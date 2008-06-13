@@ -1,13 +1,13 @@
 package org.csstudio.nams.application.department.decision;
 
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.Producer;

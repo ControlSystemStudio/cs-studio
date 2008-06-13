@@ -24,12 +24,11 @@ public class Configuration {
 	public Configuration(Session session) {
 		alleAlarmbarbeiter = session.createCriteria(AlarmbearbeiterDTO.class).list();
 		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
-		
 		alleAlarmbearbeiterGruppen = session.createCriteria(AlarmbearbeiterGruppenDTO.class).list();
-		
 		allFilters = session.createCriteria(FilterDTO.class).list();
 		
 		
+		// TODO
 		allFilterCondition = Collections.emptyList(); //session.createCriteria(FilterConditionDTO.class).list();
 	}
 	

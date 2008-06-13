@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
+package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,7 +12,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.CommonConjunctionJunctorMapper;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.hibernate.annotations.ForeignKey;
 
@@ -76,11 +75,11 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		this.iFilterConditionRef = filterConditionRef;
 	}
 
-	public CommonConjunctionJunctorMapper getJunctor() {
-		return CommonConjunctionJunctorMapper.valueOf(operand);
+	public JunctorConditionType getJunctor() {
+		return JunctorConditionType.valueOf(operand);
 	}
 	
-	public void setJunctor(CommonConjunctionJunctorMapper junctor) {
+	public void setJunctor(JunctorConditionType junctor) {
 		operand = junctor.shortOf(junctor);
 	}
 	

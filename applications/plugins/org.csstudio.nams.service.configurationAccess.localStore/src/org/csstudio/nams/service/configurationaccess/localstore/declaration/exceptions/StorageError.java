@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.declaration;
+package org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions;
 
 /**
  * Indicates an access-configuration-error or missing access-configuration or an

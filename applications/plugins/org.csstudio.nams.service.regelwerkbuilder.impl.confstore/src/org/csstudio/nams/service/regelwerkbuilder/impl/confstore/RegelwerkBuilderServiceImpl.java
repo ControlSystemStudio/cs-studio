@@ -17,18 +17,18 @@ import org.csstudio.nams.common.material.regelwerk.TimeBasedAlarmBeiBestaetigung
 import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
 import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.TimeBasedType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 

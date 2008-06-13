@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.declaration;
+package org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions;
 
 /**
  * Indicates an inconsistent, not usable configuration in current database.

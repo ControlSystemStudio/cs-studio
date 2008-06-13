@@ -12,13 +12,13 @@ import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJ
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.service.ExecutionServiceMock;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.logging.declaration.LoggerMock;

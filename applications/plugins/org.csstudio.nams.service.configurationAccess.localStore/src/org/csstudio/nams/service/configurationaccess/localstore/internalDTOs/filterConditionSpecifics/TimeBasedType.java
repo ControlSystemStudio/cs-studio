@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.declaration;
+package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 public enum TimeBasedType {
 	// bestätigungsalarm bei timeout kein alarm?

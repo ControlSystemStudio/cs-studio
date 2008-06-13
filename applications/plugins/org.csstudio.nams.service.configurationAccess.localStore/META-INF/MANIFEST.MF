@@ -55,6 +55,7 @@ Bundle-ClassPath: .,
  lib-db/derbytools.jar
 Export-Package: org.csstudio.nams.service.configurationaccess.localstore;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.configurationaccess.localstore.declaration,
+ org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions,
  org.csstudio.nams.service.configurationaccess.localstore.extensionPoint;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.configurationaccess.localstore.internalDTOs,
  org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics
