@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Messages Plug-in
+Bundle-SymbolicName: org.csstudio.nams.common.messages
+Bundle-Version: 1.0.0
+Export-Package: org.csstudio.nams.common.material;uses:="org.csstudio.nams.common.testutils"
+Require-Bundle: org.csstudio.nams.common
