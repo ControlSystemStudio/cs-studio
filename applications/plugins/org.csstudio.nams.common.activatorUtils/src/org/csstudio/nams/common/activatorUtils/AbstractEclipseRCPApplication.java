@@ -1,5 +1,8 @@
 package org.csstudio.nams.common.activatorUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
@@ -20,7 +23,8 @@ import org.osgi.framework.BundleContext;
  * public class MyApplication extends {@link AbstractEclipseRCPApplication} {
  * 
  *     &#064;{@link ApplicationInitializer}
- *     public {@link OSGiServiceOffers} initializeApplication(
+ *     public {@link OSGiServiceOffers} initializeApplication
+ *             throws {@link InitialisationFailedError} (
  *         &#064;{@link OSGiService} MyService service, 
  *         &#064;{@link ExecutableEclipseRCPExtension}(extensionId = MyExtensionType.class)
  *             Object myExtension)
@@ -87,8 +91,73 @@ public abstract class AbstractEclipseRCPApplication implements BundleActivator,
 	 * it directly!
 	 */
 	final public Object start(IApplicationContext context) throws Exception {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Not implemented yet.");
+
+		// Run Steps....
+		Method applicationStepperMethod = AnnotatedActivatorUtils
+				.findAnnotatedMethod(this, ApplicationStep.class);
+
+		// check result
+		Class<?> applicationStartMethodReturnType = applicationStepperMethod
+				.getReturnType();
+		if (!Void.TYPE.equals(applicationStartMethodReturnType)) {
+			if (!ApplicationStepResult.class.equals(applicationStartMethodReturnType)) {
+				throw new RuntimeException(
+						"Invalid return type of application-start-method: \""
+								+ applicationStartMethodReturnType.getName()
+								+ "\"; only "
+								+ ApplicationStepResult.class.getName()
+								+ " and void are supportet.");
+			}
+		}
+
+		// get params...
+		RequestedParam[] requestedParams = AnnotatedActivatorUtils
+				.getAllRequestedMethodParams(applicationStepperMethod);
+
+		// check is all requested params are valid...
+		for (RequestedParam requestedParam : requestedParams) {
+			// currently only OSGiService injection is supported
+			if (!RequestedParam.RequestType.OSGiServiceRequest
+					.equals(requestedParam.requestType)) {
+				throw new RuntimeException(
+						"Can not inject not annotated param of type "
+								+ requestedParam.type.getName()
+								+ "; currently only OSGi service injection is supported.");
+			}
+		}
+
+		// INVOKE
+		Object[] paramValues = AnnotatedActivatorUtils.evaluateParamValues(
+				AbstractEclipseRCPApplication.bundleContext, requestedParams);
+
+		ApplicationStepResult stepResult = null;
+		do {
+			try {
+				stepResult = (ApplicationStepResult) applicationStepperMethod
+						.invoke(this, paramValues);
+			} catch (InvocationTargetException wrappedApplicationStepError) {
+				Throwable applicationStepError = wrappedApplicationStepError
+						.getCause();
+				// TODO If Exception handler is avail, call exception handler
+				// with
+				// applicationStepError as parameter or if unavail stop stepping
+				// and
+				// continue throwing to the framework.
+			}
+		} while (ApplicationStepResult.CONTINUE.equals(stepResult));
+
+		// Analyzes result and perform...
+		// TODO Handle reconfigure ...
+		Object iAppResult = null;
+		if (ApplicationStepResult.DONE.equals(stepResult)) {
+			iAppResult = IApplication.EXIT_OK;
+		} else if (ApplicationStepResult.RELAUNCH.equals(stepResult)) {
+			iAppResult = IApplication.EXIT_RELAUNCH;
+		}
+		if (ApplicationStepResult.RESTART.equals(stepResult)) {
+			iAppResult = IApplication.EXIT_RESTART;
+		}
+		return iAppResult;
 	}
 
 	/**

@@ -22,5 +22,10 @@ public enum ApplicationStepResult {
 	/**
 	 * Application wish to normally continue working.
 	 */
-	CONTINUE
+	CONTINUE,
+	
+	/**
+	 * Application wishes to get reconfigured.
+	 */
+	RECONFIGURE
 }
