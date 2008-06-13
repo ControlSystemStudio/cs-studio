@@ -1,7 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 @Deprecated
-final class TopicConfigurationId {
+public final class TopicConfigurationId {
 
 	public static TopicConfigurationId valueOf(final int id) {
 		return new TopicConfigurationId(id);

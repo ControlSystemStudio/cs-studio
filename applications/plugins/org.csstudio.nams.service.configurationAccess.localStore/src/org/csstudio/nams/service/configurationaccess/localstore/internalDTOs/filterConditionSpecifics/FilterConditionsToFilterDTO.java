@@ -3,7 +3,6 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;

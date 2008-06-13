@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common,
  org.csstudio.platform.libs.jdbc,
  org.csstudio.nams.common.activatorUtils,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.nams.common.regelwerk
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/hibernate3.jar,
