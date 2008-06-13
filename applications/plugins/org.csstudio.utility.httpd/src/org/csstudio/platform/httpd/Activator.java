@@ -9,31 +9,38 @@ import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 
-/** TODO Turn into pure utility, don't start any web server in here
+/** Plugin Activator.
+ *  <p>
+ *  When <code>demo_port</code> is set, it registers a demo web server.
+ *  Otherwise it doesn't do anything useful.
+ *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class Activator extends Plugin
 {
-    // The plug-in ID
-    public static final String PLUGIN_ID = "HTTPD"; //$NON-NLS-1$
-
-    final private static int port = 9005;
-
+    /** Set to >0 at compile time to include demo server */
+    final private static int demo_port = 0 /* 9005 */;
     
     /** {@inheritDoc} */
     @Override
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-        try
+        if (demo_port > 0)
         {
-            final HttpService http =
-                HttpServiceHelper.createHttpService(context, port);
-            configureHttpService(http);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+            try
+            {
+                final HttpService http =
+                    HttpServiceHelper.createHttpService(context, demo_port);
+                configureHttpService(http);
+                System.out.println("Try these URLs from web browser:");
+                System.out.println("http://localhost:" + demo_port + "/test.html");
+                System.out.println("http://localhost:" + demo_port + "/hello");
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -41,11 +48,12 @@ public class Activator extends Plugin
     @Override
     public void stop(BundleContext context) throws Exception
     {
-        System.out.println("HTTPD stop");
-        HttpServiceHelper.stopHttpService(port);
+        if (demo_port > 0)
+            HttpServiceHelper.stopHttpService(demo_port);
         super.stop(context);
     }
 
+    /** Register resources and servlet */
     private void configureHttpService(final HttpService http)
                     throws NamespaceException, ServletException
     {

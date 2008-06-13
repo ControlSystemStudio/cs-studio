@@ -75,8 +75,6 @@ public class HttpServiceHelper
         // When closed, the registered servlets don't get called?!
         http_tracker.close();
         
-        System.out.println("Started HTTPD on port " + port);
-        
         return http;
     }
 
@@ -85,17 +83,11 @@ public class HttpServiceHelper
      *  Will only work with HttpServices that were started by
      *  <code>createHttpService</code>
      *  @port Port where the HttpService was started
+     *  @throws Exception on error
      *  @see #createHttpService
      */
-    static public void stopHttpService(final int port)
+    static public void stopHttpService(final int port) throws Exception
     {
-        try
-        {
-            JettyConfigurator.stopServer(createServerId(port));
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        JettyConfigurator.stopServer(createServerId(port));
     }
 }
