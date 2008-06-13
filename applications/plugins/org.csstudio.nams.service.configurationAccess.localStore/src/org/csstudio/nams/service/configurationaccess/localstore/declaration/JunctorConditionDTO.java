@@ -1,16 +1,12 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.hibernate.annotations.ForeignKey;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -24,13 +20,13 @@ import org.hibernate.annotations.ForeignKey;
  * FilterConditionRef			INT NOT NULL,
  * iFirstFilterConditionRef	INT NOT NULL,
  * iSecondFilterConditionRef   INT NOT NULL,
- * Operand                    SMALLINT
+// * Operand                    SMALLINT
  * ;
  * </pre>
  */
 @Entity
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
 @Table(name = "AMS_FilterCond_Conj_Common")
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef")
 public class JunctorConditionDTO extends FilterConditionDTO {
 
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -42,18 +38,9 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	@Column(name = "iSecondFilterConditionRef")
 	private int secondFilterConditionRef;
 	
-	@ForeignKey(name="AMS_FilterCondition")
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="FirstFilterConditionRef", referencedColumnName="iFilterConditionID")
-	private FilterConditionDTO firstFilterCondition;
-	
-	@ForeignKey(name="AMS_FilterCondition")
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="SecondFilterConditionRef", referencedColumnName="iFilterConditionID")
-	private FilterConditionDTO secondFilterCondition;
-	
-	@Column(name = "Operand", length = 16)
-	private short operand;
+//	@Column(name = "Operand")
+	@Transient // TODO Spalte hinzufuegen!!!
+	private short operand = 0;
 	
 	/**
 	 * @return the filterConditionRef
@@ -88,71 +75,13 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	private void setOperand(short operand) {
 		this.operand = operand;
 	}
-	@SuppressWarnings("unused")
-	public FilterConditionDTO getFirstFilterCondition() {
-		return firstFilterCondition;
-	}
-	@SuppressWarnings("unused")
-	public void setFirstFilterCondition(FilterConditionDTO firstFilterCondition) {
-		this.firstFilterCondition = firstFilterCondition;
-//		this.firstFilterConditionRef = firstFilterCondition.getIFilterConditionID();
-	}
-	@SuppressWarnings("unused")
-	public FilterConditionDTO getSecondFilterCondition() {
-		return secondFilterCondition;
-	}
-	@SuppressWarnings("unused")
-	public void setSecondFilterCondition(FilterConditionDTO secondFilterCondition) {
-		this.secondFilterCondition = secondFilterCondition;
-//		this.secondFilterConditionRef = secondFilterCondition.getIFilterConditionID();
-	}
-	@SuppressWarnings("unused")
-	private int getFirstFilterConditionRef() {
-		return firstFilterCondition.getIFilterConditionID();
-	}
-	@SuppressWarnings("unused")
-	private void setFirstFilterConditionRef(int firstFilterConditionRef) {
-		firstFilterCondition.setIFilterConditionID(firstFilterConditionRef);
-	}
-	@SuppressWarnings("unused")
-	private int getSecondFilterConditionRef() {
-		return secondFilterCondition.getIFilterConditionID();
-	}
-	@SuppressWarnings("unused")
-	private void setSecondFilterConditionRef(int secondFilterConditionRef) {
-		firstFilterCondition.setIFilterConditionID(secondFilterConditionRef);
-	}
-//
-//	private int getFirstFilterConditionRef() {
-//		return firstFilterConditionRef;
-//	}
-//
-//	public void setFirstFilterConditionRef(int firstFilterConditionRef) {
-//		this.firstFilterConditionRef = firstFilterConditionRef;
-//	}
-//
-//	private int getSecondFilterConditionRef() {
-//		return secondFilterConditionRef;
-//	}
-//
-//	public void setSecondFilterConditionRef(int secondFilterConditionRef) {
-//		this.secondFilterConditionRef = secondFilterConditionRef;
-//	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((firstFilterCondition == null) ? 0 : firstFilterCondition
-						.hashCode());
 		result = prime * result + iFilterConditionRef;
 		result = prime * result + operand;
-		result = prime
-				* result
-				+ ((secondFilterCondition == null) ? 0 : secondFilterCondition
-						.hashCode());
 		return result;
 	}
 
@@ -165,22 +94,61 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		final JunctorConditionDTO other = (JunctorConditionDTO) obj;
-		if (firstFilterCondition == null) {
-			if (other.firstFilterCondition != null)
-				return false;
-		} else if (!firstFilterCondition.equals(other.firstFilterCondition))
-			return false;
 		if (iFilterConditionRef != other.iFilterConditionRef)
 			return false;
 		if (operand != other.operand)
 			return false;
-		if (secondFilterCondition == null) {
-			if (other.secondFilterCondition != null)
-				return false;
-		} else if (!secondFilterCondition.equals(other.secondFilterCondition))
-			return false;
 		return true;
 	}
 
+	@SuppressWarnings("unused")
+	private int getIFilterConditionRef() {
+		return iFilterConditionRef;
+	}
+
+	@SuppressWarnings("unused")
+	private void setIFilterConditionRef(int filterConditionRef) {
+		iFilterConditionRef = filterConditionRef;
+	}
+
+	@SuppressWarnings("unused")
+	private int getFirstFilterConditionRef() {
+		return firstFilterConditionRef;
+	}
+
+	@SuppressWarnings("unused")
+	private void setFirstFilterConditionRef(int firstFilterConditionRef) {
+		this.firstFilterConditionRef = firstFilterConditionRef;
+	}
+
+	@SuppressWarnings("unused")
+	private int getSecondFilterConditionRef() {
+		return secondFilterConditionRef;
+	}
+
+	@SuppressWarnings("unused")
+	private void setSecondFilterConditionRef(int secondFilterConditionRef) {
+		this.secondFilterConditionRef = secondFilterConditionRef;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder(super.toString());
+		builder.append(" + first filterCond: ");
+		builder.append(this.firstFilterConditionRef);
+		builder.append(", secondFilterCond: ");
+		builder.append(this.secondFilterConditionRef);
+		return builder.toString();
+	}
+
+	public FilterConditionDTO getFirstFilterCondition() {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("not impl.");
+	}
+	
+	public FilterConditionDTO getSecondFilterCondition() {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("not impl.");
+	}
 	
 }

@@ -38,7 +38,7 @@ public class Configuration {
 		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
 		allFilters = session.createCriteria(FilterDTO.class).list();
 		
-		allFilterCondition = Collections.emptyList();// session.createCriteria(FilterConditionDTO.class).list();
+		allFilterCondition = session.createCriteria(FilterConditionDTO.class).list();
 
 		
 		// PRIVATEs
@@ -113,6 +113,9 @@ public class Configuration {
 		return allFilters;
 	}
 
+	public Collection<FilterConditionDTO> gibAlleFilterConditions() {
+		return allFilterCondition;
+	}
 	// -------------
 
 	// public Collection<AlarmbearbeiterDTO>
@@ -134,7 +137,4 @@ public class Configuration {
 		return null;
 	}
 
-	public Collection<FilterConditionDTO> getAllFilterConditions() {
-		return allFilterCondition;
-	}
 }

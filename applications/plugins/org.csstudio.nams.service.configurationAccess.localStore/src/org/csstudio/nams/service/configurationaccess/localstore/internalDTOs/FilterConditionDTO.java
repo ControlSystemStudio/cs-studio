@@ -117,9 +117,8 @@ public class FilterConditionDTO {
 		resultBuilder.append(this.getCName());
 		resultBuilder.append(" (");
 		resultBuilder.append(this.getIFilterConditionID());
-		resultBuilder.append("), refers to type: ");
-		resultBuilder.append(this.getIGroupRef());
-		resultBuilder.append(", ");
+		resultBuilder.append(")");
+		resultBuilder.append(", description: ");
 		resultBuilder.append(this.getCDesc());
 		return resultBuilder.toString();
 	}

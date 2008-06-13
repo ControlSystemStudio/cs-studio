@@ -26,7 +26,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @Table(name = "AMS_FilterCondition_String")
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef")
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
 public class StringFilterConditionDTO extends FilterConditionDTO {
 
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -113,4 +113,15 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 		this.compValue = compValue;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder(super.toString());
+		builder.append(" + key: ");
+		builder.append(this.keyValue);
+		builder.append(", operator: ");
+		builder.append(this.operator);
+		builder.append(", compareValue: ");
+		builder.append(this.compValue);
+		return builder.toString();
+	}
 }

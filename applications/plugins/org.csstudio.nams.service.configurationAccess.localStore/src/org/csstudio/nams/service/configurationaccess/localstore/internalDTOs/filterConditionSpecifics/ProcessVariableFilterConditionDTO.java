@@ -29,8 +29,8 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
  * </pre>
  */
 @Entity
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
 @Table(name = "AMS_FilterCondition_PV")
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef")
 public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
