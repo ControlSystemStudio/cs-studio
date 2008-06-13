@@ -101,6 +101,51 @@ public class FilterDTO {
 	 */
 	@Override
 	public String toString() {
-		return "id "+iFilterID+" groupref "+iGroupRef+" name "+cName+" defaultMessage "+cDefaultMessage;
+		return "id "+iFilterID+" groupref "+iGroupRef+" name "+cName;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((cDefaultMessage == null) ? 0 : cDefaultMessage.hashCode());
+		result = prime * result + ((cName == null) ? 0 : cName.hashCode());
+		result = prime * result + iFilterID;
+		result = prime * result + iGroupRef;
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof FilterDTO))
+			return false;
+		final FilterDTO other = (FilterDTO) obj;
+		if (cDefaultMessage == null) {
+			if (other.cDefaultMessage != null)
+				return false;
+		} else if (!cDefaultMessage.equals(other.cDefaultMessage))
+			return false;
+		if (cName == null) {
+			if (other.cName != null)
+				return false;
+		} else if (!cName.equals(other.cName))
+			return false;
+		if (iFilterID != other.iFilterID)
+			return false;
+		if (iGroupRef != other.iGroupRef)
+			return false;
+		return true;
+	}
+	
 }

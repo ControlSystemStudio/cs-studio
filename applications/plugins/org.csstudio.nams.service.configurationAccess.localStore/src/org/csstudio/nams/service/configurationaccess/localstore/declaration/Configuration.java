@@ -4,28 +4,28 @@ import java.util.Collection;
 
 import javax.persistence.Entity;
 
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterDTO;
 import org.hibernate.Session;
 
 @Entity
 public class Configuration {
-	// TODO implement methods(move methods in the corresponding DTO's)
-
 	private Collection<FilterDTO> allFilters;
-	private final Session session;
+	private Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
 	
 	public Configuration(Session session) {
-		this.session = session;
-		allFilters = this.session.createCriteria(FilterDTO.class).list();//.createQuery("from FilterDTO t").list();
+		alleAlarmbarbeiter = session.createCriteria(AlarmbearbeiterDTO.class).list();
+		allFilters = session.createCriteria(FilterDTO.class).list();
 	}
 	
 	/**
 	 * Returns a list of all FilterDTO's
-	 * 
-	 * @return
 	 */
 	public Collection<FilterDTO> getAllFilters() {
-		
 		return allFilters;
+	}
+	
+	public Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter() {
+		return alleAlarmbarbeiter;
 	}
 }

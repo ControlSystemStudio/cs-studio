@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import sun.tools.tree.ThisExpression;
+
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer AMS_USER.
  * 
@@ -203,6 +205,92 @@ public class AlarmbearbeiterDTO {
 	private void setUserId(int userId) {
 		this.userId = userId;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + active;
+		result = prime * result
+				+ ((confirmCode == null) ? 0 : confirmCode.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + groupRef;
+		result = prime * result
+				+ ((mobilePhone == null) ? 0 : mobilePhone.hashCode());
+		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
+		result = prime * result
+				+ ((statusCode == null) ? 0 : statusCode.hashCode());
+		result = prime * result + userId;
+		result = prime * result
+				+ ((userName == null) ? 0 : userName.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof AlarmbearbeiterDTO))
+			return false;
+		final AlarmbearbeiterDTO other = (AlarmbearbeiterDTO) obj;
+		if (active != other.active)
+			return false;
+		if (confirmCode == null) {
+			if (other.confirmCode != null)
+				return false;
+		} else if (!confirmCode.equals(other.confirmCode))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (groupRef != other.groupRef)
+			return false;
+		if (mobilePhone == null) {
+			if (other.mobilePhone != null)
+				return false;
+		} else if (!mobilePhone.equals(other.mobilePhone))
+			return false;
+		if (phone == null) {
+			if (other.phone != null)
+				return false;
+		} else if (!phone.equals(other.phone))
+			return false;
+		if (statusCode == null) {
+			if (other.statusCode != null)
+				return false;
+		} else if (!statusCode.equals(other.statusCode))
+			return false;
+		if (userId != other.userId)
+			return false;
+		if (userName == null) {
+			if (other.userName != null)
+				return false;
+		} else if (!userName.equals(other.userName))
+			return false;
+		return true;
+	}
 	
-	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder(this.getClass().getName());
+		builder.append(": name: ");
+		builder.append(this.userName);
+		builder.append(", GroupRef: ");
+		builder.append(this.groupRef);
+		builder.append(", userId: ");
+		builder.append(this.userId);
+		builder.append(", active: ");
+		builder.append(this.active);
+		return builder.toString();
+	}
 }
