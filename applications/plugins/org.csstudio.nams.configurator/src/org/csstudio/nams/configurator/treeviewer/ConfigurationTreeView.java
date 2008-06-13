@@ -5,13 +5,13 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.treeviewer.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.SortGroupBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;

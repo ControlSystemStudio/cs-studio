@@ -1,12 +1,12 @@
 package org.csstudio.nams.configurator;
 
-import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.osgi.framework.BundleActivator;
 
 /**

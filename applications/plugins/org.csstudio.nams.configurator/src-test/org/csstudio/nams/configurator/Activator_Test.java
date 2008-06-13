@@ -2,8 +2,8 @@ package org.csstudio.nams.configurator;
 
 import junit.framework.TestCase;
 
-import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.easymock.EasyMock;
 
 public class Activator_Test extends TestCase {
