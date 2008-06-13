@@ -71,3 +71,10 @@ then add the resources and servlets manually.
 Might have to set command-line option
    -Dorg.eclipse.equinox.http.jetty.autostart=false
 to prevent additional auto-started web server instances.
+Exact mechanism is unclear. When debugging into 
+org.eclipse.equinox.http.jetty.internal.Activator
+where the autostart property is checked, the Archive Engine
+happens to be in a state where the "StartLevel.isBundleActivationPolicyUsed"
+test results in no auto-started HTTP server.
+In other standalone test, I had to set the command-line option
+to prevent a default HTTP instance.

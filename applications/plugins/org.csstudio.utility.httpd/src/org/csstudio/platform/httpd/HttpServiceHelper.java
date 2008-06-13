@@ -14,8 +14,6 @@ import org.osgi.util.tracker.ServiceTracker;
  *  Might have to set command-line option
  *  <pre>-Dorg.eclipse.equinox.http.jetty.autostart=false<pre>
  *  to prevent additional auto-started web server instances.
- *  
- *  TODO Figure out why archive engine doesn't need autostart=false
  *
  *  @author Kay Kasemir
  */
