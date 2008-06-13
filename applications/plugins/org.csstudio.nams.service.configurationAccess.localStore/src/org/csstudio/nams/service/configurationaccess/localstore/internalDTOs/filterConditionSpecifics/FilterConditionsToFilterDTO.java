@@ -3,6 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -25,6 +26,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @Table(name = "AMS_Filter_FilterCondition")
 public class FilterConditionsToFilterDTO {
+	
 	@Id
 	@Column(name = "iFilterRef")
 	private int iFilterRef; // INT,
@@ -80,6 +82,48 @@ public class FilterConditionsToFilterDTO {
 		if (iPos != other.iPos)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the iFilterRef
+	 */
+	private int getIFilterRef() {
+		return iFilterRef;
+	}
+
+	/**
+	 * @param filterRef the iFilterRef to set
+	 */
+	private void setIFilterRef(int filterRef) {
+		iFilterRef = filterRef;
+	}
+
+	/**
+	 * @return the iFilterConditionRef
+	 */
+	private int getIFilterConditionRef() {
+		return iFilterConditionRef;
+	}
+
+	/**
+	 * @param filterConditionRef the iFilterConditionRef to set
+	 */
+	private void setIFilterConditionRef(int filterConditionRef) {
+		iFilterConditionRef = filterConditionRef;
+	}
+
+	/**
+	 * @return the iPos
+	 */
+	private int getIPos() {
+		return iPos;
+	}
+
+	/**
+	 * @param pos the iPos to set
+	 */
+	private void setIPos(int pos) {
+		iPos = pos;
 	}
 	
 	

@@ -36,10 +36,11 @@ import org.hibernate.annotations.CollectionOfElements;
 @Table(name = "AMS_Filter")
 public class FilterDTO {
 
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="iFilterRef", referencedColumnName="iFilterID")
-	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=FilterConditionsToFilterDTO.class)
-	private Collection<FilterConditionsToFilterDTO> conditionsAggregators;
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)//, targetEntity=FilterConditionsToFilterDTO.class, mappedBy="iFilterRef")
+	@JoinColumn(name="iFilterRef")
+//	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=FilterConditionsToFilterDTO.class)
+//	@OneToMany(mappedBy="filter")
+	private List<FilterConditionsToFilterDTO> conditionsAggregators;
 	
 	@Id
 	@Column(name="iFilterID")
