@@ -11,8 +11,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.hibernate.Transaction;
@@ -101,20 +99,20 @@ class LocalStoreConfigurationServiceImpl implements
 		 tx.commit();
 	}
 	
-	public TopicDTO getTopicConfigurations(final TopicConfigurationId id) {
-		final Transaction newTransaction = this.session.beginTransaction();
-		final List<?> messages = this.session.createQuery(
-				"from TopicDTO t where t.id = " + id.asDatabaseId()).list();
-		System.out.println(messages.size() + " TOPIC(s) found:");
-
-		TopicDTO result = null;
-		if (!messages.isEmpty()) {
-			result = (TopicDTO) messages.get(0);
-		}
-		newTransaction.commit();
-
-		return result;
-	}
+//	public TopicDTO getTopicConfigurations(final TopicConfigurationId id) {
+//		final Transaction newTransaction = this.session.beginTransaction();
+//		final List<?> messages = this.session.createQuery(
+//				"from TopicDTO t where t.id = " + id.asDatabaseId()).list();
+//		System.out.println(messages.size() + " TOPIC(s) found:");
+//
+//		TopicDTO result = null;
+//		if (!messages.isEmpty()) {
+//			result = (TopicDTO) messages.get(0);
+//		}
+//		newTransaction.commit();
+//
+//		return result;
+//	}
 
 	public void saveCurrentReplicationState(
 			final ReplicationStateDTO currentState) throws StorageError,

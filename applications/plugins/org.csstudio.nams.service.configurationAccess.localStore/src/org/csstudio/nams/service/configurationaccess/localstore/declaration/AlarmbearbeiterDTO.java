@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
+package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,12 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
-
-import sun.tools.tree.ThisExpression;
-
 /**
- * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer AMS_USER.
+ * Dieses Daten-Transfer-Objekt enthaelt die Konfiguration eines AMS_USER.
  * 
  * Das Create-Statement für die Datenbank hat folgendes Aussehen:
  * 
@@ -39,6 +35,9 @@ public class AlarmbearbeiterDTO {
 	@Column(name="iUserId", nullable=false, unique=true)
     private int userId;
 	
+	/**
+	 * Kategorie
+	 */
 	@Column(name="iGroupRef", nullable=false)
     private int groupRef = -1;
 	
@@ -67,8 +66,7 @@ public class AlarmbearbeiterDTO {
 	/**
 	 * @return the groupRef
 	 */
-	@SuppressWarnings("unused")
-	private int getGroupRef() {
+	int getGroupRef() {
 		return groupRef;
 	}
 
@@ -83,8 +81,7 @@ public class AlarmbearbeiterDTO {
 	/**
 	 * @return the userName
 	 */
-	@SuppressWarnings("unused")
-	private String getUserName() {
+	public String getUserName() {
 		return userName;
 	}
 
@@ -98,9 +95,10 @@ public class AlarmbearbeiterDTO {
 
 	/**
 	 * @return the email
+	 * 
+	 * TODO Fachwert?????
 	 */
-	@SuppressWarnings("unused")
-	private String getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
@@ -114,9 +112,10 @@ public class AlarmbearbeiterDTO {
 
 	/**
 	 * @return the mobilePhone
+	 * 
+	 * TODO Fachwert???
 	 */
-	@SuppressWarnings("unused")
-	private String getMobilePhone() {
+	public String getMobilePhone() {
 		return mobilePhone;
 	}
 
@@ -130,9 +129,10 @@ public class AlarmbearbeiterDTO {
 
 	/**
 	 * @return the phone
+	 * 
+	 * TODO Fachwert???
 	 */
-	@SuppressWarnings("unused")
-	private String getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
@@ -146,9 +146,10 @@ public class AlarmbearbeiterDTO {
 
 	/**
 	 * @return the statusCode
+	 * 
+	 * TODO Fachwert???
 	 */
-	@SuppressWarnings("unused")
-	private String getStatusCode() {
+	public String getStatusCode() {
 		return statusCode;
 	}
 
@@ -162,9 +163,10 @@ public class AlarmbearbeiterDTO {
 
 	/**
 	 * @return the confirmCode
+	 * 
+	 * TODO Fachwert???
 	 */
-	@SuppressWarnings("unused")
-	private String getConfirmCode() {
+	public  String getConfirmCode() {
 		return confirmCode;
 	}
 
@@ -179,24 +181,31 @@ public class AlarmbearbeiterDTO {
 	/**
 	 * @return the active
 	 */
-	@SuppressWarnings("unused")
 	private short getActive() {
 		return active;
+	}
+	
+	public boolean isActive() {
+		return getActive() == 1;
+	}
+
+	@SuppressWarnings("unused")
+	private void setActive(boolean active) {
+		setActive((short)(active ? 1 : 0));
 	}
 
 	/**
 	 * @param active the active to set
 	 */
-	@SuppressWarnings("unused")
 	private void setActive(short active) {
 		this.active = active;
 	}
+	
 
 	/**
 	 * @return the userId
 	 */
-	@SuppressWarnings("unused")
-	private int getUserId() {
+	int getUserId() {
 		return userId;
 	}
 
@@ -208,9 +217,6 @@ public class AlarmbearbeiterDTO {
 		this.userId = userId;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -231,9 +237,6 @@ public class AlarmbearbeiterDTO {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -294,10 +297,5 @@ public class AlarmbearbeiterDTO {
 		builder.append(", active: ");
 		builder.append(this.active);
 		return builder.toString();
-	}
-
-	public boolean wirdReferenziertVon(
-			AlarmbearbeiterZuAlarmbearbeiterGruppenDTO alarmbearbeiterZuAlarmbearbeiterGruppenDTO) {
-		return alarmbearbeiterZuAlarmbearbeiterGruppenDTO.getUserRef() == this.userId;
 	}
 }

@@ -1,21 +1,10 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
-import java.util.Collection;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
-import org.hibernate.annotations.CollectionOfElements;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer AMS_UserGroup.
@@ -39,28 +28,18 @@ import org.hibernate.annotations.CollectionOfElements;
 @Table(name = "AMS_UserGroup")
 public class AlarmbearbeiterGruppenDTO {
 	
-	
-	@OneToMany
-	@JoinTable(name="AMS_UserGroup_User", joinColumns=@JoinColumn(name="iUserGroupRef"), inverseJoinColumns=@JoinColumn(name="iUserRef"))
-	public Set<AlarmbearbeiterDTO> bearbeiter;
-	
-	public void setBearbeiter(Set<AlarmbearbeiterDTO> bearbeiter) {
-		this.bearbeiter = bearbeiter;
-	}
-	
-	public Set<AlarmbearbeiterDTO> getBearbeiter() {
-		return bearbeiter;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	// HAT funktuioniert, ist Vorlage für auto-mapping.
+//	@OneToMany
+//	@JoinTable(name="AMS_UserGroup_User", joinColumns=@JoinColumn(name="iUserGroupRef"), inverseJoinColumns=@JoinColumn(name="iUserRef"))
+//	public Set<AlarmbearbeiterDTO> bearbeiter;
+//	
+//	public void setBearbeiter(Set<AlarmbearbeiterDTO> bearbeiter) {
+//		this.bearbeiter = bearbeiter;
+//	}
+//	
+//	public Set<AlarmbearbeiterDTO> getBearbeiter() {
+//		return bearbeiter;
+//	}
 	
 	@Id @GeneratedValue
 	@Column(name="iUserGroupId", nullable=false, unique=true)
@@ -81,17 +60,10 @@ public class AlarmbearbeiterGruppenDTO {
 	@Column(name="sActive")
 	private short active = 1;
 
-	
-//	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-//	@JoinColumn(name="iUserGroupRef", referencedColumnName="iUserGroupId")
-//	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=AlarmbearbeiterZuAlarmbearbeiterGruppenDTO.class)
-//	private Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> alarmbearbeiterAggregators;
-	
 	/**
 	 * @return the userGroupId
 	 */
-	@SuppressWarnings("unused")
-	private int getUserGroupId() {
+	int getUserGroupId() {
 		return userGroupId;
 	}
 
@@ -106,8 +78,7 @@ public class AlarmbearbeiterGruppenDTO {
 	/**
 	 * @return the groupRef
 	 */
-	@SuppressWarnings("unused")
-	private int getGroupRef() {
+	int getGroupRef() {
 		return groupRef;
 	}
 
@@ -122,8 +93,7 @@ public class AlarmbearbeiterGruppenDTO {
 	/**
 	 * @return the userGroupName
 	 */
-	@SuppressWarnings("unused")
-	private String getUserGroupName() {
+	public String getUserGroupName() {
 		return userGroupName;
 	}
 
@@ -138,8 +108,7 @@ public class AlarmbearbeiterGruppenDTO {
 	/**
 	 * @return the minGroupMember
 	 */
-	@SuppressWarnings("unused")
-	private short getMinGroupMember() {
+	public short getMinGroupMember() {
 		return minGroupMember;
 	}
 
@@ -154,8 +123,7 @@ public class AlarmbearbeiterGruppenDTO {
 	/**
 	 * @return the timeOutSec
 	 */
-	@SuppressWarnings("unused")
-	private int getTimeOutSec() {
+	public int getTimeOutSec() {
 		return timeOutSec;
 	}
 
@@ -183,6 +151,15 @@ public class AlarmbearbeiterGruppenDTO {
 		this.active = active;
 	}
 	
+	public boolean isActive() {
+		return getActive() == 1;
+	}
+
+	@SuppressWarnings("unused")
+	private void setActive(boolean active) {
+		setActive((short)(active ? 1 : 0));
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
@@ -193,30 +170,9 @@ public class AlarmbearbeiterGruppenDTO {
 		builder.append(groupRef);
 		builder.append(", cName: ");
 		builder.append(this.userGroupName);
-		builder.append(", linked Alarmbearbeiter: ");
-		builder.append(bearbeiter.toString());
-//		builder.append(alarmbearbeiterAggregators.toString());
 		return builder.toString();
 	}
 
-	/**
-	 * @return the conditionsAggregators
-	 */
-//	private Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> getConditionsAggregators() {
-//		return alarmbearbeiterAggregators;
-//	}
-
-	/**
-	 * @param conditionsAggregators the conditionsAggregators to set
-	 */
-//	private void setConditionsAggregators(
-//			Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> conditionsAggregators) {
-//		this.alarmbearbeiterAggregators = conditionsAggregators;
-//	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -224,8 +180,6 @@ public class AlarmbearbeiterGruppenDTO {
 		result = prime * result + active;
 		result = prime
 				* result;
-//				+ ((alarmbearbeiterAggregators == null) ? 0 : alarmbearbeiterAggregators
-//						.hashCode());
 		result = prime * result + groupRef;
 		result = prime * result + minGroupMember;
 		result = prime * result + timeOutSec;
@@ -235,9 +189,6 @@ public class AlarmbearbeiterGruppenDTO {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -249,11 +200,6 @@ public class AlarmbearbeiterGruppenDTO {
 		final AlarmbearbeiterGruppenDTO other = (AlarmbearbeiterGruppenDTO) obj;
 		if (active != other.active)
 			return false;
-//		if (alarmbearbeiterAggregators == null) {
-//			if (other.alarmbearbeiterAggregators != null)
-//				return false;
-//		} else if (!alarmbearbeiterAggregators.equals(other.alarmbearbeiterAggregators))
-//			return false;
 		if (groupRef != other.groupRef)
 			return false;
 		if (minGroupMember != other.minGroupMember)
@@ -270,14 +216,4 @@ public class AlarmbearbeiterGruppenDTO {
 		return true;
 	}
 
-	public boolean istBearbeiterEnthalten(AlarmbearbeiterDTO alarmbearbeiterDTO) {
-//		for (AlarmbearbeiterZuAlarmbearbeiterGruppenDTO alarmbearbeiterZuAlarmbearbeiterGruppenDTO : this.alarmbearbeiterAggregators) {
-//			if( alarmbearbeiterDTO.wirdReferenziertVon(alarmbearbeiterZuAlarmbearbeiterGruppenDTO) ) {
-//				return true;
-//			}
-//		}
-		return false;
-	}
-	
-	
 }

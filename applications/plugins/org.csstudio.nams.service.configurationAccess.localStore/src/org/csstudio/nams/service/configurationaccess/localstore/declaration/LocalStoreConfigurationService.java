@@ -7,8 +7,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 
@@ -52,12 +50,12 @@ public interface LocalStoreConfigurationService {
 	public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfiguration;
 
-	/**
-	 * @deprecated Just for testing the functionality - not for production use!
-	 */
-	@Deprecated
-	public TopicDTO getTopicConfigurations(
-			TopicConfigurationId topicConfigurationDatabaseId);
+//	/**
+//	 * @deprecated Just for testing the functionality - not for production use!
+//	 */
+//	@Deprecated
+//	public TopicDTO getTopicConfigurations(
+//			TopicConfigurationId topicConfigurationDatabaseId);
 	
 	/**
 	 * @deprecated Just for testing the functionality - not for production use!

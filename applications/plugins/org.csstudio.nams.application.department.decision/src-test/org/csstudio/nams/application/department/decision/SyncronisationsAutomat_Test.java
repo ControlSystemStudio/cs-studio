@@ -20,8 +20,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
@@ -154,11 +152,11 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return null;
 					}
 
-					public TopicDTO getTopicConfigurations(
-							TopicConfigurationId topicConfigurationDatabaseId) {
-						fail("unexpected method call!");
-						return null;
-					}
+//					public TopicDTO getTopicConfigurations(
+//							TopicConfigurationId topicConfigurationDatabaseId) {
+//						fail("unexpected method call!");
+//						return null;
+//					}
 
 					public void saveCurrentReplicationState(
 							ReplicationStateDTO currentState)

@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
+package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,19 +34,22 @@ public class TopicDTO {
 	@Column(name = "CDESCRIPTION", length=256)
 	private String description;
 
-	@Column(name = "CNAME", length=128)
-	private String name;
+	/**
+	 * Kategorie.
+	 */
+	@Column(name = "IGROUPREF")
+	private int groupRef;
 	
-	@Column(name = "CTOPICNAME", length=128)
-	private String topicName;
-
 	@Id
 	@GeneratedValue
 	@Column(name = "ITOPICID", nullable=false, unique=true)
 	private int id = -1;
 
-	@Column(name = "IGROUPREF")
-	private int groupRef;
+	@Column(name = "CNAME", length=128)
+	private String name;
+
+	@Column(name = "CTOPICNAME", length=128)
+	private String topicName;
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -97,7 +100,7 @@ public class TopicDTO {
 		return this.description;
 	}
 
-	public int getGroupRef() {
+	int getGroupRef() {
 		return this.groupRef;
 	}
 
@@ -107,7 +110,7 @@ public class TopicDTO {
 	 * @return -1, wenn der Datensatz nicht eingerichtet ist, >0 bei gültiger
 	 *         Id.
 	 */
-	public int getId() {
+	int getId() {
 		return this.id;
 	}
 
@@ -143,14 +146,15 @@ public class TopicDTO {
 	 * @param ame
 	 *            Die Beschreibung des Topics; 256 Zeichen oder kürzer.
 	 */
-	public void setDescription(final String description) {
+	@SuppressWarnings("unused")
+	private void setDescription(final String description) {
 		Contract.require(description.length() <= 256,
 				"topicName.length() <= 256");
 
 		this.description = description;
 	}
-
-	public void setGroupRef(final int groupRef) {
+	@SuppressWarnings("unused")
+	private void setGroupRef(final int groupRef) {
 		this.groupRef = groupRef;
 	}
 
@@ -164,7 +168,8 @@ public class TopicDTO {
 	 * @param ame
 	 *            Der Name/Identifizierung des Topics; 128 Zeichen oder kürzer.
 	 */
-	public void setName(final String name) {
+	@SuppressWarnings("unused")
+	private void setName(final String name) {
 		Contract.require(name.length() <= 128, "topicName.length() <= 128");
 
 		this.name = name;
@@ -175,7 +180,8 @@ public class TopicDTO {
 	 * @param topicName
 	 *            Der Name des Topics; 128 Zeichen oder kürzer.
 	 */
-	public void setTopicName(final String topicName) {
+	@SuppressWarnings("unused")
+	private void setTopicName(final String topicName) {
 		Contract
 				.require(topicName.length() <= 128, "topicName.length() <= 128");
 

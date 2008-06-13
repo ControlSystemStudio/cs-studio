@@ -35,6 +35,7 @@ public class FilterConditionTypeDTO {
 	@Column(name = "cName", length=128)
 	private String cName;
 
+	@Deprecated
 	@Column(name = "cClass", length=256)
 	private String cClass;
 
@@ -48,8 +49,7 @@ public class FilterConditionTypeDTO {
 	/**
 	 * @return the iFilterConditionTypeID
 	 */
-	@SuppressWarnings("unused")
-	private int getIFilterConditionTypeID() {
+	public int getIFilterConditionTypeID() {
 		return iFilterConditionTypeID;
 	}
 
@@ -66,7 +66,7 @@ public class FilterConditionTypeDTO {
 	 * @return the cName
 	 */
 	@SuppressWarnings("unused")
-	private String getCName() {
+	public String getCName() {
 		return cName;
 	}
 
