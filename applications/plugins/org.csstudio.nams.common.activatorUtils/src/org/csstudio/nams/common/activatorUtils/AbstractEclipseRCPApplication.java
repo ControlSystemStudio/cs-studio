@@ -32,6 +32,16 @@ import org.osgi.framework.BundleContext;
  *         // Do s.th. Extension are only avail here!!!
  *     }
  *     
+ *     &#064;{@link ApplicationReInitializer}
+ *     public {@link OSGiServiceOffers} updateConfiguration
+ *             throws {@link InitialisationFailedError} (
+ *         &#064;{@link OSGiService} MyService service, 
+ *         &#064;{@link ExecutableEclipseRCPExtension}(extensionId = MyExtensionType.class)
+ *             Object myExtension)
+ *     {
+ *         // Do s.th. Extension are only avail here!!!
+ *     }
+ *     
  *     &#064;{@link ApplicationStep}
  *     public ApplicationStepResult oneStepOfIteratingCallsToPerformApplicationsOperation(
  *         &#064;{@link OSGiService} MyService service ) throws {@link Throwable}
@@ -42,7 +52,7 @@ import org.osgi.framework.BundleContext;
  *         return ApplicationStepResult.CONTINUE;
  *     }
  *     
- *     &#064;{@link ApplicationCleanUpPoint}
+ *     &#064;{@link ApplicationShutdownMethod}
  *     public void shutdownApplication(
  *         &#064;{@link OSGiService} MyService service )
  *     {
