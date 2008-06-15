@@ -28,6 +28,7 @@ import java.util.Collection;
 
 import org.csstudio.platform.internal.PluginCustomizationExporter;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -55,7 +56,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	public static final String EXTPOINT_CONTROL_SYSTEM_ITEM_FACTORIES = ID
 			+ ".controlSystemItemFactories"; //$NON-NLS-1$
-	
+
 	/**
 	 * Standard constructor.
 	 */
@@ -69,6 +70,23 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
 		applySystemPropertyDefaults();
+		offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
+	}
+
+	/**
+	 * Offers an instance of {@link ProcessVariableConnectionServiceFactory} to
+	 * the OSGi-Service registry.
+	 * 
+	 * Required by New-AMS-Application.
+	 * 
+	 * @param context
+	 *            The current bundle context.
+	 */
+	private void offerProcessVariableConnectionServiceFactoryAsOSGiService(
+			BundleContext context) {
+		context.registerService(ProcessVariableConnectionServiceFactory.class
+				.getName(), ProcessVariableConnectionServiceFactory
+				.getDefault(), null);
 	}
 
 	/**
@@ -76,15 +94,15 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 * preferences.
 	 */
 	private void applySystemPropertyDefaults() {
-		Collection<SystemPropertyPreferenceEntry> properties =
-			SystemPropertyPreferenceEntry.loadFromPreferences();
+		Collection<SystemPropertyPreferenceEntry> properties = SystemPropertyPreferenceEntry
+				.loadFromPreferences();
 		for (SystemPropertyPreferenceEntry entry : properties) {
 			// the preferences are for defaults, so they are applied only if
 			// the system property is not already set to some other value
 			if (System.getProperty(entry.getKey()) == null) {
 				System.setProperty(entry.getKey(), entry.getValue());
 				CentralLogger.getInstance().getLogger(this).debug(
-				        "Setting system property: " + entry); //$NON-NLS-1$
+						"Setting system property: " + entry); //$NON-NLS-1$
 			}
 		}
 	}
@@ -113,7 +131,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	public final String getPluginId() {
 		return ID;
 	}
-	
+
 	/**
 	 * Exports the current preferences into a file that can be used as a plugin
 	 * customization file. The exported file can for example be used as an
@@ -128,7 +146,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 *             if the export fails.
 	 */
 	@SuppressWarnings("nls")
-    public final void exportPluginCustomization(String file,
+	public final void exportPluginCustomization(String file,
 			boolean includeDefaults) throws CoreException {
 		OutputStream os = null;
 		try {
@@ -144,7 +162,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 					os.close();
 				} catch (IOException e) {
 					CentralLogger.getInstance().getLogger(this).warn(
-					        "Error closing output file: " + file, e);
+							"Error closing output file: " + file, e);
 				}
 			}
 		}

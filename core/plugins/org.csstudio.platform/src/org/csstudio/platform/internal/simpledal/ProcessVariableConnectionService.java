@@ -85,6 +85,7 @@ public class ProcessVariableConnectionService implements
 	ProcessVariableConnectionService() {
 		_connectors = new HashMap<MapKey, AbstractConnector>();
 		_cleanupThread = new CleanupThread();
+		_cleanupThread.start();
 	}
 
 	public static synchronized IProcessVariableConnectionService getInstance() {
@@ -1059,10 +1060,12 @@ public class ProcessVariableConnectionService implements
 		/**
 		 * Standard constructor.
 		 */
-		private CleanupThread() {
+		CleanupThread() {
+			// Have to be a daemon to be automatically stopped on a system
+			// shutdown.
+			this.setDaemon(true);
 			_running = true;
 			_sleepTime = 1000;
-			start();
 		}
 
 		/**
@@ -1183,21 +1186,20 @@ public class ProcessVariableConnectionService implements
 				DynamicValueProperty p = createOrGetDalProperty(pv, valueType
 						.getDalType());
 
-
 				long timeout = System.currentTimeMillis() + 1000;
 
-				while (!p.isConnected()
-						&& System.currentTimeMillis() < timeout) {
+				while (!p.isConnected() && System.currentTimeMillis() < timeout) {
 					try {
 						Thread.sleep(1);
 					} catch (InterruptedException e) {
 					}
 				}
-				
+
 				// DAL encapsulates the detection of the current user internally
 				// (probably via global system properties)
-				if(p.isConnected()) {
-					result = p.isSettable() ? SettableState.SETTABLE : SettableState.NOT_SETTABLE;
+				if (p.isConnected()) {
+					result = p.isSettable() ? SettableState.SETTABLE
+							: SettableState.NOT_SETTABLE;
 				}
 			} catch (Exception e) {
 				CentralLogger.getInstance().error(

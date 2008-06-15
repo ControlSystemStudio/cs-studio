@@ -19,21 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.simpledal;
+package org.csstudio.platform.simpledal;
 
 import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
 
 /**
- * Factory of {@link IProcessVariableConnectionService ProcessVariableConnectionService}s,
+ * Factory of
+ * {@link IProcessVariableConnectionService ProcessVariableConnectionService}s,
  * 
  * @author C1 WPS / KM, MZ
  */
 public class ProcessVariableConnectionServiceFactory {
 
+	private static ProcessVariableConnectionServiceFactory sharedInstance;
+
+	/**
+	 * Creates a new, empty {@link IProcessVariableConnectionService}.
+	 * 
+	 * @deprecated Use {@link #getDefault()}.{@link #createProcessVariableConnectionService()}
+	 *             instead.
+	 */
+	@Deprecated
+	public static IProcessVariableConnectionService getProcessVariableConnectionService() {
+		return ProcessVariableConnectionService.getInstance();
+	}
+
 	/**
 	 * Creates a new, empty {@link IProcessVariableConnectionService}.
 	 */
-	public static IProcessVariableConnectionService getProcessVariableConnectionService() {
+	public IProcessVariableConnectionService createProcessVariableConnectionService() {
 		return ProcessVariableConnectionService.getInstance();
+	}
+
+	public static ProcessVariableConnectionServiceFactory getDefault() {
+		if (ProcessVariableConnectionServiceFactory.sharedInstance == null) {
+			ProcessVariableConnectionServiceFactory.sharedInstance = new ProcessVariableConnectionServiceFactory();
+		}
+		return ProcessVariableConnectionServiceFactory.sharedInstance;
 	}
 }
