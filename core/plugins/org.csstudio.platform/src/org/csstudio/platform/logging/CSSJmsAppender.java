@@ -180,10 +180,10 @@ public class CSSJmsAppender extends AppenderSkeleton
     {
         final String text = layout.format(event).trim();
 
-        final Calendar create_time = Calendar.getInstance();
-
         final Calendar event_time = Calendar.getInstance();
-        create_time.setTimeInMillis(event.timeStamp);
+        event_time.setTimeInMillis(event.timeStamp);
+
+        final Calendar create_time = Calendar.getInstance();
         
         String clazz = null;
         String method = null;
