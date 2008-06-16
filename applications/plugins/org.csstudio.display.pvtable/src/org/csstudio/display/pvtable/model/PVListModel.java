@@ -103,11 +103,11 @@ public class PVListModel
         model_listeners.remove(listener);
     }
     
-    /** @return Returns the list of entries. */
+    /** @return Returns number of entries (rows) in model. */
     public int getEntryCount()
     {   return entries.size();  }
     
-    /** @return Returns the list of entries. */
+    /** @return Returns entry (row). */
 	public PVListEntry getEntry(int i)
 	{
         if (i >= 0  &&  i < entries.size())
