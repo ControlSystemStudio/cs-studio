@@ -25,20 +25,8 @@ public class ConfiguratorActivator extends AbstractBundleActivator implements
 	 */
 	@OSGiBundleActivationMethod
 	public void bundleStart(
-//			@OSGiService @Required ConfigurationEditingStoreService editingStoreService,
-//			@OSGiService @Required ConfigurationStoreService storeService,
 			@OSGiService @Required Logger logger
 	) {
-		// for debugging : Alle Services injected?
-//		if (editingStoreService != null && storeService != null
-//				&& logger != null) {
-//			logger.logInfoMessage(this, "activated...");
-//		}
-
-		// Inject into extension classes.
-//		ConfigurationTreeView
-//				.staticInjectEditingStoreService(editingStoreService);
-//		ConfigurationTreeView.staticInjectStoreService(storeService);
 		ConfigurationTreeView.staticInjectLogger(logger);
 	}
 	

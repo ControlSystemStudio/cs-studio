@@ -28,40 +28,73 @@ import javax.persistence.Table;
  * </pre>
  */
 @Entity
-@Table(name="AMS_User")
+@Table(name = "AMS_User")
 public class AlarmbearbeiterDTO {
-	
-	@Id @GeneratedValue
-	@Column(name="iUserId", nullable=false, unique=true)
-    private int userId;
-	
+
+	@Id
+	@GeneratedValue
+	@Column(name = "iUserId", nullable = false, unique = true)
+	private int userId;
+
 	/**
 	 * Kategorie
 	 */
-	@Column(name="iGroupRef", nullable=false)
-    private int groupRef = -1;
-	
-	@Column(name="cUserName", length=128)
+	@Column(name = "iGroupRef", nullable = false)
+	private int groupRef = -1;
+
+	@Column(name = "cUserName", length = 128)
 	private String userName;
-	
-	@Column(name="cEmail", length=128)
+
+	@Column(name = "cEmail", length = 128)
 	private String email;
-	
-	@Column(name="cMobilePhone", length=64)
+
+	@Column(name = "cMobilePhone", length = 64)
 	private String mobilePhone;
-	
-	@Column(name="cPhone", length=64)
+
+	@Column(name = "cPhone", length = 64)
 	private String phone;
-	
-	@Column(name="cStatusCode", length=32)
+
+	@Column(name = "cStatusCode", length = 32)
 	private String statusCode;
-	
-	@Column(name="cConfirmCode", length=32)
+
+	@Column(name = "cConfirmCode", length = 32)
 	private String confirmCode;
-	
-	@Column(name="sActive")
+
+	@Column(name = "sActive")
 	private short active;
-	
+
+	public AlarmbearbeiterDTO() {
+	}
+
+	/**
+	 * This constructor is normally used by the configurator and by tests. It
+	 * should not be used inside another NAMS application.
+	 * 
+	 * @param userId
+	 * @param categoryRef
+	 *            TODO Dieses ist die Rubrik-Id, besser wäre ein CategoryDTO!
+	 * @param userName
+	 * @param email
+	 * @param mobilePhone
+	 * @param phone
+	 * @param statusCode
+	 * @param confirmCode
+	 * @param active
+	 */
+	public AlarmbearbeiterDTO(int userId, int groupRef, String userName,
+			String email, String mobilePhone, String phone, String statusCode,
+			String confirmCode, boolean active) {
+		super();
+		this.userId = userId;
+		this.groupRef = groupRef;
+		this.userName = userName;
+		this.email = email;
+		this.mobilePhone = mobilePhone;
+		this.phone = phone;
+		this.statusCode = statusCode;
+		this.confirmCode = confirmCode;
+		this.active = (short) (active == true ? 1 : 0);
+	}
 
 	/**
 	 * @return the groupRef
@@ -71,7 +104,8 @@ public class AlarmbearbeiterDTO {
 	}
 
 	/**
-	 * @param groupRef the groupRef to set
+	 * @param groupRef
+	 *            the groupRef to set
 	 */
 	@SuppressWarnings("unused")
 	private void setGroupRef(int groupRef) {
@@ -86,7 +120,8 @@ public class AlarmbearbeiterDTO {
 	}
 
 	/**
-	 * @param userName the userName to set
+	 * @param userName
+	 *            the userName to set
 	 */
 	@SuppressWarnings("unused")
 	private void setUserName(String userName) {
@@ -103,7 +138,8 @@ public class AlarmbearbeiterDTO {
 	}
 
 	/**
-	 * @param email the email to set
+	 * @param email
+	 *            the email to set
 	 */
 	@SuppressWarnings("unused")
 	private void setEmail(String email) {
@@ -120,7 +156,8 @@ public class AlarmbearbeiterDTO {
 	}
 
 	/**
-	 * @param mobilePhone the mobilePhone to set
+	 * @param mobilePhone
+	 *            the mobilePhone to set
 	 */
 	@SuppressWarnings("unused")
 	private void setMobilePhone(String mobilePhone) {
@@ -137,7 +174,8 @@ public class AlarmbearbeiterDTO {
 	}
 
 	/**
-	 * @param phone the phone to set
+	 * @param phone
+	 *            the phone to set
 	 */
 	@SuppressWarnings("unused")
 	private void setPhone(String phone) {
@@ -154,7 +192,8 @@ public class AlarmbearbeiterDTO {
 	}
 
 	/**
-	 * @param statusCode the statusCode to set
+	 * @param statusCode
+	 *            the statusCode to set
 	 */
 	@SuppressWarnings("unused")
 	private void setStatusCode(String statusCode) {
@@ -166,12 +205,13 @@ public class AlarmbearbeiterDTO {
 	 * 
 	 * TODO Fachwert???
 	 */
-	public  String getConfirmCode() {
+	public String getConfirmCode() {
 		return confirmCode;
 	}
 
 	/**
-	 * @param confirmCode the confirmCode to set
+	 * @param confirmCode
+	 *            the confirmCode to set
 	 */
 	@SuppressWarnings("unused")
 	private void setConfirmCode(String confirmCode) {
@@ -184,23 +224,23 @@ public class AlarmbearbeiterDTO {
 	private short getActive() {
 		return active;
 	}
-	
+
 	public boolean isActive() {
 		return getActive() == 1;
 	}
 
 	@SuppressWarnings("unused")
 	private void setActive(boolean active) {
-		setActive((short)(active ? 1 : 0));
+		setActive((short) (active ? 1 : 0));
 	}
 
 	/**
-	 * @param active the active to set
+	 * @param active
+	 *            the active to set
 	 */
 	private void setActive(short active) {
 		this.active = active;
 	}
-	
 
 	/**
 	 * @return the userId
@@ -210,7 +250,8 @@ public class AlarmbearbeiterDTO {
 	}
 
 	/**
-	 * @param userId the userId to set
+	 * @param userId
+	 *            the userId to set
 	 */
 	@SuppressWarnings("unused")
 	private void setUserId(int userId) {
@@ -284,10 +325,11 @@ public class AlarmbearbeiterDTO {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
+		StringBuilder builder = new StringBuilder(this.getClass()
+				.getSimpleName());
 		builder.append(": name: ");
 		builder.append(this.userName);
 		builder.append(", GroupRef: ");
@@ -297,5 +339,18 @@ public class AlarmbearbeiterDTO {
 		builder.append(", active: ");
 		builder.append(this.active);
 		return builder.toString();
+	}
+
+	/**
+	 * Prueft, ob dieser Alarmbearbeiter in der Rubrik mit dem angegebenen
+	 * Datenbank-Rubrik-Primaerschluessel (GroupRef) enthalten ist.
+	 * 
+	 * TODO Besser hier ein CategoryDTO verwenden.
+	 * 
+	 * @param categoryDBId 
+	 * @return
+	 */
+	public boolean isInCategory(int categoryDBId) {
+		return this.groupRef == categoryDBId;
 	}
 }
