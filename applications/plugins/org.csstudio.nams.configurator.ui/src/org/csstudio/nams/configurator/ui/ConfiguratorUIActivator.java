@@ -5,6 +5,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.configurator.model.declaration.ConfigurationElementModelAccessService;
+import org.csstudio.nams.configurator.ui.views.AlarmbearbeiterView;
 import org.csstudio.nams.service.logging.declaration.Logger;
 
 /**
@@ -21,6 +22,7 @@ public class ConfiguratorUIActivator extends AbstractBundleActivator {
 			@OSGiService @Required final Logger logger,
 			@OSGiService @Required final ConfigurationElementModelAccessService configurationElementModelAccessService
 	) {
-		
+		AlarmbearbeiterView.staticInject(logger);
+		AlarmbearbeiterView.staticInject(configurationElementModelAccessService);
 	}
 }
