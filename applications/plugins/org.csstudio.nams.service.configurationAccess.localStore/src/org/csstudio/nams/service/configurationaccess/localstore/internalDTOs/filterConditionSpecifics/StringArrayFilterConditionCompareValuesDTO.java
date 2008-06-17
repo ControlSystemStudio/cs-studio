@@ -26,6 +26,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @Table(name = "AMS_FilterCond_ArrStrVal")
 public class StringArrayFilterConditionCompareValuesDTO {
+	
 	@Id
 	@Column(name = "iFilterConditionRef", nullable = false, insertable=false, updatable=false)
 	private int filterConditionRef;

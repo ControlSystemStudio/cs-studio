@@ -11,7 +11,6 @@ import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachc
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
@@ -22,6 +21,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.messaging.declaration.Consumer;

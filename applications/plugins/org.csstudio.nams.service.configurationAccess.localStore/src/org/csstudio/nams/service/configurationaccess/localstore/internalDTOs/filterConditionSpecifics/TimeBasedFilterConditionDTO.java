@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -37,6 +38,14 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef")
 public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 
+	@SuppressWarnings("unused")
+	protected void setFilterConditionTypeRef(int typeRef){
+		super.filterCondtionTypeRef = 2;
+	}
+	public int getFilterConditionTypeRef(){
+		return filterCondtionTypeRef;
+	}
+	
 	public String getCStartKeyValue() {
 		return cStartKeyValue;
 	}

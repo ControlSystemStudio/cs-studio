@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -31,6 +32,17 @@ import javax.persistence.Table;
 @Table(name = "AMS_FilterCondition")
 @Inheritance(strategy=InheritanceType.JOINED)
 public class FilterConditionDTO {
+
+	@Column(name="iFilterConditionTypeRef")
+	protected int filterCondtionTypeRef;
+	
+	protected void setFilterConditionTypeRef(int iD){
+		filterCondtionTypeRef = -1;
+	}
+	
+	public int getFilterConditionTypeRef(){
+		return filterCondtionTypeRef;
+	}
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -120,6 +132,8 @@ public class FilterConditionDTO {
 		resultBuilder.append(")");
 		resultBuilder.append(", description: ");
 		resultBuilder.append(this.getCDesc());
+		resultBuilder.append(", FilterConditionType: ");
+		resultBuilder.append(this.getFilterConditionTypeRef());
 		return resultBuilder.toString();
 	}
 

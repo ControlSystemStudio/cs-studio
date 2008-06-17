@@ -50,7 +50,14 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 
 	@Column(name = "sOperator")
 	private short operator;
-
+	
+	@SuppressWarnings("unused")
+	protected void setFilterConditionTypeRef(int typeRef){
+		super.filterCondtionTypeRef = 3;
+	}
+	public int getFilterConditionTypeRef(){
+		return filterCondtionTypeRef;
+	}
 	/**
 	 * @return the filterConditionRef
 	 */
@@ -135,7 +142,9 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 
 	@Override
 	public String toString() {
-		final StringBuilder resultBuilder = new StringBuilder(this.getClass().getSimpleName());
+//		final StringBuilder resultBuilder = new StringBuilder(this.getClass().getSimpleName());
+		final StringBuilder resultBuilder = new StringBuilder(super.toString());
+
 		resultBuilder.append(": ");
 		resultBuilder.append(this.getFilterConditionRef());
 		resultBuilder.append(" {");
@@ -143,7 +152,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 		resultBuilder.append("}, ");
 		resultBuilder.append(this.getKeyValue());
 		resultBuilder.append(", ");
-		resultBuilder.append(this.getOperator());
+		resultBuilder.append(this.getOperatorEnum());
 		return resultBuilder.toString();
 	}
 

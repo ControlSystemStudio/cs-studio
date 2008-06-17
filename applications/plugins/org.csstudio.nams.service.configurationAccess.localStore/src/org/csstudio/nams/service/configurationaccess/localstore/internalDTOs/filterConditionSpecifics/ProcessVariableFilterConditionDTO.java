@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
@@ -33,6 +34,14 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 @Table(name = "AMS_FilterCondition_PV")
 public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 
+	@SuppressWarnings("unused")
+	protected void setFilterConditionTypeRef(int typeRef){
+		super.filterCondtionTypeRef = 4;
+	}
+	public int getFilterConditionTypeRef(){
+		return filterCondtionTypeRef;
+	}
+	
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int iFilterConditionRef;
 

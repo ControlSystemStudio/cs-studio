@@ -3,7 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 public enum JunctorConditionType {
 	OR, AND, NOT;
 
-	static JunctorConditionType valueOf(int value) {
+	public static JunctorConditionType valueOf(int value) {
 		switch (value) {
 		case 0:
 			return OR;
@@ -16,7 +16,7 @@ public enum JunctorConditionType {
 		}
 	}
 	
-	static short shortOf(JunctorConditionType junctor) {
+	public static short shortOf(JunctorConditionType junctor) {
 		switch (junctor) {
 		case OR:
 			return 0;
