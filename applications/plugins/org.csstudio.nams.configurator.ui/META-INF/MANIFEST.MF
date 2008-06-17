@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ui Plug-in
-Bundle-SymbolicName: org.csstudio.nams.configurator.ui
+Bundle-SymbolicName: org.csstudio.nams.configurator.ui;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.configurator.ui.ConfiguratorUIActivator
 Require-Bundle: org.eclipse.ui,
