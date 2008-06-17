@@ -14,7 +14,8 @@ import org.csstudio.nams.common.material.Regelwerkskennung;
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 08.04.2008
  */
-public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractVersandRegel implements VersandRegel {
+public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractVersandRegel
+		implements VersandRegel {
 
 	private final VersandRegel ausloesungsregel;
 	private final VersandRegel bestaetigungsregel;
@@ -22,7 +23,8 @@ public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractVersandRegel imp
 	private Pruefliste internePruefliste;
 
 	/**
-	 * TODO ggf. in einer factory bauen.
+	 * TODO ggf. in einer factory bauen. tr: der BuilderService benutzt diesen
+	 * Konstruktor, eine Factory erscheint mir unsinnig
 	 */
 	public TimeBasedAlarmBeiBestaetigungRegel(VersandRegel ausloesungsregel,
 			VersandRegel bestaetigungsregel, Millisekunden timeOut) {

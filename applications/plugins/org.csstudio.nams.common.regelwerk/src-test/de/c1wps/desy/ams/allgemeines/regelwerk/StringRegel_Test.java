@@ -23,58 +23,38 @@ public class StringRegel_Test extends
 
 		StringRegel.staticInject(new Logger(){
 			public void logDebugMessage(Object caller, String message) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logDebugMessage(Object caller, String message,
 					Throwable throwable) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logErrorMessage(Object caller, String message) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logErrorMessage(Object caller, String message,
 					Throwable throwable) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logFatalMessage(Object caller, String message) {
-				// TODO Auto-generated method stub
-				
 			}
 			
 			public void logFatalMessage(Object caller, String message,
 					Throwable throwable) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logInfoMessage(Object caller, String message) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logInfoMessage(Object caller, String message,
 					Throwable throwable) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logWarningMessage(Object caller, String message) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void logWarningMessage(Object caller, String message,
 					Throwable throwable) {
-				// TODO Auto-generated method stub
-				
 			}});
 	}
 	

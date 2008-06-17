@@ -120,7 +120,7 @@ public class StringRegel extends AbstractVersandRegel implements VersandRegel {
 				break;
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.logErrorMessage(this, "An error occured during parsing of : "+ nachricht);
 			istGueltig = true;
 		}
 		

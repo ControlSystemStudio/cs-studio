@@ -49,14 +49,12 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		try {
 			listOfFilters = confStoreService.getEntireConfiguration()
 					.gibAlleFilter();
+			// TODO Auto-generated catch blocks
 		} catch (StorageError e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (StorageException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InconsistentConfiguration e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

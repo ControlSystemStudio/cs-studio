@@ -37,7 +37,7 @@ import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
 
 /**
- * TODO Add comment here.
+ * Test for TimeBasedRegel
  * 
  *
  * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>,

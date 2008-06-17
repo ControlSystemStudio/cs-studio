@@ -94,7 +94,6 @@ public class Pruefliste implements Cloneable {
 	 * @return
 	 */
 	public Millisekunden gibMillisekundenBisZurNaechstenPruefung() {
-		// TODO Auto-generated method stub
 		return millisekundenBisZurNaechstenPruefung;
 	}
 

@@ -23,7 +23,8 @@ public class TimeBasedRegel extends AbstractVersandRegel implements VersandRegel
 	private Pruefliste internePruefliste;
 
 	/**
-	 * TODO ggf. in einer factory bauen.
+	 * TODO ggf. in einer factory bauen. tr: der BuilderService benutzt diesen
+	 * Konstruktor, eine Factory erscheint mir unsinnig
 	 */
 	public TimeBasedRegel(VersandRegel ausloesungsregel, VersandRegel aufhebungsregel,
 			VersandRegel bestaetigungsregel, Millisekunden timeOut) {

@@ -39,7 +39,7 @@ import org.junit.Test;
 
 
 /**
- * TODO Add comment here.
+ * OderVersandRegelTest
  * 
  *
  * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>,

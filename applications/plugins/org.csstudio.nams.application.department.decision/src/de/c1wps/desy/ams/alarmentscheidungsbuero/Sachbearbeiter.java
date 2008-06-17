@@ -43,7 +43,7 @@ import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 import de.c1wps.desy.ams.allgemeines.Zwischenablagekorb;
 
 /**
- * TODO Add comment here.
+ * Sachbearbeiter marks in cooperation with the TerminAssistenz Messages as to be sent.
  * 
  * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
  *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
