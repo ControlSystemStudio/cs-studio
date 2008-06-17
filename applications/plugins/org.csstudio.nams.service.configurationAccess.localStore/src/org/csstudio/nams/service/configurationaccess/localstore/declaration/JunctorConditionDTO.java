@@ -20,12 +20,12 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  * FilterConditionRef			INT NOT NULL,
  * iFirstFilterConditionRef	INT NOT NULL,
  * iSecondFilterConditionRef   INT NOT NULL,
-// * Operand                    SMALLINT
+ *  // * Operand                    SMALLINT
  * ;
  * </pre>
  */
 @Entity
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMS_FilterCond_Conj_Common")
 public class JunctorConditionDTO extends FilterConditionDTO {
 
@@ -37,11 +37,18 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 
 	@Column(name = "iSecondFilterConditionRef")
 	private int secondFilterConditionRef;
-	
-//	@Column(name = "Operand")
-	@Transient // TODO Spalte hinzufuegen!!!
+
+	@Column(name = "iOperand")
 	private short operand = 0;
+
 	
+	@Transient
+	private FilterConditionDTO firstFilterCondition;
+	@Transient
+	private FilterConditionDTO secondFilterCondition;
+	@Transient
+	private FilterConditionForIdProvider filterConditionProvider;
+
 	/**
 	 * @return the filterConditionRef
 	 */
@@ -62,15 +69,16 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	public JunctorConditionType getJunctor() {
 		return JunctorConditionType.valueOf(operand);
 	}
-	
+
 	public void setJunctor(JunctorConditionType junctor) {
-		operand = junctor.shortOf(junctor);
+		operand = JunctorConditionType.shortOf(junctor);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private short getOperand() {
 		return operand;
 	}
+
 	@SuppressWarnings("unused")
 	private void setOperand(short operand) {
 		this.operand = operand;
@@ -142,13 +150,51 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	}
 
 	public FilterConditionDTO getFirstFilterCondition() {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("not impl.");
+		return firstFilterCondition;
 	}
-	
+
 	public FilterConditionDTO getSecondFilterCondition() {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("not impl.");
+		return secondFilterCondition;
 	}
-	
+
+	public void setFirstFilterCondition(FilterConditionDTO filterCondition) {
+		setFirstFilterConditionRef(filterCondition.getIFilterConditionID());
+		if (filterConditionProvider == null)
+			throw new RuntimeException(
+					"injectYourselfYourChildren must be called on " + this);
+		adaptFirstFilterCondition();
+	}
+
+	public void setSecondFilterCondition(FilterConditionDTO filterCondition) {
+		setSecondFilterConditionRef(filterCondition.getIFilterConditionID());
+		if (filterConditionProvider == null)
+			throw new RuntimeException(
+					"injectYourselfYourChildren must be called on " + this);
+		adaptSecondFilterCondition();
+	}
+
+	/**
+	 * Must be called before first use. And before
+	 * setFirst(|Second)Filtercondition is called
+	 * 
+	 * @param filterConditionProvider
+	 */
+	public void injectYourselfYourChildren(
+			FilterConditionForIdProvider filterConditionProvider) {
+		this.filterConditionProvider = filterConditionProvider;
+		adaptFirstFilterCondition();
+		adaptSecondFilterCondition();
+	}
+
+	private void adaptFirstFilterCondition() {
+		firstFilterCondition = filterConditionProvider
+				.getFilterForId(getFirstFilterConditionRef());
+	}
+
+	private void adaptSecondFilterCondition() {
+		secondFilterCondition = filterConditionProvider
+				.getFilterForId(getSecondFilterConditionRef());
+
+	}
+
 }

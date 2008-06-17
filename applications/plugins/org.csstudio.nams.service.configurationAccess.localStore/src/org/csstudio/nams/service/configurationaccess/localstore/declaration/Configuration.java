@@ -1,7 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import javax.persistence.Entity;
 
@@ -16,13 +15,13 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
 @Entity
-public class Configuration {
+public class Configuration implements FilterConditionForIdProvider{
 	private Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
 	private Collection<TopicDTO> alleAlarmtopics;
 	private Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
 	private Collection<FilterDTO> allFilters;
 
-	private Collection<FilterConditionDTO> allFilterCondition;
+	private Collection<FilterConditionDTO> allFilterConditions;
 
 	@SuppressWarnings("unchecked")
 	public Configuration(Session session) throws InconsistentConfiguration,
@@ -38,7 +37,7 @@ public class Configuration {
 		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
 		allFilters = session.createCriteria(FilterDTO.class).list();
 		
-		allFilterCondition = session.createCriteria(FilterConditionDTO.class).addOrder(Order.asc("iFilterConditionID")).list();
+		allFilterConditions = session.createCriteria(FilterConditionDTO.class).addOrder(Order.asc("iFilterConditionID")).list();
 
 		
 		// PRIVATEs
@@ -55,8 +54,17 @@ public class Configuration {
 		Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter = session
 		.createCriteria(FilterConditionsToFilterDTO.class).list();
 		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionToFilter);
+		setChildFilterConditionsInJunctorDTOs();
 	}
 
+	private void setChildFilterConditionsInJunctorDTOs(){
+		for (FilterConditionDTO filterCondition : allFilterConditions) {
+			if (filterCondition instanceof JunctorConditionDTO){
+				JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
+				junctorConditionDTO.injectYourselfYourChildren(this);
+			}
+		}
+	}
 	private void pruefeUndOrdnerFilterDieFilterConditionsZu(
 			Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter) {
 		// TODO Auto-generated method stub
@@ -87,7 +95,12 @@ public class Configuration {
 			}
 		}
 	}
-
+	/**
+	 * @deprecated "FilterConditionType is a redundant information"
+	 * @param allFilterConditionsTypes
+	 * @throws InconsistentConfiguration
+	 */
+	@Deprecated
 	private void pruefeUndOrdneTypenDenFilterConditionsZu(
 			Collection<FilterConditionTypeDTO> allFilterConditionsTypes)
 			throws InconsistentConfiguration {
@@ -114,7 +127,7 @@ public class Configuration {
 	}
 
 	public Collection<FilterConditionDTO> gibAlleFilterConditions() {
-		return allFilterCondition;
+		return allFilterConditions;
 	}
 	// -------------
 
@@ -134,6 +147,18 @@ public class Configuration {
 
 	public Collection<FilterConditionDTO> getFilterConditionsOfFilter(
 			FilterDTO filter) {
+		return null;
+	}
+/**
+ * @return null if there is no Filter with this id
+ */
+	public FilterConditionDTO getFilterForId(int id) {
+		for (FilterConditionDTO filterCondition : allFilterConditions) {
+			if (filterCondition.getIFilterConditionID() == id)
+			{
+				return filterCondition;
+			}
+		}
 		return null;
 	}
 
