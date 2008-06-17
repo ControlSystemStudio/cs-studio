@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Model Plug-in
+Bundle-SymbolicName: org.csstudio.nams.configurator.model
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.configurator.model.ConfiguratorModelActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.nams.service.logging,
+ org.csstudio.nams.common.activatorUtils,
+ org.csstudio.nams.service.configurationAccess.localStore
+Eclipse-LazyStart: true
