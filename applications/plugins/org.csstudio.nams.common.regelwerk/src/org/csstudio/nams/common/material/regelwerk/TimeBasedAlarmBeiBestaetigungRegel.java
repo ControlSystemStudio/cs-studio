@@ -84,4 +84,16 @@ public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractVersandRegel
 			return Millisekunden.valueOf(0);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder("(TimebasedRegel: TimeBehavior: Alarm bei Bestätigung: ");
+		stringBuilder.append(timeOut);
+		stringBuilder.append(" Startregel: ");
+		stringBuilder.append(ausloesungsregel);
+		stringBuilder.append(" Aufhebungsregel: ");
+		stringBuilder.append(ausloesungsregel);
+		stringBuilder.append(")");
+		return stringBuilder.toString();
+	}
 }

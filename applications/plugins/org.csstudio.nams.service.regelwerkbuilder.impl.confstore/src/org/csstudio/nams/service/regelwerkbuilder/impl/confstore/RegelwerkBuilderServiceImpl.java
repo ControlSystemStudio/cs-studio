@@ -62,8 +62,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		for (FilterDTO filterDTO : listOfFilters) {
 
 			List<FilterConditionDTO> filterConditions = 
-				// TODO filterDTO.getFilterCondition();
-				Collections.emptyList();
+				filterDTO.getFilterConditions();
 
 			// create a list of first level filterconditions
 			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();

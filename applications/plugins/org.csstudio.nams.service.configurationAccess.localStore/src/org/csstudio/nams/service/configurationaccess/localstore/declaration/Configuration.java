@@ -1,6 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 
@@ -68,8 +71,16 @@ public class Configuration implements FilterConditionForIdProvider{
 	}
 	private void pruefeUndOrdnerFilterDieFilterConditionsZu(
 			Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter) {
-		// TODO Auto-generated method stub
-		
+		Map<Integer, FilterDTO> filters = new HashMap<Integer, FilterDTO>();
+		for (FilterDTO filter : allFilters) {
+			filters.put(filter.getIFilterID(), filter);
+		}
+		for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : allFilterConditionToFilter) {
+			FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO.getIFilterRef());
+			List<FilterConditionDTO> filterConditions = filterDTO.getFilterConditions();
+			filterConditions.add(getFilterConditionForId(filterConditionsToFilterDTO.getIFilterConditionRef()));
+			filterDTO.setFilterConditions(filterConditions);
+		}
 	}
 
 	private void pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(
@@ -146,14 +157,10 @@ public class Configuration implements FilterConditionForIdProvider{
 	// return result;
 	// }
 
-	public Collection<FilterConditionDTO> getFilterConditionsOfFilter(
-			FilterDTO filter) {
-		return null;
-	}
 /**
  * @return null if there is no Filter with this id
  */
-	public FilterConditionDTO getFilterForId(int id) {
+	public FilterConditionDTO getFilterConditionForId(int id) {
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
 			if (filterCondition.getIFilterConditionID() == id)
 			{

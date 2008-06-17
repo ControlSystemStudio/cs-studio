@@ -116,5 +116,17 @@ public class TimeBasedRegel extends AbstractVersandRegel implements VersandRegel
 //			Millisekunden bereitsVerstricheneWarteZeit) {
 //		return timeOut.differenz(bereitsVerstricheneWarteZeit);
 //	}
+	
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder("(TimebasedRegel: TimeBehavior: Alarm bei TimeOut: ");
+		stringBuilder.append(timeOut);
+		stringBuilder.append(" Startregel: ");
+		stringBuilder.append(ausloesungsregel);
+		stringBuilder.append(" Aufhebungsregel: ");
+		stringBuilder.append(ausloesungsregel);
+		stringBuilder.append(")");
+		return stringBuilder.toString();
+	}
 
 }

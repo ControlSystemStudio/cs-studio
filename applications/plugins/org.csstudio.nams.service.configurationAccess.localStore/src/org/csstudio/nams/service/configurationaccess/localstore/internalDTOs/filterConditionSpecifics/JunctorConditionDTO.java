@@ -200,12 +200,12 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 
 	private void adaptFirstFilterCondition() {
 		firstFilterCondition = filterConditionProvider
-				.getFilterForId(getFirstFilterConditionRef());
+				.getFilterConditionForId(getFirstFilterConditionRef());
 	}
 
 	private void adaptSecondFilterCondition() {
 		secondFilterCondition = filterConditionProvider
-				.getFilterForId(getSecondFilterConditionRef());
+				.getFilterConditionForId(getSecondFilterConditionRef());
 
 	}
 

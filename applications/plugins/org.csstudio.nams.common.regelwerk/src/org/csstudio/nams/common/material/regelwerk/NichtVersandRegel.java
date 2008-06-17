@@ -19,5 +19,15 @@ public class NichtVersandRegel extends AbstractNodeVersandRegel {
 			return RegelErgebnis.VIELLEICHT_ZUTREFFEND;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder("Nicht-Regel [");
+		for (VersandRegel regel : children) {
+			stringBuilder.append(regel.toString());
+		}
+		stringBuilder.append("]");
+		return stringBuilder.toString();
+	}
 
 }

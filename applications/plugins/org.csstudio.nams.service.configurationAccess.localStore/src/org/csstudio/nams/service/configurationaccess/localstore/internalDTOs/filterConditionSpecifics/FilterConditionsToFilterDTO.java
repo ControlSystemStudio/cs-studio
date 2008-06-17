@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -25,13 +26,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @Table(name = "AMS_Filter_FilterCondition")
 public class FilterConditionsToFilterDTO {
-	
-	@Id
-	@Column(name = "iFilterRef")
-	private int iFilterRef; // INT,
-	@Id
-	@Column(name = "iFilterConditionRef")
-	private int iFilterConditionRef; // INT,
+	@EmbeddedId
+	private FilterConditionsToFilterDTO_PK filterCTFPK;
 
 	@Column(name = "iPos")
 	private int iPos; // INT
@@ -41,9 +37,9 @@ public class FilterConditionsToFilterDTO {
 		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
 		builder.append(": ");
 		builder.append("iFilterRef: ");
-		builder.append(iFilterRef);
+		builder.append(filterCTFPK.getIFilterRef());
 		builder.append(", iFilterConditionRef: ");
-		builder.append(iFilterConditionRef);
+		builder.append(filterCTFPK.getIFilterConditionRef());
 		builder.append(", iPos: ");
 		builder.append(iPos);
 		return builder.toString();
@@ -56,8 +52,8 @@ public class FilterConditionsToFilterDTO {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + iFilterConditionRef;
-		result = prime * result + iFilterRef;
+		result = prime * result + filterCTFPK.getIFilterConditionRef();
+		result = prime * result + filterCTFPK.getIFilterRef();
 		result = prime * result + iPos;
 		return result;
 	}
@@ -74,9 +70,9 @@ public class FilterConditionsToFilterDTO {
 		if (!(obj instanceof FilterConditionsToFilterDTO))
 			return false;
 		final FilterConditionsToFilterDTO other = (FilterConditionsToFilterDTO) obj;
-		if (iFilterConditionRef != other.iFilterConditionRef)
+		if (filterCTFPK.getIFilterRef() != other.getIFilterRef())
 			return false;
-		if (iFilterRef != other.iFilterRef)
+		if (filterCTFPK.getIFilterRef() != other.getIFilterRef())
 			return false;
 		if (iPos != other.iPos)
 			return false;
@@ -86,34 +82,37 @@ public class FilterConditionsToFilterDTO {
 	/**
 	 * @return the iFilterRef
 	 */
-	private int getIFilterRef() {
-		return iFilterRef;
+	public int getIFilterRef() {
+		return filterCTFPK.getIFilterRef();
 	}
 
 	/**
 	 * @param filterRef the iFilterRef to set
 	 */
+	@SuppressWarnings("unused")
 	private void setIFilterRef(int filterRef) {
-		iFilterRef = filterRef;
+		filterCTFPK.setIFilterRef(filterRef);
 	}
 
 	/**
 	 * @return the iFilterConditionRef
 	 */
-	private int getIFilterConditionRef() {
-		return iFilterConditionRef;
+	public int getIFilterConditionRef() {
+		return filterCTFPK.getIFilterConditionRef();
 	}
 
 	/**
 	 * @param filterConditionRef the iFilterConditionRef to set
 	 */
+	@SuppressWarnings("unused")
 	private void setIFilterConditionRef(int filterConditionRef) {
-		iFilterConditionRef = filterConditionRef;
+		filterCTFPK.setIFilterConditionRef(filterConditionRef);
 	}
 
 	/**
 	 * @return the iPos
 	 */
+	@SuppressWarnings("unused")
 	private int getIPos() {
 		return iPos;
 	}
@@ -121,6 +120,7 @@ public class FilterConditionsToFilterDTO {
 	/**
 	 * @param pos the iPos to set
 	 */
+	@SuppressWarnings("unused")
 	private void setIPos(int pos) {
 		iPos = pos;
 	}

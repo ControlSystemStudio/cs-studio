@@ -20,6 +20,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
@@ -53,9 +54,9 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
 				
 //				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class) // TODO Mapping in Configuration!!!
-				
-//				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
-//				.addAnnotatedClass(FilterDTO.class)
+				.addAnnotatedClass(TimeBasedFilterConditionDTO.class)
+				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
+				.addAnnotatedClass(FilterDTO.class)
 //				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
 				.setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
 //				.setProperty("hibernate.connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")

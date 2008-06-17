@@ -326,4 +326,17 @@ public class ProcessVariableRegel extends AbstractVersandRegel implements Versan
 		return logger;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder("(PVRegel: ");
+		stringBuilder.append("Channelname: ");
+		stringBuilder.append(channelName);
+		stringBuilder.append("Operator: ");
+		stringBuilder.append(operator);
+		stringBuilder.append("compValue: ");
+		stringBuilder.append(compValue);
+		stringBuilder.append(")");
+		return stringBuilder.toString();
+	}
+	
 }

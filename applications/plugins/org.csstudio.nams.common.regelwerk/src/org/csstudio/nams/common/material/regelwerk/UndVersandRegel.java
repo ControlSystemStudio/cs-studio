@@ -23,4 +23,15 @@ public class UndVersandRegel extends AbstractNodeVersandRegel {
 		return RegelErgebnis.ZUTREFFEND;
 	}
 
+	
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder("Und-Regel [");
+		for (VersandRegel regel : children) {
+			stringBuilder.append(regel.toString());
+			stringBuilder.append(",");
+		}
+		stringBuilder.append("]");
+		return stringBuilder.toString();
+	}
 }

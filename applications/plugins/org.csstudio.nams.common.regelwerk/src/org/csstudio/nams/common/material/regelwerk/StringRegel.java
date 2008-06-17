@@ -163,4 +163,15 @@ public class StringRegel extends AbstractVersandRegel implements VersandRegel {
 		StringRegel.logger = logger;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder("StringRegel: ");
+		stringBuilder.append("messageKey: ");
+		stringBuilder.append(messageKey);
+		stringBuilder.append(" operator: ");
+		stringBuilder.append(operator);
+		stringBuilder.append(" compareString: ");
+		stringBuilder.append(compareString);
+		return stringBuilder.toString();
+	}
 }

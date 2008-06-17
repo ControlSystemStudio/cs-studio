@@ -31,5 +31,15 @@ public class OderVersandRegel extends AbstractNodeVersandRegel {
 			return RegelErgebnis.NOCH_NICHT_GEPRUEFT;
 		return RegelErgebnis.NICHT_ZUTREFFEND;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder("Oder-Regel [");
+		for (VersandRegel regel : children) {
+			stringBuilder.append(",");
+		}
+		stringBuilder.append("]");
+		return stringBuilder.toString();
+	}
 
 }

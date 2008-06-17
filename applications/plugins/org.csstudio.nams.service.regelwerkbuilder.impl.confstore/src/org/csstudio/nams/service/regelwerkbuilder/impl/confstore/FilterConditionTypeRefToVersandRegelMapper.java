@@ -18,7 +18,7 @@ public enum FilterConditionTypeRefToVersandRegelMapper {
 //	JUNCTOR(5);
 
 	STRING(StringFilterConditionDTO.class), 
-	TIMEBASED(TimeBasedFilterConditionDTO.class), 
+	TIMEBASED(TimeBasedFilterConditionDTO.class),
 	STRING_ARRAY(StringArrayFilterConditionDTO.class), 
 	PV(ProcessVariableFilterConditionDTO.class), 
 	JUNCTOR(JunctorConditionDTO.class);

@@ -1,9 +1,15 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration eines Filters dar
@@ -36,6 +42,9 @@ public class FilterDTO {
 	
 	@Column(name="cDefaultMessage", length=1024)
 	private String defaultMessage; //	VARCHAR(1024),
+
+	@Transient
+	private List<FilterConditionDTO> filterConditons = new LinkedList<FilterConditionDTO>();
 
 	int getIFilterID() {
 		return iFilterID;
@@ -124,6 +133,13 @@ public class FilterDTO {
 		if (iGroupRef != other.iGroupRef)
 			return false;
 		return true;
+	}
+
+	public List<FilterConditionDTO> getFilterConditions() {
+		return filterConditons;
+	}
+	public void setFilterConditions(List<FilterConditionDTO> filterConditonDTOs){
+		filterConditons = filterConditonDTOs;
 	}
 	
 }

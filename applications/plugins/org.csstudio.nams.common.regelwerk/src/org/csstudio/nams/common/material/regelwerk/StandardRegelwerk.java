@@ -109,4 +109,15 @@ public class StandardRegelwerk implements Regelwerk {
 		hauptRegel.setHistoryService(historyService);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder("Regelwerkskennung: ");
+		builder.append(regelwerkskennung.toString());
+		builder.append(" Hauptregel: ");
+		builder.append(hauptRegel.toString());
+		return builder.toString();
+	}
+
+	
+	
 }
