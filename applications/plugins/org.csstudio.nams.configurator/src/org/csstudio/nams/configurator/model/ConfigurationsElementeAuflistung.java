@@ -6,12 +6,19 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 
-public class ConfigurationsElementeAuflistung<T> {
+/**
+ * Model für die Auflistungskomponenten der UI für die Elemente einer Konfigurationsart, z.B.: Alarmbearbeiter, Filter.
+ * 
+ * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
+ *
+ * @param <T> Der Konfigurationselementtyp.
+ */
+public class ConfigurationsElementeAuflistung<T extends NewAMSConfigurationElementDTO> {
 
-	private SortedSet<AlarmbearbeiterDTO> elements;
-	private SortedSet<AlarmbearbeiterDTO> visibleElements;
+	private SortedSet<T> elements;
+	private SortedSet<T> visibleElements;
 	private String currentNameFilter = null;
 	private Integer currentCategoryFilter = null;
 
@@ -21,23 +28,23 @@ public class ConfigurationsElementeAuflistung<T> {
 	 *            The Set of elements to show; this Set will be sorted in
 	 *            ascending order to the name-property.
 	 */
-	public void setElements(Set<AlarmbearbeiterDTO> elements) {
-		Comparator<AlarmbearbeiterDTO> comparator = new Comparator<AlarmbearbeiterDTO>() {
-			public int compare(AlarmbearbeiterDTO bearbeiter1,
-					AlarmbearbeiterDTO bearbeiter2) {
-				return bearbeiter1.getUserName().compareTo(
-						bearbeiter2.getUserName());
+	public void setElements(Set<T> elements) {
+		Comparator<T> comparator = new Comparator<T>() {
+			public int compare(T bearbeiter1,
+					T bearbeiter2) {
+				return bearbeiter1.getUniqueHumanReadableName().compareTo(
+						bearbeiter2.getUniqueHumanReadableName());
 			}
 		};
 
-		this.elements = new TreeSet<AlarmbearbeiterDTO>(comparator);
+		this.elements = new TreeSet<T>(comparator);
 		this.elements.addAll(elements);
 
-		this.visibleElements = new TreeSet<AlarmbearbeiterDTO>(comparator);
+		this.visibleElements = new TreeSet<T>(comparator);
 		this.updateVisibleElements();
 	}
 
-	public SortedSet<AlarmbearbeiterDTO> getVisibleElementsInAscendingOrder() {
+	public SortedSet<T> getVisibleElementsInAscendingOrder() {
 		return Collections.unmodifiableSortedSet(this.visibleElements);
 	}
 
@@ -48,25 +55,25 @@ public class ConfigurationsElementeAuflistung<T> {
 
 	private void updateVisibleElements() {
 		this.visibleElements.clear();
-		for (AlarmbearbeiterDTO alarmbearbeiter : this.elements) {
-			if (matchCurrentFilterSettings(alarmbearbeiter)) {
-				this.visibleElements.add(alarmbearbeiter);
+		for (T element : this.elements) {
+			if (matchCurrentFilterSettings(element)) {
+				this.visibleElements.add(element);
 			}
 		}
 	}
 
 	private boolean matchCurrentFilterSettings(
-			AlarmbearbeiterDTO alarmbearbeiter) {
+			T element) {
 		boolean result = true;
 		
 		if (this.currentNameFilter != null) {
-			result = alarmbearbeiter.getUserName().toLowerCase().contains(this.currentNameFilter.toLowerCase());
+			result = element.getUniqueHumanReadableName().toLowerCase().contains(this.currentNameFilter.toLowerCase());
 		}
 		
 		if( result && this.currentCategoryFilter != null ) {
 			int categoryDBId = this.currentCategoryFilter.intValue();
 			
-			result = alarmbearbeiter.isInCategory(categoryDBId);
+			result = element.isInCategory(categoryDBId);
 		}
 		
 		return result;

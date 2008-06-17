@@ -29,7 +29,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AMS_User")
-public class AlarmbearbeiterDTO {
+public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 
 	@Id
 	@GeneratedValue
@@ -352,5 +352,9 @@ public class AlarmbearbeiterDTO {
 	 */
 	public boolean isInCategory(int categoryDBId) {
 		return this.groupRef == categoryDBId;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return getUserName();
 	}
 }
