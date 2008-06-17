@@ -1,15 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
-import java.util.List;
-
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 
 public interface LocalStoreConfigurationService {
 
@@ -51,37 +45,6 @@ public interface LocalStoreConfigurationService {
 	public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfiguration;
 
-//	/**
-//	 * @deprecated Just for testing the functionality - not for production use!
-//	 */
-//	@Deprecated
-//	public TopicDTO getTopicConfigurations(
-//			TopicConfigurationId topicConfigurationDatabaseId);
-	
-	/**
-	 * @deprecated Just for testing the functionality - not for production use!
-	 */
-	@Deprecated
-	public List<FilterConditionDTO> getFilterConditionDTOConfigurations();
-	
-	/**
-	 * @deprecated Just for testing the functionality - not for production use!
-	 */
-	@Deprecated
-	public List<JunctorConditionDTO> getJunctorConditionDTOConfigurations();
-	
-	/**
-	 * @deprecated Just for testing the functionality - not for production use!
-	 */
-	@Deprecated
-	public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations();
-	
-	/**
-	 * @deprecated Just for testing the functionality - not for production use!
-	 */
-	@Deprecated
-	public List<StringArrayFilterConditionDTO> getStringArrayFilterConditionDTOConfigurations();
-
 	/**
 	 * Saves a new current syncronize-state. This method is only used to enable
 	 * a syncronisation support between the new decision-department- (earlier:
@@ -104,10 +67,4 @@ public interface LocalStoreConfigurationService {
 	public void saveCurrentReplicationState(ReplicationStateDTO currentState)
 			throws StorageError, StorageException,
 			UnknownConfigurationElementError;
-	
-	@Deprecated
-	public void saveJunctorConditionDTO(JunctorConditionDTO junctorConditionDTO);
-	
-	@Deprecated
-	public void saveStringFilterConditionDTO(StringFilterConditionDTO stringConditionDTO);
 }

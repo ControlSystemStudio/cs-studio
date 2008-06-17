@@ -8,6 +8,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
@@ -57,6 +58,7 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(TimeBasedFilterConditionDTO.class)
 				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
 				.addAnnotatedClass(FilterDTO.class)
+				.addAnnotatedClass(HistoryDTO.class)
 //				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
 				.setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
 //				.setProperty("hibernate.connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")
