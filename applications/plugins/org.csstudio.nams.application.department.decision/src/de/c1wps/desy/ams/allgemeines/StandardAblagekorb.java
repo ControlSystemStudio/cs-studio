@@ -27,7 +27,7 @@ package de.c1wps.desy.ams.allgemeines;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import de.c1wps.desy.ams.allgemeines.wam.Material;
+import org.csstudio.nams.common.wam.Material;
 
 @Material
 public class StandardAblagekorb<T extends Ablagefaehig> implements

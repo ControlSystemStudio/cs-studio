@@ -4,8 +4,7 @@ import java.net.InetAddress;
 import java.util.Date;
 
 import org.csstudio.nams.common.contract.Contract;
-
-import de.c1wps.desy.ams.allgemeines.wam.Fachwert;
+import org.csstudio.nams.common.wam.Fachwert;
 
 @Fachwert
 public final class Vorgangsmappenkennung {

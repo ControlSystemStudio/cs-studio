@@ -24,7 +24,7 @@
  */
 package de.c1wps.desy.ams.allgemeines;
 
-import de.c1wps.desy.ams.allgemeines.wam.Behaelter;
+import org.csstudio.nams.common.wam.Behaelter;
 
 @Behaelter
 public interface Ausgangskorb<T extends Ablagefaehig> extends Ablagekorb<T> {

@@ -31,6 +31,7 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
+import org.csstudio.nams.common.wam.Automat;
 
 import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
 import de.c1wps.desy.ams.allgemeines.Arbeitsfaehig;
@@ -40,7 +41,6 @@ import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 import de.c1wps.desy.ams.allgemeines.Zwischenablagekorb;
-import de.c1wps.desy.ams.allgemeines.wam.Automat;
 
 /**
  * TODO Add comment here.
