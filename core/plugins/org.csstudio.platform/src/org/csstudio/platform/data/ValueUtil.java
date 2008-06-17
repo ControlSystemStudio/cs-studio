@@ -170,6 +170,10 @@ public class ValueUtil
 		} else if (value instanceof IDoubleValue) {
 			IDoubleValue idv = (IDoubleValue) value;
 			double dv = idv.getValue();
+			if (Double.isNaN(dv))
+			   return "NaN";
+			if (Double.isInfinite(dv))
+			   return "Inf";
 			int precision = ((INumericMetaData) idv.getMetaData()).getPrecision();
 			DecimalFormatSymbols dcf = new DecimalFormatSymbols(Locale.US);
 			dcf.setDecimalSeparator('.');
