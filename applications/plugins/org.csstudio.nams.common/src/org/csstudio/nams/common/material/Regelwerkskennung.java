@@ -36,7 +36,7 @@ public final class Regelwerkskennung {
 
 	@Override
 	public String toString() {
-		return name;
+		return meinZaehlerWert + "-"+name;
 	}
 	
 	@Override
