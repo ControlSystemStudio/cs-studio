@@ -30,7 +30,7 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
     /** ID of CSS SNS Menu */
-    private static final String CSS_MENU_WEB = "web";
+    private static final String CSS_MENU_WEB = "web"; //$NON-NLS-1$
     
     private IAction create_new;
     private IAction close;
@@ -113,12 +113,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
      *   org.csstudio.sns.product/sns_wiki=...
      *  </pre>
      */
+    @SuppressWarnings("nls")
     private void createWeblinkActions(IWorkbenchWindow window)
     {
         // SNS Actions
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String weblinks = prefs.getString(PluginActivator.ID, "weblinks", null, null);
-        PluginActivator.getLogger().info("Web links: " + weblinks);
+        PluginActivator.getLogger().debug("Web links: " + weblinks);
         if (weblinks == null)
             return;
         final String[] link_prefs = weblinks.split("[ \t]+");
@@ -136,7 +137,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             }
             final String label = link[0];
             final String url = link[1];
-            PluginActivator.getLogger().info("Web link " + pref
+            PluginActivator.getLogger().debug("Web link " + pref
                     + " = " + label + " (" + url + ")");
             web_actions.add(new OpenWebBrowserAction(window, label, url));
         }
