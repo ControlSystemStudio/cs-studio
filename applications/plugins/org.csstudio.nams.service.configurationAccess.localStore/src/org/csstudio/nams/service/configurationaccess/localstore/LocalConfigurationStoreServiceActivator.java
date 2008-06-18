@@ -56,7 +56,7 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(StringFilterConditionDTO.class)
 				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
 				
-//				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class) // TODO Mapping in Configuration!!!
+				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class) // TODO Mapping in Configuration!!!
 				.addAnnotatedClass(TimeBasedFilterConditionDTO.class)
 				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
 				.addAnnotatedClass(FilterDTO.class)

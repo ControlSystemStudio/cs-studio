@@ -15,6 +15,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
@@ -51,14 +53,31 @@ public class Configuration implements FilterConditionForIdProvider{
 				.list();
 		pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(allUserUserGroupAggregation);
 
-		Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
-				.createCriteria(FilterConditionTypeDTO.class).list();
-		pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
+//		Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
+//				.createCriteria(FilterConditionTypeDTO.class).list();
+//		pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
 
 		Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter = session
 		.createCriteria(FilterConditionsToFilterDTO.class).list();
 		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionToFilter);
 		setChildFilterConditionsInJunctorDTOs();
+		Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues= session
+		.createCriteria(StringArrayFilterConditionCompareValuesDTO.class).list();
+		setStringArrayCompareValues(allCompareValues);
+	}
+
+	private void setStringArrayCompareValues(Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues) {
+		Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
+		for (FilterConditionDTO filterCondition : allFilterConditions) {
+			if  ( filterCondition instanceof StringArrayFilterConditionDTO){
+				stringAFC.put(filterCondition.getIFilterConditionID(), (StringArrayFilterConditionDTO) filterCondition);
+			}
+		}
+		for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
+			StringArrayFilterConditionDTO conditionDTO = stringAFC.get(stringArrayFilterConditionCompareValuesDTO.getFilterConditionRef());
+			conditionDTO.getCompareValueList().add(stringArrayFilterConditionCompareValuesDTO.getCompValue());
+		}
+		
 	}
 
 	private void setChildFilterConditionsInJunctorDTOs(){

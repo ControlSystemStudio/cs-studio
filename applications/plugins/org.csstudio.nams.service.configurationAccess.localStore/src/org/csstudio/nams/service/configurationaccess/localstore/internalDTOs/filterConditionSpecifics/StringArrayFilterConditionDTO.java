@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 //	@JoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionRef")
 //	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=StringArrayFilterConditionCompareValuesDTO.class)
 	@Transient // TODO Wieder auswerten!
-	private List<StringArrayFilterConditionCompareValuesDTO> compareValues = Collections.emptyList();
+	private List<String> compareValues = new LinkedList<String>();
 	
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int filterConditionRef;
@@ -117,26 +115,15 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 		this.operator = operator;
 	}
 
-	/**
-	 * @return the compareValues
-	 */
-	private List<StringArrayFilterConditionCompareValuesDTO> getCompareValues() {
-		return compareValues;
-	}
-	
 	public List<String> getCompareValueList(){
-		LinkedList<String> list = new LinkedList<String>();
-		for (StringArrayFilterConditionCompareValuesDTO compareValueDTO : compareValues) {
-			list.add(compareValueDTO.getCompValue());
-		}
-		return list;
+		return compareValues;
 	}
 
 	/**
 	 * @param compareValues the compareValues to set
 	 */
 	@SuppressWarnings("unused")
-	private void setCompareValues(List<StringArrayFilterConditionCompareValuesDTO> compareValues) {
+	private void setCompareValues(List<String> compareValues) {
 		this.compareValues = compareValues;
 	}
 
@@ -147,9 +134,9 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 
 		resultBuilder.append(": ");
 		resultBuilder.append(this.getFilterConditionRef());
-		resultBuilder.append(" {");
-		resultBuilder.append(Arrays.toString(this.getCompareValues().toArray()));
-		resultBuilder.append("}, ");
+		resultBuilder.append(" ");
+		resultBuilder.append(compareValues.toString());
+		resultBuilder.append(", ");
 		resultBuilder.append(this.getKeyValue());
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getOperatorEnum());

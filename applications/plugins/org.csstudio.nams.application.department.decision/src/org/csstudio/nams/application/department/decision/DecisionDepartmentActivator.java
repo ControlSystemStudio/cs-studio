@@ -392,6 +392,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				List<Regelwerk> alleRegelwerke = regelwerkBuilderService
 						.gibAlleRegelwerke();
 
+				logger.logDebugMessage(this, "alleRegelwerke size: "+alleRegelwerke.size()+" tostring: "+alleRegelwerke.toString());
+				
 				alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
 						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
 								.size()]));

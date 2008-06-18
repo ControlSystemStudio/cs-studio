@@ -36,6 +36,7 @@ public class OderVersandRegel extends AbstractNodeVersandRegel {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder("Oder-Regel [");
 		for (VersandRegel regel : children) {
+			stringBuilder.append(regel.toString());
 			stringBuilder.append(",");
 		}
 		stringBuilder.append("]");

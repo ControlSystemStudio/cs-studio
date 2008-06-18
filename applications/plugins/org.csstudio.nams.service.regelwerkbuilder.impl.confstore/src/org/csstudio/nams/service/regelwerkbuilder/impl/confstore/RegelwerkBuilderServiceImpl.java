@@ -156,7 +156,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 				versandRegels.add(new StringRegel(operatorEnum, keyValue, string));
 			}
 			return new OderVersandRegel(versandRegels
-					.toArray(new VersandRegel[0]));
+					.toArray(new VersandRegel[versandRegels.size()]));
 		}
 		case PV: {
 			ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;
