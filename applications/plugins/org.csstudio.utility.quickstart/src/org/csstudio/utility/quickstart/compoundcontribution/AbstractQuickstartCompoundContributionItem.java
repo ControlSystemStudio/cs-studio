@@ -42,9 +42,15 @@ public abstract class AbstractQuickstartCompoundContributionItem extends
 				.split(";");
 		if (sdsFileList.length > menuNo) {
 			if ((sdsFileList[menuNo] != null) && (sdsFileList[menuNo].length() > 1)) {
-				String[] pathSegments = sdsFileList[menuNo].split("/");
+				//separate the filePath from menu name.
+				String[] filePath = sdsFileList[menuNo].split("\\?");
+				String[] pathSegments = filePath[0].split("/");
 				String fileName = pathSegments[pathSegments.length - 1];
-				menuText = fileName;
+				if((filePath.length < 2) || (filePath[1]==null) || (filePath[1].equals(""))) {
+					menuText = fileName;
+				} else {
+					menuText = filePath[1];
+				}
 				currentCommandID = commandIDNo;
 			}
 		} else {

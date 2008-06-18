@@ -6,8 +6,13 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Class for extension point 'popupMenu'. Executes the popupMenu action
@@ -46,9 +51,18 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
 				Preferences prefs = Activator.getDefault().getPluginPreferences();
 				String sdsFileList = prefs.getString(PreferenceConstants.SDS_FILES);
 				IFile file = (IFile) element;
-				sdsFileList = trimSdsFileList(sdsFileList);
-				sdsFileList = file.getLocation().toString() + ";" + sdsFileList;
-				prefs.setValue("sdsFiles", sdsFileList);
+//				sdsFileList = trimSdsFileList(sdsFileList);
+				if(sdsFileList.split(";").length <= 20) {
+					sdsFileList = file.getLocation().toString() + "?;" + sdsFileList;
+					prefs.setValue("sdsFiles", sdsFileList);
+				} else {
+					Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+					MessageBox dialog = new MessageBox(shell, SWT.ICON_WARNING);
+					dialog.setMessage("List of quickstart items is full. Please remove items on the " +
+							"preference page to add more.");
+					dialog.setText("Quickstart Warning");
+					dialog.open();
+				}
 			}
 		}
 	}

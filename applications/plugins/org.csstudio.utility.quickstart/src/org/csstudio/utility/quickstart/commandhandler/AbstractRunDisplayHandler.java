@@ -40,7 +40,9 @@ public abstract class AbstractRunDisplayHandler extends AbstractHandler {
 		fileNo = fileNo - 1;
 		if (sdsFileList.length > fileNo) {
 			if ((sdsFileList[fileNo].length() > 0) && (sdsFileList[fileNo] != null)) {
-				IPath newPath = new Path(sdsFileList[fileNo]);
+				//separate the filePath from menu name.
+				String[] filePath = sdsFileList[fileNo].split("\\?");
+				IPath newPath = new Path(filePath[0]);
 				RunModeService.getInstance().openDisplayShellInRunMode(newPath);
 			}
 		}

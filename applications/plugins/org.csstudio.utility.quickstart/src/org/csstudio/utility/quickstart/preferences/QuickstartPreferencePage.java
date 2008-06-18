@@ -48,7 +48,7 @@ public class QuickstartPreferencePage
 	 * List of selected files in quickstart menu.
 	 */
 	public final void createFieldEditors() {
-		addField(new ListEditor(PreferenceConstants.SDS_FILES, "&Facility names: ", getFieldEditorParent()){
+		addField(new PreferenceTableEditor(PreferenceConstants.SDS_FILES, "&Facility names: ", getFieldEditorParent()){
 			
 			public String[] parseString(final String stringList){
 				return stringList.split(";");
@@ -56,14 +56,6 @@ public class QuickstartPreferencePage
 			
 			public String getNewInputObject(){
 				return null;
-			}
-			
-			public String createList(final String[] items){
-				String temp = "";
-				for(int i = 0; i < items.length;i++){
-					temp = temp + items[i] + ";";
-				}
-				return temp;
 			}
 			
 			
