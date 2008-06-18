@@ -167,48 +167,48 @@ public class Engine extends Job {
     private DirContext  _ctx = null;
     private static Engine      _thisEngine = null;
     
-    private boolean doWrite = false;
+    private boolean _doWrite = false;
 
-    private Collector       ldapReadTimeCollector = null;
-    private Collector       ldapWriteTimeCollector = null;
-    private Collector       ldapWriteRequests = null;
-    private LdapReferences  ldapReferences = null;
-    private Vector<WriteRequest> writeVector = new Vector<WriteRequest>();
+    private Collector       _ldapReadTimeCollector = null;
+    private Collector       _ldapWriteTimeCollector = null;
+    private Collector       _ldapWriteRequests = null;
+    private LdapReferences  _ldapReferences = null;
+    private Vector<WriteRequest> _writeVector = new Vector<WriteRequest>();
 
     boolean addVectorOK = true;
 
     private Engine(String name) {
         super(name);
-        this.ldapReferences = new LdapReferences();
+        this._ldapReferences = new LdapReferences();
         /*
          * initialize statistic
          */
-        ldapWriteTimeCollector = new Collector();
-        ldapWriteTimeCollector.setApplication(name);
-        ldapWriteTimeCollector.setDescriptor("Time to write to LDAP server");
-        ldapWriteTimeCollector.setContinuousPrint(false);
-        ldapWriteTimeCollector.setContinuousPrintCount(1000.0);
-        ldapWriteTimeCollector.getAlarmHandler().setDeadband(5.0);
-        ldapWriteTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);   // 500ms
-        ldapWriteTimeCollector.getAlarmHandler().setHighRelativeLimit(400.0);   // 200%
+        _ldapWriteTimeCollector = new Collector();
+        _ldapWriteTimeCollector.setApplication(name);
+        _ldapWriteTimeCollector.setDescriptor("Time to write to LDAP server");
+        _ldapWriteTimeCollector.setContinuousPrint(false);
+        _ldapWriteTimeCollector.setContinuousPrintCount(1000.0);
+        _ldapWriteTimeCollector.getAlarmHandler().setDeadband(5.0);
+        _ldapWriteTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);   // 500ms
+        _ldapWriteTimeCollector.getAlarmHandler().setHighRelativeLimit(400.0);   // 200%
         
-        ldapReadTimeCollector = new Collector();
-        ldapReadTimeCollector.setApplication(name);
-        ldapReadTimeCollector.setDescriptor("Time to find LDAP entries");
-        ldapReadTimeCollector.setContinuousPrint(false);
-        ldapReadTimeCollector.setContinuousPrintCount(1000.0);
-        ldapReadTimeCollector.getAlarmHandler().setDeadband(5.0);
-        ldapReadTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);    // 500ms
-        ldapReadTimeCollector.getAlarmHandler().setHighRelativeLimit(500.0);    // 200%
+        _ldapReadTimeCollector = new Collector();
+        _ldapReadTimeCollector.setApplication(name);
+        _ldapReadTimeCollector.setDescriptor("Time to find LDAP entries");
+        _ldapReadTimeCollector.setContinuousPrint(false);
+        _ldapReadTimeCollector.setContinuousPrintCount(1000.0);
+        _ldapReadTimeCollector.getAlarmHandler().setDeadband(5.0);
+        _ldapReadTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);    // 500ms
+        _ldapReadTimeCollector.getAlarmHandler().setHighRelativeLimit(500.0);    // 200%
         
-        ldapWriteRequests = new Collector();
-        ldapWriteRequests.setApplication(name);
-        ldapWriteRequests.setDescriptor("LDAP Write Request Buffer Size");
-        ldapWriteRequests.setContinuousPrint(false);
-        ldapWriteRequests.setContinuousPrintCount(1000.0);
-        ldapWriteRequests.getAlarmHandler().setDeadband(5.0);
-        ldapWriteRequests.getAlarmHandler().setHighAbsoluteLimit(50.0);    // 500ms
-        ldapWriteRequests.getAlarmHandler().setHighRelativeLimit(200.0);    // 200%
+        _ldapWriteRequests = new Collector();
+        _ldapWriteRequests.setApplication(name);
+        _ldapWriteRequests.setDescriptor("LDAP Write Request Buffer Size");
+        _ldapWriteRequests.setContinuousPrint(false);
+        _ldapWriteRequests.setContinuousPrintCount(1000.0);
+        _ldapWriteRequests.getAlarmHandler().setDeadband(5.0);
+        _ldapWriteRequests.getAlarmHandler().setHighAbsoluteLimit(50.0);    // 500ms
+        _ldapWriteRequests.getAlarmHandler().setHighRelativeLimit(200.0);    // 200%
     }
     
     /**
@@ -232,11 +232,11 @@ public class Engine extends Job {
             _ctx = getLdapDirContext();
         }
 
-        while ( isRunning() || doWrite) {
+        while ( isRunning() || _doWrite) {
             //
             // do the work actually prepared
             //
-            if (doWrite) {
+            if (_doWrite) {
                 performLdapWrite();
             }
             /*
@@ -282,11 +282,11 @@ public class Engine extends Job {
         //
         // add request to vector
         //
-        int bufferSize = writeVector.size();
+        int bufferSize = _writeVector.size();
         /*
          * statistic information
          */
-        ldapWriteRequests.setValue(bufferSize);
+        _ldapWriteRequests.setValue(bufferSize);
         
         /// System.out.println("Engine.addLdapWriteRequest actual buffer size: " + bufferSize);
         if ( bufferSize > maxBuffersize) {
@@ -301,12 +301,12 @@ public class Engine extends Job {
                 CentralLogger.getInstance().warn(this, "writeVector < " + maxBuffersize + " - resume writing"); 
                 addVectorOK = true;
             }
-            writeVector.add(writeRequest);
+            _writeVector.add(writeRequest);
         }
         //
         // aleays trigger writing
         //
-        doWrite = true;
+        _doWrite = true;
     }
     
     
@@ -513,6 +513,7 @@ public class Engine extends Job {
         String path = ldapPath;
         int searchControls = SearchControls.SUBTREE_SCOPE;
         if(path==null){
+            CentralLogger.getInstance().warn(this, "LDAPPath is NULL!");
             return null;
         }else if(path.contains(("ou=epicsControls"))){
             if(path.endsWith(",o=DESY,c=DE")){
@@ -525,6 +526,7 @@ public class Engine extends Job {
             }
         }else if(path.contains(",")){
             // Unbekannter LDAP Pfad
+            CentralLogger.getInstance().warn(this, "Unknown LDAP Path!");
             return null;
         }else if(!path.startsWith("econ=")){
             path = "econ="+path;
@@ -555,10 +557,10 @@ public class Engine extends Job {
                 return list;
             } catch (NamingException e) {
                 _ctx=null;
-                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
-                CentralLogger.getInstance().info(this,e);
+                CentralLogger.getInstance().info(this,"Wrong LDAP path.",e);
             }
         }
+        CentralLogger.getInstance().warn(this, "Can't connect the LDAP Server!");
         return null;
     }
     
@@ -584,12 +586,12 @@ public class Engine extends Job {
         channel = null;
         i = 0;
 
-        while(writeVector.size()>0) {
+        while(_writeVector.size()>0) {
             
             //
             // return first element and remove it from list
             //
-            WriteRequest writeReq = writeVector.remove(0);
+            WriteRequest writeReq = _writeVector.remove(0);
             //
             // prepare LDAP request for all entries matching the same channel
             //
@@ -615,8 +617,8 @@ public class Engine extends Job {
             BasicAttribute ba = new BasicAttribute( writeReq.getAttribute(), writeReq.getValue());
             modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba);
 
-            if( (writeVector.size()>100) &&(writeVector.size()%100)==0)
-                System.out.println("Engine.performLdapWrite buffer size: "+writeVector.size());
+            if( (_writeVector.size()>100) &&(_writeVector.size()%100)==0)
+                System.out.println("Engine.performLdapWrite buffer size: "+_writeVector.size());
         }
         //
         // still something left to do?
@@ -632,14 +634,14 @@ public class Engine extends Job {
                     e.printStackTrace();
                     //
                     // too bad it did not work
-                    doWrite = true; // retry!
+                    _doWrite = true; // retry!
                     return;
                 }
         } else {
             //System.out.println("Vector leer - nothing left to do");
         }
         
-        doWrite = false;
+        _doWrite = false;
     }
 
     /**
@@ -671,14 +673,14 @@ public class Engine extends Job {
         //
         // is channel name already in ldearReference hash table?
         //
-        if ( ldapReferences.hasEntry(channel)) {
+        if ( _ldapReferences.hasEntry(channel)) {
         // if ( false) { // test case with no hash table
             //
             // take what's already stored
             //
             CentralLogger.getInstance().debug(this, "Engine.changeValue : found entry for channel: " + channel);
             //System.out.println ("Engine.changeValue : found entry for channel: " + channel);
-            namesInNamespace = this.ldapReferences.getEntry( channel).getNamesInNamespace();
+            namesInNamespace = this._ldapReferences.getEntry( channel).getNamesInNamespace();
             for( int index = 0; index < namesInNamespace.size(); index++) {
                 String ldapChannelName = (String) namesInNamespace.elementAt(index);
                 modifyAttributes(ldapChannelName, modItemTemp, channel, startTime);
@@ -693,8 +695,8 @@ public class Engine extends Job {
             try {
                 NamingEnumeration<SearchResult> results = _ctx.search("",string+"=" + channel, ctrl);
                 //System.out.println ("Engine.changeValue : Time to search channel: " + gregorianTimeDifference ( startTime, new GregorianCalendar()));
-                ldapReadTimeCollector.setInfo(channel);
-                ldapReadTimeCollector.setValue(gregorianTimeDifference ( startTime, new GregorianCalendar()));
+                _ldapReadTimeCollector.setInfo(channel);
+                _ldapReadTimeCollector.setValue(gregorianTimeDifference ( startTime, new GregorianCalendar()));
     //          System.out.println("Enter Engine.changeValue results for channnel: " + channel );
                 namesInNamespace = new Vector<String>();
                 while(results.hasMore()) {
@@ -715,7 +717,7 @@ public class Engine extends Job {
                 //
                 // Write if really something found
                 //
-                ldapReferences.newLdapEntry( channel, namesInNamespace);
+                _ldapReferences.newLdapEntry( channel, namesInNamespace);
                 //System.out.println ("Engine.changeValue : add entry for channel: " + channel);
             }
         }
@@ -740,8 +742,8 @@ public class Engine extends Job {
         try {
             ldapChannelName = ldapChannelName.replace("/", "\\/");
             _ctx.modifyAttributes(ldapChannelName, modItemTemp);
-            ldapWriteTimeCollector.setInfo(channel);
-            ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/modItemTemp.length);
+            _ldapWriteTimeCollector.setInfo(channel);
+            _ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/modItemTemp.length);
             //System.out.println ("Engine.changeValue : Time to write to LDAP: (" +  channel + ")" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
         } catch (NamingException e) {
             _ctx=null;
@@ -758,13 +760,13 @@ public class Engine extends Job {
             //e.printStackTrace();
             //
             // too bad it did not work
-            doWrite = false;    // wait for next time
+            _doWrite = false;    // wait for next time
             return;
         }catch (Exception e) {
             e.printStackTrace();
             //
             // too bad it did not work
-            doWrite = false;    // wait for next time
+            _doWrite = false;    // wait for next time
             return;
         }
     }
@@ -773,8 +775,8 @@ public class Engine extends Job {
         AttriebutSet attriebutSet = new AttriebutSet();
         if(record!=null){
             // Prüft ob der record schon in der ldapReferences gespeichert ist.
-            if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&ldapReferences!=null&&ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
-                Entry entry = ldapReferences.getEntry(record);
+            if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&_ldapReferences!=null&&_ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
+                Entry entry = _ldapReferences.getEntry(record);
                 Vector<String> vector = entry.getNamesInNamespace();
                 for (String string : vector) {
                     if(string.contains("ou=EpicsControls")){
@@ -890,11 +892,11 @@ public class Engine extends Job {
 	}
 
 	public Vector<WriteRequest> getWriteVector() {
-		return writeVector;
+		return _writeVector;
 	}
 
 	public void setWriteVector(Vector<WriteRequest> writeVector) {
-		this.writeVector = writeVector;
+		this._writeVector = writeVector;
 	}
     
     
