@@ -46,7 +46,7 @@ public class FilterDTO {
 	@Transient
 	private List<FilterConditionDTO> filterConditons = new LinkedList<FilterConditionDTO>();
 
-	int getIFilterID() {
+	public int getIFilterID() {
 		return iFilterID;
 	}
 

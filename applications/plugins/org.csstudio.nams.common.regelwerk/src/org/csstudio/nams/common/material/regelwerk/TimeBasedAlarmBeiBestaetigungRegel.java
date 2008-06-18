@@ -17,34 +17,18 @@ import org.csstudio.nams.common.material.Regelwerkskennung;
 public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractTimeBasedVersandRegel
 		implements VersandRegel {
 
-	private final VersandRegel ausloesungsregel;
-	private final VersandRegel bestaetigungsregel;
-	private final Millisekunden timeOut;
-	private Pruefliste internePruefliste;
-
 	/**
 	 * TODO ggf. in einer factory bauen. tr: der BuilderService benutzt diesen
 	 * Konstruktor, eine Factory erscheint mir unsinnig
 	 */
 	public TimeBasedAlarmBeiBestaetigungRegel(VersandRegel ausloesungsregel,
 			VersandRegel bestaetigungsregel, Millisekunden timeOut) {
-		this.ausloesungsregel = ausloesungsregel;
-		this.bestaetigungsregel = bestaetigungsregel;
-		this.timeOut = timeOut;
-
-		// FIXME soll hier nicht erzeugt werden!
-		internePruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
-				ausloesungsregel);
+		super(ausloesungsregel,bestaetigungsregel,timeOut);
 	}
 
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-			// bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
-			// bisherigesErgebnis);
-			// RegelErgebnis bestaetigungsregelErgebnis = bisherigesErgebnis
-			// .gibErgebnisFuerRegel(bestaetigungsregel);
-
 			bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
 					internePruefliste);
 			RegelErgebnis bestaetigungsregelErgebnis = internePruefliste
@@ -74,20 +58,6 @@ public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractTimeBasedVersand
 		return null;
 	}
 
-	public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
-			Pruefliste ergebnisListe) {
-		ausloesungsregel.pruefeNachrichtErstmalig(nachricht, internePruefliste);
-		if (internePruefliste.gibErgebnisFuerRegel(ausloesungsregel) == RegelErgebnis.ZUTREFFEND) {
-			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
-					RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-			return timeOut;
-		} else {
-			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
-					RegelErgebnis.NICHT_ZUTREFFEND);
-			return Millisekunden.valueOf(0);
-		}
-	}
-	
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder("(TimebasedRegel: TimeBehavior: Alarm bei Bestätigung: ");

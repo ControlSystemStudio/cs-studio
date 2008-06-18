@@ -46,7 +46,7 @@ public class StandardRegelwerk implements Regelwerk {
 		this.regelwerkskennung = regelwerkskennung;
 		this.hauptRegel = hauptRegel;
 	}
-	
+	@Deprecated
 	public StandardRegelwerk(VersandRegel hauptRegel){
 		this.hauptRegel = hauptRegel;
 		this.regelwerkskennung = Regelwerkskennung.valueOf();

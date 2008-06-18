@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.NichtVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
@@ -72,7 +73,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			}
 			VersandRegel hauptRegel = new UndVersandRegel(versandRegels
 					.toArray(new VersandRegel[0]));
-			results.add(new StandardRegelwerk(hauptRegel));
+			results.add(new StandardRegelwerk(Regelwerkskennung.valueOf(filterDTO.getIFilterID(),filterDTO.getName()), hauptRegel));
 		}
 
 		return results;
@@ -156,7 +157,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 				versandRegels.add(new StringRegel(operatorEnum, keyValue, string));
 			}
 			return new OderVersandRegel(versandRegels
-					.toArray(new VersandRegel[versandRegels.size()]));
+					.toArray(new VersandRegel[0]));
 		}
 		case PV: {
 			ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;

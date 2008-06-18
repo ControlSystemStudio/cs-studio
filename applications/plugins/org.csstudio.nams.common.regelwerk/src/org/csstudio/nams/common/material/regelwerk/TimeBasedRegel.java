@@ -16,11 +16,9 @@ import org.csstudio.nams.common.material.Regelwerkskennung;
  */
 public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements VersandRegel {
 
-	private final VersandRegel ausloesungsregel;
+	
 	private final VersandRegel aufhebungsregel;
-	private final VersandRegel bestaetigungsregel;
-	private final Millisekunden timeOut;
-	private Pruefliste internePruefliste;
+
 
 	/**
 	 * TODO ggf. in einer factory bauen. tr: der BuilderService benutzt diesen
@@ -28,23 +26,13 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 	 */
 	public TimeBasedRegel(VersandRegel ausloesungsregel, VersandRegel aufhebungsregel,
 			VersandRegel bestaetigungsregel, Millisekunden timeOut) {
-		this.ausloesungsregel = ausloesungsregel;
+		super(ausloesungsregel,bestaetigungsregel, timeOut);
 		this.aufhebungsregel = aufhebungsregel;
-		this.bestaetigungsregel = bestaetigungsregel;
-		this.timeOut = timeOut;
-		
-		// FIXME soll hier nicht erzeugt werden!
-		internePruefliste = new Pruefliste(Regelwerkskennung.valueOf(), ausloesungsregel);
 	}
 
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-//			bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
-//					bisherigesErgebnis);
-//			RegelErgebnis bestaetigungsregelErgebnis = bisherigesErgebnis
-//			.gibErgebnisFuerRegel(bestaetigungsregel);
-
 			bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
 					internePruefliste);
 			RegelErgebnis bestaetigungsregelErgebnis = internePruefliste
@@ -55,10 +43,6 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 						RegelErgebnis.ZUTREFFEND);
 				return;
 			}
-			
-//			aufhebungsregel.pruefeNachrichtErstmalig(nachricht, bisherigesErgebnis);
-//			RegelErgebnis aufhebungsregelErgebnis = bisherigesErgebnis
-//			.gibErgebnisFuerRegel(aufhebungsregel);
 			
 			aufhebungsregel.pruefeNachrichtErstmalig(nachricht, internePruefliste);
 			RegelErgebnis aufhebungsregelErgebnis = internePruefliste
@@ -78,11 +62,6 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			if (verstricheneZeit.istKleiner(timeOut)) {
-				// TODO Muss VIELLEICHT_ZUTREFFEND gesetzt werden?
-				// Muss Dirty-Flag der Pruefliste gesetzt werden? 
-				// Goesta:"Nein, beides nicht"
-				// bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
-				// RegelErgebnis.VIELLEICHT_ZUTREFFEND);
 				return timeOut.differenz(verstricheneZeit);
 			} else {
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
@@ -95,31 +74,6 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 		return null;
 	}
 
-	public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
-			Pruefliste ergebnisListe) {
-//		ausloesungsregel.pruefeNachrichtErstmalig(nachricht, ergebnisListe);
-//
-//		if (ergebnisListe.gibErgebnisFuerRegel(ausloesungsregel) == RegelErgebnis.ZUTREFFEND) {
-		
-		ausloesungsregel.pruefeNachrichtErstmalig(nachricht, internePruefliste);
-
-		if (internePruefliste.gibErgebnisFuerRegel(ausloesungsregel) == RegelErgebnis.ZUTREFFEND) {
-			
-			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
-					RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-			return timeOut;
-		} else {
-			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
-					RegelErgebnis.NICHT_ZUTREFFEND);
-			return Millisekunden.valueOf(0);
-		}
-	}
-
-//	public Millisekunden ermittleVerbleibendeWartezeit(
-//			Millisekunden bereitsVerstricheneWarteZeit) {
-//		return timeOut.differenz(bereitsVerstricheneWarteZeit);
-//	}
-	
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder("(TimebasedRegel: TimeBehavior: Alarm bei TimeOut: ");
