@@ -38,6 +38,9 @@ public class Collector {
 	private StoredData	highestValue	= null;
 	private Double		totalSum		= 0.0;
 	private Double		meanValueAbsolute = null;
+	//FIXME: Es muss sicher gestellt werde das meanValuerelative 
+	//     initalisiert wird. Entweder durch einen Default wert 
+	//     oder der Construtor muss angepasst werden. 
 	private	Double		meanValuerelative = null;
 	private Double		meanValueRelativeFactor = 20.0;
 	private String		descriptor		= "desc. not set";
@@ -364,15 +367,16 @@ public String getCollectorStatusAsXml () {
 		this.info = info;
 	}
 	
+	/**
+	 * Convert Gregorian date into string.
+	 * actually format is yyyy-MM-dd HH:mm:ss.S
+	 * 
+	 * @param gregorsDate The Date to convert do default String format
+	 * @return The Date as String
+	 */
 	public static String dateToString ( GregorianCalendar gregorsDate) {
-		
-		//
-		// convert Gregorian date into string
-		//
-		//TODO: use other time format - actually : DD-MM-YYYY
 		Date d = gregorsDate.getTime();
 		SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.S" );
-	    //DateFormat df = DateFormat.getDateInstance();
 	    return df.format(d);
 	}
 
