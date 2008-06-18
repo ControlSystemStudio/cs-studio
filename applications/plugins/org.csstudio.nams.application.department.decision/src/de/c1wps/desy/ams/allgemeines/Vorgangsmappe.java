@@ -36,6 +36,7 @@ public class Vorgangsmappe implements Ablagefaehig {
 	private Pruefliste pruefliste;
 	private final Vorgangsmappenkennung kennung;
 	private Vorgangsmappenkennung abgeschlossenDurchMappenkennung;
+	private boolean abgeschlossenDurchTimeOut = false;
 
 //	@Deprecated
 //	public Vorgangsmappe(AlarmNachricht nachricht) {
@@ -100,6 +101,10 @@ public class Vorgangsmappe implements Ablagefaehig {
 		return (abgeschlossenDurchMappenkennung!=null);
 	}
 
+	public boolean istAbgeschlossenDurchTimeOut(){
+		return abgeschlossenDurchTimeOut;
+	}
+	
 	public Vorgangsmappenkennung gibMappenkennung() {
 		return this.kennung;
 	}
@@ -117,6 +122,11 @@ public class Vorgangsmappe implements Ablagefaehig {
 	@Override
 	public String toString() {
 		return this.kennung.toString() + " " + alarmNachricht;
+	}
+
+	public void abgeschlossenDurchTimeOut() {
+		abgeschlossenDurchMappenkennung = kennung;
+		abgeschlossenDurchTimeOut  = true;
 	}
 
 	// TODO Ggf. spaeter Kapitel einfuehren für einzelne Bereiche!

@@ -147,9 +147,11 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			Vorgangsmappe offenerVorgang = mappenIterator.next();
 			if (offenerVorgang.gibMappenkennung().equals(mappenKennung)) {
 				regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang.gibPruefliste(),
+						// FIXME History nicht in AlarmNachrichten loggen.
 						zeitSeitLetzterBearbeitung, new AlarmNachricht("test"));
 				if (this.pruefungAbgeschlossen(offenerVorgang.gibPruefliste()
 						.gesamtErgebnis())) {
+					offenerVorgang.abgeschlossenDurchTimeOut();
 					this.ausgangkorb.ablegen(offenerVorgang);
 					mappenIterator.remove();
 				} else {
@@ -231,6 +233,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 
 		if (this.pruefungAbgeschlossen(vorgangsmappe.gibPruefliste()
 				.gesamtErgebnis())) {
+			vorgangsmappe.pruefungAbgeschlossenDurch(vorgangsmappe.gibMappenkennung());
 			this.ausgangkorb.ablegen(vorgangsmappe);
 		} else {
 			this.ablagekorbFuerOffeneVorgaenge.ablegen(vorgangsmappe);
