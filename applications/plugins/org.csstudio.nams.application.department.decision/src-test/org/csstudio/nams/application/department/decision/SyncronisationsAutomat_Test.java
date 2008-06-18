@@ -2,7 +2,6 @@ package org.csstudio.nams.application.department.decision;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 import junit.framework.TestCase;
@@ -58,10 +57,6 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 			public boolean isClosed() {
 				return false;
-			}
-
-			public void sendeMap(Map<String, String> map) {
-				fail("should not be called");
 			}
 
 			public void sendeSystemnachricht(SystemNachricht systemNachricht) {

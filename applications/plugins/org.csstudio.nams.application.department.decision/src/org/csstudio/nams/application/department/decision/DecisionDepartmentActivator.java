@@ -37,6 +37,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -392,7 +393,11 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				List<Regelwerk> alleRegelwerke = regelwerkBuilderService
 						.gibAlleRegelwerke();
 
-				logger.logDebugMessage(this, "alleRegelwerke size: "+alleRegelwerke.size()+" tostring: "+alleRegelwerke.toString());
+				
+				logger.logDebugMessage(this, "alleRegelwerke size: "+alleRegelwerke.size());
+				for (Regelwerk regelwerk : alleRegelwerke) {
+					logger.logDebugMessage(this, regelwerk.toString());
+				}
 				
 				alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
 						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
@@ -417,7 +422,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 			// TODO Thread zum auslesen des Ausgangskorbes...
 
-			final Ausgangskorb<Vorgangsmappe> vorgangAusgangskorb = alarmEntscheidungsBuero
+			final Eingangskorb<Vorgangsmappe> vorgangAusgangskorb = (Eingangskorb<Vorgangsmappe>) alarmEntscheidungsBuero
 					.gibAlarmVorgangAusgangskorb();
 			final Eingangskorb<Vorgangsmappe> vorgangEingangskorb = alarmEntscheidungsBuero
 					.gibAlarmVorgangEingangskorb();
@@ -426,6 +431,17 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			ausgangskorbBearbeiter = new StepByStepProcessor() {
 				@Override
 				protected void doRunOneSingleStep() throws Throwable {
+					
+					Vorgangsmappe vorgangsmappe = vorgangAusgangskorb.entnehmeAeltestenEingang();
+					logger.logDebugMessage(this, "gesamtErgebnis: "+vorgangsmappe.gibPruefliste().gesamtErgebnis());
+					
+					
+					if (vorgangsmappe.gibPruefliste().gesamtErgebnis() == WeiteresVersandVorgehen.VERSENDEN) {
+						// Nachricht anreichern
+						// Versenden
+//						amsAusgangsProducer.
+					}
+					
 					// Vorgangsmappe vorgangZumSenden = vorgangAusgangskorb.???
 					// TODO Sende Vorgangsmappe.... (Ausgangskorb erweitern eine
 					// entnehme-Operation zu haben).
@@ -447,7 +463,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					// vorgangAusgangskorb);
 				}
 			};
-			// ausgangskorbBearbeiter.runAsynchronous();
+//			ausgangskorbBearbeiter.runAsynchronous();
+			executionService.executeAsynchronsly(ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER, ausgangskorbBearbeiter);
 
 			// start receiving Messages, runs while _continueWorking is true.
 			receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
@@ -571,6 +588,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						new ThreadGroup(
 								ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER
 										.name()));
+		executionServiceToBeInitialize
+		.registerGroup(
+				ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER,
+				new ThreadGroup(
+						ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER
+								.name()));
 		// executionServiceToBeInitialize
 		// .registerGroup(
 		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD,

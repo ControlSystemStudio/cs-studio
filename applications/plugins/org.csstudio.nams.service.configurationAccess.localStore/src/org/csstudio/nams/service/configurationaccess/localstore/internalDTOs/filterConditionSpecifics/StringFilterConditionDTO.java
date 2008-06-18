@@ -76,7 +76,8 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	}
 
 	public MessageKeyEnum getKeyValueEnum() {
-		return MessageKeyEnum.valueOf(keyValue);
+		MessageKeyEnum valueOf = MessageKeyEnum.valueOf(keyValue);
+		return valueOf;
 	}
 
 	/**

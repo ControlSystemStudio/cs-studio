@@ -1,7 +1,6 @@
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			}
 			VersandRegel hauptRegel = new UndVersandRegel(versandRegels
 					.toArray(new VersandRegel[0]));
-			results.add(new StandardRegelwerk(Regelwerkskennung.valueOf(filterDTO.getIFilterID(),filterDTO.getName()), hauptRegel));
+			results.add(new StandardRegelwerk(Regelwerkskennung.valueOf(filterDTO.getIFilterID(), filterDTO.getName()), hauptRegel));
 		}
 
 		return results;
@@ -157,7 +156,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 				versandRegels.add(new StringRegel(operatorEnum, keyValue, string));
 			}
 			return new OderVersandRegel(versandRegels
-					.toArray(new VersandRegel[0]));
+					.toArray(new VersandRegel[versandRegels.size()]));
 		}
 		case PV: {
 			ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;

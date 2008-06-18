@@ -2,6 +2,8 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -19,6 +21,7 @@ import javax.persistence.Table;
 @Table(name = "AMS_History")
 public class HistoryDTO {
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "iHistoryID")
 	private int iHistoryID;
 	@Column(name = "tTimeNew")

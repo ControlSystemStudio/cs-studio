@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
-import java.util.Map;
-
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -105,11 +103,4 @@ public class JMSProducer implements Producer {
 			e.printStackTrace();
 		}
 	}
-
-	@Deprecated
-	public void sendeMap(Map<String, String> map) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
