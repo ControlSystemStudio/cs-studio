@@ -67,4 +67,12 @@ public interface LocalStoreConfigurationService {
 	public void saveCurrentReplicationState(ReplicationStateDTO currentState)
 			throws StorageError, StorageException,
 			UnknownConfigurationElementError;
+
+	/**
+	 * Saves a HistoryDTO to the local Database, shall not be called on the
+	 * Configuration Database.
+	 * 
+	 * @param historyDTO
+	 */
+	public void saveHistoryDTO(HistoryDTO historyDTO);
 }

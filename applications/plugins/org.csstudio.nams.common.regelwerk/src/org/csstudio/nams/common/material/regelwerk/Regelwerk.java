@@ -22,7 +22,7 @@ public interface Regelwerk {
 	 * Soll aufgerufen werden wenn eine Terminnotiz herein kommt.
 	 */
 	void pruefeNachrichtAufTimeOuts(Pruefliste pruefliste,
-			Millisekunden verstricheneZeitSeitLetzterPruefung);
+			Millisekunden verstricheneZeitSeitLetzterPruefung, AlarmNachricht initialeNachricht);
 	
 	void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(AlarmNachricht alarmNachricht, Pruefliste pruefliste);
 	

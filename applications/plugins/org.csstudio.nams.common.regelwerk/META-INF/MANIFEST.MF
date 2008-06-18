@@ -3,12 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Regelwerk Plug-in
 Bundle-SymbolicName: org.csstudio.nams.common.regelwerk
 Bundle-Version: 1.0.0
-Require-Bundle: org.csstudio.nams.service.history,
- org.csstudio.nams.common,
+Require-Bundle: org.csstudio.nams.common,
  org.csstudio.platform,
  org.csstudio.nams.service.logging,
  org.csstudio.platform.libs.dal,
- org.csstudio.nams.common.messages
+ org.csstudio.nams.common.messages,
+ org.csstudio.nams.service.history
 Export-Package: de.c1wps.desy.ams.allgemeines.regelwerk,
  org.csstudio.nams.common.material.regelwerk;
   uses:="org.csstudio.nams.service.logging.declaration,

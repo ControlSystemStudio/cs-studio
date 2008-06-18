@@ -11,6 +11,7 @@ import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachc
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
@@ -199,6 +200,10 @@ public class SyncronisationsAutomat_Test extends TestCase {
 					public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations() {
 						fail("unexpected method call!");
 						return null;
+					}
+
+					public void saveHistoryDTO(HistoryDTO historyDTO) {
+						fail("unexpected method call!");
 					}
 
 				}, null);

@@ -79,11 +79,11 @@ public class StandardRegelwerk implements Regelwerk {
 	 * {@inheritDoc}
 	 */
 	public void pruefeNachrichtAufTimeOuts(Pruefliste pruefliste,
-			Millisekunden msSeitLetzterPruefung) {
+			Millisekunden msSeitLetzterPruefung, AlarmNachricht initialeNachricht) {
 		pruefliste.msGewartet(msSeitLetzterPruefung);
 		if (hauptRegel != null) {
 			Millisekunden zeitBisZumNaechstenTimeOut = hauptRegel.pruefeNachrichtAufTimeOuts(pruefliste,
-					pruefliste.gibBereitsGewarteteZeit());
+					pruefliste.gibBereitsGewarteteZeit(), initialeNachricht);
 			pruefliste.setzeMillisekundenBisZurNaechstenPruefung(zeitBisZumNaechstenTimeOut);
 		}
 	}
@@ -117,6 +117,14 @@ public class StandardRegelwerk implements Regelwerk {
 		builder.append(hauptRegel.toString());
 		return builder.toString();
 	}
+
+	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+			AlarmNachricht alarmNachricht, Pruefliste pruefliste,
+			AlarmNachricht initialeNachricht) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 	

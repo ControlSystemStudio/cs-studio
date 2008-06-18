@@ -1,7 +1,8 @@
 package org.csstudio.nams.service.history.declaration;
 
+
 public interface HistoryService {
-	public void logStoppingServiceForReplication();
 	public void logReceivedReplicationDoneMessage();
-	public void logTimeOutForTimeBased();
+	public void logReceivedStartReplicationMessage();
+	public void logTimeOutForTimeBased(String regelwerkID, String messageDesc, String regel);
 }

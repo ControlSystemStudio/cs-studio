@@ -640,6 +640,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					} else if (message.enthaeltSystemnachricht()) {
 						if (message.alsSystemachricht()
 								.istSyncronisationsAufforderung()) {
+							historyService.logReceivedStartReplicationMessage();
 							// TODO wir müssen syncronisieren
 							// 1. altes office runterfahren und noch offene
 							// vorgaenge schicken
@@ -647,6 +648,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							// 3. regel neu laden
 							// 4. neues office anlegen
 							// 5. neues office straten
+						} else if (message.alsSystemachricht().istSyncronisationsBestaetigung()){
+							historyService.logReceivedReplicationDoneMessage();
+							//TODO was muss bei der Bestätigung getan werden?
 						}
 					}
 					// // TODO andere Nachrichten Typen behandeln

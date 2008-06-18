@@ -1,6 +1,7 @@
 package org.csstudio.nams.common.material.regelwerk;
 
 
+
 /**
  * Operators supported by this filter-condition.
  */

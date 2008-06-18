@@ -14,7 +14,7 @@ import org.csstudio.nams.common.material.Regelwerkskennung;
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 08.04.2008
  */
-public class TimeBasedRegel extends AbstractVersandRegel implements VersandRegel {
+public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements VersandRegel {
 
 	private final VersandRegel ausloesungsregel;
 	private final VersandRegel aufhebungsregel;
@@ -75,7 +75,7 @@ public class TimeBasedRegel extends AbstractVersandRegel implements VersandRegel
 	}
 
 	public Millisekunden pruefeNachrichtAufTimeOuts(
-			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit) {
+			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			if (verstricheneZeit.istKleiner(timeOut)) {
 				// TODO Muss VIELLEICHT_ZUTREFFEND gesetzt werden?
@@ -87,6 +87,9 @@ public class TimeBasedRegel extends AbstractVersandRegel implements VersandRegel
 			} else {
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.ZUTREFFEND);
+			}
+			if (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
+				mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
 			}
 		}
 		return null;

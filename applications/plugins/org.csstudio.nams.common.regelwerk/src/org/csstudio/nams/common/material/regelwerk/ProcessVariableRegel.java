@@ -148,7 +148,7 @@ public class ProcessVariableRegel extends AbstractVersandRegel implements Versan
 	 */
 	public Millisekunden pruefeNachrichtAufTimeOuts(
 			Pruefliste bisherigesErgebnis,
-			Millisekunden verstricheneZeitSeitErsterPruefung) {
+			Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
 		// timeouts are irrelevant
 		return Millisekunden.valueOf(0);
 	}

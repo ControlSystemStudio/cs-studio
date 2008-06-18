@@ -147,7 +147,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			Vorgangsmappe offenerVorgang = mappenIterator.next();
 			if (offenerVorgang.gibMappenkennung().equals(mappenKennung)) {
 				regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang.gibPruefliste(),
-						zeitSeitLetzterBearbeitung);
+						zeitSeitLetzterBearbeitung, new AlarmNachricht("test"));
 				if (this.pruefungAbgeschlossen(offenerVorgang.gibPruefliste()
 						.gesamtErgebnis())) {
 					this.ausgangkorb.ablegen(offenerVorgang);

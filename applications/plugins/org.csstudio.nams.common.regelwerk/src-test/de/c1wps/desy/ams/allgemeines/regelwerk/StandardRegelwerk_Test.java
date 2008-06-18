@@ -39,7 +39,7 @@ public class StandardRegelwerk_Test extends
 				.gibMillisekundenBisZurNaechstenPruefung());
 
 		// 2000 ms "später"... ;)
-		regelwerk.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(2000));
+		regelwerk.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(2000), new AlarmNachricht("test"));
 
 		assertEquals(WeiteresVersandVorgehen.VERSENDEN, pruefliste
 				.gesamtErgebnis());

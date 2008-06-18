@@ -3,6 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 import java.util.List;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
@@ -168,6 +169,12 @@ class LocalStoreConfigurationServiceImpl implements
 		System.out.println(stringFilterConditionDTOs.toString());
 
 		return stringFilterConditionDTOs;
+	}
+
+	public void saveHistoryDTO(HistoryDTO historyDTO) {
+		 Transaction tx = session.beginTransaction();
+		 session.save(historyDTO);
+		 tx.commit();
 	}
 
 }

@@ -1,5 +1,6 @@
 package org.csstudio.nams.common.material.regelwerk;
 
+
 /**
  * Expected type of channel.
  */

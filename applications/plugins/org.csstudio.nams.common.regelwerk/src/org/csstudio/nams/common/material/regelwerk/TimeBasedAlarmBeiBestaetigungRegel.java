@@ -14,7 +14,7 @@ import org.csstudio.nams.common.material.Regelwerkskennung;
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 08.04.2008
  */
-public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractVersandRegel
+public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractTimeBasedVersandRegel
 		implements VersandRegel {
 
 	private final VersandRegel ausloesungsregel;
@@ -59,13 +59,16 @@ public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractVersandRegel
 	}
 
 	public Millisekunden pruefeNachrichtAufTimeOuts(
-			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit) {
+			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			if (verstricheneZeit.istKleiner(timeOut)) {
 				return timeOut.differenz(verstricheneZeit);
 			} else {
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.NICHT_ZUTREFFEND);
+			}
+			if (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
+				mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
 			}
 		}
 		return null;
