@@ -30,10 +30,11 @@ public class ArchiveImplementationRegistry
      *  <p>
      *  Maps the URL prefix to an implementation.
      */
-    private HashMap<String, ArchiveImplementationDescriptor> _AALImpl;
+    final private HashMap<String, ArchiveImplementationDescriptor> _AALImpl
+        = new HashMap<String, ArchiveImplementationDescriptor>();
 
     /** Contains the URL Lists of all ArchiveImplementation providers. */
-    private ArrayList<String> _UrlList = new ArrayList<String>();
+    final private ArrayList<String> _UrlList = new ArrayList<String>();
 
     /** Private constructor.
      *  @see #getInstance()
@@ -57,24 +58,20 @@ public class ArchiveImplementationRegistry
     @SuppressWarnings("nls")
     private void lookup()
     {
-        _AALImpl = new HashMap<String, ArchiveImplementationDescriptor>();
-
-        IExtensionRegistry extReg = Platform.getExtensionRegistry();
-        IConfigurationElement[] confElements = extReg
+        final IExtensionRegistry extReg = Platform.getExtensionRegistry();
+        final IConfigurationElement[] confElements = extReg
                         .getConfigurationElementsFor(EXTENSION_ID);
-
-        IArchiveImplementation aalImpl = null;
 
         for (IConfigurationElement element : confElements)
         {
             try
             {
-                aalImpl = (IArchiveImplementation) element
-                                .createExecutableExtension("class");
-                String urls[] = aalImpl.getURLList();
+                final IArchiveImplementation aalImpl = (IArchiveImplementation)
+                    element.createExecutableExtension("class");
+                final String urls[] = aalImpl.getURLList();
                 if (urls != null)
-                    for (int i = 0; i < urls.length; ++i)
-                        _UrlList.add(urls[i]);
+                    for (String url : urls)
+                        _UrlList.add(url);
             }
             catch (CoreException e)
             {
@@ -86,7 +83,7 @@ public class ArchiveImplementationRegistry
             if (_AALImpl.containsKey(prefix))
                 throw new IllegalArgumentException("URL prefix >>" + prefix
                                 + "<< is in use"); 
-            Activator.getLogger().info(
+            Activator.getLogger().debug(
                             "Registering handler for URL prefix '"
                             + prefix + "'");
             _AALImpl.put(prefix, new ArchiveImplementationDescriptor(element));
@@ -96,7 +93,7 @@ public class ArchiveImplementationRegistry
     /** @return A list of all default URLs that implementations provided. */
     public String[] getUrlList()
     {
-        String urls[] = new String[_UrlList.size()];
+        final String urls[] = new String[_UrlList.size()];
         return _UrlList.toArray(urls);
     }
 
@@ -117,10 +114,9 @@ public class ArchiveImplementationRegistry
             prefix = DEFAULT_PREFIX;
         else
             prefix = url.substring(0, i);
-        ArchiveImplementationDescriptor aid = _AALImpl.get(prefix);
+        final ArchiveImplementationDescriptor aid = _AALImpl.get(prefix);
         if (aid == null)
         {
-         
             Activator.getLogger().error(
                             "Unknown prefix in URL '" + url + "'");
             return null;
