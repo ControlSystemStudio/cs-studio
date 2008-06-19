@@ -111,12 +111,12 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 
 	public Millisekunden pruefeNachrichtAufTimeOuts(
 			Pruefliste bisherigesErgebnis,
-			Millisekunden zeitSeitErsterEvaluation, AlarmNachricht initialeNachricht) {
+			Millisekunden zeitSeitErsterEvaluation) {
 		Set<Millisekunden> warteZeiten = new HashSet<Millisekunden>();
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			for (VersandRegel child : children) {
 				Millisekunden wartezeit = child.pruefeNachrichtAufTimeOuts(
-						bisherigesErgebnis, zeitSeitErsterEvaluation, initialeNachricht);
+						bisherigesErgebnis, zeitSeitErsterEvaluation);
 				if (wartezeit != null) {
 					warteZeiten.add(wartezeit);
 				}

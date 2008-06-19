@@ -45,7 +45,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 		public Millisekunden pruefeNachrichtAufTimeOuts(
 				Pruefliste bisherigesErgebnis,
-				Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+				Millisekunden verstricheneZeitSeitErsterPruefung) {
 			return null;
 		}
 
@@ -261,7 +261,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 						public Millisekunden pruefeNachrichtAufTimeOuts(
 								Pruefliste bisherigesErgebnis,
-								Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+								Millisekunden verstricheneZeitSeitErsterPruefung) {
 							return null;
 						}
 
@@ -304,7 +304,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.ZUTREFFEND);
 				return Millisekunden.valueOf(0);
@@ -326,7 +326,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.NICHT_ZUTREFFEND);
 				return Millisekunden.valueOf(0);
@@ -348,7 +348,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 
 				if (verstricheneZeitSeitErsterPruefung.istKleiner(Millisekunden
 						.valueOf(51))) {

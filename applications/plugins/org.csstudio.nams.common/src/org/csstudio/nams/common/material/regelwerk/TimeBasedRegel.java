@@ -59,7 +59,7 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 	}
 
 	public Millisekunden pruefeNachrichtAufTimeOuts(
-			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
 			if (verstricheneZeit.istKleiner(timeOut)) {
 				return timeOut.differenz(verstricheneZeit);

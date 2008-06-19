@@ -148,7 +148,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				fail();
 				return null;
 			}
@@ -168,7 +168,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				fail();
 				return null;
 			}
@@ -220,7 +220,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				fail();
 				return null;
 			}
@@ -240,7 +240,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				fail();
 				return null;
 			}
@@ -293,7 +293,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				child1PruefeAufgerufen[0] = true;
 				return Millisekunden.valueOf(200);
 			}
@@ -313,7 +313,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				child2PruefeAufgerufen[0] = true;
 				return Millisekunden.valueOf(300);
 			}
@@ -332,7 +332,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 		Millisekunden wartezeit = parentRegel
 				.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden
-						.valueOf(100), new AlarmNachricht("test"));
+						.valueOf(100));
 
 		assertTrue(child1PruefeAufgerufen[0]);
 		assertTrue(child2PruefeAufgerufen[0]);
@@ -344,7 +344,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 		child2PruefeAufgerufen[0] = false;
 
 		wartezeit = parentRegel.pruefeNachrichtAufTimeOuts(
-				pruefliste, Millisekunden.valueOf(100), new AlarmNachricht("test"));
+				pruefliste, Millisekunden.valueOf(100));
 		
 		assertFalse(child1PruefeAufgerufen[0]);
 		assertFalse(child2PruefeAufgerufen[0]);
@@ -377,7 +377,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				fail();
 				return null;
 			}
@@ -397,7 +397,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				fail();
 				return Millisekunden.valueOf(0);
 			}

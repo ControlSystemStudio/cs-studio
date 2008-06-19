@@ -148,7 +148,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			if (offenerVorgang.gibMappenkennung().equals(mappenKennung)) {
 				regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang.gibPruefliste(),
 						// FIXME History nicht in AlarmNachrichten loggen.
-						zeitSeitLetzterBearbeitung, new AlarmNachricht("test"));
+						zeitSeitLetzterBearbeitung);
 				if (this.pruefungAbgeschlossen(offenerVorgang.gibPruefliste()
 						.gesamtErgebnis())) {
 					offenerVorgang.abgeschlossenDurchTimeOut();

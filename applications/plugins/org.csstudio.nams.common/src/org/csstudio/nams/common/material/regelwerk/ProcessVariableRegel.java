@@ -148,7 +148,7 @@ public class ProcessVariableRegel implements VersandRegel {
 	 */
 	public Millisekunden pruefeNachrichtAufTimeOuts(
 			Pruefliste bisherigesErgebnis,
-			Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+			Millisekunden verstricheneZeitSeitErsterPruefung) {
 		// timeouts are irrelevant
 		return Millisekunden.valueOf(0);
 	}

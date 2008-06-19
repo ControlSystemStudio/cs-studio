@@ -50,7 +50,7 @@ public class StringRegel implements VersandRegel {
 	 */
 	public Millisekunden pruefeNachrichtAufTimeOuts(
 			Pruefliste bisherigesErgebnis,
-			Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+			Millisekunden verstricheneZeitSeitErsterPruefung) {
 		// nothing to do here
 		return null;
 	}

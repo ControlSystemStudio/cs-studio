@@ -79,11 +79,11 @@ public class StandardRegelwerk implements Regelwerk {
 	 * {@inheritDoc}
 	 */
 	public void pruefeNachrichtAufTimeOuts(Pruefliste pruefliste,
-			Millisekunden msSeitLetzterPruefung, AlarmNachricht initialeNachricht) {
+			Millisekunden msSeitLetzterPruefung) {
 		pruefliste.msGewartet(msSeitLetzterPruefung);
 		if (hauptRegel != null) {
 			Millisekunden zeitBisZumNaechstenTimeOut = hauptRegel.pruefeNachrichtAufTimeOuts(pruefliste,
-					pruefliste.gibBereitsGewarteteZeit(), initialeNachricht);
+					pruefliste.gibBereitsGewarteteZeit());
 			pruefliste.setzeMillisekundenBisZurNaechstenPruefung(zeitBisZumNaechstenTimeOut);
 		}
 	}

@@ -61,7 +61,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				fail("Shouldn't be called");
 				return null;
 			}
@@ -80,7 +80,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				fail("Shouldn't be called");
 				return null;
 			}
@@ -124,7 +124,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				fail("Shouldn't be called");
 				return null;
 			}
@@ -161,7 +161,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				fail("Shouldn't be called");
 				return null;
 			}
@@ -199,7 +199,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				fail("Shouldn't be called");
 				return null;
 			}
@@ -239,7 +239,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				fail("Shouldn't be called");
 				return null;
 			}
@@ -275,7 +275,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(tbRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
 		pruefliste.setzeAufNichtVeraendert();
 		
-		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(10), new AlarmNachricht("test"));
+		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(10));
 		
 		assertFalse("pruefliste.hatSichGeaendert()", pruefliste.hatSichGeaendert());
 		assertEquals(RegelErgebnis.VIELLEICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(tbRegel));
@@ -294,7 +294,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(tbRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
 		pruefliste.setzeAufNichtVeraendert();
 		
-		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(200), new AlarmNachricht("test"));
+		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(200));
 		
 		assertTrue("pruefliste.hatSichGeaendert()", pruefliste.hatSichGeaendert());
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(tbRegel));
@@ -331,7 +331,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
 				fail("Shouldn't be called");
 				return null;
 			}

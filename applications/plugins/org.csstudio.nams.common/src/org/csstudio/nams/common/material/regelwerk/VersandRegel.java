@@ -59,7 +59,7 @@ public interface VersandRegel {
 	 */
 	public Millisekunden pruefeNachrichtAufTimeOuts(
 			Pruefliste bisherigesErgebnis,
-			Millisekunden verstricheneZeitSeitErsterPruefung, AlarmNachricht initialeNachricht);
+			Millisekunden verstricheneZeitSeitErsterPruefung);
 
 	/**
 	 * Wendet die Aufhebungs und Bestätigungsregeln auf eine Nachricht an.

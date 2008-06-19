@@ -60,7 +60,7 @@ public class NichtVersandRegel_Test extends TestCase {
 			}
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeit, AlarmNachricht initialeNachricht) {
+					Millisekunden verstricheneZeit) {
 				return Millisekunden.valueOf(0);
 			}
 			public Millisekunden pruefeNachrichtErstmalig(
