@@ -95,12 +95,19 @@ public class NumericMetaData implements INumericMetaData
         if (! (obj instanceof INumericMetaData))
             return false;
         final INumericMetaData other = (INumericMetaData) obj;
-        return other.getDisplayLow() == disp_low &&
-               other.getDisplayHigh() == disp_high &&
-               other.getWarnLow() == warn_low &&
-               other.getWarnHigh() == warn_high &&
-               other.getAlarmHigh() == alarm_high &&
-               other.getAlarmLow() == alarm_low &&
+        // Compare all the elements, w/ proper handling of double NaN/Inf.
+        return Double.doubleToLongBits(other.getDisplayLow())
+                == Double.doubleToLongBits(disp_low) &&
+               Double.doubleToLongBits(other.getDisplayHigh())
+                == Double.doubleToLongBits(disp_high) &&
+               Double.doubleToLongBits(other.getWarnLow())
+                == Double.doubleToLongBits(warn_low) &&
+               Double.doubleToLongBits(other.getWarnHigh())
+                == Double.doubleToLongBits(warn_high) &&
+               Double.doubleToLongBits(other.getAlarmHigh())
+                == Double.doubleToLongBits(alarm_high) &&
+               Double.doubleToLongBits(other.getAlarmLow())
+                == Double.doubleToLongBits(alarm_low) &&
                other.getPrecision() == prec &&
                other.getUnits().equals(units);
     }

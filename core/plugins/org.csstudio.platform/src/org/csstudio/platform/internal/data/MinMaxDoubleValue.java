@@ -83,8 +83,10 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
 		if (! (obj instanceof MinMaxDoubleValue))
 			return false;
 		final MinMaxDoubleValue rhs = (MinMaxDoubleValue) obj;
-        return minimum == rhs.minimum &&
-               maximum == rhs.maximum &&
+        return Double.doubleToLongBits(minimum) ==
+                   Double.doubleToLongBits(rhs.minimum) &&
+               Double.doubleToLongBits(maximum) ==
+                   Double.doubleToLongBits(rhs.maximum) &&
                super.equals(obj);
 	}
 
