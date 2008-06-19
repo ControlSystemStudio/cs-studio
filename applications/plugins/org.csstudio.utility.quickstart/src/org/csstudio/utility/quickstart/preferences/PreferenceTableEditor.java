@@ -1,49 +1,46 @@
 package org.csstudio.utility.quickstart.preferences;
 
-import java.util.Arrays;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
-public abstract class PreferenceTableEditor extends FieldEditor {
+/**
+ * This class is a copy from the abstract eclipse class
+ * 'ListEditor' with changes that now the items are not
+ * displayed in a 'List' but in a 'Table'. In addition it
+ * is possible to edit the items in the table.
+ * 
+ * @author jhatje
+ *
+ */
+public class PreferenceTableEditor extends FieldEditor {
 
-//    /**
-//     * The list widget; <code>null</code> if none
-//     * (before creation or after disposal).
-//     */
-//    private List list;
-
-    private TableViewer tableViewer;
+	/**
+	 * The table for the items in the menu. 
+	 * (Currently the options of the JFace component are not
+	 * used. The TableViewer is just a container for the SWT table.
+	 * Maybe the TableViewer can be replaced with the SWT table.)
+	 */
+	private TableViewer tableViewer;
     
     /**
      * The button box containing the Add, Remove, Up, and Down buttons;
@@ -96,10 +93,11 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 
     /**
      * Notifies that the Add button has been pressed.
+     * A new tableItem is set at the end of the table with
+     * initial stings that the user has to adjust.
      */
     private void addPressed() {
         setPresentsDefaultValue(false);
-//        String input = getNewInputObject();
         int itemNumber = tableViewer.getTable().getItemCount();
         TableItem item = new TableItem(tableViewer.getTable(), SWT.NONE, itemNumber);
         item.setText(0, "Path to file");
@@ -141,8 +139,10 @@ public abstract class PreferenceTableEditor extends FieldEditor {
     protected String createList(TableItem[] items) {
     	StringBuffer preferenceString = new StringBuffer();
     	for (TableItem tableItem : items) {
+    		//The path to the file, mandatory
 			preferenceString.append(tableItem.getText(0));
 			preferenceString.append("?");
+			//The name for quickstart menu, optional
 			preferenceString.append(tableItem.getText(1));
 			preferenceString.append(";");
 		}
@@ -214,6 +214,10 @@ public abstract class PreferenceTableEditor extends FieldEditor {
         buttonBox.setLayoutData(gd);
     }
 
+    /**
+     * Set the file path and menu name set by the user from
+     * preferences in the table rows.
+     */
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
@@ -234,15 +238,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
      * Method declared on FieldEditor.
      */
     protected void doLoadDefault() {
-//        if (list != null) {
-//            list.removeAll();
-//            String s = getPreferenceStore().getDefaultString(
-//                    getPreferenceName());
-//            String[] array = parseString(s);
-//            for (int i = 0; i < array.length; i++) {
-//                list.add(array[i]);
-//            }
-//        }
+    	//there are no defaults for the quickstart menu.
     }
 
     /* (non-Javadoc)
@@ -295,7 +291,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
     }
 
     /**
-     * Returns this field editor's list control.
+     * Returns this field editor's table control.
      *
      * @param parent the parent control
      * @return the list control
@@ -320,12 +316,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	        editor.horizontalAlignment = SWT.LEFT;
 	        editor.grabHorizontal = true;
 
-	        
-
-	        
-//	        tableViewer.setColumnProperties(new String[] {"Path", "Menu name"});
-
-    		tableViewer = new TableViewer(table);
+	        tableViewer = new TableViewer(table);
     		tableViewer.getTable().setFont(parent.getFont());
     		tableViewer.getTable().addSelectionListener(getSelectionListener());
     		tableViewer.getTable().addDisposeListener(new DisposeListener() {
@@ -333,62 +324,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
     				tableViewer = null;
     			}
     		});
-    		
-	        // Use a mouse listener, not a selection listener, since we're interested
-	        // in the selected column as well as row
-	        table.addMouseListener(new MouseAdapter() {
-	          public void mouseDoubleClick(MouseEvent event) {
-	            // Dispose any existing editor
-	            Control old = editor.getEditor();
-	            if (old != null) old.dispose();
-
-	            // Determine where the mouse was clicked
-	            Point pt = new Point(event.x, event.y);
-
-	            // Determine which row was selected
-	            final TableItem item = PreferenceTableEditor.this.tableViewer.getTable().getItem(pt);
-	            if (item != null) {
-	              // Determine which column was selected
-	              int column = -1;
-	              for (int i = 0, n = PreferenceTableEditor.this.tableViewer.getTable().getColumnCount(); i < n; i++) {
-	                Rectangle rect = item.getBounds(i);
-	                if (rect.contains(pt)) {
-	                  // This is the selected column
-	                  column = i;
-	                  break;
-	                }
-	              }
-	              
-	              // Create the Text object for our editor
-	              final Text text = new Text(PreferenceTableEditor.this.tableViewer.getTable(), SWT.NONE);
-	              text.setForeground(item.getForeground());
-
-	              // Transfer any text from the cell to the Text control,
-	              // set the color to match this row, select the text,
-	              // and set focus to the control
-	              text.setText(item.getText(column));
-	              text.setForeground(item.getForeground());
-	              text.selectAll();
-	              text.setFocus();
-
-	              // Recalculate the minimum width for the editor
-	              editor.minimumWidth = text.getBounds().width;
-
-	              // Set the control into the editor
-	              editor.setEditor(text, item, column);
-
-	              // Add a handler to transfer the text back to the cell
-	              // any time it's modified
-	              final int col = column;
-	              text.addModifyListener(new ModifyListener() {
-	                public void modifyText(ModifyEvent event) {
-	                  // Set the text of the editor's control back into the cell
-	                  item.setText(col, text.getText());
-	                }
-	              });
-	            }
-	          }
-	        });
+    		table.addMouseListener(new TableEditorMouseListener(editor, tableViewer.getTable()));
 
     	} else {
     		checkParent(tableViewer.getTable(), parent);
@@ -404,7 +340,9 @@ public abstract class PreferenceTableEditor extends FieldEditor {
      *
      * @return a new item
      */
-    protected abstract String getNewInputObject();
+    protected String getNewInputObject() {
+		return null;
+    }
 
     /* (non-Javadoc)
      * Method declared on FieldEditor.
@@ -453,7 +391,9 @@ public abstract class PreferenceTableEditor extends FieldEditor {
      * @return an array of <code>String</code>
      * @see #createList
      */
-    protected abstract String[] parseString(String stringList);
+    protected String[] parseString(String stringList) {
+		return stringList.split(";");
+    }
 
     /**
      * Notifies that the Remove button has been pressed.
