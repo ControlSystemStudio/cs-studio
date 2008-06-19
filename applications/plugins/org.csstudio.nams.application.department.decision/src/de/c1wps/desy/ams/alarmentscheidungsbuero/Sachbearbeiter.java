@@ -40,6 +40,7 @@ import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.wam.Automat;
+import org.csstudio.nams.service.history.declaration.HistoryService;
 
 
 /**
@@ -61,6 +62,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	private final DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufVorgangsmappenEingaenge;
 	private final DokumentVerbraucherArbeiter<Terminnotiz> achteAufTerminnotizEingaenge;
 //	private Logger log = Logger.getLogger(Sachbearbeiter.class.getName());
+//	private final HistoryService historyService;
 
 	/**
 	 * 
@@ -71,6 +73,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	 * @param ausgangskorbZurAssistenz
 	 * @param ausgangskorbFuerBearbeiteteVorgangsmappen
 	 * @param regelwerk
+	 * @param historyService 
 	 */
 	public Sachbearbeiter(
 			String nameDesSachbearbeiters,
@@ -79,13 +82,17 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			Zwischenablagekorb<Vorgangsmappe> ablagekorbFuerOffeneVorgaenge,
 			Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz,
 			Ausgangskorb<Vorgangsmappe> ausgangskorbFuerBearbeiteteVorgangsmappen,
-			Regelwerk regelwerk) {
+			Regelwerk regelwerk
+//			, 
+//			HistoryService historyService
+			) {
 
 		this.nameDesSachbearbeiters = nameDesSachbearbeiters;
 		this.ablagekorbFuerOffeneVorgaenge = ablagekorbFuerOffeneVorgaenge;
 		this.ausgangskorbZurAssistenz = ausgangskorbZurAssistenz;
 		this.ausgangkorb = ausgangskorbFuerBearbeiteteVorgangsmappen;
 		this.regelwerk = regelwerk;
+//		this.historyService = historyService;
 
 		final Eingangskorb<Ablagefaehig> internerEingangskorb = new StandardAblagekorb<Ablagefaehig>();
 
@@ -147,12 +154,16 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			Vorgangsmappe offenerVorgang = mappenIterator.next();
 			if (offenerVorgang.gibMappenkennung().equals(mappenKennung)) {
 				regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang.gibPruefliste(),
-						// FIXME History nicht in AlarmNachrichten loggen.
 						zeitSeitLetzterBearbeitung);
 				if (this.pruefungAbgeschlossen(offenerVorgang.gibPruefliste()
 						.gesamtErgebnis())) {
+					
+					// FIXME History nicht in AlarmNachrichten loggen. Soll in die Application!
+					//historyService.logTimeOutForTimeBased(regelwerk.gibRegelwerkskennung(), offenerVorgang); 
+
 					offenerVorgang.abgeschlossenDurchTimeOut();
 					this.ausgangkorb.ablegen(offenerVorgang);
+					
 					mappenIterator.remove();
 				} else {
 					Millisekunden zeitBisZumErneutenFragen = offenerVorgang
@@ -203,6 +214,8 @@ class Sachbearbeiter implements Arbeitsfaehig {
 					// Offenen Vorgang in den Ausgangskorb
 					this.ausgangkorb.ablegen(offenerVorgang);
 					
+					// FIXME Sollte auch in der History geloggt werden. Mit Desy (MC) klaeren.
+					
 					// entferne Mappe aus Ablagekorb fuer offenen Vorgaenge
 					iterator.remove();
 				}
@@ -212,7 +225,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 
 		if (alarmNachrichtHatAuswirkungAufOffeneVorgaenge) {
 			// neue Vorgangsmappe auch in den Ausgangskorb (zum
-			// loggen)??
+			// loggen)
 			// DummyPruefliste ersetzen
 			vorgangsmappe.setzePruefliste(regelwerk
 					.gibDummyPrueflisteNichtSenden());
@@ -235,6 +248,9 @@ class Sachbearbeiter implements Arbeitsfaehig {
 				.gesamtErgebnis())) {
 			vorgangsmappe.pruefungAbgeschlossenDurch(vorgangsmappe.gibMappenkennung());
 			this.ausgangkorb.ablegen(vorgangsmappe);
+			
+			//FIXME History Eintrag erstellen. Klaeren ob hier oder in dem Activator.
+			
 		} else {
 			this.ablagekorbFuerOffeneVorgaenge.ablegen(vorgangsmappe);
 			Millisekunden zeitBisZumErneutenFragen = vorgangsmappe

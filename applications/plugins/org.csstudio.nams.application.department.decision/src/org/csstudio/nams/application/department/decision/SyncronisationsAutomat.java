@@ -81,12 +81,8 @@ public class SyncronisationsAutomat {
 							.istSyncronisationsBestaetigung()) {
 						// System.out.println("richtige nachricht");
 						macheweiter = false;
-					} else {
-						// TODO systemnachricht die uns nicht interresiert?!?
+						historyService.logReceivedReplicationDoneMessage();
 					}
-				} else {
-					// TODO keine systemnachricht behandeln
-					// System.out.println("falsche nachricht");
 				}
 				// TODO Klären: Alle Arten von Nachrichten acknowledgen?
 				receiveMessage.acknowledge();
@@ -100,30 +96,7 @@ public class SyncronisationsAutomat {
 				canceled = true;
 			}
 		}
-		// System.out.println("ende");
 		isRunning = false;
-
-		// // MapMessage mapMsg = amsSenderSession.createMapMessage();
-		// MapMessage mapMsg = amsPublisherDist2.createMapMessage();
-		// mapMsg.setString(MSGPROP_COMMAND,
-		// MSGVALUE_TCMD_RELOAD_CFG_START);
-		// // amsPublisherDist.send(mapMsg);
-		// amsPublisherDist2.send(producerId, mapMsg);
-		// boolean bRet = FlagDAO.bUpdateFlag(conDb, FLG_RPL,
-		// FLAGVALUE_SYNCH_FMR_RPL,
-		// FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
-		// if (bRet) {
-		// iCmd = CMD_RPL_WAITFOR_DIST;
-		// } else {
-		// Log.log(this, Log.FATAL,
-		// "update not successful, could not update db flag to "
-		// + FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
-		// return FilterManagerStart.STAT_ERR_FLG_RPL; // force new
-		// // initialization,
-		// // no recover()
-		// // needed
-		// }
-
 	}
 
 	public static boolean isRunning() {

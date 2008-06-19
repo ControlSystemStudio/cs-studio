@@ -37,6 +37,7 @@ import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.wam.Arbeitsumgebung;
+import org.csstudio.nams.service.history.declaration.HistoryService;
 
 
 /**
@@ -63,8 +64,11 @@ public class AlarmEntscheidungsBuero {
 	 * 
 	 * TODO Logger-Service hinzufuegen/reinreichen um das Logging testbar zu
 	 * machen, da dieses wichtig fuer Nachweiszwecke ist.
+	 * @param historyService 
 	 */
-	public AlarmEntscheidungsBuero(Regelwerk[] regelwerke) {
+	public AlarmEntscheidungsBuero(Regelwerk[] regelwerke
+//			, HistoryService historyService
+			) {
 		alarmVorgangEingangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		_sachbearbeiterList = new LinkedList<Sachbearbeiter>();
@@ -82,7 +86,9 @@ public class AlarmEntscheidungsBuero {
 					terminAssistenzEingangskorb, ausgangskorb
 					/*
 					 * TODO ggf. in selben Ausgangskorb legen
-					 */, regelwerke[zaehler]);
+					 */, regelwerke[zaehler]
+//		                , historyService
+		                );
 
 			terminEingangskoerbeDerSachbearbeiter.put(sachbearbeiter.gibName(),
 					terminEingangskorb);

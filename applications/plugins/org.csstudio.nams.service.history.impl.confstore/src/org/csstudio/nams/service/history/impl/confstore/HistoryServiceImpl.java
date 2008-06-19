@@ -33,15 +33,15 @@ public class HistoryServiceImpl implements HistoryService {
 		return historyDTO;
 	}
 	
-	public void logTimeOutForTimeBased(String regelwerkID, String messageDesc, String regel)
+	public void logTimeOutForTimeBased(int regelwerkId, int messageDescId, int regelId)
  {
 		HistoryDTO historyDTO = new HistoryDTO();
 		historyDTO.setTTimeNew(new Date(System.currentTimeMillis()).getTime());
 		historyDTO.setCActionType("TimeBased");
 		historyDTO.setCDescription("Timeout for Msg "
-				+ messageDesc + " (FC="
-				+ regel + "/F="
-				+ regelwerkID + ")");
+				+ messageDescId + " (FC="
+				+ regelId + "/F="
+				+ regelwerkId + ")");
 		localStoreConfigurationService.saveHistoryDTO(historyDTO);
 	}
 

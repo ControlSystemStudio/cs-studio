@@ -36,7 +36,6 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
-import org.csstudio.nams.common.decision.Ausgangskorb;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
@@ -176,6 +175,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	private MessagingSession amsMessagingSessionForProducer;
 
+	private AlarmEntscheidungsBuero _alarmEntscheidungsBuero;
+
+	private StepByStepProcessor _ausgangskorbBearbeiter;
+
+	private Integer _applicationExitStatus = IApplication.EXIT_OK;
+
 	// private AbstractMultiConsumerMessageHandler
 	// messageHandlerToRecieveUntilApplicationQuits;
 
@@ -253,8 +258,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	public Object start(IApplicationContext context) {
 		_receiverThread = Thread.currentThread();
-		AlarmEntscheidungsBuero alarmEntscheidungsBuero = null;
-		StepByStepProcessor ausgangskorbBearbeiter = null;
+		_alarmEntscheidungsBuero = null;
+		_ausgangskorbBearbeiter = null;
 		_continueWorking = true;
 
 		logger
@@ -393,15 +398,17 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				List<Regelwerk> alleRegelwerke = regelwerkBuilderService
 						.gibAlleRegelwerke();
 
-				
-				logger.logDebugMessage(this, "alleRegelwerke size: "+alleRegelwerke.size());
+				logger.logDebugMessage(this, "alleRegelwerke size: "
+						+ alleRegelwerke.size());
 				for (Regelwerk regelwerk : alleRegelwerke) {
 					logger.logDebugMessage(this, regelwerk.toString());
 				}
-				
-				alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
+
+				_alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
 						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
-								.size()]));
+								.size()])
+				// , historyService
+				);
 				// }
 				// }
 			} catch (Throwable e) {
@@ -422,48 +429,18 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 			// TODO Thread zum auslesen des Ausgangskorbes...
 
-			final Eingangskorb<Vorgangsmappe> vorgangAusgangskorb = (Eingangskorb<Vorgangsmappe>) alarmEntscheidungsBuero
+			final Eingangskorb<Vorgangsmappe> vorgangAusgangskorb = (Eingangskorb<Vorgangsmappe>) _alarmEntscheidungsBuero
 					.gibAlarmVorgangAusgangskorb();
-			final Eingangskorb<Vorgangsmappe> vorgangEingangskorb = alarmEntscheidungsBuero
+			final Eingangskorb<Vorgangsmappe> vorgangEingangskorb = _alarmEntscheidungsBuero
 					.gibAlarmVorgangEingangskorb();
 
 			// Ausgangskoerbe nebenläufig abfragen
-			ausgangskorbBearbeiter = new StepByStepProcessor() {
-				@Override
-				protected void doRunOneSingleStep() throws Throwable {
-					
-					Vorgangsmappe vorgangsmappe = vorgangAusgangskorb.entnehmeAeltestenEingang();
-					logger.logDebugMessage(this, "gesamtErgebnis: "+vorgangsmappe.gibPruefliste().gesamtErgebnis());
-					
-					if (vorgangsmappe.gibPruefliste().gesamtErgebnis() == WeiteresVersandVorgehen.VERSENDEN) {
-						// Nachricht nicht anreichern. Wird im JMSProducer gemacht
-						// Versenden
-						amsAusgangsProducer.sendeVorgangsmappe(vorgangsmappe);
-					}
-					
-					// Vorgangsmappe vorgangZumSenden = vorgangAusgangskorb.???
-					// TODO Sende Vorgangsmappe.... (Ausgangskorb erweitern eine
-					// entnehme-Operation zu haben).
-					// TODO Besser: Decission Office erhält einen "Ausgangskorb"
-					// der in Wirklichkeit ein StandardAblagekorb ist
-					// der selber auch ein Eingangskorb ist und so kann der
-					// DokumentVerbraucher korrekt darauf arbeiten...
-					// new DokumentVerbraucherArbeiter<Vorgangsmappe>(new
-					// DokumentenBearbeiter<Vorgangsmappe>() {
-					//
-					// public void bearbeiteVorgang(
-					// Vorgangsmappe entnehmeAeltestenEingang)
-					// throws InterruptedException {
-					// // TODO mache was mit
-					//					
-					// }
-					//				
-					// },
-					// vorgangAusgangskorb);
-				}
-			};
-//			ausgangskorbBearbeiter.runAsynchronous();
-			executionService.executeAsynchronsly(ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER, ausgangskorbBearbeiter);
+			_ausgangskorbBearbeiter = new AusgangsKorbBearbeiter(
+					vorgangAusgangskorb);
+
+			executionService.executeAsynchronsly(
+					ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER,
+					_ausgangskorbBearbeiter);
 
 			// start receiving Messages, runs while _continueWorking is true.
 			receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
@@ -473,15 +450,15 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						this,
 						"Decision department has stopped message processing and continue shutting down...");
 
-		if (alarmEntscheidungsBuero != null) {
-			alarmEntscheidungsBuero
+		if (_alarmEntscheidungsBuero != null) {
+			_alarmEntscheidungsBuero
 					.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 		}
 
 		// Warte auf Thread für Ausgangskorb-Bearbeitung
-		if (ausgangskorbBearbeiter != null
-				&& ausgangskorbBearbeiter.isCurrentlyRunning()) {
-			ausgangskorbBearbeiter.stopWorking();
+		if (_ausgangskorbBearbeiter != null
+				&& _ausgangskorbBearbeiter.isCurrentlyRunning()) {
+			_ausgangskorbBearbeiter.stopWorking();
 		}
 
 		// Alle Verbindungen schließen
@@ -512,7 +489,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
-		return IApplication.EXIT_OK;
+		return _applicationExitStatus;
 	}
 
 	/**
@@ -587,8 +564,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						new ThreadGroup(
 								ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER
 										.name()));
-		executionServiceToBeInitialize
-		.registerGroup(
+		executionServiceToBeInitialize.registerGroup(
 				ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER,
 				new ThreadGroup(
 						ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER
@@ -665,26 +641,46 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						if (message.alsSystemachricht()
 								.istSyncronisationsAufforderung()) {
 							historyService.logReceivedStartReplicationMessage();
+							_applicationExitStatus = IApplication.EXIT_RESTART;
 							// TODO wir müssen syncronisieren
 							// 1. altes office runterfahren und noch offene
 							// vorgaenge schicken
+							// _alarmEntscheidungsBuero.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 							// 2. sychronizieren
+							// versucheZuSynchronisieren(this, logger,
+							// amsAusgangsProducer, amsCommandConsumer,
+							// localStoreConfigurationService);
 							// 3. regel neu laden
 							// 4. neues office anlegen
+							// TODO wir sollten dem ausgangskorbBearbeiter ein
+							// wenig Zeit lassen.
+							// _ausgangskorbBearbeiter.stopWorking();
 							// 5. neues office straten
-						} else if (message.alsSystemachricht().istSyncronisationsBestaetigung()){
-							historyService.logReceivedReplicationDoneMessage();
-							//TODO was muss bei der Bestätigung getan werden?
+							// List<Regelwerk> alleRegelwerke =
+							// regelwerkBuilderService.gibAlleRegelwerke();
+							// _alarmEntscheidungsBuero = new
+							// AlarmEntscheidungsBuero(alleRegelwerke.toArray(new
+							// Regelwerk[alleRegelwerke.size()]));
+							// 6. Ablagekoerbe neu zuordnen.
+
 						}
+						// else if (message.alsSystemachricht()
+						// .istSyncronisationsBestaetigung()) {
+						// historyService.logReceivedReplicationDoneMessage();
+						// // TODO was muss bei der Bestätigung getan werden?
+						// }
 					}
-					// // TODO andere Nachrichten Typen behandeln
-					// // steuer Nachrichten wie z.B.: "Regelwerke neu laden"
-					// // oder "einzelne Regelwerke kurzfristig deaktivieren"
+					// TODO andere Nachrichten Typen behandeln
+					// steuer Nachrichten wie z.B.: "Regelwerke neu laden"
+					// oder "einzelne Regelwerke kurzfristig deaktivieren"
 					// oder
-					// // "shutdown"
+					// "shutdown"
 				} finally {
 					try {
 						message.acknowledge();
+						if (_applicationExitStatus == IApplication.EXIT_RESTART) {
+							stop();
+						}
 					} catch (MessagingException e) {
 						logger.logWarningMessage(this,
 								"unable to ackknowlwedge message: "
@@ -749,4 +745,54 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		logger.logInfoMessage(this, "Interrupting working thread...");
 		_receiverThread.interrupt();
 	}
+
+	class AusgangsKorbBearbeiter extends StepByStepProcessor {
+
+		private final Eingangskorb<Vorgangsmappe> vorgangskorb;
+
+		public AusgangsKorbBearbeiter(Eingangskorb<Vorgangsmappe> vorgangskorb) {
+			this.vorgangskorb = vorgangskorb;
+		}
+
+		@Override
+		protected void doRunOneSingleStep() throws Throwable {
+
+			try {
+				Vorgangsmappe vorgangsmappe = vorgangskorb
+						.entnehmeAeltestenEingang();
+				logger.logDebugMessage(this, "gesamtErgebnis: "
+						+ vorgangsmappe.gibPruefliste().gesamtErgebnis());
+
+				if (vorgangsmappe.gibPruefliste().gesamtErgebnis() == WeiteresVersandVorgehen.VERSENDEN) {
+					// Nachricht nicht anreichern. Wird im JMSProducer
+					// gemacht
+					// Versenden
+					amsAusgangsProducer.sendeVorgangsmappe(vorgangsmappe);
+				}
+
+			} catch (InterruptedException e) {
+				// wird zum stoppen benötigt.
+				// hier muss nichts unternommen werden
+			}
+			// Vorgangsmappe vorgangZumSenden = vorgangAusgangskorb.???
+			// TODO Sende Vorgangsmappe.... (Ausgangskorb erweitern eine
+			// entnehme-Operation zu haben).
+			// TODO Besser: Decission Office erhält einen "Ausgangskorb"
+			// der in Wirklichkeit ein StandardAblagekorb ist
+			// der selber auch ein Eingangskorb ist und so kann der
+			// DokumentVerbraucher korrekt darauf arbeiten...
+			// new DokumentVerbraucherArbeiter<Vorgangsmappe>(new
+			// DokumentenBearbeiter<Vorgangsmappe>() {
+			//
+			// public void bearbeiteVorgang(
+			// Vorgangsmappe entnehmeAeltestenEingang)
+			// throws InterruptedException {
+			// // TODO mache was mit
+			//					
+			// }
+			//				
+			// },
+			// vorgangAusgangskorb);
+		}
+	};
 }
