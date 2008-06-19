@@ -9,6 +9,7 @@ import gov.aps.jca.event.ContextVirtualCircuitExceptionEvent;
 /** Handler for JCA Context errors and messages; places them in log.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ContextErrorHandler implements ContextExceptionListener,
                                         ContextMessageListener
 {
@@ -22,7 +23,7 @@ public class ContextErrorHandler implements ContextExceptionListener,
     /** @see ContextExceptionListener */
     public void contextVirtualCircuitException(ContextVirtualCircuitExceptionEvent ev)
     {
-      // noop
+      // nop
     }
 
     /** @see ContextMessageListener */

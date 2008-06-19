@@ -279,7 +279,7 @@ public class DBR_Helper
     final private static String decodeStatus(final Status status)
     {
         if (status.getValue() == 0)
-            return "OK";
+            return "OK"; //$NON-NLS-1$
         return status.getName();
     }
 }

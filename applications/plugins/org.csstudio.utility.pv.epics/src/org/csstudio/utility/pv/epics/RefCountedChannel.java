@@ -40,7 +40,7 @@ class RefCountedChannel
         }
         catch (Exception ex)
         {
-        	Activator.getLogger().error("Channel.destroy failed", ex);
+        	Activator.getLogger().warn("Channel.destroy failed", ex); //$NON-NLS-1$
         }
         channel = null;
     }
