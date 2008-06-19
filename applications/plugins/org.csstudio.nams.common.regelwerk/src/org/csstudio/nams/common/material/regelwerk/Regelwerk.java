@@ -3,7 +3,6 @@ package org.csstudio.nams.common.material.regelwerk;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.service.history.declaration.HistoryService;
 
 
 public interface Regelwerk {
@@ -27,7 +26,7 @@ public interface Regelwerk {
 	void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(AlarmNachricht alarmNachricht, Pruefliste pruefliste);
 	
 	
-	void injectHistoryService(HistoryService historyService);
+//	void injectHistoryService(HistoryService historyService);
 
 	public Pruefliste gibDummyPrueflisteNichtSenden();
 	

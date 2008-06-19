@@ -17,7 +17,7 @@ import org.csstudio.nams.service.logging.declaration.Logger;
  * @author Goesta Steen
  * 
  */
-public class StringRegel extends AbstractVersandRegel implements VersandRegel {
+public class StringRegel implements VersandRegel {
 
 	private final StringRegelOperator operator;
 	private final String compareString;

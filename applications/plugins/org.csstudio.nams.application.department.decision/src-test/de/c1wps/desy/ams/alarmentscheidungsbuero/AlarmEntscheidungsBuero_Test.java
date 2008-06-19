@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.material.regelwerk.AbstractVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
@@ -253,7 +252,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 		Regelwerk[] regelwerke = new Regelwerk[ANZAHL_REGELWERKE];
 		for (int i = 0; i < ANZAHL_REGELWERKE; i++) {
 			regelwerke[i] = new StandardRegelwerk(Regelwerkskennung.valueOf(),
-					new AbstractVersandRegel() {
+					new VersandRegel() {
 						// Impl hier egal!
 						public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 								AlarmNachricht nachricht,
@@ -296,7 +295,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 	public void testIntegration() throws InterruptedException,
 			UnknownHostException {
-		VersandRegel regel = new AbstractVersandRegel() {
+		VersandRegel regel = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
@@ -319,7 +318,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 			}
 
 		};
-		VersandRegel regel2 = new AbstractVersandRegel() {
+		VersandRegel regel2 = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 
@@ -341,7 +340,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 			}
 
 		};
-		VersandRegel regel3 = new AbstractVersandRegel() {
+		VersandRegel regel3 = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 

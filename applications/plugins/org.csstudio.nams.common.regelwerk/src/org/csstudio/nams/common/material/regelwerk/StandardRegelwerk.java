@@ -27,7 +27,6 @@ package org.csstudio.nams.common.material.regelwerk;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.service.history.declaration.HistoryService;
 
 public class StandardRegelwerk implements Regelwerk {
 	private final Regelwerkskennung regelwerkskennung;
@@ -106,9 +105,9 @@ public class StandardRegelwerk implements Regelwerk {
 		return regelwerkskennung;
 	}
 
-	public void injectHistoryService(HistoryService historyService) {
-		hauptRegel.setHistoryService(historyService);
-	}
+//	public void injectHistoryService(HistoryService historyService) {
+//		hauptRegel.setHistoryService(historyService);
+//	}
 
 	@Override
 	public String toString() {

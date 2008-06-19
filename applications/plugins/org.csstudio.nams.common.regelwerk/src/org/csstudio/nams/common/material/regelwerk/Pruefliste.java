@@ -47,24 +47,18 @@ public class Pruefliste implements Cloneable {
 	@Override
 	public Pruefliste clone() {
 		// TODO sollte so nich mehr klappen
-		return new Pruefliste(regelwerkskennung, hauptRegel);
+		Pruefliste pruefliste = new Pruefliste(regelwerkskennung, hauptRegel);
+		return pruefliste;
 	}
 
-	@Deprecated
-	@ForTesting
+//	@Deprecated TODO warum?
+//	@ForTesting
 	public Pruefliste(Regelwerkskennung regelwerkskennung,
 			VersandRegel hauptRegel) {
 		this.hauptRegel = hauptRegel;
 		Contract.require(regelwerkskennung != null, "regelwerkskennung!=null");
 		this.regelwerkskennung = regelwerkskennung;
 	}
-
-//	@Deprecated
-	// Sichtbarkeit sollte nicht "public" sein, aktuell (01.04.08) nur für
-	// Sachberarbeiter_Test nötig
-//	Pruefliste(Regelwerkskennung regelwerkskennung) {
-//		this(regelwerkskennung, null);
-//	}
 
 	public void setzeErgebnisFuerRegelFallsVeraendert(VersandRegel regel, RegelErgebnis ergebnis) {
 		RegelErgebnis regelErgebnis = ergebnisse.put(regel, ergebnis);

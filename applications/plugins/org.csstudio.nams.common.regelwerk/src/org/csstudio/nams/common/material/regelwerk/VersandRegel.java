@@ -26,7 +26,6 @@ package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
-import org.csstudio.nams.service.history.declaration.HistoryService;
 
 public interface VersandRegel {
 	/**
@@ -71,7 +70,7 @@ public interface VersandRegel {
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis);
 
-	public void setHistoryService(HistoryService historyService);
+//	public void setHistoryService(HistoryService historyService);
 
 	// public Millisekunden gibverbleibendeWartezeit(Millisekunden
 	// bereitsVerstricheneWarteZeit);

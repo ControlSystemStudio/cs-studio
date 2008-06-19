@@ -33,7 +33,6 @@ import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel;
-import org.csstudio.nams.common.material.regelwerk.AbstractVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
@@ -140,7 +139,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new AbstractVersandRegel() {
+		VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -160,7 +159,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return null;
 			}
 		};
-		VersandRegel childRegel2 = new AbstractVersandRegel() {
+		VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -212,7 +211,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new AbstractVersandRegel() {
+		VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -232,7 +231,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return null;
 			}
 		};
-		VersandRegel childRegel2 = new AbstractVersandRegel() {
+		VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -285,7 +284,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new AbstractVersandRegel() {
+		VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -305,7 +304,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return null;
 			}
 		};
-		VersandRegel childRegel2 = new AbstractVersandRegel() {
+		VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -369,7 +368,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new AbstractVersandRegel() {
+		VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -389,7 +388,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return  Millisekunden.valueOf(100);
 			}
 		};
-		VersandRegel childRegel2 = new AbstractVersandRegel() {
+		VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {

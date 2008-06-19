@@ -17,7 +17,7 @@ import org.csstudio.platform.simpledal.IProcessVariableValueListener;
  * @author Goesta Steen, TR, MW
  * 
  */
-public class ProcessVariableRegel extends AbstractVersandRegel implements VersandRegel {
+public class ProcessVariableRegel implements VersandRegel {
 
 	/**
 	 * Listener to be informed on PV changes.

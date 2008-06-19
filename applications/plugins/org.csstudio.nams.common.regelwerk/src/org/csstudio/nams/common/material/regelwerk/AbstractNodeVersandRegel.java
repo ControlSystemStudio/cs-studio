@@ -6,17 +6,16 @@ import java.util.Set;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.testhelper.ForTesting;
-import org.csstudio.nams.service.history.declaration.HistoryService;
 
-public abstract class AbstractNodeVersandRegel extends AbstractVersandRegel implements VersandRegel {
+public abstract class AbstractNodeVersandRegel implements VersandRegel {
 
-	public void setHistoryService(HistoryService historyService) {
-		super.setHistoryService(historyService);
-		for (VersandRegel regel : children) {
-			regel.setHistoryService(historyService);
-		}
-		
-	}
+//	public void setHistoryService(HistoryService historyService) {
+//		super.setHistoryService(historyService);
+//		for (VersandRegel regel : children) {
+//			regel.setHistoryService(historyService);
+//		}
+//		
+//	}
 
 	public AbstractNodeVersandRegel(VersandRegel[] versandRegeln) {
 		for (VersandRegel versandRegel : versandRegeln) {

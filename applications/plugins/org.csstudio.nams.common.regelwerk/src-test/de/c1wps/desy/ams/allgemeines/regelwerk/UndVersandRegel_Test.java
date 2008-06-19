@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.material.regelwerk.AbstractVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
@@ -56,7 +55,7 @@ public class UndVersandRegel_Test extends TestCase {
 	@Test
 	public void testAuswerten() {
 		
-		VersandRegel versandRegel = new AbstractVersandRegel() {
+		VersandRegel versandRegel = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 			}
@@ -71,7 +70,7 @@ public class UndVersandRegel_Test extends TestCase {
 			}
 		};
 
-		VersandRegel versandRegel2 = new AbstractVersandRegel() {
+		VersandRegel versandRegel2 = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 			}

@@ -4,8 +4,7 @@ import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 
-public abstract class AbstractTimeBasedVersandRegel extends
-		AbstractVersandRegel {
+public abstract class AbstractTimeBasedVersandRegel implements VersandRegel {
 	
 	public AbstractTimeBasedVersandRegel(VersandRegel ausloesungsregel,
 			VersandRegel bestaetigungsregel, Millisekunden timeOut){
@@ -35,8 +34,8 @@ public abstract class AbstractTimeBasedVersandRegel extends
 		}
 	}
 	
-	protected void mayWriteToHistory(Pruefliste pruefliste, AlarmNachricht nachricht) {
-		getHistoryService().logTimeOutForTimeBased(
-				pruefliste.gibRegelwerkskennung().toString(), nachricht.toString(), toString());
-	}
+//	protected void mayWriteToHistory(Pruefliste pruefliste, AlarmNachricht nachricht) {
+//		getHistoryService().logTimeOutForTimeBased(
+//				pruefliste.gibRegelwerkskennung().toString(), nachricht.toString(), toString());
+//	}
 }

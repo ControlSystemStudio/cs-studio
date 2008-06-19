@@ -28,7 +28,6 @@ package de.c1wps.desy.ams.allgemeines.regelwerk;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.material.regelwerk.AbstractVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.material.regelwerk.TimeBasedAlarmBeiBestaetigungRegel;
@@ -54,7 +53,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		_ausloesungsRegel = new AbstractVersandRegel() {
+		_ausloesungsRegel = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 				fail("Shouldn't be called");
@@ -73,7 +72,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 				return Millisekunden.valueOf(0);
 			}
 		};
-		_bestaetigungsRegel = new AbstractVersandRegel() {
+		_bestaetigungsRegel = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 				fail("Shouldn't be called");
@@ -116,7 +115,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
 		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
 		
-		VersandRegel bestaetigungsRegel = new AbstractVersandRegel() {
+		VersandRegel bestaetigungsRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -153,7 +152,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
 		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
 		
-		VersandRegel regel = new AbstractVersandRegel() {
+		VersandRegel regel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -191,7 +190,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
 		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
 		
-		VersandRegel regel = new AbstractVersandRegel() {
+		VersandRegel regel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -231,7 +230,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
 		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
 		
-		VersandRegel regel = new AbstractVersandRegel() {
+		VersandRegel regel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -323,7 +322,7 @@ public class TimeBasedRegelAlarmBeiBestaetigung_Test extends AbstractObject_Test
 		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
 		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
 		
-		VersandRegel ausloesungsRegel = new AbstractVersandRegel() {
+		VersandRegel ausloesungsRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {

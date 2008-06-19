@@ -51,9 +51,9 @@ public class TimeBasedAlarmBeiBestaetigungRegel extends AbstractTimeBasedVersand
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.NICHT_ZUTREFFEND);
 			}
-			if (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
-				mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
-			}
+//			if (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
+//				mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
+//			}
 		}
 		return null;
 	}

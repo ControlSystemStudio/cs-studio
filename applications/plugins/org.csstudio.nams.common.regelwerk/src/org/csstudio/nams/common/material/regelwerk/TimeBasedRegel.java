@@ -67,9 +67,9 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.ZUTREFFEND);
 			}
-			if (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
-				mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
-			}
+//			if (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
+//				mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
+//			}
 		}
 		return null;
 	}
