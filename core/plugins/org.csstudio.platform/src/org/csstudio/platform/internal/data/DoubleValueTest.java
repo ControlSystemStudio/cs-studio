@@ -30,6 +30,10 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.junit.Test;
 
+/** Unit test of DoubleValue
+ *  @author Kay Kasemir
+ */
+@SuppressWarnings("nls")
 public class DoubleValueTest
 {
     @Test
