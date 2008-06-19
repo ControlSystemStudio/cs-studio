@@ -60,7 +60,7 @@ public class PVContext
         {
             if (jca == null)
             {
-                Activator.getLogger().info("Initializing JCA "
+                Activator.getLogger().debug("Initializing JCA "
                                 + (use_pure_java ? "(pure Java)" : "(JNI)"));
                 jca = JCALibrary.getInstance();
                 final String type = use_pure_java ?
@@ -121,7 +121,7 @@ public class PVContext
         }
         catch (Exception ex)
         {
-            Activator.getLogger().error("exitJCA", ex);
+            Activator.getLogger().warn("exitJCA", ex);
         }
     }
 
@@ -171,7 +171,7 @@ public class PVContext
         }
         catch (Exception ex)
         {
-            Activator.getLogger().error("Remove connection listener", ex);
+            Activator.getLogger().warn("Remove connection listener", ex);
         }
         if (channel_ref.decRefs() <= 0)
         {
