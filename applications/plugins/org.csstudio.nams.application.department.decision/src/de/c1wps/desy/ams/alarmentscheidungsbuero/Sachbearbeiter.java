@@ -26,6 +26,14 @@ package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
 import java.util.Iterator;
 
+import org.csstudio.nams.common.decision.Ablagefaehig;
+import org.csstudio.nams.common.decision.Arbeitsfaehig;
+import org.csstudio.nams.common.decision.Ausgangskorb;
+import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.StandardAblagekorb;
+import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
+import org.csstudio.nams.common.decision.Zwischenablagekorb;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
@@ -33,14 +41,6 @@ import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.wam.Automat;
 
-import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
-import de.c1wps.desy.ams.allgemeines.Arbeitsfaehig;
-import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
-import de.c1wps.desy.ams.allgemeines.Zwischenablagekorb;
 
 /**
  * Sachbearbeiter marks in cooperation with the TerminAssistenz Messages as to be sent.

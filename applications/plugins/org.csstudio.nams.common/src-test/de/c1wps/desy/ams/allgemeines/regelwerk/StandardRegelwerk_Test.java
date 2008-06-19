@@ -1,5 +1,6 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
@@ -7,6 +8,8 @@ import org.csstudio.nams.common.material.regelwerk.DummyPruefliste;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.material.regelwerk.StringRegel;
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Ignore;
@@ -58,7 +61,7 @@ public class StandardRegelwerk_Test extends
 
 	@Override
 	protected StandardRegelwerk getNewInstanceOfClassUnderTest() {
-		return new StandardRegelwerk(Regelwerkskennung.valueOf());
+		return new StandardRegelwerk(Regelwerkskennung.valueOf(), new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL,MessageKeyEnum.EVENTTIME,"bubu"));
 	}
 
 	@Override

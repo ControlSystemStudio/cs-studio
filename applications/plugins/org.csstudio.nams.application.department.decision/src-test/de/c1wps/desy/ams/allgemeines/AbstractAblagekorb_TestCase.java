@@ -1,5 +1,7 @@
 package de.c1wps.desy.ams.allgemeines;
 
+import org.csstudio.nams.common.decision.Ablagefaehig;
+import org.csstudio.nams.common.decision.Ablagekorb;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;

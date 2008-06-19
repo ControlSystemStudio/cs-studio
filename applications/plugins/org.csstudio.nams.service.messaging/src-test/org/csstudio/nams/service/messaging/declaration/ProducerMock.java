@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.messaging.declaration;
 
+import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.SystemNachricht;
 
 public class ProducerMock implements Producer {
@@ -17,6 +18,11 @@ public class ProducerMock implements Producer {
 	public void sendeSystemnachricht(SystemNachricht vorgangsmappe) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

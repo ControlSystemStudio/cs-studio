@@ -6,13 +6,4 @@ Bundle-Version: 1.0.0
 Require-Bundle: org.csstudio.nams.common,
  org.csstudio.platform,
  org.csstudio.nams.service.logging,
- org.csstudio.platform.libs.dal,
- org.csstudio.nams.common.messages
-Export-Package: de.c1wps.desy.ams.allgemeines.regelwerk,
- org.csstudio.nams.common.material.regelwerk;
-  uses:="org.csstudio.nams.service.logging.declaration,
-   org.csstudio.platform.model.pvs,
-   org.csstudio.nams.common.fachwert,
-   org.csstudio.nams.common.material,
-   org.csstudio.platform.simpledal,
-   org.csstudio.ams.configurationStoreService.util"
+ org.csstudio.platform.libs.dal

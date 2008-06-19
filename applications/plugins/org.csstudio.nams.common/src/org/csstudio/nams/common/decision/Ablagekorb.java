@@ -22,8 +22,18 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+package org.csstudio.nams.common.decision;
 
-/**
- * Dieses Sub-System repräsentiert allgemeine Hilfsmittel.
- */
-package de.c1wps.desy.ams.allgemeines;
+import org.csstudio.nams.common.wam.Behaelter;
+
+@Behaelter
+public interface Ablagekorb<T extends Ablagefaehig> {
+
+	/**
+	 * Legt eine neues Dokument in den Korb.
+	 * 
+	 * @param dokument
+	 *            Das neue Dokuement,
+	 */
+	void ablegen(T dokument) throws InterruptedException;
+}

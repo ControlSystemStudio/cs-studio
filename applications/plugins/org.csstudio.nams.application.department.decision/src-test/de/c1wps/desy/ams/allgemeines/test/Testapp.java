@@ -15,6 +15,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.StandardAblagekorb;
+import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
@@ -31,10 +35,6 @@ import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentVerbraucherArbeiter;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentenBearbeiter;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 
 public class Testapp implements Runnable, ActionListener {
 

@@ -31,13 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
+import org.csstudio.nams.common.decision.Ausgangskorb;
+import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.StandardAblagekorb;
+import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.wam.Arbeitsumgebung;
 
-import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 
 /**
  * Repraesentiert die Abteilung Alarm-Entscheidungs-Buero mit Ihrer gesammten

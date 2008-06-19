@@ -24,8 +24,8 @@
  */
 package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
-import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
+import org.csstudio.nams.common.decision.Ablagefaehig;
+import org.csstudio.nams.common.decision.Eingangskorb;
 
 /**
  * Ein Arbeits-Thread, der sequentiell Dokumente aus einem Eingangskorb einen

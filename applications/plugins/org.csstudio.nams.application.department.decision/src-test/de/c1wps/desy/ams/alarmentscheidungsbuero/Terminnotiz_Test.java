@@ -4,11 +4,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 
+import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractValue_TestCase;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 
 public class Terminnotiz_Test extends AbstractValue_TestCase<Terminnotiz> {
 

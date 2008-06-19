@@ -94,8 +94,7 @@ class JMSConsumer implements Consumer {
 					while (mapNames.hasMoreElements()) {
 						String currentElement = mapNames.nextElement()
 								.toString();
-						MessageKeyEnum messageKeyEnum = MessageKeyConverter
-								.getEnumKeyFor(currentElement);
+						MessageKeyEnum messageKeyEnum = MessageKeyEnum.getEnumFor(currentElement);
 						if (messageKeyEnum != null) {
 							String value = mapMessage.getString(currentElement);
 							if (value == null) {
@@ -114,7 +113,7 @@ class JMSConsumer implements Consumer {
 						}
 					};
 
-					if (MessageKeyConverter.istSynchronisationAuforderung(map)) {
+					if (MessageKeyUtil.istSynchronisationAuforderung(map)) {
 						result = new DefaultNAMSMessage(
 								new SyncronisationsAufforderungsSystemNachchricht(),
 								ackHandler) {
@@ -123,7 +122,7 @@ class JMSConsumer implements Consumer {
 								return "SyncronisationsAufforderungsSystemNachchricht: JMS-Message: " + mapMessage.toString();
 							}
 						};
-					} else if (MessageKeyConverter
+					} else if (MessageKeyUtil
 							.istSynchronisationBestaetigung(map)) {
 						result = new DefaultNAMSMessage(
 								new SyncronisationsBestaetigungSystemNachricht(),

@@ -24,11 +24,11 @@
  */
 package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
+import org.csstudio.nams.common.decision.Arbeitsfaehig;
+import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.wam.Automat;
 
-import de.c1wps.desy.ams.allgemeines.Arbeitsfaehig;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 
 /**
  * Der Abteilungsleiter ist verantwortlich für die Bearbeitung von Nachrichten.

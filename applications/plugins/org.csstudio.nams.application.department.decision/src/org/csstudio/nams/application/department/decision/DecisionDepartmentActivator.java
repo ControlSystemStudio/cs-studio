@@ -36,6 +36,10 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
+import org.csstudio.nams.common.decision.Ausgangskorb;
+import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.service.ExecutionService;
@@ -60,10 +64,6 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
 
 import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
-import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 
 /**
  * <p>
@@ -435,11 +435,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					Vorgangsmappe vorgangsmappe = vorgangAusgangskorb.entnehmeAeltestenEingang();
 					logger.logDebugMessage(this, "gesamtErgebnis: "+vorgangsmappe.gibPruefliste().gesamtErgebnis());
 					
-					
 					if (vorgangsmappe.gibPruefliste().gesamtErgebnis() == WeiteresVersandVorgehen.VERSENDEN) {
-						// Nachricht anreichern
+						// Nachricht nicht anreichern. Wird im JMSProducer gemacht
 						// Versenden
-//						amsAusgangsProducer.
+						amsAusgangsProducer.sendeVorgangsmappe(vorgangsmappe);
 					}
 					
 					// Vorgangsmappe vorgangZumSenden = vorgangAusgangskorb.???

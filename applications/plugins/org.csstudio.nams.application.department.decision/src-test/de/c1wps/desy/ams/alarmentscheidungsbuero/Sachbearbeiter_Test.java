@@ -6,6 +6,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.csstudio.nams.common.decision.Ablagefaehig;
+import org.csstudio.nams.common.decision.Ausgangskorb;
+import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.StandardAblagekorb;
+import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
+import org.csstudio.nams.common.decision.Zwischenablagekorb;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
@@ -21,13 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;
-import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
-import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
-import de.c1wps.desy.ams.allgemeines.Zwischenablagekorb;
 
 public class Sachbearbeiter_Test extends
 		AbstractObject_TestCase<Sachbearbeiter> {

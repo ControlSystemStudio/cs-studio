@@ -27,16 +27,16 @@ package de.c1wps.desy.ams.alarmentscheidungsbuero;
 import java.net.InetAddress;
 import java.util.Date;
 
+import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.StandardAblagekorb;
+import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;
-import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 
 public class Abteilungsleiter_Test extends
 		AbstractObject_TestCase<Abteilungsleiter> {

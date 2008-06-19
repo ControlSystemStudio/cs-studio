@@ -1,10 +1,10 @@
 package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
 import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.common.decision.Ablagefaehig;
+import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 
-import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
-import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 
 public final class Terminnotiz implements Ablagefaehig {
 

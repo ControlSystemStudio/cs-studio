@@ -22,18 +22,10 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.allgemeines;
+package org.csstudio.nams.common.decision;
 
 import org.csstudio.nams.common.wam.Behaelter;
 
 @Behaelter
-public interface Ablagekorb<T extends Ablagefaehig> {
-
-	/**
-	 * Legt eine neues Dokument in den Korb.
-	 * 
-	 * @param dokument
-	 *            Das neue Dokuement,
-	 */
-	void ablegen(T dokument) throws InterruptedException;
+public interface Ausgangskorb<T extends Ablagefaehig> extends Ablagekorb<T> {
 }

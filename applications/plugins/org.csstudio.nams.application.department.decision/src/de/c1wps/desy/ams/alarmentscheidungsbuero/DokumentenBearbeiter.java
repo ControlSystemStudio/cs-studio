@@ -24,8 +24,8 @@
  */
 package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
-import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
-import de.c1wps.desy.ams.allgemeines.Ablagekorb;
+import org.csstudio.nams.common.decision.Ablagefaehig;
+import org.csstudio.nams.common.decision.Ablagekorb;
 
 /**
  * Ein Dokumentenbearbeiter bearbeitet Dokumente die in der Regel zuvor in einem

@@ -6,6 +6,7 @@ import java.util.Queue;
 
 import junit.framework.TestCase;
 
+import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
@@ -64,6 +65,10 @@ public class SyncronisationsAutomat_Test extends TestCase {
 					fail();
 				}
 				zuletzGesendeteNachricht = systemNachricht;
+			}
+
+			public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) {
+				fail("should not be called");
 			}
 
 		};

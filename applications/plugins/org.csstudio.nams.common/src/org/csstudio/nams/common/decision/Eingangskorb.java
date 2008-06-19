@@ -22,10 +22,23 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.allgemeines;
+package org.csstudio.nams.common.decision;
 
 import org.csstudio.nams.common.wam.Behaelter;
 
 @Behaelter
-public interface Ausgangskorb<T extends Ablagefaehig> extends Ablagekorb<T> {
+public interface Eingangskorb<T extends Ablagefaehig> extends Ablagekorb<T> {
+	/**
+	 * Entnimmt den ältesten Eingang aus diesem Korb. Achtung:
+	 * <ol>
+	 * <li>Der entnommene Eingang ist anschließend nicht mehr enthalten!</li>
+	 * <ol>
+	 * <li>Dieses Operation blockiert bis ein dokument verfügbar ist!</li>
+	 * </ol>
+	 * 
+	 * @throws InterruptedException
+	 *             Falls der Thread beim warten auf ein Element unterbrochen
+	 *             wird.
+	 */
+	T entnehmeAeltestenEingang() throws InterruptedException;
 }

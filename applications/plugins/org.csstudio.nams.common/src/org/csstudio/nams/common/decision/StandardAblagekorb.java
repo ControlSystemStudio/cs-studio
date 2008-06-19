@@ -22,11 +22,54 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.allgemeines;
+package org.csstudio.nams.common.decision;
+
+import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.csstudio.nams.common.wam.Material;
 
 @Material
-public interface Ablagefaehig {
+public class StandardAblagekorb<T extends Ablagefaehig> implements
+		Eingangskorb<T>, Ausgangskorb<T>, Zwischenablagekorb<T> {
+	private LinkedBlockingQueue<T> inhalt;
 
+	public StandardAblagekorb() {
+		inhalt = new LinkedBlockingQueue<T>();
+	}
+
+	/**
+	 * Legt eine neues Dokument in den Korb.
+	 * 
+	 * @param dokument
+	 *            Das neue Dokuement,
+	 * @throws InterruptedException
+	 */
+	public void ablegen(T dokument) throws InterruptedException {
+		inhalt.put(dokument);
+	}
+
+	/**
+	 * Entnimmt den ältesten Eingang aus diesem Korb. Achtung:
+	 * <ol>
+	 * <li>Der entnommene Eingang ist anschließend nicht mehr enthalten!</li>
+	 * <ol>
+	 * <li>Dieses Operation blockiert bis ein dokument verfügbar ist!</li>
+	 * </ol>
+	 * 
+	 * @throws InterruptedException
+	 *             Falls der Thread beim warten auf ein Element unterbrochen
+	 *             wird.
+	 */
+	public T entnehmeAeltestenEingang() throws InterruptedException {
+		return inhalt.take();
+	}
+
+	public Iterator<T> iterator() {
+		return inhalt.iterator();
+	}
+
+	public boolean istEnthalten(T element) {
+		return inhalt.contains(element);
+	}
 }

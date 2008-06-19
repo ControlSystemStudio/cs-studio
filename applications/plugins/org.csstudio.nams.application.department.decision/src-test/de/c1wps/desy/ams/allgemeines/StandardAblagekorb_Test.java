@@ -2,6 +2,9 @@ package de.c1wps.desy.ams.allgemeines;
 
 import java.util.Iterator;
 
+import org.csstudio.nams.common.decision.Ablagefaehig;
+import org.csstudio.nams.common.decision.Ablagekorb;
+import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.junit.Test;
 
 public class StandardAblagekorb_Test

@@ -22,7 +22,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.allgemeines;
+package org.csstudio.nams.common.decision;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.material.AlarmNachricht;

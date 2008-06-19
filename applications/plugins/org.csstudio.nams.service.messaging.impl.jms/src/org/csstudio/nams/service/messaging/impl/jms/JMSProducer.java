@@ -1,5 +1,9 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -7,6 +11,10 @@ import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
@@ -19,7 +27,7 @@ public class JMSProducer implements Producer {
 	public static void staticInjectLogger(Logger logger) {
 		injectedLogger = logger;
 	}
-	
+
 	private MessageProducer[] producers;
 	private boolean isClosed;
 	private Logger logger;
@@ -73,25 +81,29 @@ public class JMSProducer implements Producer {
 		return isClosed;
 	}
 
-	final static String MSGPROP_COMMAND = "COMMAND"; 
-	final static String MSGVALUE_TCMD_RELOAD = "AMS_RELOAD_CFG";
-	final static String MSGVALUE_TCMD_RELOAD_CFG_START = MSGVALUE_TCMD_RELOAD + "_START";
-	final static String MSGVALUE_TCMD_RELOAD_CFG_END = MSGVALUE_TCMD_RELOAD + "_END";
-	
+//	final static String MSGPROP_COMMAND = "COMMAND";
+//	final static String MSGVALUE_TCMD_RELOAD = "AMS_RELOAD_CFG";
+//	final static String MSGVALUE_TCMD_RELOAD_CFG_START = MSGVALUE_TCMD_RELOAD
+//			+ "_START";
+//	final static String MSGVALUE_TCMD_RELOAD_CFG_END = MSGVALUE_TCMD_RELOAD
+//			+ "_END";
+
 	public void sendeSystemnachricht(SystemNachricht systemNachricht) {
 		// TODO implementieren
 		try {
 			if (systemNachricht.istSyncronisationsAufforderung()) {
 				for (int i = 0; i < sessions.length; i++) {
 					MapMessage mapMessage = sessions[i].createMapMessage();
-					mapMessage.setString(MSGPROP_COMMAND, MSGVALUE_TCMD_RELOAD_CFG_START);
+					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND.getStringValue(),
+							MessageKeyUtil.MSGVALUE_TCMD_RELOAD_CFG_START);
 					mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
 					producers[i].send(mapMessage);
 				}
 			} else if (systemNachricht.istSyncronisationsBestaetigung()) {
 				for (int i = 0; i < sessions.length; i++) {
 					MapMessage mapMessage = sessions[i].createMapMessage();
-					mapMessage.setString(MSGPROP_COMMAND, MSGVALUE_TCMD_RELOAD_CFG_END);
+					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND.getStringValue(),
+							MessageKeyUtil.MSGVALUE_TCMD_RELOAD_CFG_END);
 					mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
 					producers[i].send(mapMessage);
 				}
@@ -99,7 +111,36 @@ public class JMSProducer implements Producer {
 				logger.logErrorMessage(this, "unbekannte Systemnachricht.");
 			}
 		} catch (JMSException e) {
-			//FIXME exception handling
+			// FIXME exception handling
+			e.printStackTrace();
+		}
+	}
+
+	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) {
+		// TODO Auto-generated method stub
+		Regelwerkskennung regelwerkskennung = vorgangsmappe.gibPruefliste()
+				.gibRegelwerkskennung();
+		AlarmNachricht alarmNachricht = vorgangsmappe
+				.gibAusloesendeAlarmNachrichtDiesesVorganges();
+		Map<MessageKeyEnum, String> contentMap = alarmNachricht.getContentMap();
+		
+		try {
+			for (int i = 0; i < sessions.length; i++) {
+				MapMessage mapMessage;
+				mapMessage = sessions[i].createMapMessage();
+				
+				Set<Entry<MessageKeyEnum,String>> entrySet = contentMap.entrySet();
+				for (Entry<MessageKeyEnum, String> entry : entrySet) {
+					mapMessage.setString(entry.getKey().getStringValue(), entry.getValue());
+				}
+				
+				mapMessage.setString(MessageKeyEnum.AMS_FILTERID.getStringValue(), Integer.toString(regelwerkskennung.getRegelwerksId()));
+				
+				mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+				producers[i].send(mapMessage);
+			}
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
