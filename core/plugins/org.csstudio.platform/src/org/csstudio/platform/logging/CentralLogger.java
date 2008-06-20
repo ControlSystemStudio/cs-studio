@@ -35,14 +35,39 @@ import org.csstudio.platform.CSSPlatformPlugin;
  *  CentralLogger.getInstance()
  * </pre>
  * 
- * Logging is straight forward. For example, you can use the Logger this way:
+ * Logging is straight forward:
  * <pre>
  *  final Logger log = CentralLogger.getInstance().getLogger(this);
  *  log.debug("test log message");
  *  log.info("test log message");
  * </pre>
- * 
- * <p/>
+ * Eclipse plugin log messages will also be forwarded to this Log4j log,
+ * so existing code using the plugin log will continue to function.
+ * <p>
+ * <u>General Idea for using the log levels:</u>
+ * <ul>
+ * <li><b>Fatal:</b> Error that allows nothing more than exiting the application.
+ *     No way to bring up a dialog box or other means to tell the user
+ *     what is happening.
+ * <li><b>Error:</b> Ran into error like "Cannot open file"
+ *     which certainly impacts the user, but it can be handled
+ *     by for example displaying the error in a dialog box
+ *     without stopping all of CSS.
+ * <li><b>Warn:</b> For example an exception in <code>close()</code>.
+ *     A system expert should look at this, but the user
+ *     won't really notice anything.
+ * <li><b>Info:</b> Application "start" messages from CSS, Interconnection Server,
+ *     maybe "User Fred authenticated".
+ * <li><b>Debug:</b> Plugin start/stop, PV connected, PV received sample,
+ *     SDS display "abc" opened, ...
+ * </ul>
+ * It would be nice to have multiple debug levels, but there's
+ * only one. Log4j itself allows fine-grained configuration based on
+ * the message creator (name of class behind the <code>this</code>
+ * in the above <code>....getLogger(this)</code>), but the CSS
+ * logging configuration via Eclipse preferences currently only
+ * allows a global log level selection.
+ * <p>
  * Alternatively, the following style is still supported, but with the drawback
  * that the source file info of the log calls will not reflect where your code
  * actually invoked the logger. Instead, they will show where 'debug', 'info'
