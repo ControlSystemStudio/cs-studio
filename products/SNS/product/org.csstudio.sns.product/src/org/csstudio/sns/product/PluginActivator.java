@@ -2,7 +2,6 @@ package org.csstudio.sns.product;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
 
 /** Plugin lifecycle.
  *  @author Kay Kasemir
@@ -21,11 +20,10 @@ public class PluginActivator extends AbstractUIPlugin
         plugin = this;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void start(BundleContext context) throws Exception
+    /** @return Singleton instance */
+    static public PluginActivator getInstance()
     {
-        super.start(context);
+        return plugin;
     }
     
     /** @return Log4j Logger */
