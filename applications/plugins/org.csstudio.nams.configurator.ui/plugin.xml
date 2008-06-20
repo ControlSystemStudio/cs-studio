@@ -1,15 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension
+<extension
          point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio.nams.newconfigurator"
+            name="AMS">
+      </category>
       <view
             allowMultiple="false"
-            class="org.csstudio.nams.configurator.ui.views.AlarmbearbeiterView"
+            category="org.csstudio.nams.newconfigurator"
+            class="org.csstudio.nams.configurator.views.AlarmbearbeiterView"
             fastViewWidthRatio=".5f"
-            id="org.csstudio.nams.configurator.ui.views.AlarmbearbeiterView"
+            id="org.csstudio.nams.configurator.alarmbearbeiter"
             name="Alarmbearbeiter">
       </view>
+      <view
+            allowMultiple="false"
+            category="org.csstudio.nams.newconfigurator"
+            class="org.csstudio.nams.configurator.views.AlarmbearbeitergruppenView"
+            fastViewWidthRatio=".5f"
+            id="org.csstudio.nams.configurator.alarmbearbeitergruppen"
+            name="Alarmbearbeitergruppen">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.csstudio.nams.newconfigurator"
+            class="org.csstudio.nams.configurator.views.AlarmtopicView"
+            fastViewWidthRatio=".5f"
+            id="org.csstudio.nams.configurator.alarmtopic"
+            name="Alarmtopic">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.csstudio.nams.newconfigurator"
+            class="org.csstudio.nams.configurator.views.FilterView"
+            fastViewWidthRatio=".5f"
+            id="org.csstudio.nams.configurator.filter"
+            name="Filter">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.csstudio.nams.newconfigurator"
+            class="org.csstudio.nams.configurator.views.FilterbedingungView"
+            fastViewWidthRatio="0.5f"
+            id="org.csstudio.nams.configurator.filterbedingung"
+            name="Filterbedingung">
+      </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.nams.configurator.editor.ConfigurationEditor"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.ConfigurationEditor"
+            name="Configuration Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.nams.configurator.amsconfiguratorbranch">
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.alarmbearbeiter"
+               minimized="false"
+               moveable="true"
+               ratio="0.4f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.alarmbearbeitergruppen"
+               minimized="false"
+               moveable="true"
+               ratio="0.4f"
+               relationship="top"
+               relative="org.csstudio.nams.configurator.alarmbearbeiter"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.filterbedingung"
+               minimized="false"
+               moveable="true"
+               ratio="0.4f"
+               relationship="stack"
+               relative="org.csstudio.nams.configurator.alarmbearbeiter"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.alarmtopic"
+               minimized="false"
+               moveable="true"
+               ratio="0.4f"
+               relationship="stack"
+               relative="org.csstudio.nams.configurator.filterbedingung"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.filter"
+               minimized="false"
+               moveable="true"
+               ratio="0.4f"
+               relationship="stack"
+               relative="org.csstudio.nams.configurator.alarmbearbeitergruppen"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.nams.configurator.PerspectiveFactory"
+            id="org.csstudio.nams.newconfigurator.perspective"
+            name="AMS perspective">
+      </perspective>
+   </extension>
+w
 
 </plugin>

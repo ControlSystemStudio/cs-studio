@@ -78,7 +78,7 @@ public class AlarmbearbeiterGruppenDTO {
 	/**
 	 * @return the userGroupId
 	 */
-	int getUserGroupId() {
+	public int getUserGroupId() {
 		return userGroupId;
 	}
 
@@ -86,8 +86,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 * @param userGroupId
 	 *            the userGroupId to set
 	 */
-	@SuppressWarnings("unused")
-	private void setUserGroupId(int userGroupId) {
+	public void setUserGroupId(int userGroupId) {
 		this.userGroupId = userGroupId;
 	}
 

@@ -3,7 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 public interface NewAMSConfigurationElementDTO {
 	
 	/**
-	 * Liefert eine menschenlesbare, eindeutige Bezeichnung; z.B. Der Name eines Filters.
+	 * Liefert eine menschenlesbare, eindeutige Bezeichnung; z.B. den Name eines Filters.
 	 */
 	public String getUniqueHumanReadableName();
 	

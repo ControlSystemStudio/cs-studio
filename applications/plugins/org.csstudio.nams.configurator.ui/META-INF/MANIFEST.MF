@@ -1,12 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ui Plug-in
-Bundle-SymbolicName: org.csstudio.nams.configurator.ui;singleton:=true
+Bundle-SymbolicName: org.csstudio.nams.newconfigurator;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.csstudio.nams.configurator.ui.ConfiguratorUIActivator
+Bundle-Activator: org.csstudio.nams.configurator.NewConfiguratorActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common.activatorUtils,
- org.csstudio.nams.configurator.model
+ org.csstudio.nams.configurator.model,
+ org.eclipse.core.databinding,
+ org.eclipse.core.databinding.beans,
+ org.eclipse.jface.databinding,
+ org.csstudio.nams.service.configurationAccess.localStore
 Eclipse-LazyStart: true

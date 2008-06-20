@@ -12,7 +12,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
  * Model für die Auflistungskomponenten der UI für die Elemente einer
  * Konfigurationsart, z.B.: Alarmbearbeiter, Filter.
  * 
- * XXX Das Modell-PlugIn kännte einen OSGi-Service hinterlegen, über den die
+ * XXX Das Modell-PlugIn könnte einen OSGi-Service hinterlegen, über den die
  * Views (UI PlugIn) die Modelle bezieht. Somit bliebe die
  * Modell-Exemplar-Erzeugung vollständig im Modell, die UI benutzte die Modelle
  * legiglich.
@@ -39,9 +39,9 @@ public class ConfigurationsElementeAuflistung<T extends NewAMSConfigurationEleme
 	 */
 	public void setElements(Set<T> elements) {
 		Comparator<T> comparator = new Comparator<T>() {
-			public int compare(T bearbeiter1, T bearbeiter2) {
-				return bearbeiter1.getUniqueHumanReadableName().compareTo(
-						bearbeiter2.getUniqueHumanReadableName());
+			public int compare(T element1, T element2) {
+				return element1.getUniqueHumanReadableName().compareTo(
+						element2.getUniqueHumanReadableName());
 			}
 		};
 
