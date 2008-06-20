@@ -110,7 +110,7 @@ public class TopicDTO {
 	 * @return -1, wenn der Datensatz nicht eingerichtet ist, >0 bei gültiger
 	 *         Id.
 	 */
-	int getId() {
+	public int getId() {
 		return this.id;
 	}
 

@@ -104,4 +104,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 		return this.getTopicID();
 	}
 
+	@Override
+	public String toString() {
+		return getHumanReadableName();
+	}
 }

@@ -1,11 +1,14 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.ModelFactory;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
 public class FilterbedingungView extends ViewPart {
+
+	private static ModelFactory modelFactory;
 
 	public FilterbedingungView() {
 		// TODO Auto-generated constructor stub
@@ -18,7 +21,7 @@ public class FilterbedingungView extends ViewPart {
 		new FilteredListVarianteA(parent, SWT.None) {
 			@Override
 			protected Object[] getTableInput() {
-				return new String[] { "EPICS-A1", "Ventil36_HIGHHIGH", "Kry123 LOW" };
+				return modelFactory.getFilterConditionBeans();
 			}
 		};
 	}
@@ -27,6 +30,10 @@ public class FilterbedingungView extends ViewPart {
 	public void setFocus() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public static void staticInject(ModelFactory modelFactory) {
+		FilterbedingungView.modelFactory = modelFactory;
 	}
 
 }

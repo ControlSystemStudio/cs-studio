@@ -4,6 +4,8 @@ public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
 
 	private int filterbedinungID;
+	private String description;
+	private String name;
 
 	public int getFilterbedinungID() {
 		return filterbedinungID;
@@ -17,7 +19,7 @@ public class FilterbedingungBean extends
 	}
 
 	public String getDisplayName() {
-		return "(ohne Namen)";
+		return name == null ? "(ohne Namen)" : name;
 	}
 
 	public void copyStateOf(FilterbedingungBean otherBean) {
@@ -49,5 +51,26 @@ public class FilterbedingungBean extends
 	@Override
 	public int getID() {
 		return this.getFilterbedinungID();
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String toString() {
+		return getDisplayName();
 	}
 }

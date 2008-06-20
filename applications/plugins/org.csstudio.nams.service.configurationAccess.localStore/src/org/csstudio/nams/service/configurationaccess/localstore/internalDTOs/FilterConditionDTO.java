@@ -93,8 +93,7 @@ public class FilterConditionDTO {
 	/**
 	 * @return the cName
 	 */
-	@SuppressWarnings("unused")
-	private String getCName() {
+	public String getCName() {
 		return cName;
 	}
 
@@ -109,8 +108,7 @@ public class FilterConditionDTO {
 	/**
 	 * @return the cDesc
 	 */
-	@SuppressWarnings("unused")
-	private String getCDesc() {
+	public String getCDesc() {
 		return cDesc;
 	}
 

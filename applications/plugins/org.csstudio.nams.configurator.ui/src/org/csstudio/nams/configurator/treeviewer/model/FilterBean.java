@@ -90,4 +90,9 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public int getID() {
 		return this.getFilterID();
 	}
+	
+	@Override
+	public String toString() {
+		return getDisplayName();
+	}
 }
