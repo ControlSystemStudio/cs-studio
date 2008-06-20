@@ -142,6 +142,7 @@ public class ConfigurationEditor extends EditorPart implements
 		_stackParts.add(new UserStackPart(this, parent));
 		_stackParts.add(new TopicStackPart(this, parent));
 		_stackParts.add(new AlarmbearbeitergruppenStackPart(this, parent));
+		//TODO Filter und FilterCondition Stackparts einfügen
 	}
 
 	@Override

@@ -127,8 +127,8 @@ public class FilteredListVarianteA {
 		IStructuredSelection selection = (IStructuredSelection) event
 				.getSelection();
 		Object source = selection.getFirstElement();
-		AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
-		alarmbearbeiterBean.setName((String) source);
+		AbstractConfigurationBean<?> configurationBean= (AbstractConfigurationBean<?>) source;
+
 		IConfigurationModel model = new ConfigurationModel(null) {
 			@Override
 			public Collection<String> getSortgroupNames() {
@@ -139,7 +139,7 @@ public class FilteredListVarianteA {
 			}
 		};
 
-		new OpenConfigurationEditor(alarmbearbeiterBean, model).run();
+		new OpenConfigurationEditor(configurationBean, model).run();
 	}
 
 	/**

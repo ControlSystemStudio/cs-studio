@@ -3,6 +3,7 @@ package org.csstudio.nams.configurator.editor.stackparts;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
@@ -24,6 +25,9 @@ public class AlarmbearbeitergruppenStackPart extends
 		AbstractStackPart<AlarmbearbeiterGruppenBean> {
 
 	private Composite main;
+	private IConfigurationModel model;
+	private AlarmbearbeiterGruppenBean alarmbearbeiterGruppenBean;
+	private AlarmbearbeiterGruppenBean alarmbearbeiterGruppenClone;
 
 	public AlarmbearbeitergruppenStackPart(DirtyFlagProvider flagProvider,
 			Composite parent) {
@@ -118,7 +122,7 @@ public class AlarmbearbeitergruppenStackPart extends
 						Button up = new Button(buttonsComp, SWT.PUSH);
 						up.setText("Up");
 						Button down = new Button(buttonsComp, SWT.PUSH);
-						down.setText("Donw");
+						down.setText("Down");
 						Button downdown = new Button(buttonsComp, SWT.PUSH);
 						downdown.setText("DownDown");
 					}
@@ -153,8 +157,17 @@ public class AlarmbearbeitergruppenStackPart extends
 
 	@Override
 	public void setInput(IConfigurationBean input, IConfigurationModel model) {
-		// TODO Auto-generated method stub
+		this.model = model;
+		this.alarmbearbeiterGruppenBean = (AlarmbearbeiterGruppenBean) input;
+		this.alarmbearbeiterGruppenClone = ((AlarmbearbeiterGruppenBean) input).getClone();
 
+		// init JFaceDatabinding after input is set
+		this.initDataBinding();
+	}
+
+	private void initDataBinding() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

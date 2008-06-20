@@ -1,8 +1,5 @@
 package org.csstudio.nams.configurator.views;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.csstudio.nams.configurator.ModelFactory;
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
@@ -28,18 +25,6 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 	public void createPartControl(Composite parent) {
 
 		new FilteredListVarianteA(parent, SWT.None) {
-			protected void openEditor(DoubleClickEvent event) {
-				//TODO ??? may be treeviewer code
-//				IStructuredSelection selection = (IStructuredSelection) event
-//						.getSelection();
-//				Object source = selection.getFirstElement();
-//				AlarmbearbeitergruppenBean alarmbearbeitergruppenBean = new AlarmbearbeitergruppenBean();
-//				alarmbearbeitergruppenBean.setName((String) source);
-//				IConfigurationModel model = new ConfigurationModel(modelFactory.getAlarmBearbeiterGruppenBeans());
-//
-//				new OpenConfigurationEditor(alarmbearbeitergruppenBean, model)
-//						.run();
-			}
 
 			@Override
 			protected Object[] getTableInput() {
