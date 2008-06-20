@@ -9,9 +9,9 @@ import org.eclipse.ui.part.ViewPart;
 public class AlarmbearbeiterView extends ViewPart {
 
 	private static ModelFactory modelFactory;
+	public static final String ID = "org.csstudio.nams.configurator.alarmbearbeiter";
 
 	public AlarmbearbeiterView() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import org.eclipse.ui.part.ViewPart;
 public class FilterView extends ViewPart {
 
 	private static ModelFactory modelFactory;
-
+	public static final String ID = "org.csstudio.nams.configurator.filter";
 	public FilterView() {
 		// TODO Auto-generated constructor stub
 	}

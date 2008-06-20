@@ -9,15 +9,13 @@ import org.eclipse.ui.part.ViewPart;
 public class FilterbedingungView extends ViewPart {
 
 	private static ModelFactory modelFactory;
-
+	public static final String ID = "org.csstudio.nams.configurator.filterbedingung";
 	public FilterbedingungView() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		//new FilteredListVarianteC(parent, SWT.None);
-
 		new FilteredListVarianteA(parent, SWT.None) {
 			@Override
 			protected Object[] getTableInput() {

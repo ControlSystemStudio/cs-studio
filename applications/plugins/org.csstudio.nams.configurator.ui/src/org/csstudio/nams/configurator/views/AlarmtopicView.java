@@ -9,7 +9,7 @@ import org.eclipse.ui.part.ViewPart;
 public class AlarmtopicView extends ViewPart {
 
 	private static ModelFactory modelFactory;
-
+	public static final String ID = "org.csstudio.nams.configurator.alarmtopic";
 	public AlarmtopicView() {
 		// TODO Auto-generated constructor stub
 	}
