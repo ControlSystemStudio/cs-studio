@@ -133,7 +133,9 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 		return new TimerTask() {
 			@Override
 			public void run() {
-				_scriptEngine.processScript();
+				if (_scriptEngine!=null) {
+					_scriptEngine.processScript();
+				}
 			}
 		};
 	}
