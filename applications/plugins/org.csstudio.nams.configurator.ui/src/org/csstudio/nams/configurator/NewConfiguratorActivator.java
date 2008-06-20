@@ -23,8 +23,8 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		this.localStoreConfigurationService = localStoreConfigurationService;
 		ModelFactory modelFactory = new ModelFactory(localStoreConfigurationService);
 		AlarmbearbeitergruppenView.staticInject(modelFactory);
+		AlarmbearbeiterView.staticInject(modelFactory);
 		// TODO implement following mehtods
-//		AlarmbearbeiterView.staticInject(modelFactory);
 //		AlarmtopicView.staticInject(modelFactory);
 //		FilterbedingungView.staticInject(modelFactory);
 //		FilterView.staticInject(modelFactory);

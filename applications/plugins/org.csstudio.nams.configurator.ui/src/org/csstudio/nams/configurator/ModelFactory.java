@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterGruppenBean;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -36,14 +37,32 @@ public class ModelFactory {
 	}
 	
 	public AlarmbearbeiterBean[] getAlarmBearbeiterBeans(){
-		return new AlarmbearbeiterBean[0];
+		Collection<AlarmbearbeiterDTO> alarmBearbeiterDTOs = entireConfiguration.gibAlleAlarmbearbeiter();
+		List<AlarmbearbeiterBean> beans = new LinkedList<AlarmbearbeiterBean>();
+		for (AlarmbearbeiterDTO alarmbearbeitergruppe : alarmBearbeiterDTOs) {
+			beans.add(DTO2Bean(alarmbearbeitergruppe));
+		}
+		return beans.toArray(new AlarmbearbeiterBean[beans.size()]);
+	}
+
+	private AlarmbearbeiterBean DTO2Bean(
+			AlarmbearbeiterDTO alarmbearbeiter) {
+		AlarmbearbeiterBean bean = new AlarmbearbeiterBean();
+		bean.setActive(alarmbearbeiter.isActive());
+		bean.setConfirmCode(alarmbearbeiter.getConfirmCode());
+		bean.setEmail(alarmbearbeiter.getEmail());
+		bean.setMobilePhone(alarmbearbeiter.getMobilePhone());
+		bean.setName(alarmbearbeiter.getUserName());
+		bean.setPhone(alarmbearbeiter.getPhone());
+		//FIXME no idea!?
+		//		bean.setPreferedAlarmType(alarmbearbeiter.get);
+		bean.setStatusCode(alarmbearbeiter.getStatusCode());
+		bean.setUserID(alarmbearbeiter.getUserId());
+		return bean;
 	}
 
 	public AlarmbearbeiterGruppenBean[] getAlarmBearbeiterGruppenBeans() {
 		Collection<AlarmbearbeiterGruppenDTO> alarmBearbeiterGruppenDTOs = entireConfiguration.gibAlleAlarmbearbeiterGruppen();
-
-		
-		
 		List<AlarmbearbeiterGruppenBean> beans = new LinkedList<AlarmbearbeiterGruppenBean>();
 		for (AlarmbearbeiterGruppenDTO alarmbearbeitergruppe : alarmBearbeiterGruppenDTOs) {
 			beans.add(DTO2Bean(alarmbearbeitergruppe));

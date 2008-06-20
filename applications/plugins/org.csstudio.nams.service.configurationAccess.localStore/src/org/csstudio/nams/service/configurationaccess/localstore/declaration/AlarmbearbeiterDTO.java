@@ -245,7 +245,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	/**
 	 * @return the userId
 	 */
-	int getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
@@ -253,8 +253,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 * @param userId
 	 *            the userId to set
 	 */
-	@SuppressWarnings("unused")
-	private void setUserId(int userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 

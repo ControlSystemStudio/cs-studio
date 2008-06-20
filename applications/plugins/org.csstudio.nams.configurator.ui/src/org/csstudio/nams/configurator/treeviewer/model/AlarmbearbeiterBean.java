@@ -197,4 +197,9 @@ public class AlarmbearbeiterBean extends
 	public int getID() {
 		return this.getUserID();
 	}
+	
+	@Override
+	public String toString() {
+		return getDisplayName();
+	}
 }
