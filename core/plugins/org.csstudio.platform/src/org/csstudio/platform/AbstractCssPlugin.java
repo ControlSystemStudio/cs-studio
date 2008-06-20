@@ -21,7 +21,6 @@
  */
 package org.csstudio.platform;
 
-import org.apache.log4j.Logger;
 import org.csstudio.platform.internal.logging.CssLogListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.ILogListener;
@@ -57,7 +56,7 @@ public abstract class AbstractCssPlugin extends Plugin {
 		super.start(context);
 		getLog().addLogListener(_logListener);
 		doStart(context);
-		CentralLogger.getInstance().getLogger(this).info(
+		CentralLogger.getInstance().getLogger(this).debug(
 		    "Plugin with ID " + getPluginId() + " started"); //$NON-NLS-1$ //$NON-NLS-2$	
 	}
 
@@ -81,7 +80,7 @@ public abstract class AbstractCssPlugin extends Plugin {
 		super.stop(context); // TODO Should't super.stop happen last?
 		savePluginPreferences();
 		doStop(context);
-		CentralLogger.getInstance().getLogger(this).info(
+		CentralLogger.getInstance().getLogger(this).debug(
 				"Plugin with ID " + getPluginId() + " stopped"); //$NON-NLS-1$ //$NON-NLS-2$				
 		getLog().removeLogListener(_logListener);
 	}
