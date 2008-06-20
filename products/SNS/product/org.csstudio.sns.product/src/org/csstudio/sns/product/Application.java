@@ -3,6 +3,7 @@ package org.csstudio.sns.product;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Dictionary;
 
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.workspace.RelaunchConstants;
@@ -393,11 +394,21 @@ public class Application implements IApplication
     /** Run the application.
      *  @return IApplication exit code.
      */
+    @SuppressWarnings({ "nls", "unchecked" })
     private Object runApplication(final Display display)
     {
+        // Display Name, version, location
+        final String instance = Platform.getInstanceLocation().getURL().getFile();
+        final Dictionary<String, String> headers =
+            PluginActivator.getInstance().getBundle().getHeaders();
+        String name = headers.get("Bundle-Name");
+        if (name == null)
+            name = "SNS CSS";
+        final String version = headers.get("Bundle-Version");
+        PluginActivator.getLogger().info(
+                                       name + " " + version + ": " + instance);
+        
         // Run the workbench
-        PluginActivator.getLogger().info("CSS Application Running: " //$NON-NLS-1$
-                + Platform.getInstanceLocation().getURL().getFile());
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
                         new ApplicationWorkbenchAdvisor());
 
