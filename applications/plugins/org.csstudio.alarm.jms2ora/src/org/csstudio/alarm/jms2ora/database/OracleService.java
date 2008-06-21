@@ -35,7 +35,7 @@ import oracle.jdbc.driver.OracleStatement;
 import oracle.jdbc.pool.OracleDataSource;
 
 /**
- *  The class <code>OracleDBLayer</code> 
+ *  The class <code>OracleService</code> 
  *  
  *  @author Markus Moeller
  *
