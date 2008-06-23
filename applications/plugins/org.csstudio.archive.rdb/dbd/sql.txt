@@ -1,0 +1,49 @@
+
+** Select data from start to end
+If this is all the data:
+mysql> SELECT cur_time, float_val FROM sample WHERE channel_id=3 ORDER BY cur_time;
++---------------------+-----------+
+| cur_time            | float_val |
++---------------------+-----------+
+| 2007-09-10 09:05:00 |        30 | 
+| 2007-09-10 09:15:00 |        20 | 
+| 2007-09-10 09:30:00 |         1 | 
+| 2007-09-10 10:10:00 |         2 | 
+| 2007-09-10 10:15:00 |         2 | 
+| 2007-09-10 10:15:00 |         3 | 
+| 2007-09-10 10:20:00 |         1 | 
++---------------------+-----------+
+
+... this MySQL SELECT gives the initial sample, the one still valid
+at the start time:
+ SELECT cur_time, float_val FROM sample
+ WHERE channel_id=3 AND cur_time<='2007-09-10 10:00:00'
+ ORDER BY cur_time DESC LIMIT 1;
+ 
+There's no 'LIMIT 1' in Oracle?!
+
+This one does it, but is probably expensive:
+SELECT ROWNUM, cur_time, float_val FROM
+  (SELECT cur_time, float_val 
+    FROM sample
+    WHERE channel_id=23
+      AND cur_time <= TIMESTAMP '2007-09-10 10:00:00'
+    ORDER BY cur_time DESC)
+   WHERE ROWNUM=1
+
+
+** Dump some data with good looking time stamps in Oracle
+select * from channel;
+select * from status;
+select * from severity;
+SELECT TO_CHAR(cur_time, 'yyyy-mm-dd HH24:MI:SS.FF9'), float_val
+  FROM sample WHERE channel_id=24
+  ORDER BY cur_time;
+
+** Count beans
+-- This can take forever:
+SELECT COUNT(*) FROM sample;
+
+-- Almost the same number, quickly, in Oracle:
+select num_rows from all_tables where table_name='SAMPLE';
+  

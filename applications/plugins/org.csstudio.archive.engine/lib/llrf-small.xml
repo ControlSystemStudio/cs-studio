@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<engineconfig>
+	<buffer_reserve>3</buffer_reserve>
+	<file_size>30</file_size>
+	<get_threshold>20</get_threshold>
+	<ignored_future>1</ignored_future>
+	<max_repeat_count>120</max_repeat_count>
+	<write_period>30</write_period>
+	<group>
+		<name>CCL1</name>
+		<channel><name>CCL_LLRF:FCM1:cavAmpAvg</name><period>60</period><scan/></channel>
+		<channel><name>CCL_LLRF:FCM1:cavAmpSet</name><period>30</period><monitor/></channel>
+	</group>
+	<group>
+		<name>CCL2</name>
+		<channel><name>CCL_LLRF:FCM2:cavAmpAvg</name><period>60</period><scan/></channel>
+		<channel><name>CCL_LLRF:FCM2:cavAmpSet</name><period>30</period><monitor/></channel>
+	</group>
+</engineconfig>
