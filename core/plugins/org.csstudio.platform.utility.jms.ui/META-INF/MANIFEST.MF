@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jms Utility Ui Plug-in
+Bundle-SymbolicName: org.csstudio.platform.utility.jms.ui
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.platform.utility.jms.ui.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.utility.jms
+Eclipse-LazyStart: true
+Export-Package: org.csstudio.platform.utility.jms.ui
