@@ -144,6 +144,29 @@
          </command>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.nams.configurator.actions.DeleteConfiguration"
+            id="deleteConfiguration.command"
+            name="Delete">
+         <commandParameter
+               id="deleteConfiguration.command.target"
+               name="target"
+               values="org.csstudio.nams.configurator.beans.AlarmbearbeiterBean">
+         </commandParameter>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.csstudio.nams.configurator.alarmbearbeiter">
+         <command
+               commandId="deleteConfiguration.command"
+               id="deleteConfiguration.command.contribution">
+         </command>
+      </menuContribution>
+   </extension>
 w
 
 </plugin>

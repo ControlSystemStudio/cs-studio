@@ -130,14 +130,14 @@ public abstract class FilteredListVarianteA {
 		AbstractConfigurationBean<?> configurationBean= (AbstractConfigurationBean<?>) source;
 
 		IConfigurationModel model = new ConfigurationModel() {
-			@Override
-			public Collection<String> getSortgroupNames() {
-				Collection<String> groupNames = new ArrayList<String>();
-				groupNames.add("Kryo OPS");
-				groupNames.add("C1-WPS");
-				//FIXME remove hardcoded group names
-				return groupNames;
-			}
+//			@Override
+//			public Collection<String> getSortgroupNames() {
+//				Collection<String> groupNames = new ArrayList<String>();
+//				groupNames.add("Kryo OPS");
+//				groupNames.add("C1-WPS");
+//				//FIXME remove hardcoded group names
+//				return groupNames;
+//			}
 		};
 
 		new OpenConfigurationEditor(configurationBean, model).run();

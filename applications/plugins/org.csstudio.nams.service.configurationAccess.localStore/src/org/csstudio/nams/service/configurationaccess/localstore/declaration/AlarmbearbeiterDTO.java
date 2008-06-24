@@ -3,6 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -34,7 +35,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Pre
 public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "iUserId", nullable = false, unique = true)
 	private int userId;
 

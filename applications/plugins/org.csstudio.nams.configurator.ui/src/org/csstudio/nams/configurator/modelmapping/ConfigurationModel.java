@@ -1,7 +1,6 @@
 package org.csstudio.nams.configurator.modelmapping;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
@@ -14,11 +13,6 @@ public class ConfigurationModel implements IConfigurationModel {
 
 	private static LocalStoreConfigurationService localStore;
 	private static ModelFactory modelFactory;
-
-	public Collection<String> getSortgroupNames() {
-		// TODO you shall not see this
-		return Collections.EMPTY_LIST;
-	}
 
 	public IConfigurationBean save(IConfigurationBean bean) {
 		if (bean instanceof AlarmbearbeiterBean) {

@@ -90,20 +90,21 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 		// init JFaceDatabinding after input is set
 		this.initDataBinding();
-		this.initGroupCombo();
+		//TODO redo group initialization
+//		this.initGroupCombo();
 	}
 
-	private void initGroupCombo() {
-		Collection<String> sortgroupNames = this.model.getSortgroupNames();
-		Object[] groupNames = sortgroupNames.toArray();
-
-		int selection = 0;
-		for (int groupName = 0; groupName < groupNames.length; groupName++) {
-			this._groupComboEntry.add(((String) groupNames[groupName]).trim());
-		}
-
-		this._groupComboEntry.select(selection);
-	}
+//	private void initGroupCombo() {
+//		Collection<String> sortgroupNames = this.model.getSortgroupNames();
+//		Object[] groupNames = sortgroupNames.toArray();
+//
+//		int selection = 0;
+//		for (int groupName = 0; groupName < groupNames.length; groupName++) {
+//			this._groupComboEntry.add(((String) groupNames[groupName]).trim());
+//		}
+//
+//		this._groupComboEntry.select(selection);
+//	}
 
 	private void initPrefAlarmingCombo() {
 		for (PreferedAlarmType alarm : PreferedAlarmType.values()) {
@@ -123,8 +124,9 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	@Override
 	public void save() {
 		// welche gruppe hat user gewählt?
-		String group = this._groupComboEntry.getItem(this._groupComboEntry
-				.getSelectionIndex());
+		//TODO may bla
+//		String group = this._groupComboEntry.getItem(this._groupComboEntry
+//				.getSelectionIndex());
 
 		// speicher Änderungen im lokalen Model
 		IConfigurationBean updatedBean = this.model.save(
