@@ -1,4 +1,4 @@
-package org.csstudio.util.time.swt;
+package org.csstudio.apputil.ui.time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

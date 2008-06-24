@@ -2,13 +2,13 @@ package org.csstudio.trends.databrowser.plotpart;
 
 import java.util.ArrayList;
 
+import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;

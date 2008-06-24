@@ -1,4 +1,4 @@
-package org.csstudio.util.time.swt;
+package org.csstudio.apputil.ui.time;
 
 import org.csstudio.apputil.time.RelativeTime;
 import org.eclipse.swt.layout.FillLayout;

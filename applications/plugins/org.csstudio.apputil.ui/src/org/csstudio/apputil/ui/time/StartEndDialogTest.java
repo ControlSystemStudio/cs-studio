@@ -1,7 +1,7 @@
-package org.csstudio.util.time.swt;
+package org.csstudio.apputil.ui.time;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import java.text.SimpleDateFormat;
+
 import org.csstudio.apputil.time.RelativeTime;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -24,7 +24,6 @@ public class StartEndDialogTest
         Shell shell = new Shell(display);
         shell.setLayout(new FillLayout());
         
-
         shell.pack();
         shell.open();
 
@@ -33,8 +32,12 @@ public class StartEndDialogTest
         {
             System.out.println("Start: '" + dlg.getStartSpecification() + "'");
             System.out.println("End: '" + dlg.getEndSpecification() + "'");
-            ITimestamp start = TimestampFactory.fromCalendar(dlg.getStartCalendar());
-            ITimestamp end = TimestampFactory.fromCalendar(dlg.getEndCalendar());
+            
+            final SimpleDateFormat date_format =
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+            String start = date_format.format(dlg.getStartCalendar().getTime());
+            String end = date_format.format(dlg.getEndCalendar().getTime());
             System.out.println(start + " ... " + end);
         }
 

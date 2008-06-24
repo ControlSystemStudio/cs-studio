@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.FocusEvent;
@@ -140,7 +140,7 @@ public class SampleFileDialog extends Dialog {
     }
 
     /**
-     * Es wird überprüft ob die gewählten Zeitgrenzen inhalb des zu Parsenden
+     * Es wird ï¿½berprï¿½ft ob die gewï¿½hlten Zeitgrenzen inhalb des zu Parsenden
      * Files liegen. liegt eine Zeitgrenze ausserhalb wird sie entsprechend auf
      * den Start oder Endpunkt des Files gesetzt. Dadurch wird verhindert Daten
      * zu Importiern die nicht da sind.
@@ -162,10 +162,10 @@ public class SampleFileDialog extends Dialog {
                 // time
                 - _result._startTime.getTimeInMillis(); // 
         long compEnd;
-        // Ist gewählter Startpunkt nach File start.
+        // Ist gewï¿½hlter Startpunkt nach File start.
         if (compStart >= 0) {
             compEnd = startCalendar.getTimeInMillis() - _fileEndGregorianCalendar.getTimeInMillis();
-            // Ist gewählter Startpunkt vor File end.
+            // Ist gewï¿½hlter Startpunkt vor File end.
             if (compEnd <= 0) {
                 _result._startTime = startCalendar;
             } else {
@@ -176,10 +176,10 @@ public class SampleFileDialog extends Dialog {
         }
 
         compStart = endCalendar.getTimeInMillis() - _result._startTime.getTimeInMillis();
-        // Ist gewählter Endpunkt nach File start.
+        // Ist gewï¿½hlter Endpunkt nach File start.
         if (compStart >= 0) {
             compEnd = endCalendar.getTimeInMillis() - _fileEndGregorianCalendar.getTimeInMillis();
-            // Ist gewählter Startpunkt vor File end.
+            // Ist gewï¿½hlter Startpunkt vor File end.
             if (compEnd <= 0) {
                 _result._endTime = endCalendar;
             } else {
@@ -558,14 +558,14 @@ public class SampleFileDialog extends Dialog {
                     }
                 }
 
-                // Berechnung des gewählten Start-Samples
+                // Berechnung des gewï¿½hlten Start-Samples
                 Double startTmp = (_result._startTime.getTimeInMillis() - _result._channelList.get(0)
                         .getStartTime().getTimeInMillis())
                         / _result.getDefaultResolution();
                 startTmp = Math.ceil(startTmp);
                 _result.setStartSample(startTmp.intValue());
 
-                // Berechnung des gewählten End-Samples
+                // Berechnung des gewï¿½hlten End-Samples
                 startTmp = (_result._endTime.getTimeInMillis() - _result._channelList.get(0)
                         .getStartTime().getTimeInMillis())
                         / _result.getDefaultResolution();
@@ -573,7 +573,7 @@ public class SampleFileDialog extends Dialog {
 
                 // Setzen des Startzeitpunktes und
                 // sicherstellen das der Startzeitpunkt auch mit einem
-                // Samplepunkt übereinstimmt.
+                // Samplepunkt ï¿½bereinstimmt.
                 Double sampleOffset = (_result._startTime.getTimeInMillis() - _result._startTime
                         .getTimeInMillis())
                         / _result.getDefaultResolution();

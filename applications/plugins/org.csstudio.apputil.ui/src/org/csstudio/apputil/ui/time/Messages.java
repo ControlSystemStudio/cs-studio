@@ -1,10 +1,10 @@
-package org.csstudio.util.time.swt;
+package org.csstudio.apputil.ui.time;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS
 {
-    private static final String BUNDLE_NAME = "org.csstudio.util.time.swt.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.apputil.ui.time.messages"; //$NON-NLS-1$
 
     public static String Date_Sep;
 
