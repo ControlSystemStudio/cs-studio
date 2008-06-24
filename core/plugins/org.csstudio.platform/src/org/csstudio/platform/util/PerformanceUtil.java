@@ -26,7 +26,7 @@ import java.util.HashMap;
 import org.csstudio.platform.logging.CentralLogger;
 
 public class PerformanceUtil {
-	private boolean _verbose = true;
+	private boolean _verbose = false;
 
 	private static PerformanceUtil _instance;
 

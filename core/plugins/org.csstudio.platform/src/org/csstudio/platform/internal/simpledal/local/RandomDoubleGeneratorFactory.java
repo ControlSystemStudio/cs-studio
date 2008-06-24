@@ -19,10 +19,19 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.internal.simpledal.local;
+package org.csstudio.platform.internal.simpledal.local;
 
+/**
+ * Factory for {@link RandomDoubleGenerator} instances.
+ * 
+ * @author swende
+ * 
+ */
 public class RandomDoubleGeneratorFactory implements IDataGeneratorFactory {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public AbstractDataGenerator createGenerator(LocalChannel channel,
 			int defaultPeriod, String[] options) {
 		return new RandomDoubleGenerator(channel, defaultPeriod, options);

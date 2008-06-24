@@ -21,7 +21,8 @@
  */
 package org.csstudio.platform.simpledal;
 
-import org.csstudio.platform.model.pvs.DalPropertyTypes;
+import java.util.List;
+
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 
 /**
@@ -30,10 +31,16 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
  * You may use the {@link ProcessVariableConnectionServiceFactory} to create
  * instances of this service.
  * 
- * @author C1 WPS / SW, MZ
+ * @author Sven Wende, Matthias Zeimer
  */
 public interface IProcessVariableConnectionService {
 
+	/**
+	 * 
+	 * @return
+	 */
+	List<IConnectorStatistic> getConnectorStatistic();
+	
 	/**
 	 * Returns the number of active connectors.
 	 * 
@@ -558,8 +565,8 @@ public interface IProcessVariableConnectionService {
 	 * can be manipulated by the current user,
 	 * {@link SettableState#NOT_SETTABLE} if the user is not allowed to set any
 	 * values for that process variable and {@link SettableState#UNKNOWN} if the
-	 * state could not be determined (this also happens when a pv cannot be
-	 * connected within a certain time period)
+	 * state could not be determined (this also happens when a process variable
+	 * cannot be connected within a certain time period).
 	 * 
 	 * @param pv
 	 *            the process variable address

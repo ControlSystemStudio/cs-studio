@@ -29,22 +29,23 @@ import java.util.Random;
  * @author swende
  * 
  */
-public class RandomDoubleGenerator extends AbstractDataGenerator<Double> {
-	private double _min;
-	private double _max;
-	private Random _random;
-
+public class CountdownGenerator extends AbstractDataGenerator<Double> {
+	private double _distance;
+	private double _from;
+	private double _to;
+	private long _countdownPeriod;
+	
+	private long _startMs=-1;
+	
 	/**
 	 * Constructor.
 	 * @param localChannel the local channel
 	 * @param defaultPeriod the default period
 	 * @param options
 	 */
-	public RandomDoubleGenerator(LocalChannel localChannel, int defaultPeriod,
+	public CountdownGenerator(LocalChannel localChannel, int defaultPeriod,
 			String[] options) {
 		super(localChannel, defaultPeriod, options);
-		_random = new Random(System.currentTimeMillis()
-				+ localChannel.hashCode());
 	}
 
 	/**
@@ -53,29 +54,38 @@ public class RandomDoubleGenerator extends AbstractDataGenerator<Double> {
 	@Override
 	protected void init(String[] options) {
 		try {
-			_min = Double.parseDouble(options[0]);
+			_from = Double.parseDouble(options[0]);
 		} catch (NumberFormatException nfe) {
-			_min = 0;
+			_from = 0;
 		}
 
 		try {
-			_max = Double.parseDouble(options[1]);
+			_to = Double.parseDouble(options[1]);
 		} catch (NumberFormatException nfe) {
-			_max = 1;
+			_to = 1;
 		}
 
 		try {
-			int period = Integer.parseInt(options[2]);
+			_countdownPeriod = Long.parseLong(options[2]);
+		} catch (NumberFormatException nfe) {
+			_to = 1000;
+		}
+
+		
+		try {
+			int period = Integer.parseInt(options[3]);
 			setPeriod(period);
 		} catch (NumberFormatException nfe) {
 			// ignore
 		}
 
-		if (_min > _max) {
-			double tmp = _min;
-			_min = _max;
-			_max = tmp;
+		if (_from < _to) {
+			double tmp = _from;
+			_from = _to;
+			_to = tmp;
 		}
+	
+		_distance = _from - _to;
 	}
 
 	/**
@@ -83,10 +93,25 @@ public class RandomDoubleGenerator extends AbstractDataGenerator<Double> {
 	 */
 	@Override
 	protected Double generateNextValue() {
-		double d = _random.nextDouble();
+		double result = -1;
+		
+		if(_startMs < 0) {
+			_startMs = System.currentTimeMillis();
+		}
+		
+		long now = System.currentTimeMillis();
+		long diff = now-_startMs;
+		
+		
+		if(diff>=_countdownPeriod) {
+			_startMs = -1;
+			result = _from;
+		} else {
+			double percent = (double) diff/_countdownPeriod;
+			result = _from - (_distance * percent);
+		}
 
-		double result = _min + ((_max - _min) * d);
-
+		
 		return result;
 	}
 

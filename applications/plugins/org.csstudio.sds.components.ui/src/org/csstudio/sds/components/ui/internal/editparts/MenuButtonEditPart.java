@@ -29,10 +29,10 @@ import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.ActionButtonModel;
-import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
@@ -40,9 +40,11 @@ import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.draw2d.CoordinateListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -96,6 +98,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart
 			}
 
 		});
+		
 		return label;
 	}
 

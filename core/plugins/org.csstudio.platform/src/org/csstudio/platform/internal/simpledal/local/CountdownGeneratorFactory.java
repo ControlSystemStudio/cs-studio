@@ -19,45 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.test;
-
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
+package org.csstudio.platform.internal.simpledal.local;
 
 /**
- * A initialization schema for unit tests.
+ * Factory for {@link RandomDoubleGenerator} instances.
  * 
- * @author Stefan Hofer, Sven Wende
- * @version $Revision$
+ * @author swende
+ * 
  */
-public final class TestSchema extends AbstractControlSystemSchema {
-
-	/**
-	 * ID for a test property.
-	 */
-	public static final String PROP_TEST = "PROP_TEST"; //$NON-NLS-1$
+public class CountdownGeneratorFactory implements IDataGeneratorFactory {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected void initializeAliases(final AbstractWidgetModel widgetModel) {
-
+	public AbstractDataGenerator createGenerator(LocalChannel channel,
+			int defaultPeriod, String[] options) {
+		return new CountdownGenerator(channel, defaultPeriod, options);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initializeProperties() {
-		addGlobalProperty(PROP_TEST, 3.14);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initializeWidget(final AbstractWidgetModel widgetModel) {
-
-	}
 }

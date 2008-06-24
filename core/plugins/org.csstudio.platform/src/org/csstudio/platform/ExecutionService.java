@@ -41,8 +41,6 @@ public class ExecutionService {
 
 	private ExecutorService _executorService;
 
-	private ExecutorService _executorService2;
-
 	private static ExecutionService _instance;
 
 	private Counter _threadCounter;
@@ -52,7 +50,6 @@ public class ExecutionService {
 		_tasksInProgress  = new Counter();
 		_averageTime = new AverageTime();
 		_executorService = Executors.newFixedThreadPool(2);
-		_executorService2 = Executors.newFixedThreadPool(15);
 		_scheduledExecutorService = Executors.newScheduledThreadPool(15);
 	}
 

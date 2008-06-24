@@ -78,11 +78,11 @@ public final class SwitchModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
 		buffer.append("Type:\t");
-		buffer.append(createParameter(PROP_TYPE)+"\n");
+		buffer.append(createTooltipParameter(PROP_TYPE)+"\n");
 		buffer.append("State:\t");
-		buffer.append(createParameter(PROP_STATE));
+		buffer.append(createTooltipParameter(PROP_STATE));
 		return buffer.toString();
 	}
 

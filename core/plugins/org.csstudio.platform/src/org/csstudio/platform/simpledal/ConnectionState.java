@@ -33,6 +33,8 @@ public enum ConnectionState {
 	 */
 	UNKNOWN(null),
 
+	INITIAL(org.epics.css.dal.context.ConnectionState.INITIAL),
+	
 	/**
 	 * If connection is valid and connected.
 	 */

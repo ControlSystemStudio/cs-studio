@@ -137,11 +137,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_ALIASES)+"\n");
-		buffer.append(createParameter(PROP_ACTIONDATA)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ACTIONDATA)+"\n");
 		buffer.append("Performed Action: ");
-		buffer.append(createParameter(PROP_ACTION_PRESSED_INDEX));
-		buffer.append(createParameter(PROP_ACTION_RELEASED_INDEX));
+		buffer.append(createTooltipParameter(PROP_ACTION_PRESSED_INDEX));
+		buffer.append(createTooltipParameter(PROP_ACTION_RELEASED_INDEX));
 		return buffer.toString();
 	}
 

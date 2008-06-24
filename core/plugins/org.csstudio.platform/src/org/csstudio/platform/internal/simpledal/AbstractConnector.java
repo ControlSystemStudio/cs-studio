@@ -30,6 +30,7 @@ import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.simpledal.IConnectorStatistic;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.platform.util.PerformanceUtil;
@@ -47,13 +48,13 @@ import org.csstudio.platform.util.PerformanceUtil;
  * 
  */
 @SuppressWarnings("unchecked")
-abstract class AbstractConnector {
+abstract class AbstractConnector implements IConnectorStatistic {
 	private Object _latestValue;
 
 	private ConnectionState _latestConnectionState;
 
 	/**
-	 * The process variable pointer for the channel, this connector is connected
+	 * The process variable pointer for the channel this connector is connected
 	 * to.
 	 */
 	private IProcessVariableAddress _processVariableAddress;
@@ -80,6 +81,35 @@ abstract class AbstractConnector {
 		PerformanceUtil.getInstance().constructorCalled(this);
 	}
 
+	
+	/**
+	 *{@inheritDoc}
+	 */
+	public int getListenerCount() {
+		return _weakListenerReferences.size();
+	}
+	
+		/**
+		 *{@inheritDoc}
+		 */
+	public ConnectionState getLatestConnectionState() {
+		return _latestConnectionState;
+	}
+	
+		/**
+		 *{@inheritDoc}
+		 */
+	public Object getLatestValue() {
+		return _latestValue;
+	}
+	
+		/**
+		 *{@inheritDoc}
+		 */
+	public String getLatestError() {
+		return _latestError;
+	}
+	
 	/**
 	 * Forwards the specified connection state.
 	 * 
@@ -179,15 +209,16 @@ abstract class AbstractConnector {
 		return _weakListenerReferences.isEmpty();
 	}
 
-	/**
-	 * Returns the process variable address.
-	 * 
-	 * @return the process variable address
-	 */
+		/**
+		 *{@inheritDoc}
+		 */
 	public IProcessVariableAddress getProcessVariableAddress() {
 		return _processVariableAddress;
 	}
 
+		/**
+		 *{@inheritDoc}
+		 */
 	public ValueType getValueType() {
 		return _valueType;
 	}
@@ -201,10 +232,12 @@ abstract class AbstractConnector {
 	protected void doForwardConnectionStateChange(
 			final ConnectionState connectionState) {
 		if (connectionState != null) {
+			// remember the latest state
+			_latestConnectionState = connectionState;
+			
 			execute(new IRunnable() {
 				public void doRun(IProcessVariableValueListener listener) {
 					listener.connectionStateChanged(connectionState);
-					_latestConnectionState = connectionState;
 				}
 			});
 		}
@@ -321,4 +354,8 @@ abstract class AbstractConnector {
 		PerformanceUtil.getInstance().finalizedCalled(this);
 	}
 
+	@Override
+	public String toString() {
+		return _processVariableAddress.getProperty();
+	}
 }

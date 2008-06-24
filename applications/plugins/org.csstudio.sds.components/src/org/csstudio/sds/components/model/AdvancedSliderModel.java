@@ -114,13 +114,13 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
 		buffer.append("Maximum:\t");
-		buffer.append(createParameter(PROP_MAX)+"\n");
+		buffer.append(createTooltipParameter(PROP_MAX)+"\n");
 		buffer.append("Minimum:\t");
-		buffer.append(createParameter(PROP_MIN)+"\n");
+		buffer.append(createTooltipParameter(PROP_MIN)+"\n");
 		buffer.append("Current Value:\t");
-		buffer.append(createParameter(PROP_VALUE));
+		buffer.append(createTooltipParameter(PROP_VALUE));
 		return buffer.toString();
 	}
 

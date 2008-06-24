@@ -24,8 +24,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
+import org.csstudio.sds.model.LabelModel;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
 import org.junit.Test;

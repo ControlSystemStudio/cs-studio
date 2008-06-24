@@ -25,8 +25,8 @@ import org.eclipse.draw2d.ButtonModel;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
-import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
+import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;

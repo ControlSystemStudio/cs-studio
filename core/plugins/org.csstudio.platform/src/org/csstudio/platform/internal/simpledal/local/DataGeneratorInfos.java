@@ -19,13 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.internal.simpledal.local;
+package org.csstudio.platform.internal.simpledal.local;
 
 import java.util.regex.Pattern;
 
 import org.csstudio.platform.logging.CentralLogger;
 
+/**
+ * Process variable name patterns for local channels.
+ * 
+ * @author swende
+ * 
+ */
 public enum DataGeneratorInfos {
+
+	/**
+	 * Countdown generator pattern. The pattern reads the following variables in
+	 * the process variable name
+	 * <code> local://property COUNTDOWN:{from}:{to}:{period}:{update} </code>,
+	 * for example <code>local://abc COUNTDOWN:100:0:10000:200</code> will
+	 * count down from 100 to 0 in 10 seconds and an update event will be fired
+	 * each 200 ms.
+	 * 
+	 */
+	COUNTDOWN("^.* COUNTDOWN:([0-9]+):([0-9]+):([0-9]+):([0-9]+)$",
+			new CountdownGeneratorFactory()),
+
 	/**
 	 * Random number generator pattern. The pattern reads the following
 	 * variables in the process variable name
@@ -40,15 +59,16 @@ public enum DataGeneratorInfos {
 	/**
 	 * Class method generator pattern. The pattern reads the following variables
 	 * in the process variable name
-	 * <code> local://property CLM:{classname}:{methodname}:{period} </code>, for example
-	 * <code>local://abc CLM:java.lang.String:toString:10</code> which creates ...
+	 * <code> local://property CLM:{classname}:{methodname}:{period} </code>,
+	 * for example <code>local://abc CLM:java.lang.String:toString:10</code>
+	 * which creates ...
 	 * 
 	 */
 	CLASS_METHOD("^.* CLM:(.+):(.+):([0-9]+)$",
 			new ClassMethodGeneratorFactory()),
 
 	SYSTEM_INFO("^.*SINFO:([a-zA-Z0-9]+)(:([0-9]+))?$",
-			new SystemInfoGeneratorFactory());	
+			new SystemInfoGeneratorFactory());
 
 	private Pattern _pattern;
 	private IDataGeneratorFactory _dataGeneratorFactory;

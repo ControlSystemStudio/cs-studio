@@ -111,9 +111,9 @@ public final class EllipseModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
 		buffer.append("Value:\t");
-		buffer.append(createParameter(PROP_FILL));
+		buffer.append(createTooltipParameter(PROP_FILL));
 		return buffer.toString();
 	}
 

@@ -24,6 +24,7 @@ package org.csstudio.sds.components.model;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.csstudio.sds.model.LabelModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +50,7 @@ public final class LabelElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.LabelModel#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.model.LabelModel#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -58,7 +59,7 @@ public final class LabelElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.LabelModel#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.model.LabelModel#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {

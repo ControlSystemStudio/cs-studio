@@ -22,11 +22,14 @@
 package org.csstudio.platform.internal.simpledal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.activemq.broker.region.ConnectorStatistics;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.internal.simpledal.local.LocalChannelPool;
 import org.csstudio.platform.logging.CentralLogger;
@@ -35,6 +38,8 @@ import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.simpledal.ConnectorIdentification;
+import org.csstudio.platform.simpledal.IConnectorStatistic;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.SettableState;
@@ -57,7 +62,7 @@ import org.epics.css.dal.spi.PropertyFactory;
  * 
  * @author Sven Wende
  * 
- * TODO: Schreiben von Werten ermï¿½glichen!
+ * TODO: Schreiben von Werten ermöglichen!
  * 
  * TODO: Sync/Async Lesen von Werten (x)
  * 
@@ -67,7 +72,7 @@ import org.epics.css.dal.spi.PropertyFactory;
 public class ProcessVariableConnectionService implements
 		IProcessVariableConnectionService {
 
-	private Map<MapKey, AbstractConnector> _connectors;
+	private Map<ConnectorIdentification, AbstractConnector> _connectors;
 
 	/**
 	 * A cleanup thread which disposes unnecessary connections.
@@ -83,7 +88,7 @@ public class ProcessVariableConnectionService implements
 	 * Constructor.
 	 */
 	ProcessVariableConnectionService() {
-		_connectors = new HashMap<MapKey, AbstractConnector>();
+		_connectors = new HashMap<ConnectorIdentification, AbstractConnector>();
 		_cleanupThread = new CleanupThread();
 		_cleanupThread.start();
 	}
@@ -103,6 +108,16 @@ public class ProcessVariableConnectionService implements
 		return _connectors.keySet().size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<IConnectorStatistic> getConnectorStatistic() {
+		List<IConnectorStatistic> result = new ArrayList<IConnectorStatistic>();
+		result.addAll(_connectors.values());
+		return result;
+		
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -499,7 +514,7 @@ public class ProcessVariableConnectionService implements
 							// }
 						}
 
-						// FIXME: eigene Subklasse fï¿½r diesen ResponseListener
+						// FIXME: eigene Subklasse für diesen ResponseListener
 						ResponseListener responseListener = new ResponseListener() {
 							public void responseError(ResponseEvent event) {
 								// forward the error
@@ -653,7 +668,7 @@ public class ProcessVariableConnectionService implements
 			IProcessVariableValueListener listener) {
 
 		// there is one connector for each pv-type-combination
-		MapKey key = new MapKey(pv, valueType);
+		ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
 
 		synchronized (_connectors) {
 			AbstractConnector connector = (AbstractConnector) _connectors
@@ -685,6 +700,11 @@ public class ProcessVariableConnectionService implements
 	private AbstractConnector createConnectorForLocal(
 			IProcessVariableAddress pv, ValueType valueType) {
 		LocalConnector connector = new LocalConnector(pv, valueType);
+		
+		// send initial connection state (local channels are always connected)
+		connector.forwardConnectionState(ConnectionState.CONNECTED);
+		
+		
 		LocalChannelPool.getInstance().getChannel(pv, valueType).addListener(
 				connector);
 
@@ -701,7 +721,7 @@ public class ProcessVariableConnectionService implements
 		try {
 			dynamicValueProperty = createOrGetDalProperty(pv, valueType
 					.getDalType());
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			connector.forwardError(e.getLocalizedMessage());
 		}
 
@@ -767,7 +787,7 @@ public class ProcessVariableConnectionService implements
 		DynamicValueProperty property = connector.getDalProperty();
 
 		connector.setDalProperty(null);
-
+		
 		if (property != null && !property.isDestroyed()) {
 			// remove link listener
 			property.removeLinkListener(connector);
@@ -793,7 +813,7 @@ public class ProcessVariableConnectionService implements
 			// if the property is not used anymore by other connectors,
 			// destroy it
 			// FIXME: Dies ist nur ein Workarround. Igor bitten, das
-			// Zerstï¿½ren von Properties tranparent zu gestalten.
+			// Zerstören von Properties tranparent zu gestalten.
 			if (property.getDynamicValueListeners().length <= 1
 					&& property.getResponseListeners().length <= 0) {
 				factory.getPropertyFamily().destroy(property);
@@ -915,7 +935,7 @@ public class ProcessVariableConnectionService implements
 	 * a DynamicValueProperty when the DynamicValueProperty is connected.
 	 * 
 	 * This is a just a workaround, which is necessary because
-	 * DynamicValueListenerï¿½s cannot be attached to DynamicValueProperty before
+	 * DynamicValueListener´s cannot be attached to DynamicValueProperty before
 	 * they are connected to a channel. (//TODO: Cosylab! Please fix this!)
 	 * 
 	 * @author Sven Wende
@@ -1098,12 +1118,12 @@ public class ProcessVariableConnectionService implements
 		 */
 		private void doCleanup() {
 			synchronized (_connectors) {
-				List<MapKey> deleteCandidates = new ArrayList<MapKey>();
+				List<ConnectorIdentification> deleteCandidates = new ArrayList<ConnectorIdentification>();
 
-				Iterator<MapKey> it = _connectors.keySet().iterator();
+				Iterator<ConnectorIdentification> it = _connectors.keySet().iterator();
 
 				while (it.hasNext()) {
-					MapKey key = it.next();
+					ConnectorIdentification key = it.next();
 					AbstractConnector connector = _connectors.get(key);
 
 					if (connector.isDisposable()) {
@@ -1111,7 +1131,7 @@ public class ProcessVariableConnectionService implements
 					}
 				}
 
-				for (MapKey key : deleteCandidates) {
+				for (ConnectorIdentification key : deleteCandidates) {
 					AbstractConnector connector = _connectors.remove(key);
 
 					if (connector instanceof DalConnector) {
@@ -1126,48 +1146,6 @@ public class ProcessVariableConnectionService implements
 				}
 			}
 		}
-	}
-
-	class MapKey {
-		private IProcessVariableAddress _processVariableAddress;
-		private ValueType _valueType;
-
-		private MapKey(IProcessVariableAddress processVariableAddress,
-				ValueType valueType) {
-			_processVariableAddress = processVariableAddress;
-			_valueType = valueType;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime
-					* result
-					+ ((_processVariableAddress == null) ? 0
-							: _processVariableAddress.hashCode());
-			result = prime * result
-					+ ((_valueType == null) ? 0 : _valueType.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			boolean result = false;
-
-			if (obj != null && obj instanceof MapKey) {
-				MapKey other = (MapKey) obj;
-
-				if (other._valueType == _valueType
-						&& other._processVariableAddress
-								.equals(_processVariableAddress)) {
-					result = true;
-				}
-			}
-
-			return result;
-		}
-
 	}
 
 	/**
@@ -1186,20 +1164,21 @@ public class ProcessVariableConnectionService implements
 				DynamicValueProperty p = createOrGetDalProperty(pv, valueType
 						.getDalType());
 
+
 				long timeout = System.currentTimeMillis() + 1000;
 
-				while (!p.isConnected() && System.currentTimeMillis() < timeout) {
+				while (!p.isConnected()
+						&& System.currentTimeMillis() < timeout) {
 					try {
 						Thread.sleep(1);
 					} catch (InterruptedException e) {
 					}
 				}
-
+				
 				// DAL encapsulates the detection of the current user internally
 				// (probably via global system properties)
-				if (p.isConnected()) {
-					result = p.isSettable() ? SettableState.SETTABLE
-							: SettableState.NOT_SETTABLE;
+				if(p.isConnected()) {
+					result = p.isSettable() ? SettableState.SETTABLE : SettableState.NOT_SETTABLE;
 				}
 			} catch (Exception e) {
 				CentralLogger.getInstance().error(

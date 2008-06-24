@@ -139,21 +139,21 @@ public final class MeterModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
 		buffer.append("Maximum:\t");
-		buffer.append(createParameter(PROP_MAXVAL)+"\n");
+		buffer.append(createTooltipParameter(PROP_MAXVAL)+"\n");
 		buffer.append("Minimum:\t");
-		buffer.append(createParameter(PROP_MINVAL)+"\n");
+		buffer.append(createTooltipParameter(PROP_MINVAL)+"\n");
 		buffer.append("Value:\t");
-		buffer.append(createParameter(PROP_VALUE)+"\n");
+		buffer.append(createTooltipParameter(PROP_VALUE)+"\n");
 		buffer.append("Level HIHI:\t");
-		buffer.append(createParameter(PROP_HIHIBOUND)+"\n");
+		buffer.append(createTooltipParameter(PROP_HIHIBOUND)+"\n");
 		buffer.append("Level HI:\t");
-		buffer.append(createParameter(PROP_HIBOUND)+"\n");
+		buffer.append(createTooltipParameter(PROP_HIBOUND)+"\n");
 		buffer.append("Level LO:\t");
-		buffer.append(createParameter(PROP_LOBOUND)+"\n");
+		buffer.append(createTooltipParameter(PROP_LOBOUND)+"\n");
 		buffer.append("Level LOLO:\t");
-		buffer.append(createParameter(PROP_LOLOBOUND));
+		buffer.append(createTooltipParameter(PROP_LOLOBOUND));
 		return buffer.toString();
 	}
 

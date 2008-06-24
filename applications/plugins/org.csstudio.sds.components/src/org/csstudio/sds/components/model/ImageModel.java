@@ -104,9 +104,9 @@ public final class ImageModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
 		buffer.append("Image:\t");
-		buffer.append(createParameter(PROP_FILENAME));
+		buffer.append(createTooltipParameter(PROP_FILENAME));
 		return buffer.toString();
 	}
 

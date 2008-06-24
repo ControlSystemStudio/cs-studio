@@ -21,7 +21,7 @@
  */
  package org.csstudio.sds.components.epics;
 
-import org.csstudio.sds.components.model.LabelModel;
+import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 

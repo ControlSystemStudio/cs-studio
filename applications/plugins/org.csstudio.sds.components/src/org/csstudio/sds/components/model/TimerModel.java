@@ -118,11 +118,11 @@ public final class TimerModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
 		buffer.append("Script:\t");
-		buffer.append(createParameter(PROP_SCRIPT)+"\n");
+		buffer.append(createTooltipParameter(PROP_SCRIPT)+"\n");
 		buffer.append("Delay:\t");
-		buffer.append(createParameter(PROP_DELAY));
+		buffer.append(createTooltipParameter(PROP_DELAY));
 		return buffer.toString();
 	}
 

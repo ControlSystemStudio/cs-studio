@@ -25,8 +25,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.LabelModel;
 import org.junit.Before;
 import org.junit.Test;
 
