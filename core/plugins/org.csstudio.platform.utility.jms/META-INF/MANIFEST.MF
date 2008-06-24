@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jms Utility Plug-in
+Bundle-SymbolicName: org.csstudio.platform.utility.jms
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.platform.utility.jms.Activator
+Require-Bundle: org.junit4,
+ org.csstudio.platform,
+ org.csstudio.platform.libs.jms;visibility:=reexport
+Export-Package: org.csstudio.platform.utility.jms,
+ org.csstudio.platform.utility.jms.preferences
+Bundle-ClassPath: .
