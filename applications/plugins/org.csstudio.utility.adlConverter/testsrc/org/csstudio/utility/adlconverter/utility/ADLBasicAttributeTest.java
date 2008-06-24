@@ -26,7 +26,10 @@ package org.csstudio.utility.adlconverter.utility;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,17 +77,21 @@ public class ADLBasicAttributeTest {
      */
     @Test
     public void testADLBasicAttribute() {
-        ADLBasicAttribute testBA = null;
-        try {
-//            testBA = new ADLBasicAttribute(_adlBasicAttributeString);
-            // Positive
-            assertNotNull("ADLBasicAttribute is Null",testBA);
-//            assertTrue(testBA.getAdlBasicAttributes().length==4);
-        }catch (Exception e) {
-            e.printStackTrace();
-            fail("ADLBasicAttribute dislike the _adlBasicAttributeString");
+        for (ADLWidget obj : _adlBasicAttributeString.getObjects()) {
+            if (obj.isType("object")) { //$NON-NLS-1$
+                try {
+                    ADLBasicAttribute testBA = new ADLBasicAttribute(obj, null);
+                    // Positive
+                    assertNotNull("ADLBasicAttribute is Null",testBA);
+//                    assertTrue(testBA.getAdlBasicAttributes().length==4);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    fail("ADLBasicAttribute dislike the _adlBasicAttributeString");
+                }
+                fail("Not yet implemented");
+
+            }
         }
-        fail("Not yet implemented");
     }
 
     /**

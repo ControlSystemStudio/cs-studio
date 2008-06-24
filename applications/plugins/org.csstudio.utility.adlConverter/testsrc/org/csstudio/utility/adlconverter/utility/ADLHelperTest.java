@@ -25,7 +25,9 @@
 package org.csstudio.utility.adlconverter.utility;
 
 import static org.junit.Assert.fail;
+import junit.framework.Assert;
 
+import org.eclipse.swt.SWT;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,28 +56,65 @@ public class ADLHelperTest {
     public void setUp() throws Exception {
     }
 
-    /**
-     * Test method for
-     * {@link org.csstudio.utility.adlconverter.utility.ADLHelper#getColorElement(java.lang.String)}.
-     */
     @Test
-    public void testGetColorElement() {
-        try {
-            ADLHelper.setColorMap(_colors);
-//            Element testGetObj = ADLHelper.getColorElement("0");
-//            assertNotNull(testGetObj);
-//            assertEquals("1", testGetObj.getAttributeValue("red"));
-//            assertEquals("2", testGetObj.getAttributeValue("green"));
-//            assertEquals("3", testGetObj.getAttributeValue("blue"));
-//            testGetObj = ADLHelper.getColorElement("4");
-//            assertNotNull(testGetObj);
-//            assertEquals("153", testGetObj.getAttributeValue("red"));
-//            assertEquals("255", testGetObj.getAttributeValue("green"));
-//            assertEquals("199", testGetObj.getAttributeValue("blue"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Dislike the Colorstring");
+    public void testGetFontSize(){
+        String font = "Times New Roman";
+        String text = "hallo";
+        int maxHigh = 20;
+        int maxWidth = 100;
+        String style = "0";
+        try{
+            Assert.assertTrue(ADLHelper.getFontSize(font, text, maxHigh, maxWidth, style)>1);
+        }catch (Exception e){
+            fail("Dislike the font property settings");
         }
+        
+        try{
+            font = "gibt es nicht";
+            text = "°!\"§$%&/()=?`´\\ß^+*~#',.-;:_@€<>|";
+            maxHigh = 20;
+            maxWidth = 100;
+            style = "-1";
+
+            Assert.assertTrue(ADLHelper.getFontSize(font, text, maxHigh, maxWidth, style)>1);
+        }catch (Exception e){
+            fail("Dislike the font property settings");
+        }
+
+        try{
+            font = null;
+            text = null;
+            maxHigh = 20;
+            maxWidth = 100;
+            style = null;
+
+            Assert.assertTrue(ADLHelper.getFontSize(font, text, maxHigh, maxWidth, style)>1);
+        }catch (Exception e){
+            fail("Dislike the font property settings");
+        }
+
+        try{
+            font = "Times New Roman";
+            text = "hallo";
+            maxHigh = 0;
+            maxWidth = 0;
+            style = "0";
+            
+            Assert.assertTrue(ADLHelper.getFontSize(font, text, maxHigh, maxWidth, style)>0);
+        }catch (Exception e){
+            fail("Dislike the font property settings");
+        }
+
+    }
+    
+    @Test
+    public void testGetRGB(){
+        
+    }
+    
+    @Test
+    public void testSetChan(){
+        
     }
 
     /**
@@ -83,10 +122,10 @@ public class ADLHelperTest {
      * {@link org.csstudio.utility.adlconverter.utility.ADLHelper#setColorMap(java.lang.String[])}.
      */
     @Test
-    public void testSetColorMap() {
+    public void testSetColorMap(){
         // Positive
-        try {
-            ADLHelper.setColorMap(_colors);
+//        try {
+//            ADLHelper.setColorMap(_colors);
 //            Element testGetObj = ADLHelper.getColorElement("0");
 //            assertNotNull(testGetObj);
 //            assertEquals("1", testGetObj.getAttributeValue("red"));
@@ -97,10 +136,24 @@ public class ADLHelperTest {
 //            assertEquals("153", testGetObj.getAttributeValue("red"));
 //            assertEquals("255", testGetObj.getAttributeValue("green"));
 //            assertEquals("199", testGetObj.getAttributeValue("blue"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Dislike the Colorstring");
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            fail("Dislike the Colorstring");
+//        }   
     }
-
+    
+    @Test
+    public void testSetConnectionState(){
+        
+    }
+    
+    @Test
+    public void testCheckAndSetLayer(){
+        
+    }
+    
+    @Test
+    public void testCleanString(){
+        
+    }
 }

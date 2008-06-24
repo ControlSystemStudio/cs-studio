@@ -89,13 +89,13 @@ public class Display extends Widget{
                 // TODO: Display --> type
             }else if(row[0].trim().toLowerCase().equals("gridspacing")){ //$NON-NLS-1$
                 CentralLogger.getInstance().debug(this, "gridspacing"+display.toString());
-                // TODO: Display --> gridSpacing
+                // TODO: SDS don't support yet. Display --> gridSpacing
             }else if(row[0].trim().toLowerCase().equals("gridon")){ //$NON-NLS-1$
                 CentralLogger.getInstance().debug(this, "gridon"+display.toString());
-                // TODO: Display --> gridOn
+                // TODO: SDS don't support yet. Display --> gridOn
             }else if(row[0].trim().toLowerCase().equals("snaptogrid")){ //$NON-NLS-1$
                 CentralLogger.getInstance().debug(this, "snaptogrid"+display.toString());
-                // TODO: Display --> snapToGrid
+                // TODO: SDS don't support yet. Display --> snapToGrid
             }else {
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+parameter+Messages.Display_WrongADLFormatException_Parameter_End);
             }
