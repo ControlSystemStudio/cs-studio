@@ -4,6 +4,8 @@ import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
+import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
+import org.csstudio.nams.configurator.modelmapping.ModelFactory;
 import org.csstudio.nams.configurator.views.AlarmbearbeiterView;
 import org.csstudio.nams.configurator.views.AlarmbearbeitergruppenView;
 import org.csstudio.nams.configurator.views.AlarmtopicView;
@@ -16,12 +18,11 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.newconfigurator";
-	private LocalStoreConfigurationService localStoreConfigurationService;
 	
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService @Required LocalStoreConfigurationService localStoreConfigurationService) {
-		this.localStoreConfigurationService = localStoreConfigurationService;
 		ModelFactory modelFactory = new ModelFactory(localStoreConfigurationService);
+		ConfigurationModel.staticInject(localStoreConfigurationService, modelFactory);
 		AlarmbearbeitergruppenView.staticInject(modelFactory);
 		AlarmbearbeiterView.staticInject(modelFactory);
 		AlarmtopicView.staticInject(modelFactory);

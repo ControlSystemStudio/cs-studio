@@ -1,10 +1,10 @@
-package org.csstudio.nams.configurator.beans;
+package org.csstudio.nams.configurator.modelmapping;
 
 import java.util.Collection;
 
 public interface IConfigurationModel {
 
-	public IConfigurationBean save(IConfigurationBean bean, String groupName);
+	public IConfigurationBean save(IConfigurationBean bean);
 
 	public Collection<String> getSortgroupNames();
 }

@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
+
 
 /**
  * Da einige Beans mehr als den PropertyChangeSupport benötigen, wird die

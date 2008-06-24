@@ -75,4 +75,6 @@ public interface LocalStoreConfigurationService {
 	 * @param historyDTO
 	 */
 	public void saveHistoryDTO(HistoryDTO historyDTO);
+	
+	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(AlarmbearbeiterDTO alarmBearbeiterDTO);
 }

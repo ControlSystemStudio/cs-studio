@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator;
+package org.csstudio.nams.configurator.modelmapping;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -51,7 +51,7 @@ public class ModelFactory {
 		return beans.toArray(new AlarmbearbeiterBean[beans.size()]);
 	}
 
-	private AlarmbearbeiterBean DTO2Bean(
+	AlarmbearbeiterBean DTO2Bean(
 			AlarmbearbeiterDTO alarmbearbeiter) {
 		AlarmbearbeiterBean bean = new AlarmbearbeiterBean();
 		bean.setActive(alarmbearbeiter.isActive());
@@ -75,7 +75,7 @@ public class ModelFactory {
 		return beans.toArray(new AlarmbearbeiterGruppenBean[beans.size()]);
 	}
 	
-	private AlarmbearbeiterGruppenBean DTO2Bean(AlarmbearbeiterGruppenDTO dto){
+	AlarmbearbeiterGruppenBean DTO2Bean(AlarmbearbeiterGruppenDTO dto){
 		AlarmbearbeiterGruppenBean bean = new AlarmbearbeiterGruppenBean();
 		bean.setActive(dto.isActive());
 		bean.setGroupID(dto.getUserGroupId());
@@ -94,7 +94,7 @@ public class ModelFactory {
 		return beans.toArray(new AlarmtopicBean[beans.size()]);
 	}
 
-	private AlarmtopicBean DTO2Bean(TopicDTO dto) {
+	AlarmtopicBean DTO2Bean(TopicDTO dto) {
 		AlarmtopicBean bean = new AlarmtopicBean();
 		bean.setDescription(dto.getDescription());
 		bean.setHumanReadableName(dto.getName());
@@ -112,7 +112,7 @@ public class ModelFactory {
 		return beans.toArray(new FilterBean[beans.size()]);
 	}
 
-	private FilterBean DTO2Bean(FilterDTO filter) {
+	FilterBean DTO2Bean(FilterDTO filter) {
 		FilterBean bean = new FilterBean();
 		bean.setDefaultMessage(filter.getDefaultMessage());
 		bean.setFilterID(filter.getIFilterID());
@@ -129,7 +129,7 @@ public class ModelFactory {
 		return beans.toArray(new FilterbedingungBean[beans.size()]);
 	}
 
-	private FilterbedingungBean DTO2Bean(FilterConditionDTO filter) {
+	FilterbedingungBean DTO2Bean(FilterConditionDTO filter) {
 		FilterbedingungBean bean = new FilterbedingungBean();
 		bean.setFilterbedinungID(filter.getIFilterConditionID());
 		bean.setDescription(filter.getCDesc());

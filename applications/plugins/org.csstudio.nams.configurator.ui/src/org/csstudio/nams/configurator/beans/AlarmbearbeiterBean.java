@@ -158,26 +158,76 @@ public class AlarmbearbeiterBean extends
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof AlarmbearbeiterBean) {
-			AlarmbearbeiterBean bean = (AlarmbearbeiterBean) obj;
-			boolean isEqual = false;
-			if (this.getUserID() == bean.getUserID()
-					&& this.getConfirmCode().equals(bean.getConfirmCode())
-					&& this.getEmail().equals(bean.getEmail())
-					&& this.getMobilePhone().equals(bean.getMobilePhone())
-					&& this.getName().equals(bean.getName())
-					&& this.getPhone().equals(bean.getPhone())
-					&& this.getPreferedAlarmType() == bean
-							.getPreferedAlarmType()
-					&& this.getStatusCode().equals(bean.getStatusCode())
-					&& this.isActive() == bean.isActive()) {
-				isEqual = true;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((confirmCode == null) ? 0 : confirmCode.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + (isActive ? 1231 : 1237);
+		result = prime * result
+				+ ((mobilePhone == null) ? 0 : mobilePhone.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
+		result = prime
+				* result
+				+ ((preferedAlarmType == null) ? 0 : preferedAlarmType
+						.hashCode());
+		result = prime * result
+				+ ((statusCode == null) ? 0 : statusCode.hashCode());
+		result = prime * result + userID;
+		return result;
+	}
 
-			}
-			return isEqual;
-		}
-		return super.equals(obj);
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AlarmbearbeiterBean other = (AlarmbearbeiterBean) obj;
+		if (confirmCode == null) {
+			if (other.confirmCode != null)
+				return false;
+		} else if (!confirmCode.equals(other.confirmCode))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (isActive != other.isActive)
+			return false;
+		if (mobilePhone == null) {
+			if (other.mobilePhone != null)
+				return false;
+		} else if (!mobilePhone.equals(other.mobilePhone))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (phone == null) {
+			if (other.phone != null)
+				return false;
+		} else if (!phone.equals(other.phone))
+			return false;
+		if (preferedAlarmType == null) {
+			if (other.preferedAlarmType != null)
+				return false;
+		} else if (!preferedAlarmType.equals(other.preferedAlarmType))
+			return false;
+		if (statusCode == null) {
+			if (other.statusCode != null)
+				return false;
+		} else if (!statusCode.equals(other.statusCode))
+			return false;
+		if (userID != other.userID)
+			return false;
+		return true;
 	}
 
 	@Override

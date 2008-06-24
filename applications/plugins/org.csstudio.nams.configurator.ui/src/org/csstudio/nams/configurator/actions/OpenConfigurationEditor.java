@@ -1,9 +1,9 @@
 package org.csstudio.nams.configurator.actions;
 
-import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.beans.IConfigurationModel;
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
+import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
+import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;

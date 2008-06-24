@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.views;
 
-import org.csstudio.nams.configurator.ModelFactory;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
+import org.csstudio.nams.configurator.modelmapping.ModelFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;

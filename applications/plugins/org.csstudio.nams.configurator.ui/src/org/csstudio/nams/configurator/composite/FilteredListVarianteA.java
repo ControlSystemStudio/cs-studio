@@ -6,8 +6,8 @@ import java.util.Collection;
 
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
-import org.csstudio.nams.configurator.beans.ConfigurationModel;
-import org.csstudio.nams.configurator.beans.IConfigurationModel;
+import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
+import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;

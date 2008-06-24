@@ -10,6 +10,7 @@ import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -204,6 +205,12 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 					public void saveHistoryDTO(HistoryDTO historyDTO) {
 						fail("unexpected method call!");
+					}
+
+					public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
+							AlarmbearbeiterDTO alarmBearbeiterDTO) {
+						fail("unexpected method call!");
+						return null;
 					}
 
 				}, null);

@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.beans;
+package org.csstudio.nams.configurator.modelmapping;
 
 public interface IConfigurationBean {
 	public String getDisplayName();

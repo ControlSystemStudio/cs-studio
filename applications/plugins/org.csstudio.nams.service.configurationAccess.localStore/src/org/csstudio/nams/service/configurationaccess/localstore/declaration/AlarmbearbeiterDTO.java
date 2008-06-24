@@ -129,7 +129,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the userName to set
 	 */
 	@SuppressWarnings("unused")
-	private void setUserName(String userName) {
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
@@ -147,7 +147,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the email to set
 	 */
 	@SuppressWarnings("unused")
-	private void setEmail(String email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 
@@ -165,7 +165,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the mobilePhone to set
 	 */
 	@SuppressWarnings("unused")
-	private void setMobilePhone(String mobilePhone) {
+	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
 	}
 
@@ -183,7 +183,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the phone to set
 	 */
 	@SuppressWarnings("unused")
-	private void setPhone(String phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
@@ -201,7 +201,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the statusCode to set
 	 */
 	@SuppressWarnings("unused")
-	private void setStatusCode(String statusCode) {
+	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
 	}
 
@@ -219,7 +219,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the confirmCode to set
 	 */
 	@SuppressWarnings("unused")
-	private void setConfirmCode(String confirmCode) {
+	public void setConfirmCode(String confirmCode) {
 		this.confirmCode = confirmCode;
 	}
 
@@ -235,7 +235,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	}
 
 	@SuppressWarnings("unused")
-	private void setActive(boolean active) {
+	public void setActive(boolean active) {
 		setActive((short) (active ? 1 : 0));
 	}
 

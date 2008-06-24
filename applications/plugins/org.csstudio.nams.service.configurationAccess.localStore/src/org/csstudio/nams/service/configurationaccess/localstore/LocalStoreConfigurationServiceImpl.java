@@ -1,7 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
+import java.io.Serializable;
 import java.util.List;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -175,6 +177,13 @@ class LocalStoreConfigurationServiceImpl implements
 		 Transaction tx = session.beginTransaction();
 		 session.save(historyDTO);
 		 tx.commit();
+	}
+	
+	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(AlarmbearbeiterDTO historyDTO) {
+		 Transaction tx = session.beginTransaction();
+		 Serializable generatedID = session.save(historyDTO);
+		 tx.commit();
+		 return (AlarmbearbeiterDTO) session.load(AlarmbearbeiterDTO.class, generatedID);
 	}
 
 }

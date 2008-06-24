@@ -4,9 +4,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.beans.IConfigurationModel;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
+import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -128,7 +128,7 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 		// speicher Änderungen im lokalen Model
 		IConfigurationBean updatedBean = this.model.save(
-				this.alarmbearbeiterClone, group);
+				this.alarmbearbeiterClone);
 
 		// copy clone state to original bean
 		this.alarmbearbeiterBean = (AlarmbearbeiterBean) updatedBean;
