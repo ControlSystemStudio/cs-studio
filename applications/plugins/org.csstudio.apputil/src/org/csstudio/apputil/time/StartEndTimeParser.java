@@ -60,8 +60,8 @@ public class StartEndTimeParser
     		                  final String end_specification)
         throws Exception
     {
-        this.start_specification = start_specification.replace(',', ' ');
-        this.end_specification = end_specification.replace(',', ' ');
+        this.start_specification = start_specification.replace(',', ' ').trim();
+        this.end_specification = end_specification.replace(',', ' ').trim();
         rel_start = RelativeTimeParser.parse(this.start_specification);
         rel_end = RelativeTimeParser.parse(this.end_specification);
         
