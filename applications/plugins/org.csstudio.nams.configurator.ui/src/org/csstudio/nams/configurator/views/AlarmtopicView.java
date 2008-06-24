@@ -17,7 +17,6 @@ public class AlarmtopicView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		new FilteredListVarianteA(parent, SWT.None)  {
-			@Override
 			protected Object[] getTableInput() {
 				return modelFactory.getAlarmTopicBeans();
 			}

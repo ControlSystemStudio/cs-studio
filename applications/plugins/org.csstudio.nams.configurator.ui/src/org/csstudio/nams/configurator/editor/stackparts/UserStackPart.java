@@ -196,9 +196,9 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 				this.alarmbearbeiterClone,
 				AlarmbearbeiterBean.PropertyNames.confirmCode.name());
 
-		// IObservableValue activeCheckboxObservable = BeansObservables
-		// .observeValue(this.alarmbearbeiterClone,
-		// AlarmbearbeiterBean.PropertyNames.active.name());
+		IObservableValue activeCheckboxObservable = BeansObservables
+				.observeValue(this.alarmbearbeiterClone,
+						AlarmbearbeiterBean.PropertyNames.active.name());
 
 		// bind observables
 		context.bindValue(SWTObservables
@@ -221,8 +221,8 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 		context.bindValue(SWTObservables.observeText(_confirmCodeTextEntry,
 				SWT.Modify), confirmTextObservable, null, null);
 
-		// context.bindValue(SWTObservables.observeEditable(_activeCheckBoxEntry),
-		// activeCheckboxObservable, null, null);
+		context.bindValue(SWTObservables.observeSelection(_activeCheckBoxEntry),
+				activeCheckboxObservable, null, null);
 	}
 
 	@Override

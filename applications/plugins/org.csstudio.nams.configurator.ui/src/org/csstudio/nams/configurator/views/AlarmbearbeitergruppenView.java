@@ -20,7 +20,6 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 
 		new FilteredListVarianteA(parent, SWT.None) {
 
-			@Override
 			protected Object[] getTableInput() {
 				return modelFactory.getAlarmBearbeiterGruppenBeans();
 			}

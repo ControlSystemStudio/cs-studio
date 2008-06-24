@@ -3,7 +3,6 @@ package org.csstudio.nams.configurator.composite;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
@@ -33,7 +32,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-public class FilteredListVarianteA {
+public abstract class FilteredListVarianteA {
 
 	private String filterkriterium = "";
 	private String gruppenname = "";
@@ -69,6 +68,8 @@ public class FilteredListVarianteA {
 				gruppen.add("Kryo OPS");
 				gruppen.add("C1-WPS");
 				gruppen.select(0);
+				//FIXME remove hardcoded group names
+
 
 				gruppen.addListener(SWT.Modify, new Listener() {
 					public void handleEvent(Event event) {
@@ -132,6 +133,7 @@ public class FilteredListVarianteA {
 				Collection<String> groupNames = new ArrayList<String>();
 				groupNames.add("Kryo OPS");
 				groupNames.add("C1-WPS");
+				//FIXME remove hardcoded group names
 				return groupNames;
 			}
 		};
@@ -187,22 +189,7 @@ public class FilteredListVarianteA {
 		}
 	}
 
-	protected Object[] getTableInput() {
-		List<Object> list = new ArrayList<Object>();
-		list.addAll(Arrays.asList(getKryoOps()));
-		list.addAll(Arrays.asList(getWPS()));
-		return list.toArray();
-	}
-
-	protected Object[] getKryoOps() {
-		return new String[] { "Max Mayer", "Thomas D", "Max Peter",
-				"Hugo Balder", "Nora Jones", "Andre B", "Julius Caesar",
-				"Amy Winehouse" };
-	}
-
-	protected Object[] getWPS() {
-		return new String[] { "Hans Otto", "Thomas Otto", "M C Clausen" };
-	}
+	protected abstract Object[] getTableInput();
 
 	private class TableFilter extends ViewerFilter {
 
@@ -210,15 +197,8 @@ public class FilteredListVarianteA {
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
 			if (gruppenname.length() > 0 && !gruppenname.equals("ALLE")) {
-				if (gruppenname.equals("Kryo OPS")) {
-					if (!Arrays.asList(getKryoOps()).contains(element))
-						return false;
-				}
 
-				if (gruppenname.equals("C1-WPS")) {
-					if (!Arrays.asList(getWPS()).contains(element))
-						return false;
-				}
+				//TODO Tablefilter funzt so nich
 
 				if (gruppenname.equals("Ohne Rubrik")) {
 					return false;

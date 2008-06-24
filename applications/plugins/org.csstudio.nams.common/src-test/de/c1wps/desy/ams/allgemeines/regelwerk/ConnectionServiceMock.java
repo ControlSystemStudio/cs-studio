@@ -3,9 +3,12 @@
  */
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
+import java.util.List;
+
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.simpledal.IConnectorStatistic;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.SettableState;
@@ -244,4 +247,8 @@ class ConnectionServiceMock implements
     {
         return null;
     }
+
+	public List<IConnectorStatistic> getConnectorStatistic() {
+		return null;
+	}
 }

@@ -206,9 +206,7 @@ public class ConfigurationModel extends AbstractObservableBean implements
 				 * Gruppe wurde nicht geändert, einfach nur Bean updaten
 				 */
 				this.updateBeanState(bean, groupName);
-
 			}
-
 		}
 
 		Collection<IConfigurationRoot> oldValue = this.rootNodes;
@@ -222,10 +220,8 @@ public class ConfigurationModel extends AbstractObservableBean implements
 		 */
 		getPropertyChangeSupport().firePropertyChange("model", oldValue,
 				this.rootNodes);
-
 		IConfigurationBean updatedConfigurationItem = this
 				.getUpdatedConfigurationItem(bean);
-
 		return updatedConfigurationItem;
 	}
 

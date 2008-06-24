@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-public class FilteredListVarianteC {
+public abstract class FilteredListVarianteC {
 
 	public FilteredListVarianteC(Composite parent, int style) {
 		this.createPartControl(parent, style);
@@ -68,13 +68,7 @@ public class FilteredListVarianteC {
 		}
 	}
 
-	private Object[] getTableInput() {
-		TableInput[] input = new TableInput[3];
-		input[0] = new TableInput("Hans Otto", "AMS");
-		input[1] = new TableInput("Max Mayer", "AMS");
-		input[2] = new TableInput("Thomas D", "C1-WPS");
-		return input;
-	}
+	protected abstract Object[] getTableInput();
 
 	private class TableInput {
 		String name;
