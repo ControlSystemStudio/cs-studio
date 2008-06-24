@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.modelmapping;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
@@ -15,8 +16,8 @@ public class ConfigurationModel implements IConfigurationModel {
 	private static ModelFactory modelFactory;
 
 	public Collection<String> getSortgroupNames() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO you shall not see this
+		return Collections.EMPTY_LIST;
 	}
 
 	public IConfigurationBean save(IConfigurationBean bean) {
@@ -39,16 +40,15 @@ public class ConfigurationModel implements IConfigurationModel {
 			e.printStackTrace();
 		}
 		AlarmbearbeiterDTO dto = null;
-			for (AlarmbearbeiterDTO alarmbearbeiterDTO : gibAlleAlarmbearbeiter) {
-				if (alarmbearbeiterDTO.getUserId() == bean.getUserID())
-				{
-					dto = alarmbearbeiterDTO;
-					dto.setUserId(bean.getUserID());
-					break;
-				}
+		for (AlarmbearbeiterDTO alarmbearbeiterDTO : gibAlleAlarmbearbeiter) {
+			if (alarmbearbeiterDTO.getUserId() == bean.getUserID()) {
+				dto = alarmbearbeiterDTO;
+				dto.setUserId(bean.getUserID());
+				break;
+			}
 		}
-		if (dto == null){
-			 dto = new AlarmbearbeiterDTO();
+		if (dto == null) {
+			dto = new AlarmbearbeiterDTO();
 		}
 		dto.setActive(bean.isActive());
 		dto.setConfirmCode(bean.getConfirmCode());
@@ -63,7 +63,8 @@ public class ConfigurationModel implements IConfigurationModel {
 		return bean;
 	}
 
-	public static void staticInject(LocalStoreConfigurationService localStore, ModelFactory modelFactory) {
+	public static void staticInject(LocalStoreConfigurationService localStore,
+			ModelFactory modelFactory) {
 		ConfigurationModel.localStore = localStore;
 		ConfigurationModel.modelFactory = modelFactory;
 	}

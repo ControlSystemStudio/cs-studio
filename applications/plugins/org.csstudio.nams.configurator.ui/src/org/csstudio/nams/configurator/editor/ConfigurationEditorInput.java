@@ -11,9 +11,9 @@ public class ConfigurationEditorInput implements IEditorInput {
 	private final IConfigurationBean bean;
 	private final IConfigurationModel model;
 
-	public ConfigurationEditorInput(IConfigurationBean newElement,
+	public ConfigurationEditorInput(IConfigurationBean newBean,
 			IConfigurationModel model) {
-		this.bean = newElement;
+		this.bean = newBean;
 		this.model = model;
 	}
 

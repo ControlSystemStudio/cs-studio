@@ -126,6 +126,24 @@
             name="AMS perspective">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.nams.configurator.actions.CreateNewEmptyEditor"
+            id="newEditor.command"
+            name="Neu...">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.csstudio.nams.configurator.alarmbearbeiter">
+         <command
+               commandId="newEditor.command"
+               id="newEditor.command.contribution">
+         </command>
+      </menuContribution>
+   </extension>
 w
 
 </plugin>
