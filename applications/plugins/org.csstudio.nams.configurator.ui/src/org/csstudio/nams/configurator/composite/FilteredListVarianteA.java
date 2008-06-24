@@ -127,7 +127,7 @@ public abstract class FilteredListVarianteA {
 		Object source = selection.getFirstElement();
 		AbstractConfigurationBean<?> configurationBean= (AbstractConfigurationBean<?>) source;
 
-		IConfigurationModel model = new ConfigurationModel(null) {
+		IConfigurationModel model = new ConfigurationModel() {
 			@Override
 			public Collection<String> getSortgroupNames() {
 				Collection<String> groupNames = new ArrayList<String>();

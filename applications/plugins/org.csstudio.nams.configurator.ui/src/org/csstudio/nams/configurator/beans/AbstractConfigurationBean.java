@@ -1,7 +1,5 @@
 package org.csstudio.nams.configurator.beans;
 
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
 
 /**
  * Da einige Beans mehr als den PropertyChangeSupport benötigen, wird die
@@ -27,19 +25,9 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		return this.getDisplayName().compareTo(o.getDisplayName());
 	}
 
-	private IConfigurationGroup parent;
-
 	public abstract T getClone();
 
 	public abstract void updateState(T bean);
 
 	public abstract int getID();
-
-	public IConfigurationGroup getParent() {
-		return parent;
-	}
-
-	public void setParent(IConfigurationGroup parent) {
-		this.parent = parent;
-	}
 }

@@ -3,9 +3,9 @@ package org.csstudio.nams.configurator.editor.stackparts;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationModel;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;

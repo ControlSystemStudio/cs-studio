@@ -4,10 +4,10 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationModel;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean.PreferedAlarmType;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -99,16 +99,6 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 		int selection = 0;
 		for (int groupName = 0; groupName < groupNames.length; groupName++) {
 			this._groupComboEntry.add(((String) groupNames[groupName]).trim());
-
-			/*
-			 * Falls Bean zu einer Gruppe hinzugefügt wurde, wähle die Gruppe in
-			 * der Combobox aus.
-			 */
-			if (this.alarmbearbeiterBean.getParent() != null
-					&& this.alarmbearbeiterBean.getDisplayName().equals(
-							groupNames[groupName])) {
-				selection = groupName;
-			}
 		}
 
 		this._groupComboEntry.select(selection);
@@ -124,30 +114,8 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	public boolean isDirty() {
 		if (this.alarmbearbeiterBean != null
 				&& this.alarmbearbeiterClone != null) {
-			boolean beansAreEqual = this.alarmbearbeiterBean
+			return !this.alarmbearbeiterBean
 					.equals(this.alarmbearbeiterClone);
-
-			/*
-			 * Neue Beans haben evtl. noch keine Gruppenzugehörigkeit, beachte
-			 * das
-			 */
-			if (this.alarmbearbeiterBean.getParent() != null) {
-
-				String beanGroup = this.alarmbearbeiterBean.getParent()
-						.getDisplayName();
-
-				boolean groupsAreEqual = beanGroup
-						.equalsIgnoreCase(this._groupComboEntry.getText());
-				if (beansAreEqual && groupsAreEqual) {
-					return false;
-				} else {
-
-					return true;
-				}
-			} else {
-				return !beansAreEqual;
-			}
-
 		} else
 			return false;
 	}
