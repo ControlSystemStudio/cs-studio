@@ -60,8 +60,7 @@ public class ModelFactory {
 		bean.setMobilePhone(alarmbearbeiter.getMobilePhone());
 		bean.setName(alarmbearbeiter.getUserName());
 		bean.setPhone(alarmbearbeiter.getPhone());
-		//FIXME no idea!?
-		//		bean.setPreferedAlarmType(alarmbearbeiter.get);
+		bean.setPreferedAlarmType(alarmbearbeiter.getPreferedAlarmType());
 		bean.setStatusCode(alarmbearbeiter.getStatusCode());
 		bean.setUserID(alarmbearbeiter.getUserId());
 		return bean;

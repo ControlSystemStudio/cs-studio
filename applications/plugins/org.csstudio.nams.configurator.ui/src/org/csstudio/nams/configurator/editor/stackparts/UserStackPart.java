@@ -6,9 +6,10 @@ import java.util.Collection;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationModel;
-import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean.PreferedAlarmType;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -114,8 +115,7 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	public boolean isDirty() {
 		if (this.alarmbearbeiterBean != null
 				&& this.alarmbearbeiterClone != null) {
-			return !this.alarmbearbeiterBean
-					.equals(this.alarmbearbeiterClone);
+			return !this.alarmbearbeiterBean.equals(this.alarmbearbeiterClone);
 		} else
 			return false;
 	}
@@ -168,6 +168,11 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 				.observeValue(this.alarmbearbeiterClone,
 						AlarmbearbeiterBean.PropertyNames.active.name());
 
+		IObservableValue prefAlarmingTypeObservable = BeansObservables
+				.observeValue(this.alarmbearbeiterClone,
+						AlarmbearbeiterBean.PropertyNames.preferedAlarmType
+								.name());
+
 		// bind observables
 		context.bindValue(SWTObservables
 				.observeText(_nameTextEntry, SWT.Modify), nameTextObservable,
@@ -189,8 +194,23 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 		context.bindValue(SWTObservables.observeText(_confirmCodeTextEntry,
 				SWT.Modify), confirmTextObservable, null, null);
 
-		context.bindValue(SWTObservables.observeSelection(_activeCheckBoxEntry),
+		context.bindValue(
+				SWTObservables.observeSelection(_activeCheckBoxEntry),
 				activeCheckboxObservable, null, null);
+
+		context.bindValue(SWTObservables
+				.observeSelection(_prefAlarmingTypeComboEntry),
+				prefAlarmingTypeObservable, new UpdateValueStrategy(){
+			@Override
+			public Object convert(Object value){
+				return PreferedAlarmType.valueOf((String) value) ;
+			}
+		}, new UpdateValueStrategy(){
+			@Override
+			public Object convert(Object value){
+				return ((PreferedAlarmType) value).name();
+			}
+		});
 	}
 
 	@Override

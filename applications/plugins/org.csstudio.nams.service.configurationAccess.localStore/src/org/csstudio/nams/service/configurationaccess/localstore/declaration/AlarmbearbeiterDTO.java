@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
+
 /**
  * Dieses Daten-Transfer-Objekt enthaelt die Konfiguration eines AMS_USER.
  * 
@@ -62,6 +64,9 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 
 	@Column(name = "sActive")
 	private short active;
+	
+	@Column(name = "SPREFERREDALARMINGTYPERR", length = 5)
+	private short preferedAlarmingType;
 
 	public AlarmbearbeiterDTO() {
 	}
@@ -355,5 +360,22 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 
 	public String getUniqueHumanReadableName() {
 		return getUserName();
+	}
+
+	@SuppressWarnings("unused")
+	private short getPreferedAlarmingType() {
+		return preferedAlarmingType;
+	}
+
+	@SuppressWarnings("unused")
+	private void setPreferedAlarmingType(short preferedAlarmingType) {
+		this.preferedAlarmingType = preferedAlarmingType;
+	}
+	
+	public PreferedAlarmType getPreferedAlarmType(){
+		return PreferedAlarmType.getValueForId(preferedAlarmingType);
+	}
+	public void setPreferedAlarmType(PreferedAlarmType type){
+		preferedAlarmingType = (short) type.ordinal();
 	}
 }
