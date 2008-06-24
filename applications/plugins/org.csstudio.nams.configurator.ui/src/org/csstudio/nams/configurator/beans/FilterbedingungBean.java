@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.model;
+package org.csstudio.nams.configurator.beans;
 
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {

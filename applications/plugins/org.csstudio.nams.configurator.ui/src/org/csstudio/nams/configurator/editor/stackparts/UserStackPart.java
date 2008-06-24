@@ -3,10 +3,10 @@ package org.csstudio.nams.configurator.editor.stackparts;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.IConfigurationModel;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean.PreferedAlarmType;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
-import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean.PreferedAlarmType;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;

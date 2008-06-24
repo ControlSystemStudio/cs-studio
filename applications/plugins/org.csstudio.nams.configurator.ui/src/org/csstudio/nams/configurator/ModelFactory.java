@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterGruppenBean;
-import org.csstudio.nams.configurator.treeviewer.model.AlarmtopicBean;
-import org.csstudio.nams.configurator.treeviewer.model.FilterBean;
-import org.csstudio.nams.configurator.treeviewer.model.FilterbedingungBean;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
+import org.csstudio.nams.configurator.beans.AlarmtopicBean;
+import org.csstudio.nams.configurator.beans.FilterBean;
+import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;

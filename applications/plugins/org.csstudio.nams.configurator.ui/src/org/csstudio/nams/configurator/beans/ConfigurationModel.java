@@ -1,9 +1,9 @@
-package org.csstudio.nams.configurator.treeviewer.model;
+package org.csstudio.nams.configurator.beans;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean.PreferedAlarmType;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean.PreferedAlarmType;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationType;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;

@@ -1,8 +1,8 @@
 package org.csstudio.nams.configurator.actions;
 
+import org.csstudio.nams.configurator.beans.IConfigurationModel;
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IEditorPart;

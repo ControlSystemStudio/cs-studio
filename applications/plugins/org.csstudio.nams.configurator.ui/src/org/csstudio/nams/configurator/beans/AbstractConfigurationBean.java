@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.model;
+package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;

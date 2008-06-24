@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.model;
+package org.csstudio.nams.configurator.beans;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
