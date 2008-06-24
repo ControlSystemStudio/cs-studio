@@ -22,20 +22,29 @@ public class AutoSizeControlListener
 	extends ControlAdapter implements DisposeListener
 {
 	private static final int BORDER_STUFF = 30;
-	private Composite container;
-	private Table table;
+	final private Composite container;
+	final private Table table;
 
     /** Constructor.
      *  @param container Typically the Parent of the table
      *  @param table The table to resize automatically
      */
-	public AutoSizeControlListener(Composite container, Table table)
+	@SuppressWarnings("nls")
+    public AutoSizeControlListener(final Composite container, final Table table)
 	{
 		this.container = container;
 		this.table = table;
 		for (int i = 0; i < table.getColumnCount(); ++i)
-			if (!(table.getColumn(i).getData() instanceof AutoSizeColumn))
-				throw new Error("Column " + i + " has invalid data type");  //$NON-NLS-1$//$NON-NLS-2$
+		{
+			final TableColumn column = table.getColumn(i);
+            final Object data = column.getData();
+			if (data == null)
+			    throw new Error("Column " + column.getText() + "(" + i
+			            + ") has null data");
+            if (!(data instanceof AutoSizeColumn))
+				throw new Error("Column " + column.getText() + "(" + i
+				        + ") has invalid data type " + data.getClass().getName());
+		}
 		// Listen to container resize ...
 		container.addControlListener(this);
 		// .. until the table gets removed.
@@ -44,18 +53,18 @@ public class AutoSizeControlListener
 
 	/** Resize the table columns. */
 	@Override
-	public void controlResized(ControlEvent e)
+	public void controlResized(final ControlEvent e)
 	{
 		int i, total_weight = 0, total_min = 0;
 		// Compute sum of all weights and minimum sizes.
 		for (i = 0; i < table.getColumnCount(); ++i)
 		{
-			TableColumn col = table.getColumn(i);
-			total_weight += ((AutoSizeColumn) col.getData()).weight;
-			total_min += ((AutoSizeColumn) col.getData()).min_size;
+			final TableColumn col = table.getColumn(i);
+			total_weight += ((AutoSizeColumn) col.getData()).getWeight();
+			total_min += ((AutoSizeColumn) col.getData()).getMinSize();
 		}
 		// Resize columns to fit total
-		Rectangle bounds = container.getClientArea();
+		final Rectangle bounds = container.getClientArea();
 		// Adjust width to allow for borders, avoid scroll bars
 		bounds.width -= BORDER_STUFF;
 		if (bounds.width < 50)
@@ -64,21 +73,22 @@ public class AutoSizeControlListener
 		if (extra < 0)
 			extra = 0;
 		// Assign minimum size to all columns,
-		// assing extra by weight in case there is any extra space.
+		// distributing extra spaced based on column weights.
 		for (i = 0; i < table.getColumnCount(); ++i)
 		{
-			TableColumn col = table.getColumn(i);
-			int size = ((AutoSizeColumn) col.getData()).min_size;
+		    final TableColumn col = table.getColumn(i);
+			int size = ((AutoSizeColumn) col.getData()).getMinSize();
 			if (extra > 0)
 			{
-				int weight = ((AutoSizeColumn) col.getData()).weight;
+				int weight = ((AutoSizeColumn) col.getData()).getWeight();
 				size += (extra * weight) / total_weight;
 			}
 			col.setWidth(size);
 		}
 	}
 
-	public void widgetDisposed(DisposeEvent e)
+	/** DisposeListener */
+	public void widgetDisposed(final DisposeEvent e)
 	{
 		if (container.isDisposed())
 			return;

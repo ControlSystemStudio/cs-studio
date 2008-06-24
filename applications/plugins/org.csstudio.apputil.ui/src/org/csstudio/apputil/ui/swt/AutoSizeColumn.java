@@ -1,5 +1,7 @@
 package org.csstudio.apputil.ui.swt;
 
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -10,14 +12,29 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class AutoSizeColumn
 {
-	final int min_size;
-	final int weight;
+	final private int min_size;
+	final private int weight;
 
-    private AutoSizeColumn(int min_size, int weight)
+	/** Private constructor.
+	 *  @see #make()
+	 */
+    private AutoSizeColumn(final int min_size, final int weight)
 	{
 		this.min_size = min_size;
 		this.weight = weight;
 	}
+    
+    /** @return Requested minimum columns size (width) */
+    public int getMinSize()
+    {
+        return min_size;
+    }
+
+    /** @return Weight factor used to distribute extra column space. */
+    public int getWeight()
+    {
+        return weight;
+    }
 
     /** Create a new auto-size column.
      *  <p>
@@ -27,11 +44,14 @@ public class AutoSizeColumn
      *  
      *  @param table The table to which this column belongs.
      *  @param header The column header.
-     *  @param min_size The minumum column width in pixels.
+     *  @param min_size The minimum column width in pixels.
      *  @param weight The 'weight' used in getting a share of additional
      *                screen space.
      *  @return Returns the table column.
+     *  @deprecated Use the newer TableViewerColumn
+     *  @see #make(TableViewer, String, int, int, boolean)
      */
+    @Deprecated
     public static TableColumn make(Table table, String header,
             int min_size, int weight)
     {
@@ -46,12 +66,15 @@ public class AutoSizeColumn
      *  
      *  @param table The table to which this column belongs.
      *  @param header The column header.
-     *  @param min_size The minumum column width in pixels.
+     *  @param min_size The minimum column width in pixels.
      *  @param weight The 'weight' used in getting a share of additional
      *                screen space.
      *  @param center Center-align the column?
      *  @return Returns the table column.
+     *  @deprecated Use the newer TableViewerColumn
+     *  @see #make(TableViewer, String, int, int, boolean)
      */
+    @Deprecated
 	public static TableColumn make(Table table, String header,
 			int min_size, int weight, boolean center)
 	{
@@ -64,4 +87,53 @@ public class AutoSizeColumn
             col.setAlignment(SWT.CENTER);
 		return col;
 	}
+	
+    /** Create a new auto-size table column.
+     *  <p>
+     *  The 'data' of the column will be set to the auto-size info,
+     *  so applications can no longer use the 'data' for other
+     *  custom purposes!
+     *  
+     *  @param table_viewer The table viewer to which this column belongs.
+     *  @param header The column header.
+     *  @param min_size The minimum column width in pixels.
+     *  @param weight The 'weight' used in getting a share of additional
+     *                screen space.
+     *  @param center Center-align the column?
+     *  @return Table viewer column.
+     *  @since 2008-06-24
+     */
+    public static TableViewerColumn make(final TableViewer table_viewer,
+            final String header, final int min_size, final int weight,
+            final boolean center)
+    {
+        final TableViewerColumn view_col =
+            new TableViewerColumn(table_viewer, center ? SWT.CENTER : SWT.LEFT);
+        final TableColumn col = view_col.getColumn();
+        col.setText(header);
+        col.setMoveable(true);
+        col.setWidth(min_size);
+        col.setData(new AutoSizeColumn(min_size, weight));
+        return view_col;
+    }
+
+    /** Create a new auto-size table column.
+     *  <p>
+     *  The 'data' of the column will be set to the auto-size info,
+     *  so applications can no longer use the 'data' for other
+     *  custom purposes!
+     *  
+     *  @param table_viewer The table viewer to which this column belongs.
+     *  @param header The column header.
+     *  @param min_size The minimum column width in pixels.
+     *  @param weight The 'weight' used in getting a share of additional
+     *                screen space.
+     *  @return Table viewer column.
+     *  @since 2008-06-24
+     */
+    public static TableViewerColumn make(final TableViewer table_viewer,
+            final String header, final int min_size, final int weight)
+    {
+        return make(table_viewer, header, min_size, weight, false);
+    }
 }
