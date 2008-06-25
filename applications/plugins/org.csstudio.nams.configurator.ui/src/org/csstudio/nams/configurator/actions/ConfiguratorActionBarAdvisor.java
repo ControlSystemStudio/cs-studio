@@ -1,7 +1,5 @@
 package org.csstudio.nams.configurator.actions;
 
-import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
 import org.csstudio.nams.configurator.views.AlarmbearbeiterView;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;

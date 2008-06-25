@@ -1,12 +1,6 @@
 package org.csstudio.nams.configurator;
 
 
-import org.csstudio.nams.configurator.views.AlarmbearbeiterView;
-import org.csstudio.nams.configurator.views.AlarmbearbeitergruppenView;
-import org.csstudio.nams.configurator.views.AlarmtopicView;
-import org.csstudio.nams.configurator.views.FilterView;
-import org.csstudio.nams.configurator.views.FilterbedingungView;
-import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 

@@ -1,14 +1,11 @@
 package org.csstudio.nams.configurator.composite;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -28,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -207,7 +203,7 @@ public abstract class FilteredListVarianteA {
 				}
 			}
 //TODO ???
-			return ((AbstractConfigurationBean) element).getDisplayName().toLowerCase().contains(
+			return ((AbstractConfigurationBean<?>) element).getDisplayName().toLowerCase().contains(
 					filterkriterium.toLowerCase());
 		}
 

@@ -11,6 +11,7 @@ import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachc
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -209,6 +210,17 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 					public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
 							AlarmbearbeiterDTO alarmBearbeiterDTO) {
+						fail("unexpected method call!");
+						return null;
+					}
+
+					public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
+							AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO) {
+						fail("unexpected method call!");
+						return null;
+					}
+
+					public TopicDTO saveTopicDTO(TopicDTO topicDTO) {
 						fail("unexpected method call!");
 						return null;
 					}

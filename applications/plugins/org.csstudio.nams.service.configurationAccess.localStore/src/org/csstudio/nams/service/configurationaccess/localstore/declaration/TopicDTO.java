@@ -146,20 +146,17 @@ public class TopicDTO {
 	 * @param ame
 	 *            Die Beschreibung des Topics; 256 Zeichen oder kürzer.
 	 */
-	@SuppressWarnings("unused")
-	private void setDescription(final String description) {
+	public void setDescription(final String description) {
 		Contract.require(description.length() <= 256,
 				"topicName.length() <= 256");
 
 		this.description = description;
 	}
-	@SuppressWarnings("unused")
-	private void setGroupRef(final int groupRef) {
+	public void setGroupRef(final int groupRef) {
 		this.groupRef = groupRef;
 	}
 
-	@SuppressWarnings("unused")
-	private void setId(final int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -168,8 +165,7 @@ public class TopicDTO {
 	 * @param ame
 	 *            Der Name/Identifizierung des Topics; 128 Zeichen oder kürzer.
 	 */
-	@SuppressWarnings("unused")
-	private void setName(final String name) {
+	public void setName(final String name) {
 		Contract.require(name.length() <= 128, "topicName.length() <= 128");
 
 		this.name = name;
@@ -180,8 +176,7 @@ public class TopicDTO {
 	 * @param topicName
 	 *            Der Name des Topics; 128 Zeichen oder kürzer.
 	 */
-	@SuppressWarnings("unused")
-	private void setTopicName(final String topicName) {
+	public void setTopicName(final String topicName) {
 		Contract
 				.require(topicName.length() <= 128, "topicName.length() <= 128");
 

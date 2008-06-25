@@ -77,4 +77,6 @@ public interface LocalStoreConfigurationService {
 	public void saveHistoryDTO(HistoryDTO historyDTO);
 	
 	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(AlarmbearbeiterDTO alarmBearbeiterDTO);
+	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO);
+	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
 }

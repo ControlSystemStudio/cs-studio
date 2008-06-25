@@ -4,7 +4,7 @@ import java.beans.PropertyChangeSupport;
 
 public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 
-	public static enum AlarmtopicBeanPropertyNames {
+	public static enum PropertyNames {
 		topicID, topicName, humanReadableName, description
 
 	}
@@ -28,7 +28,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 		int oldValue = getTopicID();
 		this.topicID = topicID;
 		propertyChangeSupport.firePropertyChange(
-				AlarmtopicBeanPropertyNames.topicID.name(), oldValue,
+				PropertyNames.topicID.name(), oldValue,
 				getTopicID());
 	}
 
@@ -40,7 +40,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 		String oldValue = getTopicName();
 		this.topicName = topicName;
 		propertyChangeSupport.firePropertyChange(
-				AlarmtopicBeanPropertyNames.topicName.name(), oldValue,
+				PropertyNames.topicName.name(), oldValue,
 				getTopicName());
 	}
 
@@ -52,7 +52,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 		String oldValue = getHumanReadableName();
 		this.humanReadableName = humanReadableName;
 		propertyChangeSupport.firePropertyChange(
-				AlarmtopicBeanPropertyNames.humanReadableName.name(), oldValue,
+				PropertyNames.humanReadableName.name(), oldValue,
 				getHumanReadableName());
 	}
 
@@ -64,7 +64,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 		String oldValue = getDescription();
 		this.description = description;
 		propertyChangeSupport.firePropertyChange(
-				AlarmtopicBeanPropertyNames.description.name(), oldValue,
+				PropertyNames.description.name(), oldValue,
 				getDescription());
 	}
 
@@ -80,22 +80,18 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 
 	@Override
 	public AlarmtopicBean getClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof AlarmtopicBean) {
-			AlarmtopicBean bean = (AlarmtopicBean) obj;
-			return this.getTopicID() == bean.getTopicID();
-		}
-		return super.equals(obj);
+		AlarmtopicBean bean = new AlarmtopicBean();
+		bean.setDescription(getDescription());
+		bean.setHumanReadableName(getHumanReadableName());
+		bean.setTopicID(getTopicID());
+		bean.setTopicName(getTopicName());
+		return bean;
 	}
 
 	@Override
 	public void updateState(AlarmtopicBean bean) {
 		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("not implemented yet");
 
 	}
 

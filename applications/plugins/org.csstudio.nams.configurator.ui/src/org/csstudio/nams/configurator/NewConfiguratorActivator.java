@@ -23,12 +23,12 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService @Required LocalStoreConfigurationService localStoreConfigurationService) {
 		ModelFactory modelFactory = new ModelFactory(localStoreConfigurationService);
-		ConfigurationModel.staticInject(localStoreConfigurationService, modelFactory);
 		AlarmbearbeitergruppenView.staticInject(modelFactory);
 		AlarmbearbeiterView.staticInject(modelFactory);
 		AlarmtopicView.staticInject(modelFactory);
 		FilterView.staticInject(modelFactory);
 		FilterbedingungView.staticInject(modelFactory);
+		ConfigurationModel.staticInject(localStoreConfigurationService);
 		DeleteConfiguration.staticInject(localStoreConfigurationService);
 	}
 }

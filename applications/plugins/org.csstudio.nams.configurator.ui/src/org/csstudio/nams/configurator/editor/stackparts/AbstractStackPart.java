@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.editor.stackparts;
 
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
@@ -118,7 +117,8 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 	};
 
 	@SuppressWarnings("unchecked")
-	public void save() { // welche gruppe hat user gewählt?
+	public void save() { 
+		// welche gruppe hat user gewählt?
 		// TODO may bla
 		// String group = this._groupComboEntry.getItem(this._groupComboEntry
 		// .getSelectionIndex());

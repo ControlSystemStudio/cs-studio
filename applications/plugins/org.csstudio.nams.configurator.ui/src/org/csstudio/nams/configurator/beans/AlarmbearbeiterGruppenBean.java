@@ -5,7 +5,7 @@ import java.beans.PropertyChangeSupport;
 public class AlarmbearbeiterGruppenBean extends
 		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> {
 
-	public static enum AlarmbearbeitergruppenBeanPropertyNames {
+	public static enum PropertyNames {
 		groupID, name, minGroupMember, timeOutSec, active
 	}
 
@@ -30,7 +30,7 @@ public class AlarmbearbeiterGruppenBean extends
 		this.groupID = groupID;
 
 		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeitergruppenBeanPropertyNames.groupID.name(),
+				PropertyNames.groupID.name(),
 				oldValue, groupID);
 	}
 
@@ -42,7 +42,7 @@ public class AlarmbearbeiterGruppenBean extends
 		String oldValue = getName();
 		this.name = name;
 		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeitergruppenBeanPropertyNames.name.name(), oldValue,
+				PropertyNames.name.name(), oldValue,
 				getName());
 	}
 
@@ -54,7 +54,7 @@ public class AlarmbearbeiterGruppenBean extends
 		short oldValue = getMinGroupMember();
 		this.minGroupMember = minGroupMember;
 		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeitergruppenBeanPropertyNames.minGroupMember.name(),
+				PropertyNames.minGroupMember.name(),
 				oldValue, getMinGroupMember());
 	}
 
@@ -66,7 +66,7 @@ public class AlarmbearbeiterGruppenBean extends
 		int oldValue = getTimeOutSec();
 		this.timeOutSec = timeOutSec;
 		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeitergruppenBeanPropertyNames.timeOutSec.name(),
+				PropertyNames.timeOutSec.name(),
 				oldValue, getTimeOutSec());
 	}
 
@@ -78,7 +78,7 @@ public class AlarmbearbeiterGruppenBean extends
 		boolean oldValue = isActive();
 		this.isActive = isActive;
 		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeitergruppenBeanPropertyNames.active.name(),
+				PropertyNames.active.name(),
 				oldValue, isActive());
 	}
 
@@ -93,8 +93,15 @@ public class AlarmbearbeiterGruppenBean extends
 
 	@Override
 	public AlarmbearbeiterGruppenBean getClone() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO may add group stuff?
+		
+		AlarmbearbeiterGruppenBean bean = new AlarmbearbeiterGruppenBean();
+		bean.setActive(isActive());
+		bean.setGroupID(getGroupID());
+		bean.setMinGroupMember(getMinGroupMember());
+		bean.setName(getName());
+		bean.setTimeOutSec(getTimeOutSec());
+		return bean;
 	}
 
 	@Override
@@ -132,11 +139,6 @@ public class AlarmbearbeiterGruppenBean extends
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (propertyChangeSupport == null) {
-			if (other.propertyChangeSupport != null)
-				return false;
-		} else if (!propertyChangeSupport.equals(other.propertyChangeSupport))
 			return false;
 		if (timeOutSec != other.timeOutSec)
 			return false;

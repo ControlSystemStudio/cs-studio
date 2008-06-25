@@ -10,13 +10,14 @@ public class AlarmtopicView extends ViewPart {
 
 	private static ModelFactory modelFactory;
 	public static final String ID = "org.csstudio.nams.configurator.alarmtopic";
+
 	public AlarmtopicView() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		new FilteredListVarianteA(parent, SWT.None)  {
+		new FilteredListVarianteA(parent, SWT.None) {
 			protected Object[] getTableInput() {
 				return modelFactory.getAlarmTopicBeans();
 			}
@@ -24,14 +25,12 @@ public class AlarmtopicView extends ViewPart {
 
 	}
 
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
-	}
-
 	public static void staticInject(ModelFactory modelFactory) {
 		AlarmtopicView.modelFactory = modelFactory;
 	}
 
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+	}
 }

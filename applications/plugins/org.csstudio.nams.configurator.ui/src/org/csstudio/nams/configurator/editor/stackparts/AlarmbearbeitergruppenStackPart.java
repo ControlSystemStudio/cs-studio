@@ -1,11 +1,11 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
-import java.beans.PropertyChangeListener;
-
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -14,7 +14,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -23,10 +22,11 @@ import org.eclipse.swt.widgets.Text;
 public class AlarmbearbeitergruppenStackPart extends
 		AbstractStackPart<AlarmbearbeiterGruppenBean> {
 
-	private Composite main;
-	private IConfigurationModel model;
-	private AlarmbearbeiterGruppenBean alarmbearbeiterGruppenBean;
-	private AlarmbearbeiterGruppenBean alarmbearbeiterGruppenClone;
+	private Text name;
+	private Combo gruppe;
+	private Text aktiveMitglieder;
+	private Text wartezeit;
+	private Button activeButton;
 
 	public AlarmbearbeitergruppenStackPart(DirtyFlagProvider flagProvider,
 			Composite parent) {
@@ -47,32 +47,32 @@ public class AlarmbearbeitergruppenStackPart extends
 			{
 				new Label(textFieldComp, SWT.READ_ONLY).setText("Name");
 
-				Text name = new Text(textFieldComp, SWT.BORDER);
+				name = new Text(textFieldComp, SWT.BORDER);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(name);
 
 				new Label(textFieldComp, SWT.READ_ONLY).setText("Gruppe");
 
-				Combo gruppe = new Combo(textFieldComp, SWT.None);
+				gruppe = new Combo(textFieldComp, SWT.None);
 				GridDataFactory.fillDefaults().grab(true, false)
 						.applyTo(gruppe);
 
 				new Label(textFieldComp, SWT.READ_ONLY)
 						.setText("Minimale Anzahl aktiver Mitglieder");
 
-				Text aktiveMitglieder = new Text(textFieldComp, SWT.BORDER);
+				aktiveMitglieder = new Text(textFieldComp, SWT.BORDER);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						aktiveMitglieder);
 
 				new Label(textFieldComp, SWT.READ_ONLY)
 						.setText("Wartezeit bis Rückmeldung (Sek)");
 
-				Text wartezeit = new Text(textFieldComp, SWT.BORDER);
+				wartezeit = new Text(textFieldComp, SWT.BORDER);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						wartezeit);
 
 				new Label(textFieldComp, SWT.READ_ONLY)
 						.setText("Alarmgruppe aktiv");
-				new Button(textFieldComp, SWT.CHECK);
+				activeButton = new Button(textFieldComp, SWT.CHECK);
 			}
 
 			{
@@ -132,47 +132,56 @@ public class AlarmbearbeitergruppenStackPart extends
 	}
 
 	@Override
-	public Control getMainControl() {
-		return main;
-	}
+	protected void initDataBinding() {
+		DataBindingContext context = new DataBindingContext();
 
-	@Override
-	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		IObservableValue nameTextObservable = BeansObservables
+				.observeValue(
+						this.beanClone,
+						AlarmbearbeiterGruppenBean.PropertyNames.name
+								.name());
 
-	@Override
-	public void save() {
-		// TODO Auto-generated method stub
+		IObservableValue aktiveMitgliederTextObservable = BeansObservables
+				.observeValue(
+						this.beanClone,
+						AlarmbearbeiterGruppenBean.PropertyNames.minGroupMember
+								.name());
 
+		IObservableValue warteZeitTextObservable = BeansObservables
+				.observeValue(
+						this.beanClone,
+						AlarmbearbeiterGruppenBean.PropertyNames.timeOutSec
+								.name());
+
+//		IObservableValue activeMembersTextObservable = BeansObservables
+//				.observeValue(this.beanClone,
+//						AlarmbearbeiterGruppenBean.PropertyNames.minGroupMember.name());
+
+		IObservableValue activeCheckboxObservable = BeansObservables
+		.observeValue(this.beanClone,
+				AlarmbearbeiterGruppenBean.PropertyNames.active.name());
+
+		// bind observables
+		context.bindValue(SWTObservables
+				.observeText(name, SWT.Modify), nameTextObservable,
+				null, null);
+
+		context.bindValue(SWTObservables.observeText(aktiveMitglieder,
+				SWT.Modify), aktiveMitgliederTextObservable, null, null);
+
+		context.bindValue(
+				SWTObservables.observeText(wartezeit, SWT.Modify),
+				warteZeitTextObservable, null, null);
+
+		context.bindValue(
+				SWTObservables.observeSelection(activeButton),
+				activeCheckboxObservable, null, null);
+
+		//TODO bind Group
 	}
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
+		name.setFocus();
 	}
-
-	@Override
-	public void setInput(IConfigurationBean input, IConfigurationModel model) {
-		this.model = model;
-		this.alarmbearbeiterGruppenBean = (AlarmbearbeiterGruppenBean) input;
-		this.alarmbearbeiterGruppenClone = ((AlarmbearbeiterGruppenBean) input).getClone();
-
-		// init JFaceDatabinding after input is set
-		this.initDataBinding();
-	}
-
-	protected void initDataBinding() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setPropertyChangedListener(PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

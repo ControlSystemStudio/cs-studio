@@ -11,8 +11,6 @@ import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -41,16 +39,16 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
 		_groupComboEntry = this.createComboEntry(main, "Group:", true);
-		_groupComboEntry.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				/*
-				 * Feuer property change event ab, damit der Dirty-Flag geändert
-				 * wird. Persistiert wird erst beim Klick auf "Speichern"
-				 */
-				listener.propertyChange(null);
-			}
-		});
+//		_groupComboEntry.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				/*
+//				 * Feuer property change event ab, damit der Dirty-Flag geändert
+//				 * wird. Persistiert wird erst beim Klick auf "Speichern"
+//				 */
+//				listener.propertyChange(null);
+//			}
+//		});
 		this.addSeparator(main);
 		_emailTextEntry = this.createTextEntry(main, "Email:", true);
 		_smsTextEntry = this.createTextEntry(main, "SMS number:", true);

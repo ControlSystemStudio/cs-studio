@@ -1,11 +1,11 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
-import java.beans.PropertyChangeListener;
-
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -13,7 +13,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -21,32 +20,28 @@ public class TopicStackPart extends AbstractStackPart<AlarmtopicBean> {
 
 	private Text _idTextEntry;
 	private Text _topicIdTextEntry;
-	private Composite _main;
 	private Combo _groupComboEntry;
 	private Text _topicNameTextEntry;
 	private Text _descriptionTextEntry;
 
-	private boolean _isDirty = false;
-
 	public TopicStackPart(DirtyFlagProvider flagProvider, Composite parent) {
 		super(flagProvider, AlarmtopicBean.class, 2);
-		_main = new Composite(parent, SWT.NONE);
-		_main.setLayout(new GridLayout(NUM_COLUMNS, false));
-		_idTextEntry = this.createTextEntry(_main, "ID:", false);
+		main = new Composite(parent, SWT.NONE);
+		main.setLayout(new GridLayout(NUM_COLUMNS, false));
+		_idTextEntry = this.createTextEntry(main, "ID:", false);
 		_idTextEntry.setText("Topic");
-		this.addSeparator(_main);
-		_topicIdTextEntry = this.createTextEntry(_main, "Name:", true);
-		_groupComboEntry = this.createComboEntry(_main, "Group:", true);
-		this.addSeparator(_main);
-		_topicNameTextEntry = this.createTextEntry(_main, "Topic name:", true);
-		_descriptionTextEntry = this.createDescriptionTextEntry(_main,
+		this.addSeparator(main);
+		_topicIdTextEntry = this.createTextEntry(main, "Name:", true);
+		_groupComboEntry = this.createComboEntry(main, "Group:", true);
+		this.addSeparator(main);
+		_topicNameTextEntry = this.createTextEntry(main, "Topic name:", true);
+		_descriptionTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
 
 		// TODO only for simulation! has to be removed soon (2008-05-16: Kai
 		// Meyer)
 		_topicIdTextEntry.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				_isDirty = true;
 				getDirtyFlagProvider().fireDirtyFlagChanged();
 			}
 		});
@@ -68,43 +63,36 @@ public class TopicStackPart extends AbstractStackPart<AlarmtopicBean> {
 	}
 
 	@Override
-	public Control getMainControl() {
-		return _main;
-	}
+	protected void initDataBinding() {
+		//TODO add group binding
+		DataBindingContext context = new DataBindingContext();
 
-	@Override
-	public boolean isDirty() {
-		return _isDirty;
-	}
+		IObservableValue nameTextObservable = BeansObservables.observeValue(
+				this.beanClone, AlarmtopicBean.PropertyNames.humanReadableName.name());
 
-	@Override
-	public void save() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not implemented yet.");
-	}
+		IObservableValue topicNameTextObservable = BeansObservables.observeValue(
+				this.beanClone, AlarmtopicBean.PropertyNames.topicName.name());
 
-	@Override
-	public void setPropertyChangedListener(PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
+		IObservableValue descriptionTextObservable = BeansObservables.observeValue(
+				this.beanClone, AlarmtopicBean.PropertyNames.description
+						.name());
+
+		// bind observables
+		context.bindValue(SWTObservables
+				.observeText(_topicIdTextEntry, SWT.Modify), nameTextObservable,
+				null, null);
+
+		context.bindValue(SWTObservables.observeText(_topicNameTextEntry,
+				SWT.Modify), topicNameTextObservable, null, null);
+
+		context.bindValue(
+				SWTObservables.observeText(_descriptionTextEntry, SWT.Modify),
+				descriptionTextObservable, null, null);
 
 	}
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
+		_topicNameTextEntry.setFocus();
 	}
-
-	@Override
-	public void setInput(IConfigurationBean input, IConfigurationModel model) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void initDataBinding() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

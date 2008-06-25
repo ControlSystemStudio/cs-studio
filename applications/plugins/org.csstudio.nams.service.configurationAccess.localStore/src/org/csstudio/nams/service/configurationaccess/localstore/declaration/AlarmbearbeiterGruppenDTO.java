@@ -102,7 +102,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 *            the groupRef to set
 	 */
 	@SuppressWarnings("unused")
-	private void setGroupRef(int groupRef) {
+	public void setGroupRef(int groupRef) {
 		this.groupRef = groupRef;
 	}
 
@@ -118,7 +118,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 *            the userGroupName to set
 	 */
 	@SuppressWarnings("unused")
-	private void setUserGroupName(String userGroupName) {
+	public void setUserGroupName(String userGroupName) {
 		this.userGroupName = userGroupName;
 	}
 
@@ -134,7 +134,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 *            the minGroupMember to set
 	 */
 	@SuppressWarnings("unused")
-	private void setMinGroupMember(short minGroupMember) {
+	public void setMinGroupMember(short minGroupMember) {
 		this.minGroupMember = minGroupMember;
 	}
 
@@ -150,7 +150,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 *            the timeOutSec to set
 	 */
 	@SuppressWarnings("unused")
-	private void setTimeOutSec(int timeOutSec) {
+	public void setTimeOutSec(int timeOutSec) {
 		this.timeOutSec = timeOutSec;
 	}
 
@@ -176,7 +176,7 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
 	@SuppressWarnings("unused")
-	private void setActive(boolean active) {
+	public void setActive(boolean active) {
 		setActive((short) (active ? 1 : 0));
 	}
 
