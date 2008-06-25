@@ -27,6 +27,16 @@ public class DefaultNAMSMessage implements NAMSMessage {
 		this.ackHandler = ackHandler;
 		sysNachricht = null;
 	}
+
+	/**
+	 * Nachrichten, die nicht von NAMS verarbeitbar sind.
+	 */
+	public DefaultNAMSMessage(AcknowledgeHandler ackHandler) {
+		Contract.requireNotNull("ackHandler", ackHandler);
+		this.alarmNachricht = null;
+		this.ackHandler = ackHandler;
+		sysNachricht = null;
+	}
 	
 	public final void acknowledge() throws MessagingException {
 		try {

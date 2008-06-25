@@ -94,7 +94,8 @@ class JMSConsumer implements Consumer {
 					while (mapNames.hasMoreElements()) {
 						String currentElement = mapNames.nextElement()
 								.toString();
-						MessageKeyEnum messageKeyEnum = MessageKeyEnum.getEnumFor(currentElement);
+						MessageKeyEnum messageKeyEnum = MessageKeyEnum
+								.getEnumFor(currentElement);
 						if (messageKeyEnum != null) {
 							String value = mapMessage.getString(currentElement);
 							if (value == null) {
@@ -119,7 +120,8 @@ class JMSConsumer implements Consumer {
 								ackHandler) {
 							@Override
 							public String toString() {
-								return "SyncronisationsAufforderungsSystemNachchricht: JMS-Message: " + mapMessage.toString();
+								return "SyncronisationsAufforderungsSystemNachchricht: JMS-Message: "
+										+ mapMessage.toString();
 							}
 						};
 					} else if (MessageKeyUtil
@@ -129,7 +131,8 @@ class JMSConsumer implements Consumer {
 								ackHandler) {
 							@Override
 							public String toString() {
-								return "SyncronisationsBestaetigungSystemNachricht: JMS-Message: " + mapMessage.toString();
+								return "SyncronisationsBestaetigungSystemNachricht: JMS-Message: "
+										+ mapMessage.toString();
 							}
 						};
 					} else {
@@ -138,15 +141,31 @@ class JMSConsumer implements Consumer {
 								new AlarmNachricht(map), ackHandler) {
 							@Override
 							public String toString() {
-								return "Alarmnachricht: JMS-Message: " + mapMessage.toString();
+								return "Alarmnachricht: JMS-Message: "
+										+ mapMessage.toString();
 							}
 						};
 					}
 				}
 			} else {
+				final Message unknownMessage = message;
 				logger.logWarningMessage(this,
-						"unknown Message type received: " + message.toString());
-				message.acknowledge();
+						"unknown Message type received: " + unknownMessage.toString());
+				result = new DefaultNAMSMessage(
+						new AcknowledgeHandler() {
+							public void acknowledge() throws Throwable {
+								unknownMessage.acknowledge();
+								logger.logDebugMessage(this,
+										"JMSConsumer.ackHandler.acknowledge() called for message "
+												+ unknownMessage.toString());
+							}
+						}) {
+					@Override
+					public String toString() {
+						return "Unknown-message-type of message: JMS-Message: "
+								+ unknownMessage.toString();
+					}
+				};
 			}
 		} catch (InterruptedException e) {
 			throw new MessagingException("message receiving interrupted", e);
@@ -214,13 +233,22 @@ class JMSConsumer implements Consumer {
 				} catch (JMSException e) {
 					// TODO exception handling
 					// wird von consumer.receive() geworfen
-					logger.logInfoMessage(this, "Exception during recieving message from jms", e);
+					logger.logInfoMessage(this,
+							"Exception during recieving message from jms", e);
 				} catch (InterruptedException e) {
 					// TODO exception handling
 					// wird von messageQueue.put(message) geworfen
-					logger.logInfoMessage(this, "Put of recieved jms-message to local queue has been interrupted", e);
-				} catch( Throwable t ) {
-					logger.logFatalMessage(this, "Unexpected exception during recieving message from jms", t);
+					logger
+							.logInfoMessage(
+									this,
+									"Put of recieved jms-message to local queue has been interrupted",
+									e);
+				} catch (Throwable t) {
+					logger
+							.logFatalMessage(
+									this,
+									"Unexpected exception during recieving message from jms",
+									t);
 				}
 				Thread.yield();
 			}
