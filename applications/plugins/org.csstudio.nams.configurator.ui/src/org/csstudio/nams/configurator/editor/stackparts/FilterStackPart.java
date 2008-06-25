@@ -2,45 +2,35 @@ package org.csstudio.nams.configurator.editor.stackparts;
 
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 
-public class DefaultStackPart extends AbstractStackPart {
+public class FilterStackPart extends AbstractStackPart<FilterBean> {
 
-	private Composite _main;
-
-	public DefaultStackPart(DirtyFlagProvider flagProvider, Composite parent) {
-		super(flagProvider, IConfigurationBean.class, 0);
-		_main = new Composite(parent, SWT.NONE);
-		_main.setLayout(new GridLayout(1, false));
-		Label label = new Label(_main, SWT.NONE);
-		label.setText("Default");
+	private Composite main;
+	
+	public FilterStackPart(DirtyFlagProvider flagProvider, int numColumns) {
+		super(flagProvider, FilterBean.class, 2);
+//TODO create layout
 	}
 
 	@Override
 	public Control getMainControl() {
-		return _main;
+		return main;
 	}
 
 	@Override
 	public boolean isDirty() {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void save() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not implemented yet.");
-	}
-
-	@Override
-	public void setPropertyChangedListener(PropertyChangeListener listener) {
 		// TODO Auto-generated method stub
 
 	}
@@ -53,6 +43,12 @@ public class DefaultStackPart extends AbstractStackPart {
 
 	@Override
 	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setPropertyChangedListener(PropertyChangeListener listener) {
 		// TODO Auto-generated method stub
 
 	}

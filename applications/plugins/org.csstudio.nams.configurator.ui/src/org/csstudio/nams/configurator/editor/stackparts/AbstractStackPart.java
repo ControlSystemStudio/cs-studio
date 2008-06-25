@@ -2,6 +2,7 @@ package org.csstudio.nams.configurator.editor.stackparts;
 
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
@@ -21,7 +22,9 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 	protected final int MIN_WIDTH = 300;
 	private Class<? extends IConfigurationBean> _associatedBean;
 	private DirtyFlagProvider _dirtyFlagProvider;
-	private ConfigurationType bean;
+	protected ConfigurationType bean;
+	protected ConfigurationType beanClone;
+	protected IConfigurationModel model;
 
 	public AbstractStackPart(DirtyFlagProvider flagProvider,
 			Class<? extends IConfigurationBean> associatedBean, int numColumns) {
@@ -100,12 +103,38 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 		return _associatedBean;
 	}
 
-	public abstract boolean isDirty();
+	public boolean isDirty() {
+		if (this.bean != null && this.beanClone != null) {
+			return !this.bean.equals(this.beanClone);
+		} else
+			return false;
+	};
 
-	public abstract void save();
+	@SuppressWarnings("unchecked")
+	public void save() { // welche gruppe hat user gewählt?
+		// TODO may bla
+		// String group = this._groupComboEntry.getItem(this._groupComboEntry
+		// .getSelectionIndex());
 
-	public abstract void setInput(IConfigurationBean input,
-			IConfigurationModel model);
+		// speicher Änderungen im lokalen Model
+		IConfigurationBean updatedBean = this.model.save(this.beanClone);
+
+		// copy clone state to original bean
+		this.bean = (ConfigurationType) updatedBean;
+
+		// create new clone
+		this.beanClone = (ConfigurationType) this.bean.getClone();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+		this.model = model;
+		this.bean = (ConfigurationType) input;
+		this.beanClone = (ConfigurationType) ((ConfigurationType) input)
+				.getClone();
+	}
+
+	protected abstract void initDataBinding();
 
 	public abstract void setPropertyChangedListener(
 			PropertyChangeListener listener);

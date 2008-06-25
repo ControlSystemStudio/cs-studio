@@ -101,4 +101,10 @@ public class TopicStackPart extends AbstractStackPart<AlarmtopicBean> {
 
 	}
 
+	@Override
+	protected void initDataBinding() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

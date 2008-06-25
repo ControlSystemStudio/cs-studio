@@ -164,7 +164,7 @@ public class AlarmbearbeitergruppenStackPart extends
 		this.initDataBinding();
 	}
 
-	private void initDataBinding() {
+	protected void initDataBinding() {
 		// TODO Auto-generated method stub
 		
 	}

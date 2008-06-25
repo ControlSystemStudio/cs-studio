@@ -60,7 +60,7 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="org.csstudio.nams.configurator.amsconfiguratorbranch">
+            targetID="org.csstudio.nams.newconfigurator.perspective">
          <view
                closeable="false"
                id="org.csstudio.nams.configurator.alarmbearbeiter"
@@ -122,6 +122,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.csstudio.nams.configurator.PerspectiveFactory"
+            fixed="true"
             id="org.csstudio.nams.newconfigurator.perspective"
             name="AMS perspective">
       </perspective>

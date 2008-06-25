@@ -36,10 +36,7 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	private Text _confirmCodeTextEntry;
 	private Button _activeCheckBoxEntry;
 
-	private AlarmbearbeiterBean alarmbearbeiterBean;
 
-	private AlarmbearbeiterBean alarmbearbeiterClone;
-	private IConfigurationModel model;
 	private PropertyChangeListener listener;
 
 	public UserStackPart(DirtyFlagProvider flagProvider, Composite parent) {
@@ -84,27 +81,26 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 	@Override
 	public void setInput(IConfigurationBean input, IConfigurationModel model) {
-		this.model = model;
-		this.alarmbearbeiterBean = (AlarmbearbeiterBean) input;
-		this.alarmbearbeiterClone = ((AlarmbearbeiterBean) input).getClone();
+		super.setInput(input, model);
 
 		// init JFaceDatabinding after input is set
 		this.initDataBinding();
-		//TODO redo group initialization
-//		this.initGroupCombo();
+		// TODO redo group initialization
+		// this.initGroupCombo();
 	}
 
-//	private void initGroupCombo() {
-//		Collection<String> sortgroupNames = this.model.getSortgroupNames();
-//		Object[] groupNames = sortgroupNames.toArray();
-//
-//		int selection = 0;
-//		for (int groupName = 0; groupName < groupNames.length; groupName++) {
-//			this._groupComboEntry.add(((String) groupNames[groupName]).trim());
-//		}
-//
-//		this._groupComboEntry.select(selection);
-//	}
+	// TODO get AMS_UserGroups DTO's and insert them into the HibernateMapping
+	// private void initGroupCombo() {
+	// Collection<String> sortgroupNames = this.model.getSortgroupNames();
+	// Object[] groupNames = sortgroupNames.toArray();
+	//
+	// int selection = 0;
+	// for (int groupName = 0; groupName < groupNames.length; groupName++) {
+	// this._groupComboEntry.add(((String) groupNames[groupName]).trim());
+	// }
+	//
+	// this._groupComboEntry.select(selection);
+	// }
 
 	private void initPrefAlarmingCombo() {
 		for (PreferedAlarmType alarm : PreferedAlarmType.values()) {
@@ -112,66 +108,64 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 		}
 	}
 
+	// @Override
+	// public boolean isDirty() {
+	// if (this.alarmbearbeiterBean != null
+	// && this.alarmbearbeiterClone != null) {
+	// return !this.alarmbearbeiterBean.equals(this.alarmbearbeiterClone);
+	// } else
+	// return false;
+	// }
+
+	// @Override
+	// public void save() {
+	// // welche gruppe hat user gewählt?
+	// //TODO may bla
+	// // String group = this._groupComboEntry.getItem(this._groupComboEntry
+	// // .getSelectionIndex());
+	//
+	// // speicher Änderungen im lokalen Model
+	// IConfigurationBean updatedBean = this.model.save(
+	// this.beanClone);
+	//
+	// // copy clone state to original bean
+	// this.bean = (AlarmbearbeiterBean) updatedBean;
+	//
+	// // create new clone
+	// this.beanClone = this.bean.getClone();
+	// }
 	@Override
-	public boolean isDirty() {
-		if (this.alarmbearbeiterBean != null
-				&& this.alarmbearbeiterClone != null) {
-			return !this.alarmbearbeiterBean.equals(this.alarmbearbeiterClone);
-		} else
-			return false;
-	}
-
-	@Override
-	public void save() {
-		// welche gruppe hat user gewählt?
-		//TODO may bla
-//		String group = this._groupComboEntry.getItem(this._groupComboEntry
-//				.getSelectionIndex());
-
-		// speicher Änderungen im lokalen Model
-		IConfigurationBean updatedBean = this.model.save(
-				this.alarmbearbeiterClone);
-
-		// copy clone state to original bean
-		this.alarmbearbeiterBean = (AlarmbearbeiterBean) updatedBean;
-
-		// create new clone
-		this.alarmbearbeiterClone = this.alarmbearbeiterBean.getClone();
-	}
-
-	private void initDataBinding() {
+	protected void initDataBinding() {
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.alarmbearbeiterClone,
-				AlarmbearbeiterBean.PropertyNames.name.name());
+				this.beanClone, AlarmbearbeiterBean.PropertyNames.name.name());
 
 		IObservableValue emailTextObservable = BeansObservables.observeValue(
-				this.alarmbearbeiterClone,
-				AlarmbearbeiterBean.PropertyNames.email.name());
+				this.beanClone, AlarmbearbeiterBean.PropertyNames.email.name());
 
 		IObservableValue smsTextObservable = BeansObservables.observeValue(
-				this.alarmbearbeiterClone,
-				AlarmbearbeiterBean.PropertyNames.mobilePhone.name());
+				this.beanClone, AlarmbearbeiterBean.PropertyNames.mobilePhone
+						.name());
 
 		IObservableValue voicemailTextObservable = BeansObservables
-				.observeValue(this.alarmbearbeiterClone,
+				.observeValue(this.beanClone,
 						AlarmbearbeiterBean.PropertyNames.phone.name());
 
 		IObservableValue statusTextObservable = BeansObservables.observeValue(
-				this.alarmbearbeiterClone,
-				AlarmbearbeiterBean.PropertyNames.statusCode.name());
+				this.beanClone, AlarmbearbeiterBean.PropertyNames.statusCode
+						.name());
 
 		IObservableValue confirmTextObservable = BeansObservables.observeValue(
-				this.alarmbearbeiterClone,
-				AlarmbearbeiterBean.PropertyNames.confirmCode.name());
+				this.beanClone, AlarmbearbeiterBean.PropertyNames.confirmCode
+						.name());
 
 		IObservableValue activeCheckboxObservable = BeansObservables
-				.observeValue(this.alarmbearbeiterClone,
+				.observeValue(this.beanClone,
 						AlarmbearbeiterBean.PropertyNames.active.name());
 
 		IObservableValue prefAlarmingTypeObservable = BeansObservables
-				.observeValue(this.alarmbearbeiterClone,
+				.observeValue(this.beanClone,
 						AlarmbearbeiterBean.PropertyNames.preferedAlarmType
 								.name());
 
@@ -202,23 +196,23 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 		context.bindValue(SWTObservables
 				.observeSelection(_prefAlarmingTypeComboEntry),
-				prefAlarmingTypeObservable, new UpdateValueStrategy(){
-			@Override
-			public Object convert(Object value){
-				return PreferedAlarmType.valueOf((String) value) ;
-			}
-		}, new UpdateValueStrategy(){
-			@Override
-			public Object convert(Object value){
-				return ((PreferedAlarmType) value).name();
-			}
-		});
+				prefAlarmingTypeObservable, new UpdateValueStrategy() {
+					@Override
+					public Object convert(Object value) {
+						return PreferedAlarmType.valueOf((String) value);
+					}
+				}, new UpdateValueStrategy() {
+					@Override
+					public Object convert(Object value) {
+						return ((PreferedAlarmType) value).name();
+					}
+				});
 	}
 
 	@Override
 	public void setPropertyChangedListener(PropertyChangeListener listener) {
 		this.listener = listener;
-		this.alarmbearbeiterClone.addPropertyChangeListener(listener);
+		this.beanClone.addPropertyChangeListener(listener);
 	}
 
 	@Override
