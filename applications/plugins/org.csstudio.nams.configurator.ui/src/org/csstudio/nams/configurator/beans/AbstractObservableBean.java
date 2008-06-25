@@ -3,6 +3,8 @@ package org.csstudio.nams.configurator.beans;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
+
 /**
  * Diese Bean kapselt den grundlegenden PropertyChangeSupport. Beans, die
  * lediglich den PropertyChangeSupport benötigen, können hiervon erben
@@ -10,7 +12,7 @@ import java.beans.PropertyChangeSupport;
  * @author Eugen Reiswich
  * 
  */
-public abstract class AbstractObservableBean {
+public abstract class AbstractObservableBean implements IConfigurationBean {
 
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 

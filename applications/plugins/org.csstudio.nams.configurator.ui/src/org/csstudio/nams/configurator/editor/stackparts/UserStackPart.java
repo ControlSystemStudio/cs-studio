@@ -1,8 +1,5 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
-import java.beans.PropertyChangeListener;
-import java.util.Collection;
-
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
@@ -20,12 +17,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
-	private Composite _main;
 	private Text _nameTextEntry;
 	private Text _emailTextEntry;
 	private Combo _groupComboEntry;
@@ -37,15 +32,15 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	private Button _activeCheckBoxEntry;
 
 
-	private PropertyChangeListener listener;
+
 
 	public UserStackPart(DirtyFlagProvider flagProvider, Composite parent) {
 		super(flagProvider, AlarmbearbeiterBean.class, 2);
-		_main = new Composite(parent, SWT.NONE);
-		_main.setLayout(new GridLayout(NUM_COLUMNS, false));
-		this.addSeparator(_main);
-		_nameTextEntry = this.createTextEntry(_main, "Name:", true);
-		_groupComboEntry = this.createComboEntry(_main, "Group:", true);
+		main = new Composite(parent, SWT.NONE);
+		main.setLayout(new GridLayout(NUM_COLUMNS, false));
+		this.addSeparator(main);
+		_nameTextEntry = this.createTextEntry(main, "Name:", true);
+		_groupComboEntry = this.createComboEntry(main, "Group:", true);
 		_groupComboEntry.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -56,36 +51,28 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 				listener.propertyChange(null);
 			}
 		});
-		this.addSeparator(_main);
-		_emailTextEntry = this.createTextEntry(_main, "Email:", true);
-		_smsTextEntry = this.createTextEntry(_main, "SMS number:", true);
-		_voiceMailTextEntry = this.createTextEntry(_main, "VoiceMail number:",
+		this.addSeparator(main);
+		_emailTextEntry = this.createTextEntry(main, "Email:", true);
+		_smsTextEntry = this.createTextEntry(main, "SMS number:", true);
+		_voiceMailTextEntry = this.createTextEntry(main, "VoiceMail number:",
 				true);
-		_prefAlarmingTypeComboEntry = this.createComboEntry(_main,
+		_prefAlarmingTypeComboEntry = this.createComboEntry(main,
 				"Prefered alarming type:", false);
 		this.initPrefAlarmingCombo();
-		this.addSeparator(_main);
+		this.addSeparator(main);
 		_statusCodeTextEntry = this
-				.createTextEntry(_main, "Status code:", true);
-		_confirmCodeTextEntry = this.createTextEntry(_main, "Confirm code:",
+				.createTextEntry(main, "Status code:", true);
+		_confirmCodeTextEntry = this.createTextEntry(main, "Confirm code:",
 				true);
-		this.addSeparator(_main);
-		_activeCheckBoxEntry = this.createCheckBoxEntry(_main,
+		this.addSeparator(main);
+		_activeCheckBoxEntry = this.createCheckBoxEntry(main,
 				"User is active:", true);
-	}
-
-	@Override
-	public Control getMainControl() {
-		return _main;
 	}
 
 	@Override
 	public void setInput(IConfigurationBean input, IConfigurationModel model) {
 		super.setInput(input, model);
-
-		// init JFaceDatabinding after input is set
-		this.initDataBinding();
-		// TODO redo group initialization
+		// TODO redo group initialization may 
 		// this.initGroupCombo();
 	}
 
@@ -107,15 +94,6 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 			_prefAlarmingTypeComboEntry.add(alarm.name());
 		}
 	}
-
-	// @Override
-	// public boolean isDirty() {
-	// if (this.alarmbearbeiterBean != null
-	// && this.alarmbearbeiterClone != null) {
-	// return !this.alarmbearbeiterBean.equals(this.alarmbearbeiterClone);
-	// } else
-	// return false;
-	// }
 
 	// @Override
 	// public void save() {
@@ -210,15 +188,8 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	}
 
 	@Override
-	public void setPropertyChangedListener(PropertyChangeListener listener) {
-		this.listener = listener;
-		this.beanClone.addPropertyChangeListener(listener);
-	}
-
-	@Override
 	public void setFocus() {
 		this._nameTextEntry.setFocus();
-
 	}
 
 }

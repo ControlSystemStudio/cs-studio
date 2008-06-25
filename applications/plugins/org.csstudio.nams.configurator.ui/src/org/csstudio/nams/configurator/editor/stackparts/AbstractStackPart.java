@@ -25,7 +25,11 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
 	protected IConfigurationModel model;
+	
+	protected PropertyChangeListener listener;
+	protected Composite main;
 
+	
 	public AbstractStackPart(DirtyFlagProvider flagProvider,
 			Class<? extends IConfigurationBean> associatedBean, int numColumns) {
 		_dirtyFlagProvider = flagProvider;
@@ -97,7 +101,10 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 				NUM_COLUMNS, 1));
 	}
 
-	public abstract Control getMainControl();
+	public Control getMainControl()
+	{
+		return main;
+	}
 
 	public Class<? extends IConfigurationBean> getAssociatedBean() {
 		return _associatedBean;
@@ -132,12 +139,16 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 		this.bean = (ConfigurationType) input;
 		this.beanClone = (ConfigurationType) ((ConfigurationType) input)
 				.getClone();
+		initDataBinding();
 	}
 
 	protected abstract void initDataBinding();
 
-	public abstract void setPropertyChangedListener(
-			PropertyChangeListener listener);
+	public void setPropertyChangedListener(
+			PropertyChangeListener listener){
+		this.listener = listener;
+		beanClone.addPropertyChangeListener(listener);;
+	}
 
 	public abstract void setFocus();
 

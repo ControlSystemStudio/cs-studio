@@ -21,7 +21,7 @@ import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
  * @param <T>
  */
 public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
-		extends AbstractObservableBean implements IConfigurationBean, Comparable<T>{
+		extends AbstractObservableBean implements Comparable<T>{
 
 	public int compareTo(T o) {
 		return this.getDisplayName().compareTo(o.getDisplayName());
