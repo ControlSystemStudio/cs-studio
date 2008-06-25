@@ -283,14 +283,20 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			logger.logInfoMessage(this,
 					"Decision department application is creating consumers...");
 
+			String amsProvider1 = preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1);
+			String amsProvider2 = preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2);
+			
+			logger.logDebugMessage(this, "PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1 = "+amsProvider1);
+			logger.logDebugMessage(this, "PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2 = "+amsProvider2);
+			
 			amsMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
 							"amsConsumer",
 							new String[] {
-									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1),
-									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) });
+									amsProvider1,
+									amsProvider2 });
 			// TODO clientid!! gegebenenfalls aus preferencestore holen
 			extMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(

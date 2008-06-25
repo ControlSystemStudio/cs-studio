@@ -331,9 +331,9 @@ public class ProcessVariableRegel implements VersandRegel {
 		StringBuilder stringBuilder = new StringBuilder("(PVRegel: ");
 		stringBuilder.append("Channelname: ");
 		stringBuilder.append(channelName);
-		stringBuilder.append("Operator: ");
+		stringBuilder.append(" Operator: ");
 		stringBuilder.append(operator);
-		stringBuilder.append("compValue: ");
+		stringBuilder.append(" compValue: ");
 		stringBuilder.append(compValue);
 		stringBuilder.append(")");
 		return stringBuilder.toString();

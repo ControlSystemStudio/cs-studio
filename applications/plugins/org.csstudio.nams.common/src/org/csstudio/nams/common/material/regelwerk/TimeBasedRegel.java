@@ -33,25 +33,32 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-			bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
-					internePruefliste);
-			RegelErgebnis bestaetigungsregelErgebnis = internePruefliste
-			.gibErgebnisFuerRegel(bestaetigungsregel);
-			
-			if (bestaetigungsregelErgebnis == RegelErgebnis.ZUTREFFEND) {
-				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
-						RegelErgebnis.ZUTREFFEND);
-				return;
+			if (bestaetigungsregel != null) {
+
+				bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
+						internePruefliste);
+				RegelErgebnis bestaetigungsregelErgebnis = internePruefliste
+						.gibErgebnisFuerRegel(bestaetigungsregel);
+
+				if (bestaetigungsregelErgebnis == RegelErgebnis.ZUTREFFEND) {
+					bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(
+							this, RegelErgebnis.ZUTREFFEND);
+					return;
+				}
 			}
 			
-			aufhebungsregel.pruefeNachrichtErstmalig(nachricht, internePruefliste);
-			RegelErgebnis aufhebungsregelErgebnis = internePruefliste
-			.gibErgebnisFuerRegel(aufhebungsregel);
-			
-			if (aufhebungsregelErgebnis == RegelErgebnis.ZUTREFFEND) {
-				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
-						RegelErgebnis.NICHT_ZUTREFFEND);
-				return;
+			if (aufhebungsregel != null) {
+
+				aufhebungsregel.pruefeNachrichtErstmalig(nachricht,
+						internePruefliste);
+				RegelErgebnis aufhebungsregelErgebnis = internePruefliste
+						.gibErgebnisFuerRegel(aufhebungsregel);
+
+				if (aufhebungsregelErgebnis == RegelErgebnis.ZUTREFFEND) {
+					bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(
+							this, RegelErgebnis.NICHT_ZUTREFFEND);
+					return;
+				}
 			}
 			bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 					RegelErgebnis.VIELLEICHT_ZUTREFFEND);
@@ -64,6 +71,8 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 			if (verstricheneZeit.istKleiner(timeOut)) {
 				return timeOut.differenz(verstricheneZeit);
 			} else {
+				// TODO TimeBased und TimeBasedBeiBeastaetigung zusammenfuegen
+				// Das Ergebnis ueber den Konstruktor setzen
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.ZUTREFFEND);
 			}

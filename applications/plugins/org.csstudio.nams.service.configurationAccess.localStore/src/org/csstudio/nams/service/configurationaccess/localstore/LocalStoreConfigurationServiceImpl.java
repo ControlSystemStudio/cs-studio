@@ -80,8 +80,12 @@ class LocalStoreConfigurationServiceImpl implements
 	public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfiguration {
 		final Transaction transaction = this.session.beginTransaction();
-		Configuration result = new Configuration(session);
-		transaction.commit();
+		Configuration result = null;
+		try {
+			result = new Configuration(session);
+		} finally {
+			transaction.commit();
+		}
 		return result;
 	}
 

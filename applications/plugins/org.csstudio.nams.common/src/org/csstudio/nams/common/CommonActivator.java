@@ -6,6 +6,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.common.activatorUtils.Required;
+import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.osgi.framework.BundleActivator;
@@ -27,9 +28,8 @@ public class CommonActivator extends AbstractBundleActivator implements BundleAc
 		
 		OSGiServiceOffers serviceOffers = new OSGiServiceOffers();
 		serviceOffers.put(ExecutionService.class, new DefaultExecutionService());
-		//TODO move inject to org.csstudio.nams.common.regelwerk
-//		ProcessVariableRegel.staticInject(logger);
-
+		ProcessVariableRegel.staticInject(logger);
+		
 		return serviceOffers;
 	}
 	

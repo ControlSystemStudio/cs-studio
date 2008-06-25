@@ -195,6 +195,10 @@ class JMSConsumer implements Consumer {
 				break;
 			case TOPIC:
 				Topic topic = session.createTopic(source);
+				
+//				consumer = session.createConsumer(topic, clientId
+//						+ "-" + topic.getTopicName());
+				
 				consumer = session.createDurableSubscriber(topic, clientId
 						+ "-" + topic.getTopicName());
 
