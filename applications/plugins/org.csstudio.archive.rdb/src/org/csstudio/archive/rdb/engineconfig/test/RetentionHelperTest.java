@@ -6,7 +6,7 @@ import org.csstudio.archive.rdb.Retention;
 import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.engineconfig.RetentionHelper;
 import org.csstudio.archive.rdb.internal.SQL;
-import org.csstudio.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.junit.Test;
 
 /** Retention tests

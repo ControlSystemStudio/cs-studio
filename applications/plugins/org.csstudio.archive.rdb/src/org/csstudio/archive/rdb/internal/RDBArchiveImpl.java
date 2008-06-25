@@ -26,8 +26,8 @@ import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.utility.rdb.RDBUtil;
-import org.csstudio.utility.rdb.RDBUtil.Dialect;
+import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** RDB Archive access.
  *  @author Kay Kasemir

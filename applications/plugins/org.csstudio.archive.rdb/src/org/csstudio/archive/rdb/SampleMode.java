@@ -1,6 +1,6 @@
 package org.csstudio.archive.rdb;
 
-import org.csstudio.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.StringID;
 
 /** Description of a sample mode: "Monitor", ...
  *  <p>

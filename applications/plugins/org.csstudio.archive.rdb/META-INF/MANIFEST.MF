@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
- org.csstudio.utility.rdb;visibility:=reexport,
+ org.csstudio.platform.utility.rdb;visibility:=reexport,
  org.csstudio.apputil,
  org.junit4
 Eclipse-LazyStart: true

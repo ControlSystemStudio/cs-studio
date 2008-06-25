@@ -3,9 +3,9 @@ package org.csstudio.archive.rdb.internal;
 import java.util.HashMap;
 
 import org.csstudio.archive.rdb.Status;
-import org.csstudio.utility.rdb.RDBUtil;
-import org.csstudio.utility.rdb.StringID;
-import org.csstudio.utility.rdb.StringIDHelper;
+import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.StringIDHelper;
 
 /** Caching RDB interface to status info.
  *  @author Kay Kasemir

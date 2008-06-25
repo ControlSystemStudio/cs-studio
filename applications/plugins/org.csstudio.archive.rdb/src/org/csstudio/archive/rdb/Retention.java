@@ -1,6 +1,6 @@
 package org.csstudio.archive.rdb;
 
-import org.csstudio.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.StringID;
 
 /** Retention information
  *  <p>

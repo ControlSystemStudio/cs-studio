@@ -8,7 +8,7 @@ import org.csstudio.archive.rdb.Severity;
 import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.internal.SQL;
 import org.csstudio.archive.rdb.internal.SeverityCache;
-import org.csstudio.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

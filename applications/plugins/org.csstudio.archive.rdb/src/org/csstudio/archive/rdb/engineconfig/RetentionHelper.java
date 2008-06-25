@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 import org.csstudio.archive.rdb.Retention;
 import org.csstudio.archive.rdb.internal.SQL;
-import org.csstudio.utility.rdb.RDBUtil;
-import org.csstudio.utility.rdb.StringID;
-import org.csstudio.utility.rdb.StringIDHelper;
+import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.StringIDHelper;
 
 /** Helper for putting Retention info into RDB
  *  @author Kay Kasemir

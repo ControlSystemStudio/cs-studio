@@ -4,7 +4,7 @@ import java.net.URL;
 
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
-import org.csstudio.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil;
 
 abstract public class RDBArchive
 {

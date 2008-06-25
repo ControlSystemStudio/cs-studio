@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.csstudio.archive.rdb.SampleMode;
-import org.csstudio.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Helper for RDB sample mode info 
  *  @author Kay Kasemir

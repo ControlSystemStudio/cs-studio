@@ -3,7 +3,7 @@ package org.csstudio.archive.rdb;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.StringID;
 
 /** Channel: Name, access to time range etc.
  *  @see RDBArchive

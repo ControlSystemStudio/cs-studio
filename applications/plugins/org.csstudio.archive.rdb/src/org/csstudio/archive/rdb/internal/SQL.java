@@ -1,7 +1,7 @@
 package org.csstudio.archive.rdb.internal;
 
-import org.csstudio.utility.rdb.RDBUtil;
-import org.csstudio.utility.rdb.RDBUtil.Dialect;
+import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** All the SQL strings in one place.
  *  @author Kay Kasemir

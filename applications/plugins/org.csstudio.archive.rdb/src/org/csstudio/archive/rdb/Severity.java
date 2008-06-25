@@ -1,7 +1,7 @@
 package org.csstudio.archive.rdb;
 
 import org.csstudio.platform.data.ISeverity;
-import org.csstudio.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.StringID;
 
 /** Severity with name, ID and ISeverity interface.
  *  <p>

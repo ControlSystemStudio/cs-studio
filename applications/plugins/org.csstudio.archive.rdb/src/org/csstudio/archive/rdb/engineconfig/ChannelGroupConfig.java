@@ -9,7 +9,7 @@ import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.internal.ChannelConfigImpl;
 import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
-import org.csstudio.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.StringID;
 
 /** RDB info for a group of sampled channels.
  *  @author Kay Kasemir
