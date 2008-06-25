@@ -15,7 +15,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.csstudio.platform.libs.jms.JMSConnectionFactory;
+import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.junit.Test;
 
 /** Stand-alone test of the JMSLogThread.

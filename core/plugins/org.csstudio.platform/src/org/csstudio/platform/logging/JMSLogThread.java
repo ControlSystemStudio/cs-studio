@@ -15,7 +15,7 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import org.apache.log4j.helpers.LogLog;
-import org.csstudio.platform.libs.jms.JMSConnectionFactory;
+import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
 /** Thread that reads log messages from a queue and tries to send them to JMS.
  *  <p>

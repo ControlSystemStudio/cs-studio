@@ -6,10 +6,10 @@ Bundle-Version: 1.0.0
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit4,
- org.csstudio.platform.libs.jms,
  org.eclipse.core.resources,
  org.csstudio.platform.libs.dal,
- org.csstudio.platform.libs.jmock
+ org.csstudio.platform.libs.jmock,
+ org.csstudio.platform.utility.jms
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
 Export-Package: org.apache.log4j,
