@@ -80,10 +80,10 @@ public class AbstractProcessVariableNameParserTest {
 				returnValue(new ProcessVariableAdress("abc", ControlSystemEnum.UNKNOWN, "", "abc1", ""));
 				one(_parser).doParse("abc2","dal-epics://abc2");
 				returnValue(new ProcessVariableAdress("abc", ControlSystemEnum.DAL_EPICS, "", "abc2", ""));
-				one(_parser).doParse("abc3","epics://abc3");
-				returnValue(new ProcessVariableAdress("abc", ControlSystemEnum.EPICS, "", "abc3", ""));
-				one(_parser).doParse("abc4","tine://abc4");
-				returnValue(new ProcessVariableAdress("abc", ControlSystemEnum.TINE, "", "abc4", ""));				
+//				one(_parser).doParse("abc3","epics://abc3");
+//				returnValue(new ProcessVariableAdress("abc", ControlSystemEnum.EPICS, "", "abc3", ""));
+//				one(_parser).doParse("abc4","tine://abc4");
+//				returnValue(new ProcessVariableAdress("abc", ControlSystemEnum.TINE, "", "abc4", ""));				
 			}
 		});
 

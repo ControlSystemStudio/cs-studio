@@ -38,17 +38,17 @@ public enum ControlSystemEnum implements IAdaptable {
 
 	DAL_SIMULATOR("simulator", "Simulator", true),
 
-	DAL_EPICS("dal-epics", "EPICS", true),
+	DAL_EPICS("epics", "EPICS", true),
 
-	DAL_TINE("dal-tine", "TINE", true),
+	DAL_TINE("tine", "TINE", true),
 
-	DAL_TANGO("dal-tango", null, false),
+	DAL_TANGO("tango", null, false),
 
-	TINE("tine", "TINE", true),
-
-	EPICS("epics", "EPICS", true),
-
-	TANGO("tango", null, false),
+//	TINE("tine", "TINE", true),
+//
+//	EPICS("epics", "EPICS", true),
+//
+//	TANGO("tango", null, false),
 
 	LOCAL("local", null, false),
 	

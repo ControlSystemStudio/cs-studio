@@ -32,5 +32,4 @@ Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.workbench
 Bundle-Activator: org.csstudio.platform.ui.CSSPlatformUiPlugin
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/jdom.jar,
- .
+Bundle-ClassPath: .

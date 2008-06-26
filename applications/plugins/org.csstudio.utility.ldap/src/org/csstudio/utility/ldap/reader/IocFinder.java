@@ -163,8 +163,8 @@ public final class IocFinder {
 	private static boolean isEpicsDefaultControlSystem() {
 		ControlSystemEnum controlSystem = ProcessVariableAdressFactory
 				.getInstance().getDefaultControlSystem();
-		return controlSystem == ControlSystemEnum.DAL_EPICS
-				|| controlSystem == ControlSystemEnum.EPICS;
+		return controlSystem == ControlSystemEnum.DAL_EPICS;
+//				|| controlSystem == ControlSystemEnum.EPICS;
 	}
 
 	/**

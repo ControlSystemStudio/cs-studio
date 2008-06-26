@@ -42,12 +42,12 @@ public class ProcessVariableAdressFactoryTest {
 	@Test
 	public void testCreateProcessVariableAdress() {
 		// test raw names, which contain a control system prefix
-		testPv("epics://any/any/any", ControlSystemEnum.EPICS, "any/any/any",
-				null, null);
-		testPv("tine://any|any.any", ControlSystemEnum.TINE, "any|any.any",
-				null, null);
-		testPv("tango://any-any//any|ss<ss>", ControlSystemEnum.TANGO,
-				"any-any//any|ss<ss>", null, null);
+//		testPv("epics://any/any/any", ControlSystemEnum.EPICS, "any/any/any",
+//				null, null);
+//		testPv("tine://any|any.any", ControlSystemEnum.TINE, "any|any.any",
+//				null, null);
+//		testPv("tango://any-any//any|ss<ss>", ControlSystemEnum.TANGO,
+//				"any-any//any|ss<ss>", null, null);
 
 		// test raw names, without a control system prefix
 		testPv("any/any/any", _factory.getDefaultControlSystem(),

@@ -46,7 +46,7 @@ public class SimpleNameParserTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		_epicsParser = new SimpleNameParser(ControlSystemEnum.EPICS);
+//		_epicsParser = new SimpleNameParser(ControlSystemEnum.EPICS);
 	}
 
 	/**
@@ -62,10 +62,10 @@ public class SimpleNameParserTest {
 	 */
 	@Test
 	public void testParse() {
-		test("abc", ControlSystemEnum.EPICS, null, null, "abc");
-		test("epics://abc", ControlSystemEnum.EPICS, null, null, "abc");
-		test("epics://abc[cde]", ControlSystemEnum.EPICS, null, null,
-				"abc[cde]");
+//		test("abc", ControlSystemEnum.EPICS, null, null, "abc");
+//		test("epics://abc", ControlSystemEnum.EPICS, null, null, "abc");
+//		test("epics://abc[cde]", ControlSystemEnum.EPICS, null, null,
+//				"abc[cde]");
 		test("", ControlSystemEnum.UNKNOWN, null, null, "");
 	}
 

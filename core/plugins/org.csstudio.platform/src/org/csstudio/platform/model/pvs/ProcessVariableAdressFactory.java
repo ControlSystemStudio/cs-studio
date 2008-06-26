@@ -62,12 +62,12 @@ public class ProcessVariableAdressFactory {
 				ControlSystemEnum.DAL_TANGO));
 		_parserMapping.put(ControlSystemEnum.UNKNOWN, new SimpleNameParser(
 				ControlSystemEnum.UNKNOWN));
-		_parserMapping.put(ControlSystemEnum.EPICS, new SimpleNameParser(
-				ControlSystemEnum.EPICS));
-		_parserMapping.put(ControlSystemEnum.TINE, new SimpleNameParser(
-				ControlSystemEnum.TINE));
-		_parserMapping.put(ControlSystemEnum.TANGO, new SimpleNameParser(
-				ControlSystemEnum.TANGO));
+//		_parserMapping.put(ControlSystemEnum.EPICS, new SimpleNameParser(
+//				ControlSystemEnum.EPICS));
+//		_parserMapping.put(ControlSystemEnum.TINE, new SimpleNameParser(
+//				ControlSystemEnum.TINE));
+//		_parserMapping.put(ControlSystemEnum.TANGO, new SimpleNameParser(
+//				ControlSystemEnum.TANGO));
 		_parserMapping.put(ControlSystemEnum.SDS_SIMULATOR,
 				new SimpleNameParser(ControlSystemEnum.SDS_SIMULATOR));
 		_parserMapping.put(ControlSystemEnum.DAL_SIMULATOR,
