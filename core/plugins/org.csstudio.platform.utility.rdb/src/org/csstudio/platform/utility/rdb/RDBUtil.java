@@ -55,11 +55,10 @@ public class RDBUtil
      *  <p>
      *  For MySQL resp. Oracle, the formats are:
      *  <pre>
-     *     jdbc:mysql://[host]/[database]?user=[user]&password=[password]
-     *     jdbc:oracle:thin:[user]/[password]@//[host]:[database]
+     *     jdbc:mysql://[host]:[port]/[database]?user=[user]&password=[password]
+     *     jdbc:oracle:thin:[user]/[password]@//[host]:[port]/[database]
      *  </pre>
      *  
-     *  In either case, the host portion may actually be "host:port".
      *  For Oracle, the port is usually 1521.
      *  
      *  @param url Database URL
