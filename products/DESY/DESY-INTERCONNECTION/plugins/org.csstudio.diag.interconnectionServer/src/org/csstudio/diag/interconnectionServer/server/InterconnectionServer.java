@@ -89,6 +89,7 @@ public class InterconnectionServer
     //set in constructor from xml preferences
     private int sendCommandId;//PreferenceProperties.SENT_START_ID;
     
+    
     private Collector	jmsMessageWriteCollector = null;
     private Collector	clientRequestTheadCollector = null;
     private Collector	numberOfMessagesCollector = null;
@@ -451,7 +452,7 @@ public class InterconnectionServer
         DatagramPacket  packet      = null;
         ClientRequest   newClient   = null;
         int             result      = 0;
-        byte 			buffer[]	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
+        byte 			buffer[]	= null;
         boolean receiveEnabled = true;
 
         /*
@@ -605,16 +606,28 @@ public class InterconnectionServer
         	} else {
         		try
                 {
+        			/*
+        			 * always a 'fresh' buffer!
+        			 * buffer can be overwritten if a new message arrives before we've copied the contents!!!
+        			 */
+        			buffer	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
                     packet = new DatagramPacket( buffer, buffer.length);
 
                     serverSocket.receive(packet);
+                    
+                    /*
+                     * unpack the packet here!
+                     * if we do this way down in the thread - it might be overwritten!!
+                     */
+                    
+                    String packetData = new String(packet.getData(), 0, packet.getLength());
                     
                     /* 
                      * 
                     newClient = new ClientRequest( this, serverSocket, packet, alarmSession, alarmDestination, alarmSender, 
                     		logSession, logDestination, logSender, putLogSession, putLogDestination, putLogSender);
                     		*/
-                    newClient = new ClientRequest( this, serverSocket, packet, alarmConnection, logConnection, putLogConnection);
+                    newClient = new ClientRequest( this, packetData, serverSocket, packet, alarmConnection, logConnection, putLogConnection);
                     /*
                      * does this cause a memory leak?
                      */
@@ -641,7 +654,7 @@ public class InterconnectionServer
          */
         while( getClientRequestTheadCollector().getActualValue().getValue() > 10) Thread.yield();
 
-        CentralLogger.getInstance().warn( this, "InterconnectionServer: all but " + getClientRequestTheadCollector().getActualValue().getValue() + "  clients threads stoped, closing connections...");
+        CentralLogger.getInstance().warn( this, "InterconnectionServer: all but " + getClientRequestTheadCollector().getActualValue().getValue() + "  clients threads stopped, closing connections...");
         
     	disconnectFromIocs();
     	cleanupJms();

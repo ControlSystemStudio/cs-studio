@@ -57,7 +57,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class ClientRequest extends Thread
 {
-    private DatagramSocket      socket          = null;
+    private String				packetData 		= null;
+	private DatagramSocket      socket          = null;
     private DatagramPacket      packet          = null;
     // private Session             alarmSession, logSession, putLogSession         = null;
     // private Destination         alarmDestination, logDestination, putLogDestination     = null;
@@ -80,9 +81,10 @@ public class ClientRequest extends Thread
 			Session jmsLogSession, Destination jmsLogDestination, MessageProducer jmsLogSender, 
 			Session jmsPutLogSession, Destination jmsPutLogDestination, MessageProducer jmsPutLogSender)
 			*/
-	public ClientRequest( InterconnectionServer icServer, DatagramSocket d, DatagramPacket p, Connection alarmConnection, Connection logConnection,Connection puLogConnection)
+	public ClientRequest( InterconnectionServer icServer, String packetData, DatagramSocket d, DatagramPacket p, Connection alarmConnection, Connection logConnection,Connection puLogConnection)
 	{
         this.icServer = icServer;
+        this.packetData = packetData;
 		this.socket       = d;
 		this.packet       = p;
 		/*
@@ -213,7 +215,7 @@ public class ClientRequest extends Thread
         TagValuePairs	type	= icServer.new TagValuePairs();
         
         
-        if ( parseMessage(  tagValue, tagValuePairs, id, type, statisticId)) {
+        if ( parseMessage(  packetData, tagValue, tagValuePairs, id, type, statisticId)) {
         	
         	parseTime = new GregorianCalendar();
         	//System.out.println("Time: - after parse 	= " + dateToString(new GregorianCalendar()));
@@ -868,21 +870,22 @@ public class ClientRequest extends Thread
 		}
 	}
 	
-	private boolean parseMessage ( Hashtable<String,String> tagValue, Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {
+	private boolean parseMessage ( String packetData, Hashtable<String,String> tagValue, Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {
 		boolean success = false;
 		String[] attribute = null;
 		boolean gotTag 		= false;
     	boolean gotId 		= false;
     	String	timeStamp = null;
 		
-		String daten = new String(this.packet.getData(), 0, this.packet.getLength());
+		//String daten = new String(this.packet.getData(), 0, this.packet.getLength());
+    	
 		//System.out.println("Message: " + daten);
 		//
 		// just in case we should use another data format in the future
 		// here's the place to implement anoher parser
 		//
 
-		StringTokenizer tok = new StringTokenizer(daten, PreferenceProperties.DATA_TOKENIZER);
+		StringTokenizer tok = new StringTokenizer(packetData, PreferenceProperties.DATA_TOKENIZER);
         
 		// TODO: make it a logMessage
         ///System.out.println("Anzahl der Token: " + tok.countTokens() + "\n");
@@ -942,6 +945,12 @@ public class ClientRequest extends Thread
 		 */
 		if ( tagValue.containsKey("EVENTTIME")) {
 			// nothing to do
+		} else if ( tagValue.containsKey("ID")){
+			/*
+			 * ANY message MUST contain an ID - so this should be always TRUE
+			 * put data into DataStore - this will also check for duplicates!
+			 */
+			DataStore.getInstance().storeData(tagValue.get("ID"), packetData, statisticContent.getHost());
 		} else if ( tagValue.containsKey("CREATETIME")){
 			/*
 			 * if CREATETIME is set -> is it as EVENTTIME

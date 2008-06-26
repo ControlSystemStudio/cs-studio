@@ -101,7 +101,7 @@ public class ExecuteRemoteCommandDyn implements IAction {
 		
 		}
 		
-		return command + ":" + client + " - success";
+		return command + ":" + client + " - command spawned";
 	}
 	
 }
