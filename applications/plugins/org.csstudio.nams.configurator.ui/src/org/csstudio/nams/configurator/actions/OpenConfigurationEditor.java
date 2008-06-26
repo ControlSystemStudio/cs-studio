@@ -6,6 +6,7 @@ import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -29,25 +30,30 @@ public class OpenConfigurationEditor extends Action {
 
 		IWorkbenchPage activePage = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();
-		IEditorPart activeEditor = activePage.getActiveEditor();
-		//
+
 		IConfigurationBean openEditorBean = null;
-		if (activeEditor instanceof ConfigurationEditor) {
-			ConfigurationEditor editor = (ConfigurationEditor) activeEditor;
-			openEditorBean = ((ConfigurationEditorInput) editor
-					.getEditorInput()).getBean();
-
-		}
-
-		if (openEditorBean != null && openEditorBean.equals(this.bean)) {
-			activePage.activate(activeEditor);
-		} else {
-
-			try {
-				activePage.openEditor(editorInput, ConfigurationEditor.ID);
-			} catch (PartInitException e) {
-				e.printStackTrace();
+		
+		IEditorReference[] editorReferences = activePage.getEditorReferences();
+		for (IEditorReference editorReference : editorReferences) {
+			IEditorPart editorPart = editorReference.getEditor(false);
+			
+			if (editorPart instanceof ConfigurationEditor) {
+				ConfigurationEditor editor = (ConfigurationEditor) editorPart;
+				openEditorBean = ((ConfigurationEditorInput) editor
+						.getEditorInput()).getBean();
+				
 			}
+			
+			if (openEditorBean != null && openEditorBean.equals(this.bean)) {
+				activePage.activate(editorPart);
+				return;
+			}			
+		}
+		
+		try {
+			activePage.openEditor(editorInput, ConfigurationEditor.ID);
+		} catch (PartInitException e) {
+			e.printStackTrace();
 		}
 
 	}
