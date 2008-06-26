@@ -49,6 +49,7 @@ public class ConfigurationServiceFactoryImpl implements
 			service = new LocalStoreConfigurationServiceImpl(session);
 			sessionFactoryList.add(sessionFactory);
 			sessionList.add(session);
+			services.put(connectionData, service);
 		}
 		
 		return service;
@@ -116,6 +117,7 @@ public class ConfigurationServiceFactoryImpl implements
 			sessionFactory.close();
 		}
 		sessionFactoryList.clear();
+		services.clear();
 	}
 
 	
