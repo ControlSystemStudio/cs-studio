@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.BundleActivatorUtils;
@@ -43,6 +44,7 @@ import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
@@ -202,7 +204,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	@Required
 	HistoryService injectedHistoryService, @OSGiService
 	@Required
-	LocalStoreConfigurationService injectedLocalStoreConfigurationService,
+	ConfigurationServiceFactory injectedConfigurationServiceFactory,
 			@OSGiService
 			@Required
 			ExecutionService injectedExecutionService) throws Exception {
@@ -228,7 +230,16 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		historyService = injectedHistoryService;
 
 		// LocalStoreConfigurationService
-		localStoreConfigurationService = injectedLocalStoreConfigurationService;
+		localStoreConfigurationService = injectedConfigurationServiceFactory
+				.getConfigurationService(
+						"org.apache.derby.jdbc.ClientDriver",
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
+						"org.hibernate.dialect.DerbyDialect",
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
 
 		// Execution Service
 		// TODO wird noch nicht vollstaendig benutzt! Ins Dec-Office einbauen

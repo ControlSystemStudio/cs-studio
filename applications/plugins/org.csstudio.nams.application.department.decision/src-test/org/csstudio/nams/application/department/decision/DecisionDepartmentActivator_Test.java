@@ -8,10 +8,12 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.service.ExecutionServiceMock;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
@@ -72,7 +74,13 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		bundleInsance.startBundle((Logger) logger,
 				(MessagingService) messagingService, preferenceService,
 				regelwerksBuilderService, historyService,
-				localStoreConfigurationService, executionService);
+				new ConfigurationServiceFactory() {
+					public LocalStoreConfigurationService getConfigurationService(
+							String connectionDriver, String connectionURL,
+							String dialect, String username, String password) {
+						return localStoreConfigurationService;
+					}
+				}, executionService);
 
 		Thread.yield();
 
@@ -172,6 +180,10 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	private PreferenceService createPreferenceServiceMock() {
 		PreferenceService result = EasyMock.createMock(PreferenceService.class);
 
+		EasyMock.expect(result.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION)).andReturn("P_APP_DATABASE_CONNECTION").anyTimes();;
+		EasyMock.expect(result.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER)).andReturn("P_APP_DATABASE_USER").anyTimes();;
+		EasyMock.expect(result.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD)).andReturn("P_APP_DATABASE_PASSWORD").anyTimes();;
+		
 		EasyMock
 				.expect(
 						result

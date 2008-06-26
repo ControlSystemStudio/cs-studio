@@ -12,5 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.databinding.beans,
  org.eclipse.jface.databinding,
  org.csstudio.nams.service.configurationAccess.localStore,
- org.csstudio.nams.common
+ org.csstudio.nams.common,
+ org.csstudio.ams.service.preferenceservice
 Eclipse-LazyStart: true

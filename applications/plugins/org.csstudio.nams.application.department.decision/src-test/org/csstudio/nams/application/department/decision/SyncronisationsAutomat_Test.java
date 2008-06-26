@@ -27,6 +27,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Top
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
+import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
@@ -225,7 +226,22 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return null;
 					}
 
-				}, null);
+				}, new HistoryService() {
+
+					public void logReceivedReplicationDoneMessage() {
+						
+					}
+
+					public void logReceivedStartReplicationMessage() {
+						
+					}
+
+					public void logTimeOutForTimeBased(int regelwerkID,
+							int messageDescId, int regelId) {
+						fail("unexpected method call!");
+					}
+					
+				});
 
 		assertNotNull(zuletzGesendeteNachricht);
 		assertTrue(zuletzGesendeteNachricht instanceof SyncronisationsAufforderungsSystemNachchricht);
