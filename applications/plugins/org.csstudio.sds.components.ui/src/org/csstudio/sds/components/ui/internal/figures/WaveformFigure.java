@@ -682,6 +682,44 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			for (int i = 0; i < pointList.size(); i++) {
 				Point p = pointList.getPoint(i);
 				graphics.drawPoint(p.x, p.y);
+				
+				// TODO: offer more drawing styles for the data points.
+				// Below are tests
+				//
+				// Check if these can be drawn more efficiently if
+				// not drawn pixel by pixel.
+
+				// small plus sign:
+				//
+				//    #
+				//   ###
+				//    #
+//				graphics.drawPoint(p.x-1, p.y);
+//				graphics.drawPoint(p.x+1, p.y);
+//				graphics.drawPoint(p.x, p.y-1);
+//				graphics.drawPoint(p.x, p.y+1);
+//
+				// square, 3x3 pixels:
+				//
+				//   ###
+				//   ###
+				//   ###
+//				graphics.drawPoint(p.x-1, p.y-1);
+//				graphics.drawPoint(p.x+1, p.y-1);
+//				graphics.drawPoint(p.x-1, p.y+1);
+//				graphics.drawPoint(p.x+1, p.y+1);
+//
+				// diamond:
+				//
+				//    #
+				//   ###
+				//  #####
+				//   ###
+				//    #
+//				graphics.drawPoint(p.x-2, p.y);
+//				graphics.drawPoint(p.x+2, p.y);
+//				graphics.drawPoint(p.x, p.y+2);
+//				graphics.drawPoint(p.x, p.y-2);
 			}
 		}
 
