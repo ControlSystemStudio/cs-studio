@@ -3,6 +3,6 @@ package org.csstudio.nams.configurator.modelmapping;
 
 public interface IConfigurationModel {
 
-	public IConfigurationBean save(IConfigurationBean bean);
+	public <E extends IConfigurationBean> E save(E bean);
 
 }

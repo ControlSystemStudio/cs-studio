@@ -1,10 +1,11 @@
-package org.csstudio.nams.configurator.editor.stackparts;
+package org.csstudio.nams.configurator.editor;
 
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.beans.AbstractObservableBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -14,35 +15,59 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.EditorPart;
 
-public abstract class AbstractStackPart<ConfigurationType extends IConfigurationBean> {
+public abstract class AbstractEditor<ConfigurationType extends AbstractObservableBean> extends EditorPart {
 
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
-	private Class<ConfigurationType> _associatedBean;
-	private DirtyFlagProvider _dirtyFlagProvider;
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
 	protected IConfigurationModel model;
 	
 	protected PropertyChangeListener listener;
 	protected Composite main;
-
 	
-	public AbstractStackPart(DirtyFlagProvider flagProvider,
-			Class<ConfigurationType> associatedBean, int numColumns) {
-		_dirtyFlagProvider = flagProvider;
-		_associatedBean = associatedBean;
-		NUM_COLUMNS = numColumns;
+	public AbstractEditor() {
+		NUM_COLUMNS = getNumColumns();
+	}
+	
+	protected abstract int getNumColumns();
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		save();
 	}
 
-	protected DirtyFlagProvider getDirtyFlagProvider() {
-		return _dirtyFlagProvider;
+	@Override
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
+		setSite(site);
+		setInput(input);
+		doInit(site, input);
+	}
+
+	protected abstract void doInit(IEditorSite site, IEditorInput input);
+
+	
+	@Override
+	public boolean isSaveAsAllowed() {
+		return false;
+	}
+
+	@Override
+	public abstract void createPartControl(Composite parent);
+
+	@Override
+	public void doSaveAs() {
+		
 	}
 
 	public void editConfiguration(ConfigurationType bean) {
 		this.bean = bean;
-
 	}
 
 	protected Text createTextEntry(Composite parent, String labeltext,
@@ -120,10 +145,7 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 		return main;
 	}
 
-	public Class<ConfigurationType> getAssociatedBean() {
-		return _associatedBean;
-	}
-
+	@Override
 	public boolean isDirty() {
 		if (this.bean != null && this.beanClone != null) {
 			return !this.bean.equals(this.beanClone);
@@ -139,21 +161,27 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 		// .getSelectionIndex());
 
 		// speicher Änderungen im lokalen Model
-		IConfigurationBean updatedBean = this.model.save(this.beanClone);
+		ConfigurationType updatedBean = this.model.save(this.beanClone);
 
 		// copy clone state to original bean
-		this.bean = (ConfigurationType) updatedBean;
+		this.bean = updatedBean;
 
 		// create new clone
 		this.beanClone = (ConfigurationType) this.bean.getClone();
+		resetDatabinding();
+		initDataBinding();
+	}
+
+	private void resetDatabinding() {
+		this.bean.clearPropertyChangeListeners();
+		this.beanClone.clearPropertyChangeListeners();
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+	public void setInput(ConfigurationType input, IConfigurationModel model) {
 		this.model = model;
-		this.bean = (ConfigurationType) input;
-		this.beanClone = (ConfigurationType) ((ConfigurationType) input)
-				.getClone();
+		this.bean = input;
+		this.beanClone = (ConfigurationType) input.getClone();
 		initDataBinding();
 	}
 
@@ -165,6 +193,6 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 		beanClone.addPropertyChangeListener(listener);;
 	}
 
+	@Override
 	public abstract void setFocus();
-
 }

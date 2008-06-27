@@ -56,6 +56,36 @@
             id="org.csstudio.nams.configurator.ConfigurationEditor"
             name="Configuration Editor">
       </editor>
+      <editor
+            class="org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor"
+            name="Alarmbearbeiter Editor">
+      </editor>
+      <editor
+            class="org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor"
+            name="Alarmbearbeitergruppen Editor">
+      </editor>
+      <editor
+            class="org.csstudio.nams.configurator.editor.AlarmtopicEditor"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.editor.AlarmtopicEditor"
+            name="Alarmtopic Editor">
+      </editor>
+      <editor
+            class="org.csstudio.nams.configurator.editor.FilterEditor"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.editor.FilterEditor"
+            name="Filter Editor">
+      </editor>
+      <editor
+            class="org.csstudio.nams.configurator.editor.FilterbedingungEditor"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.editor.FilterbedingungEditor"
+            name="FilterbedingungEditor">
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">

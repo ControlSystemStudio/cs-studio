@@ -20,14 +20,14 @@ public class ConfigurationModel implements IConfigurationModel {
 	private static ConfigurationBeanController controller;
 
 	@SuppressWarnings("unchecked")
-	public IConfigurationBean save(IConfigurationBean bean) {
-		IConfigurationBean result = null;
+	public <E extends IConfigurationBean> E save(E bean) {
+		E result = null;
 		if (bean instanceof AlarmbearbeiterBean) {
-			result = save((AlarmbearbeiterBean) bean);
+			result = (E) save((AlarmbearbeiterBean) bean);
 		} else if (bean instanceof AlarmbearbeiterGruppenBean) {
-			result = save((AlarmbearbeiterGruppenBean) bean);
+			result = (E) save((AlarmbearbeiterGruppenBean) bean);
 		} else if (bean instanceof AlarmtopicBean) {
-			result = save((AlarmtopicBean) bean);
+			result = (E) save((AlarmtopicBean) bean);
 		}
 		if (result == null) {
 			throw new IllegalArgumentException(
@@ -39,7 +39,7 @@ public class ConfigurationModel implements IConfigurationModel {
 		}
 	}
 
-	private IConfigurationBean save(AlarmtopicBean bean) {
+	private AlarmtopicBean save(AlarmtopicBean bean) {
 		Collection<TopicDTO> dtos = null;
 		try {
 			dtos = localStore.getEntireConfiguration().gibAlleAlarmtopics();
@@ -72,7 +72,7 @@ public class ConfigurationModel implements IConfigurationModel {
 		return bean;
 	}
 
-	private IConfigurationBean save(AlarmbearbeiterGruppenBean bean) {
+	private AlarmbearbeiterGruppenBean save(AlarmbearbeiterGruppenBean bean) {
 		Collection<AlarmbearbeiterGruppenDTO> dtos = null;
 		try {
 			dtos = localStore.getEntireConfiguration()
@@ -106,7 +106,7 @@ public class ConfigurationModel implements IConfigurationModel {
 		return bean;
 	}
 
-	private IConfigurationBean save(AlarmbearbeiterBean bean) {
+	private AlarmbearbeiterBean save(AlarmbearbeiterBean bean) {
 		Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter = null;
 		try {
 			gibAlleAlarmbearbeiter = localStore.getEntireConfiguration()

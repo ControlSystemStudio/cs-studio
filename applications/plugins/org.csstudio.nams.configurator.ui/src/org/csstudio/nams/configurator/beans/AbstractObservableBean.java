@@ -40,4 +40,8 @@ public abstract class AbstractObservableBean implements IConfigurationBean {
 	protected PropertyChangeSupport getPropertyChangeSupport() {
 		return pcs;
 	}
+	
+	public void clearPropertyChangeListeners() {
+		pcs = new PropertyChangeSupport(this);
+	}
 }
