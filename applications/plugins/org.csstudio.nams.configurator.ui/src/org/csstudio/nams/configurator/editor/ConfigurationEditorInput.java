@@ -55,12 +55,12 @@ public class ConfigurationEditorInput implements IEditorInput {
 	 * true liefern
 	 */
 	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (!(obj instanceof ConfigurationEditorInput)) return false;
 		ConfigurationEditorInput editorInput = (ConfigurationEditorInput) obj;
 
-		if (editorInput.getBean().getClass().equals(this.getBean().getClass())) {
-			return true;
-		}
-		return false;
+
+		return editorInput.getBean().equals(this.getBean());
 	}
 
 }

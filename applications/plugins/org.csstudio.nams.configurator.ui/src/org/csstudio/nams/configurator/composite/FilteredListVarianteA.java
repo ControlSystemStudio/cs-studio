@@ -1,11 +1,11 @@
 package org.csstudio.nams.configurator.composite;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
-import org.csstudio.nams.configurator.controller.ConfigurationBeanController;
-import org.csstudio.nams.configurator.controller.IConfigurationChangeListener;
 import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -38,12 +38,9 @@ public abstract class FilteredListVarianteA {
 	private String gruppenname = "";
 
 	private TableViewer table;
-	private final ConfigurationBeanController controller;
 
-	public FilteredListVarianteA(Composite parent, int style, ConfigurationBeanController controller) {
-		this.controller = controller;
+	public FilteredListVarianteA(Composite parent, int style) {
 		this.createPartControl(parent, style);
-		registerControllerListener();
 	}
 
 	private void createPartControl(Composite parent, int style) {
@@ -136,7 +133,14 @@ public abstract class FilteredListVarianteA {
 //				return groupNames;
 //			}
 		};
+		configurationBean.addPropertyChangeListener(new PropertyChangeListener(){
 
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateView();
+				
+			}
+			
+		});
 		new OpenConfigurationEditorAction(configurationBean, model).run();
 	}
 
@@ -219,7 +223,4 @@ public abstract class FilteredListVarianteA {
 		Arrays.sort(tableInput);
 		table.setInput(tableInput);
 	}
-	
-	protected abstract void registerControllerListener();
-
 }

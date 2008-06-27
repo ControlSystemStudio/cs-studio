@@ -1,11 +1,11 @@
 package org.csstudio.nams.configurator.modelmapping;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
-import org.csstudio.nams.configurator.controller.ConfigurationBeanController;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -17,7 +17,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 public class ConfigurationModel implements IConfigurationModel {
 
 	private static LocalStoreConfigurationService localStore;
-	private static ConfigurationBeanController controller;
 
 	@SuppressWarnings("unchecked")
 	public <E extends IConfigurationBean> E save(E bean) {
@@ -29,12 +28,12 @@ public class ConfigurationModel implements IConfigurationModel {
 		} else if (bean instanceof AlarmtopicBean) {
 			result = (E) save((AlarmtopicBean) bean);
 		}
+		//TODO may handle dirty flag here
+//		bean.getPropertyChangeSupport().firePropertyChange();
 		if (result == null) {
 			throw new IllegalArgumentException(
 					"Failed saving unsupported bean.");
 		} else {
-			controller
-					.fireChangeOn((Class<IConfigurationBean>) bean.getClass());
 			return result;
 		}
 	}
@@ -142,11 +141,8 @@ public class ConfigurationModel implements IConfigurationModel {
 		return bean;
 	}
 
-	public static void staticInject(LocalStoreConfigurationService localStore,
-			ConfigurationBeanController controller) {
+	public static void staticInject(LocalStoreConfigurationService localStore) {
 		ConfigurationModel.localStore = localStore;
-		ConfigurationModel.controller = controller;
-
 	}
 
 }

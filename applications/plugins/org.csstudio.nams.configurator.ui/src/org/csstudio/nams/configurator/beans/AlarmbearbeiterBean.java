@@ -1,7 +1,5 @@
 package org.csstudio.nams.configurator.beans;
 
-import java.beans.PropertyChangeSupport;
-
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 
 public class AlarmbearbeiterBean extends

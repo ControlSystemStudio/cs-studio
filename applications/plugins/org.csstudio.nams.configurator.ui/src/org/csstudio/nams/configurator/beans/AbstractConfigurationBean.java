@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
+import java.beans.PropertyChangeSupport;
+
 import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 
 
@@ -23,6 +25,10 @@ import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		extends AbstractObservableBean implements Comparable<T>{
 
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcs;
+	}
+
 	public int compareTo(T o) {
 		return this.getDisplayName().compareTo(o.getDisplayName());
 	}
@@ -32,4 +38,6 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 	public abstract void updateState(T bean);
 
 	public abstract int getID();
+	
+	
 }

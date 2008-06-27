@@ -64,6 +64,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		this.addSeparator(main);
 		_activeCheckBoxEntry = this.createCheckBoxEntry(main,
 				"User is active:", true);
+		initDataBinding();
 	}
 	
 	private void initPrefAlarmingCombo() {

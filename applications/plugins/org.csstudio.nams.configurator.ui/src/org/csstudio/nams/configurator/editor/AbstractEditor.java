@@ -1,9 +1,9 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.beans.AbstractObservableBean;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -20,7 +20,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-public abstract class AbstractEditor<ConfigurationType extends AbstractObservableBean> extends EditorPart {
+public abstract class AbstractEditor<ConfigurationType extends AbstractObservableBean> extends EditorPart implements PropertyChangeListener{
+
 
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
@@ -42,11 +43,14 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		save();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
+		ConfigurationEditorInput cInput = (ConfigurationEditorInput) input;
+		setInput((ConfigurationType) cInput.getBean(), cInput.getModel());
 		doInit(site, input);
 	}
 
@@ -170,6 +174,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		this.beanClone = (ConfigurationType) this.bean.getClone();
 		resetDatabinding();
 		initDataBinding();
+		firePropertyChange(EditorPart.PROP_DIRTY);
 	}
 
 	private void resetDatabinding() {
@@ -182,7 +187,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		this.model = model;
 		this.bean = input;
 		this.beanClone = (ConfigurationType) input.getClone();
-		initDataBinding();
+		this.beanClone.addPropertyChangeListener(this);
 	}
 
 	protected abstract void initDataBinding();
@@ -195,4 +200,9 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 
 	@Override
 	public abstract void setFocus();
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		this.firePropertyChange(EditorPart.PROP_DIRTY);
+		
+	}
 }

@@ -1,9 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
-import org.csstudio.nams.configurator.controller.AbstractConfigurationChangeListener;
-import org.csstudio.nams.configurator.controller.ConfigurationBeanController;
-import org.csstudio.nams.configurator.controller.IConfigurationChangeListener;
 import org.csstudio.nams.configurator.modelmapping.ModelFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -13,28 +10,17 @@ public class FilterbedingungView extends ViewPart {
 
 	private static ModelFactory modelFactory;
 	public static final String ID = "org.csstudio.nams.configurator.filterbedingung";
-	private static ConfigurationBeanController controller;
 	public FilterbedingungView() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		new FilteredListVarianteA(parent, SWT.None, controller) {
+		new FilteredListVarianteA(parent, SWT.None) {
 			@Override
 			protected Object[] getTableInput() {
 				return modelFactory.getFilterConditionBeans();
 			}
-
-			@Override
-			protected void registerControllerListener() {
-				controller.addConfigurationChangedListener(new AbstractConfigurationChangeListener(){
-					protected void updateFilterBedingung() {
-						updateView();
-					}
-						});
-
-				}
 		};
 	}
 
@@ -44,9 +30,8 @@ public class FilterbedingungView extends ViewPart {
 
 	}
 
-	public static void staticInject(ModelFactory modelFactory, ConfigurationBeanController controller) {
+	public static void staticInject(ModelFactory modelFactory) {
 		FilterbedingungView.modelFactory = modelFactory;
-		FilterbedingungView.controller = controller;
 	}
 
 }
