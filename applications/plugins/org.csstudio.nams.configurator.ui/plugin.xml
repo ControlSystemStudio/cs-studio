@@ -51,12 +51,6 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.csstudio.nams.configurator.editor.ConfigurationEditor"
-            icon="icons/ams.gif"
-            id="org.csstudio.nams.configurator.ConfigurationEditor"
-            name="Configuration Editor">
-      </editor>
-      <editor
             class="org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor"
             icon="icons/ams.gif"
             id="org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor"
@@ -197,6 +191,18 @@
                id="deleteConfiguration.command.contribution">
          </command>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.csstudio.nams.configurator.beans.AlarmbearbeiterBeanContributor"
+            objectClass="org.csstudio.nams.configurator.beans.AlarmbearbeiterBean">
+         <action
+               class="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
+               id="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
+               label="new">
+         </action>
+      </objectContribution>
    </extension>
 w
 

@@ -18,12 +18,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class OpenConfigurationEditor extends Action {
+public class OpenConfigurationEditorAction extends Action {
 
 	private final IConfigurationBean bean;
 	private final IConfigurationModel model;
 
-	public OpenConfigurationEditor(IConfigurationBean bean,
+	public OpenConfigurationEditorAction(IConfigurationBean bean,
 			IConfigurationModel model) {
 		this.bean = bean;
 		this.model = model;

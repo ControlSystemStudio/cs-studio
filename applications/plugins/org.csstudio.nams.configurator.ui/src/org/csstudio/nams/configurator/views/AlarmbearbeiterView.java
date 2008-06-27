@@ -43,6 +43,7 @@ public class AlarmbearbeiterView extends ViewPart {
 		Menu menu = menuManager.createContextMenu(table.getTable());
 		table.getTable().setMenu(menu);
 		getSite().registerContextMenu(menuManager, table);
+		getSite().setSelectionProvider(table);
 
 	}
 

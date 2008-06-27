@@ -2,7 +2,7 @@ package org.csstudio.nams.configurator.composite;
 
 import java.util.Arrays;
 
-import org.csstudio.nams.configurator.actions.OpenConfigurationEditor;
+import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.controller.ConfigurationBeanController;
 import org.csstudio.nams.configurator.controller.IConfigurationChangeListener;
@@ -137,7 +137,7 @@ public abstract class FilteredListVarianteA {
 //			}
 		};
 
-		new OpenConfigurationEditor(configurationBean, model).run();
+		new OpenConfigurationEditorAction(configurationBean, model).run();
 	}
 
 	/**
