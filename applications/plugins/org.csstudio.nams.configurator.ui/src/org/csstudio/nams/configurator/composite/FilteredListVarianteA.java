@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.controller.ConfigurationBeanController;
+import org.csstudio.nams.configurator.controller.IConfigurationChangeListener;
 import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -36,9 +38,12 @@ public abstract class FilteredListVarianteA {
 	private String gruppenname = "";
 
 	private TableViewer table;
+	private final ConfigurationBeanController controller;
 
-	public FilteredListVarianteA(Composite parent, int style) {
+	public FilteredListVarianteA(Composite parent, int style, ConfigurationBeanController controller) {
+		this.controller = controller;
 		this.createPartControl(parent, style);
+		registerControllerListener();
 	}
 
 	private void createPartControl(Composite parent, int style) {
@@ -102,11 +107,7 @@ public abstract class FilteredListVarianteA {
 					table.getControl());
 			table.setContentProvider(new ArrayContentProvider());
 //			table.setLabelProvider(new 
-			Object[] tableInput = this.getTableInput();
-			
-			Arrays.sort(tableInput);
-			
-			table.setInput(tableInput);
+			updateView();
 			table.setFilters(new ViewerFilter[] { new TableFilter() });
 			table.addDoubleClickListener(new IDoubleClickListener() {
 				public void doubleClick(DoubleClickEvent event) {
@@ -212,5 +213,13 @@ public abstract class FilteredListVarianteA {
 	public TableViewer getTable() {
 		return table;
 	}
+	
+	public void updateView(){
+		Object[] tableInput = this.getTableInput();
+		Arrays.sort(tableInput);
+		table.setInput(tableInput);
+	}
+	
+	protected abstract void registerControllerListener();
 
 }

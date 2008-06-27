@@ -7,6 +7,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.configurator.actions.DeleteConfiguration;
+import org.csstudio.nams.configurator.controller.ConfigurationBeanController;
 import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
 import org.csstudio.nams.configurator.modelmapping.ModelFactory;
 import org.csstudio.nams.configurator.views.AlarmbearbeiterView;
@@ -18,13 +19,18 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.osgi.framework.BundleActivator;
 
-public class NewConfiguratorActivator extends AbstractBundleActivator implements BundleActivator {
+public class NewConfiguratorActivator extends AbstractBundleActivator implements
+		BundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.newconfigurator";
-	
+
 	@OSGiBundleActivationMethod
-	public void startBundle(@OSGiService @Required PreferenceService preferenceService,@OSGiService @Required ConfigurationServiceFactory configurationServiceFactory) {
+	public void startBundle(@OSGiService
+	@Required
+	PreferenceService preferenceService, @OSGiService
+	@Required
+	ConfigurationServiceFactory configurationServiceFactory) {
 		LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
 				.getConfigurationService(
 						"oracle.jdbc.driver.OracleDriver",
@@ -35,14 +41,21 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
 						preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
+
+		ModelFactory modelFactory = new ModelFactory(
+				localStoreConfigurationService);
 		
-		ModelFactory modelFactory = new ModelFactory(localStoreConfigurationService);
-		AlarmbearbeitergruppenView.staticInject(modelFactory);
-		AlarmbearbeiterView.staticInject(modelFactory);
-		AlarmtopicView.staticInject(modelFactory);
-		FilterView.staticInject(modelFactory);
-		FilterbedingungView.staticInject(modelFactory);
-		ConfigurationModel.staticInject(localStoreConfigurationService);
+		//prepare Controler
+		ConfigurationBeanController controller = new ConfigurationBeanController();
+		
+		
+		AlarmbearbeitergruppenView.staticInject(modelFactory, controller);
+		AlarmbearbeiterView.staticInject(modelFactory, controller);
+		AlarmtopicView.staticInject(modelFactory, controller);
+		FilterView.staticInject(modelFactory, controller);
+		FilterbedingungView.staticInject(modelFactory, controller);
+		ConfigurationModel.staticInject(localStoreConfigurationService, controller);
 		DeleteConfiguration.staticInject(localStoreConfigurationService);
+		
 	}
 }

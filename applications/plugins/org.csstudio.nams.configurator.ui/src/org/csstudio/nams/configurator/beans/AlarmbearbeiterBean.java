@@ -22,11 +22,9 @@ public class AlarmbearbeiterBean extends
 	private boolean isActive = false;
 	private PreferedAlarmType preferedAlarmType = PreferedAlarmType.NONE;
 
-	private PropertyChangeSupport propertyChangeSupport;
 
 	public AlarmbearbeiterBean() {
 		userID = -1;
-		propertyChangeSupport = getPropertyChangeSupport();
 	}
 
 	public int getUserID() {
@@ -40,7 +38,7 @@ public class AlarmbearbeiterBean extends
 	public void setUserID(int userID) {
 		int oldValue = getUserID();
 		this.userID = userID;
-		propertyChangeSupport.firePropertyChange(PropertyNames.userID.name(),
+		pcs.firePropertyChange(PropertyNames.userID.name(),
 				oldValue, getUserID());
 	}
 
@@ -51,7 +49,7 @@ public class AlarmbearbeiterBean extends
 	public void setConfirmCode(String confirmCode) {
 		String oldValue = getConfirmCode();
 		this.confirmCode = confirmCode;
-		propertyChangeSupport.firePropertyChange(PropertyNames.confirmCode
+		pcs.firePropertyChange(PropertyNames.confirmCode
 				.name(), oldValue, getConfirmCode());
 	}
 
@@ -62,7 +60,7 @@ public class AlarmbearbeiterBean extends
 	public void setName(String name) {
 		String oldValue = getName();
 		this.name = name;
-		propertyChangeSupport.firePropertyChange(PropertyNames.name.name(),
+		pcs.firePropertyChange(PropertyNames.name.name(),
 				oldValue, getName());
 	}
 
@@ -73,7 +71,7 @@ public class AlarmbearbeiterBean extends
 	public void setEmail(String email) {
 		String oldValue = getEmail();
 		this.email = email;
-		propertyChangeSupport.firePropertyChange(PropertyNames.email.name(),
+		pcs.firePropertyChange(PropertyNames.email.name(),
 				oldValue, getEmail());
 	}
 
@@ -84,7 +82,7 @@ public class AlarmbearbeiterBean extends
 	public void setMobilePhone(String mobilePhone) {
 		String oldValue = getMobilePhone();
 		this.mobilePhone = mobilePhone;
-		propertyChangeSupport.firePropertyChange(PropertyNames.mobilePhone
+		pcs.firePropertyChange(PropertyNames.mobilePhone
 				.name(), oldValue, getMobilePhone());
 	}
 
@@ -95,7 +93,7 @@ public class AlarmbearbeiterBean extends
 	public void setPhone(String phone) {
 		String oldValue = getPhone();
 		this.phone = phone;
-		propertyChangeSupport.firePropertyChange(PropertyNames.phone.name(),
+		pcs.firePropertyChange(PropertyNames.phone.name(),
 				oldValue, getPhone());
 	}
 
@@ -106,7 +104,7 @@ public class AlarmbearbeiterBean extends
 	public void setStatusCode(String statusCode) {
 		String oldValue = getStatusCode();
 		this.statusCode = statusCode;
-		propertyChangeSupport.firePropertyChange(PropertyNames.statusCode
+		pcs.firePropertyChange(PropertyNames.statusCode
 				.name(), oldValue, getStatusCode());
 	}
 
@@ -117,7 +115,7 @@ public class AlarmbearbeiterBean extends
 	public void setActive(boolean isActive) {
 		boolean oldValue = isActive();
 		this.isActive = isActive;
-		propertyChangeSupport.firePropertyChange(PropertyNames.active.name(),
+		pcs.firePropertyChange(PropertyNames.active.name(),
 				oldValue, isActive());
 	}
 
@@ -128,7 +126,7 @@ public class AlarmbearbeiterBean extends
 	public void setPreferedAlarmType(PreferedAlarmType preferedAlarmType) {
 		PreferedAlarmType oldValue = getPreferedAlarmType();
 		this.preferedAlarmType = preferedAlarmType;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.preferedAlarmType.name(), oldValue,
 				getPreferedAlarmType());
 	}

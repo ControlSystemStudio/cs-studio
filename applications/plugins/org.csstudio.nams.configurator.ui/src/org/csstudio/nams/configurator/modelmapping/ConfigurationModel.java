@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
+import org.csstudio.nams.configurator.controller.ConfigurationBeanController;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -16,23 +17,32 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 public class ConfigurationModel implements IConfigurationModel {
 
 	private static LocalStoreConfigurationService localStore;
+	private static ConfigurationBeanController controller;
 
+	@SuppressWarnings("unchecked")
 	public IConfigurationBean save(IConfigurationBean bean) {
+		IConfigurationBean result = null;
 		if (bean instanceof AlarmbearbeiterBean) {
-			return save((AlarmbearbeiterBean) bean);
+			result = save((AlarmbearbeiterBean) bean);
 		} else if (bean instanceof AlarmbearbeiterGruppenBean) {
-			return save((AlarmbearbeiterGruppenBean) bean);
+			result = save((AlarmbearbeiterGruppenBean) bean);
 		} else if (bean instanceof AlarmtopicBean) {
-			return save((AlarmtopicBean) bean);
+			result = save((AlarmtopicBean) bean);
 		}
-		throw new IllegalArgumentException("Failed saving unsupported bean.");
+		if (result == null) {
+			throw new IllegalArgumentException(
+					"Failed saving unsupported bean.");
+		} else {
+			controller
+					.fireChangeOn((Class<IConfigurationBean>) bean.getClass());
+			return result;
+		}
 	}
 
 	private IConfigurationBean save(AlarmtopicBean bean) {
 		Collection<TopicDTO> dtos = null;
 		try {
-			dtos = localStore.getEntireConfiguration()
-					.gibAlleAlarmtopics();
+			dtos = localStore.getEntireConfiguration().gibAlleAlarmtopics();
 		} catch (StorageError e) {
 			e.printStackTrace();
 		} catch (StorageException e) {
@@ -44,8 +54,8 @@ public class ConfigurationModel implements IConfigurationModel {
 		for (TopicDTO potentialDTO : dtos) {
 			if (potentialDTO.getId() == bean.getTopicID()) {
 				dto = potentialDTO;
-				//TODO may be necessary see save(AlarmbearbeiterBean
-//				dto.se(bean.getGroupID());
+				// TODO may be necessary see save(AlarmbearbeiterBean
+				// dto.se(bean.getGroupID());
 				break;
 			}
 		}
@@ -53,15 +63,15 @@ public class ConfigurationModel implements IConfigurationModel {
 			dto = new TopicDTO();
 		}
 		dto.setDescription(bean.getDescription());
-//TODO do groupref stuff
-		//		dto.setGroupRef(groupRef);
+		// TODO do groupref stuff
+		// dto.setGroupRef(groupRef);
 		dto.setName(bean.getHumanReadableName());
 		dto.setTopicName(bean.getTopicName());
 		dto = localStore.saveTopicDTO(dto);
 		bean.setTopicID(dto.getId());
 		return bean;
 	}
-	
+
 	private IConfigurationBean save(AlarmbearbeiterGruppenBean bean) {
 		Collection<AlarmbearbeiterGruppenDTO> dtos = null;
 		try {
@@ -86,8 +96,8 @@ public class ConfigurationModel implements IConfigurationModel {
 			dto = new AlarmbearbeiterGruppenDTO();
 		}
 		dto.setActive(bean.isActive());
-		//TODO GroupRef is missing in bean
-//		dto.setGroupRef(null);
+		// TODO GroupRef is missing in bean
+		// dto.setGroupRef(null);
 		dto.setMinGroupMember(bean.getMinGroupMember());
 		dto.setTimeOutSec(bean.getTimeOutSec());
 		dto.setUserGroupName(bean.getName());
@@ -131,9 +141,12 @@ public class ConfigurationModel implements IConfigurationModel {
 		bean.setUserID(dto.getUserId());
 		return bean;
 	}
-	
-	public static void staticInject(LocalStoreConfigurationService localStore){
+
+	public static void staticInject(LocalStoreConfigurationService localStore,
+			ConfigurationBeanController controller) {
 		ConfigurationModel.localStore = localStore;
-		
+		ConfigurationModel.controller = controller;
+
 	}
+
 }
