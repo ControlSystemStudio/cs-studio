@@ -8,6 +8,7 @@ import java.util.List;
 import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.AlarmbearbeitergruppenStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
+import org.csstudio.nams.configurator.editor.stackparts.FilterStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
@@ -142,6 +143,7 @@ public class ConfigurationEditor extends EditorPart implements
 		_stackParts.add(new UserStackPart(this, parent));
 		_stackParts.add(new TopicStackPart(this, parent));
 		_stackParts.add(new AlarmbearbeitergruppenStackPart(this, parent));
+		_stackParts.add(new FilterStackPart(this, parent));
 		//TODO Filter und FilterCondition Stackparts einfügen
 	}
 

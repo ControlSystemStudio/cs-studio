@@ -99,6 +99,21 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
 				NUM_COLUMNS, 1));
 	}
+	
+	protected Text createDescriptionTextEntry(Composite parent, String labeltext) {
+		Label label = new Label(parent, SWT.RIGHT);
+		label.setText(labeltext);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+		Text textWidget = new Text(parent, SWT.BORDER);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
+				NUM_COLUMNS - 1, 1);
+		gridData.minimumWidth = MIN_WIDTH;
+		gridData.widthHint = MIN_WIDTH;
+		gridData.heightHint = 80;
+		textWidget.setLayoutData(gridData);
+		textWidget.setTextLimit(256);
+		return textWidget;
+	}
 
 	public Control getMainControl()
 	{

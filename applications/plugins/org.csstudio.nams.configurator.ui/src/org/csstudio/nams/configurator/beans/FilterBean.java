@@ -64,17 +64,10 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	@Override
 	public FilterBean getClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof FilterBean) {
-			FilterBean bean = (FilterBean) obj;
-			return this.getFilterID() == bean.getFilterID();
-		}
-		return super.equals(obj);
+		FilterBean bean = new FilterBean();
+		bean.setDefaultMessage(getDefaultMessage());
+		bean.setName(getName());
+		return bean;
 	}
 
 	@Override
