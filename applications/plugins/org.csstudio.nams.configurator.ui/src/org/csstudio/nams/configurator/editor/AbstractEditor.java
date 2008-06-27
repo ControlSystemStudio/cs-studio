@@ -158,7 +158,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 	};
 
 	@SuppressWarnings("unchecked")
-	public void save() { 
+	private void save() { 
 		// welche gruppe hat user gewählt?
 		// TODO may bla
 		// String group = this._groupComboEntry.getItem(this._groupComboEntry

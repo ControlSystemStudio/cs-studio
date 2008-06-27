@@ -8,4 +8,5 @@ public interface IConfigurationBean {
 	public IConfigurationBean getClone();
 	public void addPropertyChangeListener(PropertyChangeListener listener);
 	public PropertyChangeSupport getPropertyChangeSupport();
+	
 }

@@ -17,7 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 public class ConfigurationModel implements IConfigurationModel {
 
 	private static LocalStoreConfigurationService localStore;
-
+	
 	@SuppressWarnings("unchecked")
 	public <E extends IConfigurationBean> E save(E bean) {
 		E result = null;
@@ -29,7 +29,7 @@ public class ConfigurationModel implements IConfigurationModel {
 			result = (E) save((AlarmtopicBean) bean);
 		}
 		//TODO may handle dirty flag here
-//		bean.getPropertyChangeSupport().firePropertyChange();
+//		bean.getPropertyChangeSupport()
 		if (result == null) {
 			throw new IllegalArgumentException(
 					"Failed saving unsupported bean.");
