@@ -40,12 +40,12 @@ public class Jms2OraStart implements IApplication
     public static boolean SHUTDOWN = true;
     
     /**  */
-    private StoreMessages applic = null;
+    private MessageProcessor applic = null;
     
     public Object start(IApplicationContext context) throws Exception
     {        
         // Create an object from this class
-        applic = StoreMessages.getInstance();
+        applic = MessageProcessor.getInstance();
 
         // Was the initialization successful?
         if(applic.isInitialized() == true)

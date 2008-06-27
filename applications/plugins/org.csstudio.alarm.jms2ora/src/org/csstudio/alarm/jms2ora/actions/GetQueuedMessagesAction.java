@@ -24,13 +24,13 @@
 
 package org.csstudio.alarm.jms2ora.actions;
 
-import org.csstudio.alarm.jms2ora.StoreMessages;
+import org.csstudio.alarm.jms2ora.MessageProcessor;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
 public class GetQueuedMessagesAction implements IAction
 {
     public Object run(Object param)
     {
-        return Integer.toString(StoreMessages.getInstance().getNumberOfQueuedMessages());
+        return Integer.toString(MessageProcessor.getInstance().getNumberOfQueuedMessages());
     }
 }

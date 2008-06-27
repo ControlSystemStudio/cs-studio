@@ -40,6 +40,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
+import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.database.OracleService;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
 import org.csstudio.alarm.jms2ora.util.WaifFileHandler;
@@ -81,20 +82,21 @@ import java.sql.SQLException;
  */
 
 /*
- * TODO:    Auslagern von bestimmten Funktionen in eigenständige Klassen
+ * TODO:    Auslagern von bestimmten Funktionen in eigenstï¿½ndige Klassen
  *          - Die Properties der Datenbanktabellen
  */
 
-public class StoreMessages implements MessageListener
+public class MessageProcessor implements MessageListener
 {
     /** The object instance of this class */
-    private static StoreMessages instance = null;
+    private static MessageProcessor instance = null;
     
     /** Queue for received messages */
     private ConcurrentLinkedQueue<MapMessage> messages = new ConcurrentLinkedQueue<MapMessage>();
     
     /** Object for database handling */
-    private OracleService oracle = null;
+    // private OracleService oracle = null;
+    private DatabaseLayer dbLayer = null;
     
     /** Array of message receivers */
     private MessageReceiver[] receivers = null;
@@ -132,8 +134,8 @@ public class StoreMessages implements MessageListener
     /** True if the folder 'nirvana' exists. This folder holds the stored message object content. */
     private boolean existsObjectFolder = false;
 
-    private final String version = " 1.3.0";
-    private final String build = " - BUILD 2008-04-29 14:10";
+    private final String version = " 2.0.0";
+    private final String build = " - BUILD 2008-06-25 14:00";
     private final String application = "Jms2Ora";
     private final String formatStd = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}";
     private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
@@ -148,8 +150,8 @@ public class StoreMessages implements MessageListener
     public final int PM_ERROR_JMS = 3;
     public final int PM_ERROR_GENERAL = 4;
     
-    public final String[] infoText = { "Message is written into the database.",
-                                       "Message was discarded.",
+    public final String[] infoText = { "Message have been written into the database.",
+                                       "Message have been discarded.",
                                        "Database error",
                                        "JMS error",
                                        "General error"};
@@ -159,7 +161,7 @@ public class StoreMessages implements MessageListener
      *
      */
     
-    private StoreMessages()
+    private MessageProcessor()
     {
         int i;
         
@@ -169,7 +171,7 @@ public class StoreMessages implements MessageListener
         
         config = Jms2OraPlugin.getDefault().getConfiguration();
         
-        oracle = new OracleService(logger, config.getString("oracle.user"), config.getString("oracle.password"));
+        dbLayer = new DatabaseLayer(logger, config.getString("database.url"), config.getString("database.user"), config.getString("database.password"));
         initialized = readMessageTypeAndProperties();
         
         lastQuotaUpdate = Calendar.getInstance().getTime();
@@ -219,11 +221,11 @@ public class StoreMessages implements MessageListener
 
     }
     
-    public static synchronized StoreMessages getInstance()
+    public static synchronized MessageProcessor getInstance()
     {
         if(instance == null)
         {
-            instance = new StoreMessages();
+            instance = new MessageProcessor();
         }
         
         return instance;
@@ -355,8 +357,8 @@ public class StoreMessages implements MessageListener
         int result = PM_RETURN_OK;
         boolean reload = false;
         
-        // ACHTUNG: Die Message ist für den Client READ-ONLY!!! Jeder Versuch in die Message zu schreiben
-        //          löst eine Exception aus.
+        // ACHTUNG: Die Message ist fï¿½r den Client READ-ONLY!!! Jeder Versuch in die Message zu schreiben
+        //          lï¿½st eine Exception aus.
                 
         try
         {
@@ -477,7 +479,7 @@ public class StoreMessages implements MessageListener
         }
         
         // Create an entry in the table MESSAGE
-        msgId = oracle.createMessageEntry(typeId, et);
+        msgId = dbLayer.createMessageEntry(typeId, et);
         if(msgId == RET_ERROR)
         {
             logger.error("createMessageEntry()");
@@ -485,11 +487,11 @@ public class StoreMessages implements MessageListener
             return PM_ERROR_DB;
         }
         
-        if(oracle.createMessageContentEntries(msgId, msgContent) == false)
+        if(dbLayer.createMessageContentEntries(msgId, msgContent) == false)
         {
             logger.error("createMessageContentEntries()");
             
-            oracle.deleteMessage(msgId);
+            dbLayer.deleteMessage(msgId);
             
             result = PM_ERROR_DB;
         }
@@ -507,7 +509,7 @@ public class StoreMessages implements MessageListener
                     {
                         temp = createDatabaseNameFromRecord(recordNames[i]);
                         
-                        if(temp.compareToIgnoreCase(config.getString("oracle.user")) != 0)
+                        if(temp.compareToIgnoreCase(config.getString("database.user")) != 0)
                         {
                             updateDBRecord(recordNames[i], temp, temp.toLowerCase());
                         }
@@ -543,7 +545,7 @@ public class StoreMessages implements MessageListener
      */
     public void updateDBRecord(String name)
     {
-        int quota = oracle.getUsedQuota();
+        int quota = dbLayer.getUsedQuota();
 
         EpicsSingleton.getInstance().setValue(name, String.valueOf(quota));
         String record = EpicsSingleton.getInstance().get(name);
@@ -730,16 +732,16 @@ public class StoreMessages implements MessageListener
         msgProperty = null;
 
         // Connect the database
-        if(oracle.connect() == false)
+        if(dbLayer.connect() == false)
         {
             return false;
         }
 
         // Execute the first query
-        rsType      = oracle.executeSQLQuery("SELECT * from MSG_TYPE");
+        rsType      = dbLayer.executeSQLQuery("SELECT * from MSG_TYPE");
         
         // Execute the second query
-        rsProperty  = oracle.executeSQLQuery("SELECT * from MSG_PROPERTY_TYPE");
+        rsProperty  = dbLayer.executeSQLQuery("SELECT * from MSG_PROPERTY_TYPE");
         
         // Check the result sets 
         if((rsType == null) || (rsProperty == null))
@@ -791,18 +793,18 @@ public class StoreMessages implements MessageListener
         }
         catch(SQLException sqle)
         {
-            if(oracle.isConnected() == true)
+            if(dbLayer.isConnected() == true)
             {
-                oracle.close();
+                dbLayer.close();
             }
             
             return false;            
         }
         
         // Close the database
-        if(oracle.isConnected() == true)
+        if(dbLayer.isConnected() == true)
         {
-            oracle.close();
+            dbLayer.close();
         }                
 
         return true;

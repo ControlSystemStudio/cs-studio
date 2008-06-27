@@ -27,7 +27,7 @@ package org.csstudio.alarm.jms2ora.actions;
 import java.util.Map;
 
 import org.csstudio.alarm.jms2ora.Jms2OraStart;
-import org.csstudio.alarm.jms2ora.StoreMessages;
+import org.csstudio.alarm.jms2ora.MessageProcessor;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
 public class RestartJms2OraAction implements IAction
@@ -60,7 +60,7 @@ public class RestartJms2OraAction implements IAction
 
         Jms2OraStart.SHUTDOWN = false;
         
-        StoreMessages.getInstance().shutdown();
+        MessageProcessor.getInstance().shutdown();
         
         synchronized(this)
         {
