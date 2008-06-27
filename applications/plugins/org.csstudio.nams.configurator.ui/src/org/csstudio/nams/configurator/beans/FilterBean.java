@@ -14,11 +14,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	private String defaultMessage;
 	// TODO hier fehlt noch einiges (Beans für FilterConditions)
 
-	private PropertyChangeSupport propertyChangeSupport;
-
 	public FilterBean() {
 		filterID = -1;
-		propertyChangeSupport = getPropertyChangeSupport();
 	}
 
 	public int getFilterID() {
@@ -28,7 +25,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public void setFilterID(int filterID) {
 		int oldValue = getFilterID();
 		this.filterID = filterID;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				FilterBeanPropertyNames.filterID.name(), oldValue,
 				getFilterID());
 	}
@@ -40,7 +37,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public void setName(String name) {
 		String oldValue = getName();
 		this.name = name;
-		propertyChangeSupport.firePropertyChange(FilterBeanPropertyNames.name
+		pcs.firePropertyChange(FilterBeanPropertyNames.name
 				.name(), oldValue, getName());
 	}
 
@@ -51,7 +48,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public void setDefaultMessage(String defaultMessage) {
 		String oldValue = getDefaultMessage();
 		this.defaultMessage = defaultMessage;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				FilterBeanPropertyNames.defaultMessage.name(), oldValue,
 				getDefaultMessage());
 	}

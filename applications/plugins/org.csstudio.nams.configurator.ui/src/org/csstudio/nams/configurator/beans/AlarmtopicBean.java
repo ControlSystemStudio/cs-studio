@@ -13,11 +13,9 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	private String topicName;
 	private String humanReadableName;
 	private String description;
-	private PropertyChangeSupport propertyChangeSupport;
 
 	public AlarmtopicBean() {
 		topicID = -1;
-		propertyChangeSupport = getPropertyChangeSupport();
 	}
 
 	public int getTopicID() {
@@ -27,7 +25,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setTopicID(int topicID) {
 		int oldValue = getTopicID();
 		this.topicID = topicID;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.topicID.name(), oldValue,
 				getTopicID());
 	}
@@ -39,7 +37,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setTopicName(String topicName) {
 		String oldValue = getTopicName();
 		this.topicName = topicName;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.topicName.name(), oldValue,
 				getTopicName());
 	}
@@ -51,7 +49,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setHumanReadableName(String humanReadableName) {
 		String oldValue = getHumanReadableName();
 		this.humanReadableName = humanReadableName;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.humanReadableName.name(), oldValue,
 				getHumanReadableName());
 	}
@@ -63,7 +61,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setDescription(String description) {
 		String oldValue = getDescription();
 		this.description = description;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.description.name(), oldValue,
 				getDescription());
 	}
@@ -103,5 +101,47 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	@Override
 	public String toString() {
 		return getHumanReadableName();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime
+				* result
+				+ ((humanReadableName == null) ? 0 : humanReadableName
+						.hashCode());
+		result = prime * result
+				+ ((topicName == null) ? 0 : topicName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AlarmtopicBean other = (AlarmtopicBean) obj;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (humanReadableName == null) {
+			if (other.humanReadableName != null)
+				return false;
+		} else if (!humanReadableName.equals(other.humanReadableName))
+			return false;
+		if (topicName == null) {
+			if (other.topicName != null)
+				return false;
+		} else if (!topicName.equals(other.topicName))
+			return false;
+		return true;
 	}
 }

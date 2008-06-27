@@ -14,11 +14,9 @@ public class AlarmbearbeiterGruppenBean extends
 	private short minGroupMember;
 	private int timeOutSec;
 	private boolean isActive;
-	private PropertyChangeSupport propertyChangeSupport;
 
 	public AlarmbearbeiterGruppenBean() {
 		groupID = -1;
-		propertyChangeSupport = getPropertyChangeSupport();
 	}
 
 	public int getGroupID() {
@@ -29,7 +27,7 @@ public class AlarmbearbeiterGruppenBean extends
 		int oldValue = getGroupID();
 		this.groupID = groupID;
 
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.groupID.name(),
 				oldValue, groupID);
 	}
@@ -41,7 +39,7 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setName(String name) {
 		String oldValue = getName();
 		this.name = name;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.name.name(), oldValue,
 				getName());
 	}
@@ -53,7 +51,7 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setMinGroupMember(short minGroupMember) {
 		short oldValue = getMinGroupMember();
 		this.minGroupMember = minGroupMember;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.minGroupMember.name(),
 				oldValue, getMinGroupMember());
 	}
@@ -65,7 +63,7 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setTimeOutSec(int timeOutSec) {
 		int oldValue = getTimeOutSec();
 		this.timeOutSec = timeOutSec;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.timeOutSec.name(),
 				oldValue, getTimeOutSec());
 	}
@@ -77,7 +75,7 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setActive(boolean isActive) {
 		boolean oldValue = isActive();
 		this.isActive = isActive;
-		propertyChangeSupport.firePropertyChange(
+		pcs.firePropertyChange(
 				PropertyNames.active.name(),
 				oldValue, isActive());
 	}
@@ -112,10 +110,6 @@ public class AlarmbearbeiterGruppenBean extends
 		result = prime * result + (isActive ? 1231 : 1237);
 		result = prime * result + minGroupMember;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime
-				* result
-				+ ((propertyChangeSupport == null) ? 0 : propertyChangeSupport
-						.hashCode());
 		result = prime * result + timeOutSec;
 		return result;
 	}
