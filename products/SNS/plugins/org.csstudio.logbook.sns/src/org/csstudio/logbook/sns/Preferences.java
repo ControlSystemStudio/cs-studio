@@ -1,5 +1,8 @@
 package org.csstudio.logbook.sns;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 /** Preferences. Defaults are provided in preferences.ini
  *  @author nypaver
  */
@@ -14,13 +17,15 @@ public class Preferences
 
    /** @return RDB URL */
    public static String getURL()
-   {        
-      return Activator.getDefault().getPluginPreferences().getString(LOG_RDB_URL);
+   {
+       final IPreferencesService service = Platform.getPreferencesService();
+       return service.getString(Activator.ID, "LOG_RDB_URL", null, null);
    }
    
    /** @return Name of SNS logbook */
    public static String getLogBookName()
    {        
-      return Activator.getDefault().getPluginPreferences().getString(LOGBOOK_NAME);
+       final IPreferencesService service = Platform.getPreferencesService();
+       return service.getString(Activator.ID, "LOGBOOK_NAME", null, null);
    }
 }

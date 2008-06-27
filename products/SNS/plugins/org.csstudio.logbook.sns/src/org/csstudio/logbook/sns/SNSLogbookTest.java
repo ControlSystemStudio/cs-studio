@@ -1,27 +1,27 @@
-package org.csstudio.logbook;
+package org.csstudio.logbook.sns;
 
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.csstudio.logbook.ILogbook;
 import org.junit.Test;
 
-/** JUnit Plugin test, requires exactly one plugin that provides the
- *  ILogbookFactory extension point to be loaded.
+/** JUnit test of the SNS Logbook.
+ *  <p>
+ *  Application code should use org.csstudio.logbook.LogbookFactory
+ *  and not directly access a specific implementation like SNS...
  *  
- *  Can run with the application set to "Headless Mode".
- *  
- *  Pretty much everything in there depends on the particular setup:
- *  User, password, test image, so it'll prompt for them.
- *  Not a true unit test that runs on its own.
- *  
- *  @author nypaver
  *  @author Kay Kasemir
  */
-public class LogbookTest
+@SuppressWarnings("nls")
+public class SNSLogbookTest
 {
-    @SuppressWarnings("nls")
+    private static final String URL =
+        "log_rdb_url=jdbc:oracle:thin:@//snsdb1.sns.ornl.gov:1521/prod";
+    private static final String LOGBOOK = "Scratch Pad";
+
     @Test
     public void testLoogbook() throws Exception
     {
@@ -37,7 +37,8 @@ public class LogbookTest
         System.out.print("Image File: ");
         final String image = command_line.readLine();
 
-        final ILogbook logbook = LogbookFactory.connect(user, password);
+        ILogbook logbook =
+            new SNSLogbookFactory().connect(URL, LOGBOOK, user, password);
         assertNotNull(logbook);
 
         try
