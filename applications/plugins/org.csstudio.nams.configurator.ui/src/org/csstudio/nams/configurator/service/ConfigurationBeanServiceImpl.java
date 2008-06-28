@@ -246,6 +246,20 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	public void delete(IConfigurationBean bean) {
+		if (bean instanceof AlarmbearbeiterBean)
+			deleteAlarmbearbeiterBean((AlarmbearbeiterBean) bean);
+		if (bean instanceof AlarmbearbeiterGruppenBean)
+			deleteAlarmbearbeiterGruppenBean((AlarmbearbeiterGruppenBean)bean); 
+		if (bean instanceof AlarmtopicBean)
+			deleteAlarmtopicBean((AlarmtopicBean)bean);
+		if (bean instanceof FilterBean)
+			deleteFilterBean((FilterBean)bean);
+		if (bean instanceof FilterbedingungBean)
+			deleteFilterbedingungBean((FilterbedingungBean)bean);
+	}
+
+	private void deleteAlarmbearbeiterBean(AlarmbearbeiterBean bean) {
+
 		AlarmbearbeiterDTO dto = null;
 		for (AlarmbearbeiterDTO potentialdto : entireConfiguration.gibAlleAlarmbearbeiter()) {
 			if (potentialdto.getUserId() == bean.getID()) {
@@ -256,7 +270,28 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (dto != null) {
 			//TODO confService unterstützt noch kein löschen
 			System.out.println("ConfigurationBeanServiceImpl.delete() " + dto.getUserId() + " " + dto.getUserName());
-		}
+		}		
+	}
+
+	private void deleteAlarmbearbeiterGruppenBean(
+			AlarmbearbeiterGruppenBean bean) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void deleteAlarmtopicBean(AlarmtopicBean bean) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void deleteFilterBean(FilterBean bean) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void deleteFilterbedingungBean(FilterbedingungBean bean) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

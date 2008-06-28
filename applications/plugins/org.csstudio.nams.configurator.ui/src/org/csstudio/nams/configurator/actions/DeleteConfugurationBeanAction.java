@@ -1,6 +1,6 @@
 package org.csstudio.nams.configurator.actions;
 
-import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -9,12 +9,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
-public class DeleteAlarmbearbeiterAction extends Action implements IViewActionDelegate {
+public class DeleteConfugurationBeanAction extends Action implements IViewActionDelegate {
 
 	private static ConfigurationBeanService configurationBeanService;
-	private AlarmbearbeiterBean bean;
+	private IConfigurationBean bean;
 	
-	public DeleteAlarmbearbeiterAction() {
+	public DeleteConfugurationBeanAction() {
 	}
 
 	public void init(IViewPart view) {
@@ -30,7 +30,7 @@ public class DeleteAlarmbearbeiterAction extends Action implements IViewActionDe
 	public void selectionChanged(IAction action, ISelection selection) {
 		IStructuredSelection sSelection = (IStructuredSelection) selection;
 		Object source = sSelection.getFirstElement();
-		bean = (AlarmbearbeiterBean) source;
+		bean = (IConfigurationBean) source;
 	}
 	
 	public static void staticInject(ConfigurationBeanService service) {

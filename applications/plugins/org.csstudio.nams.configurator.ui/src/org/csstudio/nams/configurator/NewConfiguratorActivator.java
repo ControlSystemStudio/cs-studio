@@ -6,7 +6,7 @@ import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
-import org.csstudio.nams.configurator.actions.DeleteAlarmbearbeiterAction;
+import org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction;
 import org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
@@ -56,7 +56,7 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		
 		AlarmbearbeiterEditor.staticInject(beanService);
 		
-		DeleteAlarmbearbeiterAction.staticInject(beanService);
+		DeleteConfugurationBeanAction.staticInject(beanService);
 		
 //		ConfigurationModel.staticInject(localStoreConfigurationService);
 //		DeleteConfiguration.staticInject(localStoreConfigurationService);

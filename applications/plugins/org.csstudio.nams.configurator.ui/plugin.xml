@@ -161,8 +161,12 @@
                id="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
                label="Neu">
          </action>
+      </objectContribution>
+      <objectContribution
+            id="org.csstudio.nams.configurator.beans.IConfigurationBeanContribution"
+            objectClass="org.csstudio.nams.configurator.beans.IConfigurationBean">
          <action
-               class="org.csstudio.nams.configurator.actions.DeleteAlarmbearbeiterAction"
+               class="org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction"
                id="org.csstudio.nams.configurator.actions.DeleteAlarmbearbeiterAction"
                label="Lösche">
          </action>
