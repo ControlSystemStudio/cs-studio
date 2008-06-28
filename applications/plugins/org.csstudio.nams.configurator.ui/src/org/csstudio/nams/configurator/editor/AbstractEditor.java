@@ -4,14 +4,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.beans.AbstractObservableBean;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
+import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -22,15 +21,13 @@ import org.eclipse.ui.part.EditorPart;
 
 public abstract class AbstractEditor<ConfigurationType extends AbstractObservableBean> extends EditorPart implements PropertyChangeListener{
 
-
+	protected static ConfigurationBeanService configurationBeanService;
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
-	protected IConfigurationModel model;
 	
 	protected PropertyChangeListener listener;
-	protected Composite main;
 	
 	public AbstractEditor() {
 		NUM_COLUMNS = getNumColumns();
@@ -38,9 +35,30 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 	
 	protected abstract int getNumColumns();
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		save();
+		// welche gruppe hat user gewählt?
+		// TODO das muss in das bean nicht hier her
+		// String group = this._groupComboEntry.getItem(this._groupComboEntry
+		// .getSelectionIndex());
+
+		// speicher Änderungen mit dem Service
+		ConfigurationType updatedBean = configurationBeanService.save(this.beanClone);
+
+		this.bean.removePropertyChangeListener(this);
+		this.beanClone.removePropertyChangeListener(this);
+
+		// copy clone state to original bean
+		this.bean = updatedBean;
+		this.bean.addPropertyChangeListener(this);
+		
+		// create new clone
+		this.beanClone = (ConfigurationType) this.bean.getClone();
+		this.beanClone.addPropertyChangeListener(this);
+		
+		initDataBinding();
+		firePropertyChange(EditorPart.PROP_DIRTY);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -50,7 +68,11 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		setSite(site);
 		setInput(input);
 		ConfigurationEditorInput cInput = (ConfigurationEditorInput) input;
-		setInput((ConfigurationType) cInput.getBean(), cInput.getModel());
+		
+		this.bean = (ConfigurationType) cInput.getBean();;
+		this.beanClone = (ConfigurationType) this.bean.getClone();
+		this.beanClone.addPropertyChangeListener(this);
+		
 		doInit(site, input);
 	}
 
@@ -144,11 +166,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		return textWidget;
 	}
 
-	public Control getMainControl()
-	{
-		return main;
-	}
-
 	@Override
 	public boolean isDirty() {
 		if (this.bean != null && this.beanClone != null) {
@@ -157,37 +174,9 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 			return false;
 	};
 
-	@SuppressWarnings("unchecked")
-	private void save() { 
-		// welche gruppe hat user gewählt?
-		// TODO may bla
-		// String group = this._groupComboEntry.getItem(this._groupComboEntry
-		// .getSelectionIndex());
-
-		// speicher Änderungen im lokalen Model
-		ConfigurationType updatedBean = this.model.save(this.beanClone);
-
-		// copy clone state to original bean
-		this.bean = updatedBean;
-
-		// create new clone
-		this.beanClone = (ConfigurationType) this.bean.getClone();
-		resetDatabinding();
-		initDataBinding();
-		firePropertyChange(EditorPart.PROP_DIRTY);
-	}
-
 	private void resetDatabinding() {
 		this.bean.clearPropertyChangeListeners();
 		this.beanClone.clearPropertyChangeListeners();
-	}
-
-	@SuppressWarnings("unchecked")
-	public void setInput(ConfigurationType input, IConfigurationModel model) {
-		this.model = model;
-		this.bean = input;
-		this.beanClone = (ConfigurationType) input.getClone();
-		this.beanClone.addPropertyChangeListener(this);
 	}
 
 	protected abstract void initDataBinding();
@@ -195,7 +184,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 	public void setPropertyChangedListener(
 			PropertyChangeListener listener){
 		this.listener = listener;
-		beanClone.addPropertyChangeListener(listener);;
+		beanClone.addPropertyChangeListener(listener);
 	}
 
 	@Override
@@ -203,6 +192,9 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		this.firePropertyChange(EditorPart.PROP_DIRTY);
-		
+	}
+	
+	public static void staticInject(ConfigurationBeanService service) {
+		configurationBeanService = service;
 	}
 }

@@ -48,7 +48,6 @@ public class FilterbedingungBean extends
 
 	}
 
-	@Override
 	public int getID() {
 		return this.getFilterbedinungID();
 	}

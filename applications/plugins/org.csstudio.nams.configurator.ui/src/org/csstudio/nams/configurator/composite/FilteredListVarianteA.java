@@ -1,13 +1,9 @@
 package org.csstudio.nams.configurator.composite;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
-import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -123,7 +119,7 @@ public abstract class FilteredListVarianteA {
 		Object source = selection.getFirstElement();
 		AbstractConfigurationBean<?> configurationBean= (AbstractConfigurationBean<?>) source;
 
-		IConfigurationModel model = new ConfigurationModel() {
+//		IConfigurationModel model = new ConfigurationModel() {
 //			@Override
 //			public Collection<String> getSortgroupNames() {
 //				Collection<String> groupNames = new ArrayList<String>();
@@ -132,16 +128,16 @@ public abstract class FilteredListVarianteA {
 //				//FIXME remove hardcoded group names
 //				return groupNames;
 //			}
-		};
-		configurationBean.addPropertyChangeListener(new PropertyChangeListener(){
-
-			public void propertyChange(PropertyChangeEvent evt) {
-				updateView();
-				
-			}
-			
-		});
-		new OpenConfigurationEditorAction(configurationBean, model).run();
+//		};
+//		configurationBean.addPropertyChangeListener(new PropertyChangeListener(){
+//
+//			public void propertyChange(PropertyChangeEvent evt) {
+//				updateView();
+//				
+//			}
+//			
+//		});
+		new OpenConfigurationEditorAction(configurationBean).run();
 	}
 
 	/**
@@ -222,5 +218,6 @@ public abstract class FilteredListVarianteA {
 		Object[] tableInput = this.getTableInput();
 		Arrays.sort(tableInput);
 		table.setInput(tableInput);
+		table.refresh();
 	}
 }

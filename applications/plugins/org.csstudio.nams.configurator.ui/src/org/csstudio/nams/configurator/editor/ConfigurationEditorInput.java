@@ -1,7 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -9,20 +8,13 @@ import org.eclipse.ui.IPersistableElement;
 public class ConfigurationEditorInput implements IEditorInput {
 
 	private final IConfigurationBean bean;
-	private final IConfigurationModel model;
 
-	public ConfigurationEditorInput(IConfigurationBean newBean,
-			IConfigurationModel model) {
+	public ConfigurationEditorInput(IConfigurationBean newBean) {
 		this.bean = newBean;
-		this.model = model;
 	}
 
 	public IConfigurationBean getBean() {
 		return bean;
-	}
-
-	public IConfigurationModel getModel() {
-		return this.model;
 	}
 
 	public boolean exists() {
@@ -50,17 +42,15 @@ public class ConfigurationEditorInput implements IEditorInput {
 		return null;
 	}
 
-	/**
-	 * Da nur ein ConfigurationEditor geöffnet werden woll, muss equals immer
-	 * true liefern
-	 */
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
 		if (!(obj instanceof ConfigurationEditorInput)) return false;
+		
 		ConfigurationEditorInput editorInput = (ConfigurationEditorInput) obj;
-
-
-		return editorInput.getBean().equals(this.getBean());
+		
+		if (editorInput.getBean().getID() == -1) return false;
+		
+		return editorInput.getBean().getID() == this.getBean().getID();
 	}
 
 }

@@ -1,7 +1,9 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
-import org.csstudio.nams.configurator.modelmapping.ModelFactory;
+import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
+import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -11,21 +13,36 @@ import org.eclipse.ui.part.ViewPart;
 
 public class AlarmbearbeiterView extends ViewPart {
 
-	private static ModelFactory modelFactory;
+	private static ConfigurationBeanService configurationBeanService;
 	public static final String ID = "org.csstudio.nams.configurator.alarmbearbeiter";
-
+	private FilteredListVarianteA filteredListVarianteA;
+	
 	public AlarmbearbeiterView() {
+		configurationBeanService.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
+			@Override
+			public void onAlarmbearbeiterBeanInsert(AlarmbearbeiterBean bean) {
+				if (filteredListVarianteA != null) {
+					filteredListVarianteA.updateView();
+				}
+			}
+			@Override
+			public void onAlarmbearbeiterBeanUpdate(AlarmbearbeiterBean bean) {
+				if (filteredListVarianteA != null) {
+					filteredListVarianteA.updateView();
+				}
+			}
+		});
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		FilteredListVarianteA composite = new FilteredListVarianteA(parent, SWT.None){
+		filteredListVarianteA = new FilteredListVarianteA(parent, SWT.None){
 			protected Object[] getTableInput() {
-				return modelFactory.getAlarmBearbeiterBeans();
+				return configurationBeanService.getAlarmBearbeiterBeans();
 			}
 		};
 		MenuManager menuManager = new MenuManager();
-		TableViewer table = composite.getTable();
+		TableViewer table = filteredListVarianteA.getTable();
 		Menu menu = menuManager.createContextMenu(table.getTable());
 		table.getTable().setMenu(menu);
 		getSite().registerContextMenu(menuManager, table);
@@ -38,8 +55,8 @@ public class AlarmbearbeiterView extends ViewPart {
 		// TODO Auto-generated method stub
 	}
 
-	public static void staticInject(ModelFactory modelFactory) {
-		AlarmbearbeiterView.modelFactory = modelFactory;
+	public static void staticInject(ConfigurationBeanService beanService) {
+		configurationBeanService = beanService;
 	}
 
 }

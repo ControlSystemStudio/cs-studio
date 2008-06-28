@@ -5,13 +5,13 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.AlarmbearbeitergruppenStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.FilterStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -29,41 +29,42 @@ import org.eclipse.ui.part.EditorPart;
  * transfer all changes to the original bean - in other words: saving means to
  * change the given model bean.
  */
+@Deprecated
 public class ConfigurationEditor extends EditorPart implements
 		DirtyFlagProvider {
-
+	@Deprecated
 	public static final String ID = "org.csstudio.nams.configurator.ConfigurationEditor";
-
+	@Deprecated
 	private StackLayout _stackLayout;
-
+	@Deprecated
 	private List<AbstractStackPart<?>> _stackParts;
-
+	@Deprecated
 	private AbstractStackPart<?> _showedStackPart;
-
+	@Deprecated
 	private ConfigurationEditorInput _input;
-
+	@Deprecated
 	private DefaultStackPart _defaultStackPart;
-
+	@Deprecated
 	private IConfigurationBean _originalModel;
-
+	@Deprecated
 	private IConfigurationModel model;
-
+	@Deprecated
 	public ConfigurationEditor() {
 		_stackParts = new ArrayList<AbstractStackPart<?>>();
 	}
-
+	@Deprecated
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		_showedStackPart.save();
 
 		this.fireDirtyFlagChanged();
 	}
-
+	@Deprecated
 	@Override
 	public void doSaveAs() {
 		throw new RuntimeException("This method (doSaveAs) is not supported");
 	}
-
+	@Deprecated
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
@@ -72,12 +73,12 @@ public class ConfigurationEditor extends EditorPart implements
 		_input = (ConfigurationEditorInput) input;
 		_originalModel = _input.getBean();
 
-		model = _input.getModel();
+//		model = _input.getModel();
 		if (_defaultStackPart != null) {
 			this.showCorrespondingStackPart(_originalModel);
 		}
 	}
-
+	@Deprecated
 	private void showCorrespondingStackPart(IConfigurationBean input) {
 		AbstractStackPart<?> stackPart = this.getStackPartfor(input.getClass());
 		Control mainControl = stackPart.getMainControl();
@@ -90,7 +91,7 @@ public class ConfigurationEditor extends EditorPart implements
 
 		_stackLayout.topControl = mainControl;
 	}
-
+	@Deprecated
 	private AbstractStackPart<?> getStackPartfor(
 			Class<? extends IConfigurationBean> tObjectClass) {
 		for (AbstractStackPart<?> part : _stackParts) {
@@ -100,7 +101,7 @@ public class ConfigurationEditor extends EditorPart implements
 		}
 		return _defaultStackPart;
 	}
-
+	@Deprecated
 	private PropertyChangeListener getPropertyChangeListener() {
 		return new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -108,17 +109,17 @@ public class ConfigurationEditor extends EditorPart implements
 			}
 		};
 	}
-
+	@Deprecated
 	@Override
 	public boolean isDirty() {
 		return _showedStackPart.isDirty();
 	}
-
+	@Deprecated
 	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
-
+	@Deprecated
 	@Override
 	public void createPartControl(Composite parent) {
 		ScrolledComposite scrollPane = new ScrolledComposite(parent,
@@ -137,7 +138,7 @@ public class ConfigurationEditor extends EditorPart implements
 
 		this.showCorrespondingStackPart(_input.getBean());
 	}
-
+	@Deprecated
 	private void createAndAddEditorStackParts(Composite parent) {
 		_defaultStackPart = new DefaultStackPart(this, parent);
 		_stackParts.add(new UserStackPart(this, parent));
@@ -146,12 +147,12 @@ public class ConfigurationEditor extends EditorPart implements
 		_stackParts.add(new FilterStackPart(this, parent));
 		//TODO Filter und FilterCondition Stackparts einfügen
 	}
-
+	@Deprecated
 	@Override
 	public void setFocus() {
 		_showedStackPart.setFocus();
 	}
-
+	@Deprecated
 	public void fireDirtyFlagChanged() {
 		this.firePropertyChange(EditorPart.PROP_DIRTY);
 	}

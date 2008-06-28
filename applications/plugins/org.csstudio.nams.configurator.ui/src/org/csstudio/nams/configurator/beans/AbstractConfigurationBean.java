@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.beans;
 
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 
 
 /**
@@ -36,8 +35,5 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 	public abstract T getClone();
 
 	public abstract void updateState(T bean);
-
-	public abstract int getID();
-	
 	
 }

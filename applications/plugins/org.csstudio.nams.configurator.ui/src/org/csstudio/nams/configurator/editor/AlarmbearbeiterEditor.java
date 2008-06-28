@@ -33,7 +33,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		main = new Composite(parent, SWT.NONE);
+		Composite main = new Composite(parent, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);

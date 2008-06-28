@@ -6,9 +6,9 @@ import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
-import org.csstudio.nams.configurator.actions.DeleteConfiguration;
-import org.csstudio.nams.configurator.modelmapping.ConfigurationModel;
-import org.csstudio.nams.configurator.modelmapping.ModelFactory;
+import org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor;
+import org.csstudio.nams.configurator.service.ConfigurationBeanService;
+import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
 import org.csstudio.nams.configurator.views.AlarmbearbeiterView;
 import org.csstudio.nams.configurator.views.AlarmbearbeitergruppenView;
 import org.csstudio.nams.configurator.views.AlarmtopicView;
@@ -41,17 +41,21 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 						preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
 
-		ModelFactory modelFactory = new ModelFactory(
-				localStoreConfigurationService);
+//		ModelFactory modelFactory = new ModelFactory(
+//				localStoreConfigurationService);
+		
+		ConfigurationBeanService beanService = new ConfigurationBeanServiceImpl(localStoreConfigurationService);
 		
 		//prepare Controler
-		AlarmbearbeitergruppenView.staticInject(modelFactory);
-		AlarmbearbeiterView.staticInject(modelFactory);
-		AlarmtopicView.staticInject(modelFactory);
-		FilterView.staticInject(modelFactory);
-		FilterbedingungView.staticInject(modelFactory);
-		ConfigurationModel.staticInject(localStoreConfigurationService);
-		DeleteConfiguration.staticInject(localStoreConfigurationService);
+		AlarmbearbeitergruppenView.staticInject(beanService);
+		AlarmbearbeiterView.staticInject(beanService);
+		AlarmtopicView.staticInject(beanService);
+		FilterView.staticInject(beanService);
+		FilterbedingungView.staticInject(beanService);
+		
+		AlarmbearbeiterEditor.staticInject(beanService);
+//		ConfigurationModel.staticInject(localStoreConfigurationService);
+//		DeleteConfiguration.staticInject(localStoreConfigurationService);
 		
 	}
 }

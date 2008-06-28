@@ -239,7 +239,6 @@ public class AlarmbearbeiterBean extends
 
 	}
 
-	@Override
 	public int getID() {
 		return this.getUserID();
 	}

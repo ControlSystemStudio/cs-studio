@@ -1,14 +1,14 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
-import org.csstudio.nams.configurator.modelmapping.ModelFactory;
+import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
 public class FilterView extends ViewPart {
 
-	private static ModelFactory modelFactory;
+	private static ConfigurationBeanService configurationBeanService;
 	public static final String ID = "org.csstudio.nams.configurator.filter";
 	public FilterView() {
 		// TODO Auto-generated constructor stub
@@ -19,7 +19,7 @@ public class FilterView extends ViewPart {
 		new FilteredListVarianteA(parent, SWT.None) {
 			@Override
 			protected Object[] getTableInput() {
-				return modelFactory.getFilterBeans();
+				return configurationBeanService.getFilterBeans();
 			}
 		};
 	}
@@ -30,8 +30,8 @@ public class FilterView extends ViewPart {
 
 	}
 
-	public static void staticInject(ModelFactory modelFactory) {
-		FilterView.modelFactory = modelFactory;
+	public static void staticInject(ConfigurationBeanService beanService) {
+		configurationBeanService = beanService;
 		
 	}
 

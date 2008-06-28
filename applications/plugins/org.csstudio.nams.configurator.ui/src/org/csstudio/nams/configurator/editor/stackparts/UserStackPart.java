@@ -1,8 +1,8 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;

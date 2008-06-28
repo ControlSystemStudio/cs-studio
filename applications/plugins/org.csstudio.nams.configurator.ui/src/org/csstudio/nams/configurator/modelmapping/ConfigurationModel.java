@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -14,10 +15,13 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 
+@Deprecated
 public class ConfigurationModel implements IConfigurationModel {
 
+	@Deprecated
 	private static LocalStoreConfigurationService localStore;
 	
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public <E extends IConfigurationBean> E save(E bean) {
 		E result = null;
@@ -37,7 +41,7 @@ public class ConfigurationModel implements IConfigurationModel {
 			return result;
 		}
 	}
-
+	@Deprecated
 	private AlarmtopicBean save(AlarmtopicBean bean) {
 		Collection<TopicDTO> dtos = null;
 		try {
@@ -70,7 +74,7 @@ public class ConfigurationModel implements IConfigurationModel {
 		bean.setTopicID(dto.getId());
 		return bean;
 	}
-
+	@Deprecated
 	private AlarmbearbeiterGruppenBean save(AlarmbearbeiterGruppenBean bean) {
 		Collection<AlarmbearbeiterGruppenDTO> dtos = null;
 		try {
@@ -104,7 +108,7 @@ public class ConfigurationModel implements IConfigurationModel {
 		bean.setGroupID(dto.getUserGroupId());
 		return bean;
 	}
-
+	@Deprecated
 	private AlarmbearbeiterBean save(AlarmbearbeiterBean bean) {
 		Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter = null;
 		try {
@@ -140,7 +144,7 @@ public class ConfigurationModel implements IConfigurationModel {
 		bean.setUserID(dto.getUserId());
 		return bean;
 	}
-
+	@Deprecated
 	public static void staticInject(LocalStoreConfigurationService localStore) {
 		ConfigurationModel.localStore = localStore;
 	}

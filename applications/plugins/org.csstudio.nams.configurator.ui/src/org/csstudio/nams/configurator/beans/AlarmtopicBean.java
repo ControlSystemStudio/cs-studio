@@ -93,7 +93,6 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 
 	}
 
-	@Override
 	public int getID() {
 		return this.getTopicID();
 	}

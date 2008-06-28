@@ -35,7 +35,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Pre
 public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "iUserId", nullable = false, unique = true)
 	private int userId;
 

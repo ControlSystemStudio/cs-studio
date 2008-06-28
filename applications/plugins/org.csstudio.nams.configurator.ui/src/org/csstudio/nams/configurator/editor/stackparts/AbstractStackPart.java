@@ -2,8 +2,8 @@ package org.csstudio.nams.configurator.editor.stackparts;
 
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.modelmapping;
+package org.csstudio.nams.configurator.beans;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -8,5 +8,5 @@ public interface IConfigurationBean {
 	public IConfigurationBean getClone();
 	public void addPropertyChangeListener(PropertyChangeListener listener);
 	public PropertyChangeSupport getPropertyChangeSupport();
-	
+	public int getID();
 }

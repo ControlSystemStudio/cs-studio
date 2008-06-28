@@ -3,7 +3,6 @@ package org.csstudio.nams.configurator.beans;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.modelmapping.IConfigurationBean;
 
 /**
  * Diese Bean kapselt den grundlegenden PropertyChangeSupport. Beans, die

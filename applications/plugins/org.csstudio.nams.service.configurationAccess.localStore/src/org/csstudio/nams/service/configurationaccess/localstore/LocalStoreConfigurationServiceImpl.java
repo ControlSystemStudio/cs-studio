@@ -83,7 +83,10 @@ class LocalStoreConfigurationServiceImpl implements
 		Configuration result = null;
 		try {
 			result = new Configuration(session);
-		} finally {
+		} catch (Throwable t) {
+			transaction.rollback();
+		}
+		finally {
 			transaction.commit();
 		}
 		return result;

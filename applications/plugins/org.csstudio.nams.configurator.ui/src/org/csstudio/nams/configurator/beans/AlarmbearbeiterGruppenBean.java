@@ -145,7 +145,6 @@ public class AlarmbearbeiterGruppenBean extends
 
 	}
 
-	@Override
 	public int getID() {
 		return this.getGroupID();
 	}

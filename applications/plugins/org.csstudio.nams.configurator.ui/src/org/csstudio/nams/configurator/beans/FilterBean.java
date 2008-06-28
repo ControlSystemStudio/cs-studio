@@ -76,7 +76,6 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	}
 
-	@Override
 	public int getID() {
 		return this.getFilterID();
 	}

@@ -1,7 +1,8 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
-import org.csstudio.nams.configurator.modelmapping.ModelFactory;
+import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
+import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -9,11 +10,13 @@ import org.eclipse.ui.part.ViewPart;
 public class AlarmbearbeitergruppenView extends ViewPart {
 
 	public static final String ID = "org.csstudio.nams.configurator.alarmbearbeitergruppen";
-	private static ModelFactory modelFactory;
+	private static ConfigurationBeanService configurationBeanService;
 	private FilteredListVarianteA filteredListVarianteA;
 
 	public AlarmbearbeitergruppenView() {
-		// TODO Auto-generated constructor stub
+		configurationBeanService.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
+			
+		});
 	}
 
 	@Override
@@ -22,7 +25,7 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 		filteredListVarianteA = new FilteredListVarianteA(parent, SWT.None) {
 
 			protected Object[] getTableInput() {
-				return modelFactory.getAlarmBearbeiterGruppenBeans();
+				return configurationBeanService.getAlarmBearbeiterGruppenBeans();
 			}
 		};
 
@@ -30,12 +33,11 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
-	public static void staticInject(ModelFactory modelFactory) {
-		AlarmbearbeitergruppenView.modelFactory = modelFactory;
+	public static void staticInject(ConfigurationBeanService beanService) {
+		configurationBeanService = beanService;
 	}
 
 }
