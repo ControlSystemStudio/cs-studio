@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
 import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
@@ -37,7 +38,7 @@ public class AlarmbearbeiterView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		filteredListVarianteA = new FilteredListVarianteA(parent, SWT.None){
-			protected Object[] getTableInput() {
+			protected IConfigurationBean[] getTableInput() {
 				return configurationBeanService.getAlarmBearbeiterBeans();
 			}
 		};

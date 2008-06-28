@@ -9,4 +9,5 @@ public interface IConfigurationBean {
 	public void addPropertyChangeListener(PropertyChangeListener listener);
 	public PropertyChangeSupport getPropertyChangeSupport();
 	public int getID();
+	public String getRubrikName();
 }

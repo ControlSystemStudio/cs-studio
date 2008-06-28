@@ -24,6 +24,8 @@ import java.beans.PropertyChangeSupport;
 public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		extends AbstractObservableBean implements Comparable<T>{
 
+	private String rubrikName;
+
 	public PropertyChangeSupport getPropertyChangeSupport() {
 		return pcs;
 	}
@@ -36,4 +38,11 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 
 	public abstract void updateState(T bean);
 	
+	public String getRubrikName() {
+		return rubrikName;
+	}
+	
+	public void setRubrikName(String groupName) {
+		this.rubrikName = groupName;
+	}
 }

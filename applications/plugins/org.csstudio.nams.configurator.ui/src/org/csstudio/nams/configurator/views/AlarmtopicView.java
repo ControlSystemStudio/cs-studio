@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.swt.SWT;
@@ -18,7 +19,7 @@ public class AlarmtopicView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		new FilteredListVarianteA(parent, SWT.None) {
-			protected Object[] getTableInput() {
+			protected IConfigurationBean[] getTableInput() {
 				return configurationBeanService.getAlarmTopicBeans();
 			}
 		};

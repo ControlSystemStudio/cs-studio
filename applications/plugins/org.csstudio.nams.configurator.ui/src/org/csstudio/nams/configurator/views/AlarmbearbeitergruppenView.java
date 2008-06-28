@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
 import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
@@ -24,7 +25,7 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 
 		filteredListVarianteA = new FilteredListVarianteA(parent, SWT.None) {
 
-			protected Object[] getTableInput() {
+			protected IConfigurationBean[] getTableInput() {
 				return configurationBeanService.getAlarmBearbeiterGruppenBeans();
 			}
 		};

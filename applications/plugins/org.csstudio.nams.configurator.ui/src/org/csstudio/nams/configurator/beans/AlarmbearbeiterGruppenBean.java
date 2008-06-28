@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.beans;
 
-import java.beans.PropertyChangeSupport;
 
 public class AlarmbearbeiterGruppenBean extends
 		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> {

@@ -3,6 +3,7 @@ package org.csstudio.nams.configurator.service;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
@@ -76,6 +77,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setPreferedAlarmType(alarmbearbeiter.getPreferedAlarmType());
 		bean.setStatusCode(alarmbearbeiter.getStatusCode());
 		bean.setUserID(alarmbearbeiter.getUserId());
+		
+		//FIXME for testing only
+		if (new Random().nextBoolean()) {
+			bean.setRubrikName("Random Test Rubrik");
+		}
 		return bean;
 	}
 

@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.beans;
 
-import java.beans.PropertyChangeSupport;
 
 public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 

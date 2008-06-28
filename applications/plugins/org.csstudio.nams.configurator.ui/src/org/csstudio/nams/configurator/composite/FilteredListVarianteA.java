@@ -1,9 +1,12 @@
 package org.csstudio.nams.configurator.composite;
 
 import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -31,9 +34,11 @@ import org.eclipse.swt.widgets.Text;
 public abstract class FilteredListVarianteA {
 
 	private String filterkriterium = "";
-	private String gruppenname = "";
+	private String selectedgruppenname = "ALLE";
+	private Set<String> gruppenNamen = new TreeSet<String>();
 
 	private TableViewer table;
+	private Combo gruppenCombo;
 
 	public FilteredListVarianteA(Composite parent, int style) {
 		this.createPartControl(parent, style);
@@ -54,22 +59,22 @@ public abstract class FilteredListVarianteA {
 			{
 				new Label(compDown, SWT.READ_ONLY).setText("Rubrik");
 
-				final Combo gruppen = new Combo(compDown, SWT.BORDER
+				gruppenCombo = new Combo(compDown, SWT.BORDER
 						| SWT.READ_ONLY);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
-						gruppen);
-				gruppen.add("ALLE");
-				gruppen.add("Ohne Rubrik");
-				gruppen.add("-------------");
-				gruppen.add("Kryo OPS");
-				gruppen.add("C1-WPS");
-				gruppen.select(0);
-				//FIXME remove hardcoded group names
+						gruppenCombo);
+				gruppenCombo.add("ALLE");
+				gruppenCombo.add("Ohne Rubrik");
+				gruppenCombo.add("-------------");
+//				gruppenCombo.add("Kryo OPS");
+//				gruppenCombo.add("C1-WPS");
+				gruppenCombo.select(0);
+				//FIX ME DONE! remove hardcoded group names
 
 
-				gruppen.addListener(SWT.Modify, new Listener() {
+				gruppenCombo.addListener(SWT.Modify, new Listener() {
 					public void handleEvent(Event event) {
-						gruppenname = gruppen.getItem(gruppen
+						selectedgruppenname = gruppenCombo.getItem(gruppenCombo
 								.getSelectionIndex());
 						table.refresh();
 					}
@@ -188,24 +193,29 @@ public abstract class FilteredListVarianteA {
 		}
 	}
 
-	protected abstract Object[] getTableInput();
+	protected abstract IConfigurationBean[] getTableInput();
 
 	private class TableFilter extends ViewerFilter {
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
-			if (gruppenname.length() > 0 && !gruppenname.equals("ALLE")) {
-
-				//TODO Tablefilter funzt so nich
-
-				if (gruppenname.equals("Ohne Rubrik")) {
-					return false;
-				}
+			IConfigurationBean bean = (IConfigurationBean) element;
+			
+			if (!bean.getDisplayName().toLowerCase().contains(
+					filterkriterium.toLowerCase())) {
+				return false;
 			}
-//TODO ???
-			return ((AbstractConfigurationBean<?>) element).getDisplayName().toLowerCase().contains(
-					filterkriterium.toLowerCase());
+			if (selectedgruppenname.equals("ALLE")) {
+				return true;
+			}
+			
+			if (selectedgruppenname.equals("Ohne Rubrik")) {
+				return (bean.getRubrikName() == null || bean.getRubrikName().equals(""));
+			}
+			
+			boolean equals = (bean.getRubrikName() != null && bean.getRubrikName().equals(selectedgruppenname));
+			return equals;			
 		}
 
 	}
@@ -215,9 +225,23 @@ public abstract class FilteredListVarianteA {
 	}
 	
 	public void updateView(){
-		Object[] tableInput = this.getTableInput();
+		IConfigurationBean[] tableInput = this.getTableInput();
+		
+		if (gruppenCombo.getItemCount() > 3) {
+			gruppenCombo.remove(3, gruppenCombo.getItemCount());
+		}
+		gruppenNamen.clear();
+		for (IConfigurationBean bean : tableInput) {
+			String groupName = bean.getRubrikName();
+			if (groupName != null && !groupName.equals("")) {
+				gruppenNamen.add(groupName);
+			}
+		}
+		for (String gruppenName : gruppenNamen) {
+			gruppenCombo.add(gruppenName);
+		}
+		
 		Arrays.sort(tableInput);
 		table.setInput(tableInput);
-		table.refresh();
 	}
 }
