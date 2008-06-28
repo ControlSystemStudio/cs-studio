@@ -20,6 +20,8 @@ public interface ConfigurationBeanService {
 	public abstract FilterbedingungBean[] getFilterConditionBeans();
 
 	public <T extends IConfigurationBean> T save(T bean);
+	
+	public void delete(IConfigurationBean bean);
 
 	public void addConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);
 	public void removeConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);

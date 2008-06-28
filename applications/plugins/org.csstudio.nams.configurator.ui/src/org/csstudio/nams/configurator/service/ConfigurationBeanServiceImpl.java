@@ -239,4 +239,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return null;
 	}
 
+	public void delete(IConfigurationBean bean) {
+		AlarmbearbeiterDTO dto = null;
+		for (AlarmbearbeiterDTO potentialdto : entireConfiguration.gibAlleAlarmbearbeiter()) {
+			if (potentialdto.getUserId() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		if (dto != null) {
+			//TODO confService unterstützt noch kein löschen
+			System.out.println("ConfigurationBeanServiceImpl.delete() " + dto.getUserId() + " " + dto.getUserName());
+		}
+	}
+
 }

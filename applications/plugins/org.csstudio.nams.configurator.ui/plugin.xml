@@ -161,6 +161,11 @@
                id="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
                label="Neu">
          </action>
+         <action
+               class="org.csstudio.nams.configurator.actions.DeleteAlarmbearbeiterAction"
+               id="org.csstudio.nams.configurator.actions.DeleteAlarmbearbeiterAction"
+               label="Lösche">
+         </action>
       </objectContribution>
    </extension>
 w

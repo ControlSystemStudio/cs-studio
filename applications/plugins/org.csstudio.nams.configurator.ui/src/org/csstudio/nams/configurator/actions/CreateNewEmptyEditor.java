@@ -12,9 +12,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-
+@Deprecated
 public class CreateNewEmptyEditor extends AbstractHandler implements IHandler {
-
+	@Deprecated
 	@Override
 	public Object execute(ExecutionEvent arg0) throws ExecutionException {
 		IConfigurationBean bean = new AlarmbearbeiterBean();
