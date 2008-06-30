@@ -23,6 +23,7 @@
 
 import static org.junit.Assert.*;
 
+import java.util.List;
 
 import javax.jms.MapMessage;
 
@@ -34,8 +35,10 @@ import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.simpledal.IConnectorStatistic;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.context.RemoteInfo;
 import org.junit.After;
@@ -400,11 +403,15 @@ public class FilterConditionProcessVariableTest {
 			return 0;
 		}
 
-        public boolean isSettable(IProcessVariableAddress pv)
-        {
-            // TODO Auto-generated method stub
-            return false;
-        }
+		public List<IConnectorStatistic> getConnectorStatistic() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public SettableState isSettable(IProcessVariableAddress pv) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
 	private FilterConditionProcessVariableTObject createTObjectForTypeDouble(final Operator operator) {
