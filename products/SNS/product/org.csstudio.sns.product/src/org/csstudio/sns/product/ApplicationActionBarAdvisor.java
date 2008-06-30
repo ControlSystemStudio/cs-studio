@@ -189,24 +189,26 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     {
         final MenuManager menu_css = new MenuManager(Messages.Menu_CSS_CSS,
                         CssWorkbenchActionConstants.CSS_MENU);
+        // Alphabetical order
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Alarm,
+                CssWorkbenchActionConstants.CSS_ALARM_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Configuration,
+                CssWorkbenchActionConstants.CSS_CONFIGURATION_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Debug,
+                CssWorkbenchActionConstants.CSS_DEBUGGING_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Diagnostics,
+                CssWorkbenchActionConstants.CSS_DIAGNOSTICS_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Display,
                         CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Editors,
                         CssWorkbenchActionConstants.CSS_EDITORS_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Alarm,
-                        CssWorkbenchActionConstants.CSS_ALARM_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Management,
+                CssWorkbenchActionConstants.CSS_MANAGEMENT_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Trends,
                         CssWorkbenchActionConstants.CSS_TRENDS_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Diagnostics,
-                        CssWorkbenchActionConstants.CSS_DIAGNOSTICS_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Utilities,
                         CssWorkbenchActionConstants.CSS_UTILITIES_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Configuration,
-                        CssWorkbenchActionConstants.CSS_CONFIGURATION_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Debug,
-                        CssWorkbenchActionConstants.CSS_DEBUGGING_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Management,
-                        CssWorkbenchActionConstants.CSS_MANAGEMENT_MENU));
+        // .. except for test and other
         menu_css.add(new MenuManager(Messages.Menu_CSS_Test,
                         CssWorkbenchActionConstants.CSS_TEST_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Other,
