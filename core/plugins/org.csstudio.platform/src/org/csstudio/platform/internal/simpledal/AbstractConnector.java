@@ -19,21 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.internal.simpledal;
+package org.csstudio.platform.internal.simpledal;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IConnectorStatistic;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.platform.util.PerformanceUtil;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * Base class for connectors.
@@ -48,7 +52,8 @@ import org.csstudio.platform.util.PerformanceUtil;
  * 
  */
 @SuppressWarnings("unchecked")
-abstract class AbstractConnector implements IConnectorStatistic {
+abstract class AbstractConnector implements IConnectorStatistic,
+		IProcessVariableAdressProvider, IProcessVariable {
 	private Object _latestValue;
 
 	private ConnectionState _latestConnectionState;
@@ -81,35 +86,34 @@ abstract class AbstractConnector implements IConnectorStatistic {
 		PerformanceUtil.getInstance().constructorCalled(this);
 	}
 
-	
 	/**
-	 *{@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	public int getListenerCount() {
 		return _weakListenerReferences.size();
 	}
-	
-		/**
-		 *{@inheritDoc}
-		 */
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public ConnectionState getLatestConnectionState() {
 		return _latestConnectionState;
 	}
-	
-		/**
-		 *{@inheritDoc}
-		 */
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object getLatestValue() {
 		return _latestValue;
 	}
-	
-		/**
-		 *{@inheritDoc}
-		 */
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getLatestError() {
 		return _latestError;
 	}
-	
+
 	/**
 	 * Forwards the specified connection state.
 	 * 
@@ -209,16 +213,16 @@ abstract class AbstractConnector implements IConnectorStatistic {
 		return _weakListenerReferences.isEmpty();
 	}
 
-		/**
-		 *{@inheritDoc}
-		 */
+	/**
+	 * {@inheritDoc}
+	 */
 	public IProcessVariableAddress getProcessVariableAddress() {
 		return _processVariableAddress;
 	}
 
-		/**
-		 *{@inheritDoc}
-		 */
+	/**
+	 * {@inheritDoc}
+	 */
 	public ValueType getValueType() {
 		return _valueType;
 	}
@@ -234,8 +238,8 @@ abstract class AbstractConnector implements IConnectorStatistic {
 		if (connectionState != null) {
 			// remember the latest state
 			_latestConnectionState = connectionState;
-			
-			execute(new IRunnable() {
+
+			execute(new IInternalRunnable() {
 				public void doRun(IProcessVariableValueListener listener) {
 					listener.connectionStateChanged(connectionState);
 				}
@@ -254,7 +258,7 @@ abstract class AbstractConnector implements IConnectorStatistic {
 			// memorize the latest value
 			_latestValue = value;
 
-			execute(new IRunnable() {
+			execute(new IInternalRunnable() {
 				public void doRun(IProcessVariableValueListener listener) {
 					listener.valueChanged(ConverterUtil.convert(value,
 							_valueType));
@@ -270,7 +274,7 @@ abstract class AbstractConnector implements IConnectorStatistic {
 	 *            the DAL connection event
 	 */
 	protected void doForwardError(final String error) {
-		execute(new IRunnable() {
+		execute(new IInternalRunnable() {
 			public void doRun(IProcessVariableValueListener listener) {
 				listener.errorOccured(error);
 			}
@@ -280,13 +284,13 @@ abstract class AbstractConnector implements IConnectorStatistic {
 	/**
 	 * Executes the specified runnable for all existing value listeners.
 	 * 
-	 * Only for valid listeners that still live in the JVM, the hook method
-	 * {@link IRunnable#doRun(IProcessVariableValueListener)} is called.
+	 * Only for valid listeners that still live in the JVM the hook method
+	 * {@link IInternalRunnable#doRun(IProcessVariableValueListener)} is called.
 	 * 
 	 * @param runnable
 	 *            the runnable
 	 */
-	private void execute(IRunnable runnable) {
+	private void execute(IInternalRunnable runnable) {
 		synchronized (_weakListenerReferences) {
 			Iterator<WeakReference<IProcessVariableValueListener>> it = _weakListenerReferences
 					.iterator();
@@ -298,9 +302,6 @@ abstract class AbstractConnector implements IConnectorStatistic {
 
 				if (listener != null) {
 					runnable.doRun(listener);
-				} else {
-					// TODO: CALLBACK
-					// _weakListenerReferences.remove(wr);
 				}
 			}
 		}
@@ -337,7 +338,7 @@ abstract class AbstractConnector implements IConnectorStatistic {
 	 * @author Sven Wende
 	 * 
 	 */
-	interface IRunnable {
+	interface IInternalRunnable {
 		/**
 		 * Hook which is called only for valid value listeners, which still live
 		 * in the JVM and have not already been garbage collected.
@@ -349,13 +350,58 @@ abstract class AbstractConnector implements IConnectorStatistic {
 		void doRun(IProcessVariableValueListener valueListeners);
 	}
 
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void finalize() throws Throwable {
 		PerformanceUtil.getInstance().finalizedCalled(this);
 	}
 
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return _processVariableAddress.getProperty();
 	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<IProcessVariableAddress> getProcessVariableAdresses() {
+		return Collections.singletonList(_processVariableAddress);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProcessVariableAddress getPVAdress() {
+		return _processVariableAddress;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getName() {
+		return _processVariableAddress.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getTypeId() {
+		return IProcessVariable.TYPE_ID;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(Class adapterType) {
+		return Platform.getAdapterManager().getAdapter(this, adapterType);
+	}
+
 }

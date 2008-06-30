@@ -199,7 +199,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 */
 	public void responseError(ResponseEvent event) {
 		Exception e = event.getResponse().getError();
-		doForwardError(e != null ? e.getMessage() : "Unkown error!");
+		doForwardError(e != null ? e.getMessage() : "Unknown error!");
 	}
 
 	/**

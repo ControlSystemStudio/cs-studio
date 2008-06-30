@@ -21,7 +21,6 @@
  */
 package org.csstudio.platform.ui.internal.workbench;
 
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.util.ImageUtil;

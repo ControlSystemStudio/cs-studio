@@ -2,7 +2,7 @@ package org.csstudio.platform.simpledal;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 
-public interface IConnectorStatistic {
+public interface IConnectorStatistic  {
 
 	int getListenerCount();
 	
