@@ -48,10 +48,8 @@ public class AutoSizeColumn
      *  @param weight The 'weight' used in getting a share of additional
      *                screen space.
      *  @return Returns the table column.
-     *  @deprecated Use the newer TableViewerColumn
      *  @see #make(TableViewer, String, int, int, boolean)
      */
-    @Deprecated
     public static TableColumn make(Table table, String header,
             int min_size, int weight)
     {
@@ -71,10 +69,8 @@ public class AutoSizeColumn
      *                screen space.
      *  @param center Center-align the column?
      *  @return Returns the table column.
-     *  @deprecated Use the newer TableViewerColumn
      *  @see #make(TableViewer, String, int, int, boolean)
      */
-    @Deprecated
 	public static TableColumn make(Table table, String header,
 			int min_size, int weight, boolean center)
 	{
