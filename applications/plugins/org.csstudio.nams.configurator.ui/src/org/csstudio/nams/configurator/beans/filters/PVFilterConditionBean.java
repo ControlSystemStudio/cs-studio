@@ -11,6 +11,10 @@ public class PVFilterConditionBean extends
 	private String channelName;
 	private Operator operator;
 	private String compareValue;
+	
+	public enum PropertyNames{
+		suggestedType, channelName, operator, compareValue;
+	}
 
 	public SuggestedProcessVariableType getSuggestedType() {
 		return suggestedType;
