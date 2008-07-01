@@ -5,12 +5,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.filters.AddOnBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
+import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
+import org.csstudio.nams.configurator.beans.filters.StringArrayFilterConditionBean;
+import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
+import org.csstudio.nams.configurator.beans.filters.TimeBasedFilterConditionBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
@@ -21,6 +28,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.Logger;
 
 public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
@@ -162,11 +174,53 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return beans.toArray(new FilterbedingungBean[beans.size()]);
 	}
 
-	FilterbedingungBean DTO2Bean(FilterConditionDTO filter) {
+	private FilterbedingungBean DTO2Bean(FilterConditionDTO filter) {
 		FilterbedingungBean bean = new FilterbedingungBean();
 		bean.setFilterbedinungID(filter.getIFilterConditionID());
 		bean.setDescription(filter.getCDesc());
 		bean.setName(filter.getCName());
+		AddOnBean filterSpecificBean = null;
+		if (filter instanceof JunctorConditionDTO){
+//			filterSpecificBean = 
+				JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
+			junctorConditionBean.setFirstCondition(
+					DTO2Bean(((JunctorConditionDTO) filter).getFirstFilterCondition()));
+			junctorConditionBean.setJunctor(((JunctorConditionDTO) filter).getJunctor());
+			junctorConditionBean.setRubrikName(""); // RubrikName is set by the main Bean.
+			junctorConditionBean.setSecondCondition(
+					DTO2Bean(((JunctorConditionDTO) filter).getSecondFilterCondition()));
+			filterSpecificBean = junctorConditionBean;
+		} else if (filter instanceof ProcessVariableFilterConditionDTO){
+			PVFilterConditionBean filterbedingungBean = new PVFilterConditionBean();
+			filterbedingungBean.setRubrikName("");
+			filterbedingungBean.setChannelName(((ProcessVariableFilterConditionDTO) filter).getCName());
+			filterbedingungBean.setCompareValue(((ProcessVariableFilterConditionDTO) filter).getCCompValue());
+			filterbedingungBean.setOperator(((ProcessVariableFilterConditionDTO) filter).getPVOperator());
+			filterbedingungBean.setSuggestedType(((ProcessVariableFilterConditionDTO) filter).getSuggestedPVType());
+			filterSpecificBean = filterbedingungBean;
+		} else if (filter instanceof StringArrayFilterConditionDTO){
+			StringArrayFilterConditionBean stringArrayFilterConditionBean = new StringArrayFilterConditionBean();
+			stringArrayFilterConditionBean.setRubrikName("");
+			filterSpecificBean = stringArrayFilterConditionBean;
+		}  else if (filter instanceof StringFilterConditionDTO){
+			StringFilterConditionBean stringFilterConditionBean = new StringFilterConditionBean();
+			stringFilterConditionBean.setRubrikName("");
+			stringFilterConditionBean.setCompValue(((StringFilterConditionDTO) filter).getCompValue());
+			stringFilterConditionBean.setKeyValue(((StringFilterConditionDTO) filter).getKeyValue());
+			stringFilterConditionBean.setOperator(StringRegelOperator.valueOf(((StringFilterConditionDTO) filter).getOperator()));
+			filterSpecificBean = stringFilterConditionBean;
+		} else if (filter instanceof TimeBasedFilterConditionDTO){
+			TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();
+			timeBasedConditionBean.setRubrikName("");
+			filterSpecificBean = timeBasedConditionBean;
+		}
+		
+		
+		if (filterSpecificBean != null) {
+			bean.setFilterSpecificBean(filterSpecificBean);
+		} else {
+			throw new IllegalArgumentException("Unrecognized FilterConditionDTO: " + filter);
+		}
 		return bean;
 	}
 	
