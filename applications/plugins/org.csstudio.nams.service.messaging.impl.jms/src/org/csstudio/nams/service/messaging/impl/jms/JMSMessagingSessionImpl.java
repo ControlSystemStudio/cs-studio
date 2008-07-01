@@ -15,6 +15,8 @@ import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 
 public class JMSMessagingSessionImpl implements MessagingSession {
 
@@ -24,6 +26,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 	private Session[] sessions;
 	private boolean isClosed;
 	private final String environmentUniqueClientId;
+	private static PreferenceService preferenceService;
 
 	public JMSMessagingSessionImpl(String environmentUniqueClientId,
 			String[] urls) throws NamingException, JMSException {
@@ -37,9 +40,8 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		try {
 			for (int i = 0; i < urls.length; i++) {
 				Hashtable<String, String> properties = new Hashtable<String, String>();
-				//FIXME aus dem preference store holen!
-				properties.put(Context.INITIAL_CONTEXT_FACTORY,
-						"org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+				properties.put(Context.INITIAL_CONTEXT_FACTORY, 
+						preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_AMS_CONNECTION_FACTORY)); 
 				properties.put(Context.PROVIDER_URL, urls[i]);
 	
 				contexts[i] = new InitialContext(properties);
@@ -119,6 +121,10 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 
 	public boolean isClosed() {
 		return isClosed;
+	}
+	
+	public static void  staticInject(PreferenceService service){
+		JMSMessagingSessionImpl.preferenceService = service;
 	}
 
 }

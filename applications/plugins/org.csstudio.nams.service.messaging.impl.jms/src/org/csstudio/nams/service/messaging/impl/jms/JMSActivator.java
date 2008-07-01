@@ -5,6 +5,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.osgi.framework.BundleActivator;
 
 /**
@@ -14,12 +15,17 @@ public class JMSActivator extends AbstractBundleActivator implements BundleActiv
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.messaging.impl.jms";
+	private PreferenceService preferenceService;
 	
 	@OSGiBundleActivationMethod
 	public void startBundle(
-			@OSGiService @Required Logger logger
+			@OSGiService @Required Logger logger, @OSGiService
+			@Required
+			PreferenceService injectedPreferenceService
 	) {
+		this.preferenceService = injectedPreferenceService;
 		JMSConsumer.staticInjectLogger(logger);
 		JMSProducer.staticInjectLogger(logger);
+		JMSMessagingSessionImpl.staticInject(preferenceService);
 	}
 }
