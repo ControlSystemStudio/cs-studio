@@ -26,8 +26,8 @@ public class AllTests extends TestCase {
 				"Test for org.csstudio.nams.testutils.testsuites");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(AllTests.class);
-		suite.addTestSuite(de.c1wps.desy.ams.AllTestsSuite.class);
-		suite.addTest(de.c1wps.desy.ams.AllTestsSuite.suite());
+		suite.addTestSuite(org.csstudio.nams.application.department.decision.AllTestsSuite.class);
+		suite.addTest(org.csstudio.nams.application.department.decision.AllTestsSuite.suite());
 		
 		collectTestCasesOfPackageAndSubPackages(suite,
 				"org.csstudio.nams.testutils.testsuites");

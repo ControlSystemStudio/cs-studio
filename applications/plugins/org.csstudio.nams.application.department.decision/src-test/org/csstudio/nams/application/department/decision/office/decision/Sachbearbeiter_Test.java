@@ -1,4 +1,4 @@
-package de.c1wps.desy.ams.alarmentscheidungsbuero;
+package org.csstudio.nams.application.department.decision.office.decision;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.csstudio.nams.application.department.decision.office.decision.Sachbearbeiter;
+import org.csstudio.nams.application.department.decision.office.decision.Terminnotiz;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
 import org.csstudio.nams.common.decision.Eingangskorb;

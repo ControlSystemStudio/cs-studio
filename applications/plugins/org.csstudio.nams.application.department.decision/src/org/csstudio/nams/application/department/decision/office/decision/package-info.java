@@ -22,27 +22,9 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.alarmentscheidungsbuero;
-
-import org.csstudio.nams.common.decision.Ablagefaehig;
-import org.csstudio.nams.common.decision.Ablagekorb;
 
 /**
- * Ein Dokumentenbearbeiter bearbeitet Dokumente die in der Regel zuvor in einem
- * {@link Ablagekorb} platziert waren. Siehe hierzu auch
- * {@link DokumentVerbraucherArbeiter}.
- * 
- * @param <T>
- *            Der Typ der Dokumente, die dieser Bearbeiter bearbeiten kann.
- * 
- * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
- *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
- *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
- * @version 0.1, 31.03.2008
+ * Dieses Sub-System repraesentiert ein Alarmbuero, in welchem Erroiert wird,
+ * ob eine Nachricht gesendet werden soll oder nicht.
  */
-public interface DokumentenBearbeiter<T extends Ablagefaehig> {
-
-	void bearbeiteVorgang(T entnehmeAeltestenEingang)
-			throws InterruptedException;
-
-}
+package org.csstudio.nams.application.department.decision.office.decision;

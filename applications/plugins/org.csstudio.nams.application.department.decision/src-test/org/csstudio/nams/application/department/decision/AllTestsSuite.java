@@ -1,13 +1,11 @@
-package de.c1wps.desy.ams;
+package org.csstudio.nams.application.department.decision;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.csstudio.nams.application.department.decision.DecisionDepartmentActivator_Test;
-import org.csstudio.nams.application.department.decision.SyncronisationsAutomat_Test;
+import org.csstudio.nams.application.department.decision.office.decision.Alarmentscheidungsbuero_SubSystemTestSuite;
 
-import de.c1wps.desy.ams.alarmentscheidungsbuero.Alarmentscheidungsbuero_SubSystemTestSuite;
 import de.c1wps.desy.ams.allgemeines.Allgemeines_SubSystemTestSuite;
 import de.c1wps.desy.ams.allgemeines.regelwerk.AllgemeinesRegelwerk_SubSystemTestSuite;
 

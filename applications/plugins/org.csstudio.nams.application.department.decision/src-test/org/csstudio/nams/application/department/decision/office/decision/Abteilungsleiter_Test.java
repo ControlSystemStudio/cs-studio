@@ -22,11 +22,12 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.alarmentscheidungsbuero;
+package org.csstudio.nams.application.department.decision.office.decision;
 
 import java.net.InetAddress;
 import java.util.Date;
 
+import org.csstudio.nams.application.department.decision.office.decision.Abteilungsleiter;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;

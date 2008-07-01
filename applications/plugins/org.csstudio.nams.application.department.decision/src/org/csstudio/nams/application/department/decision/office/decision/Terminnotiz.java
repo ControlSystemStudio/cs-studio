@@ -1,4 +1,4 @@
-package de.c1wps.desy.ams.alarmentscheidungsbuero;
+package org.csstudio.nams.application.department.decision.office.decision;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.decision.Ablagefaehig;

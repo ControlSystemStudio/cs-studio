@@ -15,6 +15,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
+import org.csstudio.nams.application.department.decision.office.decision.DokumentVerbraucherArbeiter;
+import org.csstudio.nams.application.department.decision.office.decision.DokumentenBearbeiter;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
@@ -32,9 +35,6 @@ import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
 import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 
-import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
-import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentVerbraucherArbeiter;
-import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentenBearbeiter;
 
 public class Testapp implements Runnable, ActionListener {
 

@@ -28,6 +28,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
+import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
@@ -64,7 +65,6 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
 
-import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
 
 /**
  * <p>

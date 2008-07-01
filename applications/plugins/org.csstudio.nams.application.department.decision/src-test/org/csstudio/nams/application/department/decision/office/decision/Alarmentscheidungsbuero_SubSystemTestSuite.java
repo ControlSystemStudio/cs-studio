@@ -1,4 +1,4 @@
-package de.c1wps.desy.ams.alarmentscheidungsbuero;
+package org.csstudio.nams.application.department.decision.office.decision;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

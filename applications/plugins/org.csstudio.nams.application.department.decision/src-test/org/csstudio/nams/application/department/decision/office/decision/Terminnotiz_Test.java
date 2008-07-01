@@ -1,9 +1,10 @@
-package de.c1wps.desy.ams.alarmentscheidungsbuero;
+package org.csstudio.nams.application.department.decision.office.decision;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 
+import org.csstudio.nams.application.department.decision.office.decision.Terminnotiz;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.junit.Test;
