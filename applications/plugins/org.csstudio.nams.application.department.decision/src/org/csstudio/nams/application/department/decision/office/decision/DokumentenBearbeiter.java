@@ -40,7 +40,7 @@ import org.csstudio.nams.common.decision.Ablagekorb;
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 31.03.2008
  */
-public interface DokumentenBearbeiter<T extends Ablagefaehig> {
+interface DokumentenBearbeiter<T extends Ablagefaehig> {
 
 	void bearbeiteVorgang(T entnehmeAeltestenEingang)
 			throws InterruptedException;

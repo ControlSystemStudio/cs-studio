@@ -52,7 +52,8 @@ public abstract class StepByStepProcessor implements Runnable {
 	 * tests.
 	 * 
 	 * @throws RuntimeException
-	 *             An unexpected error/exception occured.
+	 *             An unexpected error/exception occurred which will be cause of
+	 *             the thrown {@link RuntimeException}.
 	 * @throws InterruptedException
 	 *             Indicates that processing was "normally" interrupted.
 	 */
@@ -68,6 +69,9 @@ public abstract class StepByStepProcessor implements Runnable {
 		}
 		try {
 			this.doRunOneSingleStep();
+		} catch (final InterruptedException ie) {
+			ie.fillInStackTrace();
+			throw ie;
 		} catch (final Throwable caughtThrowable) {
 			throw new RuntimeException(
 					"failure in one step of step-by-step processing!",
@@ -88,8 +92,8 @@ public abstract class StepByStepProcessor implements Runnable {
 	}
 
 	/**
-	 * Stops the work of this processor. A running step will may receive an
-	 * {@link InterruptedException}
+	 * Stops the work of this processor and blocks until pending work-step is
+	 * done. A running step will may receive an {@link InterruptedException}
 	 * 
 	 * @throws SecurityException
 	 *             If interrupting of the execution thread of this processor is

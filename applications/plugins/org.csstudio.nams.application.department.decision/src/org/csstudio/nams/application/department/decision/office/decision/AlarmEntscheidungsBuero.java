@@ -105,7 +105,9 @@ public class AlarmEntscheidungsBuero {
 				terminEingangskoerbeDerSachbearbeiter, new Timer());
 		_assistenz.beginneArbeit();
 
-		_abteilungsleiter = new Abteilungsleiter(gibAlarmVorgangEingangskorb(),
+		_abteilungsleiter = new Abteilungsleiter(
+				executionService,
+				gibAlarmVorgangEingangskorb(),
 				eingangskoerbeSachbearbeiter);
 		// Starten...
 		_abteilungsleiter.beginneArbeit();

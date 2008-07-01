@@ -27,6 +27,7 @@ package org.csstudio.nams.application.department.decision.office.decision;
 import java.net.InetAddress;
 import java.util.Date;
 
+import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
@@ -109,7 +110,8 @@ public class Abteilungsleiter_Test extends
 
 		Eingangskorb<Vorgangsmappe>[] sachbearbeiterkoerbe = new Eingangskorb[] {
 				sachbearbeiter1, sachbearbeiter2 };
-		Abteilungsleiter abteilungsleiter = new Abteilungsleiter(eingangskorb,
+		Abteilungsleiter abteilungsleiter = new Abteilungsleiter(
+				new DefaultExecutionService(), eingangskorb,
 				sachbearbeiterkoerbe);
 
 		abteilungsleiter.beginneArbeit();
@@ -131,22 +133,27 @@ public class Abteilungsleiter_Test extends
 		}
 		EasyMock.verify(eingangskorb);
 	}
-	
+
 	@Test
 	public void testArbeit() throws InterruptedException {
-		Abteilungsleiter abteilungsleiter = this.getNewInstanceOfClassUnderTest();
-		assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter.istAmArbeiten());
+		Abteilungsleiter abteilungsleiter = this
+				.getNewInstanceOfClassUnderTest();
+		assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter
+				.istAmArbeiten());
 		abteilungsleiter.beginneArbeit();
-		assertTrue("abteilungsleiter.istAmArbeiten()", abteilungsleiter.istAmArbeiten());
+		assertTrue("abteilungsleiter.istAmArbeiten()", abteilungsleiter
+				.istAmArbeiten());
 		abteilungsleiter.beendeArbeit();
 		Thread.sleep(100);
-		assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter.istAmArbeiten());
+		assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter
+				.istAmArbeiten());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Abteilungsleiter getNewInstanceOfClassUnderTest() {
-		return new Abteilungsleiter(new StandardAblagekorb<Vorgangsmappe>(),
+		return new Abteilungsleiter(new DefaultExecutionService(),
+				new StandardAblagekorb<Vorgangsmappe>(),
 				new StandardAblagekorb[] {});
 	}
 
@@ -159,11 +166,14 @@ public class Abteilungsleiter_Test extends
 	@Override
 	protected Abteilungsleiter[] getThreeDiffrentNewInstanceOfClassUnderTest() {
 		return new Abteilungsleiter[] {
-				new Abteilungsleiter(new StandardAblagekorb<Vorgangsmappe>(),
+				new Abteilungsleiter(new DefaultExecutionService(),
+						new StandardAblagekorb<Vorgangsmappe>(),
 						new StandardAblagekorb[] {}),
-				new Abteilungsleiter(new StandardAblagekorb<Vorgangsmappe>(),
+				new Abteilungsleiter(new DefaultExecutionService(),
+						new StandardAblagekorb<Vorgangsmappe>(),
 						new StandardAblagekorb[] {}),
-				new Abteilungsleiter(new StandardAblagekorb<Vorgangsmappe>(),
+				new Abteilungsleiter(new DefaultExecutionService(),
+						new StandardAblagekorb<Vorgangsmappe>(),
 						new StandardAblagekorb[] {}) };
 	}
 

@@ -24,9 +24,11 @@
  */
 package org.csstudio.nams.application.department.decision.office.decision;
 
+import org.csstudio.nams.application.department.decision.ThreadTypesOfDecisionDepartment;
 import org.csstudio.nams.common.decision.Arbeitsfaehig;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.wam.Automat;
 
 
@@ -36,8 +38,9 @@ import org.csstudio.nams.common.wam.Automat;
 @Automat
 class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 		Arbeitsfaehig {
-	private DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufEingaenge;
+	private DokumentVerbraucherArbeiter2<Vorgangsmappe> achteAufEingaenge;
 	private final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe;
+	private final ExecutionService executionService;
 
 	/**
 	 * 
@@ -50,11 +53,13 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 	 * @param sachbearbeiterEingangkoerbe
 	 */
 	public Abteilungsleiter(
+			ExecutionService executionService,
 			final Eingangskorb<Vorgangsmappe> eingangskorbNeuerAlarmVorgaenge,
 			final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe) {
+		this.executionService = executionService;
 		this.sachbearbeiterEingangkoerbe = sachbearbeiterEingangkoerbe;
 
-		achteAufEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(
+		achteAufEingaenge = new DokumentVerbraucherArbeiter2<Vorgangsmappe>(
 				this, eingangskorbNeuerAlarmVorgaenge);
 	}
 
@@ -81,17 +86,17 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 	 * der Aufgaben etc..
 	 */
 	public void beginneArbeit() {
-		achteAufEingaenge.start();
+		this.executionService.executeAsynchronsly(ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER, achteAufEingaenge);
 	}
 
 	public boolean istAmArbeiten() {
-		return achteAufEingaenge.isAlive();
+		return achteAufEingaenge.isCurrentlyRunning();
 	}
 
 	/**
 	 * Beendet die Arbeit.
 	 */
 	public void beendeArbeit() {
-		achteAufEingaenge.beendeArbeit();
+		achteAufEingaenge.stopWorking();
 	}
 }
