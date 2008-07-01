@@ -26,9 +26,10 @@ package org.csstudio.nams.application.department.decision.office.decision;
 
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.service.StepByStepProcessor;
 
 /**
- * Ein Arbeits-Thread, der sequentiell Dokumente aus einem Eingangskorb einen
+ * Ein Arbeits-Processor, der sequentiell Dokumente aus einem Eingangskorb einen
  * {@link DokumentenBearbeiter} zureicht.
  * 
  * @param <T>
@@ -38,42 +39,24 @@ import org.csstudio.nams.common.decision.Eingangskorb;
  * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
  *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
- * @version 0.1, 31.03.2008
- * 
- * @deprecated Use {@link DokumentVerbraucherArbeiter2}.
+ * @version 0.2, 01.07.2008
  */
-// TODO Hieraus einen runnable machen, damit dieser mit ExceutionService umgehen kann.
-@Deprecated
-class DokumentVerbraucherArbeiter<T extends Ablagefaehig> extends Thread {
-	private volatile boolean arbeitFortsetzen;
+class DokumentVerbraucherArbeiter<T extends Ablagefaehig> extends
+		StepByStepProcessor {
 	private final Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge;
 	private final DokumentenBearbeiter<T> vorgangsmappenBearbeiter;
 
-	private static long instanceCount = 0;
-	
 	public DokumentVerbraucherArbeiter(
 			DokumentenBearbeiter<T> vorgangsmappenBearbeiter,
 			Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge) {
-		super("DokumentVerbraucherArbeiter-"+(++instanceCount));
 		this.vorgangsmappenBearbeiter = vorgangsmappenBearbeiter;
 		this.eingangskorbNeuerAlarmVorgaenge = eingangskorbNeuerAlarmVorgaenge;
-		arbeitFortsetzen = true;
 	}
 
-	public void run() {
-		while (arbeitFortsetzen) {
-			try {
-				this.vorgangsmappenBearbeiter
-						.bearbeiteVorgang(this.eingangskorbNeuerAlarmVorgaenge
-								.entnehmeAeltestenEingang());
-			} catch (InterruptedException ex) {
-			}
-			Thread.yield();
-		}
-	}
-
-	public void beendeArbeit() {
-		arbeitFortsetzen = false;
-		this.interrupt();
+	@Override
+	protected void doRunOneSingleStep() throws Throwable, InterruptedException {
+		this.vorgangsmappenBearbeiter
+				.bearbeiteVorgang(this.eingangskorbNeuerAlarmVorgaenge
+						.entnehmeAeltestenEingang());
 	}
 }

@@ -38,7 +38,7 @@ import org.csstudio.nams.common.wam.Automat;
 @Automat
 class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 		Arbeitsfaehig {
-	private DokumentVerbraucherArbeiter2<Vorgangsmappe> achteAufEingaenge;
+	private DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufEingaenge;
 	private final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe;
 	private final ExecutionService executionService;
 
@@ -59,7 +59,7 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 		this.executionService = executionService;
 		this.sachbearbeiterEingangkoerbe = sachbearbeiterEingangkoerbe;
 
-		achteAufEingaenge = new DokumentVerbraucherArbeiter2<Vorgangsmappe>(
+		achteAufEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(
 				this, eingangskorbNeuerAlarmVorgaenge);
 	}
 
@@ -87,6 +87,10 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 	 */
 	public void beginneArbeit() {
 		this.executionService.executeAsynchronsly(ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER, achteAufEingaenge);
+		
+		while(!achteAufEingaenge.isCurrentlyRunning()) {
+			Thread.yield();
+		}
 	}
 
 	public boolean istAmArbeiten() {

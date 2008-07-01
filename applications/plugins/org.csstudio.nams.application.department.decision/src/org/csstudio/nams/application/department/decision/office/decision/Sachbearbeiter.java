@@ -26,6 +26,7 @@ package org.csstudio.nams.application.department.decision.office.decision;
 
 import java.util.Iterator;
 
+import org.csstudio.nams.application.department.decision.ThreadTypesOfDecisionDepartment;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Arbeitsfaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
@@ -41,11 +42,10 @@ import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.wam.Automat;
-import org.csstudio.nams.service.history.declaration.HistoryService;
-
 
 /**
- * Sachbearbeiter marks in cooperation with the TerminAssistenz Messages as to be sent.
+ * Sachbearbeiter marks in cooperation with the TerminAssistenz Messages as to
+ * be sent.
  * 
  * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
  *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
@@ -62,8 +62,9 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	private final String nameDesSachbearbeiters;
 	private final DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufVorgangsmappenEingaenge;
 	private final DokumentVerbraucherArbeiter<Terminnotiz> achteAufTerminnotizEingaenge;
-//	private Logger log = Logger.getLogger(Sachbearbeiter.class.getName());
-//	private final HistoryService historyService;
+	// private Logger log = Logger.getLogger(Sachbearbeiter.class.getName());
+	// private final HistoryService historyService;
+	private final ExecutionService executionService;
 
 	/**
 	 * 
@@ -74,7 +75,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	 * @param ausgangskorbZurAssistenz
 	 * @param ausgangskorbFuerBearbeiteteVorgangsmappen
 	 * @param regelwerk
-	 * @param historyService 
+	 * @param historyService
 	 */
 	public Sachbearbeiter(
 			ExecutionService executionService,
@@ -85,16 +86,17 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz,
 			Ausgangskorb<Vorgangsmappe> ausgangskorbFuerBearbeiteteVorgangsmappen,
 			Regelwerk regelwerk
-//			, 
-//			HistoryService historyService
-			) {
+	// ,
+	// HistoryService historyService
+	) {
 
+		this.executionService = executionService;
 		this.nameDesSachbearbeiters = nameDesSachbearbeiters;
 		this.ablagekorbFuerOffeneVorgaenge = ablagekorbFuerOffeneVorgaenge;
 		this.ausgangskorbZurAssistenz = ausgangskorbZurAssistenz;
 		this.ausgangkorb = ausgangskorbFuerBearbeiteteVorgangsmappen;
 		this.regelwerk = regelwerk;
-//		this.historyService = historyService;
+		// this.historyService = historyService;
 
 		final Eingangskorb<Ablagefaehig> internerEingangskorb = new StandardAblagekorb<Ablagefaehig>();
 
@@ -118,7 +120,8 @@ class Sachbearbeiter implements Arbeitsfaehig {
 				new DokumentenBearbeiter<Ablagefaehig>() {
 					public void bearbeiteVorgang(Ablagefaehig aeltestenEingang)
 							throws InterruptedException {
-						Sachbearbeiter.this.bearbeiteVorgangBeimSachbearbeiter(aeltestenEingang);
+						Sachbearbeiter.this
+								.bearbeiteVorgangBeimSachbearbeiter(aeltestenEingang);
 					}
 				}, internerEingangskorb);
 	}
@@ -155,17 +158,19 @@ class Sachbearbeiter implements Arbeitsfaehig {
 		while (mappenIterator.hasNext()) {
 			Vorgangsmappe offenerVorgang = mappenIterator.next();
 			if (offenerVorgang.gibMappenkennung().equals(mappenKennung)) {
-				regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang.gibPruefliste(),
-						zeitSeitLetzterBearbeitung);
+				regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang
+						.gibPruefliste(), zeitSeitLetzterBearbeitung);
 				if (this.pruefungAbgeschlossen(offenerVorgang.gibPruefliste()
 						.gesamtErgebnis())) {
-					
-					// FIXME History nicht in AlarmNachrichten loggen. Soll in die Application!
-					//historyService.logTimeOutForTimeBased(regelwerk.gibRegelwerkskennung(), offenerVorgang); 
+
+					// FIXME History nicht in AlarmNachrichten loggen. Soll in
+					// die Application!
+					// historyService.logTimeOutForTimeBased(regelwerk.gibRegelwerkskennung(),
+					// offenerVorgang);
 
 					offenerVorgang.abgeschlossenDurchTimeOut();
 					this.ausgangkorb.ablegen(offenerVorgang);
-					
+
 					mappenIterator.remove();
 				} else {
 					Millisekunden zeitBisZumErneutenFragen = offenerVorgang
@@ -205,19 +210,22 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			Vorgangsmappe offenerVorgang = iterator.next();
 			Pruefliste altePruefliste = offenerVorgang.gibPruefliste();
 			altePruefliste.setzeAufNichtVeraendert();
-			regelwerk.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(neueAlarmNachricht, altePruefliste);
-			
+			regelwerk.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+					neueAlarmNachricht, altePruefliste);
+
 			if (altePruefliste.hatSichGeaendert()) {
 				if (this.pruefungAbgeschlossen(altePruefliste.gesamtErgebnis())) {
-					// Kennung der neuen Mappe in die noch offene Mappe hinzufuegen
+					// Kennung der neuen Mappe in die noch offene Mappe
+					// hinzufuegen
 					offenerVorgang.pruefungAbgeschlossenDurch(vorgangsmappe
 							.gibMappenkennung());
 
 					// Offenen Vorgang in den Ausgangskorb
 					this.ausgangkorb.ablegen(offenerVorgang);
-					
-					// FIXME Sollte auch in der History geloggt werden. Mit Desy (MC) klaeren.
-					
+
+					// FIXME Sollte auch in der History geloggt werden. Mit Desy
+					// (MC) klaeren.
+
 					// entferne Mappe aus Ablagekorb fuer offenen Vorgaenge
 					iterator.remove();
 				}
@@ -248,11 +256,13 @@ class Sachbearbeiter implements Arbeitsfaehig {
 
 		if (this.pruefungAbgeschlossen(vorgangsmappe.gibPruefliste()
 				.gesamtErgebnis())) {
-			vorgangsmappe.pruefungAbgeschlossenDurch(vorgangsmappe.gibMappenkennung());
+			vorgangsmappe.pruefungAbgeschlossenDurch(vorgangsmappe
+					.gibMappenkennung());
 			this.ausgangkorb.ablegen(vorgangsmappe);
-			
-			//FIXME History Eintrag erstellen. Klaeren ob hier oder in dem Activator.
-			
+
+			// FIXME History Eintrag erstellen. Klaeren ob hier oder in dem
+			// Activator.
+
 		} else {
 			this.ablagekorbFuerOffeneVorgaenge.ablegen(vorgangsmappe);
 			Millisekunden zeitBisZumErneutenFragen = vorgangsmappe
@@ -277,25 +287,42 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	 * Beginnt mit der Arbeit.
 	 */
 	public void beginneArbeit() {
-		this.achteAufVorgangsmappenEingaenge.start();
-		this.achteAufTerminnotizEingaenge.start();
-		this.achteAufInterneEingaenge.start();
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
+				achteAufVorgangsmappenEingaenge);
+		while(!achteAufVorgangsmappenEingaenge.isCurrentlyRunning()) {
+			Thread.yield();
+		}
+		
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
+				achteAufTerminnotizEingaenge);
+		while(!achteAufTerminnotizEingaenge.isCurrentlyRunning()) {
+			Thread.yield();
+		}
+		
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
+				achteAufInterneEingaenge);
+		while(!achteAufInterneEingaenge.isCurrentlyRunning()) {
+			Thread.yield();
+		}
 	}
 
 	public boolean istAmArbeiten() {
-		return achteAufInterneEingaenge.isAlive()
-				&& achteAufVorgangsmappenEingaenge.isAlive()
-				&& achteAufTerminnotizEingaenge.isAlive();
+		return achteAufInterneEingaenge.isCurrentlyRunning()
+				&& achteAufVorgangsmappenEingaenge.isCurrentlyRunning()
+				&& achteAufTerminnotizEingaenge.isCurrentlyRunning();
 	}
 
 	/**
 	 * Beendet die Arbeit.
 	 */
 	public void beendeArbeit() {
-		this.achteAufVorgangsmappenEingaenge.beendeArbeit();
-		this.achteAufTerminnotizEingaenge.beendeArbeit();
-		this.achteAufInterneEingaenge.beendeArbeit();
-		
+		this.achteAufVorgangsmappenEingaenge.stopWorking();
+		this.achteAufTerminnotizEingaenge.stopWorking();
+		this.achteAufInterneEingaenge.stopWorking();
+
 		// TODO Sende offene Vorgänge...
 	}
 

@@ -19,7 +19,7 @@ import org.csstudio.nams.common.service.ExecutionService;
  * @version 0.1, 31.03.2008
  */
 public class TerminAssistenz implements Arbeitsfaehig {
-	private final DokumentVerbraucherArbeiter2<Terminnotiz> dokumentVerbraucherArbeiter;
+	private final DokumentVerbraucherArbeiter<Terminnotiz> dokumentVerbraucherArbeiter;
 	private final Timer timer;
 	private final ExecutionService executionService;
 
@@ -30,7 +30,7 @@ public class TerminAssistenz implements Arbeitsfaehig {
 			final Timer timer) {
 		this.executionService = executionService;
 		this.timer = timer;
-		this.dokumentVerbraucherArbeiter = new DokumentVerbraucherArbeiter2<Terminnotiz>(
+		this.dokumentVerbraucherArbeiter = new DokumentVerbraucherArbeiter<Terminnotiz>(
 				new Terminbearbeitung(eingangskoerbeDerSachbearbeiterNachNamen),
 				eingehendeTerminnotizen);
 	}
@@ -39,6 +39,9 @@ public class TerminAssistenz implements Arbeitsfaehig {
 		this.executionService.executeAsynchronsly(
 				ThreadTypesOfDecisionDepartment.TERMINASSISTENZ,
 				this.dokumentVerbraucherArbeiter);
+		while(!dokumentVerbraucherArbeiter.isCurrentlyRunning()) {
+			Thread.yield();
+		}
 	}
 
 	public boolean istAmArbeiten() {

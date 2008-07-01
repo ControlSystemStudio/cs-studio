@@ -30,7 +30,7 @@ import org.csstudio.nams.common.decision.Ablagekorb;
 /**
  * Ein Dokumentenbearbeiter bearbeitet Dokumente die in der Regel zuvor in einem
  * {@link Ablagekorb} platziert waren. Siehe hierzu auch
- * {@link DokumentVerbraucherArbeiter2}.
+ * {@link DokumentVerbraucherArbeiter}.
  * 
  * @param <T>
  *            Der Typ der Dokumente, die dieser Bearbeiter bearbeiten kann.
