@@ -37,7 +37,6 @@ import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.wam.Arbeitsumgebung;
-import org.csstudio.nams.service.history.declaration.HistoryService;
 
 
 /**
@@ -67,20 +66,20 @@ public class AlarmEntscheidungsBuero {
 	 * @param historyService 
 	 */
 	public AlarmEntscheidungsBuero(
-			Regelwerk[] regelwerke
-//			Eingangskorb<Ablagefaehig>
-//			, HistoryService historyService
+			Regelwerk[] regelwerke,
+			Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb,
+			Ausgangskorb<Vorgangsmappe> alarmVorgangAusgangskorb
 			) {
-		alarmVorgangEingangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
+		this.alarmVorgangEingangskorb = alarmVorgangEingangskorb;
+		this.ausgangskorb = alarmVorgangAusgangskorb;
 		_sachbearbeiterList = new LinkedList<Sachbearbeiter>();
 		// Sachbearbeiter und Koerbe anlegen:
 		StandardAblagekorb<Terminnotiz> terminAssistenzEingangskorb = new StandardAblagekorb<Terminnotiz>();
-		Eingangskorb<Vorgangsmappe>[] eingangskorbe = erzeugeEingangskoerbe(regelwerke.length);
+		Eingangskorb<Vorgangsmappe>[] eingangskoerbeSachbearbeiter = erzeugeEingangskoerbeArray(regelwerke.length);
 		Map<String, Eingangskorb<Terminnotiz>> terminEingangskoerbeDerSachbearbeiter = new HashMap<String, Eingangskorb<Terminnotiz>>();
 		for (int zaehler = 0; zaehler < regelwerke.length; zaehler++) {
 			Eingangskorb<Vorgangsmappe> eingangskorb = new StandardAblagekorb<Vorgangsmappe>();
-			eingangskorbe[zaehler] = eingangskorb;
+			eingangskoerbeSachbearbeiter[zaehler] = eingangskorb;
 			StandardAblagekorb<Terminnotiz> terminEingangskorb = new StandardAblagekorb<Terminnotiz>();
 			Sachbearbeiter sachbearbeiter = new Sachbearbeiter("" + zaehler,
 					eingangskorb, terminEingangskorb,
@@ -103,13 +102,13 @@ public class AlarmEntscheidungsBuero {
 		_assistenz.beginneArbeit();
 
 		_abteilungsleiter = new Abteilungsleiter(gibAlarmVorgangEingangskorb(),
-				eingangskorbe);
+				eingangskoerbeSachbearbeiter);
 		// Starten...
 		_abteilungsleiter.beginneArbeit();
 	}
 
 	@SuppressWarnings("unchecked")
-	private Eingangskorb<Vorgangsmappe>[] erzeugeEingangskoerbe(int length) {
+	private Eingangskorb<Vorgangsmappe>[] erzeugeEingangskoerbeArray(int length) {
 		return new Eingangskorb[length];
 	}
 

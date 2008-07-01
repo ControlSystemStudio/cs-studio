@@ -161,7 +161,7 @@ public class Testapp implements Runnable, ActionListener {
 		Regelwerk regelwerk3 = new StandardRegelwerk(regelwerkskennung3, und);
 
 		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
-				new Regelwerk[] { regelwerk, regelwerk2});
+				new Regelwerk[] { regelwerk, regelwerk2}, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
 				//new Regelwerk[] { regelwerk3 });
 		alarmVorgangEingangskorb = buero.gibAlarmVorgangEingangskorb();
 

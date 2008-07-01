@@ -79,7 +79,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 		Regelwerk regelwerk = new StandardRegelwerk(regelwerkskennung, regel);
 
 		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
-				new Regelwerk[] { regelwerk });
+				new Regelwerk[] { regelwerk }, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
 		final Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb = buero
 				.gibAlarmVorgangEingangskorb();
 		final StandardAblagekorb<Vorgangsmappe> alarmVorgangAusgangskorb = (StandardAblagekorb<Vorgangsmappe>) buero
@@ -158,7 +158,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 				timebasedRegel);
 
 		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
-				new Regelwerk[] { regelwerk });
+				new Regelwerk[] { regelwerk }, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
 		final Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb = buero
 				.gibAlarmVorgangEingangskorb();
 		final StandardAblagekorb<Vorgangsmappe> alarmVorgangAusgangskorb = (StandardAblagekorb<Vorgangsmappe>) buero
@@ -273,7 +273,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 					});
 		}
 
-		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(regelwerke);
+		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(regelwerke, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
 
 		assertNotNull(buero.gibAbteilungsleiterFuerTest());
 		assertNotNull(buero.gibAssistenzFuerTest());
@@ -380,7 +380,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 		Regelwerk regelwerk3 = new StandardRegelwerk(regelwerkskennung3, regel3);
 
 		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
-				new Regelwerk[] { regelwerk, regelwerk2, regelwerk3 });
+				new Regelwerk[] { regelwerk, regelwerk2, regelwerk3 }, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
 		Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb = buero
 				.gibAlarmVorgangEingangskorb();
 		final StandardAblagekorb<Vorgangsmappe> alarmVorgangAusgangskorb = (StandardAblagekorb<Vorgangsmappe>) buero
