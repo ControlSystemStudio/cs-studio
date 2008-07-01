@@ -6,6 +6,7 @@ Bundle-Version: 1.0.5
 Bundle-Vendor: Kay Kasemir
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.csstudio.platform.ui
 Eclipse-LazyStart: true
 Bundle-Activator: org.csstudio.utility.sysmon.Activator
