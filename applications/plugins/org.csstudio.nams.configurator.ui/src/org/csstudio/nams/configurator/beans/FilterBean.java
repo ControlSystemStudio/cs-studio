@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.beans;
 
 public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
-	public static enum FilterBeanPropertyNames {
+	public static enum PropertyNames {
 		filterID, name, defaultMessage
 
 	}
@@ -11,10 +11,45 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	private int filterID;// PRIMARY KEY
 	private String name;
 	private String defaultMessage;
-	// TODO hier fehlt noch einiges (Beans für FilterConditions)
+	// TODO hier fehlt noch einiges (Beans für FilterConditions) tr: regenerate hashCode/equals !!!
 
 	public FilterBean() {
 		filterID = -1;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((defaultMessage == null) ? 0 : defaultMessage.hashCode());
+		result = prime * result + filterID;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final FilterBean other = (FilterBean) obj;
+		if (defaultMessage == null) {
+			if (other.defaultMessage != null)
+				return false;
+		} else if (!defaultMessage.equals(other.defaultMessage))
+			return false;
+		if (filterID != other.filterID)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 	public int getFilterID() {
@@ -25,7 +60,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		int oldValue = getFilterID();
 		this.filterID = filterID;
 		pcs.firePropertyChange(
-				FilterBeanPropertyNames.filterID.name(), oldValue,
+				PropertyNames.filterID.name(), oldValue,
 				getFilterID());
 	}
 
@@ -36,7 +71,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public void setName(String name) {
 		String oldValue = getName();
 		this.name = name;
-		pcs.firePropertyChange(FilterBeanPropertyNames.name
+		pcs.firePropertyChange(PropertyNames.name
 				.name(), oldValue, getName());
 	}
 
@@ -48,7 +83,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		String oldValue = getDefaultMessage();
 		this.defaultMessage = defaultMessage;
 		pcs.firePropertyChange(
-				FilterBeanPropertyNames.defaultMessage.name(), oldValue,
+				PropertyNames.defaultMessage.name(), oldValue,
 				getDefaultMessage());
 	}
 

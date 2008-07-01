@@ -1,62 +1,61 @@
 package org.csstudio.nams.configurator.editor;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.csstudio.nams.configurator.beans.FilterbedingungBean;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
 
-public class FilterbedingungEditor extends EditorPart {
+public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
+	private Text _nameTextEntry;
+	private Combo _groupComboEntry;
+	private Text _defaultMessageTextEntry;
+	private Composite filterSpecificComposite;
+	private Combo _filterTypeEntry;
+	
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterbedingungEditor";
 
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void doSaveAs() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
-		return false;
+	public static String getId() {
+		return EDITOR_ID;
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
+		Composite main = new Composite(parent, SWT.NONE);
+		main.setLayout(new GridLayout(NUM_COLUMNS, false));
+		_nameTextEntry = this.createTextEntry(main, "Name:", true);
+		_groupComboEntry = this.createComboEntry(main, "Group:", true);
+		this.addSeparator(main);
+		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
+				"Description:");
+		
+		_filterTypeEntry = this.createComboEntry(main, "Filtertype: ", true);
+		initDataBinding();
+	}
+
+	@Override
+	protected void doInit(IEditorSite site, IEditorInput input) {
+	}
+
+	@Override
+	protected int getNumColumns() {
+		return 2;
+	}
+
+	@Override
+	protected void initDataBinding() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
+		_nameTextEntry.setFocus();
 		
-	}
-
-	public static String getId() {
-		// TODO Auto-generated method stub
-		return EDITOR_ID;
 	}
 
 }

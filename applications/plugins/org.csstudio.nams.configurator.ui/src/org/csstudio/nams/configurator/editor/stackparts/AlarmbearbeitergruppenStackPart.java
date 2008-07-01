@@ -128,7 +128,7 @@ public class AlarmbearbeitergruppenStackPart extends
 				}
 			}
 		}
-
+		initDataBinding();
 	}
 
 	@Override
