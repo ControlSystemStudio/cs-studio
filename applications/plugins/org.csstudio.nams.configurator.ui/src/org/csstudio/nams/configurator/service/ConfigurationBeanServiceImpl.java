@@ -50,6 +50,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private void loadConfiguration() {
 		try {
 			entireConfiguration = configurationService.getEntireConfiguration();
+			// TODO Folgendes Exception-Handling überdenken....
 		} catch (StorageError e) {
 			logger.logErrorMessage(this, "Could not load Eniter Configuration because of: " + e.getMessage());
 			e.printStackTrace();
