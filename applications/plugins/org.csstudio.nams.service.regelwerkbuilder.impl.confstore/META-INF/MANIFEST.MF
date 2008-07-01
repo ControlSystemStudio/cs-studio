@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.nams.service.configurationAccess.localStore,
- org.csstudio.ams.service.preferenceservice
+ org.csstudio.nams.service.preferenceservice
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.regelwerkbuilder.impl.confstore;x-friends:="org.csstudio.nams.testUtils.testSuites"
