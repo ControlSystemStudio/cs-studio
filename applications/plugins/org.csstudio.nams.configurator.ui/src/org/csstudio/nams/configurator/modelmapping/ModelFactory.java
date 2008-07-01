@@ -31,13 +31,10 @@ public class ModelFactory {
 		try {
 			entireConfiguration = localStore.getEntireConfiguration();
 		} catch (StorageError e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (StorageException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InconsistentConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
