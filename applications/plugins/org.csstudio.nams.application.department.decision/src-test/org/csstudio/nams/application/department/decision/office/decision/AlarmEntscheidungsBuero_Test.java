@@ -7,8 +7,6 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
-import org.csstudio.nams.application.department.decision.office.decision.Sachbearbeiter;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;

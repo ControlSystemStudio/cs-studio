@@ -1,9 +1,8 @@
 package de.c1wps.desy.ams.allgemeines;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractValue_TestCase;
 
 public class Millisekunden_Test extends AbstractValue_TestCase<Millisekunden> {
 	@Test

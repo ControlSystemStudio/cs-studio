@@ -2,9 +2,8 @@ package de.c1wps.desy.ams.allgemeines;
 
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ablagekorb;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
 
 abstract public class AbstractAblagekorb_TestCase<T extends Ablagefaehig, KT> extends AbstractObject_TestCase<KT> {
 	protected abstract Ablagekorb<T> gibNeuesExemplar();

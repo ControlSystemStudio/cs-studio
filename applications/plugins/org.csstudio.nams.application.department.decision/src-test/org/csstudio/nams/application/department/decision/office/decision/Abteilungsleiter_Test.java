@@ -27,17 +27,15 @@ package org.csstudio.nams.application.department.decision.office.decision;
 import java.net.InetAddress;
 import java.util.Date;
 
-import org.csstudio.nams.application.department.decision.office.decision.Abteilungsleiter;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
 
 public class Abteilungsleiter_Test extends
 		AbstractObject_TestCase<Abteilungsleiter> {

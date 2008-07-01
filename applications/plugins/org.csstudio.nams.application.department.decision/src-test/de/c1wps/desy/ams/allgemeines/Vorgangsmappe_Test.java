@@ -10,9 +10,8 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
 
 public class Vorgangsmappe_Test extends AbstractObject_TestCase<Vorgangsmappe> {
 

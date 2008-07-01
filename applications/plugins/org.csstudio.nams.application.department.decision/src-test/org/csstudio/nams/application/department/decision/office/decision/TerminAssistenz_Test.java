@@ -7,15 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
-import org.csstudio.nams.application.department.decision.office.decision.TerminAssistenz;
-import org.csstudio.nams.application.department.decision.office.decision.Terminnotiz;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
 
 public class TerminAssistenz_Test extends
 		AbstractObject_TestCase<TerminAssistenz> {

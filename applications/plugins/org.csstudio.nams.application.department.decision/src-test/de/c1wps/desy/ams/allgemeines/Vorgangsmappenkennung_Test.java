@@ -5,9 +5,8 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
+import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractValue_TestCase;
 
 public class Vorgangsmappenkennung_Test extends
 		AbstractValue_TestCase<Vorgangsmappenkennung> {

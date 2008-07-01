@@ -14,8 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.nams.service.preferenceservice
 Eclipse-LazyStart: true
-Export-Package: de.c1wps.desy.ams;x-friends:="org.csstudio.nams.testUtils.testSuites",
- de.c1wps.desy.ams.allgemeines.test;x-friends:="org.csstudio.nams.testUtils.testSuites",
+Export-Package: de.c1wps.desy.ams.allgemeines,
  org.csstudio.nams.application.department.decision;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.application.department.decision.office.decision;x-friends:="org.csstudio.nams.testUtils.testSuites"
 Import-Package: org.csstudio.nams.common.material.regelwerk

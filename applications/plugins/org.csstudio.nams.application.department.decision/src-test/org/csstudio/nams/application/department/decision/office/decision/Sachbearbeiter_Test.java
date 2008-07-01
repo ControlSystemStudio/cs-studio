@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.csstudio.nams.application.department.decision.office.decision.Sachbearbeiter;
-import org.csstudio.nams.application.department.decision.office.decision.Terminnotiz;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
 import org.csstudio.nams.common.decision.Eingangskorb;
@@ -22,14 +20,13 @@ import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.LogicalOperator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
 
 public class Sachbearbeiter_Test extends
 		AbstractObject_TestCase<Sachbearbeiter> {
