@@ -2,14 +2,17 @@ package org.csstudio.nams.service.messaging.declaration;
 
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
-
 public interface Consumer {
 	public void close();
+
 	public boolean isClosed();
+
 	/**
-	 * blockiert bis eine neue Nachricht verfügbar ist
-	 * liefert null wenn der Consumer beendet wird
+	 * Liefert die nächste zur Verfügung stehende Nachricht. Blockiert bis eine
+	 * neue Nachricht verfügbar ist. Liefert null wenn der Consumer durch
+	 * schließen beendet wird; eine {@link InterruptedException}, wenn das
+	 * empfangen unterbrochen wird (z.B. shutdown).
 	 */
-	//einen eigenen Nachrichten Typ da nicht nur Alarmnachrichten rein kommen
-	public NAMSMessage receiveMessage() throws MessagingException, InterruptedException;
+	public NAMSMessage receiveMessage() throws MessagingException,
+			InterruptedException;
 }

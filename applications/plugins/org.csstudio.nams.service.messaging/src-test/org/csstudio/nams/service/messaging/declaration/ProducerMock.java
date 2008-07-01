@@ -2,27 +2,25 @@ package org.csstudio.nams.service.messaging.declaration;
 
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.SystemNachricht;
+import org.junit.Assert;
 
 public class ProducerMock implements Producer {
 
-	public void close() {
-		// TODO Auto-generated method stub
-
+	public void tryToClose() {
+		Assert.fail("unexpected call of method.");
 	}
 
 	public boolean isClosed() {
-		// TODO Auto-generated method stub
+		Assert.fail("unexpected call of method.");
 		return false;
 	}
 
 	public void sendeSystemnachricht(SystemNachricht vorgangsmappe) {
-		// TODO Auto-generated method stub
-
+		Assert.fail("unexpected call of method.");
 	}
 
 	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) {
-		// TODO Auto-generated method stub
-		
+		Assert.fail("unexpected call of method.");
 	}
 
 }

@@ -3,6 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.junit.Test;
 
@@ -15,9 +16,9 @@ public class LocalConfigurationStoreServiceActivator_Test extends TestCase {
 		OSGiServiceOffers serviceOffers = activator.startBundle();
 		assertNotNull(serviceOffers);
 		
-		Object offeredService = serviceOffers.get(LocalStoreConfigurationService.class);
+		Object offeredService = serviceOffers.get(ConfigurationServiceFactory.class);
 		assertNotNull(offeredService);
-		assertTrue(LocalStoreConfigurationService.class.isAssignableFrom(offeredService.getClass()));
+		assertTrue(ConfigurationServiceFactory.class.isAssignableFrom(offeredService.getClass()));
 		
 		activator.stopBundle();
 	}

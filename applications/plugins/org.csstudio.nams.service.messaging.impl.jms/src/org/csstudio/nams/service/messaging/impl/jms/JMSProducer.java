@@ -19,6 +19,7 @@ import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 public class JMSProducer implements Producer {
 
@@ -57,14 +58,14 @@ public class JMSProducer implements Producer {
 				producers[i] = sessions[i].createProducer(destination);
 			}
 		} catch (JMSException e) {
-			close();
+			tryToClose();
 			logger.logErrorMessage(this, e.getLocalizedMessage(), e);
 			throw e;
 		}
 		isClosed = false;
 	}
 
-	public void close() {
+	public void tryToClose() {
 		for (MessageProducer producer : producers) {
 			if (producer != null) {
 				try {
@@ -81,15 +82,7 @@ public class JMSProducer implements Producer {
 		return isClosed;
 	}
 
-//	final static String MSGPROP_COMMAND = "COMMAND";
-//	final static String MSGVALUE_TCMD_RELOAD = "AMS_RELOAD_CFG";
-//	final static String MSGVALUE_TCMD_RELOAD_CFG_START = MSGVALUE_TCMD_RELOAD
-//			+ "_START";
-//	final static String MSGVALUE_TCMD_RELOAD_CFG_END = MSGVALUE_TCMD_RELOAD
-//			+ "_END";
-
-	public void sendeSystemnachricht(SystemNachricht systemNachricht) {
-		// TODO implementieren
+	public void sendeSystemnachricht(SystemNachricht systemNachricht) throws MessagingException {
 		try {
 			if (systemNachricht.istSyncronisationsAufforderung()) {
 				for (int i = 0; i < sessions.length; i++) {
@@ -111,12 +104,12 @@ public class JMSProducer implements Producer {
 				logger.logErrorMessage(this, "unbekannte Systemnachricht.");
 			}
 		} catch (JMSException e) {
-			// FIXME exception handling
-			e.printStackTrace();
+			logger.logWarningMessage(this, "JMSException during send of system message", e);
+			throw new MessagingException("JMSException during send of system message", e);
 		}
 	}
 
-	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) {
+	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) throws MessagingException {
 		Regelwerkskennung regelwerkskennung = vorgangsmappe.gibPruefliste()
 				.gibRegelwerkskennung();
 		AlarmNachricht alarmNachricht = vorgangsmappe
@@ -139,8 +132,8 @@ public class JMSProducer implements Producer {
 				producers[i].send(mapMessage);
 			}
 		} catch (JMSException e) {
-			// FIXME exception handling
-			e.printStackTrace();
+			logger.logWarningMessage(this, "JMSException during send of Vorgangsmappe", e);
+			throw new MessagingException("JMSException during send of Vorgangsmappe", e);
 		}
 	}
 }

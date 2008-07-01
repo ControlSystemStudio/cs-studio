@@ -34,10 +34,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
 public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 
-//	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="filterConditionRef")
-//	@JoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionRef")
-//	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=StringArrayFilterConditionCompareValuesDTO.class)
-	@Transient // TODO Wieder auswerten!
+	/**
+	 * Die Compare-Values. Werden manuell zugeordnet.
+	 */
+	@Transient 
 	private List<String> compareValues = new LinkedList<String>();
 	
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
