@@ -65,7 +65,6 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
 
-
 /**
  * <p>
  * The decision department or more precise the activator and application class
@@ -555,25 +554,24 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				new ThreadGroup(
 						ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER
 								.name()));
-		// executionServiceToBeInitialize
-		// .registerGroup(
-		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD,
-		// new ThreadGroup(
-		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD
-		// .name()));
-		// executionServiceToBeInitialize
-		// .registerGroup(
-		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD,
-		// new ThreadGroup(
-		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD
-		// .name()));
+		executionServiceToBeInitialize.registerGroup(
+				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
+				new ThreadGroup(ThreadTypesOfDecisionDepartment.SACHBEARBEITER
+						.name()));
+		executionServiceToBeInitialize.registerGroup(
+				ThreadTypesOfDecisionDepartment.TERMINASSISTENZ,
+				new ThreadGroup(ThreadTypesOfDecisionDepartment.TERMINASSISTENZ
+						.name()));
+
+		// TODO Folgende Registrierung sollte im passendem PlugIn erledigt
+		// werden, registrierung
+		// verschieben nach messaging.
 		executionServiceToBeInitialize
 				.registerGroup(
 						MultiConsumersConsumer.MultiConsumerConsumerThreads.CONSUMER_THREAD,
 						new ThreadGroup(
 								MultiConsumersConsumer.MultiConsumerConsumerThreads.CONSUMER_THREAD
 										.name()));
-		// TODO Register remaining types!
 	}
 
 	/**
