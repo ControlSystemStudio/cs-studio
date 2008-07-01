@@ -201,6 +201,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		} else if (filter instanceof StringArrayFilterConditionDTO){
 			StringArrayFilterConditionBean stringArrayFilterConditionBean = new StringArrayFilterConditionBean();
 			stringArrayFilterConditionBean.setRubrikName("");
+			stringArrayFilterConditionBean.setCompareValues(((StringArrayFilterConditionDTO) filter).getCompareValueList());
+			stringArrayFilterConditionBean.setKeyValue(((StringArrayFilterConditionDTO) filter).getKeyValueEnum());
+			stringArrayFilterConditionBean.setOperator(((StringArrayFilterConditionDTO) filter).getOperatorEnum());
 			filterSpecificBean = stringArrayFilterConditionBean;
 		}  else if (filter instanceof StringFilterConditionDTO){
 			StringFilterConditionBean stringFilterConditionBean = new StringFilterConditionBean();
@@ -212,6 +215,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		} else if (filter instanceof TimeBasedFilterConditionDTO){
 			TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();
 			timeBasedConditionBean.setRubrikName("");
+			timeBasedConditionBean.setCConfirmCompValue(((TimeBasedFilterConditionDTO) filter).getCConfirmCompValue());
+			timeBasedConditionBean.setCConfirmKeyValue(((TimeBasedFilterConditionDTO) filter).getConfirmKeyValue());
+			timeBasedConditionBean.setCStartCompValue(((TimeBasedFilterConditionDTO) filter).getCStartCompValue());
+			timeBasedConditionBean.setCStartKeyValue(((TimeBasedFilterConditionDTO) filter).getCStartKeyValue());
+			timeBasedConditionBean.setSConfirmOperator(((TimeBasedFilterConditionDTO) filter).getTBConfirmOperator());
+			timeBasedConditionBean.setSStartOperator(((TimeBasedFilterConditionDTO) filter).getTBStartOperator());
+			timeBasedConditionBean.setSTimeBehavior(((TimeBasedFilterConditionDTO) filter).getTimeBehavior());
+			timeBasedConditionBean.setSTimePeriod(((TimeBasedFilterConditionDTO) filter).getTimePeriod());
 			filterSpecificBean = timeBasedConditionBean;
 		}
 		
