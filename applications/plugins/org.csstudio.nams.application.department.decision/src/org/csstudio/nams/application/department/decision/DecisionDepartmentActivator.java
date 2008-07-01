@@ -32,7 +32,6 @@ import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
-import org.csstudio.nams.common.activatorUtils.BundleActivatorUtils;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
@@ -88,7 +87,7 @@ import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
  * @author <a href="mailto:gs@c1-wps.de">Goesta Steen</a>
  * 
  * @version 0.1-2008-04-25: Created.
- * @version 0.1.1-2008-04-28 (MZ): Change to use {@link BundleActivatorUtils}.
+ * @version 0.1.1-2008-04-28 (MZ): Change to use  org.csstudio.nams.common.activatorUtils.BundleActivatorUtils.
  * @version 0.2.0-2008-06-10 (MZ): Change to use {@link AbstractBundleActivator}.
  */
 public class DecisionDepartmentActivator extends AbstractBundleActivator

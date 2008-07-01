@@ -117,7 +117,6 @@ public class JMSProducer implements Producer {
 	}
 
 	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) {
-		// TODO Auto-generated method stub
 		Regelwerkskennung regelwerkskennung = vorgangsmappe.gibPruefliste()
 				.gibRegelwerkskennung();
 		AlarmNachricht alarmNachricht = vorgangsmappe
@@ -140,7 +139,7 @@ public class JMSProducer implements Producer {
 				producers[i].send(mapMessage);
 			}
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
+			// FIXME exception handling
 			e.printStackTrace();
 		}
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
@@ -38,7 +39,22 @@ public class ConfigurationServiceFactoryImpl implements
 	
 	public LocalStoreConfigurationService getConfigurationService(
 			String connectionDriver, String connectionURL, String dialect,
-			String username, String password) {
+			String username, String password) 
+	{
+		Contract.requireNotNull("connectionDriver", connectionDriver);
+		Contract.require(connectionDriver.length() > 0, "connectionDriver.length() > 0");
+		
+		Contract.requireNotNull("connectionURL", connectionURL);
+		Contract.require(connectionURL.length() > 0, "connectionURL.length() > 0");
+
+		Contract.requireNotNull("dialect", dialect);
+		Contract.require(dialect.length() > 0, "dialect.length() > 0");
+		
+		Contract.requireNotNull("username", username);
+		Contract.require(username.length() > 0, "username.length() > 0");
+		
+		Contract.requireNotNull("password", password);
+		Contract.require(password.length() > 0, "password.length() > 0");
 		
 		ConnectionData connectionData = new ConnectionData(connectionDriver, connectionURL, dialect, username, password);
 		LocalStoreConfigurationService service = services.get(connectionData);
