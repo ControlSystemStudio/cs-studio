@@ -7,6 +7,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
@@ -24,7 +25,6 @@ import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.junit.Test;
-
 
 public class AlarmEntscheidungsBuero_Test extends TestCase {
 
@@ -63,7 +63,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 		public void setHistoryService(HistoryService historyService) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 	}
@@ -79,7 +79,9 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 		Regelwerk regelwerk = new StandardRegelwerk(regelwerkskennung, regel);
 
 		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
-				new Regelwerk[] { regelwerk }, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
+				new DefaultExecutionService(), new Regelwerk[] { regelwerk },
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Vorgangsmappe>());
 		final Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb = buero
 				.gibAlarmVorgangEingangskorb();
 		final StandardAblagekorb<Vorgangsmappe> alarmVorgangAusgangskorb = (StandardAblagekorb<Vorgangsmappe>) buero
@@ -158,7 +160,9 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 				timebasedRegel);
 
 		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
-				new Regelwerk[] { regelwerk }, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
+				new DefaultExecutionService(), new Regelwerk[] { regelwerk },
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Vorgangsmappe>());
 		final Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb = buero
 				.gibAlarmVorgangEingangskorb();
 		final StandardAblagekorb<Vorgangsmappe> alarmVorgangAusgangskorb = (StandardAblagekorb<Vorgangsmappe>) buero
@@ -217,9 +221,9 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 		assertEquals(WeiteresVersandVorgehen.NICHT_VERSENDEN, aelteste
 				.gibPruefliste().gesamtErgebnis());
 
-
 		// Pruefen 4
-		Vorgangsmappe vorgangsmappe5 = alarmVorgangAusgangskorb.entnehmeAeltestenEingang();
+		Vorgangsmappe vorgangsmappe5 = alarmVorgangAusgangskorb
+				.entnehmeAeltestenEingang();
 
 		assertNotNull(vorgangsmappe5);
 		assertEquals("Ausloeser", vorgangsmappe5
@@ -233,15 +237,14 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 		// Pruefen 3
 		aelteste = alarmVorgangAusgangskorb.entnehmeAeltestenEingang();
-		
+
 		assertNotNull(aelteste);
 		assertEquals("Bestaetigung", aelteste
 				.gibAusloesendeAlarmNachrichtDiesesVorganges()
 				.gibNachrichtenText());
 		assertEquals(WeiteresVersandVorgehen.NICHT_VERSENDEN, aelteste
 				.gibPruefliste().gesamtErgebnis());
-		
-		
+
 		assertEquals(aelteste.gibMappenkennung(), vorgangsmappe5
 				.gibAbschliessendeMappenkennung());
 	}
@@ -273,7 +276,10 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 					});
 		}
 
-		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(regelwerke, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
+		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
+				new DefaultExecutionService(), regelwerke,
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Vorgangsmappe>());
 
 		assertNotNull(buero.gibAbteilungsleiterFuerTest());
 		assertNotNull(buero.gibAssistenzFuerTest());
@@ -380,7 +386,10 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 		Regelwerk regelwerk3 = new StandardRegelwerk(regelwerkskennung3, regel3);
 
 		AlarmEntscheidungsBuero buero = new AlarmEntscheidungsBuero(
-				new Regelwerk[] { regelwerk, regelwerk2, regelwerk3 }, new StandardAblagekorb<Vorgangsmappe>(), new StandardAblagekorb<Vorgangsmappe>());
+				new DefaultExecutionService(), new Regelwerk[] { regelwerk,
+						regelwerk2, regelwerk3 },
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Vorgangsmappe>());
 		Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb = buero
 				.gibAlarmVorgangEingangskorb();
 		final StandardAblagekorb<Vorgangsmappe> alarmVorgangAusgangskorb = (StandardAblagekorb<Vorgangsmappe>) buero

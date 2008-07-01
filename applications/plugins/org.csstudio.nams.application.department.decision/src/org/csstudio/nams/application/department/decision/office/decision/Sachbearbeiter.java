@@ -39,6 +39,7 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
+import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.wam.Automat;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 
@@ -76,6 +77,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	 * @param historyService 
 	 */
 	public Sachbearbeiter(
+			ExecutionService executionService,
 			String nameDesSachbearbeiters,
 			Eingangskorb<Vorgangsmappe> eingangskorbFuerNeueVorgangsmappen,
 			Eingangskorb<Terminnotiz> eingangskorbFuerTerminnotizen,

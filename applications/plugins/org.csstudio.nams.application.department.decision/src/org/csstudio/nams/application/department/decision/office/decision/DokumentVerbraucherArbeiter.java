@@ -40,6 +40,7 @@ import org.csstudio.nams.common.decision.Eingangskorb;
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 31.03.2008
  */
+// TODO Hieraus einen runnable machen, damit dieser mit ExceutionService umgehen kann.
 public class DokumentVerbraucherArbeiter<T extends Ablagefaehig> extends Thread {
 	private volatile boolean arbeitFortsetzen;
 	private final Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge;
@@ -48,6 +49,7 @@ public class DokumentVerbraucherArbeiter<T extends Ablagefaehig> extends Thread 
 	public DokumentVerbraucherArbeiter(
 			DokumentenBearbeiter<T> vorgangsmappenBearbeiter,
 			Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge) {
+		super("DokumentVerbraucherArbeiter");
 		this.vorgangsmappenBearbeiter = vorgangsmappenBearbeiter;
 		this.eingangskorbNeuerAlarmVorgaenge = eingangskorbNeuerAlarmVorgaenge;
 		arbeitFortsetzen = true;

@@ -36,6 +36,7 @@ import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.wam.Arbeitsumgebung;
 
 
@@ -66,6 +67,7 @@ public class AlarmEntscheidungsBuero {
 	 * @param historyService 
 	 */
 	public AlarmEntscheidungsBuero(
+			ExecutionService executionService,
 			Regelwerk[] regelwerke,
 			Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb,
 			Ausgangskorb<Vorgangsmappe> alarmVorgangAusgangskorb
@@ -81,7 +83,9 @@ public class AlarmEntscheidungsBuero {
 			Eingangskorb<Vorgangsmappe> eingangskorb = new StandardAblagekorb<Vorgangsmappe>();
 			eingangskoerbeSachbearbeiter[zaehler] = eingangskorb;
 			StandardAblagekorb<Terminnotiz> terminEingangskorb = new StandardAblagekorb<Terminnotiz>();
-			Sachbearbeiter sachbearbeiter = new Sachbearbeiter("" + zaehler,
+			Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+					executionService,
+					"" + zaehler,
 					eingangskorb, terminEingangskorb,
 					new StandardAblagekorb<Vorgangsmappe>(),
 					terminAssistenzEingangskorb, ausgangskorb

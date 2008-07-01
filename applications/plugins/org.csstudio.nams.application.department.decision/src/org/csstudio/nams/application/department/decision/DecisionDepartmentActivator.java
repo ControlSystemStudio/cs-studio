@@ -395,6 +395,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice = new StandardAblagekorb<Vorgangsmappe>();
 
 				this._alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
+						DecisionDepartmentActivator.executionService,
 						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
 								.size()]),
 						this.eingangskorbDesDecisionOffice,

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
 import org.csstudio.nams.common.decision.Eingangskorb;
@@ -45,9 +46,9 @@ public class Sachbearbeiter_Test extends
 		Test_Pruefliste(Regelwerkskennung regelwerkskennung) {
 			super(regelwerkskennung, null);
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	@Before
@@ -171,10 +172,12 @@ public class Sachbearbeiter_Test extends
 		aktuellesGesamtErgebnisDesRegelwerk = WeiteresVersandVorgehen.NOCH_NICHT_GEPRUEFT;
 		Regelwerkskennung regelwerkskennungDesBenutztenRegelwerkes = Regelwerkskennung
 				.valueOf();
-		Pruefliste pruefliste = new Test_Pruefliste(regelwerkskennungDesBenutztenRegelwerkes) {
+		Pruefliste pruefliste = new Test_Pruefliste(
+				regelwerkskennungDesBenutztenRegelwerkes) {
 			public WeiteresVersandVorgehen gesamtErgebnis() {
 				return aktuellesGesamtErgebnisDesRegelwerk;
 			}
+
 			public Millisekunden gibMillisekundenBisZurNaechstenPruefung() {
 				fail();
 				return null;
@@ -201,9 +204,10 @@ public class Sachbearbeiter_Test extends
 		EasyMock.replay(regelwerk);
 
 		// Test beginnen
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter("Horst Senkel",
-				eingangskorb, terminnotizEingangskorb, zwischenablagekorb,
-				assistenzkorb, ausgangskorb, regelwerk);
+		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Horst Senkel", eingangskorb,
+				terminnotizEingangskorb, zwischenablagekorb, assistenzkorb,
+				ausgangskorb, regelwerk);
 
 		sachbearbeiter.beginneArbeit();
 		// Warte bis der Bearbeiter fertig sein müsste...
@@ -316,7 +320,7 @@ public class Sachbearbeiter_Test extends
 	}
 
 	private Sachbearbeiter erzeugeSachbearbeiter(String name) {
-		return new Sachbearbeiter(name,
+		return new Sachbearbeiter(new DefaultExecutionService(), name,
 				new StandardAblagekorb<Vorgangsmappe>(),
 				new StandardAblagekorb<Terminnotiz>(),
 				new StandardAblagekorb<Vorgangsmappe>(),
@@ -356,7 +360,8 @@ public class Sachbearbeiter_Test extends
 		final boolean[] isMethodBearbeiteTerminNotizCalled = new boolean[] { false };
 		final boolean[] returnBearbeiteOffeneVorgaenge = new boolean[] { false };
 
-		Sachbearbeiter bearbeiter = new Sachbearbeiter("Hans",
+		Sachbearbeiter bearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Hans",
 				new StandardAblagekorb<Vorgangsmappe>(),
 				new StandardAblagekorb<Terminnotiz>(),
 				new StandardAblagekorb<Vorgangsmappe>(),
@@ -443,7 +448,8 @@ public class Sachbearbeiter_Test extends
 		StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
 		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
 		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter("Fritz",
+		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
 				new StandardAblagekorb<Vorgangsmappe>(),
 				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
 				ausgangskorb,
@@ -454,8 +460,8 @@ public class Sachbearbeiter_Test extends
 		Vorgangsmappe vorgangsmappe = new Vorgangsmappe(Vorgangsmappenkennung
 				.valueOf(InetAddress.getByName("127.0.0.1"), new Date(12345)),
 				new AlarmNachricht("Alarm")) {
-			private Pruefliste pruefliste = new Test_Pruefliste(Regelwerkskennung
-					.valueOf()) {
+			private Pruefliste pruefliste = new Test_Pruefliste(
+					Regelwerkskennung.valueOf()) {
 				@Override
 				public WeiteresVersandVorgehen gesamtErgebnis() {
 					return gesammt[0];
@@ -493,7 +499,8 @@ public class Sachbearbeiter_Test extends
 		StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
 		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
 		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter("Fritz",
+		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
 				new StandardAblagekorb<Vorgangsmappe>(),
 				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
 				ausgangskorb,
@@ -543,7 +550,8 @@ public class Sachbearbeiter_Test extends
 		StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
 		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
 		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter("Fritz",
+		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
 				new StandardAblagekorb<Vorgangsmappe>(),
 				new StandardAblagekorb<Terminnotiz>(), zwischenablage,
 				notizKorb, ausgangskorb, new StandardRegelwerk(
@@ -561,6 +569,7 @@ public class Sachbearbeiter_Test extends
 			public WeiteresVersandVorgehen gesamtErgebnis() {
 				return WeiteresVersandVorgehen.VERSENDEN;
 			}
+
 			@Override
 			public boolean hatSichGeaendert() {
 				return true;
@@ -583,13 +592,13 @@ public class Sachbearbeiter_Test extends
 		assertFalse(zwischenablage.istEnthalten(vorgangsmappe2));
 		assertFalse(zwischenablage.istEnthalten(vorgangsmappe));
 
-		
 		// weiterer weg
 		vorgangsmappe.setzePruefliste(new Test_Pruefliste(Regelwerkskennung
 				.valueOf()) {
 			public WeiteresVersandVorgehen gesamtErgebnis() {
 				return WeiteresVersandVorgehen.ERNEUT_PRUEFEN;
 			}
+
 			@Override
 			public boolean hatSichGeaendert() {
 				return true;
@@ -607,12 +616,13 @@ public class Sachbearbeiter_Test extends
 		mappeImAusgang = zwischenablage.entnehmeAeltestenEingang();
 		assertNotNull(mappeImAusgang);
 		assertEquals(vorgangsmappe, mappeImAusgang);
-		
+
 		vorgangsmappe.setzePruefliste(new Test_Pruefliste(Regelwerkskennung
 				.valueOf()) {
 			public WeiteresVersandVorgehen gesamtErgebnis() {
 				return WeiteresVersandVorgehen.ERNEUT_PRUEFEN;
 			}
+
 			@Override
 			public boolean hatSichGeaendert() {
 				return false;
@@ -631,14 +641,15 @@ public class Sachbearbeiter_Test extends
 	@Test
 	public void testachteAufTerminnotizEingaenge() throws InterruptedException {
 		mocksAufIgnorierenSetzen();
-		
+
 		StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
 		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
 		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		final boolean[] bloedeSensingVariable = { false };
 		final Terminnotiz notiz = Terminnotiz.valueOf(vorgangsmappe
 				.gibMappenkennung(), Millisekunden.valueOf(100), "Fritz");
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter("Fritz",
+		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
 				new StandardAblagekorb<Vorgangsmappe>(), notizKorb,
 				zwischenablage, new StandardAblagekorb<Terminnotiz>(),
 				ausgangskorb,
