@@ -15,6 +15,7 @@ import org.csstudio.nams.configurator.views.FilterView;
 import org.csstudio.nams.configurator.views.FilterbedingungView;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.osgi.framework.BundleActivator;
@@ -30,7 +31,8 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	@Required
 	PreferenceService preferenceService, @OSGiService
 	@Required
-	ConfigurationServiceFactory configurationServiceFactory) {
+	ConfigurationServiceFactory configurationServiceFactory,
+	@OSGiService @Required Logger logger) {
 		LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
 				.getConfigurationService(
 						"oracle.jdbc.driver.OracleDriver",
@@ -42,6 +44,8 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 						preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
 
+		ConfigurationBeanServiceImpl.staticInject(logger);
+		
 //		ModelFactory modelFactory = new ModelFactory(
 //				localStoreConfigurationService);
 		

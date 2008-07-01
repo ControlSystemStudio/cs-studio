@@ -41,7 +41,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 			for (int i = 0; i < urls.length; i++) {
 				Hashtable<String, String> properties = new Hashtable<String, String>();
 				properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-						preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_AMS_CONNECTION_FACTORY)); 
+						preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
 				properties.put(Context.PROVIDER_URL, urls[i]);
 	
 				contexts[i] = new InitialContext(properties);

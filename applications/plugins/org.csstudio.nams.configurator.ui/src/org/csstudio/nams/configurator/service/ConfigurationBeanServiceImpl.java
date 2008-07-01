@@ -21,9 +21,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.logging.declaration.Logger;
 
 public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
+	private static Logger logger;
 	private final LocalStoreConfigurationService configurationService;
 	private Configuration entireConfiguration;
 	private List<ConfigurationBeanServiceListener> listeners = new LinkedList<ConfigurationBeanServiceListener>();
@@ -37,13 +39,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		try {
 			entireConfiguration = configurationService.getEntireConfiguration();
 		} catch (StorageError e) {
-			// TODO Auto-generated catch block
+			logger.logErrorMessage(this, "Could not load Eniter Configuration because of: " + e.getMessage());
 			e.printStackTrace();
 		} catch (StorageException e) {
-			// TODO Auto-generated catch block
+			logger.logErrorMessage(this, "Could not load Eniter Configuration because of: " + e.getMessage());
 			e.printStackTrace();
 		} catch (InconsistentConfigurationException e) {
-			// TODO Auto-generated catch block
+			logger.logErrorMessage(this, "Could not load Eniter Configuration because of: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -260,8 +262,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		loadConfiguration();
 		notifyDeleteListeners(bean);
 		} catch (InconsistentConfigurationException e) {
-			//TODO generate user message
-			System.out.println(e.getMessage());
+			logger.logErrorMessage(this, "Could not Delete Entry. Entry-Type not recognized: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -276,9 +278,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		if (dto != null) {
 			configurationService.deleteAlarmbearbeiterDTO(dto);
-			//TODO may the configuration has to be refreshed
 			
-			System.out.println("ConfigurationBeanServiceImpl.delete() " + dto.getUserId() + " " + dto.getUserName());
+			logger.logInfoMessage(this, "ConfigurationBeanServiceImpl.delete() " + dto.getUserId() + " " + dto.getUserName());
 		}		
 	}
 
@@ -306,5 +307,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		for (ConfigurationBeanServiceListener listener : listeners) {
 			listener.onBeanDeleted(bean);
 		}
+	}
+	
+	public static void staticInject(Logger logger) {
+		ConfigurationBeanServiceImpl.logger = logger;
 	}
 }
