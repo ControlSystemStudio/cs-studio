@@ -208,15 +208,11 @@ public abstract class FilteredListVarianteA {
 			}
 		}
 
-		for (String gruppenName : gruppenNamen) {
-			gruppenCombo.add(gruppenName);
-		}
-
 		int oldIndex = gruppenCombo.getSelectionIndex();
 		String item = null;
 		if (oldIndex != -1) {
 			item = gruppenCombo.getItem(oldIndex);
-			gruppenCombo.deselectAll();
+//			gruppenCombo.deselectAll();
 		}
 		
 		String[] newItems = new String[gruppenNamen.size() + 3];
