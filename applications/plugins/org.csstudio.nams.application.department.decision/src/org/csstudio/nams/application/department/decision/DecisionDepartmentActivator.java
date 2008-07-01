@@ -359,22 +359,22 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							e);
 			this._continueWorking = false;
 		}
-
-		/*-
-		 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
-		 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
-		 * keine validen Daten liegen. Der folgende Aufruf blockiert
-		 * solange, bis der Distributor bestaetigt, dass die Synchronisation
-		 * erfolgreich ausgefuehrt wurde.
-		 */
-		this._continueWorking = DecisionDepartmentActivator
-				.versucheZuSynchronisieren(
-						this,
-						DecisionDepartmentActivator.logger,
-						this.amsAusgangsProducer,
-						this.amsCommandConsumer,
-						DecisionDepartmentActivator.localStoreConfigurationService);
-
+		if (this._continueWorking) {
+			/*-
+			 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
+			 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
+			 * keine validen Daten liegen. Der folgende Aufruf blockiert
+			 * solange, bis der Distributor bestaetigt, dass die Synchronisation
+			 * erfolgreich ausgefuehrt wurde.
+			 */
+			this._continueWorking = DecisionDepartmentActivator
+					.versucheZuSynchronisieren(
+							this,
+							DecisionDepartmentActivator.logger,
+							this.amsAusgangsProducer,
+							this.amsCommandConsumer,
+							DecisionDepartmentActivator.localStoreConfigurationService);
+		}
 		if (this._continueWorking) {
 			try {
 				DecisionDepartmentActivator.logger
@@ -604,19 +604,19 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						try {
 							eingangskorb.ablegen(new Vorgangsmappe(
 									Vorgangsmappenkennung.createNew(/**
-									 * TODO Host
-									 * Service
-									 * statt new
-									 * InetAddress()
-									 * .getLocalHost
-									 * benutzen
-									 */
+																	 * TODO Host
+																	 * Service
+																	 * statt new
+																	 * InetAddress()
+																	 * .getLocalHost
+																	 * benutzen
+																	 */
 									InetAddress.getLocalHost(), /**
-									 * TODO Calender
-									 * Service statt
-									 * new Date()
-									 * benutzen
-									 */
+																 * TODO Calender
+																 * Service statt
+																 * new Date()
+																 * benutzen
+																 */
 									new Date()), message.alsAlarmnachricht()));
 						} catch (final UnknownHostException e) {
 							DecisionDepartmentActivator.logger.logFatalMessage(
