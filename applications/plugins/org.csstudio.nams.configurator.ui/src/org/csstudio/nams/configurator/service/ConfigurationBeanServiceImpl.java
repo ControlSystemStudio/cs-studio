@@ -180,49 +180,89 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setDescription(filter.getCDesc());
 		bean.setName(filter.getCName());
 		AddOnBean filterSpecificBean = null;
-		if (filter instanceof JunctorConditionDTO){
-//			filterSpecificBean = 
-				JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
-			junctorConditionBean.setFirstCondition(
-					DTO2Bean(((JunctorConditionDTO) filter).getFirstFilterCondition()));
-			junctorConditionBean.setJunctor(((JunctorConditionDTO) filter).getJunctor());
-			junctorConditionBean.setRubrikName(""); // RubrikName is set by the main Bean.
-			junctorConditionBean.setSecondCondition(
-					DTO2Bean(((JunctorConditionDTO) filter).getSecondFilterCondition()));
+		if (filter instanceof JunctorConditionDTO) {
+			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
+			junctorConditionBean
+					.setFirstCondition(DTO2Bean(((JunctorConditionDTO) filter)
+							.getFirstFilterCondition()));
+			junctorConditionBean.setJunctor(((JunctorConditionDTO) filter)
+					.getJunctor());
+			junctorConditionBean.setRubrikName(""); // RubrikName is set by the
+													// main Bean.
+			junctorConditionBean
+					.setSecondCondition(DTO2Bean(((JunctorConditionDTO) filter)
+							.getSecondFilterCondition()));
 			filterSpecificBean = junctorConditionBean;
-		} else if (filter instanceof ProcessVariableFilterConditionDTO){
+		} else if (filter instanceof ProcessVariableFilterConditionDTO) {
 			PVFilterConditionBean filterbedingungBean = new PVFilterConditionBean();
 			filterbedingungBean.setRubrikName("");
-			filterbedingungBean.setChannelName(((ProcessVariableFilterConditionDTO) filter).getCName());
-			filterbedingungBean.setCompareValue(((ProcessVariableFilterConditionDTO) filter).getCCompValue());
-			filterbedingungBean.setOperator(((ProcessVariableFilterConditionDTO) filter).getPVOperator());
-			filterbedingungBean.setSuggestedType(((ProcessVariableFilterConditionDTO) filter).getSuggestedPVType());
+			filterbedingungBean
+					.setChannelName(((ProcessVariableFilterConditionDTO) filter)
+							.getCName());
+			filterbedingungBean
+					.setCompareValue(((ProcessVariableFilterConditionDTO) filter)
+							.getCCompValue());
+			filterbedingungBean
+					.setOperator(((ProcessVariableFilterConditionDTO) filter)
+							.getPVOperator());
+			filterbedingungBean
+					.setSuggestedType(((ProcessVariableFilterConditionDTO) filter)
+							.getSuggestedPVType());
 			filterSpecificBean = filterbedingungBean;
-		} else if (filter instanceof StringArrayFilterConditionDTO){
+		} else if (filter instanceof StringArrayFilterConditionDTO) {
 			StringArrayFilterConditionBean stringArrayFilterConditionBean = new StringArrayFilterConditionBean();
 			stringArrayFilterConditionBean.setRubrikName("");
-			stringArrayFilterConditionBean.setCompareValues(((StringArrayFilterConditionDTO) filter).getCompareValueList());
-			stringArrayFilterConditionBean.setKeyValue(((StringArrayFilterConditionDTO) filter).getKeyValueEnum());
-			stringArrayFilterConditionBean.setOperator(((StringArrayFilterConditionDTO) filter).getOperatorEnum());
+			stringArrayFilterConditionBean
+					.setCompareValues(((StringArrayFilterConditionDTO) filter)
+							.getCompareValueList());
+			stringArrayFilterConditionBean
+					.setKeyValue(((StringArrayFilterConditionDTO) filter)
+							.getKeyValueEnum());
+			stringArrayFilterConditionBean
+					.setOperator(((StringArrayFilterConditionDTO) filter)
+							.getOperatorEnum());
 			filterSpecificBean = stringArrayFilterConditionBean;
-		}  else if (filter instanceof StringFilterConditionDTO){
+		} else if (filter instanceof StringFilterConditionDTO) {
 			StringFilterConditionBean stringFilterConditionBean = new StringFilterConditionBean();
 			stringFilterConditionBean.setRubrikName("");
-			stringFilterConditionBean.setCompValue(((StringFilterConditionDTO) filter).getCompValue());
-			stringFilterConditionBean.setKeyValue(((StringFilterConditionDTO) filter).getKeyValue());
-			stringFilterConditionBean.setOperator(StringRegelOperator.valueOf(((StringFilterConditionDTO) filter).getOperator()));
+			stringFilterConditionBean
+					.setCompValue(((StringFilterConditionDTO) filter)
+							.getCompValue());
+			stringFilterConditionBean
+					.setKeyValue(((StringFilterConditionDTO) filter)
+							.getKeyValue());
+			stringFilterConditionBean
+					.setOperator(StringRegelOperator
+							.valueOf(((StringFilterConditionDTO) filter)
+									.getOperator()));
 			filterSpecificBean = stringFilterConditionBean;
-		} else if (filter instanceof TimeBasedFilterConditionDTO){
+		} else if (filter instanceof TimeBasedFilterConditionDTO) {
 			TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();
 			timeBasedConditionBean.setRubrikName("");
-			timeBasedConditionBean.setCConfirmCompValue(((TimeBasedFilterConditionDTO) filter).getCConfirmCompValue());
-			timeBasedConditionBean.setCConfirmKeyValue(((TimeBasedFilterConditionDTO) filter).getConfirmKeyValue());
-			timeBasedConditionBean.setCStartCompValue(((TimeBasedFilterConditionDTO) filter).getCStartCompValue());
-			timeBasedConditionBean.setCStartKeyValue(((TimeBasedFilterConditionDTO) filter).getCStartKeyValue());
-			timeBasedConditionBean.setSConfirmOperator(((TimeBasedFilterConditionDTO) filter).getTBConfirmOperator());
-			timeBasedConditionBean.setSStartOperator(((TimeBasedFilterConditionDTO) filter).getTBStartOperator());
-			timeBasedConditionBean.setSTimeBehavior(((TimeBasedFilterConditionDTO) filter).getTimeBehavior());
-			timeBasedConditionBean.setSTimePeriod(((TimeBasedFilterConditionDTO) filter).getTimePeriod());
+			timeBasedConditionBean
+					.setCConfirmCompValue(((TimeBasedFilterConditionDTO) filter)
+							.getCConfirmCompValue());
+			timeBasedConditionBean
+					.setCConfirmKeyValue(((TimeBasedFilterConditionDTO) filter)
+							.getConfirmKeyValue());
+			timeBasedConditionBean
+					.setCStartCompValue(((TimeBasedFilterConditionDTO) filter)
+							.getCStartCompValue());
+			timeBasedConditionBean
+					.setCStartKeyValue(((TimeBasedFilterConditionDTO) filter)
+							.getCStartKeyValue());
+			timeBasedConditionBean
+					.setSConfirmOperator(((TimeBasedFilterConditionDTO) filter)
+							.getTBConfirmOperator());
+			timeBasedConditionBean
+					.setSStartOperator(((TimeBasedFilterConditionDTO) filter)
+							.getTBStartOperator());
+			timeBasedConditionBean
+					.setSTimeBehavior(((TimeBasedFilterConditionDTO) filter)
+							.getTimeBehavior());
+			timeBasedConditionBean
+					.setSTimePeriod(((TimeBasedFilterConditionDTO) filter)
+							.getTimePeriod());
 			filterSpecificBean = timeBasedConditionBean;
 		}
 		
