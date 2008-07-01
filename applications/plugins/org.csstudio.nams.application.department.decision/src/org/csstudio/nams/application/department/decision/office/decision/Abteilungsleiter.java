@@ -43,11 +43,7 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 	private final ExecutionService executionService;
 
 	/**
-	 * 
-	 * TODO ACHTUNG: Die einzel-Vorgangsmappen müssen wieder zu Ihrer
-	 * Originalmappe zurückgeführt werden, oder jeder Schabearbeiter bekommt nur
-	 * ein Kaptiel in der Mappe, das wöre auch aus Gründen der
-	 * Nachvollziehbarkeit sinnhafter!
+	 * Legt den Abteilungsleiter an, der die Alarmvorgänge an seine Sachbearbeiter verteilt.
 	 * 
 	 * @param eingangskorbNeuerAlarmVorgaenge
 	 * @param sachbearbeiterEingangkoerbe

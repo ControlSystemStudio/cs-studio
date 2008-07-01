@@ -246,8 +246,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						DecisionDepartmentActivator.preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
 
-		// Execution Service
-		// TODO wird noch nicht vollstaendig benutzt! Ins Dec-Office einbauen
 		DecisionDepartmentActivator.executionService = injectedExecutionService;
 
 		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
@@ -449,7 +447,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.logInfoMessage(this,
 						"Decision department application is closing opened connections...");
 		if (this.amsAusgangsProducer != null) {
-			this.amsAusgangsProducer.close();
+			this.amsAusgangsProducer.tryToClose();
 		}
 		if (this.amsCommandConsumer != null) {
 			this.amsCommandConsumer.close();

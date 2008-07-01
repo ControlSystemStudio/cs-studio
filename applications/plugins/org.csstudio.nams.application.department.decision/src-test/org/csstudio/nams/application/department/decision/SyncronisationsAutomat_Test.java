@@ -7,7 +7,6 @@ import java.util.Queue;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.decision.Vorgangsmappe;
-import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
@@ -56,7 +55,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 		neuZuEmpfangedeNachrichten = new LinkedList<NAMSMessage>();
 		amsAusgangsProducer = new Producer() {
 
-			public void close() {
+			public void tryToClose() {
 				fail("should not be called");
 			}
 
