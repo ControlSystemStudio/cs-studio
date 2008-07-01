@@ -9,6 +9,10 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 	private StringRegelOperator operator;
 	private String compValue;
 	
+	public static enum PropertyNames {
+		keyValue, operator, compValue;
+	}
+	
 	@Override
 	public StringFilterConditionBean getClone() {
 		StringFilterConditionBean bean = new StringFilterConditionBean();

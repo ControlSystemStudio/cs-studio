@@ -10,6 +10,10 @@ public class JunctorConditionBean extends AbstractConfigurationBean<JunctorCondi
 	FilterbedingungBean secondCondition;
 	JunctorConditionType junctor;
 	
+	public static enum PropertyNames {
+		firstCondition, secondCondition, junctor;
+	}
+	
 	@Override
 	public JunctorConditionBean getClone() {
 		JunctorConditionBean bean = new JunctorConditionBean();

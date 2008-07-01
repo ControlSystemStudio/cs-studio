@@ -4,9 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
@@ -84,8 +84,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @param keyValue
 	 *            the keyValue to set
 	 */
-	@SuppressWarnings("unused")
-	private void setKeyValue(String keyValue) {
+	public void setKeyValue(String keyValue) {
 		this.keyValue = keyValue;
 	}
 
@@ -97,12 +96,19 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 		return operator;
 	}
 
+	public StringRegelOperator getOperatorEnum(){
+		return StringRegelOperator.valueOf(operator);
+	}
+	
+	public void setOperatorEnum(StringRegelOperator op){
+		operator = (short) op.ordinal();
+	}
+	
 	/**
 	 * @param operator
 	 *            the operator to set
 	 */
-	@SuppressWarnings("unused")
-	private void setOperator(short operator) {
+	public void setOperator(short operator) {
 		this.operator = operator;
 	}
 
@@ -118,8 +124,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @param compValue
 	 *            the compValue to set
 	 */
-	@SuppressWarnings("unused")
-	private void setCompValue(String compValue) {
+	public void setCompValue(String compValue) {
 		this.compValue = compValue;
 	}
 

@@ -1,13 +1,18 @@
 package org.csstudio.nams.configurator.editor;
 
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.filters.AddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
+import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
+import org.csstudio.nams.configurator.beans.filters.StringArrayFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
+import org.csstudio.nams.configurator.beans.filters.TimeBasedFilterConditionBean;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.jface.action.SubCoolBarManager;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -16,7 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
@@ -41,6 +45,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private Text stringCompareKeyText;
 	private Combo stringOperatorCombo;
 	private Text stringCompareValueText;
+	private AddOnBean[] specificBeans;
+	private Text pvChannelName;
+	private Combo pvSuggestedType;
+	private Combo pvOperator;
+	private Text pvCompareValue;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -59,14 +68,15 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
 		_filterTypeEntry = this.createComboEntry(main, "Filtertype: ", true);
+
+		initializeAddOnBeans();
 		_filterTypeEntry.addListener(SWT.Modify, new Listener() {
 			public void handleEvent(Event event) {
 				filterLayout.topControl = stackComposites[_filterTypeEntry
 						.getSelectionIndex()];
 				filterSpecificComposite.layout();
 				
-				AddOnBean specificBeans;
-//				beanClone.setFilterSpecificBean(specificBeans[_filterTypeEntry.getSelectionIndex()]);
+				beanClone.setFilterSpecificBean(specificBeans[_filterTypeEntry.getSelectionIndex()]);
 			}
 		});
 
@@ -97,13 +107,19 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stringCompareValueText = createTextEntry(stackComposites[1], "CompareValue", true);
 		// StringArrayFilterComposite
 		stackComposites[2] = new Composite(filterSpecificComposite, SWT.NONE);
-		new Label(stackComposites[2], SWT.NONE).setText("2");
+		stackComposites[2].setLayout(new GridLayout(NUM_COLUMNS, false));
+		//TODO create StringArrayGUI
+		
 		// PVComposite
 		stackComposites[3] = new Composite(filterSpecificComposite, SWT.NONE);
-		new Label(stackComposites[3], SWT.NONE).setText("3");
+		stackComposites[3].setLayout(new GridLayout(NUM_COLUMNS, false));
+		pvChannelName = createTextEntry(stackComposites[3], "channelName", true);
+		pvSuggestedType = createComboEntry(stackComposites[3], "SuggestedType", true);
+		pvOperator = createComboEntry(stackComposites[3], "Operator", true);
+		pvCompareValue = createTextEntry(stackComposites[3], "Compare value", true);
 		// TimeBasedComposite
 		stackComposites[4] = new Composite(filterSpecificComposite, SWT.NONE);
-		new Label(stackComposites[4], SWT.NONE).setText("4");
+		stackComposites[4].setLayout(new GridLayout(NUM_COLUMNS, false));
 		
 		doFilterSpecificDataBinding();
 		
@@ -115,9 +131,130 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		}  //TODO add the other cases
 	}
 
+	private void initializeAddOnBeans() {
+		specificBeans = new AddOnBean[5];
+		specificBeans[0] = new JunctorConditionBean();
+		specificBeans[1] = new StringFilterConditionBean();
+		specificBeans[2] = new StringArrayFilterConditionBean();
+		specificBeans[3] = new PVFilterConditionBean();
+		specificBeans[4] = new TimeBasedFilterConditionBean();
+		AddOnBean filterSpecificBean = bean.getFilterSpecificBean();
+		if (filterSpecificBean instanceof JunctorConditionBean)
+			specificBeans[0] = filterSpecificBean;
+		else if (filterSpecificBean instanceof StringFilterConditionBean)
+			specificBeans[1] = filterSpecificBean;
+		else if (filterSpecificBean instanceof StringArrayFilterConditionBean)
+			specificBeans[2] = filterSpecificBean;
+		else if (filterSpecificBean instanceof PVFilterConditionBean)
+			specificBeans[3] = filterSpecificBean;
+		else if (filterSpecificBean instanceof TimeBasedFilterConditionBean)
+			specificBeans[4] = filterSpecificBean;
+		else throw new RuntimeException("Unsupported AddOnBeanType " + filterSpecificBean.getClass());
+	}
+
 	private void doFilterSpecificDataBinding() {
-		//TODO implement it!
+		initStringAddOnBeanDataBinding();
+		initJunctorAddOnBeanDataBinding();
+		//TODO init all AddOnBean data bindings
+	}
+
+	private void initJunctorAddOnBeanDataBinding() {
+		DataBindingContext context = new DataBindingContext();
+
+		IObservableValue firstConditionTextObservable = BeansObservables.observeValue(
+				specificBeans[0], JunctorConditionBean.PropertyNames.firstCondition.name());
+
+		IObservableValue secondConditionTextObservable = BeansObservables
+				.observeValue(specificBeans[0],
+						JunctorConditionBean.PropertyNames.secondCondition.name());
+
+		IObservableValue stringJunctorObservable = BeansObservables
+		.observeValue(specificBeans[0],
+				JunctorConditionBean.PropertyNames.junctor.name());
 		
+		// bind observables
+		context.bindValue(SWTObservables
+				.observeSelection(junctorTypeCombo),
+				stringJunctorObservable, new UpdateValueStrategy() {
+			@Override
+			public Object convert(Object value) {
+				return JunctorConditionType.valueOf((String) value);
+			}
+		}, new UpdateValueStrategy() {
+			@Override
+			public Object convert(Object value) {
+				return ((JunctorConditionType) value).name();
+			}
+		});
+
+		context.bindValue(SWTObservables
+				.observeText(junctorFirstFilterText, SWT.Modify), firstConditionTextObservable,
+//				new UpdateValueStrategy() {
+//					@Override
+//					public Object convert(Object value) {
+//						return JunctorConditionType.valueOf((String) value);
+//					}
+//				}, new UpdateValueStrategy() {
+//					@Override
+//					public Object convert(Object value) {
+//						return ((FilterbedingungBean) value).getDisplayName();
+//					}
+//				});
+				null, null);
+				
+		context.bindValue(SWTObservables.observeText(stringCompareValueText,
+				SWT.Modify), secondConditionTextObservable, 
+//				new UpdateValueStrategy() {
+//			@Override
+//			public Object convert(Object value) {
+//				return JunctorConditionType.valueOf((String) value);
+//			}
+//		}, new UpdateValueStrategy() {
+//			@Override
+//			public Object convert(Object value) {
+//				return ((FilterbedingungBean) value).getDisplayName();
+//			}
+//		});
+				null, null);
+		
+	}
+
+	private void initStringAddOnBeanDataBinding() {
+		DataBindingContext context = new DataBindingContext();
+
+		IObservableValue keyTextObservable = BeansObservables.observeValue(
+				specificBeans[1], StringFilterConditionBean.PropertyNames.keyValue.name());
+
+		IObservableValue stringCompareValueTextObservable = BeansObservables
+				.observeValue(specificBeans[1],
+						StringFilterConditionBean.PropertyNames.compValue.name());
+
+		IObservableValue stringOperatorObservable = BeansObservables
+		.observeValue(specificBeans[2],
+				StringFilterConditionBean.PropertyNames.operator.name());
+		
+		// bind observables
+		context.bindValue(SWTObservables
+				.observeSelection(stringOperatorCombo),
+				stringOperatorObservable, new UpdateValueStrategy() {
+			@Override
+			public Object convert(Object value) {
+				return StringRegelOperator.valueOf((String) value);
+			}
+		}, new UpdateValueStrategy() {
+			@Override
+			public Object convert(Object value) {
+				return ((StringRegelOperator) value).name();
+			}
+		});
+
+		
+		context.bindValue(SWTObservables
+				.observeText(stringCompareKeyText, SWT.Modify), keyTextObservable,
+				null, null);
+
+		context.bindValue(SWTObservables.observeText(stringCompareValueText,
+				SWT.Modify), stringCompareValueTextObservable, null, null);
 	}
 
 	@Override
@@ -149,6 +286,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
 				SWT.Modify), descriptionTextObservable, null, null);
+		
 	}
 
 	@Override
