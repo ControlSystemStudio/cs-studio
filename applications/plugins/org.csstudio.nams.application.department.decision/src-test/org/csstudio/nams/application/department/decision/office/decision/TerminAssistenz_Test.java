@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
+import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
@@ -22,8 +23,8 @@ public class TerminAssistenz_Test extends
 		Eingangskorb<Terminnotiz> korb = new StandardAblagekorb<Terminnotiz>();
 		Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
 		sachbearbeiterKoerbe.put("test", new StandardAblagekorb<Terminnotiz>());
-		return new TerminAssistenz(korb, sachbearbeiterKoerbe, new Timer(
-				"TerminAssistenz"));
+		return new TerminAssistenz(new DefaultExecutionService(), korb,
+				sachbearbeiterKoerbe, new Timer("TerminAssistenz"));
 	}
 
 	@Override
@@ -39,7 +40,8 @@ public class TerminAssistenz_Test extends
 	}
 
 	@Test
-	public void testAssistenz() throws UnknownHostException, InterruptedException {
+	public void testAssistenz() throws UnknownHostException,
+			InterruptedException {
 		Eingangskorb<Terminnotiz> assistenzEingangskorb = new StandardAblagekorb<Terminnotiz>();
 		StandardAblagekorb<Terminnotiz> sachbearbeitersKorb = new StandardAblagekorb<Terminnotiz>();
 		Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
@@ -51,7 +53,8 @@ public class TerminAssistenz_Test extends
 						.getByAddress(new byte[] { 127, 0, 0, 1 }),
 						new Date(42)), Millisekunden.valueOf(42), "test");
 
-		TerminAssistenz assistenz = new TerminAssistenz(assistenzEingangskorb,
+		TerminAssistenz assistenz = new TerminAssistenz(
+				new DefaultExecutionService(), assistenzEingangskorb,
 				sachbearbeiterKoerbe, timer);
 
 		assistenz.beginneArbeit();
@@ -75,16 +78,19 @@ public class TerminAssistenz_Test extends
 
 		timer.cancel();
 	}
-	
+
 	@Test
 	public void testArbeit() throws InterruptedException {
 		TerminAssistenz terminassistenz = this.getNewInstanceOfClassUnderTest();
-		assertFalse("terminassistenz.istAmArbeiten()", terminassistenz.istAmArbeiten());
+		assertFalse("terminassistenz.istAmArbeiten()", terminassistenz
+				.istAmArbeiten());
 		terminassistenz.beginneArbeit();
-		assertTrue("terminassistenz.istAmArbeiten()", terminassistenz.istAmArbeiten());
+		assertTrue("terminassistenz.istAmArbeiten()", terminassistenz
+				.istAmArbeiten());
 		terminassistenz.beendeArbeit();
 		Thread.sleep(100);
-		assertFalse("terminassistenz.istAmArbeiten()", terminassistenz.istAmArbeiten());
+		assertFalse("terminassistenz.istAmArbeiten()", terminassistenz
+				.istAmArbeiten());
 	}
 
 }

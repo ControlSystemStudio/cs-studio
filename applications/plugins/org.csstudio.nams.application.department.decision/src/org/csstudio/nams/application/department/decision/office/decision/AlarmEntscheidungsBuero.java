@@ -101,7 +101,7 @@ public class AlarmEntscheidungsBuero {
 			sachbearbeiter.beginneArbeit();
 		}
 
-		_assistenz = new TerminAssistenz(terminAssistenzEingangskorb,
+		_assistenz = new TerminAssistenz(executionService, terminAssistenzEingangskorb,
 				terminEingangskoerbeDerSachbearbeiter, new Timer());
 		_assistenz.beginneArbeit();
 
