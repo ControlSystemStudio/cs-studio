@@ -11,7 +11,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Alar
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 
@@ -50,7 +50,7 @@ public class ConfigurationModel implements IConfigurationModel {
 			e.printStackTrace();
 		} catch (StorageException e) {
 			e.printStackTrace();
-		} catch (InconsistentConfiguration e) {
+		} catch (InconsistentConfigurationException e) {
 			e.printStackTrace();
 		}
 		TopicDTO dto = null;
@@ -84,7 +84,7 @@ public class ConfigurationModel implements IConfigurationModel {
 			e.printStackTrace();
 		} catch (StorageException e) {
 			e.printStackTrace();
-		} catch (InconsistentConfiguration e) {
+		} catch (InconsistentConfigurationException e) {
 			e.printStackTrace();
 		}
 		AlarmbearbeiterGruppenDTO dto = null;
@@ -118,7 +118,7 @@ public class ConfigurationModel implements IConfigurationModel {
 			e.printStackTrace();
 		} catch (StorageException e) {
 			e.printStackTrace();
-		} catch (InconsistentConfiguration e) {
+		} catch (InconsistentConfigurationException e) {
 			e.printStackTrace();
 		}
 		AlarmbearbeiterDTO dto = null;

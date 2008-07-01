@@ -20,14 +20,21 @@ public class AlarmbearbeiterView extends ViewPart {
 	
 	public AlarmbearbeiterView() {
 		configurationBeanService.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
+			//TODO updateView() is in most cases overkill
 			@Override
-			public void onAlarmbearbeiterBeanInsert(AlarmbearbeiterBean bean) {
+			public void onBeanInsert(IConfigurationBean bean) {
 				if (filteredListVarianteA != null) {
 					filteredListVarianteA.updateView();
 				}
 			}
 			@Override
-			public void onAlarmbearbeiterBeanUpdate(AlarmbearbeiterBean bean) {
+			public void onBeanUpdate(IConfigurationBean bean) {
+				if (filteredListVarianteA != null) {
+					filteredListVarianteA.updateView();
+				}
+			}
+			@Override
+			public void onBeanDeleted(IConfigurationBean bean) {
 				if (filteredListVarianteA != null) {
 					filteredListVarianteA.updateView();
 				}

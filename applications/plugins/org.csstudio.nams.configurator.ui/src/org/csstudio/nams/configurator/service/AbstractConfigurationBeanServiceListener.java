@@ -1,14 +1,18 @@
 package org.csstudio.nams.configurator.service;
 
-import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 
 public abstract class AbstractConfigurationBeanServiceListener implements ConfigurationBeanServiceListener {
 
-	public void onAlarmbearbeiterBeanInsert(AlarmbearbeiterBean bean) {
+	public void onBeanInsert(IConfigurationBean bean) {
 		
 	}
 
-	public void onAlarmbearbeiterBeanUpdate(AlarmbearbeiterBean bean) {
+	public void onBeanUpdate(IConfigurationBean bean) {
+		
+	}
+
+	public void onBeanDeleted(IConfigurationBean bean) {
 		
 	}
 

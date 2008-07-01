@@ -228,7 +228,8 @@ public abstract class FilteredListVarianteA {
 		IConfigurationBean[] tableInput = this.getTableInput();
 		
 		if (gruppenCombo.getItemCount() > 3) {
-			gruppenCombo.remove(3, gruppenCombo.getItemCount());
+			//TODO just removed this is probably test code?
+//			gruppenCombo.remove(3, gruppenCombo.getItemCount());
 		}
 		gruppenNamen.clear();
 		for (IConfigurationBean bean : tableInput) {

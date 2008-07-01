@@ -3,15 +3,15 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration.exc
 /**
  * Indicates an inconsistent, not usable configuration in current database.
  */
-public class InconsistentConfiguration extends Exception {
+public class InconsistentConfigurationException extends Exception {
 
 	private static final long serialVersionUID = 6336894102492628330L;
 
-	public InconsistentConfiguration(final String message) {
+	public InconsistentConfigurationException(final String message) {
 		super(message);
 	}
 
-	public InconsistentConfiguration(final String message, final Throwable cause) {
+	public InconsistentConfigurationException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 }

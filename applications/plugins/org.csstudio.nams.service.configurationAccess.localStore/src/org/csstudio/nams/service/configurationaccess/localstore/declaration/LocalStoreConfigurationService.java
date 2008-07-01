@@ -1,6 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
@@ -25,7 +25,7 @@ public interface LocalStoreConfigurationService {
 	 *             If the stored configuration is inconsistent.
 	 */
 	public ReplicationStateDTO getCurrentReplicationState()
-			throws StorageError, StorageException, InconsistentConfiguration;
+			throws StorageError, StorageException, InconsistentConfigurationException;
 
 	/**
 	 * Loads the entire configuration from the Database. ConfigurationDTO will
@@ -43,7 +43,7 @@ public interface LocalStoreConfigurationService {
 	 *             If the stored configuration is inconsistent.
 	 */
 	public Configuration getEntireConfiguration() throws StorageError,
-			StorageException, InconsistentConfiguration;
+			StorageException, InconsistentConfigurationException;
 
 	/**
 	 * Saves a new current syncronize-state. This method is only used to enable
@@ -79,4 +79,6 @@ public interface LocalStoreConfigurationService {
 	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(AlarmbearbeiterDTO alarmBearbeiterDTO);
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO);
 	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
+	
+	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException;
 }

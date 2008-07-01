@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -30,7 +30,7 @@ public class Configuration implements FilterConditionForIdProvider{
 	private Collection<FilterConditionDTO> allFilterConditions;
 
 	@SuppressWarnings("unchecked")
-	public Configuration(Session session) throws InconsistentConfiguration,
+	public Configuration(Session session) throws InconsistentConfigurationException,
 			StorageError, StorageException {
 
 		// PUBLICs
@@ -104,7 +104,7 @@ public class Configuration implements FilterConditionForIdProvider{
 
 	private void pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(
 			Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> allUserUserGroupAggregation)
-			throws InconsistentConfiguration {
+			throws InconsistentConfigurationException {
 		System.out.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"+allUserUserGroupAggregation.size());
 		for (AlarmbearbeiterZuAlarmbearbeiterGruppenDTO alarmbearbeiterZuAlarmbearbeiterGruppe : allUserUserGroupAggregation) {
 			System.out.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"+alarmbearbeiterZuAlarmbearbeiterGruppe.toString());
@@ -129,12 +129,12 @@ public class Configuration implements FilterConditionForIdProvider{
 	/**
 	 * @deprecated "FilterConditionType is a redundant information"
 	 * @param allFilterConditionsTypes
-	 * @throws InconsistentConfiguration
+	 * @throws InconsistentConfigurationException
 	 */
 	@Deprecated
 	private void pruefeUndOrdneTypenDenFilterConditionsZu(
 			Collection<FilterConditionTypeDTO> allFilterConditionsTypes)
-			throws InconsistentConfiguration {
+			throws InconsistentConfigurationException {
 		// TODO Hier die Typen den FC zuweisen (manuelles ManyToOne mapping!
 	}
 

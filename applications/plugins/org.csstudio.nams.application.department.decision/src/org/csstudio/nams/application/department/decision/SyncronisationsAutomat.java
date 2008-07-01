@@ -4,7 +4,7 @@ import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachc
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
@@ -37,7 +37,7 @@ public class SyncronisationsAutomat {
 	 * @throws MessagingException
 	 * 
 	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).
-	 * @throws InconsistentConfiguration
+	 * @throws InconsistentConfigurationException
 	 * @throws StorageException
 	 * @throws StorageError
 	 * @throws UnknownConfigurationElementError
@@ -46,7 +46,7 @@ public class SyncronisationsAutomat {
 			Producer producer, Consumer consumer,
 			LocalStoreConfigurationService localStoreConfigurationService, HistoryService historyService)
 			throws MessagingException, StorageError, StorageException,
-			InconsistentConfiguration, UnknownConfigurationElementError {
+			InconsistentConfigurationException, UnknownConfigurationElementError {
 
 		// TODO logger benutzen und nicht sysout
 

@@ -17,7 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
@@ -158,7 +158,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	}
 
 	private LocalStoreConfigurationService createLocalStoreConfigurationService()
-			throws StorageError, StorageException, InconsistentConfiguration,
+			throws StorageError, StorageException, InconsistentConfigurationException,
 			UnknownConfigurationElementError {
 		LocalStoreConfigurationService result = EasyMock
 				.createMock(LocalStoreConfigurationService.class);

@@ -17,7 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -42,7 +42,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		} catch (StorageException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InconsistentConfiguration e) {
+		} catch (InconsistentConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -215,11 +215,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		
 		if (bean.getUserID() != -1) {
 			for (ConfigurationBeanServiceListener listener : listeners) {
-				listener.onAlarmbearbeiterBeanUpdate(bean);
+				listener.onBeanUpdate(bean);
 			}
 		} else {
 			for (ConfigurationBeanServiceListener listener : listeners) {
-				listener.onAlarmbearbeiterBeanInsert(bean);
+				listener.onBeanInsert(bean);
 			}
 		}
 		return resultBean;
@@ -246,6 +246,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	public void delete(IConfigurationBean bean) {
+		try {
 		if (bean instanceof AlarmbearbeiterBean)
 			deleteAlarmbearbeiterBean((AlarmbearbeiterBean) bean);
 		if (bean instanceof AlarmbearbeiterGruppenBean)
@@ -256,9 +257,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			deleteFilterBean((FilterBean)bean);
 		if (bean instanceof FilterbedingungBean)
 			deleteFilterbedingungBean((FilterbedingungBean)bean);
+		loadConfiguration();
+		notifyDeleteListeners(bean);
+		} catch (InconsistentConfigurationException e) {
+			//TODO generate user message
+			System.out.println(e.getMessage());
+		}
 	}
 
-	private void deleteAlarmbearbeiterBean(AlarmbearbeiterBean bean) {
+	private void deleteAlarmbearbeiterBean(AlarmbearbeiterBean bean) throws InconsistentConfigurationException {
 
 		AlarmbearbeiterDTO dto = null;
 		for (AlarmbearbeiterDTO potentialdto : entireConfiguration.gibAlleAlarmbearbeiter()) {
@@ -268,7 +275,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 		}
 		if (dto != null) {
-			//TODO confService unterstützt noch kein löschen
+			configurationService.deleteAlarmbearbeiterDTO(dto);
+			//TODO may the configuration has to be refreshed
+			
 			System.out.println("ConfigurationBeanServiceImpl.delete() " + dto.getUserId() + " " + dto.getUserName());
 		}		
 	}
@@ -293,5 +302,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		// TODO Auto-generated method stub
 		
 	}
-
+	private void notifyDeleteListeners(IConfigurationBean bean){
+		for (ConfigurationBeanServiceListener listener : listeners) {
+			listener.onBeanDeleted(bean);
+		}
+	}
 }

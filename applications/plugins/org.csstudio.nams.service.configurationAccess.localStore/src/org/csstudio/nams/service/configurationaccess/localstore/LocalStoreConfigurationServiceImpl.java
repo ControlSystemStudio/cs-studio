@@ -10,7 +10,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Hist
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
@@ -18,6 +18,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
+import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 
@@ -31,7 +32,7 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	public ReplicationStateDTO getCurrentReplicationState()
-			throws StorageError, StorageException, InconsistentConfiguration {
+			throws StorageError, StorageException, InconsistentConfigurationException {
 		ReplicationStateDTO result = null;
 		try {
 			final Transaction newTransaction = this.session.beginTransaction();
@@ -49,7 +50,7 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 
 		if (result == null) {
-			throw new InconsistentConfiguration(
+			throw new InconsistentConfigurationException(
 					"Replication state unavailable.");
 		}
 
@@ -78,7 +79,7 @@ class LocalStoreConfigurationServiceImpl implements
 	// }
 
 	public Configuration getEntireConfiguration() throws StorageError,
-			StorageException, InconsistentConfiguration {
+			StorageException, InconsistentConfigurationException {
 		final Transaction transaction = this.session.beginTransaction();
 		Configuration result = null;
 		try {
@@ -92,6 +93,7 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<JunctorConditionDTO> getJunctorConditionDTOConfigurations() {
 		final Transaction newTransaction = this.session.beginTransaction();
 		final List<JunctorConditionDTO> junctorConditionDTOs = this.session
@@ -175,6 +177,7 @@ class LocalStoreConfigurationServiceImpl implements
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations() {
 		final Transaction newTransaction = this.session.beginTransaction();
 		final List<StringFilterConditionDTO> stringFilterConditionDTOs = this.session
@@ -217,6 +220,16 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 		return (TopicDTO) session.load(TopicDTO.class, generatedID);
 
+	}
+
+	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException {
+		Transaction tx = session.beginTransaction();
+		try {
+			session.delete(dto);
+		} catch (HibernateException e) {
+			new InconsistentConfigurationException("Could not delete " + dto + ". \n It is still in use.");
+		}
+		tx.commit();
 	}
 
 }

@@ -20,7 +20,7 @@ import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -54,7 +54,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			e.printStackTrace();
 		} catch (StorageException e) {
 			e.printStackTrace();
-		} catch (InconsistentConfiguration e) {
+		} catch (InconsistentConfigurationException e) {
 			e.printStackTrace();
 		}
 

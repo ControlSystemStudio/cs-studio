@@ -46,7 +46,7 @@ import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.history.declaration.HistoryService;
@@ -564,7 +564,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"Exception while synchronizing configuration.",
 					unknownConfigurationElementError);
 			result = false;
-		} catch (InconsistentConfiguration inconsistentConfiguration) {
+		} catch (InconsistentConfigurationException inconsistentConfiguration) {
 			logger.logFatalMessage(instance,
 					"Exception while synchronizing configuration.",
 					inconsistentConfiguration);

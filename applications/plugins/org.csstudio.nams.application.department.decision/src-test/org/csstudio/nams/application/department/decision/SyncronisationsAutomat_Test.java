@@ -18,7 +18,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Loca
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
@@ -121,7 +121,8 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 	@Test
 	public void testSyncronisationUeberDistributorAusfueren()
-			throws MessagingException, StorageError, StorageException, InconsistentConfiguration, UnknownConfigurationElementError {
+			throws MessagingException, StorageError, StorageException,
+			InconsistentConfigurationException, UnknownConfigurationElementError {
 		AcknowledgeHandler handler = new AcknowledgeHandler() {
 			public void acknowledge() throws Throwable {
 				ackHandlerCallCount++;
@@ -137,15 +138,16 @@ public class SyncronisationsAutomat_Test extends TestCase {
 				new SyncronisationsBestaetigungSystemNachricht(), handler));
 
 		nextToBeDelivered = new ReplicationStateDTO();
-		nextToBeDelivered.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_IDLE);
-		
+		nextToBeDelivered
+				.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_IDLE);
+
 		SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
 				amsAusgangsProducer, amsCommandConsumer,
 				new LocalStoreConfigurationService() {
 
 					public ReplicationStateDTO getCurrentReplicationState()
 							throws StorageError, StorageException,
-							InconsistentConfiguration {
+							InconsistentConfigurationException {
 						if (nextToBeDelivered == null)
 							fail("missing init of nextToBeDelivered");
 						return nextToBeDelivered;
@@ -153,7 +155,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 					public Configuration getEntireConfiguration()
 							throws StorageError, StorageException,
-							InconsistentConfiguration {
+							InconsistentConfigurationException {
 						fail("unexpected method call!");
 						return null;
 					}
@@ -191,13 +193,13 @@ public class SyncronisationsAutomat_Test extends TestCase {
 					public void saveJunctorConditionDTO(
 							JunctorConditionDTO junctorConditionDTO) {
 						fail("unexpected method call!");
-						
+
 					}
 
 					public void saveStringFilterConditionDTO(
 							StringFilterConditionDTO stringConditionDTO) {
 						fail("unexpected method call!");
-						
+
 					}
 
 					public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations() {
@@ -226,28 +228,33 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return null;
 					}
 
+					public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) {
+						fail("unexpected method call!");
+					}
+
 				}, new HistoryService() {
 
 					public void logReceivedReplicationDoneMessage() {
-						
+
 					}
 
 					public void logReceivedStartReplicationMessage() {
-						
+
 					}
 
 					public void logTimeOutForTimeBased(int regelwerkID,
 							int messageDescId, int regelId) {
 						fail("unexpected method call!");
 					}
-					
+
 				});
 
 		assertNotNull(zuletzGesendeteNachricht);
 		assertTrue(zuletzGesendeteNachricht instanceof SyncronisationsAufforderungsSystemNachchricht);
 		assertEquals("Alle Nachrichten wurden acknowledged.", 3,
 				ackHandlerCallCount);
-		assertEquals(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED, lastSended.getReplicationState());
+		assertEquals(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED,
+				lastSended.getReplicationState());
 	}
 
 }
