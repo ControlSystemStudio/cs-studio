@@ -30,51 +30,53 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
+import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerksBuilderException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 	private static IProcessVariableConnectionService pvConnectionService;
 	private static LocalStoreConfigurationService configurationStoreService;
+	private static Logger logger;
 
-	public List<Regelwerk> gibAlleRegelwerke() {
-		// hole alle Filter TObject aus dem confstore
-
+	public List<Regelwerk> gibAlleRegelwerke()
+			throws RegelwerksBuilderException {
 		List<Regelwerk> results = new LinkedList<Regelwerk>();
-
-		LocalStoreConfigurationService confStoreService = configurationStoreService;
-		// get all filters
-		Collection<FilterDTO> listOfFilters = null;
 		try {
+
+			LocalStoreConfigurationService confStoreService = configurationStoreService;
+			// get all filters
+			Collection<FilterDTO> listOfFilters = null;
 			listOfFilters = confStoreService.getEntireConfiguration()
 					.gibAlleFilter();
 			// TODO Auto-generated catch blocks
-		} catch (StorageError e) {
-			e.printStackTrace();
-		} catch (StorageException e) {
-			e.printStackTrace();
-		} catch (InconsistentConfigurationException e) {
-			e.printStackTrace();
-		}
 
-		// we do assume, that the first level filtercondition are conjugated
-		for (FilterDTO filterDTO : listOfFilters) {
+			// we do assume, that the first level filtercondition are conjugated
+			for (FilterDTO filterDTO : listOfFilters) {
 
-			List<FilterConditionDTO> filterConditions = 
-				filterDTO.getFilterConditions();
+				List<FilterConditionDTO> filterConditions = filterDTO
+						.getFilterConditions();
 
-			// create a list of first level filterconditions
-			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
-			for (FilterConditionDTO filterConditionDTO : filterConditions) {
-				versandRegels.add(createVersandRegel(filterConditionDTO,
-						confStoreService));
+				// create a list of first level filterconditions
+				List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
+				for (FilterConditionDTO filterConditionDTO : filterConditions) {
+					versandRegels.add(createVersandRegel(filterConditionDTO,
+							confStoreService));
+				}
+				VersandRegel hauptRegel = new UndVersandRegel(versandRegels
+						.toArray(new VersandRegel[0]));
+				results.add(new StandardRegelwerk(Regelwerkskennung.valueOf(
+						filterDTO.getIFilterID(), filterDTO.getName()),
+						hauptRegel));
 			}
-			VersandRegel hauptRegel = new UndVersandRegel(versandRegels
-					.toArray(new VersandRegel[0]));
-			results.add(new StandardRegelwerk(Regelwerkskennung.valueOf(filterDTO.getIFilterID(), filterDTO.getName()), hauptRegel));
-		}
 
+		} catch (Throwable t) {
+			logger.logErrorMessage(this, "failed to load Regelwerke!", t);
+			throw new RegelwerksBuilderException("failed to load Regelwerke!",
+					t);
+		}
 		return results;
 	}
 
@@ -96,16 +98,17 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		case TIMEBASED: {
 			TimeBasedFilterConditionDTO timeBasedCondition = (TimeBasedFilterConditionDTO) filterConditionDTO;
 			VersandRegel startRegel = new StringRegel(timeBasedCondition
-					.getTBStartOperator(),
-					timeBasedCondition.getStartKeyValue(), timeBasedCondition
-							.getCStartCompValue());
+					.getTBStartOperator(), timeBasedCondition
+					.getStartKeyValue(), timeBasedCondition
+					.getCStartCompValue());
 			VersandRegel confirmCancelRegel = new StringRegel(
 					timeBasedCondition.getTBConfirmOperator(),
 					timeBasedCondition.getConfirmKeyValue(), timeBasedCondition
 							.getCConfirmCompValue());
 
 			Millisekunden delayUntilAlarm = timeBasedCondition.getTimePeriod();
-			TimeBasedType timeBehaviorAlarm = timeBasedCondition.getTimeBehavior();
+			TimeBasedType timeBehaviorAlarm = timeBasedCondition
+					.getTimeBehavior();
 
 			VersandRegel timeBasedRegel = null;
 			if (timeBehaviorAlarm == TimeBasedType.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
@@ -147,24 +150,25 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
 
 			StringArrayFilterConditionDTO stringArayCondition = (StringArrayFilterConditionDTO) filterConditionDTO;
-			
-			List<String> compareValueList = stringArayCondition.getCompareValueList();
-			
+
+			List<String> compareValueList = stringArayCondition
+					.getCompareValueList();
+
 			MessageKeyEnum keyValue = stringArayCondition.getKeyValueEnum();
-			StringRegelOperator operatorEnum = stringArayCondition.getOperatorEnum();
+			StringRegelOperator operatorEnum = stringArayCondition
+					.getOperatorEnum();
 			for (String string : compareValueList) {
-				versandRegels.add(new StringRegel(operatorEnum, keyValue, string));
+				versandRegels.add(new StringRegel(operatorEnum, keyValue,
+						string));
 			}
 			return new OderVersandRegel(versandRegels
 					.toArray(new VersandRegel[versandRegels.size()]));
 		}
 		case PV: {
 			ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;
-			return new ProcessVariableRegel(
-					pvConnectionService,
-					pvCondition.getPVAddress(),
-					pvCondition.getPVOperator(), pvCondition.getSuggestedPVType(),
-					pvCondition.getCCompValue());
+			return new ProcessVariableRegel(pvConnectionService, pvCondition
+					.getPVAddress(), pvCondition.getPVOperator(), pvCondition
+					.getSuggestedPVType(), pvCondition.getCCompValue());
 		}
 		default:
 			throw new IllegalArgumentException("Unsupported FilterType, see "
@@ -180,7 +184,10 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 	public static void staticInject(
 			LocalStoreConfigurationService configurationStoreService) {
-		 RegelwerkBuilderServiceImpl.configurationStoreService =
-		 configurationStoreService;
+		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
+	}
+
+	public static void staticInject(Logger logger) {
+		RegelwerkBuilderServiceImpl.logger = logger;
 	}
 }

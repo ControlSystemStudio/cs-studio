@@ -5,5 +5,14 @@ import java.util.List;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 
 public interface RegelwerkBuilderService {
-	public List<Regelwerk> gibAlleRegelwerke();
+
+	/**
+	 * Loads all {@link Regelwerk}-elements from configured configuration.
+	 * 
+	 * @return A unmodifyable list of {@link Regelwerk}, not null.
+	 * @throws RegelwerksBuilderException
+	 *             If an error occurs on loading or creating {@link Regelwerk}-elements.
+	 */
+	public List<Regelwerk> gibAlleRegelwerke()
+			throws RegelwerksBuilderException;
 }

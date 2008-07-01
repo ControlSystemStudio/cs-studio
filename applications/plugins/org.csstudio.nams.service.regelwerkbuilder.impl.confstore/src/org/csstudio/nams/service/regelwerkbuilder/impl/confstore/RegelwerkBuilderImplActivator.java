@@ -6,6 +6,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
@@ -28,8 +29,9 @@ public class RegelwerkBuilderImplActivator extends AbstractBundleActivator
 	        @OSGiService @Required
 	        PreferenceService preferenceService,
 	        @OSGiService @Required
-	        ConfigurationServiceFactory configurationServiceFactory
-	        
+	        ConfigurationServiceFactory configurationServiceFactory,
+	        @OSGiService @Required
+	        Logger logger
 	) {
 		
 		
@@ -46,6 +48,7 @@ public class RegelwerkBuilderImplActivator extends AbstractBundleActivator
 		IProcessVariableConnectionService pvConnectionService = pvConnectionServiceFactory
 				.createProcessVariableConnectionService();
 
+		RegelwerkBuilderServiceImpl.staticInject(logger);
 		RegelwerkBuilderServiceImpl.staticInject(pvConnectionService);
 		RegelwerkBuilderServiceImpl.staticInject(configurationStoreService);
 	}
