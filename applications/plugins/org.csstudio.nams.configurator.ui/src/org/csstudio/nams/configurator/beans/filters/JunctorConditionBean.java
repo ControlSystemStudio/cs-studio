@@ -61,5 +61,44 @@ public class JunctorConditionBean extends AbstractConfigurationBean<JunctorCondi
 		this.junctor = junctor;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((firstCondition == null) ? 0 : firstCondition.hashCode());
+		result = prime * result + ((junctor == null) ? 0 : junctor.hashCode());
+		result = prime * result
+				+ ((secondCondition == null) ? 0 : secondCondition.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final JunctorConditionBean other = (JunctorConditionBean) obj;
+		if (firstCondition == null) {
+			if (other.firstCondition != null)
+				return false;
+		} else if (!firstCondition.equals(other.firstCondition))
+			return false;
+		if (junctor == null) {
+			if (other.junctor != null)
+				return false;
+		} else if (!junctor.equals(other.junctor))
+			return false;
+		if (secondCondition == null) {
+			if (other.secondCondition != null)
+				return false;
+		} else if (!secondCondition.equals(other.secondCondition))
+			return false;
+		return true;
+	}
+
 
 }

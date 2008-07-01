@@ -73,4 +73,51 @@ public class PVFilterConditionBean extends
 		return 0;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((channelName == null) ? 0 : channelName.hashCode());
+		result = prime * result
+				+ ((compareValue == null) ? 0 : compareValue.hashCode());
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		result = prime * result
+				+ ((suggestedType == null) ? 0 : suggestedType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final PVFilterConditionBean other = (PVFilterConditionBean) obj;
+		if (channelName == null) {
+			if (other.channelName != null)
+				return false;
+		} else if (!channelName.equals(other.channelName))
+			return false;
+		if (compareValue == null) {
+			if (other.compareValue != null)
+				return false;
+		} else if (!compareValue.equals(other.compareValue))
+			return false;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		if (suggestedType == null) {
+			if (other.suggestedType != null)
+				return false;
+		} else if (!suggestedType.equals(other.suggestedType))
+			return false;
+		return true;
+	}
+
 }

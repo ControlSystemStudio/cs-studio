@@ -61,5 +61,45 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 		this.operator = operator;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((compareValues == null) ? 0 : compareValues.hashCode());
+		result = prime * result
+				+ ((keyValue == null) ? 0 : keyValue.hashCode());
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final StringArrayFilterConditionBean other = (StringArrayFilterConditionBean) obj;
+		if (compareValues == null) {
+			if (other.compareValues != null)
+				return false;
+		} else if (!compareValues.equals(other.compareValues))
+			return false;
+		if (keyValue == null) {
+			if (other.keyValue != null)
+				return false;
+		} else if (!keyValue.equals(other.keyValue))
+			return false;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		return true;
+	}
+
 
 }

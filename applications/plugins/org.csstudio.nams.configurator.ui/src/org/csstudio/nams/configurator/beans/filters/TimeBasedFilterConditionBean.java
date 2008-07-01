@@ -117,5 +117,84 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 		sTimeBehavior = timeBasedType;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((cConfirmCompValue == null) ? 0 : cConfirmCompValue
+						.hashCode());
+		result = prime
+				* result
+				+ ((cConfirmKeyValue == null) ? 0 : cConfirmKeyValue.hashCode());
+		result = prime * result
+				+ ((cStartCompValue == null) ? 0 : cStartCompValue.hashCode());
+		result = prime * result
+				+ ((cStartKeyValue == null) ? 0 : cStartKeyValue.hashCode());
+		result = prime
+				* result
+				+ ((sConfirmOperator == null) ? 0 : sConfirmOperator.hashCode());
+		result = prime * result
+				+ ((sStartOperator == null) ? 0 : sStartOperator.hashCode());
+		result = prime * result
+				+ ((sTimeBehavior == null) ? 0 : sTimeBehavior.hashCode());
+		result = prime * result
+				+ ((sTimePeriod == null) ? 0 : sTimePeriod.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final TimeBasedFilterConditionBean other = (TimeBasedFilterConditionBean) obj;
+		if (cConfirmCompValue == null) {
+			if (other.cConfirmCompValue != null)
+				return false;
+		} else if (!cConfirmCompValue.equals(other.cConfirmCompValue))
+			return false;
+		if (cConfirmKeyValue == null) {
+			if (other.cConfirmKeyValue != null)
+				return false;
+		} else if (!cConfirmKeyValue.equals(other.cConfirmKeyValue))
+			return false;
+		if (cStartCompValue == null) {
+			if (other.cStartCompValue != null)
+				return false;
+		} else if (!cStartCompValue.equals(other.cStartCompValue))
+			return false;
+		if (cStartKeyValue == null) {
+			if (other.cStartKeyValue != null)
+				return false;
+		} else if (!cStartKeyValue.equals(other.cStartKeyValue))
+			return false;
+		if (sConfirmOperator == null) {
+			if (other.sConfirmOperator != null)
+				return false;
+		} else if (!sConfirmOperator.equals(other.sConfirmOperator))
+			return false;
+		if (sStartOperator == null) {
+			if (other.sStartOperator != null)
+				return false;
+		} else if (!sStartOperator.equals(other.sStartOperator))
+			return false;
+		if (sTimeBehavior == null) {
+			if (other.sTimeBehavior != null)
+				return false;
+		} else if (!sTimeBehavior.equals(other.sTimeBehavior))
+			return false;
+		if (sTimePeriod == null) {
+			if (other.sTimePeriod != null)
+				return false;
+		} else if (!sTimePeriod.equals(other.sTimePeriod))
+			return false;
+		return true;
+	}
+
 
 }

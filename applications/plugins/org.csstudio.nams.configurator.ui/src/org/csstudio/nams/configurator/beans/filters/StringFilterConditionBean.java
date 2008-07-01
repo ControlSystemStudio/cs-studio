@@ -60,4 +60,44 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 		return 0;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((compValue == null) ? 0 : compValue.hashCode());
+		result = prime * result
+				+ ((keyValue == null) ? 0 : keyValue.hashCode());
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final StringFilterConditionBean other = (StringFilterConditionBean) obj;
+		if (compValue == null) {
+			if (other.compValue != null)
+				return false;
+		} else if (!compValue.equals(other.compValue))
+			return false;
+		if (keyValue == null) {
+			if (other.keyValue != null)
+				return false;
+		} else if (!keyValue.equals(other.keyValue))
+			return false;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		return true;
+	}
+
 }
