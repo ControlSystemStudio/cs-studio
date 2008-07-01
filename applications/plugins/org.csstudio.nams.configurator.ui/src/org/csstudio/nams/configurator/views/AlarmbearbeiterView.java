@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.views;
 
-import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
 import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;

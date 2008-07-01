@@ -4,8 +4,11 @@ import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
 import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
 public class AlarmbearbeitergruppenView extends ViewPart {
@@ -29,7 +32,12 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 				return configurationBeanService.getAlarmBearbeiterGruppenBeans();
 			}
 		};
-
+		MenuManager menuManager = new MenuManager();
+		TableViewer table = filteredListVarianteA.getTable();
+		Menu menu = menuManager.createContextMenu(table.getTable());
+		table.getTable().setMenu(menu);
+		getSite().registerContextMenu(menuManager, table);
+		getSite().setSelectionProvider(table);
 	}
 
 	@Override

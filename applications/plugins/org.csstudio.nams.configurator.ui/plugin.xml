@@ -154,21 +154,17 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            id="org.csstudio.nams.configurator.beans.AlarmbearbeiterBeanContributor"
-            objectClass="org.csstudio.nams.configurator.beans.AlarmbearbeiterBean">
-         <action
-               class="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
-               id="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
-               label="Neu">
-         </action>
-      </objectContribution>
-      <objectContribution
             id="org.csstudio.nams.configurator.beans.IConfigurationBeanContribution"
             objectClass="org.csstudio.nams.configurator.beans.IConfigurationBean">
          <action
                class="org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction"
                id="org.csstudio.nams.configurator.actions.DeleteAlarmbearbeiterAction"
                label="Lösche">
+         </action>
+         <action
+               class="org.csstudio.nams.configurator.actions.NewBeanAction"
+               id="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
+               label="Neu">
          </action>
       </objectContribution>
    </extension>
