@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Preferenceservice Plug-in
+Bundle-SymbolicName: org.csstudio.ams.service.preferenceservice
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.service.preferenceservice.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Eclipse-LazyStart: true
+Export-Package: org.csstudio.nams.service.preferenceservice.declaration
