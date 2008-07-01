@@ -4,34 +4,40 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.beans.FilterbedingungBean.PropertyNames;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
 
-public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<TimeBasedFilterConditionBean> implements
+public class TimeBasedFilterConditionBean extends
+		AbstractConfigurationBean<TimeBasedFilterConditionBean> implements
 		AddOnBean {
+
+	public enum PropertyNames {
+		cStartKeyValue, sStartOperator, cStartCompValue, cConfirmKeyValue, sConfirmOperator, cConfirmCompValue, sTimePeriod, sTimeBehavior;
+	}
 
 	private String cStartKeyValue;
 	private StringRegelOperator sStartOperator;
 	private String cStartCompValue;
-	
+
 	private MessageKeyEnum cConfirmKeyValue;
 	private StringRegelOperator sConfirmOperator;
 	private String cConfirmCompValue;
-	
+
 	private Millisekunden sTimePeriod;
 	private TimeBasedType sTimeBehavior;
-	
+
 	@Override
 	public TimeBasedFilterConditionBean getClone() {
 		TimeBasedFilterConditionBean bean = new TimeBasedFilterConditionBean();
-		
+
 		bean.setCStartKeyValue(cStartKeyValue);
 		bean.setSStartOperator(sStartOperator);
 		bean.setCStartCompValue(cStartCompValue);
-		
+
 		bean.setCConfirmKeyValue(cConfirmKeyValue);
 		bean.setSConfirmOperator(sConfirmOperator);
 		bean.setCConfirmCompValue(cConfirmCompValue);
-		
+
 		bean.setSTimePeriod(sTimePeriod);
 		bean.setSTimeBehavior(sTimeBehavior);
 		return bean;
@@ -40,13 +46,13 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	@Override
 	public void updateState(TimeBasedFilterConditionBean bean) {
 		// TODO Auto-generated method stub
-		throw new RuntimeException("Unimplemented method.");	
+		throw new RuntimeException("Unimplemented method.");
 	}
 
 	public String getDisplayName() {
-		return cStartCompValue + " " + sStartOperator + " " + cStartCompValue + " " 
-		+ cConfirmKeyValue + " " + sConfirmOperator + " " + cConfirmCompValue+ " "
-		+ sTimePeriod + " " + sTimeBehavior;
+		return cStartCompValue + " " + sStartOperator + " " + cStartCompValue
+				+ " " + cConfirmKeyValue + " " + sConfirmOperator + " "
+				+ cConfirmCompValue + " " + sTimePeriod + " " + sTimeBehavior;
 	}
 
 	public int getID() {
@@ -58,7 +64,9 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	}
 
 	public void setCStartKeyValue(String startKeyValue) {
+		String oldValue = cStartKeyValue;
 		cStartKeyValue = startKeyValue;
+		pcs.firePropertyChange(PropertyNames.cStartKeyValue.name(), oldValue, startKeyValue);
 	}
 
 	public StringRegelOperator getSStartOperator() {
@@ -66,7 +74,9 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	}
 
 	public void setSStartOperator(StringRegelOperator stringRegelOperator) {
+		StringRegelOperator oldValue = stringRegelOperator;
 		sStartOperator = stringRegelOperator;
+		pcs.firePropertyChange(PropertyNames.sStartOperator.name(), oldValue, stringRegelOperator);
 	}
 
 	public String getCStartCompValue() {
@@ -74,7 +84,9 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	}
 
 	public void setCStartCompValue(String startCompValue) {
+		String oldValue = cStartCompValue;
 		cStartCompValue = startCompValue;
+		pcs.firePropertyChange(PropertyNames.cStartCompValue.name(), oldValue, startCompValue);
 	}
 
 	public MessageKeyEnum getCConfirmKeyValue() {
@@ -82,7 +94,9 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	}
 
 	public void setCConfirmKeyValue(MessageKeyEnum messageKeyEnum) {
+		MessageKeyEnum oldValue = messageKeyEnum;
 		cConfirmKeyValue = messageKeyEnum;
+		pcs.firePropertyChange(PropertyNames.cConfirmKeyValue.name(), oldValue, messageKeyEnum);
 	}
 
 	public StringRegelOperator getSConfirmOperator() {
@@ -90,15 +104,19 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	}
 
 	public void setSConfirmOperator(StringRegelOperator stringRegelOperator) {
+		StringRegelOperator oldValue = sConfirmOperator;
 		sConfirmOperator = stringRegelOperator;
-	}
+		pcs.firePropertyChange(PropertyNames.sConfirmOperator.name(), oldValue, stringRegelOperator);
+		}
 
 	public String getCConfirmCompValue() {
 		return cConfirmCompValue;
 	}
 
 	public void setCConfirmCompValue(String confirmCompValue) {
+		String oldValue = cConfirmCompValue;
 		cConfirmCompValue = confirmCompValue;
+		pcs.firePropertyChange(PropertyNames.cConfirmCompValue.name(), oldValue, confirmCompValue);
 	}
 
 	public Millisekunden getSTimePeriod() {
@@ -106,7 +124,9 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	}
 
 	public void setSTimePeriod(Millisekunden millisekunden) {
+		Millisekunden oldValue = sTimePeriod;
 		sTimePeriod = millisekunden;
+		pcs.firePropertyChange(PropertyNames.sTimePeriod.name(), oldValue, millisekunden);
 	}
 
 	public TimeBasedType getSTimeBehavior() {
@@ -114,7 +134,9 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 	}
 
 	public void setSTimeBehavior(TimeBasedType timeBasedType) {
+		TimeBasedType oldValue = sTimeBehavior;
 		sTimeBehavior = timeBasedType;
+		pcs.firePropertyChange(PropertyNames.sTimeBehavior.name(), oldValue, timeBasedType);
 	}
 
 	@Override
@@ -195,6 +217,5 @@ public class TimeBasedFilterConditionBean extends AbstractConfigurationBean<Time
 			return false;
 		return true;
 	}
-
 
 }

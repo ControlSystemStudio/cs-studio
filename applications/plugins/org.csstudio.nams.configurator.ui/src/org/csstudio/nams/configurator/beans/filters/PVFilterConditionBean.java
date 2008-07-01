@@ -21,7 +21,9 @@ public class PVFilterConditionBean extends
 	}
 
 	public void setSuggestedType(SuggestedProcessVariableType suggestedType) {
+		SuggestedProcessVariableType type = this.suggestedType;
 		this.suggestedType = suggestedType;
+		pcs.firePropertyChange(PropertyNames.suggestedType.name(), type, suggestedType);
 	}
 
 	public String getChannelName() {
@@ -29,7 +31,9 @@ public class PVFilterConditionBean extends
 	}
 
 	public void setChannelName(String channelName) {
+		String oldValue = this.channelName;
 		this.channelName = channelName;
+		pcs.firePropertyChange(PropertyNames.channelName.name(), oldValue, channelName);
 	}
 
 	public Operator getOperator() {
@@ -37,7 +41,9 @@ public class PVFilterConditionBean extends
 	}
 
 	public void setOperator(Operator operator) {
+		Operator oldValue = this.operator;
 		this.operator = operator;
+		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, operator);
 	}
 
 	public String getCompareValue() {
@@ -45,7 +51,9 @@ public class PVFilterConditionBean extends
 	}
 
 	public void setCompareValue(String compareValue) {
+		String oldValue = this.compareValue;
 		this.compareValue = compareValue;
+		pcs.firePropertyChange(PropertyNames.compareValue.name(), oldValue, compareValue);
 	}
 
 	@Override

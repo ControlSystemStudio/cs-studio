@@ -1,7 +1,14 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.LinkedList;
+
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.beans.AbstractObservableBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.filters.AddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
@@ -45,7 +52,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private Text stringCompareKeyText;
 	private Combo stringOperatorCombo;
 	private Text stringCompareValueText;
-	private AddOnBean[] specificBeans;
+	private AbstractConfigurationBean[] specificBeans;
 	private Text pvChannelName;
 	private Combo pvSuggestedType;
 	private Combo pvOperator;
@@ -76,7 +83,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						.getSelectionIndex()];
 				filterSpecificComposite.layout();
 
-				beanClone.setFilterSpecificBean(specificBeans[_filterTypeEntry
+				beanClone.setFilterSpecificBean((AddOnBean) specificBeans[_filterTypeEntry
 						.getSelectionIndex()]);
 			}
 		});
@@ -128,10 +135,18 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// TimeBasedComposite
 		stackComposites[4] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[4].setLayout(new GridLayout(NUM_COLUMNS, false));
-
+		//TODO createTimeBasedGUI
+		
+		
+		LinkedList<String> types = new LinkedList<String>();
+		for (JunctorConditionType type : JunctorConditionType.values()) {
+			types.add(type.toString());
+		}
+		junctorTypeCombo.setItems(types.toArray(new String[types.size()]));
+		
 		doFilterSpecificDataBinding();
 
-		AddOnBean filterSpecificBean = bean.getFilterSpecificBean();
+		AddOnBean filterSpecificBean = (AddOnBean) bean.getFilterSpecificBean();
 		if (filterSpecificBean instanceof JunctorConditionBean) {
 			_filterTypeEntry.select(0);
 		} else if (filterSpecificBean instanceof StringFilterConditionBean) {
@@ -146,13 +161,13 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	}
 
 	private void initializeAddOnBeans() {
-		specificBeans = new AddOnBean[5];
+		specificBeans = new AbstractConfigurationBean[5];
 		specificBeans[0] = new JunctorConditionBean();
 		specificBeans[1] = new StringFilterConditionBean();
 		specificBeans[2] = new StringArrayFilterConditionBean();
 		specificBeans[3] = new PVFilterConditionBean();
 		specificBeans[4] = new TimeBasedFilterConditionBean();
-		AddOnBean filterSpecificBean = bean.getFilterSpecificBean();
+		AbstractConfigurationBean filterSpecificBean =  (AbstractConfigurationBean) bean.getFilterSpecificBean();
 		if (filterSpecificBean instanceof JunctorConditionBean)
 			specificBeans[0] = filterSpecificBean;
 		else if (filterSpecificBean instanceof StringFilterConditionBean)
@@ -166,6 +181,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		else
 			throw new RuntimeException("Unsupported AddOnBeanType "
 					+ filterSpecificBean.getClass());
+		for (int i = 0; i < specificBeans.length; i++) {
+			specificBeans[i].addPropertyChangeListener(this);
+		}
 	}
 
 	private void doFilterSpecificDataBinding() {
@@ -229,7 +247,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		// bind observables
 		context.bindValue(SWTObservables.observeSelection(junctorTypeCombo),
-				stringJunctorObservable, new UpdateValueStrategy() {
+				stringJunctorObservable, 
+				new UpdateValueStrategy() {
 					@Override
 					public Object convert(Object value) {
 						return JunctorConditionType.valueOf((String) value);
@@ -243,17 +262,17 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
 				SWT.Modify), firstConditionTextObservable,
-		// new UpdateValueStrategy() {
-				// @Override
-				// public Object convert(Object value) {
-				// return JunctorConditionType.valueOf((String) value);
-				// }
-				// }, new UpdateValueStrategy() {
-				// @Override
-				// public Object convert(Object value) {
-				// return ((FilterbedingungBean) value).getDisplayName();
-				// }
-				// });
+//		 new UpdateValueStrategy() {
+//				 @Override
+//				 public Object convert(Object value) {
+//				 return JunctorConditionType.valueOf((String) value);
+//				 }
+//				 }, new UpdateValueStrategy() {
+//				 @Override
+//				 public Object convert(Object value) {
+//				 return ((FilterbedingungBean) value).getDisplayName();
+//				 }
+//				 });
 				null, null);
 
 		context.bindValue(SWTObservables.observeText(junctorSecondFilterText,

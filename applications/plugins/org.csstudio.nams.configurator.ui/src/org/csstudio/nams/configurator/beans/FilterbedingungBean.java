@@ -12,7 +12,7 @@ public class FilterbedingungBean extends
 	private AddOnBean filterSpecificBean;
 
 	public static enum PropertyNames {
-		filterbedingungID, description, name;
+		filterbedingungID, description, name, filterSpecificBean;
 	}
 	
 	public int getFilterbedinungID() {
@@ -20,7 +20,9 @@ public class FilterbedingungBean extends
 	}
 
 	public void setFilterbedinungID(int filterbedinungID) {
+		int oldValue = this.filterbedinungID;
 		this.filterbedinungID = filterbedinungID;
+		pcs.firePropertyChange(PropertyNames.filterbedingungID.name(), oldValue, filterbedinungID);
 	}
 
 	public FilterbedingungBean() {
@@ -41,6 +43,7 @@ public class FilterbedingungBean extends
 		bean.setDescription(description);
 		bean.setName(name);
 		bean.setFilterbedinungID(filterbedinungID);
+		bean.setFilterSpecificBean((AddOnBean) ((IConfigurationBean)filterSpecificBean).getClone());
 		return bean;
 	}
 
@@ -59,7 +62,9 @@ public class FilterbedingungBean extends
 	}
 
 	public void setDescription(String description) {
+		String oldValue = this.description;
 		this.description = description;
+		pcs.firePropertyChange(PropertyNames.description.name(), oldValue, description);
 	}
 
 	public String getName() {
@@ -67,7 +72,9 @@ public class FilterbedingungBean extends
 	}
 
 	public void setName(String name) {
+		String oldValue = this.name;
 		this.name = name;
+		pcs.firePropertyChange(PropertyNames.name.name(), oldValue, name);
 	}
 	
 	@Override
@@ -119,11 +126,13 @@ public class FilterbedingungBean extends
 		return true;
 	}
 
-	public AddOnBean getFilterSpecificBean() {
-		return filterSpecificBean;
+	public AbstractConfigurationBean getFilterSpecificBean() {
+		return (AbstractConfigurationBean) filterSpecificBean;
 	}
 
 	public void setFilterSpecificBean(AddOnBean filterSpecificBean) {
+		AddOnBean oldValue = this.filterSpecificBean;
 		this.filterSpecificBean = filterSpecificBean;
+		pcs.firePropertyChange(PropertyNames.filterSpecificBean.name(), oldValue, filterSpecificBean);
 	}
 }
