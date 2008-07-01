@@ -1,6 +1,13 @@
 package org.csstudio.apputil.time;
 
-/** Simple benchmark timer
+/** Simple benchmark timer.
+ *  <p>
+ *  Typical use is
+ *  <ol>
+ *  <li>Create (which also starts)
+ *  <li>stop(), use get... to get time
+ *  </ol>
+ *  It's also possible to stop multiple times to get "lap" readings.
  *  @author Kay Kasemir
  */
 public class BenchmarkTimer
@@ -43,4 +50,5 @@ public class BenchmarkTimer
     {
         return elapsed / 1.0e9;
     }
+
 }
