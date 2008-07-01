@@ -6,6 +6,7 @@ import java.util.List;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean.PropertyNames;
 
 public class StringArrayFilterConditionBean extends AbstractConfigurationBean<StringArrayFilterConditionBean>
 		implements AddOnBean {
@@ -13,6 +14,10 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 	private List<String> compareValues = new LinkedList<String>();
 	private MessageKeyEnum keyValue;
 	private StringRegelOperator operator;
+	
+	public static enum PropertyNames {
+		compareValues, keyValue, operator;
+	}
 	
 	@Override
 	public StringArrayFilterConditionBean getClone() {
@@ -42,7 +47,9 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 	}
 
 	public void setCompareValues(List<String> compareValues) {
+		List<String> oldValue = this.compareValues;
 		this.compareValues = compareValues;
+		pcs.firePropertyChange(PropertyNames.compareValues.name(), oldValue, this.compareValues);
 	}
 
 	public MessageKeyEnum getKeyValue() {
@@ -50,7 +57,9 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 	}
 
 	public void setKeyValue(MessageKeyEnum keyValue) {
+		MessageKeyEnum oldValue = this.keyValue;
 		this.keyValue = keyValue;
+		pcs.firePropertyChange(PropertyNames.keyValue.name(), oldValue, this.keyValue);
 	}
 
 	public StringRegelOperator getOperator() {
@@ -58,7 +67,9 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 	}
 
 	public void setOperator(StringRegelOperator operator) {
+		StringRegelOperator oldValue = this.operator;
 		this.operator = operator;
+		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, this.operator);
 	}
 
 	@Override

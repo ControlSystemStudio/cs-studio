@@ -27,7 +27,9 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 	}
 
 	public void setKeyValue(String keyValue) {
+		String oldValue = this.keyValue;
 		this.keyValue = keyValue;
+		pcs.firePropertyChange(PropertyNames.keyValue.name(), oldValue, this.keyValue);
 	}
 
 	public String getCompValue() {
@@ -35,7 +37,9 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 	}
 
 	public void setCompValue(String compValue) {
+		String oldValue = this.compValue;
 		this.compValue = compValue;
+		pcs.firePropertyChange(PropertyNames.compValue.name(), oldValue, this.compValue);
 	}
 
 	public StringRegelOperator getOperator() {
@@ -43,7 +47,9 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 	}
 
 	public void setOperator(StringRegelOperator operator) {
+		StringRegelOperator oldValue = this.operator;
 		this.operator = operator;
+		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, this.operator);
 	}
 
 	@Override

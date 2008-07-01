@@ -42,7 +42,10 @@ public class JunctorConditionBean extends AbstractConfigurationBean<JunctorCondi
 	}
 
 	public void setFirstCondition(FilterbedingungBean firstCondition) {
+		FilterbedingungBean oldValue = this.firstCondition;
 		this.firstCondition = firstCondition;
+		pcs.firePropertyChange(PropertyNames.firstCondition.name(), oldValue, this.firstCondition);
+		
 	}
 
 	public FilterbedingungBean getSecondCondition() {
@@ -50,7 +53,9 @@ public class JunctorConditionBean extends AbstractConfigurationBean<JunctorCondi
 	}
 
 	public void setSecondCondition(FilterbedingungBean secondCondition) {
+		FilterbedingungBean oldValue = this.secondCondition;
 		this.secondCondition = secondCondition;
+		pcs.firePropertyChange(PropertyNames.secondCondition.name(), oldValue, this.secondCondition);
 	}
 
 	public JunctorConditionType getJunctor() {
@@ -58,7 +63,9 @@ public class JunctorConditionBean extends AbstractConfigurationBean<JunctorCondi
 	}
 
 	public void setJunctor(JunctorConditionType junctor) {
+		JunctorConditionType oldValue = this.junctor;
 		this.junctor = junctor;
+		pcs.firePropertyChange(PropertyNames.junctor.name(), oldValue, this.junctor);
 	}
 
 	@Override
