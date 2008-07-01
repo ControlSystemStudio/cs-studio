@@ -46,10 +46,12 @@ public class DokumentVerbraucherArbeiter<T extends Ablagefaehig> extends Thread 
 	private final Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge;
 	private final DokumentenBearbeiter<T> vorgangsmappenBearbeiter;
 
+	private static long instanceCount = 0;
+	
 	public DokumentVerbraucherArbeiter(
 			DokumentenBearbeiter<T> vorgangsmappenBearbeiter,
 			Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge) {
-		super("DokumentVerbraucherArbeiter");
+		super("DokumentVerbraucherArbeiter-"+(++instanceCount));
 		this.vorgangsmappenBearbeiter = vorgangsmappenBearbeiter;
 		this.eingangskorbNeuerAlarmVorgaenge = eingangskorbNeuerAlarmVorgaenge;
 		arbeitFortsetzen = true;

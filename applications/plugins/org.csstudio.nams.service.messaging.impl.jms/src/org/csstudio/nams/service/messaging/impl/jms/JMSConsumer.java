@@ -180,10 +180,13 @@ class JMSConsumer implements Consumer {
 		private volatile boolean arbeitFortsetzen = true;
 		private MessageConsumer consumer;
 		private final Logger logger;
+		
+		private static long instanceCount = 0;
 
 		public WorkThread(LinkedBlockingQueue<Message> messageQueue,
 				Session session, String source, String clientId,
 				PostfachArt art, Logger logger) throws JMSException {
+			super("JMSConsumer#WorkThread-"+(++instanceCount));
 			this.messageQueue = messageQueue;
 			this.logger = logger;
 
