@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -62,21 +63,25 @@ public abstract class FilteredListVarianteA {
 			{
 				new Label(compDown, SWT.READ_ONLY).setText("Rubrik");
 
-				gruppenCombo = new ComboViewer(compDown, SWT.BORDER | SWT.READ_ONLY);
+				gruppenCombo = new ComboViewer(compDown, SWT.BORDER
+						| SWT.READ_ONLY);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						gruppenCombo.getControl());
 				gruppenCombo.setContentProvider(new ArrayContentProvider());
-				gruppenCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+				gruppenCombo
+						.addSelectionChangedListener(new ISelectionChangedListener() {
 
-					
-
-					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-						selectedgruppenname = (String) selection.getFirstElement();
-						gruppenComboSelectedIndex = gruppenCombo.getCombo().getSelectionIndex();
-						table.refresh();
-					}
-				});
+							public void selectionChanged(
+									SelectionChangedEvent event) {
+								IStructuredSelection selection = (IStructuredSelection) event
+										.getSelection();
+								selectedgruppenname = (String) selection
+										.getFirstElement();
+								gruppenComboSelectedIndex = gruppenCombo
+										.getCombo().getSelectionIndex();
+								table.refresh();
+							}
+						});
 			}
 
 			{
@@ -113,7 +118,7 @@ public abstract class FilteredListVarianteA {
 		main.addControlListener(new TableColumnResizeAdapter(main, table
 				.getTable(), column));
 	}
-	
+
 	private int gruppenComboSelectedIndex = -1;
 
 	protected void openEditor(DoubleClickEvent event) {
@@ -216,20 +221,28 @@ public abstract class FilteredListVarianteA {
 				gruppenNamen.add(groupName);
 			}
 		}
-		
+
 		String[] newItems = new String[gruppenNamen.size() + 3];
 		newItems[0] = "ALLE";
 		newItems[1] = "Ohne Rubrik";
 		newItems[2] = "-------------";
-		System.arraycopy(gruppenNamen.toArray(new String[gruppenNamen.size()]), 0, newItems, 3, gruppenNamen.size());
+		System.arraycopy(gruppenNamen.toArray(new String[gruppenNamen.size()]),
+				0, newItems, 3, gruppenNamen.size());
 		gruppenCombo.setInput(newItems);
-		
-		int newIndex = 0;
-		if (gruppenComboSelectedIndex > -1 && gruppenComboSelectedIndex < newItems.length) {
-			newIndex = gruppenComboSelectedIndex;
-		}
-		gruppenCombo.getCombo().select(newIndex);
 
+		// int newIndex = 0;
+		// if (gruppenComboSelectedIndex > -1 && gruppenComboSelectedIndex <
+		// newItems.length ) {
+		// newIndex = gruppenComboSelectedIndex;
+		// }
+		// gruppenCombo.getCombo().select(newIndex);
+		if (gruppenNamen.contains(selectedgruppenname)) {
+			gruppenCombo.setSelection(new StructuredSelection(
+					selectedgruppenname), true);
+		} else {
+			gruppenCombo.setSelection(new StructuredSelection(
+					"ALLE"), true);
+		}
 		Arrays.sort(tableInput);
 		table.setInput(tableInput);
 	}
