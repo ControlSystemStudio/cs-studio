@@ -1,13 +1,13 @@
 package org.csstudio.nams.service.history.impl.confstore;
 
-import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
-import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.osgi.framework.BundleActivator;
 
 /**

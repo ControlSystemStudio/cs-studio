@@ -7,9 +7,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
-import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
-import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.service.ExecutionServiceMock;
@@ -36,6 +33,9 @@ import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.declaration.ProducerMock;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage.AcknowledgeHandler;
 import org.csstudio.nams.service.messaging.declaration.MultiConsumersConsumer.MultiConsumerConsumerThreads;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.easymock.EasyMock;
 import org.eclipse.equinox.app.IApplicationContext;

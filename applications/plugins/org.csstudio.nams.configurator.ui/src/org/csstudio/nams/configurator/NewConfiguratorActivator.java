@@ -1,7 +1,5 @@
 package org.csstudio.nams.configurator;
 
-import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
-import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
@@ -17,6 +15,8 @@ import org.csstudio.nams.configurator.views.FilterView;
 import org.csstudio.nams.configurator.views.FilterbedingungView;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.osgi.framework.BundleActivator;
 
 public class NewConfiguratorActivator extends AbstractBundleActivator implements
