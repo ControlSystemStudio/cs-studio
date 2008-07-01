@@ -11,6 +11,11 @@ import org.csstudio.nams.configurator.editor.AlarmtopicEditor;
 import org.csstudio.nams.configurator.editor.FilterEditor;
 import org.csstudio.nams.configurator.editor.FilterbedingungEditor;
 
+/**
+ * Zuordnung der Editoren zu den Konfigurationselementen.
+ *  
+ * Note: Mapped Bean-Typen auf Eclipse-editor-extension-point-ids.
+ */
 public enum BeanToEditorId {
 		Alarmbearbeiter(AlarmbearbeiterBean.class, AlarmbearbeiterEditor.getId()),
 		Alarmbearbeitergruppe(AlarmbearbeiterGruppenBean.class, AlarmbearbeitergruppenEditor.getId()),

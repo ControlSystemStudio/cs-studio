@@ -44,26 +44,21 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 						preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
 
+		// prepare bean-service
 		ConfigurationBeanServiceImpl.staticInject(logger);
-		
-//		ModelFactory modelFactory = new ModelFactory(
-//				localStoreConfigurationService);
-		
 		ConfigurationBeanService beanService = new ConfigurationBeanServiceImpl(localStoreConfigurationService);
 		
-		//prepare Controler
+		//prepare Views
 		AlarmbearbeitergruppenView.staticInject(beanService);
 		AlarmbearbeiterView.staticInject(beanService);
 		AlarmtopicView.staticInject(beanService);
 		FilterView.staticInject(beanService);
 		FilterbedingungView.staticInject(beanService);
 		
+		// prepare editors
 		AlarmbearbeiterEditor.staticInject(beanService);
 		
+		// prepare actions
 		DeleteConfugurationBeanAction.staticInject(beanService);
-		
-//		ConfigurationModel.staticInject(localStoreConfigurationService);
-//		DeleteConfiguration.staticInject(localStoreConfigurationService);
-		
 	}
 }

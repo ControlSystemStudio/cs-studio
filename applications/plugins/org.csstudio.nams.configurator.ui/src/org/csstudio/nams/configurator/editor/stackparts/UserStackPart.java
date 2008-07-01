@@ -1,9 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -16,7 +14,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-
+@Deprecated
 public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 	private Text _nameTextEntry;
@@ -67,12 +65,12 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 				"User is active:", true);
 	}
 
-	@Override
-	public void setInput(IConfigurationBean input, IConfigurationModel model) {
-		super.setInput(input, model);
-		// TODO redo group initialization may 
-		// this.initGroupCombo();
-	}
+//	@Override
+//	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+//		super.setInput(input, model);
+//		// TODO redo group initialization may 
+//		// this.initGroupCombo();
+//	}
 
 	// TODO get AMS_UserGroups DTO's and insert them into the HibernateMapping
 	// private void initGroupCombo() {

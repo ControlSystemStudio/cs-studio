@@ -4,13 +4,12 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-
+@Deprecated
 public class DefaultStackPart extends AbstractStackPart {
 
 	private Composite _main;
@@ -51,11 +50,11 @@ public class DefaultStackPart extends AbstractStackPart {
 
 	}
 
-	@Override
-	public void setInput(IConfigurationBean input, IConfigurationModel model) {
-		// TODO Auto-generated method stub
-
-	}
+//	@Override
+//	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 	@Override
 	protected void initDataBinding() {

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-
+@Deprecated
 public class AlarmbearbeitergruppenStackPart extends
 		AbstractStackPart<AlarmbearbeiterGruppenBean> {
 

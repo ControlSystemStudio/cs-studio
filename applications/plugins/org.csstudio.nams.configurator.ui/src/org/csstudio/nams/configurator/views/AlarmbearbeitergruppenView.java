@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.composite.FilteredListVarianteA;
+import org.csstudio.nams.configurator.composite.FilterableBeanList;
 import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.jface.action.MenuManager;
@@ -15,7 +15,7 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 
 	public static final String ID = "org.csstudio.nams.configurator.alarmbearbeitergruppen";
 	private static ConfigurationBeanService configurationBeanService;
-	private FilteredListVarianteA filteredListVarianteA;
+	private FilterableBeanList filteredListVarianteA;
 
 	public AlarmbearbeitergruppenView() {
 		configurationBeanService.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
@@ -26,7 +26,7 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 
-		filteredListVarianteA = new FilteredListVarianteA(parent, SWT.None) {
+		filteredListVarianteA = new FilterableBeanList(parent, SWT.None) {
 
 			protected IConfigurationBean[] getTableInput() {
 				return configurationBeanService.getAlarmBearbeiterGruppenBeans();

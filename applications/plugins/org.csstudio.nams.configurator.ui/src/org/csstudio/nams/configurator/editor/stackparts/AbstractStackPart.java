@@ -4,7 +4,6 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.modelmapping.IConfigurationModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -15,6 +14,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+@Deprecated
 public abstract class AbstractStackPart<ConfigurationType extends IConfigurationBean> {
 
 	protected final int NUM_COLUMNS;
@@ -23,7 +23,7 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 	private DirtyFlagProvider _dirtyFlagProvider;
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
-	protected IConfigurationModel model;
+//	protected IConfigurationModel model;
 	
 	protected PropertyChangeListener listener;
 	protected Composite main;
@@ -139,23 +139,23 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 		// .getSelectionIndex());
 
 		// speicher Änderungen im lokalen Model
-		IConfigurationBean updatedBean = this.model.save(this.beanClone);
+//		IConfigurationBean updatedBean = this.model.save(this.beanClone);
 
 		// copy clone state to original bean
-		this.bean = (ConfigurationType) updatedBean;
-
+//		this.bean = (ConfigurationType) updatedBean;
+//
 		// create new clone
 		this.beanClone = (ConfigurationType) this.bean.getClone();
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setInput(IConfigurationBean input, IConfigurationModel model) {
-		this.model = model;
-		this.bean = (ConfigurationType) input;
-		this.beanClone = (ConfigurationType) ((ConfigurationType) input)
-				.getClone();
-		initDataBinding();
-	}
+//	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+//		this.model = model;
+//		this.bean = (ConfigurationType) input;
+//		this.beanClone = (ConfigurationType) ((ConfigurationType) input)
+//				.getClone();
+//		initDataBinding();
+//	}
 
 	protected abstract void initDataBinding();
 

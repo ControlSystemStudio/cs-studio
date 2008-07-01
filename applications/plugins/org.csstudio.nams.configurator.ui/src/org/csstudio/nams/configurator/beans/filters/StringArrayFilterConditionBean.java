@@ -6,7 +6,6 @@ import java.util.List;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
-import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean.PropertyNames;
 
 public class StringArrayFilterConditionBean extends AbstractConfigurationBean<StringArrayFilterConditionBean>
 		implements AddOnBean {

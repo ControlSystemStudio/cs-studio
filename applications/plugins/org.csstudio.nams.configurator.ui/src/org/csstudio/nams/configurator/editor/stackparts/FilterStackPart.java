@@ -7,7 +7,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-
+@Deprecated
 public class FilterStackPart extends AbstractStackPart<FilterBean> {
 
 	private Text _nameTextEntry;

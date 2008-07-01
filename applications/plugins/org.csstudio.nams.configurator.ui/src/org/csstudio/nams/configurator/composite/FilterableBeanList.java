@@ -7,7 +7,6 @@ import java.util.TreeSet;
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -26,7 +25,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -36,7 +34,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-public abstract class FilteredListVarianteA {
+public abstract class FilterableBeanList {
 
 	private String filterkriterium = "";
 	private String selectedgruppenname = "ALLE";
@@ -45,7 +43,7 @@ public abstract class FilteredListVarianteA {
 	private TableViewer table;
 	private ComboViewer gruppenCombo;
 
-	public FilteredListVarianteA(Composite parent, int style) {
+	public FilterableBeanList(Composite parent, int style) {
 		this.createPartControl(parent, style);
 	}
 
@@ -78,8 +76,6 @@ public abstract class FilteredListVarianteA {
 										.getSelection();
 								selectedgruppenname = (String) selection
 										.getFirstElement();
-								gruppenComboSelectedIndex = gruppenCombo
-										.getCombo().getSelectionIndex();
 								table.refresh();
 							}
 						});
@@ -119,8 +115,6 @@ public abstract class FilteredListVarianteA {
 		main.addControlListener(new TableColumnResizeAdapter(main, table
 				.getTable(), column));
 	}
-
-	private int gruppenComboSelectedIndex = -1;
 
 	protected void openEditor(DoubleClickEvent event) {
 		IStructuredSelection selection = (IStructuredSelection) event
