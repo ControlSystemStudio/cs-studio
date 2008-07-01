@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -222,11 +223,11 @@ public abstract class FilteredListVarianteA {
 			}
 		}
 
-		String[] newItems = new String[gruppenNamen.size() + 3];
+		Object[] newItems = new String[gruppenNamen.size() + 3];
 		newItems[0] = "ALLE";
 		newItems[1] = "Ohne Rubrik";
 		newItems[2] = "-------------";
-		System.arraycopy(gruppenNamen.toArray(new String[gruppenNamen.size()]),
+		System.arraycopy(gruppenNamen.toArray(new Object[gruppenNamen.size()]),
 				0, newItems, 3, gruppenNamen.size());
 		gruppenCombo.setInput(newItems);
 
