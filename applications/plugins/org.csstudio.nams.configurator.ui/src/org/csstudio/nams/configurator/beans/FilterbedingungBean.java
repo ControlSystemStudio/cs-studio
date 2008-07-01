@@ -1,12 +1,20 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.configurator.beans.filters.AddOnBean;
+
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
 
 	private int filterbedinungID;
 	private String description;
 	private String name;
+	
+	private AddOnBean filterSpecificBean;
 
+	public static enum PropertyNames {
+		filterbedingungID, description, name;
+	}
+	
 	public int getFilterbedinungID() {
 		return filterbedinungID;
 	}
@@ -73,6 +81,10 @@ public class FilterbedingungBean extends
 		int result = 1;
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime
+				* result
+				+ ((filterSpecificBean == null) ? 0 : filterSpecificBean
+						.hashCode());
 		result = prime * result + filterbedinungID;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -92,6 +104,11 @@ public class FilterbedingungBean extends
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
+		if (filterSpecificBean == null) {
+			if (other.filterSpecificBean != null)
+				return false;
+		} else if (!filterSpecificBean.equals(other.filterSpecificBean))
+			return false;
 		if (filterbedinungID != other.filterbedinungID)
 			return false;
 		if (name == null) {
@@ -100,5 +117,13 @@ public class FilterbedingungBean extends
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	public AddOnBean getFilterSpecificBean() {
+		return filterSpecificBean;
+	}
+
+	public void setFilterSpecificBean(AddOnBean filterSpecificBean) {
+		this.filterSpecificBean = filterSpecificBean;
 	}
 }
