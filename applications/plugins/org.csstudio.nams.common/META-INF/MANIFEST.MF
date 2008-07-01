@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common.activatorUtils
 Eclipse-LazyStart: true
-Export-Package: de.c1wps.desy.ams.allgemeines.regelwerk;
+Export-Package: de.c1wps.desy.ams.allgemeines;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ de.c1wps.desy.ams.allgemeines.regelwerk;
   uses:="org.csstudio.platform.model.pvs,
    junit.framework,
    org.csstudio.nams.common.material,
