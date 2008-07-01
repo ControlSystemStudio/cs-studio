@@ -96,6 +96,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (new Random().nextBoolean()) {
 			bean.setRubrikName("Random Test Rubrik");
 		}
+		if (bean.getDisplayName().startsWith("Alexander")) {
+			bean.setRubrikName("Alex");
+		}
+		
+		
 		return bean;
 	}
 
@@ -322,11 +327,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		
 		if (bean.getUserID() != -1) {
 			for (ConfigurationBeanServiceListener listener : listeners) {
-				listener.onBeanUpdate(bean);
+				listener.onBeanUpdate(resultBean);
 			}
 		} else {
 			for (ConfigurationBeanServiceListener listener : listeners) {
-				listener.onBeanInsert(bean);
+				listener.onBeanInsert(resultBean);
 			}
 		}
 		return resultBean;

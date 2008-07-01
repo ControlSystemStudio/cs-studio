@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.internal.dnd.SwtUtil;
 
 public abstract class FilteredListVarianteA {
 
@@ -59,18 +61,13 @@ public abstract class FilteredListVarianteA {
 			{
 				new Label(compDown, SWT.READ_ONLY).setText("Rubrik");
 
-				gruppenCombo = new Combo(compDown, SWT.BORDER
-						| SWT.READ_ONLY);
+				gruppenCombo = new Combo(compDown, SWT.BORDER | SWT.READ_ONLY);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						gruppenCombo);
+
 				gruppenCombo.add("ALLE");
 				gruppenCombo.add("Ohne Rubrik");
 				gruppenCombo.add("-------------");
-//				gruppenCombo.add("Kryo OPS");
-//				gruppenCombo.add("C1-WPS");
-				gruppenCombo.select(0);
-				//FIX ME DONE! remove hardcoded group names
-
 
 				gruppenCombo.addListener(SWT.Modify, new Listener() {
 					public void handleEvent(Event event) {
@@ -79,6 +76,7 @@ public abstract class FilteredListVarianteA {
 						table.refresh();
 					}
 				});
+				gruppenCombo.select(0);
 			}
 
 			{
@@ -100,11 +98,9 @@ public abstract class FilteredListVarianteA {
 		{
 			table = new TableViewer(main, SWT.FULL_SELECTION | SWT.MULTI);
 			column = new TableColumn(table.getTable(), SWT.LEFT);
-			// column.setWidth(450);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					table.getControl());
 			table.setContentProvider(new ArrayContentProvider());
-//			table.setLabelProvider(new 
 			updateView();
 			table.setFilters(new ViewerFilter[] { new TableFilter() });
 			table.addDoubleClickListener(new IDoubleClickListener() {
@@ -122,26 +118,8 @@ public abstract class FilteredListVarianteA {
 		IStructuredSelection selection = (IStructuredSelection) event
 				.getSelection();
 		Object source = selection.getFirstElement();
-		AbstractConfigurationBean<?> configurationBean= (AbstractConfigurationBean<?>) source;
+		AbstractConfigurationBean<?> configurationBean = (AbstractConfigurationBean<?>) source;
 
-//		IConfigurationModel model = new ConfigurationModel() {
-//			@Override
-//			public Collection<String> getSortgroupNames() {
-//				Collection<String> groupNames = new ArrayList<String>();
-//				groupNames.add("Kryo OPS");
-//				groupNames.add("C1-WPS");
-//				//FIXME remove hardcoded group names
-//				return groupNames;
-//			}
-//		};
-//		configurationBean.addPropertyChangeListener(new PropertyChangeListener(){
-//
-//			public void propertyChange(PropertyChangeEvent evt) {
-//				updateView();
-//				
-//			}
-//			
-//		});
 		new OpenConfigurationEditorAction(configurationBean).run();
 	}
 
@@ -201,7 +179,7 @@ public abstract class FilteredListVarianteA {
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
 			IConfigurationBean bean = (IConfigurationBean) element;
-			
+
 			if (!bean.getDisplayName().toLowerCase().contains(
 					filterkriterium.toLowerCase())) {
 				return false;
@@ -209,13 +187,15 @@ public abstract class FilteredListVarianteA {
 			if (selectedgruppenname.equals("ALLE")) {
 				return true;
 			}
-			
+
 			if (selectedgruppenname.equals("Ohne Rubrik")) {
-				return (bean.getRubrikName() == null || bean.getRubrikName().equals(""));
+				return (bean.getRubrikName() == null || bean.getRubrikName()
+						.equals(""));
 			}
-			
-			boolean equals = (bean.getRubrikName() != null && bean.getRubrikName().equals(selectedgruppenname));
-			return equals;			
+
+			boolean equals = (bean.getRubrikName() != null && bean
+					.getRubrikName().equals(selectedgruppenname));
+			return equals;
 		}
 
 	}
@@ -223,14 +203,10 @@ public abstract class FilteredListVarianteA {
 	public TableViewer getTable() {
 		return table;
 	}
-	
-	public void updateView(){
+
+	public void updateView() {
 		IConfigurationBean[] tableInput = this.getTableInput();
-		
-		if (gruppenCombo.getItemCount() > 3) {
-			//TODO just removed this is probably test code?
-//			gruppenCombo.remove(3, gruppenCombo.getItemCount());
-		}
+
 		gruppenNamen.clear();
 		for (IConfigurationBean bean : tableInput) {
 			String groupName = bean.getRubrikName();
@@ -238,10 +214,30 @@ public abstract class FilteredListVarianteA {
 				gruppenNamen.add(groupName);
 			}
 		}
-		for (String gruppenName : gruppenNamen) {
-			gruppenCombo.add(gruppenName);
-		}
-		
+
+		Display.getCurrent().syncExec(new Runnable() {
+			public void run() {
+				int oldIndex = gruppenCombo.getSelectionIndex();
+				String item = gruppenCombo.getItem(oldIndex);
+				gruppenCombo.deselectAll();
+
+				final int itemCount = gruppenCombo.getItemCount();
+				if (itemCount > 3) {
+//					gruppenCombo.remove(3, itemCount - 1);
+					gruppenCombo.removeAll();
+				}
+
+				for (String gruppenName : gruppenNamen) {
+					gruppenCombo.add(gruppenName);
+				}
+
+				int newIndex = gruppenCombo.indexOf(item);
+				if (newIndex == -1)
+					newIndex = 0;
+				gruppenCombo.select(newIndex);
+			}
+		});
+
 		Arrays.sort(tableInput);
 		table.setInput(tableInput);
 	}
