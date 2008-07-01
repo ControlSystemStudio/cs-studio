@@ -47,7 +47,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	private static final String NAME_OF_VALUEOF_METHOD = "valueOf";
 
 	@Test
-	public final void testAllFieldsAreFinal() {
+	public final void testAllFieldsAreFinal() throws Throwable {
 		Class<?> type = getAValueOfTypeUnderTest().getClass();
 
 		boolean atLeastOneNotFinalFieldFouund = false;
@@ -70,7 +70,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	}
 
 	@Test
-	public final void testClassIsFinalAndDirectSubClassOfObject() {
+	public final void testClassIsFinalAndDirectSubClassOfObject() throws Throwable {
 		Class<?> type = getAValueOfTypeUnderTest().getClass();
 		int modifiers = type.getModifiers();
 
@@ -80,7 +80,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	}
 
 	@Test
-	public final void testConstructorsArePrivate() {
+	public final void testConstructorsArePrivate() throws Throwable {
 		Class<?> type = getAValueOfTypeUnderTest().getClass();
 
 		boolean atLeastOneNotPrivateConstructorFouund = false;
@@ -98,7 +98,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	}
 
 	@Test
-	public final void testValueOfIsPresent() {
+	public final void testValueOfIsPresent() throws Throwable {
 		Class<?> type = getAValueOfTypeUnderTest().getClass();
 
 		boolean atLeastOneValueOfFound = false;
@@ -117,14 +117,14 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 				atLeastOneValueOfFound);
 	}
 
-	final protected T getAValueOfTypeUnderTest() {
+	final protected T getAValueOfTypeUnderTest() throws Throwable {
 		T valueOfTypeUnderTest = doGetAValueOfTypeUnderTest();
 		assertNotNull(valueOfTypeUnderTest);
 		return valueOfTypeUnderTest;
 	}
-	abstract protected T doGetAValueOfTypeUnderTest();
+	abstract protected T doGetAValueOfTypeUnderTest() throws Throwable ;
 
-	final protected T[] getDifferentInstancesOfTypeUnderTest() {
+	final protected T[] getDifferentInstancesOfTypeUnderTest() throws Throwable {
 		T[] differentInstances = doGetDifferentInstancesOfTypeUnderTest();
 
 		assertNotNull(
@@ -147,10 +147,10 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	 * 
 	 * @return T[] with different Instances, each element differs in at least one different instance variable.
 	 */
-	abstract protected T[] doGetDifferentInstancesOfTypeUnderTest();
+	abstract protected T[] doGetDifferentInstancesOfTypeUnderTest() throws Throwable ;
 
 	@Test
-	public final void testEqualsWithIdenticalInstances() {
+	public final void testEqualsWithIdenticalInstances() throws Throwable {
 		T x = getAValueOfTypeUnderTest();
 		T y = x;
 		T z = x;
@@ -204,7 +204,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	}
 
 	@Test
-	public final void testEqualsWithDiffrentInstances() {
+	public final void testEqualsWithDiffrentInstances() throws Throwable {
 		T[] differentInstances = getDifferentInstancesOfTypeUnderTest();
 
 		T x = differentInstances[0];
@@ -254,7 +254,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	}
 
 	@Test
-	public final void testEqualsWithIncompareableOtherObjectInstance() {
+	public final void testEqualsWithIncompareableOtherObjectInstance() throws Throwable {
 		T x = getAValueOfTypeUnderTest();
 		assertNotNull(
 				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
@@ -277,7 +277,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	}
 
 	@Test
-	public final void testToString() {
+	public final void testToString() throws Throwable {
 		T x = getAValueOfTypeUnderTest();
 		assertNotNull(
 				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
@@ -288,7 +288,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public final void testClone() {
+	public final void testClone() throws Throwable {
 		T x = getAValueOfTypeUnderTest();
 		assertNotNull(
 				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
@@ -358,7 +358,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 	}
 
 	@Test
-	public final void testHashCode() {
+	public final void testHashCode() throws Throwable {
 		T x = getAValueOfTypeUnderTest();
 		T y = getAValueOfTypeUnderTest();
 
