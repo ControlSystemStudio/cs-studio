@@ -1,17 +1,21 @@
 package org.csstudio.nams.configurator.editor;
 
-import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -27,7 +31,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		Composite main = new Composite(parent, SWT.NONE);
+		Composite outermain = new Composite(parent, SWT.NONE);
+		outermain.setLayout(new FillLayout(SWT.VERTICAL));
+		Composite main = new Composite(outermain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
@@ -35,6 +41,26 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
+		
+		{
+			Composite tabelleUndButtonsComp = new Composite(outermain, SWT.None);
+			tabelleUndButtonsComp.setLayout(new GridLayout(1, false));
+			GridDataFactory.fillDefaults().grab(true, true).applyTo(
+					tabelleUndButtonsComp);
+			new Label(tabelleUndButtonsComp, SWT.None).setText("Filterbedingungen");
+			{
+				ListViewer listViewer = new ListViewer(
+						tabelleUndButtonsComp);
+				GridDataFactory.fillDefaults().grab(true, true).applyTo(
+						listViewer.getControl());
+
+				listViewer.setContentProvider(new ArrayContentProvider());
+
+//				List list = listViewer.getList();
+
+			}
+		}
+		
 		initDataBinding();
 	}
 
@@ -49,6 +75,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	protected void initDataBinding() {
+		//TODO add Filter databinding
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(

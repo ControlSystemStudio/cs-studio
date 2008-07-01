@@ -101,6 +101,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		FilterBean bean = new FilterBean();
 		bean.setDefaultMessage(getDefaultMessage());
 		bean.setName(getName());
+		bean.setFilterID(filterID);
 		return bean;
 	}
 
