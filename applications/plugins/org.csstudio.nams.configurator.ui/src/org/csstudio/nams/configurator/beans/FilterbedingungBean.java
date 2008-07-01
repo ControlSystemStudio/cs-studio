@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.beans.filters.AddOnBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
@@ -43,7 +44,14 @@ public class FilterbedingungBean extends
 		bean.setDescription(description);
 		bean.setName(name);
 		bean.setFilterbedinungID(filterbedinungID);
-		bean.setFilterSpecificBean((AddOnBean) ((IConfigurationBean)filterSpecificBean).getClone());
+		if (filterSpecificBean != null) {
+			bean.setFilterSpecificBean((AddOnBean) ((IConfigurationBean)filterSpecificBean).getClone());
+		} else {
+			// TODO mw: default is always ODER, i'm not sure about this here
+			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
+			filterSpecificBean = junctorConditionBean;
+			bean.setFilterSpecificBean(junctorConditionBean);
+		}
 		return bean;
 	}
 

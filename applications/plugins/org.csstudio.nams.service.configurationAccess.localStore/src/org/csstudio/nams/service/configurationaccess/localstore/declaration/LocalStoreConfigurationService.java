@@ -4,6 +4,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 public interface LocalStoreConfigurationService {
 
@@ -81,4 +82,6 @@ public interface LocalStoreConfigurationService {
 	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
 	
 	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException;
+
+	public FilterConditionDTO saveFilterCondtionDTO(FilterConditionDTO filterConditionDTO);
 }

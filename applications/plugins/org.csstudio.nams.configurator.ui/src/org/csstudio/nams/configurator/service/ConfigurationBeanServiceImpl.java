@@ -5,7 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
@@ -353,9 +355,143 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		FilterConditionDTO filterConditionDTO = null;
+		Class<? extends AbstractConfigurationBean> beanClass = bean.getFilterSpecificBean().getClass();
+		if (JunctorConditionBean.class.equals(beanClass)) {
+			JunctorConditionBean specificBean = (JunctorConditionBean) bean.getFilterSpecificBean();
+			
+			JunctorConditionDTO junctorConditionDTO = null;
+			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			if (dto4Bean != null && (dto4Bean instanceof JunctorConditionDTO)) {
+				junctorConditionDTO = (JunctorConditionDTO) dto4Bean;
+			} else {
+				junctorConditionDTO = new JunctorConditionDTO();
+			}
+				
+			junctorConditionDTO.setFirstFilterCondition(getDTO4Bean(specificBean.getFirstCondition()));
+			junctorConditionDTO.setIFilterConditionID(bean.getFilterbedinungID());
+			junctorConditionDTO.setJunctor(specificBean.getJunctor());
+			junctorConditionDTO.setSecondFilterCondition(getDTO4Bean(specificBean.getSecondCondition()));
+			
+			// result to be saved with configurationService
+			filterConditionDTO = junctorConditionDTO;
+		}
+		else if (PVFilterConditionBean.class.equals(beanClass)) {
+			PVFilterConditionBean specificBean = (PVFilterConditionBean) bean.getFilterSpecificBean();
+			
+			ProcessVariableFilterConditionDTO pvFilterConditionDTO = null;
+			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			if (dto4Bean != null && (dto4Bean instanceof ProcessVariableFilterConditionDTO)) {
+				pvFilterConditionDTO = (ProcessVariableFilterConditionDTO) dto4Bean;
+			} else {
+				pvFilterConditionDTO = new ProcessVariableFilterConditionDTO();
+			}
+			
+			pvFilterConditionDTO.setCCompValue(specificBean.getCompareValue());
+			pvFilterConditionDTO.setPVOperator(specificBean.getOperator());
+			pvFilterConditionDTO.setSuggestedPVType(specificBean.getSuggestedType());
+			
+			// result to be saved with configurationService
+			filterConditionDTO = pvFilterConditionDTO;
+		}
+		else if (StringFilterConditionBean.class.equals(beanClass)) {
+			StringFilterConditionBean specificBean = (StringFilterConditionBean) bean.getFilterSpecificBean();
+			
+			StringFilterConditionDTO stringFilterConditionDTO = null;
+			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			if (dto4Bean != null && (dto4Bean instanceof StringFilterConditionDTO)) {
+				stringFilterConditionDTO = (StringFilterConditionDTO) dto4Bean;
+			} else {
+				stringFilterConditionDTO = new StringFilterConditionDTO();
+			}
+			
+			stringFilterConditionDTO.setCompValue(specificBean.getCompValue());
+			stringFilterConditionDTO.setKeyValue(specificBean.getKeyValue());
+			stringFilterConditionDTO.setOperator(Short.parseShort(specificBean.getOperator().name()));
+			stringFilterConditionDTO.setOperatorEnum(specificBean.getOperator());
+			
+			// result to be saved with configurationService
+			filterConditionDTO = stringFilterConditionDTO;
+		}
+		else if (StringArrayFilterConditionBean.class.equals(beanClass)) {
+			StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) bean.getFilterSpecificBean();
+			
+			StringArrayFilterConditionDTO stringArrayFilterConditionDTO = null;
+			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			if (dto4Bean != null && (dto4Bean instanceof StringArrayFilterConditionDTO)) {
+				stringArrayFilterConditionDTO = (StringArrayFilterConditionDTO) dto4Bean;
+			} else {
+				stringArrayFilterConditionDTO = new StringArrayFilterConditionDTO();
+			}
+			
+			stringArrayFilterConditionDTO.setCompareValues(specificBean.getCompareValues());
+			stringArrayFilterConditionDTO.setKeyValue(specificBean.getKeyValue().name());
+			stringArrayFilterConditionDTO.setOperator(Short.parseShort(specificBean.getOperator().name()));
+		
+			// result to be saved with configurationService
+			filterConditionDTO = stringArrayFilterConditionDTO;
+		}
+		else if (TimeBasedFilterConditionBean.class.equals(beanClass)) {
+			TimeBasedFilterConditionBean specificBean = (TimeBasedFilterConditionBean) bean.getFilterSpecificBean();
+			
+			TimeBasedFilterConditionDTO timeBasedFilterConditionDTO = null;
+			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			if (dto4Bean != null && (dto4Bean instanceof TimeBasedFilterConditionDTO)) {
+				timeBasedFilterConditionDTO = (TimeBasedFilterConditionDTO) dto4Bean;
+			} else {
+				timeBasedFilterConditionDTO = new TimeBasedFilterConditionDTO();
+			}
+			
+			timeBasedFilterConditionDTO.setCConfirmCompValue(specificBean.getCConfirmCompValue());
+			timeBasedFilterConditionDTO.setCConfirmKeyValue(specificBean.getCStartKeyValue());
+			timeBasedFilterConditionDTO.setCStartCompValue(specificBean.getCStartCompValue());
+			
+			// TODO mw: Check the Operators in TimeBasedFilterCondition. get(StringRegelOperator) but set(Operator) 
+			// => only ordinal 1 and 2 match, other differ.
+			timeBasedFilterConditionDTO.setTBConfirmOperator(Operator.valueOf(specificBean.getSConfirmOperator().name()));
+			timeBasedFilterConditionDTO.setTBStartOperator(Operator.valueOf(specificBean.getSStartOperator().name()));
+
+			timeBasedFilterConditionDTO.setTimeBehavior(specificBean.getSTimeBehavior());
+			timeBasedFilterConditionDTO.setTimePeriod(specificBean.getSTimePeriod());
+			
+			// result to be saved with configurationService
+			filterConditionDTO = timeBasedFilterConditionDTO;
+		}
+		
+		filterConditionDTO = configurationService.saveFilterCondtionDTO(filterConditionDTO);
+		FilterbedingungBean resultBean = DTO2Bean(filterConditionDTO);
+
+		loadConfiguration(); 
+		
+		if (bean.getFilterbedinungID() != -1) {
+			for (ConfigurationBeanServiceListener listener : listeners) {
+				listener.onBeanUpdate(bean);
+			}
+		} else {
+			for (ConfigurationBeanServiceListener listener : listeners) {
+				listener.onBeanInsert(bean);
+			}
+		}
+		return resultBean;
+	}
+
+	/**
+	 * Use only for JunctorConditions
+	 * @param condition
+	 * @return
+	 */
+	private FilterConditionDTO getDTO4Bean(FilterbedingungBean bean) {
+		FilterConditionDTO filterConditionDTO = null;
+		for (FilterConditionDTO potentialdto : entireConfiguration.gibAlleFilterConditions()) {
+			if (potentialdto.getIFilterConditionID() == bean.getFilterbedinungID()) {
+				filterConditionDTO = (JunctorConditionDTO) potentialdto;
+				break;
+			}
+		}
+		return filterConditionDTO;
 	}
 
 	public void delete(IConfigurationBean bean) {

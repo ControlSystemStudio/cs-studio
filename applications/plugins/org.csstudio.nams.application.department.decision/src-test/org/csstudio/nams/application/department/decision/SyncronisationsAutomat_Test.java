@@ -232,6 +232,12 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						fail("unexpected method call!");
 					}
 
+					public FilterConditionDTO saveFilterCondtionDTO(
+							FilterConditionDTO filterConditionDTO) {
+						fail("unexpected method call!");
+						return null;
+					}
+
 				}, new HistoryService() {
 
 					public void logReceivedReplicationDoneMessage() {

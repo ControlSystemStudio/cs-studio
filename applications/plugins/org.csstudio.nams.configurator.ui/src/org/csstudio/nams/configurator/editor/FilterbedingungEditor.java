@@ -235,7 +235,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			specificBeans[4] = filterSpecificBean;
 		else
 			throw new RuntimeException("Unsupported AddOnBeanType "
-					+ filterSpecificBean.getClass());
+					+ filterSpecificBean);
 		for (int i = 0; i < specificBeans.length; i++) {
 			specificBeans[i].addPropertyChangeListener(this);
 		}

@@ -232,4 +232,13 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 
+	public FilterConditionDTO saveFilterCondtionDTO(
+			FilterConditionDTO filterConditionDTO) {
+		Transaction tx = session.beginTransaction();
+		Serializable generatedID = session.save(filterConditionDTO);
+		tx.commit();
+
+		return (FilterConditionDTO) session.load(FilterConditionDTO.class, generatedID);
+	}
+
 }

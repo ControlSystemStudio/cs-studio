@@ -90,7 +90,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	 *            the keyValue to set
 	 */
 	@SuppressWarnings("unused")
-	private void setKeyValue(String keyValue) {
+	public void setKeyValue(String keyValue) {
 		this.keyValue = keyValue;
 	}
 
@@ -111,7 +111,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	 *            the operator to set
 	 */
 	@SuppressWarnings("unused")
-	private void setOperator(short operator) {
+	public void setOperator(short operator) {
 		this.operator = operator;
 	}
 
@@ -123,7 +123,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	 * @param compareValues the compareValues to set
 	 */
 	@SuppressWarnings("unused")
-	private void setCompareValues(List<String> compareValues) {
+	public void setCompareValues(List<String> compareValues) {
 		this.compareValues = compareValues;
 	}
 
