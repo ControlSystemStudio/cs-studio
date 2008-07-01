@@ -52,8 +52,8 @@ public class ProcessVariableRegel implements VersandRegel {
 		 * {@inheritDoc}
 		 */
 		public void connectionStateChanged(ConnectionState connectionState) {
-			logger.logDebugMessage(this,
-					"ConnectionState changed, new state: " + connectionState);
+			logger.logDebugMessage(this, "ConnectionState changed, new state: "
+					+ connectionState);
 			if (ConnectionState.CONNECTED.equals(connectionState)) {
 				_isConnected = true;
 			} else {
@@ -81,8 +81,8 @@ public class ProcessVariableRegel implements VersandRegel {
 		 * {@inheritDoc}
 		 */
 		public void valueChanged(T value) {
-			logger.logDebugMessage(this,
-					"Value changed, new Value: " + value.toString());
+			logger.logDebugMessage(this, "Value changed, new Value: "
+					+ value.toString());
 			_lastReceivedValue = value;
 		}
 
@@ -306,6 +306,18 @@ public class ProcessVariableRegel implements VersandRegel {
 								+ currentValue.getClass().getSimpleName());
 					}
 				}
+			} else {
+				if( currentValue == null ) {
+					// es besteht zwar eine Verbindung aber es steht kein Wert
+					// zur Verfügung:
+					// Sicherheitsverhalten: Nachricht senden:
+					logger.logWarningMessage(this,
+							"No value recieved from connected PV Service to PV (via DAL), Channel: " 
+							+ channelName 
+							+ ". Message will be accepted as fail-over behavior.");
+					ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+							RegelErgebnis.ZUTREFFEND);
+				}
 			}
 		} else {
 			logger.logErrorMessage(this,
@@ -315,17 +327,17 @@ public class ProcessVariableRegel implements VersandRegel {
 		}
 		return Millisekunden.valueOf(0);
 	}
-	
+
 	public static void staticInject(
 			org.csstudio.nams.service.logging.declaration.Logger logger) {
 		ProcessVariableRegel.logger = logger;
-		
+
 	}
 
 	public static Logger getLogger() {
 		return logger;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder("(PVRegel: ");
@@ -338,5 +350,5 @@ public class ProcessVariableRegel implements VersandRegel {
 		stringBuilder.append(")");
 		return stringBuilder.toString();
 	}
-	
+
 }
