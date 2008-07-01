@@ -24,7 +24,7 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	P_JMS_FREE_TOPIC_CONNECTION_FACTORY("org.csstudio.ams.preferences.jmsFreeTopicConnectionFactory"),
 	
 	P_JMS_AMS_CONNECTION_FACTORY("org.csstudio.ams.preferences.jmsAmsConnectionFactory"),
-	P_JMS_AMS_CONNECTION_FACTORY_CLASS("org.csstudio.ams.preferences.jmsAmsConnectionFactoryClass"),
+	P_JMS_AMS_CONNECTION_FACTORY_CLASS("org.csstudio.ams.preferences.jmsExternConnectionFactoryClass"),
 	P_JMS_AMS_PROVIDER_URL_1("org.csstudio.ams.preferences.jmsAmsProviderUrl1"),
 	P_JMS_AMS_PROVIDER_URL_2("org.csstudio.ams.preferences.jmsAmsProviderUrl2"),
 	P_JMS_AMS_SENDER_PROVIDER_URL("org.csstudio.ams.preferences.jmsAmsSenderProviderUrl");
