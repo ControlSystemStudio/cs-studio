@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="%LogSender"
+            icon="icons/logsender.gif"
+            category="org.csstudio"
+            class="org.csstudio.utility.logsender.LogSenderView"
+            id="org.csstudio.utility.logsender.LogSenderView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.utility.logsender.cssmenu"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.utility.logsender.ShowLogSenderAction"
+               icon="icons/logsender.gif"
+               id="org.csstudio.utility.logsender.ShowLogSenderAction"
+               label="%LogSender"
+               menubarPath="css/utility/"
+               style="push"
+               tooltip="%LogSender"/>
+      </actionSet>
+   </extension>
+</plugin>

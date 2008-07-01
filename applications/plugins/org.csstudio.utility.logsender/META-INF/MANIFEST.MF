@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Logsender Plug-in
+Bundle-SymbolicName: org.csstudio.utility.logsender;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kay Kasemir
+Bundle-Localization: plugin
+Require-Bundle: org.csstudio.platform,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui,
+ org.csstudio.platform.ui
