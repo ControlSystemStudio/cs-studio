@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
@@ -19,11 +20,17 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
@@ -53,6 +60,17 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private Combo pvSuggestedType;
 	private Combo pvOperator;
 	private Text pvCompareValue;
+	private Combo arrayMessageKeyCombo;
+	private Combo arrayOperatorCombo;
+	private List arrayCompareValueList;
+	private Text timeDelayText;
+	private Button timeBehaviorCheck;
+	private Combo timeStartKeyCombo;
+	private Combo timeStartOperatorCombo;
+	private Text timeStartCompareText;
+	private Combo timeStopKeyCombo;
+	private Combo timeStopOperatorCombo;
+	private Text timeStopCombareCombo;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -117,8 +135,40 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// StringArrayFilterComposite
 		stackComposites[2] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[2].setLayout(new GridLayout(NUM_COLUMNS, false));
-		// TODO create StringArrayGUI
+		arrayMessageKeyCombo = createComboEntry(stackComposites[2], "MessageKey", true);
+		arrayOperatorCombo = createComboEntry(stackComposites[2], "Operator", true);
+		arrayCompareValueList = createListEntry(stackComposites[2], "CompareValues", true);
+		final Text arrayNewCompareValueText = createTextEntry(stackComposites[2], "Neues CompareValue", true);
+		arrayNewCompareValueText.addKeyListener(new KeyListener(){
 
+			public void keyPressed(KeyEvent e) {
+				if (e.character == SWT.CR){
+					arrayCompareValueList.add(arrayNewCompareValueText.getText());
+				}
+			}
+
+			public void keyReleased(KeyEvent e) {
+			}});
+		Button button = createButtonEntry(stackComposites[2], "CompareValue löschen", true);
+		button.addMouseListener(new MouseListener() {
+
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+				if(arrayCompareValueList.getSelectionIndex() > -1){
+					String[] items = arrayCompareValueList.getItems();
+					ArrayList<String> itemList = new ArrayList<String>();
+					for (int i = 0; i < items.length; i++) {
+						if (arrayCompareValueList.getSelectionIndex() != i)
+							itemList.add(items[i]);
+					}
+					arrayCompareValueList.setItems(itemList.toArray(new String[itemList.size()]));
+				}
+			}
+
+			public void mouseUp(MouseEvent e) {
+			}});
 		// PVComposite
 		stackComposites[3] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[3].setLayout(new GridLayout(NUM_COLUMNS, false));
@@ -131,8 +181,17 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// TimeBasedComposite
 		stackComposites[4] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[4].setLayout(new GridLayout(NUM_COLUMNS, false));
-		//TODO createTimeBasedGUI
-		
+
+		timeDelayText = createTextEntry(stackComposites[4], "Wartezeit", true);
+		timeBehaviorCheck = createCheckBoxEntry(stackComposites[4], "Alarm bei Timeout", true);
+		addSeparator(stackComposites[4]);
+		timeStartKeyCombo = createComboEntry(stackComposites[4], "Start KeyValue", true);
+		timeStartOperatorCombo = createComboEntry(stackComposites[4], "Start Operator", true);
+		timeStartCompareText = createTextEntry(stackComposites[4], "Start CompareValue", true);
+		addSeparator(stackComposites[4]);
+		timeStopKeyCombo = createComboEntry(stackComposites[4], "Stop KeyValue", true);
+		timeStopOperatorCombo = createComboEntry(stackComposites[4], "Stop Operator", true);
+		timeStopCombareCombo = createTextEntry(stackComposites[4], "Stop CompareValue", true);
 		
 		LinkedList<String> types = new LinkedList<String>();
 		for (JunctorConditionType type : JunctorConditionType.values()) {

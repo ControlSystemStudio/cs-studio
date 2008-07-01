@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -130,12 +131,39 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		return comboWidget;
 	}
 
+	protected List createListEntry(Composite parent, String labeltext,
+			boolean editable) {
+		Label label = new Label(parent, SWT.RIGHT);
+		label.setText(labeltext);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		List listWidget = new List(parent, SWT.BORDER);
+//		listWidget.setEditable(editable);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
+				NUM_COLUMNS - 1, 1);
+		gridData.minimumWidth = MIN_WIDTH;
+		gridData.widthHint = MIN_WIDTH;
+		listWidget.setLayoutData(gridData);
+		return listWidget;
+	}
 	protected Button createCheckBoxEntry(Composite parent, String labeltext,
 			boolean editable) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		Button buttonWidget = new Button(parent, SWT.CHECK);
+		buttonWidget.setEnabled(editable);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
+				NUM_COLUMNS - 1, 1);
+		gridData.minimumWidth = MIN_WIDTH;
+		gridData.widthHint = MIN_WIDTH;
+		buttonWidget.setLayoutData(gridData);
+		return buttonWidget;
+	}
+	protected Button createButtonEntry(Composite parent, String labeltext,
+			boolean editable) {
+		new Composite(parent, SWT.NONE);
+		Button buttonWidget = new Button(parent, SWT.PUSH);
+		buttonWidget.setText(labeltext);
 		buttonWidget.setEnabled(editable);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
