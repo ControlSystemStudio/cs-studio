@@ -1,9 +1,13 @@
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
+import org.csstudio.nams.configurator.beans.filters.AddOnBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
+import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.action.SubCoolBarManager;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -29,6 +33,14 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterbedingungEditor";
 	private StackLayout filterLayout;
 	private Composite[] stackComposites;
+	
+	private Text junctorFirstFilterText;
+	private Combo junctorTypeCombo;
+	private Text junctorSecondFilterText;
+	
+	private Text stringCompareKeyText;
+	private Combo stringOperatorCombo;
+	private Text stringCompareValueText;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -52,6 +64,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				filterLayout.topControl = stackComposites[_filterTypeEntry
 						.getSelectionIndex()];
 				filterSpecificComposite.layout();
+				
+				AddOnBean specificBeans;
+//				beanClone.setFilterSpecificBean(specificBeans[_filterTypeEntry.getSelectionIndex()]);
 			}
 		});
 
@@ -70,16 +85,16 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites = new Composite[5];
 		// ConjunctionFilterComposite
 		stackComposites[0] = new Composite(filterSpecificComposite, SWT.NONE);
-		Text firstFilterText = createTextEntry(stackComposites[0], "Filtercondition", false);
-		Combo junctorTypeCombo = createComboEntry(stackComposites[0], "Junktor", true);
-		Text secondFilterText = createTextEntry(stackComposites[0], "Filtercondition", false);
 		stackComposites[0].setLayout(new GridLayout(NUM_COLUMNS, false));
+		junctorFirstFilterText = createTextEntry(stackComposites[0], "Filtercondition", false);
+		junctorTypeCombo = createComboEntry(stackComposites[0], "Junktor", true);
+		junctorSecondFilterText = createTextEntry(stackComposites[0], "Filtercondition", false);
 		// StringFilterComposite
 		stackComposites[1] = new Composite(filterSpecificComposite, SWT.NONE);
-		Text compareKeyText = createTextEntry(stackComposites[1], "CompareKey", true);
-		Combo operatorCombo = createComboEntry(stackComposites[1], "Operator", true);
-		Text compareValueText = createTextEntry(stackComposites[1], "CompareValue", true);
 		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
+		stringCompareKeyText = createTextEntry(stackComposites[1], "CompareKey", true);
+		stringOperatorCombo = createComboEntry(stackComposites[1], "Operator", true);
+		stringCompareValueText = createTextEntry(stackComposites[1], "CompareValue", true);
 		// StringArrayFilterComposite
 		stackComposites[2] = new Composite(filterSpecificComposite, SWT.NONE);
 		new Label(stackComposites[2], SWT.NONE).setText("2");
@@ -89,7 +104,20 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// TimeBasedComposite
 		stackComposites[4] = new Composite(filterSpecificComposite, SWT.NONE);
 		new Label(stackComposites[4], SWT.NONE).setText("4");
-		_filterTypeEntry.select(0);
+		
+		doFilterSpecificDataBinding();
+		
+		AddOnBean filterSpecificBean = bean.getFilterSpecificBean();
+		if (filterSpecificBean instanceof JunctorConditionBean) {
+			_filterTypeEntry.select(0);
+		} else if (filterSpecificBean instanceof StringFilterConditionBean){
+			_filterTypeEntry.select(1);
+		}  //TODO add the other cases
+	}
+
+	private void doFilterSpecificDataBinding() {
+		//TODO implement it!
+		
 	}
 
 	@Override
