@@ -81,6 +81,7 @@ public class AlarmNachricht implements Cloneable {
 		return nachricht + "\t" + zeitFuerToString;
 	}
 
+	// TODO mz: Name sprechender gestalten.
 	public void matchedMessageWithRegelwerk(Regelwerkskennung kennung) {
 		content.put(MessageKeyEnum.AMS_REINSERTED, Integer.valueOf(
 				kennung.getRegelwerksId()).toString());

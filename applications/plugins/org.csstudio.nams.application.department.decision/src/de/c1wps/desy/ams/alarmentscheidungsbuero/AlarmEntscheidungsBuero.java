@@ -66,7 +66,9 @@ public class AlarmEntscheidungsBuero {
 	 * machen, da dieses wichtig fuer Nachweiszwecke ist.
 	 * @param historyService 
 	 */
-	public AlarmEntscheidungsBuero(Regelwerk[] regelwerke
+	public AlarmEntscheidungsBuero(
+			Regelwerk[] regelwerke
+//			Eingangskorb<Ablagefaehig>
 //			, HistoryService historyService
 			) {
 		alarmVorgangEingangskorb = new StandardAblagekorb<Vorgangsmappe>();
@@ -157,6 +159,15 @@ public class AlarmEntscheidungsBuero {
 	 * zum senden gelegt wurden.
 	 */
 	public void beendeArbeitUndSendeSofortAlleOffeneneVorgaenge() {
-		// TODO Implementieren!
+		// Terminassistenz beenden...
+		_assistenz.beendeArbeit();
+		// Sachbearbeiter in den Feierabend schicken...
+		for (Sachbearbeiter sachbearbeiter : _sachbearbeiterList) {
+			sachbearbeiter.beendeArbeit();
+		}
+		// Andere Threads zu ende arbeiten lassen
+		Thread.yield();
+		// Abteilungsleiter in den Feierabend schicken...
+		_abteilungsleiter.beendeArbeit();
 	}
 }

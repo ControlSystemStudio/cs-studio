@@ -7,6 +7,7 @@ import java.util.Queue;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.decision.Vorgangsmappe;
+import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
@@ -242,8 +243,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 					}
 
-					public void logTimeOutForTimeBased(int regelwerkID,
-							int messageDescId, int regelId) {
+					public void logTimeOutForTimeBased(Vorgangsmappe v) {
 						fail("unexpected method call!");
 					}
 

@@ -87,7 +87,8 @@ import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
  * @author <a href="mailto:gs@c1-wps.de">Goesta Steen</a>
  * 
  * @version 0.1-2008-04-25: Created.
- * @version 0.1.1-2008-04-28 (MZ): Change to use  org.csstudio.nams.common.activatorUtils.BundleActivatorUtils.
+ * @version 0.1.1-2008-04-28 (MZ): Change to use
+ *          org.csstudio.nams.common.activatorUtils.BundleActivatorUtils.
  * @version 0.2.0-2008-06-10 (MZ): Change to use {@link AbstractBundleActivator}.
  */
 public class DecisionDepartmentActivator extends AbstractBundleActivator
@@ -282,14 +283,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		initialisiereThredGroupTypes(executionService);
 
 		try {
-			// haben wir durch den preferenceService schon
-			// TODO soll diese noch auf gültige Werte geprüft werden
-			// logger.logInfoMessage(this,
-			// "Decision department application is loading configuration...");
-
-			// Properties properties = initProperties();
-
-			// TODO clientid!! gegebenenfalls aus preferencestore holen
 			logger.logInfoMessage(this,
 					"Decision department application is creating consumers...");
 
@@ -297,17 +290,18 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1);
 			String amsProvider2 = preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2);
-			
-			logger.logDebugMessage(this, "PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1 = "+amsProvider1);
-			logger.logDebugMessage(this, "PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2 = "+amsProvider2);
-			
+
+			logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1 = "
+							+ amsProvider1);
+			logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2 = "
+							+ amsProvider2);
+
+			// FIXME clientid!! gegebenenfalls aus preferencestore holen
 			amsMessagingSessionForConsumer = messagingService
-					.createNewMessagingSession(
-							"amsConsumer",
-							new String[] {
-									amsProvider1,
-									amsProvider2 });
-			// TODO clientid!! gegebenenfalls aus preferencestore holen
+					.createNewMessagingSession("amsConsumer", new String[] {
+							amsProvider1, amsProvider2 });
 			extMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
 							"extConsumer",
@@ -335,7 +329,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
 
-			// TODO clientid!!
+			// FIXME clientid!!
 			amsMessagingSessionForProducer = messagingService
 					.createNewMessagingSession(
 							"amsProducer",
@@ -369,43 +363,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				localStoreConfigurationService);
 
 		if (_continueWorking) {
-			// try {
-			// /*-
-			// * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
-			// * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
-			// * keine validen Daten liegen. Der folgende Aufruf blockiert
-			// * solange, bis der Distributor bestaetigt, dass die
-			// Synchronisation
-			// * erfolgreich ausgefuehrt wurde.
-			// */
-			// logger
-			// .logInfoMessage(
-			// this,
-			// "Decision department application orders distributor to
-			// synchronize configuration...");
-			// MessagingException occuredMessagingException = null;
-			// try {
-			// SyncronisationsAutomat
-			// .syncronisationUeberDistributorAusfueren(
-			// amsAusgangsProducer, amsCommandConsumer,
-			// localStoreConfigurationService);
-			// } catch (MessagingException me) {
-			// occuredMessagingException = me;
-			// }
-			// if (SyncronisationsAutomat.hasBeenCanceled()) {
-			// // Abbruch bei Syncrinisation
-			// logger
-			// .logInfoMessage(
-			// this,
-			// "Decision department application was interrupted and requested to
-			// shut down during synchroisation of configuration.");
-			// } else {
-			// if (occuredMessagingException != null) {
-			// logger.logFatalMessage(this,
-			// "Exception while synchronizing configuration.",
-			// occuredMessagingException);
-			// _continueWorking = false;
-			// } else {
 			try {
 				logger
 						.logInfoMessage(this,
@@ -423,10 +380,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				_alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
 						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
 								.size()])
-				// , historyService
 				);
-				// }
-				// }
 			} catch (Throwable e) {
 				logger
 						.logFatalMessage(
@@ -443,10 +397,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							this,
 							"******* Decision department application successfully initialized, beginning work... *******");
 
-			// TODO Thread zum auslesen des Ausgangskorbes...
-
+			// TODO Den Ausgangskorb in Office reinreichen und so cast
+			// vermeiden.
+			// Das DecisionOffice enthält einen Standard-Ablagekorb.
 			final Eingangskorb<Vorgangsmappe> vorgangAusgangskorb = (Eingangskorb<Vorgangsmappe>) _alarmEntscheidungsBuero
 					.gibAlarmVorgangAusgangskorb();
+
 			final Eingangskorb<Vorgangsmappe> vorgangEingangskorb = _alarmEntscheidungsBuero
 					.gibAlarmVorgangEingangskorb();
 
@@ -474,6 +430,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		// Warte auf Thread für Ausgangskorb-Bearbeitung
 		if (_ausgangskorbBearbeiter != null
 				&& _ausgangskorbBearbeiter.isCurrentlyRunning()) {
+			// FIXME Warte bis korb leer ist.
 			_ausgangskorbBearbeiter.stopWorking();
 		}
 
@@ -658,39 +615,14 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 								.istSyncronisationsAufforderung()) {
 							historyService.logReceivedStartReplicationMessage();
 							_applicationExitStatus = IApplication.EXIT_RESTART;
-							// TODO wir müssen syncronisieren
-							// 1. altes office runterfahren und noch offene
-							// vorgaenge schicken
-							// _alarmEntscheidungsBuero.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
-							// 2. sychronizieren
-							// versucheZuSynchronisieren(this, logger,
-							// amsAusgangsProducer, amsCommandConsumer,
-							// localStoreConfigurationService);
-							// 3. regel neu laden
-							// 4. neues office anlegen
-							// TODO wir sollten dem ausgangskorbBearbeiter ein
-							// wenig Zeit lassen.
-							// _ausgangskorbBearbeiter.stopWorking();
-							// 5. neues office straten
-							// List<Regelwerk> alleRegelwerke =
-							// regelwerkBuilderService.gibAlleRegelwerke();
-							// _alarmEntscheidungsBuero = new
-							// AlarmEntscheidungsBuero(alleRegelwerke.toArray(new
-							// Regelwerk[alleRegelwerke.size()]));
-							// 6. Ablagekoerbe neu zuordnen.
-
+							/*-
+							 * Vollständiges runterfahren zur Aktualisierung
+							 * vermeidet das Vergessen von Teilsystemen. Während
+							 * einer Aktualisierung können ohnehin keine
+							 * Alarmnachrichten nebenläufig verarbeitet werden.
+							 */
 						}
-						// else if (message.alsSystemachricht()
-						// .istSyncronisationsBestaetigung()) {
-						// historyService.logReceivedReplicationDoneMessage();
-						// // TODO was muss bei der Bestätigung getan werden?
-						// }
 					}
-					// TODO andere Nachrichten Typen behandeln
-					// steuer Nachrichten wie z.B.: "Regelwerke neu laden"
-					// oder "einzelne Regelwerke kurzfristig deaktivieren"
-					// oder
-					// "shutdown"
 				} finally {
 					try {
 						message.acknowledge();
@@ -714,30 +646,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		}
 
 		consumersConsumer.close();
-
-		// messageHandlerToRecieveUntilApplicationQuits = new
-		// AbstractMultiConsumerMessageHandler(
-		// consumerArray, executionService) {
-		//
-		// public void handleMessage(NAMSMessage message) {
-		//				
-		// }
-		//
-		// };
-		// while (_continueWorking) {
-		// try {
-		// messageHandlerToRecieveUntilApplicationQuits
-		// .joinMasterProcessor();
-		// } catch (InterruptedException e) {
-		// // moeglicher interrupt ist ohne auswirkung auf das verhalten
-		// // des systems
-		// logger.logDebugMessage(this,
-		// "wait for receiver thred interrupted", e);
-		// }
-		// }
-		//
-		//		
-		// messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
 	}
 
 	/**
@@ -754,10 +662,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			logger.logInfoMessage(this, "Canceling running syncronisation...");
 			SyncronisationsAutomat.cancel();
 		}
-		// if (messageHandlerToRecieveUntilApplicationQuits != null) {
-		// logger.logInfoMessage(this, "Stopping message recieving...");
-		// messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
-		// }
+
 		logger.logInfoMessage(this, "Interrupting working thread...");
 		_receiverThread.interrupt();
 	}
@@ -776,6 +681,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			try {
 				Vorgangsmappe vorgangsmappe = vorgangskorb
 						.entnehmeAeltestenEingang();
+				if( vorgangsmappe.istAbgeschlossenDurchTimeOut() ) {
+					DecisionDepartmentActivator.historyService.logTimeOutForTimeBased(vorgangsmappe);
+				}
 				logger.logDebugMessage(this, "gesamtErgebnis: "
 						+ vorgangsmappe.gibPruefliste().gesamtErgebnis());
 
@@ -783,32 +691,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					// Nachricht nicht anreichern. Wird im JMSProducer
 					// gemacht
 					// Versenden
-					amsAusgangsProducer.sendeVorgangsmappe(vorgangsmappe);
+					DecisionDepartmentActivator.this.amsAusgangsProducer.sendeVorgangsmappe(vorgangsmappe);
 				}
 
 			} catch (InterruptedException e) {
 				// wird zum stoppen benötigt.
 				// hier muss nichts unternommen werden
 			}
-			// Vorgangsmappe vorgangZumSenden = vorgangAusgangskorb.???
-			// TODO Sende Vorgangsmappe.... (Ausgangskorb erweitern eine
-			// entnehme-Operation zu haben).
-			// TODO Besser: Decission Office erhält einen "Ausgangskorb"
-			// der in Wirklichkeit ein StandardAblagekorb ist
-			// der selber auch ein Eingangskorb ist und so kann der
-			// DokumentVerbraucher korrekt darauf arbeiten...
-			// new DokumentVerbraucherArbeiter<Vorgangsmappe>(new
-			// DokumentenBearbeiter<Vorgangsmappe>() {
-			//
-			// public void bearbeiteVorgang(
-			// Vorgangsmappe entnehmeAeltestenEingang)
-			// throws InterruptedException {
-			// // TODO mache was mit
-			//					
-			// }
-			//				
-			// },
-			// vorgangAusgangskorb);
 		}
 	};
 }

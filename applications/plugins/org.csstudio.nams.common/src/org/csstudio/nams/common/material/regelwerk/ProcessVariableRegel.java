@@ -310,9 +310,9 @@ public class ProcessVariableRegel implements VersandRegel {
 		} else {
 			logger.logErrorMessage(this,
 					"No connection to PV (via DAL), Channel: " + channelName);
+			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+					RegelErgebnis.ZUTREFFEND);
 		}
-		ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
-				RegelErgebnis.ZUTREFFEND);
 		return Millisekunden.valueOf(0);
 	}
 	

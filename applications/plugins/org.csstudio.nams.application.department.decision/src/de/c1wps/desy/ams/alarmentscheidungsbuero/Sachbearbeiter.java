@@ -293,6 +293,8 @@ class Sachbearbeiter implements Arbeitsfaehig {
 		this.achteAufVorgangsmappenEingaenge.beendeArbeit();
 		this.achteAufTerminnotizEingaenge.beendeArbeit();
 		this.achteAufInterneEingaenge.beendeArbeit();
+		
+		// TODO Sende offene Vorgänge...
 	}
 
 	public String gibName() {
