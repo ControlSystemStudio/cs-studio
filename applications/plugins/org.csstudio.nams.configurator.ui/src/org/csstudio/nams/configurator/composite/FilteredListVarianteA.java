@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -31,7 +30,6 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.internal.dnd.SwtUtil;
 
 public abstract class FilteredListVarianteA {
 
@@ -65,10 +63,6 @@ public abstract class FilteredListVarianteA {
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						gruppenCombo);
 
-				gruppenCombo.add("ALLE");
-				gruppenCombo.add("Ohne Rubrik");
-				gruppenCombo.add("-------------");
-
 				gruppenCombo.addListener(SWT.Modify, new Listener() {
 					public void handleEvent(Event event) {
 						selectedgruppenname = gruppenCombo.getItem(gruppenCombo
@@ -76,7 +70,6 @@ public abstract class FilteredListVarianteA {
 						table.refresh();
 					}
 				});
-				gruppenCombo.select(0);
 			}
 
 			{
@@ -215,28 +208,31 @@ public abstract class FilteredListVarianteA {
 			}
 		}
 
-		Display.getCurrent().syncExec(new Runnable() {
-			public void run() {
-				int oldIndex = gruppenCombo.getSelectionIndex();
-				String item = gruppenCombo.getItem(oldIndex);
-				gruppenCombo.deselectAll();
+		for (String gruppenName : gruppenNamen) {
+			gruppenCombo.add(gruppenName);
+		}
 
-				final int itemCount = gruppenCombo.getItemCount();
-				if (itemCount > 3) {
-//					gruppenCombo.remove(3, itemCount - 1);
-					gruppenCombo.removeAll();
-				}
-
-				for (String gruppenName : gruppenNamen) {
-					gruppenCombo.add(gruppenName);
-				}
-
-				int newIndex = gruppenCombo.indexOf(item);
-				if (newIndex == -1)
-					newIndex = 0;
-				gruppenCombo.select(newIndex);
-			}
-		});
+		int oldIndex = gruppenCombo.getSelectionIndex();
+		String item = null;
+		if (oldIndex != -1) {
+			item = gruppenCombo.getItem(oldIndex);
+			gruppenCombo.deselectAll();
+		}
+		
+		String[] newItems = new String[gruppenNamen.size() + 3];
+		newItems[0] = "ALLE";
+		newItems[1] = "Ohne Rubrik";
+		newItems[2] = "-------------";
+		System.arraycopy(gruppenNamen.toArray(new String[gruppenNamen.size()]), 0, newItems, 3, gruppenNamen.size());
+		gruppenCombo.setItems(newItems);
+		
+		int newIndex = 0;
+		if (item != null) {
+			newIndex = gruppenCombo.indexOf(item);
+			if (newIndex == -1)
+				newIndex = 0;
+		}
+		gruppenCombo.select(newIndex);
 
 		Arrays.sort(tableInput);
 		table.setInput(tableInput);
