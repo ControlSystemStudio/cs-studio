@@ -181,6 +181,9 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 			return false;
 		return true;
 	}
+	public void setOperatorEnum(StringRegelOperator op){
+		operator = (short) op.ordinal();
+	}
 	
 	
 }

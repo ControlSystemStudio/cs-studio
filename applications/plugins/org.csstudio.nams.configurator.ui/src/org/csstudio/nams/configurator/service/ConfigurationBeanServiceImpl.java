@@ -431,7 +431,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			
 			stringFilterConditionDTO.setCompValue(specificBean.getCompValue());
 			stringFilterConditionDTO.setKeyValue(specificBean.getKeyValue());
-			stringFilterConditionDTO.setOperator(Short.parseShort(specificBean.getOperator().name()));
 			stringFilterConditionDTO.setOperatorEnum(specificBean.getOperator());
 			
 			// result to be saved with configurationService
@@ -450,8 +449,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			
 			stringArrayFilterConditionDTO.setCompareValues(specificBean.getCompareValues());
 			stringArrayFilterConditionDTO.setKeyValue(specificBean.getKeyValue().name());
-			stringArrayFilterConditionDTO.setOperator(Short.parseShort(specificBean.getOperator().name()));
-		
+			stringArrayFilterConditionDTO.setOperatorEnum(specificBean.getOperator());
+
 			// result to be saved with configurationService
 			filterConditionDTO = stringArrayFilterConditionDTO;
 		}
