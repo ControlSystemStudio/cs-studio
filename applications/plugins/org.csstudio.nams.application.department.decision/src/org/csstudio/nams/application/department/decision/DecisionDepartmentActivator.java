@@ -308,19 +308,31 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			this.amsMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
 					.createNewMessagingSession("amsConsumer", new String[] {
 							amsProvider1, amsProvider2 });
+			String extProvider1 = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1);
+			String extProvider2 = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1 = "
+							+ extProvider1);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2 = "
+							+ extProvider2);
 			this.extMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
 					.createNewMessagingSession(
 							"extConsumer",
 							new String[] {
-									DecisionDepartmentActivator.preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
-									DecisionDepartmentActivator.preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
+									extProvider1,
+									extProvider2 });
 
+			String extAlarmTopic = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM = "
+							+ extAlarmTopic);
 			this.extAlarmConsumer = this.extMessagingSessionForConsumer
 					.createConsumer(
-							DecisionDepartmentActivator.preferenceService
-									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM),
+							extAlarmTopic,
 							PostfachArt.TOPIC);
 			
 			// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb beim Desy heruasgenommen, damit Comands nur lokal gelesen werden, Stelle 1 / 2 - 
@@ -332,25 +344,37 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 //							PostfachArt.TOPIC);
 			// END
 			
+			String amsCommandTopic = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND = "
+							+ amsCommandTopic);
 			this.amsCommandConsumer = this.amsMessagingSessionForConsumer
 					.createConsumer(
-							DecisionDepartmentActivator.preferenceService
-									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND),
+							amsCommandTopic,
 							PostfachArt.TOPIC);
 			DecisionDepartmentActivator.logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
 
 			// FIXME clientid!!
+			String amsSenderProviderUrl = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL = "
+							+ amsSenderProviderUrl);
 			this.amsMessagingSessionForProducer = DecisionDepartmentActivator.messagingService
 					.createNewMessagingSession(
 							"amsProducer",
-							new String[] { DecisionDepartmentActivator.preferenceService
-									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL) });
+							new String[] { amsSenderProviderUrl });
 
+			String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER(AusgangsTopic) = "
+							+ amsAusgangsTopic);
 			this.amsAusgangsProducer = this.amsMessagingSessionForProducer
 					.createProducer(
-							DecisionDepartmentActivator.preferenceService
-									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER),
+							amsAusgangsTopic,
 							PostfachArt.TOPIC);
 
 		} catch (final Throwable e) {

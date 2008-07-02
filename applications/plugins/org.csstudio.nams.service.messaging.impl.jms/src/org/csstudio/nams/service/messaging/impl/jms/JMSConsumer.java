@@ -199,12 +199,18 @@ class JMSConsumer implements Consumer {
 			case TOPIC:
 				Topic topic = session.createTopic(source);
 				
-//				consumer = session.createConsumer(topic, clientId
-//						+ "-" + topic.getTopicName());
 				
-				consumer = session.createDurableSubscriber(topic, clientId
-						+ "-" + topic.getTopicName());
-
+				// FIXME begin
+				// (gs,mz) klaeren ob wir einen durable subscriber verwenden koennen
+				
+				//xxx Consumer duerfen keine ID haben!!! Nur die DurableSubscriber brauchen eine ID!
+				consumer = session.createConsumer(topic);
+				//, clientId
+				//+ topic.getTopicName()
+				
+//				consumer = session.createDurableSubscriber(topic, clientId
+//						+ "-" + topic.getTopicName());
+				// FIXME end
 				break;
 			default:
 				// TODO exception handling
@@ -225,6 +231,7 @@ class JMSConsumer implements Consumer {
 
 		@Override
 		public void run() {
+			logger.logDebugMessage(this, "start to receive jms Messages - "  + consumer);
 			while (arbeitFortsetzen) {
 				try {
 					Message message = consumer.receive();
