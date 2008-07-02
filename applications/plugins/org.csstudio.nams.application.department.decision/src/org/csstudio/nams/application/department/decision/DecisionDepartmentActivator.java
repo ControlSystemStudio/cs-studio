@@ -322,11 +322,16 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							DecisionDepartmentActivator.preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM),
 							PostfachArt.TOPIC);
-			this.extCommandConsumer = this.extMessagingSessionForConsumer
-					.createConsumer(
-							DecisionDepartmentActivator.preferenceService
-									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
-							PostfachArt.TOPIC);
+			
+			// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb beim Desy heruasgenommen, damit Comands nur lokal gelesen werden, Stelle 1 / 2 - 
+			// BEGIN
+//			this.extCommandConsumer = this.extMessagingSessionForConsumer
+//					.createConsumer(
+//							DecisionDepartmentActivator.preferenceService
+//									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+//							PostfachArt.TOPIC);
+			// END
+			
 			this.amsCommandConsumer = this.amsMessagingSessionForConsumer
 					.createConsumer(
 							DecisionDepartmentActivator.preferenceService
@@ -584,7 +589,11 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		final Consumer[] consumerArray = new Consumer[] {
 				this.amsCommandConsumer, this.extAlarmConsumer,
-				this.extCommandConsumer };
+				// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb beim Desy heruasgenommen, damit Comands nur lokal gelesen werden, Stelle 2 / 2 - 
+				// BEGIN
+				// this.extCommandConsumer
+				// END
+				};
 
 		final MultiConsumersConsumer consumersConsumer = new MultiConsumersConsumer(
 				DecisionDepartmentActivator.logger, consumerArray,
