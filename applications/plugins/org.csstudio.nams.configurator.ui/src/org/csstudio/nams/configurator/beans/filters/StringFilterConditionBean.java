@@ -106,4 +106,7 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 		return true;
 	}
 
+	public void setID(int id) {
+	}
+
 }

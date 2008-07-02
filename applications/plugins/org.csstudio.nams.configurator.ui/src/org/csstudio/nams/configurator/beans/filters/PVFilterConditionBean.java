@@ -128,4 +128,7 @@ public class PVFilterConditionBean extends
 		return true;
 	}
 
+	public void setID(int id) {
+	}
+
 }

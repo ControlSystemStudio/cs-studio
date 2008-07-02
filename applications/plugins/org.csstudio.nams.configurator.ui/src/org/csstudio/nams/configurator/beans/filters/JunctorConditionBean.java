@@ -107,5 +107,8 @@ public class JunctorConditionBean extends AbstractConfigurationBean<JunctorCondi
 		return true;
 	}
 
+	public void setID(int id) {
+	}
+
 
 }

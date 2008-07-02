@@ -153,4 +153,8 @@ public class AlarmbearbeiterGruppenBean extends
 		return getDisplayName();
 	}
 
+	public void setID(int id) {
+		setGroupID(id);
+	}
+
 }

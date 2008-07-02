@@ -111,5 +111,8 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 		return true;
 	}
 
+	public void setID(int id) {
+	}
+
 
 }

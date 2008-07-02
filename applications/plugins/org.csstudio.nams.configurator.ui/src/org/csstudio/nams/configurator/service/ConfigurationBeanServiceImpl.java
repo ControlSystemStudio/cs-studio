@@ -300,7 +300,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			return (T)saveFilterBean((FilterBean)bean);
 		if (bean instanceof FilterbedingungBean)
 			return (T)saveFilterbedingungBean((FilterbedingungBean)bean);
-		return null;
+		throw new RuntimeException("Failed saving unsupported bean " + bean.getClass());
 	}
 	
 	private AlarmbearbeiterBean saveAlarmbearbeiterBean(AlarmbearbeiterBean bean) {

@@ -119,4 +119,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public String toString() {
 		return getDisplayName();
 	}
+
+	public void setID(int id) {
+		setFilterID(id);
+	}
 }

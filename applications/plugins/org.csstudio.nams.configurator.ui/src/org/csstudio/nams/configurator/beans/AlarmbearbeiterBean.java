@@ -247,4 +247,8 @@ public class AlarmbearbeiterBean extends
 	public String toString() {
 		return getDisplayName();
 	}
+
+	public void setID(int id) {
+		setUserID(id);
+	}
 }

@@ -142,4 +142,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 			return false;
 		return true;
 	}
+
+	public void setID(int id) {
+		setTopicID(id);
+	}
 }

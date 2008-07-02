@@ -5,6 +5,8 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction;
+import org.csstudio.nams.configurator.actions.DuplicateConfigurationBeanAction;
+import org.csstudio.nams.configurator.editor.AbstractEditor;
 import org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
@@ -31,38 +33,48 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	@Required
 	PreferenceService preferenceService, @OSGiService
 	@Required
-	ConfigurationServiceFactory configurationServiceFactory,
-	@OSGiService @Required Logger logger) {
+	ConfigurationServiceFactory configurationServiceFactory, @OSGiService
+	@Required
+	Logger logger) {
 		LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
 				.getConfigurationService(
 						"oracle.jdbc.driver.OracleDriver",
-						"jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP) (HOST = dbsrv01.desy.de)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP) (HOST = dbsrv02.desy.de)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP) (HOST= dbsrv03.desy.de) (PORT = 1521)) (LOAD_BALANCE = yes) (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = desy_db.desy.de) (FAILOVER_MODE =(TYPE = NONE) (METHOD = BASIC) (RETRIES = 180)(DELAY = 5))))",
-//FIXME hardcoded desy stuff
-						// preferenceService
-// .getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
+						// "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS =
+						// (PROTOCOL = TCP) (HOST = dbsrv01.desy.de)(PORT =
+						// 1521)) (ADDRESS = (PROTOCOL = TCP) (HOST =
+						// dbsrv02.desy.de)(PORT = 1521)) (ADDRESS = (PROTOCOL =
+						// TCP) (HOST= dbsrv03.desy.de) (PORT = 1521))
+						// (LOAD_BALANCE = yes) (CONNECT_DATA = (SERVER =
+						// DEDICATED)(SERVICE_NAME = desy_db.desy.de)
+						// (FAILOVER_MODE =(TYPE = NONE) (METHOD = BASIC)
+						// (RETRIES = 180)(DELAY = 5))))",
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
 						"org.hibernate.dialect.Oracle10gDialect",
-						"krykmant",
-						"krykmant");
-// preferenceService
-// .getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
-// preferenceService
-// .getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
+						// "krykmant",
+						// "krykmant");
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
 
 		// prepare bean-service
 		ConfigurationBeanServiceImpl.staticInject(logger);
-		ConfigurationBeanService beanService = new ConfigurationBeanServiceImpl(localStoreConfigurationService);
-		
+		ConfigurationBeanService beanService = new ConfigurationBeanServiceImpl(
+				localStoreConfigurationService);
+
 		// prepare Views
 		AlarmbearbeitergruppenView.staticInject(beanService);
 		AlarmbearbeiterView.staticInject(beanService);
 		AlarmtopicView.staticInject(beanService);
 		FilterView.staticInject(beanService);
 		FilterbedingungView.staticInject(beanService);
-		
+
 		// prepare editors
-		AlarmbearbeiterEditor.staticInject(beanService);
-		
+		AbstractEditor.staticInject(beanService);
+
 		// prepare actions
 		DeleteConfugurationBeanAction.staticInject(beanService);
+		DuplicateConfigurationBeanAction.staticInject(beanService);
 	}
 }

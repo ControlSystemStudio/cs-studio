@@ -143,4 +143,8 @@ public class FilterbedingungBean extends
 		this.filterSpecificBean = filterSpecificBean;
 		pcs.firePropertyChange(PropertyNames.filterSpecificBean.name(), oldValue, filterSpecificBean);
 	}
+
+	public void setID(int id) {
+		setFilterbedinungID(id);
+	}
 }
