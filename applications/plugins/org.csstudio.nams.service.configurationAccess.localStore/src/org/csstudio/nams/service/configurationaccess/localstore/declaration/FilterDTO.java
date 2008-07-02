@@ -71,8 +71,7 @@ public class FilterDTO {
 		return name;
 	}
 
-	@SuppressWarnings("unused")
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 	
@@ -80,8 +79,7 @@ public class FilterDTO {
 		return defaultMessage;
 	}
 
-	@SuppressWarnings("unused")
-	private void setDefaultMessage(String defaultMessage) {
+	public void setDefaultMessage(String defaultMessage) {
 		this.defaultMessage = defaultMessage;
 	}
 

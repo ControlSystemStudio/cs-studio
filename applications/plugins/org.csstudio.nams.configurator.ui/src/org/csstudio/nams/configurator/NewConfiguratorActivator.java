@@ -10,6 +10,7 @@ import org.csstudio.nams.configurator.editor.AbstractEditor;
 import org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
+import org.csstudio.nams.configurator.views.AbstractNamsView;
 import org.csstudio.nams.configurator.views.AlarmbearbeiterView;
 import org.csstudio.nams.configurator.views.AlarmbearbeitergruppenView;
 import org.csstudio.nams.configurator.views.AlarmtopicView;
@@ -64,11 +65,7 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 				localStoreConfigurationService);
 
 		// prepare Views
-		AlarmbearbeitergruppenView.staticInject(beanService);
-		AlarmbearbeiterView.staticInject(beanService);
-		AlarmtopicView.staticInject(beanService);
-		FilterView.staticInject(beanService);
-		FilterbedingungView.staticInject(beanService);
+		AbstractNamsView.staticInject(beanService);
 
 		// prepare editors
 		AbstractEditor.staticInject(beanService);

@@ -9,9 +9,9 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	}
 
 	private int topicID;// PRIMARY KEY
-	private String topicName;
-	private String humanReadableName;
-	private String description;
+	private String topicName = "";
+	private String humanReadableName = "";
+	private String description = "";
 
 	public AlarmtopicBean() {
 		topicID = -1;

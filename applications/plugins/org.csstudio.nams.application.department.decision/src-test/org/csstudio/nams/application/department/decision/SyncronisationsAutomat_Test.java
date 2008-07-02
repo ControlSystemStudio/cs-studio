@@ -13,6 +13,7 @@ import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
@@ -234,6 +235,11 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 					public FilterConditionDTO saveFilterCondtionDTO(
 							FilterConditionDTO filterConditionDTO) {
+						fail("unexpected method call!");
+						return null;
+					}
+
+					public FilterDTO saveFilterDTO(FilterDTO dto) {
 						fail("unexpected method call!");
 						return null;
 					}

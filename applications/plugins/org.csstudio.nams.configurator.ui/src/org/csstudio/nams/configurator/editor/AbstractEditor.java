@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import org.csstudio.nams.configurator.beans.AbstractObservableBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -113,6 +114,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
 		textWidget.setLayoutData(gridData);
+		textWidget.setText("");
 		return textWidget;
 	}
 

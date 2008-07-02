@@ -304,13 +304,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 	
 	private AlarmbearbeiterBean saveAlarmbearbeiterBean(AlarmbearbeiterBean bean) {
-		AlarmbearbeiterDTO dto = null;
-		for (AlarmbearbeiterDTO potentialdto : entireConfiguration.gibAlleAlarmbearbeiter()) {
-			if (potentialdto.getUserId() == bean.getID()) {
-				dto = potentialdto;
-				break;
-			}
-		}
+		AlarmbearbeiterDTO dto = getDTO4Bean(bean);
 		if (dto == null) {
 			dto = new AlarmbearbeiterDTO();
 		}
@@ -328,35 +322,62 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		loadConfiguration(); 
 		
-		if (bean.getUserID() != -1) {
-			for (ConfigurationBeanServiceListener listener : listeners) {
-				listener.onBeanUpdate(resultBean);
-			}
-		} else {
-			for (ConfigurationBeanServiceListener listener : listeners) {
-				listener.onBeanInsert(resultBean);
-			}
-		}
+		insertOrUpdateNotification(resultBean);
 		return resultBean;
 	}
 
-	public AlarmbearbeiterGruppenBean saveAlarmbearbeiterGruppenBean(AlarmbearbeiterGruppenBean bean) {
-		// TODO Auto-generated method stub
-		return null;
+	private AlarmbearbeiterGruppenBean saveAlarmbearbeiterGruppenBean(AlarmbearbeiterGruppenBean bean) {
+		AlarmbearbeiterGruppenDTO dto = getDTO4Bean(bean);
+		if (dto == null) {
+			dto = new AlarmbearbeiterGruppenDTO();
+		}
+		dto.setActive(bean.isActive());
+		dto.setMinGroupMember(bean.getMinGroupMember());
+		dto.setTimeOutSec(bean.getTimeOutSec());
+		dto.setUserGroupName(bean.getName());
+		
+		dto = configurationService.saveAlarmbearbeiterGruppenDTO(dto);
+		AlarmbearbeiterGruppenBean resultBean = DTO2Bean(dto);
+		loadConfiguration();
+		insertOrUpdateNotification(resultBean);
+		return resultBean;
 	}
 
-	public AlarmtopicBean saveAlarmtopicBean(AlarmtopicBean bean) {
-		// TODO Auto-generated method stub
-		return null;
+	private AlarmtopicBean saveAlarmtopicBean(AlarmtopicBean bean) {
+		TopicDTO dto = getDTO4Bean(bean);
+		if (dto == null) {
+			dto = new TopicDTO();
+		}
+		dto.setDescription(bean.getDescription());
+		dto.setName(bean.getHumanReadableName());
+		dto.setTopicName(bean.getTopicName());
+		
+		dto = configurationService.saveTopicDTO(dto);
+		AlarmtopicBean resultBean = DTO2Bean(dto);
+		loadConfiguration();
+		insertOrUpdateNotification(resultBean);
+		return resultBean;
 	}
 
-	public FilterBean saveFilterBean(FilterBean bean) {
-		// TODO Auto-generated method stub
-		return null;
+	private FilterBean saveFilterBean(FilterBean bean) {
+		FilterDTO dto = getDTO4Bean(bean);
+		if (dto == null) {
+			dto = new FilterDTO();
+		}
+		dto.setDefaultMessage(bean.getDefaultMessage());
+		//TODO save FilterConditions
+//		dto.setFilterConditions()
+		dto.setName(bean.getName());
+		
+		dto = configurationService.saveFilterDTO(dto);
+		FilterBean resultBean = DTO2Bean(dto);
+		loadConfiguration();
+		insertOrUpdateNotification(resultBean);
+		return resultBean;
 	}
 
 	@SuppressWarnings("unchecked")
-	public FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {
+	private FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {
 		
 		FilterConditionDTO filterConditionDTO = null;
 		Class<? extends AbstractConfigurationBean> beanClass = bean.getFilterSpecificBean().getClass();
@@ -466,7 +487,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		loadConfiguration(); 
 		
-		if (bean.getFilterbedinungID() != -1) {
+		insertOrUpdateNotification(bean);
+		return resultBean;
+	}
+
+	private void insertOrUpdateNotification(IConfigurationBean bean) {
+		if (bean.getID() != -1) {
 			for (ConfigurationBeanServiceListener listener : listeners) {
 				listener.onBeanUpdate(bean);
 			}
@@ -475,11 +501,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				listener.onBeanInsert(bean);
 			}
 		}
-		return resultBean;
 	}
 
 	/**
-	 * Use only for JunctorConditions
 	 * @param condition
 	 * @return
 	 */
@@ -487,13 +511,57 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		FilterConditionDTO filterConditionDTO = null;
 		for (FilterConditionDTO potentialdto : entireConfiguration.gibAlleFilterConditions()) {
 			if (potentialdto.getIFilterConditionID() == bean.getFilterbedinungID()) {
-				filterConditionDTO = (JunctorConditionDTO) potentialdto;
+				filterConditionDTO = potentialdto;
 				break;
 			}
 		}
 		return filterConditionDTO;
 	}
+	
+	private TopicDTO getDTO4Bean(AlarmtopicBean bean) {
+		TopicDTO dto = null;
+		for (TopicDTO potentialdto : entireConfiguration.gibAlleAlarmtopics()) {
+			if (potentialdto.getId() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		return dto;
+	}
+	
+	private FilterDTO getDTO4Bean(FilterBean bean) {
+		FilterDTO dto = null;
+		for (FilterDTO potentialdto : entireConfiguration.gibAlleFilter()) {
+			if (potentialdto.getIFilterID() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		return dto;
+	}
+	
+	private AlarmbearbeiterGruppenDTO getDTO4Bean(AlarmbearbeiterGruppenBean bean) {
+		AlarmbearbeiterGruppenDTO dto = null;
+		for (AlarmbearbeiterGruppenDTO potentialdto : entireConfiguration.gibAlleAlarmbearbeiterGruppen()) {
+			if (potentialdto.getUserGroupId() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		return dto;
+	}
 
+	private AlarmbearbeiterDTO getDTO4Bean(AlarmbearbeiterBean bean) {
+		AlarmbearbeiterDTO dto = null;
+		for (AlarmbearbeiterDTO potentialdto : entireConfiguration.gibAlleAlarmbearbeiter()) {
+			if (potentialdto.getUserId() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		return dto;
+	}
+	
 	public void delete(IConfigurationBean bean) {
 		try {
 		if (bean instanceof AlarmbearbeiterBean)

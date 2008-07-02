@@ -84,4 +84,6 @@ public interface LocalStoreConfigurationService {
 	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException;
 
 	public FilterConditionDTO saveFilterCondtionDTO(FilterConditionDTO filterConditionDTO);
+
+	public FilterDTO saveFilterDTO(FilterDTO dto);
 }

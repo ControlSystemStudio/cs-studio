@@ -6,6 +6,7 @@ import java.util.List;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
@@ -222,6 +223,25 @@ class LocalStoreConfigurationServiceImpl implements
 
 	}
 
+	public FilterConditionDTO saveFilterCondtionDTO(
+			FilterConditionDTO filterConditionDTO) {
+		//TODO add by-hand-mapped parts
+		Transaction tx = session.beginTransaction();
+		Serializable generatedID = session.save(filterConditionDTO);
+		tx.commit();
+
+		return (FilterConditionDTO) session.load(FilterConditionDTO.class, generatedID);
+	}
+
+	public FilterDTO saveFilterDTO(FilterDTO dto) {
+		// TODO add save for filterConditions
+		Transaction tx = session.beginTransaction();
+		Serializable generatedID = session.save(dto);
+		tx.commit();
+
+		return (FilterDTO) session.load(FilterDTO.class, generatedID);
+	}
+
 	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException {
 		Transaction tx = session.beginTransaction();
 		try {
@@ -230,15 +250,6 @@ class LocalStoreConfigurationServiceImpl implements
 			new InconsistentConfigurationException("Could not delete " + dto + ". \n It is still in use.");
 		}
 		tx.commit();
-	}
-
-	public FilterConditionDTO saveFilterCondtionDTO(
-			FilterConditionDTO filterConditionDTO) {
-		Transaction tx = session.beginTransaction();
-		Serializable generatedID = session.save(filterConditionDTO);
-		tx.commit();
-
-		return (FilterConditionDTO) session.load(FilterConditionDTO.class, generatedID);
 	}
 
 }
