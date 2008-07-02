@@ -109,7 +109,6 @@ public class JMSLogThread extends Thread implements ExceptionListener
         // Limit the queue size
         if (queue.size() < MAX_QUEUE_SIZE)
         {
-            LogLog.debug("Adding " + message);
             queue.offer(message);
             queue_is_full = false;
             return;
@@ -231,7 +230,6 @@ public class JMSLogThread extends Thread implements ExceptionListener
                 final MapMessage map = session.createMapMessage();
                 log_message.toMapMessage(map);
                 producer.send(map);
-                LogLog.debug("JMSLogThread sent " + log_message);
             }
             catch (Throwable ex)
             {
