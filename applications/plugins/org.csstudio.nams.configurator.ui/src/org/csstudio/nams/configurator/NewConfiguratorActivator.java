@@ -36,19 +36,23 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
 				.getConfigurationService(
 						"oracle.jdbc.driver.OracleDriver",
-						preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
+						"jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP) (HOST = dbsrv01.desy.de)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP) (HOST = dbsrv02.desy.de)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP) (HOST= dbsrv03.desy.de) (PORT = 1521)) (LOAD_BALANCE = yes) (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = desy_db.desy.de) (FAILOVER_MODE =(TYPE = NONE) (METHOD = BASIC) (RETRIES = 180)(DELAY = 5))))",
+//FIXME hardcoded desy stuff
+						// preferenceService
+// .getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
 						"org.hibernate.dialect.Oracle10gDialect",
-						preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
-						preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
+						"krykmant",
+						"krykmant");
+// preferenceService
+// .getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
+// preferenceService
+// .getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
 
 		// prepare bean-service
 		ConfigurationBeanServiceImpl.staticInject(logger);
 		ConfigurationBeanService beanService = new ConfigurationBeanServiceImpl(localStoreConfigurationService);
 		
-		//prepare Views
+		// prepare Views
 		AlarmbearbeitergruppenView.staticInject(beanService);
 		AlarmbearbeiterView.staticInject(beanService);
 		AlarmtopicView.staticInject(beanService);
