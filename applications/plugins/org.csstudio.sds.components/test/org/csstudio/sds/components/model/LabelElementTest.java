@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.model;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.csstudio.sds.model.LabelModel;
@@ -47,15 +46,6 @@ public final class LabelElementTest {
 	@Before
 	public void setUp() {
 		_labelElement = new LabelModel();
-	}
-
-	/**
-	 * Test method for {@link org.csstudio.sds.model.LabelModel#getDoubleTestProperty()}.
-	 */
-	@Test
-	public void testGetDoubleTestProperty() {
-		assertNotNull(_labelElement.getDoubleTestProperty());
-		assertTrue(_labelElement.hasProperty(_labelElement.getDoubleTestProperty()));
 	}
 
 	/**
