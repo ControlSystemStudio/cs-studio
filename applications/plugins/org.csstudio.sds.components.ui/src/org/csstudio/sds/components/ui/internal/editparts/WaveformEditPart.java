@@ -23,7 +23,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.WaveformModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
 import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
