@@ -635,6 +635,111 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		// exactly what we need.
 		return (int) Math.round((_max - value) * scaling);
 	}
+	
+	/**
+	 * A drawing style for drawing data points in a plot.
+	 * 
+	 * @author Joerg Rathlev
+	 */
+	private enum DataPointDrawingStyle {
+		/**
+		 * Draws a data point as a single pixel.
+		 */
+		PIXEL {
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			protected void draw(final Graphics g, final Point p) {
+				g.drawPoint(p.x, p.y);
+			}
+		},
+		
+		/**
+		 * Draws a data point as a small plus sign.
+		 */
+		SMALL_PLUS_SIGN {
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			protected void draw(final Graphics g, final Point p) {
+				//    #
+				//    #
+				//  #####
+				//    #
+				//    #
+				g.drawPoint(p.x, p.y);
+				g.drawPoint(p.x-1, p.y);
+				g.drawPoint(p.x+1, p.y);
+				g.drawPoint(p.x, p.y-1);
+				g.drawPoint(p.x, p.y+1);
+				g.drawPoint(p.x-2, p.y);
+				g.drawPoint(p.x+2, p.y);
+				g.drawPoint(p.x, p.y-2);
+				g.drawPoint(p.x, p.y+2);
+			}
+		},
+		
+		/**
+		 * Draws a data point as a small square (3x3 pixels).
+		 */
+		SMALL_SQUARE {
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			protected void draw(final Graphics g, final Point p) {
+				g.drawPoint(p.x-1, p.y-1);
+				g.drawPoint(p.x,   p.y-1);
+				g.drawPoint(p.x+1, p.y-1);
+				g.drawPoint(p.x-1, p.y);
+				g.drawPoint(p.x,   p.y);
+				g.drawPoint(p.x+1, p.y);
+				g.drawPoint(p.x-1, p.y+1);
+				g.drawPoint(p.x,   p.y+1);
+				g.drawPoint(p.x+1, p.y+1);
+			}
+		},
+		
+		/**
+		 * Draws a diamod-shaped data point.
+		 */
+		DIAMOND {
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			protected void draw(final Graphics g, final Point p) {
+				//    #
+				//   ###
+				//  #####
+				//   ###
+				//    #
+				g.drawPoint(p.x,   p.y-2);
+				g.drawPoint(p.x-1, p.y-1);
+				g.drawPoint(p.x,   p.y-1);
+				g.drawPoint(p.x+1, p.y-1);
+				g.drawPoint(p.x-2, p.y);
+				g.drawPoint(p.x-1, p.y);
+				g.drawPoint(p.x,   p.y);
+				g.drawPoint(p.x+1, p.y);
+				g.drawPoint(p.x+2, p.y);
+				g.drawPoint(p.x-1, p.y+1);
+				g.drawPoint(p.x,   p.y+1);
+				g.drawPoint(p.x+1, p.y+1);
+				g.drawPoint(p.x,   p.y+2);
+			}
+		};
+		
+		/**
+		 * Draws a data point at the specified coordinates.
+		 * 
+		 * @param g the graphics object to use for drawing.
+		 * @param p the coordinates of the data point.
+		 */
+		protected abstract void draw(Graphics g, Point p);
+	}
 
 	/**
 	 * Figure for the actual plot.
@@ -655,6 +760,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 * The width of the lines of the graph.
 		 */
 		private int _plotLineWidth = 1;
+		
+		/**
+		 * The drawing style used for the data points.
+		 */
+		private DataPointDrawingStyle _style = DataPointDrawingStyle.SMALL_SQUARE;
 
 		/**
 		 * {@inheritDoc}
@@ -681,45 +791,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			graphics.setForegroundColor(_dataPointColor);
 			for (int i = 0; i < pointList.size(); i++) {
 				Point p = pointList.getPoint(i);
-				graphics.drawPoint(p.x, p.y);
-				
-				// TODO: offer more drawing styles for the data points.
-				// Below are tests
-				//
-				// Check if these can be drawn more efficiently if
-				// not drawn pixel by pixel.
-
-				// small plus sign:
-				//
-				//    #
-				//   ###
-				//    #
-//				graphics.drawPoint(p.x-1, p.y);
-//				graphics.drawPoint(p.x+1, p.y);
-//				graphics.drawPoint(p.x, p.y-1);
-//				graphics.drawPoint(p.x, p.y+1);
-//
-				// square, 3x3 pixels:
-				//
-				//   ###
-				//   ###
-				//   ###
-//				graphics.drawPoint(p.x-1, p.y-1);
-//				graphics.drawPoint(p.x+1, p.y-1);
-//				graphics.drawPoint(p.x-1, p.y+1);
-//				graphics.drawPoint(p.x+1, p.y+1);
-//
-				// diamond:
-				//
-				//    #
-				//   ###
-				//  #####
-				//   ###
-				//    #
-//				graphics.drawPoint(p.x-2, p.y);
-//				graphics.drawPoint(p.x+2, p.y);
-//				graphics.drawPoint(p.x, p.y+2);
-//				graphics.drawPoint(p.x, p.y-2);
+				_style.draw(graphics, p);
 			}
 		}
 
@@ -773,6 +845,30 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 */
 		private void setPlotLineWidth(final int lineWidth) {
 			_plotLineWidth = lineWidth;
+		}
+
+		/**
+		 * Sets the data point drawing style of this plot.
+		 * 
+		 * @param style the style.
+		 */
+		private void setDataPointDrawingStyle(final int style) {
+			switch(style) {
+			case 0:
+				_style = DataPointDrawingStyle.PIXEL;
+				break;
+			case 1:
+				_style = DataPointDrawingStyle.SMALL_PLUS_SIGN;
+				break;
+			case 2:
+				_style = DataPointDrawingStyle.SMALL_SQUARE;
+				break;
+			case 3:
+				_style = DataPointDrawingStyle.DIAMOND;
+				break;
+			default:
+				_style = DataPointDrawingStyle.SMALL_SQUARE;
+			}
 		}
 	}
 
@@ -1316,5 +1412,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Sets the data point drawing style.
+	 * 
+	 * @param style the style.
+	 */
+	public void setDataPointDrawingStyle(final int style) {
+		_plotFigure.setDataPointDrawingStyle(style);
+		refreshConstraints();
 	}
 }

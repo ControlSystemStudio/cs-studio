@@ -113,12 +113,24 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * The ID of the transparent property.
 	 */
 	public static final String PROP_TRANSPARENT = "transparency"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the data point drawing style property.
+	 */
+	public static final String PROP_DATA_POINT_DRAWING_STYLE = "data_point_drawing_style";
 
 	/**
 	 * The display options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
 	 */
 	private static final String[] DISPLAY_OPTIONS = new String[] { "None",
 			"X-axis", "Y-axis", "Both" };
+	
+	/**
+	 * The options for the data point drawing style property.
+	 */
+	private static final String[] DRAWING_STYLE_OPTIONS = new String[] {
+		"Single pixel", "Small plus sign", "Small square", "Diamond"
+	};
 
 	/**
      * The ID of this widget model.
@@ -155,12 +167,12 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty(
 				"Show connection lines", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_GRAPH_COLOR, new ColorProperty("Color graph",
-				WidgetPropertyCategory.Display, new RGB(255, 0, 0)));
+				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
 		addProperty(PROP_CONNECTION_LINE_COLOR, new ColorProperty(
 				"Color connection line", WidgetPropertyCategory.Display,
-				new RGB(255, 100, 100)));
+				new RGB(0, 0, 0)));
 		addProperty(PROP_GRID_LINE_COLOR, new ColorProperty(
-				"Color ledger lines", WidgetPropertyCategory.Display, new RGB(
+				"Color grid lines", WidgetPropertyCategory.Display, new RGB(
 						210, 210, 210)));
 		addProperty(PROP_MIN, new DoubleProperty(
 				"Minimum", WidgetPropertyCategory.Display, -100.0));
@@ -178,6 +190,9 @@ public final class WaveformModel extends AbstractWidgetModel {
 				"Graph line width",WidgetPropertyCategory.Display,1,1,100));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
 				WidgetPropertyCategory.Display, false));
+		addProperty(PROP_DATA_POINT_DRAWING_STYLE, new ArrayOptionProperty(
+				"Data point drawing style", WidgetPropertyCategory.Display, 
+				DRAWING_STYLE_OPTIONS, 2));
 	}
 
 	/**
@@ -326,6 +341,16 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	public boolean getTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the data point drawing style. 0 = single pixel, 1 = small plus
+	 * sign, 2 = small square, 3 = diamond.
+	 * 
+	 * @return the data point drawing style.
+	 */
+	public int getDataPointDrawingStyle() {
+		return (Integer) getProperty(PROP_DATA_POINT_DRAWING_STYLE).getPropertyValue();
 	}
 
 }

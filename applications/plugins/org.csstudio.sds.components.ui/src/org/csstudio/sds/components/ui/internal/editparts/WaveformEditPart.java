@@ -216,6 +216,16 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_BORDER_WIDTH, borderHandler);
 		setPropertyChangeHandler(BargraphModel.PROP_BORDER_STYLE, borderHandler);
+		// data point drawing style
+		IWidgetPropertyChangeHandler drawingStyleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue,
+					final IFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setDataPointDrawingStyle((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, drawingStyleHandler);
 		this.registerColorPropertyChangeHandlers();
 	}
 	
