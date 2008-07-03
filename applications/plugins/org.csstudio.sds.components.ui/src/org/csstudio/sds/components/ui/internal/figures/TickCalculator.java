@@ -50,34 +50,34 @@ class TickCalculator {
 	/**
 	 * The smallest data value.
 	 */
-	private double min = 0.0;
+	private double _min = 0.0;
 	
 	/**
 	 * The largest data value.
 	 */
-	private double max = 0.0;
+	private double _max = 0.0;
 	
 	/**
 	 * The maximum number of tickmarks, as set by the client.
 	 */
-	private int maxTickCount;
+	private int _maxTickCount;
 	
 	/**
 	 * The smallest data value at which a tickmark should be placed.
 	 */
-	private double smallestTick;
+	private double _smallestTick;
 	
 	/**
 	 * The distance at which the tickmarks should be placed.
 	 */
-	private double tickDistance;
+	private double _tickDistance;
 
 	/**
 	 * Sets the minimum value in the dataset.
 	 * @param d the minimum value in the dataset.
 	 */
-	public void setMinimumValue(double d) {
-		this.min = d;
+	public void setMinimumValue(final double d) {
+		this._min = d;
 		recalculate();
 	}
 
@@ -85,8 +85,8 @@ class TickCalculator {
 	 * Sets the maximum value in the dataset.
 	 * @param d the maximum value in the dataset.
 	 */
-	public void setMaximumValue(double d) {
-		this.max = d;
+	public void setMaximumValue(final double d) {
+		this._max = d;
 		recalculate();
 	}
 
@@ -95,8 +95,8 @@ class TickCalculator {
 	 * calculate positions.
 	 * @param i the maximum number of tickmarks.
 	 */
-	public void setMaximumTickCount(int i) {
-		this.maxTickCount = i;
+	public void setMaximumTickCount(final int i) {
+		this._maxTickCount = i;
 		recalculate();
 	}
 	
@@ -105,7 +105,7 @@ class TickCalculator {
 	 * @return the smallest data value at which a tickmark should be placed.
 	 */
 	public double getSmallestTick() {
-		return smallestTick;
+		return _smallestTick;
 	}
 
 	/**
@@ -113,7 +113,7 @@ class TickCalculator {
 	 * @return the distance at which tickmarks should be placed.
 	 */
 	public double getTickDistance() {
-		return tickDistance;
+		return _tickDistance;
 	}
 
 	/**
@@ -121,15 +121,15 @@ class TickCalculator {
 	 * minimum and maximum data values and maximum number of tickmarks.
 	 */
 	private void recalculate() {
-		if (min > max || maxTickCount < 2) {
+		if (_min > _max || _maxTickCount < 2) {
 			return;
 		}
 		
-		double dataRange = max - min;
+		double dataRange = _max - _min;
 		
 		// if we were to create exactly maxTickCount ticks, without any
 		// snapping to nice numbers, this would be their distance:
-		double exactDist = dataRange / (maxTickCount - 1);
+		double exactDist = dataRange / (_maxTickCount - 1);
 		
 		// Now, the goal is to find the smallest distance that is larger than
 		// or equal to the exact distance, and that is a "nice number".
@@ -146,7 +146,7 @@ class TickCalculator {
 		// have two decimal places. Note that this works better the more
 		// tickmarks you have. With a small number of tickmarks, this will
 		// almost certainly NOT place them at nice numbers.
-		tickDistance = Math.ceil(exactDist / Math.pow(10, o - 1)) * Math.pow(10, o - 1);
+		_tickDistance = Math.ceil(exactDist / Math.pow(10, o - 1)) * Math.pow(10, o - 1);
 		
 		// The algorithm below rounds to nice numbers, but is overly
 		// aggressive, so it is disabled for now.
@@ -189,7 +189,7 @@ class TickCalculator {
 		// This ensures that the ticks really are shown at "nice" numbers, even
 		// if the smallest data value is not a nice number, and it ensures that
 		// a tick is always shown at 0.0.
-		smallestTick = Math.ceil(min / tickDistance) * tickDistance;
+		_smallestTick = Math.ceil(_min / _tickDistance) * _tickDistance;
 	}
 	
 	/**
@@ -198,7 +198,7 @@ class TickCalculator {
 	 * @param d a value.
 	 * @return the order of magnitude of d.
 	 */
-	private static double orderOfMagnitude(double d) {
+	private static double orderOfMagnitude(final double d) {
 		if (d == 0) {
 			return 0.0;
 		} else {

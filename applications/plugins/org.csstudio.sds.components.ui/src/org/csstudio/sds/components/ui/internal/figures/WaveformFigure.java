@@ -427,8 +427,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			for (double value : _data) {
 				if (value < min) {
 					min = value;
-				}
-				else if (value > max) {
+				} else if (value > max) {
 					max = value;
 				}
 			}
@@ -624,7 +623,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * @param value the value.
 	 * @return the y position.
 	 */
-	private int valueToYPos(double value) {
+	private int valueToYPos(final double value) {
 		double dataRange = _max - _min;
 		int plotHeight = _plotBounds.height - 1;
 		// the data values are mapped to [0, height-1]
@@ -1177,12 +1176,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 //				}
 				this.refreshConstraints();
 				addFigureListener(new FigureListener() {
-					public void figureMoved(IFigure source) {
+					public void figureMoved(final IFigure source) {
 						refreshConstraints();
 					}
 				});
 			}
 
+			/**
+			 * Recalculates the constraints.
+			 */
 			private void refreshConstraints() {
 				Rectangle bounds = this.getBounds();
 				if (_isHorizontal) {
