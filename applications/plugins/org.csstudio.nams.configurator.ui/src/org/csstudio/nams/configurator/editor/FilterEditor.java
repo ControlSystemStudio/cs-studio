@@ -7,6 +7,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -26,6 +27,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	private Composite filterSpecificComposite;
 
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
+	private ComboViewer _groupComboEntryViewer;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -35,7 +37,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_groupComboEntry = this.createComboEntry(main, "Group:", true);
+		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true, groupDummyContent);
+		_groupComboEntry = _groupComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");

@@ -5,36 +5,39 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.beans.AbstractObservableBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-public abstract class AbstractEditor<ConfigurationType extends AbstractObservableBean> extends EditorPart implements PropertyChangeListener{
+public abstract class AbstractEditor<ConfigurationType extends AbstractObservableBean>
+		extends EditorPart implements PropertyChangeListener {
 
 	protected static ConfigurationBeanService configurationBeanService;
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
-	
+
+	protected final String[] groupDummyContent = { "This is group dummy content" };
+
 	protected PropertyChangeListener listener;
-	
+
 	public AbstractEditor() {
 		NUM_COLUMNS = getNumColumns();
 	}
-	
+
 	protected abstract int getNumColumns();
 
 	@SuppressWarnings("unchecked")
@@ -46,7 +49,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		// .getSelectionIndex());
 
 		// speicher Änderungen mit dem Service
-		ConfigurationType updatedBean = configurationBeanService.save(this.beanClone);
+		ConfigurationType updatedBean = configurationBeanService
+				.save(this.beanClone);
 
 		this.bean.removePropertyChangeListener(this);
 		this.beanClone.removePropertyChangeListener(this);
@@ -54,11 +58,11 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		// copy clone state to original bean
 		this.bean = updatedBean;
 		this.bean.addPropertyChangeListener(this);
-		
+
 		// create new clone
 		this.beanClone = (ConfigurationType) this.bean.getClone();
 		this.beanClone.addPropertyChangeListener(this);
-		
+
 		initDataBinding();
 		firePropertyChange(EditorPart.PROP_DIRTY);
 	}
@@ -70,17 +74,17 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		setSite(site);
 		setInput(input);
 		ConfigurationEditorInput cInput = (ConfigurationEditorInput) input;
-		
-		this.bean = (ConfigurationType) cInput.getBean();;
+
+		this.bean = (ConfigurationType) cInput.getBean();
+		;
 		this.beanClone = (ConfigurationType) this.bean.getClone();
 		this.beanClone.addPropertyChangeListener(this);
-		
+
 		doInit(site, input);
 	}
 
 	protected abstract void doInit(IEditorSite site, IEditorInput input);
 
-	
 	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
@@ -91,7 +95,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 
 	@Override
 	public void doSaveAs() {
-		
+
 	}
 
 	public void editConfiguration(ConfigurationType bean) {
@@ -118,35 +122,37 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		return textWidget;
 	}
 
-	protected Combo createComboEntry(Composite parent, String labeltext,
-			boolean editable) {
+	protected ComboViewer createComboEntry(Composite parent, String labeltext,
+			boolean editable, String[] contents) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		Combo comboWidget = new Combo(parent, SWT.BORDER);
+		ComboViewer comboWidget = new ComboViewer(parent, SWT.BORDER);
+		comboWidget.add(contents);
 		// comboWidget.setEditable(editable);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
-		comboWidget.setLayoutData(gridData);
+		// comboWidget.setLayoutData(gridData);
 		return comboWidget;
 	}
 
-	protected List createListEntry(Composite parent, String labeltext,
+	protected ListViewer createListEntry(Composite parent, String labeltext,
 			boolean editable) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		List listWidget = new List(parent, SWT.BORDER);
-//		listWidget.setEditable(editable);
+		ListViewer listWidget = new ListViewer(parent, SWT.BORDER);
+		// listWidget.setEditable(editable);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
-		listWidget.setLayoutData(gridData);
+		// listWidget.setLayoutData(gridData);
 		return listWidget;
 	}
+
 	protected Button createCheckBoxEntry(Composite parent, String labeltext,
 			boolean editable) {
 		Label label = new Label(parent, SWT.RIGHT);
@@ -161,6 +167,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		buttonWidget.setLayoutData(gridData);
 		return buttonWidget;
 	}
+
 	protected Button createButtonEntry(Composite parent, String labeltext,
 			boolean editable) {
 		new Composite(parent, SWT.NONE);
@@ -180,7 +187,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
 				NUM_COLUMNS, 1));
 	}
-	
+
 	protected Text createDescriptionTextEntry(Composite parent, String labeltext) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
@@ -211,8 +218,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 
 	protected abstract void initDataBinding();
 
-	public void setPropertyChangedListener(
-			PropertyChangeListener listener){
+	public void setPropertyChangedListener(PropertyChangeListener listener) {
 		this.listener = listener;
 		beanClone.addPropertyChangeListener(listener);
 	}
@@ -223,8 +229,16 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 	public void propertyChange(PropertyChangeEvent evt) {
 		this.firePropertyChange(EditorPart.PROP_DIRTY);
 	}
-	
+
 	public static void staticInject(ConfigurationBeanService service) {
 		configurationBeanService = service;
+	}
+
+	protected static String[] array2StringArray(Object[] objects) {
+		String[] result = new String[objects.length];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = objects[i].toString();
+		}
+		return result;
 	}
 }

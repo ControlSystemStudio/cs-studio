@@ -7,6 +7,7 @@ import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -30,6 +31,10 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 	private Text _statusCodeTextEntry;
 	private Text _confirmCodeTextEntry;
 	private Button _activeCheckBoxEntry;
+
+	private ComboViewer _groupComboEntryViewer;
+
+	private ComboViewer _prefAlarmingTypeComboEntryViewer;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -37,25 +42,16 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_groupComboEntry = this.createComboEntry(main, "Group:", true);
-//		_groupComboEntry.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				/*
-//				 * Feuer property change event ab, damit der Dirty-Flag geändert
-//				 * wird. Persistiert wird erst beim Klick auf "Speichern"
-//				 */
-//				listener.propertyChange(null);
-//			}
-//		});
+		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true, groupDummyContent);
+		_groupComboEntry = _groupComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_emailTextEntry = this.createTextEntry(main, "Email:", true);
 		_smsTextEntry = this.createTextEntry(main, "SMS number:", true);
 		_voiceMailTextEntry = this.createTextEntry(main, "VoiceMail number:",
 				true);
-		_prefAlarmingTypeComboEntry = this.createComboEntry(main,
-				"Prefered alarming type:", false);
-		this.initPrefAlarmingCombo();
+		_prefAlarmingTypeComboEntryViewer = this.createComboEntry(main,
+				"Prefered alarming type:", false, array2StringArray(PreferedAlarmType.values()));
+		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_statusCodeTextEntry = this
 				.createTextEntry(main, "Status code:", true);
@@ -67,12 +63,6 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		initDataBinding();
 	}
 	
-	private void initPrefAlarmingCombo() {
-		for (PreferedAlarmType alarm : PreferedAlarmType.values()) {
-			_prefAlarmingTypeComboEntry.add(alarm.name());
-		}
-	}
-
 	@Override
 	protected void doInit(IEditorSite site, IEditorInput input) {
 		

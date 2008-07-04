@@ -6,6 +6,7 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -23,6 +24,7 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 	private Text _descriptionTextEntry;
 	
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmtopicEditor";
+	private ComboViewer _groupComboEntryViewer;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -36,7 +38,8 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		_idTextEntry.setText("Topic");
 		this.addSeparator(main);
 		_topicIdTextEntry = this.createTextEntry(main, "Name:", true);
-		_groupComboEntry = this.createComboEntry(main, "Group:", true);
+		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true, groupDummyContent);
+		_groupComboEntry = _groupComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_topicNameTextEntry = this.createTextEntry(main, "Topic name:", true);
 		_descriptionTextEntry = this.createDescriptionTextEntry(main,
