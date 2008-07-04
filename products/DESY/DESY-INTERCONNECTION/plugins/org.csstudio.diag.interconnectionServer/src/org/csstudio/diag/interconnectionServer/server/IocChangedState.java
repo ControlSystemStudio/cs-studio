@@ -120,6 +120,15 @@ public class IocChangedState extends Thread{
 			 * not necessary: setAllRecordsToConnected ( logicalIocName);
 			 */
 			
+			// TODO: something like this is necessary here... MCL
+			
+//			if ( ! statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
+//				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+//				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
+//			} else {
+//				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
+//			}
+			
 		} else if ( !InterconnectionServer.getInstance().isQuit()){
 			/*
 			 * set channels in LDAP to disconnected

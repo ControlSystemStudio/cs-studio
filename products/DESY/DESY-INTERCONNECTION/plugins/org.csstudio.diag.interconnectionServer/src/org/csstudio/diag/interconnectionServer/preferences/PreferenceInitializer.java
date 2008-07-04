@@ -44,7 +44,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.XMPP_PASSWORD, "icserver");
 		prefs.put(PreferenceConstants.DATA_PORT_NUMBER, "18324");
 		prefs.put(PreferenceConstants.COMMAND_PORT_NUMBER, "18325");
-		prefs.put(PreferenceConstants.BEACON_TIMEOUT, "15000");				//15sec
+		prefs.put(PreferenceConstants.BEACON_TIMEOUT, "20000");				//15sec -> 4.7.2008 => 20sec
 		prefs.put(PreferenceConstants.SHOW_MESSAGE_INDICATOR, "false");
 		prefs.put(PreferenceConstants.SENT_START_ID, "5000000");
 		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY, "ACTIVEMQ");
@@ -52,7 +52,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "600000");
 		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "3600000");
 		prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50");
-		prefs.put(PreferenceConstants.SECONDARY_JMS_URL	, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50");
+		//prefs.put(PreferenceConstants.SECONDARY_JMS_URL	, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50");
+		prefs.put(PreferenceConstants.NUMBER_OF_READ_THREADS, "25");
+		prefs.put(PreferenceConstants.CONNECTION_CLIENT_ID, "IC-Server");
 	}
 
 }

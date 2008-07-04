@@ -69,7 +69,7 @@ public class PreferenceProperties {
 	//public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";
 	///public static String SECONDARY_JMS_URL = "tcp://krynfs.desy.de:62616";
 	//value is now read from the xml store
-	public static String SECONDARY_JMS_URL = "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50";	// PP
+	//public static String SECONDARY_JMS_URL = "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50";	// PP
 	///public static String SECONDARY_JMS_URL = "tcp://elogbook.desy.de:64616";
 
 	

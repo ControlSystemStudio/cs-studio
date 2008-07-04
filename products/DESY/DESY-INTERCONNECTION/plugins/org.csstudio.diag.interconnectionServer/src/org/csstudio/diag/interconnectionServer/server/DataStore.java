@@ -58,10 +58,13 @@ public class DataStore {
 		for ( int index=0; index < maxMessageNumber; index++) {
 			if ( intMessageId == messageIds[index]) {
 				// found duplicates
+				// remove special chars at the end of message
+				String messageOld = messages[index].substring(0, messages[index].length() -1);
+				String messageNew = messageText.substring(0, messageText.length() -1);
 				System.out.println("DUPLICATE Message from [" + hostName + "]:");
-				System.out.println(" Old: ID:" + intMessageId + " Message " + messages[index]);
-				System.out.println(" New: ID:" + intMessageId + " Message " + messageText);
-				CentralLogger.getInstance().warn(this, "DUPLICATED Message from [" + hostName + "] OLD: " + messages[index] + " NEW: " + messageText);
+				System.out.println(" Old: ID:" + intMessageId + " Message " + messageOld);
+				System.out.println(" New: ID:" + intMessageId + " Message " + messageNew);
+				CentralLogger.getInstance().warn(this, "DUPLICATED Message from [" + hostName + "] OLD: " + messageOld + " NEW: " + messageNew);
 			}
 		}
 		// Store message

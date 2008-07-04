@@ -55,7 +55,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * 
  * @author Matthias Clausen
  */
-public class ClientRequest extends Thread
+public class ClientRequest implements Runnable
 {
     private String				packetData 		= null;
 	private DatagramSocket      socket          = null;
@@ -105,7 +105,10 @@ public class ClientRequest extends Thread
         this.statistic	  = Statistic.getInstance();
         this.tagList 	  = TagList.getInstance();
         
-		this.start();
+        /*
+         * get started from executor
+         */
+		// this.start();
 	}
 	
 	public void run()
@@ -123,9 +126,9 @@ public class ClientRequest extends Thread
 	    boolean 		received		= true;
 	    MapMessage      message         = null;
 	    MessageProducer sender          = null;
-	    Session         alarmSession	= null;
-	    Session         logSession		= null;
-	    Session         putLogSession	= null;
+//	    Session         alarmSession	= null;
+//	    Session         logSession		= null;
+//	    Session         putLogSession	= null;
         
         address 	= packet.getAddress();
         hostName 	= address.getHostName();
@@ -243,22 +246,18 @@ public class ClientRequest extends Thread
         		//
         		//System.out.print("a");
         		try {
-        			
-
-        			alarmSession = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
                     // Create the destination (Topic or Queue)
-        			Destination alarmDestination = alarmSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+        			Destination alarmDestination = icServer.getAlarmSession().createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
-                	MessageProducer alarmSender = alarmSession.createProducer( alarmDestination);
+                	MessageProducer alarmSender = icServer.getAlarmSession().createProducer( alarmDestination);
                 	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
                 	
             		//sender = alarmSession.createProducer(alarmDestination);
             		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
                     //message = alarmSession.createMapMessage();
-            		message = icServer.prepareTypedJmsMessage( alarmSession.createMapMessage(), tagValuePairs, type);
+            		message = icServer.prepareTypedJmsMessage( icServer.getAlarmSession().createMapMessage(), tagValuePairs, type);
             		///System.out.println("Time-APARM: - after message= 	= " + dateToString(new GregorianCalendar()));
             		
             		///alarmSender.setPriority( 9);
@@ -317,21 +316,17 @@ public class ClientRequest extends Thread
         		// they are important for the LDAP-Trees currently under display in the CSS-Alarm-Tree views!!!
         		//
         		try {
-        			
-        			alarmSession = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                    // Create the destination (Topic or Queue)
-        			Destination alarmDestination = alarmSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+        			Destination alarmDestination = icServer.getAlarmSession().createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
-                	MessageProducer alarmSender = alarmSession.createProducer( alarmDestination);
+                	MessageProducer alarmSender = icServer.getAlarmSession().createProducer( alarmDestination);
                 	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
                 	
             		//sender = alarmSession.createProducer(alarmDestination);
             		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
                     //message = alarmSession.createMapMessage();
-            		message = icServer.prepareTypedJmsMessage( alarmSession.createMapMessage(), tagValuePairs, type);
+            		message = icServer.prepareTypedJmsMessage( icServer.getAlarmSession().createMapMessage(), tagValuePairs, type);
             		///System.out.println("Time-APARM: - after message= 	= " + dateToString(new GregorianCalendar()));
             		
             		///alarmSender.setPriority( 9);
@@ -388,18 +383,18 @@ public class ClientRequest extends Thread
         		// LOG jms server
         		//
         		try{
-        			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                    // Create the destination (Topic or Queue)
-        			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_LOG_CONTEXT);
+        			Destination logDestination = icServer.getLogSession().createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
-                	MessageProducer logSender = logSession.createProducer( logDestination);
+                	MessageProducer logSender = icServer.getLogSession().createProducer( logDestination);
+                	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
+                	logSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
+
                 	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	logSender.setTimeToLive( jmsTimeToLiveLogsInt);
         			// sender = logSession.createProducer(logDestination);
                     //message = logSession.createMapMessage();
-                    message = icServer.prepareTypedJmsMessage( logSession.createMapMessage(), tagValuePairs, type);
+                    message = icServer.prepareTypedJmsMessage( icServer.getLogSession().createMapMessage(), tagValuePairs, type);
             		logSender.send(message);
             		logSender.close();
         		}
@@ -475,18 +470,7 @@ public class ClientRequest extends Thread
         			 * 
         			 */
         			try{
-            			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                        // Create the destination (Topic or Queue)
-            			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
-
-                        // Create a MessageProducer from the Session to the Topic or Queue
-                    	MessageProducer logSender = logSession.createProducer( logDestination);
-                    	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
-                    	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
-                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
-                    	
-                    	logSender.close();
+                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( icServer.getLogSession().createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
             		}
             		catch(JMSException jmse)
                     {
@@ -577,17 +561,7 @@ public class ClientRequest extends Thread
         			 * 
         			 */
         			try{
-            			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                        // Create the destination (Topic or Queue)
-            			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
-
-                        // Create a MessageProducer from the Session to the Topic or Queue
-                    	MessageProducer logSender = logSession.createProducer( logDestination);
-                    	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
-                    	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
-                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
-
+                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( icServer.getLogSession().createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
                     	/*
             			 * get host name of interconnection server
             			 */
@@ -608,7 +582,6 @@ public class ClientRequest extends Thread
             					null, 																// facility
             					"virtual channel", 											// text
             					null);	
-                    	logSender.close();
             		}
             		catch(JMSException jmse)
                     {
@@ -742,16 +715,7 @@ public class ClientRequest extends Thread
         			 * 
         			 */
         			try{
-            			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                        // Create the destination (Topic or Queue)
-            			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
-
-                        // Create a MessageProducer from the Session to the Topic or Queue
-                    	MessageProducer logSender = logSession.createProducer( logDestination);
-                    	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
-                    	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
-                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
+                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( icServer.getLogSession().createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
                     	/*
             			 * get host name of interconnection server
             			 */
@@ -772,7 +736,7 @@ public class ClientRequest extends Thread
             					null, 																// facility
             					"virtual channel", 											// text
             					null);	
-                    	logSender.close();
+
             		}
             		catch(JMSException jmse)
                     {
@@ -791,18 +755,16 @@ public class ClientRequest extends Thread
         		// PUT-LOG jms server
         		//
         		try {
-        			putLogSession = putLogConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
                     // Create the destination (Topic or Queue)
-        			Destination putLogDestination = putLogSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+        			Destination putLogDestination = icServer.getPutLogSession().createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
-                	MessageProducer putLogSender = putLogSession.createProducer( putLogDestination);
+                	MessageProducer putLogSender = icServer.getPutLogSession().createProducer( putLogDestination);
                 	putLogSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	putLogSender.setTimeToLive( jmsTimeToLivePutLogsInt);
         			//sender = putLogSession.createProducer(putLogDestination);
                     //message = putLogSession.createMapMessage();
-                    message = icServer.prepareTypedJmsMessage( putLogSession.createMapMessage(), tagValuePairs, type);
+                    message = icServer.prepareTypedJmsMessage( icServer.getPutLogSession().createMapMessage(), tagValuePairs, type);
             		putLogSender.send(message);
             		putLogSender.close();
         		}
@@ -850,24 +812,7 @@ public class ClientRequest extends Thread
         icServer.getClientRequestTheadCollector().decrementValue();
         icServer.setSuccessfullJmsSentCountdown(true);
         //System.out.print("Ex");
-        
-		try {
-			if (alarmSession != null) {
-				alarmSession.close();
-			}
-			if (logSession != null) {
-				logSession.close();
-			}
-			if (putLogSession != null) {
-				putLogSession.close();
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		} 
-		finally {
-			// final clean up
-		}
+
 	}
 	
 	private boolean parseMessage ( String packetData, Hashtable<String,String> tagValue, Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {
@@ -950,7 +895,7 @@ public class ClientRequest extends Thread
 			 * ANY message MUST contain an ID - so this should be always TRUE
 			 * put data into DataStore - this will also check for duplicates!
 			 */
-			DataStore.getInstance().storeData(tagValue.get("ID"), packetData, statisticContent.getHost());
+			DataStore.getInstance().storeData(tagValue.get("ID"), packetData, statisticContent.getLogicalIocName());
 		} else if ( tagValue.containsKey("CREATETIME")){
 			/*
 			 * if CREATETIME is set -> is it as EVENTTIME

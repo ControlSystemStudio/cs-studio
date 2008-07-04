@@ -38,7 +38,8 @@ public class PreferenceConstants {
 	public static final String JMS_TIME_TO_LIVE_LOGS = "jmsTimeToLiveLogs";
 	public static final String JMS_TIME_TO_LIVE_PUT_LOGS = "jmsTimeToLivePutLogs";
 	public static final String PRIMARY_JMS_URL = "primaryJmsUrl";
-	public static final String SECONDARY_JMS_URL = "secondaryJmsUrl";
-
+	//public static final String SECONDARY_JMS_URL = "secondaryJmsUrl";
+	public static final String NUMBER_OF_READ_THREADS = "numberOfReadThreads";
+	public static final String CONNECTION_CLIENT_ID = "connectionClientId";
 	
 }

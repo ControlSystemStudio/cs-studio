@@ -85,7 +85,7 @@ public class JmsMessage {
 	public void sendMessage ( int messageType, String type, String name, String value, String severity, String status, String host, String facility, String text, String howTo) {
 		
 		String jmsContext = null;
-		Connection connection = null;
+		Session session = null;
 		int jmsTimeToLive = 0;
 		/*
 		 * get preferences
@@ -106,28 +106,26 @@ public class JmsMessage {
 			/*
 			 * get JMS alarm connection from InterconnectionServer class
 			 */
-			connection = InterconnectionServer.getInstance().getAlarmConnection();
+			session = InterconnectionServer.getInstance().getAlarmSession();
 			jmsContext = PreferenceProperties.JMS_ALARM_CONTEXT;
 			jmsTimeToLive = jmsTimeToLiveAlarmsInt;
 		} else if ( messageType == JMS_MESSAGE_TYPE_LOG) {
 			/*
 			 * get JMS alarm connection from InterconnectionServer class
 			 */
-			connection = InterconnectionServer.getInstance().getLogConnection();
+			session = InterconnectionServer.getInstance().getLogSession();
 			jmsContext = PreferenceProperties.JMS_LOG_CONTEXT;
 			jmsTimeToLive = jmsTimeToLiveLogsInt;
 		} else if ( messageType == JMS_MESSAGE_TYPE_PUT_LOG) {
 			/*
 			 * get JMS alarm connection from InterconnectionServer class
 			 */
-			connection = InterconnectionServer.getInstance().getPutLogConnection();
+			session = InterconnectionServer.getInstance().getPutLogSession();
 			jmsContext = PreferenceProperties.JMS_PUT_LOG_CONTEXT;
 			jmsTimeToLive = jmsTimeToLivePutLogsInt;
 		}
 		
 		try {
-			
-			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
 	        // Create the destination (Topic or Queue)
 			Destination destination = session.createTopic( jmsContext);
