@@ -25,6 +25,7 @@
 
 package org.csstudio.nams.common.material.regelwerk;
 
+import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.wam.Fachwert;
 

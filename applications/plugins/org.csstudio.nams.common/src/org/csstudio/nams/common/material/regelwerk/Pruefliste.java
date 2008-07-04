@@ -29,7 +29,6 @@ import java.util.HashMap;
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.testhelper.ForTesting;
 import org.csstudio.nams.common.wam.Material;
 
 @Material

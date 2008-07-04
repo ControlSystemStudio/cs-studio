@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.junit.Test;
 
 public class LocalConfigurationStoreServiceActivator_Test extends TestCase {

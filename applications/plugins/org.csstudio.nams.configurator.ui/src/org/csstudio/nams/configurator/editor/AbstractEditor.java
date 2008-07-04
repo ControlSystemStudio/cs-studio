@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.configurator.beans.AbstractObservableBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
@@ -134,7 +133,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
-		// comboWidget.setLayoutData(gridData);
+		comboWidget.getCombo().setLayoutData(gridData);
 		return comboWidget;
 	}
 
@@ -149,7 +148,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
-		// listWidget.setLayoutData(gridData);
+		listWidget.getList().setLayoutData(gridData);
 		return listWidget;
 	}
 
