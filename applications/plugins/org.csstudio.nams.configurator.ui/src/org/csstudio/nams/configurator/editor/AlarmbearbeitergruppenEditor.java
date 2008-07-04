@@ -1,14 +1,21 @@
 package org.csstudio.nams.configurator.editor;
 
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -29,6 +36,7 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 	private Button activeButton;
 	
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor";
+	private TableViewer tableViewer;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -82,11 +90,13 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 						tabelleUndButtonsComp);
 
 				{
-					TableViewer tableViewer = new TableViewer(
+					tableViewer = new TableViewer(
 							tabelleUndButtonsComp);
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
 							tableViewer.getControl());
 
+					initDND();
+					
 					tableViewer.setContentProvider(new ArrayContentProvider());
 
 					Table table = tableViewer.getTable();
@@ -129,6 +139,31 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 			}
 		}
 		initDataBinding();
+	}
+
+	private void initDND() {
+		tableViewer.addDropSupport(DND.DROP_LINK, new Transfer[] {LocalSelectionTransfer.getTransfer()}, new DropTargetAdapter() {
+
+			public void dragEnter(DropTargetEvent event) {
+				try {
+					IStructuredSelection selection = (IStructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
+					if (selection.getFirstElement() instanceof AlarmbearbeiterBean) {
+						event.detail = DND.DROP_LINK;
+					}
+				} catch (Throwable e) {}
+			}
+
+			public void drop(DropTargetEvent event) {
+				try {
+					IStructuredSelection selection = (IStructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
+					AlarmbearbeiterBean bean = (AlarmbearbeiterBean) selection.getFirstElement();
+					System.out.println("Hier ist ein AlarmbearbeiterBean angekommen ;-) "+bean.toString());
+					tableViewer.add(bean);
+				} catch (Throwable e) {
+				}
+			}
+			
+		});
 	}
 
 	@Override

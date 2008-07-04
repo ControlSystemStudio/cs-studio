@@ -14,27 +14,27 @@ import org.eclipse.ui.part.ViewPart;
 public abstract class AbstractNamsView extends ViewPart {
 
 	protected static ConfigurationBeanService configurationBeanService;
-	private FilterableBeanList filteredListVarianteA;
+	private FilterableBeanList filterableBeanList;
 
 	public AbstractNamsView() {
 		configurationBeanService.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
 			//TODO updateView() is in most cases overkill
 			@Override
 			public void onBeanInsert(IConfigurationBean bean) {
-				if (filteredListVarianteA != null) {
-					filteredListVarianteA.updateView();
+				if (filterableBeanList != null) {
+					filterableBeanList.updateView();
 				}
 			}
 			@Override
 			public void onBeanUpdate(IConfigurationBean bean) {
-				if (filteredListVarianteA != null) {
-					filteredListVarianteA.updateView();
+				if (filterableBeanList != null) {
+					filterableBeanList.updateView();
 				}
 			}
 			@Override
 			public void onBeanDeleted(IConfigurationBean bean) {
-				if (filteredListVarianteA != null) {
-					filteredListVarianteA.updateView();
+				if (filterableBeanList != null) {
+					filterableBeanList.updateView();
 				}
 			}
 		});
@@ -42,19 +42,22 @@ public abstract class AbstractNamsView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		filteredListVarianteA = new FilterableBeanList(parent, SWT.None) {
+		filterableBeanList = new FilterableBeanList(parent, SWT.None) {
 			@Override
 			protected IConfigurationBean[] getTableInput() {
 				return getTableContent();
 			}
 		};
 		MenuManager menuManager = new MenuManager();
-		TableViewer table = filteredListVarianteA.getTable();
+		TableViewer table = filterableBeanList.getTable();
 		Menu menu = menuManager.createContextMenu(table.getTable());
 		table.getTable().setMenu(menu);
 		getSite().registerContextMenu(menuManager, table);
 		getSite().setSelectionProvider(table);
+		initDragAndDrop(filterableBeanList);
 	}
+
+	protected abstract void initDragAndDrop(FilterableBeanList filterableBeanList);
 
 	@Override
 	public void setFocus() {

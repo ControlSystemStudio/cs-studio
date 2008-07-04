@@ -1,15 +1,22 @@
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.configurator.beans.FilterBean;
+import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -28,6 +35,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
 	private ComboViewer _groupComboEntryViewer;
+	private ListViewer filterConditionsListViewer;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -50,19 +58,42 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					tabelleUndButtonsComp);
 			new Label(tabelleUndButtonsComp, SWT.None).setText("Filterbedingungen");
 			{
-				ListViewer listViewer = new ListViewer(
+				filterConditionsListViewer = new ListViewer(
 						tabelleUndButtonsComp);
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
-						listViewer.getControl());
+						filterConditionsListViewer.getControl());
 
-				listViewer.setContentProvider(new ArrayContentProvider());
+				filterConditionsListViewer.setContentProvider(new ArrayContentProvider());
 
+				initDND();
 //				List list = listViewer.getList();
 
 			}
 		}
 		
 		initDataBinding();
+	}
+
+	private void initDND() {
+		filterConditionsListViewer.addDropSupport(DND.DROP_LINK, new Transfer[]{LocalSelectionTransfer.getTransfer()}, new DropTargetAdapter() {
+			public void dragEnter(DropTargetEvent event) {
+				try {
+					IStructuredSelection selection = (IStructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
+					if (selection.getFirstElement() instanceof FilterbedingungBean) {
+						event.detail = DND.DROP_LINK;
+					}
+				} catch (Throwable e) {}
+			}
+
+			public void drop(DropTargetEvent event) {
+				try {
+					IStructuredSelection selection = (IStructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
+					FilterbedingungBean bean = (FilterbedingungBean) selection.getFirstElement();
+					filterConditionsListViewer.add(bean);
+				} catch (Throwable e) {
+				}
+			}
+		});
 	}
 
 	@Override
