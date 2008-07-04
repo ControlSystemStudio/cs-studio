@@ -353,9 +353,40 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		initStringAddOnBeanDataBinding();
 		initJunctorAddOnBeanDataBinding();
 		initPVAddOnBeanDataBinding();
-//		initTimeBasedAddOnBeanDataBinding();
-		// TODO init StringArray data bindings
 		initStringArrayAddOnBeanDataBinding();
+		//TODO init TimeBased DataBinding
+//		initTimeBasedAddOnBeanDataBinding();
+	}
+
+	private void initTimeBasedAddOnBeanDataBinding() {
+		DataBindingContext context = new DataBindingContext();
+
+		TimeBasedFilterConditionBean addOn = (TimeBasedFilterConditionBean) specificBeans
+				.get(SupportedFilterTypes.TIMEBASED_CONDITION);
+		
+		IObservableValue timeBasedStartCompareObservable = BeansObservables
+				.observeValue(addOn,
+						TimeBasedFilterConditionBean.PropertyNames.cStartCompValue.name());
+//
+//		IObservableValue arrayOperatorComboObservable = BeansObservables
+//				.observeValue(addOn,
+//						StringArrayFilterConditionBean.PropertyNames.operator.name());
+//
+//		IObservableList arrayCompareValueListObservable = BeansObservables.observeList(context.getValidationRealm(),
+//				addOn,
+//				StringArrayFilterConditionBean.PropertyNames.compareValues.name());
+//
+//		// bind observables
+		context.bindValue(
+				SWTObservables.observeSelection(timeStartCompareText),
+				timeBasedStartCompareObservable, null, null);
+//		
+//		context.bindValue(SWTObservables.observeSelection(arrayOperatorCombo),
+//				arrayOperatorComboObservable, null, null);
+//
+//		context.bindList(SWTObservables
+//				.observeItems(arrayCompareValueList),
+//				arrayCompareValueListObservable, null, null);
 	}
 
 	private void initStringArrayAddOnBeanDataBinding() {
@@ -390,45 +421,6 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 	}
 
-	private void initTimeBasedAddOnBeanDataBinding() {
-		DataBindingContext context = new DataBindingContext();
-
-		TimeBasedFilterConditionBean timeBasedBean = (TimeBasedFilterConditionBean) specificBeans
-				.get(SupportedFilterTypes.TIMEBASED_CONDITION);
-
-		IObservableValue timeBasedDelayTextObservable = BeansObservables
-				.observeValue(timeBasedBean,
-						TimeBasedFilterConditionBean.PropertyNames.sTimePeriod
-								.name());
-
-		IObservableValue timeBasedBehaviorCheckboxObservable = BeansObservables
-				.observeValue(
-						timeBasedBean,
-						TimeBasedFilterConditionBean.PropertyNames.sTimeBehavior
-								.name());
-
-		IObservableValue timeBasedStartCompareValueObservable = BeansObservables
-				.observeValue(
-						timeBasedBean,
-						TimeBasedFilterConditionBean.PropertyNames.cStartCompValue
-								.name());
-		IObservableValue timeBasedStopCompareValueObservable = BeansObservables
-				.observeValue(
-						timeBasedBean,
-						TimeBasedFilterConditionBean.PropertyNames.cConfirmCompValue
-								.name());
-
-		context.bindValue(SWTObservables.observeSelection(timeBehaviorCheck),
-				timeBasedBehaviorCheckboxObservable, null, null);
-
-		context.bindValue(
-				SWTObservables.observeText(timeDelayText, SWT.Modify),
-				timeBasedDelayTextObservable, null, null);
-		context.bindValue(SWTObservables.observeText(timeStartCompareText,
-				SWT.Modify), timeBasedStartCompareValueObservable, null, null);
-		context.bindValue(SWTObservables.observeText(timeStopCompareText,
-				SWT.Modify), timeBasedStopCompareValueObservable, null, null);
-	}
 
 	private void initPVAddOnBeanDataBinding() {
 		DataBindingContext context = new DataBindingContext();

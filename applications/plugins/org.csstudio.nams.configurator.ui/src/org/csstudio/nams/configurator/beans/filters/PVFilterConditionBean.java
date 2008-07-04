@@ -67,9 +67,11 @@ public class PVFilterConditionBean extends
 	}
 
 	@Override
-	public void updateState(PVFilterConditionBean bean) {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Unimplemented method");
+	public void doUpdateState(PVFilterConditionBean bean) {
+		setChannelName(bean.getChannelName());
+		setCompareValue(bean.getCompareValue());
+		setOperator(bean.getOperator());
+		setSuggestedType(bean.getSuggestedType());
 	}
 
 	public String getDisplayName() {

@@ -91,24 +91,11 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		return getName() != null ? getName() : "(ohne Namen)";
 	}
 
-	public void copyStateOf(FilterBean otherBean) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not implemented yet.");
-	}
-
 	@Override
-	public FilterBean getClone() {
-		FilterBean bean = new FilterBean();
-		bean.setDefaultMessage(getDefaultMessage());
-		bean.setName(getName());
-		bean.setFilterID(filterID);
-		return bean;
-	}
-
-	@Override
-	public void updateState(FilterBean bean) {
-		// TODO Auto-generated method stub
-
+	protected void doUpdateState(FilterBean bean) {
+		setDefaultMessage(bean.getDefaultMessage());
+		setName(bean.getName());
+		setFilterID(bean.getFilterID());
 	}
 
 	public int getID() {

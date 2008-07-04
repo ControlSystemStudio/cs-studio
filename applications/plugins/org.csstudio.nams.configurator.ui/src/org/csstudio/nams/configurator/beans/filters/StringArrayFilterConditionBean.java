@@ -19,18 +19,10 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 	}
 	
 	@Override
-	public StringArrayFilterConditionBean getClone() {
-		StringArrayFilterConditionBean bean = new StringArrayFilterConditionBean();
-		bean.setCompareValues(compareValues);
-		bean.setKeyValue(keyValue);
-		bean.setOperator(operator);
-		return bean;
-	}
-
-	@Override
-	public void updateState(StringArrayFilterConditionBean bean) {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Unimplemented method.");		
+	protected void doUpdateState(StringArrayFilterConditionBean bean) {
+		setCompareValues(bean.getCompareValues());
+		setKeyValue(bean.getKeyValue());
+		setOperator(bean.getOperator());
 	}
 
 	public String getDisplayName() {

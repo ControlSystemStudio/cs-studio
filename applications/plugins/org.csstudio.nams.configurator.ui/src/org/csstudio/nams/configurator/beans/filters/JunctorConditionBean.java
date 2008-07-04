@@ -15,18 +15,10 @@ public class JunctorConditionBean extends AbstractConfigurationBean<JunctorCondi
 	}
 	
 	@Override
-	public JunctorConditionBean getClone() {
-		JunctorConditionBean bean = new JunctorConditionBean();
-		bean.setFirstCondition(firstCondition);
-		bean.setSecondCondition(secondCondition);
-		bean.setJunctor(junctor);
-		return bean;
-	}
-
-	@Override
-	public void updateState(JunctorConditionBean bean) {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Unimplemented method");
+	public void doUpdateState(JunctorConditionBean bean) {
+		setFirstCondition(bean.getFirstCondition());
+		setSecondCondition(bean.getSecondCondition());
+		setJunctor(bean.getJunctor());
 	}
 
 	public String getDisplayName() {

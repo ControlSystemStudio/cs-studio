@@ -13,15 +13,6 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 		keyValue, operator, compValue;
 	}
 	
-	@Override
-	public StringFilterConditionBean getClone() {
-		StringFilterConditionBean bean = new StringFilterConditionBean();
-		bean.setCompValue(compValue);
-		bean.setKeyValue(keyValue);
-		bean.setOperator(operator);
-		return bean;
-	}
-
 	public String getKeyValue() {
 		return keyValue;
 	}
@@ -53,9 +44,10 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 	}
 
 	@Override
-	public void updateState(StringFilterConditionBean bean) {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Unimplemented method.");
+	protected void doUpdateState(StringFilterConditionBean bean) {
+		setCompValue(bean.getCompValue());
+		setKeyValue(bean.getKeyValue());
+		setOperator(bean.getOperator());
 	}
 
 	public String getDisplayName() {

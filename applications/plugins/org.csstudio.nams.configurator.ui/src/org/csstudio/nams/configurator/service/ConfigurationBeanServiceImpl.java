@@ -269,7 +269,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.setSTimeBehavior(((TimeBasedFilterConditionDTO) filter)
 							.getTimeBehavior());
 			timeBasedConditionBean
-					.setSTimePeriodDV(((TimeBasedFilterConditionDTO) filter)
+					.setSTimePeriod(((TimeBasedFilterConditionDTO) filter)
 							.getTimePeriod());
 			filterSpecificBean = timeBasedConditionBean;
 		}
@@ -475,7 +475,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			timeBasedFilterConditionDTO.setTBStartOperator(Operator.valueOf(specificBean.getSStartOperator().name()));
 
 			timeBasedFilterConditionDTO.setTimeBehavior(specificBean.getSTimeBehavior());
-			timeBasedFilterConditionDTO.setTimePeriod(specificBean.getSTimePeriodDV());
+			timeBasedFilterConditionDTO.setTimePeriod(specificBean.getSTimePeriod());
 			
 			// result to be saved with configurationService
 			filterConditionDTO = timeBasedFilterConditionDTO;

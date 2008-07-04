@@ -1,7 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
-import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
@@ -39,26 +38,20 @@ public class FilterbedingungBean extends
 	}
 
 	@Override
-	public FilterbedingungBean getClone() {
-		FilterbedingungBean bean = new FilterbedingungBean();
-		bean.setDescription(description);
-		bean.setName(name);
-		bean.setFilterbedinungID(filterbedinungID);
-		if (filterSpecificBean != null) {
-			bean.setFilterSpecificBean((FilterConditionAddOnBean) ((IConfigurationBean)filterSpecificBean).getClone());
-		} else {
-			// TODO mw: default is always ODER, i'm not sure about this here
-			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
-			filterSpecificBean = junctorConditionBean;
-			bean.setFilterSpecificBean(junctorConditionBean);
-		}
-		return bean;
-	}
-
-	@Override
-	public void updateState(FilterbedingungBean bean) {
-		// TODO Auto-generated method stub
-
+	protected void doUpdateState(FilterbedingungBean bean) {
+		setDescription(bean.getDescription());
+		setName(bean.getName());
+		setFilterbedinungID(bean.getFilterbedinungID());
+		setFilterSpecificBean((FilterConditionAddOnBean) bean.getFilterSpecificBean());
+//TODO may has to be initialized
+//		if (filterSpecificBean != null) {
+//			bean.setFilterSpecificBean((FilterConditionAddOnBean) ((IConfigurationBean)filterSpecificBean).getClone());
+//		} else {
+//			// TODO mw: default is always ODER, i'm not sure about this here
+//			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
+//			filterSpecificBean = junctorConditionBean;
+//			bean.setFilterSpecificBean(junctorConditionBean);
+//		}
 	}
 
 	public int getID() {

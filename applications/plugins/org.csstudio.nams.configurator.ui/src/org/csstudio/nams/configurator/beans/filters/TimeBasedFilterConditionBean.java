@@ -11,7 +11,9 @@ public class TimeBasedFilterConditionBean extends
 		FilterConditionAddOnBean {
 
 	public enum PropertyNames {
-		cStartKeyValue, sStartOperator, cStartCompValue, cConfirmKeyValue, sConfirmOperator, cConfirmCompValue, sTimePeriod, sTimeBehavior;
+		cStartKeyValue, sStartOperator, cStartCompValue, 
+		cConfirmKeyValue, sConfirmOperator, cConfirmCompValue, 
+		sTimePeriod, sTimeBehavior;
 	}
 
 	private String cStartKeyValue;
@@ -22,31 +24,21 @@ public class TimeBasedFilterConditionBean extends
 	private StringRegelOperator sConfirmOperator;
 	private String cConfirmCompValue;
 
-	private long sTimePeriod;
 	private Millisekunden sTimePeriodDomainValue;
 	private TimeBasedType sTimeBehavior;
 
 	@Override
-	public TimeBasedFilterConditionBean getClone() {
-		TimeBasedFilterConditionBean bean = new TimeBasedFilterConditionBean();
-
-		bean.setCStartKeyValue(cStartKeyValue);
-		bean.setSStartOperator(sStartOperator);
-		bean.setCStartCompValue(cStartCompValue);
-
-		bean.setCConfirmKeyValue(cConfirmKeyValue);
-		bean.setSConfirmOperator(sConfirmOperator);
-		bean.setCConfirmCompValue(cConfirmCompValue);
-
-		bean.setSTimePeriodDV(sTimePeriodDomainValue);
-		bean.setSTimeBehavior(sTimeBehavior);
-		return bean;
-	}
-
-	@Override
-	public void updateState(TimeBasedFilterConditionBean bean) {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Unimplemented method.");
+	protected void doUpdateState(TimeBasedFilterConditionBean bean) {
+		setCStartKeyValue(bean.getCStartKeyValue());
+		setSStartOperator(bean.getSStartOperator());
+		setCStartCompValue(bean.getCStartCompValue());
+		
+		setCConfirmKeyValue(bean.getCConfirmKeyValue());
+		setSConfirmOperator(bean.getSConfirmOperator());
+		setCConfirmCompValue(bean.getCConfirmCompValue());
+		
+		setSTimePeriod(bean.getSTimePeriod());
+		setSTimeBehavior(bean.getSTimeBehavior());
 	}
 
 	public String getDisplayName() {
@@ -119,24 +111,15 @@ public class TimeBasedFilterConditionBean extends
 		pcs.firePropertyChange(PropertyNames.cConfirmCompValue.name(), oldValue, confirmCompValue);
 	}
 
-	public Millisekunden getSTimePeriodDV() {
+	public Millisekunden getSTimePeriod() {
 		return sTimePeriodDomainValue;
 	}
 
-	public void setSTimePeriodDV(Millisekunden millisekunden) {
+	public void setSTimePeriod(Millisekunden millisekunden) {
 		Millisekunden oldValue = sTimePeriodDomainValue;
 		if (oldValue == null) oldValue = Millisekunden.valueOf(0);
 		sTimePeriodDomainValue = millisekunden;
-		sTimePeriod = (int) (millisekunden.alsLongVonMillisekunden()/1000);
 		pcs.firePropertyChange(PropertyNames.sTimePeriod.name(), oldValue.alsLongVonMillisekunden(), millisekunden.alsLongVonMillisekunden());
-	}
-
-	public long getSTimePeriod(){
-		return sTimePeriod;
-	}
-	
-	public void setSTimePeriod(long value){
-		setSTimePeriodDV(Millisekunden.valueOf(value));
 	}
 	
 	public TimeBasedType getSTimeBehavior() {

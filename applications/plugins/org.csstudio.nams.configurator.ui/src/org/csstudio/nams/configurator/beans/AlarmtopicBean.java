@@ -8,7 +8,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 
 	}
 
-	private int topicID;// PRIMARY KEY
+	private int topicID;
 	private String topicName = "";
 	private String humanReadableName = "";
 	private String description = "";
@@ -70,26 +70,12 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 				: "(ohne Namen)";
 	}
 
-	public void copyStateOf(AlarmtopicBean otherBean) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not implemented yet.");
-	}
-
 	@Override
-	public AlarmtopicBean getClone() {
-		AlarmtopicBean bean = new AlarmtopicBean();
-		bean.setDescription(getDescription());
-		bean.setHumanReadableName(getHumanReadableName());
-		bean.setTopicID(getTopicID());
-		bean.setTopicName(getTopicName());
-		return bean;
-	}
-
-	@Override
-	public void updateState(AlarmtopicBean bean) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not implemented yet");
-
+	protected void doUpdateState(AlarmtopicBean bean) {
+		setDescription(bean.getDescription());
+		setHumanReadableName(bean.getHumanReadableName());
+		setTopicID(bean.getTopicID());
+		setTopicName(bean.getTopicName());
 	}
 
 	public int getID() {

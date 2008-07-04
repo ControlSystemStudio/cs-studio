@@ -129,25 +129,6 @@ public class AlarmbearbeiterBean extends
 				getPreferedAlarmType());
 	}
 
-	// public void copyStateOf(AlarmbearbeiterBean otherBean) {
-	// throw new UnsupportedOperationException("not implemented yet.");
-	// }
-
-	@Override
-	public AlarmbearbeiterBean getClone() {
-		AlarmbearbeiterBean bean = new AlarmbearbeiterBean();
-		bean.setUserID(this.getUserID());
-		bean.setActive(this.isActive);
-		bean.setConfirmCode(this.getConfirmCode());
-		bean.setEmail(this.getEmail());
-		bean.setMobilePhone(this.getMobilePhone());
-		bean.setName(this.getName());
-		bean.setPhone(this.getPhone());
-		bean.setPreferedAlarmType(this.getPreferedAlarmType());
-		bean.setStatusCode(this.getStatusCode());
-		return bean;
-	}
-
 	public String getDisplayName() {
 		return getName() != null ? getName() : "(ohne Name)";
 	}
@@ -226,7 +207,7 @@ public class AlarmbearbeiterBean extends
 	}
 
 	@Override
-	public void updateState(AlarmbearbeiterBean bean) {
+	protected void doUpdateState(AlarmbearbeiterBean bean) {
 		this.setUserID(bean.getUserID());
 		this.setActive(bean.isActive);
 		this.setConfirmCode(bean.getConfirmCode());
@@ -236,7 +217,6 @@ public class AlarmbearbeiterBean extends
 		this.setPhone(bean.getPhone());
 		this.setPreferedAlarmType(bean.getPreferedAlarmType());
 		this.setStatusCode(this.getStatusCode());
-
 	}
 
 	public int getID() {

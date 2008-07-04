@@ -83,24 +83,6 @@ public class AlarmbearbeiterGruppenBean extends
 		return getName() == null ? "(ohne Name)" : getName();
 	}
 
-	public void copyStateOf(AlarmbearbeiterGruppenBean otherBean) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not implemented yet.");
-	}
-
-	@Override
-	public AlarmbearbeiterGruppenBean getClone() {
-		// TODO may add group stuff?
-		
-		AlarmbearbeiterGruppenBean bean = new AlarmbearbeiterGruppenBean();
-		bean.setActive(isActive());
-		bean.setGroupID(getGroupID());
-		bean.setMinGroupMember(getMinGroupMember());
-		bean.setName(getName());
-		bean.setTimeOutSec(getTimeOutSec());
-		return bean;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -139,9 +121,12 @@ public class AlarmbearbeiterGruppenBean extends
 	}
 
 	@Override
-	public void updateState(AlarmbearbeiterGruppenBean bean) {
-		// TODO Auto-generated method stub
-
+	protected void doUpdateState(AlarmbearbeiterGruppenBean bean) {
+		setActive(bean.isActive());
+		setGroupID(bean.getGroupID());
+		setMinGroupMember(bean.getMinGroupMember());
+		setName(bean.getName());
+		setTimeOutSec(bean.getTimeOutSec());
 	}
 
 	public int getID() {
