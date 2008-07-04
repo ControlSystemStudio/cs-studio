@@ -7,7 +7,7 @@ import org.eclipse.ui.IPersistableElement;
 
 public class ConfigurationEditorInput implements IEditorInput {
 
-	private final IConfigurationBean bean;
+	private IConfigurationBean bean;
 
 	public ConfigurationEditorInput(IConfigurationBean newBean) {
 		this.bean = newBean;
@@ -15,6 +15,10 @@ public class ConfigurationEditorInput implements IEditorInput {
 
 	public IConfigurationBean getBean() {
 		return bean;
+	}
+	
+	public void setBean(IConfigurationBean bean) {
+		this.bean = bean;
 	}
 
 	public boolean exists() {
@@ -48,9 +52,7 @@ public class ConfigurationEditorInput implements IEditorInput {
 		
 		ConfigurationEditorInput editorInput = (ConfigurationEditorInput) obj;
 		
-		if (editorInput.getBean().getID() == -1) return false;
-		
-		return editorInput.getBean().getID() == this.getBean().getID();
+		return editorInput.getBean() == this.getBean();
 	}
 
 }

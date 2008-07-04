@@ -452,6 +452,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		AlarmbearbeiterBean resultBean = alarmbearbeiterBeans.get(new Integer(
 				dto.getUserId()));
+//		if (inserted) {
+//			bean.updateState(resultBean);
+//			alarmbearbeiterBeans.put(new Integer(dto.getUserId()), bean);
+//			resultBean = bean;
+//		}
 
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;

@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.editor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.nams.configurator.beans.AbstractObservableBean;
+import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceListener;
@@ -22,7 +22,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-public abstract class AbstractEditor<ConfigurationType extends AbstractObservableBean>
+public abstract class AbstractEditor<ConfigurationType extends AbstractConfigurationBean<ConfigurationType>>
 		extends EditorPart implements PropertyChangeListener,
 		ConfigurationBeanServiceListener {
 
@@ -47,13 +47,16 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractObservabl
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// speicher Änderungen mit dem Service
-		ConfigurationType updatedBean = configurationBeanService
-				.save(this.beanClone);
-
+		if (this.bean.getID() == -1) {
+			ConfigurationType bean = configurationBeanService.save(this.beanClone);
+			this.bean = bean;
+			ConfigurationEditorInput cInput = (ConfigurationEditorInput) getEditorInput();
+			cInput.setBean(this.bean);
+		} else {
+			configurationBeanService.save(this.beanClone);
+		}
+		
 		this.beanClone.removePropertyChangeListener(this);
-
-		// copy clone state to original bean
-		this.bean = updatedBean;
 
 		// create new clone
 		this.beanClone = (ConfigurationType) this.bean.getClone();
