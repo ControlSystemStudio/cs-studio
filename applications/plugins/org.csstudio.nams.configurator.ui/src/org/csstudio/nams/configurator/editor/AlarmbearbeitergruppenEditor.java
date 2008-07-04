@@ -157,7 +157,6 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 				try {
 					IStructuredSelection selection = (IStructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
 					AlarmbearbeiterBean bean = (AlarmbearbeiterBean) selection.getFirstElement();
-					System.out.println("Hier ist ein AlarmbearbeiterBean angekommen ;-) "+bean.toString());
 					tableViewer.add(bean);
 				} catch (Throwable e) {
 				}
