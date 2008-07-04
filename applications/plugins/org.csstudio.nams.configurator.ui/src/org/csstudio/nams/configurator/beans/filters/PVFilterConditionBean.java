@@ -5,7 +5,7 @@ import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class PVFilterConditionBean extends
-		AbstractConfigurationBean<PVFilterConditionBean> implements AddOnBean {
+		AbstractConfigurationBean<PVFilterConditionBean> implements FilterConditionAddOnBean {
 
 	private SuggestedProcessVariableType suggestedType;
 	private String channelName;

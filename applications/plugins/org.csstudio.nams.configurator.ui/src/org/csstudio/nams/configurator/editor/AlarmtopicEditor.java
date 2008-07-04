@@ -17,7 +17,6 @@ import org.eclipse.ui.IEditorSite;
 
 public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
-	private Text _idTextEntry;
 	private Text _topicIdTextEntry;
 	private Combo _groupComboEntry;
 	private Text _topicNameTextEntry;
@@ -34,8 +33,6 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 	public void createPartControl(Composite parent) {
 		Composite main = new Composite(parent, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
-		_idTextEntry = this.createTextEntry(main, "ID:", false);
-		_idTextEntry.setText("Topic");
 		this.addSeparator(main);
 		_topicIdTextEntry = this.createTextEntry(main, "Name:", true);
 		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true, groupDummyContent);
@@ -86,7 +83,7 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	public void setFocus() {
-		_idTextEntry.setFocus();
+		_topicNameTextEntry.setFocus();
 	}
 
 }

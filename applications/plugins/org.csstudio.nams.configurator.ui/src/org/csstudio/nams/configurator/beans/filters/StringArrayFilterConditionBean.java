@@ -8,7 +8,7 @@ import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class StringArrayFilterConditionBean extends AbstractConfigurationBean<StringArrayFilterConditionBean>
-		implements AddOnBean {
+		implements FilterConditionAddOnBean {
 
 	private List<String> compareValues = new LinkedList<String>();
 	private MessageKeyEnum keyValue;

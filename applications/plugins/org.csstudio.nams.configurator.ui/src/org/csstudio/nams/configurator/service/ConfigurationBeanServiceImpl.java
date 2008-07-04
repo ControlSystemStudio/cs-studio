@@ -14,7 +14,7 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.beans.filters.AddOnBean;
+import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.StringArrayFilterConditionBean;
@@ -187,7 +187,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setFilterbedinungID(filter.getIFilterConditionID());
 		bean.setDescription(filter.getCDesc());
 		bean.setName(filter.getCName());
-		AddOnBean filterSpecificBean = null;
+		FilterConditionAddOnBean filterSpecificBean = null;
 		if (filter instanceof JunctorConditionDTO) {
 			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
 			junctorConditionBean
@@ -269,7 +269,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.setSTimeBehavior(((TimeBasedFilterConditionDTO) filter)
 							.getTimeBehavior());
 			timeBasedConditionBean
-					.setSTimePeriod(((TimeBasedFilterConditionDTO) filter)
+					.setSTimePeriodDV(((TimeBasedFilterConditionDTO) filter)
 							.getTimePeriod());
 			filterSpecificBean = timeBasedConditionBean;
 		}
@@ -475,7 +475,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			timeBasedFilterConditionDTO.setTBStartOperator(Operator.valueOf(specificBean.getSStartOperator().name()));
 
 			timeBasedFilterConditionDTO.setTimeBehavior(specificBean.getSTimeBehavior());
-			timeBasedFilterConditionDTO.setTimePeriod(specificBean.getSTimePeriod());
+			timeBasedFilterConditionDTO.setTimePeriod(specificBean.getSTimePeriodDV());
 			
 			// result to be saved with configurationService
 			filterConditionDTO = timeBasedFilterConditionDTO;

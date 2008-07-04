@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.beans.filters;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
-public class StringFilterConditionBean extends AbstractConfigurationBean<StringFilterConditionBean> implements AddOnBean{
+public class StringFilterConditionBean extends AbstractConfigurationBean<StringFilterConditionBean> implements FilterConditionAddOnBean{
 
 	private String keyValue;
 	private StringRegelOperator operator;

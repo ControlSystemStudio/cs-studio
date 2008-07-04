@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -23,19 +24,14 @@ import javax.persistence.Table;
 @Table(name = "AMS_FilterCond_ArrStrVal")
 public class StringArrayFilterConditionCompareValuesDTO {
 	
-	@Id
-	@Column(name = "iFilterConditionRef", nullable = false, insertable=false, updatable=false)
-	private int filterConditionRef;
-
-//	@Id
-	@Column(name = "cCompValue", length = 128)
-	private String compValue;
+	@EmbeddedId
+	private StringArrayFilterConditionCompareValuesDTO_PK pk;
 	
 	/**
 	 * @return the filterConditionRef
 	 */
 	public int getFilterConditionRef() {
-		return filterConditionRef;
+		return pk.getFilterConditionRef();
 	}
 
 	/**
@@ -43,14 +39,14 @@ public class StringArrayFilterConditionCompareValuesDTO {
 	 */
 	@SuppressWarnings("unused")
 	private void setFilterConditionRef(int filterConditionRef) {
-		this.filterConditionRef = filterConditionRef;
+		this.pk.setFilterConditionRef(filterConditionRef);
 	}
 
 	/**
 	 * @return the compValue
 	 */
 	public String getCompValue() {
-		return compValue;
+		return pk.getCompValue();
 	}
 
 	/**
@@ -58,7 +54,7 @@ public class StringArrayFilterConditionCompareValuesDTO {
 	 */
 	@SuppressWarnings("unused")
 	private void setCompValue(String compValue) {
-		this.compValue = compValue;
+		this.pk.setCompValue(compValue);
 	}
 	
 	@Override
@@ -75,9 +71,7 @@ public class StringArrayFilterConditionCompareValuesDTO {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((compValue == null) ? 0 : compValue.hashCode());
-		result = prime * result + filterConditionRef;
+		result = prime * result + ((pk == null) ? 0 : pk.hashCode());
 		return result;
 	}
 
@@ -87,18 +81,14 @@ public class StringArrayFilterConditionCompareValuesDTO {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof StringArrayFilterConditionCompareValuesDTO))
+		if (getClass() != obj.getClass())
 			return false;
 		final StringArrayFilterConditionCompareValuesDTO other = (StringArrayFilterConditionCompareValuesDTO) obj;
-		if (compValue == null) {
-			if (other.compValue != null)
+		if (pk == null) {
+			if (other.pk != null)
 				return false;
-		} else if (!compValue.equals(other.compValue))
-			return false;
-		if (filterConditionRef != other.filterConditionRef)
+		} else if (!pk.equals(other.pk))
 			return false;
 		return true;
 	}
-	
-	
 }

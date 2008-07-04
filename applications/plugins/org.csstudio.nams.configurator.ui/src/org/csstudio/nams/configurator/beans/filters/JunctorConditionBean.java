@@ -4,7 +4,7 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 
-public class JunctorConditionBean extends AbstractConfigurationBean<JunctorConditionBean> implements AddOnBean{
+public class JunctorConditionBean extends AbstractConfigurationBean<JunctorConditionBean> implements FilterConditionAddOnBean{
 
 	FilterbedingungBean firstCondition;
 	FilterbedingungBean secondCondition;

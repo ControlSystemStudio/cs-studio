@@ -8,7 +8,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 
 public class TimeBasedFilterConditionBean extends
 		AbstractConfigurationBean<TimeBasedFilterConditionBean> implements
-		AddOnBean {
+		FilterConditionAddOnBean {
 
 	public enum PropertyNames {
 		cStartKeyValue, sStartOperator, cStartCompValue, cConfirmKeyValue, sConfirmOperator, cConfirmCompValue, sTimePeriod, sTimeBehavior;
@@ -22,7 +22,8 @@ public class TimeBasedFilterConditionBean extends
 	private StringRegelOperator sConfirmOperator;
 	private String cConfirmCompValue;
 
-	private Millisekunden sTimePeriod;
+	private long sTimePeriod;
+	private Millisekunden sTimePeriodDomainValue;
 	private TimeBasedType sTimeBehavior;
 
 	@Override
@@ -37,7 +38,7 @@ public class TimeBasedFilterConditionBean extends
 		bean.setSConfirmOperator(sConfirmOperator);
 		bean.setCConfirmCompValue(cConfirmCompValue);
 
-		bean.setSTimePeriod(sTimePeriod);
+		bean.setSTimePeriodDV(sTimePeriodDomainValue);
 		bean.setSTimeBehavior(sTimeBehavior);
 		return bean;
 	}
@@ -51,7 +52,7 @@ public class TimeBasedFilterConditionBean extends
 	public String getDisplayName() {
 		return cStartCompValue + " " + sStartOperator + " " + cStartCompValue
 				+ " " + cConfirmKeyValue + " " + sConfirmOperator + " "
-				+ cConfirmCompValue + " " + sTimePeriod + " " + sTimeBehavior;
+				+ cConfirmCompValue + " " + sTimePeriodDomainValue + " " + sTimeBehavior;
 	}
 
 	public int getID() {
@@ -118,16 +119,26 @@ public class TimeBasedFilterConditionBean extends
 		pcs.firePropertyChange(PropertyNames.cConfirmCompValue.name(), oldValue, confirmCompValue);
 	}
 
-	public Millisekunden getSTimePeriod() {
+	public Millisekunden getSTimePeriodDV() {
+		return sTimePeriodDomainValue;
+	}
+
+	public void setSTimePeriodDV(Millisekunden millisekunden) {
+		Millisekunden oldValue = sTimePeriodDomainValue;
+		if (oldValue == null) oldValue = Millisekunden.valueOf(0);
+		sTimePeriodDomainValue = millisekunden;
+		sTimePeriod = (int) (millisekunden.alsLongVonMillisekunden()/1000);
+		pcs.firePropertyChange(PropertyNames.sTimePeriod.name(), oldValue.alsLongVonMillisekunden(), millisekunden.alsLongVonMillisekunden());
+	}
+
+	public long getSTimePeriod(){
 		return sTimePeriod;
 	}
-
-	public void setSTimePeriod(Millisekunden millisekunden) {
-		Millisekunden oldValue = sTimePeriod;
-		sTimePeriod = millisekunden;
-		pcs.firePropertyChange(PropertyNames.sTimePeriod.name(), oldValue, millisekunden);
+	
+	public void setSTimePeriod(long value){
+		setSTimePeriodDV(Millisekunden.valueOf(value));
 	}
-
+	
 	public TimeBasedType getSTimeBehavior() {
 		return sTimeBehavior;
 	}
@@ -161,7 +172,7 @@ public class TimeBasedFilterConditionBean extends
 		result = prime * result
 				+ ((sTimeBehavior == null) ? 0 : sTimeBehavior.hashCode());
 		result = prime * result
-				+ ((sTimePeriod == null) ? 0 : sTimePeriod.hashCode());
+				+ ((sTimePeriodDomainValue == null) ? 0 : sTimePeriodDomainValue.hashCode());
 		return result;
 	}
 
@@ -209,10 +220,10 @@ public class TimeBasedFilterConditionBean extends
 				return false;
 		} else if (!sTimeBehavior.equals(other.sTimeBehavior))
 			return false;
-		if (sTimePeriod == null) {
-			if (other.sTimePeriod != null)
+		if (sTimePeriodDomainValue == null) {
+			if (other.sTimePeriodDomainValue != null)
 				return false;
-		} else if (!sTimePeriod.equals(other.sTimePeriod))
+		} else if (!sTimePeriodDomainValue.equals(other.sTimePeriodDomainValue))
 			return false;
 		return true;
 	}

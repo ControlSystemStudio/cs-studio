@@ -1,6 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
-import org.csstudio.nams.configurator.beans.filters.AddOnBean;
+import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 
 public class FilterbedingungBean extends
@@ -10,7 +10,7 @@ public class FilterbedingungBean extends
 	private String description;
 	private String name;
 	
-	private AddOnBean filterSpecificBean;
+	private FilterConditionAddOnBean filterSpecificBean;
 
 	public static enum PropertyNames {
 		filterbedingungID, description, name, filterSpecificBean;
@@ -45,7 +45,7 @@ public class FilterbedingungBean extends
 		bean.setName(name);
 		bean.setFilterbedinungID(filterbedinungID);
 		if (filterSpecificBean != null) {
-			bean.setFilterSpecificBean((AddOnBean) ((IConfigurationBean)filterSpecificBean).getClone());
+			bean.setFilterSpecificBean((FilterConditionAddOnBean) ((IConfigurationBean)filterSpecificBean).getClone());
 		} else {
 			// TODO mw: default is always ODER, i'm not sure about this here
 			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
@@ -138,8 +138,8 @@ public class FilterbedingungBean extends
 		return (AbstractConfigurationBean) filterSpecificBean;
 	}
 
-	public void setFilterSpecificBean(AddOnBean filterSpecificBean) {
-		AddOnBean oldValue = this.filterSpecificBean;
+	public void setFilterSpecificBean(FilterConditionAddOnBean filterSpecificBean) {
+		FilterConditionAddOnBean oldValue = this.filterSpecificBean;
 		this.filterSpecificBean = filterSpecificBean;
 		pcs.firePropertyChange(PropertyNames.filterSpecificBean.name(), oldValue, filterSpecificBean);
 	}
