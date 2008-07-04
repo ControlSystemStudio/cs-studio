@@ -42,7 +42,7 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		((AbstractConfigurationBean) cloneBean).doUpdateState(this);
+		((AbstractConfigurationBean) cloneBean).updateState(this);
 		return cloneBean;
 	}
 
