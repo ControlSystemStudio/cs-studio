@@ -216,7 +216,7 @@ public class AlarmbearbeiterBean extends
 		this.setName(bean.getName());
 		this.setPhone(bean.getPhone());
 		this.setPreferedAlarmType(bean.getPreferedAlarmType());
-		this.setStatusCode(this.getStatusCode());
+		this.setStatusCode(bean.getStatusCode());
 	}
 
 	public int getID() {
