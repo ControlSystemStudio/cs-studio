@@ -35,6 +35,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	protected final String[] groupDummyContent = { "This is group dummy content" };
 
 	protected PropertyChangeListener listener;
+	private String superTitle;
 
 	public AbstractEditor() {
 		NUM_COLUMNS = getNumColumns();
@@ -47,22 +48,23 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// speicher Änderungen mit dem Service
-		if (this.bean.getID() == -1) {
-			ConfigurationType bean = configurationBeanService.save(this.beanClone);
-			this.bean = bean;
+		ConfigurationType resultBean = configurationBeanService.save(this.beanClone);
+		if (this.bean != resultBean) {
+			this.bean = resultBean;
 			ConfigurationEditorInput cInput = (ConfigurationEditorInput) getEditorInput();
 			cInput.setBean(this.bean);
-		} else {
-			configurationBeanService.save(this.beanClone);
+
+			this.beanClone.removePropertyChangeListener(this);
+			
+			// create new clone
+			this.beanClone = (ConfigurationType) this.bean.getClone();
+			this.beanClone.addPropertyChangeListener(this);
+			
+			initDataBinding();
 		}
 		
-		this.beanClone.removePropertyChangeListener(this);
-
-		// create new clone
-		this.beanClone = (ConfigurationType) this.bean.getClone();
-		this.beanClone.addPropertyChangeListener(this);
-
-		initDataBinding();
+		setPartName(this.bean.getDisplayName() + " - " + superTitle);
+		
 		firePropertyChange(EditorPart.PROP_DIRTY);
 	}
 
@@ -79,6 +81,9 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		this.beanClone = (ConfigurationType) this.bean.getClone();
 		this.beanClone.addPropertyChangeListener(this);
 
+		superTitle = super.getTitle();
+		setPartName(this.bean.getDisplayName() + " - " + superTitle);
+		
 		doInit(site, input);
 	}
 
@@ -241,6 +246,11 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return result;
 	}
 
+	@Override
+	public String getTitle() {
+		return super.getTitle();
+	}
+	
 	public void onBeanDeleted(IConfigurationBean bean) {
 		if (bean.getClass().equals(this.bean.getClass())
 				&& bean.getID() == this.bean.getID()) {
