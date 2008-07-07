@@ -56,7 +56,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 		IProcessVariableAdressProvider, IProcessVariable {
 	private Object _latestValue;
 
-	private ConnectionState _latestConnectionState;
+	private ConnectionState _latestConnectionState = ConnectionState.INITIAL;
 
 	/**
 	 * The process variable pointer for the channel this connector is connected
