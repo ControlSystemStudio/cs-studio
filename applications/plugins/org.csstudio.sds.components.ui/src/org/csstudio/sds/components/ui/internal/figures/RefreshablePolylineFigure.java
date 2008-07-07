@@ -21,12 +21,14 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.swt.SWT;
@@ -69,20 +71,22 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	@Override
 	protected void outlineShape(final Graphics graphics) {
 		Rectangle figureBounds = getBounds();
-
-//		PointList pointList = this.getPoints();
-//		for (int i=0;i<pointList.size();i++) {
-//			Point point = pointList.getPoint(i);
-//			graphics.drawString("("+point.x+","+point.y+")", point);
-//		}
+		
+		PointList points = getPoints();
 		
 		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-		graphics.setClip(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
+		Rectangle clip = new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height);
+		graphics.pushState();
+		graphics.clipRect(clip);
 		graphics.setForegroundColor(getForegroundColor());
-		graphics.drawPolyline(getPoints());
-		graphics.setClip(new Rectangle(figureBounds.x+newW, figureBounds.y, figureBounds.width-newW, figureBounds.height));
+		graphics.drawPolyline(points);
+		clip = new Rectangle(figureBounds.x+newW, figureBounds.y, figureBounds.width-newW, figureBounds.height);
+		graphics.popState();
+		graphics.pushState();
+		graphics.clipRect(clip);
 		graphics.setForegroundColor(getBackgroundColor());
-		graphics.drawPolyline(getPoints());
+		graphics.drawPolyline(points);
+		graphics.popState();
 	}
 
 	/**
@@ -94,6 +98,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		invalidate();
 		fireFigureMoved();
 		repaint();
+		super.setBounds(rect);
 	}
 
 	/**
@@ -103,7 +108,6 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * 
 	 */
 	public void randomNoiseRefresh() {
-		// TODO: swende: make some noise
 	}
 
 	/**
