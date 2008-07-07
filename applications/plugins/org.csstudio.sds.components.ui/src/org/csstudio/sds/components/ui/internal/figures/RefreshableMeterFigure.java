@@ -22,6 +22,8 @@
  package org.csstudio.sds.components.ui.internal.figures;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.csstudio.sds.components.ui.internal.utils.ShadedDrawing;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
@@ -29,6 +31,8 @@ import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
+import org.csstudio.sds.util.ChannelReferenceValidationException;
+import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.AbstractBorder;
@@ -220,6 +224,10 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 	 * Does anything have to be recalculated?
 	 */
 	private boolean do_calc=false;
+	/**
+     * The known aliases.
+     */
+    private Map<String, String> _aliases;
 	
 	public RefreshableMeterFigure() {
 		setLayoutManager(new XYLayout());
@@ -380,6 +388,18 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		_channelName = channel;
 	}
 	
+    /**
+     * Sets the known aliases.
+     * @param aliases A {@link Map} with the aliases
+     */
+    public void setAliases(final Map<String,String> aliases) {
+        if (aliases==null) {
+            _aliases = new HashMap<String, String>();
+        } else {
+            _aliases = aliases;
+        }
+    }
+
 	public void setAngle(final int angl) {
 		_angle=angl;
 		invalidateBackground();
@@ -716,7 +736,14 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		private void drawChannelName(final Graphics gfx) {
 			gfx.setForegroundColor(getForegroundColor());
 			gfx.setFont(_channelFont);
-			TextPainter.drawText(gfx,_channelName,
+			String toprint;
+            try {
+                toprint = ChannelReferenceValidationUtil.createCanonicalName(_channelName, _aliases);
+            } catch (ChannelReferenceValidationException e) {
+                toprint = _channelName;
+                e.printStackTrace();
+            }
+			TextPainter.drawText(gfx,toprint,
 					_imgWidth/2,
 					_channelFont.getFontData()[0].getHeight(),
 					TextPainter.CENTER);
@@ -915,7 +942,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		public Insets getInsets(final IFigure figure) {
 			return new Insets(0);
 		}
-
+		
 		/**
 		 * {@inheritDoc}
 		 */

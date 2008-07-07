@@ -54,6 +54,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		// create AND initialize the view properly
 		final RefreshableMeterFigure figure = new RefreshableMeterFigure();
 		figure.setAngle(model.getAngle());
+		figure.setAliases(model.getAliases());
 		figure.setInnerAngle(model.getInnerAngle());
 		figure.setNeedleColor(model.getNeedleColor());
 		figure.setVisibleRadius(model.getVisibleRadius());
