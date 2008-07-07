@@ -31,8 +31,11 @@ import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.internal.runmode.AbstractRunModeBox;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.draw2d.ActionEvent;
+import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.IFigure;
@@ -85,16 +88,30 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 */
 	private void configureButtonListener(
 			final RefreshableActionButtonFigure figure) {
+		// FIXME: diesen Listener im Runmode gar nicht erst anmelden
+		// FIXME: Action synchron ausführen
+
+		// FIXME: Warum wird hier kein normaler ActionListener verwendet? Siehe nächste Zeilen
+		figure.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent event) {
+				// FIXME: Einkommentieren, um Parent-Fenster zu schließen
+//				AbstractRunModeBox box = (AbstractRunModeBox) getRuntimeContext().getWindowHandle();
+//				box.dispose();
+			}
+		});
+		
 		figure.addChangeListener(new ChangeListener() {
 			public void handleStateChanged(final ChangeEvent event) {
 				final String propertyName = event.getPropertyName();
 				if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)
-						&& getExecutionMode().equals(ExecutionMode.RUN_MODE)
+						&& getExecutionMode()==ExecutionMode.RUN_MODE
 						&& figure.getModel().isArmed()) {
+					
 					Display.getCurrent().asyncExec(new Runnable() {
 						public void run() {
-							CentralLogger.getInstance().info(this, "KLICK");
 							ActionButtonModel model = (ActionButtonModel) getWidgetModel();
+							
+							// FIXME: Was ist der Usecase für Aktionen bei Press vs. Release Mousebutton?
 							int index;
 							if (figure.getModel().isPressed()) {
 								index = model.getChoosenPressedActionIndex();
@@ -108,6 +125,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 							if (index >= 0 && index < size) {
 								WidgetAction type = model.getActionData()
 										.getWidgetActions().get(index);
+								
 								WidgetActionHandlerService.getInstance()
 										.performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA),type);
 							}
