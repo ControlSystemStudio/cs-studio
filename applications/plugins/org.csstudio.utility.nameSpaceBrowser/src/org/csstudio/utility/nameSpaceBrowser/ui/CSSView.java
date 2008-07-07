@@ -50,6 +50,7 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -203,6 +204,7 @@ public class CSSView extends Composite implements Observer{
 	 	});
 	 	listViewer.setLabelProvider(new myLabelProvider());
 	 	listViewer.setContentProvider(new ArrayContentProvider());
+	 	listViewer.setSorter(new ViewerSorter());
 	 	listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 	 	
 	 	nameSpace.setName(para.name);
