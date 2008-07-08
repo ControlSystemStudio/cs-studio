@@ -106,6 +106,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		setDefaultMessage(bean.getDefaultMessage());
 		setName(bean.getName());
 		setFilterID(bean.getFilterID());
+		setConditions(bean.getConditions());
 	}
 
 	public int getID() {
@@ -122,10 +123,12 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	}
 
 	public List<FilterbedingungBean> getConditions() {
-		return conditions;
+		return new LinkedList<FilterbedingungBean>(this.conditions);
 	}
 
 	public void setConditions(List<FilterbedingungBean> conditions) {
+		List<FilterbedingungBean> oldValue = this.conditions;
 		this.conditions = conditions;
+		pcs.firePropertyChange(PropertyNames.conditions.name(), oldValue, conditions);
 	}
 }

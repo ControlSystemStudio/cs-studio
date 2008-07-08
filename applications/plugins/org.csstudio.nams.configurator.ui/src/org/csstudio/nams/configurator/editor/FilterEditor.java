@@ -1,13 +1,19 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.util.List;
+
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.observable.list.IListChangeListener;
 import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.list.ListChangeEvent;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.internal.databinding.observable.tree.IViewerUpdate;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.internal.databinding.internal.swt.SWTObservableList;
+import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -27,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.part.EditorPart;
 
 public class FilterEditor extends AbstractEditor<FilterBean> {
 
@@ -100,7 +107,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 									.getTransfer().getSelection();
 							FilterbedingungBean bean = (FilterbedingungBean) selection
 									.getFirstElement();
-							filterConditionsListViewer.add(bean);
+							List<FilterbedingungBean> list = FilterEditor.this.beanClone.getConditions();
+							list.add(bean);
+							FilterEditor.this.beanClone.setConditions(list);
 						} catch (Throwable e) {
 						}
 					}
@@ -118,7 +127,6 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	protected void initDataBinding() {
-		// TODO add Filter databinding
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
@@ -129,7 +137,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						FilterBean.PropertyNames.defaultMessage.name());
 
 		IObservableList filterConditionsObservable = BeansObservables
-				.observeList(context.getValidationRealm(), bean,
+				.observeList(context.getValidationRealm(), this.beanClone,
 						FilterBean.PropertyNames.conditions.name());
 
 		// bind observables
@@ -139,8 +147,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
 				SWT.Modify), descriptionTextObservable, null, null);
-		
-		context.bindList(SWTObservables.observeItems(filterConditionsListViewer.getList()), filterConditionsObservable, null, null);
+		IObservableList observeItems = SWTObservables.observeItems(filterConditionsListViewer.getList());
+		context.bindList(observeItems, filterConditionsObservable, null, null);
 	}
 
 	@Override

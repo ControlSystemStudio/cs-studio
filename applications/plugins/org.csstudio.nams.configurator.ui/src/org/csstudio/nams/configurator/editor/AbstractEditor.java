@@ -7,7 +7,9 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceListener;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -142,13 +144,20 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return comboWidget;
 	}
 
+//	class NotifyingListViewer 
+	
 	protected ListViewer createListEntry(Composite parent, String labeltext,
 			boolean editable) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		ListViewer listWidget = new ListViewer(parent, SWT.BORDER);
+		ListViewer listWidget = new ListViewer(parent, SWT.BORDER){
+			
+		};
+		ArrayContentProvider cp = null;
+		
 		// listWidget.setEditable(editable);
+//		listWidget.setInput(new WritableList());
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;

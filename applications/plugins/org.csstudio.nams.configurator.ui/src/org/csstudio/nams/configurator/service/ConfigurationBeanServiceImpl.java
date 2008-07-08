@@ -515,8 +515,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			inserted = true;
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
-		// TODO save FilterConditions
-		// dto.setFilterConditions()
+		
+		List<FilterConditionDTO> list = new LinkedList<FilterConditionDTO>();
+		for (FilterbedingungBean condBean : bean.getConditions()) {
+			list.add(getDTO4Bean(condBean));
+		}
+		
+		dto.setFilterConditions(list);
 		dto.setName(bean.getName());
 
 		dto = configurationService.saveFilterDTO(dto);
