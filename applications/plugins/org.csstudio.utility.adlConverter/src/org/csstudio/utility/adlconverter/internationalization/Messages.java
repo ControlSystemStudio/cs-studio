@@ -65,6 +65,8 @@ public class Messages extends NLS {
     public static String ADLDisplayImporter_ADLBackgroundLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerName;
+    public static String ADLDisplayImporter_ADLActionLayerName;
+    public static String ADLDisplayImporter_ADLActionLayerDes;
     public static String ADLDynamicAttribute_AssertError_Begin;
     public static String ADLDynamicAttribute_AssertError_End;
     public static String ADLDynamicAttribute_WrongADLFormatException_Parameter_Begin;

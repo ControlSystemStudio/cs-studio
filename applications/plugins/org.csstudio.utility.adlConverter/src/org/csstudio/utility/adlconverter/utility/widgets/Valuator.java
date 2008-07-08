@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 
 /**
@@ -78,7 +79,7 @@ public class Valuator extends Widget {
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix, Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_VALUE, dynamicsDescriptor );
-
+        _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
     }
 
     /**

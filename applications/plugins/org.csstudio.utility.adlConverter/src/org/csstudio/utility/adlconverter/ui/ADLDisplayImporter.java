@@ -99,6 +99,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         _storDisplay = null;
         displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLBackgroundLayerName,Messages.ADLDisplayImporter_ADLBackgroundLayerDes),0);
         displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLBargraphLayerName,Messages.ADLDisplayImporter_ADLBargraphLayerDes),2);
+        displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLActionLayerName,Messages.ADLDisplayImporter_ADLActionLayerDes),2);
         for (ADLWidget strings : root.getObjects()) {
             try {
                 display(strings, displayModel);

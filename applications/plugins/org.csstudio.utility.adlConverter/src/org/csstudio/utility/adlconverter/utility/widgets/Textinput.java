@@ -112,6 +112,8 @@ public class Textinput extends Widget {
 //        <option id="5" />
 //        </property>
         _widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE, 5);
+        _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
+
     }
 
     /**

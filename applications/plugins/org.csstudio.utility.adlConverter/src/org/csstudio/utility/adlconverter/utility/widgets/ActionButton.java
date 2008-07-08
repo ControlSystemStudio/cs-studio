@@ -96,7 +96,7 @@ public class ActionButton extends Widget {
         _widget.setPropertyValue(ActionButtonModel.PROP_ACTION_PRESSED_INDEX, pressIndex);
         _widget.setPropertyValue(ActionButtonModel.PROP_ACTION_RELEASED_INDEX, releasIndex);
         _widget.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, result);
-        
+        _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName); //$NON-NLS-1$
     }
 
     /**
