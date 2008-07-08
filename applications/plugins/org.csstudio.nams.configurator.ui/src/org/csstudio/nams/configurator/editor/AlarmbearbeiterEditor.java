@@ -1,6 +1,8 @@
 package org.csstudio.nams.configurator.editor;
 
+import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.RubrikBean;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -17,14 +19,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 
-
 public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 
 	private final static String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor";
-	
+
 	private Text _nameTextEntry;
 	private Text _emailTextEntry;
-	private Combo _groupComboEntry;
+	private Combo _rubrikComboEntry;
 	private Text _smsTextEntry;
 	private Text _voiceMailTextEntry;
 	private Combo _prefAlarmingTypeComboEntry;
@@ -32,29 +33,33 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 	private Text _confirmCodeTextEntry;
 	private Button _activeCheckBoxEntry;
 
-	private ComboViewer _groupComboEntryViewer;
+	private ComboViewer _rubrikComboEntryViewer;
 
 	private ComboViewer _prefAlarmingTypeComboEntryViewer;
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite main = new Composite(parent, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true, groupDummyContent);
-		_groupComboEntry = _groupComboEntryViewer.getCombo();
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
+				array2StringArray(configurationBeanService
+						.getRubrikBeansForType(RubrikTypeEnum.USER)));
+		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_emailTextEntry = this.createTextEntry(main, "Email:", true);
 		_smsTextEntry = this.createTextEntry(main, "SMS number:", true);
 		_voiceMailTextEntry = this.createTextEntry(main, "VoiceMail number:",
 				true);
 		_prefAlarmingTypeComboEntryViewer = this.createComboEntry(main,
-				"Prefered alarming type:", false, array2StringArray(PreferedAlarmType.values()));
-		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer.getCombo();
+				"Prefered alarming type:", false,
+				array2StringArray(PreferedAlarmType.values()));
+		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer
+				.getCombo();
+		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
-		_statusCodeTextEntry = this
-				.createTextEntry(main, "Status code:", true);
+		_statusCodeTextEntry = this.createTextEntry(main, "Status code:", true);
 		_confirmCodeTextEntry = this.createTextEntry(main, "Confirm code:",
 				true);
 		this.addSeparator(main);
@@ -62,10 +67,10 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 				"User is active:", true);
 		initDataBinding();
 	}
-	
+
 	@Override
 	protected void doInit(IEditorSite site, IEditorInput input) {
-		
+
 	}
 
 	@Override
@@ -108,6 +113,9 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 						AlarmbearbeiterBean.PropertyNames.preferedAlarmType
 								.name());
 
+		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
+				this.beanClone, RubrikBean.PropertyNames.rubrikName.name());
+
 		// bind observables
 		context.bindValue(SWTObservables
 				.observeText(_nameTextEntry, SWT.Modify), nameTextObservable,
@@ -146,6 +154,10 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 						return ((PreferedAlarmType) value).name();
 					}
 				});
+
+		context.bindValue(SWTObservables
+				.observeSelection(_rubrikComboEntry),
+				rubrikTextObservable, null, null);
 	}
 
 	@Override
@@ -156,5 +168,5 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 	public static String getId() {
 		return EDITOR_ID;
 	}
-	
+
 }

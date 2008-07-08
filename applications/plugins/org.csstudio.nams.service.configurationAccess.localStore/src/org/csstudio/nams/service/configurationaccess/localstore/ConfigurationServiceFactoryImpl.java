@@ -18,6 +18,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Repl
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
@@ -92,6 +93,7 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
 				.addAnnotatedClass(FilterDTO.class)
 				.addAnnotatedClass(HistoryDTO.class)
+				.addAnnotatedClass(RubrikDTO.class)
 
 //				.setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
 //				.setProperty("hibernate.connection.url", "jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))")

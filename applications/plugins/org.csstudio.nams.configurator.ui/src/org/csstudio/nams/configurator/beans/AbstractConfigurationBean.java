@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
@@ -19,14 +20,10 @@ import java.beans.PropertyChangeSupport;
  * 
  * @param <T>
  */
-public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
-		extends AbstractObservableBean implements Comparable<T> {
+public abstract class AbstractConfigurationBean<T extends IConfigurationBean> 
+					implements IConfigurationBean, Comparable<T> {
 
 	private String rubrikName;
-
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return pcs;
-	}
 
 	public int compareTo(T o) {
 		return this.getDisplayName().compareTo(o.getDisplayName());
@@ -61,5 +58,36 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		String oldValue = this.rubrikName;
 		this.rubrikName = groupName;
 		pcs.firePropertyChange("rubrikName", oldValue, groupName);
+	}
+	
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+	/**
+	 * Propertychange suppoert for JFace Databinding
+	 */
+	public void addPropertyChangeListener(String propertyName,
+			PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void removePropertyChangeListener(String propertyName,
+			PropertyChangeListener listener) {
+		pcs.removePropertyChangeListener(propertyName, listener);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		pcs.removePropertyChangeListener(listener);
+	}
+	
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcs;
+	}
+	
+	public void clearPropertyChangeListeners() {
+		pcs = new PropertyChangeSupport(this);
 	}
 }

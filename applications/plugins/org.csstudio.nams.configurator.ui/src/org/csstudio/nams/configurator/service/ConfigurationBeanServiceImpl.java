@@ -1,12 +1,13 @@
 package org.csstudio.nams.configurator.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
+import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
@@ -16,6 +17,7 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.RubrikBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
@@ -32,6 +34,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
@@ -51,6 +54,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private Map<Integer, AlarmtopicBean> alarmtopicBeans = new HashMap<Integer, AlarmtopicBean>();
 	private Map<Integer, FilterbedingungBean> filterbedingungBeans = new HashMap<Integer, FilterbedingungBean>();
 	private Map<Integer, FilterBean> filterBeans = new HashMap<Integer, FilterBean>();
+	private Map<Integer, RubrikBean> rubrikBeans = new HashMap<Integer, RubrikBean>();
 
 	public ConfigurationBeanServiceImpl(
 			LocalStoreConfigurationService localStore) {
@@ -76,6 +80,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		try {
 			entireConfiguration = configurationService.getEntireConfiguration();
 			// TODO Folgendes Exception-Handling überdenken....
+
+			Collection<RubrikDTO> rubriks = entireConfiguration.gibAlleRubriken();
+			for (RubrikDTO rubrik : rubriks) {
+				RubrikBean bean = DTO2Bean(rubrik);
+				RubrikBean origBean = rubrikBeans
+				.get(new Integer(bean.getID()));
+				if (origBean != null) {
+					origBean.updateState(bean);
+				} else {
+					rubrikBeans.put(bean.getID(), bean);
+				}
+			}
 
 			Collection<AlarmbearbeiterDTO> alarmbearbeiter = entireConfiguration
 					.gibAlleAlarmbearbeiter();
@@ -141,6 +157,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				}
 			}
 
+
 		} catch (StorageError e) {
 			logger.logErrorMessage(this,
 					"Could not load Eniter Configuration because of: "
@@ -194,15 +211,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setPreferedAlarmType(alarmbearbeiter.getPreferedAlarmType());
 		bean.setStatusCode(alarmbearbeiter.getStatusCode());
 		bean.setUserID(alarmbearbeiter.getUserId());
-
-		// FIXME for testing only
-		if (new Random().nextBoolean()) {
-			bean.setRubrikName("Random Test Rubrik");
-		}
-		if (bean.getDisplayName().startsWith("Alexander")) {
-			bean.setRubrikName("Alex");
-		}
-
+		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group = Rubrik
+		
 		return bean;
 	}
 
@@ -294,6 +304,43 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		bean.setConditions(conditions);
 		return bean;
+	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getFilterBeans()
+	 */
+	public RubrikBean[] getRubrikBeansForType(RubrikTypeEnum type) {
+		Collection<RubrikBean> values = rubrikBeans.values();
+		Collection<RubrikBean> specificRubriks = new ArrayList<RubrikBean>();
+		for (RubrikBean rubrikBean : values) {
+			if(rubrikBean.getRubrikType().equals(type)) {
+				specificRubriks.add(rubrikBean);
+			}
+		}
+		return specificRubriks.toArray(new RubrikBean[specificRubriks.size()]);
+	}
+	
+	private RubrikBean DTO2Bean(RubrikDTO dto) {
+		RubrikBean bean = new RubrikBean();
+		bean.setID(dto.getIGroupId());
+		bean.setRubrikName(dto.getCGroupName());
+		bean.setRubrikType(dto.getType().name());
+		return bean;
+	}
+	
+	private String getRubrikNameForId(int groupRef) {
+		Collection<RubrikBean> values = rubrikBeans.values();
+		String result = null;
+		for (RubrikBean rubrikBean : values) {
+			if(rubrikBean.getID() == groupRef) {
+				result = rubrikBean.getRubrikName();
+				break;
+			}
+		}
+		return result;
 	}
 
 	/*

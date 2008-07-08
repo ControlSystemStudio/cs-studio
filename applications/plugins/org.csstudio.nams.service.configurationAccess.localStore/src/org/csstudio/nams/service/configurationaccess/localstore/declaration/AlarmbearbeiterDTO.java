@@ -105,7 +105,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	/**
 	 * @return the groupRef
 	 */
-	int getGroupRef() {
+	public int getGroupRef() {
 		return groupRef;
 	}
 

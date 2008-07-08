@@ -1,11 +1,13 @@
 package org.csstudio.nams.configurator.service;
 
+import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.RubrikBean;
 
 public interface ConfigurationBeanService {
 
@@ -18,6 +20,8 @@ public interface ConfigurationBeanService {
 	public abstract FilterBean[] getFilterBeans();
 
 	public abstract FilterbedingungBean[] getFilterConditionBeans();
+
+	public abstract RubrikBean[] getRubrikBeansForType(RubrikTypeEnum type);
 
 	public <T extends IConfigurationBean> T save(T bean);
 	

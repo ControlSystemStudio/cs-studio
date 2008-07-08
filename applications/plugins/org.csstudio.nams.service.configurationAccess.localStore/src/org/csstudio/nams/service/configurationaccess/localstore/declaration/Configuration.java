@@ -12,6 +12,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
@@ -26,8 +27,8 @@ public class Configuration implements FilterConditionForIdProvider{
 	private Collection<TopicDTO> alleAlarmtopics;
 	private Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
 	private Collection<FilterDTO> allFilters;
-
 	private Collection<FilterConditionDTO> allFilterConditions;
+	private Collection<RubrikDTO> alleRubriken;
 
 	@SuppressWarnings("unchecked")
 	public Configuration(Session session) throws InconsistentConfigurationException,
@@ -44,6 +45,7 @@ public class Configuration implements FilterConditionForIdProvider{
 		allFilters = session.createCriteria(FilterDTO.class).list();
 		
 		allFilterConditions = session.createCriteria(FilterConditionDTO.class).addOrder(Order.asc("iFilterConditionID")).list();
+		alleRubriken = session.createCriteria(RubrikDTO.class).list();
 
 		
 		// PRIVATEs
@@ -160,6 +162,11 @@ public class Configuration implements FilterConditionForIdProvider{
 	public Collection<FilterConditionDTO> gibAlleFilterConditions() {
 		return allFilterConditions;
 	}
+	
+	public Collection<RubrikDTO> gibAlleRubriken() {
+		return alleRubriken;
+	}
+
 	// -------------
 
 	// public Collection<AlarmbearbeiterDTO>
@@ -188,5 +195,4 @@ public class Configuration implements FilterConditionForIdProvider{
 		}
 		return null;
 	}
-
 }
