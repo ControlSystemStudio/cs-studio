@@ -282,12 +282,17 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	FilterBean DTO2Bean(FilterDTO filter) {
-		// TODO (gs) hier muessen die FilterbedingungBenas eingebunden werden
-		// (aus der Map holen)
 		FilterBean bean = new FilterBean();
 		bean.setDefaultMessage(filter.getDefaultMessage());
 		bean.setFilterID(filter.getIFilterID());
 		bean.setName(filter.getName());
+		List<FilterbedingungBean> conditions = bean.getConditions();
+		conditions.clear();
+		for (FilterConditionDTO condition : filter.getFilterConditions()) {
+			conditions.add(filterbedingungBeans.get(condition
+					.getIFilterConditionID()));
+		}
+		bean.setConditions(conditions);
 		return bean;
 	}
 
@@ -452,11 +457,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		AlarmbearbeiterBean resultBean = alarmbearbeiterBeans.get(new Integer(
 				dto.getUserId()));
-//		if (inserted) {
-//			bean.updateState(resultBean);
-//			alarmbearbeiterBeans.put(new Integer(dto.getUserId()), bean);
-//			resultBean = bean;
-//		}
+		// if (inserted) {
+		// bean.updateState(resultBean);
+		// alarmbearbeiterBeans.put(new Integer(dto.getUserId()), bean);
+		// resultBean = bean;
+		// }
 
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
@@ -482,8 +487,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
 	}
-
-	
 
 	private AlarmtopicBean saveAlarmtopicBean(AlarmtopicBean bean) {
 		boolean inserted = false;
@@ -670,14 +673,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
-	private void insertOrUpdateNotification(
-			IConfigurationBean bean, boolean inserted) {
+	private void insertOrUpdateNotification(IConfigurationBean bean,
+			boolean inserted) {
 		if (inserted)
 			insertNotification(bean);
 		else
 			updateNotification(bean);
 	}
-	
+
 	private void updateNotification(IConfigurationBean bean) {
 		for (ConfigurationBeanServiceListener listener : listeners) {
 			listener.onBeanUpdate(bean);

@@ -1,18 +1,21 @@
 package org.csstudio.nams.configurator.beans;
 
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	public static enum PropertyNames {
-		filterID, name, defaultMessage
+		filterID, name, defaultMessage, conditions
 
 	}
 
 	private int filterID;// PRIMARY KEY
 	private String name;
 	private String defaultMessage;
-	// TODO hier fehlt noch einiges (Beans für FilterConditions) tr: regenerate hashCode/equals !!!
-
+	private List<FilterbedingungBean> conditions = new LinkedList<FilterbedingungBean>();
+	
 	public FilterBean() {
 		filterID = -1;
 	}
@@ -21,6 +24,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((conditions == null) ? 0 : conditions.hashCode());
 		result = prime * result
 				+ ((defaultMessage == null) ? 0 : defaultMessage.hashCode());
 		result = prime * result + filterID;
@@ -37,6 +42,11 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		if (getClass() != obj.getClass())
 			return false;
 		final FilterBean other = (FilterBean) obj;
+		if (conditions == null) {
+			if (other.conditions != null)
+				return false;
+		} else if (!conditions.equals(other.conditions))
+			return false;
 		if (defaultMessage == null) {
 			if (other.defaultMessage != null)
 				return false;
@@ -109,5 +119,13 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	public void setID(int id) {
 		setFilterID(id);
+	}
+
+	public List<FilterbedingungBean> getConditions() {
+		return conditions;
+	}
+
+	public void setConditions(List<FilterbedingungBean> conditions) {
+		this.conditions = conditions;
 	}
 }
