@@ -1,7 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.composite.FilterableBeanList;
 
 public class FilterView extends AbstractNamsView {
 
@@ -11,11 +10,4 @@ public class FilterView extends AbstractNamsView {
 	protected IConfigurationBean[] getTableContent() {
 		return configurationBeanService.getFilterBeans();
 	}
-
-	@Override
-	protected void initDragAndDrop(FilterableBeanList filterableBeanList) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

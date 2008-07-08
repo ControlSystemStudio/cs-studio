@@ -1,7 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.composite.FilterableBeanList;
 
 public class AlarmtopicView extends AbstractNamsView {
 
@@ -10,11 +9,5 @@ public class AlarmtopicView extends AbstractNamsView {
 	@Override
 	protected IConfigurationBean[] getTableContent() {
 		return configurationBeanService.getAlarmTopicBeans();
-	}
-
-	@Override
-	protected void initDragAndDrop(FilterableBeanList filterableBeanList) {
-		// TODO Auto-generated method stub
-		
 	}
 }

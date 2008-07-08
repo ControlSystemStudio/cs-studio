@@ -57,7 +57,9 @@ public abstract class AbstractNamsView extends ViewPart {
 		initDragAndDrop(filterableBeanList);
 	}
 
-	protected abstract void initDragAndDrop(FilterableBeanList filterableBeanList);
+	protected void initDragAndDrop(FilterableBeanList filterableBeanList){
+		
+	}
 
 	@Override
 	public void setFocus() {
