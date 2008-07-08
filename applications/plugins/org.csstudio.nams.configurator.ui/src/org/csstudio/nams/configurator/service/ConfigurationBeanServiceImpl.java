@@ -375,28 +375,28 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();
 			timeBasedConditionBean.setRubrikName("");
 			timeBasedConditionBean
-					.setCConfirmCompValue(((TimeBasedFilterConditionDTO) filter)
+					.setConfirmCompValue(((TimeBasedFilterConditionDTO) filter)
 							.getCConfirmCompValue());
 			timeBasedConditionBean
-					.setCConfirmKeyValue(((TimeBasedFilterConditionDTO) filter)
+					.setConfirmKeyValue(((TimeBasedFilterConditionDTO) filter)
 							.getConfirmKeyValue());
 			timeBasedConditionBean
-					.setCStartCompValue(((TimeBasedFilterConditionDTO) filter)
+					.setStartCompValue(((TimeBasedFilterConditionDTO) filter)
 							.getCStartCompValue());
 			timeBasedConditionBean
-					.setCStartKeyValue(((TimeBasedFilterConditionDTO) filter)
-							.getCStartKeyValue());
+					.setStartKeyValue(((TimeBasedFilterConditionDTO) filter)
+							.getStartKeyValue());
 			timeBasedConditionBean
-					.setSConfirmOperator(((TimeBasedFilterConditionDTO) filter)
+					.setConfirmOperator(((TimeBasedFilterConditionDTO) filter)
 							.getTBConfirmOperator());
 			timeBasedConditionBean
-					.setSStartOperator(((TimeBasedFilterConditionDTO) filter)
+					.setStartOperator(((TimeBasedFilterConditionDTO) filter)
 							.getTBStartOperator());
 			timeBasedConditionBean
-					.setSTimeBehavior(((TimeBasedFilterConditionDTO) filter)
+					.setTimeBehavior(((TimeBasedFilterConditionDTO) filter)
 							.getTimeBehavior());
 			timeBasedConditionBean
-					.setSTimePeriod(((TimeBasedFilterConditionDTO) filter)
+					.setTimePeriod(((TimeBasedFilterConditionDTO) filter)
 							.getTimePeriod());
 			filterSpecificBean = timeBasedConditionBean;
 		}
@@ -636,24 +636,24 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 
 			timeBasedFilterConditionDTO.setCConfirmCompValue(specificBean
-					.getCConfirmCompValue());
-			timeBasedFilterConditionDTO.setCConfirmKeyValue(specificBean
-					.getCStartKeyValue());
+					.getConfirmCompValue());
+			timeBasedFilterConditionDTO.setConfirmKeyValue(specificBean
+					.getStartKeyValue());
 			timeBasedFilterConditionDTO.setCStartCompValue(specificBean
-					.getCStartCompValue());
+					.getStartCompValue());
 
 			// TODO mw: Check the Operators in TimeBasedFilterCondition.
 			// get(StringRegelOperator) but set(Operator)
 			// => only ordinal 1 and 2 match, other differ.
 			timeBasedFilterConditionDTO.setTBConfirmOperator(Operator
-					.valueOf(specificBean.getSConfirmOperator().name()));
+					.valueOf(specificBean.getConfirmOperator().name()));
 			timeBasedFilterConditionDTO.setTBStartOperator(Operator
-					.valueOf(specificBean.getSStartOperator().name()));
+					.valueOf(specificBean.getStartOperator().name()));
 
 			timeBasedFilterConditionDTO.setTimeBehavior(specificBean
-					.getSTimeBehavior());
+					.getTimeBehavior());
 			timeBasedFilterConditionDTO.setTimePeriod(specificBean
-					.getSTimePeriod());
+					.getTimePeriod());
 
 			// result to be saved with configurationService
 			filterConditionDTO = timeBasedFilterConditionDTO;

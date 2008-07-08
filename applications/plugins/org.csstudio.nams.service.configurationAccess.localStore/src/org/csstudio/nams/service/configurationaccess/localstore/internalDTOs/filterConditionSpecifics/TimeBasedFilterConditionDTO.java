@@ -44,13 +44,17 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 	public int getFilterConditionTypeRef(){
 		return filterCondtionTypeRef;
 	}
-	
-	public String getCStartKeyValue() {
+	@SuppressWarnings("unused")
+	private String getCStartKeyValue() {
 		return cStartKeyValue;
 	}
 	@SuppressWarnings("unused")
 	private void setCStartKeyValue(String startKeyValue) {
 		cStartKeyValue = startKeyValue;
+	}
+	
+	public void setStartKeyValue(MessageKeyEnum value) {
+		cStartKeyValue = value.getStringValue();
 	}
 	
 	public MessageKeyEnum getStartKeyValue(){
@@ -63,6 +67,7 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 	public void setCStartCompValue(String startCompValue) {
 		cStartCompValue = startCompValue;
 	}
+	
 	@SuppressWarnings("unused")
 	private String getCConfirmKeyValue() {
 		return cConfirmKeyValue;
@@ -169,5 +174,9 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 	private short sTimePeriod;
 	@Column(name="sTimeBehavior")
 	private short sTimeBehavior;
+	
+	public void setConfirmKeyValue(MessageKeyEnum startKeyValue) {
+		cConfirmKeyValue = startKeyValue.getStringValue();
+	}
 }
 

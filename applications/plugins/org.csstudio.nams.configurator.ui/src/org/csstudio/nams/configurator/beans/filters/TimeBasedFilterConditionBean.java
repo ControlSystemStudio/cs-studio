@@ -10,126 +10,126 @@ public class TimeBasedFilterConditionBean extends
 		AbstractConfigurationBean<TimeBasedFilterConditionBean> implements
 		FilterConditionAddOnBean {
 
-	public enum PropertyNames {
-		cStartKeyValue, sStartOperator, cStartCompValue, 
-		cConfirmKeyValue, sConfirmOperator, cConfirmCompValue, 
-		sTimePeriod, sTimeBehavior;
-	}
-
-	private String cStartKeyValue;
+	private MessageKeyEnum startKeyValue;
 	private StringRegelOperator sStartOperator;
-	private String cStartCompValue;
+	private String startCompValue;
 
-	private MessageKeyEnum cConfirmKeyValue;
-	private StringRegelOperator sConfirmOperator;
-	private String cConfirmCompValue;
+	private MessageKeyEnum confirmKeyValue;
+	private StringRegelOperator confirmOperator;
+	private String confirmCompValue;
 
-	private Millisekunden sTimePeriodDomainValue;
-	private TimeBasedType sTimeBehavior;
+	private Millisekunden timePeriodDomainValue;
+	private TimeBasedType timeBehavior;
+	
+	public enum PropertyNames {
+		startKeyValue, startOperator, startCompValue, 
+		confirmKeyValue, confirmOperator, confirmCompValue, 
+		timePeriod, timeBehavior;
+	}
 
 	@Override
 	protected void doUpdateState(TimeBasedFilterConditionBean bean) {
-		setCStartKeyValue(bean.getCStartKeyValue());
-		setSStartOperator(bean.getSStartOperator());
-		setCStartCompValue(bean.getCStartCompValue());
+		setStartKeyValue(bean.getStartKeyValue());
+		setStartOperator(bean.getStartOperator());
+		setStartCompValue(bean.getStartCompValue());
 		
-		setCConfirmKeyValue(bean.getCConfirmKeyValue());
-		setSConfirmOperator(bean.getSConfirmOperator());
-		setCConfirmCompValue(bean.getCConfirmCompValue());
+		setConfirmKeyValue(bean.getConfirmKeyValue());
+		setConfirmOperator(bean.getConfirmOperator());
+		setConfirmCompValue(bean.getConfirmCompValue());
 		
-		setSTimePeriod(bean.getSTimePeriod());
-		setSTimeBehavior(bean.getSTimeBehavior());
+		setTimePeriod(bean.getTimePeriod());
+		setTimeBehavior(bean.getTimeBehavior());
 	}
 
 	public String getDisplayName() {
-		return cStartCompValue + " " + sStartOperator + " " + cStartCompValue
-				+ " " + cConfirmKeyValue + " " + sConfirmOperator + " "
-				+ cConfirmCompValue + " " + sTimePeriodDomainValue + " " + sTimeBehavior;
+		return startCompValue + " " + sStartOperator + " " + startCompValue
+				+ " " + confirmKeyValue + " " + confirmOperator + " "
+				+ confirmCompValue + " " + timePeriodDomainValue + " " + timeBehavior;
 	}
 
 	public int getID() {
 		return 0;
 	}
 
-	public String getCStartKeyValue() {
-		return cStartKeyValue;
+	public MessageKeyEnum getStartKeyValue() {
+		return startKeyValue;
 	}
 
-	public void setCStartKeyValue(String startKeyValue) {
-		String oldValue = cStartKeyValue;
-		cStartKeyValue = startKeyValue;
-		pcs.firePropertyChange(PropertyNames.cStartKeyValue.name(), oldValue, startKeyValue);
+	public void setStartKeyValue(MessageKeyEnum startKeyValue) {
+		MessageKeyEnum oldValue = this.startKeyValue;
+		this.startKeyValue = startKeyValue;
+		pcs.firePropertyChange(PropertyNames.startKeyValue.name(), oldValue, startKeyValue);
 	}
 
-	public StringRegelOperator getSStartOperator() {
+	public StringRegelOperator getStartOperator() {
 		return sStartOperator;
 	}
 
-	public void setSStartOperator(StringRegelOperator stringRegelOperator) {
+	public void setStartOperator(StringRegelOperator stringRegelOperator) {
 		StringRegelOperator oldValue = stringRegelOperator;
 		sStartOperator = stringRegelOperator;
-		pcs.firePropertyChange(PropertyNames.sStartOperator.name(), oldValue, stringRegelOperator);
+		pcs.firePropertyChange(PropertyNames.startOperator.name(), oldValue, stringRegelOperator);
 	}
 
-	public String getCStartCompValue() {
-		return cStartCompValue;
+	public String getStartCompValue() {
+		return startCompValue;
 	}
 
-	public void setCStartCompValue(String startCompValue) {
-		String oldValue = cStartCompValue;
-		cStartCompValue = startCompValue;
-		pcs.firePropertyChange(PropertyNames.cStartCompValue.name(), oldValue, startCompValue);
+	public void setStartCompValue(String startCompValue) {
+		String oldValue = this.startCompValue;
+		this.startCompValue = startCompValue;
+		pcs.firePropertyChange(PropertyNames.startCompValue.name(), oldValue, startCompValue);
 	}
 
-	public MessageKeyEnum getCConfirmKeyValue() {
-		return cConfirmKeyValue;
+	public MessageKeyEnum getConfirmKeyValue() {
+		return confirmKeyValue;
 	}
 
-	public void setCConfirmKeyValue(MessageKeyEnum messageKeyEnum) {
-		MessageKeyEnum oldValue = messageKeyEnum;
-		cConfirmKeyValue = messageKeyEnum;
-		pcs.firePropertyChange(PropertyNames.cConfirmKeyValue.name(), oldValue, messageKeyEnum);
+	public void setConfirmKeyValue(MessageKeyEnum messageKeyEnum) {
+		MessageKeyEnum oldValue = confirmKeyValue;
+		confirmKeyValue = messageKeyEnum;
+		pcs.firePropertyChange(PropertyNames.confirmKeyValue.name(), oldValue, messageKeyEnum);
 	}
 
-	public StringRegelOperator getSConfirmOperator() {
-		return sConfirmOperator;
+	public StringRegelOperator getConfirmOperator() {
+		return confirmOperator;
 	}
 
-	public void setSConfirmOperator(StringRegelOperator stringRegelOperator) {
-		StringRegelOperator oldValue = sConfirmOperator;
-		sConfirmOperator = stringRegelOperator;
-		pcs.firePropertyChange(PropertyNames.sConfirmOperator.name(), oldValue, stringRegelOperator);
+	public void setConfirmOperator(StringRegelOperator stringRegelOperator) {
+		StringRegelOperator oldValue = this.confirmOperator;
+		this.confirmOperator = stringRegelOperator;
+		pcs.firePropertyChange(PropertyNames.confirmOperator.name(), oldValue, stringRegelOperator);
 		}
 
-	public String getCConfirmCompValue() {
-		return cConfirmCompValue;
+	public String getConfirmCompValue() {
+		return confirmCompValue;
 	}
 
-	public void setCConfirmCompValue(String confirmCompValue) {
-		String oldValue = cConfirmCompValue;
-		cConfirmCompValue = confirmCompValue;
-		pcs.firePropertyChange(PropertyNames.cConfirmCompValue.name(), oldValue, confirmCompValue);
+	public void setConfirmCompValue(String confirmCompValue) {
+		String oldValue = this.confirmCompValue;
+		this.confirmCompValue = confirmCompValue;
+		pcs.firePropertyChange(PropertyNames.confirmCompValue.name(), oldValue, confirmCompValue);
 	}
 
-	public Millisekunden getSTimePeriod() {
-		return sTimePeriodDomainValue;
+	public Millisekunden getTimePeriod() {
+		return timePeriodDomainValue;
 	}
 
-	public void setSTimePeriod(Millisekunden millisekunden) {
-		Millisekunden oldValue = sTimePeriodDomainValue;
+	public void setTimePeriod(Millisekunden millisekunden) {
+		Millisekunden oldValue = timePeriodDomainValue;
 		if (oldValue == null) oldValue = Millisekunden.valueOf(0);
-		sTimePeriodDomainValue = millisekunden;
-		pcs.firePropertyChange(PropertyNames.sTimePeriod.name(), oldValue.alsLongVonMillisekunden(), millisekunden.alsLongVonMillisekunden());
+		timePeriodDomainValue = millisekunden;
+		pcs.firePropertyChange(PropertyNames.timePeriod.name(), oldValue.alsLongVonMillisekunden(), millisekunden.alsLongVonMillisekunden());
 	}
 	
-	public TimeBasedType getSTimeBehavior() {
-		return sTimeBehavior;
+	public TimeBasedType getTimeBehavior() {
+		return timeBehavior;
 	}
 
-	public void setSTimeBehavior(TimeBasedType timeBasedType) {
-		TimeBasedType oldValue = sTimeBehavior;
-		sTimeBehavior = timeBasedType;
-		pcs.firePropertyChange(PropertyNames.sTimeBehavior.name(), oldValue, timeBasedType);
+	public void setTimeBehavior(TimeBasedType timeBasedType) {
+		TimeBasedType oldValue = timeBehavior;
+		timeBehavior = timeBasedType;
+		pcs.firePropertyChange(PropertyNames.timeBehavior.name(), oldValue, timeBasedType);
 	}
 
 	@Override
@@ -138,24 +138,24 @@ public class TimeBasedFilterConditionBean extends
 		int result = 1;
 		result = prime
 				* result
-				+ ((cConfirmCompValue == null) ? 0 : cConfirmCompValue
+				+ ((confirmCompValue == null) ? 0 : confirmCompValue
 						.hashCode());
 		result = prime
 				* result
-				+ ((cConfirmKeyValue == null) ? 0 : cConfirmKeyValue.hashCode());
+				+ ((confirmKeyValue == null) ? 0 : confirmKeyValue.hashCode());
 		result = prime * result
-				+ ((cStartCompValue == null) ? 0 : cStartCompValue.hashCode());
+				+ ((startCompValue == null) ? 0 : startCompValue.hashCode());
 		result = prime * result
-				+ ((cStartKeyValue == null) ? 0 : cStartKeyValue.hashCode());
+				+ ((startKeyValue == null) ? 0 : startKeyValue.hashCode());
 		result = prime
 				* result
-				+ ((sConfirmOperator == null) ? 0 : sConfirmOperator.hashCode());
+				+ ((confirmOperator == null) ? 0 : confirmOperator.hashCode());
 		result = prime * result
 				+ ((sStartOperator == null) ? 0 : sStartOperator.hashCode());
 		result = prime * result
-				+ ((sTimeBehavior == null) ? 0 : sTimeBehavior.hashCode());
+				+ ((timeBehavior == null) ? 0 : timeBehavior.hashCode());
 		result = prime * result
-				+ ((sTimePeriodDomainValue == null) ? 0 : sTimePeriodDomainValue.hashCode());
+				+ ((timePeriodDomainValue == null) ? 0 : timePeriodDomainValue.hashCode());
 		return result;
 	}
 
@@ -168,45 +168,45 @@ public class TimeBasedFilterConditionBean extends
 		if (getClass() != obj.getClass())
 			return false;
 		final TimeBasedFilterConditionBean other = (TimeBasedFilterConditionBean) obj;
-		if (cConfirmCompValue == null) {
-			if (other.cConfirmCompValue != null)
+		if (confirmCompValue == null) {
+			if (other.confirmCompValue != null)
 				return false;
-		} else if (!cConfirmCompValue.equals(other.cConfirmCompValue))
+		} else if (!confirmCompValue.equals(other.confirmCompValue))
 			return false;
-		if (cConfirmKeyValue == null) {
-			if (other.cConfirmKeyValue != null)
+		if (confirmKeyValue == null) {
+			if (other.confirmKeyValue != null)
 				return false;
-		} else if (!cConfirmKeyValue.equals(other.cConfirmKeyValue))
+		} else if (!confirmKeyValue.equals(other.confirmKeyValue))
 			return false;
-		if (cStartCompValue == null) {
-			if (other.cStartCompValue != null)
+		if (startCompValue == null) {
+			if (other.startCompValue != null)
 				return false;
-		} else if (!cStartCompValue.equals(other.cStartCompValue))
+		} else if (!startCompValue.equals(other.startCompValue))
 			return false;
-		if (cStartKeyValue == null) {
-			if (other.cStartKeyValue != null)
+		if (startKeyValue == null) {
+			if (other.startKeyValue != null)
 				return false;
-		} else if (!cStartKeyValue.equals(other.cStartKeyValue))
+		} else if (!startKeyValue.equals(other.startKeyValue))
 			return false;
-		if (sConfirmOperator == null) {
-			if (other.sConfirmOperator != null)
+		if (confirmOperator == null) {
+			if (other.confirmOperator != null)
 				return false;
-		} else if (!sConfirmOperator.equals(other.sConfirmOperator))
+		} else if (!confirmOperator.equals(other.confirmOperator))
 			return false;
 		if (sStartOperator == null) {
 			if (other.sStartOperator != null)
 				return false;
 		} else if (!sStartOperator.equals(other.sStartOperator))
 			return false;
-		if (sTimeBehavior == null) {
-			if (other.sTimeBehavior != null)
+		if (timeBehavior == null) {
+			if (other.timeBehavior != null)
 				return false;
-		} else if (!sTimeBehavior.equals(other.sTimeBehavior))
+		} else if (!timeBehavior.equals(other.timeBehavior))
 			return false;
-		if (sTimePeriodDomainValue == null) {
-			if (other.sTimePeriodDomainValue != null)
+		if (timePeriodDomainValue == null) {
+			if (other.timePeriodDomainValue != null)
 				return false;
-		} else if (!sTimePeriodDomainValue.equals(other.sTimePeriodDomainValue))
+		} else if (!timePeriodDomainValue.equals(other.timePeriodDomainValue))
 			return false;
 		return true;
 	}
