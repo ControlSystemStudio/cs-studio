@@ -307,7 +307,7 @@ public class SendCommandToIoc implements Runnable {
         			 * ==> take action -> send all alarms from IOC
         			 */
         			if ( (! Statistic.getInstance().getContentObject(statisticId).wasPreviousBeaconWithinThreeBeaconTimeouts()) ||
-        					(Statistic.getInstance().getContentObject(statisticId).areWeConnectedLongerThenThreeBeaconTimeouts() &&
+        					(! Statistic.getInstance().getContentObject(statisticId).areWeConnectedLongerThenThreeBeaconTimeouts() &&
         							Statistic.getInstance().getContentObject(statisticId).isGetAllAlarmsOnSelectChange()) )  {
         				SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         				InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
