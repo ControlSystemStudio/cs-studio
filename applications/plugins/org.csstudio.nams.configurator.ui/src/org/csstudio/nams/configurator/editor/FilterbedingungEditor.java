@@ -111,7 +111,6 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private Combo junctorTypeCombo;
 	private Text junctorSecondFilterText;
 
-	private Text stringCompareKeyText;
 	private Combo stringOperatorCombo;
 	private Text stringCompareValueText;
 
@@ -145,6 +144,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private ComboViewer timeStartOperatorComboViewer;
 	private ComboViewer timeStopKeyComvoViewer;
 	private ComboViewer timeStopOperatorComboViewer;
+	private ComboViewer stringCompareKeyComboViewer;
+	private Combo stringCompareKeyCombo;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -201,8 +202,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// StringFilterComposite
 		stackComposites[1] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
-		stringCompareKeyText = createTextEntry(stackComposites[1],
-				"CompareKey", true);
+		stringCompareKeyComboViewer = createComboEntry(stackComposites[1],
+				"CompareKey", true, array2StringArray(MessageKeyEnum.values()));
+		stringCompareKeyCombo = stringCompareKeyComboViewer.getCombo();
 		stringOperatorComboViewer = createComboEntry(stackComposites[1],
 				"Operator", true, array2StringArray(StringRegelOperator
 						.values()));
@@ -550,38 +552,16 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
 				SWT.Modify), firstConditionTextObservable,
-		// new UpdateValueStrategy() {
-				// @Override
-				// public Object convert(Object value) {
-				// return JunctorConditionType.valueOf((String) value);
-				// }
-				// }, new UpdateValueStrategy() {
-				// @Override
-				// public Object convert(Object value) {
-				// return ((FilterbedingungBean) value).getDisplayName();
-				// }
-				// });
 				null, null);
 
 		context.bindValue(SWTObservables.observeText(junctorSecondFilterText,
 				SWT.Modify), secondConditionTextObservable,
-		// new UpdateValueStrategy() {
-				// @Override
-				// public Object convert(Object value) {
-				// return JunctorConditionType.valueOf((String) value);
-				// }
-				// }, new UpdateValueStrategy() {
-				// @Override
-				// public Object convert(Object value) {
-				// return ((FilterbedingungBean) value).getDisplayName();
-				// }
-				// });
 				null, null);
 
 	}
 
 	private void initStringAddOnBeanDataBinding(DataBindingContext context) {
-		IObservableValue keyTextObservable = BeansObservables.observeValue(
+		IObservableValue keyComboObservable = BeansObservables.observeValue(
 				specificBeans.get(SupportedFilterTypes.STRING_CONDITION),
 				StringFilterConditionBean.PropertyNames.keyValue.name());
 
@@ -598,20 +578,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		// bind observables
 		context.bindValue(SWTObservables.observeSelection(stringOperatorCombo),
-				stringOperatorObservable, new UpdateValueStrategy() {
-					@Override
-					public Object convert(Object value) {
-						return StringRegelOperator.valueOf((String) value);
-					}
-				}, new UpdateValueStrategy() {
-					@Override
-					public Object convert(Object value) {
-						return ((StringRegelOperator) value).name();
-					}
-				});
+				stringOperatorObservable, new StringRegelOperatorToModelStrategy(), new StringRegelOperatorToGuiStrategy());
 
-		context.bindValue(SWTObservables.observeText(stringCompareKeyText,
-				SWT.Modify), keyTextObservable, null, null);
+		context.bindValue(SWTObservables.observeSelection(stringCompareKeyCombo), keyComboObservable, new MessageKeyToModelStrategy(), null);
 
 		context.bindValue(SWTObservables.observeText(stringCompareValueText,
 				SWT.Modify), stringCompareValueTextObservable, null, null);

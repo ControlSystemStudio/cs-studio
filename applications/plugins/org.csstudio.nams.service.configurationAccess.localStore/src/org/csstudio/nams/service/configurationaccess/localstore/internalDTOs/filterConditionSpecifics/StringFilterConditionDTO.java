@@ -70,7 +70,6 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	/**
 	 * @return the keyValue
 	 */
-	@SuppressWarnings("unused")
 	public String getKeyValue() {
 		return keyValue;
 	}
@@ -84,8 +83,12 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @param keyValue
 	 *            the keyValue to set
 	 */
-	public void setKeyValue(String keyValue) {
+	protected void setKeyValue(String keyValue) {
 		this.keyValue = keyValue;
+	}
+	
+	public void setKeyValue(MessageKeyEnum keyValue){
+		this.keyValue = keyValue.getStringValue();
 	}
 
 	/**

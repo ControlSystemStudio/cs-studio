@@ -1,11 +1,12 @@
 package org.csstudio.nams.configurator.beans.filters;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class StringFilterConditionBean extends AbstractConfigurationBean<StringFilterConditionBean> implements FilterConditionAddOnBean{
 
-	private String keyValue;
+	private MessageKeyEnum keyValue;
 	private StringRegelOperator operator;
 	private String compValue;
 	
@@ -13,12 +14,12 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 		keyValue, operator, compValue;
 	}
 	
-	public String getKeyValue() {
+	public MessageKeyEnum getKeyValue() {
 		return keyValue;
 	}
 
-	public void setKeyValue(String keyValue) {
-		String oldValue = this.keyValue;
+	public void setKeyValue(MessageKeyEnum keyValue) {
+		MessageKeyEnum oldValue = this.keyValue;
 		this.keyValue = keyValue;
 		pcs.firePropertyChange(PropertyNames.keyValue.name(), oldValue, this.keyValue);
 	}

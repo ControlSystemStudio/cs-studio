@@ -365,7 +365,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 							.getCompValue());
 			stringFilterConditionBean
 					.setKeyValue(((StringFilterConditionDTO) filter)
-							.getKeyValue());
+							.getKeyValueEnum());
 			stringFilterConditionBean
 					.setOperator(StringRegelOperator
 							.valueOf(((StringFilterConditionDTO) filter)
