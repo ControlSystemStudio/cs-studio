@@ -105,6 +105,7 @@ public class BeaconWatchdog extends Thread{
 					   * change also the select state - the IOC can't tell us any more ...
 					   */
 					  thisContent.setSelectState( false);	// not selected
+					  thisContent.setGetAllAlarmsOnSelectChange(true);	// the next time we get connected
 					  
 //					 System.out.println("---------- Client disconnected ---------------");
 //					 System.out.println("Host:" +  thisContent.host + "  Port: " + thisContent.port +"\n");

@@ -61,21 +61,12 @@ public class IocChangedState extends Thread{
 	}
 	
 	public void run() {
-		String localHostName = null;
 		
+		String localHostName = InterconnectionServer.getInstance().getLocalHostName();
+
 		// increment statistic counter
 		
 		InterconnectionServer.getInstance().getNumberOfIocFailoverCollector().incrementCount();
-		
-		/*
-		 * get host name of interconnection server
-		 */
-		try {
-			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-			localHostName = localMachine.getHostName();
-		}
-		catch (java.net.UnknownHostException uhe) { 
-		}
 		
 		CentralLogger.getInstance().debug(this,"IocChangedState: logical IOC name: " + logicalIocName); 
 		/*

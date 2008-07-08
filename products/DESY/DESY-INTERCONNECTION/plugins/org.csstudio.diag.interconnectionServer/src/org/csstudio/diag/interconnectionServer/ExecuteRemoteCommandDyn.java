@@ -24,6 +24,7 @@ package org.csstudio.diag.interconnectionServer;
 import java.util.Map;
 
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
+import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
 import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
 import org.csstudio.diag.interconnectionServer.server.SendCommandToIoc;
 import org.csstudio.platform.libs.dcf.actions.IAction;
@@ -80,21 +81,28 @@ public class ExecuteRemoteCommandDyn implements IAction {
 		case PreferenceProperties.COMMAND_SEND_ALL_ALARMS_I:
 			// all records
 			sendCommandToIoc = new SendCommandToIoc( client, commandPortNum, command);
+			// use thread pool
+			InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 			break;
 			
 		case PreferenceProperties.COMMAND_SEND_ALARM_I:
 			// individual record
 			sendCommandToIoc= new SendCommandToIoc( client, commandPortNum, command);
+			// use thread pool
+			InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 			break;
 			
 		case PreferenceProperties.COMMAND_DISCONNECT_I:
 			sendCommandToIoc= new SendCommandToIoc( client, commandPortNum, command);
+			InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 			break;
 		case PreferenceProperties.COMMAND_SEND_STATUS_I:
 			sendCommandToIoc= new SendCommandToIoc( client, commandPortNum, command);
+			InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 			break;
 		case PreferenceProperties.COMMAND_TAKE_OVER_I:
 			sendCommandToIoc= new SendCommandToIoc( client, commandPortNum, command);
+			InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 			break;
 			default:
 				

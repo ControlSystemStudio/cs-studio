@@ -27,7 +27,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.GregorianCalendar;
-import java.util.Random;
 
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
@@ -41,7 +40,7 @@ import org.eclipse.core.runtime.Platform;
  * @author Matthias Clausen
  *
  */
-public class SendCommandToIoc extends Thread {
+public class SendCommandToIoc implements Runnable {
 	
 	private String hostName = "locahost";
 	private int port = 0;
@@ -50,9 +49,10 @@ public class SendCommandToIoc extends Thread {
 	private int id = 0;
 	private static String IOC_NOT_REACHABLE = "IOC_NOT_REACHABLE";
 	private int statusMessageDelay = 0;
+	private boolean retry = false;
 	
 	/**
-	 * Send a command to the IOC in an independent thread.
+	 * Send a command to the IOC in an independent thread from command thread pool.
 	 * @param hostName IOC name.
 	 * @param port Port to be used.
 	 * @param command One of the supported commands.
@@ -69,6 +69,12 @@ public class SendCommandToIoc extends Thread {
 //    		System.out.println ("SendCommandToIoc(1): hostname contains >|< ! hostname = " + hostName);
 //    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
 //		}
+		/*
+		 * TODO:
+		 * the following check does NOT work if we implement Runnable!
+		 * -> the method start() is NOT available! 
+		 */
+		
 		this.port = port;
 		this.command = command;
 		this.statisticId = this.hostName + ":" + Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
@@ -77,14 +83,17 @@ public class SendCommandToIoc extends Thread {
 			CentralLogger.getInstance().fatal(this, "Wrong StatiscitcID or HostName! ID: " + this.statisticId + "Host: " + hostName);
 			// do NOT start!
 		} else {
-			this.start();
+			/*
+			 * not available!
+			 * this.start();
+			 */
 		}
 	}
 	
 	/**
-	 * Send a command to the IOC in an independent thread.
-	 * @param statisticId
-	 * @param command
+	 * Send a command to the IOC in an independent thread from command thread pool.
+	 * @param statisticId To distinguish individual IOC connection parameter
+	 * @param command The command to be sent
 	 */
 	public SendCommandToIoc ( String statisticId, String command) {
 		
@@ -98,6 +107,12 @@ public class SendCommandToIoc extends Thread {
 //    		System.out.println ("SendCommandToIoc(2): hostname contains >|< ! hostname = " + hostName);
 //    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
 //		}
+		
+		/*
+		 * TODO:
+		 * the following check does NOT work if we implement Runnable!
+		 * -> the method start() is NOT available! 
+		 */
 		this.port = Statistic.getInstance().getContentObject(statisticId).getPort();
 		this.command = command;
 		this.statisticId = statisticId;
@@ -105,8 +120,27 @@ public class SendCommandToIoc extends Thread {
 			CentralLogger.getInstance().fatal(this, "Wrong StatiscitcID or HostName! ID: " + this.statisticId + "Host: " + hostName);
 			// do NOT start!
 		} else {
-			this.start();
+			/*
+			 * not available!
+			 * this.start();
+			 */
 		}
+	}
+	/**
+	 * Send a command to the IOC in an independent thread from command thread pool.
+	 * @param statisticId To distinguish individual IOC connection parameter
+	 * @param command The command to be sent
+	 * @param retry TRUE if it's a retry
+	 */
+	public SendCommandToIoc ( String statisticId, String command, boolean retry) {
+		
+		this.id = InterconnectionServer.getInstance().getSendCommandId();
+		this.hostName = Statistic.getInstance().getContentObject(statisticId).getHost();
+		this.retry = retry;
+
+		this.port = Statistic.getInstance().getContentObject(statisticId).getPort();
+		this.command = command;
+		this.statisticId = statisticId;
 	}
 	
 	public void run() {
@@ -153,15 +187,6 @@ public class SendCommandToIoc extends Thread {
         {
         	socket = new DatagramSocket( );	// do NOT specify the port
             
-            // DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, packet.getAddress(), packet.getPort());
-//        	/*
-//        	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
-//        	 * in any case: be prepared!
-//        	 */
-//        	if ( hostName.contains("|")) {
-//        		System.out.println ("SendCommandToIoc: hostname contains >|< ! hostname = " + hostName);
-//        		hostName = hostName.substring(0, hostName.indexOf("|"));
-//    		}
             DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, InetAddress.getByName( hostName), PreferenceProperties.COMMAND_PORT_NUMBER);
             
             socket.send(newPacket);
@@ -169,7 +194,7 @@ public class SendCommandToIoc extends Thread {
             
 			try {
 				/*
-	        	 * set timeout period to 10 seconds
+	        	 * set timeout period to TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND seconds
 	        	 */
 				socket.setSoTimeout( PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND);
 
@@ -177,12 +202,33 @@ public class SendCommandToIoc extends Thread {
 				socket.receive(packet);
 			} catch (InterruptedIOException ioe) {
 				// TODO: handle exception
-				ioe.printStackTrace();
+				// ioe.printStackTrace();
 				/*
 				 * error handling:
 				 * set answer message and use normal handling of state
 				 */
 				answerMessage = IOC_NOT_REACHABLE;
+				/*
+				 * create log message
+				 * depending on whether this is a retry - or not
+				 */
+				if ( this.retry) {
+					CentralLogger.getInstance().warn(this, "Retry-Timeout (" + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND + ") mS  sending command: " + command + " to IOC: " + 
+							Statistic.getInstance().getContentObject(statisticId).getLogicalIocName());
+				} else {
+					CentralLogger.getInstance().info(this, "Timeout (" + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND + ") mS  sending command: " + command + " to IOC: " + 
+							Statistic.getInstance().getContentObject(statisticId).getLogicalIocName());
+				}
+
+				/*
+				 * retry to send the command just ONCE!
+				 */
+				if (!this.retry) {
+					SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( this.statisticId, this.command, true);
+    				InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+    				CentralLogger.getInstance().info(this, "Retry to send command: " + command + " to IOC: " + 
+    						Statistic.getInstance().getContentObject(statisticId).getLogicalIocName());
+				}
 			}
 			
 			if ( answerMessage == null) {
@@ -251,12 +297,21 @@ public class SendCommandToIoc extends Thread {
         			// send command to IOC - get ALL alarm states
         			
         			/*
-        			 * if we received beacons within the last two beacon timeout periods we 'probably' did not loose any messages
+        			 * if we received beacons within the last three beacon timeout periods we 'probably' did not loose any messages
         			 * this is a switch over from one IC-Server to another and thus
         			 * we DO NOT have to ask for an update on all alarms! 
+        			 * 
+        			 * Else if:
+        			 * - wasPreviousBeaconWithinThreeBeaconTimeouts is FALSE  (enough is the new beacon type is used)
+        			 * - or (areWeConnectedLongerThenThreeBeaconTimeouts is FALSE) AND (isGetAllAlarmsOnSelectChange() is TRUE)
+        			 * ==> take action -> send all alarms from IOC
         			 */
-        			if ( ! Statistic.getInstance().getContentObject(statisticId).wasPreviousBeaconWithinThreeBeaconTimeouts()) {
-        				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			if ( (! Statistic.getInstance().getContentObject(statisticId).wasPreviousBeaconWithinThreeBeaconTimeouts()) ||
+        					(Statistic.getInstance().getContentObject(statisticId).areWeConnectedLongerThenThreeBeaconTimeouts() &&
+        							Statistic.getInstance().getContentObject(statisticId).isGetAllAlarmsOnSelectChange()) )  {
+        				SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        				InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+        				Statistic.getInstance().getContentObject(statisticId).setGetAllAlarmsOnSelectChange(false); // one time is enough
         				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
         			} else {
         				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");

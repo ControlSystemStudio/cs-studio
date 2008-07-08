@@ -24,11 +24,7 @@ package org.csstudio.diag.interconnectionServer;
 import java.util.Map;
 
 import org.csstudio.diag.interconnectionServer.server.AlarmSimulator;
-import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
-import org.csstudio.diag.interconnectionServer.server.SendCommandToIoc;
 import org.csstudio.platform.libs.dcf.actions.IAction;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 /**
  * Use XMPP to activate the alarm simulator.
  * 

@@ -110,7 +110,7 @@ public class PreferenceProperties {
 	public static String[]	COMMAND_LIST = {COMMAND_TAKE_OVER, COMMAND_DISCONNECT, COMMAND_SEND_ALARM, 
 		COMMAND_SEND_ALL_ALARMS, COMMAND_SEND_STATUS };
 	
-	public static final int	TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND	= 10000;
+	public static final int	TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND	= 1000; // 8.7.2008 10 -> 3 sec MCL
 	
 	public static final int 	TAG_TYPE_LOG_SERVER_REPLY = 1;
 	public static final String 	TAG_LOG_SERVER_REPLY = "TEST-KEY";

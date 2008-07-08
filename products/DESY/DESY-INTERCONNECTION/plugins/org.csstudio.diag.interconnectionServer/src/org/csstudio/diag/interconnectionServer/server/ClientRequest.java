@@ -232,9 +232,9 @@ public class ClientRequest implements Runnable
         	
         	//
     		// set beacon time locally (set to current time - retrigger)
-        	// to be performed in ANY case
+        	// to be performed in ANY case !!
     		//
-//    		statisticContent.setBeaconTime();	// set beacon ONLY for beacon messages!
+    		statisticContent.setBeaconTime();	// set beacon ONLY for beacon messages!
         	
         	switch (TagList.getInstance().getMessageType( type.getValue())) {
         	
@@ -244,6 +244,7 @@ public class ClientRequest implements Runnable
         		//
         		// ALARM jms server
         		//
+        		
         		//System.out.print("a");
         		try {
                     // Create the destination (Topic or Queue)
@@ -423,9 +424,9 @@ public class ClientRequest implements Runnable
         	case TagList.BEACON_MESSAGE:
         		//
         		// set beacon time locally (set to current time - retrigger)
-        		// set beacon ONLY for beacon messages!
+        		// set beacon ONLY for beacon messages! (hmmm. this should be already solved - put it ON TOP!
         		//
-        		statisticContent.setBeaconTime();	
+//        		statisticContent.setBeaconTime();	
         		
         		//
         		// just send a reply
@@ -441,7 +442,8 @@ public class ClientRequest implements Runnable
         		 * This is handled in the SendCommandToIoc class
         		 */
         		if (statisticContent.getSelectStateCounter() > PreferenceProperties.BEACON_ASK_IF_SELECTED_COUNTER) {
-        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_STATUS);
+        			SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_STATUS);
+        			icServer.getCommandExecutor().execute(sendCommandToIoc);
         			statisticContent.setSelectStateCounter(0);
         		} else {
         			/*
@@ -449,8 +451,7 @@ public class ClientRequest implements Runnable
         			 */
         			statisticContent.incrementSelectStateCounter();
         		}
-        		
-        		
+
         		//
         		// generate system log message if connection state changed
         		//
@@ -459,6 +460,7 @@ public class ClientRequest implements Runnable
         			// connect state changed!
         			//
         			statisticContent.setConnectState (true);
+        			statisticContent.setTimeReConnected();
         			/*
         			 * start IocChangeState thread
         			 */
@@ -489,7 +491,7 @@ public class ClientRequest implements Runnable
         		// set beacon time locally (set to current time - retrigger)
         		// set beacon ONLY for beacon messages!
         		//
-        		statisticContent.setBeaconTime();
+//        		statisticContent.setBeaconTime();
         		
         		//
         		// just send a reply
@@ -504,24 +506,15 @@ public class ClientRequest implements Runnable
         		if (!statisticContent.isSelectState()) {
         			//remember we're selected
         			statisticContent.setSelectState(true);
-        			/*
-        			 * get host name of interconnection server
-        			 */
-        			String localHostName = "localHost NOT defined";
-        			try {
-        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-        				localHostName = localMachine.getHostName();
-        			}
-        			catch (java.net.UnknownHostException uhe) { 
-        			}
+        			
         			String selectMessage = "SELECTED";
         			if ( statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
         				selectMessage = "SELECTED - switch over";
         			}
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
-        					localHostName, 														// value
+        					icServer.getLocalHostName() + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
+        					icServer.getLocalHostName(), 														// value
         					JmsMessage.SEVERITY_NO_ALARM, 										// severity
         					selectMessage, 														// status
         					hostName, 															// host
@@ -535,7 +528,9 @@ public class ClientRequest implements Runnable
         			 * we DO NOT have to ask for an update on all alarms! 
         			 */
         			if ( ! statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
-        				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        				SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        				icServer.getCommandExecutor().execute(sendCommandToIoc);
+        				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we just got the alarms...
         				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
         			} else {
         				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
@@ -551,6 +546,7 @@ public class ClientRequest implements Runnable
         			// connect state changed!
         			//
         			statisticContent.setConnectState (true);
+        			statisticContent.setTimeReConnected();
         			/*
         			 * start IocChangeState thread
         			 */
@@ -562,20 +558,11 @@ public class ClientRequest implements Runnable
         			 */
         			try{
                     	icServer.sendLogMessage( icServer.prepareJmsMessage ( icServer.getLogSession().createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
-                    	/*
-            			 * get host name of interconnection server
-            			 */
-                    	String localHostName = "localHost NOT defined";
-            			try {
-            				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-            				localHostName = localMachine.getHostName();
-            			}
-            			catch (java.net.UnknownHostException uhe) { 
-            			}
+
             			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
             					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-            					localHostName + ":" + hostName + ":connectState",					// name
-            					localHostName, 														// value
+            					icServer.getLocalHostName() + ":" + hostName + ":connectState",					// name
+            					icServer.getLocalHostName(), 														// value
             					JmsMessage.SEVERITY_NO_ALARM, 										// severity
             					"CONNECTED", 														// status
             					hostName, 															// host
@@ -600,7 +587,7 @@ public class ClientRequest implements Runnable
         		// set beacon time locally (set to current time - retrigger)
         		// set beacon ONLY for beacon messages!
         		//
-        		statisticContent.setBeaconTime();
+//        		statisticContent.setBeaconTime();
         		
         		//
         		// the IOC changed state from NOT selected to selected
@@ -622,20 +609,11 @@ public class ClientRequest implements Runnable
         		if ( true) {
         			//remember we're selected
         			statisticContent.setSelectState(true);
-        			/*
-        			 * get host name of interconnection server
-        			 */
-        			String localHostName = "localHost NOT defined";
-        			try {
-        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-        				localHostName = localMachine.getHostName();
-        			}
-        			catch (java.net.UnknownHostException uhe) { 
-        			}
+
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
-        					localHostName, 														// value
+        					icServer.getLocalHostName() + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
+        					icServer.getLocalHostName(), 														// value
         					JmsMessage.SEVERITY_NO_ALARM, 										// severity
         					"SELECTED - switch over", 												// status
         					hostName, 															// host
@@ -644,6 +622,7 @@ public class ClientRequest implements Runnable
         					null);	
         			// do NOT send command to IOC - get ALL alarm states
 //        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+//        			icServer.getCommandExecutor().execute(sendCommandToIoc);
         		}
         		
         		
@@ -661,7 +640,7 @@ public class ClientRequest implements Runnable
         		// set beacon time locally (set to current time - retrigger)
         		// set beacon ONLY for beacon messages!
         		//
-        		statisticContent.setBeaconTime();
+//        		statisticContent.setBeaconTime();
         		
         		//
         		// just send a reply
@@ -676,20 +655,11 @@ public class ClientRequest implements Runnable
         		if ( statisticContent.isSelectState()) {
         			//remember we're not selected any more
         			statisticContent.setSelectState(false);
-        			/*
-        			 * get host name of interconnection server
-        			 */
-        			String localHostName = "localHost NOT defined";
-        			try {
-        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-        				localHostName = localMachine.getHostName();
-        			}
-        			catch (java.net.UnknownHostException uhe) { 
-        			}
+
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",	// name
-        					localHostName, 														// value
+        					icServer.getLocalHostName() + ":" + statisticContent.getLogicalIocName() + ":selectState",	// name
+        					icServer.getLocalHostName(), 														// value
         					JmsMessage.SEVERITY_MINOR, 											// severity
         					"NOT-SELECTED", 													// status
         					hostName, 															// host
@@ -705,6 +675,7 @@ public class ClientRequest implements Runnable
         			// connect state changed!
         			//
         			statisticContent.setConnectState (true);
+        			statisticContent.setTimeReConnected();
         			/*
         			 * start IocChangeState thread
         			 */
@@ -716,20 +687,11 @@ public class ClientRequest implements Runnable
         			 */
         			try{
                     	icServer.sendLogMessage( icServer.prepareJmsMessage ( icServer.getLogSession().createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
-                    	/*
-            			 * get host name of interconnection server
-            			 */
-            			String localHostName = null;
-            			try {
-            				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-            				localHostName = localMachine.getHostName();
-            			}
-            			catch (java.net.UnknownHostException uhe) { 
-            			}
+
             			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
             					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-            					localHostName + ":" + hostName + ":connectState",					// name
-            					localHostName, 														// value
+            					icServer.getLocalHostName() + ":" + hostName + ":connectState",					// name
+            					icServer.getLocalHostName(), 														// value
             					JmsMessage.SEVERITY_NO_ALARM, 										// severity
             					"CONNECTED", 														// status
             					hostName, 															// host

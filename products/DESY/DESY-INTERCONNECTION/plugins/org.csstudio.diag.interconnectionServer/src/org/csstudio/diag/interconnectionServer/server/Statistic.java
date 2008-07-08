@@ -111,6 +111,7 @@ public class Statistic {
 		int numberOfOutgoingMessages = 0;
 		String lastCommand = null;
 		GregorianCalendar timeStarted = null;
+		GregorianCalendar timeReConnected = null;
 		GregorianCalendar timeLastReceived = null;
 		GregorianCalendar timeLastCommandSent = null;
 		GregorianCalendar timeLastBeaconReceived = null;
@@ -124,7 +125,16 @@ public class Statistic {
 		boolean connectState = false;
 		boolean selectState = false;
 		int selectStateCounter = 0;
+		boolean getAllAlarmsOnSelectChange = true;
 		
+		public boolean isGetAllAlarmsOnSelectChange() {
+			return getAllAlarmsOnSelectChange;
+		}
+
+		public void setGetAllAlarmsOnSelectChange(boolean getAllAlarmsOnSelectChange) {
+			this.getAllAlarmsOnSelectChange = getAllAlarmsOnSelectChange;
+		}
+
 		public int getSelectStateCounter() {
 			return selectStateCounter;
 		}
@@ -142,6 +152,7 @@ public class Statistic {
 			// init time
 			//
 			this.timeStarted = new GregorianCalendar();
+			this.timeReConnected = new GregorianCalendar();
 			this.timeLastReceived = new GregorianCalendar(1970,1,1);
 			this.timeLastCommandSent = new GregorianCalendar(1970,1,1);
 			this.timeLastBeaconReceived = new GregorianCalendar(1970,1,1);
@@ -372,6 +383,19 @@ public class Statistic {
 				return true;
 			}
 		}
+		
+		public boolean areWeConnectedLongerThenThreeBeaconTimeouts() {
+			
+			GregorianCalendar newTime = new GregorianCalendar();
+			
+			if ( gregorianTimeDifference ( this.timeReConnected, newTime) > 3*PreferenceProperties.BEACON_TIMEOUT) {
+				//nothing to do - already long time connected
+				return true;
+			} else {
+				// the user might trigger some actions
+				return false;
+			}
+		}
 
 		public int getDeltaTimePreviousBeaconReceived() {
 			return deltaTimePreviousBeaconReceived;
@@ -407,6 +431,18 @@ public class Statistic {
 		public void setDeltaTime2ndPreviousBeaconReceived(
 				int deltaTime2ndPreviousBeaconReceived) {
 			this.deltaTime2ndPreviousBeaconReceived = deltaTime2ndPreviousBeaconReceived;
+		}
+
+		public GregorianCalendar getTimeReConnected() {
+			return timeReConnected;
+		}
+
+		public void setTimeReConnected(GregorianCalendar timeReConnected) {
+			this.timeReConnected = timeReConnected;
+		}
+		
+		public void setTimeReConnected() {
+			this.timeReConnected = new GregorianCalendar();
 		}
 		
 

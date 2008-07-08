@@ -82,6 +82,8 @@ public class InterconnectionServer
 	public int 							successfullJmsSentCountdown = PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN;
 	private	volatile boolean         	quit        = false;
 	private int messageCounter = 0;
+	private String						localHostName = "defaultLocalHost";
+	private BeaconWatchdog				beaconWatchdog = null;
 	//private static int					errorContNamingException = 0;
     
     public final String NAME    = "IcServer";
@@ -90,10 +92,10 @@ public class InterconnectionServer
     
     //set in constructor from xml preferences
     private int sendCommandId;			// PreferenceProperties.SENT_START_ID
-    private int numberOfReadThreads;	// PreferenceConstants.NUMBER_OF_READ_THREADS
     
     // Thread Executor
     private ExecutorService executor;
+    private ExecutorService commandExecutor;
     
     private Collector	jmsMessageWriteCollector = null;
     private Collector	clientRequestTheadCollector = null;
@@ -199,7 +201,7 @@ public class InterconnectionServer
         		 * using ActiveMQ
         		 */
                 this.alarmConnection = connectionFactory.createConnection();
-                this.alarmConnection.setClientID(connectionClientId + "Alarm");
+                this.alarmConnection.setClientID(connectionClientId + "Alarm-" + getLocalHostName());
                 this.alarmConnection.start();
         	} else {
         		/*
@@ -238,7 +240,7 @@ public class InterconnectionServer
         		 * using ActiveMQ
         		 */
         		this.logConnection = connectionFactory.createConnection();
-        		this.logConnection.setClientID(connectionClientId + "Log");
+        		this.logConnection.setClientID(connectionClientId + "Log-" + getLocalHostName());
         		this.logConnection.start();
         	} else {
         		/*
@@ -276,7 +278,7 @@ public class InterconnectionServer
         		 * using ActiveMQ
         		 */
         		this.putLogConnection = connectionFactory.createConnection();
-        		this.putLogConnection.setClientID(connectionClientId + "PutLog");
+        		this.putLogConnection.setClientID(connectionClientId + "PutLog-" + getLocalHostName());
         		this.putLogConnection.start();
         	} else {
         		/*
@@ -349,7 +351,8 @@ public class InterconnectionServer
 
     	for ( int i=0; i<listOfNodes.length; i++ ) {
     		CentralLogger.getInstance().warn(this, "InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
-    		new SendCommandToIoc( listOfNodes[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
+    		SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( listOfNodes[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
+    		getCommandExecutor().execute(sendCommandToIoc);
     	}
     }
     
@@ -453,10 +456,21 @@ public class InterconnectionServer
 		}
         
         /*
+		 * get host name of interconnection server
+		 */
+		setLocalHostName("localHost-ND");
+		try {
+			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+			setLocalHostName( localMachine.getHostName());
+		}
+		catch (java.net.UnknownHostException uhe) { 
+		}
+        
+        /*
          * set up collectors (statistic)
          */
         jmsMessageWriteCollector = new Collector();
-        jmsMessageWriteCollector.setApplication("IC-Server");
+        jmsMessageWriteCollector.setApplication("IC-Server" + getLocalHostName());
         jmsMessageWriteCollector.setDescriptor("Time to write JMS message");
         jmsMessageWriteCollector.setContinuousPrint(false);
         jmsMessageWriteCollector.setContinuousPrintCount(1000.0);
@@ -467,7 +481,7 @@ public class InterconnectionServer
          * set up collectors (statistic)
          */
         clientRequestTheadCollector = new Collector();
-        clientRequestTheadCollector.setApplication("IC-Server");
+        clientRequestTheadCollector.setApplication("IC-Server" + getLocalHostName());
         clientRequestTheadCollector.setDescriptor("Number of Client request Threads");
         clientRequestTheadCollector.setContinuousPrint(false);
         clientRequestTheadCollector.setContinuousPrintCount(1000.0);
@@ -479,15 +493,14 @@ public class InterconnectionServer
          * set up collectors (statistic)
          */
         numberOfMessagesCollector = new Collector();
-        numberOfMessagesCollector.setApplication("IC-Server");
+        numberOfMessagesCollector.setApplication("IC-Server" + getLocalHostName());
         numberOfMessagesCollector.setDescriptor("Number of Messages received");
         /*
          * set up collectors (statistic)
          */
         numberOfIocFailoverCollector = new Collector();
-        numberOfIocFailoverCollector.setApplication("IC-Server");
+        numberOfIocFailoverCollector.setApplication("IC-Server" + getLocalHostName());
         numberOfIocFailoverCollector.setDescriptor("Number of IOC failover");
-        
         
         if ( ! setupConnections()){
         	//
@@ -515,7 +528,7 @@ public class InterconnectionServer
 	    String beaconTimeout = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.BEACON_TIMEOUT, "", null); 
 	    int beaconTimeoutI = Integer.parseInt(beaconTimeout);
-		new BeaconWatchdog(beaconTimeoutI);  // mS
+	    this.beaconWatchdog = new BeaconWatchdog(beaconTimeoutI);  // mS
 		/*
 		 * do we want to write out message indicators?
 		 */
@@ -534,7 +547,17 @@ public class InterconnectionServer
 	    int numberofReadThreads = Integer.parseInt(numberofReadThreadsS);
 	    
 	    this.setExecutor( Executors.newFixedThreadPool(numberofReadThreads));
-	    CentralLogger.getInstance().warn( this, "IC-Server create Read Thread Pool with " + numberofReadThreads + " threads"); 
+	    CentralLogger.getInstance().info( this, "IC-Server create Read Thread Pool with " + numberofReadThreads + " threads"); 
+	    
+		//
+		// create command thread pool using the Executor Service
+		//
+	    String numberofCommandThreadsS = prefs.getString(Activator.getDefault().getPluginId(),
+	    		PreferenceConstants.NUMBER_OF_COMMAND_THREADS, "", null); 
+	    int numberofCommandThreads = Integer.parseInt(numberofCommandThreadsS);
+	    
+	    this.setCommandExecutor( Executors.newFixedThreadPool(numberofCommandThreads));
+	    CentralLogger.getInstance().info( this, "IC-Server create Command Thread Pool with " + numberofCommandThreads + " threads"); 
 		
 		
         try
@@ -665,6 +688,10 @@ public class InterconnectionServer
     	
     	// shutdown thread pool
     	this.getExecutor().shutdownNow();
+    	this.getCommandExecutor().shutdownNow();
+    	
+    	// shutdown beacon watchdog
+    	this.beaconWatchdog.setRunning(false);
     	
         serverSocket.close();
         
@@ -983,5 +1010,21 @@ public class InterconnectionServer
 
 	public void setPutLogSession(Session putLogSession) {
 		this.putLogSession = putLogSession;
+	}
+
+	public String getLocalHostName() {
+		return localHostName;
+	}
+
+	public void setLocalHostName(String localHostName) {
+		this.localHostName = localHostName;
+	}
+
+	public ExecutorService getCommandExecutor() {
+		return commandExecutor;
+	}
+
+	public void setCommandExecutor(ExecutorService commandExecutor) {
+		this.commandExecutor = commandExecutor;
 	}
 }
