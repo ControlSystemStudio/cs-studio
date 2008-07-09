@@ -49,13 +49,15 @@ public class IocChangedState extends Thread{
 	private String logicalIocName = "unknown logical Name";
 	private String iocIpAddress = "unknown IP Address";
 	private boolean isRunning = true;
+	private String statisticId= null;
 	
-	IocChangedState ( String iocName, String iocIpAddress, String logicalIocName, String ldapIocName, boolean isRunning) {
+	IocChangedState ( String statisticId, String iocName, String iocIpAddress, String logicalIocName, String ldapIocName, boolean isRunning) {
 		this.isRunning = isRunning;
 		this.iocName = iocName;
 		this.ldapIocName = ldapIocName;
 		this.iocIpAddress = iocIpAddress;
 		this.logicalIocName = logicalIocName;
+		this.statisticId = statisticId;
 		
 		this.start();
 	}
@@ -173,6 +175,11 @@ public class IocChangedState extends Thread{
 			 * set changes in LDAP and generate JMS Alarm message
 			 */
 			LdapSupport.getInstance().setAllRecordsToDisconnected ( ldapIocName);
+			/*
+			 * remember that we've set this IOC to disconnected!
+			 * one the IOC is back online - and we are selected - -> get all alarms from the IOC
+			 */
+			Statistic.getInstance().getContentObject( this.statisticId).setDidWeSetAllChannelToDisconnect(true);
 			
 		}
 		

@@ -464,7 +464,7 @@ public class ClientRequest implements Runnable
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
+        			new IocChangedState ( statisticId, statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
         			
         			
         			/*
@@ -500,6 +500,23 @@ public class ClientRequest implements Runnable
         		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
         		
         		/*
+        		 * OK - we are selected - so:
+        		 * just in case we previously set the channel to disconnected - we'll have to update all alarm states
+        		 * -> trigger the IOC to send all alarms!
+        		 */
+        		if ( statisticContent.isDidWeSetAllChannelToDisconnect()) {
+        			/*
+        			 * yes - did set all channel to disconnect
+        			 * we'll have to get all alarm-states from the IOC
+        			 */
+        			SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+    				icServer.getCommandExecutor().execute(sendCommandToIoc);
+    				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
+    				statisticContent.setDidWeSetAllChannelToDisconnect(false);
+    				CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+        		}
+        		
+        		/*
         		 * we are selected!
         		 * in case we were not selected before - we'll ask the IOC for an update on ALL the alarm states
         		 */
@@ -527,10 +544,11 @@ public class ClientRequest implements Runnable
         			 * this is a switch over from one IC-Server to another and thus
         			 * we DO NOT have to ask for an update on all alarms! 
         			 */
-        			if ( ! statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
+        			if ( ! statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts() &&
+        					statisticContent.isGetAllAlarmsOnSelectChange()) {
         				SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         				icServer.getCommandExecutor().execute(sendCommandToIoc);
-        				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we just got the alarms...
+        				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
         				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
         			} else {
         				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
@@ -550,7 +568,7 @@ public class ClientRequest implements Runnable
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
+        			new IocChangedState (statisticId, statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
         			
         			/*
         			 * create JMS sender
@@ -679,7 +697,7 @@ public class ClientRequest implements Runnable
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
+        			new IocChangedState (statisticId, statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
         			
         			/*
         			 * create JMS sender

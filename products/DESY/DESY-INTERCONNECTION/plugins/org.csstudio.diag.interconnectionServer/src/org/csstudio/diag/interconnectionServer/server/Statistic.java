@@ -89,7 +89,7 @@ public class Statistic {
 				//
 				// create new statistic object
 				//
-				contentObject = new StatisticContent();
+				contentObject = new StatisticContent( statisticId);
 				connectionList.put( statisticId, contentObject);
 			}
 			
@@ -126,6 +126,8 @@ public class Statistic {
 		boolean selectState = false;
 		int selectStateCounter = 0;
 		boolean getAllAlarmsOnSelectChange = true;
+		boolean didWeSetAllChannelToDisconnect = false; // set to true if the command has bee issued
+		String statisticId = null;
 		
 		public boolean isGetAllAlarmsOnSelectChange() {
 			return getAllAlarmsOnSelectChange;
@@ -147,7 +149,7 @@ public class Statistic {
 			this.selectStateCounter++;
 		}
 
-		public StatisticContent () {
+		public StatisticContent ( String statisticId) {
 			//
 			// init time
 			//
@@ -159,6 +161,7 @@ public class Statistic {
 			this.timePreviousBeaconReceived = new GregorianCalendar(1970,1,1);
 			this.time2ndPreviousBeaconReceived = new GregorianCalendar(1970,1,1);
 			this.timeLastErrorOccured = new GregorianCalendar(1970,1,1);
+			this.statisticId = statisticId;
 			
 		}
 		
@@ -320,7 +323,7 @@ public class Statistic {
 		}
 		
 		public String getStatisticId () {
-			return host + ":" + port;
+			return statisticId;
 		}
 
 		public String getIpAddress() {
@@ -443,6 +446,19 @@ public class Statistic {
 		
 		public void setTimeReConnected() {
 			this.timeReConnected = new GregorianCalendar();
+		}
+
+		public boolean isDidWeSetAllChannelToDisconnect() {
+			return didWeSetAllChannelToDisconnect;
+		}
+
+		public void setDidWeSetAllChannelToDisconnect(
+				boolean didWeSetAllChannelToDisconnect) {
+			this.didWeSetAllChannelToDisconnect = didWeSetAllChannelToDisconnect;
+		}
+
+		public void setStatisticId(String statisticId) {
+			this.statisticId = statisticId;
 		}
 		
 

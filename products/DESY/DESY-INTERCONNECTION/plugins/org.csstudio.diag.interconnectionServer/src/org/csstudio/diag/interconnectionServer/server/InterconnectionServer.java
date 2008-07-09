@@ -363,7 +363,7 @@ public class InterconnectionServer
     	 * exit main loop
     	 */
     	setQuit(true);
-    	while(running) {
+    	while(this.running) {
 //    		Thread.yield();
 //    		try {
 //				Thread.sleep( 1000);	// wait until 
@@ -470,7 +470,7 @@ public class InterconnectionServer
          * set up collectors (statistic)
          */
         jmsMessageWriteCollector = new Collector();
-        jmsMessageWriteCollector.setApplication("IC-Server" + getLocalHostName());
+        jmsMessageWriteCollector.setApplication("IC-Server-" + getLocalHostName());
         jmsMessageWriteCollector.setDescriptor("Time to write JMS message");
         jmsMessageWriteCollector.setContinuousPrint(false);
         jmsMessageWriteCollector.setContinuousPrintCount(1000.0);
@@ -481,7 +481,7 @@ public class InterconnectionServer
          * set up collectors (statistic)
          */
         clientRequestTheadCollector = new Collector();
-        clientRequestTheadCollector.setApplication("IC-Server" + getLocalHostName());
+        clientRequestTheadCollector.setApplication("IC-Server-" + getLocalHostName());
         clientRequestTheadCollector.setDescriptor("Number of Client request Threads");
         clientRequestTheadCollector.setContinuousPrint(false);
         clientRequestTheadCollector.setContinuousPrintCount(1000.0);
@@ -493,13 +493,13 @@ public class InterconnectionServer
          * set up collectors (statistic)
          */
         numberOfMessagesCollector = new Collector();
-        numberOfMessagesCollector.setApplication("IC-Server" + getLocalHostName());
+        numberOfMessagesCollector.setApplication("IC-Server-" + getLocalHostName());
         numberOfMessagesCollector.setDescriptor("Number of Messages received");
         /*
          * set up collectors (statistic)
          */
         numberOfIocFailoverCollector = new Collector();
-        numberOfIocFailoverCollector.setApplication("IC-Server" + getLocalHostName());
+        numberOfIocFailoverCollector.setApplication("IC-Server-" + getLocalHostName());
         numberOfIocFailoverCollector.setDescriptor("Number of IOC failover");
         
         if ( ! setupConnections()){
@@ -703,7 +703,7 @@ public class InterconnectionServer
         
     	CentralLogger.getInstance().warn(this, "InterconnectionServer: finally Stopped");
         
-        running = false;
+        this.running = false;
         return result;
     }
     

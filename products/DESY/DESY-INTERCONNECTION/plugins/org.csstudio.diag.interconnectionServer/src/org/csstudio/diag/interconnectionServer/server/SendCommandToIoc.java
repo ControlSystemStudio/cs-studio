@@ -268,6 +268,22 @@ public class SendCommandToIoc implements Runnable {
         			//create log message
         			CentralLogger.getInstance().warn(this, "IOC SELECTED this InterConnectionServer: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
         			/*
+            		 * OK - we are selected - so:
+            		 * just in case we previously set the channel to disconnected - we'll have to update all alarm states
+            		 * -> trigger the IOC to send all alarms!
+            		 */
+            		if ( Statistic.getInstance().getContentObject(statisticId).isDidWeSetAllChannelToDisconnect()) {
+            			/*
+            			 * yes - did set all channel to disconnect
+            			 * we'll have to get all alarm-states from the IOC
+            			 */
+            			SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+            			InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+            			Statistic.getInstance().getContentObject(statisticId).setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
+            			Statistic.getInstance().getContentObject(statisticId).setDidWeSetAllChannelToDisconnect(false);
+        				CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+            		}
+        			/*
         			 * send JMS message - we are selected
         			 */
         			/*
