@@ -42,7 +42,7 @@ public interface SynchronizeService {
 		 * @return {@code true} if and only if synchronize should be proceeded,
 		 *         {@code false} otherwise.
 		 */
-		public abstract boolean pruefeObUngesicherteAenderungenDasSynchronisierenVerhindern();
+		public abstract boolean pruefeObSynchronisationAusgefuehrtWerdenDarf();
 		
 		/**
 		 * Informiert über den abbruch den Synchrisationsvorhabens.
