@@ -22,19 +22,20 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
 @Entity
-public class Configuration implements FilterConditionForIdProvider{
+public class Configuration implements FilterConditionForIdProvider {
 	private Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
 	private Collection<TopicDTO> alleAlarmtopics;
 	private Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
 	private Collection<FilterDTO> allFilters;
 	private Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
-	
+
 	private Collection<FilterConditionDTO> allFilterConditions;
 	private Collection<RubrikDTO> alleRubriken;
 
 	@SuppressWarnings("unchecked")
-	public Configuration(Session session) throws InconsistentConfigurationException,
-			StorageError, StorageException {
+	public Configuration(Session session)
+			throws InconsistentConfigurationException, StorageError,
+			StorageException {
 
 		// PUBLICs
 		alleAlarmbarbeiter = session.createCriteria(AlarmbearbeiterDTO.class)
@@ -45,64 +46,78 @@ public class Configuration implements FilterConditionForIdProvider{
 
 		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
 		allFilters = session.createCriteria(FilterDTO.class).list();
-		
-		allFilterConditions = session.createCriteria(FilterConditionDTO.class).addOrder(Order.asc("iFilterConditionID")).list();
+
+		allFilterConditions = session.createCriteria(FilterConditionDTO.class)
+				.addOrder(Order.asc("iFilterConditionID")).list();
 		alleRubriken = session.createCriteria(RubrikDTO.class).list();
 
-		
 		// PRIVATEs
 		Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> allUserUserGroupAggregation = session
-		.createCriteria(
-				AlarmbearbeiterZuAlarmbearbeiterGruppenDTO.class)
+				.createCriteria(
+						AlarmbearbeiterZuAlarmbearbeiterGruppenDTO.class)
 				.list();
 		pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(allUserUserGroupAggregation);
 
-//		Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
-//				.createCriteria(FilterConditionTypeDTO.class).list();
-//		pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
+		// Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
+		// .createCriteria(FilterConditionTypeDTO.class).list();
+		// pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
 
-		allFilterConditionMappings = session
-		.createCriteria(FilterConditionsToFilterDTO.class).list();
+		allFilterConditionMappings = session.createCriteria(
+				FilterConditionsToFilterDTO.class).list();
 		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionMappings);
 		setChildFilterConditionsInJunctorDTOs();
-		Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues= session
-		.createCriteria(StringArrayFilterConditionCompareValuesDTO.class).list();
+		Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues = session
+				.createCriteria(
+						StringArrayFilterConditionCompareValuesDTO.class)
+				.list();
 		setStringArrayCompareValues(allCompareValues);
 	}
 
-	private void setStringArrayCompareValues(Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues) {
+	private void setStringArrayCompareValues(
+			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues) {
 		Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
-			if  ( filterCondition instanceof StringArrayFilterConditionDTO){
-				stringAFC.put(filterCondition.getIFilterConditionID(), (StringArrayFilterConditionDTO) filterCondition);
+			if (filterCondition instanceof StringArrayFilterConditionDTO) {
+				stringAFC.put(filterCondition.getIFilterConditionID(),
+						(StringArrayFilterConditionDTO) filterCondition);
 			}
 		}
 		for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
-			StringArrayFilterConditionDTO conditionDTO = stringAFC.get(stringArrayFilterConditionCompareValuesDTO.getFilterConditionRef());
-			conditionDTO.getCompareValueList().add(stringArrayFilterConditionCompareValuesDTO.getCompValue());
+			StringArrayFilterConditionDTO conditionDTO = stringAFC
+					.get(stringArrayFilterConditionCompareValuesDTO
+							.getFilterConditionRef());
+			conditionDTO.getCompareValueList().add(
+					stringArrayFilterConditionCompareValuesDTO.getCompValue());
 		}
-		
+
 	}
 
-	private void setChildFilterConditionsInJunctorDTOs(){
+	private void setChildFilterConditionsInJunctorDTOs() {
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition instanceof JunctorConditionDTO){
+			if (filterCondition instanceof JunctorConditionDTO) {
 				JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
 				junctorConditionDTO.injectYourselfYourChildren(this);
 			}
 		}
 	}
+
 	private void pruefeUndOrdnerFilterDieFilterConditionsZu(
 			Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter) {
 		Map<Integer, FilterDTO> filters = new HashMap<Integer, FilterDTO>();
 		for (FilterDTO filter : allFilters) {
+			List<FilterConditionDTO> list = filter.getFilterConditions();
+			list.clear();
+			filter.setFilterConditions(list);
 			filters.put(filter.getIFilterID(), filter);
 		}
 		for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : allFilterConditionToFilter) {
-			FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO.getIFilterRef());
-			List<FilterConditionDTO> filterConditions = filterDTO.getFilterConditions();
-			filterConditions.clear();
-			filterConditions.add(getFilterConditionForId(filterConditionsToFilterDTO.getIFilterConditionRef()));
+			FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO
+					.getIFilterRef());
+			List<FilterConditionDTO> filterConditions = filterDTO
+					.getFilterConditions();
+			filterConditions
+					.add(getFilterConditionForId(filterConditionsToFilterDTO
+							.getIFilterConditionRef()));
 			filterDTO.setFilterConditions(filterConditions);
 		}
 	}
@@ -110,9 +125,13 @@ public class Configuration implements FilterConditionForIdProvider{
 	private void pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(
 			Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> allUserUserGroupAggregation)
 			throws InconsistentConfigurationException {
-		System.out.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"+allUserUserGroupAggregation.size());
+		System.out
+				.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"
+						+ allUserUserGroupAggregation.size());
 		for (AlarmbearbeiterZuAlarmbearbeiterGruppenDTO alarmbearbeiterZuAlarmbearbeiterGruppe : allUserUserGroupAggregation) {
-			System.out.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"+alarmbearbeiterZuAlarmbearbeiterGruppe.toString());
+			System.out
+					.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"
+							+ alarmbearbeiterZuAlarmbearbeiterGruppe.toString());
 
 			int alarmbearbeiterId = alarmbearbeiterZuAlarmbearbeiterGruppe
 					.getUserRef();
@@ -124,13 +143,15 @@ public class Configuration implements FilterConditionForIdProvider{
 				if (gruppenId == alarmbearbeiterGruppenId) {
 					for (AlarmbearbeiterDTO alarmbearbeiter : alleAlarmbarbeiter) {
 						if (alarmbearbeiterId == alarmbearbeiter.getUserId()) {
-							alarmbearbeiterGruppe.alarmbearbeiterZuordnen(alarmbearbeiter);
+							alarmbearbeiterGruppe
+									.alarmbearbeiterZuordnen(alarmbearbeiter);
 						}
 					}
 				}
 			}
 		}
 	}
+
 	/**
 	 * @deprecated "FilterConditionType is a redundant information"
 	 * @param allFilterConditionsTypes
@@ -165,6 +186,7 @@ public class Configuration implements FilterConditionForIdProvider{
 	public Collection<FilterConditionDTO> gibAlleFilterConditions() {
 		return allFilterConditions;
 	}
+
 	// -------------
 
 	// public Collection<AlarmbearbeiterDTO>
@@ -181,25 +203,24 @@ public class Configuration implements FilterConditionForIdProvider{
 	// return result;
 	// }
 
-/**
- * @return null if there is no Filter with this id
- */
+	/**
+	 * @return null if there is no Filter with this id
+	 */
 	public FilterConditionDTO getFilterConditionForId(int id) {
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition.getIFilterConditionID() == id)
-			{
+			if (filterCondition.getIFilterConditionID() == id) {
 				return filterCondition;
 			}
 		}
 		return null;
 	}
 
-public Collection<FilterConditionsToFilterDTO> getAllFilterConditionMappings() {
-	return allFilterConditionMappings;
-}
+	public Collection<FilterConditionsToFilterDTO> getAllFilterConditionMappings() {
+		return allFilterConditionMappings;
+	}
 
-public Collection<RubrikDTO> gibAlleRubriken() {
-	return alleRubriken;
-}
+	public Collection<RubrikDTO> gibAlleRubriken() {
+		return alleRubriken;
+	}
 
 }

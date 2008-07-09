@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class FilterConditionsToFilterDTO_PK implements Serializable{
-	private static final long serialVersionUID = 2514538103147317758L;
+	private static final long serialVersionUID = 4223187179567040076L;
 
 	@Column(name="iFilterConditionRef")
 	private int iFilterConditionRef;
