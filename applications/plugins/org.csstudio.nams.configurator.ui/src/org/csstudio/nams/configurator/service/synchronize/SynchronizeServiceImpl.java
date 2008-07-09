@@ -14,6 +14,9 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 	public void sychronizeAlarmSystem(Callback callback) {
 		if( callback.pruefeObSynchronisationAusgefuehrtWerdenDarf() )
 		{
+			
+			localStoreConfigurationService.prepareSynchonization();
+			
 			// TODO Fortfahren...
 		} else {
 			callback.synchronisationAbgebrochen();

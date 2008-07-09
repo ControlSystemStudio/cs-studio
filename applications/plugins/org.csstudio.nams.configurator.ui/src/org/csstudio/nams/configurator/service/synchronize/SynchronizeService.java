@@ -33,7 +33,7 @@ public interface SynchronizeService {
 	 */
 	public void sychronizeAlarmSystem(Callback callback);
 
-	public abstract static class Callback {
+	public abstract static interface Callback {
 		/**
 		 * Prüft, ob es ungesicherte Änderungen gibt, aufgrund derer nicht
 		 * synchronisiert werden kann oder sollte. Ggf. Rückfrage an den
