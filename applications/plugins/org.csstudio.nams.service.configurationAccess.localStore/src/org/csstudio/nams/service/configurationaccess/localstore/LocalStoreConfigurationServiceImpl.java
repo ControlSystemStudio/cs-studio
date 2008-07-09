@@ -239,7 +239,7 @@ class LocalStoreConfigurationServiceImpl implements
 		return (FilterConditionDTO) session.load(FilterConditionDTO.class,
 				generatedID);
 	}
-	
+
 	public RubrikDTO saveRubrikDTO(RubrikDTO dto) {
 		Transaction tx = session.beginTransaction();
 		Serializable generatedID = session.save(dto);
@@ -247,30 +247,15 @@ class LocalStoreConfigurationServiceImpl implements
 		return (RubrikDTO) session.load(RubrikDTO.class, generatedID);
 	}
 
-
 	public FilterDTO saveFilterDTO(FilterDTO dto)
 			throws InconsistentConfigurationException {
-		Configuration entireConfiguration = null;
 		Serializable generatedID = null;
-		try {
-			entireConfiguration = getEntireConfiguration();
-		} catch (StorageError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (StorageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InconsistentConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// TODO add save for filterConditions
 		Transaction tx = session.beginTransaction();
 		try {
 			generatedID = session.save(dto);
 
-			Collection<FilterConditionsToFilterDTO> conditionMappings = entireConfiguration
-					.getAllFilterConditionMappings();
+			Collection<FilterConditionsToFilterDTO> conditionMappings = session
+					.createCriteria(FilterConditionsToFilterDTO.class).list();
 			Set<FilterConditionsToFilterDTO> relevantMappings = new HashSet<FilterConditionsToFilterDTO>();
 			Set<FilterConditionsToFilterDTO> usedMappings = new HashSet<FilterConditionsToFilterDTO>();
 			for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : conditionMappings) {
@@ -286,7 +271,7 @@ class LocalStoreConfigurationServiceImpl implements
 				FilterConditionsToFilterDTO match = null;
 				for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : relevantMappings) {
 					if (condition.getIFilterConditionID() == filterConditionsToFilterDTO
-							.getIFilterConditionRef()) {
+							.getIFilterConditionRef() && dto.getIFilterID() == filterConditionsToFilterDTO.getIFilterRef()) {
 						match = filterConditionsToFilterDTO;
 						break;
 					}
@@ -330,7 +315,7 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 
-	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto) 	
+	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto)
 			throws InconsistentConfigurationException {
 		Transaction tx = session.beginTransaction();
 		try {
@@ -341,6 +326,7 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 		tx.commit();
 	}
+
 	
 	public void deleteAlarmtopicDTO(TopicDTO dto) throws InconsistentConfigurationException {
 		Transaction tx = session.beginTransaction();
@@ -375,6 +361,4 @@ class LocalStoreConfigurationServiceImpl implements
 		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
 		// HSQL-Statement.
 	}
-
-
 }

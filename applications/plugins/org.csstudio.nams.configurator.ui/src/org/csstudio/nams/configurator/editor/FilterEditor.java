@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
@@ -14,6 +15,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -21,8 +23,11 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -71,13 +76,28 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 				filterConditionsListViewer
 						.setContentProvider(new ArrayContentProvider());
-
+				
 				initDND();
-				// List list = listViewer.getList();
-
 			}
-		}
+			Button button = new Button(tabelleUndButtonsComp, SWT.PUSH);
+			button.setText("remove");
+			button.addMouseListener(new MouseListener(){
 
+				public void mouseDoubleClick(MouseEvent e) {
+					ISelection selection = filterConditionsListViewer.getSelection();
+					IStructuredSelection selection2 = (IStructuredSelection) selection;
+					for (Object element : selection2.toList()) {
+						filterConditionsListViewer.remove(element);
+					}
+				}
+
+				public void mouseDown(MouseEvent e) {
+				}
+
+				public void mouseUp(MouseEvent e) {
+				}});
+		}
+		
 		initDataBinding();
 	}
 
