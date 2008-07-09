@@ -31,7 +31,7 @@ public interface SynchronizeService {
 	 *            Über diesen Callback werden Rückfragen an den Aufrufer
 	 *            gestellt und (Zwischen-)Ergebnisse mitgeteilt.
 	 */
-	public void sychronizeAlarmSystem(Callback callback);
+	public void sychronizeAlarmSystem(Callback callback) throws Throwable;
 
 	public abstract static interface Callback {
 		/**

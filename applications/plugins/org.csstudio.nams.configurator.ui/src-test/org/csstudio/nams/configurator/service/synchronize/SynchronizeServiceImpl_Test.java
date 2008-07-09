@@ -27,7 +27,7 @@ public class SynchronizeServiceImpl_Test extends
 	}
 
 	@Test
-	public void testAbgebrocheneSynchronizationWegenUngesicherterAenderungen() {
+	public void testAbgebrocheneSynchronizationWegenUngesicherterAenderungen() throws Throwable {
 		synAbgebrochenGerufen = false;
 
 		EasyMock.replay(localStoreConfigurationServiceMock);
@@ -48,7 +48,7 @@ public class SynchronizeServiceImpl_Test extends
 	}
 
 	@Test
-	public void testErfolgreicheSynchronization() {
+	public void testErfolgreicheSynchronization() throws Throwable {
 
 		localStoreConfigurationServiceMock.prepareSynchonization();
 		EasyMock.expectLastCall().once();
