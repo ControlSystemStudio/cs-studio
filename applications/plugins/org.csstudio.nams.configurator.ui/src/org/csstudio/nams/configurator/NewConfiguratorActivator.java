@@ -9,7 +9,9 @@ import org.csstudio.nams.configurator.actions.DuplicateConfigurationBeanAction;
 import org.csstudio.nams.configurator.editor.AbstractEditor;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
+import org.csstudio.nams.configurator.service.synchronize.SynchronizeServiceImpl;
 import org.csstudio.nams.configurator.views.AbstractNamsView;
+import org.csstudio.nams.configurator.views.SyncronizeView;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.logging.declaration.Logger;
@@ -67,5 +69,8 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		// prepare actions
 		DeleteConfugurationBeanAction.staticInject(beanService);
 		DuplicateConfigurationBeanAction.staticInject(beanService);
+		
+		// prepare sync-view
+		SyncronizeView.staticInjectSynchronizeService(new SynchronizeServiceImpl(localStoreConfigurationService));
 	}
 }
