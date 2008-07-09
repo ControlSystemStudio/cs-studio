@@ -220,7 +220,7 @@ public class SaveValueDialog extends Dialog {
 		stepColumn.setWidth(80);
 		TableColumn resultColumn = new TableColumn(_resultsTable, SWT.LEFT);
 		resultColumn.setText(Messages.SaveValueDialog_RESULT_COLUMN);
-		resultColumn.setWidth(350);
+		resultColumn.setWidth(420);
 		
 		for (SaveValueServiceDescription service : _services) {
 			TableItem item = new TableItem(_resultsTable, SWT.NONE);
