@@ -90,13 +90,14 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime
 				* result
 				+ ((humanReadableName == null) ? 0 : humanReadableName
 						.hashCode());
+		result = prime * result + topicID;
 		result = prime * result
 				+ ((topicName == null) ? 0 : topicName.hashCode());
 		return result;
@@ -106,7 +107,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -120,6 +121,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 			if (other.humanReadableName != null)
 				return false;
 		} else if (!humanReadableName.equals(other.humanReadableName))
+			return false;
+		if (topicID != other.topicID)
 			return false;
 		if (topicName == null) {
 			if (other.topicName != null)

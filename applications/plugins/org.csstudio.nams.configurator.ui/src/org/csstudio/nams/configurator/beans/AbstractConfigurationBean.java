@@ -94,4 +94,30 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 	public void clearPropertyChangeListeners() {
 		pcs = new PropertyChangeSupport(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((rubrikName == null) ? 0 : rubrikName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AbstractConfigurationBean<?> other = (AbstractConfigurationBean<?>) obj;
+		if (rubrikName == null) {
+			if (other.rubrikName != null)
+				return false;
+		} else if (!rubrikName.equals(other.rubrikName))
+			return false;
+		return true;
+	}
 }

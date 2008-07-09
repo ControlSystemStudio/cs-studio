@@ -86,7 +86,7 @@ public class FilterbedingungBean extends
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime
@@ -102,7 +102,7 @@ public class FilterbedingungBean extends
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -127,8 +127,8 @@ public class FilterbedingungBean extends
 		return true;
 	}
 
-	public AbstractConfigurationBean getFilterSpecificBean() {
-		return (AbstractConfigurationBean) filterSpecificBean;
+	public AbstractConfigurationBean<?> getFilterSpecificBean() {
+		return (AbstractConfigurationBean<?>) filterSpecificBean;
 	}
 
 	public void setFilterSpecificBean(FilterConditionAddOnBean filterSpecificBean) {
