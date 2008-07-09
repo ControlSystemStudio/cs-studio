@@ -244,6 +244,10 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return null;
 					}
 
+					public void prepareSynchonization() {
+						fail("unexpected method call!");
+					}
+
 				}, new HistoryService() {
 
 					public void logReceivedReplicationDoneMessage() {

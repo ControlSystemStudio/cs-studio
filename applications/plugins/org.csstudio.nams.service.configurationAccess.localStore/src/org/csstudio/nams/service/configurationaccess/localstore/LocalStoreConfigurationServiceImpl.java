@@ -312,4 +312,8 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 
+	public void prepareSynchonization() {
+		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein HSQL-Statement.
+	}
+
 }

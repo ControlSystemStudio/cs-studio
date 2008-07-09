@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SynchronizeService_Test {
+	
+	
 
 	@Before
 	public void setUp() throws Exception {

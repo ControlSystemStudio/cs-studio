@@ -86,4 +86,9 @@ public interface LocalStoreConfigurationService {
 	public FilterConditionDTO saveFilterCondtionDTO(FilterConditionDTO filterConditionDTO);
 
 	public FilterDTO saveFilterDTO(FilterDTO dto);
+	
+	/**
+	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden die SYN-Tabellen geschrieben.
+	 */
+	public void prepareSynchonization();
 }
