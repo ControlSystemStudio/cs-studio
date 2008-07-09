@@ -248,7 +248,8 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 
-	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException {
+	public FilterDTO saveFilterDTO(FilterDTO dto)
+			throws InconsistentConfigurationException {
 		Configuration entireConfiguration = null;
 		Serializable generatedID = null;
 		try {
@@ -266,51 +267,53 @@ class LocalStoreConfigurationServiceImpl implements
 		// TODO add save for filterConditions
 		Transaction tx = session.beginTransaction();
 		try {
-		generatedID = session.save(dto);
+			generatedID = session.save(dto);
 
-		Collection<FilterConditionsToFilterDTO> conditionMappings = entireConfiguration
-				.getAllFilterConditionMappings();
-		Set<FilterConditionsToFilterDTO> relevantMappings = new HashSet<FilterConditionsToFilterDTO>();
-		Set<FilterConditionsToFilterDTO> usedMappings = new HashSet<FilterConditionsToFilterDTO>();
-		for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : conditionMappings) {
-			if (filterConditionsToFilterDTO.getIFilterRef() == dto.getIFilterID()) {
-				relevantMappings.add(filterConditionsToFilterDTO);
-			}
-		}
-		//for all used FC
-		//get the mappingDTO, if no DTO exists, create one
-		
-		for (FilterConditionDTO condition : dto.getFilterConditions()) {
-			FilterConditionsToFilterDTO match = null;
-			for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : relevantMappings) {
-				if (condition.getFilterConditionTypeRef() == filterConditionsToFilterDTO.getIFilterConditionRef()){
-					match = filterConditionsToFilterDTO;
-					break;
+			Collection<FilterConditionsToFilterDTO> conditionMappings = entireConfiguration
+					.getAllFilterConditionMappings();
+			Set<FilterConditionsToFilterDTO> relevantMappings = new HashSet<FilterConditionsToFilterDTO>();
+			Set<FilterConditionsToFilterDTO> usedMappings = new HashSet<FilterConditionsToFilterDTO>();
+			for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : conditionMappings) {
+				if (filterConditionsToFilterDTO.getIFilterRef() == dto
+						.getIFilterID()) {
+					relevantMappings.add(filterConditionsToFilterDTO);
 				}
 			}
-			if (match == null) {
-				FilterConditionsToFilterDTO_PK newKey = new FilterConditionsToFilterDTO_PK();
-				newKey.setIFilterConditionRef(condition.getFilterConditionTypeRef());
-				newKey.setIFilterRef(dto.getIFilterID());
-				match = new FilterConditionsToFilterDTO();
-				match.setFilterConditionsToFilterDTO_PK(newKey);
+			// for all used FC
+			// get the mappingDTO, if no DTO exists, create one
+
+			for (FilterConditionDTO condition : dto.getFilterConditions()) {
+				FilterConditionsToFilterDTO match = null;
+				for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : relevantMappings) {
+					if (condition.getIFilterConditionID() == filterConditionsToFilterDTO
+							.getIFilterConditionRef()) {
+						match = filterConditionsToFilterDTO;
+						break;
+					}
+				}
+				if (match == null) {
+					FilterConditionsToFilterDTO_PK newKey = new FilterConditionsToFilterDTO_PK();
+					newKey.setIFilterConditionRef(condition
+							.getIFilterConditionID());
+					newKey.setIFilterRef(dto.getIFilterID());
+					match = new FilterConditionsToFilterDTO();
+					match.setFilterConditionsToFilterDTO_PK(newKey);
+				}
+				usedMappings.add(match);
 			}
-			usedMappings.add(match);
-		}
-		//save the used Mappings
-		for (FilterConditionsToFilterDTO map : usedMappings) {
-			session.saveOrUpdate(map);
-		}
-		//if an old mapping dto does not exist, remove it
-		relevantMappings.removeAll(usedMappings);
-		for (FilterConditionsToFilterDTO unusedMapping : relevantMappings) {
-			session.delete(unusedMapping);
-		}
+			// save the used Mappings
+			for (FilterConditionsToFilterDTO map : usedMappings) {
+				session.saveOrUpdate(map);
+			}
+			// if an old mapping dto does not exist, remove it
+			relevantMappings.removeAll(usedMappings);
+			for (FilterConditionsToFilterDTO unusedMapping : relevantMappings) {
+				session.delete(unusedMapping);
+			}
+			tx.commit();
 		} catch (Throwable e) {
 			tx.rollback();
 			throw new InconsistentConfigurationException(e.getMessage());
-		} finally {
-			tx.commit();
 		}
 		return (FilterDTO) session.load(FilterDTO.class, generatedID);
 	}
@@ -328,7 +331,8 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	public void prepareSynchonization() {
-		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein HSQL-Statement.
+		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
+		// HSQL-Statement.
 	}
 
 

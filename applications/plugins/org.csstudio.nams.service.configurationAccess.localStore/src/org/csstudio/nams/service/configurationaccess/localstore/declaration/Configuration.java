@@ -101,6 +101,7 @@ public class Configuration implements FilterConditionForIdProvider{
 		for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : allFilterConditionToFilter) {
 			FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO.getIFilterRef());
 			List<FilterConditionDTO> filterConditions = filterDTO.getFilterConditions();
+			filterConditions.clear();
 			filterConditions.add(getFilterConditionForId(filterConditionsToFilterDTO.getIFilterConditionRef()));
 			filterDTO.setFilterConditions(filterConditions);
 		}
