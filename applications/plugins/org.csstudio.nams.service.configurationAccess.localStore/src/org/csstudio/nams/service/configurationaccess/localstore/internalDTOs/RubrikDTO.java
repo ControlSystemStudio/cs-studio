@@ -65,7 +65,7 @@ public class RubrikDTO {
 		
 		// For Application
 		public void setType(RubrikTypeEnum type) {
-			sType = (short) type.ordinal();
+			sType = (short) type.getShortFor();
 		}
 
 		public int getIGroupId() {

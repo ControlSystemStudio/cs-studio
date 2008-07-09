@@ -24,6 +24,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
@@ -246,6 +247,11 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 					public void prepareSynchonization() {
 						fail("unexpected method call!");
+					}
+
+					public RubrikDTO saveRubrikDTO(RubrikDTO dto) {
+						fail("unexpected method call!");
+						return null;
 					}
 
 				}, new HistoryService() {

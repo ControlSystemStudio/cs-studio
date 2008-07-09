@@ -19,6 +19,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
@@ -238,6 +239,14 @@ class LocalStoreConfigurationServiceImpl implements
 		return (FilterConditionDTO) session.load(FilterConditionDTO.class,
 				generatedID);
 	}
+	
+	public RubrikDTO saveRubrikDTO(RubrikDTO dto) {
+		Transaction tx = session.beginTransaction();
+		Serializable generatedID = session.save(dto);
+		tx.commit();
+		return (RubrikDTO) session.load(RubrikDTO.class, generatedID);
+	}
+
 
 	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException {
 		Configuration entireConfiguration = null;
@@ -321,5 +330,6 @@ class LocalStoreConfigurationServiceImpl implements
 	public void prepareSynchonization() {
 		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein HSQL-Statement.
 	}
+
 
 }

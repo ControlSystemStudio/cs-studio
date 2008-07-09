@@ -5,6 +5,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 
 public interface LocalStoreConfigurationService {
 
@@ -87,8 +88,11 @@ public interface LocalStoreConfigurationService {
 
 	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException;
 	
+	public RubrikDTO saveRubrikDTO(RubrikDTO dto);
+	
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden die SYN-Tabellen geschrieben.
 	 */
 	public void prepareSynchonization();
+
 }

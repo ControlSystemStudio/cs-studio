@@ -345,6 +345,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				break;
 			}
 		}
+		if ((result == 0) && !("".equals(rubrikName))) {
+			RubrikDTO newRubrikDTO = new RubrikDTO();
+			newRubrikDTO.setCGroupName(rubrikName);
+			newRubrikDTO.setType(type);
+			result = configurationService.saveRubrikDTO(newRubrikDTO).getIGroupId();
+		}
 		return result;
 	}
 
