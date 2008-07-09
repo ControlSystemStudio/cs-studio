@@ -47,6 +47,14 @@
             id="org.csstudio.nams.configurator.filterbedingung"
             name="Filterbedingung">
       </view>
+      <view
+            allowMultiple="false"
+            category="org.csstudio.nams.newconfigurator"
+            class="org.csstudio.nams.configurator.views.SyncronizeView"
+            fastViewWidthRatio="0.5f"
+            id="org.csstudio.nams.configurator.syncronize"
+            name="* Syncronize background-system *">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -140,6 +148,17 @@
                showTitle="true"
                visible="true">
          </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.syncronize"
+               minimized="false"
+               moveable="true"
+               ratio="0.8f"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
       </perspectiveExtension>
    </extension>
    <extension
@@ -148,7 +167,7 @@
             class="org.csstudio.nams.configurator.PerspectiveFactory"
             fixed="true"
             id="org.csstudio.nams.newconfigurator.perspective"
-            name="AMS perspective">
+            name="New Alarm-Management-System (NAMS)">
       </perspective>
    </extension>
    <extension
