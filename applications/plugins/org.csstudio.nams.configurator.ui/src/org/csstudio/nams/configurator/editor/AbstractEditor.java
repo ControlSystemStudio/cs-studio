@@ -7,6 +7,7 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceListener;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -17,10 +18,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
 public abstract class AbstractEditor<ConfigurationType extends AbstractConfigurationBean<ConfigurationType>>
@@ -32,6 +35,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	protected final int MIN_WIDTH = 300;
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
+
+	protected final String[] groupDummyContent = { "This is group dummy content" };
 
 	protected PropertyChangeListener listener;
 	private String superTitle;
@@ -47,23 +52,31 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// speicher Änderungen mit dem Service
-		ConfigurationType resultBean = configurationBeanService.save(this.beanClone);
-		if (this.bean != resultBean) {
-			this.bean = resultBean;
-			ConfigurationEditorInput cInput = (ConfigurationEditorInput) getEditorInput();
-			cInput.setBean(this.bean);
+		try {
+			ConfigurationType resultBean = configurationBeanService
+					.save(this.beanClone);
+			if (this.bean != resultBean) {
+				this.bean = resultBean;
+				ConfigurationEditorInput cInput = (ConfigurationEditorInput) getEditorInput();
+				cInput.setBean(this.bean);
 
-			this.beanClone.removePropertyChangeListener(this);
-			
-			// create new clone
-			this.beanClone = (ConfigurationType) this.bean.getClone();
-			this.beanClone.addPropertyChangeListener(this);
-			
-			initDataBinding();
+				this.beanClone.removePropertyChangeListener(this);
+
+				// create new clone
+				this.beanClone = (ConfigurationType) this.bean.getClone();
+				this.beanClone.addPropertyChangeListener(this);
+
+				initDataBinding();
+			}
+		} catch (InconsistentConfigurationException e) {
+			MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell());
+			messageBox.setText(e.getClass().toString());
+			messageBox.setMessage(e.getMessage());
 		}
-		
+
 		setPartName(this.bean.getDisplayName() + " - " + superTitle);
-		
+
 		firePropertyChange(EditorPart.PROP_DIRTY);
 	}
 
@@ -76,13 +89,13 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		ConfigurationEditorInput cInput = (ConfigurationEditorInput) input;
 
 		this.bean = (ConfigurationType) cInput.getBean();
-		
+
 		this.beanClone = (ConfigurationType) this.bean.getClone();
 		this.beanClone.addPropertyChangeListener(this);
 
 		superTitle = super.getTitle();
 		setPartName(this.bean.getDisplayName() + " - " + superTitle);
-		
+
 		doInit(site, input);
 	}
 
@@ -141,20 +154,20 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return comboWidget;
 	}
 
-//	class NotifyingListViewer 
-	
+	// class NotifyingListViewer
+
 	protected ListViewer createListEntry(Composite parent, String labeltext,
 			boolean editable) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		ListViewer listWidget = new ListViewer(parent, SWT.BORDER){
-			
+		ListViewer listWidget = new ListViewer(parent, SWT.BORDER) {
+
 		};
 		ArrayContentProvider cp = null;
-		
+
 		// listWidget.setEditable(editable);
-//		listWidget.setInput(new WritableList());
+		// listWidget.setInput(new WritableList());
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
@@ -256,14 +269,13 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	public String getTitle() {
 		return super.getTitle();
 	}
-	
+
 	public void onBeanDeleted(IConfigurationBean bean) {
 		if (bean.getClass().equals(this.bean.getClass())
 				&& bean.getID() == this.bean.getID()) {
 			getSite().getShell().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					getSite().getPage()
-							.closeEditor(AbstractEditor.this, true);
+					getSite().getPage().closeEditor(AbstractEditor.this, true);
 				}
 			});
 		}

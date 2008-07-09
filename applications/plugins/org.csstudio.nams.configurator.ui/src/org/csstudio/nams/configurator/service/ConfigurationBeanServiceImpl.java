@@ -41,6 +41,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.Logger;
+import org.eclipse.swt.widgets.MessageBox;
 
 public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
@@ -292,7 +293,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setName(filter.getName());
 		List<FilterbedingungBean> conditions = bean.getConditions();
 		conditions.clear();
-		//FIXME ignore inconsistant filterConditions
+		//FIXME ignoring inconsistant filterConditions
 		if (!filter.getFilterConditions().contains(null)) {
 			for (FilterConditionDTO condition : filter.getFilterConditions()) {
 				conditions.add(filterbedingungBeans.get(condition
@@ -462,7 +463,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends IConfigurationBean> T save(T bean) {
+	public <T extends IConfigurationBean> T save(T bean) throws InconsistentConfigurationException {
 		if (bean instanceof AlarmbearbeiterBean)
 			return (T) saveAlarmbearbeiterBean((AlarmbearbeiterBean) bean);
 		if (bean instanceof AlarmbearbeiterGruppenBean)
@@ -548,7 +549,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
-	private FilterBean saveFilterBean(FilterBean bean) {
+	private FilterBean saveFilterBean(FilterBean bean) throws InconsistentConfigurationException {
 		boolean inserted = false;
 		FilterDTO dto = getDTO4Bean(bean);
 		if (dto == null) {

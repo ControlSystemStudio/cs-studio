@@ -7,6 +7,7 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 
 public interface ConfigurationBeanService {
 
@@ -22,7 +23,7 @@ public interface ConfigurationBeanService {
 
 	public abstract String[] getRubrikNamesForType(RubrikTypeEnum type);
 
-	public <T extends IConfigurationBean> T save(T bean);
+	public <T extends IConfigurationBean> T save(T bean) throws InconsistentConfigurationException;
 	
 	public void delete(IConfigurationBean bean);
 

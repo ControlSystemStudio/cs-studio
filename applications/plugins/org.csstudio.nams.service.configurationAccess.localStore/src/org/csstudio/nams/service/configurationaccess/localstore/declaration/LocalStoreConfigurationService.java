@@ -85,7 +85,7 @@ public interface LocalStoreConfigurationService {
 
 	public FilterConditionDTO saveFilterCondtionDTO(FilterConditionDTO filterConditionDTO);
 
-	public FilterDTO saveFilterDTO(FilterDTO dto);
+	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException;
 	
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden die SYN-Tabellen geschrieben.

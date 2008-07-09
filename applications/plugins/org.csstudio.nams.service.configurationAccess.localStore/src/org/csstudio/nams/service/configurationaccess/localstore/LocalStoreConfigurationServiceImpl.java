@@ -239,8 +239,9 @@ class LocalStoreConfigurationServiceImpl implements
 				generatedID);
 	}
 
-	public FilterDTO saveFilterDTO(FilterDTO dto) {
+	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException {
 		Configuration entireConfiguration = null;
+		Serializable generatedID = null;
 		try {
 			entireConfiguration = getEntireConfiguration();
 		} catch (StorageError e) {
@@ -255,7 +256,8 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 		// TODO add save for filterConditions
 		Transaction tx = session.beginTransaction();
-		Serializable generatedID = session.save(dto);
+		try {
+		generatedID = session.save(dto);
 
 		Collection<FilterConditionsToFilterDTO> conditionMappings = entireConfiguration
 				.getAllFilterConditionMappings();
@@ -295,8 +297,12 @@ class LocalStoreConfigurationServiceImpl implements
 		for (FilterConditionsToFilterDTO unusedMapping : relevantMappings) {
 			session.delete(unusedMapping);
 		}
-		tx.commit();
-
+		} catch (Throwable e) {
+			tx.rollback();
+			throw new InconsistentConfigurationException(e.getMessage());
+		} finally {
+			tx.commit();
+		}
 		return (FilterDTO) session.load(FilterDTO.class, generatedID);
 	}
 
