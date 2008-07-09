@@ -89,7 +89,7 @@ public class FilterConditionsToFilterDTO {
 	 * @param filterRef the iFilterRef to set
 	 */
 	@SuppressWarnings("unused")
-	private void setIFilterRef(int filterRef) {
+	public void setIFilterRef(int filterRef) {
 		filterCTFPK.setIFilterRef(filterRef);
 	}
 
@@ -104,7 +104,7 @@ public class FilterConditionsToFilterDTO {
 	 * @param filterConditionRef the iFilterConditionRef to set
 	 */
 	@SuppressWarnings("unused")
-	private void setIFilterConditionRef(int filterConditionRef) {
+	public void setIFilterConditionRef(int filterConditionRef) {
 		filterCTFPK.setIFilterConditionRef(filterConditionRef);
 	}
 
@@ -123,6 +123,8 @@ public class FilterConditionsToFilterDTO {
 	private void setIPos(int pos) {
 		iPos = pos;
 	}
-	
+	public void setFilterConditionsToFilterDTO_PK(FilterConditionsToFilterDTO_PK key) {
+		filterCTFPK = key;
+	}
 	
 }

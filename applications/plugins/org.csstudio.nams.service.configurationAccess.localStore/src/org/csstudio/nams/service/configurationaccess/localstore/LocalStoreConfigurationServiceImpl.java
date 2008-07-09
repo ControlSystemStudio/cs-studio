@@ -1,7 +1,10 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
@@ -16,6 +19,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
@@ -33,7 +38,8 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	public ReplicationStateDTO getCurrentReplicationState()
-			throws StorageError, StorageException, InconsistentConfigurationException {
+			throws StorageError, StorageException,
+			InconsistentConfigurationException {
 		ReplicationStateDTO result = null;
 		try {
 			final Transaction newTransaction = this.session.beginTransaction();
@@ -87,8 +93,7 @@ class LocalStoreConfigurationServiceImpl implements
 			result = new Configuration(session);
 		} catch (Throwable t) {
 			transaction.rollback();
-		}
-		finally {
+		} finally {
 			transaction.commit();
 		}
 		return result;
@@ -225,29 +230,84 @@ class LocalStoreConfigurationServiceImpl implements
 
 	public FilterConditionDTO saveFilterCondtionDTO(
 			FilterConditionDTO filterConditionDTO) {
-		//TODO add by-hand-mapped parts
+		// TODO add by-hand-mapped parts
 		Transaction tx = session.beginTransaction();
 		Serializable generatedID = session.save(filterConditionDTO);
 		tx.commit();
 
-		return (FilterConditionDTO) session.load(FilterConditionDTO.class, generatedID);
+		return (FilterConditionDTO) session.load(FilterConditionDTO.class,
+				generatedID);
 	}
 
 	public FilterDTO saveFilterDTO(FilterDTO dto) {
+		Configuration entireConfiguration = null;
+		try {
+			entireConfiguration = getEntireConfiguration();
+		} catch (StorageError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (StorageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InconsistentConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// TODO add save for filterConditions
 		Transaction tx = session.beginTransaction();
 		Serializable generatedID = session.save(dto);
+
+		Collection<FilterConditionsToFilterDTO> conditionMappings = entireConfiguration
+				.getAllFilterConditionMappings();
+		Set<FilterConditionsToFilterDTO> relevantMappings = new HashSet<FilterConditionsToFilterDTO>();
+		Set<FilterConditionsToFilterDTO> usedMappings = new HashSet<FilterConditionsToFilterDTO>();
+		for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : conditionMappings) {
+			if (filterConditionsToFilterDTO.getIFilterRef() == dto.getIFilterID()) {
+				relevantMappings.add(filterConditionsToFilterDTO);
+			}
+		}
+		//for all used FC
+		//get the mappingDTO, if no DTO exists, create one
+		
+		for (FilterConditionDTO condition : dto.getFilterConditions()) {
+			FilterConditionsToFilterDTO match = null;
+			for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : relevantMappings) {
+				if (condition.getFilterConditionTypeRef() == filterConditionsToFilterDTO.getIFilterConditionRef()){
+					match = filterConditionsToFilterDTO;
+					break;
+				}
+			}
+			if (match == null) {
+				FilterConditionsToFilterDTO_PK newKey = new FilterConditionsToFilterDTO_PK();
+				newKey.setIFilterConditionRef(condition.getFilterConditionTypeRef());
+				newKey.setIFilterRef(dto.getIFilterID());
+				match = new FilterConditionsToFilterDTO();
+				match.setFilterConditionsToFilterDTO_PK(newKey);
+			}
+			usedMappings.add(match);
+		}
+		//save the used Mappings
+		for (FilterConditionsToFilterDTO map : usedMappings) {
+			session.saveOrUpdate(map);
+		}
+		//if an old mapping dto does not exist, remove it
+		relevantMappings.removeAll(usedMappings);
+		for (FilterConditionsToFilterDTO unusedMapping : relevantMappings) {
+			session.delete(unusedMapping);
+		}
 		tx.commit();
 
 		return (FilterDTO) session.load(FilterDTO.class, generatedID);
 	}
 
-	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException {
+	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto)
+			throws InconsistentConfigurationException {
 		Transaction tx = session.beginTransaction();
 		try {
 			session.delete(dto);
 		} catch (HibernateException e) {
-			new InconsistentConfigurationException("Could not delete " + dto + ". \n It is still in use.");
+			new InconsistentConfigurationException("Could not delete " + dto
+					+ ". \n It is still in use.");
 		}
 		tx.commit();
 	}

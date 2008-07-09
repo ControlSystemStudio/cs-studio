@@ -81,11 +81,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			entireConfiguration = configurationService.getEntireConfiguration();
 			// TODO Folgendes Exception-Handling überdenken....
 
-			Collection<RubrikDTO> rubriks = entireConfiguration.gibAlleRubriken();
+			Collection<RubrikDTO> rubriks = entireConfiguration
+					.gibAlleRubriken();
 			for (RubrikDTO rubrik : rubriks) {
 				RubrikBean bean = DTO2Bean(rubrik);
 				RubrikBean origBean = rubrikBeans
-				.get(new Integer(bean.getID()));
+						.get(new Integer(bean.getID()));
 				if (origBean != null) {
 					origBean.updateState(bean);
 				} else {
@@ -157,7 +158,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				}
 			}
 
-
 		} catch (StorageError e) {
 			logger.logErrorMessage(this,
 					"Could not load Eniter Configuration because of: "
@@ -211,8 +211,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setPreferedAlarmType(alarmbearbeiter.getPreferedAlarmType());
 		bean.setStatusCode(alarmbearbeiter.getStatusCode());
 		bean.setUserID(alarmbearbeiter.getUserId());
-		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group = Rubrik
-		
+		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group
+																				// =
+																				// Rubrik
+
 		return bean;
 	}
 
@@ -298,14 +300,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setName(filter.getName());
 		List<FilterbedingungBean> conditions = bean.getConditions();
 		conditions.clear();
-		for (FilterConditionDTO condition : filter.getFilterConditions()) {
-			conditions.add(filterbedingungBeans.get(condition
-					.getIFilterConditionID()));
+		//FIXME ignore inconsistant filterConditions
+		if (!filter.getFilterConditions().contains(null)) {
+			for (FilterConditionDTO condition : filter.getFilterConditions()) {
+				conditions.add(filterbedingungBeans.get(condition
+						.getIFilterConditionID()));
+			}
+		} else {
+			System.out.println("Ignored FilterConditions in Filter: " + filter.getIFilterID());
 		}
 		bean.setConditions(conditions);
 		return bean;
 	}
-	
 
 	/*
 	 * (non-Javadoc)
@@ -316,13 +322,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		Collection<RubrikBean> values = rubrikBeans.values();
 		Collection<RubrikBean> specificRubriks = new ArrayList<RubrikBean>();
 		for (RubrikBean rubrikBean : values) {
-			if(rubrikBean.getRubrikType().equals(type)) {
+			if (rubrikBean.getRubrikType().equals(type)) {
 				specificRubriks.add(rubrikBean);
 			}
 		}
 		return specificRubriks.toArray(new RubrikBean[specificRubriks.size()]);
 	}
-	
+
 	private RubrikBean DTO2Bean(RubrikDTO dto) {
 		RubrikBean bean = new RubrikBean();
 		bean.setID(dto.getIGroupId());
@@ -330,12 +336,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setRubrikType(dto.getType().name());
 		return bean;
 	}
-	
+
 	private String getRubrikNameForId(int groupRef) {
 		Collection<RubrikBean> values = rubrikBeans.values();
 		String result = null;
 		for (RubrikBean rubrikBean : values) {
-			if(rubrikBean.getID() == groupRef) {
+			if (rubrikBean.getID() == groupRef) {
 				result = rubrikBean.getRubrikName();
 				break;
 			}
@@ -562,12 +568,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			inserted = true;
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
-		
+
 		List<FilterConditionDTO> list = new LinkedList<FilterConditionDTO>();
 		for (FilterbedingungBean condBean : bean.getConditions()) {
 			list.add(getDTO4Bean(condBean));
 		}
-		
+
 		dto.setFilterConditions(list);
 		dto.setName(bean.getName());
 

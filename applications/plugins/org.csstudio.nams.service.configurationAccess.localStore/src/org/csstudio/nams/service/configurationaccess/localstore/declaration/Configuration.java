@@ -27,6 +27,8 @@ public class Configuration implements FilterConditionForIdProvider{
 	private Collection<TopicDTO> alleAlarmtopics;
 	private Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
 	private Collection<FilterDTO> allFilters;
+	private Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
+	
 	private Collection<FilterConditionDTO> allFilterConditions;
 	private Collection<RubrikDTO> alleRubriken;
 
@@ -59,9 +61,9 @@ public class Configuration implements FilterConditionForIdProvider{
 //				.createCriteria(FilterConditionTypeDTO.class).list();
 //		pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
 
-		Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter = session
+		allFilterConditionMappings = session
 		.createCriteria(FilterConditionsToFilterDTO.class).list();
-		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionToFilter);
+		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionMappings);
 		setChildFilterConditionsInJunctorDTOs();
 		Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues= session
 		.createCriteria(StringArrayFilterConditionCompareValuesDTO.class).list();
@@ -162,11 +164,6 @@ public class Configuration implements FilterConditionForIdProvider{
 	public Collection<FilterConditionDTO> gibAlleFilterConditions() {
 		return allFilterConditions;
 	}
-	
-	public Collection<RubrikDTO> gibAlleRubriken() {
-		return alleRubriken;
-	}
-
 	// -------------
 
 	// public Collection<AlarmbearbeiterDTO>
@@ -195,4 +192,13 @@ public class Configuration implements FilterConditionForIdProvider{
 		}
 		return null;
 	}
+
+public Collection<FilterConditionsToFilterDTO> getAllFilterConditionMappings() {
+	return allFilterConditionMappings;
+}
+
+public Collection<RubrikDTO> gibAlleRubriken() {
+	return alleRubriken;
+}
+
 }
