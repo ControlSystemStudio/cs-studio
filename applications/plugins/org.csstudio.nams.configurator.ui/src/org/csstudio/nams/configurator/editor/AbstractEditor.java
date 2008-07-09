@@ -9,7 +9,6 @@ import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceListener;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -164,7 +163,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		ListViewer listWidget = new ListViewer(parent, SWT.BORDER) {
 
 		};
-		ArrayContentProvider cp = null;
+//		ArrayContentProvider cp = null;
 
 		// listWidget.setEditable(editable);
 		// listWidget.setInput(new WritableList());
@@ -215,7 +214,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
-		Text textWidget = new Text(parent, SWT.BORDER);
+		Text textWidget = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL| SWT.WRAP);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;

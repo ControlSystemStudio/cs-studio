@@ -29,10 +29,17 @@ import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -160,8 +167,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		Composite main = new Composite(outermain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true, 
-				configurationBeanService.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
+				configurationBeanService
+						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
@@ -327,6 +335,54 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			throw new RuntimeException("Unsupported AddOnBean "
 					+ filterSpecificBean.getClass());
 		initDataBinding();
+		initDND();
+	}
+
+	private void initDND() {
+		DropTarget target1 = new DropTarget(junctorFirstFilterText,
+				DND.DROP_LINK);
+		DropTarget target2 = new DropTarget(junctorSecondFilterText,
+				DND.DROP_LINK);
+		
+		target1.setTransfer(new Transfer[] { LocalSelectionTransfer
+				.getTransfer() });
+		target2.setTransfer(new Transfer[] { LocalSelectionTransfer
+				.getTransfer() });
+		
+		target1.addDropListener(new TextDropTarget(junctorFirstFilterText));
+		target2.addDropListener(new TextDropTarget(junctorSecondFilterText));
+	}
+	
+	class TextDropTarget extends DropTargetAdapter {
+		private final Text text;
+
+		public TextDropTarget(Text junctorFirstFilterText) {
+			text = junctorFirstFilterText;
+		}
+
+		public void dragEnter(DropTargetEvent event) {
+			try {
+				IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+						.getTransfer().getSelection();
+				if (selection.getFirstElement() instanceof FilterbedingungBean) {
+					event.detail = DND.DROP_LINK;
+				}
+			} catch (Throwable e) {
+			}
+		}
+
+		public void drop(DropTargetEvent event) {
+			try {
+				IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+						.getTransfer().getSelection();
+				FilterbedingungBean bean = (FilterbedingungBean) selection
+						.getFirstElement();
+				//TODO
+				text.setData(bean);
+				text.setText(bean.getDisplayName());
+			} catch (Throwable e) {
+			}
+		}
 	}
 
 	private void initializeAddOnBeans() {
@@ -432,7 +488,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						TimeBasedFilterConditionBean.PropertyNames.timeBehavior
 								.name());
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone, FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
+				this.beanClone,
+				FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables.observeText(timeStopCompareText,
@@ -450,9 +507,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				timeBasedStopOperator,
 				new StringRegelOperatorToModelStrategy(),
 				new StringRegelOperatorToGuiStrategy());
-		
-		context.bindValue(SWTObservables
-				.observeSelection(_rubrikComboEntry),
+
+		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
 				rubrikTextObservable, null, null);
 	}
 
@@ -558,12 +614,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				});
 
 		context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
-				SWT.Modify), firstConditionTextObservable,
-				null, null);
+				SWT.Modify), firstConditionTextObservable, null, null);
 
 		context.bindValue(SWTObservables.observeText(junctorSecondFilterText,
-				SWT.Modify), secondConditionTextObservable,
-				null, null);
+				SWT.Modify), secondConditionTextObservable, null, null);
 
 	}
 
@@ -585,9 +639,13 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		// bind observables
 		context.bindValue(SWTObservables.observeSelection(stringOperatorCombo),
-				stringOperatorObservable, new StringRegelOperatorToModelStrategy(), new StringRegelOperatorToGuiStrategy());
+				stringOperatorObservable,
+				new StringRegelOperatorToModelStrategy(),
+				new StringRegelOperatorToGuiStrategy());
 
-		context.bindValue(SWTObservables.observeSelection(stringCompareKeyCombo), keyComboObservable, new MessageKeyToModelStrategy(), null);
+		context.bindValue(SWTObservables
+				.observeSelection(stringCompareKeyCombo), keyComboObservable,
+				new MessageKeyToModelStrategy(), null);
 
 		context.bindValue(SWTObservables.observeText(stringCompareValueText,
 				SWT.Modify), stringCompareValueTextObservable, null, null);
@@ -612,9 +670,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		IObservableValue descriptionTextObservable = BeansObservables
 				.observeValue(this.beanClone,
 						FilterbedingungBean.PropertyNames.description.name());
-		
+
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone, FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
+				this.beanClone,
+				FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables
@@ -630,9 +689,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		initStringArrayAddOnBeanDataBinding(context);
 		// TODO init TimeBased DataBinding
 		initTimeBasedAddOnBeanDataBinding(context);
-		
-		context.bindValue(SWTObservables
-				.observeSelection(_rubrikComboEntry),
+
+		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
 				rubrikTextObservable, null, null);
 
 	}

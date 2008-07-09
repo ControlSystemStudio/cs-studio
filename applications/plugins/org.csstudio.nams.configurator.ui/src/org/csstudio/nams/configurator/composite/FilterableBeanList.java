@@ -225,13 +225,7 @@ public abstract class FilterableBeanList {
 				0, newItems, 3, gruppenNamen.size());
 		gruppenCombo.setInput(newItems);
 
-		// int newIndex = 0;
-		// if (gruppenComboSelectedIndex > -1 && gruppenComboSelectedIndex <
-		// newItems.length ) {
-		// newIndex = gruppenComboSelectedIndex;
-		// }
-		// gruppenCombo.getCombo().select(newIndex);
-		if (gruppenNamen.contains(selectedgruppenname)) {
+		if (gruppenNamen.contains(selectedgruppenname) || selectedgruppenname.equals("Ohne Rubrik")) {
 			gruppenCombo.setSelection(new StructuredSelection(
 					selectedgruppenname), true);
 		} else {
