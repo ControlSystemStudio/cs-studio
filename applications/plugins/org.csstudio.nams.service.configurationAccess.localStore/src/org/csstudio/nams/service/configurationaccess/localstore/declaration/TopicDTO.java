@@ -147,9 +147,10 @@ public class TopicDTO {
 	 *            Die Beschreibung des Topics; 256 Zeichen oder kürzer.
 	 */
 	public void setDescription(final String description) {
-		Contract.require(description.length() <= 256,
-				"topicName.length() <= 256");
-
+		if (description != null) {
+			Contract.require(description.length() <= 256,
+					"topicName.length() <= 256");
+		}
 		this.description = description;
 	}
 	public void setGroupRef(final int groupRef) {
