@@ -1,14 +1,15 @@
 package org.csstudio.nams.configurator.views;
 
 import org.csstudio.nams.configurator.service.synchronize.SynchronizeService;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -18,6 +19,7 @@ import org.eclipse.ui.part.ViewPart;
 public class SyncronizeView extends ViewPart {
 
 	private static SynchronizeService synchronizeService = null;
+	private Text statusText;
 
 	/**
 	 * Injiziert den {@link SynchronizeService} für diese View. Must be called
@@ -39,32 +41,40 @@ public class SyncronizeView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout());
+		composite.setLayout(new FillLayout(SWT.VERTICAL|SWT.HORIZONTAL));
 		
+		Composite innerComposite = new Composite(composite, SWT.NONE);
+		innerComposite.setLayout(new GridLayout(1, false));
 		
-		Button syncButton = new Button(parent, SWT.TOGGLE);
+		Button syncButton = new Button(innerComposite, SWT.TOGGLE);
+		syncButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		syncButton.setText("Perform synchronization of background-system");
 		syncButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 				Button source = (Button)e.getSource();
 				if( source.getSelection() ) {
-					System.out.println("selected");
+					statusText.setText("Beginning syncronization...");
 				} else {
 					// deselect nur aus dem code erlaubt!
 					source.setSelection(true);
-					System.out.println("not selected");
 				}
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
+				// will never be called by a button.
 			}
 			
 		});
+//		
+//		Composite innerTextComposite = new Composite(innerComposite, SWT.NONE);
+//		innerTextComposite.setLayout(new FillLayout(SWT.VERTICAL|SWT.HORIZONTAL));
 		
-		// TODO Auto-generated method stub
-		new Label(parent, SWT.NONE)
-				.setText("Hallo Welt! Hier wird bald was passieren... ;-)");
+		
+		statusText = new Text(innerComposite, SWT.SCROLL_LINE | SWT.V_SCROLL | SWT.H_SCROLL);
+		statusText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		statusText.setEditable(false);
+		statusText.setText("Push \"Perform synchronization of background-system\" to begin syncronization.");
 	}
 
 	@Override
