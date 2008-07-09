@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.editor;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
@@ -40,8 +39,6 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	private Text _nameTextEntry;
 	private Combo _rubrikComboEntry;
 	private Text _defaultMessageTextEntry;
-	private Composite filterSpecificComposite;
-
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
 	private ComboViewer _rubrikComboEntryViewer;
 	private ListViewer filterConditionsListViewer;
@@ -55,7 +52,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
 		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
-				configurationBeanService.getRubrikNamesForType(RubrikTypeEnum.FILTER));
+				configurationBeanService
+						.getRubrikNamesForType(RubrikTypeEnum.FILTER));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
@@ -67,7 +65,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					tabelleUndButtonsComp);
 			new Label(tabelleUndButtonsComp, SWT.None)
-					.setText("Filterbedingungen");
+					.setText("Filterconditions");
 			{
 				filterConditionsListViewer = new ListViewer(
 						tabelleUndButtonsComp);
@@ -76,28 +74,32 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 				filterConditionsListViewer
 						.setContentProvider(new ArrayContentProvider());
-				
+
 				initDND();
 			}
 			Button button = new Button(tabelleUndButtonsComp, SWT.PUSH);
-			button.setText("remove");
-			button.addMouseListener(new MouseListener(){
+			button.setText("Remove Filterconditions");
+			button.addMouseListener(new MouseListener() {
 
 				public void mouseDoubleClick(MouseEvent e) {
-					ISelection selection = filterConditionsListViewer.getSelection();
-					IStructuredSelection selection2 = (IStructuredSelection) selection;
-					for (Object element : selection2.toList()) {
-						filterConditionsListViewer.remove(element);
-					}
 				}
 
 				public void mouseDown(MouseEvent e) {
+					int[] indices = filterConditionsListViewer.getList()
+							.getSelectionIndices();
+					List<FilterbedingungBean> list = beanClone.getConditions();
+					for (int i = indices.length - 1; i >= 0; i--) {
+						int j = indices[i];
+						list.remove(j);
+					}
+					beanClone.setConditions(list);
 				}
 
 				public void mouseUp(MouseEvent e) {
-				}});
+				}
+			});
 		}
-		
+
 		initDataBinding();
 	}
 
@@ -122,7 +124,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 									.getTransfer().getSelection();
 							FilterbedingungBean bean = (FilterbedingungBean) selection
 									.getFirstElement();
-							List<FilterbedingungBean> list = FilterEditor.this.beanClone.getConditions();
+							List<FilterbedingungBean> list = FilterEditor.this.beanClone
+									.getConditions();
 							list.add(bean);
 							FilterEditor.this.beanClone.setConditions(list);
 						} catch (Throwable e) {
@@ -154,9 +157,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		IObservableList filterConditionsObservable = BeansObservables
 				.observeList(context.getValidationRealm(), this.beanClone,
 						FilterBean.PropertyNames.conditions.name());
-		
+
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone, FilterBean.AbstractPropertyNames.rubrikName.name());
+				this.beanClone, FilterBean.AbstractPropertyNames.rubrikName
+						.name());
 
 		// bind observables
 		context.bindValue(SWTObservables
@@ -165,11 +169,11 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
 				SWT.Modify), descriptionTextObservable, null, null);
-		IObservableList observeItems = SWTObservables.observeItems(filterConditionsListViewer.getList());
+		IObservableList observeItems = SWTObservables
+				.observeItems(filterConditionsListViewer.getList());
 		context.bindList(observeItems, filterConditionsObservable, null, null);
-		
-		context.bindValue(SWTObservables
-				.observeSelection(_rubrikComboEntry),
+
+		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
 				rubrikTextObservable, null, null);
 	}
 
