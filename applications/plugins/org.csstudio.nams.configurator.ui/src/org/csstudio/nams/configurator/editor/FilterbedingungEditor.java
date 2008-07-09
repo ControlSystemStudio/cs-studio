@@ -160,9 +160,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		Composite main = new Composite(outermain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
-				array2StringArray(configurationBeanService
-						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND)));
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true, 
+				configurationBeanService.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
@@ -432,6 +431,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				.observeValue(addOn,
 						TimeBasedFilterConditionBean.PropertyNames.timeBehavior
 								.name());
+		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
+				this.beanClone, FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables.observeText(timeStopCompareText,
@@ -449,6 +450,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				timeBasedStopOperator,
 				new StringRegelOperatorToModelStrategy(),
 				new StringRegelOperatorToGuiStrategy());
+		
+		context.bindValue(SWTObservables
+				.observeSelection(_rubrikComboEntry),
+				rubrikTextObservable, null, null);
 	}
 
 	private void initStringArrayAddOnBeanDataBinding(DataBindingContext context) {

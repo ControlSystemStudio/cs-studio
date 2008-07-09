@@ -1,19 +1,15 @@
 package org.csstudio.nams.configurator.editor;
 
-import java.beans.PropertyChangeEvent;
 import java.util.List;
 
+import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.observable.list.IListChangeListener;
 import org.eclipse.core.databinding.observable.list.IObservableList;
-import org.eclipse.core.databinding.observable.list.ListChangeEvent;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.internal.databinding.observable.tree.IViewerUpdate;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -33,7 +29,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.part.EditorPart;
 
 public class FilterEditor extends AbstractEditor<FilterBean> {
 
@@ -55,7 +50,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
 		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
-				groupDummyContent);
+				configurationBeanService.getRubrikNamesForType(RubrikTypeEnum.FILTER));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
@@ -139,6 +134,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		IObservableList filterConditionsObservable = BeansObservables
 				.observeList(context.getValidationRealm(), this.beanClone,
 						FilterBean.PropertyNames.conditions.name());
+		
+		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
+				this.beanClone, FilterBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables
@@ -149,6 +147,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				SWT.Modify), descriptionTextObservable, null, null);
 		IObservableList observeItems = SWTObservables.observeItems(filterConditionsListViewer.getList());
 		context.bindList(observeItems, filterConditionsObservable, null, null);
+		
+		context.bindValue(SWTObservables
+				.observeSelection(_rubrikComboEntry),
+				rubrikTextObservable, null, null);
 	}
 
 	@Override

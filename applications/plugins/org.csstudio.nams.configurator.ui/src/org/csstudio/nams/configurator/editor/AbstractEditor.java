@@ -7,7 +7,6 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceListener;
-import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -33,8 +32,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	protected final int MIN_WIDTH = 300;
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
-
-	protected final String[] groupDummyContent = { "This is group dummy content" };
 
 	protected PropertyChangeListener listener;
 	private String superTitle;

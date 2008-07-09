@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -18,12 +19,12 @@ import org.eclipse.ui.IEditorSite;
 public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
 	private Text _topicIdTextEntry;
-	private Combo _groupComboEntry;
+	private Combo _rubrikComboEntry;
 	private Text _topicNameTextEntry;
 	private Text _descriptionTextEntry;
 	
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmtopicEditor";
-	private ComboViewer _groupComboEntryViewer;
+	private ComboViewer _rubrikComboEntryViewer;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -35,8 +36,9 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_topicIdTextEntry = this.createTextEntry(main, "Name:", true);
-		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true, groupDummyContent);
-		_groupComboEntry = _groupComboEntryViewer.getCombo();
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true, configurationBeanService
+				.getRubrikNamesForType(RubrikTypeEnum.TOPIC));
+		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_topicNameTextEntry = this.createTextEntry(main, "Topic name:", true);
 		_descriptionTextEntry = this.createDescriptionTextEntry(main,
@@ -55,7 +57,6 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	protected void initDataBinding() {
-		//TODO add group binding
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
@@ -67,6 +68,9 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		IObservableValue descriptionTextObservable = BeansObservables.observeValue(
 				this.beanClone, AlarmtopicBean.PropertyNames.description
 						.name());
+		
+		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
+				this.beanClone, AlarmtopicBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables
@@ -79,6 +83,10 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		context.bindValue(
 				SWTObservables.observeText(_descriptionTextEntry, SWT.Modify),
 				descriptionTextObservable, null, null);
+		
+		context.bindValue(SWTObservables
+				.observeSelection(_rubrikComboEntry),
+				rubrikTextObservable, null, null);
 	}
 
 	@Override

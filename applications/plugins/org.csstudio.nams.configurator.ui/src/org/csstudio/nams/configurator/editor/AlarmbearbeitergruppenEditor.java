@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -9,6 +10,7 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -30,13 +32,14 @@ import org.eclipse.ui.IEditorSite;
 public class AlarmbearbeitergruppenEditor extends AbstractEditor<AlarmbearbeiterGruppenBean> {
 
 	private Text name;
-	private Combo gruppe;
+	private Combo _rubrikComboEntry;
 	private Text aktiveMitglieder;
 	private Text wartezeit;
 	private Button activeButton;
 	
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor";
 	private TableViewer tableViewer;
+	private ComboViewer _rubrikComboEntryViewer;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -58,11 +61,14 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 				name = new Text(textFieldComp, SWT.BORDER);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(name);
 
-				new Label(textFieldComp, SWT.READ_ONLY).setText("Gruppe");
+//				new Label(textFieldComp, SWT.READ_ONLY).setText("Gruppe");
 
-				gruppe = new Combo(textFieldComp, SWT.None);
+				_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true, configurationBeanService
+								.getRubrikNamesForType(RubrikTypeEnum.USER_GROUP));
+				
+				_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 				GridDataFactory.fillDefaults().grab(true, false)
-						.applyTo(gruppe);
+						.applyTo(_rubrikComboEntry);
 
 				new Label(textFieldComp, SWT.READ_ONLY)
 						.setText("Minimale Anzahl aktiver Mitglieder");
@@ -195,6 +201,9 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 						this.beanClone,
 						AlarmbearbeiterGruppenBean.PropertyNames.timeOutSec
 								.name());
+		
+		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
+				this.beanClone, AlarmbearbeiterBean.AbstractPropertyNames.rubrikName.name());
 
 //		IObservableValue activeMembersTextObservable = BeansObservables
 //				.observeValue(this.beanClone,
@@ -220,7 +229,9 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 				SWTObservables.observeSelection(activeButton),
 				activeCheckboxObservable, null, null);
 
-		//TODO bind Group
+		context.bindValue(SWTObservables
+				.observeSelection(_rubrikComboEntry),
+				rubrikTextObservable, null, null);
 		
 	}
 
