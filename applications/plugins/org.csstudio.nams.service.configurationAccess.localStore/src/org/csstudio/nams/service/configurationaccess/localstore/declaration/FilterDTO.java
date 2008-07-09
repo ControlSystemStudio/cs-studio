@@ -63,7 +63,7 @@ public class FilterDTO {
 	}
 
 	@SuppressWarnings("unused")
-	private void setIGroupRef(int groupRef) {
+	public void setIGroupRef(int groupRef) {
 		iGroupRef = groupRef;
 	}
 

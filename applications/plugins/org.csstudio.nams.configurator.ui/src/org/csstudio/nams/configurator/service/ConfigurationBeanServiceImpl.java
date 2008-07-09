@@ -56,7 +56,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private Map<Integer, FilterbedingungBean> filterbedingungBeans = new HashMap<Integer, FilterbedingungBean>();
 	private Map<Integer, FilterBean> filterBeans = new HashMap<Integer, FilterBean>();
 
-	// Rubriks don't need to be beans. But here, everything should be Bean.
+	// Rubriks don't need to be beans.
 	private Collection<RubrikDTO> rubrikDTOs = new LinkedList<RubrikDTO>();  
 
 	public ConfigurationBeanServiceImpl(
@@ -336,6 +336,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		return result;
 	}
+	
+	private int getRubrikIDForName(String rubrikName, RubrikTypeEnum type) {
+		int result = 0;
+		for (Iterator<RubrikDTO> iter = rubrikDTOs.iterator(); iter.hasNext();) {
+			RubrikDTO rubrikDTO = (RubrikDTO) iter.next();
+			if (rubrikDTO.getCGroupName().equals(rubrikName) && rubrikDTO.getType().equals(type)) {
+				result = rubrikDTO.getIGroupId();
+				break;
+			}
+		}
+		return result;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -493,7 +505,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setPhone(bean.getPhone());
 		dto.setPreferedAlarmType(bean.getPreferedAlarmType());
 		dto.setStatusCode(bean.getStatusCode());
-
+		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.USER));
+		
 		dto = configurationService.saveAlarmbearbeiterDTO(dto);
 		loadConfiguration();
 
@@ -521,6 +534,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setMinGroupMember(bean.getMinGroupMember());
 		dto.setTimeOutSec(bean.getTimeOutSec());
 		dto.setUserGroupName(bean.getName());
+		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.USER_GROUP));
 
 		dto = configurationService.saveAlarmbearbeiterGruppenDTO(dto);
 		loadConfiguration();
@@ -540,6 +554,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setDescription(bean.getDescription());
 		dto.setName(bean.getHumanReadableName());
 		dto.setTopicName(bean.getTopicName());
+		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.TOPIC));
 
 		dto = configurationService.saveTopicDTO(dto);
 		loadConfiguration();
@@ -565,6 +580,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		
 		dto.setFilterConditions(list);
 		dto.setName(bean.getName());
+		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.FILTER));
 
 		dto = configurationService.saveFilterDTO(dto);
 		loadConfiguration();
@@ -709,6 +725,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterConditionDTO = timeBasedFilterConditionDTO;
 		}
 
+		filterConditionDTO.setIGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.FILTER_COND));
 		filterConditionDTO = configurationService
 				.saveFilterCondtionDTO(filterConditionDTO);
 		loadConfiguration();

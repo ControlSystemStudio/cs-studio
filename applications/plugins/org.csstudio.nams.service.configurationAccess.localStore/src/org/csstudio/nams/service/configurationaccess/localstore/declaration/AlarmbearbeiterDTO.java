@@ -114,7 +114,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the groupRef to set
 	 */
 	@SuppressWarnings("unused")
-	private void setGroupRef(int groupRef) {
+	public void setGroupRef(int groupRef) {
 		this.groupRef = groupRef;
 	}
 
