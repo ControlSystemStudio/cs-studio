@@ -192,7 +192,7 @@ public class Engine extends Job {
         _ldapWriteTimeCollector.setContinuousPrintCount(1000.0);
         _ldapWriteTimeCollector.getAlarmHandler().setDeadband(5.0);
         _ldapWriteTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0); // 500ms
-        _ldapWriteTimeCollector.getAlarmHandler().setHighRelativeLimit(400.0); // 200%
+        _ldapWriteTimeCollector.getAlarmHandler().setHighRelativeLimit(200.0); // 200%
 
         _ldapReadTimeCollector = new Collector();
         _ldapReadTimeCollector.setApplication(name);
@@ -201,7 +201,7 @@ public class Engine extends Job {
         _ldapReadTimeCollector.setContinuousPrintCount(1000.0);
         _ldapReadTimeCollector.getAlarmHandler().setDeadband(5.0);
         _ldapReadTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0); // 500ms
-        _ldapReadTimeCollector.getAlarmHandler().setHighRelativeLimit(500.0); // 200%
+        _ldapReadTimeCollector.getAlarmHandler().setHighRelativeLimit(200.0); // 200%
 
         _ldapWriteRequests = new Collector();
         _ldapWriteRequests.setApplication(name);
@@ -209,7 +209,7 @@ public class Engine extends Job {
         _ldapWriteRequests.setContinuousPrint(false);
         _ldapWriteRequests.setContinuousPrintCount(1000.0);
         _ldapWriteRequests.getAlarmHandler().setDeadband(5.0);
-        _ldapWriteRequests.getAlarmHandler().setHighAbsoluteLimit(50.0); // 500ms
+        _ldapWriteRequests.getAlarmHandler().setHighAbsoluteLimit(250.0); // number of entries in list
         _ldapWriteRequests.getAlarmHandler().setHighRelativeLimit(200.0); // 200%
     }
 
