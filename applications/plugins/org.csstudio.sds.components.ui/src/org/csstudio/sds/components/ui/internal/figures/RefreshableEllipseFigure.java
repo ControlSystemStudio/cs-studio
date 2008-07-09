@@ -93,8 +93,9 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 			graphics.setClip(backgroundRectangle);
 			graphics.setBackgroundColor(getBackgroundColor());
 			graphics.fillOval(figureBounds);
+			graphics.popState();
 		}
-		graphics.popState();
+		
 		graphics.pushState();
 		graphics.clipRect(fillRectangle);
 		graphics.setBackgroundColor(getForegroundColor());
