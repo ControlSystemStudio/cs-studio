@@ -44,6 +44,13 @@ public interface SynchronizeService {
 		 */
 		public abstract boolean pruefeObSynchronisationAusgefuehrtWerdenDarf();
 		
+		public void bereiteSynchronisationVor();
+		public void fehlerBeimVorbereiteDerSynchronisation(Throwable t);
+		
+		public void sendeNachrichtAnHintergrundSystem();
+		
+		public void synchronisationsBestaetigungDesHintergrundSystemsErhalten();
+		
 		/**
 		 * Informiert über den abbruch den Synchrisationsvorhabens.
 		 */
