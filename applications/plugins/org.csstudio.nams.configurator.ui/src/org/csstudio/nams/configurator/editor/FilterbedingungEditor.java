@@ -23,6 +23,7 @@ import org.csstudio.nams.configurator.editor.updatevaluestrategies.MessageKeyToM
 import org.csstudio.nams.configurator.editor.updatevaluestrategies.StringRegelOperatorToGuiStrategy;
 import org.csstudio.nams.configurator.editor.updatevaluestrategies.StringRegelOperatorToModelStrategy;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -180,7 +181,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		_filterTypeEntryViewer = this.createComboEntry(main, "Filtertype: ",
 				false, array2StringArray(SupportedFilterTypes.values()));
 		_filterTypeEntry = _filterTypeEntryViewer.getCombo();
-		
+
 		initializeAddOnBeans();
 		Listener listener = new Listener() {
 			public void handleEvent(Event event) {
@@ -209,11 +210,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		junctorTypeComboViewer = createComboEntry(stackComposites[0],
 				"Junktor", true, array2StringArray(JunctorConditionType
 						.values()));
-		junctorTypeComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				checkJunktionType();
-			}
-		});
+		junctorTypeComboViewer
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(SelectionChangedEvent event) {
+						checkJunktionType();
+					}
+				});
 		junctorTypeCombo = junctorTypeComboViewer.getCombo();
 		junctorSecondFilterText = createTextEntry(stackComposites[0],
 				"Filtercondition", false);
@@ -350,12 +352,15 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	}
 
 	private void checkJunktionType() {
-		String typeString = (String)((StructuredSelection)junctorTypeComboViewer.getSelection()).getFirstElement();
+		String typeString = (String) ((StructuredSelection) junctorTypeComboViewer
+				.getSelection()).getFirstElement();
 		try {
-			JunctorConditionType type = JunctorConditionType.valueOf(typeString);
-			junctorSecondFilterText.setVisible(type != JunctorConditionType.NOT);
+			JunctorConditionType type = JunctorConditionType
+					.valueOf(typeString);
+			junctorSecondFilterText
+					.setVisible(type != JunctorConditionType.NOT);
 		} catch (Exception e) {
-			
+
 		}
 	}
 
@@ -364,16 +369,16 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				DND.DROP_LINK);
 		DropTarget target2 = new DropTarget(junctorSecondFilterText,
 				DND.DROP_LINK);
-		
+
 		target1.setTransfer(new Transfer[] { LocalSelectionTransfer
 				.getTransfer() });
 		target2.setTransfer(new Transfer[] { LocalSelectionTransfer
 				.getTransfer() });
-		
+
 		target1.addDropListener(new TextDropTarget(junctorFirstFilterText));
 		target2.addDropListener(new TextDropTarget(junctorSecondFilterText));
 	}
-	
+
 	class TextDropTarget extends DropTargetAdapter {
 		private final Text text;
 
@@ -398,7 +403,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						.getTransfer().getSelection();
 				FilterbedingungBean bean = (FilterbedingungBean) selection
 						.getFirstElement();
-				//TODO
+				// TODO
 				text.setData(bean);
 				text.setText(bean.getDisplayName());
 			} catch (Throwable e) {
@@ -521,7 +526,23 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				null);
 
 		context.bindValue(SWTObservables.observeSelection(timeBehaviorCheck),
-				timeBehaviorObservable, null, null);
+				timeBehaviorObservable, new UpdateValueStrategy() {
+
+					@Override
+					public Object convert(Object value) {
+						Boolean status = (Boolean) value;
+						return status ? TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM
+								: TimeBasedType.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM;
+					}
+
+				}, new UpdateValueStrategy() {
+
+					@Override
+					public Object convert(Object value) {
+						return TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM == value ? true : false;
+					}
+
+				});
 
 		context.bindValue(SWTObservables
 				.observeSelection(timeStopOperatorCombo),
