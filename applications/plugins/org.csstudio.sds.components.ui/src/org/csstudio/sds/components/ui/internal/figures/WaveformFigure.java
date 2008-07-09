@@ -49,8 +49,6 @@ import org.eclipse.swt.graphics.RGB;
  * A simple waveform figure.
  * 
  * @author Sven Wende, Kai Meyer, Joerg Rathlev
- * @version $Revision$
- * 
  */
 public final class WaveformFigure extends Panel implements IAdaptable {
 	
@@ -217,7 +215,12 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * The maximum number of tickmarks to show on the x-axis.
 	 */
 	private int _xAxisMaxTickmarks = 10;
-
+	
+	/**
+	 * The y-axis data mapping.
+	 */
+	private Axis _yAxis = new Axis(0.0, 0.0, 0);
+	
 	/**
 	 * Standard constructor.
 	 */
@@ -310,6 +313,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 		
 		_plotBounds = this.calculatePlotBounds();
+		_yAxis.setDisplaySize(_plotBounds.height);
 		this.adjustAutoscale();
 		_zeroLevel = this.valueToYPos(0.0);
 		int verticalScaleWidth = 0;
@@ -438,6 +442,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			if (max < _max - AUTOSCALE_TRESHOLD || max > _max + AUTOSCALE_TRESHOLD) {
 				_max = max;
 			}
+			_yAxis.setDataRange(_min, _max);
 		}
 	}
 	
@@ -449,6 +454,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setMax(final double max) {
 		_max = max;
 		_propertyMax = max;
+		_yAxis.setDataRange(_min, _max);
 		this.refreshConstraints();
 	}
 
@@ -460,6 +466,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setMin(final double min) {
 		_min = min;
 		_propertyMin = min;
+		_yAxis.setDataRange(_min, _max);
 		this.refreshConstraints();
 	}
 
@@ -473,6 +480,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		if (!_autoScale) {
 			_min = _propertyMin;
 			_max = _propertyMax;
+			_yAxis.setDataRange(_min, _max);
 		}
 		this.refreshConstraints();
 	}
@@ -624,15 +632,13 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * @return the y position.
 	 */
 	private int valueToYPos(final double value) {
-		double dataRange = _max - _min;
-		int plotHeight = _plotBounds.height - 1;
 		// the data values are mapped to [0, height-1]
-		double scaling = plotHeight / dataRange;
-		
-		// _max - value calculates the distance of the value to the plot's
-		// upper edge. Since the y-axis goes from top to bottom, this is
-		// exactly what we need.
-		return (int) Math.round((_max - value) * scaling);
+		int plotHeight = _plotBounds.height - 1;
+
+		// the axis calculates the distance from the lower bound of the data
+		// range, but for the y coordinate, we need the distance from the top
+		// of the plot, so we subtract the returned value from plotHeight.
+		return plotHeight - _yAxis.valueToCoordinate(value);
 	}
 	
 	/**
