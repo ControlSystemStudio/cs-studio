@@ -41,7 +41,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.Logger;
-import org.eclipse.swt.widgets.MessageBox;
 
 public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
