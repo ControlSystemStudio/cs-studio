@@ -36,7 +36,8 @@ public class SyncronisationsAutomat {
 	 * @param localStoreConfigurationService
 	 * @throws MessagingException
 	 * 
-	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).
+	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).  (gs) Wird doch gemacht, oder?!?!
+	 * 
 	 * @throws InconsistentConfigurationException
 	 * @throws StorageException
 	 * @throws StorageError
@@ -47,8 +48,6 @@ public class SyncronisationsAutomat {
 			LocalStoreConfigurationService localStoreConfigurationService, HistoryService historyService)
 			throws MessagingException, StorageError, StorageException,
 			InconsistentConfigurationException, UnknownConfigurationElementError {
-
-		// TODO logger benutzen und nicht sysout
 
 		/**
 		 * Wenn der ReplicationState gerade auf einem Zustand des Distributors
@@ -71,7 +70,6 @@ public class SyncronisationsAutomat {
 		workingThread = Thread.currentThread();
 		canceled = false;
 		isRunning = true;
-		// System.out.println("vor");
 		while (macheweiter) {
 			try {
 				NAMSMessage receiveMessage = consumer.receiveMessage();
@@ -79,7 +77,6 @@ public class SyncronisationsAutomat {
 				if (receiveMessage.enthaeltSystemnachricht()) {
 					if (receiveMessage.alsSystemachricht()
 							.istSyncronisationsBestaetigung()) {
-						// System.out.println("richtige nachricht");
 						macheweiter = false;
 						historyService.logReceivedReplicationDoneMessage();
 					}
@@ -91,7 +88,7 @@ public class SyncronisationsAutomat {
 				if (e.getCause() instanceof InterruptedException) {
 					canceled = true;
 				}
-				throw new MessagingException(e);
+				throw e;
 			} catch (InterruptedException is) {
 				canceled = true;
 			}
