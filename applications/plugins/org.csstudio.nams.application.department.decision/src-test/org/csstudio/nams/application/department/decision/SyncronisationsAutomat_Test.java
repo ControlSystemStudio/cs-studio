@@ -254,6 +254,12 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return null;
 					}
 
+					public void deleteAlarmbearbeiterGruppenDTO(
+							AlarmbearbeiterGruppenDTO dto)
+							throws InconsistentConfigurationException {
+						fail("unexpected method call!");
+					}
+
 				}, new HistoryService() {
 
 					public void logReceivedReplicationDoneMessage() {

@@ -330,10 +330,20 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 
+	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto) 	
+			throws InconsistentConfigurationException {
+		Transaction tx = session.beginTransaction();
+		try {
+			session.delete(dto);
+		} catch (HibernateException e) {
+			new InconsistentConfigurationException("Could not delete " + dto
+					+ ". \n It is still in use.");
+		}
+		tx.commit();
+	}
+	
 	public void prepareSynchonization() {
 		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
 		// HSQL-Statement.
 	}
-
-
 }

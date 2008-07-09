@@ -81,18 +81,18 @@ public interface LocalStoreConfigurationService {
 	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(AlarmbearbeiterDTO alarmBearbeiterDTO);
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO);
 	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
+	public FilterConditionDTO saveFilterCondtionDTO(FilterConditionDTO filterConditionDTO);
+	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException;
+	public RubrikDTO saveRubrikDTO(RubrikDTO dto);
 	
 	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException;
+	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto) throws InconsistentConfigurationException;
 
-	public FilterConditionDTO saveFilterCondtionDTO(FilterConditionDTO filterConditionDTO);
-
-	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException;
-	
-	public RubrikDTO saveRubrikDTO(RubrikDTO dto);
 	
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden die SYN-Tabellen geschrieben.
 	 */
 	public void prepareSynchonization();
+
 
 }

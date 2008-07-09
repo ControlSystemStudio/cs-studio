@@ -869,9 +869,23 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private void deleteAlarmbearbeiterGruppenBean(
-			AlarmbearbeiterGruppenBean bean) {
-		// TODO Auto-generated method stub
+			AlarmbearbeiterGruppenBean bean) throws InconsistentConfigurationException {
 
+		AlarmbearbeiterGruppenDTO dto = null;
+		for (AlarmbearbeiterGruppenDTO potentialdto : entireConfiguration
+				.gibAlleAlarmbearbeiterGruppen()) {
+			if (potentialdto.getUserGroupId() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		if (dto != null) {
+			configurationService.deleteAlarmbearbeiterGruppenDTO(dto);
+			alarmbearbeitergruppenBeans.remove(dto.getUserGroupId());
+			logger.logInfoMessage(this,
+					"ConfigurationBeanServiceImpl.delete() " + dto.getUserGroupId()
+							+ " " + dto.getUserGroupName());
+		}
 	}
 
 	private void deleteAlarmtopicBean(AlarmtopicBean bean) {
