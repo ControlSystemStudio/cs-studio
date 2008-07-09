@@ -2,7 +2,7 @@ package org.csstudio.nams.configurator.service.synchronize;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 
-public class SynchronizeService {
+public interface SynchronizeService {
 
 	/**
 	 * Synchronisiert die eingegebenen und gespeicherten Änderungen mit dem
@@ -31,11 +31,22 @@ public class SynchronizeService {
 	 *            Über diesen Callback werden Rückfragen an den Aufrufer
 	 *            gestellt und (Zwischen-)Ergebnisse mitgeteilt.
 	 */
-	public void sychronizeAlarmSystem(Callback callback) {
-
-	}
+	public void sychronizeAlarmSystem(Callback callback);
 
 	public abstract static class Callback {
-
+		/**
+		 * Prüft, ob es ungesicherte Änderungen gibt, aufgrund derer nicht
+		 * synchronisiert werden kann oder sollte. Ggf. Rückfrage an den
+		 * Anwender.
+		 * 
+		 * @return {@code true} if and only if synchronize should be proceeded,
+		 *         {@code false} otherwise.
+		 */
+		public abstract boolean pruefeObUngesicherteAenderungenDasSynchronisierenVerhindern();
+		
+		/**
+		 * Informiert über den abbruch den Synchrisationsvorhabens.
+		 */
+		public abstract void synchronisationAbgebrochen();
 	}
 }
