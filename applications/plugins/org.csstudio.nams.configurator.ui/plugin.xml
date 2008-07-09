@@ -159,6 +159,16 @@
                showTitle="true"
                visible="true">
          </view>
+         <view
+               closeable="false"
+               id="org.eclipse.ui.console.ConsoleView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.csstudio.nams.configurator.syncronize"
+               showTitle="true"
+               visible="true">
+         </view>
       </perspectiveExtension>
    </extension>
    <extension
