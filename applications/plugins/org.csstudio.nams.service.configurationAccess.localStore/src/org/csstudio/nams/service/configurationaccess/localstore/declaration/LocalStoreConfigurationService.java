@@ -87,12 +87,16 @@ public interface LocalStoreConfigurationService {
 	
 	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException;
 	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto) throws InconsistentConfigurationException;
+	public void deleteAlarmtopicDTO(TopicDTO dto) throws InconsistentConfigurationException;
+	public void deleteFilterDTO(FilterDTO dto) throws InconsistentConfigurationException;
+	public void deleteFilterConditionDTO(FilterConditionDTO dto) throws InconsistentConfigurationException;
 
 	
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden die SYN-Tabellen geschrieben.
 	 */
 	public void prepareSynchonization();
+
 
 
 }

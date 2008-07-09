@@ -342,8 +342,39 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 	
+	public void deleteAlarmtopicDTO(TopicDTO dto) throws InconsistentConfigurationException {
+		Transaction tx = session.beginTransaction();
+		try {
+			session.delete(dto);
+		} catch (HibernateException e) {
+			new InconsistentConfigurationException("Could not delete " + dto
+					+ ". \n It is still in use.");
+		}
+		tx.commit();
+	}
+	
+	public void deleteFilterConditionDTO(FilterConditionDTO dto)
+		throws InconsistentConfigurationException {
+		Transaction tx = session.beginTransaction();
+		try {
+			session.delete(dto);
+		} catch (HibernateException e) {
+			new InconsistentConfigurationException("Could not delete " + dto
+					+ ". \n It is still in use.");
+		}
+		tx.commit();
+	}
+	
+	public void deleteFilterDTO(FilterDTO dto)
+		throws InconsistentConfigurationException {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void prepareSynchonization() {
 		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
 		// HSQL-Statement.
 	}
+
+
 }

@@ -260,6 +260,20 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						fail("unexpected method call!");
 					}
 
+					public void deleteAlarmtopicDTO(TopicDTO dto) {
+						fail("unexpected method call!");
+					}
+
+					public void deleteFilterConditionDTO(FilterConditionDTO dto)
+							throws InconsistentConfigurationException {
+						fail("unexpected method call!");
+					}
+
+					public void deleteFilterDTO(FilterDTO dto)
+							throws InconsistentConfigurationException {
+						fail("unexpected method call!");
+					}
+
 				}, new HistoryService() {
 
 					public void logReceivedReplicationDoneMessage() {

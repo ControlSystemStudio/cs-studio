@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
@@ -26,6 +27,7 @@ public class FilterbedingungBean extends
 	}
 
 	public FilterbedingungBean() {
+		filterSpecificBean = new JunctorConditionBean();
 	}
 
 	public String getDisplayName() {

@@ -888,9 +888,24 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 	}
 
-	private void deleteAlarmtopicBean(AlarmtopicBean bean) {
-		// TODO Auto-generated method stub
-
+	private void deleteAlarmtopicBean(AlarmtopicBean bean) 
+			throws InconsistentConfigurationException {
+		TopicDTO dto = null;
+		for (TopicDTO potentialdto : entireConfiguration
+				.gibAlleAlarmtopics()) {
+			if (potentialdto.getId() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		if (dto != null) {
+			configurationService.deleteAlarmtopicDTO(dto);
+			alarmtopicBeans.remove(dto.getId());
+			logger.logInfoMessage(this,
+					"ConfigurationBeanServiceImpl.delete() " + dto.getId()
+					+ " " + dto.getTopicName());
+		}
+		
 	}
 
 	private void deleteFilterBean(FilterBean bean) {
@@ -898,9 +913,23 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	}
 
-	private void deleteFilterbedingungBean(FilterbedingungBean bean) {
-		// TODO Auto-generated method stub
-
+	private void deleteFilterbedingungBean(FilterbedingungBean bean) 
+			throws InconsistentConfigurationException{
+		FilterConditionDTO dto = null;
+		for (FilterConditionDTO potentialdto : entireConfiguration
+				.gibAlleFilterConditions()) {
+			if (potentialdto.getIFilterConditionID() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		if (dto != null) {
+			configurationService.deleteFilterConditionDTO(dto);
+			filterbedingungBeans.remove(dto.getIFilterConditionID());
+			logger.logInfoMessage(this,
+					"ConfigurationBeanServiceImpl.delete() " + dto.getIFilterConditionID()
+					+ " " + dto.getCName());
+		}
 	}
 
 	private void notifyDeleteListeners(IConfigurationBean bean) {
