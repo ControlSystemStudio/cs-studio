@@ -142,9 +142,12 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		ComboViewer comboWidget = new ComboViewer(parent, SWT.BORDER);
+		int style = SWT.BORDER;
+		if (!editable) {
+			style |= SWT.READ_ONLY;
+		}
+		ComboViewer comboWidget = new ComboViewer(parent, style);
 		comboWidget.add(contents);
-		// comboWidget.setEditable(editable);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;

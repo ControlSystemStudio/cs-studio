@@ -31,8 +31,11 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.dnd.DND;
@@ -175,11 +178,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
 		_filterTypeEntryViewer = this.createComboEntry(main, "Filtertype: ",
-				true, array2StringArray(SupportedFilterTypes.values()));
+				false, array2StringArray(SupportedFilterTypes.values()));
 		_filterTypeEntry = _filterTypeEntryViewer.getCombo();
-
+		
 		initializeAddOnBeans();
-		_filterTypeEntry.addListener(SWT.Modify, new Listener() {
+		Listener listener = new Listener() {
 			public void handleEvent(Event event) {
 				filterLayout.topControl = stackComposites[_filterTypeEntry
 						.getSelectionIndex()];
@@ -190,7 +193,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 								.get(SupportedFilterTypes
 										.fromString(_filterTypeEntry.getText())));
 			}
-		});
+		};
+		_filterTypeEntry.addListener(SWT.Modify, listener);
 
 		filterSpecificComposite = new Composite(outermain, SWT.NONE);
 		filterLayout = new StackLayout();
@@ -205,6 +209,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		junctorTypeComboViewer = createComboEntry(stackComposites[0],
 				"Junktor", true, array2StringArray(JunctorConditionType
 						.values()));
+		junctorTypeComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				checkJunktionType();
+			}
+		});
 		junctorTypeCombo = junctorTypeComboViewer.getCombo();
 		junctorSecondFilterText = createTextEntry(stackComposites[0],
 				"Filtercondition", false);
@@ -336,6 +345,18 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 					+ filterSpecificBean.getClass());
 		initDataBinding();
 		initDND();
+		listener.handleEvent(null); // zur initialisierung
+		checkJunktionType();
+	}
+
+	private void checkJunktionType() {
+		String typeString = (String)((StructuredSelection)junctorTypeComboViewer.getSelection()).getFirstElement();
+		try {
+			JunctorConditionType type = JunctorConditionType.valueOf(typeString);
+			junctorSecondFilterText.setVisible(type != JunctorConditionType.NOT);
+		} catch (Exception e) {
+			
+		}
 	}
 
 	private void initDND() {
