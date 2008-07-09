@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dal Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.dal;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.5
 Bundle-Activator: org.csstudio.dal.DalPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -14,7 +14,7 @@ Bundle-ClassPath: .,
  lib/java-common-4.0-SNAPSHOT.jar,
  lib/java-common-src-4.0-SNAPSHOT.jar,
  lib/junit-3.8.1.jar,
- lib/css-dal-0.7.2.jar
+ lib/css-dal-0.8.0.jar
 Export-Package: EDU.oswego.cs.dl.util.concurrent,
  EDU.oswego.cs.dl.util.concurrent.misc,
  EDU.oswego.cs.dl.util.concurrent.taskDemo,
