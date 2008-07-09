@@ -58,7 +58,7 @@ public class FilterDTO {
 	/**
 	 * Kategorie
 	 */
-	int getIGroupRef() {
+	public int getIGroupRef() {
 		return iGroupRef;
 	}
 

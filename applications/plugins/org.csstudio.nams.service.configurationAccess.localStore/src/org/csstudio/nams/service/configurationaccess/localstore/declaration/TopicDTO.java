@@ -100,7 +100,7 @@ public class TopicDTO {
 		return this.description;
 	}
 
-	int getGroupRef() {
+	public int getGroupRef() {
 		return this.groupRef;
 	}
 

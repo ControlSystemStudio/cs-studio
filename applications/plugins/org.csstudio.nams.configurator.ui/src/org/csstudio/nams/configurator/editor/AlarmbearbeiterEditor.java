@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.beans.RubrikBean;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -45,7 +44,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
 		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
 				array2StringArray(configurationBeanService
-						.getRubrikBeansForType(RubrikTypeEnum.USER)));
+						.getRubrikNamesForType(RubrikTypeEnum.USER)));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_emailTextEntry = this.createTextEntry(main, "Email:", true);
@@ -57,7 +56,6 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 				array2StringArray(PreferedAlarmType.values()));
 		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer
 				.getCombo();
-		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_statusCodeTextEntry = this.createTextEntry(main, "Status code:", true);
 		_confirmCodeTextEntry = this.createTextEntry(main, "Confirm code:",
@@ -114,7 +112,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 								.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone, RubrikBean.PropertyNames.rubrikName.name());
+				this.beanClone, AlarmbearbeiterBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables

@@ -7,7 +7,6 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.beans.RubrikBean;
 
 public interface ConfigurationBeanService {
 
@@ -21,7 +20,7 @@ public interface ConfigurationBeanService {
 
 	public abstract FilterbedingungBean[] getFilterConditionBeans();
 
-	public abstract RubrikBean[] getRubrikBeansForType(RubrikTypeEnum type);
+	public abstract String[] getRubrikNamesForType(RubrikTypeEnum type);
 
 	public <T extends IConfigurationBean> T save(T bean);
 	

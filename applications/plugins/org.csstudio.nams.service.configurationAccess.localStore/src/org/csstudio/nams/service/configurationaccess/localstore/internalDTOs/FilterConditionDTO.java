@@ -77,7 +77,7 @@ public class FilterConditionDTO {
 	 * @return the iGroupRef
 	 */
 	@SuppressWarnings("unused")
-	private int getIGroupRef() {
+	public int getIGroupRef() {
 		return iGroupRef;
 	}
 

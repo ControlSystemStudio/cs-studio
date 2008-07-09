@@ -23,6 +23,10 @@ import java.beans.PropertyChangeSupport;
 public abstract class AbstractConfigurationBean<T extends IConfigurationBean> 
 					implements IConfigurationBean, Comparable<T> {
 
+	public static enum AbstractPropertyNames {
+		rubrikName
+	}
+	
 	private String rubrikName;
 
 	public int compareTo(T o) {

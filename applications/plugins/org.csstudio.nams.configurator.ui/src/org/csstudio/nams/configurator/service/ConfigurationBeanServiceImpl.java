@@ -3,6 +3,7 @@ package org.csstudio.nams.configurator.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,6 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.beans.RubrikBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
@@ -54,7 +54,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private Map<Integer, AlarmtopicBean> alarmtopicBeans = new HashMap<Integer, AlarmtopicBean>();
 	private Map<Integer, FilterbedingungBean> filterbedingungBeans = new HashMap<Integer, FilterbedingungBean>();
 	private Map<Integer, FilterBean> filterBeans = new HashMap<Integer, FilterBean>();
-	private Map<Integer, RubrikBean> rubrikBeans = new HashMap<Integer, RubrikBean>();
+
+	// Rubriks don't need to be beans. But here, everything should be Bean.
+	private Collection<RubrikDTO> rubrikDTOs = new LinkedList<RubrikDTO>();  
 
 	public ConfigurationBeanServiceImpl(
 			LocalStoreConfigurationService localStore) {
@@ -81,18 +83,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			entireConfiguration = configurationService.getEntireConfiguration();
 			// TODO Folgendes Exception-Handling überdenken....
 
-			Collection<RubrikDTO> rubriks = entireConfiguration
-					.gibAlleRubriken();
-			for (RubrikDTO rubrik : rubriks) {
-				RubrikBean bean = DTO2Bean(rubrik);
-				RubrikBean origBean = rubrikBeans
-						.get(new Integer(bean.getID()));
-				if (origBean != null) {
-					origBean.updateState(bean);
-				} else {
-					rubrikBeans.put(bean.getID(), bean);
-				}
-			}
+			rubrikDTOs = entireConfiguration.gibAlleRubriken();
 
 			Collection<AlarmbearbeiterDTO> alarmbearbeiter = entireConfiguration
 					.gibAlleAlarmbearbeiter();
@@ -158,6 +149,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				}
 			}
 
+
 		} catch (StorageError e) {
 			logger.logErrorMessage(this,
 					"Could not load Eniter Configuration because of: "
@@ -211,10 +203,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setPreferedAlarmType(alarmbearbeiter.getPreferedAlarmType());
 		bean.setStatusCode(alarmbearbeiter.getStatusCode());
 		bean.setUserID(alarmbearbeiter.getUserId());
-		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group
-																				// =
-																				// Rubrik
-
+		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group = Rubrik
+		
 		return bean;
 	}
 
@@ -247,6 +237,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setMinGroupMember(dto.getMinGroupMember());
 		bean.setName(dto.getUserGroupName());
 		bean.setTimeOutSec(dto.getTimeOutSec());
+		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group = Rubrik
 		return bean;
 	}
 
@@ -273,6 +264,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setHumanReadableName(dto.getName());
 		bean.setTopicID(dto.getId());
 		bean.setTopicName(dto.getTopicName());
+		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group = Rubrik
 		return bean;
 	}
 
@@ -310,39 +302,34 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			System.out.println("Ignored FilterConditions in Filter: " + filter.getIFilterID());
 		}
 		bean.setConditions(conditions);
+		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group = Rubrik
 		return bean;
 	}
+	
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getFilterBeans()
 	 */
-	public RubrikBean[] getRubrikBeansForType(RubrikTypeEnum type) {
-		Collection<RubrikBean> values = rubrikBeans.values();
-		Collection<RubrikBean> specificRubriks = new ArrayList<RubrikBean>();
-		for (RubrikBean rubrikBean : values) {
-			if (rubrikBean.getRubrikType().equals(type)) {
-				specificRubriks.add(rubrikBean);
+	public String[] getRubrikNamesForType(RubrikTypeEnum type) {
+		Collection<String> specificRubriks = new ArrayList<String>();
+		for (Iterator<RubrikDTO> iter = rubrikDTOs.iterator(); iter.hasNext();) {
+			RubrikDTO rubrikDTO = (RubrikDTO) iter.next();
+			if (rubrikDTO.getType().equals(type)) {
+				specificRubriks.add(rubrikDTO.getCGroupName());
 			}
 		}
-		return specificRubriks.toArray(new RubrikBean[specificRubriks.size()]);
+		
+		return specificRubriks.toArray(new String[specificRubriks.size()]);
 	}
-
-	private RubrikBean DTO2Bean(RubrikDTO dto) {
-		RubrikBean bean = new RubrikBean();
-		bean.setID(dto.getIGroupId());
-		bean.setRubrikName(dto.getCGroupName());
-		bean.setRubrikType(dto.getType().name());
-		return bean;
-	}
-
+	
 	private String getRubrikNameForId(int groupRef) {
-		Collection<RubrikBean> values = rubrikBeans.values();
-		String result = null;
-		for (RubrikBean rubrikBean : values) {
-			if (rubrikBean.getID() == groupRef) {
-				result = rubrikBean.getRubrikName();
+		String result = "";
+		for (Iterator<RubrikDTO> iter = rubrikDTOs.iterator(); iter.hasNext();) {
+			RubrikDTO rubrikDTO = (RubrikDTO) iter.next();
+			if (rubrikDTO.getIGroupId() == groupRef) {
+				result = rubrikDTO.getCGroupName();
 				break;
 			}
 		}
@@ -459,6 +446,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterSpecificBean = timeBasedConditionBean;
 		}
 
+		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group = Rubrik
 		if (filterSpecificBean != null) {
 			bean.setFilterSpecificBean(filterSpecificBean);
 		} else {
@@ -568,12 +556,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			inserted = true;
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
-
+		
 		List<FilterConditionDTO> list = new LinkedList<FilterConditionDTO>();
 		for (FilterbedingungBean condBean : bean.getConditions()) {
 			list.add(getDTO4Bean(condBean));
 		}
-
+		
 		dto.setFilterConditions(list);
 		dto.setName(bean.getName());
 

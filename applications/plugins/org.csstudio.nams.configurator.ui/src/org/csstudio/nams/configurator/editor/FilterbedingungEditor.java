@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
@@ -98,7 +99,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	}
 
 	private Text _nameTextEntry;
-	private Combo _groupComboEntry;
+	private Combo _rubrikComboEntry;
 	private Text _defaultMessageTextEntry;
 	private Composite filterSpecificComposite;
 	private Combo _filterTypeEntry;
@@ -132,7 +133,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private Combo timeStopOperatorCombo;
 	private Text timeStopCompareText;
 	private ListViewer arrayCompareValueListViewer;
-	private ComboViewer _groupComboEntryViewer;
+	private ComboViewer _rubrikComboEntryViewer;
 	private ComboViewer _filterTypeEntryViewer;
 	private ComboViewer junctorTypeComboViewer;
 	private ComboViewer stringOperatorComboViewer;
@@ -159,9 +160,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		Composite main = new Composite(outermain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true,
-				groupDummyContent);
-		_groupComboEntry = _groupComboEntryViewer.getCombo();
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
+				array2StringArray(configurationBeanService
+						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND)));
+		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
@@ -597,7 +599,6 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 	@Override
 	protected void initDataBinding() {
-		// TODO add group binding
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
@@ -606,6 +607,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		IObservableValue descriptionTextObservable = BeansObservables
 				.observeValue(this.beanClone,
 						FilterbedingungBean.PropertyNames.description.name());
+		
+		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
+				this.beanClone, FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables
@@ -621,6 +625,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		initStringArrayAddOnBeanDataBinding(context);
 		// TODO init TimeBased DataBinding
 		initTimeBasedAddOnBeanDataBinding(context);
+		
+		context.bindValue(SWTObservables
+				.observeSelection(_rubrikComboEntry),
+				rubrikTextObservable, null, null);
 
 	}
 

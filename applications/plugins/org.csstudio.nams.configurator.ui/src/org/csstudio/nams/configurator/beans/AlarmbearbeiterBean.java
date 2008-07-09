@@ -6,8 +6,7 @@ public class AlarmbearbeiterBean extends
 		AbstractConfigurationBean<AlarmbearbeiterBean> {
 
 	public static enum PropertyNames {
-		userID, confirmCode, name, email, mobilePhone, phone, statusCode, active, preferedAlarmType
-
+		userID, confirmCode, name, email, mobilePhone, phone, statusCode, active, preferedAlarmType 
 	}
 
 	private int userID;// PRIMARY KEY

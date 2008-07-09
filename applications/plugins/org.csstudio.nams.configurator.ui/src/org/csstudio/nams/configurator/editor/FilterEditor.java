@@ -38,12 +38,12 @@ import org.eclipse.ui.part.EditorPart;
 public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	private Text _nameTextEntry;
-	private Combo _groupComboEntry;
+	private Combo _rubrikComboEntry;
 	private Text _defaultMessageTextEntry;
 	private Composite filterSpecificComposite;
 
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
-	private ComboViewer _groupComboEntryViewer;
+	private ComboViewer _rubrikComboEntryViewer;
 	private ListViewer filterConditionsListViewer;
 
 	@Override
@@ -54,9 +54,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_groupComboEntryViewer = this.createComboEntry(main, "Group:", true,
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
 				groupDummyContent);
-		_groupComboEntry = _groupComboEntryViewer.getCombo();
+		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");

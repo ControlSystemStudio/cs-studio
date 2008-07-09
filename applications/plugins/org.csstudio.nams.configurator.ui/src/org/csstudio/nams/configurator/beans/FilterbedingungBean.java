@@ -12,7 +12,7 @@ public class FilterbedingungBean extends
 	private FilterConditionAddOnBean filterSpecificBean;
 
 	public static enum PropertyNames {
-		filterbedingungID, description, name, filterSpecificBean;
+		filterbedingungID, description, name, filterSpecificBean
 	}
 	
 	public int getFilterbedinungID() {

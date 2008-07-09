@@ -93,7 +93,7 @@ public class AlarmbearbeiterGruppenDTO {
 	/**
 	 * @return the groupRef
 	 */
-	int getGroupRef() {
+	public int getGroupRef() {
 		return groupRef;
 	}
 
