@@ -12,6 +12,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+@Deprecated
 public class NewBeanAction extends Action implements
 		IViewActionDelegate {
 

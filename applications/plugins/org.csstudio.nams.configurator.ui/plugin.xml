@@ -191,11 +191,6 @@
                label="Lösche">
          </action>
          <action
-               class="org.csstudio.nams.configurator.actions.NewBeanAction"
-               id="org.csstudio.nams.configurator.actions.NewAlarmbearbeiterAction"
-               label="Neu">
-         </action>
-         <action
                class="org.csstudio.nams.configurator.actions.DuplicateConfigurationBeanAction"
                id="org.csstudio.nams.newconfigurator.action.duplicate"
                label="Duplizieren">

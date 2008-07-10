@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 
 public class FilterView extends AbstractNamsView {
@@ -9,5 +10,10 @@ public class FilterView extends AbstractNamsView {
 	@Override
 	protected IConfigurationBean[] getTableContent() {
 		return configurationBeanService.getFilterBeans();
+	}
+	
+	@Override
+	protected Class<? extends IConfigurationBean> getBeanClass() {
+		return FilterBean.class;
 	}
 }

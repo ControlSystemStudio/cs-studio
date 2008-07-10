@@ -1,14 +1,21 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;
+import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public abstract class AbstractNamsView extends ViewPart {
@@ -54,9 +61,45 @@ public abstract class AbstractNamsView extends ViewPart {
 		table.getTable().setMenu(menu);
 		getSite().registerContextMenu(menuManager, table);
 		getSite().setSelectionProvider(table);
+
+		IActionBars actionBars = getViewSite().getActionBars();
+
+		menuManager.add(new Action() {
+			@Override
+			public void run() {
+				ConfigurationEditorInput editorInput;
+				try {
+					editorInput = new ConfigurationEditorInput(getBeanClass().newInstance());
+
+					IWorkbenchPage activePage = PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage();
+					String editorId = BeanToEditorId.getEnumForClass(getBeanClass())
+							.getEditorId();
+
+					activePage.openEditor(editorInput, editorId);
+				} catch (InstantiationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (PartInitException e) {
+					e.printStackTrace();
+				}			
+			}
+			
+			@Override
+			public String getText() {
+				
+				return "Neu";
+			}
+		});
+		
 		initDragAndDrop(filterableBeanList);
 	}
 
+	
+	
 	protected void initDragAndDrop(FilterableBeanList filterableBeanList){
 		
 	}
@@ -71,4 +114,5 @@ public abstract class AbstractNamsView extends ViewPart {
 		configurationBeanService = beanService;
 	}
 	
+	protected abstract Class<? extends IConfigurationBean> getBeanClass();
 }

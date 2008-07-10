@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;
 import org.csstudio.nams.configurator.dnd.SelectionDragSourceListener;
@@ -21,5 +22,10 @@ public class FilterbedingungView extends AbstractNamsView {
 		filterableBeanList.getTable().addDragSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new SelectionDragSourceListener(filterableBeanList.getTable()));
+	}
+	
+	@Override
+	protected Class<? extends IConfigurationBean> getBeanClass() {
+		return FilterbedingungBean.class;
 	}
 }
