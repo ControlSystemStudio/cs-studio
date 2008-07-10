@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
+import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler;
+import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
@@ -247,6 +249,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
 
 		DecisionDepartmentActivator.executionService = injectedExecutionService;
+		
+		XMPPLoginCallbackHandler.staticInject(DecisionDepartmentActivator.logger);
+		XMPPRemoteShutdownAction.staticInject(DecisionDepartmentActivator.logger);
 
 		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
 				+ DecisionDepartmentActivator.PLUGIN_ID

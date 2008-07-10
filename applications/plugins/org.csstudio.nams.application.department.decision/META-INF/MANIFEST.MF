@@ -12,7 +12,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.history,
  org.csstudio.nams.service.configurationAccess.localStore,
  org.csstudio.nams.common.activatorUtils,
- org.csstudio.nams.service.preferenceservice
+ org.csstudio.nams.service.preferenceservice,
+ org.csstudio.platform.libs.xmpp,
+ org.csstudio.platform,
+ org.csstudio.platform.libs.dcf
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.application.department.decision;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.application.department.decision.office.decision;x-friends:="org.csstudio.nams.testUtils.testSuites"

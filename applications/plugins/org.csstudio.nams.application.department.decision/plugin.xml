@@ -11,5 +11,22 @@
          </run>
       </application>
    </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler"
+            id="org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler"
+            name="DecissionDepartmentLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction"
+            id="org.csstudio.nams.application.department.decision.remote.RemoteShutdownAction"
+            name="shutdown"
+            parameters="authorisation">
+      </parametrizedAction>
+   </extension>
 
 </plugin>
