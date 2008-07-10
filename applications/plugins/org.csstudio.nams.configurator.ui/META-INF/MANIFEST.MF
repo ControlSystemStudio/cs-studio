@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.databinding,
  org.csstudio.nams.service.configurationAccess.localStore,
  org.csstudio.nams.common,
- org.csstudio.nams.service.preferenceservice
+ org.csstudio.nams.service.preferenceservice,
+ org.eclipse.ui.forms
 Eclipse-LazyStart: true

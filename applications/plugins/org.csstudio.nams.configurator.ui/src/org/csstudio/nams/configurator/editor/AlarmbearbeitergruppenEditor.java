@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class AlarmbearbeitergruppenEditor extends AbstractEditor<AlarmbearbeiterGruppenBean> {
 
@@ -40,6 +42,8 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor";
 	private TableViewer tableViewer;
 	private ComboViewer _rubrikComboEntryViewer;
+	private FormToolkit formToolkit;
+	private ScrolledForm mainForm;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -47,7 +51,10 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 
 	@Override
 	public void createPartControl(Composite parent) {
-		Composite main = new Composite(parent, SWT.None);
+		formToolkit = new FormToolkit(parent.getDisplay());
+		mainForm = formToolkit.createScrolledForm(parent);
+		Composite main = mainForm.getBody();
+		main.setBackground(parent.getBackground());
 		main.setLayout(new GridLayout(1, false));
 		{
 			Composite textFieldComp = new Composite(main, SWT.None);

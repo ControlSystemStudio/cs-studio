@@ -59,6 +59,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
@@ -158,6 +160,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private ComboViewer timeStopOperatorComboViewer;
 	private ComboViewer stringCompareKeyComboViewer;
 	private Combo stringCompareKeyCombo;
+	private FormToolkit formToolkit;
+	private ScrolledForm mainForm;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -165,7 +169,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		Composite outermain = new Composite(parent, SWT.NONE);
+		formToolkit = new FormToolkit(parent.getDisplay());
+		mainForm = formToolkit.createScrolledForm(parent);
+		Composite outermain = mainForm.getBody();
+		outermain.setBackground(parent.getBackground());
 		outermain.setLayout(new FillLayout(SWT.VERTICAL));
 
 		Composite main = new Composite(outermain, SWT.NONE);

@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 
@@ -36,9 +38,15 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 
 	private ComboViewer _prefAlarmingTypeComboEntryViewer;
 
+	private FormToolkit formToolkit;
+	private ScrolledForm mainForm;
+
 	@Override
 	public void createPartControl(Composite parent) {
-		Composite main = new Composite(parent, SWT.NONE);
+		formToolkit = new FormToolkit(parent.getDisplay());
+		mainForm = formToolkit.createScrolledForm(parent);
+		Composite main = mainForm.getBody();
+		main.setBackground(parent.getBackground());
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);

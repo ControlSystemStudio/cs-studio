@@ -35,8 +35,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
 
-	protected final String[] groupDummyContent = { "This is group dummy content" };
-
 	protected PropertyChangeListener listener;
 	private String superTitle;
 
