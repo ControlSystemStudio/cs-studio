@@ -88,7 +88,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	}
 	
 	public void setKeyValue(MessageKeyEnum keyValue){
-		this.keyValue = keyValue.getStringValue();
+		setKeyValue( keyValue.getStringValue() );
 	}
 
 	/**

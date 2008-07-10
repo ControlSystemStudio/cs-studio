@@ -9,6 +9,10 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
+
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
  * AMS_FilterCondition.
@@ -30,7 +34,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "AMS_FilterCondition")
 @Inheritance(strategy=InheritanceType.JOINED)
-public class FilterConditionDTO {
+public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 
 	@Column(name="iFilterConditionTypeRef")
 	protected int filterCondtionTypeRef;
@@ -169,6 +173,14 @@ public class FilterConditionDTO {
 		if (iGroupRef != other.iGroupRef)
 			return false;
 		return true;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return getCName();
+	}
+
+	public boolean isInCategory(int categoryDBId) {
+		return getIGroupRef() == categoryDBId;
 	}
 
 	

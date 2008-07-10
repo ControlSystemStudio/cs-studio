@@ -114,6 +114,21 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertNotNull(entireConfiguration);
 		assertTrue("neue fc ist jetzt gespeichert.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
 		
+		// verändern
+		neueFilterCondition.setCName("Modified");
+		service.saveDTO(neueFilterCondition);
+		
+		// neu laden....
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		Collection<FilterConditionDTO> loadedList = entireConfiguration.gibAlleFilterConditions();
+		assertTrue("neue fc ist jetzt gespeichert.", loadedList.contains(neueFilterCondition));
+		for (FilterConditionDTO filterConditionDTO : loadedList) {
+			// Keine Benutzer mit altem Namen vorhanden.
+			assertFalse("Test".equals(filterConditionDTO.getCName()));
+		}
+		
+		// löschen
 		service.deleteDTO(neueFilterCondition);
 		
 		// neu laden

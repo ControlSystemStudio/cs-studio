@@ -1,5 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
+
 public interface NewAMSConfigurationElementDTO {
 	
 	/**
@@ -11,10 +13,8 @@ public interface NewAMSConfigurationElementDTO {
 	 * Prueft, ob dieses Konfigurationselement in der Rubrik mit dem angegebenen
 	 * Datenbank-Rubrik-Primaerschluessel (GroupRef) enthalten ist.
 	 * 
-	 * TODO Besser hier ein CategoryDTO verwenden.
-	 * 
-	 * @param categoryDBId 
-	 * @return
+	 * @deprecated mz 20080710: Hier ein {@link RubrikDTO} verwenden.
 	 */
+	@Deprecated
 	public boolean isInCategory(int categoryDBId);
 }
