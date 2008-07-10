@@ -52,7 +52,7 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 						// (RETRIES = 180)(DELAY = 5))))",
 						preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
-						"org.hibernate.dialect.Oracle10gDialect",
+						"org.hibernate.dialect.Oracle10gDialect", // FIXME mz2008-07-10: Könnte Problem bei der DESY erklären, wenn die keine 10er einsetzen wird das scheitern!
 						// "krykmant",
 						// "krykmant");
 						preferenceService
