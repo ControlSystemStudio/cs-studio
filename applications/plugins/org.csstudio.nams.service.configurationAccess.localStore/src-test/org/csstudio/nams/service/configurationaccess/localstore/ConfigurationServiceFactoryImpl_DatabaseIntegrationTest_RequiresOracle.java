@@ -95,30 +95,30 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertFalse("neuer bearbeiter ist jetzt nicht mehr da.", entireConfiguration.gibAlleAlarmbearbeiter().contains(neuerBearbeiter));
 	}
 	
-//	@Test
-//	public void testFactoryAndServiceOnOracleFuerFilterCondition() throws Throwable {
-//		StringFilterConditionDTO neueFilterCondition = new StringFilterConditionDTO();
-//		neueFilterCondition.setCName("Test");
-//		neueFilterCondition.setCompValue("TestValue");
-//		neueFilterCondition.setKeyValue(MessageKeyEnum.DESTINATION);
-//		neueFilterCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
-//
-//		Configuration entireConfiguration = service.getEntireConfiguration();
-//		assertNotNull(entireConfiguration);
-//		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
-//		
-//		service.saveFilterCondtionDTO(neueFilterCondition);
-//		
-//		// neu laden....
-//		entireConfiguration = service.getEntireConfiguration();
-//		assertNotNull(entireConfiguration);
-//		assertTrue("neue fc ist jetzt gespeichert.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
-//		
-//		service.deleteFilterConditionDTO(neueFilterCondition);
-//		
-//		// neu laden
-//		entireConfiguration = service.getEntireConfiguration();
-//		assertNotNull(entireConfiguration);
-//		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
-//	}
+	@Test
+	public void testFactoryAndServiceOnOracleFuerFilterCondition() throws Throwable {
+		StringFilterConditionDTO neueFilterCondition = new StringFilterConditionDTO();
+		neueFilterCondition.setCName("Test");
+		neueFilterCondition.setCompValue("TestValue");
+		neueFilterCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		neueFilterCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+
+		Configuration entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
+		
+		service.saveDTO(neueFilterCondition);
+		
+		// neu laden....
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertTrue("neue fc ist jetzt gespeichert.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
+		
+		service.deleteDTO(neueFilterCondition);
+		
+		// neu laden
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
+	}
 }
