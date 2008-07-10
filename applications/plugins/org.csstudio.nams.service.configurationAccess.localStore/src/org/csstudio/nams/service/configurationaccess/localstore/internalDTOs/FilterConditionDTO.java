@@ -118,8 +118,7 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	/**
 	 * @param desc the cDesc to set
 	 */
-	@SuppressWarnings("unused")
-	private void setCDesc(String desc) {
+	public void setCDesc(String desc) {
 		cDesc = desc;
 	}
 

@@ -336,6 +336,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 	
 	private int getRubrikIDForName(String rubrikName, RubrikTypeEnum type) {
+		if( rubrikName == null || rubrikName.length() == 0 ) {
+			return 0;
+		}
 		int result = 0;
 		for (Iterator<RubrikDTO> iter = rubrikDTOs.iterator(); iter.hasNext();) {
 			RubrikDTO rubrikDTO = (RubrikDTO) iter.next();
@@ -723,9 +726,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 
 		filterConditionDTO.setIGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.FILTER_COND));
+		filterConditionDTO.setCName(bean.getName());
+		filterConditionDTO.setCDesc(bean.getDescription());
 		try {
-			filterConditionDTO = configurationService
-					.saveFilterCondtionDTO(filterConditionDTO);
+			configurationService.saveDTO(filterConditionDTO);
 		} catch (Throwable t) {
 			// FIXME mz20080710 Handle throwable!
 			t.printStackTrace();
