@@ -5,9 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.csstudio.nams.application.department.decision.office.decision.Alarmentscheidungsbuero_SubSystemTestSuite;
-
-import de.c1wps.desy.ams.allgemeines.Allgemeines_SubSystemTestSuite;
-import de.c1wps.desy.ams.allgemeines.regelwerk.AllgemeinesRegelwerk_SubSystemTestSuite;
+import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction_Test;
 
 public class AllTestsSuite extends TestCase {
 
@@ -17,12 +15,11 @@ public class AllTestsSuite extends TestCase {
 		TestSuite suite = new TestSuite("Test for de.c1wps.desy.ams");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(AllTestsSuite.class);
-		suite.addTest(Allgemeines_SubSystemTestSuite.suite());
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 		suite.addTestSuite(SyncronisationsAutomat_Test.class);
-		suite.addTest(AllgemeinesRegelwerk_SubSystemTestSuite.suite());
 		
 		suite.addTestSuite(DecisionDepartmentActivator_Test.class);
+		suite.addTestSuite(XMPPRemoteShutdownAction_Test.class);
 		//$JUnit-END$
 		return suite;
 	}
