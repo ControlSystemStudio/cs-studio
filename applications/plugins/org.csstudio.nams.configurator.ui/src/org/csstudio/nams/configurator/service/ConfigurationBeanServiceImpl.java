@@ -726,8 +726,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 
 		filterConditionDTO.setIGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.FILTER_COND));
-		filterConditionDTO = configurationService
-				.saveFilterCondtionDTO(filterConditionDTO);
+		try {
+			filterConditionDTO = configurationService
+					.saveFilterCondtionDTO(filterConditionDTO);
+		} catch (Throwable t) {
+			// FIXME mz20080710 Handle throwable!
+			t.printStackTrace();
+		}
 		loadConfiguration();
 
 		FilterbedingungBean resultBean = filterbedingungBeans.get(new Integer(

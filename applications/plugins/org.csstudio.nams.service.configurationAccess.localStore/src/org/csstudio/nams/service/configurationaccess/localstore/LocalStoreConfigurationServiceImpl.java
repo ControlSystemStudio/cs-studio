@@ -12,6 +12,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
@@ -172,17 +173,17 @@ class LocalStoreConfigurationServiceImpl implements
 		return vrs;
 	}
 
-	public void saveStringFilterConditionDTO(
-			StringFilterConditionDTO stringConditionDTO) {
-		Transaction tx = session.beginTransaction();
-		Integer msgId = (Integer) session.save(stringConditionDTO);
-		// final List<?> messages = this.session.createQuery(
-		// "from JunctorConditionDTO r where r.iFilterConditionID = '"+
-		// junctorConditionDTO.getIFilterConditionID()+"'").list();
-		System.out.println("New StringrConditionDTO id: " + msgId);
-		tx.commit();
-
-	}
+	// public void saveStringFilterConditionDTO(
+	// StringFilterConditionDTO stringConditionDTO) {
+	// Transaction tx = session.beginTransaction();
+	// Integer msgId = (Integer) session.save(stringConditionDTO);
+	// // final List<?> messages = this.session.createQuery(
+	// // "from JunctorConditionDTO r where r.iFilterConditionID = '"+
+	// // junctorConditionDTO.getIFilterConditionID()+"'").list();
+	// System.out.println("New StringrConditionDTO id: " + msgId);
+	// tx.commit();
+	//
+	// }
 
 	@SuppressWarnings("unchecked")
 	public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations() {
@@ -202,8 +203,44 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 
+	public void saveDTO(NewAMSConfigurationElementDTO dto) throws StorageError,
+			StorageException, InconsistentConfigurationException {
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(dto);
+			transaction.commit();
+		} catch (Throwable t) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			throw new StorageException(
+					"failed to save configuration element of type "
+							+ dto.getClass().getSimpleName(), t);
+		}
+	}
+
+	public void deleteDTO(NewAMSConfigurationElementDTO dto)
+			throws StorageError, StorageException,
+			InconsistentConfigurationException {
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			session.delete(dto);
+			transaction.commit();
+		} catch (Throwable t) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			throw new StorageException(
+					"failed to delete configuration element of type "
+							+ dto.getClass().getSimpleName(), t);
+		}
+	}
+
 	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
 			AlarmbearbeiterDTO alarmbearbeiterDTO) {
+
 		Transaction tx = session.beginTransaction();
 		Serializable generatedID = session.save(alarmbearbeiterDTO);
 		tx.commit();
@@ -229,15 +266,25 @@ class LocalStoreConfigurationServiceImpl implements
 
 	}
 
+	/**
+	 * TODO Remove return value
+	 * 
+	 * @throws StorageException
+	 */
 	public FilterConditionDTO saveFilterCondtionDTO(
-			FilterConditionDTO filterConditionDTO) {
-		// TODO add by-hand-mapped parts
-		Transaction tx = session.beginTransaction();
-		Serializable generatedID = session.save(filterConditionDTO);
-		tx.commit();
-
-		return (FilterConditionDTO) session.load(FilterConditionDTO.class,
-				generatedID);
+			FilterConditionDTO filterConditionDTO) throws StorageException {
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			session.saveOrUpdate(filterConditionDTO);
+			tx.commit();
+		} catch (Throwable t) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			throw new StorageException("failed to store fc", t);
+		}
+		return filterConditionDTO;
 	}
 
 	public RubrikDTO saveRubrikDTO(RubrikDTO dto) {
@@ -341,16 +388,18 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 
+	// TODO Exception Handling
 	public void deleteFilterConditionDTO(FilterConditionDTO dto)
 			throws InconsistentConfigurationException {
 		Transaction tx = session.beginTransaction();
 		try {
 			session.delete(dto);
+			tx.commit();
 		} catch (HibernateException e) {
+			tx.rollback();
 			new InconsistentConfigurationException("Could not delete " + dto
-					+ ". \n It is still in use.");
+					+ ". \n It is still in use.", e);
 		}
-		tx.commit();
 	}
 
 	public void deleteFilterDTO(FilterDTO dto)

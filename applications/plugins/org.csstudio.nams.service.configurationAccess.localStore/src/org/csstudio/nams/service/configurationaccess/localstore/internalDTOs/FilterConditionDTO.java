@@ -44,7 +44,7 @@ public class FilterConditionDTO {
 	}
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	@Column(name = "iFilterConditionID", nullable=false, unique=true)
 	private int iFilterConditionID;
 

@@ -79,6 +79,13 @@ public interface LocalStoreConfigurationService {
 	 */
 	public void saveHistoryDTO(HistoryDTO historyDTO);
 
+	public void saveDTO(NewAMSConfigurationElementDTO dto) throws StorageError,
+			StorageException, InconsistentConfigurationException;
+
+	public void deleteDTO(NewAMSConfigurationElementDTO dto)
+			throws StorageError, StorageException,
+			InconsistentConfigurationException;
+
 	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
 			AlarmbearbeiterDTO alarmBearbeiterDTO);
 
@@ -88,7 +95,8 @@ public interface LocalStoreConfigurationService {
 	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
 
 	public FilterConditionDTO saveFilterCondtionDTO(
-			FilterConditionDTO filterConditionDTO);
+			FilterConditionDTO filterConditionDTO) throws StorageException,
+			StorageError;
 
 	public FilterDTO saveFilterDTO(FilterDTO dto)
 			throws InconsistentConfigurationException;

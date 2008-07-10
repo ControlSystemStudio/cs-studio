@@ -16,6 +16,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
@@ -272,6 +273,18 @@ public class SyncronisationsAutomat_Test extends TestCase {
 					public void deleteFilterDTO(FilterDTO dto)
 							throws InconsistentConfigurationException {
 						fail("unexpected method call!");
+					}
+
+					public void deleteDTO(NewAMSConfigurationElementDTO dto)
+							throws StorageError, StorageException,
+							InconsistentConfigurationException {
+						fail("unexpected method call!");						
+					}
+
+					public void saveDTO(NewAMSConfigurationElementDTO dto)
+							throws StorageError, StorageException,
+							InconsistentConfigurationException {
+						fail("unexpected method call!");						
 					}
 
 				}, new HistoryService() {
