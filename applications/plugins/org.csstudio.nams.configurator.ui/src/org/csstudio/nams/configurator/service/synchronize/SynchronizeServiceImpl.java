@@ -11,13 +11,23 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			this.localStoreConfigurationService = localStoreConfigurationService;
 	}
 
-	public void sychronizeAlarmSystem(Callback callback) {
+	public void sychronizeAlarmSystem(final Callback callback) {
+		new Thread(new Runnable() {
+			public void run() {
+				sychronizeAlarmSystemInternal(callback);
+			}}).start();
+	}
+	private void sychronizeAlarmSystemInternal(final Callback callback) {
 		if( callback.pruefeObSynchronisationAusgefuehrtWerdenDarf() )
 		{
 			
 			localStoreConfigurationService.prepareSynchonization();
 			
 			// TODO Fortfahren...
+			callback.bereiteSynchronisationVor();
+			callback.sendeNachrichtAnHintergrundSystem();
+			callback.wartetAufAntowrtDesHintergrundSystems();
+			callback.synchronisationsDurchHintergrundsystemsErfolgreich();
 		} else {
 			callback.synchronisationAbgebrochen();
 		}

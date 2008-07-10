@@ -56,6 +56,14 @@ public class SynchronizeServiceImpl_Test extends
 		EasyMock.replay(localStoreConfigurationServiceMock);
 		
 		EasyMock.expect(callback.pruefeObSynchronisationAusgefuehrtWerdenDarf()).andReturn(true).once();
+		callback.bereiteSynchronisationVor();
+		EasyMock.expectLastCall().once();
+		callback.sendeNachrichtAnHintergrundSystem();
+		EasyMock.expectLastCall().once();
+		callback.wartetAufAntowrtDesHintergrundSystems();
+		EasyMock.expectLastCall().once();
+		callback.synchronisationsDurchHintergrundsystemsErfolgreich();
+		EasyMock.expectLastCall().once();
 		EasyMock.replay(callback);
 		
 		SynchronizeService synchronizeService = getNewInstanceOfClassUnderTest();

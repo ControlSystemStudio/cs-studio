@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.csstudio.nams.configurator.editor.AbstractEditor;
 import org.csstudio.nams.configurator.service.synchronize.SynchronizeService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,7 +15,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -61,11 +65,7 @@ public class SyncronizeView extends ViewPart {
 				Button source = (Button) e.getSource();
 				if (source.getSelection()) {
 					statusText.setText("");
-					new Thread(new Runnable() {
-						public void run() {
-							SyncronizeView.this.doSynchronize();
-						}
-					}).start();
+					SyncronizeView.this.doSynchronize();
 				} else {
 					// deselect nur aus dem code erlaubt!
 					source.setSelection(true);
@@ -86,56 +86,126 @@ public class SyncronizeView extends ViewPart {
 				.setText("Push \"Perform synchronization of background-system\" to begin syncronization.");
 	}
 
+	protected boolean lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding() {
+		boolean hasADirtyNamsEditor = false;
+		IWorkbenchPage[] pages = this.getSite().getWorkbenchWindow().getPages();
+		for (IWorkbenchPage page : pages) {
+			IEditorPart[] dirtyEditors = page.getDirtyEditors();
+			for (IEditorPart editor : dirtyEditors) {
+				if (editor instanceof AbstractEditor<?>) {
+					hasADirtyNamsEditor = true;
+				}
+			}
+		}
+
+		if (hasADirtyNamsEditor) {
+			// XXX Besser wöre ein Dialog der Art: "Ungesciherte Änderungen. Wie
+			// möchten
+			// Sie verfahren?" mit Aktionen: "Anderungen sichten" vs. "trozdem
+			// fortfahren".
+			MessageBox messageBox = new MessageBox(this.getSite().getShell(),
+					SWT.ICON_WARNING | SWT.YES | SWT.NO);
+			messageBox.setText("Unsaved NAMS-Editors!");
+			messageBox
+					.setMessage("You still have unsaved changes in NAMS-Editors."
+							+ " This changes will be ignored by synchrnoisation process.\n"
+							+ "Do you want to review your changes before continuing?");
+			if (messageBox.open() == SWT.YES) {
+				// The User likes to check his changes.
+				System.out
+						.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): false");
+				return false;
+			}
+		}
+		System.out
+				.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): true");
+		return true;
+	}
+
 	protected synchronized void doSynchronize() {
 		appendStatusText("Beginning syncronization...");
 
 		try {
 			synchronizeService
 					.sychronizeAlarmSystem(new SynchronizeService.Callback() {
-
 						public void bereiteSynchronisationVor() {
-							// TODO Auto-generated method stub
-
+							appendStatusText("Preparing syncronisation...\n");
 						}
 
-						public void fehlerBeimVorbereiteDerSynchronisation(
+						public void fehlerBeimVorbereitenDerSynchronisation(
 								Throwable t) {
-							// TODO Auto-generated method stub
-
+							appendStatusText(
+									"Failed to prepare syncronisation.\nReason:",
+									t);
+							buttonFreigben();
 						}
+
+						volatile Boolean result = null;
 
 						public boolean pruefeObSynchronisationAusgefuehrtWerdenDarf() {
-//							throw new RuntimeException("test");
-							// TODO Auto-generated method stub
-							return false;
+							appendStatusText("Looking for unsaved changes...");
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									result = lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding();
+								}
+							});
+							while (result == null)
+								Thread.yield();
+							appendStatusText("Done.\n");
+							return result.booleanValue();
 						}
 
 						public void sendeNachrichtAnHintergrundSystem() {
-							// TODO Auto-generated method stub
+							appendStatusText("Sending sychronisation request to back-end-system...\n");
+						}
 
+						public void sendenDerNachrichtAnHintergrundSystemFehlgeschalgen(
+								Throwable t) {
+							appendStatusText(
+									"Failed to send sychronisation request to back-end-system.\nReason:",
+									t);
+							buttonFreigben();
 						}
 
 						public void synchronisationAbgebrochen() {
-							// TODO Auto-generated method stub
-
+							appendStatusText("Sychronisation has been canceled.\n");
+							buttonFreigben();
 						}
 
-						public void synchronisationsBestaetigungDesHintergrundSystemsErhalten() {
-							// TODO Auto-generated method stub
+						public void synchronisationsDurchHintergrundsystemsErfolgreich() {
+							appendStatusText("\n\nSyncronisation successfully finished!");
+							buttonFreigben();
+						}
 
+						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
+								String fehlertext) {
+							appendStatusText("Back-end-system reporting failure of sychronisation.\nReported reason: "
+									+ fehlertext);
+							buttonFreigben();
+						}
+
+						private void buttonFreigben() {
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									syncButton.setSelection(false);
+								}
+							});
+						}
+
+						public void wartetAufAntowrtDesHintergrundSystems() {
+							appendStatusText("Waiting for sychronisation commitment to back-end-system...\n");
 						}
 
 					});
-			appendStatusText("\n\nSyncronisation successfully finished!");
 		} catch (Throwable t) {
 			appendStatusText("\n\nSyncronisation failed!\nReason: ", t);
 		}
 
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				syncButton.setSelection(false);
-			}
-		});
+		// Display.getDefault().asyncExec(new Runnable() {
+		// public void run() {
+		// syncButton.setSelection(false);
+		// }
+		// });
 	}
 
 	private void appendStatusText(final String text) {
