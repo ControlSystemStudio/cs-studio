@@ -19,7 +19,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  * <pre>
  * create table AMS_FilterCond_Conj_Common
  * 
- * FilterConditionRef			INT NOT NULL,
+ * iFilterConditionRef			INT NOT NULL,
  * iFirstFilterConditionRef	INT NOT NULL,
  * iSecondFilterConditionRef   INT NOT NULL,
  *  // * Operand                    SMALLINT
@@ -134,8 +134,7 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		return firstFilterConditionRef;
 	}
 
-	@SuppressWarnings("unused")
-	private void setFirstFilterConditionRef(int firstFilterConditionRef) {
+	public void setFirstFilterConditionRef(int firstFilterConditionRef) {
 		this.firstFilterConditionRef = firstFilterConditionRef;
 	}
 
@@ -144,8 +143,7 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		return secondFilterConditionRef;
 	}
 
-	@SuppressWarnings("unused")
-	private void setSecondFilterConditionRef(int secondFilterConditionRef) {
+	public void setSecondFilterConditionRef(int secondFilterConditionRef) {
 		this.secondFilterConditionRef = secondFilterConditionRef;
 	}
 
@@ -169,7 +167,8 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		return secondFilterCondition;
 	}
 
-	public void setFirstFilterCondition(FilterConditionDTO filterCondition) {
+	@SuppressWarnings("unused")
+	private void setFirstFilterCondition(FilterConditionDTO filterCondition) {
 		setFirstFilterConditionRef(filterCondition.getIFilterConditionID());
 		if (filterConditionProvider == null)
 			throw new RuntimeException(
@@ -177,7 +176,8 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		adaptFirstFilterCondition();
 	}
 
-	public void setSecondFilterCondition(FilterConditionDTO filterCondition) {
+	@SuppressWarnings("unused")
+	private void setSecondFilterCondition(FilterConditionDTO filterCondition) {
 		setSecondFilterConditionRef(filterCondition.getIFilterConditionID());
 		if (filterConditionProvider == null)
 			throw new RuntimeException(

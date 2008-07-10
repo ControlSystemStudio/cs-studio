@@ -615,15 +615,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				inserted = true;
 			}
 
-			junctorConditionDTO
-					.setFirstFilterCondition(getDTO4Bean(specificBean
-							.getFirstCondition()));
-			junctorConditionDTO.setIFilterConditionID(bean
-					.getFilterbedinungID());
+			junctorConditionDTO.setFirstFilterConditionRef(specificBean.getFirstCondition().getFilterbedinungID());
+			junctorConditionDTO.setSecondFilterConditionRef(specificBean.getSecondCondition().getFilterbedinungID());
+			junctorConditionDTO.injectYourselfYourChildren(entireConfiguration);
 			junctorConditionDTO.setJunctor(specificBean.getJunctor());
-			junctorConditionDTO
-					.setSecondFilterCondition(getDTO4Bean(specificBean
-							.getSecondCondition()));
 
 			// result to be saved with configurationService
 			filterConditionDTO = junctorConditionDTO;

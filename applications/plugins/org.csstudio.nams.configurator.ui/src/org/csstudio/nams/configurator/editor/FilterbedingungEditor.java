@@ -375,15 +375,17 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		target2.setTransfer(new Transfer[] { LocalSelectionTransfer
 				.getTransfer() });
 
-		target1.addDropListener(new TextDropTarget(junctorFirstFilterText));
-		target2.addDropListener(new TextDropTarget(junctorSecondFilterText));
+		target1.addDropListener(new TextDropTarget(junctorFirstFilterText, true));
+		target2.addDropListener(new TextDropTarget(junctorSecondFilterText, false));
 	}
 
 	class TextDropTarget extends DropTargetAdapter {
 		private final Text text;
+		private final boolean first;
 
-		public TextDropTarget(Text junctorFirstFilterText) {
-			text = junctorFirstFilterText;
+		public TextDropTarget(Text junctorFilterText, boolean first) {
+			text = junctorFilterText;
+			this.first = first;
 		}
 
 		public void dragEnter(DropTargetEvent event) {
@@ -403,8 +405,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						.getTransfer().getSelection();
 				FilterbedingungBean bean = (FilterbedingungBean) selection
 						.getFirstElement();
-				// TODO
-				text.setData(bean);
+				JunctorConditionBean junctorBean = (JunctorConditionBean) specificBeans.get(SupportedFilterTypes.JUNCTOR_CONDITION);
+				if (first) {
+					junctorBean.setFirstCondition(bean);
+				} else {
+					junctorBean.setSecondCondition(bean);
+				}
 				text.setText(bean.getDisplayName());
 			} catch (Throwable e) {
 			}
@@ -624,17 +630,17 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	}
 
 	private void initJunctorAddOnBeanDataBinding(DataBindingContext context) {
-		IObservableValue firstConditionTextObservable = BeansObservables
-				.observeValue(specificBeans
-						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
-						JunctorConditionBean.PropertyNames.firstCondition
-								.name());
-
-		IObservableValue secondConditionTextObservable = BeansObservables
-				.observeValue(specificBeans
-						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
-						JunctorConditionBean.PropertyNames.secondCondition
-								.name());
+//		IObservableValue firstConditionTextObservable = BeansObservables
+//				.observeValue(specificBeans
+//						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
+//						JunctorConditionBean.PropertyNames.firstCondition
+//								.name());
+//
+//		IObservableValue secondConditionTextObservable = BeansObservables
+//				.observeValue(specificBeans
+//						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
+//						JunctorConditionBean.PropertyNames.secondCondition
+//								.name());
 
 		IObservableValue stringJunctorObservable = BeansObservables
 				.observeValue(specificBeans
@@ -655,11 +661,23 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 					}
 				});
 
-		context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
-				SWT.Modify), firstConditionTextObservable, null, null);
-
-		context.bindValue(SWTObservables.observeText(junctorSecondFilterText,
-				SWT.Modify), secondConditionTextObservable, null, null);
+//		context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
+//				SWT.Modify), firstConditionTextObservable, 
+//				new UpdateValueStrategy() {
+//					@Override
+//					public Object convert(Object value) {
+//						return junctorFirstFilterText.getData();
+//					}
+//				}, null);
+//
+//		context.bindValue(SWTObservables.observeText(junctorSecondFilterText,
+//				SWT.Modify), secondConditionTextObservable,
+//				new UpdateValueStrategy() {
+//					@Override
+//					public Object convert(Object value) {
+//						return junctorSecondFilterText.getData();
+//					}
+//			}, null);
 
 	}
 
