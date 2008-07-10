@@ -2,13 +2,16 @@ package org.csstudio.nams.configurator.service.synchronize;
 
 /**
  * Ein Service zum Synchronisieren mit dem Hintergrundsystem.
+ * 
+ * XXX The name SynchronizeAutomaton may be better cause this "service" has
+ * s.th. like a state (a own thread which is special automaton behavior).
  */
 public interface SynchronizeService {
 
 	/**
-	 * Synchronisiert die eingegebenen und gespeicherten Änderungen mit dem
-	 * Hintergrundsystem. Zum Verlauf studieren Sie die Dokumentation der
-	 * Operationen der Klasse {@link SynchronizeService.Callback}.
+	 * Synchronisiert asynchron(!) die eingegebenen und gespeicherten Änderungen
+	 * mit dem Hintergrundsystem. Zum Verlauf studieren Sie die Dokumentation
+	 * der Operationen der Klasse {@link SynchronizeService.Callback}.
 	 * 
 	 * @param callback
 	 *            Über diesen Callback werden Rückfragen an den Aufrufer
