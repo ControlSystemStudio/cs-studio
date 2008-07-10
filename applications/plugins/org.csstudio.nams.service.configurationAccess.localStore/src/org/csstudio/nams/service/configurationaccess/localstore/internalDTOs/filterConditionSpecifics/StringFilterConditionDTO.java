@@ -103,6 +103,9 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 		return StringRegelOperator.valueOf(operator);
 	}
 	
+	/**
+	 * TODO Rename to sth. like setStringOperator
+	 */
 	public void setOperatorEnum(StringRegelOperator op){
 		operator = (short) op.ordinal();
 	}
@@ -111,7 +114,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @param operator
 	 *            the operator to set
 	 */
-	public void setOperator(short operator) {
+	private void setOperator(short operator) {
 		this.operator = operator;
 	}
 

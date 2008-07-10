@@ -100,7 +100,7 @@ public class FilterConditionDTO {
 	 * @param name the cName to set
 	 */
 	@SuppressWarnings("unused")
-	private void setCName(String name) {
+	public void setCName(String name) {
 		cName = name;
 	}
 

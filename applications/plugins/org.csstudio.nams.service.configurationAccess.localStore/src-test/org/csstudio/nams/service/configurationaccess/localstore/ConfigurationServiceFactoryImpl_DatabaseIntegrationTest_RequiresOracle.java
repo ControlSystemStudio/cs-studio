@@ -2,10 +2,14 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 
 import junit.framework.TestCase;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,32 +80,28 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 	
 	@Test
 	public void testFactoryAndServiceOnOracleFuerFilterCondition() throws Throwable {
-//		FilterCon neuerBearbeiter = new AlarmbearbeiterDTO();
-//		neuerBearbeiter.setActive(true);
-//		neuerBearbeiter.setConfirmCode("123");
-//		neuerBearbeiter.setEmail("test@testbar.test");
-//		neuerBearbeiter.setMobilePhone("0900 123");
-//		neuerBearbeiter.setPhone("01805 456");
-//		neuerBearbeiter.setPreferedAlarmType(PreferedAlarmType.EMAIL);
-//		neuerBearbeiter.setStatusCode("987");
-//		neuerBearbeiter.setUserName("Hans Otto Dietmar Struntz");
-//		
-//		Configuration entireConfiguration = service.getEntireConfiguration();
-//		assertNotNull(entireConfiguration);
-//		assertFalse("neuer bearbeiter ist natürlich noch nicht da.", entireConfiguration.gibAlleAlarmbearbeiter().contains(neuerBearbeiter));
-//		
-//		service.saveAlarmbearbeiterDTO(neuerBearbeiter);
-//		
-//		// neu laden....
-//		entireConfiguration = service.getEntireConfiguration();
-//		assertNotNull(entireConfiguration);
-//		assertTrue("neuer bearbeiter ist jetzt gespeichert.", entireConfiguration.gibAlleAlarmbearbeiter().contains(neuerBearbeiter));	
-//		
-//		service.deleteAlarmbearbeiterDTO(neuerBearbeiter);
-//		
-//		// neu laden
-//		entireConfiguration = service.getEntireConfiguration();
-//		assertNotNull(entireConfiguration);
-//		assertFalse("neuer bearbeiter ist jetzt nicht mehr da.", entireConfiguration.gibAlleAlarmbearbeiter().contains(neuerBearbeiter));
+		StringFilterConditionDTO neueFilterCondition = new StringFilterConditionDTO();
+		neueFilterCondition.setCName("Test");
+		neueFilterCondition.setCompValue("TestValue");
+		neueFilterCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		neueFilterCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+
+		Configuration entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
+		
+		service.saveFilterCondtionDTO(neueFilterCondition);
+		
+		// neu laden....
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertTrue("neue fc ist jetzt gespeichert.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
+		
+		service.deleteFilterConditionDTO(neueFilterCondition);
+		
+		// neu laden
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
 	}
 }
