@@ -35,16 +35,16 @@ public class ExecutionServiceMock implements ExecutionService {
 	
 	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(
 			GT groupId, StepByStepProcessor runnable) {
-		System.out.println("ExecutionServiceMock.executeAsynchronsly(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
+//		System.out.println("ExecutionServiceMock.executeAsynchronsly(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
 		
-		for (Enum<?> enuum :allStepByStepProcessors.keySet()) {
-			System.out.println(enuum.toString() + " = " + groupId.toString() + " is " + (enuum == groupId));
-		}
+//		for (Enum<?> enuum :allStepByStepProcessors.keySet()) {
+//			System.out.println(enuum.toString() + " = " + groupId.toString() + " is " + (enuum == groupId));
+//		}
 		
 		List<StepByStepProcessor> list = allStepByStepProcessors.get(groupId);
 		if( list == null )
 		{ 
-			System.out.println("ExecutionServiceMock.executeAsynchronsly(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
+//			System.out.println("ExecutionServiceMock.executeAsynchronsly(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
 			Assert.fail("group not registered: "+groupId);
 		}
 		list.add(runnable);
@@ -75,7 +75,7 @@ public class ExecutionServiceMock implements ExecutionService {
 	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId,
 			ThreadGroup group) {
 		allStepByStepProcessors.put(groupId, new LinkedList<StepByStepProcessor>());
-		System.out.println("ExecutionServiceMock.registerGroup(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
+//		System.out.println("ExecutionServiceMock.registerGroup(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
 	}
 
 	public <GT extends Enum<?> & ThreadType> Iterable<GT> getCurrentlyUsedGroupIds() {

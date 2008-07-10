@@ -271,7 +271,9 @@ class LocalStoreConfigurationServiceImpl implements
 				FilterConditionsToFilterDTO match = null;
 				for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : relevantMappings) {
 					if (condition.getIFilterConditionID() == filterConditionsToFilterDTO
-							.getIFilterConditionRef() && dto.getIFilterID() == filterConditionsToFilterDTO.getIFilterRef()) {
+							.getIFilterConditionRef()
+							&& dto.getIFilterID() == filterConditionsToFilterDTO
+									.getIFilterRef()) {
 						match = filterConditionsToFilterDTO;
 						break;
 					}
@@ -327,8 +329,8 @@ class LocalStoreConfigurationServiceImpl implements
 		tx.commit();
 	}
 
-	
-	public void deleteAlarmtopicDTO(TopicDTO dto) throws InconsistentConfigurationException {
+	public void deleteAlarmtopicDTO(TopicDTO dto)
+			throws InconsistentConfigurationException {
 		Transaction tx = session.beginTransaction();
 		try {
 			session.delete(dto);
@@ -337,27 +339,28 @@ class LocalStoreConfigurationServiceImpl implements
 					+ ". \n It is still in use.");
 		}
 		tx.commit();
-	}
-	
-	public void deleteFilterConditionDTO(FilterConditionDTO dto)
-		throws InconsistentConfigurationException {
-		Transaction tx = session.beginTransaction();
-		try {
-			session.delete(dto);
-		} catch (HibernateException e) {
-			new InconsistentConfigurationException("Could not delete " + dto
-					+ ". \n It is still in use.");
-		}
-		tx.commit();
-	}
-	
-	public void deleteFilterDTO(FilterDTO dto)
-		throws InconsistentConfigurationException {
-		// TODO Auto-generated method stub
-		
 	}
 
-	public void prepareSynchonization() {
+	public void deleteFilterConditionDTO(FilterConditionDTO dto)
+			throws InconsistentConfigurationException {
+		Transaction tx = session.beginTransaction();
+		try {
+			session.delete(dto);
+		} catch (HibernateException e) {
+			new InconsistentConfigurationException("Could not delete " + dto
+					+ ". \n It is still in use.");
+		}
+		tx.commit();
+	}
+
+	public void deleteFilterDTO(FilterDTO dto)
+			throws InconsistentConfigurationException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void prepareSynchonization() throws StorageError, StorageException,
+			InconsistentConfigurationException {
 		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
 		// HSQL-Statement.
 	}

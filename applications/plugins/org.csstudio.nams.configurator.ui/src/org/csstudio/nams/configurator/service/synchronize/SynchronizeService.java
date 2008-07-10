@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.service.synchronize;
 
+import org.csstudio.nams.common.service.ThreadType;
+
 /**
  * Ein Service zum Synchronisieren mit dem Hintergrundsystem.
  * 
@@ -8,6 +10,10 @@ package org.csstudio.nams.configurator.service.synchronize;
  */
 public interface SynchronizeService {
 
+	static public enum ThreadTypes implements ThreadType {
+		SYNCHRONIZER
+	}
+	
 	/**
 	 * Synchronisiert asynchron(!) die eingegebenen und gespeicherten Änderungen
 	 * mit dem Hintergrundsystem. Zum Verlauf studieren Sie die Dokumentation

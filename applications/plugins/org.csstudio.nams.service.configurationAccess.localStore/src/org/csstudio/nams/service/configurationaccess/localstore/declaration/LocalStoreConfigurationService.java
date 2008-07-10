@@ -27,7 +27,8 @@ public interface LocalStoreConfigurationService {
 	 *             If the stored configuration is inconsistent.
 	 */
 	public ReplicationStateDTO getCurrentReplicationState()
-			throws StorageError, StorageException, InconsistentConfigurationException;
+			throws StorageError, StorageException,
+			InconsistentConfigurationException;
 
 	/**
 	 * Loads the entire configuration from the Database. ConfigurationDTO will
@@ -77,26 +78,53 @@ public interface LocalStoreConfigurationService {
 	 * @param historyDTO
 	 */
 	public void saveHistoryDTO(HistoryDTO historyDTO);
-	
-	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(AlarmbearbeiterDTO alarmBearbeiterDTO);
-	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO);
+
+	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
+			AlarmbearbeiterDTO alarmBearbeiterDTO);
+
+	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
+			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO);
+
 	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
-	public FilterConditionDTO saveFilterCondtionDTO(FilterConditionDTO filterConditionDTO);
-	public FilterDTO saveFilterDTO(FilterDTO dto) throws InconsistentConfigurationException;
+
+	public FilterConditionDTO saveFilterCondtionDTO(
+			FilterConditionDTO filterConditionDTO);
+
+	public FilterDTO saveFilterDTO(FilterDTO dto)
+			throws InconsistentConfigurationException;
+
 	public RubrikDTO saveRubrikDTO(RubrikDTO dto);
-	
-	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto) throws InconsistentConfigurationException;
-	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto) throws InconsistentConfigurationException;
-	public void deleteAlarmtopicDTO(TopicDTO dto) throws InconsistentConfigurationException;
-	public void deleteFilterDTO(FilterDTO dto) throws InconsistentConfigurationException;
-	public void deleteFilterConditionDTO(FilterConditionDTO dto) throws InconsistentConfigurationException;
 
-	
+	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto)
+			throws InconsistentConfigurationException;
+
+	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto)
+			throws InconsistentConfigurationException;
+
+	public void deleteAlarmtopicDTO(TopicDTO dto)
+			throws InconsistentConfigurationException;
+
+	public void deleteFilterDTO(FilterDTO dto)
+			throws InconsistentConfigurationException;
+
+	public void deleteFilterConditionDTO(FilterConditionDTO dto)
+			throws InconsistentConfigurationException;
+
 	/**
-	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden die SYN-Tabellen geschrieben.
+	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden
+	 * die SYN-Tabellen geschrieben.
+	 * 
+	 * @throws StorageError
+	 *             If a configuration error is present and this database is not
+	 *             accessible.
+	 * @throws StorageException
+	 *             If a database exception occurred or database is unexpected
+	 *             unreachable.
+	 * @throws UnknownConfigurationElementError
+	 *             If the flag-object to be stored is not known by this
+	 *             configuration database..
 	 */
-	public void prepareSynchonization();
-
-
+	public void prepareSynchonization() throws StorageError, StorageException,
+			InconsistentConfigurationException;
 
 }

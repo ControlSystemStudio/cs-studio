@@ -4,6 +4,7 @@ import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
+import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction;
 import org.csstudio.nams.configurator.actions.DuplicateConfigurationBeanAction;
 import org.csstudio.nams.configurator.editor.AbstractEditor;
@@ -32,7 +33,11 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	@Required
 	ConfigurationServiceFactory configurationServiceFactory, @OSGiService
 	@Required
-	Logger logger) {
+	Logger logger,
+	@OSGiService
+	@Required
+	ExecutionService executionService
+	) {
 		LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
 				.getConfigurationService(
 						"oracle.jdbc.driver.OracleDriver",
@@ -71,6 +76,6 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		DuplicateConfigurationBeanAction.staticInject(beanService);
 		
 		// prepare sync-view
-		SyncronizeView.staticInjectSynchronizeService(new SynchronizeServiceImpl(localStoreConfigurationService));
+		SyncronizeView.staticInjectSynchronizeService(new SynchronizeServiceImpl(logger, executionService, localStoreConfigurationService));
 	}
 }
