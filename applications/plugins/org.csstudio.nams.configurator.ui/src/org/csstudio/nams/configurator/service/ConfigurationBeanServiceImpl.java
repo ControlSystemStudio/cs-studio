@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.common.material.regelwerk.Operator;
-import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
@@ -430,9 +429,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.setKeyValue(((StringFilterConditionDTO) filter)
 							.getKeyValueEnum());
 			stringFilterConditionBean
-					.setOperator(StringRegelOperator
-							.valueOf(((StringFilterConditionDTO) filter)
-									.getOperator()));
+					.setOperator(((StringFilterConditionDTO) filter).getOperatorEnum());
 			filterSpecificBean = stringFilterConditionBean;
 		} else if (filter instanceof TimeBasedFilterConditionDTO) {
 			TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();

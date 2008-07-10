@@ -88,9 +88,9 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		//
 		case STRING: {
 			StringFilterConditionDTO stringCondition = (StringFilterConditionDTO) filterConditionDTO;
-			return new StringRegel(StringRegelOperator.valueOf(stringCondition
-					.getOperator()), stringCondition.getKeyValueEnum(),
-					stringCondition.getCompValue());
+			return new StringRegel(stringCondition.getOperatorEnum(),
+					stringCondition.getKeyValueEnum(), stringCondition
+							.getCompValue());
 		}
 		case TIMEBASED: {
 			TimeBasedFilterConditionDTO timeBasedCondition = (TimeBasedFilterConditionDTO) filterConditionDTO;

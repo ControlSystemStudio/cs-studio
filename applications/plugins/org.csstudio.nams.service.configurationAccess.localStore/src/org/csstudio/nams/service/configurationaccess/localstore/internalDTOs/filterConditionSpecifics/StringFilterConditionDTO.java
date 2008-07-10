@@ -95,7 +95,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @return the operator
 	 */
 	@SuppressWarnings("unused")
-	public short getOperator() {
+	private short getOperator() {
 		return operator;
 	}
 
@@ -107,13 +107,14 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * TODO Rename to sth. like setStringOperator
 	 */
 	public void setOperatorEnum(StringRegelOperator op){
-		operator = (short) op.ordinal();
+		setOperator((short) op.databaseValue());
 	}
 	
 	/**
 	 * @param operator
 	 *            the operator to set
 	 */
+	@SuppressWarnings("unused")
 	private void setOperator(short operator) {
 		this.operator = operator;
 	}
