@@ -108,6 +108,16 @@ public class SynchronizeServiceImpl_Test extends
 		synchronizeService.sychronizeAlarmSystem(callback);
 		executionServiceMock.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
 		
+		/*-
+		 * FIXME mz 2008-07-10: TODOS Hier und im der Impl!:
+		 * - Neue SystemNachricht 
+		 * - ProducerMock mit eq für die Sys-Nachricht, alles andere verboten
+		 * - Consumer für die Antwort, neue Systemnachricht
+		 * - TESTFAELLE:
+		 *   # für JMS-Fehler beim senden
+		 *   # für JMS Fehler beim empfangen
+		 */
+		
 		EasyMock.verify(localStoreConfigurationServiceMock);
 		EasyMock.verify(callback);
 	}
