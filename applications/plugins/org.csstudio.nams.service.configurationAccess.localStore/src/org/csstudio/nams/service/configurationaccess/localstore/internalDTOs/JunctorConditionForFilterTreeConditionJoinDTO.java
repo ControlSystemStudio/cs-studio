@@ -16,10 +16,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * Representiert eine JOIN-Zeile für {@link JunctorConditionForFilterTreeDTO}-Operanden.
  * 
  * <pre>
- * create table AMS_FilterCond_Conj_4_Filter_FilterCond_Join (
- *   iFilterConditionID             INT NOT NULL,
- *   iFilterConditionRef			INT NOT NULL,
- * );
+ * create table AMSFilterCondConj4FilterFCJoin (
+ *    iFilterConditionID           NUMBER(11) NOT NULL,
+ *    iFilterConditionRef			NUMBER(11) NOT NULL
+  * );
  * </pre>
  * 
  * @author gs, mz
@@ -27,7 +27,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * 
  */
 @Entity
-@Table(name = "AMS_FilterCond_Conj_4_Filter_FilterCond_Join")
+@Table(name = "AMSFilterCondConj4FilterFCJoin")
 public class JunctorConditionForFilterTreeConditionJoinDTO implements
 		NewAMSConfigurationElementDTO {
 

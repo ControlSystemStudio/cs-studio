@@ -26,9 +26,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Jun
  * Das Join der Operanden erfolgt via {@link JunctorConditionForFilterTreeConditionJoinDTO}.
  * 
  * <pre>
- * create table AMS_FilterCond_Conj_4_Filter_Common (
- *   iFilterConditionRef			INT NOT NULL,
- *   Operator                       ENUM('AND', 'OR') NOT NULL
+ * create table AMSFilterCondConj4FilterCommon (
+ *    iFilterConditionRef			NUMBER(11) NOT NULL,
+ *    Operator                     VARCHAR2(3) NOT NULL, 
+ *    CONSTRAINT AMSFilterCondConj4FilterCommon CHECK (Operator IN ('AND', 'OR'))
  * );
  * </pre>
  * 
@@ -37,7 +38,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Jun
  */
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
-@Table(name = "AMS_FilterCond_Conj_4_Filter_Common")
+@Table(name = "AMSFilterCondConj4FilterCommon")
 public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO {
 
 	@SuppressWarnings("unused")

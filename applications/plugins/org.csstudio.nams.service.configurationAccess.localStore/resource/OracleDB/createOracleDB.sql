@@ -2,8 +2,10 @@
 drop table AMSFilterCondConj4FilterCommon;
 create table AMSFilterCondConj4FilterCommon (
    iFilterConditionRef			NUMBER(11) NOT NULL,
-   Operator                     ENUM('AND', 'OR') NOT NULL
+   Operator                     VCHAR(3) NOT NULL, 
+   CONSTRAINT AMSFilterCondConj4FilterCommon CHECK (Operator IN ('AND', 'OR'))
 );
+
 
 drop table AMSFilterCondConj4FilterFCJoin;
 create table AMSFilterCondConj4FilterFCJoin (
