@@ -5,14 +5,19 @@ import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
@@ -34,6 +39,7 @@ import org.eclipse.ui.IEditorSite;
 
 public class FilterEditor extends AbstractEditor<FilterBean> {
 
+	private final FilterTreeContentProvider filterTreeContentProvider = new FilterTreeContentProvider();
 	private Text _nameTextEntry;
 	private Combo _rubrikComboEntry;
 	private Text _defaultMessageTextEntry;
@@ -62,18 +68,40 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			treeAndButtonsComp.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					treeAndButtonsComp);
-			new Label(treeAndButtonsComp, SWT.None)
-					.setText("Filterconditions");
+			new Label(treeAndButtonsComp, SWT.None).setText("Filterconditions");
 			{
-				filterConditionsTreeViewer = new TreeViewer(
-						treeAndButtonsComp);
+				filterConditionsTreeViewer = new TreeViewer(treeAndButtonsComp);
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
 						filterConditionsTreeViewer.getControl());
 
 				filterConditionsTreeViewer
-						.setContentProvider(new FilterTreeContentProvider());
-				filterConditionsTreeViewer.setLabelProvider(new FilterTreeLabelProvider());
+						.setContentProvider(filterTreeContentProvider);
+				filterConditionsTreeViewer
+						.setLabelProvider(new FilterTreeLabelProvider());
 				filterConditionsTreeViewer.setInput(beanClone.getConditions());
+
+				NewJunctorAction newAndAction = new NewJunctorAction(
+						JunctorConditionType.AND);
+				NewJunctorAction newOrAction = new NewJunctorAction(
+						JunctorConditionType.OR);
+				NewNotAction newNotAction = new NewNotAction();
+
+				filterConditionsTreeViewer
+						.addSelectionChangedListener(newAndAction);
+				filterConditionsTreeViewer
+						.addSelectionChangedListener(newOrAction);
+				filterConditionsTreeViewer
+						.addSelectionChangedListener(newNotAction);
+
+				MenuManager menuManager = new MenuManager();
+				menuManager.add(newAndAction);
+				menuManager.add(newOrAction);
+				menuManager.add(newNotAction);
+
+				filterConditionsTreeViewer.getTree().setMenu(
+						menuManager
+								.createContextMenu(filterConditionsTreeViewer
+										.getTree()));
 
 				initDND();
 			}
@@ -85,14 +113,15 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				}
 
 				public void mouseDown(MouseEvent e) {
-//					int[] indices = filterConditionsTreeViewer.getSelection()
-//							.getSelectionIndices();
-//					List<FilterbedingungBean> list = beanClone.getConditions();
-//					for (int i = indices.length - 1; i >= 0; i--) {
-//						int j = indices[i];
-//						list.remove(j);
-//					}
-//					beanClone.setConditions(list);
+					// int[] indices = filterConditionsTreeViewer.getSelection()
+					// .getSelectionIndices();
+					// List<FilterbedingungBean> list =
+					// beanClone.getConditions();
+					// for (int i = indices.length - 1; i >= 0; i--) {
+					// int j = indices[i];
+					// list.remove(j);
+					// }
+					// beanClone.setConditions(list);
 				}
 
 				public void mouseUp(MouseEvent e) {
@@ -101,6 +130,103 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		}
 
 		initDataBinding();
+	}
+
+	private class NewJunctorAction extends Action implements
+			ISelectionChangedListener {
+		private JunctorConditionForFilterTreeBean bean;
+		private final JunctorConditionType type;
+		private NotConditionForFilterTreeBean notBean;
+
+		private NewJunctorAction(JunctorConditionType type) {
+			this.type = type;
+		}
+
+		@Override
+		public void run() {
+			//FIXME vehaelt sich nicht richtig!!!
+
+			JunctorConditionForFilterTreeBean node = new JunctorConditionForFilterTreeBean();
+			node.setJunctorConditionType(type);
+			if (bean != null) {
+				bean.addOperand(node);
+			} else if (notBean != null) {
+				notBean.setFilterbedingungBean(node);
+			}
+			filterConditionsTreeViewer.expandToLevel(node, 0);
+			filterConditionsTreeViewer.refresh();
+		}
+
+		public void selectionChanged(SelectionChangedEvent event) {
+			
+			//FIXME vehaelt sich nicht richtig!!!
+			
+			IStructuredSelection selection = (IStructuredSelection) event
+					.getSelection();
+			Object element = selection.getFirstElement();
+			bean = null;
+			notBean = null;
+			if (element instanceof JunctorConditionForFilterTreeBean) {
+				bean = (JunctorConditionForFilterTreeBean) element;
+				setEnabled(true);
+			} else if (element instanceof NotConditionForFilterTreeBean) {
+				notBean = (NotConditionForFilterTreeBean) element;
+				setEnabled(true);
+			} else {
+				setEnabled(false);
+			}
+		}
+
+		@Override
+		public String getText() {
+			return type.name();
+		}
+	}
+
+	private class NewNotAction extends Action implements
+			ISelectionChangedListener {
+		private FilterbedingungBean bean;
+		private boolean not;
+
+		@Override
+		public void run() {
+			JunctorConditionForFilterTreeBean parent = (JunctorConditionForFilterTreeBean) filterTreeContentProvider
+					.getParent(bean);
+			if (parent != null) {
+				if (not) {
+					NotConditionForFilterTreeBean notBean = new NotConditionForFilterTreeBean();
+					parent.removeOperand(bean);
+					notBean.setFilterbedingungBean(bean);
+					parent.addOperand(notBean);
+				} else {
+					parent.removeOperand(bean);
+					NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) bean;
+					FilterbedingungBean filterbedingungBean = notBean
+							.getFilterbedingungBean();
+					parent.addOperand(filterbedingungBean);
+				}
+			}
+
+			filterConditionsTreeViewer.refresh();
+			filterConditionsTreeViewer.expandToLevel(not, 0);
+		}
+
+		public void selectionChanged(SelectionChangedEvent event) {
+			IStructuredSelection selection = (IStructuredSelection) event
+					.getSelection();
+			Object element = selection.getFirstElement();
+			setEnabled(true);
+			if (element instanceof FilterbedingungBean) {
+				bean = (FilterbedingungBean) element;
+				if (!(element instanceof NotConditionForFilterTreeBean)) {
+					setText("NOT");
+					not = true;
+				} else {
+					setText("UNNOT");
+					not = false;
+				}
+			}
+		}
 	}
 
 	private void initDND() {
@@ -112,15 +238,24 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					public boolean performDrop(Object data) {
 						Object target = getCurrentTarget();
 						IStructuredSelection selection = (IStructuredSelection) data;
-						FilterbedingungBean bean = (FilterbedingungBean) selection.getFirstElement();
+						FilterbedingungBean bean = (FilterbedingungBean) selection
+								.getFirstElement();
 						boolean result = false;
 						if (target instanceof JunctorConditionForFilterTreeBean) {
 							JunctorConditionForFilterTreeBean targetBean = (JunctorConditionForFilterTreeBean) target;
 							targetBean.addOperand(bean);
 							result = true;
 						} else if (target instanceof NotConditionForFilterTreeBean) {
+
 							NotConditionForFilterTreeBean targetBean = (NotConditionForFilterTreeBean) target;
-							targetBean.setFilterbedingungBean(bean);
+							FilterbedingungBean filterbedingungBean = targetBean
+									.getFilterbedingungBean();
+							if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
+								JunctorConditionForFilterTreeBean junctorFilterbedingungBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
+								junctorFilterbedingungBean.addOperand(bean);
+							} else {
+								targetBean.setFilterbedingungBean(bean);
+							}
 							result = true;
 						}
 						filterConditionsTreeViewer.refresh();
@@ -132,14 +267,16 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						event.detail = DND.DROP_LINK;
 						super.dragEnter(event);
 					}
-					
+
 					@Override
 					public boolean validateDrop(Object target, int operation,
 							TransferData transferType) {
 						boolean result = false;
-						if (target instanceof JunctorConditionForFilterTreeBean || target instanceof NotConditionForFilterTreeBean) {
-							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer.getTransfer().getSelection();
-							if (selection.getFirstElement() instanceof FilterbedingungBean){
+						if (target instanceof JunctorConditionForFilterTreeBean
+								|| target instanceof NotConditionForFilterTreeBean) {
+							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+									.getTransfer().getSelection();
+							if (selection.getFirstElement() instanceof FilterbedingungBean) {
 								result = true;
 							}
 						}
@@ -168,9 +305,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				.observeValue(this.beanClone,
 						FilterBean.PropertyNames.defaultMessage.name());
 
-//		IObservableTree filterConditionsObservable = BeansObservables
-//				.observeList(context.getValidationRealm(), this.beanClone,
-//						FilterBean.PropertyNames.conditions.name());
+		// IObservableTree filterConditionsObservable = BeansObservables
+		// .observeList(context.getValidationRealm(), this.beanClone,
+		// FilterBean.PropertyNames.conditions.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
 				this.beanClone, FilterBean.AbstractPropertyNames.rubrikName
@@ -183,9 +320,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
 				SWT.Modify), descriptionTextObservable, null, null);
-//		IObservableTree observeItems = SWTObservables
-//				.observeItems(filterConditionsTreeViewer.getTree());
-//		context.bindList(observeItems, filterConditionsObservable, null, null);
+		// IObservableTree observeItems = SWTObservables
+		// .observeItems(filterConditionsTreeViewer.getTree());
+		// context.bindList(observeItems, filterConditionsObservable, null,
+		// null);
 
 		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
 				rubrikTextObservable, null, null);

@@ -4,38 +4,22 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 
 public class JunctorConditionForFilterTreeBean extends
-		AbstractConfigurationBean<JunctorConditionForFilterTreeBean> {
+		FilterbedingungBean {
 
 	private JunctorConditionType junctorConditionType;
-	private int id;
 	private Set<FilterbedingungBean> filterbedingungBeans = new TreeSet<FilterbedingungBean>();
 
 	public String getDisplayName() {
 		return junctorConditionType.name();
 	}
 
-	public int getID() {
-		return id;
-	}
-
-	public void setID(int id) {
-		this.id = id;
-	}
-
 	public int compareTo(JunctorConditionForFilterTreeBean o) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	protected void doUpdateState(JunctorConditionForFilterTreeBean bean) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void addOperand(FilterbedingungBean bean) {
@@ -56,6 +40,10 @@ public class JunctorConditionForFilterTreeBean extends
 
 	public Set<FilterbedingungBean> getOperands() {
 		return Collections.unmodifiableSet(filterbedingungBeans);
+	}
+
+	public void removeOperand(FilterbedingungBean bean) {
+		filterbedingungBeans.remove(bean);
 	}
 
 }

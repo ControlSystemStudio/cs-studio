@@ -12,7 +12,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -62,8 +61,6 @@ public abstract class AbstractNamsView extends ViewPart {
 		getSite().registerContextMenu(menuManager, table);
 		getSite().setSelectionProvider(table);
 
-		IActionBars actionBars = getViewSite().getActionBars();
-
 		menuManager.add(new Action() {
 			@Override
 			public void run() {
@@ -90,7 +87,6 @@ public abstract class AbstractNamsView extends ViewPart {
 			
 			@Override
 			public String getText() {
-				
 				return "Neu";
 			}
 		});

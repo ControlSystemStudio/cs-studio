@@ -1,15 +1,21 @@
 package org.csstudio.nams.configurator.beans.filters;
 
-import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 
-public class NotConditionForFilterTreeBean extends AbstractConfigurationBean<NotConditionForFilterTreeBean> {
+public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 
 	private int id;
 	private FilterbedingungBean bean;
 
 	public String getDisplayName() {
-		return "NOT " + bean.getDisplayName();
+		String result = "NOT ";
+		if (bean != null) {
+			if (bean instanceof JunctorConditionForFilterTreeBean) {
+				result = "N";
+			}
+			result = result + bean.getDisplayName();
+		}
+		return result;
 	}
 
 	public int getID() {
@@ -26,7 +32,7 @@ public class NotConditionForFilterTreeBean extends AbstractConfigurationBean<Not
 	}
 
 	@Override
-	protected void doUpdateState(NotConditionForFilterTreeBean bean) {
+	protected void doUpdateState(FilterbedingungBean bean) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -35,4 +41,7 @@ public class NotConditionForFilterTreeBean extends AbstractConfigurationBean<Not
 		this.bean = bean;
 	}
 
+	public FilterbedingungBean getFilterbedingungBean() {
+		return bean;
+	}
 }
