@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -35,6 +36,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -354,12 +357,93 @@ public class AlarmbearbeitergruppenEditor extends
 
 						Button upup = new Button(buttonsComp, SWT.PUSH);
 						upup.setText("UpUp");
+						upup.addMouseListener(new MouseListener(){
+
+							public void mouseDoubleClick(MouseEvent e) {
+							}
+
+							public void mouseDown(MouseEvent e) {
+								List<User2GroupBean> users = beanClone.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
+								Object element = selection.getFirstElement();
+								users.remove(element);
+								users.add(0, (User2GroupBean)element);
+								beanClone.setUsers(users);
+								tableViewer.refresh();
+							}
+
+							public void mouseUp(MouseEvent e) {
+							}
+						});
 						Button up = new Button(buttonsComp, SWT.PUSH);
 						up.setText("Up");
+						upup.addMouseListener(new MouseListener(){
+
+							public void mouseDoubleClick(MouseEvent e) {
+							}
+
+							public void mouseDown(MouseEvent e) {
+								// TODO Auto-generated method stub
+								List<User2GroupBean> users = beanClone.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
+								int index = tableViewer.getTable().getSelectionIndex();
+								if (index > 0) index--;
+								Object element = selection.getFirstElement();
+								users.remove(element);
+								users.add(index, (User2GroupBean)element);
+								beanClone.setUsers(users);
+								tableViewer.refresh();
+							}
+
+							public void mouseUp(MouseEvent e) {
+							}
+							
+						});
 						Button down = new Button(buttonsComp, SWT.PUSH);
 						down.setText("Down");
+						down.addMouseListener(new MouseListener(){
+
+							public void mouseDoubleClick(MouseEvent e) {
+							}
+
+							public void mouseDown(MouseEvent e) {
+								List<User2GroupBean> users = beanClone.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
+								int index = tableViewer.getTable().getSelectionIndex();
+								if (index < tableViewer.getTable().getSelectionIndex()) index++;
+								Object element = selection.getFirstElement();
+								users.remove(element);
+								users.add(index, (User2GroupBean)element);
+								beanClone.setUsers(users);
+								tableViewer.refresh();
+							}
+
+							public void mouseUp(MouseEvent e) {
+							}
+							
+						});
 						Button downdown = new Button(buttonsComp, SWT.PUSH);
 						downdown.setText("DownDown");
+						downdown.addMouseListener(new MouseListener(){
+
+							public void mouseDoubleClick(MouseEvent e) {
+							}
+
+							public void mouseDown(MouseEvent e) {
+								List<User2GroupBean> users = beanClone.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
+								User2GroupBean element = (User2GroupBean) selection.getFirstElement();
+								users.remove(element);
+								users.add((User2GroupBean)element);
+								beanClone.setUsers(users);
+								tableViewer.refresh();
+								
+							}
+
+							public void mouseUp(MouseEvent e) {
+							}
+							
+						});
 					}
 				}
 			}
@@ -392,8 +476,7 @@ public class AlarmbearbeitergruppenEditor extends
 							List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.beanClone
 									.getUsers();
 							users.add(new User2GroupBean(bean,
-									AlarmbearbeitergruppenEditor.this.bean,
-									tableViewer.getTable().getItemCount() + 1));
+									AlarmbearbeitergruppenEditor.this.bean));
 							AlarmbearbeitergruppenEditor.this.beanClone
 									.setUsers(users);
 						} catch (Throwable e) {

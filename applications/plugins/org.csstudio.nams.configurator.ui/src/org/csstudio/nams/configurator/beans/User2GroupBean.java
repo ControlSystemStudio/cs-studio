@@ -13,11 +13,10 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	 * KEY(iUserGroupRef,iUserRef)
 	 */
 	public enum PropertyNames {
-		position, active, activeReason, lastChange
+		active, activeReason, lastChange
 
 	}
 
-	int position;
 	boolean active;
 	String activeReason = "";
 	// FIXME we shall not use Date
@@ -29,18 +28,66 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	// position, active, activeReason, lastChange
 	// }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (active ? 1231 : 1237);
+		result = prime * result
+				+ ((activeReason == null) ? 0 : activeReason.hashCode());
+		result = prime * result
+				+ ((groupBean == null) ? 0 : groupBean.hashCode());
+		result = prime * result
+				+ ((lastChange == null) ? 0 : lastChange.hashCode());
+		result = prime * result
+				+ ((userBean == null) ? 0 : userBean.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final User2GroupBean other = (User2GroupBean) obj;
+		if (active != other.active)
+			return false;
+		if (activeReason == null) {
+			if (other.activeReason != null)
+				return false;
+		} else if (!activeReason.equals(other.activeReason))
+			return false;
+		if (groupBean == null) {
+			if (other.groupBean != null)
+				return false;
+		} else if (!groupBean.equals(other.groupBean))
+			return false;
+		if (lastChange == null) {
+			if (other.lastChange != null)
+				return false;
+		} else if (!lastChange.equals(other.lastChange))
+			return false;
+		if (userBean == null) {
+			if (other.userBean != null)
+				return false;
+		} else if (!userBean.equals(other.userBean))
+			return false;
+		return true;
+	}
+
 	public User2GroupBean(AlarmbearbeiterBean userBean,
-			AlarmbearbeiterGruppenBean groupBean, int position) {
+			AlarmbearbeiterGruppenBean groupBean) {
 		this.userBean = userBean;
 		this.groupBean = groupBean;
-		this.position = position;
 	}
 
 	@Override
 	protected void doUpdateState(User2GroupBean bean) {
 		userBean.updateState(bean.getUserBean());
 		groupBean.updateState(bean.getGroupBean());
-		setPosition(bean.getPosition());
 		setActive(bean.isActive());
 		setActiveReason(bean.getActiveReason());
 		setLastChange(bean.getLastChange());
@@ -59,17 +106,6 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 
 	public String getUserName() {
 		return userBean.getName();
-	}
-
-	public int getPosition() {
-		return position;
-	}
-
-	public void setPosition(int position) {
-		int oldValue = this.position;
-		this.position = position;
-		pcs.firePropertyChange(PropertyNames.position.name(), oldValue,
-				position);
 	}
 
 	public boolean isActive() {
