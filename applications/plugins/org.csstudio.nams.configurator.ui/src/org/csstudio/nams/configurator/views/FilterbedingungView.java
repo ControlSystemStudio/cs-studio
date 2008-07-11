@@ -14,7 +14,7 @@ public class FilterbedingungView extends AbstractNamsView {
 
 	@Override
 	protected IConfigurationBean[] getTableContent() {
-		return configurationBeanService.getFilterConditionBeans();
+		return configurationBeanService.getFilterConditionsForView();
 	}
 
 	@Override

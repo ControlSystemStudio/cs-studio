@@ -18,8 +18,9 @@ public interface ConfigurationBeanService {
 	public abstract AlarmtopicBean[] getAlarmTopicBeans();
 
 	public abstract FilterBean[] getFilterBeans();
-
+	
 	public abstract FilterbedingungBean[] getFilterConditionBeans();
+	public FilterbedingungBean[] getFilterConditionsForView();
 
 	public abstract String[] getRubrikNamesForType(RubrikTypeEnum type);
 

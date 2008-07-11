@@ -19,6 +19,7 @@ import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.StringArrayFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
@@ -173,6 +174,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		listeners.add(listener);
 	}
 
+	public FilterbedingungBean[] getFilterConditionsForView(){
+		//TODO may cache results
+		List<FilterbedingungBean> lists = new LinkedList<FilterbedingungBean>();
+		for (FilterbedingungBean bean : getFilterConditionBeans()) {
+			if (!(bean.getFilterSpecificBean() instanceof JunctorConditionForFilterTreeBean))
+					lists.add(bean);
+		}
+		return lists.toArray(new FilterbedingungBean[lists.size()]);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
