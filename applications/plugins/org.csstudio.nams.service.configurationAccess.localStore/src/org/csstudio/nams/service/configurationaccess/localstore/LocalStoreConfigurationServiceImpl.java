@@ -23,6 +23,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO_PK;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
@@ -209,6 +210,11 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			transaction = session.beginTransaction();
 			session.saveOrUpdate(dto);
+			
+			if( dto instanceof HasJoinedElements) {
+				((HasJoinedElements<?>)dto).storeJoinData(session);
+			}
+			
 			transaction.commit();
 		} catch (Throwable t) {
 			if (transaction != null) {

@@ -1,6 +1,8 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -140,10 +142,29 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 	}
 	
 	public void testReadAndWriteJunctorConditionForFilterTree() throws Throwable {
+		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
+		leftCondition.setCName("Test-LeftCond");
+		leftCondition.setCompValue("TestValue");
+		leftCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		leftCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+		service.saveDTO(leftCondition);
+		
+		StringFilterConditionDTO rightCondition = new StringFilterConditionDTO();
+		rightCondition.setCName("Test-RightCond");
+		rightCondition.setCompValue("TestValue2");
+		rightCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		rightCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+		service.saveDTO(rightCondition);
+		
+		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
+		operands.add(leftCondition);
+		operands.add(rightCondition);
+		
 		JunctorConditionForFilterTreeDTO condition = new JunctorConditionForFilterTreeDTO();
 		condition.setCName("TEST-Con");
 		condition.setCDesc("Test-Description");
 		condition.setOperator(JunctorConditionType.AND);
+		condition.setOperands(operands);
 		
 		Configuration entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
@@ -188,5 +209,9 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
 		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(condition));
+		
+		// clean up
+		service.deleteDTO(leftCondition);
+		service.deleteDTO(rightCondition);
 	}
 }

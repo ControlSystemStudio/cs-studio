@@ -2,8 +2,10 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Entity;
 
@@ -15,7 +17,9 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.hibernate.Session;
@@ -71,6 +75,18 @@ public class Configuration implements FilterConditionForIdProvider {
 						StringArrayFilterConditionCompareValuesDTO.class)
 				.list();
 		setStringArrayCompareValues(allCompareValues);
+		
+		Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(allFilterConditions);
+		for (FilterConditionDTO fc : allFCs) {
+			if( fc instanceof JunctorConditionForFilterTreeDTO ) {
+				JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO)fc;
+				try {
+					jcfft.loadJoinData(session, allFCs);
+				} catch (Throwable e) {
+					throw new InconsistentConfigurationException("unable to load joined conditions of JunctionConditionForFilters", e);
+				}
+			}
+		}
 	}
 
 	private void setStringArrayCompareValues(

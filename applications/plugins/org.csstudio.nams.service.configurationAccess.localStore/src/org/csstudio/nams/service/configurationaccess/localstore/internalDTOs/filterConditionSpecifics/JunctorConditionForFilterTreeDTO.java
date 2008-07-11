@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.JunctorConditionForFilterTreeConditionJoinDTO;
+import org.hibernate.Session;
 
 /**
  * Dieses FC wird verwendet, um in den Filtern den Conjunction-Baum
@@ -39,7 +41,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Jun
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterCondConj4FilterCommon")
-public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO {
+public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO implements HasJoinedElements<FilterConditionDTO>
+{
 
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -73,6 +76,8 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO {
 	}
 
 	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
 	 * Setzt die Operanden der Junction. Dieses geschiet nicht durch das Mapping
 	 * sondern manuell nach dem Laden.
 	 * 
@@ -88,6 +93,8 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO {
 	}
 
 	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
 	 * Liefert die Operanden der Junction. Dieses wird nicht durch das Mapping
 	 * vorbereitet sondern manuell nach dem Laden.
 	 * 
@@ -100,6 +107,56 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO {
 		return new HashSet<FilterConditionDTO>(asList);
 	}
 
+	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
+	 * This method is used to store the join-data for previously set {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}.
+	 * IMPORTANT: This method has to be called in a valid open transaction!
+	 * 
+	 * @param session The session to store to; it is guaranteed that only {@link JunctorConditionForFilterTreeDTO} will be stored and/or deleted.
+	 * @throws If an error occurred
+	 */
+	public synchronized void storeJoinData(Session session) throws Throwable {
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session.createCriteria(JunctorConditionForFilterTreeConditionJoinDTO.class).list();
+		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
+			if( joinElement.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
+				session.delete(joinElement);
+			}
+		}
+		
+		for (FilterConditionDTO condition : this.getOperands()) {
+			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(this, condition);
+			session.save(newJoin);
+		}
+	}
+	
+	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
+	 * This method is used to load the join-data and set {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}.
+	 * IMPORTANT: This method has to be called in a valid open transaction!
+	 * 
+	 * @param session The session to store to; it is guaranteed that only {@link JunctorConditionForFilterTreeDTO} will be loaded and nothing be deleted.
+	 * @param allFilterConditions All avail {@link FilterConditionDTO}; is is guaranteed that no {@link FilterConditionDTO} will be modified or deleted.
+	 * @throws If an error occurred
+	 */
+	public synchronized void loadJoinData(Session session, Collection<FilterConditionDTO> allFilterConditions) throws Throwable {
+		Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
+		
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session.createCriteria(JunctorConditionForFilterTreeConditionJoinDTO.class).list();
+		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
+			if( joinElement.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
+				for (FilterConditionDTO conditionDTO : allFilterConditions) {
+					if( conditionDTO.getIFilterConditionID() == joinElement.getJoinedConditionsDatabaseId() ) {
+						foundOperands.add(conditionDTO);
+					}
+				}
+			}
+		}
+		
+		this.operands = foundOperands.toArray(new FilterConditionDTO[foundOperands.size()]);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

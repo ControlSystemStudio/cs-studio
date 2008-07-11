@@ -35,6 +35,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
@@ -468,8 +469,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (filterSpecificBean != null) {
 			bean.setFilterSpecificBean(filterSpecificBean);
 		} else {
-			throw new IllegalArgumentException(
-					"Unrecognized FilterConditionDTO: " + filter);
+			
+			// FIXME mz20080711 ; Add original mapping
+			if( !(filter instanceof JunctorConditionForFilterTreeDTO) )		
+				throw new IllegalArgumentException(
+						"Unrecognized FilterConditionDTO: " + filter);
 		}
 		return bean;
 	}

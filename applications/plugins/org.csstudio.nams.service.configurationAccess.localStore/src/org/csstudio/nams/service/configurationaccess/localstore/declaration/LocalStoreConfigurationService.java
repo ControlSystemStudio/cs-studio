@@ -6,6 +6,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 
 public interface LocalStoreConfigurationService {
 
@@ -79,6 +80,15 @@ public interface LocalStoreConfigurationService {
 	 */
 	public void saveHistoryDTO(HistoryDTO historyDTO);
 
+	/**
+	 * 
+	 * IMPORTANT: Auf {@link HasJoinedElements} achten!!!
+	 * 
+	 * @param dto
+	 * @throws StorageError
+	 * @throws StorageException
+	 * @throws InconsistentConfigurationException
+	 */
 	public void saveDTO(NewAMSConfigurationElementDTO dto) throws StorageError,
 			StorageException, InconsistentConfigurationException;
 
