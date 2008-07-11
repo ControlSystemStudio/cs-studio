@@ -19,7 +19,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * create table AMSFilterCondConj4FilterFCJoin (
  *    iFilterConditionID           NUMBER(11) NOT NULL,
  *    iFilterConditionRef			NUMBER(11) NOT NULL
-  * );
+ * );
  * </pre>
  * 
  * @author gs, mz
@@ -85,6 +85,26 @@ public class JunctorConditionForFilterTreeConditionJoinDTO implements
 					+ this.iFilterConditionID + " zu "
 					+ this.iFilterConditionRef;
 		}
+	}
+
+	public JunctorConditionForFilterTreeConditionJoinDTO() {
+		// Required by bean-convention.
+	}
+
+	public JunctorConditionForFilterTreeConditionJoinDTO(
+			JunctorConditionForFilterTreeDTO filterCondition,
+			FilterConditionDTO joinedCondition) {
+		Contract.requireNotNull("filterCondition", filterCondition);
+		Contract.requireNotNull("joinedCondition", joinedCondition);
+		Contract
+				.require(
+						(filterCondition.getIFilterConditionID() != joinedCondition
+								.getIFilterConditionID()) || filterCondition.getIFilterConditionID() == 0,
+						"filterCondition.getIFilterConditionID() != joinedCondition.getIFilterConditionID() || filterCondition.getIFilterConditionID() == 0");
+
+		id = new JoinPK();
+		id.iFilterConditionID = filterCondition.getIFilterConditionID();
+		id.iFilterConditionRef = joinedCondition.getIFilterConditionID();
 	}
 
 	@EmbeddedId
@@ -173,7 +193,7 @@ public class JunctorConditionForFilterTreeConditionJoinDTO implements
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.id.toString();

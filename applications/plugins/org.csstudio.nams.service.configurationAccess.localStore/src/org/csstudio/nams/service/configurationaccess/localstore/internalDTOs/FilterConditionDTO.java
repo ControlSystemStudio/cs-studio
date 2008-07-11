@@ -86,8 +86,10 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	}
 
 	/**
+	 * ONLY TO BE USED FOR MAPPING PURPOSES. 
+	 * 
 	 * @param groupRef
-	 *            the iGroupRef to set
+	 *            Die Rubrik dieses DTOs.
 	 */
 	@SuppressWarnings("unused")
 	public void setIGroupRef(int groupRef) {

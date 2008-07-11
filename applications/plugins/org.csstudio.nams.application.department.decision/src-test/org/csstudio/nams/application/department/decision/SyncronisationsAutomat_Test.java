@@ -28,6 +28,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.history.declaration.HistoryService;
@@ -285,6 +286,12 @@ public class SyncronisationsAutomat_Test extends TestCase {
 							throws StorageError, StorageException,
 							InconsistentConfigurationException {
 						fail("unexpected method call!");						
+					}
+
+					public void deleteDTO(JunctorConditionForFilterTreeDTO dto)
+							throws StorageError, StorageException,
+							InconsistentConfigurationException {
+						fail("unexpected method call!");
 					}
 
 				}, new HistoryService() {
