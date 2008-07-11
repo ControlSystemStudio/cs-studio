@@ -112,13 +112,13 @@ public class SyncronizeView extends ViewPart {
 							+ "Do you want to review your changes before continuing?");
 			if (messageBox.open() == SWT.YES) {
 				// The User likes to check his changes.
-				System.out
-						.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): false");
+//				System.out
+//						.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): false");
 				return false;
 			}
 		}
-		System.out
-				.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): true");
+//		System.out
+//				.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): true");
 		return true;
 	}
 
