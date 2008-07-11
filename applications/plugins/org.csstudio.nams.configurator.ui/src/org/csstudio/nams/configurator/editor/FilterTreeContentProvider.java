@@ -32,6 +32,9 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 	}
 
 	public Object getParent(Object element) {
+		
+		//FIXME funktioniert nicht!!
+		
 		if (results != null) {
 			JunctorConditionForFilterTreeBean root = results[0]; 
 			return rekursiv(root, element);
