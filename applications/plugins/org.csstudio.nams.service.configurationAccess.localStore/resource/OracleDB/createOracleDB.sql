@@ -2,7 +2,7 @@
 drop table AMSFilterCondConj4FilterCommon;
 create table AMSFilterCondConj4FilterCommon (
    iFilterConditionRef			NUMBER(11) NOT NULL,
-   Operator                     VCHAR(3) NOT NULL, 
+   Operator                     VARCHAR2(3) NOT NULL, 
    CONSTRAINT AMSFilterCondConj4FilterCommon CHECK (Operator IN ('AND', 'OR'))
 );
 
