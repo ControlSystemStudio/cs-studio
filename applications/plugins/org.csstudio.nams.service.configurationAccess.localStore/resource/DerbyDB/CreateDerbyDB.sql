@@ -3,16 +3,15 @@ connect 'jdbc:derby://localhost/amsdb;create=true';
 -- NAMS --
 drop table AMSFilterCondConj4FilterCommon;
 create table AMSFilterCondConj4FilterCommon (
-   iFilterConditionRef			NUMBER(11) NOT NULL,
-   Operator                     VARCHAR2(3) NOT NULL, 
+   iFilterConditionRef		INT NOT NULL,
+   Operator                     VARCHAR(3) NOT NULL, 
    CONSTRAINT AMSFilterCondConj4FilterCommon CHECK (Operator IN ('AND', 'OR'))
 );
 
-
 drop table AMSFilterCondConj4FilterFCJoin;
 create table AMSFilterCondConj4FilterFCJoin (
-   iFilterConditionID           NUMBER(11) NOT NULL,
-   iFilterConditionRef			NUMBER(11) NOT NULL
+   iFilterConditionID           INT NOT NULL,
+   iFilterConditionRef		INT NOT NULL
  );
  
 -- AMS --
