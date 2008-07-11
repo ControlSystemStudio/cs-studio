@@ -1,27 +1,25 @@
 package org.csstudio.nams.configurator.editor;
 
-import java.util.List;
-
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
+import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -41,7 +39,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	private Text _defaultMessageTextEntry;
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
 	private ComboViewer _rubrikComboEntryViewer;
-	private ListViewer filterConditionsListViewer;
+	private TreeViewer filterConditionsTreeViewer;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -60,24 +58,26 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				"Description:");
 
 		{
-			Composite tabelleUndButtonsComp = new Composite(outermain, SWT.None);
-			tabelleUndButtonsComp.setLayout(new GridLayout(1, false));
+			Composite treeAndButtonsComp = new Composite(outermain, SWT.None);
+			treeAndButtonsComp.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
-					tabelleUndButtonsComp);
-			new Label(tabelleUndButtonsComp, SWT.None)
+					treeAndButtonsComp);
+			new Label(treeAndButtonsComp, SWT.None)
 					.setText("Filterconditions");
 			{
-				filterConditionsListViewer = new ListViewer(
-						tabelleUndButtonsComp);
+				filterConditionsTreeViewer = new TreeViewer(
+						treeAndButtonsComp);
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
-						filterConditionsListViewer.getControl());
+						filterConditionsTreeViewer.getControl());
 
-				filterConditionsListViewer
-						.setContentProvider(new ArrayContentProvider());
+				filterConditionsTreeViewer
+						.setContentProvider(new FilterTreeContentProvider());
+				filterConditionsTreeViewer.setLabelProvider(new FilterTreeLabelProvider());
+				filterConditionsTreeViewer.setInput(beanClone.getConditions());
 
 				initDND();
 			}
-			Button button = new Button(tabelleUndButtonsComp, SWT.PUSH);
+			Button button = new Button(treeAndButtonsComp, SWT.PUSH);
 			button.setText("Remove Filterconditions");
 			button.addMouseListener(new MouseListener() {
 
@@ -85,14 +85,14 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				}
 
 				public void mouseDown(MouseEvent e) {
-					int[] indices = filterConditionsListViewer.getList()
-							.getSelectionIndices();
-					List<FilterbedingungBean> list = beanClone.getConditions();
-					for (int i = indices.length - 1; i >= 0; i--) {
-						int j = indices[i];
-						list.remove(j);
-					}
-					beanClone.setConditions(list);
+//					int[] indices = filterConditionsTreeViewer.getSelection()
+//							.getSelectionIndices();
+//					List<FilterbedingungBean> list = beanClone.getConditions();
+//					for (int i = indices.length - 1; i >= 0; i--) {
+//						int j = indices[i];
+//						list.remove(j);
+//					}
+//					beanClone.setConditions(list);
 				}
 
 				public void mouseUp(MouseEvent e) {
@@ -104,32 +104,46 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	}
 
 	private void initDND() {
-		filterConditionsListViewer.addDropSupport(DND.DROP_LINK,
+		filterConditionsTreeViewer.addDropSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
-				new DropTargetAdapter() {
-					public void dragEnter(DropTargetEvent event) {
-						try {
-							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
-									.getTransfer().getSelection();
-							if (selection.getFirstElement() instanceof FilterbedingungBean) {
-								event.detail = DND.DROP_LINK;
-							}
-						} catch (Throwable e) {
+				new ViewerDropAdapter(filterConditionsTreeViewer) {
+
+					@Override
+					public boolean performDrop(Object data) {
+						Object target = getCurrentTarget();
+						IStructuredSelection selection = (IStructuredSelection) data;
+						FilterbedingungBean bean = (FilterbedingungBean) selection.getFirstElement();
+						boolean result = false;
+						if (target instanceof JunctorConditionForFilterTreeBean) {
+							JunctorConditionForFilterTreeBean targetBean = (JunctorConditionForFilterTreeBean) target;
+							targetBean.addOperand(bean);
+							result = true;
+						} else if (target instanceof NotConditionForFilterTreeBean) {
+							NotConditionForFilterTreeBean targetBean = (NotConditionForFilterTreeBean) target;
+							targetBean.setFilterbedingungBean(bean);
+							result = true;
 						}
+						filterConditionsTreeViewer.refresh();
+						return result;
 					}
 
-					public void drop(DropTargetEvent event) {
-						try {
-							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
-									.getTransfer().getSelection();
-							FilterbedingungBean bean = (FilterbedingungBean) selection
-									.getFirstElement();
-							List<FilterbedingungBean> list = FilterEditor.this.beanClone
-									.getConditions();
-							list.add(bean);
-							FilterEditor.this.beanClone.setConditions(list);
-						} catch (Throwable e) {
+					@Override
+					public void dragEnter(DropTargetEvent event) {
+						event.detail = DND.DROP_LINK;
+						super.dragEnter(event);
+					}
+					
+					@Override
+					public boolean validateDrop(Object target, int operation,
+							TransferData transferType) {
+						boolean result = false;
+						if (target instanceof JunctorConditionForFilterTreeBean || target instanceof NotConditionForFilterTreeBean) {
+							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer.getTransfer().getSelection();
+							if (selection.getFirstElement() instanceof FilterbedingungBean){
+								result = true;
+							}
 						}
+						return result;
 					}
 				});
 	}
@@ -154,9 +168,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				.observeValue(this.beanClone,
 						FilterBean.PropertyNames.defaultMessage.name());
 
-		IObservableList filterConditionsObservable = BeansObservables
-				.observeList(context.getValidationRealm(), this.beanClone,
-						FilterBean.PropertyNames.conditions.name());
+//		IObservableTree filterConditionsObservable = BeansObservables
+//				.observeList(context.getValidationRealm(), this.beanClone,
+//						FilterBean.PropertyNames.conditions.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
 				this.beanClone, FilterBean.AbstractPropertyNames.rubrikName
@@ -169,9 +183,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
 				SWT.Modify), descriptionTextObservable, null, null);
-		IObservableList observeItems = SWTObservables
-				.observeItems(filterConditionsListViewer.getList());
-		context.bindList(observeItems, filterConditionsObservable, null, null);
+//		IObservableTree observeItems = SWTObservables
+//				.observeItems(filterConditionsTreeViewer.getTree());
+//		context.bindList(observeItems, filterConditionsObservable, null, null);
 
 		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
 				rubrikTextObservable, null, null);
