@@ -34,11 +34,6 @@ public class FilterbedingungBean extends
 		return name == null ? "(ohne Namen)" : name;
 	}
 
-	public void copyStateOf(FilterbedingungBean otherBean) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not implemented yet.");
-	}
-
 	@Override
 	protected void doUpdateState(FilterbedingungBean bean) {
 		setDescription(bean.getDescription());

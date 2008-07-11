@@ -1,11 +1,13 @@
 package org.csstudio.nams.configurator.beans;
 
+import java.util.LinkedList;
+import java.util.List;
 
 public class AlarmbearbeiterGruppenBean extends
 		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> {
 
 	public static enum PropertyNames {
-		groupID, name, minGroupMember, timeOutSec, active
+		groupID, name, minGroupMember, timeOutSec, active, users
 	}
 
 	private int groupID;// PRIMARY KEY
@@ -13,6 +15,7 @@ public class AlarmbearbeiterGruppenBean extends
 	private short minGroupMember;
 	private int timeOutSec;
 	private boolean isActive;
+	private List<User2GroupBean> users = new LinkedList<User2GroupBean>();
 
 	public AlarmbearbeiterGruppenBean() {
 		groupID = -1;
@@ -26,9 +29,7 @@ public class AlarmbearbeiterGruppenBean extends
 		int oldValue = getGroupID();
 		this.groupID = groupID;
 
-		pcs.firePropertyChange(
-				PropertyNames.groupID.name(),
-				oldValue, groupID);
+		pcs.firePropertyChange(PropertyNames.groupID.name(), oldValue, groupID);
 	}
 
 	public String getName() {
@@ -38,9 +39,7 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setName(String name) {
 		String oldValue = getName();
 		this.name = name;
-		pcs.firePropertyChange(
-				PropertyNames.name.name(), oldValue,
-				getName());
+		pcs.firePropertyChange(PropertyNames.name.name(), oldValue, getName());
 	}
 
 	public short getMinGroupMember() {
@@ -50,9 +49,8 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setMinGroupMember(short minGroupMember) {
 		short oldValue = getMinGroupMember();
 		this.minGroupMember = minGroupMember;
-		pcs.firePropertyChange(
-				PropertyNames.minGroupMember.name(),
-				oldValue, getMinGroupMember());
+		pcs.firePropertyChange(PropertyNames.minGroupMember.name(), oldValue,
+				getMinGroupMember());
 	}
 
 	public int getTimeOutSec() {
@@ -62,9 +60,8 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setTimeOutSec(int timeOutSec) {
 		int oldValue = getTimeOutSec();
 		this.timeOutSec = timeOutSec;
-		pcs.firePropertyChange(
-				PropertyNames.timeOutSec.name(),
-				oldValue, getTimeOutSec());
+		pcs.firePropertyChange(PropertyNames.timeOutSec.name(), oldValue,
+				getTimeOutSec());
 	}
 
 	public boolean isActive() {
@@ -74,9 +71,8 @@ public class AlarmbearbeiterGruppenBean extends
 	public void setActive(boolean isActive) {
 		boolean oldValue = isActive();
 		this.isActive = isActive;
-		pcs.firePropertyChange(
-				PropertyNames.active.name(),
-				oldValue, isActive());
+		pcs.firePropertyChange(PropertyNames.active.name(), oldValue,
+				isActive());
 	}
 
 	public String getDisplayName() {
@@ -92,6 +88,7 @@ public class AlarmbearbeiterGruppenBean extends
 		result = prime * result + minGroupMember;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + timeOutSec;
+		result = prime * result + ((users == null) ? 0 : users.hashCode());
 		return result;
 	}
 
@@ -117,6 +114,11 @@ public class AlarmbearbeiterGruppenBean extends
 			return false;
 		if (timeOutSec != other.timeOutSec)
 			return false;
+		if (users == null) {
+			if (other.users != null)
+				return false;
+		} else if (!users.equals(other.users))
+			return false;
 		return true;
 	}
 
@@ -127,12 +129,13 @@ public class AlarmbearbeiterGruppenBean extends
 		setMinGroupMember(bean.getMinGroupMember());
 		setName(bean.getName());
 		setTimeOutSec(bean.getTimeOutSec());
+		setUsers(bean.getUsers());
 	}
 
 	public int getID() {
 		return this.getGroupID();
 	}
-	
+
 	@Override
 	public String toString() {
 		return getDisplayName();
@@ -140,6 +143,16 @@ public class AlarmbearbeiterGruppenBean extends
 
 	public void setID(int id) {
 		setGroupID(id);
+	}
+
+	public List<User2GroupBean> getUsers() {
+		return new LinkedList<User2GroupBean>(users);
+	}
+
+	public void setUsers(List<User2GroupBean> users) {
+		List<User2GroupBean> oldValue = this.users;
+		this.users = users;
+		pcs.firePropertyChange(PropertyNames.users.name(), oldValue, users);
 	}
 
 }
