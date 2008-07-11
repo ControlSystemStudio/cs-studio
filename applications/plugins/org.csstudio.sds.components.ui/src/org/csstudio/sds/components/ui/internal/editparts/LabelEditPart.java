@@ -69,7 +69,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		figure.setType(model.getType());
 		figure.setTextValue(model.getTextValue());
 		figure.setDecimalPlaces(model.getPrecision());
-		figure.setAliases(model.getAliases());
+		figure.setAliases(model.getAllInheritedAliases());
 		figure.setPrimaryPV(model.getPrimaryPV());
 		
 		return figure;

@@ -160,6 +160,8 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		gfx.setForegroundColor(getForegroundColor());
 		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
 		
+		
+		// FIXME: 8-2-2008: swende: This logic should be implemented in the controller - not the view
 		String toprint="none";
 		switch (_valueType) {
 		case TYPE_TEXT:
@@ -180,7 +182,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 				toprint = ChannelReferenceValidationUtil.createCanonicalName(_primaryPV, _aliases);
 			} catch (ChannelReferenceValidationException e) {
 				toprint = _primaryPV;
-				e.printStackTrace();
 			}
 			break;
 		case TYPE_HEX:

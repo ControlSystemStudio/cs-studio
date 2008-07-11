@@ -235,8 +235,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart
 			Display.getCurrent().asyncExec(new Runnable() {
 				public void run() {
 					WidgetActionHandlerService.getInstance().performAction(
-							getCastedModel().getProperty(
-									AbstractWidgetModel.PROP_ACTIONDATA),
+							getCastedModel(),
 							_widgetAction);
 				}
 			});

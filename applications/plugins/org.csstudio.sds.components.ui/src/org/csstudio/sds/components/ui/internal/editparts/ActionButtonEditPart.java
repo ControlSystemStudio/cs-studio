@@ -107,6 +107,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 						&& getExecutionMode()==ExecutionMode.RUN_MODE
 						&& figure.getModel().isArmed()) {
 					
+					// FIXME: 2008-10-07: swende: Bug. Alles ab hier passiert pro Klick 2x!!
+					
 					Display.getCurrent().asyncExec(new Runnable() {
 						public void run() {
 							ActionButtonModel model = (ActionButtonModel) getWidgetModel();
@@ -127,7 +129,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 										.getWidgetActions().get(index);
 								
 								WidgetActionHandlerService.getInstance()
-										.performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA),type);
+										.performAction(model,type);
 							}
 							figure.getModel().setArmed(figure.getModel().isPressed());
 						}
