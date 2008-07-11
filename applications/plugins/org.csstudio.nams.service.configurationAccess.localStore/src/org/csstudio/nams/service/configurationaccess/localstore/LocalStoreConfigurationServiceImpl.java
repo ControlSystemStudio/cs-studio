@@ -212,7 +212,7 @@ class LocalStoreConfigurationServiceImpl implements
 			session.saveOrUpdate(dto);
 			
 			if( dto instanceof HasJoinedElements) {
-				((HasJoinedElements<?>)dto).storeJoinData(session);
+				((HasJoinedElements<?>)dto).storeJoinLinkData(session);
 			}
 			
 			transaction.commit();
@@ -232,7 +232,13 @@ class LocalStoreConfigurationServiceImpl implements
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
+			
+			if( dto instanceof HasJoinedElements) {
+				((HasJoinedElements<?>)dto).deleteJoinLinkData(session);
+			}
+
 			session.delete(dto);
+			
 			transaction.commit();
 		} catch (Throwable t) {
 			if (transaction != null) {

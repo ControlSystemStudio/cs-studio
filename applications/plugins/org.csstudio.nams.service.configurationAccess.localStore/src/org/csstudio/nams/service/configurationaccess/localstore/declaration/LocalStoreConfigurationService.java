@@ -92,6 +92,15 @@ public interface LocalStoreConfigurationService {
 	public void saveDTO(NewAMSConfigurationElementDTO dto) throws StorageError,
 			StorageException, InconsistentConfigurationException;
 
+	/**
+	 * 
+	 * IMPORTANT: Auf {@link HasJoinedElements} achten!!!
+	 * 
+	 * @param dto
+	 * @throws StorageError
+	 * @throws StorageException
+	 * @throws InconsistentConfigurationException
+	 */
 	public void deleteDTO(NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException;

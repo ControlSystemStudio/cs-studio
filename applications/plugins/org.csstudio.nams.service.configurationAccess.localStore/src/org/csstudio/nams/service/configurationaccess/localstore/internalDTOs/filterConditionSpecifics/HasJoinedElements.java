@@ -30,7 +30,23 @@ public interface HasJoinedElements<T extends NewAMSConfigurationElementDTO> {
 	 * @throws If
 	 *             an error occurred
 	 */
-	public abstract void storeJoinData(Session session) throws Throwable;
+	public abstract void storeJoinLinkData(Session session) throws Throwable;
+	
+	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
+	 * Deletes all join-data (link/mapping; NOT the joined elements)
+	 * 
+	 *  IMPORTANT: This method has to
+	 * be called in a valid open transaction!
+	 * 
+	 * @param session
+	 *            The session to store to; it is guaranteed that all join data will be
+	 *            deleted.
+	 * @throws If
+	 *             an error occurred
+	 */
+	public abstract void deleteJoinLinkData(Session session) throws Throwable;
 
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!

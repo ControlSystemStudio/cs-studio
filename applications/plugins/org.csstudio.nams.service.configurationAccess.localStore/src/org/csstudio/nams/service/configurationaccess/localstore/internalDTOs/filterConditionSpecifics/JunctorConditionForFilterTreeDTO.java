@@ -116,13 +116,8 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO impleme
 	 * @param session The session to store to; it is guaranteed that only {@link JunctorConditionForFilterTreeDTO} will be stored and/or deleted.
 	 * @throws If an error occurred
 	 */
-	public synchronized void storeJoinData(Session session) throws Throwable {
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session.createCriteria(JunctorConditionForFilterTreeConditionJoinDTO.class).list();
-		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
-			if( joinElement.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
-				session.delete(joinElement);
-			}
-		}
+	public synchronized void storeJoinLinkData(Session session) throws Throwable {
+		deleteJoinLinkData(session) ;
 		
 		for (FilterConditionDTO condition : this.getOperands()) {
 			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(this, condition);
@@ -155,6 +150,15 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO impleme
 		}
 		
 		this.operands = foundOperands.toArray(new FilterConditionDTO[foundOperands.size()]);
+	}
+	
+	public synchronized void deleteJoinLinkData(Session session) throws Throwable {
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session.createCriteria(JunctorConditionForFilterTreeConditionJoinDTO.class).list();
+		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
+			if( joinElement.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
+				session.delete(joinElement);
+			}
+		}		
 	}
 	
 	@Override
