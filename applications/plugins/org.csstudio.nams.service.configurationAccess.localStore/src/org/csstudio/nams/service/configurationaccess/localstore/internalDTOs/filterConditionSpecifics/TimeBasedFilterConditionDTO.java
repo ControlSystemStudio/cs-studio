@@ -37,13 +37,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef")
 public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 
-	@SuppressWarnings("unused")
-	protected void setFilterConditionTypeRef(int typeRef){
-		super.filterCondtionTypeRef = 2;
-	}
-	public int getFilterConditionTypeRef(){
-		return filterCondtionTypeRef;
-	}
+	
 	@SuppressWarnings("unused")
 	private String getCStartKeyValue() {
 		return cStartKeyValue;

@@ -49,13 +49,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	@Column(name = "sOperator")
 	private short operator;
 	
-	@SuppressWarnings("unused")
-	protected void setFilterConditionTypeRef(int typeRef){
-		super.filterCondtionTypeRef = 3;
-	}
-	public int getFilterConditionTypeRef(){
-		return filterCondtionTypeRef;
-	}
+	
 	/**
 	 * @return the filterConditionRef
 	 */

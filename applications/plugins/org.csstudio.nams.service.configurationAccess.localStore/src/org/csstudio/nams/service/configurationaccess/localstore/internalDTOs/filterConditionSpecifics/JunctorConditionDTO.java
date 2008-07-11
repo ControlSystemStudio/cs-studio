@@ -31,14 +31,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Table(name = "AMS_FilterCond_Conj_Common")
 public class JunctorConditionDTO extends FilterConditionDTO {
 
-	@SuppressWarnings("unused")
-	protected void setFilterConditionTypeRef(int typeRef){
-		super.filterCondtionTypeRef = 5;
-	}
-	public int getFilterConditionTypeRef(){
-		return filterCondtionTypeRef;
-	}
-	
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int iFilterConditionRef;
 

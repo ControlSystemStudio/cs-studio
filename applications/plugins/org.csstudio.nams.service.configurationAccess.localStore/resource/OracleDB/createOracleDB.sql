@@ -1,3 +1,13 @@
+-- NAMS Oracle --
+create table AMS_FilterCond_Conj_4_Filter_Common (
+   iFilterConditionRef			INT NOT NULL,
+   Operator                     ENUM('AND', 'OR') NOT NULL
+);
+
+create table AMS_FilterCond_Conj_4_Filter_FilterCond_Join (
+   iFilterConditionID           INT NOT NULL,
+   iFilterConditionRef			INT NOT NULL,
+ );
 
 -- Create Oracle AMS --
 

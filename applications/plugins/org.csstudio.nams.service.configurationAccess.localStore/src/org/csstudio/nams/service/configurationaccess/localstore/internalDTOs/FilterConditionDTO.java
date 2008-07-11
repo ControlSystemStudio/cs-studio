@@ -11,8 +11,6 @@ import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
  * AMS_FilterCondition.
@@ -33,36 +31,36 @@ import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
  */
 @Entity
 @Table(name = "AMS_FilterCondition")
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 
-	@Column(name="iFilterConditionTypeRef")
-	protected int filterCondtionTypeRef;
-	
-	protected void setFilterConditionTypeRef(int iD){
-		filterCondtionTypeRef = -1;
-	}
-	
-	public int getFilterConditionTypeRef(){
-		return filterCondtionTypeRef;
-	}
-	
+	/**
+	 * Dieses Feld wird von NAMS nicht benötigt und ist lediglich der
+	 * Vollständigkeithalber mit angebenen.
+	 */
+	@SuppressWarnings("unused")
+	@Deprecated
+	@Column(name = "iFilterConditionTypeRef")
+	private int filterCondtionTypeRef;
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)
-	@Column(name = "iFilterConditionID", nullable=false, unique=true)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name = "iFilterConditionID", nullable = false, unique = true)
 	private int iFilterConditionID;
 
-	@Column(name = "iGroupRef", nullable=false)
+	@Column(name = "iGroupRef", nullable = false)
 	private int iGroupRef = -1;
 
-	@Column(name = "cName", length=128)
+	@Column(name = "cName", length = 128)
 	private String cName;
 
-	@Column(name = "cDesc", length=256)
+	@Column(name = "cDesc", length = 256)
 	private String cDesc;
 
 	/**
-	 * @return the iFilterConditionID
+	 * ONLY TO BE USED FOR MAPPING PURPOSES. 
+	 * 
+	 *  Returns the database id of this condition.
 	 */
 	@SuppressWarnings("unused")
 	public int getIFilterConditionID() {
@@ -70,7 +68,9 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	}
 
 	/**
-	 * @param filterConditionID the iFilterConditionID to set
+	 * ONLY TO BE USED FOR MAPPING PURPOSES. 
+	 * 
+	 *  Sets the database id of this condition.
 	 */
 	@SuppressWarnings("unused")
 	public void setIFilterConditionID(int filterConditionID) {
@@ -86,7 +86,8 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	}
 
 	/**
-	 * @param groupRef the iGroupRef to set
+	 * @param groupRef
+	 *            the iGroupRef to set
 	 */
 	@SuppressWarnings("unused")
 	public void setIGroupRef(int groupRef) {
@@ -101,7 +102,8 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	}
 
 	/**
-	 * @param name the cName to set
+	 * @param name
+	 *            the cName to set
 	 */
 	@SuppressWarnings("unused")
 	public void setCName(String name) {
@@ -116,7 +118,8 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	}
 
 	/**
-	 * @param desc the cDesc to set
+	 * @param desc
+	 *            the cDesc to set
 	 */
 	public void setCDesc(String desc) {
 		cDesc = desc;
@@ -124,7 +127,8 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 
 	@Override
 	public String toString() {
-		final StringBuilder resultBuilder = new StringBuilder(this.getClass().getSimpleName());
+		final StringBuilder resultBuilder = new StringBuilder(this.getClass()
+				.getSimpleName());
 		resultBuilder.append(": ");
 		resultBuilder.append(this.getCName());
 		resultBuilder.append(" (");
@@ -132,8 +136,6 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 		resultBuilder.append(")");
 		resultBuilder.append(", description: ");
 		resultBuilder.append(this.getCDesc());
-		resultBuilder.append(", FilterConditionType: ");
-		resultBuilder.append(this.getFilterConditionTypeRef());
 		return resultBuilder.toString();
 	}
 
@@ -182,5 +184,4 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 		return getIGroupRef() == categoryDBId;
 	}
 
-	
 }

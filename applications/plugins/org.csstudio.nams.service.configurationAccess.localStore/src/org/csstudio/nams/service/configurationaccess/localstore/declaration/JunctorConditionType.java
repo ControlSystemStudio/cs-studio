@@ -1,7 +1,22 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
+
+
+/**
+ * Der Operator von Juntion-Conditions.
+ * 
+ * Note: Namen der ENUM sind äquivalent zu den Einträgen in der DB!
+ * 
+ * XXX REname to Operator
+ */
 public enum JunctorConditionType {
-	OR, AND, NOT;
+	OR, AND, 
+	
+	/**
+	 * @deprecated NOT is NOT supported any more!!
+	 */
+	@Deprecated
+	NOT;
 
 	public static JunctorConditionType valueOf(int value) {
 		switch (value) {
