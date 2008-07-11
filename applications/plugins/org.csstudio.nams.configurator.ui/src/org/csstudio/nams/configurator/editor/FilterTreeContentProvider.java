@@ -15,26 +15,23 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 	private JunctorConditionForFilterTreeBean[] results;
 
 	public Object[] getChildren(Object parentElement) {
-		Object[] result = new Object[0];
+		FilterbedingungBean[] result = new FilterbedingungBean[0];
 		if (parentElement instanceof JunctorConditionForFilterTreeBean) {
 			JunctorConditionForFilterTreeBean junctorEditionElement = (JunctorConditionForFilterTreeBean) parentElement;
 			Set<FilterbedingungBean> operands = junctorEditionElement.getOperands();
-			result = operands.toArray(new Object[operands.size()]);
+			result = operands.toArray(new FilterbedingungBean[operands.size()]);
 		} 
 		if (parentElement instanceof NotConditionForFilterTreeBean) {
 			NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) parentElement;
 			if (not.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
 				Set<FilterbedingungBean> operands = ((JunctorConditionForFilterTreeBean) not.getFilterbedingungBean()).getOperands();
-				result = operands.toArray(new Object[operands.size()]);
+				result = operands.toArray(new FilterbedingungBean[operands.size()]);
 			}
 		}
 		return result;
 	}
 
 	public Object getParent(Object element) {
-		
-		//FIXME funktioniert nicht!!
-		
 		if (results != null) {
 			JunctorConditionForFilterTreeBean root = results[0]; 
 			return rekursiv(root, element);
@@ -42,31 +39,29 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
-	private Object rekursiv(JunctorConditionForFilterTreeBean bean, Object element) {
-		Set<FilterbedingungBean> operands = bean.getOperands();
-		if (operands != null && operands.size() > 0){
-			for (FilterbedingungBean filterbedingungBean : operands) {
-				if (filterbedingungBean.equals(element)) {
-					return bean;
-				} else if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
-					Object rekursiv = rekursiv((JunctorConditionForFilterTreeBean) filterbedingungBean, element);
-					if (rekursiv != null) {
-						return rekursiv;
+	private Object rekursiv(Object potentialParent, Object element) {
+
+		if (hasChildren(potentialParent)) {
+			FilterbedingungBean[] children = (FilterbedingungBean[]) getChildren(potentialParent);
+			for (FilterbedingungBean filterbedingungBean : children) {
+				if (filterbedingungBean == element) {
+					if (potentialParent instanceof NotConditionForFilterTreeBean) {
+						NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) potentialParent;
+						return not.getFilterbedingungBean();
 					}
-				} else if (filterbedingungBean instanceof NotConditionForFilterTreeBean) {
-					NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) filterbedingungBean;
-					FilterbedingungBean notBeanChild = notBean.getFilterbedingungBean();
-					if (notBeanChild.equals(element)) {
-						return bean;
-					} else if (notBeanChild instanceof JunctorConditionForFilterTreeBean) {
-						Object rekursiv = rekursiv((JunctorConditionForFilterTreeBean) notBeanChild, element);
-						if (rekursiv != null) {
-							return rekursiv;
-						}
+					return potentialParent;
+				}
+				if (filterbedingungBean instanceof NotConditionForFilterTreeBean) {
+					NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) filterbedingungBean;
+					if (not.getFilterbedingungBean() == element) {
+						return potentialParent;
 					}
 				}
+				Object result = rekursiv(filterbedingungBean, element);
+				if (result != null) {
+					return result;
+				}
 			}
-			
 		}
 		return null;
 	}

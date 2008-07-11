@@ -136,7 +136,6 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			ISelectionChangedListener {
 		private JunctorConditionForFilterTreeBean bean;
 		private final JunctorConditionType type;
-		private NotConditionForFilterTreeBean notBean;
 
 		private NewJunctorAction(JunctorConditionType type) {
 			this.type = type;
@@ -144,34 +143,29 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		@Override
 		public void run() {
-			//FIXME vehaelt sich nicht richtig!!!
-
 			JunctorConditionForFilterTreeBean node = new JunctorConditionForFilterTreeBean();
 			node.setJunctorConditionType(type);
-			if (bean != null) {
-				bean.addOperand(node);
-			} else if (notBean != null) {
-				notBean.setFilterbedingungBean(node);
-			}
+			bean.addOperand(node);
 			filterConditionsTreeViewer.expandToLevel(node, 0);
 			filterConditionsTreeViewer.refresh();
 		}
 
 		public void selectionChanged(SelectionChangedEvent event) {
-			
-			//FIXME vehaelt sich nicht richtig!!!
-			
 			IStructuredSelection selection = (IStructuredSelection) event
 					.getSelection();
 			Object element = selection.getFirstElement();
 			bean = null;
-			notBean = null;
 			if (element instanceof JunctorConditionForFilterTreeBean) {
 				bean = (JunctorConditionForFilterTreeBean) element;
 				setEnabled(true);
 			} else if (element instanceof NotConditionForFilterTreeBean) {
-				notBean = (NotConditionForFilterTreeBean) element;
-				setEnabled(true);
+				NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) element;
+				if (notBean.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
+					bean = (JunctorConditionForFilterTreeBean) notBean.getFilterbedingungBean();
+					setEnabled(true);
+				} else {
+					setEnabled(false);
+				}
 			} else {
 				setEnabled(false);
 			}
@@ -179,7 +173,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		@Override
 		public String getText() {
-			return type.name();
+			return "add " + type.name();
 		}
 	}
 
@@ -222,7 +216,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					setText("NOT");
 					not = true;
 				} else {
-					setText("UNNOT");
+					setText("NOT");
 					not = false;
 				}
 			}
