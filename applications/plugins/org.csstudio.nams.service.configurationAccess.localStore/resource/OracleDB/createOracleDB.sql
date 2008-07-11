@@ -1,12 +1,14 @@
 -- NAMS Oracle --
-create table AMS_FilterCond_Conj_4_Filter_Common (
-   iFilterConditionRef			INT NOT NULL,
+drop table AMSFilterCondConj4FilterCommon;
+create table AMSFilterCondConj4FilterCommon (
+   iFilterConditionRef			NUMBER(11) NOT NULL,
    Operator                     ENUM('AND', 'OR') NOT NULL
 );
 
-create table AMS_FilterCond_Conj_4_Filter_FilterCond_Join (
-   iFilterConditionID           INT NOT NULL,
-   iFilterConditionRef			INT NOT NULL,
+drop table AMSFilterCondConj4FilterFCJoin;
+create table AMSFilterCondConj4FilterFCJoin (
+   iFilterConditionID           NUMBER(11) NOT NULL,
+   iFilterConditionRef			NUMBER(11) NOT NULL
  );
 
 -- Create Oracle AMS --
