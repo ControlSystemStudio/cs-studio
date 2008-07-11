@@ -48,8 +48,15 @@ public abstract class StepByStepProcessor implements Runnable {
 			InterruptedException;
 
 	/**
+	 * Called internally to indicate that no further steps are required.
+	 */
+	protected void done() {
+		this.continueRunning = false;
+	}
+	
+	/**
 	 * Executes exactly one step. Should not be called directly outside from
-	 * tests.
+	 * tests. Call {@link #done()} to complete.
 	 * 
 	 * @throws RuntimeException
 	 *             An unexpected error/exception occurred which will be cause of
