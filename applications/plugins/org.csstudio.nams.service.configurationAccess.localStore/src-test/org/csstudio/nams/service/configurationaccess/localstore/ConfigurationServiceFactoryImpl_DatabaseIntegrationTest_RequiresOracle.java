@@ -8,9 +8,11 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.junit.After;
 import org.junit.Before;
@@ -135,5 +137,56 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
 		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
+	}
+	
+	public void testReadAndWriteJunctorConditionForFilterTree() throws Throwable {
+		JunctorConditionForFilterTreeDTO condition = new JunctorConditionForFilterTreeDTO();
+		condition.setCName("TEST-Con");
+		condition.setCDesc("Test-Description");
+		condition.setOperator(JunctorConditionType.AND);
+		
+		Configuration entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration.gibAlleFilterConditions().contains(condition));
+		
+		service.saveDTO(condition);
+		
+		// neu laden....
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		
+		// search saved dto
+		Collection<FilterConditionDTO> alleFilterConditions = entireConfiguration.gibAlleFilterConditions();
+		JunctorConditionForFilterTreeDTO found = null;
+		for (FilterConditionDTO filterConditionDTO : alleFilterConditions) {
+			if( condition.equals(filterConditionDTO) )
+			{
+				found = condition;
+			}
+		}
+		assertNotNull("neue fc ist jetzt gespeichert.", condition);
+		condition = found;
+		
+		// verändern
+		condition.setCName("Modified");
+		service.saveDTO(condition);
+		
+		// neu laden....
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		Collection<FilterConditionDTO> loadedList = entireConfiguration.gibAlleFilterConditions();
+		assertTrue("neue fc ist jetzt gespeichert.", loadedList.contains(condition));
+		for (FilterConditionDTO filterConditionDTO : loadedList) {
+			// Keine Benutzer mit altem Namen vorhanden.
+			assertFalse("Test-Con".equals(filterConditionDTO.getCName()));
+		}
+		
+		// löschen
+		service.deleteDTO(condition);
+		
+		// neu laden
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(condition));
 	}
 }

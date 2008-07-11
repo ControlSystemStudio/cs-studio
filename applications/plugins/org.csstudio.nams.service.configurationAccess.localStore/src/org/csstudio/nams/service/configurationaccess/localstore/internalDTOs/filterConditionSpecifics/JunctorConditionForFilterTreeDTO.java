@@ -79,6 +79,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO {
 	 * @param operands
 	 *            Eine, potentiell leere, Menge von Operanden, nicht null.
 	 */
+	@Transient
 	public void setOperands(final Set<FilterConditionDTO> operands) {
 		Contract.requireNotNull("operands", operands);
 
@@ -93,6 +94,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO {
 	 * @return Eine, potentiell leere, Menge von Operanden, null, wenn die DTO
 	 *         noch nicht gefüllt wurde.
 	 */
+	@Transient
 	public Set<FilterConditionDTO> getOperands() {
 		List<FilterConditionDTO> asList = Arrays.asList(this.operands);
 		return new HashSet<FilterConditionDTO>(asList);
