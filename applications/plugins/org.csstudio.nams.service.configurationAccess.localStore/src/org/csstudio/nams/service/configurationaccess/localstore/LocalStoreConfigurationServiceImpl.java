@@ -21,6 +21,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
@@ -261,11 +263,57 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
-			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO) {
-		// TODO add handling for by-hand mapped parts
+			AlarmbearbeiterGruppenDTO dto) throws InconsistentConfigurationException {
+		Serializable generatedID = null;
 		Transaction tx = session.beginTransaction();
-		Serializable generatedID = session.save(alarmBearbeiterGruppenDTO);
-		tx.commit();
+		try {
+			generatedID = session.save(dto);
+
+			Collection<User2UserGroupDTO> conditionMappings = session
+					.createCriteria(User2UserGroupDTO.class).list();
+			Set<User2UserGroupDTO> relevantMappings = new HashSet<User2UserGroupDTO>();
+			Set<User2UserGroupDTO> usedMappings = new HashSet<User2UserGroupDTO>();
+			for (User2UserGroupDTO a : conditionMappings) {
+				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
+						.getUserGroupId()) {
+					relevantMappings.add(a);
+				}
+			}
+			// for all used FC
+			// get the mappingDTO, if no DTO exists, create one
+
+			for (User2UserGroupDTO condition : dto.gibZugehoerigeAlarmbearbeiter()) {
+				User2UserGroupDTO match = null;
+				for (User2UserGroupDTO filterConditionsToFilterDTO : relevantMappings) {
+					if (condition.getUser2UserGroupPK().equals(filterConditionsToFilterDTO.getUser2UserGroupPK()))
+							{
+						match = filterConditionsToFilterDTO;
+						break;
+					}
+				}
+				if (match == null) {
+					User2UserGroupDTO_PK newKey = new User2UserGroupDTO_PK();
+					newKey.setIUserGroupRef(dto.getUserGroupId());
+					newKey.setIUserRef(condition.getUser2UserGroupPK().getIUserRef());
+					match = new User2UserGroupDTO();
+					match.setUser2UserGroupPK(newKey);
+				}
+				usedMappings.add(match);
+			}
+			// save the used Mappings
+			for (User2UserGroupDTO map : usedMappings) {
+				session.saveOrUpdate(map);
+			}
+			// if an old mapping dto does not exist, remove it
+			relevantMappings.removeAll(usedMappings);
+			for (User2UserGroupDTO unusedMapping : relevantMappings) {
+				session.delete(unusedMapping);
+			}
+			tx.commit();
+		} catch (Throwable e) {
+			tx.rollback();
+			throw new InconsistentConfigurationException(e.getMessage());
+		}
 		return (AlarmbearbeiterGruppenDTO) session.load(
 				AlarmbearbeiterGruppenDTO.class, generatedID);
 	}

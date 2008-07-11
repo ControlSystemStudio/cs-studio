@@ -17,6 +17,7 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.User2GroupBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
@@ -35,6 +36,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
@@ -57,7 +59,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private Map<Integer, FilterBean> filterBeans = new HashMap<Integer, FilterBean>();
 
 	// Rubriks don't need to be beans.
-	private Collection<RubrikDTO> rubrikDTOs = new LinkedList<RubrikDTO>();  
+	private Collection<RubrikDTO> rubrikDTOs = new LinkedList<RubrikDTO>();
 
 	public ConfigurationBeanServiceImpl(
 			LocalStoreConfigurationService localStore) {
@@ -150,7 +152,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				}
 			}
 
-
 		} catch (StorageError e) {
 			logger.logErrorMessage(this,
 					"Could not load Eniter Configuration because of: "
@@ -174,16 +175,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		listeners.add(listener);
 	}
 
-	public FilterbedingungBean[] getFilterConditionsForView(){
-		//TODO may cache results
+	public FilterbedingungBean[] getFilterConditionsForView() {
+		// TODO may cache results
 		List<FilterbedingungBean> lists = new LinkedList<FilterbedingungBean>();
 		for (FilterbedingungBean bean : getFilterConditionBeans()) {
 			if (!(bean.getFilterSpecificBean() instanceof JunctorConditionForFilterTreeBean))
-					lists.add(bean);
+				lists.add(bean);
 		}
 		return lists.toArray(new FilterbedingungBean[lists.size()]);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -214,8 +215,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setPreferedAlarmType(alarmbearbeiter.getPreferedAlarmType());
 		bean.setStatusCode(alarmbearbeiter.getStatusCode());
 		bean.setUserID(alarmbearbeiter.getUserId());
-		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group = Rubrik
-		
+		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group
+																				// =
+																				// Rubrik
+
 		return bean;
 	}
 
@@ -240,16 +243,49 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	AlarmbearbeiterGruppenBean DTO2Bean(AlarmbearbeiterGruppenDTO dto) {
-		// TODO (gs) hier muessen die AlarmbearbeiterBeans eingebunden werden
-		// (aus der Map holen)
+
 		AlarmbearbeiterGruppenBean bean = new AlarmbearbeiterGruppenBean();
 		bean.setActive(dto.isActive());
 		bean.setGroupID(dto.getUserGroupId());
 		bean.setMinGroupMember(dto.getMinGroupMember());
 		bean.setName(dto.getUserGroupName());
 		bean.setTimeOutSec(dto.getTimeOutSec());
-		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group = Rubrik
+		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group
+																	// = Rubrik
+
+		List<User2GroupBean> list = new LinkedList<User2GroupBean>();
+		Map<User2GroupBean, User2UserGroupDTO> beanDTOMap = new HashMap<User2GroupBean, User2UserGroupDTO>();
+		for (User2UserGroupDTO map : dto.gibZugehoerigeAlarmbearbeiter()) {
+			User2GroupBean bean2 = DTO2Bean(map);
+			list.add(bean2);
+			beanDTOMap.put(bean2, map);
+		}
+		User2GroupBean[] sortArray = new User2GroupBean[list.size()];
+		for (User2GroupBean unsortedBean : list) {
+			sortArray[beanDTOMap.get(unsortedBean).getPosition()] = unsortedBean;
+		}
+		list.clear();
+		for (User2GroupBean user2GroupBean : sortArray) {
+			list.add(user2GroupBean);
+		}
+		bean.setUsers(list);
 		return bean;
+	}
+
+	private User2GroupBean DTO2Bean(User2UserGroupDTO map) {
+		AlarmbearbeiterBean userBean = new AlarmbearbeiterBean();
+		userBean.setID(map.getUser2UserGroupPK().getIUserRef());
+		userBean = DTO2Bean(getDTO4Bean(userBean));
+		AlarmbearbeiterGruppenBean groupBean = new AlarmbearbeiterGruppenBean();
+		groupBean.setID(map.getUser2UserGroupPK().getIUserGroupRef());
+		groupBean = DTO2Bean(getDTO4Bean(groupBean));
+		User2GroupBean result = new User2GroupBean(userBean, groupBean);
+
+		result.setActive(map.isActive());
+		result.setLastChange(map.getLastchange());
+		result.setRubrikName("");
+
+		return result;
 	}
 
 	/*
@@ -275,7 +311,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setHumanReadableName(dto.getName());
 		bean.setTopicID(dto.getId());
 		bean.setTopicName(dto.getTopicName());
-		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group = Rubrik
+		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group
+																	// = Rubrik
 		return bean;
 	}
 
@@ -303,20 +340,22 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setName(filter.getName());
 		List<FilterbedingungBean> conditions = bean.getConditions();
 		conditions.clear();
-		//FIXME ignoring inconsistant filterConditions
+		// FIXME ignoring inconsistant filterConditions
 		if (!filter.getFilterConditions().contains(null)) {
 			for (FilterConditionDTO condition : filter.getFilterConditions()) {
 				conditions.add(filterbedingungBeans.get(condition
 						.getIFilterConditionID()));
 			}
 		} else {
-			System.out.println("Ignored FilterConditions in Filter: " + filter.getIFilterID());
+			System.out.println("Ignored FilterConditions in Filter: "
+					+ filter.getIFilterID());
 		}
 		bean.setConditions(conditions);
-		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group = Rubrik
+		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group
+																		// =
+																		// Rubrik
 		return bean;
 	}
-	
 
 	/*
 	 * (non-Javadoc)
@@ -331,10 +370,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				specificRubriks.add(rubrikDTO.getCGroupName());
 			}
 		}
-		
+
 		return specificRubriks.toArray(new String[specificRubriks.size()]);
 	}
-	
+
 	private String getRubrikNameForId(int groupRef) {
 		String result = "";
 		for (Iterator<RubrikDTO> iter = rubrikDTOs.iterator(); iter.hasNext();) {
@@ -346,15 +385,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		return result;
 	}
-	
+
 	private int getRubrikIDForName(String rubrikName, RubrikTypeEnum type) {
-		if( rubrikName == null || rubrikName.length() == 0 ) {
+		if (rubrikName == null || rubrikName.length() == 0) {
 			return 0;
 		}
 		int result = 0;
 		for (Iterator<RubrikDTO> iter = rubrikDTOs.iterator(); iter.hasNext();) {
 			RubrikDTO rubrikDTO = (RubrikDTO) iter.next();
-			if (rubrikDTO.getCGroupName().equals(rubrikName) && rubrikDTO.getType().equals(type)) {
+			if (rubrikDTO.getCGroupName().equals(rubrikName)
+					&& rubrikDTO.getType().equals(type)) {
 				result = rubrikDTO.getIGroupId();
 				break;
 			}
@@ -363,7 +403,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			RubrikDTO newRubrikDTO = new RubrikDTO();
 			newRubrikDTO.setCGroupName(rubrikName);
 			newRubrikDTO.setType(type);
-			result = configurationService.saveRubrikDTO(newRubrikDTO).getIGroupId();
+			result = configurationService.saveRubrikDTO(newRubrikDTO)
+					.getIGroupId();
 		}
 		return result;
 	}
@@ -444,7 +485,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.setKeyValue(((StringFilterConditionDTO) filter)
 							.getKeyValueEnum());
 			stringFilterConditionBean
-					.setOperator(((StringFilterConditionDTO) filter).getOperatorEnum());
+					.setOperator(((StringFilterConditionDTO) filter)
+							.getOperatorEnum());
 			filterSpecificBean = stringFilterConditionBean;
 		} else if (filter instanceof TimeBasedFilterConditionDTO) {
 			TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();
@@ -476,13 +518,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterSpecificBean = timeBasedConditionBean;
 		}
 
-		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group = Rubrik
+		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group
+																		// =
+																		// Rubrik
 		if (filterSpecificBean != null) {
 			bean.setFilterSpecificBean(filterSpecificBean);
 		} else {
-			
+
 			// FIXME mz20080711 ; Add original mapping
-			if( !(filter instanceof JunctorConditionForFilterTreeDTO) )		
+			if (!(filter instanceof JunctorConditionForFilterTreeDTO))
 				throw new IllegalArgumentException(
 						"Unrecognized FilterConditionDTO: " + filter);
 		}
@@ -495,7 +539,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends IConfigurationBean> T save(T bean) throws InconsistentConfigurationException {
+	public <T extends IConfigurationBean> T save(T bean)
+			throws InconsistentConfigurationException {
 		if (bean instanceof AlarmbearbeiterBean)
 			return (T) saveAlarmbearbeiterBean((AlarmbearbeiterBean) bean);
 		if (bean instanceof AlarmbearbeiterGruppenBean)
@@ -525,8 +570,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setPhone(bean.getPhone());
 		dto.setPreferedAlarmType(bean.getPreferedAlarmType());
 		dto.setStatusCode(bean.getStatusCode());
-		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.USER));
-		
+		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(),
+				RubrikTypeEnum.USER));
+
 		dto = configurationService.saveAlarmbearbeiterDTO(dto);
 		loadConfiguration();
 
@@ -554,14 +600,41 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setMinGroupMember(bean.getMinGroupMember());
 		dto.setTimeOutSec(bean.getTimeOutSec());
 		dto.setUserGroupName(bean.getName());
-		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.USER_GROUP));
+		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(),
+				RubrikTypeEnum.USER_GROUP));
 
-		dto = configurationService.saveAlarmbearbeiterGruppenDTO(dto);
+		List<User2UserGroupDTO> list = new LinkedList<User2UserGroupDTO>();
+		for (User2GroupBean bean2 : bean.getUsers()) {
+			list.add(getDTO4Bean(bean2));
+		}
+		dto.setAlarmbearbeiter(list);
+
+		try {
+			dto = configurationService.saveAlarmbearbeiterGruppenDTO(dto);
+		} catch (InconsistentConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		loadConfiguration();
 		AlarmbearbeiterGruppenBean resultBean = alarmbearbeitergruppenBeans
 				.get(new Integer(dto.getUserGroupId()));
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
+	}
+
+	private User2UserGroupDTO getDTO4Bean(User2GroupBean bean2) {
+		User2UserGroupDTO user2UserGroupDTO = null;
+		for (User2UserGroupDTO potentialdto : entireConfiguration
+				.getAllUser2UserGroupDTOs()) {
+			if (potentialdto.getUser2UserGroupPK().getIUserGroupRef() == bean2
+					.getGroupBean().getGroupID()
+					&& potentialdto.getUser2UserGroupPK().getIUserRef() == bean2
+							.getUserBean().getUserID()) {
+				user2UserGroupDTO = potentialdto;
+				break;
+			}
+		}
+		return user2UserGroupDTO;
 	}
 
 	private AlarmtopicBean saveAlarmtopicBean(AlarmtopicBean bean) {
@@ -574,7 +647,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setDescription(bean.getDescription());
 		dto.setName(bean.getHumanReadableName());
 		dto.setTopicName(bean.getTopicName());
-		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.TOPIC));
+		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(),
+				RubrikTypeEnum.TOPIC));
 
 		dto = configurationService.saveTopicDTO(dto);
 		loadConfiguration();
@@ -584,7 +658,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
-	private FilterBean saveFilterBean(FilterBean bean) throws InconsistentConfigurationException {
+	private FilterBean saveFilterBean(FilterBean bean)
+			throws InconsistentConfigurationException {
 		boolean inserted = false;
 		FilterDTO dto = getDTO4Bean(bean);
 		if (dto == null) {
@@ -592,15 +667,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			inserted = true;
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
-		
+
 		List<FilterConditionDTO> list = new LinkedList<FilterConditionDTO>();
 		for (FilterbedingungBean condBean : bean.getConditions()) {
 			list.add(getDTO4Bean(condBean));
 		}
-		
+
 		dto.setFilterConditions(list);
 		dto.setName(bean.getName());
-		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.FILTER));
+		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
+				RubrikTypeEnum.FILTER));
 
 		dto = configurationService.saveFilterDTO(dto);
 		loadConfiguration();
@@ -630,8 +706,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				inserted = true;
 			}
 
-			junctorConditionDTO.setFirstFilterConditionRef(specificBean.getFirstCondition().getFilterbedinungID());
-			junctorConditionDTO.setSecondFilterConditionRef(specificBean.getSecondCondition().getFilterbedinungID());
+			junctorConditionDTO.setFirstFilterConditionRef(specificBean
+					.getFirstCondition().getFilterbedinungID());
+			junctorConditionDTO.setSecondFilterConditionRef(specificBean
+					.getSecondCondition().getFilterbedinungID());
 			junctorConditionDTO.injectYourselfYourChildren(entireConfiguration);
 			junctorConditionDTO.setJunctor(specificBean.getJunctor());
 
@@ -740,7 +818,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterConditionDTO = timeBasedFilterConditionDTO;
 		}
 
-		filterConditionDTO.setIGroupRef(getRubrikIDForName(bean.getRubrikName(), RubrikTypeEnum.FILTER_COND));
+		filterConditionDTO.setIGroupRef(getRubrikIDForName(
+				bean.getRubrikName(), RubrikTypeEnum.FILTER_COND));
 		filterConditionDTO.setCName(bean.getName());
 		filterConditionDTO.setCDesc(bean.getDescription());
 		try {
@@ -885,7 +964,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private void deleteAlarmbearbeiterGruppenBean(
-			AlarmbearbeiterGruppenBean bean) throws InconsistentConfigurationException {
+			AlarmbearbeiterGruppenBean bean)
+			throws InconsistentConfigurationException {
 
 		AlarmbearbeiterGruppenDTO dto = null;
 		for (AlarmbearbeiterGruppenDTO potentialdto : entireConfiguration
@@ -899,16 +979,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			configurationService.deleteAlarmbearbeiterGruppenDTO(dto);
 			alarmbearbeitergruppenBeans.remove(dto.getUserGroupId());
 			logger.logInfoMessage(this,
-					"ConfigurationBeanServiceImpl.delete() " + dto.getUserGroupId()
-							+ " " + dto.getUserGroupName());
+					"ConfigurationBeanServiceImpl.delete() "
+							+ dto.getUserGroupId() + " "
+							+ dto.getUserGroupName());
 		}
 	}
 
-	private void deleteAlarmtopicBean(AlarmtopicBean bean) 
+	private void deleteAlarmtopicBean(AlarmtopicBean bean)
 			throws InconsistentConfigurationException {
 		TopicDTO dto = null;
-		for (TopicDTO potentialdto : entireConfiguration
-				.gibAlleAlarmtopics()) {
+		for (TopicDTO potentialdto : entireConfiguration.gibAlleAlarmtopics()) {
 			if (potentialdto.getId() == bean.getID()) {
 				dto = potentialdto;
 				break;
@@ -919,9 +999,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			alarmtopicBeans.remove(dto.getId());
 			logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " + dto.getId()
-					+ " " + dto.getTopicName());
+							+ " " + dto.getTopicName());
 		}
-		
+
 	}
 
 	private void deleteFilterBean(FilterBean bean) {
@@ -929,8 +1009,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	}
 
-	private void deleteFilterbedingungBean(FilterbedingungBean bean) 
-			throws InconsistentConfigurationException{
+	private void deleteFilterbedingungBean(FilterbedingungBean bean)
+			throws InconsistentConfigurationException {
 		FilterConditionDTO dto = null;
 		for (FilterConditionDTO potentialdto : entireConfiguration
 				.gibAlleFilterConditions()) {
@@ -943,8 +1023,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			configurationService.deleteFilterConditionDTO(dto);
 			filterbedingungBeans.remove(dto.getIFilterConditionID());
 			logger.logInfoMessage(this,
-					"ConfigurationBeanServiceImpl.delete() " + dto.getIFilterConditionID()
-					+ " " + dto.getCName());
+					"ConfigurationBeanServiceImpl.delete() "
+							+ dto.getIFilterConditionID() + " "
+							+ dto.getCName());
 		}
 	}
 

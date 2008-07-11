@@ -109,7 +109,7 @@ public interface LocalStoreConfigurationService {
 			AlarmbearbeiterDTO alarmBearbeiterDTO);
 
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
-			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO);
+			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO) throws InconsistentConfigurationException;
 
 	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
 

@@ -12,9 +12,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
@@ -33,6 +32,7 @@ public class Configuration implements FilterConditionForIdProvider {
 
 	private Collection<FilterConditionDTO> allFilterConditions;
 	private Collection<RubrikDTO> alleRubriken;
+	private List<User2UserGroupDTO> alleUser2UserGroupMappings;
 
 	@SuppressWarnings("unchecked")
 	public Configuration(Session session)
@@ -53,13 +53,8 @@ public class Configuration implements FilterConditionForIdProvider {
 				.addOrder(Order.asc("iFilterConditionID")).list();
 		alleRubriken = session.createCriteria(RubrikDTO.class).list();
 
-		// PRIVATEs
-		Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> allUserUserGroupAggregation = session
-				.createCriteria(
-						AlarmbearbeiterZuAlarmbearbeiterGruppenDTO.class)
-				.list();
-		pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(allUserUserGroupAggregation);
-
+		alleUser2UserGroupMappings = session.createCriteria(User2UserGroupDTO.class).list();
+		
 		// Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
 		// .createCriteria(FilterConditionTypeDTO.class).list();
 		// pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
@@ -85,6 +80,7 @@ public class Configuration implements FilterConditionForIdProvider {
 				}
 			}
 		}
+		addUsersToGroups();
 	}
 
 	private void setStringArrayCompareValues(
@@ -136,48 +132,16 @@ public class Configuration implements FilterConditionForIdProvider {
 		}
 	}
 
-	private void pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(
-			Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> allUserUserGroupAggregation)
-			throws InconsistentConfigurationException {
-		System.out
-				.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"
-						+ allUserUserGroupAggregation.size());
-		for (AlarmbearbeiterZuAlarmbearbeiterGruppenDTO alarmbearbeiterZuAlarmbearbeiterGruppe : allUserUserGroupAggregation) {
-			System.out
-					.println("Configuration.pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu()"
-							+ alarmbearbeiterZuAlarmbearbeiterGruppe.toString());
-
-			int alarmbearbeiterId = alarmbearbeiterZuAlarmbearbeiterGruppe
-					.getUserRef();
-			int alarmbearbeiterGruppenId = alarmbearbeiterZuAlarmbearbeiterGruppe
-					.getUserGroupRef();
-			for (AlarmbearbeiterGruppenDTO alarmbearbeiterGruppe : alleAlarmbearbeiterGruppen) {
-				int gruppenId = alarmbearbeiterGruppe.getUserGroupId();
-
-				if (gruppenId == alarmbearbeiterGruppenId) {
-					for (AlarmbearbeiterDTO alarmbearbeiter : alleAlarmbarbeiter) {
-						if (alarmbearbeiterId == alarmbearbeiter.getUserId()) {
-							alarmbearbeiterGruppe
-									.alarmbearbeiterZuordnen(alarmbearbeiter);
-						}
-					}
-				}
-			}
+	private void addUsersToGroups(){
+		HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
+		for (AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
+			gruppen.put(gruppe.getUserGroupId(), gruppe);
+		}
+		for (User2UserGroupDTO map : alleUser2UserGroupMappings) {
+			gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef()).alarmbearbeiterZuordnen(map);
 		}
 	}
-
-	/**
-	 * @deprecated "FilterConditionType is a redundant information"
-	 * @param allFilterConditionsTypes
-	 * @throws InconsistentConfigurationException
-	 */
-	@Deprecated
-	private void pruefeUndOrdneTypenDenFilterConditionsZu(
-			Collection<FilterConditionTypeDTO> allFilterConditionsTypes)
-			throws InconsistentConfigurationException {
-		// TODO Hier die Typen den FC zuweisen (manuelles ManyToOne mapping!
-	}
-
+	
 	public Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter() {
 		return alleAlarmbarbeiter;
 	}
@@ -235,6 +199,10 @@ public class Configuration implements FilterConditionForIdProvider {
 
 	public Collection<RubrikDTO> gibAlleRubriken() {
 		return alleRubriken;
+	}
+
+	public List<User2UserGroupDTO> getAllUser2UserGroupDTOs() {
+		return alleUser2UserGroupMappings;
 	}
 
 }

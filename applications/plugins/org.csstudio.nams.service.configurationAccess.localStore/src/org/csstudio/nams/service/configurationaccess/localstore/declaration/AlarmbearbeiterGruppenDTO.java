@@ -1,7 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -73,7 +77,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 * Dieses Feld wird nachträglich manuelle gestzt!! Um Object-Identität zu gewährleisten.
 	 */
 	@Transient
-	private Set<AlarmbearbeiterDTO> alarmbearbeiterDieserGruppe = new HashSet<AlarmbearbeiterDTO>();
+	private Set<User2UserGroupDTO> alarmbearbeiterDieserGruppe = new HashSet<User2UserGroupDTO>();
 
 	/**
 	 * @return the userGroupId
@@ -244,11 +248,15 @@ public class AlarmbearbeiterGruppenDTO {
 	/**
 	 * Liefert alle zugehörigen Alarmbearbeiter.
 	 */
-	public Set<AlarmbearbeiterDTO> gibZugehoerigeAlarmbearbeiter() {
+	public Set<User2UserGroupDTO> gibZugehoerigeAlarmbearbeiter() {
 		return Collections.unmodifiableSet(this.alarmbearbeiterDieserGruppe);
 	}
 
-    void alarmbearbeiterZuordnen(AlarmbearbeiterDTO alarmbearbeiter) {
-    	alarmbearbeiterDieserGruppe.add(alarmbearbeiter);
+    public void alarmbearbeiterZuordnen(User2UserGroupDTO map) {
+    	System.out.println(map + " wurde " + this + " zugeordnet");
+    	alarmbearbeiterDieserGruppe.add(map);
 	}
+    public void setAlarmbearbeiter(List<User2UserGroupDTO> list){
+    	alarmbearbeiterDieserGruppe = new HashSet<User2UserGroupDTO>(list);
+    }
 }
