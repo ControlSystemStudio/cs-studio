@@ -178,7 +178,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		Composite main = new Composite(outermain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true,
 				configurationBeanService
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
@@ -215,7 +215,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		junctorFirstFilterText = createTextEntry(stackComposites[0],
 				"Filtercondition", false);
 		junctorTypeComboViewer = createComboEntry(stackComposites[0],
-				"Junktor", true, array2StringArray(JunctorConditionType
+				"Junktor", false, array2StringArray(JunctorConditionType
 						.values()));
 		junctorTypeComboViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -230,10 +230,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[1] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
 		stringCompareKeyComboViewer = createComboEntry(stackComposites[1],
-				"CompareKey", true, array2StringArray(MessageKeyEnum.values()));
+				"CompareKey", false, array2StringArray(MessageKeyEnum.values()));
 		stringCompareKeyCombo = stringCompareKeyComboViewer.getCombo();
 		stringOperatorComboViewer = createComboEntry(stackComposites[1],
-				"Operator", true, array2StringArray(StringRegelOperator
+				"Operator", false, array2StringArray(StringRegelOperator
 						.values()));
 		stringOperatorCombo = stringOperatorComboViewer.getCombo();
 		stringCompareValueText = createTextEntry(stackComposites[1],
@@ -242,10 +242,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[2] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[2].setLayout(new GridLayout(NUM_COLUMNS, false));
 		arrayMessageKeyComboViewer = createComboEntry(stackComposites[2],
-				"MessageKey", true, array2StringArray(MessageKeyEnum.values()));
+				"MessageKey", false, array2StringArray(MessageKeyEnum.values()));
 		arrayMessageKeyCombo = arrayMessageKeyComboViewer.getCombo();
 		arrayOperatorComboViewer = createComboEntry(stackComposites[2],
-				"Operator", true, array2StringArray(StringRegelOperator
+				"Operator", false, array2StringArray(StringRegelOperator
 						.values()));
 		arrayOperatorCombo = arrayOperatorComboViewer.getCombo();
 		arrayCompareValueListViewer = createListEntry(stackComposites[2],
@@ -265,8 +265,23 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			public void keyReleased(KeyEvent e) {
 			}
 		});
+		Button buttonAdd = createButtonEntry(stackComposites[2],
+				"Eingabe hinzufügen", true);
+		buttonAdd.addMouseListener(new MouseListener() {
+
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+				arrayCompareValueList.add(arrayNewCompareValueText
+						.getText());
+			}
+
+			public void mouseUp(MouseEvent e) {
+			}
+		});
 		Button button = createButtonEntry(stackComposites[2],
-				"CompareValue löschen", true);
+				"Vergleichswert löschen", true);
 		button.addMouseListener(new MouseListener() {
 
 			public void mouseDoubleClick(MouseEvent e) {
@@ -293,11 +308,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[3].setLayout(new GridLayout(NUM_COLUMNS, false));
 		pvChannelName = createTextEntry(stackComposites[3], "channelName", true);
 		pvSuggestedTypeViewer = createComboEntry(stackComposites[3],
-				"SuggestedType", true,
+				"SuggestedType", false,
 				array2StringArray(SuggestedProcessVariableType.values()));
 		pvSuggestedType = pvSuggestedTypeViewer.getCombo();
 		pvOperatorViewer = createComboEntry(stackComposites[3], "Operator",
-				true, array2StringArray(Operator.values()));
+				false, array2StringArray(Operator.values()));
 		pvOperator = pvOperatorViewer.getCombo();
 		pvCompareValue = createTextEntry(stackComposites[3], "Compare value",
 				true);
@@ -310,22 +325,22 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				"Alarm bei Timeout", true);
 		addSeparator(stackComposites[4]);
 		timeStartKeyComboViewer = createComboEntry(stackComposites[4],
-				"Start KeyValue", true, array2StringArray(MessageKeyEnum
+				"Start KeyValue", false, array2StringArray(MessageKeyEnum
 						.values()));
 		timeStartKeyCombo = timeStartKeyComboViewer.getCombo();
 		timeStartOperatorComboViewer = createComboEntry(stackComposites[4],
-				"Start Operator", true, array2StringArray(StringRegelOperator
+				"Start Operator", false, array2StringArray(StringRegelOperator
 						.values()));
 		timeStartOperatorCombo = timeStartOperatorComboViewer.getCombo();
 		timeStartCompareText = createTextEntry(stackComposites[4],
 				"Start CompareValue", true);
 		addSeparator(stackComposites[4]);
 		timeStopKeyComvoViewer = createComboEntry(stackComposites[4],
-				"Stop KeyValue", true, array2StringArray(MessageKeyEnum
+				"Stop KeyValue", false, array2StringArray(MessageKeyEnum
 						.values()));
 		timeStopKeyCombo = timeStopKeyComvoViewer.getCombo();
 		timeStopOperatorComboViewer = createComboEntry(stackComposites[4],
-				"Stop Operator", true, array2StringArray(StringRegelOperator
+				"Stop Operator", false, array2StringArray(StringRegelOperator
 						.values()));
 		timeStopOperatorCombo = timeStopOperatorComboViewer.getCombo();
 		timeStopCompareText = createTextEntry(stackComposites[4],

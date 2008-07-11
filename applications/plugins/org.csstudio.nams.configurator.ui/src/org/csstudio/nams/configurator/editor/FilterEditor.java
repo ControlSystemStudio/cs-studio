@@ -51,7 +51,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true,
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true,
 				configurationBeanService
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();

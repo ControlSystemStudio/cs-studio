@@ -70,7 +70,7 @@ public class AlarmbearbeitergruppenEditor extends AbstractEditor<Alarmbearbeiter
 
 //				new Label(textFieldComp, SWT.READ_ONLY).setText("Gruppe");
 
-				_rubrikComboEntryViewer = this.createComboEntry(main, "Group:", true, configurationBeanService
+				_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true, configurationBeanService
 								.getRubrikNamesForType(RubrikTypeEnum.USER_GROUP));
 				
 				_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
