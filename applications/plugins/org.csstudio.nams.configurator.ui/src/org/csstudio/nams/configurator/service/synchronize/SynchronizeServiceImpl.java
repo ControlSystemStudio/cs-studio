@@ -26,6 +26,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			protected void doRunOneSingleStep() throws Throwable,
 					InterruptedException {
 				sychronizeAlarmSystemInternal(callback);
+				this.done();
 			}
 		});
 	}
