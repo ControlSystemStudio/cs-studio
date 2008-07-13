@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.nams.configurator.model.ConfiguratorModelActivato
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common.activatorUtils,
- org.csstudio.nams.service.configurationAccess.localStore
+ org.csstudio.nams.service.configurationAccess.localStore,
+ org.csstudio.nams.common
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.configurator.model.declaration;x-friends:="org.csstudio.nams.newconfigurator"

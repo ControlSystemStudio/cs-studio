@@ -8,6 +8,14 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 
+/**
+ * Ein Service zum Zugirff auf die NAMS-Konfiguration.
+ * 
+ * TODO Rename to ConfigurationStoreService 
+ * TODO Alle konkreten Operationen auf
+ * die allgemeinen DTO-Operationen umbauen; siehe auch Anmerkungen in
+ * {@link HasJoinedElements}.
+ */
 public interface LocalStoreConfigurationService {
 
 	/**

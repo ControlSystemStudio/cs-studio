@@ -33,6 +33,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 
+/**
+ * Implementation für Hibernate.
+ * 
+ * TODO Rename to ConfigurationStoreServiceHibernateImpl
+ */
 class LocalStoreConfigurationServiceImpl implements
 		LocalStoreConfigurationService {
 

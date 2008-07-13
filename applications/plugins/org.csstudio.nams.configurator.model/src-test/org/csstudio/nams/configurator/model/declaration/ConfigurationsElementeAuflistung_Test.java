@@ -1,14 +1,14 @@
 package org.csstudio.nams.configurator.model.declaration;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.junit.Test;
 
-public class ConfigurationsElementeAuflistung_Test extends TestCase {
+public class ConfigurationsElementeAuflistung_Test extends AbstractObject_TestCase<ConfigurationsElementeAuflistung<?>> {
 
 	@Test
 	public void testListeFuellenUndFiltern() {
@@ -72,5 +72,45 @@ public class ConfigurationsElementeAuflistung_Test extends TestCase {
 		result.add(new AlarmbearbeiterDTO(4,1,"Olli Dittrich", "", "", "", "", "", true));
 		
 		return result;
+	}
+
+	@Override
+	protected ConfigurationsElementeAuflistung<?> getNewInstanceOfClassUnderTest() {
+		ConfigurationsElementeAuflistung<AlarmbearbeiterDTO> liste = new ConfigurationsElementeAuflistung<AlarmbearbeiterDTO>();
+		Set<AlarmbearbeiterDTO> testDaten = createTestDaten();
+		liste.setElements(testDaten);
+		return liste;
+	}
+
+	@Override
+	protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() {
+		return new Object();
+	}
+
+	@Override
+	protected ConfigurationsElementeAuflistung<?>[] getThreeDiffrentNewInstanceOfClassUnderTest() {
+		ConfigurationsElementeAuflistung<?> [] confAuf = new ConfigurationsElementeAuflistung[3];
+		
+		ConfigurationsElementeAuflistung<AlarmbearbeiterDTO> liste = new ConfigurationsElementeAuflistung<AlarmbearbeiterDTO>();
+		Set<AlarmbearbeiterDTO> testDaten = createTestDaten();
+		liste.setElements(testDaten);
+		
+		confAuf[0] = liste;
+		
+		liste = new ConfigurationsElementeAuflistung<AlarmbearbeiterDTO>();
+		testDaten = Collections.emptySet();
+		liste.setElements(testDaten);
+		
+		confAuf[1] = liste;
+		
+		liste = new ConfigurationsElementeAuflistung<AlarmbearbeiterDTO>();
+		testDaten = new HashSet<AlarmbearbeiterDTO>();
+		testDaten.add(new AlarmbearbeiterDTO(1,1,"Hans Otto", "", "", "", "", "", true));
+		testDaten.add(new AlarmbearbeiterDTO(2,2,"Hans Werner", "", "", "", "", "", true));
+		liste.setElements(testDaten);
+		
+		confAuf[2] = liste;
+		
+		return confAuf;
 	}
 }

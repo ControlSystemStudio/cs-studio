@@ -2,6 +2,11 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 
+/**
+ * Ein DTO der NAMS-Konfiguration
+ * 
+ * TODO Rename to NamsDTO.
+ */
 public interface NewAMSConfigurationElementDTO {
 	
 	/**
