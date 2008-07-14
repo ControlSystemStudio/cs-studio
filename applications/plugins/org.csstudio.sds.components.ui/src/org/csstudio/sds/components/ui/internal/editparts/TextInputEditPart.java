@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.text.NumberFormat;
 import java.util.Map;
 
 import org.csstudio.platform.data.INumericMetaData;
@@ -34,10 +35,13 @@ import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.util.ChannelReferenceValidationException;
+import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
@@ -84,6 +88,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
      */
     private static final int INPUT_FIELD_BRIGHTNESS = 10;
 
+    private NumberFormat numberFormat = NumberFormat.getInstance();
     /**
      * {@inheritDoc}
      */
@@ -93,19 +98,15 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
         RefreshableLabelFigure label = new RefreshableLabelFigure();
 
-        //label.setText(model.getInputText());
-        label.setType(model.getType());
+        //FIXME: 2008-11-07: swende: Input-Text wie bei LabelEditpart berechnen! 
 		label.setTextValue(model.getInputText());
-		label.setDecimalPlaces(model.getPrecision());
         label.setFont(CustomMediaFactory.getInstance().getFont(
                         model.getFont()));
         label.setTextAlignment(model.getTextAlignment());
         label.setTransparent(model.getTransparent());
-        label.setAliases(model.getAliases());
-		label.setPrimaryPV(model.getPrimaryPV());
+        
         label.addMouseListener(new MouseListener() {
             public void mouseDoubleClicked(final MouseEvent me) {
-                System.out.println("Test TextInput mouseDoubleClicked -3");
                 performDirectEdit();
             }
 
@@ -308,7 +309,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
                     final Object newValue,
                     final IFigure refreshableFigure) {
                 RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-                //label.setText((String) newValue);
                 label.setTextValue((String) newValue);
                 return true;
             }
@@ -358,11 +358,11 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-                labelFigure.setType((Integer) newValue);
+                labelFigure.setTextValue(determineLabel(null));
                 return true;
             }
         };
-        setPropertyChangeHandler(TextInputModel.PROP_TYPE, handle);
+        setPropertyChangeHandler(TextInputModel.PROP_VALUE_TYPE, handle);
 
 		// precision
 		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
@@ -370,7 +370,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setDecimalPlaces((Integer) newValue);
+				label.setTextValue(determineLabel(TextInputModel.PROP_PRECISION));
 				return true;
 			}
 		};
@@ -382,7 +382,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setAliases((Map<String, String>) newValue);
+				label.setTextValue(determineLabel(TextInputModel.PROP_ALIASES));
 				return true;
 			}
 		};
@@ -394,12 +394,72 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setPrimaryPV((String) newValue);
+				label.setTextValue(determineLabel(TextInputModel.PROP_PRIMARY_PV));
 				return true;
 			}
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_PRIMARY_PV, pvHandler);
     }
+    
+	private String determineLabel(String updatedPropertyId) {
+//		LabelModel model = getCastedModel();
+		 TextInputModel model = (TextInputModel) getWidgetModel();
+
+		TextTypeEnum type = model.getValueType();
+		String text = model.getInputText();
+
+		String toprint = "none";
+
+		switch (type) {
+		case TEXT:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)) {
+				toprint = text;
+			}
+			break;
+		case DOUBLE:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)
+					|| updatedPropertyId.equals(LabelModel.PROP_PRECISION)) {
+				try {
+					double d = Double.parseDouble(text);
+					numberFormat.setMaximumFractionDigits(model.getPrecision());
+					toprint = numberFormat.format(d);
+				} catch (Exception e) {
+					toprint = text;
+				}
+			}
+			break;
+		case ALIAS:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_ALIASES) || updatedPropertyId.equals(LabelModel.PROP_PRIMARY_PV)) {
+				try {
+					toprint = ChannelReferenceValidationUtil
+							.createCanonicalName(model.getPrimaryPV(), model
+									.getAllInheritedAliases());
+				} catch (ChannelReferenceValidationException e) {
+					toprint = model.getPrimaryPV();
+				}
+			}
+			break;
+		case HEX:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)) {
+				try {
+					long l = Long.parseLong(text);
+					toprint = Long.toHexString(l);
+				} catch (Exception e1) {
+					try {
+						double d = Double.parseDouble(text);
+						toprint = Double.toHexString(d);
+					} catch (Exception e2) {
+						toprint = text;
+					}
+				}
+			}
+			break;
+		default:
+			toprint = "unknown value type";
+		}
+		return toprint;
+	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -410,7 +470,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		}
 		
 		TextInputModel model = (TextInputModel) getWidgetModel();
-		int type = model.getType();
 		ITimestamp timestamp = TimestampFactory.now();
 	
 		// Note: the IValue implementations require a Severity, otherwise the
@@ -420,7 +479,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		ISeverity severity = ValueFactory.createOKSeverity();
 		
 		IValue result;
-		switch (TextTypeEnum.getEnumForIndex(type)) {
+		switch (model.getValueType()) {
 		case DOUBLE:
 			// try to convert the input text to a double
 			double value = 0.0;

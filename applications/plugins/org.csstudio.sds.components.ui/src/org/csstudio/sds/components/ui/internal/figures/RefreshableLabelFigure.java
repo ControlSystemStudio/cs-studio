@@ -52,36 +52,9 @@ import org.eclipse.swt.graphics.Font;
 public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	
 	/**
-	 * The ID for the <i>text</i> type.
-	 */
-	public static final int TYPE_TEXT = 0;
-	/**
-	 * The ID for the <i>double</i> type.
-	 */
-	public static final int TYPE_DOUBLE = 1;
-	/**
-	 * The ID for the <i>alias</i> type.
-	 */
-	public static final int TYPE_ALIAS = 2;
-	/**
-	 * The ID for the <i>alias</i> type.
-	 */
-	public static final int TYPE_HEX = 3;
-	
-	/**
-	 * Type of the label.
-	 */
-	private int _valueType=TextTypeEnum.DOUBLE.getIndex();
-	
-	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-	
-	/**
-	 * The potenz for the precision.
-	 */
-	private int _decimalPlaces = 2;
 	
 	/**
 	 * Default label font.
@@ -161,46 +134,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
 		
 		
-		// FIXME: 8-2-2008: swende: This logic should be implemented in the controller - not the view
-		String toprint="none";
-		switch (_valueType) {
-		case TYPE_TEXT:
-			toprint=_textValue;
-			break;
-		case TYPE_DOUBLE:
-			try {
-				double d = Double.parseDouble(_textValue);
-				NumberFormat format = NumberFormat.getInstance();
-				format.setMaximumFractionDigits(_decimalPlaces);
-				toprint = format.format(d);
-			} catch (Exception e) {
-				toprint = _textValue;
-			}
-			break;
-		case TYPE_ALIAS:
-			try {
-				toprint = ChannelReferenceValidationUtil.createCanonicalName(_primaryPV, _aliases);
-			} catch (ChannelReferenceValidationException e) {
-				toprint = _primaryPV;
-			}
-			break;
-		case TYPE_HEX:
-			try {
-				long l = Long.parseLong(_textValue);
-				toprint = Long.toHexString(l);
-			} catch (Exception e1) {
-				try {
-					double d = Double.parseDouble(_textValue);
-					toprint = Double.toHexString(d);
-				} catch (Exception e2) {
-					toprint = _textValue;
-				}
-			}
-			break;
-		default:
-			toprint="unknown value type";
-		}
-		
 		Point textPoint;
 		int alignment;
 		switch (_alignment) {
@@ -232,20 +165,20 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		if (!isEnabled()) {
 			gfx.setForegroundColor(ColorConstants.buttonLightest);
 			if (Math.round(_rotation)==90) {
-				TextPainter.drawText(gfx,toprint,textPoint.x,textPoint.y,alignment);
+				TextPainter.drawText(gfx,_textValue,textPoint.x,textPoint.y,alignment);
 			} else {
-				TextPainter.drawRotatedText(gfx,toprint,90.0-_rotation,textPoint.x+1,textPoint.y+1,alignment);
+				TextPainter.drawRotatedText(gfx,_textValue,90.0-_rotation,textPoint.x+1,textPoint.y+1,alignment);
 			}
 			
 			gfx.setForegroundColor(ColorConstants.buttonDarker);
 		}
 		if (Math.round(_rotation)==90) {
-			TextPainter.drawText(gfx,toprint,textPoint.x,textPoint.y,alignment);
+			TextPainter.drawText(gfx,_textValue,textPoint.x,textPoint.y,alignment);
 		} else {
-			TextPainter.drawRotatedText(gfx,toprint,90.0-_rotation,textPoint.x,textPoint.y,alignment);
+			TextPainter.drawRotatedText(gfx,_textValue,90.0-_rotation,textPoint.x,textPoint.y,alignment);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -258,49 +191,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 */
 	public Font getFont() {
 		return _font;
-	}
-	
-	/**
-	 * Sets the count of decimal places for this Figure.
-	 * 
-	 * @param decimalPlaces
-	 *            The precision
-	 */
-	public void setDecimalPlaces(final int decimalPlaces) {
-		_decimalPlaces = decimalPlaces;
-	}
-
-	/**
-	 * Gets the precision of this Figure.
-	 * 
-	 * @return The precision
-	 */
-	public int getDecimalPlaces() {
-		return _decimalPlaces;
-	}
-	
-	/**
-	 * Sets the known aliases.
-	 * @param aliases A {@link Map} with the aliases
-	 */
-	public void setAliases(final Map<String,String> aliases) {
-		if (aliases==null) {
-			_aliases = new HashMap<String, String>();
-		} else {
-			_aliases = aliases;
-		}
-	}
-	
-	/**
-	 * Sets the primary process variable.
-	 * @param mainPV the primary pv
-	 */
-	public void setPrimaryPV(final String mainPV) {
-		if (mainPV==null) {
-			_primaryPV = "";
-		} else {
-			_primaryPV = mainPV;
-		}
 	}
 	
 	/**
@@ -399,22 +289,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 */
 	public int getYOff() {
 		return _yOff;
-	}
-	
-	/**
-	 * Sets the type of the displayed text.
-	 * @param newval The type of the displayed text
-	 */
-	public void setType(final int newval) {
-		_valueType=newval;
-	}
-	
-	/**
-	 * returns the type of the displayed text.
-	 * @return The type of the displayed text
-	 */
-	public int getType() {
-		return _valueType;
 	}
 	
 	/**

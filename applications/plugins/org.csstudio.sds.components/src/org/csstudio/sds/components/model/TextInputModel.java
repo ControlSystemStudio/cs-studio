@@ -82,7 +82,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
      * Type of the displayed text.
      */
-    public static final String PROP_TYPE = "value_type";
+    public static final String PROP_VALUE_TYPE = "value_type";
     /**
      * The ID of the <i>double type</i> property.
      */
@@ -115,7 +115,8 @@ public final class TextInputModel extends AbstractWidgetModel {
 		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
-		addProperty(PROP_TYPE, new ArrayOptionProperty("Value Type",WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex()));
+		//FIXME: 2008-07-11: swende: Use an OptionProperty instead!
+		addProperty(PROP_VALUE_TYPE, new ArrayOptionProperty("Value Type",WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex()));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 6));
 	}
@@ -181,13 +182,23 @@ public final class TextInputModel extends AbstractWidgetModel {
 	public boolean getTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
+	
 	/**
-     * Returns the type of the text (Double or String).
-     * @return The type of the text
-     */
-    public int getType() {
-        return (Integer) getProperty(PROP_TYPE).getPropertyValue();
-    }
+	 * Returns the type of the text (Double or String).
+	 * @return The type of the text
+	 */
+	public TextTypeEnum getValueType() {
+		TextTypeEnum result = TextTypeEnum.TEXT;
+		
+		int index = (Integer) getProperty(PROP_VALUE_TYPE).getPropertyValue();
+		
+		if(index>= 0 && index<TextTypeEnum.values().length){
+			result = TextTypeEnum.values()[index];
+		}
+		
+		return result;
+	}
+
     
     /**
 	 * Return the precision.

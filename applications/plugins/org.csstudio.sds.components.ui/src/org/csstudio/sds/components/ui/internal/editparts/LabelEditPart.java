@@ -19,18 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.ui.internal.editparts;
+package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.text.NumberFormat;
 import java.util.Map;
 
+import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.LabelModel;
+import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.util.ChannelReferenceValidationException;
+import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-
-import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 
 /**
  * EditPart controller for the label widget.
@@ -40,6 +43,8 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
  */
 public final class LabelEditPart extends AbstractWidgetEditPart {
 
+	private NumberFormat numberFormat = NumberFormat.getInstance();
+	
 	/**
 	 * Returns the casted model. This is just for convenience.
 	 * 
@@ -57,56 +62,52 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		LabelModel model = getCastedModel();
 		// create AND initialize the view properly
 		final RefreshableLabelFigure figure = new RefreshableLabelFigure();
-		
-		figure.setFont(CustomMediaFactory.getInstance().getFont(model.getFont()));
+
+		figure.setFont(CustomMediaFactory.getInstance()
+				.getFont(model.getFont()));
 		figure.setTextAlignment(model.getTextAlignment());
 		figure.setTransparent(model.getTransparent());
 		figure.setBorderWidth(model.getBorderWidth());
 		figure.setRotation(model.getRotation());
 		figure.setXOff(model.getXOff());
 		figure.setYOff(model.getYOff());
-		
-		figure.setType(model.getType());
-		figure.setTextValue(model.getTextValue());
-		figure.setDecimalPlaces(model.getPrecision());
-		figure.setAliases(model.getAllInheritedAliases());
-		figure.setPrimaryPV(model.getPrimaryPV());
-		
+
+		figure.setTextValue(determineLabel(null));
+
 		return figure;
 	}
-	
+
 	/**
 	 * Registers handlers for changes of the different value properties.
 	 */
 	protected void registerValueChangeHandlers() {
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setType((Integer) newValue);
+				labelFigure.setTextValue(determineLabel(null));
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_TYPE, handle);
-		
-		//text value
+		setPropertyChangeHandler(LabelModel.PROP_VALUE_TYPE, handle);
+
+		// text value
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setTextValue((String) newValue);
+				labelFigure.setTextValue(determineLabel(LabelModel.PROP_TEXTVALUE));
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TEXTVALUE, handle);
-		
+
 		// precision
 		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setDecimalPlaces((Integer) newValue);
+					final Object newValue, final IFigure refreshableFigure) {
+				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+				labelFigure.setTextValue(determineLabel(LabelModel.PROP_PRECISION));
 				return true;
 			}
 		};
@@ -115,10 +116,9 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
 			@SuppressWarnings("unchecked")
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setAliases((Map<String, String>) newValue);
+					final Object newValue, final IFigure refreshableFigure) {
+				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+				labelFigure.setTextValue(determineLabel(LabelModel.PROP_ALIASES));
 				return true;
 			}
 		};
@@ -127,16 +127,73 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
 			@SuppressWarnings("unchecked")
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setPrimaryPV((String) newValue);
+					final Object newValue, final IFigure refreshableFigure) {
+				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+				labelFigure.setTextValue(determineLabel(LabelModel.PROP_ALIASES));
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_PRIMARY_PV, pvHandler);
 	}
-	
+
+	private String determineLabel(String updatedPropertyId) {
+		LabelModel model = getCastedModel();
+
+		TextTypeEnum type = model.getValueType();
+		String text = model.getTextValue();
+
+		String toprint = "none";
+
+		switch (type) {
+		case TEXT:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)) {
+				toprint = text;
+			}
+			break;
+		case DOUBLE:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)
+					|| updatedPropertyId.equals(LabelModel.PROP_PRECISION)) {
+				try {
+					double d = Double.parseDouble(text);
+					numberFormat.setMaximumFractionDigits(model.getPrecision());
+					toprint = numberFormat.format(d);
+				} catch (Exception e) {
+					toprint = text;
+				}
+			}
+			break;
+		case ALIAS:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_ALIASES) || updatedPropertyId.equals(LabelModel.PROP_PRIMARY_PV)) {
+				try {
+					toprint = ChannelReferenceValidationUtil
+							.createCanonicalName(model.getPrimaryPV(), model
+									.getAllInheritedAliases());
+				} catch (ChannelReferenceValidationException e) {
+					toprint = model.getPrimaryPV();
+				}
+			}
+			break;
+		case HEX:
+			if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)) {
+				try {
+					long l = Long.parseLong(text);
+					toprint = Long.toHexString(l);
+				} catch (Exception e1) {
+					try {
+						double d = Double.parseDouble(text);
+						toprint = Double.toHexString(d);
+					} catch (Exception e2) {
+						toprint = text;
+					}
+				}
+			}
+			break;
+		default:
+			toprint = "unknown value type";
+		}
+		return toprint;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -144,8 +201,8 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 	protected void registerPropertyChangeHandlers() {
 		// changes to the font property
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
 				FontData fontData = (FontData) newValue;
 				labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
@@ -155,13 +212,13 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_FONT, handle);
-		
+
 		// changes to the text alignment property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setTextAlignment((Integer)newValue);
+				labelFigure.setTextAlignment((Integer) newValue);
 				return true;
 			}
 		};
@@ -169,43 +226,43 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 
 		// changes to the transparency property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setTransparent((Boolean)newValue);
+				labelFigure.setTransparent((Boolean) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handle);
-		
+
 		// changes to the border width property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setBorderWidth((Integer)newValue);
+				labelFigure.setBorderWidth((Integer) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_BORDER_WIDTH, handle);
-		
+
 		// changes to the text rotation property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setRotation((Double)newValue);
+				labelFigure.setRotation((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_ROTATION, handle);
-		
+
 		// changes to the x offset property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setXOff((Integer)newValue);
+				labelFigure.setXOff((Integer) newValue);
 				return true;
 			}
 		};
@@ -213,10 +270,10 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 
 		// changes to the y offset property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setYOff((Integer)newValue);
+				labelFigure.setYOff((Integer) newValue);
 				return true;
 			}
 		};
