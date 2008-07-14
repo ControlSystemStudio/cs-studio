@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.Timer;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -81,7 +82,7 @@ public class LogView extends ViewPart implements MessageListener {
 	public String[] columnNames;
 
 	public ColumnPropertyChangeListener cl;
-	
+
 	/**
 	 * The Show Property View action.
 	 */

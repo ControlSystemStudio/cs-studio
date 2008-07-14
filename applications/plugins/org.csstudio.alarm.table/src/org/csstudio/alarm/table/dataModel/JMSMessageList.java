@@ -157,6 +157,21 @@ public class JMSMessageList {
 		while (iterator.hasNext())
 			((IJMSMessageViewer) iterator.next()).removeJMSMessage(jmsm);
 	}
+
+	/**
+	 * @param task
+	 */
+	public void removeJMSMessage(JMSMessage[] jmsm) {
+		for (JMSMessage message2 : jmsm) {
+			System.out.println(message2.getProperty("NAME"));
+		}
+		for (JMSMessage message : jmsm) {
+			JMSMessages.remove(message);
+		}
+		Iterator iterator = changeListeners.iterator();
+		while (iterator.hasNext())
+			((IJMSMessageViewer) iterator.next()).removeJMSMessage(jmsm);
+	}
 	
 //	public void modelChanged() {
 //		Iterator iterator = changeListeners.iterator();

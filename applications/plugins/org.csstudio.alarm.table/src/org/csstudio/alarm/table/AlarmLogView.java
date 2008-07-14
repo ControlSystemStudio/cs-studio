@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Vector;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -36,6 +39,7 @@ import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,15 +49,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
 
 /**
- * Add to the base class {@code LogView}:
- * - the acknowledge button and combo box
- * - the send method for jms acknowledge messages 
- * - the rule for receiving a new acknowledge message
+ * Add to the base class {@code LogView}: - the acknowledge button and combo
+ * box - the send method for jms acknowledge messages - the rule for receiving a
+ * new acknowledge message
  * 
  * @see LogView
  * @author jhatje
@@ -65,6 +69,16 @@ public class AlarmLogView extends LogView {
 
 	public static final String ID = AlarmLogView.class.getName();
 
+	private Timer timer = new Timer();
+
+	private final Vector<JMSMessage> jmsMessagesToRemove = new Vector<JMSMessage>();
+
+	private boolean working = false;
+
+	private RemoveAcknowledgedMessagesTask _removeMessageTask;
+
+	private Timer _timer = new Timer();
+
 	/**
 	 * Creates the view for the alarm log table.
 	 * 
@@ -73,16 +87,17 @@ public class AlarmLogView extends LogView {
 	@Override
 	public void createPartControl(Composite parent) {
 
-		//in alarm table the 'ack' column must be the first one!
-		String preferenceColumnString = JmsLogsPlugin.getDefault().getPluginPreferences()
-		.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm);
-		
+		// in alarm table the 'ack' column must be the first one!
+		String preferenceColumnString = JmsLogsPlugin.getDefault()
+				.getPluginPreferences().getString(
+						AlarmViewerPreferenceConstants.P_STRINGAlarm);
+
 		preferenceColumnString = "Ack,25;" + preferenceColumnString; //$NON-NLS-1$
-		
-		//read the column names from the preference page
+
+		// read the column names from the preference page
 		columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
 
-		//create the table model 
+		// create the table model
 		jmsml = new JMSAlarmMessageList(columnNames);
 
 		parentShell = parent.getShell();
@@ -108,8 +123,8 @@ public class AlarmLogView extends LogView {
 		ackButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
 				1, 1));
 		final Combo ackCombo = new Combo(comp, SWT.SINGLE);
-		ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2,
-				1));
+		ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
+				2, 1));
 		ackCombo.add("ALL");
 		IPreferenceStore prefs = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
@@ -135,19 +150,20 @@ public class AlarmLogView extends LogView {
 			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
 		ackCombo.select(4);
 
-		GregorianCalendar currentTime = new GregorianCalendar(TimeZone.getTimeZone("ECT"));
-	    SimpleDateFormat formater = new SimpleDateFormat();
+		GregorianCalendar currentTime = new GregorianCalendar(TimeZone
+				.getTimeZone("ECT"));
+		SimpleDateFormat formater = new SimpleDateFormat();
 		Label runningSinceLabel = new Label(comp, SWT.NONE);
-		runningSinceLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
-				1));
-		runningSinceLabel.setText("Running Since: " + formater.format(currentTime.getTime()));
+		runningSinceLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+				false, 1, 1));
+		runningSinceLabel.setText("Running Since: "
+				+ formater.format(currentTime.getTime()));
 
 		ackButton.addSelectionListener(new SelectionListener() {
 
 			/**
-			 * Acknowledge button is pressed for all (selection 0) 
-			 * messages or messages with a special severity (selection
-			 * 1-3). 
+			 * Acknowledge button is pressed for all (selection 0) messages or
+			 * messages with a special severity (selection 1-3).
 			 * 
 			 */
 			public void widgetSelected(SelectionEvent e) {
@@ -160,11 +176,13 @@ public class AlarmLogView extends LogView {
 
 					if (ti.getData() instanceof JMSMessage) {
 						message = (JMSMessage) ti.getData();
-						//ComboBox selection for all messages or for a special severity
+						// ComboBox selection for all messages or for a special
+						// severity
 						if (ackCombo.getItem(ackCombo.getSelectionIndex())
 								.equals(message.getProperty("SEVERITY"))
 								|| (ackCombo.getSelectionIndex() == 0)) {
-							//add the message only if it is not yet acknowledged.
+							// add the message only if it is not yet
+							// acknowledged.
 							if (message.is_ackknowledgement() == false) {
 								msgList.add(message);
 							}
@@ -175,7 +193,8 @@ public class AlarmLogView extends LogView {
 					}
 
 				}
-				SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
+				SendAcknowledge sendAck = SendAcknowledge
+						.newFromJMSMessage(msgList);
 				sendAck.schedule();
 			}
 
@@ -183,7 +202,7 @@ public class AlarmLogView extends LogView {
 			}
 		});
 
-		//create jface table viewer with paramter 2 for alarm table version
+		// create jface table viewer with paramter 2 for alarm table version
 		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,
 				SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
 
@@ -193,7 +212,6 @@ public class AlarmLogView extends LogView {
 		fillLocalToolBar(bars.getToolBarManager());
 		getSite().setSelectionProvider(jlv);
 
-		
 		parent.pack();
 
 		cl = new ColumnPropertyChangeListener(
@@ -205,18 +223,16 @@ public class AlarmLogView extends LogView {
 	}
 
 	/**
-	 * Override the rule in the log table if a message
-	 * is acknowledged.
+	 * Override the rule in the log table if a message is acknowledged.
 	 * 
 	 * @param message
-	 * @throws JMSException 
+	 * @throws JMSException
 	 */
 	@Override
 	protected void setAck(MapMessage message) throws JMSException {
 		JmsLogsPlugin.logInfo("AlarmLogView Ack message received, MsgName: "
 				+ message.getString("NAME") + " MsgTime: "
 				+ message.getString("EVENTTIME"));
-
 		TableItem[] items = jlv.getTable().getItems();
 		for (TableItem item : items) {
 			if (item.getData() instanceof JMSMessage) {
@@ -230,8 +246,18 @@ public class AlarmLogView extends LogView {
 										.equalsIgnoreCase("NO_ALARM"))
 								|| (jmsMessage.getProperty("SEVERITY_KEY")
 										.equalsIgnoreCase("INVALID"))) {
-							jmsml.removeJMSMessage(jmsMessage);
-							jlv.refresh();
+							jmsMessagesToRemove.add(jmsMessage);
+							CentralLogger.getInstance().debug(
+									this,
+									"add message, removelist size: "
+											+ jmsMessagesToRemove.size());
+							if ((_removeMessageTask == null)
+									|| (_removeMessageTask.is_isCanceled() == true)) {
+								CentralLogger.getInstance().debug(this, "Create new 'RemoveAckMessage Task'");
+								_removeMessageTask = new RemoveAcknowledgedMessagesTask(
+										jmsml, jmsMessagesToRemove);
+						        _timer.schedule(_removeMessageTask, 2000, 2000);
+							}
 						} else {
 							item.setChecked(true);
 							jmsMessage.getHashMap().put("ACK_HIDDEN", "true");
@@ -247,30 +273,51 @@ public class AlarmLogView extends LogView {
 		}
 	}
 
-	public void saveColumn(){
+	// private synchronized void removeMessages() {
+	// CentralLogger.getInstance().debug(this, "XXXXXXXXXXXXX in removeMessage
+	// start, removelist size: " + jmsMessagesToRemove.size());
+	// JMSMessage[] a = new JMSMessage[1];
+	// a = jmsMessagesToRemove.toArray(a);
+	// jmsml.removeJMSMessage(a);
+	// for (JMSMessage message : a) {
+	// jmsMessagesToRemove.remove(message);
+	// }
+	// // jmsMessagesToRemove.clear();
+	// CentralLogger.getInstance().debug(this, "XXXXXXXXXXXXX in removeMessage
+	// end, removelist size: " + jmsMessagesToRemove.size());
+	// }
+
+	public void saveColumn() {
 		/**
-		 * When dispose store the width for each column, excepting the first column (ACK).
+		 * When dispose store the width for each column, excepting the first
+		 * column (ACK).
 		 */
 		int[] width = jlv.getColumnWidth();
-		String newPreferenceColumnString=""; //$NON-NLS-1$
-		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(";"); //$NON-NLS-1$
-		/**The "+1" is need for the column Ack.
-		 * The column Ack is not at the preferences and the ackcolumn is ever the first column.
+		String newPreferenceColumnString = ""; //$NON-NLS-1$
+		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences()
+				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
+						";"); //$NON-NLS-1$
+		/**
+		 * The "+1" is need for the column Ack. The column Ack is not at the
+		 * preferences and the ackcolumn is ever the first column.
 		 */
-		if(width.length!=columns.length+1){
+		if (width.length != columns.length + 1) {
 			return;
 		}
 		for (int i = 0; i < columns.length; i++) {
-			/** +width[i+1]: see above */ 
-			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i+1]+";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			/** +width[i+1]: see above */
+			newPreferenceColumnString = newPreferenceColumnString
+					.concat(columns[i].split(",")[0] + "," + width[i + 1] + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
-		newPreferenceColumnString = newPreferenceColumnString.substring(0,newPreferenceColumnString.length()-1);
-		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setValue(AlarmViewerPreferenceConstants.P_STRINGAlarm, newPreferenceColumnString);
-		if(store.needsSaving()){
+		newPreferenceColumnString = newPreferenceColumnString.substring(0,
+				newPreferenceColumnString.length() - 1);
+		IPreferenceStore store = JmsLogsPlugin.getDefault()
+				.getPreferenceStore();
+		store.setValue(AlarmViewerPreferenceConstants.P_STRINGAlarm,
+				newPreferenceColumnString);
+		if (store.needsSaving()) {
 			JmsLogsPlugin.getDefault().savePluginPreferences();
 		}
 
-		
 	}
 }

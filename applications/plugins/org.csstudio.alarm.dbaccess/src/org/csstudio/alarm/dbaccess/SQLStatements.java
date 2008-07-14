@@ -36,7 +36,7 @@ public class SQLStatements {
 
 	public static String test = "select * from message_content where value = ?";
 	
-	public static String MAX_ROWNUM = "5000";
+	public static String MAX_ROWNUM = "5000000";
 
 	public static String ARCHIVE_SIMPLE = "select  mct.message_id, mt.name as MsgType, m.datum, mpt.name as Property,  mct.value "
 		+ "from  message m, message_content mct,msg_type mt, msg_property_type mpt "

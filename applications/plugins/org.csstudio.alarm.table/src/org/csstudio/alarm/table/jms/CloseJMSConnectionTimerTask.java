@@ -19,40 +19,53 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.dataModel;
+package org.csstudio.alarm.table.jms;
 
-public interface IJMSMessageViewer {
+import java.util.TimerTask;
 
-	/**
-	 * Update the view to reflect the fact that a JMSMessage was added 
-	 * to the JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void addJMSMessage(JMSMessage jmsm);
+import org.csstudio.platform.logging.CentralLogger;
 
-	/**
-	 * Update the view to reflect the fact that an array of JMSMessages was added 
-	 * to the JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void addJMSMessages(JMSMessage[] jmsm);
+
+/**
+ * The TimerTask checks the period of the last JMSAccess
+ * and closes the connection if the period is longer than a
+ * threshold.
+ * 
+ * @author jhatje
+ * @author $Author$
+ * @version $Revision$
+ * @since 15.05.2008
+ */
+public class CloseJMSConnectionTimerTask extends TimerTask {
+
+	private long _lastDBAcccessInMillisec;
 	
-	/**
-	 * Update the view to reflect the fact that a JMSMessage was removed 
-	 * from the JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void removeJMSMessage(JMSMessage jmsm);
-
-	/**
-	 * Update the view to reflect the fact that an array of JMSMessages was removed 
-	 * from the JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void removeJMSMessage(JMSMessage[] jmsm);
+	private SendMapMessage _sender;
 	
+	private long _closeThresholdInMillisec = 2 * 1000;
+	
+	public CloseJMSConnectionTimerTask(SendMapMessage sender) {
+		_sender = sender;
+	}
+	
+	@Override
+	public void run() {
+		long lastConnectionPeriod = System.currentTimeMillis() - _lastDBAcccessInMillisec;
+		if (lastConnectionPeriod > _closeThresholdInMillisec) {
+				try {
+					CentralLogger.getInstance().debug(this, "TimerTask stops JMS Connection");
+					_sender.stopSender();
+					this.cancel();
+				} catch (Exception e) {
+					CentralLogger.getInstance().error(this, 
+							"Close JMS Connection error: " + e.getMessage());
+				}
+		}
+	}
+
+	public void set_lastDBAcccessInMillisec(long acccessInMillisec) {
+		CentralLogger.getInstance().debug(this, "Reset time of JMS Close Connection Timer Task");
+		_lastDBAcccessInMillisec = acccessInMillisec;
+	}
+
 }

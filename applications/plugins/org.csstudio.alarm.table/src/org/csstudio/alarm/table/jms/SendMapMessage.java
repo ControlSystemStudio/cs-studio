@@ -22,6 +22,7 @@
  package org.csstudio.alarm.table.jms;
 
 import java.util.Hashtable;
+import java.util.Timer;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -36,12 +37,12 @@ import javax.naming.InitialContext;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
-import org.csstudio.platform.libs.jms.JmsPlugin;
-import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
+import org.csstudio.platform.logging.CentralLogger;
 
 
 public class SendMapMessage {
     
+	private static SendMapMessage _instance;
 	Hashtable<String, String>   properties  = null;
     Context                     context     = null;
     ConnectionFactory           factory     = null;
@@ -50,8 +51,21 @@ public class SendMapMessage {
     MessageProducer             sender      = null;
     Destination                 destination = null;
     MapMessage                  message     = null;
+	private CloseJMSConnectionTimerTask _timerTask;
+	private Timer _timer = new Timer();
 
     
+	private SendMapMessage() {
+		super();
+	}
+
+	public static SendMapMessage getInstance() {
+		if (_instance == null) {
+			_instance = new SendMapMessage();
+		}
+		return _instance;
+	}
+
     public void startSender(boolean acknowledge) throws Exception {
         properties = new Hashtable<String, String>();
         properties.put(Context.INITIAL_CONTEXT_FACTORY, 
@@ -89,12 +103,32 @@ public class SendMapMessage {
 	}
 	
 	public MapMessage getSessionMessageObject() throws Exception{
-		if(message != null) message.clearBody();
-		else message = session.createMapMessage();
+		if (session == null) {
+			CentralLogger.getInstance().debug(this, "Start Sender, start timer task");
+			startSender(true);
+	        _timerTask = new CloseJMSConnectionTimerTask(this);
+	        _timer.schedule(_timerTask, 1000, 1000);
+		}	
+		_timerTask.set_lastDBAcccessInMillisec(System.currentTimeMillis());
+		CentralLogger.getInstance().debug(this, "Create mapMessage");
+		if(message != null) {
+			message.clearBody();
+		} else {
+			message = session.createMapMessage();
+		}
 		return message;
 	}
 	
 	public void sendMessage() throws Exception{
-        sender.send(message);
+		if (session == null) {
+			CentralLogger.getInstance().debug(this, "Start Sender, start timer task");
+			startSender(true);
+	        _timerTask = new CloseJMSConnectionTimerTask(this);
+	        _timer.schedule(_timerTask, 1000, 1000);
+		}
+		_timerTask.set_lastDBAcccessInMillisec(System.currentTimeMillis());
+		CentralLogger.getInstance().debug(this, "Send the JMS message");
+		sender.send(message);
 	}
+
 }

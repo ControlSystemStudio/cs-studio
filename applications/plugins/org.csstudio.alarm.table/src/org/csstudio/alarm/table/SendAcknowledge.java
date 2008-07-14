@@ -104,9 +104,9 @@ public class SendAcknowledge extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 
-		SendMapMessage sender = new SendMapMessage();
+		SendMapMessage sender = SendMapMessage.getInstance();
         try {
-		sender.startSender(true);
+//		sender.startSender(true);
 
 		
 		for (JMSMessage message : messagesToSend) {
@@ -140,12 +140,12 @@ public class SendAcknowledge extends Job {
           	return Status.CANCEL_STATUS;
   		} finally {
             try {
-				sender.stopSender();
+//				sender.stopSender();
 				System.out.println("stop sender!!!"); //$NON-NLS-1$
 			} catch (Exception e) {
 	          	JmsLogsPlugin.logException("JMS Error", e);
 			}
-            sender = null;
+//            sender = null;
 
   		}
 
