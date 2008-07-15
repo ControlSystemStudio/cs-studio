@@ -22,7 +22,6 @@
  package org.csstudio.sds.components.ui.internal.figures;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
