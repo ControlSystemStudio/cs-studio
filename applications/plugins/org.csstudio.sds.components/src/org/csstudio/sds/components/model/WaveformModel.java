@@ -118,6 +118,11 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * The ID of the data point drawing style property.
 	 */
 	public static final String PROP_DATA_POINT_DRAWING_STYLE = "data_point_drawing_style";
+	
+	/**
+	 * The ID for the y-axis scaling property.
+	 */
+	public static final String PROP_Y_AXIS_SCALING = "y_axis_scaling";
 
 	/**
 	 * The display options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
@@ -130,6 +135,13 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	private static final String[] DRAWING_STYLE_OPTIONS = new String[] {
 		"Single pixel", "Small plus sign", "Small square", "Diamond"
+	};
+	
+	/**
+	 * The options for the axis scaling property.
+	 */
+	private static final String[] AXIS_SCALING_OPTIONS = new String[] {
+		"Linear", "Logarithmic"
 	};
 
 	/**
@@ -193,6 +205,9 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_DATA_POINT_DRAWING_STYLE, new ArrayOptionProperty(
 				"Data point drawing style", WidgetPropertyCategory.Display, 
 				DRAWING_STYLE_OPTIONS, 2));
+		addProperty(PROP_Y_AXIS_SCALING, new ArrayOptionProperty(
+				"Y-axis scaling", WidgetPropertyCategory.Display,
+				AXIS_SCALING_OPTIONS, 0));
 	}
 
 	/**

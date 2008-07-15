@@ -219,7 +219,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	/**
 	 * The y-axis data mapping.
 	 */
-	private Axis _yAxis = new Axis(0.0, 0.0, 0);
+	private IAxis _yAxis = new LogarithmicAxis(0.0, 0.0, 0);
 	
 	/**
 	 * Standard constructor.
@@ -984,17 +984,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				tc.setMaximumValue(_max);
 				tc.setMaximumTickCount(_yAxisMaxTickmarks);
 				
-				double value = tc.getSmallestTick();
-				double distance = tc.getTickDistance();
-				
-				while (value <= _max) {
+				List<Tick> ticks = tc.calculateTicks();
+				for (Tick tick : ticks) {
 					if (index >= _posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);
 					}
-					int y = valueToYPos(value);
+					int y = valueToYPos(tick.value());
 					this.setConstraint(_posScaleMarkers.get(index), new Rectangle(0, y, width, TEXTHEIGHT));
-					this.refreshScaleMarker(_posScaleMarkers.get(index), value, _showValues);
-					value += distance;
+					this.refreshScaleMarker(_posScaleMarkers.get(index), tick.value(), _showValues);
 					index++;
 				}
 				this.removeScaleMarkers(index, _posScaleMarkers);
@@ -1429,6 +1426,25 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	public void setDataPointDrawingStyle(final int style) {
 		_plotFigure.setDataPointDrawingStyle(style);
+		refreshConstraints();
+	}
+
+	/**
+	 * Sets the y-axis scaling of this waveform figure.
+	 * 
+	 * @param scaling
+	 *            the new scaling. 0 = linear, 1 = logarithmic.
+	 */
+	public void setYAxisScaling(final int scaling) {
+		switch (scaling) {
+		case 0:
+		default:
+			_yAxis = new LinearAxis(_min, _max, _plotBounds.height);
+			break;
+		case 1:
+			_yAxis = new LogarithmicAxis(_min, _max, _plotBounds.height);
+			break;
+		}
 		refreshConstraints();
 	}
 }

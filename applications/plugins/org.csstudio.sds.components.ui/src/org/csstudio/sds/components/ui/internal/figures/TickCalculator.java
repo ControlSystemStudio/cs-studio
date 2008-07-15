@@ -21,6 +21,10 @@
  */
  package org.csstudio.sds.components.ui.internal.figures;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 
 /**
  * <p>Calculates where the tickmarks on an axis should be placed. Ticks are
@@ -101,19 +105,23 @@ class TickCalculator {
 	}
 	
 	/**
-	 * Returns the smallest data value at which a tickmark should be placed.
-	 * @return the smallest data value at which a tickmark should be placed.
+	 * Calculates and returns the major ticks.
+	 * 
+	 * @return the major ticks.
 	 */
-	public double getSmallestTick() {
-		return _smallestTick;
-	}
-
-	/**
-	 * Returns the distance at which tickmarks should be placed.
-	 * @return the distance at which tickmarks should be placed.
-	 */
-	public double getTickDistance() {
-		return _tickDistance;
+	public List<Tick> calculateTicks() {
+		List<Tick> result = new ArrayList<Tick>();
+		recalculate();
+		if (_tickDistance == 0.0 || _min > _max || _maxTickCount < 2) {
+			return result;
+		}
+		double value = _smallestTick;
+		while (value <= _max) {
+			Tick tick = new Tick(TickType.MAJOR, value);
+			result.add(tick);
+			value += _tickDistance;
+		}
+		return result;
 	}
 
 	/**

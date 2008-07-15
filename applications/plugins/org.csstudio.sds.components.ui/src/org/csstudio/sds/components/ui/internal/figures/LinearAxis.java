@@ -27,8 +27,8 @@ package org.csstudio.sds.components.ui.internal.figures;
  * 
  * @author Joerg Rathlev
  */
-final class Axis {
-	
+final class LinearAxis implements IAxis {
+
 	private double _dataLower;
 	private double _dataUpper;
 	private int _displaySize;
@@ -36,64 +36,58 @@ final class Axis {
 	/**
 	 * Creates a new axis.
 	 * 
-	 * @param dataLower the lower bound of the data range.
-	 * @param dataUpper the upper bound of the data range.
-	 * @param displaySize the size of the display.
+	 * @param dataLower
+	 *            the lower bound of the data range.
+	 * @param dataUpper
+	 *            the upper bound of the data range.
+	 * @param displaySize
+	 *            the size of the display.
 	 */
-	Axis(double dataLower, double dataUpper, int displaySize) {
+	LinearAxis(double dataLower, double dataUpper, int displaySize) {
 		if (dataLower > dataUpper) {
-			throw new IllegalArgumentException("Lower bound must be lower than upper bound");
+			throw new IllegalArgumentException(
+					"Lower bound must be lower than upper bound");
 		}
 		if (displaySize < 0) {
 			throw new IllegalArgumentException("Invalid display size");
 		}
-		
+
 		_dataLower = dataLower;
 		_dataUpper = dataUpper;
 		_displaySize = displaySize;
 	}
 
 	/**
-	 * Converts a data value to a display coordinate. Note that it is possible
-	 * for the returned value to fall outside the display coordinate range of
-	 * this axis if the data value is outside the range of data values for this
-	 * axis.
-	 * 
-	 * @param value the data value.
-	 * @return the display coordinate.
+	 * {@inheritDoc}
 	 */
 	public int valueToCoordinate(double value) {
 		double dataRange = _dataUpper - _dataLower;
 		double scaling = (_displaySize - 1) / dataRange;
-		
+
 		return ((int) Math.round((value - _dataLower) * scaling));
 	}
 
 	/**
-	 * Sets the data range to a new range.
-	 * 
-	 * @param lower the new lower bound of the data range.
-	 * @param upper the new upper bound of the data range.
+	 * {@inheritDoc}
 	 */
 	public void setDataRange(double lower, double upper) {
 		if (lower > upper) {
-			throw new IllegalArgumentException("Lower bound must be lower than upper bound");
+			throw new IllegalArgumentException(
+					"Lower bound must be lower than upper bound");
 		}
-		
+
 		_dataLower = lower;
 		_dataUpper = upper;
 	}
 
 	/**
-	 * Sets the display size to a new value.
-	 * 
-	 * @param size the new display size.
+	 * {@inheritDoc}
 	 */
 	public void setDisplaySize(int size) {
 		if (size < 0) {
 			throw new IllegalArgumentException("Invalid display size");
 		}
-		
+
 		_displaySize = size;
 	}
 

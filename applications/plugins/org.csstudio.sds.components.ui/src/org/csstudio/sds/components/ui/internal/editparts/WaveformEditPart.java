@@ -225,6 +225,16 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, drawingStyleHandler);
+		// y-axis scaling
+		IWidgetPropertyChangeHandler yAxisScalingHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue,
+					final IFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setYAxisScaling((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_SCALING, yAxisScalingHandler);
 		this.registerColorPropertyChangeHandlers();
 	}
 	

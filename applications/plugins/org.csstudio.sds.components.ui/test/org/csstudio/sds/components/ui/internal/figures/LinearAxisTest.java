@@ -31,11 +31,11 @@ import org.junit.Test;
  * 
  * @author Joerg Rathlev
  */
-public class AxisTest {
+public class LinearAxisTest {
 	
 	@Test
 	public void testSimpleMapping() {
-		Axis axis = new Axis(0.0, 9.0, 10);
+		LinearAxis axis = new LinearAxis(0.0, 9.0, 10);
 		assertEquals(0, axis.valueToCoordinate(0.0));
 		assertEquals(1, axis.valueToCoordinate(1.0));
 		assertEquals(9, axis.valueToCoordinate(9.0));
@@ -47,7 +47,7 @@ public class AxisTest {
 	
 	@Test
 	public void testRounding() throws Exception {
-		Axis axis = new Axis(0.0, 9.0, 10);
+		LinearAxis axis = new LinearAxis(0.0, 9.0, 10);
 		assertEquals(0, axis.valueToCoordinate(0.1));
 		assertEquals(0, axis.valueToCoordinate(0.49));
 		assertEquals(1, axis.valueToCoordinate(0.5));
@@ -63,7 +63,7 @@ public class AxisTest {
 	
 	@Test
 	public void testScaling() throws Exception {
-		Axis axis = new Axis(0.0, 1.0, 101);
+		LinearAxis axis = new LinearAxis(0.0, 1.0, 101);
 		assertEquals(0, axis.valueToCoordinate(0.0));
 		assertEquals(100, axis.valueToCoordinate(1.0));
 		assertEquals(50, axis.valueToCoordinate(0.5));
@@ -72,7 +72,7 @@ public class AxisTest {
 	
 	@Test
 	public void testSetDataRange() throws Exception {
-		Axis axis = new Axis(0.0, 9.0, 10);
+		LinearAxis axis = new LinearAxis(0.0, 9.0, 10);
 		assertEquals(0, axis.valueToCoordinate(0.0));
 		axis.setDataRange(-9.0, 9.0);
 		assertEquals(5, axis.valueToCoordinate(0.0));
@@ -80,7 +80,7 @@ public class AxisTest {
 	
 	@Test
 	public void testSetDisplaySize() throws Exception {
-		Axis axis = new Axis(0.0, 10.0, 10);
+		LinearAxis axis = new LinearAxis(0.0, 10.0, 10);
 		assertEquals(5, axis.valueToCoordinate(5.0));
 		axis.setDisplaySize(20);
 		assertEquals(10, axis.valueToCoordinate(5.0));
