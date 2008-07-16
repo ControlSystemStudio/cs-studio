@@ -114,15 +114,18 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				}
 
 				public void mouseDown(MouseEvent e) {
-					// int[] indices = filterConditionsTreeViewer.getSelection()
-					// .getSelectionIndices();
-					// List<FilterbedingungBean> list =
-					// beanClone.getConditions();
-					// for (int i = indices.length - 1; i >= 0; i--) {
-					// int j = indices[i];
-					// list.remove(j);
-					// }
-					// beanClone.setConditions(list);
+					 IStructuredSelection selection = (IStructuredSelection) filterConditionsTreeViewer.getSelection();
+					 Object element = selection.getFirstElement();
+					 if (element != null) {
+						 FilterbedingungBean bean2remove = (FilterbedingungBean) element;
+						 Object parent2 = filterTreeContentProvider.getParent(bean2remove);
+						 if (parent2 != null && parent2 instanceof JunctorConditionForFilterTreeBean) {
+							 JunctorConditionForFilterTreeBean junctorParent = (JunctorConditionForFilterTreeBean) parent2;
+							 junctorParent.removeOperand(bean2remove);
+							 filterConditionsTreeViewer.refresh();
+						 }
+						 
+					 }
 				}
 
 				public void mouseUp(MouseEvent e) {
@@ -258,11 +261,11 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 							if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
 								JunctorConditionForFilterTreeBean junctorFilterbedingungBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
 								junctorFilterbedingungBean.addOperand(bean);
-							} else {
-								targetBean.setFilterbedingungBean(bean);
+								result = true;
 							}
-							result = true;
 						}
+						
+						// FIXME does not select correctly if dropped on NotNode
 						filterConditionsTreeViewer.refresh();
 						if (result) {
 							filterConditionsTreeViewer.expandToLevel(bean, 0);
