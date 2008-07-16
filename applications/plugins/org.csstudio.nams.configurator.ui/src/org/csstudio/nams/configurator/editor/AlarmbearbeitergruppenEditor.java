@@ -15,6 +15,7 @@ import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -23,7 +24,6 @@ import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -57,9 +57,13 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class AlarmbearbeitergruppenEditor extends
 		AbstractEditor<AlarmbearbeiterGruppenBean> {
 
-	private static  final Image checkedImage = AbstractUIPlugin.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID, "icons/checked.gif").createImage();
-	private static final Image uncheckedImage = AbstractUIPlugin.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID, "icons/unchecked.gif").createImage();
-	
+	private static final Image checkedImage = AbstractUIPlugin
+			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
+					"icons/checked.gif").createImage();
+	private static final Image uncheckedImage = AbstractUIPlugin
+			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
+					"icons/unchecked.gif").createImage();
+
 	private final class IStructuredContentProviderImplementation extends
 			AbstractConfigurationBean<IStructuredContentProviderImplementation>
 			implements IStructuredContentProvider {
@@ -73,10 +77,8 @@ public class AlarmbearbeitergruppenEditor extends
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			System.out.println("Input changed");
 			List<User2GroupBean> oldList = (List<User2GroupBean>) oldInput;
 			List<User2GroupBean> newList = (List<User2GroupBean>) newInput;
-
 			if (oldList != null)
 				for (User2GroupBean item : oldList) {
 					removeDatabinding(item);
@@ -170,9 +172,14 @@ public class AlarmbearbeitergruppenEditor extends
 								configurationBeanService
 										.getRubrikNamesForType(RubrikTypeEnum.USER_GROUP));
 
-				_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true, configurationBeanService
-								.getRubrikNamesForType(RubrikTypeEnum.USER_GROUP));
-				
+				_rubrikComboEntryViewer = this
+						.createComboEntry(
+								main,
+								"Rubrik:",
+								true,
+								configurationBeanService
+										.getRubrikNamesForType(RubrikTypeEnum.USER_GROUP));
+
 				_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						_rubrikComboEntry);
@@ -203,7 +210,8 @@ public class AlarmbearbeitergruppenEditor extends
 						tabelleUndButtonsComp);
 
 				{
-					tableViewer = new TableViewer(tabelleUndButtonsComp, SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+					tableViewer = new TableViewer(tabelleUndButtonsComp,
+							SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
 					Table table = tableViewer.getTable();
 
 					TableViewerColumn nameColumn = new TableViewerColumn(
@@ -219,7 +227,8 @@ public class AlarmbearbeitergruppenEditor extends
 
 					TableViewerColumn hinweisColumn = new TableViewerColumn(
 							tableViewer, SWT.None);
-					hinweisColumn.setEditingSupport(new EditingSupport(tableViewer){
+					hinweisColumn.setEditingSupport(new EditingSupport(
+							tableViewer) {
 
 						@Override
 						protected boolean canEdit(Object element) {
@@ -238,9 +247,11 @@ public class AlarmbearbeitergruppenEditor extends
 
 						@Override
 						protected void setValue(Object element, Object value) {
-							((User2GroupBean) element).setActiveReason((String) value);
+							((User2GroupBean) element)
+									.setActiveReason((String) value);
 							tableViewer.refresh();
-						}});
+						}
+					});
 					column = hinweisColumn.getColumn();
 					column.setText("Hinweise vom Alarmbearbeiter");
 					column.setWidth(200);
@@ -264,7 +275,8 @@ public class AlarmbearbeitergruppenEditor extends
 
 						@Override
 						protected void setValue(Object element, Object value) {
-							((User2GroupBean) element).setActive((Boolean) value);
+							((User2GroupBean) element)
+									.setActive((Boolean) value);
 							tableViewer.refresh();
 						}
 
@@ -275,14 +287,14 @@ public class AlarmbearbeitergruppenEditor extends
 						public Image getColumnImage(Object element,
 								int columnIndex) {
 							if (columnIndex == 1)
-							if (element instanceof User2GroupBean) {
-								User2GroupBean displayedBean = (User2GroupBean) element;
-									if (displayedBean.isActive()){
+								if (element instanceof User2GroupBean) {
+									User2GroupBean displayedBean = (User2GroupBean) element;
+									if (displayedBean.isActive()) {
 										return checkedImage;
 									} else {
 										return uncheckedImage;
 									}
-							}
+								}
 							return null;
 						}
 
@@ -320,7 +332,6 @@ public class AlarmbearbeitergruppenEditor extends
 
 					});
 
-
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
 							tableViewer.getControl());
 
@@ -357,17 +368,19 @@ public class AlarmbearbeitergruppenEditor extends
 
 						Button upup = new Button(buttonsComp, SWT.PUSH);
 						upup.setText("UpUp");
-						upup.addMouseListener(new MouseListener(){
+						upup.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
 							}
 
 							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = beanClone.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
+								List<User2GroupBean> users = beanClone
+										.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer
+										.getSelection();
 								Object element = selection.getFirstElement();
 								users.remove(element);
-								users.add(0, (User2GroupBean)element);
+								users.add(0, (User2GroupBean) element);
 								beanClone.setUsers(users);
 								tableViewer.refresh();
 							}
@@ -377,72 +390,84 @@ public class AlarmbearbeitergruppenEditor extends
 						});
 						Button up = new Button(buttonsComp, SWT.PUSH);
 						up.setText("Up");
-						upup.addMouseListener(new MouseListener(){
+						upup.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
 							}
 
 							public void mouseDown(MouseEvent e) {
 								// TODO Auto-generated method stub
-								List<User2GroupBean> users = beanClone.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
-								int index = tableViewer.getTable().getSelectionIndex();
-								if (index > 0) index--;
+								List<User2GroupBean> users = beanClone
+										.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer
+										.getSelection();
+								int index = tableViewer.getTable()
+										.getSelectionIndex();
+								if (index > 0)
+									index--;
 								Object element = selection.getFirstElement();
 								users.remove(element);
-								users.add(index, (User2GroupBean)element);
+								users.add(index, (User2GroupBean) element);
 								beanClone.setUsers(users);
 								tableViewer.refresh();
 							}
 
 							public void mouseUp(MouseEvent e) {
 							}
-							
+
 						});
 						Button down = new Button(buttonsComp, SWT.PUSH);
 						down.setText("Down");
-						down.addMouseListener(new MouseListener(){
+						down.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
 							}
 
 							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = beanClone.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
-								int index = tableViewer.getTable().getSelectionIndex();
-								if (index < tableViewer.getTable().getSelectionIndex()) index++;
+								List<User2GroupBean> users = beanClone
+										.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer
+										.getSelection();
+								int index = tableViewer.getTable()
+										.getSelectionIndex();
+								if (index < tableViewer.getTable()
+										.getSelectionIndex())
+									index++;
 								Object element = selection.getFirstElement();
 								users.remove(element);
-								users.add(index, (User2GroupBean)element);
+								users.add(index, (User2GroupBean) element);
 								beanClone.setUsers(users);
 								tableViewer.refresh();
 							}
 
 							public void mouseUp(MouseEvent e) {
 							}
-							
+
 						});
 						Button downdown = new Button(buttonsComp, SWT.PUSH);
 						downdown.setText("DownDown");
-						downdown.addMouseListener(new MouseListener(){
+						downdown.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
 							}
 
 							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = beanClone.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
-								User2GroupBean element = (User2GroupBean) selection.getFirstElement();
+								List<User2GroupBean> users = beanClone
+										.getUsers();
+								IStructuredSelection selection = (IStructuredSelection) tableViewer
+										.getSelection();
+								User2GroupBean element = (User2GroupBean) selection
+										.getFirstElement();
 								users.remove(element);
-								users.add((User2GroupBean)element);
+								users.add((User2GroupBean) element);
 								beanClone.setUsers(users);
 								tableViewer.refresh();
-								
+
 							}
 
 							public void mouseUp(MouseEvent e) {
 							}
-							
+
 						});
 					}
 				}
@@ -475,8 +500,7 @@ public class AlarmbearbeitergruppenEditor extends
 									.getFirstElement();
 							List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.beanClone
 									.getUsers();
-							users.add(new User2GroupBean(bean,
-									AlarmbearbeitergruppenEditor.this.bean));
+							users.add(new User2GroupBean(bean));
 							AlarmbearbeitergruppenEditor.this.beanClone
 									.setUsers(users);
 						} catch (Throwable e) {
@@ -542,15 +566,11 @@ public class AlarmbearbeitergruppenEditor extends
 						IStatus status;
 						status = super.doAdd(observableList, element, index);
 						Display.getCurrent().asyncExec(new Runnable() {
-
 							public void run() {
-								// TODO Auto-generated method stub
 								tableViewer.setInput(beanClone.getUsers());
 
 							}
 						});
-						// new Asyn
-						// tableViewer.refresh();
 						return status;
 					}
 
@@ -558,7 +578,7 @@ public class AlarmbearbeitergruppenEditor extends
 					protected IStatus doRemove(IObservableList observableList,
 							int index) {
 						IStatus status = super.doRemove(observableList, index);
-						tableViewer.setInput(userContentProvider.getEntries());
+						tableViewer.setInput(beanClone.getUsers());
 						tableViewer.refresh();
 						return status;
 					}

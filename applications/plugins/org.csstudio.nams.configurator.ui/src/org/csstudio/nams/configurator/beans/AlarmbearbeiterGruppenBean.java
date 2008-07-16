@@ -151,6 +151,8 @@ public class AlarmbearbeiterGruppenBean extends
 
 	public void setUsers(List<User2GroupBean> users) {
 		List<User2GroupBean> oldValue = this.users;
+//		this.users.clear();
+//		this.users.addAll(users);
 		this.users = users;
 		pcs.firePropertyChange(PropertyNames.users.name(), oldValue, users);
 	}

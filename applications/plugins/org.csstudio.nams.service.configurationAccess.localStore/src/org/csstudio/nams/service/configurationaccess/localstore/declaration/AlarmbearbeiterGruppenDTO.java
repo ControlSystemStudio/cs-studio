@@ -253,7 +253,6 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
     public void alarmbearbeiterZuordnen(User2UserGroupDTO map) {
-    	System.out.println(map + " wurde " + this + " zugeordnet");
     	alarmbearbeiterDieserGruppe.add(map);
 	}
     public void setAlarmbearbeiter(List<User2UserGroupDTO> list){

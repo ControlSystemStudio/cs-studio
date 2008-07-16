@@ -276,7 +276,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	private User2GroupBean DTO2Bean(User2UserGroupDTO map, AlarmbearbeiterGruppenBean groupBean) {
 		AlarmbearbeiterBean userBean = alarmbearbeiterBeans.get(map.getUser2UserGroupPK().getIUserRef());
-		User2GroupBean result = new User2GroupBean(userBean, groupBean);
+		User2GroupBean result = new User2GroupBean(userBean);
 
 		result.setActive(map.isActive());
 		result.setLastChange(new Date(map.getLastchange()));
@@ -604,7 +604,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		List<User2UserGroupDTO> list = new LinkedList<User2UserGroupDTO>();
 		List<User2GroupBean> users = bean.getUsers();
 		for (User2GroupBean bean2 : users) {
-			User2UserGroupDTO mapDTO = getDTO4Bean(bean2);
+			User2UserGroupDTO mapDTO = getDTO4Bean(bean2, bean);
 			mapDTO.setActive(bean2.isActive());
 			mapDTO.setActiveReason(bean2.getActiveReason());
 			mapDTO.setLastchange(bean2.getLastChange().getTime());
@@ -626,12 +626,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
-	private User2UserGroupDTO getDTO4Bean(User2GroupBean bean2) {
+	private User2UserGroupDTO getDTO4Bean(User2GroupBean bean2, AlarmbearbeiterGruppenBean parentBean) {
 		User2UserGroupDTO map = null;
 		for (User2UserGroupDTO potentialdto : entireConfiguration
 				.getAllUser2UserGroupDTOs()) {
-			if (potentialdto.getUser2UserGroupPK().getIUserGroupRef() == bean2
-					.getGroupBean().getGroupID()
+			if (potentialdto.getUser2UserGroupPK().getIUserGroupRef() == parentBean.getGroupID()
 					&& potentialdto.getUser2UserGroupPK().getIUserRef() == bean2
 							.getUserBean().getUserID()) {
 				map = potentialdto;
@@ -640,7 +639,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (map == null) {
 			map = new User2UserGroupDTO();
 			User2UserGroupDTO_PK user2UserGroupDTO_PK = new User2UserGroupDTO_PK();
-			user2UserGroupDTO_PK.setIUserGroupRef(bean2.getGroupBean().getGroupID());
+			user2UserGroupDTO_PK.setIUserGroupRef(parentBean.getGroupID());
 			user2UserGroupDTO_PK.setIUserRef(bean2.getUserBean().getUserID());
 			map.setUser2UserGroupPK(user2UserGroupDTO_PK);
 		}

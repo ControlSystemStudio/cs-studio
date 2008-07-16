@@ -22,7 +22,6 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	// FIXME we shall not use Date
 	Date lastChange = new Date();
 	private final AlarmbearbeiterBean userBean;
-	private final AlarmbearbeiterGruppenBean groupBean;
 
 	// public enum PropertyNames {
 	// position, active, activeReason, lastChange
@@ -31,12 +30,9 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + (active ? 1231 : 1237);
+		int result = prime * 0 + (active ? 1231 : 1237);
 		result = prime * result
 				+ ((activeReason == null) ? 0 : activeReason.hashCode());
-		result = prime * result
-				+ ((groupBean == null) ? 0 : groupBean.hashCode());
 		result = prime * result
 				+ ((lastChange == null) ? 0 : lastChange.hashCode());
 		result = prime * result
@@ -48,8 +44,6 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		final User2GroupBean other = (User2GroupBean) obj;
@@ -59,11 +53,6 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 			if (other.activeReason != null)
 				return false;
 		} else if (!activeReason.equals(other.activeReason))
-			return false;
-		if (groupBean == null) {
-			if (other.groupBean != null)
-				return false;
-		} else if (!groupBean.equals(other.groupBean))
 			return false;
 		if (lastChange == null) {
 			if (other.lastChange != null)
@@ -78,16 +67,13 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 		return true;
 	}
 
-	public User2GroupBean(AlarmbearbeiterBean userBean,
-			AlarmbearbeiterGruppenBean groupBean) {
+	public User2GroupBean(AlarmbearbeiterBean userBean) {
 		this.userBean = userBean;
-		this.groupBean = groupBean;
 	}
 
 	@Override
 	protected void doUpdateState(User2GroupBean bean) {
 		userBean.updateState(bean.getUserBean());
-		groupBean.updateState(bean.getGroupBean());
 		setActive(bean.isActive());
 		setActiveReason(bean.getActiveReason());
 		setLastChange(bean.getLastChange());
@@ -142,9 +128,5 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 
 	public AlarmbearbeiterBean getUserBean() {
 		return userBean;
-	}
-
-	public AlarmbearbeiterGruppenBean getGroupBean() {
-		return groupBean;
 	}
 }
