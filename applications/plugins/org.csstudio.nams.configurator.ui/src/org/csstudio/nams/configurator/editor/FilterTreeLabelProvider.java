@@ -11,7 +11,6 @@ public class FilterTreeLabelProvider extends LabelProvider {
 		if (element instanceof IConfigurationBean) {
 			result = ((IConfigurationBean) element).getDisplayName();
 		}
-			
 		
 		return result;
 	}

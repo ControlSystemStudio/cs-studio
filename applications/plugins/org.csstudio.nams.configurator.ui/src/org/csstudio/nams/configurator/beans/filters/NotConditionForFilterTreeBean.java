@@ -4,7 +4,6 @@ import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 
 public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 
-	private int id;
 	private FilterbedingungBean bean;
 
 	public String getDisplayName() {
@@ -18,17 +17,19 @@ public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 		return result;
 	}
 
-	public int getID() {
-		return id;
+	@Override
+	public int compareTo(FilterbedingungBean o) {
+		if (o instanceof NotConditionForFilterTreeBean) {
+			return compareTo((NotConditionForFilterTreeBean) o); 
+		}
+		return -1;
 	}
-
-	public void setID(int id) {
-		this.id = id;
-	}
-
+	
 	public int compareTo(NotConditionForFilterTreeBean o) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (this == o){
+			return 0;
+		}
+		return -1;
 	}
 
 	@Override
@@ -43,5 +44,18 @@ public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 
 	public FilterbedingungBean getFilterbedingungBean() {
 		return bean;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((bean == null) ? 0 : bean.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return this == obj;
 	}
 }

@@ -10,7 +10,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
  * XXX REname to Operator
  */
 public enum JunctorConditionType {
-	OR, AND, 
+	AND, OR, 
 	
 	/**
 	 * @deprecated NOT is NOT supported any more!!

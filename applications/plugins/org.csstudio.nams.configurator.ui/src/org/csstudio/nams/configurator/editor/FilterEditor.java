@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
@@ -145,9 +146,12 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		public void run() {
 			JunctorConditionForFilterTreeBean node = new JunctorConditionForFilterTreeBean();
 			node.setJunctorConditionType(type);
-			bean.addOperand(node);
-			filterConditionsTreeViewer.expandToLevel(node, 0);
+			boolean added = bean.addOperand(node);
 			filterConditionsTreeViewer.refresh();
+			if (added) {
+				filterConditionsTreeViewer.expandToLevel(node, 0);
+				filterConditionsTreeViewer.setSelection(new StructuredSelection(node));
+			}
 		}
 
 		public void selectionChanged(SelectionChangedEvent event) {
@@ -186,9 +190,11 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		public void run() {
 			JunctorConditionForFilterTreeBean parent = (JunctorConditionForFilterTreeBean) filterTreeContentProvider
 					.getParent(bean);
+			FilterbedingungBean newBean = null;
 			if (parent != null) {
 				if (not) {
 					NotConditionForFilterTreeBean notBean = new NotConditionForFilterTreeBean();
+					newBean = notBean;
 					parent.removeOperand(bean);
 					notBean.setFilterbedingungBean(bean);
 					parent.addOperand(notBean);
@@ -197,12 +203,17 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) bean;
 					FilterbedingungBean filterbedingungBean = notBean
 							.getFilterbedingungBean();
+					newBean = filterbedingungBean;
 					parent.addOperand(filterbedingungBean);
 				}
 			}
 
 			filterConditionsTreeViewer.refresh();
-			filterConditionsTreeViewer.expandToLevel(not, 0);
+			if (newBean != null){
+				filterConditionsTreeViewer.expandToLevel(newBean, 0);
+				filterConditionsTreeViewer.setSelection(new StructuredSelection(newBean));
+			}
+			
 		}
 
 		public void selectionChanged(SelectionChangedEvent event) {
@@ -253,6 +264,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 							result = true;
 						}
 						filterConditionsTreeViewer.refresh();
+						if (result) {
+							filterConditionsTreeViewer.expandToLevel(bean, 0);
+							filterConditionsTreeViewer.setSelection(new StructuredSelection(bean));
+						}
 						return result;
 					}
 
