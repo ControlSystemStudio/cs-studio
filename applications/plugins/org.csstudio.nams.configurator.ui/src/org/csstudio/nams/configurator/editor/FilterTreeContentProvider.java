@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,19 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 
 	private JunctorConditionForFilterTreeBean[] results;
 
+	/**
+	 * Gives the content of the root-and condition.
+	 */
+	public List<FilterbedingungBean> getContentsOfRootANDCondition() {
+		List<FilterbedingungBean> result = new LinkedList<FilterbedingungBean>();
+		
+		if( results != null ) {
+			result.addAll( results[0].getOperands() );
+		}
+		
+		return result;
+	}
+	
 	public Object[] getChildren(Object parentElement) {
 		FilterbedingungBean[] result = new FilterbedingungBean[0];
 		if (parentElement instanceof JunctorConditionForFilterTreeBean) {

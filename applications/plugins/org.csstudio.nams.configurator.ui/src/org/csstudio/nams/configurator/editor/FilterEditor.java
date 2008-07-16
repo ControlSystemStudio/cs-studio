@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.part.EditorPart;
 
 public class FilterEditor extends AbstractEditor<FilterBean> {
 
@@ -129,6 +130,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						 if (junctorParent != null) {
 							 junctorParent.removeOperand(bean2remove);
 							 filterConditionsTreeViewer.refresh();
+							 updateBeanAndFireEvent();
 						 }
 					 }
 				}
@@ -141,6 +143,12 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		initDataBinding();
 	}
 
+	protected void updateBeanAndFireEvent()
+	{
+		beanClone.setConditions(filterTreeContentProvider.getContentsOfRootANDCondition());
+		FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
+	}
+	
 	private class NewJunctorAction extends Action implements
 			ISelectionChangedListener {
 		private JunctorConditionForFilterTreeBean selectedBean;
@@ -159,6 +167,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			if (added) {
 				filterConditionsTreeViewer.expandToLevel(node, 0);
 				filterConditionsTreeViewer.setSelection(new StructuredSelection(node));
+				updateBeanAndFireEvent();
 			}
 		}
 
@@ -219,6 +228,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					newBean = filterbedingungBean;
 					junction.addOperand(filterbedingungBean);
 				}
+				updateBeanAndFireEvent();
 			}
 
 			filterConditionsTreeViewer.refresh();
@@ -278,6 +288,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						if (result) {
 							filterConditionsTreeViewer.expandToLevel(bean, 0);
 							filterConditionsTreeViewer.setSelection(new StructuredSelection(bean));
+							updateBeanAndFireEvent();
 						}
 						return result;
 					}

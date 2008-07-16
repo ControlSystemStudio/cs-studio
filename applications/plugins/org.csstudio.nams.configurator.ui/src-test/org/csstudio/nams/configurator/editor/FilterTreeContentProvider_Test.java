@@ -87,8 +87,19 @@ public class FilterTreeContentProvider_Test extends TestCase {
 		assertNull(provider.getParent(stringVergleichImOderLinkeSeite));
 		assertNull(provider.getParent(stringVergleichImOderRechteSeite1));
 		
+		// Keine root-nodes vorhanden
+		assertNotNull(provider.getContentsOfRootANDCondition());
+		assertEquals(0, provider.getContentsOfRootANDCondition().size());
+		
 		// Der TreeInput geht hier erstmal rein...
 		Object[] thingsToBeShown = provider.getElements(rootListAsEditorInputAND);
+		
+		// 2 root nodes
+		List<FilterbedingungBean> contentsOfRootANDCondition = provider.getContentsOfRootANDCondition();
+		assertNotNull(provider.getContentsOfRootANDCondition());
+		assertEquals(2, contentsOfRootANDCondition.size());
+		assertSame(oder, contentsOfRootANDCondition.get(0));
+		assertSame(stringVergleichAusserhalb, contentsOfRootANDCondition.get(1));
 		
 		// Testen das die folgenden Aufrufe nix zerstören
 		testMethodsThatShouldDoNothing();
@@ -136,6 +147,13 @@ public class FilterTreeContentProvider_Test extends TestCase {
 		assertEquals(treeRootBean, provider.getParent(oder));
 		assertEquals(oder, provider.getParent(stringVergleichImOderLinkeSeite));
 		assertEquals(oder, provider.getParent(notImOderRechteSeite));
+		
+		// auch zum schluss 2 root nodes
+		contentsOfRootANDCondition = provider.getContentsOfRootANDCondition();
+		assertNotNull(provider.getContentsOfRootANDCondition());
+		assertEquals(2, contentsOfRootANDCondition.size());
+		assertSame(oder, contentsOfRootANDCondition.get(0));
+		assertSame(stringVergleichAusserhalb, contentsOfRootANDCondition.get(1));
 		
 		// Robust?? Ungueltige Zugriffe
 		Object somethingInvalid = new Object();
