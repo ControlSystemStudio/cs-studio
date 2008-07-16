@@ -43,21 +43,21 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 
 		if (hasChildren(potentialParent)) {
 			FilterbedingungBean[] children = (FilterbedingungBean[]) getChildren(potentialParent);
-			for (FilterbedingungBean filterbedingungBean : children) {
-				if (filterbedingungBean == element) {
+			for (FilterbedingungBean child : children) {
+				if (child == element) {
 					if (potentialParent instanceof NotConditionForFilterTreeBean) {
 						NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) potentialParent;
 						return not.getFilterbedingungBean();
 					}
 					return potentialParent;
 				}
-				if (filterbedingungBean instanceof NotConditionForFilterTreeBean) {
-					NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) filterbedingungBean;
+				if (child instanceof NotConditionForFilterTreeBean) {
+					NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) child;
 					if (not.getFilterbedingungBean() == element) {
 						return potentialParent;
 					}
 				}
-				Object result = rekursiv(filterbedingungBean, element);
+				Object result = rekursiv(child, element);
 				if (result != null) {
 					return result;
 				}
