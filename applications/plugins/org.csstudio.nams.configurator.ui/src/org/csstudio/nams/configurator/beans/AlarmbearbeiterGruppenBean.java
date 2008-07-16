@@ -47,10 +47,10 @@ public class AlarmbearbeiterGruppenBean extends
 	}
 
 	public void setMinGroupMember(short minGroupMember) {
-		short oldValue = getMinGroupMember();
+		short oldValue = minGroupMember;
 		this.minGroupMember = minGroupMember;
 		pcs.firePropertyChange(PropertyNames.minGroupMember.name(), oldValue,
-				getMinGroupMember());
+				minGroupMember);
 	}
 
 	public int getTimeOutSec() {
@@ -58,10 +58,10 @@ public class AlarmbearbeiterGruppenBean extends
 	}
 
 	public void setTimeOutSec(int timeOutSec) {
-		int oldValue = getTimeOutSec();
+		int oldValue = this.timeOutSec;
 		this.timeOutSec = timeOutSec;
 		pcs.firePropertyChange(PropertyNames.timeOutSec.name(), oldValue,
-				getTimeOutSec());
+				timeOutSec);
 	}
 
 	public boolean isActive() {

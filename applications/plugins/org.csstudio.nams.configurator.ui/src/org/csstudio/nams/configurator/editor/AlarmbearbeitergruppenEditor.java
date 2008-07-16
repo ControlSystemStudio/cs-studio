@@ -13,10 +13,12 @@ import org.csstudio.nams.configurator.beans.User2GroupBean;
 import org.csstudio.nams.configurator.composite.TableColumnResizeAdapter;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateListStrategy;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -41,7 +43,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -51,6 +52,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -491,7 +493,7 @@ public class AlarmbearbeitergruppenEditor extends
 							}
 						});
 					}
-					
+
 				}
 			}
 		}
@@ -567,9 +569,6 @@ public class AlarmbearbeitergruppenEditor extends
 		IObservableList usersListObservable = BeansObservables.observeList(
 				context.getValidationRealm(), this.beanClone,
 				AlarmbearbeiterGruppenBean.PropertyNames.users.name());
-		// IObservableValue activeMembersTextObservable = BeansObservables
-		// .observeValue(this.beanClone,
-		// AlarmbearbeiterGruppenBean.PropertyNames.minGroupMember.name());
 
 		IObservableValue activeCheckboxObservable = BeansObservables
 				.observeValue(this.beanClone,
@@ -612,10 +611,31 @@ public class AlarmbearbeitergruppenEditor extends
 				nameTextObservable, null, null);
 
 		context.bindValue(SWTObservables.observeText(aktiveMitglieder,
-				SWT.Modify), aktiveMitgliederTextObservable, null, null);
+				SWT.Modify), aktiveMitgliederTextObservable,
+				new UpdateValueStrategy() {
+
+					@Override
+					public IStatus validateAfterGet(Object value) {
+							if (!isValidDigit((String) value)) {
+								aktiveMitglieder.setText("0");
+								return Status.CANCEL_STATUS;
+							}
+						return super.validateAfterGet(value);
+					}
+				}, null);
 
 		context.bindValue(SWTObservables.observeText(wartezeit, SWT.Modify),
-				warteZeitTextObservable, null, null);
+				warteZeitTextObservable, new UpdateValueStrategy() {
+
+					@Override
+					public IStatus validateAfterGet(Object value) {
+							if (!isValidDigit((String) value)) {
+								wartezeit.setText("0");
+								return Status.CANCEL_STATUS;
+							}
+						return super.validateAfterGet(value);
+					}
+				}, null);
 
 		context.bindValue(SWTObservables.observeSelection(activeButton),
 				activeCheckboxObservable, null, null);
@@ -629,5 +649,4 @@ public class AlarmbearbeitergruppenEditor extends
 	public void setFocus() {
 		name.setFocus();
 	}
-
 }

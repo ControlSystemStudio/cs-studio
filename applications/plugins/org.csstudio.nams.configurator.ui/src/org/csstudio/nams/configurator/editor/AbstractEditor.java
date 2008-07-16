@@ -285,4 +285,14 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	public void onBeanUpdate(IConfigurationBean bean) {
 	}
+	
+	protected boolean isValidDigit(String value) {
+		char[] charArray = value.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			if (!Character.isDigit(charArray[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
