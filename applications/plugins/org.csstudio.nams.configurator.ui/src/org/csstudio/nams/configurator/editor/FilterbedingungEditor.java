@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.editor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
@@ -22,7 +21,6 @@ import org.csstudio.nams.configurator.beans.filters.TimeBasedFilterConditionBean
 import org.csstudio.nams.configurator.editor.updatevaluestrategies.MessageKeyToModelStrategy;
 import org.csstudio.nams.configurator.editor.updatevaluestrategies.StringRegelOperatorToGuiStrategy;
 import org.csstudio.nams.configurator.editor.updatevaluestrategies.StringRegelOperatorToModelStrategy;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -32,28 +30,25 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -65,7 +60,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 	public enum SupportedFilterTypes {
-		JUNCTOR_CONDITION("Junctor Conditions", JunctorConditionBean.class), STRING_CONDITION(
+		JUNCTOR_CONDITION("Or Condition", JunctorConditionBean.class), STRING_CONDITION(
 				"String Condition", StringFilterConditionBean.class), STRING_ARRAY_CONDITION(
 				"StringArray Condition", StringArrayFilterConditionBean.class), PV_CONDITION(
 				"PV Condition", PVFilterConditionBean.class), TIMEBASED_CONDITION(
@@ -121,9 +116,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private StackLayout filterLayout;
 	private Composite[] stackComposites;
 
-	private Text junctorFirstFilterText;
-	private Combo junctorTypeCombo;
-	private Text junctorSecondFilterText;
+//	private Text junctorFirstFilterText;
+//	private Combo junctorTypeCombo;
+//	private Text junctorSecondFilterText;
 
 	private Combo stringOperatorCombo;
 	private Text stringCompareValueText;
@@ -209,23 +204,34 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		filterSpecificComposite.setLayout(filterLayout);
 
 		stackComposites = new Composite[5];
+
 		// ConjunctionFilterComposite
+		Text junctorFirstFilterText;
+		Text junctorSecondFilterText;
 		stackComposites[0] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[0].setLayout(new GridLayout(NUM_COLUMNS, false));
+		new Label(stackComposites[0], SWT.NONE);
+		Label label = new Label(stackComposites[0], SWT.LEFT | SWT.WRAP);
+		label
+				.setText("Dieses Filterbedingung  existiert nur aus Gründen der\n" +
+						"Abwärtskompatibilität, bitte realisieren Sie das\n" +
+						"gewünschte Verhalten über die neuen Funktionen des Filters");
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		junctorFirstFilterText = createTextEntry(stackComposites[0],
 				"Filtercondition", false);
-		junctorTypeComboViewer = createComboEntry(stackComposites[0],
-				"Junktor", false, array2StringArray(JunctorConditionType
-						.values()));
-		junctorTypeComboViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						checkJunktionType();
-					}
-				});
-		junctorTypeCombo = junctorTypeComboViewer.getCombo();
+		// junctorTypeComboViewer = createComboEntry(stackComposites[0],
+		// "Junktor", false, array2StringArray(JunctorConditionType
+		// .values()));
+		// junctorTypeComboViewer
+		// .addSelectionChangedListener(new ISelectionChangedListener() {
+		// public void selectionChanged(SelectionChangedEvent event) {
+		// checkJunktionType();
+		// }
+		// });
+		// junctorTypeCombo = junctorTypeComboViewer.getCombo();
 		junctorSecondFilterText = createTextEntry(stackComposites[0],
 				"Filtercondition", false);
+
 		// StringFilterComposite
 		stackComposites[1] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
@@ -273,8 +279,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 
 			public void mouseDown(MouseEvent e) {
-				arrayCompareValueList.add(arrayNewCompareValueText
-						.getText());
+				arrayCompareValueList.add(arrayNewCompareValueText.getText());
 			}
 
 			public void mouseUp(MouseEvent e) {
@@ -346,11 +351,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		timeStopCompareText = createTextEntry(stackComposites[4],
 				"Stop CompareValue", true);
 
-		LinkedList<String> types = new LinkedList<String>();
-		for (JunctorConditionType type : JunctorConditionType.values()) {
-			types.add(type.toString());
-		}
-		junctorTypeCombo.setItems(types.toArray(new String[types.size()]));
+//		LinkedList<String> types = new LinkedList<String>();
+//		for (JunctorConditionType type : JunctorConditionType.values()) {
+//			types.add(type.toString());
+//		}
+//		junctorTypeCombo.setItems(types.toArray(new String[types.size()]));
 
 		FilterConditionAddOnBean filterSpecificBean = (FilterConditionAddOnBean) bean
 				.getFilterSpecificBean();
@@ -370,35 +375,38 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		initDataBinding();
 		initDND();
 		listener.handleEvent(null); // zur initialisierung
-		checkJunktionType();
+//		checkJunktionType();
 	}
 
-	private void checkJunktionType() {
-		String typeString = (String) ((StructuredSelection) junctorTypeComboViewer
-				.getSelection()).getFirstElement();
-		try {
-			JunctorConditionType type = JunctorConditionType
-					.valueOf(typeString);
-			junctorSecondFilterText
-					.setVisible(type != JunctorConditionType.NOT);
-		} catch (Exception e) {
-
-		}
-	}
+//	private void checkJunktionType() {
+//		String typeString = (String) ((StructuredSelection) junctorTypeComboViewer
+//				.getSelection()).getFirstElement();
+//		try {
+//			JunctorConditionType type = JunctorConditionType
+//					.valueOf(typeString);
+//			junctorSecondFilterText
+//					.setVisible(type != JunctorConditionType.NOT);
+//		} catch (Exception e) {
+//
+//		}
+//	}
 
 	private void initDND() {
-		DropTarget target1 = new DropTarget(junctorFirstFilterText,
-				DND.DROP_LINK);
-		DropTarget target2 = new DropTarget(junctorSecondFilterText,
-				DND.DROP_LINK);
-
-		target1.setTransfer(new Transfer[] { LocalSelectionTransfer
-				.getTransfer() });
-		target2.setTransfer(new Transfer[] { LocalSelectionTransfer
-				.getTransfer() });
-
-		target1.addDropListener(new TextDropTarget(junctorFirstFilterText, true));
-		target2.addDropListener(new TextDropTarget(junctorSecondFilterText, false));
+//		DropTarget target1 = new DropTarget(junctorFirstFilterText,
+//				DND.DROP_LINK);
+//		DropTarget target2 = new DropTarget(junctorSecondFilterText,
+//				DND.DROP_LINK);
+//
+//		target1.setTransfer(new Transfer[] { LocalSelectionTransfer
+//				.getTransfer() });
+//		target2.setTransfer(new Transfer[] { LocalSelectionTransfer
+//				.getTransfer() });
+//
+//		target1
+//				.addDropListener(new TextDropTarget(junctorFirstFilterText,
+//						true));
+//		target2.addDropListener(new TextDropTarget(junctorSecondFilterText,
+//				false));
 	}
 
 	class TextDropTarget extends DropTargetAdapter {
@@ -427,7 +435,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						.getTransfer().getSelection();
 				FilterbedingungBean bean = (FilterbedingungBean) selection
 						.getFirstElement();
-				JunctorConditionBean junctorBean = (JunctorConditionBean) specificBeans.get(SupportedFilterTypes.JUNCTOR_CONDITION);
+				JunctorConditionBean junctorBean = (JunctorConditionBean) specificBeans
+						.get(SupportedFilterTypes.JUNCTOR_CONDITION);
 				if (first) {
 					junctorBean.setFirstCondition(bean);
 				} else {
@@ -567,7 +576,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 					@Override
 					public Object convert(Object value) {
-						return TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM == value ? true : false;
+						return TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM == value ? true
+								: false;
 					}
 
 				});
@@ -652,54 +662,54 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	}
 
 	private void initJunctorAddOnBeanDataBinding(DataBindingContext context) {
-//		IObservableValue firstConditionTextObservable = BeansObservables
-//				.observeValue(specificBeans
-//						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
-//						JunctorConditionBean.PropertyNames.firstCondition
-//								.name());
-//
-//		IObservableValue secondConditionTextObservable = BeansObservables
-//				.observeValue(specificBeans
-//						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
-//						JunctorConditionBean.PropertyNames.secondCondition
-//								.name());
+		// IObservableValue firstConditionTextObservable = BeansObservables
+		// .observeValue(specificBeans
+		// .get(SupportedFilterTypes.JUNCTOR_CONDITION),
+		// JunctorConditionBean.PropertyNames.firstCondition
+		// .name());
+		//
+		// IObservableValue secondConditionTextObservable = BeansObservables
+		// .observeValue(specificBeans
+		// .get(SupportedFilterTypes.JUNCTOR_CONDITION),
+		// JunctorConditionBean.PropertyNames.secondCondition
+		// .name());
 
-		IObservableValue stringJunctorObservable = BeansObservables
-				.observeValue(specificBeans
-						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
-						JunctorConditionBean.PropertyNames.junctor.name());
+//		IObservableValue stringJunctorObservable = BeansObservables
+//				.observeValue(specificBeans
+//						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
+//						JunctorConditionBean.PropertyNames.junctor.name());
 
 		// bind observables
-		context.bindValue(SWTObservables.observeSelection(junctorTypeCombo),
-				stringJunctorObservable, new UpdateValueStrategy() {
-					@Override
-					public Object convert(Object value) {
-						return JunctorConditionType.valueOf((String) value);
-					}
-				}, new UpdateValueStrategy() {
-					@Override
-					public Object convert(Object value) {
-						return ((JunctorConditionType) value).name();
-					}
-				});
+//		context.bindValue(SWTObservables.observeSelection(junctorTypeCombo),
+//				stringJunctorObservable, new UpdateValueStrategy() {
+//					@Override
+//					public Object convert(Object value) {
+//						return JunctorConditionType.valueOf((String) value);
+//					}
+//				}, new UpdateValueStrategy() {
+//					@Override
+//					public Object convert(Object value) {
+//						return ((JunctorConditionType) value).name();
+//					}
+//				});
 
-//		context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
-//				SWT.Modify), firstConditionTextObservable, 
-//				new UpdateValueStrategy() {
-//					@Override
-//					public Object convert(Object value) {
-//						return junctorFirstFilterText.getData();
-//					}
-//				}, null);
-//
-//		context.bindValue(SWTObservables.observeText(junctorSecondFilterText,
-//				SWT.Modify), secondConditionTextObservable,
-//				new UpdateValueStrategy() {
-//					@Override
-//					public Object convert(Object value) {
-//						return junctorSecondFilterText.getData();
-//					}
-//			}, null);
+		// context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
+		// SWT.Modify), firstConditionTextObservable,
+		// new UpdateValueStrategy() {
+		// @Override
+		// public Object convert(Object value) {
+		// return junctorFirstFilterText.getData();
+		// }
+		// }, null);
+		//
+		// context.bindValue(SWTObservables.observeText(junctorSecondFilterText,
+		// SWT.Modify), secondConditionTextObservable,
+		// new UpdateValueStrategy() {
+		// @Override
+		// public Object convert(Object value) {
+		// return junctorSecondFilterText.getData();
+		// }
+		// }, null);
 
 	}
 

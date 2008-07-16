@@ -247,10 +247,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			if (element instanceof FilterbedingungBean) {
 				selectedBean = (FilterbedingungBean) element;
 				if (!(element instanceof NotConditionForFilterTreeBean)) {
-					setText("NOT");
+					setText("NOT hinzufügen");
 					not = true;
 				} else {
-					setText("NOT");
+					setText("NOT entfernen");
 					not = false;
 				}
 			}
