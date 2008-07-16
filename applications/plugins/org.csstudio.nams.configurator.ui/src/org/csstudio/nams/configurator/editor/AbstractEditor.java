@@ -193,7 +193,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	protected Button createButtonEntry(Composite parent, String labeltext,
 			boolean editable) {
-		new Composite(parent, SWT.NONE);
 		Button buttonWidget = new Button(parent, SWT.PUSH);
 		buttonWidget.setText(labeltext);
 		buttonWidget.setEnabled(editable);
