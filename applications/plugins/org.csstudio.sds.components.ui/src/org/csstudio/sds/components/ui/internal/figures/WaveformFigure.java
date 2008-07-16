@@ -207,11 +207,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
-	 * The maximum number of tickmarks to show on the y-axis.
-	 */
-	private int _yAxisMaxTickmarks = 10;
-	
-	/**
 	 * The maximum number of tickmarks to show on the x-axis.
 	 */
 	private int _xAxisMaxTickmarks = 10;
@@ -219,7 +214,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	/**
 	 * The y-axis data mapping.
 	 */
-	private IAxis _yAxis = new LogarithmicAxis(0.0, 0.0, 0);
+	private IAxis _yAxis = new LinearAxis(0.0, 0.0, 0);
 	
 	/**
 	 * Standard constructor.
@@ -325,7 +320,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			}
 			this.setConstraint(_yAxisScale, new Rectangle(0, 0,
 					verticalScaleWidth, _plotBounds.height+TEXTHEIGHT));
-			_yAxisScale.setIncrement((_max-_min)/_yAxisMaxTickmarks);
+			_yAxisScale.refreshConstraints();
 		} else {
 			this.setConstraint(_yAxisScale, DEFAULT_CONSTRAINT);
 		}
@@ -351,7 +346,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			this.setConstraint(_yAxisGridLines, new Rectangle(
 					verticalScaleWidth, 0, _plotBounds.width, _plotBounds.height+TEXTHEIGHT));
 			_yAxisGridLines.setWideness(_plotBounds.width);
-			_yAxisGridLines.setIncrement((_max-_min)/_yAxisMaxTickmarks);
 		} else {
 			this.setConstraint(_yAxisGridLines, DEFAULT_CONSTRAINT);
 		}
@@ -595,16 +589,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 	
 	/**
-	 * Sets the count of sections on the y-axis.
-	 * @param ySectionCount
-	 * 			The count of sections on the y-axis
-	 */
-	public void setYSectionCount(final int ySectionCount) {
-		_yAxisMaxTickmarks = ySectionCount;
-		this.refreshConstraints();
-	}
-	
-	/**
 	 * Sets the count of sections on the x-axis.
 	 * @param xSectionCount
 	 * 			The count of sections on the x-axis
@@ -634,7 +618,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private int valueToYPos(final double value) {
 		// the data values are mapped to [0, height-1]
 		int plotHeight = _plotBounds.height - 1;
-
+		
 		// the axis calculates the distance from the lower bound of the data
 		// range, but for the y coordinate, we need the distance from the top
 		// of the plot, so we subtract the returned value from plotHeight.
@@ -817,8 +801,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			PointList result = new PointList();
 			for (int i = 0; i < _data.length ; i++) {
 				int x = (int) Math.round(xDist * i);
-				int y = valueToYPos(_data[i]);
-				result.addPoint(new Point(bounds.x + x, bounds.y + y));
+				if (_yAxis.isLegalValue(_data[i])) {
+					int y = valueToYPos(_data[i]);
+					result.addPoint(new Point(bounds.x + x, bounds.y + y));
+				}
 			}
 			return result;
 		}
@@ -979,12 +965,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					width = TEXTWIDTH + _wideness;
 				}
 				
-				TickCalculator tc = new TickCalculator();
-				tc.setMinimumValue(_min);
-				tc.setMaximumValue(_max);
-				tc.setMaximumTickCount(_yAxisMaxTickmarks);
-				
-				List<Tick> ticks = tc.calculateTicks();
+				int distance = TEXTHEIGHT * 3;
+				List<Tick> ticks = _yAxis.calculateTicks(distance, 3);
 				for (Tick tick : ticks) {
 					if (index >= _posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);

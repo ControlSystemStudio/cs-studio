@@ -52,7 +52,6 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setAutoScale(model.getAutoscale());
 		waveform.setShowScale(model.getShowScale());
 		waveform.setXSectionCount(model.getXSectionCount());
-		waveform.setYSectionCount(model.getYSectionCount());
 		waveform.setShowValues(model.getShowValues());
 		waveform.setShowGridLines(model.getShowLedgerLines());
 		waveform.setGridLinesColor(model.getLedgerLineColor());
@@ -63,6 +62,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
 		waveform.setGraphColor(model.getGraphColor());
 		waveform.setTransparent(model.getTransparent());
+		waveform.setYAxisScaling(model.getYAxisScaling());
 		return waveform;
 	}
 
@@ -148,17 +148,6 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_SHOW_SCALE, scaleHandler);
-		// y-axis section count
-		IWidgetPropertyChangeHandler ySectionHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
-				figure.setYSectionCount((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_MAX_TICKMARKS, ySectionHandler);
 		// x-axis section count
 		IWidgetPropertyChangeHandler xSectionHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

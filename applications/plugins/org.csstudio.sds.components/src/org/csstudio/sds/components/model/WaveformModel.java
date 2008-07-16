@@ -100,11 +100,6 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public static final String PROP_GRID_LINE_COLOR = "ledger_lines_color"; //$NON-NLS-1$
 	
 	/**
-	 * Property ID for the maximum number of tickmarks to show on the y-axis.
-	 */
-	public static final String PROP_Y_AXIS_MAX_TICKMARKS = "y_axis_max_tickmarks"; //$NON-NLS-1$
-	
-	/**
 	 * Property ID for the maximum number of tickmarks to show on the x-axis.
 	 */
 	public static final String PROP_X_AXIS_MAX_TICKMARKS = "x_axis_max_tickmarks"; //$NON-NLS-1$
@@ -194,8 +189,6 @@ public final class WaveformModel extends AbstractWidgetModel {
 				"Automatic Scaling", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_SHOW_VALUES, new BooleanProperty(
 				"Show values", WidgetPropertyCategory.Display,false));
-		addProperty(PROP_Y_AXIS_MAX_TICKMARKS, new IntegerProperty(
-				"Y-axis max. number of tickmarks",WidgetPropertyCategory.Display,10));
 		addProperty(PROP_X_AXIS_MAX_TICKMARKS, new IntegerProperty(
 				"X-axis max. number of tickmarks",WidgetPropertyCategory.Display,10));
 		addProperty(PROP_GRAPH_LINE_WIDTH, new IntegerProperty(
@@ -330,16 +323,6 @@ public final class WaveformModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Returns the count of sections on the y-axis.
-	 * @return int 
-	 * 				The count of sections on the y-axis
-	 */
-	public int getYSectionCount() {
-		return (Integer) getProperty(PROP_Y_AXIS_MAX_TICKMARKS)
-				.getPropertyValue();
-	}
-	
-	/**
 	 * Returns the count of sections on the x-axis.
 	 * @return int 
 	 * 				The count of sections on the x-axis
@@ -366,6 +349,15 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	public int getDataPointDrawingStyle() {
 		return (Integer) getProperty(PROP_DATA_POINT_DRAWING_STYLE).getPropertyValue();
+	}
+
+	/**
+	 * Returns the setting of the y-axis scaling property.
+	 * 
+	 * @return the y-axis scaling.
+	 */
+	public int getYAxisScaling() {
+		return getProperty(PROP_Y_AXIS_SCALING).getPropertyValue();
 	}
 
 }

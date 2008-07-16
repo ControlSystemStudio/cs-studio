@@ -22,6 +22,8 @@
 
 package org.csstudio.sds.components.ui.internal.figures;
 
+import java.util.List;
+
 /**
  * Maps data values to display coordinates.
  * 
@@ -29,8 +31,19 @@ package org.csstudio.sds.components.ui.internal.figures;
  */
 final class LinearAxis implements IAxis {
 
+	/**
+	 * The lower bound of the data range of this axis.
+	 */
 	private double _dataLower;
+	
+	/**
+	 * The upper bound of the data range of this axis.
+	 */
 	private double _dataUpper;
+	
+	/**
+	 * The size of this axis in display units. 
+	 */
 	private int _displaySize;
 
 	/**
@@ -43,11 +56,8 @@ final class LinearAxis implements IAxis {
 	 * @param displaySize
 	 *            the size of the display.
 	 */
-	LinearAxis(double dataLower, double dataUpper, int displaySize) {
-		if (dataLower > dataUpper) {
-			throw new IllegalArgumentException(
-					"Lower bound must be lower than upper bound");
-		}
+	LinearAxis(final double dataLower, final double dataUpper,
+			final int displaySize) {
 		if (displaySize < 0) {
 			throw new IllegalArgumentException("Invalid display size");
 		}
@@ -60,22 +70,51 @@ final class LinearAxis implements IAxis {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int valueToCoordinate(double value) {
+	public int valueToCoordinate(final double value) {
 		double dataRange = _dataUpper - _dataLower;
 		double scaling = (_displaySize - 1) / dataRange;
 
-		return ((int) Math.round((value - _dataLower) * scaling));
+		long intermediate = Math.round((value - _dataLower) * scaling);
+		// constrain the value to an integer value
+		return intermediate > Integer.MAX_VALUE ? Integer.MAX_VALUE
+				: (intermediate < Integer.MIN_VALUE ? Integer.MIN_VALUE
+						: (int) intermediate);
+	}
+	
+	/**
+	 * Checks whether the specified value is a legal value for this axis. For
+	 * a linear axis, all values except NaN are legal.
+	 * 
+	 * @param value
+	 *            the data value to check.
+	 * @return <code>true</code> if the value is legal, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean isLegalValue(final double value) {
+		// Note: cannot use == or != operator here because NaN != NaN.
+		return !Double.isNaN(value);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Tick> calculateTicks(final int minMajorDistance,
+			final int minMinorDistance) {
+		
+		// TODO: calculate minor tickmarks. TickCalculator calculates only
+		// major tickmarks.
+		
+		TickCalculator calc = new TickCalculator();
+		calc.setMinimumValue(_dataLower);
+		calc.setMaximumValue(_dataUpper);
+		calc.setMaximumTickCount(_displaySize / minMajorDistance);
+		return calc.calculateTicks();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDataRange(double lower, double upper) {
-		if (lower > upper) {
-			throw new IllegalArgumentException(
-					"Lower bound must be lower than upper bound");
-		}
-
+	public void setDataRange(final double lower, final double upper) {
 		_dataLower = lower;
 		_dataUpper = upper;
 	}
@@ -83,7 +122,7 @@ final class LinearAxis implements IAxis {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDisplaySize(int size) {
+	public void setDisplaySize(final int size) {
 		if (size < 0) {
 			throw new IllegalArgumentException("Invalid display size");
 		}
