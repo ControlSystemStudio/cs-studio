@@ -119,11 +119,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * The minimum data value set in this waveform's properties.
 	 */
 	private double _propertyMin = 0;
-
-	/**
-	 * The zero level (the Y position of the value zero).
-	 */
-	private int _zeroLevel = 0;
 	
 	/**
 	 * The transparent state of the background.
@@ -143,9 +138,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private int _showScale = 0;
 
 	/**
-	 * The wideness of the Scale.
+	 * The size of an axis with ticks in pixels. For a horizontal axis, this is
+	 * the height of the axis; for a vertical axis, this is its width.
 	 */
-	private int _scaleWideness = 10;
+	private static final int AXIS_SIZE = 10;
 
 	/**
 	 * The axes for which grid lines are drawn.
@@ -284,17 +280,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	public void setData(final double[] data) {
 		 _data = data;
-
-//		 int count = 100;
-//		 int amplitude = 75;
-//		 int verschiebung = 0;
-//		 double[] result = new double[count];
-//		 double value = (Math.PI*2)/count;
-//		 for (int i=0;i<count;i++) {
-//			 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
-//		 }
-//		 _data = result;
-		 
 		this.refreshConstraints();
 		repaint();
 	}
@@ -307,62 +292,91 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			return;
 		}
 		
-		_plotBounds = this.calculatePlotBounds();
+		/*
+		 * TODO: the structure of the calculations below is too complicated.
+		 * The problem is that the bounds of the innermost sub-figure, the plot,
+		 * are calculated first instead of last.
+		 */
+		
+		_plotBounds = calculatePlotBounds();
 		_yAxis.setDisplaySize(_plotBounds.height);
-		this.adjustAutoscale();
-		_zeroLevel = this.valueToYPos(0.0);
-		int verticalScaleWidth = 0;
+		adjustAutoscale();
 		
-		if (_showScale == SHOW_Y_AXIS || _showScale == SHOW_BOTH) {
-			verticalScaleWidth = _scaleWideness;
-			if (_showValues) {
-				verticalScaleWidth = verticalScaleWidth + TEXTWIDTH;
-			}
-			this.setConstraint(_yAxisScale, new Rectangle(0, 0,
-					verticalScaleWidth, _plotBounds.height+TEXTHEIGHT));
-			_yAxisScale.refreshConstraints();
-		} else {
-			this.setConstraint(_yAxisScale, DEFAULT_CONSTRAINT);
-		}
+		setConstraint(_yAxisScale, calculateYAxisBounds());
+		_yAxisScale.refreshConstraints();
 		
-		if (_showScale == SHOW_X_AXIS || _showScale == SHOW_BOTH) {
-			if (_showScale == SHOW_X_AXIS) {
-				this.setConstraint(_xAxisScale, new Rectangle(
-						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1,
-						_plotBounds.width, _scaleWideness+TEXTHEIGHT));	
-			} else {
-				this.setConstraint(_xAxisScale, new Rectangle(
-						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1 + TEXTHEIGHT/2,
-						_plotBounds.width, _scaleWideness+TEXTHEIGHT));
-			}
+		setConstraint(_xAxisScale, calculateXAxisBounds());	
+		double d = _data.length / Math.max(1, _xAxisMaxTickmarks);
+		_xAxisScale.setIncrement(d);
 
-			double d = ((double)_data.length)/Math.max(1, _xAxisMaxTickmarks);
-			_xAxisScale.setIncrement(d);
-		} else {
-			this.setConstraint(_xAxisScale, DEFAULT_CONSTRAINT);
-		}
-
-		if (_showGridLines == SHOW_Y_AXIS	|| _showGridLines == SHOW_BOTH) {
-			this.setConstraint(_yAxisGridLines, new Rectangle(
-					verticalScaleWidth, 0, _plotBounds.width, _plotBounds.height+TEXTHEIGHT));
-			_yAxisGridLines.setWideness(_plotBounds.width);
-		} else {
-			this.setConstraint(_yAxisGridLines, DEFAULT_CONSTRAINT);
-		}
+		setConstraint(_yAxisGridLines, calculateYAxisGridBounds());
+		_yAxisGridLines.setWideness(_plotBounds.width);
 		
-		if (_showGridLines == SHOW_X_AXIS || _showGridLines == SHOW_BOTH) {
-			this.setConstraint(_xAxisGridLines, new Rectangle(
-					verticalScaleWidth, TEXTHEIGHT/2, _plotBounds.width, _plotBounds.height));
-			double d = ((double)_data.length)/_xAxisMaxTickmarks;
-			_xAxisGridLines.setIncrement(d);
-			_xAxisGridLines.setWideness(_plotBounds.height);
-		} else {
-			this.setConstraint(_xAxisGridLines, DEFAULT_CONSTRAINT);
-		}
+		setConstraint(_xAxisGridLines, calculateXAxisGridBounds());
+		_xAxisGridLines.setIncrement(d);
+		_xAxisGridLines.setWideness(_plotBounds.height);
 		
-		this.setConstraint(_plotFigure, _plotBounds);
+		setConstraint(_plotFigure, _plotBounds);
 
-		this.setToolTip(this.getToolTipFigure());
+		setToolTip(getToolTipFigure());
+	}
+
+	/**
+	 * Calculates the bounds of the gridlines figure for the x-axis.
+	 * 
+	 * @return the bounds of the gridlines figure for the x-axis.
+	 */
+	private Rectangle calculateXAxisGridBounds() {
+		if (showXAxisGrid()) {
+			return _plotBounds.getCopy();
+		} else {
+			return DEFAULT_CONSTRAINT;
+		}
+	}
+
+	/**
+	 * Calculates the bounds of the gridlines figure for the y-axis.
+	 * 
+	 * @return the bounds of the gridlines figure for the y-axis.
+	 */
+	private Rectangle calculateYAxisGridBounds() {
+		if (showYAxisGrid()) {
+			// The vertical position and size is the same as that of the y-axis;
+			// the horizontal position and size is that of the plot area.
+			Rectangle yAxis = calculateYAxisBounds();
+			return new Rectangle(
+				_plotBounds.x, yAxis.y, _plotBounds.width, yAxis.height);
+		} else {
+			return DEFAULT_CONSTRAINT;
+		}
+	}
+
+	/**
+	 * Calculates the bounds of the x-axis.
+	 * 
+	 * @return the bounds of the x-axis.
+	 */
+	private Rectangle calculateXAxisBounds() {
+		if (showXAxis()) {
+			return new Rectangle(_plotBounds.x, _plotBounds.bottom(),
+					_plotBounds.width, xAxisHeight());
+		} else {
+			return DEFAULT_CONSTRAINT;
+		}
+	}
+
+	/**
+	 * Calculates the bounds of the y-axis.
+	 * 
+	 * @return the bounds of the y-axis.
+	 */
+	private Rectangle calculateYAxisBounds() {
+		if (showYAxis()) {
+			return new Rectangle(0, _plotBounds.y - (TEXTHEIGHT / 2),
+				yAxisWidth(), _plotBounds.height + TEXTHEIGHT);
+		} else {
+			return DEFAULT_CONSTRAINT;
+		}
 	}
 
 	/**
@@ -373,15 +387,97 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private Rectangle calculatePlotBounds() {
 		Rectangle figureBounds = this.getBounds().getCopy();
 		figureBounds.crop(this.getInsets());
-		if (_showScale == SHOW_Y_AXIS || _showScale == SHOW_BOTH) {
-			int width = _scaleWideness;
-			if (_showValues) {
-				width += TEXTWIDTH;
-			}
-			return new Rectangle(width, TEXTHEIGHT/2, figureBounds.width
-					- width, figureBounds.height-TEXTHEIGHT);
+		int x = yAxisWidth();
+		int y = plotMarginTop();
+		int width = figureBounds.width - x;
+		int height = figureBounds.height - y - plotMarginBottom();
+		return new Rectangle(x, y, width, height);
+	}
+	
+	/**
+	 * Calculates the margin between the bottom of this figure and the bottom
+	 * of the contained plot figure.
+	 * 
+	 * @return the margin.
+	 */
+	private int plotMarginBottom() {
+		return showXAxis() ? xAxisHeight() : (showYAxis() ? TEXTHEIGHT / 2 : 0);
+	}
+
+	/**
+	 * Calculates the margin between the top of this figure and the top of the
+	 * contained plot figure.
+	 * 
+	 * @return the margin.
+	 */
+	private int plotMarginTop() {
+		return showYAxis() ? TEXTHEIGHT / 2 : 0;
+	}
+
+	/**
+	 * Calculates the width of the y-axis.
+	 * 
+	 * @return the width of the y-axis in pixels.
+	 */
+	private int yAxisWidth() {
+		if (showYAxis()) {
+			return _showValues ? AXIS_SIZE + TEXTWIDTH : AXIS_SIZE;
+		} else {
+			return 0;
 		}
-		return new Rectangle(0, 0, figureBounds.width, figureBounds.height);
+	}
+
+	/**
+	 * Calculates the height of the x-axis.
+	 * 
+	 * @return the height of the x-axis in pixels.
+	 */
+	private int xAxisHeight() {
+		if (showXAxis()) {
+			return _showValues ? AXIS_SIZE + TEXTHEIGHT : AXIS_SIZE;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Checks whether the x-axis is displayed.
+	 * 
+	 * @return <code>true</code> if the x-axis is displayed,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean showXAxis() {
+		return (_showScale == SHOW_X_AXIS || _showScale == SHOW_BOTH);
+	}
+
+	/**
+	 * Checks whether the y-axis is displayed.
+	 * 
+	 * @return <code>true</code> if the y-axis is displayed,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean showYAxis() {
+		return (_showScale == SHOW_Y_AXIS || _showScale == SHOW_BOTH);
+	}
+
+	/**
+	 * Checks whether gridlines are displayed for the x-axis.
+	 * 
+	 * @return <code>true</code> if gridlines are displayed,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean showXAxisGrid() {
+		return (_showGridLines == SHOW_X_AXIS || _showGridLines == SHOW_BOTH);
+	}
+
+	/**
+	 * Checks whether gridlines are displayed for the y-axis.
+	 * 
+	 * @return <code>true</code> if gridlines are displayed,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean showYAxisGrid() {
+		return (_showGridLines == SHOW_Y_AXIS || _showGridLines == SHOW_BOTH);
 	}
 
 	/**
@@ -764,9 +860,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.drawLine(figureBounds.x, figureBounds.y, figureBounds.x,
 					figureBounds.y + figureBounds.height);
-			graphics.drawLine(figureBounds.x, figureBounds.y + _zeroLevel,
+			graphics.drawLine(figureBounds.x, figureBounds.y + valueToYPos(0),
 					figureBounds.x + figureBounds.width, figureBounds.y
-							+ _zeroLevel);
+							+ valueToYPos(0));
 			
 			// TODO: the points don't actually have to be recalculated everytime the plot
 			// is redrawn -- only if the data points have changed or if the size of the
