@@ -21,7 +21,7 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	String activeReason = "";
 	// FIXME we shall not use Date
 	Date lastChange = new Date();
-	private final AlarmbearbeiterBean userBean;
+	private AlarmbearbeiterBean userBean;
 
 	// public enum PropertyNames {
 	// position, active, activeReason, lastChange
@@ -70,10 +70,16 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	public User2GroupBean(AlarmbearbeiterBean userBean) {
 		this.userBean = userBean;
 	}
+	/**
+	 * Just for getClone()
+	 */
+	public User2GroupBean(){
+		
+	}
 
 	@Override
 	protected void doUpdateState(User2GroupBean bean) {
-		userBean.updateState(bean.getUserBean());
+		userBean = bean.getUserBean();
 		setActive(bean.isActive());
 		setActiveReason(bean.getActiveReason());
 		setLastChange(bean.getLastChange());

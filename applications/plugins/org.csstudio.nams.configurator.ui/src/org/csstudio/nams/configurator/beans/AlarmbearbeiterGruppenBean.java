@@ -129,7 +129,11 @@ public class AlarmbearbeiterGruppenBean extends
 		setMinGroupMember(bean.getMinGroupMember());
 		setName(bean.getName());
 		setTimeOutSec(bean.getTimeOutSec());
-		setUsers(bean.getUsers());
+		List<User2GroupBean> newList = new LinkedList<User2GroupBean>();
+		for (User2GroupBean mapBean : bean.getUsers()) {
+			newList.add(mapBean.getClone());
+		}
+		setUsers(newList);
 	}
 
 	public int getID() {

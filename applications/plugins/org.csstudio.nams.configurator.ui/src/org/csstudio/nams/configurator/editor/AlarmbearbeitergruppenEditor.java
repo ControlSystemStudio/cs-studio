@@ -9,6 +9,7 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.User2GroupBean;
+import org.csstudio.nams.configurator.composite.TableColumnResizeAdapter;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -52,6 +53,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class AlarmbearbeitergruppenEditor extends
@@ -83,19 +85,23 @@ public class AlarmbearbeitergruppenEditor extends
 				for (User2GroupBean item : oldList) {
 					removeDatabinding(item);
 				}
-			for (User2GroupBean item : newList) {
-				initDataBindingOnUser2GroupBean(item);
+
+			if (newList != null) {
+				for (User2GroupBean item : newList) {
+					initDataBindingOnUser2GroupBean(item);
+				}
 			}
 			entries = (List<User2GroupBean>) newInput;
 		}
 
 		private void initDataBindingOnUser2GroupBean(User2GroupBean item) {
-			// TODO Auto-generated method stub
-
+			item.addPropertyChangeListener(User2GroupBean.PropertyNames.active.name(), AlarmbearbeitergruppenEditor.this);
+			item.addPropertyChangeListener(User2GroupBean.PropertyNames.activeReason.name(), AlarmbearbeitergruppenEditor.this);
 		}
 
 		private void removeDatabinding(User2GroupBean item) {
-			// TODO Auto-generated method stub
+			item.removePropertyChangeListener(User2GroupBean.PropertyNames.active.name(), AlarmbearbeitergruppenEditor.this);
+			item.removePropertyChangeListener(User2GroupBean.PropertyNames.activeReason.name(), AlarmbearbeitergruppenEditor.this);
 
 		}
 
@@ -210,10 +216,15 @@ public class AlarmbearbeitergruppenEditor extends
 						tabelleUndButtonsComp);
 
 				{
-					tableViewer = new TableViewer(tabelleUndButtonsComp,
+					Composite tabellenComposite = new Composite(tabelleUndButtonsComp, SWT.NONE);
+					tabellenComposite.setLayout(new GridLayout(2, false));
+					GridDataFactory.fillDefaults().grab(true, true).applyTo(
+							tabellenComposite);
+					tableViewer = new TableViewer(tabellenComposite,
 							SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
 					Table table = tableViewer.getTable();
 
+					
 					TableViewerColumn nameColumn = new TableViewerColumn(
 							tableViewer, SWT.NONE);
 					TableColumn column = nameColumn.getColumn();
@@ -227,6 +238,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 					TableViewerColumn hinweisColumn = new TableViewerColumn(
 							tableViewer, SWT.None);
+					tabellenComposite.addControlListener(new TableColumnResizeAdapter(tabellenComposite, table, hinweisColumn.getColumn(), 300));
 					hinweisColumn.setEditingSupport(new EditingSupport(
 							tableViewer) {
 
@@ -237,7 +249,9 @@ public class AlarmbearbeitergruppenEditor extends
 
 						@Override
 						protected CellEditor getCellEditor(Object element) {
-							return new TextCellEditor();
+							TextCellEditor editor = new TextCellEditor(tableViewer.getTable());
+							((Text) editor.getControl()).setTextLimit(128);
+							return editor;
 						}
 
 						@Override
@@ -254,7 +268,7 @@ public class AlarmbearbeitergruppenEditor extends
 					});
 					column = hinweisColumn.getColumn();
 					column.setText("Hinweise vom Alarmbearbeiter");
-					column.setWidth(200);
+					column.setWidth(300);
 					EditingSupport editingSupport = new EditingSupport(
 							tableViewer) {
 
@@ -474,6 +488,7 @@ public class AlarmbearbeitergruppenEditor extends
 			}
 		}
 		initDataBinding();
+		
 	}
 
 	private void initDND() {
