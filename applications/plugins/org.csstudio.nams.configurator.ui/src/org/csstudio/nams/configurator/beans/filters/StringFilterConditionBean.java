@@ -6,6 +6,8 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class StringFilterConditionBean extends AbstractConfigurationBean<StringFilterConditionBean> implements FilterConditionAddOnBean{
 
+	
+	
 	private MessageKeyEnum keyValue;
 	private StringRegelOperator operator;
 	private String compValue;
@@ -100,6 +102,17 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 	}
 
 	public void setID(int id) {
+	}
+
+	public StringFilterConditionBean() {
+	}
+	
+	public StringFilterConditionBean(MessageKeyEnum keyValue,
+			StringRegelOperator operator, String compValue) {
+		super();
+		this.keyValue = keyValue;
+		this.operator = operator;
+		this.compValue = compValue;
 	}
 
 }
