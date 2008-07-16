@@ -2,6 +2,7 @@ package org.csstudio.nams.configurator.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -37,6 +38,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
@@ -256,7 +258,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		List<User2GroupBean> list = new LinkedList<User2GroupBean>();
 		Map<User2GroupBean, User2UserGroupDTO> beanDTOMap = new HashMap<User2GroupBean, User2UserGroupDTO>();
 		for (User2UserGroupDTO map : dto.gibZugehoerigeAlarmbearbeiter()) {
-			User2GroupBean bean2 = DTO2Bean(map);
+			User2GroupBean bean2 = DTO2Bean(map, bean);
 			list.add(bean2);
 			beanDTOMap.put(bean2, map);
 		}
@@ -272,18 +274,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return bean;
 	}
 
-	private User2GroupBean DTO2Bean(User2UserGroupDTO map) {
-		AlarmbearbeiterBean userBean = new AlarmbearbeiterBean();
-		userBean.setID(map.getUser2UserGroupPK().getIUserRef());
-		userBean = DTO2Bean(getDTO4Bean(userBean));
-		AlarmbearbeiterGruppenBean groupBean = new AlarmbearbeiterGruppenBean();
-		groupBean.setID(map.getUser2UserGroupPK().getIUserGroupRef());
-		groupBean = DTO2Bean(getDTO4Bean(groupBean));
+	private User2GroupBean DTO2Bean(User2UserGroupDTO map, AlarmbearbeiterGruppenBean groupBean) {
+		AlarmbearbeiterBean userBean = alarmbearbeiterBeans.get(map.getUser2UserGroupPK().getIUserRef());
 		User2GroupBean result = new User2GroupBean(userBean, groupBean);
 
 		result.setActive(map.isActive());
-		result.setLastChange(map.getLastchange());
+		result.setLastChange(new Date(map.getLastchange()));
 		result.setRubrikName("");
+		result.setActiveReason(map.getActiveReason());
 
 		return result;
 	}
@@ -604,8 +602,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				RubrikTypeEnum.USER_GROUP));
 
 		List<User2UserGroupDTO> list = new LinkedList<User2UserGroupDTO>();
-		for (User2GroupBean bean2 : bean.getUsers()) {
-			list.add(getDTO4Bean(bean2));
+		List<User2GroupBean> users = bean.getUsers();
+		for (User2GroupBean bean2 : users) {
+			User2UserGroupDTO mapDTO = getDTO4Bean(bean2);
+			mapDTO.setActive(bean2.isActive());
+			mapDTO.setActiveReason(bean2.getActiveReason());
+			mapDTO.setLastchange(bean2.getLastChange().getTime());
+			mapDTO.setPosition(users.indexOf(bean2));
+			list.add(mapDTO);
 		}
 		dto.setAlarmbearbeiter(list);
 
@@ -623,18 +627,24 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private User2UserGroupDTO getDTO4Bean(User2GroupBean bean2) {
-		User2UserGroupDTO user2UserGroupDTO = null;
+		User2UserGroupDTO map = null;
 		for (User2UserGroupDTO potentialdto : entireConfiguration
 				.getAllUser2UserGroupDTOs()) {
 			if (potentialdto.getUser2UserGroupPK().getIUserGroupRef() == bean2
 					.getGroupBean().getGroupID()
 					&& potentialdto.getUser2UserGroupPK().getIUserRef() == bean2
 							.getUserBean().getUserID()) {
-				user2UserGroupDTO = potentialdto;
-				break;
+				map = potentialdto;
 			}
 		}
-		return user2UserGroupDTO;
+		if (map == null) {
+			map = new User2UserGroupDTO();
+			User2UserGroupDTO_PK user2UserGroupDTO_PK = new User2UserGroupDTO_PK();
+			user2UserGroupDTO_PK.setIUserGroupRef(bean2.getGroupBean().getGroupID());
+			user2UserGroupDTO_PK.setIUserRef(bean2.getUserBean().getUserID());
+			map.setUser2UserGroupPK(user2UserGroupDTO_PK);
+		}
+		return map;
 	}
 
 	private AlarmtopicBean saveAlarmtopicBean(AlarmtopicBean bean) {

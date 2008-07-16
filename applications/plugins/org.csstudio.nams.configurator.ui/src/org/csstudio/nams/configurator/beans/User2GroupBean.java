@@ -20,7 +20,7 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	boolean active;
 	String activeReason = "";
 	// FIXME we shall not use Date
-	Date lastChange;
+	Date lastChange = new Date();
 	private final AlarmbearbeiterBean userBean;
 	private final AlarmbearbeiterGruppenBean groupBean;
 

@@ -217,11 +217,11 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			transaction = session.beginTransaction();
 			session.saveOrUpdate(dto);
-			
-			if( dto instanceof HasJoinedElements) {
-				((HasJoinedElements<?>)dto).storeJoinLinkData(session);
+
+			if (dto instanceof HasJoinedElements) {
+				((HasJoinedElements<?>) dto).storeJoinLinkData(session);
 			}
-			
+
 			transaction.commit();
 		} catch (Throwable t) {
 			if (transaction != null) {
@@ -239,13 +239,13 @@ class LocalStoreConfigurationServiceImpl implements
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			
-			if( dto instanceof HasJoinedElements) {
-				((HasJoinedElements<?>)dto).deleteJoinLinkData(session);
+
+			if (dto instanceof HasJoinedElements) {
+				((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
 			}
 
 			session.delete(dto);
-			
+
 			transaction.commit();
 		} catch (Throwable t) {
 			if (transaction != null) {
@@ -268,7 +268,8 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
-			AlarmbearbeiterGruppenDTO dto) throws InconsistentConfigurationException {
+			AlarmbearbeiterGruppenDTO dto)
+			throws InconsistentConfigurationException {
 		Serializable generatedID = null;
 		Transaction tx = session.beginTransaction();
 		try {
@@ -286,24 +287,10 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			// for all used FC
 			// get the mappingDTO, if no DTO exists, create one
-
-			for (User2UserGroupDTO condition : dto.gibZugehoerigeAlarmbearbeiter()) {
-				User2UserGroupDTO match = null;
-				for (User2UserGroupDTO filterConditionsToFilterDTO : relevantMappings) {
-					if (condition.getUser2UserGroupPK().equals(filterConditionsToFilterDTO.getUser2UserGroupPK()))
-							{
-						match = filterConditionsToFilterDTO;
-						break;
-					}
-				}
-				if (match == null) {
-					User2UserGroupDTO_PK newKey = new User2UserGroupDTO_PK();
-					newKey.setIUserGroupRef(dto.getUserGroupId());
-					newKey.setIUserRef(condition.getUser2UserGroupPK().getIUserRef());
-					match = new User2UserGroupDTO();
-					match.setUser2UserGroupPK(newKey);
-				}
-				usedMappings.add(match);
+			Set<User2UserGroupDTO> zugehoerigeAlarmbearbeiter = dto
+			.gibZugehoerigeAlarmbearbeiter();
+			for (User2UserGroupDTO condition : zugehoerigeAlarmbearbeiter) {
+				usedMappings.add(condition);
 			}
 			// save the used Mappings
 			for (User2UserGroupDTO map : usedMappings) {

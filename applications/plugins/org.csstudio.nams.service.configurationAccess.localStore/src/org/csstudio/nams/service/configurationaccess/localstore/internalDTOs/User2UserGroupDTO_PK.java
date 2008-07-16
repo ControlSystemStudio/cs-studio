@@ -9,10 +9,10 @@ import javax.persistence.Embeddable;
 public class User2UserGroupDTO_PK implements Serializable{
 	private static final long serialVersionUID = 5698295964009594216L;
 
-	@Column(name="iFilterConditionRef")
+	@Column(name="iUserGroupRef")
 	private int iUserGroupRef;
 	
-	@Column(name="iFilterRef", nullable=false)
+	@Column(name="iUserRef", nullable=false)
 	private int iUserRef;
 
 	public int getIUserGroupRef() {

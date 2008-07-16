@@ -1,41 +1,38 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Table;
-/**
-drop table AMS_UserGroup_User;
-create table AMS_UserGroup_User
-(
-	iUserGroupRef		NUMBER(11) NOT NULL,
-	iUserRef		NUMBER(11) NOT NULL,
-	iPos			NUMBER(11) NOT NULL,		 Benchrichtigungsreihenfolge 				
-	sActive			NUMBER(6),			 Gruppenzugeh�rigkeit aktiv?(0 - Inactive, 1 - Active) 
-	cActiveReason		VARCHAR2(128),			 Grund/Ursache der An/Abmeldung			
-	tTimeChange		NUMBER(14),			 Zeitstempel der letzten �nderung des Datensatzes	
-	PRIMARY KEY(iUserGroupRef,iUserRef)					
-);
-*/
+import javax.persistence.Transient;
 
+/**
+ * drop table AMS_UserGroup_User; create table AMS_UserGroup_User (
+ * iUserGroupRef NUMBER(11) NOT NULL, iUserRef NUMBER(11) NOT NULL, iPos
+ * NUMBER(11) NOT NULL, Benchrichtigungsreihenfolge sActive NUMBER(6),
+ * Gruppenzugeh�rigkeit aktiv?(0 - Inactive, 1 - Active) cActiveReason
+ * VARCHAR2(128), Grund/Ursache der An/Abmeldung tTimeChange NUMBER(14),
+ * Zeitstempel der letzten �nderung des Datensatzes PRIMARY
+ * KEY(iUserGroupRef,iUserRef) );
+ */
+@Entity
 @Table(name = "AMS_USERGROUP_USER")
 public class User2UserGroupDTO {
 
 	@EmbeddedId
 	private User2UserGroupDTO_PK user2UserGroupPK;
-	
+
 	@Column(name = "iPos")
 	private int position;
-	
+
 	@Column(name = "sActive")
 	private short active;
-	
+
 	@Column(name = "cActiveReason")
 	private String activeReason;
-	
+
 	@Column(name = "tTimeChange")
-	private Date lastchange;
+	private long lastchange;
 
 	@Override
 	public int hashCode() {
@@ -44,8 +41,7 @@ public class User2UserGroupDTO {
 		result = prime * result + active;
 		result = prime * result
 				+ ((activeReason == null) ? 0 : activeReason.hashCode());
-		result = prime * result
-				+ ((lastchange == null) ? 0 : lastchange.hashCode());
+		result = prime * result + (int) (lastchange ^ (lastchange >>> 32));
 		result = prime * result + position;
 		result = prime
 				* result
@@ -69,10 +65,7 @@ public class User2UserGroupDTO {
 				return false;
 		} else if (!activeReason.equals(other.activeReason))
 			return false;
-		if (lastchange == null) {
-			if (other.lastchange != null)
-				return false;
-		} else if (!lastchange.equals(other.lastchange))
+		if (lastchange != other.lastchange)
 			return false;
 		if (position != other.position)
 			return false;
@@ -116,20 +109,21 @@ public class User2UserGroupDTO {
 		this.activeReason = activeReason;
 	}
 
-	public Date getLastchange() {
-		return lastchange;
-	}
-
-	public void setLastchange(Date lastchange) {
-		this.lastchange = lastchange;
-	}
-
+	@Transient
 	public boolean isActive() {
 		return active == 0 ? false : true;
 	}
-	
-	public void setActive(boolean value){
+	@Transient
+	public void setActive(boolean value) {
 		active = value ? (short) 1 : (short) 0;
 	}
-	
+
+	public long getLastchange() {
+		return lastchange;
+	}
+
+	public void setLastchange(long lastchange) {
+		this.lastchange = lastchange;
+	}
+
 }

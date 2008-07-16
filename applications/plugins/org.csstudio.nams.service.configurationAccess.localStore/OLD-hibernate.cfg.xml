@@ -43,7 +43,7 @@
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterGruppenDTO"/>
-  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterGruppenZuAlarmbearbeiterDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO"/>
