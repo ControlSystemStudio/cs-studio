@@ -118,13 +118,18 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					 Object element = selection.getFirstElement();
 					 if (element != null) {
 						 FilterbedingungBean bean2remove = (FilterbedingungBean) element;
-						 Object parent2 = filterTreeContentProvider.getParent(bean2remove);
-						 if (parent2 != null && parent2 instanceof JunctorConditionForFilterTreeBean) {
-							 JunctorConditionForFilterTreeBean junctorParent = (JunctorConditionForFilterTreeBean) parent2;
+						 Object parent = filterTreeContentProvider.getParent(bean2remove);
+						 JunctorConditionForFilterTreeBean junctorParent = null;
+						 if (parent instanceof NotConditionForFilterTreeBean) {
+							 junctorParent = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent).getFilterbedingungBean();
+						 }
+						 if (parent instanceof JunctorConditionForFilterTreeBean) {
+							 junctorParent = (JunctorConditionForFilterTreeBean) parent;
+						 }
+						 if (junctorParent != null) {
 							 junctorParent.removeOperand(bean2remove);
 							 filterConditionsTreeViewer.refresh();
 						 }
-						 
 					 }
 				}
 
@@ -138,7 +143,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	private class NewJunctorAction extends Action implements
 			ISelectionChangedListener {
-		private JunctorConditionForFilterTreeBean bean;
+		private JunctorConditionForFilterTreeBean selectedBean;
 		private final JunctorConditionType type;
 
 		private NewJunctorAction(JunctorConditionType type) {
@@ -149,7 +154,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		public void run() {
 			JunctorConditionForFilterTreeBean node = new JunctorConditionForFilterTreeBean();
 			node.setJunctorConditionType(type);
-			boolean added = bean.addOperand(node);
+			boolean added = selectedBean.addOperand(node);
 			filterConditionsTreeViewer.refresh();
 			if (added) {
 				filterConditionsTreeViewer.expandToLevel(node, 0);
@@ -161,14 +166,14 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			IStructuredSelection selection = (IStructuredSelection) event
 					.getSelection();
 			Object element = selection.getFirstElement();
-			bean = null;
+			selectedBean = null;
 			if (element instanceof JunctorConditionForFilterTreeBean) {
-				bean = (JunctorConditionForFilterTreeBean) element;
+				selectedBean = (JunctorConditionForFilterTreeBean) element;
 				setEnabled(true);
 			} else if (element instanceof NotConditionForFilterTreeBean) {
 				NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) element;
 				if (notBean.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
-					bean = (JunctorConditionForFilterTreeBean) notBean.getFilterbedingungBean();
+					selectedBean = (JunctorConditionForFilterTreeBean) notBean.getFilterbedingungBean();
 					setEnabled(true);
 				} else {
 					setEnabled(false);
@@ -186,28 +191,33 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	private class NewNotAction extends Action implements
 			ISelectionChangedListener {
-		private FilterbedingungBean bean;
+		private FilterbedingungBean selectedBean;
 		private boolean not;
 
 		@Override
 		public void run() {
-			JunctorConditionForFilterTreeBean parent = (JunctorConditionForFilterTreeBean) filterTreeContentProvider
-					.getParent(bean);
+			FilterbedingungBean parent = (FilterbedingungBean) filterTreeContentProvider.getParent(selectedBean);
 			FilterbedingungBean newBean = null;
 			if (parent != null) {
+				JunctorConditionForFilterTreeBean junction = null;
+				if (parent instanceof NotConditionForFilterTreeBean) {
+					junction = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent).getFilterbedingungBean();
+				} else if (parent instanceof JunctorConditionForFilterTreeBean) {
+					junction = (JunctorConditionForFilterTreeBean) parent;
+				}
 				if (not) {
 					NotConditionForFilterTreeBean notBean = new NotConditionForFilterTreeBean();
 					newBean = notBean;
-					parent.removeOperand(bean);
-					notBean.setFilterbedingungBean(bean);
-					parent.addOperand(notBean);
+					junction.removeOperand(selectedBean);
+					notBean.setFilterbedingungBean(selectedBean);
+					junction.addOperand(notBean);
 				} else {
-					parent.removeOperand(bean);
-					NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) bean;
+					junction.removeOperand(selectedBean);
+					NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) selectedBean;
 					FilterbedingungBean filterbedingungBean = notBean
 							.getFilterbedingungBean();
 					newBean = filterbedingungBean;
-					parent.addOperand(filterbedingungBean);
+					junction.addOperand(filterbedingungBean);
 				}
 			}
 
@@ -225,7 +235,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			Object element = selection.getFirstElement();
 			setEnabled(true);
 			if (element instanceof FilterbedingungBean) {
-				bean = (FilterbedingungBean) element;
+				selectedBean = (FilterbedingungBean) element;
 				if (!(element instanceof NotConditionForFilterTreeBean)) {
 					setText("NOT");
 					not = true;
@@ -264,8 +274,6 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 								result = true;
 							}
 						}
-						
-						// FIXME does not select correctly if dropped on NotNode
 						filterConditionsTreeViewer.refresh();
 						if (result) {
 							filterConditionsTreeViewer.expandToLevel(bean, 0);

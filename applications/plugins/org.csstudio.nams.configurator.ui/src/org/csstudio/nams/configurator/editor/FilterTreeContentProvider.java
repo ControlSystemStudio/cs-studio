@@ -45,17 +45,7 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 			FilterbedingungBean[] children = (FilterbedingungBean[]) getChildren(potentialParent);
 			for (FilterbedingungBean child : children) {
 				if (child == element) {
-					if (potentialParent instanceof NotConditionForFilterTreeBean) {
-						NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) potentialParent;
-						return not.getFilterbedingungBean();
-					}
 					return potentialParent;
-				}
-				if (child instanceof NotConditionForFilterTreeBean) {
-					NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) child;
-					if (not.getFilterbedingungBean() == element) {
-						return potentialParent;
-					}
 				}
 				Object result = rekursiv(child, element);
 				if (result != null) {
@@ -96,12 +86,10 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 	}
 
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// TODO Auto-generated method stub
 
 	}
 

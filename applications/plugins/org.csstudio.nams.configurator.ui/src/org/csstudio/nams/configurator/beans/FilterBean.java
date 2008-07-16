@@ -122,6 +122,11 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		setFilterID(id);
 	}
 
+	/**
+	 * returns a list of an and combined {@link FilterbedingungBean} list.
+	 *  this is done for backwards compatibility
+	 * @return
+	 */
 	public List<FilterbedingungBean> getConditions() {
 		return new LinkedList<FilterbedingungBean>(this.conditions);
 	}
