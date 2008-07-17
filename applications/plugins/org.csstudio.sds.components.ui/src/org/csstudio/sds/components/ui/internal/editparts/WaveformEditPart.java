@@ -63,6 +63,9 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setGraphColor(model.getGraphColor());
 		waveform.setTransparent(model.getTransparent());
 		waveform.setYAxisScaling(model.getYAxisScaling());
+		waveform.setLabel(model.getLabel());
+		waveform.setXAxisLabel(model.getXAxisLabel());
+		waveform.setYAxisLabel(model.getYAxisLabel());
 		return waveform;
 	}
 
@@ -204,6 +207,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_BORDER_WIDTH, borderHandler);
 		setPropertyChangeHandler(BargraphModel.PROP_BORDER_STYLE, borderHandler);
+		
 		// data point drawing style
 		IWidgetPropertyChangeHandler drawingStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
@@ -214,6 +218,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, drawingStyleHandler);
+		
 		// y-axis scaling
 		IWidgetPropertyChangeHandler yAxisScalingHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
@@ -224,6 +229,40 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_SCALING, yAxisScalingHandler);
+		
+		// label
+		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue,
+					final IFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setLabel((String) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_LABEL, labelHandler);
+		
+		// x-axis label
+		IWidgetPropertyChangeHandler xAxisLabelHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue,
+					final IFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setXAxisLabel((String) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_X_AXIS_LABEL, xAxisLabelHandler);
+
+		// y-axis label
+		IWidgetPropertyChangeHandler yAxisLabelHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue,
+					final IFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setYAxisLabel((String) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_LABEL, yAxisLabelHandler);
+		
 		this.registerColorPropertyChangeHandlers();
 	}
 	

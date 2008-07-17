@@ -218,6 +218,16 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private Label _waveformLabel;
 	
 	/**
+	 * The x-axis label.
+	 */
+	private Label _xAxisLabel;
+	
+	/**
+	 * The y-axis label.
+	 */
+	private Label _yAxisLabel;
+	
+	/**
 	 * Standard constructor.
 	 */
 	public WaveformFigure() {
@@ -254,8 +264,22 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_plotFigure = new PlotFigure();
 		this.add(_plotFigure);
 		
-		_waveformLabel = new Label("Sample"); // TODO: property for text
+		_waveformLabel = new Label("Waveform"); // TODO: property for text
 		this.add(_waveformLabel);
+		_xAxisLabel = new Label("X-axis");
+		this.add(_xAxisLabel); // TODO: property for text
+		_yAxisLabel = new Label("Y-axis") {
+			@Override
+			protected void paintFigure(final Graphics graphics) {
+				// TODO: this is recommended in the Eclipse newsgroup to draw
+				// vertical text[1], but causes a NullPointerException[2].
+				// [1] http://dev.eclipse.org/newslists/news.eclipse.tools.gef/msg15609.html
+				// [2] http://dev.eclipse.org/mhonarc/newsLists/news.eclipse.tools.gef/msg20487.html
+//				graphics.rotate(90);
+				super.paintFigure(graphics);
+			}
+		};
+		this.add(_yAxisLabel); // TODO: property for text
 
 		// listen to figure movement events
 		addFigureListener(new FigureListener() {
@@ -303,15 +327,24 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		Rectangle figBounds = this.getBounds().getCopy();
 		figBounds.crop(this.getInsets());
 		
+		// These bounds are used for the placement of the sub-figures below.
+		// The bounds are cropped after the placement of each sub-figure and
+		// the next sub-figure will be placed in the remaining bounds.
 		Rectangle bounds = new Rectangle(0, 0, figBounds.width, figBounds.height);
 		
 		Rectangle labelBounds = calculateLabelBounds(bounds);
 		setConstraint(_waveformLabel, labelBounds);
 		
+		Rectangle xAxisLabelBounds = calculateXAxisLabelBounds(bounds);
+		setConstraint(_xAxisLabel, xAxisLabelBounds);
+		
 		Rectangle xAxisBounds = calculateXAxisBounds(bounds);
 		setConstraint(_xAxisScale, xAxisBounds);
 		double d = _data.length / Math.max(1, _xAxisMaxTickmarks);
 		_xAxisScale.setIncrement(d);
+		
+		Rectangle yAxisLabelBounds = calculateYAxisLabelBounds(bounds);
+		setConstraint(_yAxisLabel, yAxisLabelBounds);
 		
 		Rectangle yAxisBounds = calculateYAxisBounds(bounds);
 		setConstraint(_yAxisScale, yAxisBounds);
@@ -319,12 +352,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		
 		_plotBounds = calculatePlotBounds(bounds);
 		setConstraint(_plotFigure, _plotBounds);
-		_yAxis.setDisplaySize(_plotBounds.height);
-		adjustAutoscale();
 		
-		// Grid lines are located on top of the plot (within the same bounds)
+		// Grid lines are located on top of the plot (within the same bounds,
+		// but the y-axis grid needs to be adjusted for the text height at the
+		// top to align with the y-axis).
 		setConstraint(_yAxisGridLines,
-				showYAxisGrid() ? _plotBounds.getCopy() : ZERO_RECTANGLE);
+				showYAxisGrid() ?
+						_plotBounds.getCopy().expand(
+								new Insets(TEXTHEIGHT / 2, 0, 0 ,0))
+						: ZERO_RECTANGLE);
 		_yAxisGridLines.setWideness(_plotBounds.width);
 		setConstraint(_xAxisGridLines,
 				showXAxisGrid() ? _plotBounds.getCopy() : ZERO_RECTANGLE);
@@ -332,6 +368,50 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_xAxisGridLines.setWideness(_plotBounds.height);
 
 		setToolTip(getToolTipFigure());
+
+		// Update the axis (for mapping the data points to display coordinates)
+		_yAxis.setDisplaySize(_plotBounds.height);
+		adjustAutoscale();
+	}
+
+	/**
+	 * Calculates the bounds of the y-axis label.
+	 * 
+	 * @param bounds
+	 *            the bounds within which the label will be displayed. These
+	 *            bounds will be cropped to the remaining bounds.
+	 * @return the bounds of the label.
+	 */
+	private Rectangle calculateYAxisLabelBounds(final Rectangle bounds) {
+		if (isYAxisLabeled()) {
+			int width = yAxisLabelWidth();
+			Rectangle result = new Rectangle(bounds.x, bounds.y,
+					width, bounds.height);
+			bounds.crop(new Insets(0, width, 0, 0));
+			return result;
+		} else {
+			return ZERO_RECTANGLE;
+		}
+	}
+
+	/**
+	 * Calculates the bounds of the x-axis label.
+	 * 
+	 * @param bounds
+	 *            the bounds within which the label will be displayed. These
+	 *            bounds will be cropped to the remaining bounds.
+	 * @return the bounds of the label.
+	 */
+	private Rectangle calculateXAxisLabelBounds(final Rectangle bounds) {
+		if (isXAxisLabeled()) {
+			int height = TEXTHEIGHT;
+			Rectangle result = new Rectangle(bounds.x, bounds.bottom() - height,
+					bounds.width, height);
+			bounds.crop(new Insets(0, 0, height, 0));
+			return result;
+		} else {
+			return ZERO_RECTANGLE;
+		}
 	}
 
 	/**
@@ -366,13 +446,25 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private Rectangle calculateXAxisBounds(final Rectangle bounds) {
 		if (showXAxis()) {
 			int height = xAxisHeight();
-			Rectangle result = new Rectangle(bounds.x + yAxisWidth(),
-					bounds.bottom() - height, bounds.width, height);
+			Rectangle result = new Rectangle(
+					bounds.x + yAxisWidth() + yAxisLabelWidth(),
+					bounds.bottom() - height,
+					bounds.width - yAxisWidth() - yAxisLabelWidth(),
+					height);
 			bounds.crop(new Insets(0, 0, height, 0));
 			return result;
 		} else {
 			return ZERO_RECTANGLE;
 		}
+	}
+
+	/**
+	 * Calculates the width of the y-axis label.
+	 * 
+	 * @return the width of the y-axis label.
+	 */
+	private int yAxisLabelWidth() {
+		return isYAxisLabeled() ? TEXTWIDTH : 0;
 	}
 
 	/**
@@ -425,7 +517,27 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 *         <code>false</code> otherwise.
 	 */
 	private boolean isLabelled() {
-		return true; // TODO: configurable
+		return !"".equals(_waveformLabel.getText());
+	}
+
+	/**
+	 * Returns whether this figure has a label on its x-axis.
+	 * 
+	 * @return <code>true</code> if the x-axis is labeled, <code>false</code>
+	 *         otherwise.
+	 */
+	private boolean isXAxisLabeled() {
+		return showXAxis() && !"".equals(_xAxisLabel.getText());
+	}
+
+	/**
+	 * Returns whether this figure has a label on its y-axis.
+	 * 
+	 * @return <code>true</code> if the y-axis is labeled, <code>false</code>
+	 *         otherwise.
+	 */
+	private boolean isYAxisLabeled() {
+		return showYAxis() && !"".equals(_yAxisLabel.getText());
 	}
 
 	/**
@@ -1537,6 +1649,36 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			_yAxis = new LogarithmicAxis(_min, _max, _plotBounds.height);
 			break;
 		}
+		refreshConstraints();
+	}
+
+	/**
+	 * Sets the label.
+	 * 
+	 * @param label the label.
+	 */
+	public void setLabel(final String label) {
+		_waveformLabel.setText(label);
+		refreshConstraints();
+	}
+
+	/**
+	 * Sets the x-axis label.
+	 * 
+	 * @param axisLabel the label.
+	 */
+	public void setXAxisLabel(final String axisLabel) {
+		_xAxisLabel.setText(axisLabel);
+		refreshConstraints();
+	}
+
+	/**
+	 * Sets the y-axis label.
+	 * 
+	 * @param axisLabel the label.
+	 */
+	public void setYAxisLabel(final String axisLabel) {
+		_yAxisLabel.setText(axisLabel);
 		refreshConstraints();
 	}
 }

@@ -29,6 +29,7 @@ import org.csstudio.sds.model.properties.DoubleArrayProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.ArrayOptionProperty;
+import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -118,6 +119,21 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * The ID for the y-axis scaling property.
 	 */
 	public static final String PROP_Y_AXIS_SCALING = "y_axis_scaling";
+	
+	/**
+	 * The ID for the label property.
+	 */
+	public static final String PROP_LABEL = "label";
+	
+	/**
+	 * The ID for the x-axis label property.
+	 */
+	public static final String PROP_X_AXIS_LABEL = "x_axis_label";
+
+	/**
+	 * The ID for the y-axis label property.
+	 */
+	public static final String PROP_Y_AXIS_LABEL = "y_axis_label";
 
 	/**
 	 * The display options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
@@ -201,6 +217,12 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_Y_AXIS_SCALING, new ArrayOptionProperty(
 				"Y-axis scaling", WidgetPropertyCategory.Display,
 				AXIS_SCALING_OPTIONS, 0));
+		addProperty(PROP_LABEL, new StringProperty("Label",
+				WidgetPropertyCategory.Display, ""));
+		addProperty(PROP_X_AXIS_LABEL, new StringProperty("X-axis label",
+				WidgetPropertyCategory.Display, ""));
+		addProperty(PROP_Y_AXIS_LABEL, new StringProperty("Y-axis label",
+				WidgetPropertyCategory.Display, ""));
 	}
 
 	/**
@@ -358,6 +380,33 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	public int getYAxisScaling() {
 		return getProperty(PROP_Y_AXIS_SCALING).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the label.
+	 * 
+	 * @return the label.
+	 */
+	public String getLabel() {
+		return getProperty(PROP_LABEL).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the x-axis label.
+	 * 
+	 * @return the x-axis label.
+	 */
+	public String getXAxisLabel() {
+		return getProperty(PROP_X_AXIS_LABEL).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the y-axis label.
+	 * 
+	 * @return the y-axis label.
+	 */
+	public String getYAxisLabel() {
+		return getProperty(PROP_Y_AXIS_LABEL).getPropertyValue();
 	}
 
 }
