@@ -92,7 +92,7 @@ public abstract class FilterableBeanList {
 		}
 
 		{
-			table = new TableViewer(main, SWT.FULL_SELECTION | SWT.MULTI);
+			table = new TableViewer(main, SWT.FULL_SELECTION );
 			column = new TableColumn(table.getTable(), SWT.LEFT);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					table.getControl());

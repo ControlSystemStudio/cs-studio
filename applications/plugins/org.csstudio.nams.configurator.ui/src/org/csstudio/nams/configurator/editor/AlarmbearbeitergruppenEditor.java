@@ -52,7 +52,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -510,13 +509,28 @@ public class AlarmbearbeitergruppenEditor extends
 						try {
 							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
 									.getTransfer().getSelection();
-							if (selection.getFirstElement() instanceof AlarmbearbeiterBean) {
-								event.detail = DND.DROP_LINK;
+							if (selection.getFirstElement() instanceof AlarmbearbeiterBean && 
+									!containsAlarmbearbeiter((AlarmbearbeiterBean)selection.getFirstElement()) )
+									{
+									event.detail = DND.DROP_LINK;
+							} else {
+								event.detail = DND.DROP_NONE;
 							}
 						} catch (Throwable e) {
 						}
 					}
 
+					private boolean containsAlarmbearbeiter(AlarmbearbeiterBean newUser) {
+						List<User2GroupBean> users = beanClone.getUsers();
+						
+						for (User2GroupBean user2GroupBean : users) {
+							if( user2GroupBean.getUserBean().equals(newUser) )
+								return true;
+						}
+						
+						return false;
+					}
+					
 					public void drop(DropTargetEvent event) {
 						try {
 							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
