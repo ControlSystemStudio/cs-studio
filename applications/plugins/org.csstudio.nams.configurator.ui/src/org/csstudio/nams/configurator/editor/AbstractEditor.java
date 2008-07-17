@@ -254,11 +254,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 			return false;
 	};
 
-	// private void resetDatabinding() {
-	// this.bean.clearPropertyChangeListeners();
-	// this.beanClone.clearPropertyChangeListeners();
-	// }
-
 	protected abstract void initDataBinding();
 
 	public void setPropertyChangedListener(PropertyChangeListener listener) {

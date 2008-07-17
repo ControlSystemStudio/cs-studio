@@ -59,7 +59,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		_voiceMailTextEntry = this.createTextEntry(main, "VoiceMail number:",
 				true);
 		_prefAlarmingTypeComboEntryViewer = this.createComboForEnum(main,
-				"Prefered alarming type:", PreferedAlarmType.values(), this.beanClone, "preferedAlarmType" );
+				"Prefered alarming type:", PreferedAlarmType.values(), this.beanClone, AlarmbearbeiterBean.PropertyNames.preferedAlarmType.name() );
 		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer
 				.getCombo();
 		this.addSeparator(main);

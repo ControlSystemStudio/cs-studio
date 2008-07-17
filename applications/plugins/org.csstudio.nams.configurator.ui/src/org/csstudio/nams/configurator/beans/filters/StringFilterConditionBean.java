@@ -44,6 +44,7 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 		StringRegelOperator oldValue = this.operator;
 		this.operator = operator;
 		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, this.operator);
+		System.out.println("StringFilterConditionBean.setOperator()");
 	}
 
 	@Override
