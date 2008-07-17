@@ -7,7 +7,7 @@ import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.preferenceservice.declaration.bridge4ui.PreferenceStoreAccessor;
 import org.csstudio.nams.service.preferenceservice.ui.preferencepages.PreferenceInitializer;
-import org.csstudio.nams.service.preferenceservice.ui.preferencepages.SamplePreferencePage;
+import org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleActivator;
 
@@ -34,6 +34,6 @@ public class PreferenceServiceUIActivator extends AbstractBundleActivator {
 		IPreferenceStore preferenceStore = preferenceStoreAccessor.getPreferenceStore();
 		
 		PreferenceInitializer.staticInject(preferenceStore);
-		SamplePreferencePage.staticInject(preferenceStore);
+		ConfigurationDatabaseSetUp.staticInject(preferenceStore);
 	}
 }

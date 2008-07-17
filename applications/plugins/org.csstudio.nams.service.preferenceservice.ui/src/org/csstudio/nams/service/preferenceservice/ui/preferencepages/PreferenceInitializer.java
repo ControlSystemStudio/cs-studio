@@ -6,6 +6,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Class used to initialize default preference values.
+ * 
+ * TODO mz 2008-07-17 Move to non-ui plugin!
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 

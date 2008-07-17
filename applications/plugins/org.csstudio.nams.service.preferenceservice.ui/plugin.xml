@@ -5,9 +5,16 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="Sample Preferences"
-            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.SamplePreferencePage"
-            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.SamplePreferencePage">
+            category="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp"
+            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp"
+            name="Configuration database">
+      </page>
+      <page
+            category="org.csstudio.platform.ui.css.applications.configuration"
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
+            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
+            name="New AMS">
       </page>
    </extension>
    <extension

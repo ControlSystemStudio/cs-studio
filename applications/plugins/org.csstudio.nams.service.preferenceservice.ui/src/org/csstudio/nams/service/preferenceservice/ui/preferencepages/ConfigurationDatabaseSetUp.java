@@ -8,36 +8,28 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
- * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
- * subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
- * save, restore and apply itself.
- * <p>
- * This page is used to modify preferences only. They
- * are stored in the preference store that belongs to
- * the main plug-in class. That way, preferences can
- * be accessed directly via the preference store.
+ * This preference page is used to set up the configuration database settings.
  */
 
-public class SamplePreferencePage
+public class ConfigurationDatabaseSetUp
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 	
+	private static final int TEXTCOLUMS = 64;
+
 	public static void staticInject(IPreferenceStore preferenceStore) {
-		SamplePreferencePage.preferenceStore = preferenceStore;
+		ConfigurationDatabaseSetUp.preferenceStore = preferenceStore;
 	}
 
 	private static IPreferenceStore preferenceStore;
 
-	public SamplePreferencePage() {
+	public ConfigurationDatabaseSetUp() {
 		super(GRID);
 		
-		if( SamplePreferencePage.preferenceStore == null ) {
+		if( ConfigurationDatabaseSetUp.preferenceStore == null ) {
 			throw new RuntimeException("class has not been equiped, missing: preference store");
 		}
-		setPreferenceStore(SamplePreferencePage.preferenceStore);
+		setPreferenceStore(ConfigurationDatabaseSetUp.preferenceStore);
 		setDescription("A demonstration of a preference page implementation");
 	}
 	
@@ -64,7 +56,7 @@ public class SamplePreferencePage
 //				"C&hoice 2", "choice2" }
 //		}, getFieldEditorParent()));
 		addField(
-			new StringFieldEditor(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION.getPreferenceStoreId(), "Configuration database jdbc-url:", getFieldEditorParent()));
+			new StringFieldEditor(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION.getPreferenceStoreId(), "Configuration database jdbc-url:", TEXTCOLUMS, getFieldEditorParent()));
 	}
 
 	public void init(IWorkbench workbench) {
