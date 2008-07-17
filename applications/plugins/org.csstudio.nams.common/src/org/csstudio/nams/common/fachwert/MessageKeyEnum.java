@@ -22,6 +22,18 @@ public enum MessageKeyEnum {
 				return mke;
 			}
 		}
-		return null;
+		throw new RuntimeException("No value available for " + value);
+	}
+	
+	/**
+	 * Liefert die Stringdarstellung aller Enum-Values.
+	 */
+	public static String[] valuesAsStringArray() {
+		MessageKeyEnum[] values = values();
+		String[] result = new String[values.length];
+		for (int index=0;index < values.length; index++) {
+			result[index] = values[index].getStringValue();
+		}
+		return result;
 	}
 }

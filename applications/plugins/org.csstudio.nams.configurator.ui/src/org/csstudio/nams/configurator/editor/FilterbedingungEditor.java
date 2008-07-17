@@ -236,7 +236,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[1] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
 		stringCompareKeyComboViewer = createComboEntry(stackComposites[1],
-				"CompareKey", false, array2StringArray(MessageKeyEnum.values()));
+				"CompareKey", false, MessageKeyEnum.valuesAsStringArray());
 		stringCompareKeyCombo = stringCompareKeyComboViewer.getCombo();
 		stringOperatorComboViewer = createComboEntry(stackComposites[1],
 				"Operator", false, array2StringArray(StringRegelOperator
@@ -248,7 +248,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[2] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[2].setLayout(new GridLayout(NUM_COLUMNS, false));
 		arrayMessageKeyComboViewer = createComboEntry(stackComposites[2],
-				"MessageKey", false, array2StringArray(MessageKeyEnum.values()));
+				"MessageKey", false, MessageKeyEnum.valuesAsStringArray());
 		arrayMessageKeyCombo = arrayMessageKeyComboViewer.getCombo();
 		arrayOperatorComboViewer = createComboEntry(stackComposites[2],
 				"Operator", false, array2StringArray(StringRegelOperator

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -64,12 +65,12 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	/**
 	 * @return the keyValue
 	 */
-	public String getKeyValue() {
+	private String getKeyValue() {
 		return keyValue;
 	}
 
 	public MessageKeyEnum getKeyValueEnum() {
-		MessageKeyEnum valueOf = MessageKeyEnum.valueOf(keyValue);
+		MessageKeyEnum valueOf = MessageKeyEnum.getEnumFor(keyValue);
 		return valueOf;
 	}
 
@@ -82,6 +83,8 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	}
 	
 	public void setKeyValue(MessageKeyEnum keyValue){
+		Contract.requireNotNull("keyValue", keyValue);
+		
 		setKeyValue( keyValue.getStringValue() );
 	}
 
