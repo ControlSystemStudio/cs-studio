@@ -50,7 +50,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true, configurationBeanService
+		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true, configurationBeanService
 						.getRubrikNamesForType(RubrikTypeEnum.USER));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
@@ -58,9 +58,8 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		_smsTextEntry = this.createTextEntry(main, "SMS number:", true);
 		_voiceMailTextEntry = this.createTextEntry(main, "VoiceMail number:",
 				true);
-		_prefAlarmingTypeComboEntryViewer = this.createComboEntry(main,
-				"Prefered alarming type:", false,
-				array2StringArray(PreferedAlarmType.values()));
+		_prefAlarmingTypeComboEntryViewer = this.createComboForEnum(main,
+				"Prefered alarming type:", PreferedAlarmType.values(), this.beanClone, "preferedAlarmType" );
 		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer
 				.getCombo();
 		this.addSeparator(main);

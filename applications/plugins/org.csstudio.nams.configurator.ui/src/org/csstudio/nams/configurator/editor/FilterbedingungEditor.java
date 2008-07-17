@@ -1,6 +1,8 @@
 package org.csstudio.nams.configurator.editor;
 
 import java.beans.IntrospectionException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +63,40 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
+	public static class FilterTypeBean extends
+			AbstractConfigurationBean<FilterTypeBean> {
+		private SupportedFilterTypes type;
+
+		public SupportedFilterTypes getType() {
+			return type;
+		}
+
+		public void setType(SupportedFilterTypes type) {
+			SupportedFilterTypes oldValue = this.type;
+			this.type = type;
+			pcs.firePropertyChange("type", oldValue, type);
+		}
+
+		@Override
+		protected void doUpdateState(FilterTypeBean bean) {
+			// Kommt nicht vor...
+		}
+
+		public String getDisplayName() {
+			return "(internal bean for storing selcted filter type in filter condition editor)";
+		}
+
+		public int getID() {
+			return 0;
+		}
+
+		public void setID(int id) {
+			// Ignored.
+		}
+	}
+
+	private FilterTypeBean selectedFilterType = new FilterTypeBean();
+
 	public enum SupportedFilterTypes {
 		JUNCTOR_CONDITION("Or Condition", JunctorConditionBean.class), STRING_CONDITION(
 				"String Condition", StringFilterConditionBean.class), STRING_ARRAY_CONDITION(
@@ -118,9 +154,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private StackLayout filterLayout;
 	private Composite[] stackComposites;
 
-//	private Text junctorFirstFilterText;
-//	private Combo junctorTypeCombo;
-//	private Text junctorSecondFilterText;
+	// private Text junctorFirstFilterText;
+	// private Combo junctorTypeCombo;
+	// private Text junctorSecondFilterText;
 
 	private Combo stringOperatorCombo;
 	private Text stringCompareValueText;
@@ -175,31 +211,43 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		Composite main = new Composite(outermain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true,
+		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true,
 				configurationBeanService
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
-		_filterTypeEntryViewer = this.createComboEntry(main, "Filtertype: ",
-				false, array2StringArray(SupportedFilterTypes.values()));
+		_filterTypeEntryViewer = this.createComboForEnum(main, "Filtertype: ",
+				SupportedFilterTypes.values(), this.selectedFilterType, "type");
 		_filterTypeEntry = _filterTypeEntryViewer.getCombo();
 
 		initializeAddOnBeans();
-		Listener listener = new Listener() {
-			public void handleEvent(Event event) {
-				filterLayout.topControl = stackComposites[_filterTypeEntry
-						.getSelectionIndex()];
-				filterSpecificComposite.layout();
 
-				beanClone
-						.setFilterSpecificBean((FilterConditionAddOnBean) specificBeans
-								.get(SupportedFilterTypes
-										.fromString(_filterTypeEntry.getText())));
-			}
-		};
-		_filterTypeEntry.addListener(SWT.Modify, listener);
+		this.selectedFilterType
+				.addPropertyChangeListener(new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						filterLayout.topControl = stackComposites[FilterbedingungEditor.this.selectedFilterType.getType().ordinal()];
+						filterSpecificComposite.layout();
+
+						beanClone
+								.setFilterSpecificBean((FilterConditionAddOnBean) specificBeans
+										.get(FilterbedingungEditor.this.selectedFilterType.getType()));
+					}
+				});
+		// Listener listener = new Listener() {
+		// public void handleEvent(Event event) {
+		// filterLayout.topControl = stackComposites[_filterTypeEntry
+		// .getSelectionIndex()];
+		// filterSpecificComposite.layout();
+		//
+		// beanClone
+		// .setFilterSpecificBean((FilterConditionAddOnBean) specificBeans
+		// .get(SupportedFilterTypes
+		// .fromString(_filterTypeEntry.getText())));
+		// }
+		// };
+		// _filterTypeEntry.addListener(SWT.Modify, listener);
 
 		filterSpecificComposite = new Composite(outermain, SWT.NONE);
 		filterLayout = new StackLayout();
@@ -214,10 +262,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[0].setLayout(new GridLayout(NUM_COLUMNS, false));
 		new Label(stackComposites[0], SWT.NONE);
 		Label label = new Label(stackComposites[0], SWT.LEFT | SWT.WRAP);
-		label
-				.setText("Dieses Filterbedingung  existiert nur aus Gründen der\n" +
-						"Abwärtskompatibilität, bitte realisieren Sie das\n" +
-						"gewünschte Verhalten über die neuen Funktionen des Filters");
+		label.setText("Dieses Filterbedingung  existiert nur aus Gründen der\n"
+				+ "Abwärtskompatibilität, bitte realisieren Sie das\n"
+				+ "gewünschte Verhalten über die neuen Funktionen des Filters");
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		junctorFirstFilterText = createTextEntry(stackComposites[0],
 				"Filtercondition", false);
@@ -237,37 +284,41 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// StringFilterComposite
 		stackComposites[1] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
-		stringCompareKeyComboViewer = createComboEntry(stackComposites[1],
-				"CompareKey", false, MessageKeyEnum.valuesAsStringArray());
+		IConfigurationBean stringConfigurationBean = specificBeans
+			.get(SupportedFilterTypes.STRING_CONDITION);
+
+		stringCompareKeyComboViewer = createComboForEnum(stackComposites[1], "CompareKey", MessageKeyEnum.values(),
+				stringConfigurationBean, "keyValue");
+						
 		stringCompareKeyCombo = stringCompareKeyComboViewer.getCombo();
+
 		
+			stringOperatorComboViewer = createComboForEnum(stackComposites[1], "Operator", StringRegelOperator.values(),
+							stringConfigurationBean, "operator");
 		
-		IConfigurationBean stringConfigurationBean = specificBeans.get(SupportedFilterTypes.STRING_CONDITION);
-		try {
-			stringOperatorComboViewer = EditorUIUtils.createComboViewerForEnumValues(stackComposites[1], StringRegelOperator
-							.values(), stringConfigurationBean, "operator");
-		} catch (IntrospectionException e1) {
-			new RuntimeException(e1);
-		}
-			
-//			
-//			createComboEntry(stackComposites[1],
-//				"Operator", false, array2StringArray(StringRegelOperator
-//						.values()));
-		
-		
+
+		//			
+		// createComboEntry(stackComposites[1],
+		// "Operator", false, array2StringArray(StringRegelOperator
+		// .values()));
+
 		stringOperatorCombo = stringOperatorComboViewer.getCombo();
 		stringCompareValueText = createTextEntry(stackComposites[1],
 				"CompareValue", true);
 		// StringArrayFilterComposite
 		stackComposites[2] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[2].setLayout(new GridLayout(NUM_COLUMNS, false));
-		arrayMessageKeyComboViewer = createComboEntry(stackComposites[2],
-				"MessageKey", false, MessageKeyEnum.valuesAsStringArray());
+		
+		IConfigurationBean stringArrayConfigurationBean = specificBeans
+		.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
+		arrayMessageKeyComboViewer = createComboForEnum(stackComposites[2], "MessageKey", MessageKeyEnum.values(),
+				stringArrayConfigurationBean, "keyValue");
+		
 		arrayMessageKeyCombo = arrayMessageKeyComboViewer.getCombo();
-		arrayOperatorComboViewer = createComboEntry(stackComposites[2],
-				"Operator", false, array2StringArray(StringRegelOperator
-						.values()));
+		
+		arrayOperatorComboViewer = createComboForEnum(stackComposites[2], "Operator", StringRegelOperator.values(),
+				stringArrayConfigurationBean, "operator");
+		
 		arrayOperatorCombo = arrayOperatorComboViewer.getCombo();
 		arrayCompareValueListViewer = createListEntry(stackComposites[2],
 				"CompareValues", true);
@@ -327,101 +378,109 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[3] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[3].setLayout(new GridLayout(NUM_COLUMNS, false));
 		pvChannelName = createTextEntry(stackComposites[3], "channelName", true);
-		pvSuggestedTypeViewer = createComboEntry(stackComposites[3],
-				"SuggestedType", false,
-				array2StringArray(SuggestedProcessVariableType.values()));
+		
+		IConfigurationBean pvConfigurationBean = specificBeans
+		.get(SupportedFilterTypes.PV_CONDITION);
+		pvSuggestedTypeViewer = createComboForEnum(stackComposites[3], "SuggestedType", SuggestedProcessVariableType.values(),
+				pvConfigurationBean, "suggestedType");
+			
 		pvSuggestedType = pvSuggestedTypeViewer.getCombo();
-		pvOperatorViewer = createComboEntry(stackComposites[3], "Operator",
-				false, array2StringArray(Operator.values()));
+		
+		pvOperatorViewer =  createComboForEnum(stackComposites[3], "Operator", Operator.values(),
+				pvConfigurationBean, "operator");
+		
 		pvOperator = pvOperatorViewer.getCombo();
 		pvCompareValue = createTextEntry(stackComposites[3], "Compare value",
 				true);
 		// TimeBasedComposite
 		stackComposites[4] = new Composite(filterSpecificComposite, SWT.NONE);
 		stackComposites[4].setLayout(new GridLayout(NUM_COLUMNS, false));
+		IConfigurationBean timeBasedConfigurationBean = specificBeans
+		.get(SupportedFilterTypes.TIMEBASED_CONDITION);
 
 		timeDelayText = createTextEntry(stackComposites[4], "Wartezeit", true);
 		timeBehaviorCheck = createCheckBoxEntry(stackComposites[4],
 				"Alarm bei Timeout", true);
 		addSeparator(stackComposites[4]);
-		timeStartKeyComboViewer = createComboEntry(stackComposites[4],
-				"Start KeyValue", false, array2StringArray(MessageKeyEnum
-						.values()));
+		timeStartKeyComboViewer = createComboForEnum(stackComposites[4], "Start KeyValue", MessageKeyEnum.values(),
+				timeBasedConfigurationBean, "startKeyValue");
+
 		timeStartKeyCombo = timeStartKeyComboViewer.getCombo();
-		timeStartOperatorComboViewer = createComboEntry(stackComposites[4],
-				"Start Operator", false, array2StringArray(StringRegelOperator
-						.values()));
+		timeStartOperatorComboViewer = createComboForEnum(stackComposites[4], "Start Operator", StringRegelOperator.values(),
+				timeBasedConfigurationBean, "startOperator");
+			
 		timeStartOperatorCombo = timeStartOperatorComboViewer.getCombo();
 		timeStartCompareText = createTextEntry(stackComposites[4],
 				"Start CompareValue", true);
 		addSeparator(stackComposites[4]);
-		timeStopKeyComvoViewer = createComboEntry(stackComposites[4],
-				"Stop KeyValue", false, array2StringArray(MessageKeyEnum
-						.values()));
+		timeStopKeyComvoViewer = createComboForEnum(stackComposites[4], "Stop KeyValue", MessageKeyEnum.values(),
+				timeBasedConfigurationBean, "confirmKeyValue");
+			
 		timeStopKeyCombo = timeStopKeyComvoViewer.getCombo();
-		timeStopOperatorComboViewer = createComboEntry(stackComposites[4],
-				"Stop Operator", false, array2StringArray(StringRegelOperator
-						.values()));
+		timeStopOperatorComboViewer = createComboForEnum(stackComposites[4], "Stop Operator", StringRegelOperator.values(),
+				timeBasedConfigurationBean, "confirmOperator");
+			
 		timeStopOperatorCombo = timeStopOperatorComboViewer.getCombo();
 		timeStopCompareText = createTextEntry(stackComposites[4],
 				"Stop CompareValue", true);
 
-//		LinkedList<String> types = new LinkedList<String>();
-//		for (JunctorConditionType type : JunctorConditionType.values()) {
-//			types.add(type.toString());
-//		}
-//		junctorTypeCombo.setItems(types.toArray(new String[types.size()]));
+		// LinkedList<String> types = new LinkedList<String>();
+		// for (JunctorConditionType type : JunctorConditionType.values()) {
+		// types.add(type.toString());
+		// }
+		// junctorTypeCombo.setItems(types.toArray(new String[types.size()]));
 
 		FilterConditionAddOnBean filterSpecificBean = (FilterConditionAddOnBean) bean
 				.getFilterSpecificBean();
 		if (filterSpecificBean instanceof JunctorConditionBean) {
-			_filterTypeEntry.select(0);
+			this.selectedFilterType.setType(SupportedFilterTypes.JUNCTOR_CONDITION);
 		} else if (filterSpecificBean instanceof StringFilterConditionBean) {
-			_filterTypeEntry.select(1);
+			this.selectedFilterType.setType(SupportedFilterTypes.STRING_CONDITION);
 		} else if (filterSpecificBean instanceof StringArrayFilterConditionBean) {
-			_filterTypeEntry.select(2);
+			this.selectedFilterType.setType(SupportedFilterTypes.STRING_ARRAY_CONDITION);
 		} else if (filterSpecificBean instanceof PVFilterConditionBean) {
-			_filterTypeEntry.select(3);
+			this.selectedFilterType.setType(SupportedFilterTypes.PV_CONDITION);
 		} else if (filterSpecificBean instanceof TimeBasedFilterConditionBean) {
-			_filterTypeEntry.select(4);
+			this.selectedFilterType.setType(SupportedFilterTypes.TIMEBASED_CONDITION);
 		} else
 			throw new RuntimeException("Unsupported AddOnBean "
 					+ filterSpecificBean.getClass());
 		initDataBinding();
 		initDND();
-		listener.handleEvent(null); // zur initialisierung
-//		checkJunktionType();
+//		listener.handleEvent(null); // zur initialisierung
+		// checkJunktionType();
 	}
 
-//	private void checkJunktionType() {
-//		String typeString = (String) ((StructuredSelection) junctorTypeComboViewer
-//				.getSelection()).getFirstElement();
-//		try {
-//			JunctorConditionType type = JunctorConditionType
-//					.valueOf(typeString);
-//			junctorSecondFilterText
-//					.setVisible(type != JunctorConditionType.NOT);
-//		} catch (Exception e) {
-//
-//		}
-//	}
+	// private void checkJunktionType() {
+	// String typeString = (String) ((StructuredSelection)
+	// junctorTypeComboViewer
+	// .getSelection()).getFirstElement();
+	// try {
+	// JunctorConditionType type = JunctorConditionType
+	// .valueOf(typeString);
+	// junctorSecondFilterText
+	// .setVisible(type != JunctorConditionType.NOT);
+	// } catch (Exception e) {
+	//
+	// }
+	// }
 
 	private void initDND() {
-//		DropTarget target1 = new DropTarget(junctorFirstFilterText,
-//				DND.DROP_LINK);
-//		DropTarget target2 = new DropTarget(junctorSecondFilterText,
-//				DND.DROP_LINK);
-//
-//		target1.setTransfer(new Transfer[] { LocalSelectionTransfer
-//				.getTransfer() });
-//		target2.setTransfer(new Transfer[] { LocalSelectionTransfer
-//				.getTransfer() });
-//
-//		target1
-//				.addDropListener(new TextDropTarget(junctorFirstFilterText,
-//						true));
-//		target2.addDropListener(new TextDropTarget(junctorSecondFilterText,
-//				false));
+		// DropTarget target1 = new DropTarget(junctorFirstFilterText,
+		// DND.DROP_LINK);
+		// DropTarget target2 = new DropTarget(junctorSecondFilterText,
+		// DND.DROP_LINK);
+		//
+		// target1.setTransfer(new Transfer[] { LocalSelectionTransfer
+		// .getTransfer() });
+		// target2.setTransfer(new Transfer[] { LocalSelectionTransfer
+		// .getTransfer() });
+		//
+		// target1
+		// .addDropListener(new TextDropTarget(junctorFirstFilterText,
+		// true));
+		// target2.addDropListener(new TextDropTarget(junctorSecondFilterText,
+		// false));
 	}
 
 	class TextDropTarget extends DropTargetAdapter {
@@ -689,24 +748,24 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// JunctorConditionBean.PropertyNames.secondCondition
 		// .name());
 
-//		IObservableValue stringJunctorObservable = BeansObservables
-//				.observeValue(specificBeans
-//						.get(SupportedFilterTypes.JUNCTOR_CONDITION),
-//						JunctorConditionBean.PropertyNames.junctor.name());
+		// IObservableValue stringJunctorObservable = BeansObservables
+		// .observeValue(specificBeans
+		// .get(SupportedFilterTypes.JUNCTOR_CONDITION),
+		// JunctorConditionBean.PropertyNames.junctor.name());
 
 		// bind observables
-//		context.bindValue(SWTObservables.observeSelection(junctorTypeCombo),
-//				stringJunctorObservable, new UpdateValueStrategy() {
-//					@Override
-//					public Object convert(Object value) {
-//						return JunctorConditionType.valueOf((String) value);
-//					}
-//				}, new UpdateValueStrategy() {
-//					@Override
-//					public Object convert(Object value) {
-//						return ((JunctorConditionType) value).name();
-//					}
-//				});
+		// context.bindValue(SWTObservables.observeSelection(junctorTypeCombo),
+		// stringJunctorObservable, new UpdateValueStrategy() {
+		// @Override
+		// public Object convert(Object value) {
+		// return JunctorConditionType.valueOf((String) value);
+		// }
+		// }, new UpdateValueStrategy() {
+		// @Override
+		// public Object convert(Object value) {
+		// return ((JunctorConditionType) value).name();
+		// }
+		// });
 
 		// context.bindValue(SWTObservables.observeText(junctorFirstFilterText,
 		// SWT.Modify), firstConditionTextObservable,

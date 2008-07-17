@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -135,7 +136,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return textWidget;
 	}
 
-	protected ComboViewer createComboEntry(Composite parent, String labeltext,
+	protected ComboViewer createRubrikCombo(Composite parent, String labeltext,
 			boolean editable, String[] contents) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
@@ -146,6 +147,26 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		}
 		ComboViewer comboWidget = new ComboViewer(parent, style);
 		comboWidget.add(contents);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
+				NUM_COLUMNS - 1, 1);
+		gridData.minimumWidth = MIN_WIDTH;
+		gridData.widthHint = MIN_WIDTH;
+		comboWidget.getCombo().setLayoutData(gridData);
+		return comboWidget;
+	}
+	
+	protected <T extends Enum<?>> ComboViewer createComboForEnum(Composite parent, String labeltext, T[] contents, IConfigurationBean bean, String targetProperty) {
+		Label label = new Label(parent, SWT.RIGHT);
+		label.setText(labeltext);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		
+		ComboViewer comboWidget;
+		try {
+			comboWidget = EditorUIUtils.createComboViewerForEnumValues(parent, contents, bean, targetProperty);
+		} catch (IntrospectionException e) {
+			throw new RuntimeException("failed to create combo viewer", e);
+		}
+		
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
