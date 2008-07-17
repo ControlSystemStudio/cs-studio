@@ -7,6 +7,7 @@ public interface IConfigurationBean {
 	public String getDisplayName();
 	public IConfigurationBean getClone();
 	public void addPropertyChangeListener(PropertyChangeListener listener);
+	public void removePropertyChangeListener(PropertyChangeListener listener);
 	public PropertyChangeSupport getPropertyChangeSupport();
 	public int getID();
 	public void setID(int id);

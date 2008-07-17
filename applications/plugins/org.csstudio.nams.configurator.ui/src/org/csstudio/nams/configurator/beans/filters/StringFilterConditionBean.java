@@ -37,10 +37,14 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 	}
 
 	public StringRegelOperator getOperator() {
+		System.out.println("StringFilterConditionBean.getOperator()");
+		
 		return operator;
 	}
 
 	public void setOperator(StringRegelOperator operator) {
+		System.out.println("StringFilterConditionBean.setOperator()");
+		
 		StringRegelOperator oldValue = this.operator;
 		this.operator = operator;
 		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, this.operator);

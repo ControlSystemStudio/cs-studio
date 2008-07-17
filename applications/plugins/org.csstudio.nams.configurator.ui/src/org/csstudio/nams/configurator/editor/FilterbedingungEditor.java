@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
@@ -238,9 +240,22 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stringCompareKeyComboViewer = createComboEntry(stackComposites[1],
 				"CompareKey", false, MessageKeyEnum.valuesAsStringArray());
 		stringCompareKeyCombo = stringCompareKeyComboViewer.getCombo();
-		stringOperatorComboViewer = createComboEntry(stackComposites[1],
-				"Operator", false, array2StringArray(StringRegelOperator
-						.values()));
+		
+		
+		IConfigurationBean stringConfigurationBean = specificBeans.get(SupportedFilterTypes.STRING_CONDITION);
+		try {
+			stringOperatorComboViewer = EditorUIUtils.createComboViewerForEnumValues(stackComposites[1], StringRegelOperator
+							.values(), stringConfigurationBean, "operator");
+		} catch (IntrospectionException e1) {
+			new RuntimeException(e1);
+		}
+			
+//			
+//			createComboEntry(stackComposites[1],
+//				"Operator", false, array2StringArray(StringRegelOperator
+//						.values()));
+		
+		
 		stringOperatorCombo = stringOperatorComboViewer.getCombo();
 		stringCompareValueText = createTextEntry(stackComposites[1],
 				"CompareValue", true);
