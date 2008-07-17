@@ -3,8 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Preferenceservice Plug-in
 Bundle-SymbolicName: org.csstudio.nams.service.preferenceservice
 Bundle-Version: 1.0.0
-Bundle-Activator: org.csstudio.nams.service.preferenceservice.Activator
+Bundle-Activator: org.csstudio.nams.service.preferenceservice.PreferenceServiceActivator
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.csstudio.nams.common.activatorUtils,
+ org.csstudio.nams.service.logging
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.preferenceservice.declaration

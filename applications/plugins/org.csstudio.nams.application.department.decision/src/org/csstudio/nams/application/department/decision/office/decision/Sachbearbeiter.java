@@ -261,7 +261,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			this.ausgangkorb.ablegen(vorgangsmappe);
 
 			// FIXME History Eintrag erstellen. Klaeren ob hier oder in dem
-			// Activator.
+			// PreferenceServiceActivator.
 
 		} else {
 			this.ablagekorbFuerOffeneVorgaenge.ablegen(vorgangsmappe);
