@@ -6,6 +6,12 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ApplicationDatabaseSetUp"
+            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ApplicationDatabaseSetUp"
+            name="Application database">
+      </page>
+      <page
+            category="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
             class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp"
             id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp"
             name="Configuration database">
@@ -15,6 +21,12 @@
             class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
             id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
             name="New AMS">
+      </page>
+      <page
+            category="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingSetUp"
+            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingSetUp"
+            name="Internal messaging">
       </page>
    </extension>
    <extension

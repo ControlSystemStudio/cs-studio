@@ -7,7 +7,7 @@ public enum PreferenceServiceDatabaseKeys implements HoldsAPreferenceId {
 			
 			P_CONFIG_DATABASE_TYPE(
 			"org.csstudio.nams.preferences.configDatabaseType",
-			"Type of database"), P_CONFIG_DATABASE_USER(
+			"Type of config database"), P_CONFIG_DATABASE_USER(
 			"org.csstudio.ams.preferences.configDatabaseUser",
 			"Configuration databases user"), P_CONFIG_DATABASE_PASSWORD(
 			"org.csstudio.ams.preferences.configDatabasePassword",
@@ -19,7 +19,10 @@ public enum PreferenceServiceDatabaseKeys implements HoldsAPreferenceId {
 			"org.csstudio.ams.preferences.appDatabaseUser",
 			"Application databases user"), P_APP_DATABASE_PASSWORD(
 			"org.csstudio.ams.preferences.appDatabasePassword",
-			"Application databases password");
+			"Application databases password"), 
+			P_APP_DATABASE_TYPE(
+					"org.csstudio.nams.preferences.appDatabaseType",
+					"Type of application database");
 
 	private String _key;
 	private String _description;

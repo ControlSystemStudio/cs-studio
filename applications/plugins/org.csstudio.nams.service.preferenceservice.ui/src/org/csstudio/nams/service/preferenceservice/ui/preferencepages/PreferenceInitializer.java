@@ -25,11 +25,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
 	public void initializeDefaultPreferences() {
 		// configuration db
 		preferenceStore.setDefault(
