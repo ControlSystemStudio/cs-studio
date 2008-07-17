@@ -7,6 +7,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.nams.service.preferenceservice.declaration.bridge4ui.PreferenceStoreAccessor;
 import org.csstudio.nams.service.preferenceservice.definition.PreferenceStoreServiceImpl;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -46,9 +47,15 @@ public class PreferenceServiceActivator extends AbstractBundleActivator {
 	final Logger logger) {
 		OSGiServiceOffers result = new OSGiServiceOffers();
 		
+		final IPreferenceStore preferenceStore = getEclipsePreferenceStoreWithAMSId();
+
 		result.put(PreferenceService.class, new PreferenceStoreServiceImpl());
+		result.put(PreferenceStoreAccessor.class, new PreferenceStoreAccessor() {
+			public IPreferenceStore getPreferenceStore() {
+				return preferenceStore;
+			}
+		});
 		
-		IPreferenceStore preferenceStore = getEclipsePreferenceStoreWithAMSId();
 		PreferenceStoreServiceImpl.staticInject(preferenceStore);
 		
 		return result;
