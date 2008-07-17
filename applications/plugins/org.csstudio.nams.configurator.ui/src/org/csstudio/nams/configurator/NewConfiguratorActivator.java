@@ -8,6 +8,7 @@ import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction;
 import org.csstudio.nams.configurator.actions.DuplicateConfigurationBeanAction;
 import org.csstudio.nams.configurator.editor.AbstractEditor;
+import org.csstudio.nams.configurator.editor.EditorUIUtils;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
 import org.csstudio.nams.configurator.service.synchronize.SynchronizeServiceImpl;
@@ -65,6 +66,9 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		ConfigurationBeanService beanService = new ConfigurationBeanServiceImpl(
 				localStoreConfigurationService);
 
+		// prepare utilities
+		EditorUIUtils.staticInject(logger);
+		
 		// prepare Views
 		AbstractNamsView.staticInject(beanService);
 

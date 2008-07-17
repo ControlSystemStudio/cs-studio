@@ -9,6 +9,7 @@ import java.util.Comparator;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -26,8 +27,16 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * This class/utilities are stateless, all methods are static and there is no
  * need for creating an instance.
+ * 
+ * This class need to be initialized before first used by injecting the {@link Logger}.
  */
 public final class EditorUIUtils {
+	
+	private static Logger logger;
+
+	public static void staticInject(Logger logger) {
+		EditorUIUtils.logger = logger;
+	}
 
 	private static final class PropertyChangeListenerImplementation implements
 			PropertyChangeListener {
@@ -46,9 +55,11 @@ public final class EditorUIUtils {
 			if (propertyName.equals(event.getPropertyName())) {
 				Object newSelection = propertyEditor.getValue();
 				if (newSelection != null) {
-					IStructuredSelection oldSelection = (IStructuredSelection) viewer.getSelection();
-					if( oldSelection.getFirstElement() != newSelection ) {
-						viewer.setSelection(new StructuredSelection(newSelection));
+					IStructuredSelection oldSelection = (IStructuredSelection) viewer
+							.getSelection();
+					if (oldSelection.getFirstElement() != newSelection) {
+						viewer.setSelection(new StructuredSelection(
+								newSelection));
 					}
 				}
 			}
@@ -88,8 +99,9 @@ public final class EditorUIUtils {
 		Contract.require(enumValues.length > 0, "enumValues.length > 0");
 		Contract.requireNotNull("boundBean", boundBean);
 		Contract.requireNotNull("propertyName", propertyName);
-		Contract.require(propertyName.length() > 0, "propertyName.length() > 0");
-		
+		Contract
+				.require(propertyName.length() > 0, "propertyName.length() > 0");
+
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(
 				propertyName, boundBean.getClass());
 
@@ -98,7 +110,8 @@ public final class EditorUIUtils {
 						enumValues[0].getClass()),
 						"propertyDescriptor.getPropertyType().equals(enumValues.getClass())");
 
-		final PropertyEditorUtil propertyEditor = new PropertyEditorUtil(propertyDescriptor, boundBean);
+		final PropertyEditorUtil propertyEditor = new PropertyEditorUtil(
+				propertyDescriptor, boundBean);
 
 		final ComboViewer result = new ComboViewer(parent, SWT.READ_ONLY);
 
@@ -120,8 +133,10 @@ public final class EditorUIUtils {
 				IStructuredSelection selection = (IStructuredSelection) event
 						.getSelection();
 				Object selectedElement = selection.getFirstElement();
-				if( propertyEditor.getValue() != selectedElement ) {
+				if (propertyEditor.getValue() != selectedElement) {
 					propertyEditor.setValue(selectedElement);
+					EditorUIUtils.logger.logDebugMessage(this, "#selectionListener.selectionChanged(SelectionChangedEvent): Set Property "
+									+ propertyName + " to " + selectedElement);
 				}
 			}
 		});
@@ -145,11 +160,12 @@ public final class EditorUIUtils {
 		private final PropertyDescriptor propertyDescriptor;
 		private final Object bean;
 
-		public PropertyEditorUtil(PropertyDescriptor propertyDescriptor, Object bean) {
+		public PropertyEditorUtil(PropertyDescriptor propertyDescriptor,
+				Object bean) {
 			this.propertyDescriptor = propertyDescriptor;
 			this.bean = bean;
 		}
-		
+
 		public void setValue(Object value) {
 			Method writeMethod = propertyDescriptor.getWriteMethod();
 			try {
@@ -158,7 +174,7 @@ public final class EditorUIUtils {
 				throw new RuntimeException("failed to write property", t);
 			}
 		}
-		
+
 		public Object getValue() {
 			Object result = null;
 			Method readMethod = propertyDescriptor.getReadMethod();
@@ -170,7 +186,7 @@ public final class EditorUIUtils {
 			return result;
 		}
 	}
-	
+
 	private EditorUIUtils() {
 		// Avoid instances of this class.
 	}
