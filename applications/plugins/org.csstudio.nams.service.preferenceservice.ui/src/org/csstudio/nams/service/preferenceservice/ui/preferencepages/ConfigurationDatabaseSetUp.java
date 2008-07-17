@@ -1,6 +1,8 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -30,7 +32,7 @@ public class ConfigurationDatabaseSetUp
 			throw new RuntimeException("class has not been equiped, missing: preference store");
 		}
 		setPreferenceStore(ConfigurationDatabaseSetUp.preferenceStore);
-		setDescription("A demonstration of a preference page implementation");
+		setDescription("Set up of global configuration database");
 	}
 	
 	/**
@@ -40,25 +42,52 @@ public class ConfigurationDatabaseSetUp
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-//		addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH, 
-//				"&Directory preference:", getFieldEditorParent()));
-//		addField(
-//			new BooleanFieldEditor(
-//				PreferenceConstants.P_BOOLEAN,
-//				"&An example of a boolean preference",
-//				getFieldEditorParent()));
-//
-//		addField(new RadioGroupFieldEditor(
-//				PreferenceConstants.P_CHOICE,
-//			"An example of a multiple-choice preference",
-//			1,
-//			new String[][] { { "&Choice 1", "choice1" }, {
-//				"C&hoice 2", "choice2" }
-//		}, getFieldEditorParent()));
 		addField(
-			new StringFieldEditor(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION.getPreferenceStoreId(), "Configuration database jdbc-url:", TEXTCOLUMS, getFieldEditorParent()));
+				new ComboFieldEditor(
+						PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE.getPreferenceStoreId(),
+						PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE.getDescription() + ":",
+						getDatabaseTypesValuesForDropDown(),
+						getFieldEditorParent()
+				)
+		);
+		addField(
+			new StringFieldEditor(
+					PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION.getPreferenceStoreId(), 
+					PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION.getDescription() +":", 
+					TEXTCOLUMS, 
+					getFieldEditorParent()
+			)
+		);
+		addField(
+				new StringFieldEditor(
+						PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER.getPreferenceStoreId(), 
+						PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER.getDescription() +":", 
+						TEXTCOLUMS, 
+						getFieldEditorParent()
+				)
+		);
+		addField(
+				new StringFieldEditor(
+						PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD.getPreferenceStoreId(), 
+						PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD.getDescription() +":", 
+						TEXTCOLUMS, 
+						getFieldEditorParent()
+				)
+		);
 	}
 
+	private String[][] getDatabaseTypesValuesForDropDown() {
+		DatabaseType[] databaseTypes = DatabaseType.values();
+		String[][] result = new String[databaseTypes.length][2];
+		
+		for (int index = 0; index < databaseTypes.length; index++) {
+			result[index][0] = databaseTypes[index].getHumanReadableName();
+			result[index][1] = databaseTypes[index].name();
+		}
+		
+		return result;
+	}
+	
 	public void init(IWorkbench workbench) {
 	}
 	

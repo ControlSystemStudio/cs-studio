@@ -11,15 +11,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class NewAMSRootPage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	public NewAMSRootPage() {
-		// TODO Auto-generated constructor stub
-	}
-
-
 	@Override
 	protected Control createContents(Composite parent) {
 		Label label = new Label(parent, SWT.WRAP);
-		label.setText("On the sub-pages of this node you may configure the settings of the new alarm-management-system.");
+		label.setText("On the sub-pages of this node you may configure the settings of\nthe new alarm-management-system.");
 		return label;
 	}
 
