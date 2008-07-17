@@ -28,15 +28,10 @@ import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetAdapter;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -211,7 +206,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites = new Composite[5];
 
 		// ConjunctionFilterComposite
-		stackComposites[0] = new Composite(filterSpecificComposite, SWT.NONE);
+		stackComposites[0] = new Composite(filterSpecificComposite, SWT.TOP);
 		stackComposites[0].setLayout(new GridLayout(NUM_COLUMNS, false));
 		new Label(stackComposites[0], SWT.NONE);
 		Label label = new Label(stackComposites[0], SWT.LEFT | SWT.WRAP);
@@ -223,7 +218,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		createTextEntry(stackComposites[0], "Filtercondition", false);
 
 		// StringFilterComposite
-		stackComposites[1] = new Composite(filterSpecificComposite, SWT.NONE);
+		stackComposites[1] = new Composite(filterSpecificComposite, SWT.TOP);
 		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
 		IConfigurationBean stringConfigurationBean = specificBeans
 				.get(SupportedFilterTypes.STRING_CONDITION);
@@ -244,7 +239,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stringCompareValueText = createTextEntry(stackComposites[1],
 				"CompareValue", true);
 		// StringArrayFilterComposite
-		stackComposites[2] = new Composite(filterSpecificComposite, SWT.NONE);
+		stackComposites[2] = new Composite(filterSpecificComposite, SWT.TOP);
 		stackComposites[2].setLayout(new GridLayout(NUM_COLUMNS, false));
 
 		IConfigurationBean stringArrayConfigurationBean = specificBeans
@@ -312,7 +307,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 		});
 		// PVComposite
-		stackComposites[3] = new Composite(filterSpecificComposite, SWT.NONE);
+		stackComposites[3] = new Composite(filterSpecificComposite, SWT.TOP);
 		stackComposites[3].setLayout(new GridLayout(NUM_COLUMNS, false));
 		pvChannelName = createTextEntry(stackComposites[3], "channelName", true);
 
@@ -329,7 +324,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		pvCompareValue = createTextEntry(stackComposites[3], "Compare value",
 				true);
 		// TimeBasedComposite
-		stackComposites[4] = new Composite(filterSpecificComposite, SWT.NONE);
+		stackComposites[4] = new Composite(filterSpecificComposite, SWT.TOP);
 		stackComposites[4].setLayout(new GridLayout(NUM_COLUMNS, false));
 		IConfigurationBean timeBasedConfigurationBean = specificBeans
 				.get(SupportedFilterTypes.TIMEBASED_CONDITION);
@@ -425,7 +420,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// false));
 	}
 
-	class TextDropTarget extends DropTargetAdapter {
+	/*-class TextDropTarget extends DropTargetAdapter {
 		private final Text text;
 		private final boolean first;
 
@@ -462,7 +457,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			} catch (Throwable e) {
 			}
 		}
-	}
+	}*/
 
 	private void initializeAddOnBeans() {
 		specificBeans = new HashMap<SupportedFilterTypes, AbstractConfigurationBean<?>>();
@@ -476,7 +471,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				new PVFilterConditionBean());
 		specificBeans.put(SupportedFilterTypes.TIMEBASED_CONDITION,
 				new TimeBasedFilterConditionBean());
-		AbstractConfigurationBean<?> filterSpecificBean = (AbstractConfigurationBean<?>) bean
+		AbstractConfigurationBean<?> filterSpecificBean = (AbstractConfigurationBean<?>) beanClone
 				.getFilterSpecificBean();
 
 		specificBeans.put(SupportedFilterTypes.fromClass(filterSpecificBean
@@ -486,6 +481,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			bean.addPropertyChangeListener(this);
 		}
 
+		
 	}
 
 	private void initTimeBasedAddOnBeanDataBinding(DataBindingContext context) {

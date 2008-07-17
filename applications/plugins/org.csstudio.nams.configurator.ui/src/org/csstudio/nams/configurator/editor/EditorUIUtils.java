@@ -32,16 +32,10 @@ import org.eclipse.swt.widgets.Composite;
  */
 public final class EditorUIUtils {
 	
-	private static Logger logger;
-
-	public static void staticInject(Logger logger) {
-		EditorUIUtils.logger = logger;
-	}
-
 	private static final class PropertyChangeListenerImplementation implements
 			PropertyChangeListener {
-		private final String propertyName;
 		private final PropertyEditorUtil propertyEditor;
+		private final String propertyName;
 		private final ComboViewer viewer;
 
 		private PropertyChangeListenerImplementation(String propertyName,
@@ -65,6 +59,39 @@ public final class EditorUIUtils {
 			}
 		}
 	}
+
+	static private class PropertyEditorUtil {
+		private final Object bean;
+		private final PropertyDescriptor propertyDescriptor;
+
+		public PropertyEditorUtil(PropertyDescriptor propertyDescriptor,
+				Object bean) {
+			this.propertyDescriptor = propertyDescriptor;
+			this.bean = bean;
+		}
+
+		public Object getValue() {
+			Object result = null;
+			Method readMethod = propertyDescriptor.getReadMethod();
+			try {
+				result = readMethod.invoke(bean);
+			} catch (Throwable t) {
+				throw new RuntimeException("failed to write property", t);
+			}
+			return result;
+		}
+
+		public void setValue(Object value) {
+			Method writeMethod = propertyDescriptor.getWriteMethod();
+			try {
+				writeMethod.invoke(bean, value);
+			} catch (Throwable t) {
+				throw new RuntimeException("failed to write property", t);
+			}
+		}
+	}
+
+	private static Logger logger;
 
 	/**
 	 * Erzeugt einen ComboViewer für Enums. Die Auswahländerungen des Viewers
@@ -156,41 +183,6 @@ public final class EditorUIUtils {
 		return result;
 	}
 
-	static private class PropertyEditorUtil {
-		private final PropertyDescriptor propertyDescriptor;
-		private final Object bean;
-
-		public PropertyEditorUtil(PropertyDescriptor propertyDescriptor,
-				Object bean) {
-			this.propertyDescriptor = propertyDescriptor;
-			this.bean = bean;
-		}
-
-		public void setValue(Object value) {
-			Method writeMethod = propertyDescriptor.getWriteMethod();
-			try {
-				writeMethod.invoke(bean, value);
-			} catch (Throwable t) {
-				throw new RuntimeException("failed to write property", t);
-			}
-		}
-
-		public Object getValue() {
-			Object result = null;
-			Method readMethod = propertyDescriptor.getReadMethod();
-			try {
-				result = readMethod.invoke(bean);
-			} catch (Throwable t) {
-				throw new RuntimeException("failed to write property", t);
-			}
-			return result;
-		}
-	}
-
-	private EditorUIUtils() {
-		// Avoid instances of this class.
-	}
-
 	static public boolean isValidDigit(String value) {
 		char[] charArray = value.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
@@ -199,5 +191,13 @@ public final class EditorUIUtils {
 			}
 		}
 		return true;
+	}
+
+	public static void staticInject(Logger logger) {
+		EditorUIUtils.logger = logger;
+	}
+
+	private EditorUIUtils() {
+		// Avoid instances of this class.
 	}
 }

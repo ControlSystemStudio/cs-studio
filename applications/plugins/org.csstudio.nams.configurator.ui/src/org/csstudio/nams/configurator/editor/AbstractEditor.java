@@ -104,10 +104,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	}
 
-	public void editConfiguration(ConfigurationType bean) {
-		this.bean = bean;
-	}
-
 	protected Text createTextEntry(Composite parent, String labeltext,
 			boolean editable) {
 		Label label = new Label(parent, SWT.RIGHT);
