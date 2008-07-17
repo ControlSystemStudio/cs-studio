@@ -1,9 +1,12 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -41,6 +44,9 @@ public class AMSInternalMessagingSetUp
 	 */
 	public void createFieldEditors() {
 		// JMS
+		Label serversLabel = new Label(getFieldEditorParent(), SWT.NONE);
+		GridDataFactory.generate(serversLabel, 2, 1);
+		serversLabel.setText("Server");
 		addField(
 			new StringFieldEditor(
 					PreferenceServiceJMSKeys.P_JMS_AMS_CONNECTION_FACTORY_CLASS.getPreferenceStoreId(), 
@@ -82,6 +88,9 @@ public class AMSInternalMessagingSetUp
 				)
 		);
 		// Topics
+		Label topicLabel = new Label(getFieldEditorParent(), SWT.NONE);
+		GridDataFactory.generate(topicLabel, 2, 1);
+		topicLabel.setText("Topics");
 		// - command
 		addField(
 				new StringFieldEditor(
