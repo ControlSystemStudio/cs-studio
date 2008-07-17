@@ -1,0 +1,47 @@
+----------------------------------------------------------------------------------------------------------
+--------------- EDITOREN ---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+- Alarmbearbeitergruppen Editor
+	- Dirtyflag spinnt bei neu angelegter Gruppe
+	- Minimale Anzahl activer Mitglieder kann größer sein als die Anzahl der Mitgleider
+	- Doppelklick auf Alarmbearbeiter soll Editor öfnen
+	- mehrere Alarmbearbeiter gleichzeitig löschen
+	
+- Filter Editor
+	- speicher klappt nur wenn keine junction Bedingungen oder Not Bedingungen enthalten sind
+	- man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen
+	- das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen.  
+	- Alarmaktionen fehlt noch ganz
+	- Filterbedingungen per DND im Baum verschieben
+	- mehrere Filterbedingungen gleichzeitig löschen
+	
+- Filterbedingung Editor
+	- selektiert bei einer neuen Bedingung die Or Condition. Soll aber String Bedingung selektieren.
+	- String Array condition: CompareValues ist unter Linux nicht zu sehen
+	- speicher nur bei der StringBedingung getestet!!
+	
+- Alarmtopic Editor
+	- ok
+	
+- Alarmbearbeite Editor
+	- ok
+	
+----------------------------------------------------------------------------------------------------------
+--------------- Views ------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+- Alarmbearbeiter View
+	- ok
+	
+- Filterbedingun View
+	- ok
+	
+- Alarmtopic View
+	- ok
+	
+- Alarmbearbeitergruppen View
+	- ok
+	
+- Filter View
+	- löschen klappt nicht
