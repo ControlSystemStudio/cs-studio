@@ -2,6 +2,8 @@ package org.csstudio.nams.configurator.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -256,20 +258,17 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 																	// = Rubrik
 
 		List<User2GroupBean> list = new LinkedList<User2GroupBean>();
-		Map<User2GroupBean, User2UserGroupDTO> beanDTOMap = new HashMap<User2GroupBean, User2UserGroupDTO>();
+		final Map<User2GroupBean, User2UserGroupDTO> beanDTOMap = new HashMap<User2GroupBean, User2UserGroupDTO>();
 		for (User2UserGroupDTO map : dto.gibZugehoerigeAlarmbearbeiter()) {
 			User2GroupBean bean2 = DTO2Bean(map, bean);
 			list.add(bean2);
 			beanDTOMap.put(bean2, map);
 		}
-		User2GroupBean[] sortArray = new User2GroupBean[list.size()];
-		for (User2GroupBean unsortedBean : list) {
-			sortArray[beanDTOMap.get(unsortedBean).getPosition()] = unsortedBean;
-		}
-		list.clear();
-		for (User2GroupBean user2GroupBean : sortArray) {
-			list.add(user2GroupBean);
-		}
+		Collections.sort(list, new Comparator<User2GroupBean>() {
+			public int compare(User2GroupBean o1, User2GroupBean o2) {
+				return beanDTOMap.get(o1).getPosition() - beanDTOMap.get(o2).getPosition();
+			}
+		});
 		bean.setUsers(list);
 		return bean;
 	}
@@ -603,12 +602,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		List<User2UserGroupDTO> list = new LinkedList<User2UserGroupDTO>();
 		List<User2GroupBean> users = bean.getUsers();
+		int positionCount = 0;
 		for (User2GroupBean bean2 : users) {
 			User2UserGroupDTO mapDTO = getDTO4Bean(bean2, bean);
 			mapDTO.setActive(bean2.isActive());
 			mapDTO.setActiveReason(bean2.getActiveReason());
 			mapDTO.setLastchange(bean2.getLastChange().getTime());
-			mapDTO.setPosition(users.indexOf(bean2));
+			mapDTO.setPosition(positionCount);
+			positionCount++;
 			list.add(mapDTO);
 		}
 		dto.setAlarmbearbeiter(list);

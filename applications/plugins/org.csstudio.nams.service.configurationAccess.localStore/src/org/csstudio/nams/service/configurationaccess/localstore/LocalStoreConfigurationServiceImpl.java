@@ -32,6 +32,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.Criterion;
 
 /**
  * Implementation für Hibernate.
@@ -270,44 +271,35 @@ class LocalStoreConfigurationServiceImpl implements
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
 			AlarmbearbeiterGruppenDTO dto)
 			throws InconsistentConfigurationException {
-		Serializable generatedID = null;
+		
 		Transaction tx = session.beginTransaction();
 		try {
-			generatedID = session.save(dto);
-
-			Collection<User2UserGroupDTO> conditionMappings = session
+			session.saveOrUpdate(dto);
+			
+			Collection<User2UserGroupDTO> user2GroupMappings = session
 					.createCriteria(User2UserGroupDTO.class).list();
-			Set<User2UserGroupDTO> relevantMappings = new HashSet<User2UserGroupDTO>();
-			Set<User2UserGroupDTO> usedMappings = new HashSet<User2UserGroupDTO>();
-			for (User2UserGroupDTO a : conditionMappings) {
+			
+			for (User2UserGroupDTO a : user2GroupMappings) {
 				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
 						.getUserGroupId()) {
-					relevantMappings.add(a);
+					session.delete(a);
 				}
 			}
 			// for all used FC
 			// get the mappingDTO, if no DTO exists, create one
 			Set<User2UserGroupDTO> zugehoerigeAlarmbearbeiter = dto
 			.gibZugehoerigeAlarmbearbeiter();
-			for (User2UserGroupDTO condition : zugehoerigeAlarmbearbeiter) {
-				usedMappings.add(condition);
-			}
+			
 			// save the used Mappings
-			for (User2UserGroupDTO map : usedMappings) {
-				session.saveOrUpdate(map);
-			}
-			// if an old mapping dto does not exist, remove it
-			relevantMappings.removeAll(usedMappings);
-			for (User2UserGroupDTO unusedMapping : relevantMappings) {
-				session.delete(unusedMapping);
+			for (User2UserGroupDTO map : zugehoerigeAlarmbearbeiter) {
+				session.save(map);
 			}
 			tx.commit();
 		} catch (Throwable e) {
 			tx.rollback();
 			throw new InconsistentConfigurationException(e.getMessage());
 		}
-		return (AlarmbearbeiterGruppenDTO) session.load(
-				AlarmbearbeiterGruppenDTO.class, generatedID);
+		return dto;
 	}
 
 	public TopicDTO saveTopicDTO(TopicDTO topicDTO) {
