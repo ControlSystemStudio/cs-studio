@@ -11,6 +11,7 @@ import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -21,7 +22,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.JunctorConditionForFilterTreeConditionJoinDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
@@ -41,18 +41,12 @@ public class ConfigurationServiceFactoryImpl implements
 	private List<SessionFactory> sessionFactoryList = new LinkedList<SessionFactory>();
 	private List<Session> sessionList = new LinkedList<Session>();
 	
-	public LocalStoreConfigurationService getConfigurationService(
-			String connectionDriver, String connectionURL, String dialect,
-			String username, String password) 
+	public LocalStoreConfigurationService getConfigurationService(String connectionURL, DatabaseType dbType, String username, String password)
 	{
-		Contract.requireNotNull("connectionDriver", connectionDriver);
-		Contract.require(connectionDriver.length() > 0, "connectionDriver.length() > 0");
+		Contract.requireNotNull("dbType", dbType);
 		
 		Contract.requireNotNull("connectionURL", connectionURL);
 		Contract.require(connectionURL.length() > 0, "connectionURL.length() > 0");
-
-		Contract.requireNotNull("dialect", dialect);
-		Contract.require(dialect.length() > 0, "dialect.length() > 0");
 		
 		Contract.requireNotNull("username", username);
 		Contract.require(username.length() > 0, "username.length() > 0");
@@ -60,7 +54,7 @@ public class ConfigurationServiceFactoryImpl implements
 		Contract.requireNotNull("password", password);
 		Contract.require(password.length() > 0, "password.length() > 0");
 		
-		ConnectionData connectionData = new ConnectionData(connectionDriver, connectionURL, dialect, username, password);
+		ConnectionData connectionData = new ConnectionData(dbType.getDriverName(), connectionURL, dbType.getHibernateDialect().getName(), username, password);
 		LocalStoreConfigurationService service = services.get(connectionData);
 		
 		if (service == null) {

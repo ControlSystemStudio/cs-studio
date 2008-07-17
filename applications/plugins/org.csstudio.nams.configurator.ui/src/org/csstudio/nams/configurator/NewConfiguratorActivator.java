@@ -15,6 +15,7 @@ import org.csstudio.nams.configurator.service.synchronize.SynchronizeServiceImpl
 import org.csstudio.nams.configurator.views.AbstractNamsView;
 import org.csstudio.nams.configurator.views.SyncronizeView;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
@@ -41,21 +42,10 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	) {
 		LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
 				.getConfigurationService(
-						"oracle.jdbc.driver.OracleDriver",
-						// "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS =
-						// (PROTOCOL = TCP) (HOST = dbsrv01.desy.de)(PORT =
-						// 1521)) (ADDRESS = (PROTOCOL = TCP) (HOST =
-						// dbsrv02.desy.de)(PORT = 1521)) (ADDRESS = (PROTOCOL =
-						// TCP) (HOST= dbsrv03.desy.de) (PORT = 1521))
-						// (LOAD_BALANCE = yes) (CONNECT_DATA = (SERVER =
-						// DEDICATED)(SERVICE_NAME = desy_db.desy.de)
-						// (FAILOVER_MODE =(TYPE = NONE) (METHOD = BASIC)
-						// (RETRIES = 180)(DELAY = 5))))",
+						
 						preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
-						"org.hibernate.dialect.Oracle10gDialect", // FIXME mz2008-07-10: Könnte Problem bei der DESY erklären, wenn die keine 10er einsetzen wird das scheitern!
-						// "krykmant",
-						// "krykmant");
+						DatabaseType.Oracle10g, // FIXME mz2008-07-10: Könnte Problem bei der DESY erklären, wenn die keine 10er einsetzen wird das scheitern!
 						preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
 						preferenceService

@@ -11,6 +11,7 @@ import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachri
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.service.ExecutionServiceMock;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
@@ -67,7 +68,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	};
 
 	@Ignore
-//	@Test
+	// @Test
 	public void ignoredtestBundleAndApplicationLifecycle() throws Throwable {
 		final DecisionDepartmentActivator bundleInsance = new DecisionDepartmentActivator();
 		final DecisionDepartmentActivator applicationInsance = new DecisionDepartmentActivator();
@@ -77,8 +78,8 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 				regelwerksBuilderService, historyService,
 				new ConfigurationServiceFactory() {
 					public LocalStoreConfigurationService getConfigurationService(
-							String connectionDriver, String connectionURL,
-							String dialect, String username, String password) {
+							String connectionURL, DatabaseType dbType,
+							String username, String password) {
 						return localStoreConfigurationService;
 					}
 				}, executionService);
@@ -98,9 +99,9 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 			public void run() {
 				try {
 					Thread.sleep(2000); // FIXME Was besseres übelegen!
-										// (Application Konzept mit einer run
-										// ist nicht gut - init müsste
-										// ausgelagert werden.)
+					// (Application Konzept mit einer run
+					// ist nicht gut - init müsste
+					// ausgelagert werden.)
 
 					// Hier läuft der Test!!!!!!!!!!!
 					executionService
@@ -159,7 +160,8 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	}
 
 	private LocalStoreConfigurationService createLocalStoreConfigurationService()
-			throws StorageError, StorageException, InconsistentConfigurationException,
+			throws StorageError, StorageException,
+			InconsistentConfigurationException,
 			UnknownConfigurationElementError {
 		LocalStoreConfigurationService result = EasyMock
 				.createMock(LocalStoreConfigurationService.class);
@@ -181,10 +183,25 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	private PreferenceService createPreferenceServiceMock() {
 		PreferenceService result = EasyMock.createMock(PreferenceService.class);
 
-		EasyMock.expect(result.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION)).andReturn("P_APP_DATABASE_CONNECTION").anyTimes();;
-		EasyMock.expect(result.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER)).andReturn("P_APP_DATABASE_USER").anyTimes();;
-		EasyMock.expect(result.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD)).andReturn("P_APP_DATABASE_PASSWORD").anyTimes();;
-		
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION))
+				.andReturn("P_APP_DATABASE_CONNECTION").anyTimes();
+		;
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER))
+				.andReturn("P_APP_DATABASE_USER").anyTimes();
+		;
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD))
+				.andReturn("P_APP_DATABASE_PASSWORD").anyTimes();
+		;
+
 		EasyMock
 				.expect(
 						result

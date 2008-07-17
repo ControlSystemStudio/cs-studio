@@ -10,6 +10,7 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -39,9 +40,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertNotNull(factory);
 		
 		service = factory.getConfigurationService(
-				"oracle.jdbc.driver.OracleDriver",
 				"jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))",
-				"org.hibernate.dialect.Oracle10gDialect",
+				DatabaseType.Oracle10g,
 				"DESY", 
 				"DESY");
 		

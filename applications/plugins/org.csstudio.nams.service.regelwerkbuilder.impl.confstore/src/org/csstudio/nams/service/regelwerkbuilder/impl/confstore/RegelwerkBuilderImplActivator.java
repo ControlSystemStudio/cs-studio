@@ -5,6 +5,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
@@ -36,10 +37,9 @@ public class RegelwerkBuilderImplActivator extends AbstractBundleActivator
 		
 		
 		LocalStoreConfigurationService configurationStoreService = configurationServiceFactory.getConfigurationService(
-				"org.apache.derby.jdbc.ClientDriver",
 				preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-				"org.hibernate.dialect.DerbyDialect",
+				DatabaseType.Derby,
 				preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
 				preferenceService

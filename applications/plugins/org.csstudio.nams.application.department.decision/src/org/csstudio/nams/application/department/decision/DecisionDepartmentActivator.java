@@ -45,6 +45,7 @@ import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
@@ -239,10 +240,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		// LocalStoreConfigurationService
 		DecisionDepartmentActivator.localStoreConfigurationService = injectedConfigurationServiceFactory
 				.getConfigurationService(
-						"org.apache.derby.jdbc.ClientDriver",
 						DecisionDepartmentActivator.preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-						"org.hibernate.dialect.DerbyDialect",
+								DatabaseType.Oracle10g, // TODO mz2008-07-17: AUs PrefStore holen (PrefStore anpassen)
 						DecisionDepartmentActivator.preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
 						DecisionDepartmentActivator.preferenceService
