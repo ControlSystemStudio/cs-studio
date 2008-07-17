@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Sample Preferences"
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.SamplePreferencePage"
+            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.SamplePreferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>
