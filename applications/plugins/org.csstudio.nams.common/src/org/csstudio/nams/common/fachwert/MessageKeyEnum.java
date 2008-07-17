@@ -22,7 +22,7 @@ public enum MessageKeyEnum {
 				return mke;
 			}
 		}
-		throw new RuntimeException("No value available for " + value);
+		throw new IllegalArgumentException("No value available for " + value);
 	}
 	
 	/**
