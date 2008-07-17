@@ -39,6 +39,7 @@ import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -88,10 +89,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private static final int SHOW_BOTH = 3;
 
 	/**
-	 * Default constraint for all scales.
+	 * A rectangle with zero width and height.
 	 */
-	private static final Rectangle DEFAULT_CONSTRAINT = new Rectangle(0, 0, 0,
-			0);
+	private static final Rectangle ZERO_RECTANGLE = new Rectangle(0, 0, 0, 0);
 
 	/**
 	 * The displayed waveform data.
@@ -213,6 +213,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private IAxis _yAxis = new LinearAxis(0.0, 0.0, 0);
 	
 	/**
+	 * The label for this waveform.
+	 */
+	private Label _waveformLabel;
+	
+	/**
 	 * Standard constructor.
 	 */
 	public WaveformFigure() {
@@ -248,6 +253,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		
 		_plotFigure = new PlotFigure();
 		this.add(_plotFigure);
+		
+		_waveformLabel = new Label("Sample"); // TODO: property for text
+		this.add(_waveformLabel);
 
 		// listen to figure movement events
 		addFigureListener(new FigureListener() {
@@ -292,126 +300,132 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			return;
 		}
 		
-		/*
-		 * TODO: the structure of the calculations below is too complicated.
-		 * The problem is that the bounds of the innermost sub-figure, the plot,
-		 * are calculated first instead of last.
-		 */
+		Rectangle figBounds = this.getBounds().getCopy();
+		figBounds.crop(this.getInsets());
 		
-		_plotBounds = calculatePlotBounds();
+		Rectangle bounds = new Rectangle(0, 0, figBounds.width, figBounds.height);
+		
+		Rectangle labelBounds = calculateLabelBounds(bounds);
+		setConstraint(_waveformLabel, labelBounds);
+		
+		Rectangle xAxisBounds = calculateXAxisBounds(bounds);
+		setConstraint(_xAxisScale, xAxisBounds);
+		double d = _data.length / Math.max(1, _xAxisMaxTickmarks);
+		_xAxisScale.setIncrement(d);
+		
+		Rectangle yAxisBounds = calculateYAxisBounds(bounds);
+		setConstraint(_yAxisScale, yAxisBounds);
+		_yAxisScale.refreshConstraints();
+		
+		_plotBounds = calculatePlotBounds(bounds);
+		setConstraint(_plotFigure, _plotBounds);
 		_yAxis.setDisplaySize(_plotBounds.height);
 		adjustAutoscale();
 		
-		setConstraint(_yAxisScale, calculateYAxisBounds());
-		_yAxisScale.refreshConstraints();
-		
-		setConstraint(_xAxisScale, calculateXAxisBounds());	
-		double d = _data.length / Math.max(1, _xAxisMaxTickmarks);
-		_xAxisScale.setIncrement(d);
-
-		setConstraint(_yAxisGridLines, calculateYAxisGridBounds());
+		// Grid lines are located on top of the plot (within the same bounds)
+		setConstraint(_yAxisGridLines,
+				showYAxisGrid() ? _plotBounds.getCopy() : ZERO_RECTANGLE);
 		_yAxisGridLines.setWideness(_plotBounds.width);
-		
-		setConstraint(_xAxisGridLines, calculateXAxisGridBounds());
+		setConstraint(_xAxisGridLines,
+				showXAxisGrid() ? _plotBounds.getCopy() : ZERO_RECTANGLE);
 		_xAxisGridLines.setIncrement(d);
 		_xAxisGridLines.setWideness(_plotBounds.height);
-		
-		setConstraint(_plotFigure, _plotBounds);
 
 		setToolTip(getToolTipFigure());
 	}
 
 	/**
-	 * Calculates the bounds of the gridlines figure for the x-axis.
+	 * Calculates the bounds of the plot of this figure.
 	 * 
-	 * @return the bounds of the gridlines figure for the x-axis.
+	 * @param bounds
+	 *            the bounds within which the plot will be displayed. Note:
+	 *            unlike the other {@code calculate...} methods, this method
+	 *            will not crop these bounds to the remaining bounds, because
+	 *            the plot fills up all the remaining space (except necessary
+	 *            padding).
+	 * @return the bounds of the plot.
 	 */
-	private Rectangle calculateXAxisGridBounds() {
-		if (showXAxisGrid()) {
-			return _plotBounds.getCopy();
-		} else {
-			return DEFAULT_CONSTRAINT;
-		}
+	private Rectangle calculatePlotBounds(final Rectangle bounds) {
+		int y = bounds.y + (showYAxis() ? TEXTHEIGHT / 2 : 0);
+		// height, adjusted for extra space at top and bottom for y-axis labels
+		int height = bounds.height
+				- (showYAxis() ? (showXAxis() ? TEXTHEIGHT / 2 : TEXTHEIGHT) : 0);
+		Rectangle result = new Rectangle(bounds.x, y, bounds.width,
+				height);
+		return result;
 	}
 
 	/**
-	 * Calculates the bounds of the gridlines figure for the y-axis.
+	 * Calculates the bounds of the x-axis of this figure.
 	 * 
-	 * @return the bounds of the gridlines figure for the y-axis.
-	 */
-	private Rectangle calculateYAxisGridBounds() {
-		if (showYAxisGrid()) {
-			// The vertical position and size is the same as that of the y-axis;
-			// the horizontal position and size is that of the plot area.
-			Rectangle yAxis = calculateYAxisBounds();
-			return new Rectangle(
-				_plotBounds.x, yAxis.y, _plotBounds.width, yAxis.height);
-		} else {
-			return DEFAULT_CONSTRAINT;
-		}
-	}
-
-	/**
-	 * Calculates the bounds of the x-axis.
-	 * 
+	 * @param bounds
+	 *            the bounds within which the x-axis will be displayed. These
+	 *            bounds will be cropped to the remaining bounds.
 	 * @return the bounds of the x-axis.
 	 */
-	private Rectangle calculateXAxisBounds() {
+	private Rectangle calculateXAxisBounds(final Rectangle bounds) {
 		if (showXAxis()) {
-			return new Rectangle(_plotBounds.x, _plotBounds.bottom(),
-					_plotBounds.width, xAxisHeight());
+			int height = xAxisHeight();
+			Rectangle result = new Rectangle(bounds.x + yAxisWidth(),
+					bounds.bottom() - height, bounds.width, height);
+			bounds.crop(new Insets(0, 0, height, 0));
+			return result;
 		} else {
-			return DEFAULT_CONSTRAINT;
+			return ZERO_RECTANGLE;
 		}
 	}
 
 	/**
-	 * Calculates the bounds of the y-axis.
+	 * Calculates the bounds of the y-axis of this figure.
 	 * 
+	 * @param bounds
+	 *            the bounds within which the y-axis will be displayed. These
+	 *            bounds will be cropped to the remaining bounds.
 	 * @return the bounds of the y-axis.
 	 */
-	private Rectangle calculateYAxisBounds() {
+	private Rectangle calculateYAxisBounds(final Rectangle bounds) {
 		if (showYAxis()) {
-			return new Rectangle(0, _plotBounds.y - (TEXTHEIGHT / 2),
-				yAxisWidth(), _plotBounds.height + TEXTHEIGHT);
+			int width = yAxisWidth();
+			// height, adjusted for extra space at the bottom if the x-axis is
+			// shown (the space is then already subtracted from the figureBounds)
+			int height = bounds.height + (showXAxis() ? TEXTHEIGHT / 2 : 0);
+			Rectangle result = new Rectangle(bounds.x, bounds.y,
+					width, height);
+			bounds.crop(new Insets(0, width, 0, 0));
+			return result;
 		} else {
-			return DEFAULT_CONSTRAINT;
+			return ZERO_RECTANGLE;
 		}
 	}
 
 	/**
-	 * Calculates and returns the bounds of the plot area.
-	 * @return Rectangle
-	 * 				The rectangle describing the bounds of the plot area.
-	 */
-	private Rectangle calculatePlotBounds() {
-		Rectangle figureBounds = this.getBounds().getCopy();
-		figureBounds.crop(this.getInsets());
-		int x = yAxisWidth();
-		int y = plotMarginTop();
-		int width = figureBounds.width - x;
-		int height = figureBounds.height - y - plotMarginBottom();
-		return new Rectangle(x, y, width, height);
-	}
-	
-	/**
-	 * Calculates the margin between the bottom of this figure and the bottom
-	 * of the contained plot figure.
+	 * Calculates the bounds of the label of this figure.
 	 * 
-	 * @return the margin.
+	 * @param bounds
+	 *            the bounds within which the label will be displayed. These
+	 *            bounds will be cropped to the remaining bounds.
+	 * @return the bounds of the label.
 	 */
-	private int plotMarginBottom() {
-		return showXAxis() ? xAxisHeight() : (showYAxis() ? TEXTHEIGHT / 2 : 0);
+	private Rectangle calculateLabelBounds(final Rectangle bounds) {
+		if (isLabelled()) {
+			int height = TEXTHEIGHT;
+			Rectangle result = new Rectangle(bounds.x, bounds.y,
+					bounds.width, height);
+			bounds.crop(new Insets(height, 0, 0, 0));
+			return result;
+		} else {
+			return ZERO_RECTANGLE;
+		}
 	}
 
 	/**
-	 * Calculates the margin between the top of this figure and the top of the
-	 * contained plot figure.
+	 * Returns whether this figure has a label.
 	 * 
-	 * @return the margin.
+	 * @return <code>true</code> if this figure has a label,
+	 *         <code>false</code> otherwise.
 	 */
-	private int plotMarginTop() {
-		return showYAxis() ? TEXTHEIGHT / 2 : 0;
+	private boolean isLabelled() {
+		return true; // TODO: configurable
 	}
 
 	/**
