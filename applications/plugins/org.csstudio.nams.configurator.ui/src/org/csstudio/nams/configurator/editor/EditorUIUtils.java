@@ -44,9 +44,12 @@ public final class EditorUIUtils {
 
 		public void propertyChange(PropertyChangeEvent event) {
 			if (propertyName.equals(event.getPropertyName())) {
-				Object selection = propertyEditor.getValue();
-				if (selection != null) {
-					viewer.setSelection(new StructuredSelection(selection));
+				Object newSelection = propertyEditor.getValue();
+				if (newSelection != null) {
+					IStructuredSelection oldSelection = (IStructuredSelection) viewer.getSelection();
+					if( oldSelection.getFirstElement() != newSelection ) {
+						viewer.setSelection(new StructuredSelection(newSelection));
+					}
 				}
 			}
 		}
@@ -117,7 +120,9 @@ public final class EditorUIUtils {
 				IStructuredSelection selection = (IStructuredSelection) event
 						.getSelection();
 				Object selectedElement = selection.getFirstElement();
-				propertyEditor.setValue(selectedElement);
+				if( propertyEditor.getValue() != selectedElement ) {
+					propertyEditor.setValue(selectedElement);
+				}
 			}
 		});
 
@@ -168,5 +173,15 @@ public final class EditorUIUtils {
 	
 	private EditorUIUtils() {
 		// Avoid instances of this class.
+	}
+
+	static public boolean isValidDigit(String value) {
+		char[] charArray = value.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			if (!Character.isDigit(charArray[i])) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

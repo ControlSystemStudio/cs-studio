@@ -36,7 +36,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	protected ConfigurationType bean;
 	protected ConfigurationType beanClone;
 
-	protected PropertyChangeListener listener;
 	private String superTitle;
 
 	public AbstractEditor() {
@@ -57,14 +56,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 				this.bean = resultBean;
 				ConfigurationEditorInput cInput = (ConfigurationEditorInput) getEditorInput();
 				cInput.setBean(this.bean);
-
-				this.beanClone.removePropertyChangeListener(this);
-
-				// create new clone
-				this.beanClone = (ConfigurationType) this.bean.getClone();
-				this.beanClone.addPropertyChangeListener(this);
-
-				initDataBinding();
+				this.beanClone.setID(this.bean.getID()); // Die Bean darf nicht neu geklont werden!!! Sonst geht das binding der viewer verloren!
 			}
 		} catch (InconsistentConfigurationException e) {
 			MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench()
@@ -155,7 +147,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return comboWidget;
 	}
 	
-	protected <T extends Enum<?>> ComboViewer createComboForEnum(Composite parent, String labeltext, T[] contents, IConfigurationBean bean, String targetProperty) {
+	public <T extends Enum<?>> ComboViewer createTitledComboForEnumValues(Composite parent, String labeltext, T[] contents, IConfigurationBean bean, String targetProperty) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
@@ -175,8 +167,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return comboWidget;
 	}
 
-	// class NotifyingListViewer
-
 	protected ListViewer createListEntry(Composite parent, String labeltext,
 			boolean editable) {
 		Label label = new Label(parent, SWT.RIGHT);
@@ -185,10 +175,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		ListViewer listWidget = new ListViewer(parent, SWT.BORDER) {
 
 		};
-//		ArrayContentProvider cp = null;
-
-		// listWidget.setEditable(editable);
-		// listWidget.setInput(new WritableList());
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
@@ -256,11 +242,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	protected abstract void initDataBinding();
 
-	public void setPropertyChangedListener(PropertyChangeListener listener) {
-		this.listener = listener;
-		beanClone.addPropertyChangeListener(listener);
-	}
-
 	@Override
 	public abstract void setFocus();
 
@@ -270,14 +251,6 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	public static void staticInject(ConfigurationBeanService service) {
 		configurationBeanService = service;
-	}
-
-	protected static String[] array2StringArray(Object[] objects) {
-		String[] result = new String[objects.length];
-		for (int i = 0; i < result.length; i++) {
-			result[i] = objects[i].toString();
-		}
-		return result;
 	}
 
 	@Override
@@ -300,15 +273,5 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	}
 
 	public void onBeanUpdate(IConfigurationBean bean) {
-	}
-	
-	protected boolean isValidDigit(String value) {
-		char[] charArray = value.toCharArray();
-		for (int i = 0; i < charArray.length; i++) {
-			if (!Character.isDigit(charArray[i])) {
-				return false;
-			}
-		}
-		return true;
 	}
 }

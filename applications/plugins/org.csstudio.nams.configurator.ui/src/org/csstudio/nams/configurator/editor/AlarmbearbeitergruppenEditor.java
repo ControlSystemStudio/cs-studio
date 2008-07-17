@@ -616,7 +616,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 					@Override
 					public IStatus validateAfterGet(Object value) {
-							if (!isValidDigit((String) value)) {
+							if (!EditorUIUtils.isValidDigit((String) value)) {
 								aktiveMitglieder.setText("0");
 								return Status.CANCEL_STATUS;
 							}
@@ -629,7 +629,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 					@Override
 					public IStatus validateAfterGet(Object value) {
-							if (!isValidDigit((String) value)) {
+							if (!EditorUIUtils.isValidDigit((String) value)) {
 								wartezeit.setText("0");
 								return Status.CANCEL_STATUS;
 							}

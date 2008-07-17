@@ -185,7 +185,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
-		this.createComboForEnum(main, "Filtertype: ", SupportedFilterTypes
+		this.createTitledComboForEnumValues(main, "Filtertype: ", SupportedFilterTypes
 				.values(), this.selectedFilterType, "type");
 
 		initializeAddOnBeans();
@@ -228,11 +228,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		IConfigurationBean stringConfigurationBean = specificBeans
 				.get(SupportedFilterTypes.STRING_CONDITION);
 
-		createComboForEnum(stackComposites[1], "CompareKey", MessageKeyEnum
+		createTitledComboForEnumValues(stackComposites[1], "CompareKey", MessageKeyEnum
 				.values(), stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.keyValue.name());
 
-		createComboForEnum(stackComposites[1], "Operator", StringRegelOperator
+		createTitledComboForEnumValues(stackComposites[1], "Operator", StringRegelOperator
 				.values(), stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.operator.name());
 
@@ -249,11 +249,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		IConfigurationBean stringArrayConfigurationBean = specificBeans
 				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
-		createComboForEnum(stackComposites[2], "MessageKey", MessageKeyEnum
+		createTitledComboForEnumValues(stackComposites[2], "MessageKey", MessageKeyEnum
 				.values(), stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.keyValue.name());
 
-		createComboForEnum(stackComposites[2], "Operator", StringRegelOperator
+		createTitledComboForEnumValues(stackComposites[2], "Operator", StringRegelOperator
 				.values(), stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.operator.name());
 
@@ -318,11 +318,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		IConfigurationBean pvConfigurationBean = specificBeans
 				.get(SupportedFilterTypes.PV_CONDITION);
-		createComboForEnum(stackComposites[3], "SuggestedType",
+		createTitledComboForEnumValues(stackComposites[3], "SuggestedType",
 				SuggestedProcessVariableType.values(), pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.suggestedType.name());
 
-		createComboForEnum(stackComposites[3], "Operator", Operator.values(),
+		createTitledComboForEnumValues(stackComposites[3], "Operator", Operator.values(),
 				pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.operator.name());
 
@@ -338,23 +338,23 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		timeBehaviorCheck = createCheckBoxEntry(stackComposites[4],
 				"Alarm bei Timeout", true);
 		addSeparator(stackComposites[4]);
-		createComboForEnum(stackComposites[4], "Start KeyValue", MessageKeyEnum
+		createTitledComboForEnumValues(stackComposites[4], "Start KeyValue", MessageKeyEnum
 				.values(), timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.startKeyValue.name());
 
-		createComboForEnum(stackComposites[4], "Start Operator",
+		createTitledComboForEnumValues(stackComposites[4], "Start Operator",
 				StringRegelOperator.values(), timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.startOperator.name());
 
 		timeStartCompareText = createTextEntry(stackComposites[4],
 				"Start CompareValue", true);
 		addSeparator(stackComposites[4]);
-		createComboForEnum(stackComposites[4], "Stop KeyValue", MessageKeyEnum
+		createTitledComboForEnumValues(stackComposites[4], "Stop KeyValue", MessageKeyEnum
 				.values(), timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.confirmKeyValue
 						.name());
 
-		createComboForEnum(stackComposites[4], "Stop Operator",
+		createTitledComboForEnumValues(stackComposites[4], "Stop Operator",
 				StringRegelOperator.values(), timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.confirmOperator
 						.name());
