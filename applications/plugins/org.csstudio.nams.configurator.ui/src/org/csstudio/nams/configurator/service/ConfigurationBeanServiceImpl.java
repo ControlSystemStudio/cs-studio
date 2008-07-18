@@ -723,6 +723,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		loadConfiguration();
 		FilterBean resultBean = filterBeans
 				.get(new Integer(dto.getIFilterID()));
+		
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
 	}

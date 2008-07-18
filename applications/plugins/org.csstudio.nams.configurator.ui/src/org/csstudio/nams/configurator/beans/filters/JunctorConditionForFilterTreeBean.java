@@ -73,7 +73,11 @@ public class JunctorConditionForFilterTreeBean extends
 			JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) bean;
 			Set<FilterbedingungBean> operands = junctorBean.getOperands();
 			for (FilterbedingungBean filterbedingungBean : operands) {
-				this.filterbedingungBeans.add(filterbedingungBean);
+				if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
+					this.filterbedingungBeans.add(filterbedingungBean.getClone());
+				} else {
+					this.filterbedingungBeans.add(filterbedingungBean);
+				}
 			}
 			this.junctorConditionType = junctorBean.junctorConditionType;
 		}
