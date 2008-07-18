@@ -627,13 +627,19 @@ public class AlarmbearbeitergruppenEditor extends
 		context.bindValue(SWTObservables.observeText(aktiveMitglieder,
 				SWT.Modify), aktiveMitgliederTextObservable,
 				new UpdateValueStrategy() {
-
+					
 					@Override
 					public IStatus validateAfterGet(Object value) {
-							if (!EditorUIUtils.isValidDigit((String) value)) {
-								aktiveMitglieder.setText("0");
+						if (!EditorUIUtils.isValidDigit((String) value)) {
+							aktiveMitglieder.setText("0");
+							return Status.CANCEL_STATUS;
+						} else { 
+							Short convertedValue = Short.parseShort((String) value);
+							if (convertedValue > beanClone.getUsers().size()){
+								aktiveMitglieder.setText("" + beanClone.getUsers().size());
 								return Status.CANCEL_STATUS;
 							}
+						}
 						return super.validateAfterGet(value);
 					}
 				}, null);

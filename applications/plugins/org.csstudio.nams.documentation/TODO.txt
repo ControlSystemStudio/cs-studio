@@ -4,7 +4,6 @@
  
 - Alarmbearbeitergruppen Editor (mw)
 	- Dirtyflag spinnt bei neu angelegter Gruppe (3)
-	- Minimale Anzahl activer Mitglieder kann größer sein als die Anzahl der Mitgleider (3, mind. Warnung)
 	- Doppelklick auf Alarmbearbeiter soll Editor öfnen (2)
 	- mehrere Alarmbearbeiter gleichzeitig löschen (1)
 	
