@@ -57,17 +57,7 @@ public class PVFilterConditionBean extends
 	}
 
 	@Override
-	public PVFilterConditionBean getClone() {
-		PVFilterConditionBean bean = new PVFilterConditionBean();
-		bean.setChannelName(channelName);
-		bean.setCompareValue(compareValue);
-		bean.setOperator(operator);
-		bean.setSuggestedType(suggestedType);
-		return bean;
-	}
-
-	@Override
-	public void doUpdateState(PVFilterConditionBean bean) {
+	protected void doUpdateState(PVFilterConditionBean bean) {
 		setChannelName(bean.getChannelName());
 		setCompareValue(bean.getCompareValue());
 		setOperator(bean.getOperator());

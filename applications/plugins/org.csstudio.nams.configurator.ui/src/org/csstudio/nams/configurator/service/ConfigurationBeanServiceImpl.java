@@ -451,7 +451,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterbedingungBean.setRubrikName("");
 			filterbedingungBean
 					.setChannelName(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
-							.getCName());
+							.getCPvChannelName());
 			filterbedingungBean
 					.setCompareValue(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
 							.getCCompValue());
@@ -792,7 +792,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				pvFilterConditionDTO = new ProcessVariableFilterConditionDTO();
 				inserted = true;
 			}
-
+			pvFilterConditionDTO.setCPvChannelName(specificBean.getChannelName());
 			pvFilterConditionDTO.setCCompValue(specificBean.getCompareValue());
 			pvFilterConditionDTO.setPVOperator(specificBean.getOperator());
 			pvFilterConditionDTO.setSuggestedPVType(specificBean

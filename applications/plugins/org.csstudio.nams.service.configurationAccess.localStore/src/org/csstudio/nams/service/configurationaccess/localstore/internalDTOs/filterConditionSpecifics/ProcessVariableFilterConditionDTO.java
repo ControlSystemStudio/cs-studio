@@ -93,12 +93,11 @@ public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 	}
 
 	@SuppressWarnings("unused")
-	private String getCPvChannelName() {
+	public String getCPvChannelName() {
 		return cPvChannelName;
 	}
 	
-	@SuppressWarnings("unused")
-	private void setCPvChannelName(String pvChannelName) {
+	public void setCPvChannelName(String pvChannelName) {
 		cPvChannelName = pvChannelName;
 	}
 	
