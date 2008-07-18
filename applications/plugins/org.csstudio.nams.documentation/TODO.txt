@@ -1,10 +1,14 @@
 ----------------------------------------------------------------------------------------------------------
+--------------- Tests --- (Priorität, je höher, desto wichtiger) --------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+- AllTests schmiert ab (2)
+
+
+----------------------------------------------------------------------------------------------------------
 --------------- EDITOREN --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
- 
-- Alarmbearbeitergruppen Editor (mw)
-	- ok
-	
+
 - Filter Editor (gs, mz)
 	- speichern klappt nur wenn keine neuen junction Bedingungen (Unterknoten) oder Not Bedingungen enthalten sind (5)
 	- (X) man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen (=> soll so bleiben)
@@ -22,6 +26,9 @@
 	- ok
 	
 - Alarmbearbeite Editor
+	- ok
+
+- Alarmbearbeitergruppen Editor (mw)
 	- ok
 	
 ----------------------------------------------------------------------------------------------------------
