@@ -6,10 +6,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.common.material.regelwerk.Operator;
@@ -32,6 +34,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Alar
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
@@ -337,27 +340,22 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return values.toArray(new FilterBean[values.size()]);
 	}
 
-	FilterBean DTO2Bean(FilterDTO filter) {
+	FilterBean DTO2Bean(FilterDTO filterDTO) {
 		FilterBean bean = new FilterBean();
-		bean.setDefaultMessage(filter.getDefaultMessage());
-		bean.setFilterID(filter.getIFilterID());
-		bean.setName(filter.getName());
+		bean.setDefaultMessage(filterDTO.getDefaultMessage());
+		bean.setFilterID(filterDTO.getIFilterID());
+		bean.setName(filterDTO.getName());
+
 		List<FilterbedingungBean> conditions = bean.getConditions();
 		conditions.clear();
-		// FIXME ignoring inconsistant filterConditions
-		if (!filter.getFilterConditions().contains(null)) {
-			for (FilterConditionDTO condition : filter.getFilterConditions()) {
-				conditions.add(filterbedingungBeans.get(condition
-						.getIFilterConditionID()));
-			}
-		} else {
-			System.out.println("Ignored FilterConditions in Filter: "
-					+ filter.getIFilterID());
+		for (FilterConditionDTO condition : filterDTO.getFilterConditions()) {
+			int filterConditionID = condition.getIFilterConditionID();
+			FilterbedingungBean filterbedingungBean = filterbedingungBeans.get(filterConditionID);
+			conditions.add(filterbedingungBean);
 		}
 		bean.setConditions(conditions);
-		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group
-		// =
-		// Rubrik
+		bean.setRubrikName(getRubrikNameForId(filterDTO.getIGroupRef()));
+
 		return bean;
 	}
 
@@ -431,109 +429,120 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return values.toArray(new FilterbedingungBean[values.size()]);
 	}
 
-	private FilterbedingungBean DTO2Bean(FilterConditionDTO filter) {
+	private FilterbedingungBean DTO2Bean(FilterConditionDTO filterCondtionDTO) {
 		FilterbedingungBean bean = new FilterbedingungBean();
-		bean.setFilterbedinungID(filter.getIFilterConditionID());
-		bean.setDescription(filter.getCDesc());
-		bean.setName(filter.getCName());
+		
 		FilterConditionAddOnBean filterSpecificBean = null;
-		if (filter instanceof JunctorConditionDTO) {
+		if (filterCondtionDTO instanceof JunctorConditionDTO) {
 			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
 			junctorConditionBean
-					.setFirstCondition(DTO2Bean(((JunctorConditionDTO) filter)
+					.setFirstCondition(DTO2Bean(((JunctorConditionDTO) filterCondtionDTO)
 							.getFirstFilterCondition()));
-			junctorConditionBean.setJunctor(((JunctorConditionDTO) filter)
+			junctorConditionBean.setJunctor(((JunctorConditionDTO) filterCondtionDTO)
 					.getJunctor());
 			junctorConditionBean.setRubrikName(""); // RubrikName is set by the
 			// main Bean.
 			junctorConditionBean
-					.setSecondCondition(DTO2Bean(((JunctorConditionDTO) filter)
+					.setSecondCondition(DTO2Bean(((JunctorConditionDTO) filterCondtionDTO)
 							.getSecondFilterCondition()));
 			filterSpecificBean = junctorConditionBean;
-		} else if (filter instanceof ProcessVariableFilterConditionDTO) {
+		} else if (filterCondtionDTO instanceof ProcessVariableFilterConditionDTO) {
 			PVFilterConditionBean filterbedingungBean = new PVFilterConditionBean();
 			filterbedingungBean.setRubrikName("");
 			filterbedingungBean
-					.setChannelName(((ProcessVariableFilterConditionDTO) filter)
+					.setChannelName(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
 							.getCName());
 			filterbedingungBean
-					.setCompareValue(((ProcessVariableFilterConditionDTO) filter)
+					.setCompareValue(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
 							.getCCompValue());
 			filterbedingungBean
-					.setOperator(((ProcessVariableFilterConditionDTO) filter)
+					.setOperator(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
 							.getPVOperator());
 			filterbedingungBean
-					.setSuggestedType(((ProcessVariableFilterConditionDTO) filter)
+					.setSuggestedType(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
 							.getSuggestedPVType());
 			filterSpecificBean = filterbedingungBean;
-		} else if (filter instanceof StringArrayFilterConditionDTO) {
+		} else if (filterCondtionDTO instanceof StringArrayFilterConditionDTO) {
 			StringArrayFilterConditionBean stringArrayFilterConditionBean = new StringArrayFilterConditionBean();
 			stringArrayFilterConditionBean.setRubrikName("");
 
 			stringArrayFilterConditionBean
-					.setCompareValues(((StringArrayFilterConditionDTO) filter)
+					.setCompareValues(((StringArrayFilterConditionDTO) filterCondtionDTO)
 							.getCompareValueStringList());
 			stringArrayFilterConditionBean
-					.setKeyValue(((StringArrayFilterConditionDTO) filter)
+					.setKeyValue(((StringArrayFilterConditionDTO) filterCondtionDTO)
 							.getKeyValueEnum());
 			stringArrayFilterConditionBean
-					.setOperator(((StringArrayFilterConditionDTO) filter)
+					.setOperator(((StringArrayFilterConditionDTO) filterCondtionDTO)
 							.getOperatorEnum());
 			filterSpecificBean = stringArrayFilterConditionBean;
-		} else if (filter instanceof StringFilterConditionDTO) {
+		} else if (filterCondtionDTO instanceof StringFilterConditionDTO) {
 			StringFilterConditionBean stringFilterConditionBean = new StringFilterConditionBean();
 			stringFilterConditionBean.setRubrikName("");
 			stringFilterConditionBean
-					.setCompValue(((StringFilterConditionDTO) filter)
+					.setCompValue(((StringFilterConditionDTO) filterCondtionDTO)
 							.getCompValue());
 			stringFilterConditionBean
-					.setKeyValue(((StringFilterConditionDTO) filter)
+					.setKeyValue(((StringFilterConditionDTO) filterCondtionDTO)
 							.getKeyValueEnum());
 			stringFilterConditionBean
-					.setOperator(((StringFilterConditionDTO) filter)
+					.setOperator(((StringFilterConditionDTO) filterCondtionDTO)
 							.getOperatorEnum());
 			filterSpecificBean = stringFilterConditionBean;
-		} else if (filter instanceof TimeBasedFilterConditionDTO) {
+		} else if (filterCondtionDTO instanceof TimeBasedFilterConditionDTO) {
 			TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();
 			timeBasedConditionBean.setRubrikName("");
 			timeBasedConditionBean
-					.setConfirmCompValue(((TimeBasedFilterConditionDTO) filter)
+					.setConfirmCompValue(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getCConfirmCompValue());
 			timeBasedConditionBean
-					.setConfirmKeyValue(((TimeBasedFilterConditionDTO) filter)
+					.setConfirmKeyValue(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getConfirmKeyValue());
 			timeBasedConditionBean
-					.setStartCompValue(((TimeBasedFilterConditionDTO) filter)
+					.setStartCompValue(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getCStartCompValue());
 			timeBasedConditionBean
-					.setStartKeyValue(((TimeBasedFilterConditionDTO) filter)
+					.setStartKeyValue(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getStartKeyValue());
 			timeBasedConditionBean
-					.setConfirmOperator(((TimeBasedFilterConditionDTO) filter)
+					.setConfirmOperator(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getTBConfirmOperator());
 			timeBasedConditionBean
-					.setStartOperator(((TimeBasedFilterConditionDTO) filter)
+					.setStartOperator(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getTBStartOperator());
 			timeBasedConditionBean
-					.setTimeBehavior(((TimeBasedFilterConditionDTO) filter)
+					.setTimeBehavior(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getTimeBehavior());
 			timeBasedConditionBean
-					.setTimePeriod(((TimeBasedFilterConditionDTO) filter)
+					.setTimePeriod(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getTimePeriod());
 			filterSpecificBean = timeBasedConditionBean;
+		} else if (filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO) {
+			JunctorConditionForFilterTreeDTO fcdto = (JunctorConditionForFilterTreeDTO) filterCondtionDTO;
+			JunctorConditionForFilterTreeBean jcfftBean = new JunctorConditionForFilterTreeBean();
+			jcfftBean.setJunctorConditionType(fcdto.getOperator());
+			for (FilterConditionDTO innerFC : fcdto.getOperands()) {
+				jcfftBean.addOperand(
+						DTO2Bean(innerFC)		
+				);
+			}
+			bean = jcfftBean;
 		}
 
-		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group
+		bean.setFilterbedinungID(filterCondtionDTO.getIFilterConditionID());
+		bean.setDescription(filterCondtionDTO.getCDesc());
+		bean.setName(filterCondtionDTO.getCName());
+		bean.setRubrikName(getRubrikNameForId(filterCondtionDTO.getIGroupRef())); // GUI-Group
 		// =
 		// Rubrik
 		if (filterSpecificBean != null) {
 			bean.setFilterSpecificBean(filterSpecificBean);
-		} else {
-
-			// FIXME mz20080711 ; Add original mapping
-			if (!(filter instanceof JunctorConditionForFilterTreeDTO))
+		}  else {
+			// FCFFT haben keine speciefic beans!
+			if(!(filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO)) {
 				throw new IllegalArgumentException(
-						"Unrecognized FilterConditionDTO: " + filter);
+						"Unrecognized FilterConditionDTO: " + filterCondtionDTO);
+			}
 		}
 		return bean;
 	}
@@ -681,7 +690,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private FilterBean saveFilterBean(FilterBean bean)
 			throws InconsistentConfigurationException {
 		boolean inserted = false;
-		FilterDTO dto = getDTO4Bean(bean);
+
+		FilterDTO dto = findDTO4Bean(bean);
 		if (dto == null) {
 			dto = new FilterDTO();
 			inserted = true;
@@ -690,7 +700,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		List<FilterConditionDTO> list = new LinkedList<FilterConditionDTO>();
 		for (FilterbedingungBean condBean : bean.getConditions()) {
-			list.add(getDTO4Bean(condBean));
+			FilterConditionDTO found = findDTO4Bean(condBean);
+			if (found == null) {
+				if (condBean instanceof JunctorConditionForFilterTreeBean) {
+					// JCFFT
+					found = saveFilterCond4Filter((JunctorConditionForFilterTreeBean)condBean);
+				} else {
+					throw new InconsistentConfigurationException(
+							"Currently unsuported bean type: "
+									+ condBean.getClass().getSimpleName());
+				}
+			}
+			list.add(found);
 		}
 
 		dto.setFilterConditions(list);
@@ -706,6 +727,29 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
+	JunctorConditionForFilterTreeDTO saveFilterCond4Filter(
+			JunctorConditionForFilterTreeBean bean) {
+		JunctorConditionForFilterTreeDTO dto = new JunctorConditionForFilterTreeDTO();
+		
+		dto.setCName(bean.getName());
+		dto.setCDesc(bean.getDescription());
+		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
+				RubrikTypeEnum.FILTER_COND));
+		dto.setOperator(bean.getJunctorConditionType());
+		
+		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
+		for (FilterbedingungBean fcBean : bean.getOperands()) {
+			if( fcBean instanceof JunctorConditionForFilterTreeBean ) {
+				JunctorConditionForFilterTreeDTO innerDTO = saveFilterCond4Filter((JunctorConditionForFilterTreeBean)fcBean);
+				operands.add(innerDTO);
+			} else {
+				operands.add(findDTO4Bean(fcBean));
+			}
+		}
+		dto.setOperands(operands);
+		return dto;
+	}
+
 	@SuppressWarnings("unchecked")
 	private FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {
 		boolean inserted = false;
@@ -718,7 +762,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getFilterSpecificBean();
 
 			JunctorConditionDTO junctorConditionDTO = null;
-			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			FilterConditionDTO dto4Bean = findDTO4Bean(bean);
 			if (dto4Bean != null && (dto4Bean instanceof JunctorConditionDTO)) {
 				junctorConditionDTO = (JunctorConditionDTO) dto4Bean;
 			} else {
@@ -740,7 +784,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getFilterSpecificBean();
 
 			ProcessVariableFilterConditionDTO pvFilterConditionDTO = null;
-			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			FilterConditionDTO dto4Bean = findDTO4Bean(bean);
 			if (dto4Bean != null
 					&& (dto4Bean instanceof ProcessVariableFilterConditionDTO)) {
 				pvFilterConditionDTO = (ProcessVariableFilterConditionDTO) dto4Bean;
@@ -761,7 +805,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getFilterSpecificBean();
 
 			StringFilterConditionDTO stringFilterConditionDTO = null;
-			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			FilterConditionDTO dto4Bean = findDTO4Bean(bean);
 			if (dto4Bean != null
 					&& (dto4Bean instanceof StringFilterConditionDTO)) {
 				stringFilterConditionDTO = (StringFilterConditionDTO) dto4Bean;
@@ -782,7 +826,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getFilterSpecificBean();
 
 			StringArrayFilterConditionDTO stringArrayFilterConditionDTO = null;
-			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			FilterConditionDTO dto4Bean = findDTO4Bean(bean);
 			if (dto4Bean != null
 					&& (dto4Bean instanceof StringArrayFilterConditionDTO)) {
 				stringArrayFilterConditionDTO = (StringArrayFilterConditionDTO) dto4Bean;
@@ -819,7 +863,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getFilterSpecificBean();
 
 			TimeBasedFilterConditionDTO timeBasedFilterConditionDTO = null;
-			FilterConditionDTO dto4Bean = getDTO4Bean(bean);
+			FilterConditionDTO dto4Bean = findDTO4Bean(bean);
 			if (dto4Bean != null
 					&& (dto4Bean instanceof TimeBasedFilterConditionDTO)) {
 				timeBasedFilterConditionDTO = (TimeBasedFilterConditionDTO) dto4Bean;
@@ -913,7 +957,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * @param condition
 	 * @return
 	 */
-	private FilterConditionDTO getDTO4Bean(FilterbedingungBean bean) {
+	private FilterConditionDTO findDTO4Bean(FilterbedingungBean bean) {
 		FilterConditionDTO filterConditionDTO = null;
 		for (FilterConditionDTO potentialdto : entireConfiguration
 				.gibAlleFilterConditions()) {
@@ -937,7 +981,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return dto;
 	}
 
-	private FilterDTO getDTO4Bean(FilterBean bean) {
+	private FilterDTO findDTO4Bean(FilterBean bean) {
 		FilterDTO dto = null;
 		for (FilterDTO potentialdto : entireConfiguration.gibAlleFilter()) {
 			if (potentialdto.getIFilterID() == bean.getID()) {
@@ -1056,7 +1100,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	}
 
-	private void deleteFilterBean(FilterBean bean) 
+	private void deleteFilterBean(FilterBean bean)
 			throws InconsistentConfigurationException {
 		FilterDTO dto = null;
 		for (FilterDTO potentialdto : entireConfiguration.gibAlleFilter()) {
@@ -1069,9 +1113,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			try {
 				configurationService.deleteFilterDTO(dto);
 			} catch (StorageError e) {
-				throw new InconsistentConfigurationException("failed to deleteFilter()", e);
+				throw new InconsistentConfigurationException(
+						"failed to deleteFilter()", e);
 			} catch (StorageException e) {
-				throw new InconsistentConfigurationException("failed to deleteFilter()", e);
+				throw new InconsistentConfigurationException(
+						"failed to deleteFilter()", e);
 			}
 			filterbedingungBeans.remove(dto.getIFilterID());
 			logger.logInfoMessage(this,

@@ -105,7 +105,7 @@ class LocalStoreConfigurationServiceImpl implements
 		} catch (Throwable t) {
 			transaction.rollback();
 			t.printStackTrace();
-		}
+		} 
 		return result;
 	}
 
@@ -260,18 +260,22 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
+	void deleteDTONoTransaction(NewAMSConfigurationElementDTO dto)
+	throws Throwable {
+		if (dto instanceof HasJoinedElements) {
+			((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
+		}
+		
+		session.delete(dto);
+	}
+	
 	public void deleteDTO(NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-
-			if (dto instanceof HasJoinedElements) {
-				((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
-			}
-
-			session.delete(dto);
+			deleteDTONoTransaction(dto);
 
 			transaction.commit();
 		} catch (Throwable t) {
@@ -348,24 +352,6 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			tx = session.beginTransaction();
 			session.saveOrUpdate(filterConditionDTO);
-//			if (filterConditionDTO instanceof StringArrayFilterConditionDTO) {
-//
-//				List<StringArrayFilterConditionCompareValuesDTO> list = session
-//						.createCriteria(
-//								StringArrayFilterConditionCompareValuesDTO.class)
-//						.add(
-//								Restrictions.eq("iFilterConditionRef",
-//										filterConditionDTO
-//												.getIFilterConditionID()))
-//						.list();
-//				for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : list) {
-//					session.delete(stringArrayFilterConditionCompareValuesDTO);
-//				}
-//				StringArrayFilterConditionDTO safc = (StringArrayFilterConditionDTO) filterConditionDTO;
-//				for (StringArrayFilterConditionCompareValuesDTO compValue : safc.getCompareValueList()) {
-//					session.saveOrUpdate(compValue);
-//				}
-//			}
 			tx.commit();
 		} catch (Throwable t) {
 			if (tx != null) {
@@ -409,7 +395,7 @@ class LocalStoreConfigurationServiceImpl implements
 					if (junctorConditions != null
 							&& junctorConditions.size() > 0) {
 						for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
-							deleteDTO(junctorConditionForFilterTreeDTO);
+							deleteDTONoTransaction(junctorConditionForFilterTreeDTO);
 						}
 					}
 				}
