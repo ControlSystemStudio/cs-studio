@@ -21,6 +21,8 @@
  */
  package org.csstudio.platform.simpledal;
 
+import org.epics.css.dal.Timestamp;
+
 public class ProcessVariableValueAdapter<E> implements IProcessVariableValueListener<E> {
 
 	public void connectionStateChanged(ConnectionState connectionState) {
@@ -31,7 +33,7 @@ public class ProcessVariableValueAdapter<E> implements IProcessVariableValueList
 		
 	}
 
-	public void valueChanged(E value) {
+	public void valueChanged(E value, Timestamp timestamp) {
 		
 	}
 

@@ -37,6 +37,7 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ValueType;
+import org.epics.css.dal.Timestamp;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -386,7 +387,7 @@ public abstract class AbstractProcessVariableConnectionServiceTest {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void valueChanged(Object value) {
+		public void valueChanged(Object value, Timestamp timestamp) {
 			_receivedValues.add(value);
 			printReceivedValue(_processVariableAddress, _valueType, value, null);
 		}

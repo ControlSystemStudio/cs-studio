@@ -135,14 +135,14 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void valueChanged(final DynamicValueEvent event) {
-		doForwardValue(event.getValue());
+		doForwardValue(event.getValue(), event.getTimestamp());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void valueUpdated(final DynamicValueEvent event) {
-		doForwardValue(event.getValue());
+		doForwardValue(event.getValue(), event.getTimestamp());
 	}
 
 	/**
@@ -219,7 +219,8 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		}
 
 		if (forward) {
-			doForwardValue(event.getResponse().getValue());
+			//jhatje 18.0.7.2008, add timestamp of the event
+			doForwardValue(event.getResponse().getValue(), event.getResponse().getTimestamp());
 		}
 	}
 

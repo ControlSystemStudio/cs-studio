@@ -49,6 +49,7 @@ import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
+import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.RemoteInfo;
@@ -493,7 +494,7 @@ public class ProcessVariableConnectionService implements
 			// FIXME: Momentan fragen wir lokale Werte auch hier synchron ab.
 			Object value = LocalChannelPool.getInstance().getChannel(pv,
 					valueType).getValue();
-			listener.valueChanged(ConverterUtil.convert(value, valueType));
+			listener.valueChanged(ConverterUtil.convert(value, valueType), new Timestamp());
 		} else {
 
 			try {
@@ -529,11 +530,13 @@ public class ProcessVariableConnectionService implements
 								cleanup();
 							}
 
+							//jhatje 18.07.2008, add timestamp
 							public void responseReceived(ResponseEvent event) {
 								Object value = event.getResponse().getValue();
+								Timestamp timestamp = event.getResponse().getTimestamp();
 								// forward the value (with the requested type)
 								listener.valueChanged(ConverterUtil.convert(
-										value, valueType));
+										value, valueType), timestamp);
 
 								cleanup();
 							}

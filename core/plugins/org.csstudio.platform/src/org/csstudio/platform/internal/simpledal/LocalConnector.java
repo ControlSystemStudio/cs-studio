@@ -25,6 +25,7 @@ import org.csstudio.platform.internal.simpledal.local.ILocalChannelListener;
 import org.csstudio.platform.internal.simpledal.local.LocalChannelPool;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ValueType;
+import org.epics.css.dal.Timestamp;
 
 /**
  * Local Connectors are connected to a simulated channels that live in the local
@@ -45,8 +46,12 @@ class LocalConnector extends AbstractConnector implements ILocalChannelListener 
 		assert valueType != null;
 	}
 
+	/**
+	 * Add Timestamp created from current System time.
+	 * (jhatje 18.07.2008)
+	 */
 	public void valueChanged(Object value) {
-		doForwardValue(value);
+		doForwardValue(value, new Timestamp());
 	}
 
 }

@@ -31,6 +31,7 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ProcessVariableValueAdapter;
+import org.epics.css.dal.Timestamp;
 import org.junit.Before;
 import org.junit.Before;
 import org.junit.Test;
@@ -101,7 +102,7 @@ public class UseCase {
 				.createProcessVariableAdress("dal-epics://Random:11"),
 				new ProcessVariableValueAdapter<Double>() {
 					@Override
-					public void valueChanged(Double value) {
+					public void valueChanged(Double value, Timestamp timestamp) {
 						System.out.println("simple -> " + value);
 					}
 				});
@@ -113,7 +114,7 @@ public class UseCase {
 								.createProcessVariableAdress("dal-epics://Random:11[graphMax]"),
 						new ProcessVariableValueAdapter<Double>() {
 							@Override
-							public void valueChanged(Double value) {
+							public void valueChanged(Double value, Timestamp timestamp) {
 								System.out
 										.println("characteristic -> " + value);
 							}
@@ -124,7 +125,7 @@ public class UseCase {
 				.createProcessVariableAdress("local://something"),
 				new ProcessVariableValueAdapter<Double>() {
 					@Override
-					public void valueChanged(Double value) {
+					public void valueChanged(Double value, Timestamp timestamp) {
 						System.out.println("local static -> " + value);
 					}
 				});
@@ -134,7 +135,7 @@ public class UseCase {
 				.createProcessVariableAdress("local://something RND:1:99:500"),
 				new ProcessVariableValueAdapter<Double>() {
 					@Override
-					public void valueChanged(Double value) {
+					public void valueChanged(Double value, Timestamp timestamp) {
 						System.out.println("local dynamic -> " + value);
 					}
 				});
@@ -151,12 +152,12 @@ public class UseCase {
 				System.out.println(error);
 			}
 
-			public void valueChanged(Double value) {
-				System.out.println(value);
-			}
-
 			public void connectionStateChanged(ConnectionState connectionState) {
 
+			}
+
+			public void valueChanged(Double value, Timestamp timestamp) {
+				System.out.println(value + ", " + timestamp);
 			}
 
 		};
@@ -165,7 +166,7 @@ public class UseCase {
 		_connectionService.registerForDoubleValues(
 				new ProcessVariableValueAdapter<Double>() {
 					@Override
-					public void valueChanged(Double value) {
+					public void valueChanged(Double value, Timestamp timestamp) {
 						System.out.println("simple -> " + value);
 					}
 				}, _addressFactory
@@ -176,7 +177,7 @@ public class UseCase {
 				.registerForDoubleValues(
 						new ProcessVariableValueAdapter<Double>() {
 							@Override
-							public void valueChanged(Double value) {
+							public void valueChanged(Double value, Timestamp timestamp) {
 								System.out.println("local dynamic -> " + value);
 							}
 						},

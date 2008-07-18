@@ -38,6 +38,7 @@ import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.platform.util.PerformanceUtil;
 import org.eclipse.core.runtime.Platform;
+import org.epics.css.dal.Timestamp;
 
 /**
  * Base class for connectors.
@@ -167,7 +168,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 
 		// send initial value
 		if (_latestValue != null) {
-			listener.valueChanged(_latestValue);
+			listener.valueChanged(_latestValue, null);
 		}
 
 		// FIXME: Was machen wir mit dem "latestError" ?? Ebenfalls initial
@@ -249,11 +250,23 @@ abstract class AbstractConnector implements IConnectorStatistic,
 
 	/**
 	 * Forward the current value.
-	 * 
 	 * @param event
 	 *            the DAL connection event
 	 */
 	protected void doForwardValue(final Object value) {
+		doForwardValue(value, null);
+	}
+
+	/**
+	 * Forward the current value with its timestamp.
+	 * (jhatje 18.07.2008, add timestamp)
+	 * 
+	 * @param timestamp 
+	 * 			  the Timestamp of the latest event	
+	 * @param event
+	 *            the DAL connection event
+	 */
+	protected void doForwardValue(final Object value, final Timestamp timestamp) {
 		if (value != null) {
 			// memorize the latest value
 			_latestValue = value;
@@ -261,7 +274,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 			execute(new IInternalRunnable() {
 				public void doRun(IProcessVariableValueListener listener) {
 					listener.valueChanged(ConverterUtil.convert(value,
-							_valueType));
+							_valueType), timestamp);
 				}
 			});
 		}

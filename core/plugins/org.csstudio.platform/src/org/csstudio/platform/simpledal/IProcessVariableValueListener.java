@@ -21,6 +21,8 @@
  */
  package org.csstudio.platform.simpledal;
 
+import org.epics.css.dal.Timestamp;
+
 /**
  * Listener, which can be connected to control system channels using an
  * {@link IProcessVariableConnectionService}.
@@ -36,8 +38,11 @@ public interface IProcessVariableValueListener<E> {
 	 * 
 	 * @param value
 	 *            the latest value
+	 * @param timestamp
+	 * 			  the timestamp of the latest value.
+	 * 			(jhatje 18.07.2008) 
 	 */
-	void valueChanged(E value);
+	void valueChanged(E value, Timestamp timestamp);
 
 	/**
 	 * Announces a connection state change.
