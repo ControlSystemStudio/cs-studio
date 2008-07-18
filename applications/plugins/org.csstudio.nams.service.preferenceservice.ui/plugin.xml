@@ -9,12 +9,18 @@
             class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ApplicationDatabaseSetUp"
             id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ApplicationDatabaseSetUp"
             name="Application database">
+         <keywordReference
+               id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.XXXDatabaseSetUp.keywordA">
+         </keywordReference>
       </page>
       <page
             category="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
             class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp"
             id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp"
             name="Configuration database">
+         <keywordReference
+               id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.XXXDatabaseSetUp.keywordA">
+         </keywordReference>
       </page>
       <page
             category="org.csstudio.platform.ui.css.applications.configuration"
@@ -40,6 +46,13 @@
       <initializer
             class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.keywords">
+      <keyword
+            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.XXXDatabaseSetUp.keywordA"
+            label="New AMS, NAMS, configuration, database">
+      </keyword>
    </extension>
 
 </plugin>
