@@ -27,7 +27,7 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		rubrikName
 	}
 	
-	private String rubrikName;
+	private String rubrikName = "";
 
 	public int compareTo(T o) {
 		return this.getDisplayName().compareTo(o.getDisplayName());
