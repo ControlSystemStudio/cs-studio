@@ -5,7 +5,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.csstudio.nams.common.Regelwerkskennung_Test;
+import org.csstudio.nams.common.material.Regelwerkskennung_Test;
 
 
 public class AllgemeinesRegelwerk_SubSystemTestSuite extends TestCase {

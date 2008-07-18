@@ -1,4 +1,4 @@
-package org.csstudio.nams.common;
+package org.csstudio.nams.common.material;
 
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractValue_TestCase;

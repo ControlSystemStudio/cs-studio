@@ -3,6 +3,8 @@ package org.csstudio.nams.testutils.testsuites;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.csstudio.nams.application.department.decision.DecisionDepartmentAllTestsSuite;
+import org.csstudio.nams.common.NAMSCommonAllTestsSuite;
 import org.junit.Test;
 
 /**
@@ -15,7 +17,8 @@ public class AllNewAMSTests_WithoutDatabase extends TestCase {
 				"AllNewAMSTests_WithoutDatabase");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(AllNewAMSTests_WithoutDatabase.class);
-		suite.addTest(org.csstudio.nams.application.department.decision.DecisionDepartmentAllTestsSuite.suite());
+		suite.addTest(DecisionDepartmentAllTestsSuite.suite());
+		suite.addTest(NAMSCommonAllTestsSuite.suite());
 		
 		return suite;
 	}

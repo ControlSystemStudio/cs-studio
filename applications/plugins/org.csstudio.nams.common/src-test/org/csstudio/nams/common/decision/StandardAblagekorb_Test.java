@@ -1,4 +1,4 @@
-package de.c1wps.desy.ams.allgemeines;
+package org.csstudio.nams.common.decision;
 
 import java.util.Iterator;
 

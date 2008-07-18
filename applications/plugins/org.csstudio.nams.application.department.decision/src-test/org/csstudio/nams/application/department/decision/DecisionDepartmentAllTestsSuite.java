@@ -13,7 +13,7 @@ public class DecisionDepartmentAllTestsSuite extends TestCase {
 	public static Test suite() throws Throwable {
 		// TODO System.setErr(new PrintStream(new OutputStreamWriter(new StringWriter())));
 		
-		TestSuite suite = new TestSuite("DecisionDepartmentAllTestsSuite");
+		TestSuite suite = new TestSuite("NAMSCommonAllTestsSuite");
 		//$JUnit-BEGIN$
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 		suite.addTestSuite(DecisionDepartmentActivator_Test.class);
