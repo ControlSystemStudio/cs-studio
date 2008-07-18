@@ -3,6 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import org.csstudio.nams.common.contract.Contract;
 import org.hibernate.dialect.DerbyDialect;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.Oracle9iDialect;
@@ -14,7 +15,7 @@ import org.hibernate.dialect.Oracle9iDialect;
  */
 public enum DatabaseType {
 	/**
-	 * Treiber und Dialect für Oracle 10g.
+	 * Treiber und Dialect für Oracle 10g. jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))
 	 */
 	Oracle10g("Oracle 10g", "oracle.jdbc.driver.OracleDriver", Oracle10gDialect.class),
 
@@ -31,7 +32,12 @@ public enum DatabaseType {
 	/**
 	 * Treiber und Dialect für Derby.
 	 */
-	Derby("Apache Derby", "org.apache.derby.jdbc.ClientDriver", DerbyDialect.class);
+	Derby("Apache Derby", "org.apache.derby.jdbc.ClientDriver", DerbyDialect.class),
+	
+	/**
+	 * Treiber und Dialect für HSQL. jdbc:hsqldb:file:namsconfigurator.db / sa / 
+	 */
+	HSQL_1_8_0("HSQL database engine 1.8.0 or higher", "org.hsqldb.jdbcDriver", HSQLDialect.class);
 
 	private final String driverName;
 	private final Class<? extends Dialect> hibernateDialect;

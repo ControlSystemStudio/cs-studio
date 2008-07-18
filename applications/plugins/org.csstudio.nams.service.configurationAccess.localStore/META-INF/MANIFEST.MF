@@ -53,7 +53,9 @@ Bundle-ClassPath: .,
  lib-hibernate/xerces-2.6.2.jar,
  lib-hibernate/xml-apis.jar,
  lib-db/derbyclient.jar,
- lib-db/derbytools.jar
+ lib-db/derbytools.jar,
+ lib-hsql/hsqldb.jar,
+ lib-hsql/servlet.jar
 Export-Package: org.csstudio.nams.service.configurationaccess.localstore;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.configurationaccess.localstore.declaration,
  org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions,
