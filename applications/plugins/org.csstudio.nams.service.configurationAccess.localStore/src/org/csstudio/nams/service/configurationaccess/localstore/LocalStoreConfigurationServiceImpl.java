@@ -378,32 +378,35 @@ class LocalStoreConfigurationServiceImpl implements
 
 			session.saveOrUpdate(dto);
 
+			List<FilterConditionDTO> filterConditions = dto
+			.getFilterConditions();
+
 			// clean up join data
 			Collection<FilterConditionsToFilterDTO> conditionMappings = session
 					.createCriteria(FilterConditionsToFilterDTO.class).list();
 
 			for (FilterConditionsToFilterDTO joinElement : conditionMappings) {
 				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
+					int filterConditionRef = joinElement.getIFilterConditionRef();
 					session.delete(joinElement);
 
 					Collection<JunctorConditionForFilterTreeDTO> junctorConditions = session
 							.createCriteria(
 									JunctorConditionForFilterTreeDTO.class)
 							.add(
-									Restrictions.idEq(joinElement
-											.getIFilterConditionRef())).list();
+									Restrictions.idEq(filterConditionRef)).list();
 					if (junctorConditions != null
 							&& junctorConditions.size() > 0) {
 						for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
-							deleteDTONoTransaction(junctorConditionForFilterTreeDTO);
+							if (!filterConditions.contains(junctorConditionForFilterTreeDTO)) {
+								deleteDTONoTransaction(junctorConditionForFilterTreeDTO);
+							}
 						}
 					}
 				}
 			}
 
 			// join speichern
-			List<FilterConditionDTO> filterConditions = dto
-					.getFilterConditions();
 			for (FilterConditionDTO filterConditionDTO : filterConditions) {
 				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
 					// Diese Condition speichern, da sie von Editor angelegt

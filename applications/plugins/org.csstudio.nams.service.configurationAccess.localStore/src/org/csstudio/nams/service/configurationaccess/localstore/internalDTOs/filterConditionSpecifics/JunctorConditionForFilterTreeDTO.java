@@ -55,6 +55,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	@Transient
 	private FilterConditionDTO[] operands = new FilterConditionDTO[0];
 
+	
 	/**
 	 * Setzt den Operator für diese Conjunction.
 	 * 

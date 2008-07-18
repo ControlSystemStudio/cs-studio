@@ -215,6 +215,29 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 			assertFalse("Test-Con".equals(filterConditionDTO.getCName()));
 		}
 		
+		
+		// verändern
+		Set<FilterConditionDTO> operands2 = new HashSet<FilterConditionDTO>();
+		operands2.add(leftCondition);
+		condition.setOperands(operands2);
+		service.saveDTO(condition);
+		
+		// neu laden....
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		loadedList = entireConfiguration.gibAlleFilterConditions();
+		assertTrue("neue fc ist jetzt gespeichert.", loadedList.contains(condition));
+		JunctorConditionForFilterTreeDTO result = null;
+		for (FilterConditionDTO filterConditionDTO : loadedList) {
+			if (filterConditionDTO.getCName().equals("Modified")) {
+				result = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
+			}
+		}
+		assertNotNull(result);
+		assertEquals(1, result.getOperands().size());
+		assertTrue(result.getOperands().contains(leftCondition));
+		
+		
 		// löschen
 		service.deleteDTO(condition);
 		
@@ -250,16 +273,16 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		service.saveDTO(leftCondition);
 		service.saveDTO(rightCondition);
 
-		JunctorConditionForFilterTreeDTO andCondition = new JunctorConditionForFilterTreeDTO();
-		andCondition.setCName("TEST-Con JCFFT");
-		andCondition.setCDesc("Test-Description");
-		andCondition.setOperator(JunctorConditionType.AND);
-		andCondition.setOperands(operands);
+		JunctorConditionForFilterTreeDTO orCondition = new JunctorConditionForFilterTreeDTO();
+		orCondition.setCName("TEST-Con JCFFT");
+		orCondition.setCDesc("Test-Description");
+		orCondition.setOperator(JunctorConditionType.OR);
+		orCondition.setOperands(operands);
 		
 		// Filter 
 		// Root-Ebene aufbauen
 		List<FilterConditionDTO> filterConditions = new LinkedList<FilterConditionDTO>();
-		filterConditions.add(andCondition);
+		filterConditions.add(orCondition);
 		
 		FilterDTO filter = new FilterDTO();
 		filter.setName("Test Filter für JCFFT");
@@ -289,6 +312,34 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 			}
 		}
 		assertNotNull("enthalten", found);
+		assertEquals(filter, found);
+		
+		
+		// verändern
+		Set<FilterConditionDTO> operands2 = new HashSet<FilterConditionDTO>();
+		operands2.add(leftCondition);
+		
+		orCondition.setOperands(operands2);
+		service.saveFilterDTO(filter);
+		
+		// Pruefen dass noch kein entsprechender Filter da ist.
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		alleFilter = entireConfiguration.gibAlleFilter();
+		FilterDTO foundFilter = null;
+		for (FilterDTO filterDTO : alleFilter) {
+			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
+				foundFilter = filterDTO;
+			}
+		}
+		List<FilterConditionDTO> list = foundFilter.getFilterConditions();
+		assertEquals(1, list.size());
+		assertEquals(orCondition, list.get(0));
+		JunctorConditionForFilterTreeDTO junctionDTO = (JunctorConditionForFilterTreeDTO) list.get(0);
+		Set<FilterConditionDTO> operands3 = junctionDTO.getOperands();
+		assertEquals(1, operands3.size());
+		assertEquals(leftCondition, operands3.iterator().next());
+		
 		
 		// löschen
 		service.deleteDTO(filter);

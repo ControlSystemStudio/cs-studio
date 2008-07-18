@@ -106,7 +106,14 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		setDefaultMessage(bean.getDefaultMessage());
 		setName(bean.getName());
 		setFilterID(bean.getFilterID());
-		setConditions(bean.getConditions());
+		
+		List<FilterbedingungBean> cloneList = new LinkedList<FilterbedingungBean>();
+		List<FilterbedingungBean> list = bean.getConditions();
+		for (FilterbedingungBean filterbedingungBean : list) {
+			cloneList.add(filterbedingungBean.getClone());
+		}
+		
+		setConditions(cloneList);
 	}
 
 	public int getID() {

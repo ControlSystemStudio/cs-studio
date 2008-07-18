@@ -731,8 +731,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			JunctorConditionForFilterTreeBean bean) {
 		JunctorConditionForFilterTreeDTO dto = new JunctorConditionForFilterTreeDTO();
 		
-		dto.setCName(bean.getName());
-		dto.setCDesc(bean.getDescription());
+		dto.setCName(bean.getJunctorConditionType().toString());
+		dto.setCDesc("");
 		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
 				RubrikTypeEnum.FILTER_COND));
 		dto.setOperator(bean.getJunctorConditionType());

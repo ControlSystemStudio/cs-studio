@@ -14,6 +14,9 @@ public class JunctorConditionForFilterTreeBean extends
 	private JunctorConditionType junctorConditionType;
 	private Set<FilterbedingungBean> filterbedingungBeans = new TreeSet<FilterbedingungBean>();
 
+	public JunctorConditionForFilterTreeBean() {
+		setFilterSpecificBean(null);
+	}
 
 	public String getDisplayName() {
 		return junctorConditionType.name();
@@ -63,22 +66,54 @@ public class JunctorConditionForFilterTreeBean extends
 	}
 
 	@Override
+	protected void doUpdateState(FilterbedingungBean bean) {
+		if (bean instanceof JunctorConditionForFilterTreeBean) {
+			super.doUpdateState(bean);
+			this.filterbedingungBeans.clear();
+			JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) bean;
+			Set<FilterbedingungBean> operands = junctorBean.getOperands();
+			for (FilterbedingungBean filterbedingungBean : operands) {
+				this.filterbedingungBeans.add(filterbedingungBean);
+			}
+			this.junctorConditionType = junctorBean.junctorConditionType;
+		}
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime
-		* result
-		+ ((filterbedingungBeans == null) ? 0 : filterbedingungBeans
-				.hashCode());
+				* result
+				+ ((filterbedingungBeans == null) ? 0 : filterbedingungBeans
+						.hashCode());
 		result = prime
-		* result
-		+ ((junctorConditionType == null) ? 0 : junctorConditionType
-				.hashCode());
+				* result
+				+ ((junctorConditionType == null) ? 0 : junctorConditionType
+						.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final JunctorConditionForFilterTreeBean other = (JunctorConditionForFilterTreeBean) obj;
+		if (filterbedingungBeans == null) {
+			if (other.filterbedingungBeans != null)
+				return false;
+		} else if (!filterbedingungBeans.equals(other.filterbedingungBeans))
+			return false;
+		if (junctorConditionType == null) {
+			if (other.junctorConditionType != null)
+				return false;
+		} else if (!junctorConditionType.equals(other.junctorConditionType))
+			return false;
+		return true;
 	}
+	
 }
