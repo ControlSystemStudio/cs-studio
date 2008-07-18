@@ -52,7 +52,17 @@ public class ConfigurationServiceFactoryImpl implements
 		Contract.require(username.length() > 0, "username.length() > 0");
 		
 		Contract.requireNotNull("password", password);
-		Contract.require(password.length() > 0, "password.length() > 0");
+		//Passwords of length 0 ok for development databaseses! Contract.require(password.length() > 0, "password.length() > 0");
+		
+		/*-if( dbType == DatabaseType.HSQL_1_8_0 ) {
+			try {
+				DriverManager.registerDriver(new jdbcDriver());
+			} catch (Throwable t) {
+				// TODO logging....
+				System.out
+						.println("ConfigurationServiceFactoryImpl.getConfigurationService() " + t);
+			}
+		}*/
 		
 		ConnectionData connectionData = new ConnectionData(dbType.getDriverName(), connectionURL, dbType.getHibernateDialect().getName(), username, password);
 		LocalStoreConfigurationService service = services.get(connectionData);
@@ -93,18 +103,6 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(JunctorConditionForFilterTreeDTO.class)
 				.addAnnotatedClass(JunctorConditionForFilterTreeConditionJoinDTO.class)
 				.addAnnotatedClass(User2UserGroupDTO.class)
-
-//				.setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
-//				.setProperty("hibernate.connection.url", "jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))")
-//				.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect")
-//				.setProperty("hibernate.connection.username", "DESY")
-//				.setProperty("hibernate.connection.password", "DESY")
-
-//				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
-//				.setProperty("hibernate.connection.url", "jdbc:derby://localhost:1527/amsdb")
-//				.setProperty("hibernate.dialect", "org.hibernate.dialect.DerbyDialect")
-//				.setProperty("hibernate.connection.username", "APP")
-//				.setProperty("hibernate.connection.password", "APP")
 				
 				.setProperty("hibernate.connection.driver_class", connectionData.getConnectionDriver())
 				.setProperty("hibernate.connection.url", connectionData.getConnectionURL())
@@ -116,7 +114,7 @@ public class ConfigurationServiceFactoryImpl implements
 				.setProperty("current_session_context_class", "thread")
 				.setProperty("cache.provider_class", "org.hibernate.cache.NoCacheProvider")
 				.setProperty("show_sql", "true")
-				.setProperty("hbm2ddl.auto", "update")
+				.setProperty("hbm2ddl.auto", "update") 
 				.setProperty("hibernate.mapping.precedence", "class");
 
 		//TODO in die config auslagern

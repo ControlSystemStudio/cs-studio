@@ -25,6 +25,9 @@ public class LocalConfigurationStoreServiceActivator extends
 	@OSGiBundleActivationMethod
 	public OSGiServiceOffers startBundle(
 			@OSGiService @Required Logger logger) throws Exception {
+
+		/*- XXX Needed for HSQL-Mode.
+		Class.forName("org.hsqldb.jdbcDriver");*/
 		
 		OSGiServiceOffers result = new OSGiServiceOffers();
 		try {

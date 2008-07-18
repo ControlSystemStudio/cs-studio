@@ -3,7 +3,6 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import org.csstudio.nams.common.contract.Contract;
 import org.hibernate.dialect.DerbyDialect;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.Oracle9iDialect;
@@ -36,8 +35,10 @@ public enum DatabaseType {
 	
 	/**
 	 * Treiber und Dialect für HSQL. jdbc:hsqldb:file:namsconfigurator.db / sa / 
-	 */
-	HSQL_1_8_0("HSQL database engine 1.8.0 or higher", "org.hsqldb.jdbcDriver", HSQLDialect.class);
+	 *//*-
+	HSQL_1_8_0("HSQL database engine 1.8.0 or higher", "org.hsqldb.jdbcDriver", HSQLDialect.class)
+	*/
+	;
 
 	private final String driverName;
 	private final Class<? extends Dialect> hibernateDialect;
