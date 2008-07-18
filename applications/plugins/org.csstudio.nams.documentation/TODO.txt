@@ -3,7 +3,6 @@
 ----------------------------------------------------------------------------------------------------------
  
 - Alarmbearbeitergruppen Editor (mw)
-	- Doppelklick auf Alarmbearbeiter soll Editor öfnen (2)
 	- mehrere Alarmbearbeiter gleichzeitig löschen (1)
 	
 - Filter Editor (gs, mz)

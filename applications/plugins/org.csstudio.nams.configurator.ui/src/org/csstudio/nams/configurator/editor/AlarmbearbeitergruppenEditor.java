@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.NewConfiguratorActivator;
+import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
@@ -19,6 +20,8 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -47,11 +50,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -340,7 +347,33 @@ public class AlarmbearbeitergruppenEditor extends
 					table.setHeaderVisible(true);
 					table.setLinesVisible(true);
 					table.setSize(400, 300);
+					
+					table.addMouseListener(new MouseListener(){
 
+						public void mouseDoubleClick(MouseEvent e) {
+							try {
+								ConfigurationEditorInput editorInput;
+								editorInput = new ConfigurationEditorInput(
+										beanClone.getUsers().get(tableViewer.getTable().getSelectionIndex()).getUserBean());
+								
+								IWorkbenchPage activePage = PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow().getActivePage();
+								String editorId = BeanToEditorId.getEnumForClass(AlarmbearbeiterBean.class)
+								.getEditorId();
+								
+								activePage.openEditor(editorInput, editorId);
+							} catch (PartInitException pie) {
+								pie.printStackTrace();
+							}
+						}
+
+						public void mouseDown(MouseEvent e) {
+						}
+
+						public void mouseUp(MouseEvent e) {
+						}
+					});
+					
 					// TableColumn alarmbearbieter = new TableColumn(table,
 					// SWT.LEFT);
 					// alarmbearbieter.setText("Alarmbearbeiter");
