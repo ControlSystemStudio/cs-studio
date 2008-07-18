@@ -104,11 +104,11 @@ public class LoggerMock implements Logger {
 	}
 
 	public void logWarningMessage(Object caller, String message) {
-		logEntries.add(new LogEntry(LogType.INFO, caller, message, null));
+		logEntries.add(new LogEntry(LogType.WARNING, caller, message, null));
 	}
 
 	public void logWarningMessage(Object caller, String message,
 			Throwable throwable) {
-		logEntries.add(new LogEntry(LogType.INFO, caller, message, throwable));
+		logEntries.add(new LogEntry(LogType.WARNING, caller, message, throwable));
 	}
 }

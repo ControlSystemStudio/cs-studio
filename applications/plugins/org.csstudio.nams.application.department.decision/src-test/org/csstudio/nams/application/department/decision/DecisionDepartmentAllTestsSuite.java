@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.csstudio.nams.application.department.decision.office.decision.Alarmentscheidungsbuero_SubSystemTestSuite;
+import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler_Test;
 import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction_Test;
 
 public class DecisionDepartmentAllTestsSuite extends TestCase {
@@ -14,10 +15,12 @@ public class DecisionDepartmentAllTestsSuite extends TestCase {
 		
 		TestSuite suite = new TestSuite("DecisionDepartmentAllTestsSuite");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(DecisionDepartmentAllTestsSuite.class);
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
-		suite.addTestSuite(SyncronisationsAutomat_Test.class);
 		suite.addTestSuite(DecisionDepartmentActivator_Test.class);
+		suite.addTestSuite(DecisionDepartmentAllTestsSuite.class);
+		suite.addTestSuite(SyncronisationsAutomat_Test.class);
+		suite.addTestSuite(ThreadTypesOfDecisionDepartment_Test.class);
+		suite.addTestSuite(XMPPLoginCallbackHandler_Test.class);
 		suite.addTestSuite(XMPPRemoteShutdownAction_Test.class);
 		//$JUnit-END$
 		return suite;
