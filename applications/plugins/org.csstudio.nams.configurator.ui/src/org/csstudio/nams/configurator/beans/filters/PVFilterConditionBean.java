@@ -7,10 +7,10 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 public class PVFilterConditionBean extends
 		AbstractConfigurationBean<PVFilterConditionBean> implements FilterConditionAddOnBean {
 
-	private SuggestedProcessVariableType suggestedType;
-	private String channelName;
-	private Operator operator;
-	private String compareValue;
+	private SuggestedProcessVariableType suggestedType = SuggestedProcessVariableType.STRING;
+	private String channelName = "";
+	private Operator operator = Operator.EQUALS;
+	private String compareValue = "";
 	
 	public enum PropertyNames{
 		suggestedType, channelName, operator, compareValue;

@@ -10,16 +10,16 @@ public class TimeBasedFilterConditionBean extends
 		AbstractConfigurationBean<TimeBasedFilterConditionBean> implements
 		FilterConditionAddOnBean {
 
-	private MessageKeyEnum startKeyValue;
-	private StringRegelOperator sStartOperator;
-	private String startCompValue;
+	private MessageKeyEnum startKeyValue = MessageKeyEnum.NAME;
+	private StringRegelOperator sStartOperator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
+	private String startCompValue = "";
 
-	private MessageKeyEnum confirmKeyValue;
-	private StringRegelOperator confirmOperator;
-	private String confirmCompValue;
+	private MessageKeyEnum confirmKeyValue = MessageKeyEnum.NAME;
+	private StringRegelOperator confirmOperator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
+	private String confirmCompValue = "";
 
-	private Millisekunden timePeriodDomainValue;
-	private TimeBasedType timeBehavior;
+	private Millisekunden timePeriodDomainValue = Millisekunden.valueOf(0);
+	private TimeBasedType timeBehavior = TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM;
 	
 	public enum PropertyNames {
 		startKeyValue, startOperator, startCompValue, 

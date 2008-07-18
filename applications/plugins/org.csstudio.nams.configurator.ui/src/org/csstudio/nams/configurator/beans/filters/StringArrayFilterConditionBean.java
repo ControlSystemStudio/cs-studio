@@ -11,8 +11,8 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 		implements FilterConditionAddOnBean {
 
 	private List<String> compareValues = new LinkedList<String>();
-	private MessageKeyEnum keyValue;
-	private StringRegelOperator operator;
+	private MessageKeyEnum keyValue = MessageKeyEnum.NAME;
+	private StringRegelOperator operator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
 	
 	public static enum PropertyNames {
 		compareValues, keyValue, operator;

@@ -8,9 +8,9 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 
 	
 	
-	private MessageKeyEnum keyValue;
-	private StringRegelOperator operator;
-	private String compValue;
+	private MessageKeyEnum keyValue = MessageKeyEnum.NAME;
+	private StringRegelOperator operator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
+	private String compValue = "";
 	
 	public static enum PropertyNames {
 		keyValue, operator, compValue;
