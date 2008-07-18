@@ -1014,9 +1014,24 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	}
 
-	private void deleteFilterBean(FilterBean bean) {
-		// TODO Auto-generated method stub
-
+	private void deleteFilterBean(FilterBean bean) 
+			throws InconsistentConfigurationException {
+		FilterDTO dto = null;
+		for (FilterDTO potentialdto : entireConfiguration
+				.gibAlleFilter()) {
+			if (potentialdto.getIFilterID() == bean.getID()) {
+				dto = potentialdto;
+				break;
+			}
+		}
+		if (dto != null) {
+			configurationService.deleteFilterDTO(dto);
+			filterbedingungBeans.remove(dto.getIFilterID());
+			logger.logInfoMessage(this,
+					"ConfigurationBeanServiceImpl.delete() "
+							+ dto.getIFilterID() + " "
+							+ dto.getName());
+		}
 	}
 
 	private void deleteFilterbedingungBean(FilterbedingungBean bean)

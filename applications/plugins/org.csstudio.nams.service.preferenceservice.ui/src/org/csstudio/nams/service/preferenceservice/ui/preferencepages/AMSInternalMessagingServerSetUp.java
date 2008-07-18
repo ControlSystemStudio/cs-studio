@@ -1,12 +1,9 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -14,26 +11,26 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * This preference page is used to set up the configuration database settings.
  */
 
-public class AMSInternalMessagingSetUp
+public class AMSInternalMessagingServerSetUp
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 	
 	private static final int TEXTCOLUMS = 64;
 
 	public static void staticInject(IPreferenceStore preferenceStore) {
-		AMSInternalMessagingSetUp.preferenceStore = preferenceStore;
+		AMSInternalMessagingServerSetUp.preferenceStore = preferenceStore;
 	}
 
 	private static IPreferenceStore preferenceStore;
 
-	public AMSInternalMessagingSetUp() {
+	public AMSInternalMessagingServerSetUp() {
 		super(GRID);
 		
-		if( AMSInternalMessagingSetUp.preferenceStore == null ) {
+		if( AMSInternalMessagingServerSetUp.preferenceStore == null ) {
 			throw new RuntimeException("class has not been equiped, missing: preference store");
 		}
-		setPreferenceStore(AMSInternalMessagingSetUp.preferenceStore);
-		setDescription("Set up of nams internal messaging");
+		setPreferenceStore(AMSInternalMessagingServerSetUp.preferenceStore);
+		setDescription("Set up of nams internal messaging server");
 	}
 	
 	/**
@@ -44,9 +41,9 @@ public class AMSInternalMessagingSetUp
 	 */
 	public void createFieldEditors() {
 		// JMS
-		Label serversLabel = new Label(getFieldEditorParent(), SWT.NONE);
-		GridDataFactory.generate(serversLabel, 2, 1);
-		serversLabel.setText("Server");
+//		Label serversLabel = new Label(getFieldEditorParent(), SWT.NONE);
+//		GridDataFactory.generate(serversLabel, 2, 1);
+//		serversLabel.setText("Server");
 		addField(
 			new StringFieldEditor(
 					PreferenceServiceJMSKeys.P_JMS_AMS_CONNECTION_FACTORY_CLASS.getPreferenceStoreId(), 
@@ -88,26 +85,26 @@ public class AMSInternalMessagingSetUp
 				)
 		);
 		// Topics
-		Label topicLabel = new Label(getFieldEditorParent(), SWT.NONE);
-		GridDataFactory.generate(topicLabel, 2, 1);
-		topicLabel.setText("Topics");
-		// - command
-		addField(
-				new StringFieldEditor(
-						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND.getPreferenceStoreId(), 
-						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND.getDescription() +":", 
-						TEXTCOLUMS, 
-						getFieldEditorParent()
-				)
-		);
-		addField(
-				new StringFieldEditor(
-						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID.getPreferenceStoreId(), 
-						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID.getDescription() +":", 
-						TEXTCOLUMS, 
-						getFieldEditorParent()
-				)
-		);
+//		Label topicLabel = new Label(getFieldEditorParent(), SWT.NONE);
+//		GridDataFactory.generate(topicLabel, 2, 1);
+//		topicLabel.setText("Topics");
+//		// - command
+//		addField(
+//				new StringFieldEditor(
+//						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND.getPreferenceStoreId(), 
+//						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND.getDescription() +":", 
+//						TEXTCOLUMS, 
+//						getFieldEditorParent()
+//				)
+//		);
+//		addField(
+//				new StringFieldEditor(
+//						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID.getPreferenceStoreId(), 
+//						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID.getDescription() +":", 
+//						TEXTCOLUMS, 
+//						getFieldEditorParent()
+//				)
+//		);
 		
 		// - 
 		

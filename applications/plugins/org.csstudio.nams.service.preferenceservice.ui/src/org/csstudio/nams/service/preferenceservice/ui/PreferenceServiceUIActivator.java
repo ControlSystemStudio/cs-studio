@@ -6,10 +6,11 @@ import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.preferenceservice.declaration.bridge4ui.PreferenceStoreAccessor;
-import org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingSetUp;
+import org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingServerSetUp;
+import org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingTopicsSetUp;
 import org.csstudio.nams.service.preferenceservice.ui.preferencepages.ApplicationDatabaseSetUp;
-import org.csstudio.nams.service.preferenceservice.ui.preferencepages.PreferenceInitializer;
 import org.csstudio.nams.service.preferenceservice.ui.preferencepages.ConfigurationDatabaseSetUp;
+import org.csstudio.nams.service.preferenceservice.ui.preferencepages.PreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleActivator;
 
@@ -38,6 +39,7 @@ public class PreferenceServiceUIActivator extends AbstractBundleActivator {
 		PreferenceInitializer.staticInject(preferenceStore);
 		ConfigurationDatabaseSetUp.staticInject(preferenceStore);
 		ApplicationDatabaseSetUp.staticInject(preferenceStore);
-		AMSInternalMessagingSetUp.staticInject(preferenceStore);
+		AMSInternalMessagingServerSetUp.staticInject(preferenceStore);
+		AMSInternalMessagingTopicsSetUp.staticInject(preferenceStore);
 	}
 }

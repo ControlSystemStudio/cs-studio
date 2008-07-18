@@ -1,25 +1,25 @@
 ----------------------------------------------------------------------------------------------------------
---------------- EDITOREN ---------------------------------------------------------------------------------
+--------------- EDITOREN --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
 
 - Alarmbearbeitergruppen Editor
-	- Dirtyflag spinnt bei neu angelegter Gruppe
-	- Minimale Anzahl activer Mitglieder kann größer sein als die Anzahl der Mitgleider
-	- Doppelklick auf Alarmbearbeiter soll Editor öfnen
-	- mehrere Alarmbearbeiter gleichzeitig löschen
+	- Dirtyflag spinnt bei neu angelegter Gruppe (3)
+	- Minimale Anzahl activer Mitglieder kann größer sein als die Anzahl der Mitgleider (3, mind. Warnung)
+	- Doppelklick auf Alarmbearbeiter soll Editor öfnen (2)
+	- mehrere Alarmbearbeiter gleichzeitig löschen (1)
 	
 - Filter Editor
-	- speicher klappt nur wenn keine junction Bedingungen oder Not Bedingungen enthalten sind
-	- man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen
-	- das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen.  
-	- Alarmaktionen fehlt noch ganz
-	- Filterbedingungen per DND im Baum verschieben
-	- mehrere Filterbedingungen gleichzeitig löschen
+	- speichern klappt nur wenn keine neuen junction Bedingungen (Unterknoten) oder Not Bedingungen enthalten sind (5)
+	- (X) man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen (=> soll so bleiben)
+	- das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen. (3)
+	- Alarmaktionen fehlt noch ganz (Tabelle und Co) (5)
+	- Filterbedingungen per DND im Baum verschieben (1)
+	- mehrere Filterbedingungen gleichzeitig löschen (1)
 	
 - Filterbedingung Editor
-	- selektiert bei einer neuen Bedingung die Or Condition. Soll aber String Bedingung selektieren.
-	- String Array condition: CompareValues ist unter Linux nicht zu sehen
-	- speicher nur bei der StringBedingung getestet!!
+	- selektiert bei einer neuen Bedingung die Or Condition. Soll aber String Bedingung selektieren. (1)
+	- String Array condition: CompareValues ist unter Linux nicht zu sehen (4)
+	- speicher nur bei der StringBedingung getestet!! (gui: 1, beanservice: 3)
 	
 - Alarmtopic Editor
 	- ok

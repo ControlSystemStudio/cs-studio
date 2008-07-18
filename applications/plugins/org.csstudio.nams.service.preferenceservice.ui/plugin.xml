@@ -24,9 +24,15 @@
       </page>
       <page
             category="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
-            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingSetUp"
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingServerSetUp"
             id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingSetUp"
-            name="Internal messaging">
+            name="Internal messaging server">
+      </page>
+      <page
+            category="org.csstudio.nams.service.preferenceservice.ui.preferencepages.NewAMSRootPage"
+            class="org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingTopicsSetUp"
+            id="org.csstudio.nams.service.preferenceservice.ui.preferencepages.AMSInternalMessagingTopicsSetUp"
+            name="Internal messaging topics">
       </page>
    </extension>
    <extension
