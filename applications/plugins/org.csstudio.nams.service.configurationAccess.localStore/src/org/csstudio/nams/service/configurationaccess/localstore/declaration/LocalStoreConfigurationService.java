@@ -140,7 +140,7 @@ public interface LocalStoreConfigurationService {
 			throws InconsistentConfigurationException;
 
 	public void deleteFilterDTO(FilterDTO dto)
-			throws InconsistentConfigurationException;
+			throws InconsistentConfigurationException, StorageError, StorageException;
 
 	public void deleteFilterConditionDTO(FilterConditionDTO dto)
 			throws InconsistentConfigurationException;

@@ -1027,7 +1027,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 		}
 		if (dto != null) {
-			configurationService.deleteFilterDTO(dto);
+			try {
+				configurationService.deleteFilterDTO(dto);
+			} catch (StorageError e) {
+				throw new InconsistentConfigurationException("failed to deleteFilter()", e);
+			} catch (StorageException e) {
+				throw new InconsistentConfigurationException("failed to deleteFilter()", e);
+			}
 			filterbedingungBeans.remove(dto.getIFilterID());
 			logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() "

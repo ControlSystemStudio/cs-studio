@@ -50,6 +50,11 @@ public class LoggerMock implements Logger {
 		public Throwable getThrowable() {
 			return throwable;
 		}
+		
+		@Override
+		public String toString() {
+			return ""+logType+" / "+message+" /  "+throwable+" / "+caller;
+		}
 	}
 	
 	private List<LogEntry> logEntries = new LinkedList<LogEntry>();

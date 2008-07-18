@@ -463,9 +463,8 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	public void deleteFilterDTO(FilterDTO dto)
-			throws InconsistentConfigurationException {
-		// TODO Auto-generated method stub
-
+			throws InconsistentConfigurationException, StorageError, StorageException {
+		deleteDTO(dto);
 	}
 
 	public void prepareSynchonization() throws StorageError, StorageException,

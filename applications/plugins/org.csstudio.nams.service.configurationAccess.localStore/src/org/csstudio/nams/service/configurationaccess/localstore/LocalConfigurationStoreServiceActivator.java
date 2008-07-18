@@ -25,6 +25,7 @@ public class LocalConfigurationStoreServiceActivator extends
 	@OSGiBundleActivationMethod
 	public OSGiServiceOffers startBundle(
 			@OSGiService @Required Logger logger) throws Exception {
+		
 		OSGiServiceOffers result = new OSGiServiceOffers();
 		try {
 			configurationServiceFactoryImpl = new ConfigurationServiceFactoryImpl();

@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +13,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration eines Filters dar
@@ -31,20 +37,21 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @Table(name = "AMS_Filter")
-public class FilterDTO implements NewAMSConfigurationElementDTO {
+public class FilterDTO implements NewAMSConfigurationElementDTO,
+		HasJoinedElements<FilterConditionDTO> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name="iFilterID")
-	private int iFilterID; //		INT,
-	
-	@Column(name="iGroupRef", nullable=false)
-	private int iGroupRef = -1; //		INT default -1 NOT NULL,
-	
-	@Column(name="cName", length=128)
-	private String name; //			VARCHAR(128),
-	
-	@Column(name="cDefaultMessage", length=1024)
-	private String defaultMessage; //	VARCHAR(1024),
+	@Column(name = "iFilterID")
+	private int iFilterID; // INT,
+
+	@Column(name = "iGroupRef", nullable = false)
+	private int iGroupRef = -1; // INT default -1 NOT NULL,
+
+	@Column(name = "cName", length = 128)
+	private String name; // VARCHAR(128),
+
+	@Column(name = "cDefaultMessage", length = 1024)
+	private String defaultMessage; // VARCHAR(1024),
 
 	@Transient
 	private List<FilterConditionDTO> filterConditons = new LinkedList<FilterConditionDTO>();
@@ -77,7 +84,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDefaultMessage() {
 		return defaultMessage;
 	}
@@ -88,7 +95,8 @@ public class FilterDTO implements NewAMSConfigurationElementDTO {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
+		StringBuilder builder = new StringBuilder(this.getClass()
+				.getSimpleName());
 		builder.append(": ");
 		builder.append("iFilterID: ");
 		builder.append(iFilterID);
@@ -104,7 +112,8 @@ public class FilterDTO implements NewAMSConfigurationElementDTO {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((defaultMessage == null) ? 0 : defaultMessage.hashCode());
+		result = prime * result
+				+ ((defaultMessage == null) ? 0 : defaultMessage.hashCode());
 		result = prime * result + iFilterID;
 		result = prime * result + iGroupRef;
 		return result;
@@ -139,7 +148,8 @@ public class FilterDTO implements NewAMSConfigurationElementDTO {
 	public List<FilterConditionDTO> getFilterConditions() {
 		return filterConditons;
 	}
-	public void setFilterConditions(List<FilterConditionDTO> filterConditonDTOs){
+
+	public void setFilterConditions(List<FilterConditionDTO> filterConditonDTOs) {
 		filterConditons = filterConditonDTOs;
 	}
 
@@ -150,5 +160,25 @@ public class FilterDTO implements NewAMSConfigurationElementDTO {
 	public boolean isInCategory(int categoryDBId) {
 		return false;
 	}
-	
+
+	public void deleteJoinLinkData(Session session) throws Throwable {
+		List<FilterConditionsToFilterDTO> list = session.createCriteria(
+				FilterConditionsToFilterDTO.class).add(Restrictions.eq("filterCTFPK.iFilterRef", this.iFilterID))
+				.list();
+		for (FilterConditionsToFilterDTO fctf : list) {
+			session.delete(fctf);
+		}
+	}
+
+	public void loadJoinData(Session session,
+			Collection<FilterConditionDTO> allJoinedElements) throws Throwable {
+		// Ist momentan in Configuration erledigt.
+
+	}
+
+	public void storeJoinLinkData(Session session) throws Throwable {
+		// Ist momentan in Configuration erledigt.
+
+	}
+
 }

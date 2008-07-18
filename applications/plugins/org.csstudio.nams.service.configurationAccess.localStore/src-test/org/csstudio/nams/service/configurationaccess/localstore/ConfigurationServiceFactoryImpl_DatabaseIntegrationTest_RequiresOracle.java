@@ -20,6 +20,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
+import org.csstudio.nams.service.logging.declaration.LoggerMock;
+import org.csstudio.nams.service.logging.declaration.LoggerMock.LogEntry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,11 +38,14 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		extends TestCase {
 
 	LocalStoreConfigurationService service;
+	private LoggerMock loggerMock;
 	
 	@Before
 	public void setUp() throws Exception {
+		loggerMock = new LoggerMock();
+		Configuration.staticInject(loggerMock);
+
 		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl();
-		assertNotNull(factory);
 		
 		service = factory.getConfigurationService(
 				"jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))",
@@ -53,6 +58,11 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 
 	@After
 	public void tearDown() throws Exception {
+		LogEntry[] mockGetCurrentLogEntries = loggerMock.mockGetCurrentLogEntries();
+		for (LogEntry logEntry : mockGetCurrentLogEntries) {
+			System.out.println(logEntry.toString());
+		}
+		
 		service = null;
 	}
 
