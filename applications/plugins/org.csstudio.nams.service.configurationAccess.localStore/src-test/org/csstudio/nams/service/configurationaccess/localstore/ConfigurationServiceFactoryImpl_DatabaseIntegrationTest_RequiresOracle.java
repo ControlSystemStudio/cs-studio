@@ -39,35 +39,46 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 
 	LocalStoreConfigurationService service;
 	private LoggerMock loggerMock;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		loggerMock = new LoggerMock();
 		Configuration.staticInject(loggerMock);
 
-		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl();
-		
-		service = factory.getConfigurationService(
-				"jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))",
-				DatabaseType.Oracle10g,
-				"DESY", 
-				"DESY");
-		
+		service = createAServiceForOracleTests();
+
 		assertNotNull(service);
+	}
+
+	/**
+	 * Erstellt einen Service für die Oracle-DB. Die Konfiguration ist fest
+	 * codiert und muss ggf. in dieser Klasse angepasst werden!
+	 */
+	public static LocalStoreConfigurationService createAServiceForOracleTests() {
+		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl();
+
+		LocalStoreConfigurationService result = factory
+				.getConfigurationService(
+						"jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))",
+						DatabaseType.Oracle10g, "DESY", "DESY");
+
+		return result;
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		LogEntry[] mockGetCurrentLogEntries = loggerMock.mockGetCurrentLogEntries();
+		LogEntry[] mockGetCurrentLogEntries = loggerMock
+				.mockGetCurrentLogEntries();
 		for (LogEntry logEntry : mockGetCurrentLogEntries) {
 			System.out.println(logEntry.toString());
 		}
-		
+
 		service = null;
 	}
 
 	@Test
-	public void testFactoryAndServiceOnOracleFuerAlarmbearbeiter() throws Throwable {
+	public void testFactoryAndServiceOnOracleFuerAlarmbearbeiter()
+			throws Throwable {
 		AlarmbearbeiterDTO neuerBearbeiter = new AlarmbearbeiterDTO();
 		neuerBearbeiter.setActive(true);
 		neuerBearbeiter.setConfirmCode("123");
@@ -77,156 +88,176 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		neuerBearbeiter.setPreferedAlarmType(PreferedAlarmType.EMAIL);
 		neuerBearbeiter.setStatusCode("987");
 		neuerBearbeiter.setUserName("Hans Otto Dietmar Struntz");
-		
+
 		Configuration entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertFalse("neuer bearbeiter ist natürlich noch nicht da.", entireConfiguration.gibAlleAlarmbearbeiter().contains(neuerBearbeiter));
-		
+		assertFalse("neuer bearbeiter ist natürlich noch nicht da.",
+				entireConfiguration.gibAlleAlarmbearbeiter().contains(
+						neuerBearbeiter));
+
 		service.saveDTO(neuerBearbeiter);
-		
+
 		// neu laden....
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertTrue("neuer bearbeiter ist jetzt gespeichert.", entireConfiguration.gibAlleAlarmbearbeiter().contains(neuerBearbeiter));	
-		
+		assertTrue("neuer bearbeiter ist jetzt gespeichert.",
+				entireConfiguration.gibAlleAlarmbearbeiter().contains(
+						neuerBearbeiter));
+
 		// verändern
 		neuerBearbeiter.setUserName("Hans Otto Detlef Struntz");
 		service.saveDTO(neuerBearbeiter);
-		
+
 		// neu laden....
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		Collection<AlarmbearbeiterDTO> loadedList = entireConfiguration.gibAlleAlarmbearbeiter();
-		assertTrue("neuer bearbeiter ist jetzt gespeichert.", loadedList.contains(neuerBearbeiter));	
+		Collection<AlarmbearbeiterDTO> loadedList = entireConfiguration
+				.gibAlleAlarmbearbeiter();
+		assertTrue("neuer bearbeiter ist jetzt gespeichert.", loadedList
+				.contains(neuerBearbeiter));
 		for (AlarmbearbeiterDTO alarmbearbeiterDTO : loadedList) {
 			// Keine Benutzer mit altem Namen vorhanden.
-			assertFalse("Hans Otto Dietmar Struntz".equals(alarmbearbeiterDTO.getUserName()));
+			assertFalse("Hans Otto Dietmar Struntz".equals(alarmbearbeiterDTO
+					.getUserName()));
 		}
-		
+
 		// loeschen
 		service.deleteDTO(neuerBearbeiter);
-		
+
 		// neu laden
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertFalse("neuer bearbeiter ist jetzt nicht mehr da.", entireConfiguration.gibAlleAlarmbearbeiter().contains(neuerBearbeiter));
+		assertFalse("neuer bearbeiter ist jetzt nicht mehr da.",
+				entireConfiguration.gibAlleAlarmbearbeiter().contains(
+						neuerBearbeiter));
 	}
-	
+
 	@Test
-	public void testFactoryAndServiceOnOracleFuerFilterCondition() throws Throwable {
+	public void testFactoryAndServiceOnOracleFuerFilterCondition()
+			throws Throwable {
 		StringFilterConditionDTO neueFilterCondition = new StringFilterConditionDTO();
 		neueFilterCondition.setCName("Test");
 		neueFilterCondition.setCompValue("TestValue");
 		neueFilterCondition.setKeyValue(MessageKeyEnum.DESTINATION);
-		neueFilterCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+		neueFilterCondition
+				.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
 
 		Configuration entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
-		
+		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration
+				.gibAlleFilterConditions().contains(neueFilterCondition));
+
 		service.saveDTO(neueFilterCondition);
-		
+
 		// neu laden....
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertTrue("neue fc ist jetzt gespeichert.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
-		
+		assertTrue("neue fc ist jetzt gespeichert.", entireConfiguration
+				.gibAlleFilterConditions().contains(neueFilterCondition));
+
 		// verändern
 		neueFilterCondition.setCName("Modified");
 		service.saveDTO(neueFilterCondition);
-		
+
 		// neu laden....
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		Collection<FilterConditionDTO> loadedList = entireConfiguration.gibAlleFilterConditions();
-		assertTrue("neue fc ist jetzt gespeichert.", loadedList.contains(neueFilterCondition));
+		Collection<FilterConditionDTO> loadedList = entireConfiguration
+				.gibAlleFilterConditions();
+		assertTrue("neue fc ist jetzt gespeichert.", loadedList
+				.contains(neueFilterCondition));
 		for (FilterConditionDTO filterConditionDTO : loadedList) {
 			// Keine Benutzer mit altem Namen vorhanden.
 			assertFalse("Test".equals(filterConditionDTO.getCName()));
 		}
-		
+
 		// löschen
 		service.deleteDTO(neueFilterCondition);
-		
+
 		// neu laden
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(neueFilterCondition));
+		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration
+				.gibAlleFilterConditions().contains(neueFilterCondition));
 	}
-	
-	public void testReadAndWriteJunctorConditionForFilterTree() throws Throwable {
+
+	public void testReadAndWriteJunctorConditionForFilterTree()
+			throws Throwable {
 		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
 		leftCondition.setCName("Test-LeftCond");
 		leftCondition.setCompValue("TestValue");
 		leftCondition.setKeyValue(MessageKeyEnum.DESTINATION);
 		leftCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
 		service.saveDTO(leftCondition);
-		
+
 		StringFilterConditionDTO rightCondition = new StringFilterConditionDTO();
 		rightCondition.setCName("Test-RightCond");
 		rightCondition.setCompValue("TestValue2");
 		rightCondition.setKeyValue(MessageKeyEnum.DESTINATION);
 		rightCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
 		service.saveDTO(rightCondition);
-		
+
 		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
 		operands.add(leftCondition);
 		operands.add(rightCondition);
-		
+
 		JunctorConditionForFilterTreeDTO condition = new JunctorConditionForFilterTreeDTO();
 		condition.setCName("TEST-Con");
 		condition.setCDesc("Test-Description");
 		condition.setOperator(JunctorConditionType.AND);
 		condition.setOperands(operands);
-		
+
 		Configuration entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration.gibAlleFilterConditions().contains(condition));
-		
+		assertFalse("neue fc ist natürlich noch nicht da.", entireConfiguration
+				.gibAlleFilterConditions().contains(condition));
+
 		service.saveDTO(condition);
-		
+
 		// neu laden....
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		
+
 		// search saved dto
-		Collection<FilterConditionDTO> alleFilterConditions = entireConfiguration.gibAlleFilterConditions();
+		Collection<FilterConditionDTO> alleFilterConditions = entireConfiguration
+				.gibAlleFilterConditions();
 		JunctorConditionForFilterTreeDTO found = null;
 		for (FilterConditionDTO filterConditionDTO : alleFilterConditions) {
-			if( condition.equals(filterConditionDTO) )
-			{
+			if (condition.equals(filterConditionDTO)) {
 				found = condition;
 			}
 		}
 		assertNotNull("neue fc ist jetzt gespeichert.", condition);
 		condition = found;
-		
+
 		// verändern
 		condition.setCName("Modified");
 		service.saveDTO(condition);
-		
+
 		// neu laden....
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		Collection<FilterConditionDTO> loadedList = entireConfiguration.gibAlleFilterConditions();
-		assertTrue("neue fc ist jetzt gespeichert.", loadedList.contains(condition));
+		Collection<FilterConditionDTO> loadedList = entireConfiguration
+				.gibAlleFilterConditions();
+		assertTrue("neue fc ist jetzt gespeichert.", loadedList
+				.contains(condition));
 		for (FilterConditionDTO filterConditionDTO : loadedList) {
 			// Keine Benutzer mit altem Namen vorhanden.
 			assertFalse("Test-Con".equals(filterConditionDTO.getCName()));
 		}
-		
-		
+
 		// verändern
 		Set<FilterConditionDTO> operands2 = new HashSet<FilterConditionDTO>();
 		operands2.add(leftCondition);
 		condition.setOperands(operands2);
 		service.saveDTO(condition);
-		
+
 		// neu laden....
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
 		loadedList = entireConfiguration.gibAlleFilterConditions();
-		assertTrue("neue fc ist jetzt gespeichert.", loadedList.contains(condition));
+		assertTrue("neue fc ist jetzt gespeichert.", loadedList
+				.contains(condition));
 		JunctorConditionForFilterTreeDTO result = null;
 		for (FilterConditionDTO filterConditionDTO : loadedList) {
 			if (filterConditionDTO.getCName().equals("Modified")) {
@@ -236,21 +267,21 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertNotNull(result);
 		assertEquals(1, result.getOperands().size());
 		assertTrue(result.getOperands().contains(leftCondition));
-		
-		
+
 		// löschen
 		service.deleteDTO(condition);
-		
+
 		// neu laden
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
-		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration.gibAlleFilterConditions().contains(condition));
-		
+		assertFalse("neue fc ist jetzt nicht mehr da.", entireConfiguration
+				.gibAlleFilterConditions().contains(condition));
+
 		// clean up
 		service.deleteDTO(leftCondition);
 		service.deleteDTO(rightCondition);
 	}
-	
+
 	public void testSaveFilter() throws Throwable {
 		// Conditions
 		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
@@ -258,17 +289,17 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		leftCondition.setCompValue("TestValue");
 		leftCondition.setKeyValue(MessageKeyEnum.DESTINATION);
 		leftCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
-		
+
 		StringFilterConditionDTO rightCondition = new StringFilterConditionDTO();
 		rightCondition.setCName("Test-RightCond");
 		rightCondition.setCompValue("TestValue2");
 		rightCondition.setKeyValue(MessageKeyEnum.DESTINATION);
 		rightCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
-		
+
 		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
 		operands.add(leftCondition);
 		operands.add(rightCondition);
-		
+
 		// Speicher die FC nicht(!) die Tree-FC (andCondition)
 		service.saveDTO(leftCondition);
 		service.saveDTO(rightCondition);
@@ -278,12 +309,12 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		orCondition.setCDesc("Test-Description");
 		orCondition.setOperator(JunctorConditionType.OR);
 		orCondition.setOperands(operands);
-		
-		// Filter 
+
+		// Filter
 		// Root-Ebene aufbauen
 		List<FilterConditionDTO> filterConditions = new LinkedList<FilterConditionDTO>();
 		filterConditions.add(orCondition);
-		
+
 		FilterDTO filter = new FilterDTO();
 		filter.setName("Test Filter für JCFFT");
 		filter.setDefaultMessage("Hallo Welt!");
@@ -294,34 +325,33 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertNotNull(entireConfiguration);
 		Collection<FilterDTO> alleFilter = entireConfiguration.gibAlleFilter();
 		for (FilterDTO filterDTO : alleFilter) {
-			assertFalse("noch nicht enthalten", filterDTO.getName().equals("Test Filter für JCFFT"));
+			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
+					"Test Filter für JCFFT"));
 		}
-		
+
 		// Save
 		service.saveFilterDTO(filter);
-		
+
 		// Pruefen dass Filter jetzt da ist.
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
 		alleFilter = entireConfiguration.gibAlleFilter();
 		FilterDTO found = null;
 		for (FilterDTO filterDTO : alleFilter) {
-			if( filter.equals(filterDTO) )
-			{
+			if (filter.equals(filterDTO)) {
 				found = filterDTO;
 			}
 		}
 		assertNotNull("enthalten", found);
 		assertEquals(filter, found);
-		
-		
+
 		// verändern
 		Set<FilterConditionDTO> operands2 = new HashSet<FilterConditionDTO>();
 		operands2.add(leftCondition);
-		
+
 		orCondition.setOperands(operands2);
 		service.saveFilterDTO(filter);
-		
+
 		// Pruefen dass noch kein entsprechender Filter da ist.
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
@@ -335,23 +365,24 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		List<FilterConditionDTO> list = foundFilter.getFilterConditions();
 		assertEquals(1, list.size());
 		assertEquals(orCondition, list.get(0));
-		JunctorConditionForFilterTreeDTO junctionDTO = (JunctorConditionForFilterTreeDTO) list.get(0);
+		JunctorConditionForFilterTreeDTO junctionDTO = (JunctorConditionForFilterTreeDTO) list
+				.get(0);
 		Set<FilterConditionDTO> operands3 = junctionDTO.getOperands();
 		assertEquals(1, operands3.size());
 		assertEquals(leftCondition, operands3.iterator().next());
-		
-		
+
 		// löschen
 		service.deleteDTO(filter);
-		
+
 		// Pruefen dass kein entsprechender Filter mehr da ist.
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
 		alleFilter = entireConfiguration.gibAlleFilter();
 		for (FilterDTO filterDTO : alleFilter) {
-			assertFalse("nicht mehr enthalten", filterDTO.getName().equals("Test Filter für JCFFT"));
+			assertFalse("nicht mehr enthalten", filterDTO.getName().equals(
+					"Test Filter für JCFFT"));
 		}
-		
+
 		// clean up
 		service.deleteDTO(leftCondition);
 		service.deleteDTO(rightCondition);
