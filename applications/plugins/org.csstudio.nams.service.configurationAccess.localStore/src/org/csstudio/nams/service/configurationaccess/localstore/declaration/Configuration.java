@@ -41,6 +41,10 @@ public class Configuration implements FilterConditionForIdProvider {
 			throws InconsistentConfigurationException, StorageError,
 			StorageException {
 
+		if( logger == null ) {
+			throw new RuntimeException("class has not been equiped, missing logger");
+		}
+		
 		// PUBLICs
 		alleAlarmbarbeiter = session.createCriteria(AlarmbearbeiterDTO.class)
 				.addOrder(Order.asc("userId")).list();
@@ -55,8 +59,9 @@ public class Configuration implements FilterConditionForIdProvider {
 				.addOrder(Order.asc("iFilterConditionID")).list();
 		alleRubriken = session.createCriteria(RubrikDTO.class).list();
 
-		alleUser2UserGroupMappings = session.createCriteria(User2UserGroupDTO.class).list();
-		
+		alleUser2UserGroupMappings = session.createCriteria(
+				User2UserGroupDTO.class).list();
+
 		// Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
 		// .createCriteria(FilterConditionTypeDTO.class).list();
 		// pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
@@ -70,15 +75,18 @@ public class Configuration implements FilterConditionForIdProvider {
 						StringArrayFilterConditionCompareValuesDTO.class)
 				.list();
 		setStringArrayCompareValues(allCompareValues);
-		
-		Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(allFilterConditions);
+
+		Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(
+				allFilterConditions);
 		for (FilterConditionDTO fc : allFCs) {
-			if( fc instanceof JunctorConditionForFilterTreeDTO ) {
-				JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO)fc;
+			if (fc instanceof JunctorConditionForFilterTreeDTO) {
+				JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
 				try {
 					jcfft.loadJoinData(session, allFCs);
 				} catch (Throwable e) {
-					throw new InconsistentConfigurationException("unable to load joined conditions of JunctionConditionForFilters", e);
+					throw new InconsistentConfigurationException(
+							"unable to load joined conditions of JunctionConditionForFilters",
+							e);
 				}
 			}
 		}
@@ -125,31 +133,39 @@ public class Configuration implements FilterConditionForIdProvider {
 		for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : allFilterConditionToFilter) {
 			FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO
 					.getIFilterRef());
-			List<FilterConditionDTO> filterConditions = filterDTO
-					.getFilterConditions();
-			filterConditions
-					.add(getFilterConditionForId(filterConditionsToFilterDTO
-							.getIFilterConditionRef()));
-			filterDTO.setFilterConditions(filterConditions);
+			if (filterDTO == null) {
+				logger.logWarningMessage(this, "no filter found for id: "
+						+ filterConditionsToFilterDTO.getIFilterRef());
+			} else {
+				List<FilterConditionDTO> filterConditions = filterDTO
+						.getFilterConditions();
+				filterConditions
+						.add(getFilterConditionForId(filterConditionsToFilterDTO
+								.getIFilterConditionRef()));
+				filterDTO.setFilterConditions(filterConditions);
+			}
 		}
 	}
 
-	private void addUsersToGroups(Session session){
+	private void addUsersToGroups(Session session) {
 		HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
 		for (AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
 			gruppen.put(gruppe.getUserGroupId(), gruppe);
 		}
 		for (User2UserGroupDTO map : alleUser2UserGroupMappings) {
 			try {
-				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef()).alarmbearbeiterZuordnen(map);
+				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
+						.alarmbearbeiterZuordnen(map);
 			} catch (NullPointerException npe) {
 				session.delete(map);
-				logger.logWarningMessage(this, "Deleted invalid User To UserGroup mapping, group "
-						+ map.getUser2UserGroupPK().getIUserGroupRef() + " doesn't exist");
+				logger.logWarningMessage(this,
+						"Deleted invalid User To UserGroup mapping, group "
+								+ map.getUser2UserGroupPK().getIUserGroupRef()
+								+ " doesn't exist");
 			}
 		}
 	}
-	
+
 	public Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter() {
 		return alleAlarmbarbeiter;
 	}
