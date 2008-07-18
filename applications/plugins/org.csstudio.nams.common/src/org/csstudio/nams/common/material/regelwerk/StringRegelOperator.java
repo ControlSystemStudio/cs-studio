@@ -12,8 +12,38 @@ public enum StringRegelOperator {
 
 	public short databaseValue()
 	{
-		// TODO mz20080710 Dirty Workaround - clean.
-		return (short) (this.ordinal() + 1);
+		switch(this){
+		case OPERATOR_TEXT_EQUAL:
+			return 1;
+		case OPERATOR_TEXT_NOT_EQUAL:
+			return 2;
+		case OPERATOR_NUMERIC_LT:
+			return 3;
+		case OPERATOR_NUMERIC_LT_EQUAL:
+			return 4;
+		case OPERATOR_NUMERIC_EQUAL:
+			return 5;
+		case OPERATOR_NUMERIC_GT_EQUAL:
+			return 6;
+		case OPERATOR_NUMERIC_GT:
+			return 7;
+		case OPERATOR_NUMERIC_NOT_EQUAL:
+			return 8;
+
+		case OPERATOR_TIME_BEFORE:
+			return 9;
+		case OPERATOR_TIME_BEFORE_EQUAL:
+			return 10;
+		case OPERATOR_TIME_EQUAL:
+			return 11;
+		case OPERATOR_TIME_AFTER_EQUAL:
+			return 12;
+		case OPERATOR_TIME_AFTER:
+			return 13;
+		case OPERATOR_TIME_NOT_EQUAL:
+			return 14;
+		default: throw new IllegalArgumentException(this + " is an unsupported Enumconstant");
+		}
 	}
 	
 	public static StringRegelOperator valueOf(short value) {

@@ -176,7 +176,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 		return true;
 	}
 	public void setOperatorEnum(StringRegelOperator op){
-		operator = (short) op.ordinal();
+		operator = op.databaseValue();
 	}
 
 	public void setKeyValue(MessageKeyEnum keyValue2) {
