@@ -23,10 +23,12 @@ import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.TimeBasedFilterConditionBean;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
@@ -281,6 +283,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				java.util.List<String> list = specificBean.getCompareValues();
 				list.add(arrayNewCompareValueText.getText());
 				specificBean.setCompareValues(list);
+				arrayCompareValueListViewer.refresh();
 				arrayNewCompareValueText.setText("");
 			}
 
@@ -639,7 +642,22 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// arrayOperatorComboObservable, null, null);
 
 		context.bindList(SWTObservables.observeItems(arrayCompareValueList),
-				arrayCompareValueListObservable, null, null);
+				arrayCompareValueListObservable, new UpdateListStrategy(){
+			@Override
+			protected IStatus doAdd(IObservableList observableList,
+					Object element, int index) {
+				return super.doAdd(observableList, element, index);
+			}
+		}, new UpdateListStrategy(){
+
+					@Override
+					protected IStatus doAdd(IObservableList observableList,
+							Object element, int index) {
+						arrayCompareValueListViewer.refresh();
+						return super.doAdd(observableList, element, index);
+					}
+			
+		});
 
 	}
 

@@ -34,7 +34,7 @@ public class StringArrayFilterConditionBean extends AbstractConfigurationBean<St
 	}
 
 	public List<String> getCompareValues() {
-		return compareValues;
+		return new LinkedList<String>(compareValues);
 	}
 
 	public void setCompareValues(List<String> compareValues) {
