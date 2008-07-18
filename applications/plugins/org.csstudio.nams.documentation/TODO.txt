@@ -12,6 +12,7 @@
 	- Alarmaktionen fehlt noch ganz (Tabelle und Co) (5)
 	- Filterbedingungen per DND im Baum verschieben (1)
 	- mehrere Filterbedingungen gleichzeitig löschen (1)
+	- Scrollbar machen (1)
 	
 - Filterbedingung Editor
 	- String Array condition: CompareValues ist unter Linux nicht zu sehen (4)
