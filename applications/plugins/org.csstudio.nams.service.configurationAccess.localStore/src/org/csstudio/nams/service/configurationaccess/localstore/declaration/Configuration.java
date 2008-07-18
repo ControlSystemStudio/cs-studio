@@ -3,6 +3,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -101,14 +102,18 @@ public class Configuration implements FilterConditionForIdProvider {
 			if (filterCondition instanceof StringArrayFilterConditionDTO) {
 				stringAFC.put(filterCondition.getIFilterConditionID(),
 						(StringArrayFilterConditionDTO) filterCondition);
+				StringArrayFilterConditionDTO sFC = (StringArrayFilterConditionDTO) filterCondition;
+				sFC.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
 			}
 		}
 		for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
 			StringArrayFilterConditionDTO conditionDTO = stringAFC
 					.get(stringArrayFilterConditionCompareValuesDTO
 							.getFilterConditionRef());
-			conditionDTO.getCompareValueList().add(
+			List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO.getCompareValueList();
+			list.add(
 					stringArrayFilterConditionCompareValuesDTO);
+			conditionDTO.setCompareValues(list);
 		}
 
 	}

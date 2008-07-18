@@ -110,7 +110,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	}
 
 	public List<StringArrayFilterConditionCompareValuesDTO> getCompareValueList(){
-		return compareValues;
+		return new LinkedList<StringArrayFilterConditionCompareValuesDTO>(compareValues);
 	}
 
 	/**

@@ -283,8 +283,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				java.util.List<String> list = specificBean.getCompareValues();
 				list.add(arrayNewCompareValueText.getText());
 				specificBean.setCompareValues(list);
-				arrayCompareValueListViewer.refresh();
 				arrayNewCompareValueText.setText("");
+				
 			}
 
 			public void mouseUp(MouseEvent e) {
@@ -299,14 +299,13 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 			public void mouseDown(MouseEvent e) {
 				if (arrayCompareValueList.getSelectionIndex() > -1) {
-					String[] items = arrayCompareValueList.getItems();
+					String[] items = ((StringArrayFilterConditionBean)beanClone.getFilterSpecificBean()).getCompareValues().toArray(new String[0]);
 					ArrayList<String> itemList = new ArrayList<String>();
 					for (int i = 0; i < items.length; i++) {
 						if (arrayCompareValueList.getSelectionIndex() != i)
 							itemList.add(items[i]);
 					}
-					arrayCompareValueList.setItems(itemList
-							.toArray(new String[itemList.size()]));
+					((StringArrayFilterConditionBean)beanClone.getFilterSpecificBean()).setCompareValues(itemList);
 				}
 			}
 
@@ -642,22 +641,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// arrayOperatorComboObservable, null, null);
 
 		context.bindList(SWTObservables.observeItems(arrayCompareValueList),
-				arrayCompareValueListObservable, new UpdateListStrategy(){
-			@Override
-			protected IStatus doAdd(IObservableList observableList,
-					Object element, int index) {
-				return super.doAdd(observableList, element, index);
-			}
-		}, new UpdateListStrategy(){
-
-					@Override
-					protected IStatus doAdd(IObservableList observableList,
-							Object element, int index) {
-						arrayCompareValueListViewer.refresh();
-						return super.doAdd(observableList, element, index);
-					}
-			
-		});
+				arrayCompareValueListObservable, null, null);
 
 	}
 

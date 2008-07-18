@@ -830,6 +830,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			if (dto4Bean != null
 					&& (dto4Bean instanceof StringArrayFilterConditionDTO)) {
 				stringArrayFilterConditionDTO = (StringArrayFilterConditionDTO) dto4Bean;
+				stringArrayFilterConditionDTO.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
 			} else {
 				stringArrayFilterConditionDTO = new StringArrayFilterConditionDTO();
 				inserted = true;
@@ -839,7 +840,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			Collection<StringArrayFilterConditionCompareValuesDTO> allStringArrayCompareValues = entireConfiguration
 					.getAllStringArrayCompareValues();
 			for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allStringArrayCompareValues) {
-				if (stringArrayFilterConditionCompareValuesDTO.getFilterConditionRef() == dto4Bean.getIFilterConditionID()){
+				if (stringArrayFilterConditionCompareValuesDTO.getFilterConditionRef() == bean.getFilterbedinungID()){
 					oldCompareValues.add(stringArrayFilterConditionCompareValuesDTO);
 				}
 			}
