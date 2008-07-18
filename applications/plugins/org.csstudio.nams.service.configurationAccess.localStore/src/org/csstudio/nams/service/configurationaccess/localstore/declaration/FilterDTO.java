@@ -31,7 +31,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @Table(name = "AMS_Filter")
-public class FilterDTO {
+public class FilterDTO implements NewAMSConfigurationElementDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name="iFilterID")
@@ -141,6 +141,14 @@ public class FilterDTO {
 	}
 	public void setFilterConditions(List<FilterConditionDTO> filterConditonDTOs){
 		filterConditons = filterConditonDTOs;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return toString();
+	}
+
+	public boolean isInCategory(int categoryDBId) {
+		return false;
 	}
 	
 }

@@ -25,7 +25,8 @@ import org.hibernate.Session;
  * Diese FC wird allerdings nicht in der Auflistung der FCs im
  * Konfigurationswerkzeug angezeigt!
  * 
- * Das Join der Operanden erfolgt via {@link JunctorConditionForFilterTreeConditionJoinDTO}.
+ * Das Join der Operanden erfolgt via
+ * {@link JunctorConditionForFilterTreeConditionJoinDTO}.
  * 
  * <pre>
  * create table AMSFilterCondConj4FilterCommon (
@@ -41,8 +42,8 @@ import org.hibernate.Session;
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterCondConj4FilterCommon")
-public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO implements HasJoinedElements<FilterConditionDTO>
-{
+public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
+		implements HasJoinedElements<FilterConditionDTO> {
 
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -110,58 +111,102 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO impleme
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!
 	 * 
-	 * This method is used to store the join-data for previously set {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}.
-	 * IMPORTANT: This method has to be called in a valid open transaction!
+	 * This method is used to store the join-data for previously set
+	 * {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}. IMPORTANT:
+	 * This method has to be called in a valid open transaction!
 	 * 
-	 * @param session The session to store to; it is guaranteed that only {@link JunctorConditionForFilterTreeDTO} will be stored and/or deleted.
-	 * @throws If an error occurred
+	 * @param session
+	 *            The session to store to; it is guaranteed that only
+	 *            {@link JunctorConditionForFilterTreeDTO} will be stored and/or
+	 *            deleted.
+	 * @throws If
+	 *             an error occurred
 	 */
-	public synchronized void storeJoinLinkData(Session session) throws Throwable {
-		deleteJoinLinkData(session) ;
-		
+	public synchronized void storeJoinLinkData(Session session)
+			throws Throwable {
+		deleteJoinLinkData(session);
+
 		for (FilterConditionDTO condition : this.getOperands()) {
-			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(this, condition);
+			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
+					this, condition);
+			if (condition instanceof JunctorConditionForFilterTreeDTO) {
+				session.saveOrUpdate(condition);
+				((JunctorConditionForFilterTreeDTO) condition)
+						.storeJoinLinkData(session);
+			}
 			session.save(newJoin);
 		}
 	}
-	
+
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!
 	 * 
-	 * This method is used to load the join-data and set {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}.
-	 * IMPORTANT: This method has to be called in a valid open transaction!
+	 * This method is used to load the join-data and set
+	 * {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}. IMPORTANT:
+	 * This method has to be called in a valid open transaction!
 	 * 
-	 * @param session The session to store to; it is guaranteed that only {@link JunctorConditionForFilterTreeDTO} will be loaded and nothing be deleted.
-	 * @param allFilterConditions All avail {@link FilterConditionDTO}; is is guaranteed that no {@link FilterConditionDTO} will be modified or deleted.
-	 * @throws If an error occurred
+	 * Here also sub-conditions of same type are ordered to load their join
+	 * data!
+	 * 
+	 * @param session
+	 *            The session to store to; it is guaranteed that only
+	 *            {@link JunctorConditionForFilterTreeDTO} will be loaded and
+	 *            nothing be deleted.
+	 * @param allFilterConditions
+	 *            All avail {@link FilterConditionDTO}; is is guaranteed that
+	 *            no {@link FilterConditionDTO} will be modified or deleted.
+	 * @throws If
+	 *             an error occurred
 	 */
-	public synchronized void loadJoinData(Session session, Collection<FilterConditionDTO> allFilterConditions) throws Throwable {
+	public synchronized void loadJoinData(Session session,
+			Collection<FilterConditionDTO> allFilterConditions)
+			throws Throwable {
 		Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
-		
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session.createCriteria(JunctorConditionForFilterTreeConditionJoinDTO.class).list();
+
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session
+				.createCriteria(
+						JunctorConditionForFilterTreeConditionJoinDTO.class)
+				.list();
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
-			if( joinElement.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
+			if (joinElement.getJoinParentsDatabaseId() == this
+					.getIFilterConditionID()) {
 				for (FilterConditionDTO conditionDTO : allFilterConditions) {
-					if( conditionDTO.getIFilterConditionID() == joinElement.getJoinedConditionsDatabaseId() ) {
+					if (conditionDTO.getIFilterConditionID() == joinElement
+							.getJoinedConditionsDatabaseId()) {
 						foundOperands.add(conditionDTO);
 					}
 				}
 			}
 		}
-		
-		this.operands = foundOperands.toArray(new FilterConditionDTO[foundOperands.size()]);
+
+		this.operands = foundOperands
+				.toArray(new FilterConditionDTO[foundOperands.size()]);
 	}
-	
-	public synchronized void deleteJoinLinkData(Session session) throws Throwable {
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session.createCriteria(JunctorConditionForFilterTreeConditionJoinDTO.class).list();
+
+	public synchronized void deleteJoinLinkData(Session session)
+			throws Throwable {
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session
+				.createCriteria(
+						JunctorConditionForFilterTreeConditionJoinDTO.class)
+				.list();
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
-			if( joinElement.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
+			if (joinElement.getJoinParentsDatabaseId() == this
+					.getIFilterConditionID()) {
 				session.delete(joinElement);
 			}
-			// TODO mz 2008-07-18 Auch untergeordnette JCFFT - Elemente löschen
-		}		
+		}
+		// Lösche auch Conditions dieses Typs, da diese nur für den Filter
+		// relevant und somit nicht als normale conditions genutzt werden
+		// (Achtung: Sonderfall!!)
+		for (FilterConditionDTO operand : this.operands) {
+			if (operand instanceof JunctorConditionForFilterTreeDTO) {
+				((JunctorConditionForFilterTreeDTO) operand)
+						.deleteJoinLinkData(session);
+				session.delete(operand);
+			}
+		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

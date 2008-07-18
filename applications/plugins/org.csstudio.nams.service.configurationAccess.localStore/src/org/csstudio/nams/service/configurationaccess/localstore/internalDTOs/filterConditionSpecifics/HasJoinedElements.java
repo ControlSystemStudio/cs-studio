@@ -79,5 +79,4 @@ public interface HasJoinedElements<T extends NewAMSConfigurationElementDTO> {
 	 */
 	public abstract void loadJoinData(Session session,
 			Collection<T> allJoinedElements) throws Throwable;
-
 }

@@ -280,6 +280,19 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		}
 		assertNotNull("enthalten", found);
 		
+		// löschen
+		service.deleteDTO(filter);
 		
+		// Pruefen dass kein entsprechender Filter mehr da ist.
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		alleFilter = entireConfiguration.gibAlleFilter();
+		for (FilterDTO filterDTO : alleFilter) {
+			assertFalse("nicht mehr enthalten", filterDTO.getName().equals("Test Filter für JCFFT"));
+		}
+		
+		// clean up
+		service.deleteDTO(leftCondition);
+		service.deleteDTO(rightCondition);
 	}
 }
