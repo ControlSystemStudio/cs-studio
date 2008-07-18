@@ -168,13 +168,12 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		ListViewer listWidget = new ListViewer(parent, SWT.BORDER) {
-
-		};
-		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
+		ListViewer listWidget = new ListViewer(parent, SWT.BORDER|SWT.V_SCROLL|SWT.H_SCROLL);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, true,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
+//		gridData.minimumHeight = 120;
 		listWidget.getList().setLayoutData(gridData);
 		return listWidget;
 	}

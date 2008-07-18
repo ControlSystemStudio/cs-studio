@@ -182,8 +182,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		this.addSeparator(main);
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
-		this.createTitledComboForEnumValues(main, "Filtertype: ", SupportedFilterTypes
-				.values(), this.selectedFilterType, "type");
+		this.createTitledComboForEnumValues(main, "Filtertype: ",
+				SupportedFilterTypes.values(), this.selectedFilterType, "type");
 
 		initializeAddOnBeans();
 
@@ -225,12 +225,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		IConfigurationBean stringConfigurationBean = specificBeans
 				.get(SupportedFilterTypes.STRING_CONDITION);
 
-		createTitledComboForEnumValues(stackComposites[1], "CompareKey", MessageKeyEnum
-				.values(), stringConfigurationBean,
+		createTitledComboForEnumValues(stackComposites[1], "CompareKey",
+				MessageKeyEnum.values(), stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.keyValue.name());
 
-		createTitledComboForEnumValues(stackComposites[1], "Operator", StringRegelOperator
-				.values(), stringConfigurationBean,
+		createTitledComboForEnumValues(stackComposites[1], "Operator",
+				StringRegelOperator.values(), stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.operator.name());
 
 		//			
@@ -246,12 +246,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		IConfigurationBean stringArrayConfigurationBean = specificBeans
 				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
-		createTitledComboForEnumValues(stackComposites[2], "MessageKey", MessageKeyEnum
-				.values(), stringArrayConfigurationBean,
+		createTitledComboForEnumValues(stackComposites[2], "MessageKey",
+				MessageKeyEnum.values(), stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.keyValue.name());
 
-		createTitledComboForEnumValues(stackComposites[2], "Operator", StringRegelOperator
-				.values(), stringArrayConfigurationBean,
+		createTitledComboForEnumValues(stackComposites[2], "Operator",
+				StringRegelOperator.values(), stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.operator.name());
 
 		arrayCompareValueListViewer = createListEntry(stackComposites[2],
@@ -279,12 +279,14 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 
 			public void mouseDown(MouseEvent e) {
-				StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) beanClone.getFilterSpecificBean();
+				StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) beanClone
+						.getFilterSpecificBean();
 				java.util.List<String> list = specificBean.getCompareValues();
-				list.add(arrayNewCompareValueText.getText());
-				specificBean.setCompareValues(list);
-				arrayNewCompareValueText.setText("");
-				
+				if (!list.contains(arrayNewCompareValueText.getText())) {
+					list.add(arrayNewCompareValueText.getText());
+					specificBean.setCompareValues(list);
+					arrayNewCompareValueText.setText("");
+				}
 			}
 
 			public void mouseUp(MouseEvent e) {
@@ -299,13 +301,17 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 			public void mouseDown(MouseEvent e) {
 				if (arrayCompareValueList.getSelectionIndex() > -1) {
-					String[] items = ((StringArrayFilterConditionBean)beanClone.getFilterSpecificBean()).getCompareValues().toArray(new String[0]);
+					String[] items = ((StringArrayFilterConditionBean) beanClone
+							.getFilterSpecificBean()).getCompareValues()
+							.toArray(new String[0]);
 					ArrayList<String> itemList = new ArrayList<String>();
 					for (int i = 0; i < items.length; i++) {
 						if (arrayCompareValueList.getSelectionIndex() != i)
 							itemList.add(items[i]);
 					}
-					((StringArrayFilterConditionBean)beanClone.getFilterSpecificBean()).setCompareValues(itemList);
+					((StringArrayFilterConditionBean) beanClone
+							.getFilterSpecificBean())
+							.setCompareValues(itemList);
 				}
 			}
 
@@ -323,8 +329,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				SuggestedProcessVariableType.values(), pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.suggestedType.name());
 
-		createTitledComboForEnumValues(stackComposites[3], "Operator", Operator.values(),
-				pvConfigurationBean,
+		createTitledComboForEnumValues(stackComposites[3], "Operator", Operator
+				.values(), pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.operator.name());
 
 		pvCompareValue = createTextEntry(stackComposites[3], "Compare value",
@@ -339,8 +345,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		timeBehaviorCheck = createCheckBoxEntry(stackComposites[4],
 				"Alarm bei Timeout", true);
 		addSeparator(stackComposites[4]);
-		createTitledComboForEnumValues(stackComposites[4], "Start KeyValue", MessageKeyEnum
-				.values(), timeBasedConfigurationBean,
+		createTitledComboForEnumValues(stackComposites[4], "Start KeyValue",
+				MessageKeyEnum.values(), timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.startKeyValue.name());
 
 		createTitledComboForEnumValues(stackComposites[4], "Start Operator",
@@ -350,8 +356,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		timeStartCompareText = createTextEntry(stackComposites[4],
 				"Start CompareValue", true);
 		addSeparator(stackComposites[4]);
-		createTitledComboForEnumValues(stackComposites[4], "Stop KeyValue", MessageKeyEnum
-				.values(), timeBasedConfigurationBean,
+		createTitledComboForEnumValues(stackComposites[4], "Stop KeyValue",
+				MessageKeyEnum.values(), timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.confirmKeyValue
 						.name());
 
@@ -487,7 +493,6 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			bean.addPropertyChangeListener(this);
 		}
 
-		
 	}
 
 	private void initTimeBasedAddOnBeanDataBinding(DataBindingContext context) {
@@ -614,16 +619,16 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private void initStringArrayAddOnBeanDataBinding(DataBindingContext context) {
 		StringArrayFilterConditionBean addOn = (StringArrayFilterConditionBean) specificBeans
 				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
-		
-//		 IObservableValue arrayKeyValueComboObservable = BeansObservables
-//		 .observeValue(addOn,
-//		 StringArrayFilterConditionBean.PropertyNames.keyValue
-//		 .name());
-//
-//		 IObservableValue arrayOperatorComboObservable = BeansObservables
-//		 .observeValue(addOn,
-//		 StringArrayFilterConditionBean.PropertyNames.operator
-//		 .name());
+
+		// IObservableValue arrayKeyValueComboObservable = BeansObservables
+		// .observeValue(addOn,
+		// StringArrayFilterConditionBean.PropertyNames.keyValue
+		// .name());
+		//
+		// IObservableValue arrayOperatorComboObservable = BeansObservables
+		// .observeValue(addOn,
+		// StringArrayFilterConditionBean.PropertyNames.operator
+		// .name());
 
 		IObservableList arrayCompareValueListObservable = BeansObservables
 				.observeList(
