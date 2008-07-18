@@ -22,7 +22,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
@@ -32,7 +31,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
-import org.hibernate.criterion.Criterion;
 
 /**
  * Implementation für Hibernate.
@@ -102,11 +100,11 @@ class LocalStoreConfigurationServiceImpl implements
 		Configuration result = null;
 		try {
 			result = new Configuration(session);
+			transaction.commit();
 		} catch (Throwable t) {
 			transaction.rollback();
-		} finally {
-			transaction.commit();
-		}
+			t.printStackTrace();
+		} 
 		return result;
 	}
 

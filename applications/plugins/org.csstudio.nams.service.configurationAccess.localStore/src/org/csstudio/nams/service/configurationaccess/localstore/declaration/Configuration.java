@@ -19,6 +19,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
@@ -33,6 +34,7 @@ public class Configuration implements FilterConditionForIdProvider {
 	private Collection<FilterConditionDTO> allFilterConditions;
 	private Collection<RubrikDTO> alleRubriken;
 	private List<User2UserGroupDTO> alleUser2UserGroupMappings;
+	private static Logger logger;
 
 	@SuppressWarnings("unchecked")
 	public Configuration(Session session)
@@ -80,7 +82,7 @@ public class Configuration implements FilterConditionForIdProvider {
 				}
 			}
 		}
-		addUsersToGroups();
+		addUsersToGroups(session);
 	}
 
 	private void setStringArrayCompareValues(
@@ -132,13 +134,19 @@ public class Configuration implements FilterConditionForIdProvider {
 		}
 	}
 
-	private void addUsersToGroups(){
+	private void addUsersToGroups(Session session){
 		HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
 		for (AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
 			gruppen.put(gruppe.getUserGroupId(), gruppe);
 		}
 		for (User2UserGroupDTO map : alleUser2UserGroupMappings) {
-			gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef()).alarmbearbeiterZuordnen(map);
+			try {
+				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef()).alarmbearbeiterZuordnen(map);
+			} catch (NullPointerException npe) {
+				session.delete(map);
+				logger.logWarningMessage(this, "Deleted invalid User To UserGroup mapping, group "
+						+ map.getUser2UserGroupPK().getIUserGroupRef() + " doesn't exist");
+			}
 		}
 	}
 	
@@ -203,6 +211,10 @@ public class Configuration implements FilterConditionForIdProvider {
 
 	public List<User2UserGroupDTO> getAllUser2UserGroupDTOs() {
 		return alleUser2UserGroupMappings;
+	}
+
+	public static void staticInject(Logger logger) {
+		Configuration.logger = logger;
 	}
 
 }

@@ -89,7 +89,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		try {
 			entireConfiguration = configurationService.getEntireConfiguration();
 			// TODO Folgendes Exception-Handling überdenken....
-
+			if (entireConfiguration == null) {
+				throw new RuntimeException("Couldn't load the Configuration");
+			}
 			rubrikDTOs = entireConfiguration.gibAlleRubriken();
 
 			Collection<AlarmbearbeiterDTO> alarmbearbeiter = entireConfiguration

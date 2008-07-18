@@ -108,7 +108,7 @@ public class SyncronizeView extends ViewPart {
 			messageBox.setText("Unsaved NAMS-Editors!");
 			messageBox
 					.setMessage("You still have unsaved changes in NAMS-Editors."
-							+ " This changes will be ignored by synchrnoisation process.\n"
+							+ " This changes will be ignored by synchronization process.\n"
 							+ "Do you want to review your changes before continuing?");
 			if (messageBox.open() == SWT.YES) {
 				// The User likes to check his changes.
@@ -123,19 +123,19 @@ public class SyncronizeView extends ViewPart {
 	}
 
 	protected synchronized void doSynchronize() {
-		appendStatusText("Beginning syncronization...");
+		appendStatusText("Beginning synchronization...");
 
 		try {
 			synchronizeService
 					.sychronizeAlarmSystem(new SynchronizeService.Callback() {
 						public void bereiteSynchronisationVor() {
-							appendStatusText("Preparing syncronisation...\n");
+							appendStatusText("Preparing synchronization...\n");
 						}
 
 						public void fehlerBeimVorbereitenDerSynchronisation(
 								Throwable t) {
 							appendStatusText(
-									"Failed to prepare syncronisation.\nReason:",
+									"Failed to prepare synchronization.\nReason:",
 									t);
 							buttonFreigben();
 						}
@@ -156,30 +156,30 @@ public class SyncronizeView extends ViewPart {
 						}
 
 						public void sendeNachrichtAnHintergrundSystem() {
-							appendStatusText("Sending sychronisation request to back-end-system...\n");
+							appendStatusText("Sending sychronization request to back-end-system...\n");
 						}
 
 						public void sendenDerNachrichtAnHintergrundSystemFehlgeschalgen(
 								Throwable t) {
 							appendStatusText(
-									"Failed to send sychronisation request to back-end-system.\nReason:",
+									"Failed to send sychronization request to back-end-system.\nReason:",
 									t);
 							buttonFreigben();
 						}
 
 						public void synchronisationAbgebrochen() {
-							appendStatusText("Sychronisation has been canceled.\n");
+							appendStatusText("Sychronization has been canceled.\n");
 							buttonFreigben();
 						}
 
 						public void synchronisationsDurchHintergrundsystemsErfolgreich() {
-							appendStatusText("\n\nSyncronisation successfully finished!");
+							appendStatusText("\n\nSynchronization successfully finished!");
 							buttonFreigben();
 						}
 
 						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
 								String fehlertext) {
-							appendStatusText("Back-end-system reporting failure of sychronisation.\nReported reason: "
+							appendStatusText("Back-end-system reporting failure of sychronization.\nReported reason: "
 									+ fehlertext);
 							buttonFreigben();
 						}
@@ -193,12 +193,12 @@ public class SyncronizeView extends ViewPart {
 						}
 
 						public void wartetAufAntowrtDesHintergrundSystems() {
-							appendStatusText("Waiting for sychronisation commitment to back-end-system...\n");
+							appendStatusText("Waiting for sychronization commitment to back-end-system...\n");
 						}
 
 					});
 		} catch (Throwable t) {
-			appendStatusText("\n\nSyncronisation failed!\nReason: ", t);
+			appendStatusText("\n\nSynchronization failed!\nReason: ", t);
 		}
 
 		// Display.getDefault().asyncExec(new Runnable() {

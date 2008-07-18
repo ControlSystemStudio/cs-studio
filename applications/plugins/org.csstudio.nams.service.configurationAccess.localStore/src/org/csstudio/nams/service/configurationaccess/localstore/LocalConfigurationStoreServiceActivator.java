@@ -4,8 +4,12 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
+import org.csstudio.nams.common.activatorUtils.Required;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.osgi.framework.BundleActivator;
 
 /**
@@ -19,7 +23,8 @@ public class LocalConfigurationStoreServiceActivator extends
 	private ConfigurationServiceFactoryImpl configurationServiceFactoryImpl;
 
 	@OSGiBundleActivationMethod
-	public OSGiServiceOffers startBundle() throws Exception {
+	public OSGiServiceOffers startBundle(
+			@OSGiService @Required Logger logger) throws Exception {
 		OSGiServiceOffers result = new OSGiServiceOffers();
 		try {
 			configurationServiceFactoryImpl = new ConfigurationServiceFactoryImpl();
@@ -29,6 +34,10 @@ public class LocalConfigurationStoreServiceActivator extends
 					"Failed to start LocalConfigurationStoreService's bundle",
 					t);
 		}
+		
+		// prepare Configuration
+		Configuration.staticInject(logger);
+		
 		return result;
 	}
 
