@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
@@ -24,12 +25,20 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @Table(name = "AMS_Filter_FilterCondition")
-public class FilterConditionsToFilterDTO {
+public class FilterConditionsToFilterDTO implements NewAMSConfigurationElementDTO {
 	@EmbeddedId
 	private FilterConditionsToFilterDTO_PK filterCTFPK;
 
+	public FilterConditionsToFilterDTO() {
+		filterCTFPK = new FilterConditionsToFilterDTO_PK();
+	}
+	
+	/**
+	 * This column is no more in use.
+	 */
+	@Deprecated
 	@Column(name = "iPos")
-	private int iPos; // INT
+	private int iPos = 0; // INT
 
 	@Override
 	public String toString() {
@@ -125,6 +134,14 @@ public class FilterConditionsToFilterDTO {
 	}
 	public void setFilterConditionsToFilterDTO_PK(FilterConditionsToFilterDTO_PK key) {
 		filterCTFPK = key;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return toString();
+	}
+
+	public boolean isInCategory(int categoryDBId) {
+		return false;
 	}
 	
 }

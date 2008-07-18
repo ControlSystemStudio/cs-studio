@@ -158,6 +158,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO impleme
 			if( joinElement.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
 				session.delete(joinElement);
 			}
+			// TODO mz 2008-07-18 Auch untergeordnette JCFFT - Elemente löschen
 		}		
 	}
 	

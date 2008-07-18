@@ -2,7 +2,6 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,14 +22,15 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Implementation für Hibernate.
@@ -215,13 +215,7 @@ class LocalStoreConfigurationServiceImpl implements
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			session.saveOrUpdate(dto);
-
-			if (dto instanceof HasJoinedElements) {
-				((HasJoinedElements<?>) dto).storeJoinLinkData(session);
-			}
-
-			transaction.commit();
+			saveDTONoTransaction(dto);
 		} catch (Throwable t) {
 			if (transaction != null) {
 				transaction.rollback();
@@ -229,6 +223,20 @@ class LocalStoreConfigurationServiceImpl implements
 			throw new StorageException(
 					"failed to save configuration element of type "
 							+ dto.getClass().getSimpleName(), t);
+		}
+	}
+
+	/**
+	 * Für interne Verwendung innerhalb einer Transaction, da Transaction in JDBC nicht verschachtelt werden dürfen.
+	 * 
+	 * @see {@link #saveDTO(NewAMSConfigurationElementDTO)}
+	 */
+	protected void saveDTONoTransaction(NewAMSConfigurationElementDTO dto)
+			throws Throwable {
+		session.saveOrUpdate(dto);
+
+		if (dto instanceof HasJoinedElements) {
+			((HasJoinedElements<?>) dto).storeJoinLinkData(session);
 		}
 	}
 
@@ -269,14 +277,14 @@ class LocalStoreConfigurationServiceImpl implements
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
 			AlarmbearbeiterGruppenDTO dto)
 			throws InconsistentConfigurationException {
-		
+
 		Transaction tx = session.beginTransaction();
 		try {
 			session.saveOrUpdate(dto);
-			
+
 			Collection<User2UserGroupDTO> user2GroupMappings = session
 					.createCriteria(User2UserGroupDTO.class).list();
-			
+
 			for (User2UserGroupDTO a : user2GroupMappings) {
 				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
 						.getUserGroupId()) {
@@ -286,8 +294,8 @@ class LocalStoreConfigurationServiceImpl implements
 			// for all used FC
 			// get the mappingDTO, if no DTO exists, create one
 			Set<User2UserGroupDTO> zugehoerigeAlarmbearbeiter = dto
-			.gibZugehoerigeAlarmbearbeiter();
-			
+					.gibZugehoerigeAlarmbearbeiter();
+
 			// save the used Mappings
 			for (User2UserGroupDTO map : zugehoerigeAlarmbearbeiter) {
 				session.save(map);
@@ -336,62 +344,63 @@ class LocalStoreConfigurationServiceImpl implements
 		return (RubrikDTO) session.load(RubrikDTO.class, generatedID);
 	}
 
+	@SuppressWarnings("unchecked")
 	public FilterDTO saveFilterDTO(FilterDTO dto)
 			throws InconsistentConfigurationException {
-		Serializable generatedID = null;
-		Transaction tx = session.beginTransaction();
+		Transaction tx = null;
 		try {
-			generatedID = session.save(dto);
+			tx = session.beginTransaction();
 
+			session.saveOrUpdate(dto);
+
+			// clean up join data
 			Collection<FilterConditionsToFilterDTO> conditionMappings = session
 					.createCriteria(FilterConditionsToFilterDTO.class).list();
-			Set<FilterConditionsToFilterDTO> relevantMappings = new HashSet<FilterConditionsToFilterDTO>();
-			Set<FilterConditionsToFilterDTO> usedMappings = new HashSet<FilterConditionsToFilterDTO>();
-			for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : conditionMappings) {
-				if (filterConditionsToFilterDTO.getIFilterRef() == dto
-						.getIFilterID()) {
-					relevantMappings.add(filterConditionsToFilterDTO);
-				}
-			}
-			// for all used FC
-			// get the mappingDTO, if no DTO exists, create one
 
-			for (FilterConditionDTO condition : dto.getFilterConditions()) {
-				FilterConditionsToFilterDTO match = null;
-				for (FilterConditionsToFilterDTO filterConditionsToFilterDTO : relevantMappings) {
-					if (condition.getIFilterConditionID() == filterConditionsToFilterDTO
-							.getIFilterConditionRef()
-							&& dto.getIFilterID() == filterConditionsToFilterDTO
-									.getIFilterRef()) {
-						match = filterConditionsToFilterDTO;
-						break;
+			for (FilterConditionsToFilterDTO joinElement : conditionMappings) {
+				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
+					session.delete(joinElement);
+
+					Collection<JunctorConditionForFilterTreeDTO> junctorConditions = session
+							.createCriteria(
+									JunctorConditionForFilterTreeDTO.class)
+							.add(
+									Restrictions.idEq(joinElement
+											.getIFilterConditionRef())).list();
+					if (junctorConditions != null
+							&& junctorConditions.size() > 0) {
+						for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
+							deleteDTO(junctorConditionForFilterTreeDTO);
+						}
 					}
 				}
-				if (match == null) {
-					FilterConditionsToFilterDTO_PK newKey = new FilterConditionsToFilterDTO_PK();
-					newKey.setIFilterConditionRef(condition
-							.getIFilterConditionID());
-					newKey.setIFilterRef(dto.getIFilterID());
-					match = new FilterConditionsToFilterDTO();
-					match.setFilterConditionsToFilterDTO_PK(newKey);
+			}
+
+			// join speichern
+			List<FilterConditionDTO> filterConditions = dto
+					.getFilterConditions();
+			for (FilterConditionDTO filterConditionDTO : filterConditions) {
+				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
+					// Diese Condition speichern, da sie von Editor angelegt
+					// wird.
+					saveDTONoTransaction(filterConditionDTO);
 				}
-				usedMappings.add(match);
+
+				FilterConditionsToFilterDTO joinData = new FilterConditionsToFilterDTO();
+				joinData.setIFilterRef(dto.getIFilterID());
+				joinData.setIFilterConditionRef(filterConditionDTO
+						.getIFilterConditionID());
+				saveDTONoTransaction(joinData);
 			}
-			// save the used Mappings
-			for (FilterConditionsToFilterDTO map : usedMappings) {
-				session.saveOrUpdate(map);
-			}
-			// if an old mapping dto does not exist, remove it
-			relevantMappings.removeAll(usedMappings);
-			for (FilterConditionsToFilterDTO unusedMapping : relevantMappings) {
-				session.delete(unusedMapping);
-			}
+
 			tx.commit();
 		} catch (Throwable e) {
-			tx.rollback();
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
 			throw new InconsistentConfigurationException(e.getMessage());
 		}
-		return (FilterDTO) session.load(FilterDTO.class, generatedID);
+		return dto;
 	}
 
 	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto)
@@ -410,6 +419,15 @@ class LocalStoreConfigurationServiceImpl implements
 			throws InconsistentConfigurationException {
 		Transaction tx = session.beginTransaction();
 		try {
+			Collection<User2UserGroupDTO> user2GroupMappings = session
+					.createCriteria(User2UserGroupDTO.class).list();
+
+			for (User2UserGroupDTO a : user2GroupMappings) {
+				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
+						.getUserGroupId()) {
+					session.delete(a);
+				}
+			}
 			session.delete(dto);
 		} catch (HibernateException e) {
 			new InconsistentConfigurationException("Could not delete " + dto

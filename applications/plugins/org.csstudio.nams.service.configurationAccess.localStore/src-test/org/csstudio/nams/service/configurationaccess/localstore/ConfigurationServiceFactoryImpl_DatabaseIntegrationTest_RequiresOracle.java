@@ -2,6 +2,8 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -11,6 +13,7 @@ import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -213,5 +216,70 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		// clean up
 		service.deleteDTO(leftCondition);
 		service.deleteDTO(rightCondition);
+	}
+	
+	public void testSaveFilter() throws Throwable {
+		// Conditions
+		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
+		leftCondition.setCName("Test-LeftCond");
+		leftCondition.setCompValue("TestValue");
+		leftCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		leftCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+		
+		StringFilterConditionDTO rightCondition = new StringFilterConditionDTO();
+		rightCondition.setCName("Test-RightCond");
+		rightCondition.setCompValue("TestValue2");
+		rightCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		rightCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+		
+		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
+		operands.add(leftCondition);
+		operands.add(rightCondition);
+		
+		JunctorConditionForFilterTreeDTO andCondition = new JunctorConditionForFilterTreeDTO();
+		andCondition.setCName("TEST-Con");
+		andCondition.setCDesc("Test-Description");
+		andCondition.setOperator(JunctorConditionType.AND);
+		andCondition.setOperands(operands);
+
+		// Speicher die FC nicht(!) die Tree-FC (andCondition)
+		service.saveDTO(leftCondition);
+		service.saveDTO(rightCondition);
+		
+		// Filter 
+		// Root-Ebene aufbauen
+		List<FilterConditionDTO> filterConditions = new LinkedList<FilterConditionDTO>();
+		filterConditions.add(andCondition);
+		
+		FilterDTO filter = new FilterDTO();
+		filter.setName("Test Filter für JCFFT");
+		filter.setDefaultMessage("Hallo Welt!");
+		filter.setFilterConditions(filterConditions);
+
+		// Pruefen dass noch kein entsprechender Filter da ist.
+		Configuration entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		Collection<FilterDTO> alleFilter = entireConfiguration.gibAlleFilter();
+		for (FilterDTO filterDTO : alleFilter) {
+//			assertFalse("noch nicht enthalten", filterDTO.getName().equals("Test Filter für JCFFT"));
+		}
+		
+		// Save
+		service.saveFilterDTO(filter);
+		
+		// Pruefen dass Filter jetzt da ist.
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		alleFilter = entireConfiguration.gibAlleFilter();
+		FilterDTO found = null;
+		for (FilterDTO filterDTO : alleFilter) {
+			if( filter.equals(filterDTO) )
+			{
+				found = filterDTO;
+			}
+		}
+		assertNotNull("enthalten", found);
+		
+		
 	}
 }
