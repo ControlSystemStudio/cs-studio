@@ -12,6 +12,7 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.epics.css.dal.Timestamp;
 
 /**
  * @author Goesta Steen, TR, MW
@@ -80,8 +81,8 @@ public class ProcessVariableRegel implements VersandRegel {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void valueChanged(T value) {
-			logger.logDebugMessage(this, "Value changed, new Value: "
+		public void valueChanged(T value, Timestamp e) {
+			logger.logDebugMessage(this, e.toString() + " Value changed, new Value: "
 					+ value.toString());
 			_lastReceivedValue = value;
 		}

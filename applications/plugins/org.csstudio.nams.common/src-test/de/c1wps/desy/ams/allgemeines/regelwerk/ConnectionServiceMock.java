@@ -13,6 +13,7 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
+import org.epics.css.dal.Timestamp;
 import org.junit.Assert;
 
 class ConnectionServiceMock implements IProcessVariableConnectionService {
@@ -40,7 +41,7 @@ class ConnectionServiceMock implements IProcessVariableConnectionService {
 
 	@SuppressWarnings("unchecked")
 	public void sendNewValue(Object value) {
-		_listener.valueChanged(value);
+		_listener.valueChanged(value, new Timestamp());
 	}
 
 	public void sendNewConnectionState(ConnectionState state) {
