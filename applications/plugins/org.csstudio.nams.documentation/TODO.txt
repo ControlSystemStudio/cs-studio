@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------------------------------------------
  
 - Alarmbearbeitergruppen Editor (mw)
-	- mehrere Alarmbearbeiter gleichzeitig löschen (1)
+	- ok
 	
 - Filter Editor (gs, mz)
 	- speichern klappt nur wenn keine neuen junction Bedingungen (Unterknoten) oder Not Bedingungen enthalten sind (5)
@@ -15,7 +15,7 @@
 	- Scrollbar machen (1)
 	
 - Filterbedingung Editor
-	- String Array condition: CompareValues ist unter Linux nicht zu sehen (4)
+	- String Array condition: CompareValues ist nicht zu sehen (4)
 	- speicher nur bei der StringBedingung getestet!! (gui: 1, beanservice: 3)
 	
 - Alarmtopic Editor

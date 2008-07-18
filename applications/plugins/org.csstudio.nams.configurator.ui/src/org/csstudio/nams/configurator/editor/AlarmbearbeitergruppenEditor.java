@@ -208,7 +208,7 @@ public class AlarmbearbeitergruppenEditor extends
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
 							tabellenComposite);
 					tableViewer = new TableViewer(tabellenComposite,
-							SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+							SWT.MULTI | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
 					Table table = tableViewer.getTable();
 
 					TableViewerColumn nameColumn = new TableViewerColumn(
