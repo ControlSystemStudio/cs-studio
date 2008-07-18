@@ -1,7 +1,7 @@
 /**
  * An almost empty mock for {@link IProcessVariableConnectionService}.
  */
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.List;
 

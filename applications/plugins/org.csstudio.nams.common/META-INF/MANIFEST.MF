@@ -10,13 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common.activatorUtils
 Eclipse-LazyStart: true
 Export-Package: 
- de.c1wps.desy.ams.allgemeines.regelwerk;
-  uses:="org.csstudio.platform.model.pvs,
-   junit.framework,
-   org.csstudio.nams.common.material,
-   org.csstudio.platform.simpledal,
-   org.csstudio.nams.common.material.regelwerk,
-   org.csstudio.nams.common.testutils",
  junit.extensions;uses:="junit.framework",
  junit.framework;uses:="org.junit.runner,org.junit.runner.notification",
  junit.runner;uses:="junit.framework",

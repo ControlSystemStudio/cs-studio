@@ -23,7 +23,7 @@
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
 
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.Set;
 

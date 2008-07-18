@@ -1,4 +1,4 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
