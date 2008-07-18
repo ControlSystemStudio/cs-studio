@@ -67,11 +67,11 @@ public class Label extends Widget {
                 String[] textit = ADLHelper.cleanString(row[1]);
                 _widget.setPropertyValue(LabelModel.PROP_TEXTVALUE, textit[1]);
                 labelText = textit[1];
-                _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);
+                _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);
                 if(textit[1].startsWith("$")&&textit.length>2){ //$NON-NLS-1$
                     _widget.setAliasValue("channel", textit[2]); //$NON-NLS-1$
                     _widget.setPrimarPv(textit[2]);
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_ALIAS);
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_ALIAS);
                 }
             }else if(row[0].equals("alignment")||row[0].equals("align")){ //$NON-NLS-1$ //$NON-NLS-2$
 //              <property type="sds.option" id="textAlignment">
@@ -96,21 +96,21 @@ public class Label extends Widget {
                 String test = row[1];
                 CentralLogger.getInstance().debug(this,Messages.Label_Format_Debug + test);
                 if(test.equals("\"exponential\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->exponential wird noch nicht vom ASDS unterstützt.
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->exponential wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"decimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_DOUBLE); 
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_DOUBLE); 
                 }else if(test.equals("\"engr.notation\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->engr.notation wird noch nicht vom ASDS unterstützt.
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->engr.notation wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"compact\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->compact wird noch nicht vom ASDS unterstützt.
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->compact wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"octal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->octal wird noch nicht vom ASDS unterstützt.
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->octal wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"hexadecimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_HEX); 
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_HEX); 
                 }else if(test.equals("\"truncated\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->truncated wird noch nicht vom ASDS unterstützt.
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->truncated wird noch nicht vom ASDS unterstützt.
                 }else{// Unknown or String
-                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);
+                    _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);
                 }
             }else{                
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);
