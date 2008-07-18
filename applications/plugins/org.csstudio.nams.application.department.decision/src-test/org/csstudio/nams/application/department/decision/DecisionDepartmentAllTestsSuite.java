@@ -7,17 +7,16 @@ import junit.framework.TestSuite;
 import org.csstudio.nams.application.department.decision.office.decision.Alarmentscheidungsbuero_SubSystemTestSuite;
 import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction_Test;
 
-public class AllTestsSuite extends TestCase {
+public class DecisionDepartmentAllTestsSuite extends TestCase {
 
 	public static Test suite() throws Throwable {
 		// TODO System.setErr(new PrintStream(new OutputStreamWriter(new StringWriter())));
 		
-		TestSuite suite = new TestSuite("Test for de.c1wps.desy.ams");
+		TestSuite suite = new TestSuite("DecisionDepartmentAllTestsSuite");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(AllTestsSuite.class);
+		suite.addTestSuite(DecisionDepartmentAllTestsSuite.class);
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 		suite.addTestSuite(SyncronisationsAutomat_Test.class);
-		
 		suite.addTestSuite(DecisionDepartmentActivator_Test.class);
 		suite.addTestSuite(XMPPRemoteShutdownAction_Test.class);
 		//$JUnit-END$

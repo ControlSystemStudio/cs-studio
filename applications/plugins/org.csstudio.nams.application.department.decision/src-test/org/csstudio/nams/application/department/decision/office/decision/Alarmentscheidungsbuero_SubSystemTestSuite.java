@@ -8,7 +8,7 @@ public class Alarmentscheidungsbuero_SubSystemTestSuite extends TestCase {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"Test for de.c1wps.desy.ams.alarmentscheidungsbuero");
+				"Alarmentscheidungsbuero_SubSystemTestSuite");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(AlarmEntscheidungsBuero_Test.class);
 		suite.addTestSuite(Abteilungsleiter_Test.class);

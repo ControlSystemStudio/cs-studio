@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Test;
 
 public class DecisionDepartmentActivator_Test extends TestCase {
 
@@ -67,9 +67,13 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		}
 	};
 
-	@Ignore
-	// @Test
-	public void ignoredtestBundleAndApplicationLifecycle() throws Throwable {
+	@Test
+	public void testBundleAndApplicationLifecycle() throws Throwable {
+		
+		// FIXME mz 2008-07-18: This Test has to be fixed!
+		fail("This Test has to be fixed!");
+		
+		
 		final DecisionDepartmentActivator bundleInsance = new DecisionDepartmentActivator();
 		final DecisionDepartmentActivator applicationInsance = new DecisionDepartmentActivator();
 
