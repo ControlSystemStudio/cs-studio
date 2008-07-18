@@ -28,7 +28,7 @@ public class FilterbedingungBean extends
 	}
 
 	public FilterbedingungBean() {
-		filterSpecificBean = new JunctorConditionBean();
+		filterSpecificBean = new StringFilterConditionBean();
 	}
 
 	public String getDisplayName() {
