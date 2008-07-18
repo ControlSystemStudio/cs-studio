@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,9 +16,8 @@ import javax.persistence.Transient;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.hibernate.Session;
-import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration eines Filters dar
@@ -163,11 +163,25 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 	public void deleteJoinLinkData(Session session) throws Throwable {
 		List<FilterConditionsToFilterDTO> list = session.createCriteria(
-				FilterConditionsToFilterDTO.class).add(Restrictions.eq("filterCTFPK.iFilterRef", this.iFilterID))
+				FilterConditionsToFilterDTO.class)
 				.list();
 		for (FilterConditionsToFilterDTO fctf : list) {
-			session.delete(fctf);
+			if( fctf.getIFilterRef() == this.iFilterID ) {
+				session.delete(fctf);
+			}
 		}
+		
+		Collection<FilterConditionDTO> toRemove = new HashSet<FilterConditionDTO>();
+		for (FilterConditionDTO condition : getFilterConditions()) {
+			if( condition instanceof HasJoinedElements ) {
+				((HasJoinedElements<?>)condition).deleteJoinLinkData(session);
+			}
+			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
+				session.delete(condition);
+				toRemove.add(condition);
+			}
+		}
+		this.filterConditons.removeAll(toRemove);
 	}
 
 	public void loadJoinData(Session session,

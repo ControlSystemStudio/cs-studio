@@ -246,15 +246,15 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		operands.add(leftCondition);
 		operands.add(rightCondition);
 		
-		JunctorConditionForFilterTreeDTO andCondition = new JunctorConditionForFilterTreeDTO();
-		andCondition.setCName("TEST-Con");
-		andCondition.setCDesc("Test-Description");
-		andCondition.setOperator(JunctorConditionType.AND);
-		andCondition.setOperands(operands);
-
 		// Speicher die FC nicht(!) die Tree-FC (andCondition)
 		service.saveDTO(leftCondition);
 		service.saveDTO(rightCondition);
+
+		JunctorConditionForFilterTreeDTO andCondition = new JunctorConditionForFilterTreeDTO();
+		andCondition.setCName("TEST-Con JCFFT");
+		andCondition.setCDesc("Test-Description");
+		andCondition.setOperator(JunctorConditionType.AND);
+		andCondition.setOperands(operands);
 		
 		// Filter 
 		// Root-Ebene aufbauen
@@ -271,7 +271,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertNotNull(entireConfiguration);
 		Collection<FilterDTO> alleFilter = entireConfiguration.gibAlleFilter();
 		for (FilterDTO filterDTO : alleFilter) {
-//			assertFalse("noch nicht enthalten", filterDTO.getName().equals("Test Filter für JCFFT"));
+			assertFalse("noch nicht enthalten", filterDTO.getName().equals("Test Filter für JCFFT"));
 		}
 		
 		// Save
