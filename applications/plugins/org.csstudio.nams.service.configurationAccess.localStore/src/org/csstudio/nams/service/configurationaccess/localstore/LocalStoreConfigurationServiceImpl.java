@@ -25,6 +25,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.hibernate.HibernateException;
@@ -104,7 +105,7 @@ class LocalStoreConfigurationServiceImpl implements
 		} catch (Throwable t) {
 			transaction.rollback();
 			t.printStackTrace();
-		} 
+		}
 		return result;
 	}
 
@@ -216,6 +217,24 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			transaction = session.beginTransaction();
 			saveDTONoTransaction(dto);
+			if (dto instanceof StringArrayFilterConditionDTO) {
+				StringArrayFilterConditionDTO filterDto = (StringArrayFilterConditionDTO) dto;
+				List<StringArrayFilterConditionCompareValuesDTO> list = session
+						.createCriteria(
+								StringArrayFilterConditionCompareValuesDTO.class)
+						.list();
+				for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : list) {
+					if (filterDto.getIFilterConditionID() == stringArrayFilterConditionCompareValuesDTO
+							.getFilterConditionRef()) {
+						session
+								.delete(stringArrayFilterConditionCompareValuesDTO);
+					}
+				}
+				for (StringArrayFilterConditionCompareValuesDTO compValue : filterDto.getCompareValueList()) {
+					compValue.setPK(filterDto.getIFilterConditionID());
+					session.saveOrUpdate(compValue);
+				}
+			}
 		} catch (Throwable t) {
 			if (transaction != null) {
 				transaction.rollback();
@@ -227,7 +246,8 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	/**
-	 * Für interne Verwendung innerhalb einer Transaction, da Transaction in JDBC nicht verschachtelt werden dürfen.
+	 * Für interne Verwendung innerhalb einer Transaction, da Transaction in
+	 * JDBC nicht verschachtelt werden dürfen.
 	 * 
 	 * @see {@link #saveDTO(NewAMSConfigurationElementDTO)}
 	 */
@@ -321,12 +341,31 @@ class LocalStoreConfigurationServiceImpl implements
 	 * 
 	 * @throws StorageException
 	 */
+	@Deprecated
 	public FilterConditionDTO saveFilterCondtionDTO(
 			FilterConditionDTO filterConditionDTO) throws StorageException {
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 			session.saveOrUpdate(filterConditionDTO);
+//			if (filterConditionDTO instanceof StringArrayFilterConditionDTO) {
+//
+//				List<StringArrayFilterConditionCompareValuesDTO> list = session
+//						.createCriteria(
+//								StringArrayFilterConditionCompareValuesDTO.class)
+//						.add(
+//								Restrictions.eq("iFilterConditionRef",
+//										filterConditionDTO
+//												.getIFilterConditionID()))
+//						.list();
+//				for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : list) {
+//					session.delete(stringArrayFilterConditionCompareValuesDTO);
+//				}
+//				StringArrayFilterConditionDTO safc = (StringArrayFilterConditionDTO) filterConditionDTO;
+//				for (StringArrayFilterConditionCompareValuesDTO compValue : safc.getCompareValueList()) {
+//					session.saveOrUpdate(compValue);
+//				}
+//			}
 			tx.commit();
 		} catch (Throwable t) {
 			if (tx != null) {

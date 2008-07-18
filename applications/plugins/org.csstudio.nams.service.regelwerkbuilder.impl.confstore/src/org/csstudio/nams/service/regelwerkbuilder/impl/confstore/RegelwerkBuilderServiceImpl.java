@@ -148,8 +148,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 			StringArrayFilterConditionDTO stringArayCondition = (StringArrayFilterConditionDTO) filterConditionDTO;
 
-			List<String> compareValueList = stringArayCondition
-					.getCompareValueList();
+			List<String> compareValueList = stringArayCondition.getCompareValueStringList();
 
 			MessageKeyEnum keyValue = stringArayCondition.getKeyValueEnum();
 			StringRegelOperator operatorEnum = stringArayCondition

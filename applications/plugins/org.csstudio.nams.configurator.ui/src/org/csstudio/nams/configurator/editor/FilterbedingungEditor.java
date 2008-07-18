@@ -277,7 +277,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 
 			public void mouseDown(MouseEvent e) {
-				arrayCompareValueList.add(arrayNewCompareValueText.getText());
+				StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) beanClone.getFilterSpecificBean();
+				java.util.List<String> list = specificBean.getCompareValues();
+				list.add(arrayNewCompareValueText.getText());
+				specificBean.setCompareValues(list);
+				arrayNewCompareValueText.setText("");
 			}
 
 			public void mouseUp(MouseEvent e) {
@@ -608,16 +612,16 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private void initStringArrayAddOnBeanDataBinding(DataBindingContext context) {
 		StringArrayFilterConditionBean addOn = (StringArrayFilterConditionBean) specificBeans
 				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
-		//
-		// IObservableValue arrayKeyValueComboObservable = BeansObservables
-		// .observeValue(addOn,
-		// StringArrayFilterConditionBean.PropertyNames.keyValue
-		// .name());
-
-		// IObservableValue arrayOperatorComboObservable = BeansObservables
-		// .observeValue(addOn,
-		// StringArrayFilterConditionBean.PropertyNames.operator
-		// .name());
+		
+//		 IObservableValue arrayKeyValueComboObservable = BeansObservables
+//		 .observeValue(addOn,
+//		 StringArrayFilterConditionBean.PropertyNames.keyValue
+//		 .name());
+//
+//		 IObservableValue arrayOperatorComboObservable = BeansObservables
+//		 .observeValue(addOn,
+//		 StringArrayFilterConditionBean.PropertyNames.operator
+//		 .name());
 
 		IObservableList arrayCompareValueListObservable = BeansObservables
 				.observeList(
@@ -793,7 +797,6 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		initJunctorAddOnBeanDataBinding(context);
 		initPVAddOnBeanDataBinding(context);
 		initStringArrayAddOnBeanDataBinding(context);
-		// TODO init TimeBased DataBinding
 		initTimeBasedAddOnBeanDataBinding(context);
 
 		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),

@@ -38,7 +38,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	 * Die Compare-Values. Werden manuell zugeordnet.
 	 */
 	@Transient 
-	private List<String> compareValues = new LinkedList<String>();
+	private List<StringArrayFilterConditionCompareValuesDTO> compareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 	
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int filterConditionRef;
@@ -76,7 +76,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	}
 
 	public MessageKeyEnum getKeyValueEnum() {
-		return MessageKeyEnum.valueOf(keyValue);
+		return MessageKeyEnum.getEnumFor(keyValue);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 		this.operator = operator;
 	}
 
-	public List<String> getCompareValueList(){
+	public List<StringArrayFilterConditionCompareValuesDTO> getCompareValueList(){
 		return compareValues;
 	}
 
@@ -117,7 +117,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	 * @param compareValues the compareValues to set
 	 */
 	@SuppressWarnings("unused")
-	public void setCompareValues(List<String> compareValues) {
+	public void setCompareValues(List<StringArrayFilterConditionCompareValuesDTO> compareValues) {
 		this.compareValues = compareValues;
 	}
 
@@ -177,6 +177,18 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	}
 	public void setOperatorEnum(StringRegelOperator op){
 		operator = (short) op.ordinal();
+	}
+
+	public void setKeyValue(MessageKeyEnum keyValue2) {
+		keyValue = keyValue2.getStringValue();
+	}
+
+	public List<String> getCompareValueStringList() {
+		List<String> list = new LinkedList<String>();
+		for (StringArrayFilterConditionCompareValuesDTO value : getCompareValueList()) {
+			list.add(value.getCompValue());
+		}
+		return list;
 	}
 	
 	

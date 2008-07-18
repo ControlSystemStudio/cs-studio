@@ -89,4 +89,13 @@ public class StringArrayFilterConditionCompareValuesDTO {
 			return false;
 		return true;
 	}
+
+	public void setPk(StringArrayFilterConditionCompareValuesDTO_PK pk) {
+		this.pk = pk;
+	}
+
+	public void setPK(int filterConditionID) {
+		this.pk.setFilterConditionRef(filterConditionID);
+		
+	}
 }

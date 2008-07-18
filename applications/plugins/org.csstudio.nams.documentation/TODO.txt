@@ -14,7 +14,6 @@
 	- mehrere Filterbedingungen gleichzeitig löschen (1)
 	
 - Filterbedingung Editor
-	- selektiert bei einer neuen Bedingung die Or Condition. Soll aber String Bedingung selektieren. (1)
 	- String Array condition: CompareValues ist unter Linux nicht zu sehen (4)
 	- speicher nur bei der StringBedingung getestet!! (gui: 1, beanservice: 3)
 	

@@ -35,6 +35,7 @@ public class Configuration implements FilterConditionForIdProvider {
 	private Collection<RubrikDTO> alleRubriken;
 	private List<User2UserGroupDTO> alleUser2UserGroupMappings;
 	private static Logger logger;
+	private Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
 
 	@SuppressWarnings("unchecked")
 	public Configuration(Session session)
@@ -70,7 +71,7 @@ public class Configuration implements FilterConditionForIdProvider {
 				FilterConditionsToFilterDTO.class).list();
 		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionMappings);
 		setChildFilterConditionsInJunctorDTOs();
-		Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues = session
+		allCompareValues = session
 				.createCriteria(
 						StringArrayFilterConditionCompareValuesDTO.class)
 				.list();
@@ -107,7 +108,7 @@ public class Configuration implements FilterConditionForIdProvider {
 					.get(stringArrayFilterConditionCompareValuesDTO
 							.getFilterConditionRef());
 			conditionDTO.getCompareValueList().add(
-					stringArrayFilterConditionCompareValuesDTO.getCompValue());
+					stringArrayFilterConditionCompareValuesDTO);
 		}
 
 	}
@@ -231,6 +232,10 @@ public class Configuration implements FilterConditionForIdProvider {
 
 	public static void staticInject(Logger logger) {
 		Configuration.logger = logger;
+	}
+
+	public Collection<StringArrayFilterConditionCompareValuesDTO> getAllStringArrayCompareValues() {
+		return allCompareValues;
 	}
 
 }

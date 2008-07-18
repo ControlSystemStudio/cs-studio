@@ -44,6 +44,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Use
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
@@ -222,8 +224,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setStatusCode(alarmbearbeiter.getStatusCode());
 		bean.setUserID(alarmbearbeiter.getUserId());
 		bean.setRubrikName(getRubrikNameForId(alarmbearbeiter.getGroupRef())); // GUI-Group
-																				// =
-																				// Rubrik
+		// =
+		// Rubrik
 
 		return bean;
 	}
@@ -257,7 +259,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setName(dto.getUserGroupName());
 		bean.setTimeOutSec(dto.getTimeOutSec());
 		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group
-																	// = Rubrik
+		// = Rubrik
 
 		List<User2GroupBean> list = new LinkedList<User2GroupBean>();
 		final Map<User2GroupBean, User2UserGroupDTO> beanDTOMap = new HashMap<User2GroupBean, User2UserGroupDTO>();
@@ -268,15 +270,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		Collections.sort(list, new Comparator<User2GroupBean>() {
 			public int compare(User2GroupBean o1, User2GroupBean o2) {
-				return beanDTOMap.get(o1).getPosition() - beanDTOMap.get(o2).getPosition();
+				return beanDTOMap.get(o1).getPosition()
+						- beanDTOMap.get(o2).getPosition();
 			}
 		});
 		bean.setUsers(list);
 		return bean;
 	}
 
-	private User2GroupBean DTO2Bean(User2UserGroupDTO map, AlarmbearbeiterGruppenBean groupBean) {
-		AlarmbearbeiterBean userBean = alarmbearbeiterBeans.get(map.getUser2UserGroupPK().getIUserRef());
+	private User2GroupBean DTO2Bean(User2UserGroupDTO map,
+			AlarmbearbeiterGruppenBean groupBean) {
+		AlarmbearbeiterBean userBean = alarmbearbeiterBeans.get(map
+				.getUser2UserGroupPK().getIUserRef());
 		User2GroupBean result = new User2GroupBean(userBean);
 
 		result.setActive(map.isActive());
@@ -311,7 +316,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setTopicID(dto.getId());
 		bean.setTopicName(dto.getTopicName());
 		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group
-																	// = Rubrik
+		// = Rubrik
 		return bean;
 	}
 
@@ -351,8 +356,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		bean.setConditions(conditions);
 		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group
-																		// =
-																		// Rubrik
+		// =
+		// Rubrik
 		return bean;
 	}
 
@@ -464,9 +469,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		} else if (filter instanceof StringArrayFilterConditionDTO) {
 			StringArrayFilterConditionBean stringArrayFilterConditionBean = new StringArrayFilterConditionBean();
 			stringArrayFilterConditionBean.setRubrikName("");
+
 			stringArrayFilterConditionBean
 					.setCompareValues(((StringArrayFilterConditionDTO) filter)
-							.getCompareValueList());
+							.getCompareValueStringList());
 			stringArrayFilterConditionBean
 					.setKeyValue(((StringArrayFilterConditionDTO) filter)
 							.getKeyValueEnum());
@@ -518,8 +524,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 
 		bean.setRubrikName(getRubrikNameForId(filter.getIGroupRef())); // GUI-Group
-																		// =
-																		// Rubrik
+		// =
+		// Rubrik
 		if (filterSpecificBean != null) {
 			bean.setFilterSpecificBean(filterSpecificBean);
 		} else {
@@ -629,11 +635,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
-	private User2UserGroupDTO getDTO4Bean(User2GroupBean bean2, AlarmbearbeiterGruppenBean parentBean) {
+	private User2UserGroupDTO getDTO4Bean(User2GroupBean bean2,
+			AlarmbearbeiterGruppenBean parentBean) {
 		User2UserGroupDTO map = null;
 		for (User2UserGroupDTO potentialdto : entireConfiguration
 				.getAllUser2UserGroupDTOs()) {
-			if (potentialdto.getUser2UserGroupPK().getIUserGroupRef() == parentBean.getGroupID()
+			if (potentialdto.getUser2UserGroupPK().getIUserGroupRef() == parentBean
+					.getGroupID()
 					&& potentialdto.getUser2UserGroupPK().getIUserRef() == bean2
 							.getUserBean().getUserID()) {
 				map = potentialdto;
@@ -783,10 +791,24 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				inserted = true;
 			}
 
-			stringArrayFilterConditionDTO.setCompareValues(specificBean
-					.getCompareValues());
+			List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+			Collection<StringArrayFilterConditionCompareValuesDTO> allStringArrayCompareValues = entireConfiguration
+					.getAllStringArrayCompareValues();
+			for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allStringArrayCompareValues) {
+				if (stringArrayFilterConditionCompareValuesDTO.getFilterConditionRef() == dto4Bean.getIFilterConditionID()){
+					oldCompareValues.add(stringArrayFilterConditionCompareValuesDTO);
+				}
+			}
+			List<StringArrayFilterConditionCompareValuesDTO> currentCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+			for (String compValue : specificBean.getCompareValues()) {
+				currentCompareValues.add(getCompareValueDTO(oldCompareValues, bean, compValue));
+			}
+			
+			
+			stringArrayFilterConditionDTO.setCompareValues(currentCompareValues);
+
 			stringArrayFilterConditionDTO.setKeyValue(specificBean
-					.getKeyValue().name());
+					.getKeyValue());
 			stringArrayFilterConditionDTO.setOperatorEnum(specificBean
 					.getOperator());
 
@@ -836,6 +858,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		filterConditionDTO.setCDesc(bean.getDescription());
 		try {
 			configurationService.saveDTO(filterConditionDTO);
+
 		} catch (Throwable t) {
 			// FIXME mz20080710 Handle throwable!
 			t.printStackTrace();
@@ -847,6 +870,23 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
+	}
+
+	private StringArrayFilterConditionCompareValuesDTO getCompareValueDTO(
+			List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues,
+			FilterbedingungBean bean, String compValue) {
+		for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : oldCompareValues) {
+			if (stringArrayFilterConditionCompareValuesDTO.getCompValue() == compValue){
+				return stringArrayFilterConditionCompareValuesDTO;
+			}
+		}
+		StringArrayFilterConditionCompareValuesDTO result = new StringArrayFilterConditionCompareValuesDTO();
+		StringArrayFilterConditionCompareValuesDTO_PK pk = new StringArrayFilterConditionCompareValuesDTO_PK();
+		pk.setCompValue(compValue);
+		pk.setFilterConditionRef(bean.getFilterbedinungID());
+		result.setPk(pk);
+		
+		return result;
 	}
 
 	private void insertOrUpdateNotification(IConfigurationBean bean,
@@ -1019,8 +1059,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private void deleteFilterBean(FilterBean bean) 
 			throws InconsistentConfigurationException {
 		FilterDTO dto = null;
-		for (FilterDTO potentialdto : entireConfiguration
-				.gibAlleFilter()) {
+		for (FilterDTO potentialdto : entireConfiguration.gibAlleFilter()) {
 			if (potentialdto.getIFilterID() == bean.getID()) {
 				dto = potentialdto;
 				break;
@@ -1037,8 +1076,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterbedingungBeans.remove(dto.getIFilterID());
 			logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() "
-							+ dto.getIFilterID() + " "
-							+ dto.getName());
+							+ dto.getIFilterID() + " " + dto.getName());
 		}
 	}
 
