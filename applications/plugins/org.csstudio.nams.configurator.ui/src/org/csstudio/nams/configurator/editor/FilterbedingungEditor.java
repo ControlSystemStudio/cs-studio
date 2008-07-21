@@ -40,7 +40,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -167,14 +166,25 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		return EDITOR_ID;
 	}
 
+	private void addStringArrayCompareValue(final Text newCompareValue) {
+		StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) beanClone
+		.getFilterSpecificBean();
+		java.util.List<String> list = specificBean.getCompareValues();
+		if (!list.contains(newCompareValue.getText())) {
+			list.add(newCompareValue.getText());
+			specificBean.setCompareValues(list);
+			newCompareValue.setText("");
+		}
+	}
+	
 	@Override
 	public void createPartControl(Composite parent) {
 		formToolkit = new FormToolkit(parent.getDisplay());
 		mainForm = formToolkit.createScrolledForm(parent);
 		Composite outermain = mainForm.getBody();
 		outermain.setBackground(parent.getBackground());
-		outermain.setLayout(new FillLayout(SWT.VERTICAL));
-
+		outermain.setLayout(new GridLayout(1, true));
+		
 		Composite main = new Composite(outermain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
@@ -266,8 +276,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 			public void keyPressed(KeyEvent e) {
 				if (e.character == SWT.CR) {
-					arrayCompareValueList.add(arrayNewCompareValueText
-							.getText());
+					addStringArrayCompareValue(arrayNewCompareValueText);
 				}
 			}
 
@@ -282,17 +291,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 
 			public void mouseDown(MouseEvent e) {
-				StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) beanClone
-						.getFilterSpecificBean();
-				java.util.List<String> list = specificBean.getCompareValues();
-				if (!list.contains(arrayNewCompareValueText.getText())) {
-					list.add(arrayNewCompareValueText.getText());
-					specificBean.setCompareValues(list);
-					arrayNewCompareValueText.setText("");
-				}
 			}
 
 			public void mouseUp(MouseEvent e) {
+				addStringArrayCompareValue(arrayNewCompareValueText);
 			}
 		});
 		Button button = createButtonEntry(stackComposites[2],
