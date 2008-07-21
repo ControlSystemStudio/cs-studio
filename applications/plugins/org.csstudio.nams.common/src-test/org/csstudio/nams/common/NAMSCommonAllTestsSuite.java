@@ -28,11 +28,8 @@ import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen_Test;
 public class NAMSCommonAllTestsSuite extends TestCase {
 
 	public static Test suite() throws Throwable {
-		// TODO System.setErr(new PrintStream(new OutputStreamWriter(new StringWriter())));
-		
 		TestSuite suite = new TestSuite("NAMSCommonAllTestsSuite");
 		//$JUnit-BEGIN$
-//		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 
 		suite.addTestSuite(NAMSCommonAllTestsSuite.class);
 		suite.addTestSuite(CommonActivator_Test.class);

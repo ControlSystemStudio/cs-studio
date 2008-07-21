@@ -11,8 +11,6 @@ import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteS
 public class DecisionDepartmentAllTestsSuite extends TestCase {
 
 	public static Test suite() throws Throwable {
-		// TODO System.setErr(new PrintStream(new OutputStreamWriter(new StringWriter())));
-		
 		TestSuite suite = new TestSuite("NAMSCommonAllTestsSuite");
 		//$JUnit-BEGIN$
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
