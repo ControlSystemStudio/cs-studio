@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
@@ -693,25 +694,17 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (dto == null) {
 			dto = new FilterDTO();
 			inserted = true;
+		} else {
+			for (FilterConditionDTO filterConditionDTO : dto.getFilterConditions()) {
+				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
+					filterbedingungBeans.remove(new Integer(filterConditionDTO.getIFilterConditionID()));
+				}
+			}
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
 
-		List<FilterConditionDTO> list = new LinkedList<FilterConditionDTO>();
-		for (FilterbedingungBean condBean : bean.getConditions()) {
-			FilterConditionDTO found = findDTO4Bean(condBean);
-			if (found == null) {
-				if (condBean instanceof JunctorConditionForFilterTreeBean) {
-					// JCFFT
-					found = saveFilterCond4Filter((JunctorConditionForFilterTreeBean)condBean);
-				} else {
-					throw new InconsistentConfigurationException(
-							"Currently unsuported bean type: "
-									+ condBean.getClass().getSimpleName());
-				}
-			}
-			list.add(found);
-		}
-
+		List<FilterConditionDTO> list = createFilterConditionDTOListForFilter(bean.getConditions());
+		
 		dto.setFilterConditions(list);
 		dto.setName(bean.getName());
 		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
@@ -726,28 +719,86 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
-	JunctorConditionForFilterTreeDTO saveFilterCond4Filter(
-			JunctorConditionForFilterTreeBean bean) {
-		JunctorConditionForFilterTreeDTO dto = new JunctorConditionForFilterTreeDTO();
+	private List<FilterConditionDTO> createFilterConditionDTOListForFilter(
+			Collection<FilterbedingungBean> conditions) throws InconsistentConfigurationException {
 		
-		dto.setCName(bean.getJunctorConditionType().toString());
-		dto.setCDesc("");
-		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
-				RubrikTypeEnum.FILTER_COND));
-		dto.setOperator(bean.getJunctorConditionType());
+		List<FilterConditionDTO> result = new LinkedList<FilterConditionDTO>();
 		
-		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
-		for (FilterbedingungBean fcBean : bean.getOperands()) {
-			if( fcBean instanceof JunctorConditionForFilterTreeBean ) {
-				JunctorConditionForFilterTreeDTO innerDTO = saveFilterCond4Filter((JunctorConditionForFilterTreeBean)fcBean);
-				operands.add(innerDTO);
-			} else {
-				operands.add(findDTO4Bean(fcBean));
+		for (FilterbedingungBean filterbedingungBean : conditions) {
+			
+			FilterConditionDTO conditionDTO = findDTO4Bean(filterbedingungBean);
+			
+			if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
+				JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
+				List<FilterConditionDTO> listForFilter = createFilterConditionDTOListForFilter(junctorBean.getOperands());
+				
+				if (conditionDTO == null) {
+					JunctorConditionForFilterTreeDTO newDTO = new JunctorConditionForFilterTreeDTO();
+					newDTO.setCName(junctorBean.getJunctorConditionType().toString());
+					newDTO.setCDesc("");
+					newDTO.setIGroupRef(getRubrikIDForName(junctorBean.getRubrikName(),
+							RubrikTypeEnum.FILTER_COND));
+					newDTO.setOperator(junctorBean.getJunctorConditionType());
+					
+					conditionDTO = newDTO;
+				} else {
+					filterbedingungBeans.remove(new Integer(conditionDTO.getIFilterConditionID()));
+					for (FilterConditionDTO filterDTO : ((JunctorConditionForFilterTreeDTO)conditionDTO).getOperands()) {
+						filterbedingungBeans.remove(new Integer(filterDTO.getIFilterConditionID()));
+					}
+				}
+				((JunctorConditionForFilterTreeDTO)conditionDTO).setOperands(new HashSet<FilterConditionDTO>(listForFilter));
 			}
+			
+			if (conditionDTO == null) {
+				throw new InconsistentConfigurationException("No DTO found for " + filterbedingungBean.toString());
+			}
+			
+			result.add(conditionDTO);
+			
 		}
-		dto.setOperands(operands);
-		return dto;
+		
+		return result;
 	}
+
+//	private FilterConditionDTO findOrCreateFilterConditionDTO(FilterbedingungBean condBean) {
+//		FilterConditionDTO found = findDTO4Bean(condBean);
+//		if (condBean instanceof JunctorConditionForFilterTreeBean) {
+//			if (found == null) {
+//				found = createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)condBean);
+//			} else {
+//				JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) condBean;
+//				JunctorConditionForFilterTreeDTO junctorDTO = (JunctorConditionForFilterTreeDTO) found;
+//				
+//				Set<FilterConditionDTO> operands;
+//				junctorDTO.setOperands(operands);
+//			}
+//		}
+//		return found;
+//	}
+//
+//	JunctorConditionForFilterTreeDTO createJunctorConditionForFilterTreeDTO(
+//			JunctorConditionForFilterTreeBean bean) {
+//		JunctorConditionForFilterTreeDTO dto = new JunctorConditionForFilterTreeDTO();
+//		
+//		dto.setCName(bean.getJunctorConditionType().toString());
+//		dto.setCDesc("");
+//		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
+//				RubrikTypeEnum.FILTER_COND));
+//		dto.setOperator(bean.getJunctorConditionType());
+//		
+//		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
+//		for (FilterbedingungBean fcBean : bean.getOperands()) {
+//			if( fcBean instanceof JunctorConditionForFilterTreeBean ) {
+//				JunctorConditionForFilterTreeDTO innerDTO = createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)fcBean);
+//				operands.add(innerDTO);
+//			} else {
+//				operands.add(findDTO4Bean(fcBean));
+//			}
+//		}
+//		dto.setOperands(operands);
+//		return dto;
+//	}
 
 	@SuppressWarnings("unchecked")
 	private FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {

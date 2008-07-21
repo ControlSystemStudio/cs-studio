@@ -58,16 +58,23 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 				cInput.setBean(this.bean);
 				this.beanClone.setID(this.bean.getID()); // Die Bean darf nicht neu geklont werden!!! Sonst geht das binding der viewer verloren!
 			}
+			afterSafe();
 		} catch (InconsistentConfigurationException e) {
 			MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell());
 			messageBox.setText(e.getClass().toString());
 			messageBox.setMessage(e.getMessage());
 		}
-
 		setPartName(this.bean.getDisplayName() + " - " + superTitle);
 
 		firePropertyChange(EditorPart.PROP_DIRTY);
+	}
+
+	/**
+	 * Zum aufräumen nach dem speichern.
+	 */
+	protected void afterSafe() {
+		// per default nothing to do 
 	}
 
 	@SuppressWarnings("unchecked")

@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -141,6 +142,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public void setConditions(List<FilterbedingungBean> conditions) {
 		List<FilterbedingungBean> oldValue = this.conditions;
 		this.conditions = conditions;
+		Collections.sort(this.conditions);
 		pcs.firePropertyChange(PropertyNames.conditions.name(), oldValue, conditions);
 	}
 }

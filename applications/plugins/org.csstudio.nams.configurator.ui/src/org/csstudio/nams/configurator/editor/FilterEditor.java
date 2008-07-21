@@ -54,6 +54,12 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	private ScrolledForm mainForm;
 
 	@Override
+	protected void afterSafe() {
+		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans enthält.
+		this.beanClone.updateState(this.bean);
+	}
+	
+	@Override
 	public void createPartControl(Composite parent) {
 		formToolkit = new FormToolkit(parent.getDisplay());
 		mainForm = formToolkit.createScrolledForm(parent);

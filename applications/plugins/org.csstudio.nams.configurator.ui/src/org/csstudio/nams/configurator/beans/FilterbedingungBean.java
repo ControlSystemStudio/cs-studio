@@ -1,15 +1,14 @@
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
-import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
 
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
 
 	private int filterbedinungID;
-	private String description;
-	private String name;
+	private String description = "";
+	private String name = "";
 	
 	private FilterConditionAddOnBean filterSpecificBean;
 
