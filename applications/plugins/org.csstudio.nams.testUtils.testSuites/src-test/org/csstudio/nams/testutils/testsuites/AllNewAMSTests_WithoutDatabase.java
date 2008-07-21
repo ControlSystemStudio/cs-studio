@@ -7,6 +7,10 @@ import org.csstudio.nams.application.department.decision.DecisionDepartmentAllTe
 import org.csstudio.nams.common.NAMSCommonAllTestsSuite;
 import org.csstudio.nams.configurator.NAMSNewConfiguratorAllTestsSuite;
 import org.csstudio.nams.service.configurationaccess.localstore.ConfigurationaccessLocalStoreWithoutDBAllTestsSuite;
+import org.csstudio.nams.service.history.HistoryServiceAllTestsSuite;
+import org.csstudio.nams.service.history.impl.confstore.HistoryServiceConfStroeImplAllTestsSuite;
+import org.csstudio.nams.service.logging.LoggingServiceAllTestsSuite;
+import org.csstudio.nams.service.messaging.MessagingServiceAllTestsSuite;
 import org.junit.Test;
 
 /**
@@ -23,6 +27,10 @@ public class AllNewAMSTests_WithoutDatabase extends TestCase {
 		suite.addTest(NAMSCommonAllTestsSuite.suite());
 		suite.addTest(NAMSNewConfiguratorAllTestsSuite.suite());
 		suite.addTest(ConfigurationaccessLocalStoreWithoutDBAllTestsSuite.suite());
+		suite.addTest(HistoryServiceAllTestsSuite.suite());
+		suite.addTest(HistoryServiceConfStroeImplAllTestsSuite.suite());
+		suite.addTest(LoggingServiceAllTestsSuite.suite());
+		suite.addTest(MessagingServiceAllTestsSuite.suite());
 		
 		return suite;
 	}
