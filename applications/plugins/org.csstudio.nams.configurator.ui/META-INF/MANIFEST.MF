@@ -18,3 +18,14 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.nams.service.preferenceservice.ui,
  org.csstudio.platform
 Eclipse-LazyStart: true
+Export-Package: org.csstudio.nams.configurator;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.actions;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.beans;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.beans.filters;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.composite;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.dnd;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.editor;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.editor.updatevaluestrategies;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.service;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.service.synchronize;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.views;x-friends:="org.csstudio.nams.testUtils.testSuites"

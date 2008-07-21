@@ -5,6 +5,7 @@ import junit.framework.TestSuite;
 
 import org.csstudio.nams.application.department.decision.DecisionDepartmentAllTestsSuite;
 import org.csstudio.nams.common.NAMSCommonAllTestsSuite;
+import org.csstudio.nams.configurator.NAMSNewConfiguratorAllTestsSuite;
 import org.junit.Test;
 
 /**
@@ -19,6 +20,7 @@ public class AllNewAMSTests_WithoutDatabase extends TestCase {
 		suite.addTestSuite(AllNewAMSTests_WithoutDatabase.class);
 		suite.addTest(DecisionDepartmentAllTestsSuite.suite());
 		suite.addTest(NAMSCommonAllTestsSuite.suite());
+		suite.addTest(NAMSNewConfiguratorAllTestsSuite.suite());
 		
 		return suite;
 	}
