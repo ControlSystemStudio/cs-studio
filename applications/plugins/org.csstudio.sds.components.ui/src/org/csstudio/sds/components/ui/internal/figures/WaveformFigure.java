@@ -340,7 +340,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		
 		Rectangle xAxisBounds = calculateXAxisBounds(bounds);
 		setConstraint(_xAxisScale, xAxisBounds);
-		double d = _data.length / Math.max(1, _xAxisMaxTickmarks);
+		// Must use floating point division here to prevent truncating towards
+		// zero, which might result in a zero increment. FIXME: this will still
+		// fail if _data.length == 0.
+		double d = ((double) _data.length) / ((double) Math.max(1, _xAxisMaxTickmarks));
 		_xAxisScale.setIncrement(d);
 		
 		Rectangle yAxisLabelBounds = calculateYAxisLabelBounds(bounds);
@@ -1165,7 +1168,13 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				if (dataPointDistance > this.getBounds().width - 1 || dataPointDistance < 0) {
 					dataPointDistance = this.getBounds().width - 1;
 				}
-				while (x < this.getBounds().width) {
+				// The counter is used only as a workaround/safeguard in case
+				// the _increment is set to zero (happens if _data.length == 0).
+				// This prevents trying to create infinitely many ticks. The
+				// real solution would be to use an IAxis object for the x-axis
+				// as well.
+				int count = 0;
+				while (x < this.getBounds().width && count < _xAxisMaxTickmarks) {
 					if (index>=_posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);
 					}
@@ -1174,6 +1183,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					index++;
 					value += _increment;
 					x = (int) Math.round(value * dataPointDistance);
+					count++;
 				}
 				this.removeScaleMarkers(index, _posScaleMarkers);
 				
