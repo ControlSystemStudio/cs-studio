@@ -397,7 +397,7 @@ public class AlarmbearbeitergruppenEditor extends
 					{
 
 						Button upup = createButtonEntry(buttonsComp, "to top",
-								true);
+								true , 1);
 						upup.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
@@ -418,7 +418,7 @@ public class AlarmbearbeitergruppenEditor extends
 							public void mouseUp(MouseEvent e) {
 							}
 						});
-						Button up = createButtonEntry(buttonsComp, "up", true);
+						Button up = createButtonEntry(buttonsComp, "up", true, 1);
 						up.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
@@ -445,7 +445,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 						});
 						Button down = createButtonEntry(buttonsComp, "down",
-								true);
+								true, 1);
 						down.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
@@ -473,7 +473,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 						});
 						Button downdown = createButtonEntry(buttonsComp,
-								"to bottom", true);
+								"to bottom", true, 1);
 						downdown.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {
@@ -499,7 +499,7 @@ public class AlarmbearbeitergruppenEditor extends
 						});
 						addSeparator(buttonsComp);
 						Button deleteButton = createButtonEntry(buttonsComp,
-								"löschen", true);
+								"löschen", true, 1);
 						deleteButton.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(MouseEvent e) {

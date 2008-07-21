@@ -284,7 +284,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 		});
 		Button buttonAdd = createButtonEntry(stackComposites[2],
-				"Eingabe hinzufügen", true);
+				"Eingabe hinzufügen", true, 2);
 		buttonAdd.addMouseListener(new MouseListener() {
 
 			public void mouseDoubleClick(MouseEvent e) {
@@ -298,7 +298,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 		});
 		Button button = createButtonEntry(stackComposites[2],
-				"Vergleichswert löschen", true);
+				"Vergleichswert löschen", true,2);
 		button.addMouseListener(new MouseListener() {
 
 			public void mouseDoubleClick(MouseEvent e) {
@@ -341,7 +341,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		pvCompareValue = createTextEntry(stackComposites[3], "Compare value",
 				true);
 		Button checkPVChannel = createButtonEntry(stackComposites[3],
-				"PV Verbindung überprüfen", true);
+				"PV Verbindung überprüfen", true,2);
 		checkPVChannel.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}
