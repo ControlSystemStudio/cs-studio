@@ -45,6 +45,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -169,11 +170,12 @@ public class AlarmbearbeitergruppenEditor extends
 		mainForm = formToolkit.createScrolledForm(parent);
 		Composite main = mainForm.getBody();
 		main.setBackground(parent.getBackground());
-		main.setLayout(new GridLayout(1, false));
+		main.setLayout(new GridLayout(1, true));
+//		main.setLayout(new FillLayout(SWT.VERTICAL));
 		{
 			Composite textFieldComp = new Composite(main, SWT.None);
 			textFieldComp.setLayout(new GridLayout(2, false));
-			GridDataFactory.fillDefaults().grab(true, true).applyTo(
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(
 					textFieldComp);
 
 			{
