@@ -17,6 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Junc
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.JunctorConditionForFilterTreeConditionJoinDTO;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Dieses FC wird verwendet, um in den Filtern den Conjunction-Baum
@@ -128,13 +129,13 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		deleteJoinLinkData(session);
 
 		for (FilterConditionDTO condition : this.getOperands()) {
-			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
-					this, condition);
 			if (condition instanceof JunctorConditionForFilterTreeDTO) {
 				session.saveOrUpdate(condition);
 				((JunctorConditionForFilterTreeDTO) condition)
 						.storeJoinLinkData(session);
 			}
+			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
+					this, condition);
 			session.save(newJoin);
 		}
 	}
@@ -190,22 +191,29 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 				.createCriteria(
 						JunctorConditionForFilterTreeConditionJoinDTO.class)
 				.list();
+		
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {
+				int joinId = joinElement.getJoinedConditionsDatabaseId();
 				session.delete(joinElement);
+				List<JunctorConditionForFilterTreeDTO> list = session.createCriteria(JunctorConditionForFilterTreeDTO.class).add(Restrictions.idEq(joinId)).list();
+				for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : list) {
+					junctorConditionForFilterTreeDTO.deleteJoinLinkData(session);
+					session.delete(junctorConditionForFilterTreeDTO);
+				}
 			}
 		}
 		// Lösche auch Conditions dieses Typs, da diese nur für den Filter
 		// relevant und somit nicht als normale conditions genutzt werden
 		// (Achtung: Sonderfall!!)
-		for (FilterConditionDTO operand : this.operands) {
-			if (operand instanceof JunctorConditionForFilterTreeDTO) {
-				((JunctorConditionForFilterTreeDTO) operand)
-						.deleteJoinLinkData(session);
-				session.delete(operand);
-			}
-		}
+//		for (FilterConditionDTO operand : this.operands) {
+//			if (operand instanceof JunctorConditionForFilterTreeDTO) {
+//				((JunctorConditionForFilterTreeDTO) operand)
+//						.deleteJoinLinkData(session);
+//				session.delete(operand);
+//			}
+//		}
 	}
 
 	@Override
