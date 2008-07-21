@@ -95,22 +95,20 @@ public class StandardAblagekorb_Test
 		Thread ct2 = new Thread(c2);
 		Thread ct1 = new Thread(c1);
 
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(100);
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		Thread.yield();
+		
 		ct2.start();
 		ct1.start();
 
 		new Thread(p).start();
 		while (fertigeConsumer < 2) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+				Thread.yield();
 		}
 	}
 
