@@ -31,7 +31,7 @@ public class LocalConfigurationStoreServiceActivator extends
 		
 		OSGiServiceOffers result = new OSGiServiceOffers();
 		try {
-			configurationServiceFactoryImpl = new ConfigurationServiceFactoryImpl();
+			configurationServiceFactoryImpl = new ConfigurationServiceFactoryImpl(logger);
 			result.put(ConfigurationServiceFactory.class, configurationServiceFactoryImpl);
 		} catch (final Throwable t) {
 			throw new RuntimeException(

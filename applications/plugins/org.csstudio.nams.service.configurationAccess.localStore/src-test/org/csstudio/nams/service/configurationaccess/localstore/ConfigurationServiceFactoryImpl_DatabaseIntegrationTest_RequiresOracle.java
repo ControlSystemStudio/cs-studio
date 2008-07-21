@@ -55,7 +55,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 	 * codiert und muss ggf. in dieser Klasse angepasst werden!
 	 */
 	public static LocalStoreConfigurationService createAServiceForOracleTests() {
-		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl();
+		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl(new LoggerMock());
 
 		LocalStoreConfigurationService result = factory
 				.getConfigurationService(

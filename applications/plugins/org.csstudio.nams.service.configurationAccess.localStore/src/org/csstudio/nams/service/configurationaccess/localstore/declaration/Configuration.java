@@ -38,62 +38,84 @@ public class Configuration implements FilterConditionForIdProvider {
 	private static Logger logger;
 	private Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
 
-	@SuppressWarnings("unchecked")
-	public Configuration(Session session)
-			throws InconsistentConfigurationException, StorageError,
-			StorageException {
-
-		if( logger == null ) {
-			throw new RuntimeException("class has not been equiped, missing logger");
-		}
-		
-		// PUBLICs
-		alleAlarmbarbeiter = session.createCriteria(AlarmbearbeiterDTO.class)
-				.addOrder(Order.asc("userId")).list();
-		alleAlarmbearbeiterGruppen = session.createCriteria(
-				AlarmbearbeiterGruppenDTO.class).addOrder(
-				Order.asc("userGroupId")).list();
-
-		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
-		allFilters = session.createCriteria(FilterDTO.class).list();
-
-		allFilterConditions = session.createCriteria(FilterConditionDTO.class)
-				.addOrder(Order.asc("iFilterConditionID")).list();
-		alleRubriken = session.createCriteria(RubrikDTO.class).list();
-
-		alleUser2UserGroupMappings = session.createCriteria(
-				User2UserGroupDTO.class).list();
-
-		// Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
-		// .createCriteria(FilterConditionTypeDTO.class).list();
-		// pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
-
-		allFilterConditionMappings = session.createCriteria(
-				FilterConditionsToFilterDTO.class).list();
-		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionMappings);
-		setChildFilterConditionsInJunctorDTOs();
-		allCompareValues = session
-				.createCriteria(
-						StringArrayFilterConditionCompareValuesDTO.class)
-				.list();
-		setStringArrayCompareValues(allCompareValues);
-
-		Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(
-				allFilterConditions);
-		for (FilterConditionDTO fc : allFCs) {
-			if (fc instanceof JunctorConditionForFilterTreeDTO) {
-				JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
-				try {
-					jcfft.loadJoinData(session, allFCs);
-				} catch (Throwable e) {
-					throw new InconsistentConfigurationException(
-							"unable to load joined conditions of JunctionConditionForFilters",
-							e);
-				}
-			}
-		}
-		addUsersToGroups(session);
+	public Configuration(
+			Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter,
+			Collection<TopicDTO> alleAlarmtopics,
+			Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
+			Collection<FilterDTO> allFilters,
+			Collection<FilterConditionsToFilterDTO> allFilterConditionMappings,
+			Collection<FilterConditionDTO> allFilterConditions,
+			Collection<RubrikDTO> alleRubriken,
+			List<User2UserGroupDTO> alleUser2UserGroupMappings,
+			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues) {
+		super();
+		this.alleAlarmbarbeiter = alleAlarmbarbeiter;
+		this.alleAlarmtopics = alleAlarmtopics;
+		this.alleAlarmbearbeiterGruppen = alleAlarmbearbeiterGruppen;
+		this.allFilters = allFilters;
+		this.allFilterConditionMappings = allFilterConditionMappings;
+		this.allFilterConditions = allFilterConditions;
+		this.alleRubriken = alleRubriken;
+		this.alleUser2UserGroupMappings = alleUser2UserGroupMappings;
+		this.allCompareValues = allCompareValues;
 	}
+
+//	@SuppressWarnings("unchecked")
+//	public Configuration(Session session)
+//			throws InconsistentConfigurationException, StorageError,
+//			StorageException {
+//
+//		if( logger == null ) {
+//			throw new RuntimeException("class has not been equiped, missing logger");
+//		}
+//		
+//		// PUBLICs
+//		alleAlarmbarbeiter = session.createCriteria(AlarmbearbeiterDTO.class)
+//				.addOrder(Order.asc("userId")).list();
+//		alleAlarmbearbeiterGruppen = session.createCriteria(
+//				AlarmbearbeiterGruppenDTO.class).addOrder(
+//				Order.asc("userGroupId")).list();
+//
+//		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
+//		allFilters = session.createCriteria(FilterDTO.class).list();
+//
+//		allFilterConditions = session.createCriteria(FilterConditionDTO.class)
+//				.addOrder(Order.asc("iFilterConditionID")).list();
+//		alleRubriken = session.createCriteria(RubrikDTO.class).list();
+//
+//		alleUser2UserGroupMappings = session.createCriteria(
+//				User2UserGroupDTO.class).list();
+//
+//		// Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
+//		// .createCriteria(FilterConditionTypeDTO.class).list();
+//		// pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
+//
+//		allFilterConditionMappings = session.createCriteria(
+//				FilterConditionsToFilterDTO.class).list();
+//		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionMappings);
+//		setChildFilterConditionsInJunctorDTOs();
+//		allCompareValues = session
+//				.createCriteria(
+//						StringArrayFilterConditionCompareValuesDTO.class)
+//				.list();
+//		setStringArrayCompareValues(allCompareValues);
+//
+//		Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(
+//				allFilterConditions);
+//		for (FilterConditionDTO fc : allFCs) {
+//			if (fc instanceof JunctorConditionForFilterTreeDTO) {
+//				JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
+//				try {
+//					jcfft.loadJoinData(session, allFCs);
+//				} catch (Throwable e) {
+//					throw new InconsistentConfigurationException(
+//							"unable to load joined conditions of JunctionConditionForFilters",
+//							e);
+//				}
+//			}
+//		}
+//		addUsersToGroups(session);
+//	}
 
 	private void setStringArrayCompareValues(
 			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues) {
@@ -122,7 +144,7 @@ public class Configuration implements FilterConditionForIdProvider {
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
 			if (filterCondition instanceof JunctorConditionDTO) {
 				JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
-				junctorConditionDTO.injectYourselfYourChildren(this);
+//				junctorConditionDTO.injectYourselfYourChildren(this);
 			}
 		}
 	}

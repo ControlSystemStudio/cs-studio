@@ -824,7 +824,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getFirstCondition().getFilterbedinungID());
 			junctorConditionDTO.setSecondFilterConditionRef(specificBean
 					.getSecondCondition().getFilterbedinungID());
-			junctorConditionDTO.injectYourselfYourChildren(entireConfiguration);
+			
+			// FIXME mw, mz 2008-07-21: Dieses Verhalten auf andrem Wege wieder herstellen: Einfache Injektion der ersten und zweiten FC junctorConditionDTO.injectYourselfYourChildren(entireConfiguration);
+			
 			junctorConditionDTO.setJunctor(specificBean.getJunctor());
 
 			// result to be saved with configurationService

@@ -122,7 +122,7 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	}
 
 	@SuppressWarnings("unused")
-	private int getFirstFilterConditionRef() {
+	public int getFirstFilterConditionRef() {
 		return firstFilterConditionRef;
 	}
 
@@ -131,7 +131,7 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	}
 
 	@SuppressWarnings("unused")
-	private int getSecondFilterConditionRef() {
+	public int getSecondFilterConditionRef() {
 		return secondFilterConditionRef;
 	}
 
@@ -160,45 +160,15 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	}
 
 	@SuppressWarnings("unused")
-	private void setFirstFilterCondition(FilterConditionDTO filterCondition) {
+	public void setFirstFilterCondition(FilterConditionDTO filterCondition) {
 		setFirstFilterConditionRef(filterCondition.getIFilterConditionID());
-		if (filterConditionProvider == null)
-			throw new RuntimeException(
-					"injectYourselfYourChildren must be called on " + this);
-		adaptFirstFilterCondition();
+		firstFilterCondition = filterCondition;
 	}
 
 	@SuppressWarnings("unused")
-	private void setSecondFilterCondition(FilterConditionDTO filterCondition) {
+	public void setSecondFilterCondition(FilterConditionDTO filterCondition) {
 		setSecondFilterConditionRef(filterCondition.getIFilterConditionID());
-		if (filterConditionProvider == null)
-			throw new RuntimeException(
-					"injectYourselfYourChildren must be called on " + this);
-		adaptSecondFilterCondition();
-	}
-
-	/**
-	 * Must be called before first use. And before
-	 * setFirst(|Second)Filtercondition is called
-	 * 
-	 * @param filterConditionProvider
-	 */
-	public void injectYourselfYourChildren(
-			FilterConditionForIdProvider filterConditionProvider) {
-		this.filterConditionProvider = filterConditionProvider;
-		adaptFirstFilterCondition();
-		adaptSecondFilterCondition();
-	}
-
-	private void adaptFirstFilterCondition() {
-		firstFilterCondition = filterConditionProvider
-				.getFilterConditionForId(getFirstFilterConditionRef());
-	}
-
-	private void adaptSecondFilterCondition() {
-		secondFilterCondition = filterConditionProvider
-				.getFilterConditionForId(getSecondFilterConditionRef());
-
+		secondFilterCondition = filterCondition;
 	}
 
 }

@@ -40,7 +40,13 @@ public class ConfigurationServiceFactoryImpl implements
 	private Map<ConnectionData, LocalStoreConfigurationService> services = new HashMap<ConnectionData, LocalStoreConfigurationService>();
 	private List<SessionFactory> sessionFactoryList = new LinkedList<SessionFactory>();
 	private List<Session> sessionList = new LinkedList<Session>();
+	private final org.csstudio.nams.service.logging.declaration.Logger logger;
 	
+	public ConfigurationServiceFactoryImpl(
+			org.csstudio.nams.service.logging.declaration.Logger logger) {
+				this.logger = logger;
+	}
+
 	public LocalStoreConfigurationService getConfigurationService(String connectionURL, DatabaseType dbType, String username, String password)
 	{
 		Contract.requireNotNull("dbType", dbType);
@@ -70,7 +76,7 @@ public class ConfigurationServiceFactoryImpl implements
 		if (service == null) {
 			SessionFactory sessionFactory = createSessionFactory(connectionData);
 			Session session = sessionFactory.openSession();
-			service = new LocalStoreConfigurationServiceImpl(session);
+			service = new LocalStoreConfigurationServiceImpl(session, logger);
 			sessionFactoryList.add(sessionFactory);
 			sessionList.add(session);
 			services.put(connectionData, service);
