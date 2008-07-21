@@ -19,8 +19,10 @@
 	- Scrollbar machen (1)
 	
 - Filterbedingung Editor
-	- String Array condition: CompareValues ist nicht zu sehen (4)
-	- speicher nur bei der StringBedingung getestet!! (gui: 1, beanservice: 3)
+	- (X) String Array condition: CompareValues ist nicht zu sehen (4)
+	- speicher nur bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
+	- PV-FC: Button zum Channel Test fehlt!
+	- TimeBased: UI Design nicht ganz korrekt; Bei "Alarm bei Timeout" ist es eine Stop-Bedingung, sonst eine Sofort-Auslösungs-Bedingung!
 	
 - Alarmtopic Editor
 	- ok

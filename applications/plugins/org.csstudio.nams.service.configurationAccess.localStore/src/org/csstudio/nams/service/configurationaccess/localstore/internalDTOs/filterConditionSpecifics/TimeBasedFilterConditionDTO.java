@@ -7,7 +7,6 @@ import javax.persistence.Table;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
-import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
@@ -105,14 +104,14 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 	public StringRegelOperator getTBStartOperator () {
 		return StringRegelOperator.valueOf(sStartOperator);
 	}
-	public void setTBStartOperator (Operator operator) {
-		sStartOperator = operator.asDatabaseId();
+	public void setTBStartOperator (StringRegelOperator operator) {
+		sStartOperator = operator.databaseValue();
 	}
 	public StringRegelOperator getTBConfirmOperator () {
 		return StringRegelOperator.valueOf(sConfirmOperator);
 	}
-	public void setTBConfirmOperator (Operator operator) {
-		sConfirmOperator = operator.asDatabaseId();
+	public void setTBConfirmOperator (StringRegelOperator operator) {
+		sConfirmOperator = operator.databaseValue();
 	}
 	
 	@SuppressWarnings("unused")

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
-import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
@@ -34,7 +33,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Alar
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
@@ -881,13 +879,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			timeBasedFilterConditionDTO.setCStartCompValue(specificBean
 					.getStartCompValue());
 
-			// TODO mw: Check the Operators in TimeBasedFilterCondition.
-			// get(StringRegelOperator) but set(Operator)
-			// => only ordinal 1 and 2 match, other differ.
-			timeBasedFilterConditionDTO.setTBConfirmOperator(Operator
-					.valueOf(specificBean.getConfirmOperator().name()));
-			timeBasedFilterConditionDTO.setTBStartOperator(Operator
-					.valueOf(specificBean.getStartOperator().name()));
+			timeBasedFilterConditionDTO.setTBConfirmOperator(specificBean.getConfirmOperator());
+			timeBasedFilterConditionDTO.setTBStartOperator(specificBean.getStartOperator());
 
 			timeBasedFilterConditionDTO.setTimeBehavior(specificBean
 					.getTimeBehavior());
@@ -907,7 +900,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		} catch (Throwable t) {
 			// FIXME mz20080710 Handle throwable!
-			t.printStackTrace();
+			logger.logFatalMessage(this, "failed to save filter condition", t);
 		}
 		loadConfiguration();
 
