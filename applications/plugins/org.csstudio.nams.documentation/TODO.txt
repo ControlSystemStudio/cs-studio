@@ -8,6 +8,9 @@
 --------------- EDITOREN --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
 
+- PrefPanes
+	- die meisten prefpages fehlen!
+
 - Filter Editor (gs, mz)
 	- (X) man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen (=> soll so bleiben)
 	- das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen. (3)
