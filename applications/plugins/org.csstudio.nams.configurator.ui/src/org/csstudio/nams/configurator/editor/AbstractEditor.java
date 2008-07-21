@@ -195,11 +195,13 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	protected Button createButtonEntry(Composite parent, String labeltext,
 			boolean editable) {
+		Composite composite = new Composite(parent, SWT.NONE);
 		Button buttonWidget = new Button(parent, SWT.PUSH);
 		buttonWidget.setText(labeltext);
 		buttonWidget.setEnabled(editable);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
+		composite.setLayoutData(gridData);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
 		buttonWidget.setLayoutData(gridData);
