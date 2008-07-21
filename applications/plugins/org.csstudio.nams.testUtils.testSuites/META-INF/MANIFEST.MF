@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.regelwerkbuilder,
  org.csstudio.nams.service.regelwerkbuilder.impl.confstore,
  org.csstudio.nams.common.activatorUtils,
+ org.csstudio.nams.configurator.model,
  org.csstudio.nams.newconfigurator,
  org.csstudio.nams.service.preferenceservice,
  org.csstudio.nams.service.preferenceservice.ui

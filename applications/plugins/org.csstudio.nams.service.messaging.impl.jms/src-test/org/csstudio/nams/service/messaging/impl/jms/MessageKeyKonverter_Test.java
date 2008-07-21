@@ -3,11 +3,13 @@ package org.csstudio.nams.service.messaging.impl.jms;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MessageKeyKonverter_Test {
+public class MessageKeyKonverter_Test extends TestCase {
 
 	@Test
 	public void testIstSynchronisation(){

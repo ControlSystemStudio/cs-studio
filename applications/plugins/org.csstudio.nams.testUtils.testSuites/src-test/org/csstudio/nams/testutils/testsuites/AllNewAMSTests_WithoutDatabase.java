@@ -11,6 +11,11 @@ import org.csstudio.nams.service.history.HistoryServiceAllTestsSuite;
 import org.csstudio.nams.service.history.impl.confstore.HistoryServiceConfStroeImplAllTestsSuite;
 import org.csstudio.nams.service.logging.LoggingServiceAllTestsSuite;
 import org.csstudio.nams.service.messaging.MessagingServiceAllTestsSuite;
+import org.csstudio.nams.service.messaging.impl.jms.MessagingServiceJMSImplAllTestsSuite;
+import org.csstudio.nams.service.preferenceservice.PreferenceServiceAllTestsSuite;
+import org.csstudio.nams.service.preferenceservice.ui.PreferenceServiceUIAllTestsSuite;
+import org.csstudio.nams.service.regelwerkbuilder.RegelwerksbuilderAllTestsSuite;
+import org.csstudio.nams.service.regelwerkbuilder.impl.confstore.RegelwerksbuilderConfStoreImplAllTestsSuite;
 import org.junit.Test;
 
 /**
@@ -31,7 +36,12 @@ public class AllNewAMSTests_WithoutDatabase extends TestCase {
 		suite.addTest(HistoryServiceConfStroeImplAllTestsSuite.suite());
 		suite.addTest(LoggingServiceAllTestsSuite.suite());
 		suite.addTest(MessagingServiceAllTestsSuite.suite());
-		
+		suite.addTest(MessagingServiceJMSImplAllTestsSuite.suite());
+		suite.addTest(PreferenceServiceAllTestsSuite.suite());
+		suite.addTest(PreferenceServiceUIAllTestsSuite.suite());
+		suite.addTest(RegelwerksbuilderAllTestsSuite.suite());
+		suite.addTest(RegelwerksbuilderConfStoreImplAllTestsSuite.suite());
+		//$JUnit-END$
 		return suite;
 	}
 	
