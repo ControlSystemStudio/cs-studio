@@ -28,7 +28,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.part.EditorPart;
 
 public class FilterEditor extends AbstractEditor<FilterBean> {
@@ -48,12 +50,18 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
 	private ComboViewer _rubrikComboEntryViewer;
 	private TreeViewer filterConditionsTreeViewer;
+	private FormToolkit formToolkit;
+	private ScrolledForm mainForm;
 
 	@Override
 	public void createPartControl(Composite parent) {
-		Composite outermain = new Composite(parent, SWT.NONE);
-		outermain.setLayout(new FillLayout(SWT.VERTICAL));
-		Composite main = new Composite(outermain, SWT.NONE);
+		formToolkit = new FormToolkit(parent.getDisplay());
+		mainForm = formToolkit.createScrolledForm(parent);
+		Composite outerFormMain = mainForm.getBody();
+		outerFormMain.setBackground(parent.getBackground());
+		outerFormMain.setLayout(new GridLayout(1,false));
+		
+		Composite main = new Composite(outerFormMain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
@@ -66,7 +74,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				"Description:");
 
 		{
-			Composite treeAndButtonsComp = new Composite(outermain, SWT.None);
+			Composite treeAndButtonsComp = new Composite(outerFormMain, SWT.None);
 			treeAndButtonsComp.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					treeAndButtonsComp);
@@ -76,6 +84,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
 						filterConditionsTreeViewer.getControl());
 
+				GridData treeLayout = (GridData) filterConditionsTreeViewer.getTree().getLayoutData();
+				treeLayout.minimumHeight = 100;
+				treeLayout.minimumWidth = 300;
+				
 				filterConditionsTreeViewer
 						.setContentProvider(filterTreeContentProvider);
 				filterConditionsTreeViewer

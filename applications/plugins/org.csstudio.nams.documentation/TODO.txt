@@ -17,7 +17,7 @@
 	- Alarmaktionen fehlt noch ganz (Tabelle und Co) (5)
 	- Filterbedingungen per DND im Baum verschieben (1)
 	- mehrere Filterbedingungen gleichzeitig löschen (1)
-	- Scrollbar machen (1)
+	- doppelklick auf filterbedingungbean öffnet filterbedingungeditor
 	
 - Filterbedingung Editor
 	- speicher NUR bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
