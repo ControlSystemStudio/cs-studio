@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.csstudio.nams.configurator.editor.FilterTreeContentProvider_Test;
+import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl_Test;
 import org.csstudio.nams.configurator.service.synchronize.SynchronizeServiceImpl_Test;
 
 public class NAMSNewConfiguratorAllTestsSuite extends TestCase {
@@ -17,6 +18,7 @@ public class NAMSNewConfiguratorAllTestsSuite extends TestCase {
 		
 		suite.addTestSuite(FilterTreeContentProvider_Test.class);
 		suite.addTestSuite(SynchronizeServiceImpl_Test.class);
+		suite.addTestSuite(ConfigurationBeanServiceImpl_Test.class);
 		
 		//$JUnit-END$
 		return suite;
