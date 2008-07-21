@@ -1,8 +1,12 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.util.Iterator;
+
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
@@ -19,6 +23,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
@@ -35,8 +40,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.part.EditorPart;
@@ -55,18 +64,19 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	protected void afterSafe() {
-		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans enthält.
+		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans
+		// enthält.
 		this.beanClone.updateState(this.bean);
 	}
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
-				formToolkit = new FormToolkit(parent.getDisplay());
+		formToolkit = new FormToolkit(parent.getDisplay());
 		mainForm = formToolkit.createScrolledForm(parent);
 		Composite outerFormMain = mainForm.getBody();
 		outerFormMain.setBackground(parent.getBackground());
-		outerFormMain.setLayout(new GridLayout(1,false));
-		
+		outerFormMain.setLayout(new GridLayout(1, false));
+
 		Composite main = new Composite(outerFormMain, SWT.NONE);
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
@@ -80,20 +90,23 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				"Description:");
 
 		{
-			Composite treeAndButtonsComp = new Composite(outerFormMain, SWT.None);
+			Composite treeAndButtonsComp = new Composite(outerFormMain,
+					SWT.None);
 			treeAndButtonsComp.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					treeAndButtonsComp);
 			new Label(treeAndButtonsComp, SWT.None).setText("Filterconditions");
 			{
-				filterConditionsTreeViewer = new TreeViewer(treeAndButtonsComp);
+				filterConditionsTreeViewer = new TreeViewer(treeAndButtonsComp,
+						SWT.MULTI);
+				Tree filterTree = filterConditionsTreeViewer.getTree();
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
 						filterConditionsTreeViewer.getControl());
 
-				GridData treeLayout = (GridData) filterConditionsTreeViewer.getTree().getLayoutData();
+				GridData treeLayout = (GridData) filterTree.getLayoutData();
 				treeLayout.minimumHeight = 100;
 				treeLayout.minimumWidth = 300;
-				
+
 				filterConditionsTreeViewer
 						.setContentProvider(filterTreeContentProvider);
 				filterConditionsTreeViewer
@@ -118,10 +131,43 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				menuManager.add(newOrAction);
 				menuManager.add(newNotAction);
 
-				filterConditionsTreeViewer.getTree().setMenu(
-						menuManager
-								.createContextMenu(filterConditionsTreeViewer
-										.getTree()));
+				filterTree.setMenu(menuManager.createContextMenu(filterTree));
+
+				filterTree.addMouseListener(new MouseListener() {
+
+					public void mouseDoubleClick(MouseEvent e) {
+						try {
+							ConfigurationEditorInput editorInput;
+							IStructuredSelection selection = (IStructuredSelection) filterConditionsTreeViewer
+									.getSelection();
+							IConfigurationBean filterBedingung = (IConfigurationBean) selection
+									.getFirstElement();
+							if (!(filterBedingung instanceof JunctorConditionForFilterTreeBean || filterBedingung instanceof NotConditionForFilterTreeBean)) {
+								editorInput = new ConfigurationEditorInput(
+										filterBedingung);
+
+								IWorkbenchPage activePage = PlatformUI
+										.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getActivePage();
+								String editorId = BeanToEditorId
+										.getEnumForClass(
+												FilterbedingungBean.class)
+										.getEditorId();
+
+								activePage.openEditor(editorInput, editorId);
+							}
+						} catch (PartInitException pie) {
+							pie.printStackTrace();
+						}
+					}
+
+					public void mouseDown(MouseEvent e) {
+					}
+
+					public void mouseUp(MouseEvent e) {
+					}
+				});
 
 				initDND();
 			}
@@ -132,25 +178,32 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				public void mouseDoubleClick(MouseEvent e) {
 				}
 
+				@SuppressWarnings("unchecked")
 				public void mouseDown(MouseEvent e) {
-					 IStructuredSelection selection = (IStructuredSelection) filterConditionsTreeViewer.getSelection();
-					 Object element = selection.getFirstElement();
-					 if (element != null) {
-						 FilterbedingungBean bean2remove = (FilterbedingungBean) element;
-						 Object parent = filterTreeContentProvider.getParent(bean2remove);
-						 JunctorConditionForFilterTreeBean junctorParent = null;
-						 if (parent instanceof NotConditionForFilterTreeBean) {
-							 junctorParent = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent).getFilterbedingungBean();
-						 }
-						 if (parent instanceof JunctorConditionForFilterTreeBean) {
-							 junctorParent = (JunctorConditionForFilterTreeBean) parent;
-						 }
-						 if (junctorParent != null) {
-							 junctorParent.removeOperand(bean2remove);
-							 filterConditionsTreeViewer.refresh();
-							 updateBeanAndFireEvent();
-						 }
-					 }
+					TreeSelection selection = (TreeSelection) filterConditionsTreeViewer
+							.getSelection();
+					for (Iterator<FilterbedingungBean> iter = selection
+							.iterator(); iter.hasNext();) {
+						FilterbedingungBean bean2remove = (FilterbedingungBean) iter
+								.next();
+						Object parent = filterTreeContentProvider
+								.getParent(bean2remove);
+						JunctorConditionForFilterTreeBean junctorParent = null;
+						if (parent instanceof NotConditionForFilterTreeBean) {
+							junctorParent = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent)
+									.getFilterbedingungBean();
+						}
+						if (parent instanceof JunctorConditionForFilterTreeBean) {
+							junctorParent = (JunctorConditionForFilterTreeBean) parent;
+						}
+						if (junctorParent != null) {
+							junctorParent.removeOperand(bean2remove);
+							filterConditionsTreeViewer.refresh();
+							updateBeanAndFireEvent();
+						}
+
+					}
+
 				}
 
 				public void mouseUp(MouseEvent e) {
@@ -161,12 +214,12 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		initDataBinding();
 	}
 
-	protected void updateBeanAndFireEvent()
-	{
-		beanClone.setConditions(filterTreeContentProvider.getContentsOfRootANDCondition());
+	protected void updateBeanAndFireEvent() {
+		beanClone.setConditions(filterTreeContentProvider
+				.getContentsOfRootANDCondition());
 		FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
 	}
-	
+
 	private class NewJunctorAction extends Action implements
 			ISelectionChangedListener {
 		private JunctorConditionForFilterTreeBean selectedBean;
@@ -184,7 +237,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			filterConditionsTreeViewer.refresh();
 			if (added) {
 				filterConditionsTreeViewer.expandToLevel(node, 0);
-				filterConditionsTreeViewer.setSelection(new StructuredSelection(node));
+				filterConditionsTreeViewer
+						.setSelection(new StructuredSelection(node));
 				updateBeanAndFireEvent();
 			}
 		}
@@ -200,7 +254,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			} else if (element instanceof NotConditionForFilterTreeBean) {
 				NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) element;
 				if (notBean.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
-					selectedBean = (JunctorConditionForFilterTreeBean) notBean.getFilterbedingungBean();
+					selectedBean = (JunctorConditionForFilterTreeBean) notBean
+							.getFilterbedingungBean();
 					setEnabled(true);
 				} else {
 					setEnabled(false);
@@ -223,12 +278,14 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		@Override
 		public void run() {
-			FilterbedingungBean parent = (FilterbedingungBean) filterTreeContentProvider.getParent(selectedBean);
+			FilterbedingungBean parent = (FilterbedingungBean) filterTreeContentProvider
+					.getParent(selectedBean);
 			FilterbedingungBean newBean = null;
 			if (parent != null) {
 				JunctorConditionForFilterTreeBean junction = null;
 				if (parent instanceof NotConditionForFilterTreeBean) {
-					junction = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent).getFilterbedingungBean();
+					junction = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent)
+							.getFilterbedingungBean();
 				} else if (parent instanceof JunctorConditionForFilterTreeBean) {
 					junction = (JunctorConditionForFilterTreeBean) parent;
 				}
@@ -250,11 +307,12 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			}
 
 			filterConditionsTreeViewer.refresh();
-			if (newBean != null){
+			if (newBean != null) {
 				filterConditionsTreeViewer.expandToLevel(newBean, 0);
-				filterConditionsTreeViewer.setSelection(new StructuredSelection(newBean));
+				filterConditionsTreeViewer
+						.setSelection(new StructuredSelection(newBean));
 			}
-			
+
 		}
 
 		public void selectionChanged(SelectionChangedEvent event) {
@@ -305,7 +363,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						filterConditionsTreeViewer.refresh();
 						if (result) {
 							filterConditionsTreeViewer.expandToLevel(bean, 0);
-							filterConditionsTreeViewer.setSelection(new StructuredSelection(bean));
+							filterConditionsTreeViewer
+									.setSelection(new StructuredSelection(bean));
 							updateBeanAndFireEvent();
 						}
 						return result;
@@ -378,6 +437,30 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				rubrikTextObservable, null, null);
 	}
 
+	@Override
+	public void onBeanInsert(IConfigurationBean bean) {
+		// FIXME synchronize bean and beanClone
+		if (filterConditionsTreeViewer != null) {
+			filterConditionsTreeViewer.refresh();
+		}
+//		if (!isDirty()) {
+//			afterSafe();
+//		}
+		super.onBeanInsert(bean);
+	}
+	
+	@Override
+	public void onBeanUpdate(IConfigurationBean bean) {
+		// FIXME synchronize bean and beanClone
+		if (filterConditionsTreeViewer != null) {
+			filterConditionsTreeViewer.refresh();
+		}
+//		if (!isDirty()) {
+//			afterSafe();
+//		}
+		super.onBeanUpdate(bean);
+	}
+	
 	@Override
 	public void setFocus() {
 		_nameTextEntry.setFocus();
