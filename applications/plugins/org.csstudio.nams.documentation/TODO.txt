@@ -2,16 +2,13 @@
 --------------- Tests --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
 
-- AllTests schmiert ab (2)
 - DecisionDepartmentActivator_Test#testBundleAndApplicationLifecycle()
-
 
 ----------------------------------------------------------------------------------------------------------
 --------------- EDITOREN --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
 
 - Filter Editor (gs, mz)
-	- speichern klappt nur wenn keine neuen junction Bedingungen (Unterknoten) oder Not Bedingungen enthalten sind (5)
 	- (X) man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen (=> soll so bleiben)
 	- das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen. (3)
 	- Alarmaktionen fehlt noch ganz (Tabelle und Co) (5)
@@ -20,7 +17,7 @@
 	- Scrollbar machen (1)
 	
 - Filterbedingung Editor
-	- speicher nur bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
+	- speicher NUR bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
 	- TimeBased: UI Design nicht ganz korrekt; Bei "Alarm bei Timeout" ist es eine Stop-Bedingung, sonst eine Sofort-Auslösungs-Bedingung!
 	
 - Alarmtopic Editor
