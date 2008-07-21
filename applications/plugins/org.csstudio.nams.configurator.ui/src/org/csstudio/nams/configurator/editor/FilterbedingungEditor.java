@@ -886,4 +886,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		FilterbedingungEditor.pvConnectionService = pvConnectionService;
 	}
 
+	@Override
+	public boolean isDirty() {
+		return super.isDirty() && !(beanClone.getFilterSpecificBean() instanceof JunctorConditionBean);
+	}
+
 }
