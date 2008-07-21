@@ -61,7 +61,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		formToolkit = new FormToolkit(parent.getDisplay());
+				formToolkit = new FormToolkit(parent.getDisplay());
 		mainForm = formToolkit.createScrolledForm(parent);
 		Composite outerFormMain = mainForm.getBody();
 		outerFormMain.setBackground(parent.getBackground());
