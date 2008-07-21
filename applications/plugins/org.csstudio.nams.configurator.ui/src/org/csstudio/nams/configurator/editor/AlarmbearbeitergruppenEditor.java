@@ -10,6 +10,7 @@ import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.User2GroupBean;
 import org.csstudio.nams.configurator.composite.TableColumnResizeAdapter;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -20,8 +21,6 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -45,13 +44,11 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -698,6 +695,22 @@ public class AlarmbearbeitergruppenEditor extends
 		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
 				rubrikTextObservable, null, null);
 
+	}
+	
+	@Override
+	public void onBeanUpdate(IConfigurationBean bean) {
+		if (tableViewer != null) {
+			tableViewer.refresh();
+		}
+		super.onBeanUpdate(bean);
+	}
+	
+	@Override
+	public void onBeanInsert(IConfigurationBean bean) {
+		if (tableViewer != null) {
+			tableViewer.refresh();
+		}
+		super.onBeanInsert(bean);
 	}
 
 	@Override
