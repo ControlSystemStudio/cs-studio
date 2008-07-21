@@ -23,7 +23,7 @@
 	- StringArray: Speichern: Eine willkürliche gewählte CompVal wird nicht mitgespeichert! 
 	- StringArray: Die Tabelle ist zu kurz bzw. es erscheint kein tollbalken beim hinzufügen
 	- speicher nur bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
-	- (X) PV-FC: Button zum Channel Test fehlt!
+	- PV-FC: Button zum Channel Test fehlt!
 	- TimeBased: UI Design nicht ganz korrekt; Bei "Alarm bei Timeout" ist es eine Stop-Bedingung, sonst eine Sofort-Auslösungs-Bedingung!
 	
 - Alarmtopic Editor
