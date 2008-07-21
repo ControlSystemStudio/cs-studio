@@ -22,14 +22,16 @@ import org.csstudio.nams.configurator.beans.filters.StringArrayFilterConditionBe
 import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.TimeBasedFilterConditionBean;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
+import org.csstudio.platform.simpledal.ConnectionException;
+import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -159,6 +161,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private FormToolkit formToolkit;
 	private ScrolledForm mainForm;
 	private Text timeStopCompareText;
+	private static IProcessVariableConnectionService pvConnectionService;
 
 	public static String getId() {
 		return EDITOR_ID;
@@ -323,7 +326,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		stackComposites[3].setLayout(new GridLayout(NUM_COLUMNS, false));
 		pvChannelName = createTextEntry(stackComposites[3], "channelName", true);
 
-		IConfigurationBean pvConfigurationBean = specificBeans
+		final PVFilterConditionBean pvConfigurationBean = (PVFilterConditionBean) specificBeans
 				.get(SupportedFilterTypes.PV_CONDITION);
 		createTitledComboForEnumValues(stackComposites[3], "SuggestedType",
 				SuggestedProcessVariableType.values(), pvConfigurationBean,
@@ -335,6 +338,66 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		pvCompareValue = createTextEntry(stackComposites[3], "Compare value",
 				true);
+		Button checkPVChannel = createButtonEntry(stackComposites[3],
+				"PV Verbindung überprüfen", true);
+		checkPVChannel.addMouseListener(new MouseListener() {
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+				String channelName = pvChannelName.getText();
+				if (channelName != null && channelName.length() > 0) {
+					try {
+						SuggestedProcessVariableType suggestedType = pvConfigurationBean
+								.getSuggestedType();
+						if (SuggestedProcessVariableType.DOUBLE
+								.equals(suggestedType)) {
+							pvConnectionService
+									.getValueAsDouble(ProcessVariableAdressFactory
+											.getInstance()
+											.createProcessVariableAdress(
+													channelName));
+						} else if (SuggestedProcessVariableType.LONG
+								.equals(suggestedType)) {
+							pvConnectionService
+									.getValueAsLong(ProcessVariableAdressFactory
+											.getInstance()
+											.createProcessVariableAdress(
+													channelName));
+						} else if (SuggestedProcessVariableType.STRING
+								.equals(suggestedType)) {
+							pvConnectionService
+									.getValueAsString(ProcessVariableAdressFactory
+											.getInstance()
+											.createProcessVariableAdress(
+													channelName));
+						}
+					} catch (ConnectionException connectionException) {
+						MessageDialog
+						.openError(
+								e.widget.getDisplay().getActiveShell(),
+								"PV channel state for channel: " + channelName,
+								"Connection to PV channel failed.\n\n" +
+								"Reason:\n" + 
+								EditorUIUtils.throwableAsMessageString(connectionException));
+						connectionException.printStackTrace();
+						return;
+					}
+					MessageDialog
+							.openInformation(
+									e.widget.getDisplay().getActiveShell(),
+									"PV channel state for channel: " + channelName,
+									"Connection to PV channel successfully established.\n\n" +
+									"(This only indicates that your adress is correct and the PV is currently accessible\n" +
+									"It is no quaranty for successfully access all over the time.\n" +
+									"If the connection fails during message processing, this condition will match constantly)");
+				}
+			}
+
+			public void mouseUp(MouseEvent e) {
+			}
+		});
+
 		// TimeBasedComposite
 		stackComposites[4] = new Composite(filterSpecificComposite, SWT.TOP);
 		stackComposites[4].setLayout(new GridLayout(NUM_COLUMNS, false));
@@ -814,6 +877,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	@Override
 	public void setFocus() {
 		_nameTextEntry.setFocus();
+	}
+
+	public static void staticInject(
+			IProcessVariableConnectionService pvConnectionService) {
+		FilterbedingungEditor.pvConnectionService = pvConnectionService;
 	}
 
 }

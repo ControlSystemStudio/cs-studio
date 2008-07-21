@@ -4,6 +4,9 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 
@@ -193,6 +196,35 @@ public final class EditorUIUtils {
 		return true;
 	}
 
+	/**
+	 * Creates a {@link String} of the message and stack trace reported by given {@link Throwable}.
+	 *  
+	 * @param t The {@link Throwable}, not null.
+	 * @return A string containing all specified data, not null, may empty.
+	 */
+	static public String throwableAsMessageString(Throwable t) {
+		Contract.requireNotNull("t", t);
+		
+		String result = null;
+		
+		StringWriter resultWriter = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(resultWriter);
+		t.printStackTrace(printWriter);
+		printWriter.flush();
+		resultWriter.flush();
+		result = resultWriter.toString();
+		
+		printWriter.close();
+		try {
+			resultWriter.close();
+		} catch (IOException e) {
+			// Ignored.
+		}
+		
+		Contract.ensureResultNotNull(result);
+		return result;
+	}
+	
 	public static void staticInject(Logger logger) {
 		EditorUIUtils.logger = logger;
 	}

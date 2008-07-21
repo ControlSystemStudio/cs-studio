@@ -15,5 +15,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.nams.common,
  org.csstudio.nams.service.preferenceservice,
  org.eclipse.ui.forms,
- org.csstudio.nams.service.preferenceservice.ui
+ org.csstudio.nams.service.preferenceservice.ui,
+ org.csstudio.platform
 Eclipse-LazyStart: true
