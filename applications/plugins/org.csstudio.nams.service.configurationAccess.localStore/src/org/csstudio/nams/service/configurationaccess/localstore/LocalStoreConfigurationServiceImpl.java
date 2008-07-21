@@ -351,6 +351,7 @@ class LocalStoreConfigurationServiceImpl implements
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
+//			session.delete(filterConditionDTO);
 			session.saveOrUpdate(filterConditionDTO);
 			tx.commit();
 		} catch (Throwable t) {

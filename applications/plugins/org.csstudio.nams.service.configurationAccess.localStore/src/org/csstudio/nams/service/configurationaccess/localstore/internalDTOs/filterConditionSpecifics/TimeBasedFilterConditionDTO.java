@@ -51,7 +51,7 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 	}
 	
 	public MessageKeyEnum getStartKeyValue(){
-		return MessageKeyEnum.valueOf(cStartKeyValue);
+		return MessageKeyEnum.getEnumFor(cStartKeyValue);
 	}
 	
 	public String getCStartCompValue() {
@@ -66,7 +66,7 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 		return cConfirmKeyValue;
 	}
 	public MessageKeyEnum getConfirmKeyValue(){
-		return MessageKeyEnum.valueOf(cConfirmKeyValue);
+		return MessageKeyEnum.getEnumFor(cConfirmKeyValue);
 	}
 	
 	public void setCConfirmKeyValue(String confirmKeyValue) {

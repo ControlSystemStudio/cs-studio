@@ -927,10 +927,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getConfirmCompValue());
 			timeBasedFilterConditionDTO.setConfirmKeyValue(specificBean
 					.getStartKeyValue());
+			timeBasedFilterConditionDTO.setTBConfirmOperator(specificBean.getConfirmOperator());
+			
+			
 			timeBasedFilterConditionDTO.setCStartCompValue(specificBean
 					.getStartCompValue());
-
-			timeBasedFilterConditionDTO.setTBConfirmOperator(specificBean.getConfirmOperator());
+			timeBasedFilterConditionDTO.setStartKeyValue(specificBean.getStartKeyValue());
 			timeBasedFilterConditionDTO.setTBStartOperator(specificBean.getStartOperator());
 
 			timeBasedFilterConditionDTO.setTimeBehavior(specificBean
