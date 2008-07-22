@@ -40,6 +40,7 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
+import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.RemoteInfo;
 import org.junit.After;
 import org.junit.Before;
@@ -144,7 +145,7 @@ public class FilterConditionProcessVariableTest {
 
 		@SuppressWarnings("unchecked")
 		public void sendNewValue(Object value) {
-			_listener.valueChanged(value);
+			_listener.valueChanged(value, new Timestamp());
 		}
 
 		public void sendNewConnectionState(ConnectionState state) {

@@ -35,6 +35,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.epics.css.dal.Timestamp;
 
 /**
  * A filter condition based on PV-values.
@@ -171,7 +172,7 @@ public strictfp class FilterConditionProcessVariable implements
 		/**
 		 * {@inheritDoc}
 		 */
-		public void valueChanged(T value) {
+		public void valueChanged(T value, Timestamp timestamp) {
 			Log.log(this, Log.DEBUG, "Value changed, new Value: " + value.toString());
 			_lastReceivedValue = value;
 		}

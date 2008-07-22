@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.epics.css.dal.Timestamp;
 
 public class FilterConditionProcessVariableUI extends FilterConditionUI {
 
@@ -100,7 +101,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 									}
 								}
 
-								public void valueChanged(Double value) {
+								public void valueChanged(Double value, Timestamp timestamp) {
 									recievedValue = value;
 									valueRecieved = true;
 								}
@@ -124,7 +125,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 									}
 								}
 
-								public void valueChanged(Long value) {
+								public void valueChanged(Long value, Timestamp timestamp) {
 									recievedValue = value;
 									valueRecieved = true;
 								}
@@ -147,7 +148,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 									}
 								}
 
-								public void valueChanged(String value) {
+								public void valueChanged(String value, Timestamp timestamp) {
 									recievedValue = value;
 									valueRecieved = true;
 								}

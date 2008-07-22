@@ -30,6 +30,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.epics.css.dal.Timestamp;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class FilterConditionProcessVariable_IntegrationTestWithDAL {
 				}
 			}
 
-			public void valueChanged(Double value) {
+			public void valueChanged(Double value, Timestamp timestamp) {
 			}
 
 			public void errorOccured(String error) {
