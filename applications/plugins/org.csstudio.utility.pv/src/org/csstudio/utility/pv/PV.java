@@ -43,13 +43,19 @@ public interface PV extends IProcessVariable
      */
     public IValue getValue(double timeout_seconds) throws Exception;
     
-    /** Add a new listener. */
+    /** Add a new listener.
+     *  @see PVListener
+     */
     public void addListener(PVListener listener);
 
     /** Remove a listener. */
     public void removeListener(PVListener listener);
 
-    /** Start the PV: connect, ... */
+    /** Start the PV: connect, get meta data, subscribe to updates,
+     *  invoke {@link PVListener} for incoming values, ...
+     *  @see #addListener(PVListener)
+     *  @see #stop()
+     */
     public void start() throws Exception;
     
     /** @return Returns <code>true</code> between <code>start()</code> and <code>stop()</code>. */
@@ -70,7 +76,10 @@ public interface PV extends IProcessVariable
      *  @return Some human readable state info */
     public String getStateInfo();
     
-    /** Stop the PV: disconnect, ... */
+    /** Stop the PV: disconnect, ...
+     *  When the PV is no longer needed, one should 'stop' it
+     *  to release resources.
+     */
     public void stop();
 
     /** Get the value.

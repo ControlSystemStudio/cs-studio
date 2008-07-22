@@ -7,7 +7,8 @@ package org.csstudio.utility.pv;
 public interface IPVFactory
 {
     /** Create a PV for the given channel name.
+     *  @param name Name of the Process Variable
      *  @return PV
      */
-    public PV createPV( String name);
+    public PV createPV(String name);
 }

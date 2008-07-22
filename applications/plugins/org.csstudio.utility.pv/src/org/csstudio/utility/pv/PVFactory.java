@@ -21,11 +21,22 @@ import org.eclipse.core.runtime.Platform;
         }
         public void pvValueUpdate(PV pv)
         {
-            System.out.println(pv.getName() + " = " + pv.getValue());
+            IValue value = pv.getValue();
+            System.out.println(pv.getName() + " = " + value);
+            if (value instanceof IDoubleValue)
+            {
+                IDoubleValue dbl = (IDoubleValue) value;
+                System.out.println(dbl.getValue());
+            }
+            // ... or use ValueUtil    
         }
     });
     // Start the PV
     pv.start();
+    
+    ...
+    
+    pv.stop();
     </pre>
  *  
  *  @author Kay Kasemir
