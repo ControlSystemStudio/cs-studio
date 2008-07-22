@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: KryoNameBrowser Plug-in
+Bundle-SymbolicName: org.csstudio.config.kryoNameBrowser;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.config.kryonamebrowser.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.ui
+Eclipse-LazyStart: true

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="Kryo Name Browser"
+            icon="icons/browser.png"
+            category="org.csstudio"
+            class="org.csstudio.config.kryonamebrowser.ui.MainView"
+            id="org.csstudio.config.kryonamebrowser.ui.MainView">
+      </view>
+ 	</extension>
+ 	   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.config.kryonamebrowser"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.config.kryonamebrowser.ui.ShowKryoNameBrowser"
+               icon="icons/browser.png"
+               id="org.csstudio.config.kryonamebrowser.ui.ShowKryoNameBrowser"
+               label="Kryo Name Browser"
+               menubarPath="css/configuration/"
+               style="push"/>
+      </actionSet>
+   </extension>
+</plugin>
