@@ -1197,7 +1197,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					width = TEXTWIDTH + _wideness;
 				}
 				
-				int distance = TEXTHEIGHT * 3;
+				int distance = TEXTHEIGHT * 2;
 				List<Tick> ticks = _yAxis.calculateTicks(distance, 3);
 				for (Tick tick : ticks) {
 					if (index >= _posScaleMarkers.size()) {
