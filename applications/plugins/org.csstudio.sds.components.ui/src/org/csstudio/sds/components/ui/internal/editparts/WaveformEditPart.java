@@ -66,6 +66,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setLabel(model.getLabel());
 		waveform.setXAxisLabel(model.getXAxisLabel());
 		waveform.setYAxisLabel(model.getYAxisLabel());
+		waveform.setDataPointDrawingStyle(model.getDataPointDrawingStyle());
 		return waveform;
 	}
 
