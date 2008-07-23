@@ -220,7 +220,8 @@ public abstract class AbstractNamsView extends ViewPart {
 
 		Composite error = new Composite(viewsRoot, SWT.TOP);
 		error.setLayout(new GridLayout(1, true));
-		new Label(error, SWT.ICON_ERROR).setText("Error!");
+		Label errorLabel = new Label(error, SWT.WRAP);
+		errorLabel.setText("Konnte keine Verbindung zur Datenbank herstellen.\nBitte überprüfen Sie die Einstellungen unter:\nCSS-Application/Configuration/New AMS.");
 
 		viewStackContents.put(ViewModes.NORMAL, normalViewElements);
 		viewStackContents.put(ViewModes.NOT_INITIALIZED, error);
