@@ -66,29 +66,43 @@ public abstract class AbstractNamsView extends ViewPart {
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION);
 				String P_CONFIG_DATABASE_TYPE_asString = preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE);
-				if( P_CONFIG_DATABASE_TYPE_asString == null || P_CONFIG_DATABASE_TYPE_asString.length() == 0 ) {
-					throw new RuntimeException("Missing database setting!");
-				}
-				
-				DatabaseType P_CONFIG_DATABASE_TYPE = DatabaseType
-						.valueOf(P_CONFIG_DATABASE_TYPE_asString);
 				String P_CONFIG_DATABASE_USER = preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER);
 				String P_CONFIG_DATABASE_PASSWORD = preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD);
-				
+
+				if ((P_CONFIG_DATABASE_CONNECTION == null || P_CONFIG_DATABASE_CONNECTION
+						.length() == 0)
+						|| (P_CONFIG_DATABASE_TYPE_asString == null || P_CONFIG_DATABASE_TYPE_asString
+								.length() == 0)
+						|| (P_CONFIG_DATABASE_USER == null || P_CONFIG_DATABASE_USER
+								.length() == 0)
+						|| (P_CONFIG_DATABASE_PASSWORD == null || P_CONFIG_DATABASE_PASSWORD
+								.length() == 0)) {
+					throw new RuntimeException("Missing database setting!");
+				}
+
+				DatabaseType P_CONFIG_DATABASE_TYPE = DatabaseType
+						.valueOf(P_CONFIG_DATABASE_TYPE_asString);
+
 				LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
-						.getConfigurationService(
-								P_CONFIG_DATABASE_CONNECTION,
-								P_CONFIG_DATABASE_TYPE,
-								P_CONFIG_DATABASE_USER,
+						.getConfigurationService(P_CONFIG_DATABASE_CONNECTION,
+								P_CONFIG_DATABASE_TYPE, P_CONFIG_DATABASE_USER,
 								P_CONFIG_DATABASE_PASSWORD);
-				
-				logger.logDebugMessage(this, "DB connected with P_CONFIG_DATABASE_CONNECTION: " + P_CONFIG_DATABASE_CONNECTION );
-				logger.logDebugMessage(this, "DB connected with P_CONFIG_DATABASE_TYPE: " + P_CONFIG_DATABASE_TYPE );
-				logger.logDebugMessage(this, "DB connected with P_CONFIG_DATABASE_USER: " + P_CONFIG_DATABASE_USER );
-				logger.logDebugMessage(this, "DB connected with P_CONFIG_DATABASE_PASSWORD: " + P_CONFIG_DATABASE_PASSWORD );
-				
+
+				logger.logDebugMessage(this,
+						"DB connected with P_CONFIG_DATABASE_CONNECTION: "
+								+ P_CONFIG_DATABASE_CONNECTION);
+				logger.logDebugMessage(this,
+						"DB connected with P_CONFIG_DATABASE_TYPE: "
+								+ P_CONFIG_DATABASE_TYPE);
+				logger.logDebugMessage(this,
+						"DB connected with P_CONFIG_DATABASE_USER: "
+								+ P_CONFIG_DATABASE_USER);
+				logger.logDebugMessage(this,
+						"DB connected with P_CONFIG_DATABASE_PASSWORD: "
+								+ P_CONFIG_DATABASE_PASSWORD);
+
 				if (configurationBeanService == null) {
 					configurationBeanService = new ConfigurationBeanServiceImpl();
 				}
@@ -105,7 +119,7 @@ public abstract class AbstractNamsView extends ViewPart {
 						.staticInject(configurationBeanService);
 			}
 			semaphore.release(1);
-			
+
 			configurationBeanService
 					.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
 						// TODO updateView() is in most cases overkill
@@ -130,15 +144,15 @@ public abstract class AbstractNamsView extends ViewPart {
 							}
 						}
 					});
-			
+
 			configurationBeanService.refreshData();
-			
+
 			isInitialized = true;
 		} catch (Throwable t) {
 			isInitialized = false;
-			if( semaphore.hasQueuedThreads() ) {
-				semaphore.release();
-			}
+
+			semaphore.release();
+
 			throw t;
 		}
 	}
