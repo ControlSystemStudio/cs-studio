@@ -167,7 +167,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	}
 
 	private void addStringArrayCompareValue(final Text newCompareValue) {
-		StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) beanClone
+		StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) workingCopyOfEditorInput()
 		.getFilterSpecificBean();
 		java.util.List<String> list = specificBean.getCompareValues();
 		if (!list.contains(newCompareValue.getText())) {
@@ -207,7 +207,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 								.getType().ordinal()];
 						filterSpecificComposite.layout();
 
-						beanClone
+						workingCopyOfEditorInput()
 								.setFilterSpecificBean((FilterConditionAddOnBean) specificBeans
 										.get(FilterbedingungEditor.this.selectedFilterType
 												.getType()));
@@ -306,7 +306,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 			public void mouseDown(MouseEvent e) {
 				if (arrayCompareValueList.getSelectionIndex() > -1) {
-					String[] items = ((StringArrayFilterConditionBean) beanClone
+					String[] items = ((StringArrayFilterConditionBean) workingCopyOfEditorInput()
 							.getFilterSpecificBean()).getCompareValues()
 							.toArray(new String[0]);
 					ArrayList<String> itemList = new ArrayList<String>();
@@ -314,7 +314,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						if (arrayCompareValueList.getSelectionIndex() != i)
 							itemList.add(items[i]);
 					}
-					((StringArrayFilterConditionBean) beanClone
+					((StringArrayFilterConditionBean) workingCopyOfEditorInput()
 							.getFilterSpecificBean())
 							.setCompareValues(itemList);
 				}
@@ -548,7 +548,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				new PVFilterConditionBean());
 		specificBeans.put(SupportedFilterTypes.TIMEBASED_CONDITION,
 				new TimeBasedFilterConditionBean());
-		AbstractConfigurationBean<?> filterSpecificBean = (AbstractConfigurationBean<?>) beanClone
+		AbstractConfigurationBean<?> filterSpecificBean = (AbstractConfigurationBean<?>) workingCopyOfEditorInput()
 				.getFilterSpecificBean();
 
 		specificBeans.put(SupportedFilterTypes.fromClass(filterSpecificBean
@@ -640,7 +640,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						TimeBasedFilterConditionBean.PropertyNames.timeBehavior
 								.name());
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone,
+				this.workingCopyOfEditorInput(),
 				FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
@@ -847,14 +847,14 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.beanClone, FilterbedingungBean.PropertyNames.name.name());
+				this.workingCopyOfEditorInput(), FilterbedingungBean.PropertyNames.name.name());
 
 		IObservableValue descriptionTextObservable = BeansObservables
-				.observeValue(this.beanClone,
+				.observeValue(this.workingCopyOfEditorInput(),
 						FilterbedingungBean.PropertyNames.description.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone,
+				this.workingCopyOfEditorInput(),
 				FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
@@ -888,7 +888,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 	@Override
 	public boolean isDirty() {
-		return super.isDirty() && !(beanClone.getFilterSpecificBean() instanceof JunctorConditionBean);
+		return super.isDirty() && !(workingCopyOfEditorInput().getFilterSpecificBean() instanceof JunctorConditionBean);
 	}
 
 }

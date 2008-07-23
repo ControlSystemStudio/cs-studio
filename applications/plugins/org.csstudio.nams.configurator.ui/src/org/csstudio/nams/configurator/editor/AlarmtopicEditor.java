@@ -67,17 +67,17 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.beanClone, AlarmtopicBean.PropertyNames.humanReadableName.name());
+				this.workingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.humanReadableName.name());
 
 		IObservableValue topicNameTextObservable = BeansObservables.observeValue(
-				this.beanClone, AlarmtopicBean.PropertyNames.topicName.name());
+				this.workingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.topicName.name());
 
 		IObservableValue descriptionTextObservable = BeansObservables.observeValue(
-				this.beanClone, AlarmtopicBean.PropertyNames.description
+				this.workingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.description
 						.name());
 		
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone, AlarmtopicBean.AbstractPropertyNames.rubrikName.name());
+				this.workingCopyOfEditorInput(), AlarmtopicBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables

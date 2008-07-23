@@ -66,7 +66,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	protected void afterSafe() {
 		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans
 		// enthält.
-		this.beanClone.updateState(this.getOriginalEditorInput());
+		this.workingCopyOfEditorInput().updateState(this.getOriginalEditorInput());
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						.setContentProvider(filterTreeContentProvider);
 				filterConditionsTreeViewer
 						.setLabelProvider(new FilterTreeLabelProvider());
-				filterConditionsTreeViewer.setInput(beanClone.getConditions());
+				filterConditionsTreeViewer.setInput(workingCopyOfEditorInput().getConditions());
 
 				NewJunctorAction newAndAction = new NewJunctorAction(
 						JunctorConditionType.AND);
@@ -215,7 +215,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	}
 
 	protected void updateBeanAndFireEvent() {
-		beanClone.setConditions(filterTreeContentProvider
+		workingCopyOfEditorInput().setConditions(filterTreeContentProvider
 				.getContentsOfRootANDCondition());
 		FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
 	}
@@ -407,10 +407,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.beanClone, FilterBean.PropertyNames.name.name());
+				this.workingCopyOfEditorInput(), FilterBean.PropertyNames.name.name());
 
 		IObservableValue descriptionTextObservable = BeansObservables
-				.observeValue(this.beanClone,
+				.observeValue(this.workingCopyOfEditorInput(),
 						FilterBean.PropertyNames.defaultMessage.name());
 
 		// IObservableTree filterConditionsObservable = BeansObservables
@@ -418,7 +418,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		// FilterBean.PropertyNames.conditions.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.beanClone, FilterBean.AbstractPropertyNames.rubrikName
+				this.workingCopyOfEditorInput(), FilterBean.AbstractPropertyNames.rubrikName
 						.name());
 
 		// bind observables

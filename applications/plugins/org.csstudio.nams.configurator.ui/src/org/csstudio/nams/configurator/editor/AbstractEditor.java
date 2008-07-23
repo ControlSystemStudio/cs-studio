@@ -40,14 +40,38 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	 * its stae if configuration is reloaded.
 	 */
 	private ConfigurationType originalEditorInput;
-	protected ConfigurationType beanClone;
+
+	/**
+	 * The working copy the editor will work on. This instance is a private
+	 * instance of the editor and not referenced by the bean service. It is used
+	 * for save operations with the bean service and is used to fund the
+	 * {@link #originalEditorInput original bean} in bean service which is to be
+	 * updated.
+	 */
+	private ConfigurationType workingCopyOfEditorInput;
+
+	/**
+	 * Returns the current working copy of the editor. This instance is a private
+	 * instance of the editor and not referenced by the bean service. It is used
+	 * for save operations with the bean service and is used to fund the
+	 * {@link #originalEditorInput original bean} in bean service which is to be
+	 * updated.
+	 * 
+	 * @return The editor input working copy, not null.
+	 */
+	protected ConfigurationType workingCopyOfEditorInput() {
+		ConfigurationType result = this.workingCopyOfEditorInput;
+
+		Contract.ensureResultNotNull(result);
+		return result;
+	}
 
 	/**
 	 * Returns the original editor input. This bean is also referenced by the
 	 * editors bean service and will change its state if configuration is
 	 * reloaded!
 	 * 
-	 * @return The editor input bean, nott null.
+	 * @return The editor input bean, not null.
 	 */
 	protected ConfigurationType getOriginalEditorInput() {
 		ConfigurationType result = this.originalEditorInput;
@@ -71,25 +95,25 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		// speicher Änderungen mit dem Service
 		try {
 			ConfigurationType resultBean = configurationBeanService
-					.save(this.beanClone);
+					.save(this.workingCopyOfEditorInput);
 			if (this.originalEditorInput != resultBean) {
 				this.originalEditorInput = resultBean;
 				ConfigurationEditorInput cInput = (ConfigurationEditorInput) getEditorInput();
 				cInput.setBean(this.originalEditorInput);
-				this.beanClone.setID(this.originalEditorInput.getID()); // Die
-																		// Bean
-																		// darf
-																		// nicht
-																		// neu
-																		// geklont
-																		// werden!!!
-																		// Sonst
-																		// geht
-																		// das
-																		// binding
-																		// der
-																		// viewer
-																		// verloren!
+				this.workingCopyOfEditorInput.setID(this.originalEditorInput.getID()); // Die
+				// Bean
+				// darf
+				// nicht
+				// neu
+				// geklont
+				// werden!!!
+				// Sonst
+				// geht
+				// das
+				// binding
+				// der
+				// viewer
+				// verloren!
 			}
 			afterSafe();
 		} catch (InconsistentConfigurationException e) {
@@ -121,9 +145,9 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 		this.originalEditorInput = (ConfigurationType) cInput.getBean();
 
-		this.beanClone = (ConfigurationType) this.originalEditorInput
+		this.workingCopyOfEditorInput = (ConfigurationType) this.originalEditorInput
 				.getClone();
-		this.beanClone.addPropertyChangeListener(this);
+		this.workingCopyOfEditorInput.addPropertyChangeListener(this);
 
 		superTitle = super.getTitle();
 		setPartName(this.originalEditorInput.getDisplayName() + " - "
@@ -279,8 +303,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	@Override
 	public boolean isDirty() {
-		if (this.originalEditorInput != null && this.beanClone != null) {
-			return !this.originalEditorInput.equals(this.beanClone);
+		if (this.originalEditorInput != null && this.workingCopyOfEditorInput != null) {
+			return !this.originalEditorInput.equals(this.workingCopyOfEditorInput);
 		} else
 			return false;
 	};
