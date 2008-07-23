@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.ui.internal.editparts;
+package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -60,8 +60,8 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Helge Rickens, Kai Meyer
  * 
  */
-public final class MenuButtonEditPart extends AbstractWidgetEditPart
-		implements IProcessVariableWithSamples {
+public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
+		IProcessVariableWithSamples {
 
 	/**
 	 * {@inheritDoc}
@@ -98,7 +98,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart
 			}
 
 		});
-		
+
 		return label;
 	}
 
@@ -235,8 +235,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart
 			Display.getCurrent().asyncExec(new Runnable() {
 				public void run() {
 					WidgetActionHandlerService.getInstance().performAction(
-							getCastedModel(),
-							_widgetAction);
+							getCastedModel(), _widgetAction);
 				}
 			});
 		}
@@ -247,12 +246,13 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart
 	 */
 	public IValue getSample(final int index) {
 		if (index != 0) {
-			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+			throw new IndexOutOfBoundsException(index
+					+ " is not a valid sample index");
 		}
-		
+
 		MenuButtonModel model = (MenuButtonModel) getWidgetModel();
 		ITimestamp timestamp = TimestampFactory.now();
-		
+
 		// Note: the IValue implementations require a Severity, otherwise the
 		// format() method will throw a NullPointerException. We don't really
 		// have a severity here, so we fake one. This may cause problems for
@@ -261,7 +261,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart
 
 		IValue result = ValueFactory.createStringValue(timestamp, severity,
 				null, Quality.Original, new String[] { model.getLabel() });
-		
+
 		return result;
 	}
 
@@ -271,6 +271,14 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart
 	public int size() {
 		// always one sample
 		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean forceDisabledInEditMode() {
+		return true;
 	}
 
 }

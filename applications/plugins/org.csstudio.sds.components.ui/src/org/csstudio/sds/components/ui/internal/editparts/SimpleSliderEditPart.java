@@ -49,7 +49,8 @@ import org.eclipse.ui.progress.UIJob;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class SimpleSliderEditPart extends AbstractWidgetEditPart implements IProcessVariableWithSamples {
+public final class SimpleSliderEditPart extends AbstractWidgetEditPart
+		implements IProcessVariableWithSamples {
 
 	/**
 	 * A UI job, which is used to reset the manual value of the slider figure
@@ -67,9 +68,9 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 		final SimpleSliderFigure slider = new SimpleSliderFigure();
 		slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
 			public void sliderValueChanged(final double newValue) {
-				if (getExecutionMode()== ExecutionMode.RUN_MODE) {
-					model.getProperty(SimpleSliderModel.PROP_VALUE).setManualValue(
-							newValue);
+				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+					model.getProperty(SimpleSliderModel.PROP_VALUE)
+							.setManualValue(newValue);
 
 					slider.setManualValue((Double) newValue);
 
@@ -85,9 +86,10 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 						};
 
 					}
-					_resetManualValueDisplayJob.schedule(5000);	
+					_resetManualValueDisplayJob.schedule(5000);
 				} else {
-					CentralLogger.getInstance().info(this, "Slider value changed");
+					CentralLogger.getInstance().info(this,
+							"Slider value changed");
 				}
 			}
 		});
@@ -103,7 +105,8 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 		slider.setDecimalPlaces(model.getPrecision());
 		slider.setSliderWide(model.getSliderWidth());
 		slider.setPopulateEvents(true);
-		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.isEnabled());
+		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE)
+				&& model.isEnabled());
 		return slider;
 	}
 
@@ -115,8 +118,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 		// value
 		IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setValue((Double) newValue);
@@ -130,11 +132,10 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 		// min
 		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
-				//slider.setMin((Integer) newValue);
+				// slider.setMin((Integer) newValue);
 				slider.setMin((Double) newValue);
 				slider.setPopulateEvents(true);
 				return true;
@@ -145,8 +146,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 		// max
 		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setMax((Double) newValue);
@@ -159,8 +159,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 		// increment
 		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setIncrement((Double) newValue);
@@ -168,13 +167,13 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_INCREMENT, incrementHandler);
-		
+		setPropertyChangeHandler(SimpleSliderModel.PROP_INCREMENT,
+				incrementHandler);
+
 		// precision
 		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setDecimalPlaces((Integer) newValue);
@@ -182,25 +181,25 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_PRECISION, precisionHandler);
-		
+		setPropertyChangeHandler(SimpleSliderModel.PROP_PRECISION,
+				precisionHandler);
+
 		// show value as text
 		IWidgetPropertyChangeHandler showValueAsTextHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setShowValueAsText((Boolean)newValue);
+				slider.setShowValueAsText((Boolean) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_SHOW_VALUE_AS_TEXT, showValueAsTextHandler);
-		
+		setPropertyChangeHandler(SimpleSliderModel.PROP_SHOW_VALUE_AS_TEXT,
+				showValueAsTextHandler);
+
 		// minSliderWide
 		IWidgetPropertyChangeHandler minSliderWideHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setSliderWide((Integer) newValue);
@@ -208,16 +207,16 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_SLIDER_WIDTH, minSliderWideHandler);
+		setPropertyChangeHandler(SimpleSliderModel.PROP_SLIDER_WIDTH,
+				minSliderWideHandler);
 
 		// orientation
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
-				
+
 				slider.setOrientation((Boolean) newValue);
 
 				SimpleSliderModel model = (SimpleSliderModel) getModel();
@@ -238,24 +237,25 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 	 */
 	public IValue getSample(final int index) {
 		if (index != 0) {
-			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+			throw new IndexOutOfBoundsException(index
+					+ " is not a valid sample index");
 		}
-		
+
 		SimpleSliderModel model = (SimpleSliderModel) getWidgetModel();
 		double value = model.getValue();
 		int precision = model.getPrecision();
 		ITimestamp timestamp = TimestampFactory.now();
-		
+
 		// Note: the IValue implementations require a Severity, otherwise the
 		// format() method will throw a NullPointerException. We don't really
 		// have a severity here, so we fake one. This may cause problems for
 		// clients who rely on getting a meaningful severity from the IValue.
 		ISeverity severity = ValueFactory.createOKSeverity();
-		
+
 		// Fake some metadata because it is required for an IValue.
 		INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
 				0, precision, "");
-		
+
 		IDoubleValue result = ValueFactory.createDoubleValue(timestamp,
 				severity, null, md, Quality.Original, new double[] { value });
 
@@ -268,5 +268,13 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 	public int size() {
 		// always one sample
 		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean forceDisabledInEditMode() {
+		return true;
 	}
 }

@@ -91,47 +91,53 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		// FIXME: diesen Listener im Runmode gar nicht erst anmelden
 		// FIXME: Action synchron ausführen
 
-		// FIXME: Warum wird hier kein normaler ActionListener verwendet? Siehe nächste Zeilen
-		figure.addActionListener(new ActionListener(){
+		// FIXME: Warum wird hier kein normaler ActionListener verwendet? Siehe
+		// nächste Zeilen
+		figure.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				// FIXME: Einkommentieren, um Parent-Fenster zu schließen
-//				AbstractRunModeBox box = (AbstractRunModeBox) getRuntimeContext().getWindowHandle();
-//				box.dispose();
+				// AbstractRunModeBox box = (AbstractRunModeBox)
+				// getRuntimeContext().getWindowHandle();
+				// box.dispose();
 			}
 		});
-		
+
 		figure.addChangeListener(new ChangeListener() {
 			public void handleStateChanged(final ChangeEvent event) {
 				final String propertyName = event.getPropertyName();
 				if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)
-						&& getExecutionMode()==ExecutionMode.RUN_MODE
+						&& getExecutionMode() == ExecutionMode.RUN_MODE
 						&& figure.getModel().isArmed()) {
-					
-					// FIXME: 2008-10-07: swende: Bug. Alles ab hier passiert pro Klick 2x!!
-					
+
+					// FIXME: 2008-10-07: swende: Bug. Alles ab hier passiert
+					// pro Klick 2x!!
+
 					Display.getCurrent().asyncExec(new Runnable() {
 						public void run() {
 							ActionButtonModel model = (ActionButtonModel) getWidgetModel();
-							
-							// FIXME: Was ist der Usecase für Aktionen bei Press vs. Release Mousebutton?
+
+							// FIXME: Was ist der Usecase für Aktionen bei Press
+							// vs. Release Mousebutton?
 							int index;
 							if (figure.getModel().isPressed()) {
 								index = model.getChoosenPressedActionIndex();
 							} else {
 								index = model.getChoosenReleasedActionIndex();
 							}
-							int size = model.getActionData().getWidgetActions().size();
+							int size = model.getActionData().getWidgetActions()
+									.size();
 							if (index >= 0 && size == 1) {
 								index = 0;
 							}
 							if (index >= 0 && index < size) {
 								WidgetAction type = model.getActionData()
 										.getWidgetActions().get(index);
-								
+
 								WidgetActionHandlerService.getInstance()
-										.performAction(model,type);
+										.performAction(model, type);
 							}
-							figure.getModel().setArmed(figure.getModel().isPressed());
+							figure.getModel().setArmed(
+									figure.getModel().isPressed());
 						}
 					});
 				}
@@ -197,32 +203,12 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				buttonStyleHandler);
 	}
 
-	// /**
-	// * Opens a shell in RunMode.
-	// * @param path
-	// * The Ipath to the Display, which should be opened.
-	// * @param newAlias
-	// * The Map of new Alias for the opened Display
-	// */
-	// private void openDisplayShellInRunMode(final IPath path, final
-	// Map<String, String> newAlias) {
-	// if (path!=null && !path.isEmpty()) {
-	// RunModeService.getInstance().openDisplayShellInRunMode(path, newAlias);
-	// }
-	// }
-	//	
-	// /**
-	// * Opens a view in RunMode.
-	// * @param path
-	// * The IPath to the Display, which should be opened.
-	// * @param newAlias
-	// * The Map of new Alias for the opened Display
-	// */
-	// private void openDisplayViewInRunMode(final IPath path, final Map<String,
-	// String> newAlias) {
-	// if (path!=null && !path.isEmpty()) {
-	// RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
-	// }
-	// }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean forceDisabledInEditMode() {
+		return true;
+	}
 
 }
