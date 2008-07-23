@@ -576,15 +576,31 @@ class LocalStoreConfigurationServiceImpl implements
 			List<FilterConditionDTO> filterConditions = dto
 					.getFilterConditions();
 
+			Set<FilterConditionsToFilterDTO> zuSpeicherndeJoins = new HashSet<FilterConditionsToFilterDTO>();
+			
+			// erzeugen der zu schreibenden join daten
+			for (FilterConditionDTO filterConditionDTO : filterConditions) {
+				FilterConditionsToFilterDTO joinData = new FilterConditionsToFilterDTO();
+				joinData.setIFilterRef(dto.getIFilterID());
+				joinData.setIFilterConditionRef(filterConditionDTO
+						.getIFilterConditionID());
+				
+				zuSpeicherndeJoins.add(joinData);
+				
+			}
+			
+			
 			// clean up join data
 			Collection<FilterConditionsToFilterDTO> conditionMappings = session
 					.createCriteria(FilterConditionsToFilterDTO.class).list();
 
 			for (FilterConditionsToFilterDTO joinElement : conditionMappings) {
 				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
-					int filterConditionRef = joinElement
-							.getIFilterConditionRef();
-					session.delete(joinElement);
+					int filterConditionRef = joinElement.getIFilterConditionRef();
+
+					if (!zuSpeicherndeJoins.contains(joinElement)) {
+						session.delete(joinElement); // nicht mehr verwendete Knoten löschen
+					}
 
 					Collection<JunctorConditionForFilterTreeDTO> junctorConditions = session
 							.createCriteria(
@@ -614,7 +630,10 @@ class LocalStoreConfigurationServiceImpl implements
 				joinData.setIFilterRef(dto.getIFilterID());
 				joinData.setIFilterConditionRef(filterConditionDTO
 						.getIFilterConditionID());
-				saveDTONoTransaction(joinData);
+				
+				if (!zuSpeicherndeJoins.contains(joinData)) {
+					saveDTONoTransaction(joinData);
+				}
 			}
 
 			tx.commit();

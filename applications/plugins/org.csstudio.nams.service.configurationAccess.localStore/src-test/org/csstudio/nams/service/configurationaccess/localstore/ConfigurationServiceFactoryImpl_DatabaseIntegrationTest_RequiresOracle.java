@@ -325,8 +325,11 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertNotNull(entireConfiguration);
 		Collection<FilterDTO> alleFilter = entireConfiguration.gibAlleFilter();
 		for (FilterDTO filterDTO : alleFilter) {
-			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
-					"Test Filter für JCFFT"));
+			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
+				service.deleteDTO(filterDTO);
+			}
+//			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
+//					"Test Filter für JCFFT"));
 		}
 
 		// Save
@@ -352,7 +355,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		orCondition.setOperands(operands2);
 		service.saveFilterDTO(filter);
 
-		// Pruefen dass noch kein entsprechender Filter da ist.
+		// Filter finden
 		entireConfiguration = service.getEntireConfiguration();
 		assertNotNull(entireConfiguration);
 		alleFilter = entireConfiguration.gibAlleFilter();

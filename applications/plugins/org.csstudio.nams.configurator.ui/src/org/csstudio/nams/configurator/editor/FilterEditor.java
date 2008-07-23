@@ -126,6 +126,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				filterConditionsTreeViewer
 						.addSelectionChangedListener(newNotAction);
 
+				filterConditionsTreeViewer.expandAll();
+				
 				MenuManager menuManager = new MenuManager();
 				menuManager.add(newAndAction);
 				menuManager.add(newOrAction);

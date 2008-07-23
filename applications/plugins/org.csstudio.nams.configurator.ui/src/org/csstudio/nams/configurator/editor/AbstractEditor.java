@@ -107,9 +107,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	
 	@Override
 	public void dispose() {
-		super.dispose();
-		
 		configurationBeanService.removeConfigurationBeanServiceListener(this);
+		super.dispose();
 	}
 
 	protected abstract int getNumColumns();

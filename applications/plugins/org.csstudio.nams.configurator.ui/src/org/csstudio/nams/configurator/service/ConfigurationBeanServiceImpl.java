@@ -525,7 +525,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			JunctorConditionForFilterTreeBean jcfftBean = new JunctorConditionForFilterTreeBean();
 			jcfftBean.setJunctorConditionType(fcdto.getOperator());
 			for (FilterConditionDTO innerFC : fcdto.getOperands()) {
-				jcfftBean.addOperand(DTO2Bean(innerFC));
+				// TODO (gs) dieses Verhalten hebelt das eindeute hinzufügen in die Map aus
+				// sollte sich wie in der loadConfiguration() verhalten
+				jcfftBean.addOperand(
+						DTO2Bean(innerFC)		
+				);
 			}
 			bean = jcfftBean;
 		}
@@ -699,13 +703,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			dto = new FilterDTO();
 			inserted = true;
 		} else {
-			for (FilterConditionDTO filterConditionDTO : dto
-					.getFilterConditions()) {
-				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
-					filterbedingungBeans.remove(new Integer(filterConditionDTO
-							.getIFilterConditionID()));
-				}
-			}
+			removeJunctorConditionForFilterTreeBeans(dto.getFilterConditions());
+//			for (FilterConditionDTO filterConditionDTO : dto.getFilterConditions()) {
+//				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
+//					filterbedingungBeans.remove(new Integer(filterConditionDTO.getIFilterConditionID()));
+//				}
+//			}
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
 
@@ -726,6 +729,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return resultBean;
 	}
 
+	private void removeJunctorConditionForFilterTreeBeans(Collection<FilterConditionDTO> filterConditions) {
+		for (FilterConditionDTO filterConditionDTO : filterConditions) {
+			if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
+				JunctorConditionForFilterTreeDTO junctorDTO = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
+				removeJunctorConditionForFilterTreeBeans(junctorDTO.getOperands());
+				filterbedingungBeans.remove(new Integer(junctorDTO.getIFilterConditionID()));
+			}
+		}
+	}
+
 	private List<FilterConditionDTO> createFilterConditionDTOListForFilter(
 			Collection<FilterbedingungBean> conditions)
 			throws InconsistentConfigurationException {
@@ -738,10 +751,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 			if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
 				JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
-				List<FilterConditionDTO> listForFilter = createFilterConditionDTOListForFilter(junctorBean
-						.getOperands());
-
-				if (conditionDTO == null) {
+				List<FilterConditionDTO> listForFilter = createFilterConditionDTOListForFilter(junctorBean.getOperands());
+				
+//				if (conditionDTO == null) {
 					JunctorConditionForFilterTreeDTO newDTO = new JunctorConditionForFilterTreeDTO();
 					newDTO.setCName(junctorBean.getJunctorConditionType()
 							.toString());
@@ -751,18 +763,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					newDTO.setOperator(junctorBean.getJunctorConditionType());
 
 					conditionDTO = newDTO;
-				} else {
-					filterbedingungBeans.remove(new Integer(conditionDTO
-							.getIFilterConditionID()));
-					for (FilterConditionDTO filterDTO : ((JunctorConditionForFilterTreeDTO) conditionDTO)
-							.getOperands()) {
-						filterbedingungBeans.remove(new Integer(filterDTO
-								.getIFilterConditionID()));
-					}
-				}
-				((JunctorConditionForFilterTreeDTO) conditionDTO)
-						.setOperands(new HashSet<FilterConditionDTO>(
-								listForFilter));
+//				} 
+//				else {
+//					filterbedingungBeans.remove(new Integer(conditionDTO.getIFilterConditionID()));
+//					for (FilterConditionDTO filterDTO : ((JunctorConditionForFilterTreeDTO)conditionDTO).getOperands()) {
+//						filterbedingungBeans.remove(new Integer(filterDTO.getIFilterConditionID()));
+//					}
+//				}
+				((JunctorConditionForFilterTreeDTO)conditionDTO).setOperands(new HashSet<FilterConditionDTO>(listForFilter));
 			}
 
 			if (conditionDTO == null) {

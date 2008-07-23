@@ -62,7 +62,7 @@ public class FilterConditionsToFilterDTO implements NewAMSConfigurationElementDT
 		int result = 1;
 		result = prime * result + filterCTFPK.getIFilterConditionRef();
 		result = prime * result + filterCTFPK.getIFilterRef();
-		result = prime * result + iPos;
+//		result = prime * result + iPos;
 		return result;
 	}
 
@@ -82,8 +82,8 @@ public class FilterConditionsToFilterDTO implements NewAMSConfigurationElementDT
 			return false;
 		if (filterCTFPK.getIFilterRef() != other.getIFilterRef())
 			return false;
-		if (iPos != other.iPos)
-			return false;
+//		if (iPos != other.iPos)
+//			return false;
 		return true;
 	}
 

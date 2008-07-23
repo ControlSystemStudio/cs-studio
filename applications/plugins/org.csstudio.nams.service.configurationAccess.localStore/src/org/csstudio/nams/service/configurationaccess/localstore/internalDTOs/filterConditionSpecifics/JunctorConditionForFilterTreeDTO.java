@@ -160,6 +160,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 * @throws If
 	 *             an error occurred
 	 */
+	@SuppressWarnings("unchecked")
 	public synchronized void loadJoinData(Session session,
 			Collection<FilterConditionDTO> allFilterConditions)
 			throws Throwable {
@@ -185,6 +186,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 				.toArray(new FilterConditionDTO[foundOperands.size()]);
 	}
 
+	@SuppressWarnings("unchecked")
 	public synchronized void deleteJoinLinkData(Session session)
 			throws Throwable {
 		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session
