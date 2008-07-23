@@ -99,9 +99,14 @@ public abstract class AbstractNamsView extends ViewPart {
 				logger.logDebugMessage(this,
 						"DB connected with P_CONFIG_DATABASE_USER: "
 								+ P_CONFIG_DATABASE_USER);
-				logger.logDebugMessage(this,
-						"DB connected with P_CONFIG_DATABASE_PASSWORD: "
-								+ P_CONFIG_DATABASE_PASSWORD);
+				logger
+						.logDebugMessage(
+								this,
+								"DB P_CONFIG_DATABASE_PASSWORD is: "
+										+ (P_CONFIG_DATABASE_PASSWORD != null
+												&& P_CONFIG_DATABASE_PASSWORD
+														.length() > 0 ? "available"
+												: "missing"));
 
 				if (configurationBeanService == null) {
 					configurationBeanService = new ConfigurationBeanServiceImpl();
