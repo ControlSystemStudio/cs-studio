@@ -86,6 +86,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	public void refreshData() {
 		loadConfiguration();
+		for (ConfigurationBeanServiceListener listener : listeners) {
+			listener.onConfigurationReload();
+		}
 	}
 
 	private void loadConfiguration() {

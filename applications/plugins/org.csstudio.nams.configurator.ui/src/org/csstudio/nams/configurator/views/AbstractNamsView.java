@@ -24,6 +24,7 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService.PreferenceChangeListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -31,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -148,6 +150,15 @@ public abstract class AbstractNamsView extends ViewPart {
 								filterableBeanList.updateView();
 							}
 						}
+
+						public void onConfigurationReload() {
+							if (filterableBeanList != null) {
+								logger
+								.logDebugMessage(this,
+										"Refreshing list...");
+								filterableBeanList.updateView();
+							}
+						}
 					});
 
 			configurationBeanService.refreshData();
@@ -221,7 +232,8 @@ public abstract class AbstractNamsView extends ViewPart {
 		Composite error = new Composite(viewsRoot, SWT.TOP);
 		error.setLayout(new GridLayout(1, true));
 		Label errorLabel = new Label(error, SWT.WRAP);
-		errorLabel.setText("Konnte keine Verbindung zur Datenbank herstellen.\nBitte überprüfen Sie die Einstellungen unter:\nCSS-Application/Configuration/New AMS.");
+		errorLabel
+				.setText("Konnte keine Verbindung zur Datenbank herstellen.\nBitte überprüfen Sie die Einstellungen unter:\nCSS-Application/Configuration/New AMS.");
 
 		viewStackContents.put(ViewModes.NORMAL, normalViewElements);
 		viewStackContents.put(ViewModes.NOT_INITIALIZED, error);
@@ -238,6 +250,7 @@ public abstract class AbstractNamsView extends ViewPart {
 				return new IConfigurationBean[0];
 			}
 		};
+
 		MenuManager menuManager = new MenuManager();
 		TableViewer table = filterableBeanList.getTable();
 		Menu menu = menuManager.createContextMenu(table.getTable());
@@ -292,6 +305,43 @@ public abstract class AbstractNamsView extends ViewPart {
 								performInitializeAndSetCorrespondingViewMode();
 							}
 						});
+		
+		IActionBars actionBar = getViewSite().getActionBars();
+		actionBar.getToolBarManager().add(new Action() {
+			@Override
+			public void run() {
+				if (MessageDialog
+						.openQuestion(
+								getViewSite().getShell(),
+								"Reload entire configuration?",
+								"Do you realy like to reload the entire configuration?" +
+								"\n\nUnsaved changes may get lost.")) {
+					logger
+							.logDebugMessage(this,
+									"Reload of entire configuration requested by user...");
+					configurationBeanService.refreshData();
+					logger
+					.logDebugMessage(this,
+					"Reload of entire configuration done.");
+				}
+			}
+
+			@Override
+			public String getText() {
+				return "Reload";
+			}
+
+			@Override
+			public String getToolTipText() {
+				return "Reloads the entire configuration - unsaved changes may be discarded!";
+			}
+
+			@Override
+			public int getStyle() {
+				return SWT.BORDER | SWT.ICON_WORKING;
+			}
+
+		});
 	}
 
 	protected void initDragAndDrop(FilterableBeanList filterableBeanList) {

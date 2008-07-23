@@ -367,4 +367,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	public void onBeanUpdate(IConfigurationBean bean) {
 	}
+	
+	public void onConfigurationReload() {
+	}
 }

@@ -10,4 +10,6 @@ public interface ConfigurationBeanServiceListener {
 	
 	void onBeanDeleted(IConfigurationBean bean);
 
+	void onConfigurationReload();
+
 }
