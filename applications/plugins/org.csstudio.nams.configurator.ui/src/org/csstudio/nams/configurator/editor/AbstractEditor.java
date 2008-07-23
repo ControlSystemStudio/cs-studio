@@ -27,6 +27,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
+/**
+ * Abstrakte Oberklasse aller Editoren von Configurations-Elementen des NAMS.
+ * 
+ * @param <ConfigurationType> Der Input-Typ, den der konkrete Editor bearbeitet.
+ */
 public abstract class AbstractEditor<ConfigurationType extends AbstractConfigurationBean<ConfigurationType>>
 		extends EditorPart implements PropertyChangeListener,
 		ConfigurationBeanServiceListener {
