@@ -9,7 +9,7 @@ public class AlarmtopicView extends AbstractNamsView {
 
 	@Override
 	protected IConfigurationBean[] getTableContent() {
-		return configurationBeanService.getAlarmTopicBeans();
+		return getConfigurationBeanService().getAlarmTopicBeans();
 	}
 	
 	@Override

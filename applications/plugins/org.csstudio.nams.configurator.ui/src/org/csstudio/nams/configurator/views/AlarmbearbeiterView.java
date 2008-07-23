@@ -14,7 +14,7 @@ public class AlarmbearbeiterView extends AbstractNamsView {
 
 	@Override
 	protected IConfigurationBean[] getTableContent() {
-		return configurationBeanService.getAlarmBearbeiterBeans();
+		return getConfigurationBeanService().getAlarmBearbeiterBeans();
 	}
 
 	@Override

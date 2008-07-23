@@ -54,7 +54,7 @@ import org.csstudio.nams.service.logging.declaration.Logger;
 public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	private static Logger logger;
-	private final LocalStoreConfigurationService configurationService;
+	private LocalStoreConfigurationService configurationService;
 	private Configuration entireConfiguration;
 	private List<ConfigurationBeanServiceListener> listeners = new LinkedList<ConfigurationBeanServiceListener>();
 
@@ -68,15 +68,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private Collection<RubrikDTO> rubrikDTOs = new LinkedList<RubrikDTO>();
 
 	private static ConfigurationBeanService previosInstance;
-	
-	public ConfigurationBeanServiceImpl(
-			LocalStoreConfigurationService localStore) {
-		if( previosInstance != null ) {
-			throw new RuntimeException("Could not use more than one bean service at this step of developement.");
+
+	public ConfigurationBeanServiceImpl() {
+		if (previosInstance != null) {
+			throw new RuntimeException(
+					"Could not use more than one bean service at this step of developement.");
 		}
-		
+		previosInstance = this;
+	}
+
+	public void setNewConfigurationStore(
+			LocalStoreConfigurationService localStore) {
 		this.configurationService = localStore;
-		loadConfiguration();
 	}
 
 	// private <BeanType extends AbstractConfigurationBean<BeanType>, DTOType>
@@ -92,6 +95,10 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	// }
 	// }
 	// }
+
+	public void refreshData() {
+		loadConfiguration();
+	}
 
 	private void loadConfiguration() {
 		try {
@@ -167,20 +174,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 
 		} catch (StorageError e) {
-			logger.logErrorMessage(this,
-					"Could not load Eniter Configuration because of: "
-							+ e.getMessage());
-			e.printStackTrace();
+			logger.logErrorMessage(this, "Could not load Configuration", e);
 		} catch (StorageException e) {
-			logger.logErrorMessage(this,
-					"Could not load Eniter Configuration because of: "
-							+ e.getMessage());
-			e.printStackTrace();
+			logger.logErrorMessage(this, "Could not load Configuration", e);
 		} catch (InconsistentConfigurationException e) {
-			logger.logErrorMessage(this,
-					"Could not load Eniter Configuration because of: "
-							+ e.getMessage());
-			e.printStackTrace();
+			logger.logErrorMessage(this, "Could not load Configuration", e);
 		}
 	}
 
@@ -353,7 +351,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		conditions.clear();
 		for (FilterConditionDTO condition : filterDTO.getFilterConditions()) {
 			int filterConditionID = condition.getIFilterConditionID();
-			FilterbedingungBean filterbedingungBean = filterbedingungBeans.get(filterConditionID);
+			FilterbedingungBean filterbedingungBean = filterbedingungBeans
+					.get(filterConditionID);
 			conditions.add(filterbedingungBean);
 		}
 		bean.setConditions(conditions);
@@ -434,15 +433,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	private FilterbedingungBean DTO2Bean(FilterConditionDTO filterCondtionDTO) {
 		FilterbedingungBean bean = new FilterbedingungBean();
-		
+
 		FilterConditionAddOnBean filterSpecificBean = null;
 		if (filterCondtionDTO instanceof JunctorConditionDTO) {
 			JunctorConditionBean junctorConditionBean = new JunctorConditionBean();
 			junctorConditionBean
 					.setFirstCondition(DTO2Bean(((JunctorConditionDTO) filterCondtionDTO)
 							.getFirstFilterCondition()));
-			junctorConditionBean.setJunctor(((JunctorConditionDTO) filterCondtionDTO)
-					.getJunctor());
+			junctorConditionBean
+					.setJunctor(((JunctorConditionDTO) filterCondtionDTO)
+							.getJunctor());
 			junctorConditionBean.setRubrikName(""); // RubrikName is set by the
 			// main Bean.
 			junctorConditionBean
@@ -525,9 +525,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			JunctorConditionForFilterTreeBean jcfftBean = new JunctorConditionForFilterTreeBean();
 			jcfftBean.setJunctorConditionType(fcdto.getOperator());
 			for (FilterConditionDTO innerFC : fcdto.getOperands()) {
-				jcfftBean.addOperand(
-						DTO2Bean(innerFC)		
-				);
+				jcfftBean.addOperand(DTO2Bean(innerFC));
 			}
 			bean = jcfftBean;
 		}
@@ -535,14 +533,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		bean.setFilterbedinungID(filterCondtionDTO.getIFilterConditionID());
 		bean.setDescription(filterCondtionDTO.getCDesc());
 		bean.setName(filterCondtionDTO.getCName());
-		bean.setRubrikName(getRubrikNameForId(filterCondtionDTO.getIGroupRef())); // GUI-Group
+		bean
+				.setRubrikName(getRubrikNameForId(filterCondtionDTO
+						.getIGroupRef())); // GUI-Group
 		// =
 		// Rubrik
 		if (filterSpecificBean != null) {
 			bean.setFilterSpecificBean(filterSpecificBean);
-		}  else {
+		} else {
 			// FCFFT haben keine speciefic beans!
-			if(!(filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO)) {
+			if (!(filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO)) {
 				throw new IllegalArgumentException(
 						"Unrecognized FilterConditionDTO: " + filterCondtionDTO);
 			}
@@ -699,16 +699,19 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			dto = new FilterDTO();
 			inserted = true;
 		} else {
-			for (FilterConditionDTO filterConditionDTO : dto.getFilterConditions()) {
+			for (FilterConditionDTO filterConditionDTO : dto
+					.getFilterConditions()) {
 				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
-					filterbedingungBeans.remove(new Integer(filterConditionDTO.getIFilterConditionID()));
+					filterbedingungBeans.remove(new Integer(filterConditionDTO
+							.getIFilterConditionID()));
 				}
 			}
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
 
-		List<FilterConditionDTO> list = createFilterConditionDTOListForFilter(bean.getConditions());
-		
+		List<FilterConditionDTO> list = createFilterConditionDTOListForFilter(bean
+				.getConditions());
+
 		dto.setFilterConditions(list);
 		dto.setName(bean.getName());
 		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
@@ -718,91 +721,106 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		loadConfiguration();
 		FilterBean resultBean = filterBeans
 				.get(new Integer(dto.getIFilterID()));
-		
+
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
 	}
 
 	private List<FilterConditionDTO> createFilterConditionDTOListForFilter(
-			Collection<FilterbedingungBean> conditions) throws InconsistentConfigurationException {
-		
+			Collection<FilterbedingungBean> conditions)
+			throws InconsistentConfigurationException {
+
 		List<FilterConditionDTO> result = new LinkedList<FilterConditionDTO>();
-		
+
 		for (FilterbedingungBean filterbedingungBean : conditions) {
-			
+
 			FilterConditionDTO conditionDTO = findDTO4Bean(filterbedingungBean);
-			
+
 			if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
 				JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
-				List<FilterConditionDTO> listForFilter = createFilterConditionDTOListForFilter(junctorBean.getOperands());
-				
+				List<FilterConditionDTO> listForFilter = createFilterConditionDTOListForFilter(junctorBean
+						.getOperands());
+
 				if (conditionDTO == null) {
 					JunctorConditionForFilterTreeDTO newDTO = new JunctorConditionForFilterTreeDTO();
-					newDTO.setCName(junctorBean.getJunctorConditionType().toString());
+					newDTO.setCName(junctorBean.getJunctorConditionType()
+							.toString());
 					newDTO.setCDesc("");
-					newDTO.setIGroupRef(getRubrikIDForName(junctorBean.getRubrikName(),
-							RubrikTypeEnum.FILTER_COND));
+					newDTO.setIGroupRef(getRubrikIDForName(junctorBean
+							.getRubrikName(), RubrikTypeEnum.FILTER_COND));
 					newDTO.setOperator(junctorBean.getJunctorConditionType());
-					
+
 					conditionDTO = newDTO;
 				} else {
-					filterbedingungBeans.remove(new Integer(conditionDTO.getIFilterConditionID()));
-					for (FilterConditionDTO filterDTO : ((JunctorConditionForFilterTreeDTO)conditionDTO).getOperands()) {
-						filterbedingungBeans.remove(new Integer(filterDTO.getIFilterConditionID()));
+					filterbedingungBeans.remove(new Integer(conditionDTO
+							.getIFilterConditionID()));
+					for (FilterConditionDTO filterDTO : ((JunctorConditionForFilterTreeDTO) conditionDTO)
+							.getOperands()) {
+						filterbedingungBeans.remove(new Integer(filterDTO
+								.getIFilterConditionID()));
 					}
 				}
-				((JunctorConditionForFilterTreeDTO)conditionDTO).setOperands(new HashSet<FilterConditionDTO>(listForFilter));
+				((JunctorConditionForFilterTreeDTO) conditionDTO)
+						.setOperands(new HashSet<FilterConditionDTO>(
+								listForFilter));
 			}
-			
+
 			if (conditionDTO == null) {
-				throw new InconsistentConfigurationException("No DTO found for " + filterbedingungBean.toString());
+				throw new InconsistentConfigurationException(
+						"No DTO found for " + filterbedingungBean.toString());
 			}
-			
+
 			result.add(conditionDTO);
-			
+
 		}
-		
+
 		return result;
 	}
 
-//	private FilterConditionDTO findOrCreateFilterConditionDTO(FilterbedingungBean condBean) {
-//		FilterConditionDTO found = findDTO4Bean(condBean);
-//		if (condBean instanceof JunctorConditionForFilterTreeBean) {
-//			if (found == null) {
-//				found = createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)condBean);
-//			} else {
-//				JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) condBean;
-//				JunctorConditionForFilterTreeDTO junctorDTO = (JunctorConditionForFilterTreeDTO) found;
-//				
-//				Set<FilterConditionDTO> operands;
-//				junctorDTO.setOperands(operands);
-//			}
-//		}
-//		return found;
-//	}
-//
-//	JunctorConditionForFilterTreeDTO createJunctorConditionForFilterTreeDTO(
-//			JunctorConditionForFilterTreeBean bean) {
-//		JunctorConditionForFilterTreeDTO dto = new JunctorConditionForFilterTreeDTO();
-//		
-//		dto.setCName(bean.getJunctorConditionType().toString());
-//		dto.setCDesc("");
-//		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
-//				RubrikTypeEnum.FILTER_COND));
-//		dto.setOperator(bean.getJunctorConditionType());
-//		
-//		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
-//		for (FilterbedingungBean fcBean : bean.getOperands()) {
-//			if( fcBean instanceof JunctorConditionForFilterTreeBean ) {
-//				JunctorConditionForFilterTreeDTO innerDTO = createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)fcBean);
-//				operands.add(innerDTO);
-//			} else {
-//				operands.add(findDTO4Bean(fcBean));
-//			}
-//		}
-//		dto.setOperands(operands);
-//		return dto;
-//	}
+	// private FilterConditionDTO
+	// findOrCreateFilterConditionDTO(FilterbedingungBean condBean) {
+	// FilterConditionDTO found = findDTO4Bean(condBean);
+	// if (condBean instanceof JunctorConditionForFilterTreeBean) {
+	// if (found == null) {
+	// found =
+	// createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)condBean);
+	// } else {
+	// JunctorConditionForFilterTreeBean junctorBean =
+	// (JunctorConditionForFilterTreeBean) condBean;
+	// JunctorConditionForFilterTreeDTO junctorDTO =
+	// (JunctorConditionForFilterTreeDTO) found;
+	//				
+	// Set<FilterConditionDTO> operands;
+	// junctorDTO.setOperands(operands);
+	// }
+	// }
+	// return found;
+	// }
+	//
+	// JunctorConditionForFilterTreeDTO createJunctorConditionForFilterTreeDTO(
+	// JunctorConditionForFilterTreeBean bean) {
+	// JunctorConditionForFilterTreeDTO dto = new
+	// JunctorConditionForFilterTreeDTO();
+	//		
+	// dto.setCName(bean.getJunctorConditionType().toString());
+	// dto.setCDesc("");
+	// dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
+	// RubrikTypeEnum.FILTER_COND));
+	// dto.setOperator(bean.getJunctorConditionType());
+	//		
+	// Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
+	// for (FilterbedingungBean fcBean : bean.getOperands()) {
+	// if( fcBean instanceof JunctorConditionForFilterTreeBean ) {
+	// JunctorConditionForFilterTreeDTO innerDTO =
+	// createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)fcBean);
+	// operands.add(innerDTO);
+	// } else {
+	// operands.add(findDTO4Bean(fcBean));
+	// }
+	// }
+	// dto.setOperands(operands);
+	// return dto;
+	// }
 
 	@SuppressWarnings("unchecked")
 	private FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {
@@ -828,9 +846,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getFirstCondition().getFilterbedinungID());
 			junctorConditionDTO.setSecondFilterConditionRef(specificBean
 					.getSecondCondition().getFilterbedinungID());
-			
-			// FIXME mw, mz 2008-07-21: Dieses Verhalten auf andrem Wege wieder herstellen: Einfache Injektion der ersten und zweiten FC junctorConditionDTO.injectYourselfYourChildren(entireConfiguration);
-			
+
+			// FIXME mw, mz 2008-07-21: Dieses Verhalten auf andrem Wege wieder
+			// herstellen: Einfache Injektion der ersten und zweiten FC
+			// junctorConditionDTO.injectYourselfYourChildren(entireConfiguration);
+
 			junctorConditionDTO.setJunctor(specificBean.getJunctor());
 
 			// result to be saved with configurationService
@@ -848,7 +868,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				pvFilterConditionDTO = new ProcessVariableFilterConditionDTO();
 				inserted = true;
 			}
-			pvFilterConditionDTO.setCPvChannelName(specificBean.getChannelName());
+			pvFilterConditionDTO.setCPvChannelName(specificBean
+					.getChannelName());
 			pvFilterConditionDTO.setCCompValue(specificBean.getCompareValue());
 			pvFilterConditionDTO.setPVOperator(specificBean.getOperator());
 			pvFilterConditionDTO.setSuggestedPVType(specificBean
@@ -886,7 +907,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			if (dto4Bean != null
 					&& (dto4Bean instanceof StringArrayFilterConditionDTO)) {
 				stringArrayFilterConditionDTO = (StringArrayFilterConditionDTO) dto4Bean;
-				stringArrayFilterConditionDTO.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
+				stringArrayFilterConditionDTO
+						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
 			} else {
 				stringArrayFilterConditionDTO = new StringArrayFilterConditionDTO();
 				inserted = true;
@@ -896,17 +918,20 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			Collection<StringArrayFilterConditionCompareValuesDTO> allStringArrayCompareValues = entireConfiguration
 					.getAllStringArrayCompareValues();
 			for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allStringArrayCompareValues) {
-				if (stringArrayFilterConditionCompareValuesDTO.getFilterConditionRef() == bean.getFilterbedinungID()){
-					oldCompareValues.add(stringArrayFilterConditionCompareValuesDTO);
+				if (stringArrayFilterConditionCompareValuesDTO
+						.getFilterConditionRef() == bean.getFilterbedinungID()) {
+					oldCompareValues
+							.add(stringArrayFilterConditionCompareValuesDTO);
 				}
 			}
 			List<StringArrayFilterConditionCompareValuesDTO> currentCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 			for (String compValue : specificBean.getCompareValues()) {
-				currentCompareValues.add(getCompareValueDTO(oldCompareValues, bean, compValue));
+				currentCompareValues.add(getCompareValueDTO(oldCompareValues,
+						bean, compValue));
 			}
-			
-			
-			stringArrayFilterConditionDTO.setCompareValues(currentCompareValues);
+
+			stringArrayFilterConditionDTO
+					.setCompareValues(currentCompareValues);
 
 			stringArrayFilterConditionDTO.setKeyValue(specificBean
 					.getKeyValue());
@@ -933,13 +958,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getConfirmCompValue());
 			timeBasedFilterConditionDTO.setConfirmKeyValue(specificBean
 					.getStartKeyValue());
-			timeBasedFilterConditionDTO.setTBConfirmOperator(specificBean.getConfirmOperator());
-			
-			
+			timeBasedFilterConditionDTO.setTBConfirmOperator(specificBean
+					.getConfirmOperator());
+
 			timeBasedFilterConditionDTO.setCStartCompValue(specificBean
 					.getStartCompValue());
-			timeBasedFilterConditionDTO.setStartKeyValue(specificBean.getStartKeyValue());
-			timeBasedFilterConditionDTO.setTBStartOperator(specificBean.getStartOperator());
+			timeBasedFilterConditionDTO.setStartKeyValue(specificBean
+					.getStartKeyValue());
+			timeBasedFilterConditionDTO.setTBStartOperator(specificBean
+					.getStartOperator());
 
 			timeBasedFilterConditionDTO.setTimeBehavior(specificBean
 					.getTimeBehavior());
@@ -974,7 +1001,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues,
 			FilterbedingungBean bean, String compValue) {
 		for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : oldCompareValues) {
-			if (stringArrayFilterConditionCompareValuesDTO.getCompValue() == compValue){
+			if (stringArrayFilterConditionCompareValuesDTO.getCompValue() == compValue) {
 				return stringArrayFilterConditionCompareValuesDTO;
 			}
 		}
@@ -983,7 +1010,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		pk.setCompValue(compValue);
 		pk.setFilterConditionRef(bean.getFilterbedinungID());
 		result.setPk(pk);
-		
+
 		return result;
 	}
 
@@ -1006,7 +1033,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			listener.onBeanInsert(bean);
 		}
 	}
-	
+
 	private void notifyDeleteListeners(IConfigurationBean bean) {
 		for (ConfigurationBeanServiceListener listener : listeners) {
 			listener.onBeanDeleted(bean);
@@ -1205,8 +1232,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 							+ dto.getCName());
 		}
 	}
-
-	
 
 	public static void staticInject(Logger logger) {
 		ConfigurationBeanServiceImpl.logger = logger;

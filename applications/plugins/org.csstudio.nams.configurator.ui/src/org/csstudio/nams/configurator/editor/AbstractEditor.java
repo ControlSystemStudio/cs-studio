@@ -39,7 +39,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	private static ConfigurationBeanService configurationBeanService;
 	
 	/**
-	 * The configuration bean service all editors of one runtime working on.
+	 * The configuration bean service all editors of current configuration working on. DO NOT chache this instance!
 	 * 
 	 * @return The bean service, not null.
 	 */

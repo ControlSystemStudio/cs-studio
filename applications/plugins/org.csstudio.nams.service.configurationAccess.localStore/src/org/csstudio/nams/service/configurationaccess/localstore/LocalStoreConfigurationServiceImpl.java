@@ -50,9 +50,24 @@ class LocalStoreConfigurationServiceImpl implements
 	private final Session session;
 	private final Logger logger;
 
-	public LocalStoreConfigurationServiceImpl(final Session session, Logger logger) {
+	/**
+	 * 
+	 * @param session
+	 *            The session to work on; the session will be treated as
+	 *            exclusive instance and be closed on finalization of this
+	 *            service instance.
+	 * @param logger
+	 */
+	public LocalStoreConfigurationServiceImpl(final Session session,
+			Logger logger) {
 		this.session = session;
 		this.logger = logger;
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		session.close();
 	}
 
 	public ReplicationStateDTO getCurrentReplicationState()
@@ -110,19 +125,20 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			// 
 			Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
-			 Collection<TopicDTO> alleAlarmtopics;
-			 Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
-			 Collection<FilterDTO> allFilters;
-			 Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
+			Collection<TopicDTO> alleAlarmtopics;
+			Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
+			Collection<FilterDTO> allFilters;
+			Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
 
-			 Collection<FilterConditionDTO> allFilterConditions;
-			 Collection<RubrikDTO> alleRubriken;
-			 List<User2UserGroupDTO> alleUser2UserGroupMappings;
-			 Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
-			
+			Collection<FilterConditionDTO> allFilterConditions;
+			Collection<RubrikDTO> alleRubriken;
+			List<User2UserGroupDTO> alleUser2UserGroupMappings;
+			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
+
 			// PUBLICs
-			alleAlarmbarbeiter = session.createCriteria(AlarmbearbeiterDTO.class)
-					.addOrder(Order.asc("userId")).list();
+			alleAlarmbarbeiter = session.createCriteria(
+					AlarmbearbeiterDTO.class).addOrder(Order.asc("userId"))
+					.list();
 			alleAlarmbearbeiterGruppen = session.createCriteria(
 					AlarmbearbeiterGruppenDTO.class).addOrder(
 					Order.asc("userGroupId")).list();
@@ -130,25 +146,26 @@ class LocalStoreConfigurationServiceImpl implements
 			alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
 			allFilters = session.createCriteria(FilterDTO.class).list();
 
-			allFilterConditions = session.createCriteria(FilterConditionDTO.class)
-					.addOrder(Order.asc("iFilterConditionID")).list();
+			allFilterConditions = session.createCriteria(
+					FilterConditionDTO.class).addOrder(
+					Order.asc("iFilterConditionID")).list();
 			alleRubriken = session.createCriteria(RubrikDTO.class).list();
 
 			alleUser2UserGroupMappings = session.createCriteria(
 					User2UserGroupDTO.class).list();
 
-			// Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
+			// Collection<FilterConditionTypeDTO> allFilterConditionsTypes =
+			// session
 			// .createCriteria(FilterConditionTypeDTO.class).list();
 			// pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
 
 			allFilterConditionMappings = session.createCriteria(
 					FilterConditionsToFilterDTO.class).list();
-			pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionMappings, allFilterConditions, allFilters);
+			pruefeUndOrdnerFilterDieFilterConditionsZu(
+					allFilterConditionMappings, allFilterConditions, allFilters);
 			setChildFilterConditionsInJunctorDTOs(allFilterConditions);
-			allCompareValues = session
-					.createCriteria(
-							StringArrayFilterConditionCompareValuesDTO.class)
-					.list();
+			allCompareValues = session.createCriteria(
+					StringArrayFilterConditionCompareValuesDTO.class).list();
 			setStringArrayCompareValues(allCompareValues, allFilterConditions);
 
 			Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(
@@ -165,19 +182,25 @@ class LocalStoreConfigurationServiceImpl implements
 					}
 				}
 			}
-			addUsersToGroups(session, alleAlarmbearbeiterGruppen, alleUser2UserGroupMappings);
-			
+			addUsersToGroups(session, alleAlarmbearbeiterGruppen,
+					alleUser2UserGroupMappings);
+
 			//
-			result = new Configuration(alleAlarmbarbeiter, alleAlarmtopics, alleAlarmbearbeiterGruppen, allFilters, allFilterConditionMappings, allFilterConditions, alleRubriken, alleUser2UserGroupMappings, allCompareValues);
+			result = new Configuration(alleAlarmbarbeiter, alleAlarmtopics,
+					alleAlarmbearbeiterGruppen, allFilters,
+					allFilterConditionMappings, allFilterConditions,
+					alleRubriken, alleUser2UserGroupMappings, allCompareValues);
 			transaction.commit();
 		} catch (Throwable t) {
 			transaction.rollback();
 			t.printStackTrace();
-		} 
+		}
 		return result;
 	}
-	
-	private void addUsersToGroups(Session session, Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen, List<User2UserGroupDTO> alleUser2UserGroupMappings) {
+
+	private void addUsersToGroups(Session session,
+			Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
+			List<User2UserGroupDTO> alleUser2UserGroupMappings) {
 		HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
 		for (AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
 			gruppen.put(gruppe.getUserGroupId(), gruppe);
@@ -195,44 +218,54 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 		}
 	}
-	
+
 	private void setStringArrayCompareValues(
-			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues, Collection<FilterConditionDTO> allFilterConditions) {
+			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues,
+			Collection<FilterConditionDTO> allFilterConditions) {
 		Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
 			if (filterCondition instanceof StringArrayFilterConditionDTO) {
 				stringAFC.put(filterCondition.getIFilterConditionID(),
 						(StringArrayFilterConditionDTO) filterCondition);
 				StringArrayFilterConditionDTO sFC = (StringArrayFilterConditionDTO) filterCondition;
-				sFC.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
+				sFC
+						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
 			}
 		}
 		for (StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
 			StringArrayFilterConditionDTO conditionDTO = stringAFC
 					.get(stringArrayFilterConditionCompareValuesDTO
 							.getFilterConditionRef());
-			List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO.getCompareValueList();
-			list.add(
-					stringArrayFilterConditionCompareValuesDTO);
+			List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO
+					.getCompareValueList();
+			list.add(stringArrayFilterConditionCompareValuesDTO);
 			conditionDTO.setCompareValues(list);
 		}
 
 	}
-	
-	private void setChildFilterConditionsInJunctorDTOs(Collection<FilterConditionDTO> allFilterConditions) {
+
+	private void setChildFilterConditionsInJunctorDTOs(
+			Collection<FilterConditionDTO> allFilterConditions) {
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
 			if (filterCondition instanceof JunctorConditionDTO) {
 				JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
-				FilterConditionDTO firstFilterCondition = getFilterConditionForId(junctorConditionDTO.getFirstFilterConditionRef(), allFilterConditions);
-				FilterConditionDTO secondFilterCondition = getFilterConditionForId(junctorConditionDTO.getSecondFilterConditionRef(), allFilterConditions);
-				
-				junctorConditionDTO.setFirstFilterCondition(firstFilterCondition);
-				junctorConditionDTO.setSecondFilterCondition(secondFilterCondition);
+				FilterConditionDTO firstFilterCondition = getFilterConditionForId(
+						junctorConditionDTO.getFirstFilterConditionRef(),
+						allFilterConditions);
+				FilterConditionDTO secondFilterCondition = getFilterConditionForId(
+						junctorConditionDTO.getSecondFilterConditionRef(),
+						allFilterConditions);
+
+				junctorConditionDTO
+						.setFirstFilterCondition(firstFilterCondition);
+				junctorConditionDTO
+						.setSecondFilterCondition(secondFilterCondition);
 			}
 		}
 	}
-	
-	public FilterConditionDTO getFilterConditionForId(int id, Collection<FilterConditionDTO> allFilterConditions) {
+
+	public FilterConditionDTO getFilterConditionForId(int id,
+			Collection<FilterConditionDTO> allFilterConditions) {
 		for (FilterConditionDTO filterCondition : allFilterConditions) {
 			if (filterCondition.getIFilterConditionID() == id) {
 				return filterCondition;
@@ -240,9 +273,11 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 		return null;
 	}
-	
+
 	private void pruefeUndOrdnerFilterDieFilterConditionsZu(
-			Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter, Collection<FilterConditionDTO> allFilterConditions, Collection<FilterDTO> allFilters) {
+			Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter,
+			Collection<FilterConditionDTO> allFilterConditions,
+			Collection<FilterDTO> allFilters) {
 		Map<Integer, FilterDTO> filters = new HashMap<Integer, FilterDTO>();
 		for (FilterDTO filter : allFilters) {
 			List<FilterConditionDTO> list = filter.getFilterConditions();
@@ -259,18 +294,13 @@ class LocalStoreConfigurationServiceImpl implements
 			} else {
 				List<FilterConditionDTO> filterConditions = filterDTO
 						.getFilterConditions();
-				filterConditions
-						.add(getFilterConditionForId(filterConditionsToFilterDTO
-								.getIFilterConditionRef(), allFilterConditions));
+				filterConditions.add(getFilterConditionForId(
+						filterConditionsToFilterDTO.getIFilterConditionRef(),
+						allFilterConditions));
 				filterDTO.setFilterConditions(filterConditions);
 			}
 		}
 	}
-	
-	
-	
-	
-	
 
 	@SuppressWarnings("unchecked")
 	public List<JunctorConditionDTO> getJunctorConditionDTOConfigurations() {
@@ -393,7 +423,8 @@ class LocalStoreConfigurationServiceImpl implements
 								.delete(stringArrayFilterConditionCompareValuesDTO);
 					}
 				}
-				for (StringArrayFilterConditionCompareValuesDTO compValue : filterDto.getCompareValueList()) {
+				for (StringArrayFilterConditionCompareValuesDTO compValue : filterDto
+						.getCompareValueList()) {
 					compValue.setPK(filterDto.getIFilterConditionID());
 					session.saveOrUpdate(compValue);
 				}
@@ -424,14 +455,14 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	void deleteDTONoTransaction(NewAMSConfigurationElementDTO dto)
-	throws Throwable {
+			throws Throwable {
 		if (dto instanceof HasJoinedElements) {
 			((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
 		}
-		
+
 		session.delete(dto);
 	}
-	
+
 	public void deleteDTO(NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
@@ -514,7 +545,7 @@ class LocalStoreConfigurationServiceImpl implements
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-//			session.delete(filterConditionDTO);
+			// session.delete(filterConditionDTO);
 			session.saveOrUpdate(filterConditionDTO);
 			tx.commit();
 		} catch (Throwable t) {
@@ -543,7 +574,7 @@ class LocalStoreConfigurationServiceImpl implements
 			session.saveOrUpdate(dto);
 
 			List<FilterConditionDTO> filterConditions = dto
-			.getFilterConditions();
+					.getFilterConditions();
 
 			// clean up join data
 			Collection<FilterConditionsToFilterDTO> conditionMappings = session
@@ -551,18 +582,19 @@ class LocalStoreConfigurationServiceImpl implements
 
 			for (FilterConditionsToFilterDTO joinElement : conditionMappings) {
 				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
-					int filterConditionRef = joinElement.getIFilterConditionRef();
+					int filterConditionRef = joinElement
+							.getIFilterConditionRef();
 					session.delete(joinElement);
 
 					Collection<JunctorConditionForFilterTreeDTO> junctorConditions = session
 							.createCriteria(
 									JunctorConditionForFilterTreeDTO.class)
-							.add(
-									Restrictions.idEq(filterConditionRef)).list();
+							.add(Restrictions.idEq(filterConditionRef)).list();
 					if (junctorConditions != null
 							&& junctorConditions.size() > 0) {
 						for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
-							if (!filterConditions.contains(junctorConditionForFilterTreeDTO)) {
+							if (!filterConditions
+									.contains(junctorConditionForFilterTreeDTO)) {
 								deleteDTONoTransaction(junctorConditionForFilterTreeDTO);
 							}
 						}
@@ -655,7 +687,8 @@ class LocalStoreConfigurationServiceImpl implements
 	}
 
 	public void deleteFilterDTO(FilterDTO dto)
-			throws InconsistentConfigurationException, StorageError, StorageException {
+			throws InconsistentConfigurationException, StorageError,
+			StorageException {
 		deleteDTO(dto);
 	}
 

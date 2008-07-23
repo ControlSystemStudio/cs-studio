@@ -10,6 +10,11 @@ import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 
 public interface ConfigurationBeanService {
+	
+	/**
+	 * XXX Ein sehr inperformanter Weg alle Daten neu zu laden,...
+	 */
+	public void refreshData();
 
 	public abstract AlarmbearbeiterBean[] getAlarmBearbeiterBeans();
 

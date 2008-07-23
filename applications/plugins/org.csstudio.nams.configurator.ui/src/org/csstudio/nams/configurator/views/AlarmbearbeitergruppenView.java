@@ -9,7 +9,7 @@ public class AlarmbearbeitergruppenView extends AbstractNamsView {
 
 	@Override
 	protected IConfigurationBean[] getTableContent() {
-		return configurationBeanService.getAlarmBearbeiterGruppenBeans();
+		return getConfigurationBeanService().getAlarmBearbeiterGruppenBeans();
 	}
 	
 	@Override

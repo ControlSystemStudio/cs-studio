@@ -146,6 +146,11 @@ public class SynchronizeServiceImpl_Test extends
 					T key) {
 				return "A Test Setting";
 			}
+
+			public <T extends Enum<?> & HoldsAPreferenceId> void addPreferenceChangeListenerFor(
+					T[] preferenceIds, PreferenceChangeListener changeListener) {
+				fail("unexpectedmethod call!");
+			}
 			
 		}, new ConfigurationServiceFactory() {
 

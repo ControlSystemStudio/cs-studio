@@ -9,7 +9,7 @@ public class FilterView extends AbstractNamsView {
 
 	@Override
 	protected IConfigurationBean[] getTableContent() {
-		return configurationBeanService.getFilterBeans();
+		return getConfigurationBeanService().getFilterBeans();
 	}
 	
 	@Override
