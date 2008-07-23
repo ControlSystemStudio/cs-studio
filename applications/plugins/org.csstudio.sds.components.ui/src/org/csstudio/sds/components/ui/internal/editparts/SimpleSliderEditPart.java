@@ -67,7 +67,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart implement
 		final SimpleSliderFigure slider = new SimpleSliderFigure();
 		slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
 			public void sliderValueChanged(final double newValue) {
-				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+				if (getExecutionMode()== ExecutionMode.RUN_MODE) {
 					model.getProperty(SimpleSliderModel.PROP_VALUE).setManualValue(
 							newValue);
 

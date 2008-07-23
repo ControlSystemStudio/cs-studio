@@ -53,19 +53,6 @@ public final class LabelEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.LabelEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
-	 */
-	@Test
-	public void testDoRefreshFigure() {
-		RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) _editPart.getFigure();
-		
-		final String oldText = labelFigure.getTextValue();
-		final String newText = oldText+oldText;
-		
-		assertEquals(newText, labelFigure.getTextValue());
-	}
-
-	/**
 	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.LabelEditPart#doCreateFigure()}.
 	 */
 	@Test

@@ -21,17 +21,10 @@
  */
  package org.csstudio.sds.components.ui.internal.figures;
 
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
-import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
-import org.csstudio.sds.util.ChannelReferenceValidationException;
-import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
@@ -52,7 +45,7 @@ import org.eclipse.swt.graphics.Font;
 public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	
 	/**
-	 * A border adapter, which covers all border handlings.
+	 * A border adapter, which covers all border drawing.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
 	
@@ -90,18 +83,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 * Is the background transparent or not?
 	 */
 	private boolean _transparent=true;
-	/**
-	 * The width of the border.
-	 */
-	private int _borderWidth;
-	/**
-	 * The known aliases.
-	 */
-	private Map<String, String> _aliases;
-	/**
-	 * The value for the primary process variable.
-	 */
-	private String _primaryPV;
 	
 	/**
 	 * Fills the image. Nothing to do here.
@@ -187,13 +168,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	}
 	
 	/**
-	 * {@inheritDoc} 
-	 */
-	public Font getFont() {
-		return _font;
-	}
-	
-	/**
 	 * Sets the alignment for the text.
 	 * @param newval The alignment for the text
 	 */
@@ -201,14 +175,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		if (newval>=0 && newval<_alignments.length) {
 			_alignment=newval;
 		}
-	}
-	
-	/**
-	 * Returns the alignment of the text.
-	 * @return The alignment of the text
-	 */
-	public int getTextAlignment() {
-		return _alignment;
 	}
 	
 	/**
@@ -220,43 +186,11 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	}
 	
 	/**
-	 * Returns the transparent state of the background.
-	 * @return True, if the background is transparent, false otherwise
-	 */
-	public boolean getTransparent() {
-		return _transparent;
-	}
-	
-	/**
-	 * Sets the width of the border.
-	 * @param newval The width of the border
-	 */
-	public void setBorderWidth(final int newval) {
-		_borderWidth=newval;
-	}
-	
-	/**
-	 * returns the width of the border.
-	 * @return The width of the border
-	 */
-	public int getBorderWidth() {
-		return _borderWidth;
-	}
-	
-	/**
 	 * Sets the rotation for the text.
 	 * @param newval The rotation for the text
 	 */
 	public void setRotation(final double newval) {
 		_rotation=newval;
-	}
-	
-	/**
-	 * Returns the rotation of the text.
-	 * @return The rotation of the text
-	 */
-	public double getRotation() {
-		return _rotation;
 	}
 	
 	/**
@@ -268,14 +202,6 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	}
 	
 	/**
-	 * Returns the x offset of the text.
-	 * @return The x offset of the text
-	 */
-	public int getXOff() {
-		return _xOff;
-	}
-	
-	/**
 	 * Sets the y offset for the text. 
 	 * @param newval The y offset
 	 */
@@ -284,27 +210,11 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	}
 	
 	/**
-	 * Returns the y offset of the text.
-	 * @return The y offset of the text
-	 */
-	public int getYOff() {
-		return _yOff;
-	}
-	
-	/**
 	 * Sets the value for the text.
 	 * @param newval The value for the text
 	 */
 	public void setTextValue(final String newval) {
 		_textValue=newval;
-	}
-	
-	/**
-	 * Returns the value for the text.
-	 * @return The value for the text
-	 */
-	public String getTextValue() {
-		return _textValue;
 	}
 
 	/**
@@ -320,5 +230,5 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		}
 		return null;
 	}
-
+	
 }

@@ -67,7 +67,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 				.getFont(model.getFont()));
 		figure.setTextAlignment(model.getTextAlignment());
 		figure.setTransparent(model.getTransparent());
-		figure.setBorderWidth(model.getBorderWidth());
 		figure.setRotation(model.getRotation());
 		figure.setXOff(model.getXOff());
 		figure.setYOff(model.getYOff());
@@ -234,17 +233,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handle);
-
-		// changes to the border width property
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure figure) {
-				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setBorderWidth((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_BORDER_WIDTH, handle);
 
 		// changes to the text rotation property
 		handle = new IWidgetPropertyChangeHandler() {
