@@ -5,6 +5,7 @@ import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.common.service.ExecutionService;
+import org.csstudio.nams.configurator.composite.FilterableBeanList;
 import org.csstudio.nams.configurator.editor.EditorUIUtils;
 import org.csstudio.nams.configurator.editor.FilterbedingungEditor;
 import org.csstudio.nams.configurator.service.ConfigurationBeanServiceImpl;
@@ -38,6 +39,9 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	ProcessVariableConnectionServiceFactory pvConnectionServiceFactory) {
 		// prepare bean-service
 		ConfigurationBeanServiceImpl.staticInject(logger);
+
+		// prepare widgets
+		FilterableBeanList.staticInject(logger);
 
 		// prepare utilities
 		EditorUIUtils.staticInject(logger);

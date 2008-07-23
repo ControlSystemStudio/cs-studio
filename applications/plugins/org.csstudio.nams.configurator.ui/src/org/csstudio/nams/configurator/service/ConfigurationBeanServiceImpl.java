@@ -164,7 +164,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				}
 			}
 
-		} catch (StorageError e) {
+		} catch (StorageError e) { // TODO mz: Exceptions durchwerfen!
 			logger.logErrorMessage(this, "Could not load Configuration", e);
 		} catch (StorageException e) {
 			logger.logErrorMessage(this, "Could not load Configuration", e);

@@ -155,7 +155,7 @@ public abstract class AbstractNamsView extends ViewPart {
 							if (filterableBeanList != null) {
 								logger
 								.logDebugMessage(this,
-										"Refreshing list...");
+										"Refreshing list for "+AbstractNamsView.this.getClass().getSimpleName()+"...");
 								filterableBeanList.updateView();
 							}
 						}

@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -30,6 +31,12 @@ import org.eclipse.swt.widgets.Text;
 
 public abstract class FilterableBeanList {
 
+	private static Logger logger;
+	
+	public static void staticInject(Logger logger) {
+		FilterableBeanList.logger = logger;
+	}
+	
 	private String filterkriterium = "";
 	private String selectedgruppenname = "ALLE";
 	private Set<String> gruppenNamen = new TreeSet<String>();
@@ -154,6 +161,8 @@ public abstract class FilterableBeanList {
 	public void updateView() {
 		IConfigurationBean[] tableInput = this.getTableInput();
 
+		logger.logDebugMessage(this, "new tableInput: " + Arrays.toString(tableInput));
+		
 		gruppenNamen.clear();
 		for (IConfigurationBean bean : tableInput) {
 			String groupName = bean.getRubrikName();

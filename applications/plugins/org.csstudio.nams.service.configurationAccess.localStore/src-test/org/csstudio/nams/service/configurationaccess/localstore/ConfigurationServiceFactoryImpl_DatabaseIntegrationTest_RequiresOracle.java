@@ -78,6 +78,47 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 	}
 
 	@Test
+	public void testReloadAndRefresh() throws Throwable {
+		LocalStoreConfigurationService secondService = createAServiceForOracleTests();
+		
+		AlarmbearbeiterDTO dto = new AlarmbearbeiterDTO();
+		dto.setUserName("Test-Troll");
+		service.saveAlarmbearbeiterDTO(dto);
+		assertTrue(dto.getUserId() != 0);
+		assertEquals("Test-Troll", dto.getUserName());
+
+		Collection<AlarmbearbeiterDTO> alleAlarmbearbeiter = secondService.getEntireConfiguration().gibAlleAlarmbearbeiter();
+		AlarmbearbeiterDTO found = null;
+		for (AlarmbearbeiterDTO alarmbearbeiterDTO : alleAlarmbearbeiter) {
+			if( alarmbearbeiterDTO.getUserId() == dto.getUserId() )  { // Set by save op
+				assertEquals(dto.getUserName(), alarmbearbeiterDTO.getUserName());
+				found = alarmbearbeiterDTO;
+				break;
+			}
+		}
+		assertNotNull(found);
+		
+		int oldId = dto.getUserId();
+		dto.setUserName("Test-Dummy");
+		service.saveAlarmbearbeiterDTO(dto);
+		assertEquals(oldId, dto.getUserId());
+		assertEquals("Test-Dummy", dto.getUserName());
+		
+		Collection<AlarmbearbeiterDTO> alleAlarmbearbeiterNow = secondService.getEntireConfiguration().gibAlleAlarmbearbeiter();
+		AlarmbearbeiterDTO foundNow = null;
+		for (AlarmbearbeiterDTO alarmbearbeiterDTO : alleAlarmbearbeiterNow) {
+			if( alarmbearbeiterDTO.getUserId() == dto.getUserId() )  { // Set by save op
+				assertEquals(dto.getUserName(), alarmbearbeiterDTO.getUserName());
+				foundNow = alarmbearbeiterDTO;
+				break;
+			}
+		}
+		assertNotNull(foundNow);
+		
+		service.deleteDTO(dto);
+	}
+	
+	@Test
 	public void testFactoryAndServiceOnOracleFuerAlarmbearbeiter()
 			throws Throwable {
 		AlarmbearbeiterDTO neuerBearbeiter = new AlarmbearbeiterDTO();

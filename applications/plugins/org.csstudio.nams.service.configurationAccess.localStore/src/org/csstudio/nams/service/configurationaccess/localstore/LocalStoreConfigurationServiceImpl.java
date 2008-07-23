@@ -98,27 +98,6 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	// private void test() {
-	// Transaction tx = session.beginTransaction();
-	// TopicDTO message = new TopicDTO();
-	// Integer msgId = (Integer) session.save(message);
-	// System.out.println("New TOPIC id: " + msgId);
-	// tx.commit();
-	//
-	// // Second unit of work
-	//
-	// Transaction newTransaction = session.beginTransaction();
-	// List<?> messages = session.createQuery(
-	// "from TopicDTO t order by t.id asc").list();
-	// System.out.println(messages.size() + " TOPIC(s) found:");
-	//
-	// for (Iterator<?> iter = messages.iterator(); iter.hasNext();) {
-	// TopicDTO loadedMsg = (TopicDTO) iter.next();
-	// System.out.println(loadedMsg.toString());
-	// }
-	// newTransaction.commit();
-	// }
-
 	public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfigurationException {
 		final Transaction transaction = this.session.beginTransaction();
@@ -168,11 +147,6 @@ class LocalStoreConfigurationServiceImpl implements
 
 			alleUser2UserGroupMappings = session.createCriteria(
 					User2UserGroupDTO.class).list();
-
-			// Collection<FilterConditionTypeDTO> allFilterConditionsTypes =
-			// session
-			// .createCriteria(FilterConditionTypeDTO.class).list();
-			// pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
 
 			allFilterConditionMappings = session.createCriteria(
 					FilterConditionsToFilterDTO.class).list();

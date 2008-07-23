@@ -124,7 +124,8 @@ public class ConfigurationServiceFactoryImpl implements
 				.setProperty("cache.provider_class", "org.hibernate.cache.NoCacheProvider")
 				.setProperty("show_sql", "true")
 				.setProperty("hbm2ddl.auto", "update") 
-				.setProperty("hibernate.mapping.precedence", "class");
+				.setProperty("hibernate.mapping.precedence", "class")
+				;
 
 		//TODO in die config auslagern
 		Logger.getLogger("org.hibernate").setLevel(Level.WARN);
