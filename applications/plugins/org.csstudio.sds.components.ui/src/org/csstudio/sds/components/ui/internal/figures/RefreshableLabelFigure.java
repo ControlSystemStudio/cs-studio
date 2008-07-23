@@ -231,4 +231,9 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		return null;
 	}
 	
+	@Override
+	public void setEnabled(boolean value) {
+		// TODO Auto-generated method stub
+		super.setEnabled(value);
+	}
 }
