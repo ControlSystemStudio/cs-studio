@@ -33,6 +33,7 @@ public class ConfigurationBeanServiceImpl_Test extends TestCase {
 		fail("Diesen Test implementieren, wenn der Conf-Service aufgeräumt ist, also das Configuration ein reines Material!");
 		
 		ConfigurationBeanService service = new ConfigurationBeanServiceImpl();
+		((ConfigurationBeanServiceImpl)service).setNewConfigurationStore(confService);
 		
 		
 	}
