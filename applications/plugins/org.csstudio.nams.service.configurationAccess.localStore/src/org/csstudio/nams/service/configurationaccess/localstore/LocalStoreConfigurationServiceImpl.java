@@ -29,6 +29,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
@@ -149,6 +150,20 @@ class LocalStoreConfigurationServiceImpl implements
 			allFilterConditions = session.createCriteria(
 					FilterConditionDTO.class).addOrder(
 					Order.asc("iFilterConditionID")).list();
+			
+			// Nots befüllen
+			for (FilterConditionDTO filterConditionDTO : allFilterConditions) {
+				if( filterConditionDTO instanceof NegationConditionForFilterTreeDTO ) {
+					NegationConditionForFilterTreeDTO notCond = (NegationConditionForFilterTreeDTO) filterConditionDTO;
+					for (FilterConditionDTO possibleCondition : allFilterConditions) {
+						if( notCond.getINegatedFCRef() == possibleCondition.getIFilterConditionID() ) {
+							notCond.setNegatedFilterCondition(possibleCondition);
+							break;
+						}
+					}
+				}
+			}
+			
 			alleRubriken = session.createCriteria(RubrikDTO.class).list();
 
 			alleUser2UserGroupMappings = session.createCriteria(
@@ -620,7 +635,8 @@ class LocalStoreConfigurationServiceImpl implements
 
 			// join speichern
 			for (FilterConditionDTO filterConditionDTO : filterConditions) {
-				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
+				if ((filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) 
+						|| (filterConditionDTO instanceof NegationConditionForFilterTreeDTO) ) {
 					// Diese Condition speichern, da sie von Editor angelegt
 					// wird.
 					saveDTONoTransaction(filterConditionDTO);

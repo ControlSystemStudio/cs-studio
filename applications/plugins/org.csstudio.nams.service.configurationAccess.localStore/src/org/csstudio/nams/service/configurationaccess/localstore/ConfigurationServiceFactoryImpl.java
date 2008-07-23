@@ -25,6 +25,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Use
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
@@ -106,6 +107,7 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(FilterDTO.class)
 				.addAnnotatedClass(HistoryDTO.class)
 				.addAnnotatedClass(RubrikDTO.class)
+				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
 				.addAnnotatedClass(JunctorConditionForFilterTreeDTO.class)
 				.addAnnotatedClass(JunctorConditionForFilterTreeConditionJoinDTO.class)
 				.addAnnotatedClass(User2UserGroupDTO.class)

@@ -25,14 +25,13 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
-@Table(name = "AMSFilterCondConj4FilterCommon")
+@Table(name = "AMSFilterNegationCond4Filter")
 public class NegationConditionForFilterTreeDTO extends FilterConditionDTO {
 	
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int iFilterConditionRef;
 
-	@SuppressWarnings("unused")
 	@Column(name = "iNegatedFCRef", nullable = false)
 	private int iNegatedFCRef;
 
@@ -49,7 +48,7 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO {
 	}
 
 	/**
-	 * TO BE USED BY {@link LocalStoreConfigurationService} ONLY!
+	 * TO BE USED FOR MAPPING PURPOSES!
 	 * 
 	 * Sets the negated condition.
 	 */
@@ -57,5 +56,14 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO {
 			FilterConditionDTO negatedFilterCondition) {
 		this.negatedFilterCondition = negatedFilterCondition;
 		this.iNegatedFCRef = negatedFilterCondition.getIFilterConditionID();
+	}
+
+	/**
+	 * TO BE USED BY {@link LocalStoreConfigurationService} ONLY!
+	 * 
+	 * Returns the database id of negated condition.
+	 */
+	public int getINegatedFCRef() {
+		return iNegatedFCRef;
 	}
 }
