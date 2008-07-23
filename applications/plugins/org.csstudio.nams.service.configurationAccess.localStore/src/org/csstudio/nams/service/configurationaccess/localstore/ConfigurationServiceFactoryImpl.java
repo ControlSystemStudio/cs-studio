@@ -111,6 +111,7 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(JunctorConditionForFilterTreeDTO.class)
 				.addAnnotatedClass(JunctorConditionForFilterTreeConditionJoinDTO.class)
 				.addAnnotatedClass(User2UserGroupDTO.class)
+				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
 				
 				.setProperty("hibernate.connection.driver_class", connectionData.getConnectionDriver())
 				.setProperty("hibernate.connection.url", connectionData.getConnectionURL())
