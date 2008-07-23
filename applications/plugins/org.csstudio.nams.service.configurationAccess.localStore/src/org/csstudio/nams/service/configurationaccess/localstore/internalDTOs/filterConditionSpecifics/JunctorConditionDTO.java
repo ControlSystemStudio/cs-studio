@@ -6,7 +6,6 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterConditionForIdProvider;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
@@ -48,8 +47,6 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	private FilterConditionDTO firstFilterCondition;
 	@Transient
 	private FilterConditionDTO secondFilterCondition;
-	@Transient
-	private FilterConditionForIdProvider filterConditionProvider;
 
 	/**
 	 * @return the filterConditionRef

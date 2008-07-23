@@ -13,7 +13,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.logging.declaration.Logger;
 
 @Entity
-public class Configuration implements FilterConditionForIdProvider {
+public class Configuration {
 	private Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
 	private Collection<TopicDTO> alleAlarmtopics;
 	private Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
@@ -70,18 +70,6 @@ public class Configuration implements FilterConditionForIdProvider {
 
 	public Collection<FilterConditionDTO> gibAlleFilterConditions() {
 		return allFilterConditions;
-	}
-
-	/**
-	 * @return null if there is no Filter with this id
-	 */
-	public FilterConditionDTO getFilterConditionForId(int id) {
-		for (FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition.getIFilterConditionID() == id) {
-				return filterCondition;
-			}
-		}
-		return null;
 	}
 
 	public Collection<FilterConditionsToFilterDTO> getAllFilterConditionMappings() {
