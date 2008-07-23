@@ -2,9 +2,14 @@ package org.csstudio.nams.configurator.service.synchronize;
 
 import org.csstudio.nams.common.service.ExecutionServiceMock;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.logging.declaration.LoggerMock;
+import org.csstudio.nams.service.preferenceservice.declaration.HoldsAPreferenceId;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -124,7 +129,33 @@ public class SynchronizeServiceImpl_Test extends
 
 	@Override
 	protected SynchronizeService getNewInstanceOfClassUnderTest() {
-		return new SynchronizeServiceImpl(new LoggerMock(), executionServiceMock, localStoreConfigurationServiceMock);
+		return new SynchronizeServiceImpl(new LoggerMock(), executionServiceMock, new PreferenceService() {
+
+			public <T extends Enum<?> & HoldsAPreferenceId> boolean getBoolean(
+					T key) {
+				fail("unexpectedmethod call!");
+				return false;
+			}
+
+			public <T extends Enum<?> & HoldsAPreferenceId> int getInt(T key) {
+				fail("unexpectedmethod call!");
+				return 0;
+			}
+
+			public <T extends Enum<?> & HoldsAPreferenceId> String getString(
+					T key) {
+				return "A Test Setting";
+			}
+			
+		}, new ConfigurationServiceFactory() {
+
+			public LocalStoreConfigurationService getConfigurationService(
+					String connectionURL, DatabaseType dbType, String username,
+					String password) throws StorageError {
+				return localStoreConfigurationServiceMock;
+			}
+			
+		});
 	}
 
 	@Override

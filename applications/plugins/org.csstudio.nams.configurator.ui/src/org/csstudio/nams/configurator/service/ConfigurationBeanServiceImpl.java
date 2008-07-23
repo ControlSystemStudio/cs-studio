@@ -11,10 +11,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
-import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
@@ -69,8 +67,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	// Rubriks don't need to be beans.
 	private Collection<RubrikDTO> rubrikDTOs = new LinkedList<RubrikDTO>();
 
+	private static ConfigurationBeanService previosInstance;
+	
 	public ConfigurationBeanServiceImpl(
 			LocalStoreConfigurationService localStore) {
+		if( previosInstance != null ) {
+			throw new RuntimeException("Could not use more than one bean service at this step of developement.");
+		}
+		
 		this.configurationService = localStore;
 		loadConfiguration();
 	}
@@ -1002,6 +1006,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			listener.onBeanInsert(bean);
 		}
 	}
+	
+	private void notifyDeleteListeners(IConfigurationBean bean) {
+		for (ConfigurationBeanServiceListener listener : listeners) {
+			listener.onBeanDeleted(bean);
+		}
+	}
 
 	/**
 	 * @param condition
@@ -1196,11 +1206,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 	}
 
-	private void notifyDeleteListeners(IConfigurationBean bean) {
-		for (ConfigurationBeanServiceListener listener : listeners) {
-			listener.onBeanDeleted(bean);
-		}
-	}
+	
 
 	public static void staticInject(Logger logger) {
 		ConfigurationBeanServiceImpl.logger = logger;

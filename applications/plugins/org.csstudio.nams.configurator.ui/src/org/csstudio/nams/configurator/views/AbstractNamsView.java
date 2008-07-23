@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.nams.configurator.actions.BeanToEditorId;
+import org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction;
+import org.csstudio.nams.configurator.actions.DuplicateConfigurationBeanAction;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;
+import org.csstudio.nams.configurator.editor.AbstractEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.service.AbstractConfigurationBeanServiceListener;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
@@ -42,72 +45,108 @@ public abstract class AbstractNamsView extends ViewPart {
 	public boolean isInitialized() {
 		return configurationBeanService != null;
 	}
-	
+
 	private void initialize() throws Throwable {
 		try {
-			LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
-					.getConfigurationService(
+			if (!isInitialized()) {
+				LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
+						.getConfigurationService(
 
-							preferenceService
-									.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
-							DatabaseType.Oracle10g,
-							preferenceService
-									.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
-							preferenceService
-									.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
-			configurationBeanService = new ConfigurationBeanServiceImpl(
-					localStoreConfigurationService);
-			configurationBeanService
-					.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
-						// TODO updateView() is in most cases overkill
-						@Override
-						public void onBeanInsert(IConfigurationBean bean) {
-							if (filterableBeanList != null) {
-								filterableBeanList.updateView();
-							}
-						}
+								preferenceService
+										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
+								DatabaseType.Oracle10g,
+								preferenceService
+										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
+								preferenceService
+										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
+				configurationBeanService = new ConfigurationBeanServiceImpl(
+						localStoreConfigurationService);
+				// prepare editors
+				AbstractEditor.staticInject(configurationBeanService);
 
-						@Override
-						public void onBeanUpdate(IConfigurationBean bean) {
-							if (filterableBeanList != null) {
-								filterableBeanList.updateView();
+				// prepare actions TODO Dieses sollten die Views selber tun.
+				DeleteConfugurationBeanAction
+						.staticInject(configurationBeanService);
+				DuplicateConfigurationBeanAction
+						.staticInject(configurationBeanService);
+			} 
+				configurationBeanService
+						.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
+							// TODO updateView() is in most cases overkill
+							@Override
+							public void onBeanInsert(IConfigurationBean bean) {
+								if (filterableBeanList != null) {
+									filterableBeanList.updateView();
+								}
 							}
-						}
 
-						@Override
-						public void onBeanDeleted(IConfigurationBean bean) {
-							if (filterableBeanList != null) {
-								filterableBeanList.updateView();
+							@Override
+							public void onBeanUpdate(IConfigurationBean bean) {
+								if (filterableBeanList != null) {
+									filterableBeanList.updateView();
+								}
 							}
-						}
-					});
+
+							@Override
+							public void onBeanDeleted(IConfigurationBean bean) {
+								if (filterableBeanList != null) {
+									filterableBeanList.updateView();
+								}
+							}
+						});
+
+			
+
 		} catch (Throwable t) {
 			configurationBeanService = null;
 			throw t;
 		}
 	}
 
-	public AbstractNamsView() {
+	private void performInitializeAndSetCorrespondingViewMode() {
 		try {
 			initialize();
 		} catch (Throwable e) {
-			logger.logFatalMessage(this, "Failed to initialize bean service!", e);
+			logger.logFatalMessage(this, "Failed to initialize bean service!",
+					e);
 			assert configurationBeanService == null;
-			
+		}
+		if (isInitialized()) {
+			Composite composite = viewStackContents.get(ViewModes.NORMAL);
+			assert composite != null;
+			viewsRootLayout.topControl = composite;
+			if (filterableBeanList != null) {
+				filterableBeanList.updateView();
+			}
+		} else {
+			Composite composite = viewStackContents
+					.get(ViewModes.NOT_INITIALIZED);
+			assert composite != null;
+			viewsRootLayout.topControl = composite;
 		}
 	}
 
+	public AbstractNamsView() {
+		// try {
+		// initialize();
+		// } catch (Throwable e) {
+		// // Ignore.
+		// }
+	}
+
 	/**
-	 * Gibt an, in welchem Modus die View ist, also u.a. welches Stack der View (Medlung) gezeigt wird.
+	 * Gibt an, in welchem Modus die View ist, also u.a. welches Stack der View
+	 * (Medlung) gezeigt wird.
+	 * 
 	 * @author mz
-	 *
+	 * 
 	 */
 	private enum ViewModes {
 		NOT_INITIALIZED, NORMAL;
 	}
-	
+
 	private Map<ViewModes, Composite> viewStackContents = new HashMap<ViewModes, Composite>();
-	
+
 	@Override
 	public void createPartControl(Composite rootComposite) {
 		Composite rootParent = new Composite(rootComposite, SWT.NONE);
@@ -116,18 +155,24 @@ public abstract class AbstractNamsView extends ViewPart {
 
 		Composite normalViewElements = new Composite(rootParent, SWT.TOP);
 		normalViewElements.setLayout(new GridLayout(1, true));
-		
+
 		Composite error = new Composite(rootParent, SWT.TOP);
 		error.setLayout(new GridLayout(1, true));
 		new Label(error, SWT.ICON_ERROR).setText("Error!");
-		
+
 		viewStackContents.put(ViewModes.NORMAL, normalViewElements);
 		viewStackContents.put(ViewModes.NOT_INITIALIZED, error);
-		
-		filterableBeanList = new FilterableBeanList(normalViewElements, SWT.None) {
+
+		performInitializeAndSetCorrespondingViewMode();
+
+		filterableBeanList = new FilterableBeanList(normalViewElements,
+				SWT.None) {
 			@Override
 			protected IConfigurationBean[] getTableInput() {
+				// if (isInitialized()) {
 				return getTableContent();
+				// }
+				// return new IConfigurationBean[0];
 			}
 		};
 		MenuManager menuManager = new MenuManager();
@@ -169,16 +214,6 @@ public abstract class AbstractNamsView extends ViewPart {
 		});
 
 		initDragAndDrop(filterableBeanList);
-		
-		if( isInitialized() ) {
-			Composite composite = viewStackContents.get(ViewModes.NORMAL);
-			assert composite != null;
-			viewsRootLayout.topControl = composite;
-		} else {
-			Composite composite = viewStackContents.get(ViewModes.NOT_INITIALIZED);
-			assert composite != null;
-			viewsRootLayout.topControl = composite;
-		}
 	}
 
 	protected void initDragAndDrop(FilterableBeanList filterableBeanList) {

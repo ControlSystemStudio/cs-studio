@@ -128,8 +128,8 @@ public abstract class FilterableBeanList {
 				Object element) {
 			IConfigurationBean bean = (IConfigurationBean) element;
 
-			if (!bean.getDisplayName().toLowerCase().contains(
-					filterkriterium.toLowerCase())) {
+			if (filterkriterium != null && filterkriterium.length() != 0 && (!bean.getDisplayName().toLowerCase().contains(
+					filterkriterium.toLowerCase()))) {
 				return false;
 			}
 			if (selectedgruppenname.equals("ALLE")) {
@@ -137,8 +137,7 @@ public abstract class FilterableBeanList {
 			}
 
 			if (selectedgruppenname.equals("Ohne Rubrik")) {
-				return (bean.getRubrikName() == null || bean.getRubrikName()
-						.equals(""));
+				return (bean.getRubrikName() == null || bean.getRubrikName().length() == 0);
 			}
 
 			boolean equals = (bean.getRubrikName() != null && bean
