@@ -71,18 +71,22 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implem
 	}
 
 	public void deleteJoinLinkData(Session session) throws Throwable {
-		// TODO Auto-generated method stub
-		
+		if (this.negatedFilterCondition instanceof HasJoinedElements) {
+			((HasJoinedElements<?>)this.negatedFilterCondition).deleteJoinLinkData(session);
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void loadJoinData(Session session,
 			Collection<FilterConditionDTO> allJoinedElements) throws Throwable {
-		// TODO Auto-generated method stub
-		
+		if (this.negatedFilterCondition instanceof HasJoinedElements) {
+			((HasJoinedElements<FilterConditionDTO>)this.negatedFilterCondition).loadJoinData(session, allJoinedElements);
+		}
 	}
 
 	public void storeJoinLinkData(Session session) throws Throwable {
-		// TODO Auto-generated method stub
-		
+		if (this.negatedFilterCondition instanceof HasJoinedElements) {
+			((HasJoinedElements<?>)this.negatedFilterCondition).storeJoinLinkData(session);
+		}
 	}
 }
