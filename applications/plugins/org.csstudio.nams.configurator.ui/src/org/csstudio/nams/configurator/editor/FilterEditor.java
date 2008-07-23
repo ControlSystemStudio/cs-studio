@@ -66,7 +66,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	protected void afterSafe() {
 		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans
 		// enthält.
-		this.beanClone.updateState(this.bean);
+		this.beanClone.updateState(this.getOriginalEditorInput());
 	}
 
 	@Override

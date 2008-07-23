@@ -4,6 +4,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
@@ -33,8 +34,27 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	protected static ConfigurationBeanService configurationBeanService;
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
-	protected ConfigurationType bean;
+
+	/**
+	 * The original bean input wich is referenced in the bean service and change
+	 * its stae if configuration is reloaded.
+	 */
+	private ConfigurationType originalEditorInput;
 	protected ConfigurationType beanClone;
+
+	/**
+	 * Returns the original editor input. This bean is also referenced by the
+	 * editors bean service and will change its state if configuration is
+	 * reloaded!
+	 * 
+	 * @return The editor input bean, nott null.
+	 */
+	protected ConfigurationType getOriginalEditorInput() {
+		ConfigurationType result = this.originalEditorInput;
+
+		Contract.ensureResultNotNull(result);
+		return result;
+	}
 
 	private String superTitle;
 
@@ -52,11 +72,24 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		try {
 			ConfigurationType resultBean = configurationBeanService
 					.save(this.beanClone);
-			if (this.bean != resultBean) {
-				this.bean = resultBean;
+			if (this.originalEditorInput != resultBean) {
+				this.originalEditorInput = resultBean;
 				ConfigurationEditorInput cInput = (ConfigurationEditorInput) getEditorInput();
-				cInput.setBean(this.bean);
-				this.beanClone.setID(this.bean.getID()); // Die Bean darf nicht neu geklont werden!!! Sonst geht das binding der viewer verloren!
+				cInput.setBean(this.originalEditorInput);
+				this.beanClone.setID(this.originalEditorInput.getID()); // Die
+																		// Bean
+																		// darf
+																		// nicht
+																		// neu
+																		// geklont
+																		// werden!!!
+																		// Sonst
+																		// geht
+																		// das
+																		// binding
+																		// der
+																		// viewer
+																		// verloren!
 			}
 			afterSafe();
 		} catch (InconsistentConfigurationException e) {
@@ -65,7 +98,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 			messageBox.setText(e.getClass().toString());
 			messageBox.setMessage(e.getMessage());
 		}
-		setPartName(this.bean.getDisplayName() + " - " + superTitle);
+		setPartName(this.originalEditorInput.getDisplayName() + " - "
+				+ superTitle);
 
 		firePropertyChange(EditorPart.PROP_DIRTY);
 	}
@@ -74,7 +108,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	 * Zum aufräumen nach dem speichern.
 	 */
 	protected void afterSafe() {
-		// per default nothing to do 
+		// per default nothing to do
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,13 +119,15 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		setInput(input);
 		ConfigurationEditorInput cInput = (ConfigurationEditorInput) input;
 
-		this.bean = (ConfigurationType) cInput.getBean();
+		this.originalEditorInput = (ConfigurationType) cInput.getBean();
 
-		this.beanClone = (ConfigurationType) this.bean.getClone();
+		this.beanClone = (ConfigurationType) this.originalEditorInput
+				.getClone();
 		this.beanClone.addPropertyChangeListener(this);
 
 		superTitle = super.getTitle();
-		setPartName(this.bean.getDisplayName() + " - " + superTitle);
+		setPartName(this.originalEditorInput.getDisplayName() + " - "
+				+ superTitle);
 
 		doInit(site, input);
 	}
@@ -149,19 +185,22 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		comboWidget.getCombo().setLayoutData(gridData);
 		return comboWidget;
 	}
-	
-	public <T extends Enum<?>> ComboViewer createTitledComboForEnumValues(Composite parent, String labeltext, T[] contents, IConfigurationBean bean, String targetProperty) {
+
+	public <T extends Enum<?>> ComboViewer createTitledComboForEnumValues(
+			Composite parent, String labeltext, T[] contents,
+			IConfigurationBean bean, String targetProperty) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		
+
 		ComboViewer comboWidget;
 		try {
-			comboWidget = EditorUIUtils.createComboViewerForEnumValues(parent, contents, bean, targetProperty);
+			comboWidget = EditorUIUtils.createComboViewerForEnumValues(parent,
+					contents, bean, targetProperty);
 		} catch (IntrospectionException e) {
 			throw new RuntimeException("failed to create combo viewer", e);
 		}
-		
+
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
@@ -175,12 +214,13 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		ListViewer listWidget = new ListViewer(parent, SWT.BORDER|SWT.V_SCROLL|SWT.H_SCROLL);
+		ListViewer listWidget = new ListViewer(parent, SWT.BORDER
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, true,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
-//		gridData.minimumHeight = 120;
+		// gridData.minimumHeight = 120;
 		listWidget.getList().setLayoutData(gridData);
 		return listWidget;
 	}
@@ -202,13 +242,13 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	protected Button createButtonEntry(Composite parent, String labeltext,
 			boolean editable, int gridWidth) {
-//		Composite composite = new Composite(parent, SWT.NONE);
+		// Composite composite = new Composite(parent, SWT.NONE);
 		Button buttonWidget = new Button(parent, SWT.PUSH);
 		buttonWidget.setText(labeltext);
 		buttonWidget.setEnabled(editable);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				gridWidth, 1);
-//		composite.setLayoutData(gridData);
+		// composite.setLayoutData(gridData);
 		gridData.minimumWidth = MIN_WIDTH;
 		gridData.widthHint = MIN_WIDTH;
 		buttonWidget.setLayoutData(gridData);
@@ -225,7 +265,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
-		Text textWidget = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL| SWT.WRAP);
+		Text textWidget = new Text(parent, SWT.BORDER | SWT.MULTI
+				| SWT.V_SCROLL | SWT.WRAP);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false,
 				NUM_COLUMNS - 1, 1);
 		gridData.minimumWidth = MIN_WIDTH;
@@ -238,8 +279,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 
 	@Override
 	public boolean isDirty() {
-		if (this.bean != null && this.beanClone != null) {
-			return !this.bean.equals(this.beanClone);
+		if (this.originalEditorInput != null && this.beanClone != null) {
+			return !this.originalEditorInput.equals(this.beanClone);
 		} else
 			return false;
 	};
@@ -263,8 +304,8 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	}
 
 	public void onBeanDeleted(IConfigurationBean bean) {
-		if (bean.getClass().equals(this.bean.getClass())
-				&& bean.getID() == this.bean.getID()) {
+		if (bean.getClass().equals(this.originalEditorInput.getClass())
+				&& bean.getID() == this.originalEditorInput.getID()) {
 			getSite().getShell().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					getSite().getPage().closeEditor(AbstractEditor.this, true);

@@ -440,7 +440,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// }
 		// junctorTypeCombo.setItems(types.toArray(new String[types.size()]));
 
-		FilterConditionAddOnBean filterSpecificBean = (FilterConditionAddOnBean) bean
+		FilterConditionAddOnBean filterSpecificBean = (FilterConditionAddOnBean) getOriginalEditorInput()
 				.getFilterSpecificBean();
 		if (filterSpecificBean instanceof JunctorConditionBean) {
 			this.selectedFilterType
