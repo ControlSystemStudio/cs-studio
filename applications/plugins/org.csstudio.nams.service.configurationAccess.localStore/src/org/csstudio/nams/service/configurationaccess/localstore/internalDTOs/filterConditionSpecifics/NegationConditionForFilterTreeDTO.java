@@ -25,7 +25,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
-@Table(name = "AMSFilterNegationCond4Filter")
+@Table(name = "AMSFilterCondConj4FilterCommon")
 public class NegationConditionForFilterTreeDTO extends FilterConditionDTO {
 	
 	@SuppressWarnings("unused")
