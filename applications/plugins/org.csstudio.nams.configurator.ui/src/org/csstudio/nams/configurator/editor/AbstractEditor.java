@@ -104,6 +104,13 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		NUM_COLUMNS = getNumColumns();
 		configurationBeanService.addConfigurationBeanServiceListener(this);
 	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		
+		configurationBeanService.removeConfigurationBeanServiceListener(this);
+	}
 
 	protected abstract int getNumColumns();
 
