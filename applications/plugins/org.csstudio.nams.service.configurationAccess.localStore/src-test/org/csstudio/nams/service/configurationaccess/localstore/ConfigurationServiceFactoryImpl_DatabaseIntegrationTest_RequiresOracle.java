@@ -19,6 +19,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Loca
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.LoggerMock;
 import org.csstudio.nams.service.logging.declaration.LoggerMock.LogEntry;
@@ -29,7 +30,7 @@ import org.junit.Test;
 /**
  * This TestCase tests the factory and the service for a real database (Oracle).
  * The service will be configured and created by the factory and some service
- * interactions will be perforemed. Do not forgett to reset the databse before
+ * interactions will be performed. Do not forget to reset the database before
  * any run of this integration test!
  * 
  * @author gs, mz
@@ -389,5 +390,41 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		// clean up
 		service.deleteDTO(leftCondition);
 		service.deleteDTO(rightCondition);
+	}
+	
+	@Test
+	public void testStoreAndLoadConditionNegations() throws Throwable {
+		fail("test under construction");
+		
+		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
+		leftCondition.setCName("Test-LeftCond");
+		leftCondition.setCompValue("TestValue");
+		leftCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		leftCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+		service.saveDTO(leftCondition);
+
+		StringFilterConditionDTO rightCondition = new StringFilterConditionDTO();
+		rightCondition.setCName("Test-RightCond");
+		rightCondition.setCompValue("TestValue2");
+		rightCondition.setKeyValue(MessageKeyEnum.DESTINATION);
+		rightCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
+		service.saveDTO(rightCondition);
+
+		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
+		operands.add(leftCondition);
+		operands.add(rightCondition);
+
+		JunctorConditionForFilterTreeDTO andCondition = new JunctorConditionForFilterTreeDTO();
+		andCondition.setCName("TEST-Con");
+		andCondition.setCDesc("Test-Description");
+		andCondition.setOperator(JunctorConditionType.AND);
+		andCondition.setOperands(operands);
+		
+		NegationConditionForFilterTreeDTO notAND = new NegationConditionForFilterTreeDTO();
+		notAND.setNegatedFilterCondition(andCondition);
+		service.saveDTO(notAND);
+		
+		
+		
 	}
 }

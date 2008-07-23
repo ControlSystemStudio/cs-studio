@@ -2,7 +2,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 
 import java.util.Collection;
 
-import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -31,12 +31,8 @@ import org.hibernate.Session;
 @Table(name = "AMSFilterNegationCond4Filter")
 public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implements HasJoinedElements<FilterConditionDTO> {
 	
-	@SuppressWarnings("unused")
-	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
-	private int iFilterConditionRef;
-
-	@Column(name = "iNegatedFCRef", nullable = false)
-	private int iNegatedFCRef;
+	@EmbeddedId
+	private NegationConditionForFilterTreeDTO_PK id;
 
 	@Transient
 	private FilterConditionDTO negatedFilterCondition;
@@ -58,7 +54,7 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implem
 	public void setNegatedFilterCondition(
 			FilterConditionDTO negatedFilterCondition) {
 		this.negatedFilterCondition = negatedFilterCondition;
-		this.iNegatedFCRef = negatedFilterCondition.getIFilterConditionID();
+		this.id.setINegatedFCRef( negatedFilterCondition.getIFilterConditionID() );
 	}
 	
 	/**
@@ -67,7 +63,7 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implem
 	 * Returns the database id of negated condition.
 	 */
 	public int getINegatedFCRef() {
-		return iNegatedFCRef;
+		return this.id.getINegatedFCRef();
 	}
 
 	public void deleteJoinLinkData(Session session) throws Throwable {
