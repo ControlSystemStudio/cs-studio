@@ -82,20 +82,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		this.configurationService = localStore;
 	}
 
-	// private <BeanType extends AbstractConfigurationBean<BeanType>, DTOType>
-	// void updateMaps(Map<Integer, BeanType> map, Collection<DTOType> dtoList)
-	// {
-	// for (DTOType dto : dtoList) {
-	// BeanType bean = DTO2Bean(dto);
-	// BeanType origBean = map.get(new Integer(bean.getID()));
-	// if (origBean != null) {
-	// origBean.updateState(bean);
-	// } else {
-	// map.put(bean.getID(), bean);
-	// }
-	// }
-	// }
-
 	public void refreshData() {
 		loadConfiguration();
 	}
@@ -203,15 +189,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getAlarmBearbeiterBeans()
 	 */
 	public AlarmbearbeiterBean[] getAlarmBearbeiterBeans() {
-		// Collection<AlarmbearbeiterDTO> alarmBearbeiterDTOs =
-		// entireConfiguration.gibAlleAlarmbearbeiter();
-		// List<AlarmbearbeiterBean> beans = new
-		// LinkedList<AlarmbearbeiterBean>();
-		// for (AlarmbearbeiterDTO alarmbearbeitergruppe : alarmBearbeiterDTOs)
-		// {
-		// beans.add(DTO2Bean(alarmbearbeitergruppe));
-		// }
-		// return beans.toArray(new AlarmbearbeiterBean[beans.size()]);
 		Collection<AlarmbearbeiterBean> values = alarmbearbeiterBeans.values();
 		return values.toArray(new AlarmbearbeiterBean[values.size()]);
 	}
@@ -240,15 +217,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getAlarmBearbeiterGruppenBeans()
 	 */
 	public AlarmbearbeiterGruppenBean[] getAlarmBearbeiterGruppenBeans() {
-		// Collection<AlarmbearbeiterGruppenDTO> alarmBearbeiterGruppenDTOs =
-		// entireConfiguration.gibAlleAlarmbearbeiterGruppen();
-		// List<AlarmbearbeiterGruppenBean> beans = new
-		// LinkedList<AlarmbearbeiterGruppenBean>();
-		// for (AlarmbearbeiterGruppenDTO alarmbearbeitergruppe :
-		// alarmBearbeiterGruppenDTOs) {
-		// beans.add(DTO2Bean(alarmbearbeitergruppe));
-		// }
-		// return beans.toArray(new AlarmbearbeiterGruppenBean[beans.size()]);
 		Collection<AlarmbearbeiterGruppenBean> values = alarmbearbeitergruppenBeans
 				.values();
 		return values.toArray(new AlarmbearbeiterGruppenBean[values.size()]);
@@ -302,13 +270,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getAlarmTopicBeans()
 	 */
 	public AlarmtopicBean[] getAlarmTopicBeans() {
-		// Collection<TopicDTO> alarmtopicsDTOs =
-		// entireConfiguration.gibAlleAlarmtopics();
-		// List<AlarmtopicBean> beans = new LinkedList<AlarmtopicBean>();
-		// for (TopicDTO alarmbearbeitergruppe : alarmtopicsDTOs) {
-		// beans.add(DTO2Bean(alarmbearbeitergruppe));
-		// }
-		// return beans.toArray(new AlarmtopicBean[beans.size()]);
 		Collection<AlarmtopicBean> values = alarmtopicBeans.values();
 		return values.toArray(new AlarmtopicBean[values.size()]);
 	}
@@ -330,13 +291,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getFilterBeans()
 	 */
 	public FilterBean[] getFilterBeans() {
-		// Collection<FilterDTO> filterDTOs =
-		// entireConfiguration.gibAlleFilter();
-		// List<FilterBean> beans = new LinkedList<FilterBean>();
-		// for (FilterDTO filter : filterDTOs) {
-		// beans.add(DTO2Bean(filter));
-		// }
-		// return beans.toArray(new FilterBean[beans.size()]);
 		Collection<FilterBean> values = filterBeans.values();
 		return values.toArray(new FilterBean[values.size()]);
 	}
@@ -419,14 +373,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	 * @see org.csstudio.nams.configurator.modelmapping.Bubu#getFilterConditionBeans()
 	 */
 	public FilterbedingungBean[] getFilterConditionBeans() {
-		// Collection<FilterConditionDTO> filterDTOs =
-		// entireConfiguration.gibAlleFilterConditions();
-		// List<FilterbedingungBean> beans = new
-		// LinkedList<FilterbedingungBean>();
-		// for (FilterConditionDTO filter : filterDTOs) {
-		// beans.add(DTO2Bean(filter));
-		// }
-		// return beans.toArray(new FilterbedingungBean[beans.size()]);
 		Collection<FilterbedingungBean> values = filterbedingungBeans.values();
 		return values.toArray(new FilterbedingungBean[values.size()]);
 	}
@@ -599,11 +545,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		AlarmbearbeiterBean resultBean = alarmbearbeiterBeans.get(new Integer(
 				dto.getUserId()));
-		// if (inserted) {
-		// bean.updateState(resultBean);
-		// alarmbearbeiterBeans.put(new Integer(dto.getUserId()), bean);
-		// resultBean = bean;
-		// }
 
 		insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
@@ -704,11 +645,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			inserted = true;
 		} else {
 			removeJunctorConditionForFilterTreeBeans(dto.getFilterConditions());
-//			for (FilterConditionDTO filterConditionDTO : dto.getFilterConditions()) {
-//				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
-//					filterbedingungBeans.remove(new Integer(filterConditionDTO.getIFilterConditionID()));
-//				}
-//			}
 		}
 		dto.setDefaultMessage(bean.getDefaultMessage());
 
@@ -753,23 +689,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
 				List<FilterConditionDTO> listForFilter = createFilterConditionDTOListForFilter(junctorBean.getOperands());
 				
-//				if (conditionDTO == null) {
-					JunctorConditionForFilterTreeDTO newDTO = new JunctorConditionForFilterTreeDTO();
-					newDTO.setCName(junctorBean.getJunctorConditionType()
-							.toString());
-					newDTO.setCDesc("");
-					newDTO.setIGroupRef(getRubrikIDForName(junctorBean
-							.getRubrikName(), RubrikTypeEnum.FILTER_COND));
-					newDTO.setOperator(junctorBean.getJunctorConditionType());
+				JunctorConditionForFilterTreeDTO newDTO = new JunctorConditionForFilterTreeDTO();
+				newDTO.setCName(junctorBean.getJunctorConditionType()
+						.toString());
+				newDTO.setCDesc("");
+				newDTO.setIGroupRef(getRubrikIDForName(junctorBean
+						.getRubrikName(), RubrikTypeEnum.FILTER_COND));
+				newDTO.setOperator(junctorBean.getJunctorConditionType());
 
-					conditionDTO = newDTO;
-//				} 
-//				else {
-//					filterbedingungBeans.remove(new Integer(conditionDTO.getIFilterConditionID()));
-//					for (FilterConditionDTO filterDTO : ((JunctorConditionForFilterTreeDTO)conditionDTO).getOperands()) {
-//						filterbedingungBeans.remove(new Integer(filterDTO.getIFilterConditionID()));
-//					}
-//				}
+				conditionDTO = newDTO;
 				((JunctorConditionForFilterTreeDTO)conditionDTO).setOperands(new HashSet<FilterConditionDTO>(listForFilter));
 			}
 
@@ -784,51 +712,6 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		return result;
 	}
-
-	// private FilterConditionDTO
-	// findOrCreateFilterConditionDTO(FilterbedingungBean condBean) {
-	// FilterConditionDTO found = findDTO4Bean(condBean);
-	// if (condBean instanceof JunctorConditionForFilterTreeBean) {
-	// if (found == null) {
-	// found =
-	// createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)condBean);
-	// } else {
-	// JunctorConditionForFilterTreeBean junctorBean =
-	// (JunctorConditionForFilterTreeBean) condBean;
-	// JunctorConditionForFilterTreeDTO junctorDTO =
-	// (JunctorConditionForFilterTreeDTO) found;
-	//				
-	// Set<FilterConditionDTO> operands;
-	// junctorDTO.setOperands(operands);
-	// }
-	// }
-	// return found;
-	// }
-	//
-	// JunctorConditionForFilterTreeDTO createJunctorConditionForFilterTreeDTO(
-	// JunctorConditionForFilterTreeBean bean) {
-	// JunctorConditionForFilterTreeDTO dto = new
-	// JunctorConditionForFilterTreeDTO();
-	//		
-	// dto.setCName(bean.getJunctorConditionType().toString());
-	// dto.setCDesc("");
-	// dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
-	// RubrikTypeEnum.FILTER_COND));
-	// dto.setOperator(bean.getJunctorConditionType());
-	//		
-	// Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
-	// for (FilterbedingungBean fcBean : bean.getOperands()) {
-	// if( fcBean instanceof JunctorConditionForFilterTreeBean ) {
-	// JunctorConditionForFilterTreeDTO innerDTO =
-	// createJunctorConditionForFilterTreeDTO((JunctorConditionForFilterTreeBean)fcBean);
-	// operands.add(innerDTO);
-	// } else {
-	// operands.add(findDTO4Bean(fcBean));
-	// }
-	// }
-	// dto.setOperands(operands);
-	// return dto;
-	// }
 
 	@SuppressWarnings("unchecked")
 	private FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {
