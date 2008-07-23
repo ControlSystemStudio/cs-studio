@@ -1,5 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -8,6 +10,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.hibernate.Session;
 
 /**
  * Dieses FC wird verwendet, um andere Condtions im Filter zu verneinen. Diese
@@ -26,7 +29,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterNegationCond4Filter")
-public class NegationConditionForFilterTreeDTO extends FilterConditionDTO {
+public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implements HasJoinedElements<FilterConditionDTO> {
 	
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -57,7 +60,7 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO {
 		this.negatedFilterCondition = negatedFilterCondition;
 		this.iNegatedFCRef = negatedFilterCondition.getIFilterConditionID();
 	}
-
+	
 	/**
 	 * TO BE USED BY {@link LocalStoreConfigurationService} ONLY!
 	 * 
@@ -65,5 +68,21 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO {
 	 */
 	public int getINegatedFCRef() {
 		return iNegatedFCRef;
+	}
+
+	public void deleteJoinLinkData(Session session) throws Throwable {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void loadJoinData(Session session,
+			Collection<FilterConditionDTO> allJoinedElements) throws Throwable {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void storeJoinLinkData(Session session) throws Throwable {
+		// TODO Auto-generated method stub
+		
 	}
 }

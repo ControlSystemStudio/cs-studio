@@ -24,6 +24,7 @@ import org.csstudio.nams.configurator.beans.User2GroupBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
+import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.PVFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.StringArrayFilterConditionBean;
 import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
@@ -43,6 +44,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Use
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO_PK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO_PK;
@@ -672,6 +674,11 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				removeJunctorConditionForFilterTreeBeans(junctorDTO.getOperands());
 				filterbedingungBeans.remove(new Integer(junctorDTO.getIFilterConditionID()));
 			}
+			if (filterConditionDTO instanceof NegationConditionForFilterTreeDTO) {
+				NegationConditionForFilterTreeDTO notDTO = (NegationConditionForFilterTreeDTO) filterConditionDTO;
+				removeJunctorConditionForFilterTreeBeans(Collections.singletonList(notDTO.getNegatedFilterCondition()));
+				filterbedingungBeans.remove(new Integer(notDTO.getIFilterConditionID()));
+			}
 		}
 	}
 
@@ -699,6 +706,21 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 				conditionDTO = newDTO;
 				((JunctorConditionForFilterTreeDTO)conditionDTO).setOperands(new HashSet<FilterConditionDTO>(listForFilter));
+			}
+			if (filterbedingungBean instanceof NotConditionForFilterTreeBean) {
+				NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) filterbedingungBean;
+
+				List<FilterConditionDTO> listForFilter = createFilterConditionDTOListForFilter(Collections.singletonList(notBean.getFilterbedingungBean()));
+				
+				NegationConditionForFilterTreeDTO newDTO = new NegationConditionForFilterTreeDTO();
+				
+				newDTO.setCName("NOT");
+				newDTO.setCDesc("");
+				newDTO.setIGroupRef(getRubrikIDForName(notBean
+						.getRubrikName(), RubrikTypeEnum.FILTER_COND));
+				newDTO.setNegatedFilterCondition(listForFilter.get(0));
+
+				conditionDTO = newDTO;
 			}
 
 			if (conditionDTO == null) {

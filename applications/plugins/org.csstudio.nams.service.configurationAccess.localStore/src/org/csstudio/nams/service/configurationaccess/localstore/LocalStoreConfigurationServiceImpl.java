@@ -64,7 +64,7 @@ class LocalStoreConfigurationServiceImpl implements
 		this.session = session;
 		this.logger = logger;
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
@@ -592,29 +592,30 @@ class LocalStoreConfigurationServiceImpl implements
 					.getFilterConditions();
 
 			Set<FilterConditionsToFilterDTO> zuSpeicherndeJoins = new HashSet<FilterConditionsToFilterDTO>();
-			
+
 			// erzeugen der zu schreibenden join daten
 			for (FilterConditionDTO filterConditionDTO : filterConditions) {
 				FilterConditionsToFilterDTO joinData = new FilterConditionsToFilterDTO();
 				joinData.setIFilterRef(dto.getIFilterID());
 				joinData.setIFilterConditionRef(filterConditionDTO
 						.getIFilterConditionID());
-				
+
 				zuSpeicherndeJoins.add(joinData);
-				
+
 			}
-			
-			
+
 			// clean up join data
 			Collection<FilterConditionsToFilterDTO> conditionMappings = session
 					.createCriteria(FilterConditionsToFilterDTO.class).list();
 
 			for (FilterConditionsToFilterDTO joinElement : conditionMappings) {
 				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
-					int filterConditionRef = joinElement.getIFilterConditionRef();
+					int filterConditionRef = joinElement
+							.getIFilterConditionRef();
 
 					if (!zuSpeicherndeJoins.contains(joinElement)) {
-						session.delete(joinElement); // nicht mehr verwendete Knoten löschen
+						session.delete(joinElement); // nicht mehr verwendete
+														// Knoten löschen
 					}
 
 					Collection<JunctorConditionForFilterTreeDTO> junctorConditions = session
@@ -630,13 +631,27 @@ class LocalStoreConfigurationServiceImpl implements
 							}
 						}
 					}
+
+					Collection<NegationConditionForFilterTreeDTO> notConditions = session
+							.createCriteria(
+									NegationConditionForFilterTreeDTO.class)
+							.add(Restrictions.idEq(filterConditionRef)).list();
+					if (notConditions != null
+							&& notConditions.size() > 0) {
+						for (NegationConditionForFilterTreeDTO notConditionForFilterTreeDTO : notConditions) {
+							if (!filterConditions
+									.contains(notConditionForFilterTreeDTO)) {
+								deleteDTONoTransaction(notConditionForFilterTreeDTO);
+							}
+						}
+					}
 				}
 			}
 
 			// join speichern
 			for (FilterConditionDTO filterConditionDTO : filterConditions) {
-				if ((filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) 
-						|| (filterConditionDTO instanceof NegationConditionForFilterTreeDTO) ) {
+				if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO ||
+						filterConditionDTO instanceof NegationConditionForFilterTreeDTO) {
 					// Diese Condition speichern, da sie von Editor angelegt
 					// wird.
 					saveDTONoTransaction(filterConditionDTO);
@@ -646,7 +661,7 @@ class LocalStoreConfigurationServiceImpl implements
 				joinData.setIFilterRef(dto.getIFilterID());
 				joinData.setIFilterConditionRef(filterConditionDTO
 						.getIFilterConditionID());
-				
+
 				if (!zuSpeicherndeJoins.contains(joinData)) {
 					saveDTONoTransaction(joinData);
 				}
