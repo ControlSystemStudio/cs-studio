@@ -66,7 +66,9 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		EditorUIUtils.staticInject(logger);
 
 		// prepare Views
-		AbstractNamsView.staticInject(beanService);
+		AbstractNamsView.staticInject(logger);
+		AbstractNamsView.staticInject(preferenceService);
+		AbstractNamsView.staticInject(configurationServiceFactory);		
 
 		// prepare editors
 		AbstractEditor.staticInject(beanService);
@@ -75,7 +77,7 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 				.createProcessVariableConnectionService();
 		FilterbedingungEditor.staticInject(pvConnectionService);
 
-		// prepare actions
+		// prepare actions TODO Dieses sollten die Views selber tun.
 		DeleteConfugurationBeanAction.staticInject(beanService);
 		DuplicateConfigurationBeanAction.staticInject(beanService);
 
