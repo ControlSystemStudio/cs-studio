@@ -31,7 +31,20 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		extends EditorPart implements PropertyChangeListener,
 		ConfigurationBeanServiceListener {
 
-	protected static ConfigurationBeanService configurationBeanService;
+	private static ConfigurationBeanService configurationBeanService;
+	
+	/**
+	 * The configuration bean service all editors of one runtime working on.
+	 * 
+	 * @return The bean service, not null.
+	 */
+	protected static ConfigurationBeanService getConfigurationBeanService() {
+		ConfigurationBeanService result = AbstractEditor.configurationBeanService;
+
+		Contract.ensureResultNotNull(result);
+		return result;
+	}
+
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
 
@@ -59,7 +72,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 	 * 
 	 * @return The editor input working copy, not null.
 	 */
-	protected ConfigurationType workingCopyOfEditorInput() {
+	protected ConfigurationType getWorkingCopyOfEditorInput() {
 		ConfigurationType result = this.workingCopyOfEditorInput;
 
 		Contract.ensureResultNotNull(result);

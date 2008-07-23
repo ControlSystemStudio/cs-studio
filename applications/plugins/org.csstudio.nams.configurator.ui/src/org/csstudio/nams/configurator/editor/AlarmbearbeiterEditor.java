@@ -50,7 +50,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true, configurationBeanService
+		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true, getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.USER));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
@@ -59,7 +59,7 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		_voiceMailTextEntry = this.createTextEntry(main, "VoiceMail number:",
 				true);
 		_prefAlarmingTypeComboEntryViewer = this.createTitledComboForEnumValues(main,
-				"Prefered alarming type:", PreferedAlarmType.values(), this.workingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.preferedAlarmType.name() );
+				"Prefered alarming type:", PreferedAlarmType.values(), this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.preferedAlarmType.name() );
 		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer
 				.getCombo();
 		this.addSeparator(main);
@@ -87,38 +87,38 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.name.name());
+				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.name.name());
 
 		IObservableValue emailTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.email.name());
+				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.email.name());
 
 		IObservableValue smsTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.mobilePhone
+				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.mobilePhone
 						.name());
 
 		IObservableValue voicemailTextObservable = BeansObservables
-				.observeValue(this.workingCopyOfEditorInput(),
+				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterBean.PropertyNames.phone.name());
 
 		IObservableValue statusTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.statusCode
+				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.statusCode
 						.name());
 
 		IObservableValue confirmTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.confirmCode
+				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.confirmCode
 						.name());
 
 		IObservableValue activeCheckboxObservable = BeansObservables
-				.observeValue(this.workingCopyOfEditorInput(),
+				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterBean.PropertyNames.active.name());
 
 		IObservableValue prefAlarmingTypeObservable = BeansObservables
-				.observeValue(this.workingCopyOfEditorInput(),
+				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterBean.PropertyNames.preferedAlarmType
 								.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmbearbeiterBean.AbstractPropertyNames.rubrikName.name());
+				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables

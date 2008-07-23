@@ -183,7 +183,7 @@ public class AlarmbearbeitergruppenEditor extends
 								textFieldComp,
 								"Rubrik:",
 								true,
-								configurationBeanService
+								getConfigurationBeanService()
 										.getRubrikNamesForType(RubrikTypeEnum.USER_GROUP));
 				_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 				aktiveMitglieder = createTextEntry(textFieldComp,
@@ -353,7 +353,7 @@ public class AlarmbearbeitergruppenEditor extends
 							try {
 								ConfigurationEditorInput editorInput;
 								editorInput = new ConfigurationEditorInput(
-										workingCopyOfEditorInput().getUsers().get(tableViewer.getTable().getSelectionIndex()).getUserBean());
+										getWorkingCopyOfEditorInput().getUsers().get(tableViewer.getTable().getSelectionIndex()).getUserBean());
 								
 								IWorkbenchPage activePage = PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow().getActivePage();
@@ -403,14 +403,14 @@ public class AlarmbearbeitergruppenEditor extends
 							}
 
 							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = workingCopyOfEditorInput()
+								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
 										.getUsers();
 								IStructuredSelection selection = (IStructuredSelection) tableViewer
 										.getSelection();
 								Object element = selection.getFirstElement();
 								users.remove(element);
 								users.add(0, (User2GroupBean) element);
-								workingCopyOfEditorInput().setUsers(users);
+								getWorkingCopyOfEditorInput().setUsers(users);
 								tableViewer.refresh();
 							}
 
@@ -424,7 +424,7 @@ public class AlarmbearbeitergruppenEditor extends
 							}
 
 							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = workingCopyOfEditorInput()
+								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
 										.getUsers();
 								IStructuredSelection selection = (IStructuredSelection) tableViewer
 										.getSelection();
@@ -435,7 +435,7 @@ public class AlarmbearbeitergruppenEditor extends
 									index--;
 								users.remove(element);
 								users.add(index, (User2GroupBean) element);
-								workingCopyOfEditorInput().setUsers(users);
+								getWorkingCopyOfEditorInput().setUsers(users);
 								tableViewer.refresh();
 							}
 
@@ -451,7 +451,7 @@ public class AlarmbearbeitergruppenEditor extends
 							}
 
 							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = workingCopyOfEditorInput()
+								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
 										.getUsers();
 								IStructuredSelection selection = (IStructuredSelection) tableViewer
 										.getSelection();
@@ -463,7 +463,7 @@ public class AlarmbearbeitergruppenEditor extends
 									index++;
 								users.remove(element);
 								users.add(index, (User2GroupBean) element);
-								workingCopyOfEditorInput().setUsers(users);
+								getWorkingCopyOfEditorInput().setUsers(users);
 								tableViewer.refresh();
 							}
 
@@ -479,7 +479,7 @@ public class AlarmbearbeitergruppenEditor extends
 							}
 
 							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = workingCopyOfEditorInput()
+								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
 										.getUsers();
 								IStructuredSelection selection = (IStructuredSelection) tableViewer
 										.getSelection();
@@ -487,7 +487,7 @@ public class AlarmbearbeitergruppenEditor extends
 										.getFirstElement();
 								users.remove(element);
 								users.add((User2GroupBean) element);
-								workingCopyOfEditorInput().setUsers(users);
+								getWorkingCopyOfEditorInput().setUsers(users);
 								tableViewer.refresh();
 
 							}
@@ -507,7 +507,7 @@ public class AlarmbearbeitergruppenEditor extends
 							public void mouseDown(MouseEvent e) {
 								Table table = tableViewer.getTable();
 								if (table.getSelectionIndex() > -1) {
-									List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.workingCopyOfEditorInput()
+									List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
 											.getUsers();
 									int[] items = table.getSelectionIndices();
 									List<User2GroupBean> removeList = new LinkedList<User2GroupBean>();
@@ -515,7 +515,7 @@ public class AlarmbearbeitergruppenEditor extends
 										removeList.add(users.get(items[i]));
 									}
 									users.removeAll(removeList);
-									AlarmbearbeitergruppenEditor.this.workingCopyOfEditorInput()
+									AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
 											.setUsers(users);
 								}
 							}
@@ -553,7 +553,7 @@ public class AlarmbearbeitergruppenEditor extends
 					}
 
 					private boolean containsAlarmbearbeiter(AlarmbearbeiterBean newUser) {
-						List<User2GroupBean> users = workingCopyOfEditorInput().getUsers();
+						List<User2GroupBean> users = getWorkingCopyOfEditorInput().getUsers();
 						
 						for (User2GroupBean user2GroupBean : users) {
 							if( user2GroupBean.getUserBean().equals(newUser) )
@@ -569,10 +569,10 @@ public class AlarmbearbeitergruppenEditor extends
 									.getTransfer().getSelection();
 							AlarmbearbeiterBean bean = (AlarmbearbeiterBean) selection
 									.getFirstElement();
-							List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.workingCopyOfEditorInput()
+							List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
 									.getUsers();
 							users.add(new User2GroupBean(bean));
-							AlarmbearbeitergruppenEditor.this.workingCopyOfEditorInput()
+							AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
 									.setUsers(users);
 						} catch (Throwable e) {
 						}
@@ -595,29 +595,29 @@ public class AlarmbearbeitergruppenEditor extends
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmbearbeiterGruppenBean.PropertyNames.name
+				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterGruppenBean.PropertyNames.name
 						.name());
 
 		IObservableValue aktiveMitgliederTextObservable = BeansObservables
-				.observeValue(this.workingCopyOfEditorInput(),
+				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterGruppenBean.PropertyNames.minGroupMember
 								.name());
 
 		IObservableValue warteZeitTextObservable = BeansObservables
-				.observeValue(this.workingCopyOfEditorInput(),
+				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterGruppenBean.PropertyNames.timeOutSec
 								.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(),
+				this.getWorkingCopyOfEditorInput(),
 				AlarmbearbeiterBean.AbstractPropertyNames.rubrikName.name());
 
 		IObservableList usersListObservable = BeansObservables.observeList(
-				context.getValidationRealm(), this.workingCopyOfEditorInput(),
+				context.getValidationRealm(), this.getWorkingCopyOfEditorInput(),
 				AlarmbearbeiterGruppenBean.PropertyNames.users.name());
 
 		IObservableValue activeCheckboxObservable = BeansObservables
-				.observeValue(this.workingCopyOfEditorInput(),
+				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterGruppenBean.PropertyNames.active.name());
 
 		IObservableList usersListInTableObservable = BeansObservables
@@ -635,7 +635,7 @@ public class AlarmbearbeitergruppenEditor extends
 						status = super.doAdd(observableList, element, index);
 						Display.getCurrent().asyncExec(new Runnable() {
 							public void run() {
-								tableViewer.setInput(workingCopyOfEditorInput().getUsers());
+								tableViewer.setInput(getWorkingCopyOfEditorInput().getUsers());
 
 							}
 						});
@@ -646,7 +646,7 @@ public class AlarmbearbeitergruppenEditor extends
 					protected IStatus doRemove(IObservableList observableList,
 							int index) {
 						IStatus status = super.doRemove(observableList, index);
-						tableViewer.setInput(workingCopyOfEditorInput().getUsers());
+						tableViewer.setInput(getWorkingCopyOfEditorInput().getUsers());
 						tableViewer.refresh();
 						return status;
 					}
@@ -667,8 +667,8 @@ public class AlarmbearbeitergruppenEditor extends
 							return Status.CANCEL_STATUS;
 						} else { 
 							Short convertedValue = Short.parseShort((String) value);
-							if (convertedValue > workingCopyOfEditorInput().getUsers().size()){
-								aktiveMitglieder.setText("" + workingCopyOfEditorInput().getUsers().size());
+							if (convertedValue > getWorkingCopyOfEditorInput().getUsers().size()){
+								aktiveMitglieder.setText("" + getWorkingCopyOfEditorInput().getUsers().size());
 								return Status.CANCEL_STATUS;
 							}
 						}

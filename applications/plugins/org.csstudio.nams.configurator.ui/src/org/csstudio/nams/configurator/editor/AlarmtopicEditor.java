@@ -43,7 +43,7 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_topicIdTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true, configurationBeanService
+		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true, getConfigurationBeanService()
 				.getRubrikNamesForType(RubrikTypeEnum.TOPIC));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
@@ -67,17 +67,17 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.humanReadableName.name());
+				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.humanReadableName.name());
 
 		IObservableValue topicNameTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.topicName.name());
+				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.topicName.name());
 
 		IObservableValue descriptionTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.description
+				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.description
 						.name());
 		
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), AlarmtopicBean.AbstractPropertyNames.rubrikName.name());
+				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
 		context.bindValue(SWTObservables

@@ -66,7 +66,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	protected void afterSafe() {
 		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans
 		// enthält.
-		this.workingCopyOfEditorInput().updateState(this.getOriginalEditorInput());
+		this.getWorkingCopyOfEditorInput().updateState(this.getOriginalEditorInput());
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
 		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true,
-				configurationBeanService
+				getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
@@ -111,7 +111,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						.setContentProvider(filterTreeContentProvider);
 				filterConditionsTreeViewer
 						.setLabelProvider(new FilterTreeLabelProvider());
-				filterConditionsTreeViewer.setInput(workingCopyOfEditorInput().getConditions());
+				filterConditionsTreeViewer.setInput(getWorkingCopyOfEditorInput().getConditions());
 
 				NewJunctorAction newAndAction = new NewJunctorAction(
 						JunctorConditionType.AND);
@@ -215,7 +215,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	}
 
 	protected void updateBeanAndFireEvent() {
-		workingCopyOfEditorInput().setConditions(filterTreeContentProvider
+		getWorkingCopyOfEditorInput().setConditions(filterTreeContentProvider
 				.getContentsOfRootANDCondition());
 		FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
 	}
@@ -407,10 +407,10 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		DataBindingContext context = new DataBindingContext();
 
 		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), FilterBean.PropertyNames.name.name());
+				this.getWorkingCopyOfEditorInput(), FilterBean.PropertyNames.name.name());
 
 		IObservableValue descriptionTextObservable = BeansObservables
-				.observeValue(this.workingCopyOfEditorInput(),
+				.observeValue(this.getWorkingCopyOfEditorInput(),
 						FilterBean.PropertyNames.defaultMessage.name());
 
 		// IObservableTree filterConditionsObservable = BeansObservables
@@ -418,7 +418,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		// FilterBean.PropertyNames.conditions.name());
 
 		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.workingCopyOfEditorInput(), FilterBean.AbstractPropertyNames.rubrikName
+				this.getWorkingCopyOfEditorInput(), FilterBean.AbstractPropertyNames.rubrikName
 						.name());
 
 		// bind observables
