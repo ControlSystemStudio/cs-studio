@@ -329,8 +329,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
 				service.deleteDTO(filterDTO);
 			}
-//			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
-//					"Test Filter für JCFFT"));
+			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
+					"Test Filter für JCFFT"));
 		}
 
 		// Save
@@ -393,38 +393,117 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 	}
 	
 	@Test
-	public void testStoreAndLoadConditionNegations() throws Throwable {
-		fail("test under construction");
-		
+	public void testStoreAndLoadFilterWithConditionNegations() throws Throwable {
+		// Conditions
 		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
 		leftCondition.setCName("Test-LeftCond");
 		leftCondition.setCompValue("TestValue");
 		leftCondition.setKeyValue(MessageKeyEnum.DESTINATION);
 		leftCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
-		service.saveDTO(leftCondition);
 
 		StringFilterConditionDTO rightCondition = new StringFilterConditionDTO();
 		rightCondition.setCName("Test-RightCond");
 		rightCondition.setCompValue("TestValue2");
 		rightCondition.setKeyValue(MessageKeyEnum.DESTINATION);
 		rightCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
-		service.saveDTO(rightCondition);
 
 		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
 		operands.add(leftCondition);
 		operands.add(rightCondition);
 
-		JunctorConditionForFilterTreeDTO andCondition = new JunctorConditionForFilterTreeDTO();
-		andCondition.setCName("TEST-Con");
-		andCondition.setCDesc("Test-Description");
-		andCondition.setOperator(JunctorConditionType.AND);
-		andCondition.setOperands(operands);
+		// Speicher die FC nicht(!) die Tree-FC (andCondition)
+		service.saveDTO(leftCondition);
+		service.saveDTO(rightCondition);
+
+		JunctorConditionForFilterTreeDTO orCondition = new JunctorConditionForFilterTreeDTO();
+		orCondition.setCName("TEST-Con JCFFT");
+		orCondition.setCDesc("Test-Description");
+		orCondition.setOperator(JunctorConditionType.OR);
+		orCondition.setOperands(operands);
+
+		NegationConditionForFilterTreeDTO notOR = new NegationConditionForFilterTreeDTO();
+		notOR.setNegatedFilterCondition(orCondition);
 		
-		NegationConditionForFilterTreeDTO notAND = new NegationConditionForFilterTreeDTO();
-		notAND.setNegatedFilterCondition(andCondition);
-		service.saveDTO(notAND);
-		
-		
-		
+		// Filter
+		// Root-Ebene aufbauen
+		List<FilterConditionDTO> filterConditions = new LinkedList<FilterConditionDTO>();
+		filterConditions.add(notOR);
+
+		FilterDTO filter = new FilterDTO();
+		filter.setName("Test Filter für JCFFT");
+		filter.setDefaultMessage("Hallo Welt!");
+		filter.setFilterConditions(filterConditions);
+
+		// Pruefen dass noch kein entsprechender Filter da ist.
+		Configuration entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		Collection<FilterDTO> alleFilter = entireConfiguration.gibAlleFilter();
+		for (FilterDTO filterDTO : alleFilter) {
+			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
+				service.deleteDTO(filterDTO);
+			}
+			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
+					"Test Filter für JCFFT"));
+		}
+
+		// Save
+		service.saveFilterDTO(filter);
+
+		// Pruefen dass Filter jetzt da ist.
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		alleFilter = entireConfiguration.gibAlleFilter();
+		FilterDTO found = null;
+		for (FilterDTO filterDTO : alleFilter) {
+			if (filter.equals(filterDTO)) {
+				found = filterDTO;
+			}
+		}
+		assertNotNull("enthalten", found);
+		assertEquals(filter, found);
+
+		// verändern
+		Set<FilterConditionDTO> operands2 = new HashSet<FilterConditionDTO>();
+		operands2.add(leftCondition);
+
+		orCondition.setOperands(operands2);
+		service.saveFilterDTO(filter);
+
+		// Filter finden
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		alleFilter = entireConfiguration.gibAlleFilter();
+		FilterDTO foundFilter = null;
+		for (FilterDTO filterDTO : alleFilter) {
+			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
+				foundFilter = filterDTO;
+			}
+		}
+		List<FilterConditionDTO> list = foundFilter.getFilterConditions();
+		assertEquals(1, list.size());
+		assertEquals(notOR, list.get(0));
+		NegationConditionForFilterTreeDTO notOrFound = (NegationConditionForFilterTreeDTO) list.get(0);
+		FilterConditionDTO foundNotOr = notOrFound.getNegatedFilterCondition();
+		assertTrue(foundNotOr instanceof JunctorConditionForFilterTreeDTO);
+		JunctorConditionForFilterTreeDTO junctionDTO = (JunctorConditionForFilterTreeDTO) foundNotOr;
+		Set<FilterConditionDTO> operands3 = junctionDTO.getOperands();
+		assertEquals(1, operands3.size());
+		assertEquals(leftCondition, operands3.iterator().next());
+
+		// löschen
+		service.deleteDTO(filter);
+
+		// Pruefen dass kein entsprechender Filter mehr da ist.
+		entireConfiguration = service.getEntireConfiguration();
+		assertNotNull(entireConfiguration);
+		alleFilter = entireConfiguration.gibAlleFilter();
+		for (FilterDTO filterDTO : alleFilter) {
+			assertFalse("nicht mehr enthalten", filterDTO.getName().equals(
+					"Test Filter für JCFFT"));
+		}
+
+		// clean up
+		service.deleteDTO(leftCondition);
+		service.deleteDTO(rightCondition);
 	}
 }

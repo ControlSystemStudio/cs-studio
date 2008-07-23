@@ -2,7 +2,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 
 import java.util.Collection;
 
-import javax.persistence.EmbeddedId;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -29,14 +29,25 @@ import org.hibernate.Session;
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterNegationCond4Filter")
-public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implements HasJoinedElements<FilterConditionDTO> {
-	
-	@EmbeddedId
-	private NegationConditionForFilterTreeDTO_PK id;
+public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
+		implements HasJoinedElements<FilterConditionDTO> {
+
+	@SuppressWarnings("unused")
+	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
+	private int iFilterConditionRef;
+
+	@SuppressWarnings("unused")
+	@Column(name = "iNegatedFCRef", nullable = false)
+	private int iNegatedFCRef;
 
 	@Transient
 	private FilterConditionDTO negatedFilterCondition;
 
+	public NegationConditionForFilterTreeDTO() {
+		setCName("NegationConditionForFilterTreeDTO");
+		setCDesc("The type NegationConditionForFilterTreeDTO is not to be used directly! It is used internally on filters.");
+	}
+	
 	/**
 	 * Returns the negated FilterCondition.
 	 * 
@@ -54,21 +65,22 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implem
 	public void setNegatedFilterCondition(
 			FilterConditionDTO negatedFilterCondition) {
 		this.negatedFilterCondition = negatedFilterCondition;
-		this.id.setINegatedFCRef( negatedFilterCondition.getIFilterConditionID() );
+		this.iNegatedFCRef = negatedFilterCondition.getIFilterConditionID();
 	}
-	
+
 	/**
 	 * TO BE USED BY {@link LocalStoreConfigurationService} ONLY!
 	 * 
 	 * Returns the database id of negated condition.
 	 */
 	public int getINegatedFCRef() {
-		return this.id.getINegatedFCRef();
+		return this.iNegatedFCRef;
 	}
 
 	public void deleteJoinLinkData(Session session) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements<?>)this.negatedFilterCondition).deleteJoinLinkData(session);
+			((HasJoinedElements<?>) this.negatedFilterCondition)
+					.deleteJoinLinkData(session);
 		}
 	}
 
@@ -76,13 +88,57 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO implem
 	public void loadJoinData(Session session,
 			Collection<FilterConditionDTO> allJoinedElements) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements<FilterConditionDTO>)this.negatedFilterCondition).loadJoinData(session, allJoinedElements);
+			((HasJoinedElements<FilterConditionDTO>) this.negatedFilterCondition)
+					.loadJoinData(session, allJoinedElements);
 		}
 	}
 
 	public void storeJoinLinkData(Session session) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements<?>)this.negatedFilterCondition).storeJoinLinkData(session);
+			((HasJoinedElements<?>) this.negatedFilterCondition)
+					.storeJoinLinkData(session);
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + iFilterConditionRef;
+		result = prime * result + iNegatedFCRef;
+		result = prime
+				* result
+				+ ((negatedFilterCondition == null) ? 0
+						: negatedFilterCondition.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof NegationConditionForFilterTreeDTO))
+			return false;
+		final NegationConditionForFilterTreeDTO other = (NegationConditionForFilterTreeDTO) obj;
+		if (iFilterConditionRef != other.iFilterConditionRef)
+			return false;
+		if (iNegatedFCRef != other.iNegatedFCRef)
+			return false;
+		if (negatedFilterCondition == null) {
+			if (other.negatedFilterCondition != null)
+				return false;
+		} else if (!negatedFilterCondition.equals(other.negatedFilterCondition))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + ": iFilterConditionRef="
+				+ this.iFilterConditionRef + ", iNegatedFCRef="
+				+ this.iNegatedFCRef + ", assigned FC by mapping: "
+				+ this.negatedFilterCondition;
 	}
 }
