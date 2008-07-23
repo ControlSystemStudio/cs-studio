@@ -64,9 +64,14 @@ public abstract class AbstractNamsView extends ViewPart {
 			if (!isInitialized()) {
 				String P_CONFIG_DATABASE_CONNECTION = preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION);
+				String P_CONFIG_DATABASE_TYPE_asString = preferenceService
+						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE);
+				if( P_CONFIG_DATABASE_TYPE_asString == null || P_CONFIG_DATABASE_TYPE_asString.length() == 0 ) {
+					throw new RuntimeException("Missing database setting!");
+				}
+				
 				DatabaseType P_CONFIG_DATABASE_TYPE = DatabaseType
-						.valueOf(preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE));
+						.valueOf(P_CONFIG_DATABASE_TYPE_asString);
 				String P_CONFIG_DATABASE_USER = preferenceService
 						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER);
 				String P_CONFIG_DATABASE_PASSWORD = preferenceService
