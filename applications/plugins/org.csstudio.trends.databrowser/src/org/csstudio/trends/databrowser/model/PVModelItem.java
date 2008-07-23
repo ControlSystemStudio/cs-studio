@@ -18,10 +18,10 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.utility.pv.IPVFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Element;
 
@@ -106,10 +106,18 @@ public class PVModelItem
     @SuppressWarnings("nls")
     private PV createPV(String pv_name)
     {
-        if (test_mode)
-            return new EPICS_V3_PV(pv_name);
         try
         {
+            if (test_mode)
+            {
+            	// For unit tests we create an EPICS_V3_PV
+            	// without going through the platform registry.
+            	// To avoid a dependency/import of the ..pv.epics
+            	// code, use Class.forName:
+            	final IPVFactory factory = (IPVFactory)
+            		Class.forName("org.csstudio.utility.pv.epics.EPICSPVFactory").newInstance();
+                return factory.createPV(pv_name);
+            }
             return PVFactory.createPV(pv_name);
         }
         catch (Exception ex)
@@ -177,7 +185,6 @@ public class PVModelItem
     }
     
     /** @see IModelItem#addSamples() */
-    @SuppressWarnings("nls")
     public void addArchiveSamples(final String source, final IValue samples[])
     {
         this.samples.addArchiveSamples(source, samples);
@@ -212,7 +219,6 @@ public class PVModelItem
     /** Decode XML DOM element for "pv ...".
      *  @see #getXMLContent()
      */
-    @SuppressWarnings("nls")
     public static PVModelItem loadFromDOM(Model model, Element pv, int ring_size) throws Exception
     {
         // Common PV stuff
