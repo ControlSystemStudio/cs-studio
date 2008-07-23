@@ -480,6 +480,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				);
 			}
 			bean = jcfftBean;
+		} else if (filterCondtionDTO instanceof NegationConditionForFilterTreeDTO) {
+			NegationConditionForFilterTreeDTO ncffDTO = (NegationConditionForFilterTreeDTO) filterCondtionDTO;
+			NotConditionForFilterTreeBean notBean = new NotConditionForFilterTreeBean();
+			
+			// TODO (gs) dieses Verhalten hebelt das eindeute hinzufügen in die Map aus
+			// sollte sich wie in der loadConfiguration() verhalten
+			notBean.setFilterbedingungBean(DTO2Bean(ncffDTO.getNegatedFilterCondition()));
+			
+			bean = notBean;
 		}
 
 		bean.setFilterbedinungID(filterCondtionDTO.getIFilterConditionID());
@@ -493,8 +502,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (filterSpecificBean != null) {
 			bean.setFilterSpecificBean(filterSpecificBean);
 		} else {
-			// FCFFT haben keine speciefic beans!
-			if (!(filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO)) {
+			// FCFFT und NCFFT haben keine speciefic beans!
+			if (!(filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO) && !(filterCondtionDTO instanceof NegationConditionForFilterTreeDTO)) {
 				throw new IllegalArgumentException(
 						"Unrecognized FilterConditionDTO: " + filterCondtionDTO);
 			}
