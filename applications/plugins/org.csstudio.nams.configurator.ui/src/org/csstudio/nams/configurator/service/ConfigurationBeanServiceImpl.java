@@ -173,7 +173,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		listeners.add(listener);
 	}
 
-	public FilterbedingungBean[] getFilterConditionsForView() {
+	public FilterbedingungBean[] getFilterConditionsBeans() {
 		// TODO may cache results
 		List<FilterbedingungBean> lists = new LinkedList<FilterbedingungBean>();
 		for (FilterbedingungBean bean : getFilterConditionBeans()) {

@@ -25,7 +25,7 @@ public interface ConfigurationBeanService {
 	public abstract FilterBean[] getFilterBeans();
 	
 	public abstract FilterbedingungBean[] getFilterConditionBeans();
-	public FilterbedingungBean[] getFilterConditionsForView();
+	public FilterbedingungBean[] getFilterConditionsBeans();
 
 	public abstract String[] getRubrikNamesForType(RubrikTypeEnum type);
 

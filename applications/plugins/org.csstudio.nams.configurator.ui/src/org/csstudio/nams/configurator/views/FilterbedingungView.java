@@ -1,7 +1,12 @@
 package org.csstudio.nams.configurator.views;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
+import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;
 import org.csstudio.nams.configurator.dnd.SelectionDragSourceListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -14,7 +19,16 @@ public class FilterbedingungView extends AbstractNamsView {
 
 	@Override
 	protected IConfigurationBean[] getTableContent() {
-		return getConfigurationBeanService().getFilterConditionsForView();
+		FilterbedingungBean[] conditionsBeans = getConfigurationBeanService().getFilterConditionsBeans();
+		List<FilterbedingungBean> result = new LinkedList<FilterbedingungBean>();
+		for (FilterbedingungBean filterbedingungBean : conditionsBeans) {
+			// TODO (gs) nur zum testen auskommentiert
+//			if (!(filterbedingungBean instanceof JunctorConditionForFilterTreeBean) &&
+//					!(filterbedingungBean instanceof NotConditionForFilterTreeBean)) {
+				result.add(filterbedingungBean);
+//			}
+		}
+		return result.toArray(new FilterbedingungBean[result.size()]);
 	}
 
 	@Override
