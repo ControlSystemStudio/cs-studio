@@ -1,6 +1,12 @@
 connect 'jdbc:derby://localhost/amsdb;create=true';
 
 -- NAMS --
+drop table AMSFilterNegationCond4Filter;
+create table AMSFilterNegationCond4Filter (
+    iFilterConditionRef			INT NOT NULL,
+    iNegatedFCRef               INT NOT NULL
+);
+
 drop table AMSFilterCondConj4FilterCommon;
 create table AMSFilterCondConj4FilterCommon (
    iFilterConditionRef		INT NOT NULL,

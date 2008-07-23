@@ -1,4 +1,10 @@
 -- NAMS Oracle --
+drop table AMSFilterNegationCond4Filter;
+create table AMSFilterNegationCond4Filter (
+    iFilterConditionRef			NUMBER(11) NOT NULL,
+    iNegatedFCRef               NUMBER(11) NOT NULL
+);
+
 drop table AMSFilterCondConj4FilterCommon;
 create table AMSFilterCondConj4FilterCommon (
    iFilterConditionRef			NUMBER(11) NOT NULL,
