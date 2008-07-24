@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
@@ -35,11 +37,16 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.hibernate.CacheMode;
+import org.hibernate.EntityMode;
 import org.hibernate.FlushMode;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
+import org.hibernate.ReplicationMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
+import org.hibernate.jmx.HibernateService;
 
 /**
  * Implementation für Hibernate.
@@ -375,6 +382,7 @@ class LocalStoreConfigurationServiceImpl implements
 			session = this.openNewSession();
 			transaction = session.beginTransaction();
 			transaction.begin();
+			
 			this.saveDTONoTransaction(session, dto);
 			if (dto instanceof StringArrayFilterConditionDTO) {
 				final StringArrayFilterConditionDTO filterDto = (StringArrayFilterConditionDTO) dto;
@@ -553,7 +561,9 @@ class LocalStoreConfigurationServiceImpl implements
 
 				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
 						Class<T> clasz) throws Throwable {
-					return loadAll(clasz);
+					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this.loadAll(session, clasz);
+					allLoaded.remove(dto); // Muss raus sonst landen wir immer wieder hier! ;)
+					return allLoaded;
 				}
 
 				public void save(NewAMSConfigurationElementDTO element)
@@ -582,6 +592,7 @@ class LocalStoreConfigurationServiceImpl implements
 	 */
 	protected void saveDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
+		
 		session.saveOrUpdate(dto);
 		
 		if (dto instanceof HasJoinedElements) {
@@ -589,7 +600,9 @@ class LocalStoreConfigurationServiceImpl implements
 
 				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
 						Class<T> clasz)  throws Throwable {
-					return loadAll(clasz);
+					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this.loadAll(session, clasz);
+					allLoaded.remove(dto); // Muss raus, sonst landen wir immer wieder hier! ;)
+					return allLoaded;
 				}
 
 				public void save(NewAMSConfigurationElementDTO element)  throws Throwable {

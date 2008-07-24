@@ -280,7 +280,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 				.gibAlleFilterConditions();
 		JunctorConditionForFilterTreeDTO found = null;
 		for (FilterConditionDTO filterConditionDTO : alleFilterConditions) {
-			if (condition.equals(filterConditionDTO)) {
+			if (condition.getCName().equals(filterConditionDTO.getCName())) {
 				found = condition;
 			}
 		}
