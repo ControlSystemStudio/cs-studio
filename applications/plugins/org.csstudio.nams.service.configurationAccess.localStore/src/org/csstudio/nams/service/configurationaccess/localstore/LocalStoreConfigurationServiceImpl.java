@@ -49,8 +49,8 @@ import org.hibernate.criterion.Restrictions;
 class LocalStoreConfigurationServiceImpl implements
 		LocalStoreConfigurationService {
 
-	private final SessionFactory sessionFactory;
 	private final Logger logger;
+	private final SessionFactory sessionFactory;
 
 	/**
 	 * 
@@ -66,20 +66,28 @@ class LocalStoreConfigurationServiceImpl implements
 		this.logger = logger;
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		this.sessionFactory.close();
+	private void addUsersToGroups(
+			final Session session,
+			final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
+			final List<User2UserGroupDTO> alleUser2UserGroupMappings) {
+		final HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
+		for (final AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
+			gruppen.put(gruppe.getUserGroupId(), gruppe);
+		}
+		for (final User2UserGroupDTO map : alleUser2UserGroupMappings) {
+			try {
+				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
+						.alarmbearbeiterZuordnen(map);
+			} catch (final NullPointerException npe) {
+				session.delete(map);
+				this.logger.logWarningMessage(this,
+						"Deleted invalid User To UserGroup mapping, group "
+								+ map.getUser2UserGroupPK().getIUserGroupRef()
+								+ " doesn't exist");
+			}
+		}
 	}
 
-	private Session openNewSession() throws HibernateException {
-		final Session result = this.sessionFactory.openSession();
-		result.setCacheMode(CacheMode.IGNORE);
-		result.setFlushMode(FlushMode.COMMIT);
-
-		return result;
-	}
-	
 	private void closeSession(Session session) throws HibernateException {
 		if (session != null && session.isOpen()) {
 			try {
@@ -89,6 +97,88 @@ class LocalStoreConfigurationServiceImpl implements
 				throw new StorageError("session could not be closed", he);
 			}
 		}
+	}
+	
+	public void deleteAlarmbearbeiterGruppenDTO(
+			final AlarmbearbeiterGruppenDTO dto) throws StorageError,
+			StorageException, InconsistentConfigurationException {
+		Session session = null;
+		Transaction tx = null;
+		try {
+			session = this.openNewSession();
+			tx = session.beginTransaction();
+			final Collection<User2UserGroupDTO> user2GroupMappings = session
+					.createCriteria(User2UserGroupDTO.class).list();
+
+			for (final User2UserGroupDTO a : user2GroupMappings) {
+				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
+						.getUserGroupId()) {
+					session.delete(a);
+				}
+			}
+			session.delete(dto);
+			tx.commit();
+		} catch (final Throwable e) {
+			new InconsistentConfigurationException("Could not delete " + dto);
+		} finally {
+			closeSession(session);
+		}
+	}
+
+	public void deleteAlarmtopicDTO(final TopicDTO dto) throws StorageError,
+			StorageException, InconsistentConfigurationException {
+		this.deleteDTO(dto);
+	}
+
+	public void deleteDTO(final NewAMSConfigurationElementDTO dto)
+			throws StorageError, StorageException,
+			InconsistentConfigurationException {
+		Transaction transaction = null;
+		Session session = null;
+		try {
+			session = this.openNewSession();
+			transaction = session.beginTransaction();
+			this.deleteDTONoTransaction(session, dto);
+
+			transaction.commit();
+		} catch (final Throwable t) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			throw new StorageException(
+					"failed to delete configuration element of type "
+							+ dto.getClass().getSimpleName(), t);
+		} finally {
+			closeSession(session);
+		}
+	}
+
+	void deleteDTONoTransaction(final Session session,
+			final NewAMSConfigurationElementDTO dto) throws Throwable {
+		if (dto instanceof HasJoinedElements) {
+			((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
+		}
+
+		session.delete(dto);
+	}
+
+	public void deleteFilterConditionDTO(final FilterConditionDTO dto)
+			throws StorageError, StorageException,
+			InconsistentConfigurationException {
+		this.deleteDTO(dto);
+	}
+
+	public void deleteFilterDTO(final FilterDTO dto)
+			throws InconsistentConfigurationException, StorageError,
+			StorageException {
+		// FIXME fertigstellen: Die Joins/OR/AND/NOTS...
+		this.deleteDTO(dto);
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		this.sessionFactory.close();
 	}
 
 	public ReplicationStateDTO getCurrentReplicationState()
@@ -226,75 +316,6 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	private void addUsersToGroups(
-			final Session session,
-			final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
-			final List<User2UserGroupDTO> alleUser2UserGroupMappings) {
-		final HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
-		for (final AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
-			gruppen.put(gruppe.getUserGroupId(), gruppe);
-		}
-		for (final User2UserGroupDTO map : alleUser2UserGroupMappings) {
-			try {
-				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
-						.alarmbearbeiterZuordnen(map);
-			} catch (final NullPointerException npe) {
-				session.delete(map);
-				this.logger.logWarningMessage(this,
-						"Deleted invalid User To UserGroup mapping, group "
-								+ map.getUser2UserGroupPK().getIUserGroupRef()
-								+ " doesn't exist");
-			}
-		}
-	}
-
-	private void setStringArrayCompareValues(
-			final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues,
-			final Collection<FilterConditionDTO> allFilterConditions) {
-		final Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
-		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition instanceof StringArrayFilterConditionDTO) {
-				stringAFC.put(filterCondition.getIFilterConditionID(),
-						(StringArrayFilterConditionDTO) filterCondition);
-				final StringArrayFilterConditionDTO sFC = (StringArrayFilterConditionDTO) filterCondition;
-				sFC
-						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
-			}
-		}
-		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
-			final StringArrayFilterConditionDTO conditionDTO = stringAFC
-					.get(stringArrayFilterConditionCompareValuesDTO
-							.getFilterConditionRef());
-			final List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO
-					.getCompareValueList();
-			list.add(stringArrayFilterConditionCompareValuesDTO);
-			conditionDTO.setCompareValues(list);
-		}
-
-	}
-
-	private void setChildFilterConditionsInJunctorDTOs(
-			final Collection<FilterConditionDTO> allFilterConditions) {
-		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition instanceof JunctorConditionDTO) {
-				final JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
-				final FilterConditionDTO firstFilterCondition = this
-						.getFilterConditionForId(junctorConditionDTO
-								.getFirstFilterConditionRef(),
-								allFilterConditions);
-				final FilterConditionDTO secondFilterCondition = this
-						.getFilterConditionForId(junctorConditionDTO
-								.getSecondFilterConditionRef(),
-								allFilterConditions);
-
-				junctorConditionDTO
-						.setFirstFilterCondition(firstFilterCondition);
-				junctorConditionDTO
-						.setSecondFilterCondition(secondFilterCondition);
-			}
-		}
-	}
-
 	public FilterConditionDTO getFilterConditionForId(final int id,
 			final Collection<FilterConditionDTO> allFilterConditions) {
 		for (final FilterConditionDTO filterCondition : allFilterConditions) {
@@ -303,6 +324,21 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 		}
 		return null;
+	}
+
+	private Session openNewSession() throws HibernateException {
+		final Session result = this.sessionFactory.openSession();
+		result.setCacheMode(CacheMode.IGNORE);
+		result.setFlushMode(FlushMode.COMMIT);
+
+		return result;
+	}
+
+	public void prepareSynchonization() throws StorageError, StorageException,
+			InconsistentConfigurationException {
+		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
+		// HSQL-Statement.
+		throw new UnsupportedOperationException("not implemented yet.");
 	}
 
 	private void pruefeUndOrdnerFilterDieFilterConditionsZu(
@@ -333,6 +369,52 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
+	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
+			final AlarmbearbeiterDTO alarmbearbeiterDTO) throws StorageError,
+			StorageException, InconsistentConfigurationException {
+		this.saveDTO(alarmbearbeiterDTO);
+		return alarmbearbeiterDTO;
+	}
+
+	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
+			final AlarmbearbeiterGruppenDTO dto)
+			throws InconsistentConfigurationException {
+
+		Transaction tx = null;
+		Session session = null;
+		try {
+			session = this.openNewSession();
+			tx = session.beginTransaction();
+			session.saveOrUpdate(dto);
+
+			final Collection<User2UserGroupDTO> user2GroupMappings = session
+					.createCriteria(User2UserGroupDTO.class).list();
+
+			for (final User2UserGroupDTO a : user2GroupMappings) {
+				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
+						.getUserGroupId()) {
+					session.delete(a);
+				}
+			}
+			// for all used FC
+			// get the mappingDTO, if no DTO exists, create one
+			final Set<User2UserGroupDTO> zugehoerigeAlarmbearbeiter = dto
+					.gibZugehoerigeAlarmbearbeiter();
+
+			// save the used Mappings
+			for (final User2UserGroupDTO map : zugehoerigeAlarmbearbeiter) {
+				session.save(map);
+			}
+			tx.commit();
+		} catch (final Throwable e) {
+			tx.rollback();
+			throw new InconsistentConfigurationException(e.getMessage());
+		} finally {
+			closeSession(session);
+		}
+		return dto;
+	}
+
 	public void saveCurrentReplicationState(
 			final ReplicationStateDTO currentState) throws StorageError,
 			StorageException, UnknownConfigurationElementError {
@@ -349,27 +431,6 @@ class LocalStoreConfigurationServiceImpl implements
 				newTransaction.rollback();
 			}
 			throw new StorageException("unable to save replication state", t);
-		} finally {
-			closeSession(session);
-		}
-	}
-
-	public void saveHistoryDTO(final HistoryDTO historyDTO)
-			throws StorageError, StorageException,
-			InconsistentConfigurationException {
-		Transaction newTransaction = null;
-		Session session = null;
-		try {
-			session = this.openNewSession();
-			newTransaction = session.beginTransaction();
-			session.saveOrUpdate(historyDTO);
-			newTransaction.commit();
-			session.close();
-		} catch (final Throwable t) {
-			if (newTransaction != null) {
-				newTransaction.rollback();
-			}
-			throw new StorageException("unable to save history element", t);
 		} finally {
 			closeSession(session);
 		}
@@ -430,97 +491,6 @@ class LocalStoreConfigurationServiceImpl implements
 		if (dto instanceof HasJoinedElements) {
 			((HasJoinedElements<?>) dto).storeJoinLinkData(session);
 		}
-	}
-
-	void deleteDTONoTransaction(final Session session,
-			final NewAMSConfigurationElementDTO dto) throws Throwable {
-		if (dto instanceof HasJoinedElements) {
-			((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
-		}
-
-		session.delete(dto);
-	}
-
-	public void deleteDTO(final NewAMSConfigurationElementDTO dto)
-			throws StorageError, StorageException,
-			InconsistentConfigurationException {
-		Transaction transaction = null;
-		Session session = null;
-		try {
-			session = this.openNewSession();
-			transaction = session.beginTransaction();
-			this.deleteDTONoTransaction(session, dto);
-
-			transaction.commit();
-		} catch (final Throwable t) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			throw new StorageException(
-					"failed to delete configuration element of type "
-							+ dto.getClass().getSimpleName(), t);
-		} finally {
-			closeSession(session);
-		}
-	}
-
-	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
-			final AlarmbearbeiterDTO alarmbearbeiterDTO) throws StorageError,
-			StorageException, InconsistentConfigurationException {
-		this.saveDTO(alarmbearbeiterDTO);
-		return alarmbearbeiterDTO;
-	}
-
-	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
-			final AlarmbearbeiterGruppenDTO dto)
-			throws InconsistentConfigurationException {
-
-		Transaction tx = null;
-		Session session = null;
-		try {
-			session = this.openNewSession();
-			tx = session.beginTransaction();
-			session.saveOrUpdate(dto);
-
-			final Collection<User2UserGroupDTO> user2GroupMappings = session
-					.createCriteria(User2UserGroupDTO.class).list();
-
-			for (final User2UserGroupDTO a : user2GroupMappings) {
-				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
-						.getUserGroupId()) {
-					session.delete(a);
-				}
-			}
-			// for all used FC
-			// get the mappingDTO, if no DTO exists, create one
-			final Set<User2UserGroupDTO> zugehoerigeAlarmbearbeiter = dto
-					.gibZugehoerigeAlarmbearbeiter();
-
-			// save the used Mappings
-			for (final User2UserGroupDTO map : zugehoerigeAlarmbearbeiter) {
-				session.save(map);
-			}
-			tx.commit();
-		} catch (final Throwable e) {
-			tx.rollback();
-			throw new InconsistentConfigurationException(e.getMessage());
-		} finally {
-			closeSession(session);
-		}
-		return dto;
-	}
-
-	public TopicDTO saveTopicDTO(final TopicDTO topicDTO) throws StorageError,
-			StorageException, InconsistentConfigurationException {
-		this.saveDTO(topicDTO);
-		return topicDTO;
-
-	}
-
-	public RubrikDTO saveRubrikDTO(final RubrikDTO dto) throws StorageError,
-			StorageException, InconsistentConfigurationException {
-		this.saveDTO(dto);
-		return dto;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -627,61 +597,85 @@ class LocalStoreConfigurationServiceImpl implements
 		return dto;
 	}
 
-	public void deleteAlarmbearbeiterDTO(final AlarmbearbeiterDTO dto)
+	public void saveHistoryDTO(final HistoryDTO historyDTO)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
-		this.deleteDTO(dto);
-	}
-
-	public void deleteAlarmbearbeiterGruppenDTO(
-			final AlarmbearbeiterGruppenDTO dto) throws StorageError,
-			StorageException, InconsistentConfigurationException {
+		Transaction newTransaction = null;
 		Session session = null;
-		Transaction tx = null;
 		try {
 			session = this.openNewSession();
-			tx = session.beginTransaction();
-			final Collection<User2UserGroupDTO> user2GroupMappings = session
-					.createCriteria(User2UserGroupDTO.class).list();
-
-			for (final User2UserGroupDTO a : user2GroupMappings) {
-				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
-						.getUserGroupId()) {
-					session.delete(a);
-				}
+			newTransaction = session.beginTransaction();
+			session.saveOrUpdate(historyDTO);
+			newTransaction.commit();
+			session.close();
+		} catch (final Throwable t) {
+			if (newTransaction != null) {
+				newTransaction.rollback();
 			}
-			session.delete(dto);
-			tx.commit();
-		} catch (final Throwable e) {
-			new InconsistentConfigurationException("Could not delete " + dto);
+			throw new StorageException("unable to save history element", t);
 		} finally {
 			closeSession(session);
 		}
 	}
 
-	public void deleteAlarmtopicDTO(final TopicDTO dto) throws StorageError,
+	public RubrikDTO saveRubrikDTO(final RubrikDTO dto) throws StorageError,
 			StorageException, InconsistentConfigurationException {
-		this.deleteDTO(dto);
+		this.saveDTO(dto);
+		return dto;
 	}
 
-	public void deleteFilterConditionDTO(final FilterConditionDTO dto)
-			throws StorageError, StorageException,
-			InconsistentConfigurationException {
-		this.deleteDTO(dto);
+	public TopicDTO saveTopicDTO(final TopicDTO topicDTO) throws StorageError,
+			StorageException, InconsistentConfigurationException {
+		this.saveDTO(topicDTO);
+		return topicDTO;
+
 	}
 
-	public void deleteFilterDTO(final FilterDTO dto)
-			throws InconsistentConfigurationException, StorageError,
-			StorageException {
-		// FIXME fertigstellen: Die Joins/OR/AND/NOTS...
-		this.deleteDTO(dto);
+	private void setChildFilterConditionsInJunctorDTOs(
+			final Collection<FilterConditionDTO> allFilterConditions) {
+		for (final FilterConditionDTO filterCondition : allFilterConditions) {
+			if (filterCondition instanceof JunctorConditionDTO) {
+				final JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
+				final FilterConditionDTO firstFilterCondition = this
+						.getFilterConditionForId(junctorConditionDTO
+								.getFirstFilterConditionRef(),
+								allFilterConditions);
+				final FilterConditionDTO secondFilterCondition = this
+						.getFilterConditionForId(junctorConditionDTO
+								.getSecondFilterConditionRef(),
+								allFilterConditions);
+
+				junctorConditionDTO
+						.setFirstFilterCondition(firstFilterCondition);
+				junctorConditionDTO
+						.setSecondFilterCondition(secondFilterCondition);
+			}
+		}
 	}
 
-	public void prepareSynchonization() throws StorageError, StorageException,
-			InconsistentConfigurationException {
-		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
-		// HSQL-Statement.
-		throw new UnsupportedOperationException("not implemented yet.");
+	private void setStringArrayCompareValues(
+			final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues,
+			final Collection<FilterConditionDTO> allFilterConditions) {
+		final Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
+		for (final FilterConditionDTO filterCondition : allFilterConditions) {
+			if (filterCondition instanceof StringArrayFilterConditionDTO) {
+				stringAFC.put(filterCondition.getIFilterConditionID(),
+						(StringArrayFilterConditionDTO) filterCondition);
+				final StringArrayFilterConditionDTO sFC = (StringArrayFilterConditionDTO) filterCondition;
+				sFC
+						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
+			}
+		}
+		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
+			final StringArrayFilterConditionDTO conditionDTO = stringAFC
+					.get(stringArrayFilterConditionCompareValuesDTO
+							.getFilterConditionRef());
+			final List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO
+					.getCompareValueList();
+			list.add(stringArrayFilterConditionCompareValuesDTO);
+			conditionDTO.setCompareValues(list);
+		}
+
 	}
 
 }
