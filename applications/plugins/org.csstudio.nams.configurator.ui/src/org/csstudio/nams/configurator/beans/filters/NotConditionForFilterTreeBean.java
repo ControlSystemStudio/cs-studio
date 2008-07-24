@@ -29,13 +29,16 @@ public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 		if (this == o){
 			return 0;
 		}
-		return -1;
+		return this.bean.compareTo(o.bean);
 	}
 
 	@Override
 	protected void doUpdateState(FilterbedingungBean bean) {
-		// TODO Auto-generated method stub
-		
+		if (bean instanceof NotConditionForFilterTreeBean) {
+			super.doUpdateState(bean);
+			NotConditionForFilterTreeBean ncffBean = (NotConditionForFilterTreeBean) bean;
+			this.bean = ncffBean.getFilterbedingungBean();
+		}
 	}
 
 	public void setFilterbedingungBean(FilterbedingungBean bean) {
@@ -56,6 +59,9 @@ public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj;
+		if (obj instanceof NotConditionForFilterTreeBean) {
+			return this.bean.equals(((NotConditionForFilterTreeBean)obj).bean);
+		}
+		return false;
 	}
 }
