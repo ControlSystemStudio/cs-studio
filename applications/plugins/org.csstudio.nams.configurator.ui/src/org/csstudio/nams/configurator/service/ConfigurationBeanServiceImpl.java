@@ -366,8 +366,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			RubrikDTO newRubrikDTO = new RubrikDTO();
 			newRubrikDTO.setCGroupName(rubrikName);
 			newRubrikDTO.setType(type);
-			result = configurationService.saveRubrikDTO(newRubrikDTO)
-					.getIGroupId();
+			configurationService.saveDTO(newRubrikDTO);
+			result = newRubrikDTO.getIGroupId();
 		}
 		return result;
 	}
@@ -554,7 +554,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(),
 				RubrikTypeEnum.USER));
 
-		dto = configurationService.saveAlarmbearbeiterDTO(dto);
+		configurationService.saveDTO(dto);
 		loadConfiguration();
 
 		AlarmbearbeiterBean resultBean = alarmbearbeiterBeans.get(new Integer(
@@ -641,7 +641,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(),
 				RubrikTypeEnum.TOPIC));
 
-		dto = configurationService.saveTopicDTO(dto);
+		configurationService.saveDTO(dto);
 		loadConfiguration();
 		AlarmtopicBean resultBean = alarmtopicBeans
 				.get(new Integer(dto.getId()));
@@ -1063,7 +1063,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 		}
 		if (dto != null) {
-			configurationService.deleteAlarmbearbeiterDTO(dto);
+			configurationService.deleteDTO(dto);
 			alarmbearbeiterBeans.remove(dto.getUserId());
 			logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " + dto.getUserId()
@@ -1103,7 +1103,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 		}
 		if (dto != null) {
-			configurationService.deleteAlarmtopicDTO(dto);
+			configurationService.deleteDTO(dto);
 			alarmtopicBeans.remove(dto.getId());
 			logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() " + dto.getId()
@@ -1149,7 +1149,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 		}
 		if (dto != null) {
-			configurationService.deleteFilterConditionDTO(dto);
+			configurationService.deleteDTO(dto);
 			filterbedingungBeans.remove(dto.getIFilterConditionID());
 			logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() "

@@ -4,6 +4,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
+
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
  * AMS_FilterCond_ArrStrVal.
@@ -20,7 +22,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AMS_FilterCond_ArrStrVal")
-public class StringArrayFilterConditionCompareValuesDTO {
+public class StringArrayFilterConditionCompareValuesDTO implements NewAMSConfigurationElementDTO {
 	
 	@EmbeddedId
 	private StringArrayFilterConditionCompareValuesDTO_PK pk;
@@ -97,5 +99,13 @@ public class StringArrayFilterConditionCompareValuesDTO {
 	public void setPK(int filterConditionID) {
 		this.pk.setFilterConditionRef(filterConditionID);
 		
+	}
+
+	public String getUniqueHumanReadableName() {
+		return toString();
+	}
+
+	public boolean isInCategory(int categoryDBId) {
+		return false;
 	}
 }

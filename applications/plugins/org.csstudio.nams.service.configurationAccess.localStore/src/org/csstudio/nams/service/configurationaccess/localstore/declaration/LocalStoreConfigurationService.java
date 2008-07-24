@@ -4,8 +4,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 
 /**
@@ -113,37 +111,21 @@ public interface LocalStoreConfigurationService {
 			throws StorageError, StorageException,
 			InconsistentConfigurationException;
 
-	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
-			AlarmbearbeiterDTO alarmBearbeiterDTO) throws StorageError,
-			StorageException, InconsistentConfigurationException;
-
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
 			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO)
 			throws InconsistentConfigurationException;
 
-	public TopicDTO saveTopicDTO(TopicDTO topicDTO) throws StorageError,
-			StorageException, InconsistentConfigurationException;
-
 	public FilterDTO saveFilterDTO(FilterDTO dto) throws StorageError,
-			StorageException, InconsistentConfigurationException;
-
-	public RubrikDTO saveRubrikDTO(RubrikDTO dto) throws StorageError,
 			StorageException, InconsistentConfigurationException;
 
 	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException;
 
-	public void deleteAlarmtopicDTO(TopicDTO dto) throws StorageError,
-			StorageException, InconsistentConfigurationException;
-
 	public void deleteFilterDTO(FilterDTO dto)
 			throws InconsistentConfigurationException, StorageError,
 			StorageException;
 
-	public void deleteFilterConditionDTO(FilterConditionDTO dto)
-			throws StorageError, StorageException,
-			InconsistentConfigurationException;
 
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden

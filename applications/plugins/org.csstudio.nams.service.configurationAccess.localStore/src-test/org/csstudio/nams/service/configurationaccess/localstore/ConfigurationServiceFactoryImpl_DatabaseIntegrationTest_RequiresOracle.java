@@ -84,7 +84,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 
 		AlarmbearbeiterDTO dto = new AlarmbearbeiterDTO();
 		dto.setUserName("Test-Troll");
-		service.saveAlarmbearbeiterDTO(dto);
+		service.saveDTO(dto);
 		assertTrue(dto.getUserId() != 0);
 		assertEquals("Test-Troll", dto.getUserName());
 
@@ -106,7 +106,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 
 		int oldId = dto.getUserId();
 		dto.setUserName("Test-Dummy");
-		service.saveAlarmbearbeiterDTO(dto);
+		service.saveDTO(dto);
 		assertEquals(oldId, dto.getUserId());
 		assertEquals("Test-Dummy", dto.getUserName());
 
@@ -385,7 +385,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		Collection<FilterDTO> alleFilter = entireConfiguration.gibAlleFilter();
 		for (FilterDTO filterDTO : alleFilter) {
 			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
-				service.deleteDTO(filterDTO);
+				service.deleteFilterDTO(filterDTO);
 			}
 			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
 					"Test Filter für JCFFT"));

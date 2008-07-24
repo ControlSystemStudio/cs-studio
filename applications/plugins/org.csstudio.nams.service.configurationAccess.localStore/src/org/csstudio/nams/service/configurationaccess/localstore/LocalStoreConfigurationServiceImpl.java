@@ -38,8 +38,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Implementation für Hibernate.
@@ -74,16 +72,15 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			tx = session.beginTransaction();
-			final Collection<User2UserGroupDTO> user2GroupMappings = session
-					.createCriteria(User2UserGroupDTO.class).list();
+			final Collection<User2UserGroupDTO> user2GroupMappings = loadAll(session, User2UserGroupDTO.class);
 
 			for (final User2UserGroupDTO a : user2GroupMappings) {
 				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
 						.getUserGroupId()) {
-					session.delete(a);
+					deleteDTONoTransaction(session, a);
 				}
 			}
-			session.delete(dto);
+			deleteDTONoTransaction(session, dto);
 			tx.commit();
 		} catch (final Throwable e) {
 			new InconsistentConfigurationException("Could not delete " + dto);
@@ -92,11 +89,6 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	public void deleteAlarmtopicDTO(final TopicDTO dto) throws StorageError,
-			StorageException, InconsistentConfigurationException {
-		this.deleteDTO(dto);
-	}
-	
 	public void deleteDTO(final NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
@@ -104,6 +96,7 @@ class LocalStoreConfigurationServiceImpl implements
 		Session session = null;
 		try {
 			session = this.openNewSession();
+			
 			transaction = session.beginTransaction();
 			this.deleteDTONoTransaction(session, dto);
 
@@ -118,12 +111,6 @@ class LocalStoreConfigurationServiceImpl implements
 		} finally {
 			closeSession(session);
 		}
-	}
-
-	public void deleteFilterConditionDTO(final FilterConditionDTO dto)
-			throws StorageError, StorageException,
-			InconsistentConfigurationException {
-		this.deleteDTO(dto);
 	}
 
 	public void deleteFilterDTO(final FilterDTO dto)
@@ -187,19 +174,13 @@ class LocalStoreConfigurationServiceImpl implements
 			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
 
 			// PUBLICs
-			alleAlarmbarbeiter = session.createCriteria(
-					AlarmbearbeiterDTO.class).addOrder(Order.asc("userId"))
-					.list();
-			alleAlarmbearbeiterGruppen = session.createCriteria(
-					AlarmbearbeiterGruppenDTO.class).addOrder(
-					Order.asc("userGroupId")).list();
+			alleAlarmbarbeiter = loadAll(session, AlarmbearbeiterDTO.class);
+			alleAlarmbearbeiterGruppen = loadAll(session, AlarmbearbeiterGruppenDTO.class);
 
-			alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
-			allFilters = session.createCriteria(FilterDTO.class).list();
+			alleAlarmtopics = loadAll(session, TopicDTO.class);
+			allFilters = loadAll(session, FilterDTO.class);
 
-			allFilterConditions = session.createCriteria(
-					FilterConditionDTO.class).addOrder(
-					Order.asc("iFilterConditionID")).list();
+			allFilterConditions = loadAll(session, FilterConditionDTO.class);
 
 			// Nots befüllen
 			for (final FilterConditionDTO filterConditionDTO : allFilterConditions) {
@@ -216,20 +197,17 @@ class LocalStoreConfigurationServiceImpl implements
 				}
 			}
 
-			alleRubriken = session.createCriteria(RubrikDTO.class).list();
+			alleRubriken = loadAll(session, RubrikDTO.class);
 
-			alleUser2UserGroupMappings = session.createCriteria(
-					User2UserGroupDTO.class).list();
+			alleUser2UserGroupMappings = loadAll(session, User2UserGroupDTO.class);
 
-			allFilterConditionMappings = session.createCriteria(
-					FilterConditionsToFilterDTO.class).list();
+			allFilterConditionMappings = loadAll(session, FilterConditionsToFilterDTO.class);
 			this
 					.pruefeUndOrdnerFilterDieFilterConditionsZu(
 							allFilterConditionMappings, allFilterConditions,
 							allFilters);
 			this.setChildFilterConditionsInJunctorDTOs(allFilterConditions);
-			allCompareValues = session.createCriteria(
-					StringArrayFilterConditionCompareValuesDTO.class).list();
+			allCompareValues = loadAll(session, StringArrayFilterConditionCompareValuesDTO.class);
 			this.setStringArrayCompareValues(allCompareValues,
 					allFilterConditions);
 
@@ -256,7 +234,6 @@ class LocalStoreConfigurationServiceImpl implements
 					allFilterConditionMappings, allFilterConditions,
 					alleRubriken, alleUser2UserGroupMappings, allCompareValues);
 			transaction.commit();
-			session.close();
 		} catch (final Throwable t) {
 			if (transaction != null) {
 				transaction.rollback();
@@ -285,13 +262,6 @@ class LocalStoreConfigurationServiceImpl implements
 		throw new UnsupportedOperationException("not implemented yet.");
 	}
 
-	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
-			final AlarmbearbeiterDTO alarmbearbeiterDTO) throws StorageError,
-			StorageException, InconsistentConfigurationException {
-		this.saveDTO(alarmbearbeiterDTO);
-		return alarmbearbeiterDTO;
-	}
-
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
 			final AlarmbearbeiterGruppenDTO dto)
 			throws InconsistentConfigurationException {
@@ -303,8 +273,7 @@ class LocalStoreConfigurationServiceImpl implements
 			tx = session.beginTransaction();
 			session.saveOrUpdate(dto);
 
-			final Collection<User2UserGroupDTO> user2GroupMappings = session
-					.createCriteria(User2UserGroupDTO.class).list();
+			final Collection<User2UserGroupDTO> user2GroupMappings = loadAll(session, User2UserGroupDTO.class);
 
 			for (final User2UserGroupDTO a : user2GroupMappings) {
 				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
@@ -318,8 +287,8 @@ class LocalStoreConfigurationServiceImpl implements
 					.gibZugehoerigeAlarmbearbeiter();
 
 			// save the used Mappings
-			for (final User2UserGroupDTO map : zugehoerigeAlarmbearbeiter) {
-				session.save(map);
+			for (final User2UserGroupDTO user2userGroup : zugehoerigeAlarmbearbeiter) {
+				saveDTONoTransaction(session, user2userGroup);
 			}
 			tx.commit();
 		} catch (final Throwable e) {
@@ -351,6 +320,11 @@ class LocalStoreConfigurationServiceImpl implements
 			closeSession(session);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(Session session, Class<T> clasz) {
+		return session.createCriteria(clasz).list();
+	}
 
 	public void saveDTO(final NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
@@ -363,21 +337,17 @@ class LocalStoreConfigurationServiceImpl implements
 			this.saveDTONoTransaction(session, dto);
 			if (dto instanceof StringArrayFilterConditionDTO) {
 				final StringArrayFilterConditionDTO filterDto = (StringArrayFilterConditionDTO) dto;
-				final List<StringArrayFilterConditionCompareValuesDTO> list = session
-						.createCriteria(
-								StringArrayFilterConditionCompareValuesDTO.class)
-						.list();
+				final List<StringArrayFilterConditionCompareValuesDTO> list = loadAll(session, StringArrayFilterConditionCompareValuesDTO.class);
 				for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : list) {
 					if (filterDto.getIFilterConditionID() == stringArrayFilterConditionCompareValuesDTO
 							.getFilterConditionRef()) {
-						session
-								.delete(stringArrayFilterConditionCompareValuesDTO);
+						deleteDTONoTransaction(session, stringArrayFilterConditionCompareValuesDTO);
 					}
 				}
 				for (final StringArrayFilterConditionCompareValuesDTO compValue : filterDto
 						.getCompareValueList()) {
 					compValue.setPK(filterDto.getIFilterConditionID());
-					session.saveOrUpdate(compValue);
+					saveDTONoTransaction(session, compValue);
 				}
 			}
 			transaction.commit();
@@ -393,7 +363,6 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public FilterDTO saveFilterDTO(final FilterDTO dto) throws StorageError,
 			StorageException, InconsistentConfigurationException {
 		Session session = null;
@@ -402,7 +371,7 @@ class LocalStoreConfigurationServiceImpl implements
 			session = this.openNewSession();
 			tx = session.beginTransaction();
 
-			session.saveOrUpdate(dto);
+			saveDTONoTransaction(session, dto);
 
 			final List<FilterConditionDTO> filterConditions = dto
 					.getFilterConditions();
@@ -421,8 +390,7 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 
 			// clean up join data
-			final Collection<FilterConditionsToFilterDTO> conditionMappings = session
-					.createCriteria(FilterConditionsToFilterDTO.class).list();
+			final Collection<FilterConditionsToFilterDTO> conditionMappings = loadAll(session, FilterConditionsToFilterDTO.class);
 
 			for (final FilterConditionsToFilterDTO joinElement : conditionMappings) {
 				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
@@ -430,17 +398,18 @@ class LocalStoreConfigurationServiceImpl implements
 							.getIFilterConditionRef();
 
 					if (!zuSpeicherndeJoins.contains(joinElement)) {
-						session.delete(joinElement); // nicht mehr verwendete
+						deleteDTONoTransaction(session, joinElement); // nicht mehr verwendete
 						// Knoten löschen
 					}
 
-					final Collection<JunctorConditionForFilterTreeDTO> junctorConditions = session
-							.createCriteria(
-									JunctorConditionForFilterTreeDTO.class)
-							.add(Restrictions.idEq(filterConditionRef)).list();
+					final Collection<JunctorConditionForFilterTreeDTO> junctorConditions = loadAll(session, JunctorConditionForFilterTreeDTO.class);
 					if ((junctorConditions != null)
 							&& (junctorConditions.size() > 0)) {
 						for (final JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
+							if( junctorConditionForFilterTreeDTO.getIFilterConditionID() != filterConditionRef ) {
+								continue;
+							}
+							
 							if (!filterConditions
 									.contains(junctorConditionForFilterTreeDTO)) {
 								this.deleteDTONoTransaction(session,
@@ -449,12 +418,13 @@ class LocalStoreConfigurationServiceImpl implements
 						}
 					}
 
-					final Collection<NegationConditionForFilterTreeDTO> notConditions = session
-							.createCriteria(
-									NegationConditionForFilterTreeDTO.class)
-							.add(Restrictions.idEq(filterConditionRef)).list();
+					final Collection<NegationConditionForFilterTreeDTO> notConditions = loadAll( session, NegationConditionForFilterTreeDTO.class);
 					if ((notConditions != null) && (notConditions.size() > 0)) {
 						for (final NegationConditionForFilterTreeDTO notConditionForFilterTreeDTO : notConditions) {
+							if( notConditionForFilterTreeDTO.getIFilterConditionID() != filterConditionRef ) {
+								continue;
+							}
+							
 							if (!filterConditions
 									.contains(notConditionForFilterTreeDTO)) {
 								this.deleteDTONoTransaction(session,
@@ -507,7 +477,6 @@ class LocalStoreConfigurationServiceImpl implements
 			newTransaction = session.beginTransaction();
 			session.saveOrUpdate(historyDTO);
 			newTransaction.commit();
-			session.close();
 		} catch (final Throwable t) {
 			if (newTransaction != null) {
 				newTransaction.rollback();
@@ -518,26 +487,15 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	public RubrikDTO saveRubrikDTO(final RubrikDTO dto) throws StorageError,
-			StorageException, InconsistentConfigurationException {
-		this.saveDTO(dto);
-		return dto;
-	}
-
-	public TopicDTO saveTopicDTO(final TopicDTO topicDTO) throws StorageError,
-			StorageException, InconsistentConfigurationException {
-		this.saveDTO(topicDTO);
-		return topicDTO;
-
-	}
-
 	void deleteDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
-		if (dto instanceof HasJoinedElements) {
-			((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
+		NewAMSConfigurationElementDTO mergedDto = (NewAMSConfigurationElementDTO) session.merge(dto);
+		
+		if (mergedDto instanceof HasJoinedElements) {
+			((HasJoinedElements<?>) mergedDto).deleteJoinLinkData(session);
 		}
 
-		session.delete(dto);
+		session.delete(mergedDto);
 	}
 
 	@Override
@@ -575,11 +533,18 @@ class LocalStoreConfigurationServiceImpl implements
 				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
 						.alarmbearbeiterZuordnen(map);
 			} catch (final NullPointerException npe) {
-				session.delete(map);
-				this.logger.logWarningMessage(this,
-						"Deleted invalid User To UserGroup mapping, group "
-								+ map.getUser2UserGroupPK().getIUserGroupRef()
-								+ " doesn't exist");
+				try {
+					deleteDTONoTransaction(session, map);
+					this.logger.logWarningMessage(this,
+							"Deleted invalid User To UserGroup mapping, group "
+							+ map.getUser2UserGroupPK().getIUserGroupRef()
+							+ " doesn't exist");
+				} catch (Throwable e) {
+					this.logger.logErrorMessage(this,
+							"Failed to deleted invalid User To UserGroup mapping, group "
+							+ map.getUser2UserGroupPK().getIUserGroupRef()
+							+ " doesn't exist", e);
+				}
 			}
 		}
 	}

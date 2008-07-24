@@ -1,7 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +35,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Use
  */
 @Entity
 @Table(name = "AMS_UserGroup")
-public class AlarmbearbeiterGruppenDTO {
+public class AlarmbearbeiterGruppenDTO implements NewAMSConfigurationElementDTO {
 
 	// HAT funktuioniert, ist Vorlage für auto-mapping.
 	// @OneToMany
@@ -258,4 +257,12 @@ public class AlarmbearbeiterGruppenDTO {
     public void setAlarmbearbeiter(List<User2UserGroupDTO> list){
     	alarmbearbeiterDieserGruppe = new HashSet<User2UserGroupDTO>(list);
     }
+
+	public String getUniqueHumanReadableName() {
+		return getUserGroupName();
+	}
+
+	public boolean isInCategory(int categoryDBId) {
+		return false;
+	}
 }

@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
+
 /**
  * drop table AMS_UserGroup_User; create table AMS_UserGroup_User (
  * iUserGroupRef NUMBER(11) NOT NULL, iUserRef NUMBER(11) NOT NULL, iPos
@@ -17,7 +19,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "AMS_USERGROUP_USER")
-public class User2UserGroupDTO {
+public class User2UserGroupDTO implements NewAMSConfigurationElementDTO {
 
 	@EmbeddedId
 	private User2UserGroupDTO_PK user2UserGroupPK;
@@ -124,6 +126,14 @@ public class User2UserGroupDTO {
 
 	public void setLastchange(long lastchange) {
 		this.lastchange = lastchange;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return toString();
+	}
+
+	public boolean isInCategory(int categoryDBId) {
+		return false;
 	}
 
 }
