@@ -2,7 +2,9 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -44,7 +46,7 @@ import org.hibernate.criterion.Restrictions;
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterCondConj4FilterCommon")
 public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
-		implements HasJoinedElements<FilterConditionDTO> {
+		implements HasJoinedElements {
 
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -124,19 +126,19 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 * @throws If
 	 *             an error occurred
 	 */
-	public synchronized void storeJoinLinkData(Session session)
+	public synchronized void storeJoinLinkData(Mapper mapper)
 			throws Throwable {
-		deleteJoinLinkData(session);
+		deleteJoinLinkData(mapper);
 
 		for (FilterConditionDTO condition : this.getOperands()) {
 			if (condition instanceof JunctorConditionForFilterTreeDTO) {
-				session.saveOrUpdate(condition);
+				mapper.save(condition);
 				((JunctorConditionForFilterTreeDTO) condition)
-						.storeJoinLinkData(session);
+						.storeJoinLinkData(mapper);
 			}
 			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
 					this, condition);
-			session.save(newJoin);
+			mapper.save(newJoin);
 		}
 	}
 
@@ -162,8 +164,14 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized void loadJoinData(Session session,
-			Collection<FilterConditionDTO> allFilterConditions)
+			Collection<?> allFilterConditionsParam)
 			throws Throwable {
+		Collection<FilterConditionDTO> allFilterConditions = new LinkedList<FilterConditionDTO>();
+		for (Object object : allFilterConditionsParam) {
+			allFilterConditions.add((FilterConditionDTO) object);
+		}
+		
+		
 		Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
 
 		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session
@@ -187,22 +195,23 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized void deleteJoinLinkData(Session session)
+	public synchronized void deleteJoinLinkData(Mapper mapper)
 			throws Throwable {
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session
-				.createCriteria(
-						JunctorConditionForFilterTreeConditionJoinDTO.class)
-				.list();
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class);
 		
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {
 				int joinId = joinElement.getJoinedConditionsDatabaseId();
-				session.delete(joinElement);
-				List<JunctorConditionForFilterTreeDTO> list = session.createCriteria(JunctorConditionForFilterTreeDTO.class).add(Restrictions.idEq(joinId)).list();
+				mapper.delete(joinElement);
+				List<JunctorConditionForFilterTreeDTO> list = mapper.loadAll(JunctorConditionForFilterTreeDTO.class);
 				for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : list) {
-					junctorConditionForFilterTreeDTO.deleteJoinLinkData(session);
-					session.delete(junctorConditionForFilterTreeDTO);
+					if( junctorConditionForFilterTreeDTO.getIFilterConditionID() != joinId ) {
+						continue;
+					}
+					
+					junctorConditionForFilterTreeDTO.deleteJoinLinkData(mapper);
+					mapper.delete(junctorConditionForFilterTreeDTO);
 				}
 			}
 		}

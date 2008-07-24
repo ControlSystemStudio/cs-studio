@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
@@ -22,7 +23,15 @@ import org.hibernate.Session;
  * abstrahieren und im Service ausführen; der Typ {@link Configuration} ist dann
  * ein simpler Container
  */
-public interface HasJoinedElements<T extends NewAMSConfigurationElementDTO> {
+public interface HasJoinedElements {
+
+	static interface Mapper {
+		public void save(NewAMSConfigurationElementDTO element) throws Throwable;
+
+		public void delete(NewAMSConfigurationElementDTO element) throws Throwable;
+
+		public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(Class<T> clasz) throws Throwable;
+	}
 
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!
@@ -33,14 +42,13 @@ public interface HasJoinedElements<T extends NewAMSConfigurationElementDTO> {
 	 * {@link JunctorConditionForFilterTreeDTO}. IMPORTANT: This method has to
 	 * be called in a valid open transaction!
 	 * 
-	 * @param session
-	 *            The session to store to; it is guaranteed that only
-	 *            {@link JunctorConditionForFilterTreeDTO} will be stored and/or
-	 *            deleted.
+	 * @param mapper
+	 *            The Mapper to store to; it is quaranted that only belonging
+	 *            mappings are stored..
 	 * @throws If
 	 *             an error occurred
 	 */
-	public abstract void storeJoinLinkData(Session session) throws Throwable;
+	public abstract void storeJoinLinkData(Mapper mapper) throws Throwable;
 
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!
@@ -49,13 +57,13 @@ public interface HasJoinedElements<T extends NewAMSConfigurationElementDTO> {
 	 * 
 	 * IMPORTANT: This method has to be called in a valid open transaction!
 	 * 
-	 * @param session
-	 *            The session to store to; it is guaranteed that all join data
+	 * @param mapper
+	 *            The Mapper to delete to; it is guaranteed that all join data
 	 *            will be deleted.
 	 * @throws If
 	 *             an error occurred
 	 */
-	public abstract void deleteJoinLinkData(Session session) throws Throwable;
+	public abstract void deleteJoinLinkData(Mapper mapper) throws Throwable;
 
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!
@@ -78,5 +86,5 @@ public interface HasJoinedElements<T extends NewAMSConfigurationElementDTO> {
 	 *             an error occurred
 	 */
 	public abstract void loadJoinData(Session session,
-			Collection<T> allJoinedElements) throws Throwable;
+			Collection<?> allPotientielJoinedElements) throws Throwable;
 }

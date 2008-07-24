@@ -38,7 +38,7 @@ import org.hibernate.Session;
 @Entity
 @Table(name = "AMS_Filter")
 public class FilterDTO implements NewAMSConfigurationElementDTO,
-		HasJoinedElements<FilterConditionDTO> {
+		HasJoinedElements {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "iFilterID")
@@ -161,38 +161,38 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		return false;
 	}
 
-	public void deleteJoinLinkData(Session session) throws Throwable {
-		List<FilterConditionsToFilterDTO> list = session.createCriteria(
-				FilterConditionsToFilterDTO.class)
-				.list();
+	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+		List<FilterConditionsToFilterDTO> list = mapper.loadAll(FilterConditionsToFilterDTO.class);
 		for (FilterConditionsToFilterDTO fctf : list) {
 			if( fctf.getIFilterRef() == this.iFilterID ) {
-				session.delete(fctf);
+				mapper.delete(fctf);
 			}
 		}
 		
 		Collection<FilterConditionDTO> toRemove = new HashSet<FilterConditionDTO>();
 		for (FilterConditionDTO condition : getFilterConditions()) {
 			if( condition instanceof HasJoinedElements ) {
-				((HasJoinedElements<?>)condition).deleteJoinLinkData(session);
+				((HasJoinedElements)condition).deleteJoinLinkData(mapper);
 			}
 			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
-				session.delete(condition);
+				mapper.delete(condition);
 				toRemove.add(condition);
 			}
 		}
 		this.filterConditons.removeAll(toRemove);
 	}
 
-	public void loadJoinData(Session session,
-			Collection<FilterConditionDTO> allJoinedElements) throws Throwable {
+
+
+	public void storeJoinLinkData(Mapper mapper) throws Throwable {
 		// Ist momentan in Configuration erledigt.
 
 	}
 
-	public void storeJoinLinkData(Session session) throws Throwable {
-		// Ist momentan in Configuration erledigt.
-
+	public void loadJoinData(Session session,
+			Collection<?> allPotientielJoinedElements) throws Throwable {
+		// Does the service
+		
 	}
 
 }

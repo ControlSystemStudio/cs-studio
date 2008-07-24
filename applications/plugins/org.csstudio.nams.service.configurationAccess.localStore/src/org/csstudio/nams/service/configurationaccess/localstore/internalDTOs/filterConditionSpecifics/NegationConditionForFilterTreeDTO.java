@@ -30,7 +30,7 @@ import org.hibernate.Session;
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterNegationCond4Filter")
 public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
-		implements HasJoinedElements<FilterConditionDTO> {
+		implements HasJoinedElements {
 
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -77,26 +77,26 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		return this.iNegatedFCRef;
 	}
 
-	public void deleteJoinLinkData(Session session) throws Throwable {
+	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements<?>) this.negatedFilterCondition)
-					.deleteJoinLinkData(session);
+			((HasJoinedElements) this.negatedFilterCondition)
+					.deleteJoinLinkData(mapper);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadJoinData(Session session,
-			Collection<FilterConditionDTO> allJoinedElements) throws Throwable {
+			Collection allJoinedElements) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements<FilterConditionDTO>) this.negatedFilterCondition)
+			((HasJoinedElements) this.negatedFilterCondition)
 					.loadJoinData(session, allJoinedElements);
 		}
 	}
 
-	public void storeJoinLinkData(Session session) throws Throwable {
+	public void storeJoinLinkData(Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements<?>) this.negatedFilterCondition)
-					.storeJoinLinkData(session);
+			((HasJoinedElements) this.negatedFilterCondition)
+					.storeJoinLinkData(mapper);
 		}
 	}
 

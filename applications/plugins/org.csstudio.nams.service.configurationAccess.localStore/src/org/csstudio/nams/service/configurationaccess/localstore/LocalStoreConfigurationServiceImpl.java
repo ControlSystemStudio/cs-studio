@@ -515,15 +515,26 @@ class LocalStoreConfigurationServiceImpl implements
 
 	void deleteDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
-//		if (session.contains(dto)) {
-//			session.delete(dto);
-//		} else {
-//			session.delete(session.merge(dto));
-//		}
-		session.delete(dto);
 		
 		if (dto instanceof HasJoinedElements) {
-			((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
+			((HasJoinedElements) dto).deleteJoinLinkData(new HasJoinedElements.Mapper() {
+
+				public void delete(NewAMSConfigurationElementDTO element)
+						throws Throwable {
+					deleteDTONoTransaction(session, element);
+				}
+
+				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+						Class<T> clasz) throws Throwable {
+					return loadAll(clasz);
+				}
+
+				public void save(NewAMSConfigurationElementDTO element)
+						throws Throwable {
+					saveDTONoTransaction(session, element);
+				}
+				
+			});
 		}
 
 		session.delete(dto);
@@ -547,7 +558,23 @@ class LocalStoreConfigurationServiceImpl implements
 		session.saveOrUpdate(dto);
 		
 		if (dto instanceof HasJoinedElements) {
-			((HasJoinedElements<?>) dto).storeJoinLinkData(session);
+			((HasJoinedElements) dto).storeJoinLinkData(new HasJoinedElements.Mapper() {
+
+				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+						Class<T> clasz)  throws Throwable {
+					return loadAll(clasz);
+				}
+
+				public void save(NewAMSConfigurationElementDTO element)  throws Throwable {
+					saveDTONoTransaction(session, element);
+				}
+
+				public void delete(NewAMSConfigurationElementDTO element)
+						throws Throwable {
+					deleteDTONoTransaction(session, element);
+				}
+				
+			});
 		}
 	}
 
