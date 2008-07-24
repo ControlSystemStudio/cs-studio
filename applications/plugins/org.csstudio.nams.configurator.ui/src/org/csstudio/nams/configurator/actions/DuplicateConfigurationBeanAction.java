@@ -3,7 +3,6 @@ package org.csstudio.nams.configurator.actions;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -35,7 +34,7 @@ public class DuplicateConfigurationBeanAction extends Action implements
 					.getActiveWorkbenchWindow().getActivePage();
 			try {
 				duplicateBean = beanService.save(duplicateBean);
-			} catch (InconsistentConfigurationException e) {
+			} catch (Throwable e) {
 				MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getShell());
 				messageBox.setText(e.getClass().toString());

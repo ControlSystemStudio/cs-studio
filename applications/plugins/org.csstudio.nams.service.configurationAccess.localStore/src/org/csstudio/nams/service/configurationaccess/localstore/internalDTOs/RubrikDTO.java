@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt hält eine AMS_Group.
@@ -27,7 +28,7 @@ import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 
 @Entity
 @Table(name = "AMS_Groups")
-public class RubrikDTO {
+public class RubrikDTO implements NewAMSConfigurationElementDTO {
 
 		@Id
 		@GeneratedValue(strategy=GenerationType.AUTO)
@@ -106,6 +107,14 @@ public class RubrikDTO {
 			if (sType != other.sType)
 				return false;
 			return true;
+		}
+
+		public String getUniqueHumanReadableName() {
+			return getCGroupName();
+		}
+
+		public boolean isInCategory(int categoryDBId) {
+			return false;
 		}
 	
 }

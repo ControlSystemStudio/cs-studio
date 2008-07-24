@@ -8,6 +8,8 @@ import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 
 public interface ConfigurationBeanService {
 	
@@ -29,9 +31,9 @@ public interface ConfigurationBeanService {
 
 	public abstract String[] getRubrikNamesForType(RubrikTypeEnum type);
 
-	public <T extends IConfigurationBean> T save(T bean) throws InconsistentConfigurationException;
+	public <T extends IConfigurationBean> T save(T bean) throws InconsistentConfigurationException, StorageError, StorageException;
 	
-	public void delete(IConfigurationBean bean);
+	public void delete(IConfigurationBean bean) throws StorageError, StorageException, InconsistentConfigurationException;
 
 	public void addConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);
 	public void removeConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);

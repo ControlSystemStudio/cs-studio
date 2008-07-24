@@ -349,7 +349,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return result;
 	}
 
-	private int getRubrikIDForName(String rubrikName, RubrikTypeEnum type) {
+	private int getRubrikIDForName(String rubrikName, RubrikTypeEnum type) throws StorageError, StorageException, InconsistentConfigurationException {
 		if (rubrikName == null || rubrikName.length() == 0) {
 			return 0;
 		}
@@ -521,7 +521,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	@SuppressWarnings("unchecked")
 	public <T extends IConfigurationBean> T save(T bean)
-			throws InconsistentConfigurationException {
+			throws InconsistentConfigurationException, StorageError, StorageException {
 		if (bean instanceof AlarmbearbeiterBean)
 			return (T) saveAlarmbearbeiterBean((AlarmbearbeiterBean) bean);
 		if (bean instanceof AlarmbearbeiterGruppenBean)
@@ -536,7 +536,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				+ bean.getClass());
 	}
 
-	private AlarmbearbeiterBean saveAlarmbearbeiterBean(AlarmbearbeiterBean bean) {
+	private AlarmbearbeiterBean saveAlarmbearbeiterBean(AlarmbearbeiterBean bean) throws StorageError, StorageException, InconsistentConfigurationException {
 		boolean inserted = false;
 		AlarmbearbeiterDTO dto = getDTO4Bean(bean);
 		if (dto == null) {
@@ -565,7 +565,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private AlarmbearbeiterGruppenBean saveAlarmbearbeiterGruppenBean(
-			AlarmbearbeiterGruppenBean bean) {
+			AlarmbearbeiterGruppenBean bean) throws StorageError, StorageException, InconsistentConfigurationException {
 		boolean inserted = false;
 		AlarmbearbeiterGruppenDTO dto = getDTO4Bean(bean);
 		if (dto == null) {
@@ -628,7 +628,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return map;
 	}
 
-	private AlarmtopicBean saveAlarmtopicBean(AlarmtopicBean bean) {
+	private AlarmtopicBean saveAlarmtopicBean(AlarmtopicBean bean) throws StorageError, StorageException, InconsistentConfigurationException {
 		boolean inserted = false;
 		TopicDTO dto = getDTO4Bean(bean);
 		if (dto == null) {
@@ -650,7 +650,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private FilterBean saveFilterBean(FilterBean bean)
-			throws InconsistentConfigurationException {
+			throws InconsistentConfigurationException, StorageError, StorageException {
 		boolean inserted = false;
 
 		FilterDTO dto = findDTO4Bean(bean);
@@ -696,7 +696,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	private List<FilterConditionDTO> createFilterConditionDTOListForFilter(
 			Collection<FilterbedingungBean> conditions)
-			throws InconsistentConfigurationException {
+			throws InconsistentConfigurationException, StorageError, StorageException {
 
 		List<FilterConditionDTO> result = new LinkedList<FilterConditionDTO>();
 
@@ -748,7 +748,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) {
+	private FilterbedingungBean saveFilterbedingungBean(FilterbedingungBean bean) throws StorageError, StorageException, InconsistentConfigurationException {
 		boolean inserted = false;
 
 		FilterConditionDTO filterConditionDTO = null;
@@ -1029,7 +1029,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return dto;
 	}
 
-	public void delete(IConfigurationBean bean) {
+	public void delete(IConfigurationBean bean) throws StorageError, StorageException, InconsistentConfigurationException {
 		try {
 			if (bean instanceof AlarmbearbeiterBean)
 				deleteAlarmbearbeiterBean((AlarmbearbeiterBean) bean);
@@ -1052,7 +1052,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private void deleteAlarmbearbeiterBean(AlarmbearbeiterBean bean)
-			throws InconsistentConfigurationException {
+			throws InconsistentConfigurationException, StorageError, StorageException {
 
 		AlarmbearbeiterDTO dto = null;
 		for (AlarmbearbeiterDTO potentialdto : entireConfiguration
@@ -1073,7 +1073,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	private void deleteAlarmbearbeiterGruppenBean(
 			AlarmbearbeiterGruppenBean bean)
-			throws InconsistentConfigurationException {
+			throws InconsistentConfigurationException, StorageError, StorageException {
 
 		AlarmbearbeiterGruppenDTO dto = null;
 		for (AlarmbearbeiterGruppenDTO potentialdto : entireConfiguration
@@ -1094,7 +1094,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private void deleteAlarmtopicBean(AlarmtopicBean bean)
-			throws InconsistentConfigurationException {
+			throws InconsistentConfigurationException, StorageError, StorageException {
 		TopicDTO dto = null;
 		for (TopicDTO potentialdto : entireConfiguration.gibAlleAlarmtopics()) {
 			if (potentialdto.getId() == bean.getID()) {
@@ -1139,7 +1139,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private void deleteFilterbedingungBean(FilterbedingungBean bean)
-			throws InconsistentConfigurationException {
+			throws InconsistentConfigurationException, StorageError, StorageException {
 		FilterConditionDTO dto = null;
 		for (FilterConditionDTO potentialdto : entireConfiguration
 				.gibAlleFilterConditions()) {

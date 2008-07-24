@@ -140,7 +140,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 				// verloren!
 			}
 			afterSafe();
-		} catch (InconsistentConfigurationException e) {
+		} catch (Throwable e) {
 			MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell());
 			messageBox.setText(e.getClass().toString());

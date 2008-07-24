@@ -11,8 +11,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 /**
  * Ein Service zum Zugirff auf die NAMS-Konfiguration.
  * 
- * TODO Rename to ConfigurationStoreService 
- * TODO Alle konkreten Operationen auf
+ * TODO Rename to ConfigurationStoreService TODO Alle konkreten Operationen auf
  * die allgemeinen DTO-Operationen umbauen; siehe auch Anmerkungen in
  * {@link HasJoinedElements}.
  */
@@ -86,7 +85,8 @@ public interface LocalStoreConfigurationService {
 	 * 
 	 * @param historyDTO
 	 */
-	public void saveHistoryDTO(HistoryDTO historyDTO);
+	public void saveHistoryDTO(HistoryDTO historyDTO) throws StorageError,
+			StorageException, InconsistentConfigurationException;
 
 	/**
 	 * 
@@ -114,36 +114,40 @@ public interface LocalStoreConfigurationService {
 			InconsistentConfigurationException;
 
 	public AlarmbearbeiterDTO saveAlarmbearbeiterDTO(
-			AlarmbearbeiterDTO alarmBearbeiterDTO);
+			AlarmbearbeiterDTO alarmBearbeiterDTO) throws StorageError,
+			StorageException, InconsistentConfigurationException;
 
 	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
-			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO) throws InconsistentConfigurationException;
-
-	public TopicDTO saveTopicDTO(TopicDTO topicDTO);
-
-	public FilterConditionDTO saveFilterCondtionDTO(
-			FilterConditionDTO filterConditionDTO) throws StorageException,
-			StorageError;
-
-	public FilterDTO saveFilterDTO(FilterDTO dto)
+			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO)
 			throws InconsistentConfigurationException;
 
-	public RubrikDTO saveRubrikDTO(RubrikDTO dto);
+	public TopicDTO saveTopicDTO(TopicDTO topicDTO) throws StorageError,
+			StorageException, InconsistentConfigurationException;
+
+	public FilterDTO saveFilterDTO(FilterDTO dto) throws StorageError,
+			StorageException, InconsistentConfigurationException;
+
+	public RubrikDTO saveRubrikDTO(RubrikDTO dto) throws StorageError,
+			StorageException, InconsistentConfigurationException;
 
 	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto)
-			throws InconsistentConfigurationException;
+			throws StorageError, StorageException,
+			InconsistentConfigurationException;
 
 	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto)
-			throws InconsistentConfigurationException;
+			throws StorageError, StorageException,
+			InconsistentConfigurationException;
 
-	public void deleteAlarmtopicDTO(TopicDTO dto)
-			throws InconsistentConfigurationException;
+	public void deleteAlarmtopicDTO(TopicDTO dto) throws StorageError,
+			StorageException, InconsistentConfigurationException;
 
 	public void deleteFilterDTO(FilterDTO dto)
-			throws InconsistentConfigurationException, StorageError, StorageException;
+			throws InconsistentConfigurationException, StorageError,
+			StorageException;
 
 	public void deleteFilterConditionDTO(FilterConditionDTO dto)
-			throws InconsistentConfigurationException;
+			throws StorageError, StorageException,
+			InconsistentConfigurationException;
 
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden

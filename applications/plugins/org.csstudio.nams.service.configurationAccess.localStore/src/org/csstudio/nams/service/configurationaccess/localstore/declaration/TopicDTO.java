@@ -29,7 +29,7 @@ import org.csstudio.nams.common.contract.Contract;
  */
 @Entity
 @Table(name = "AMS_TOPIC")
-public class TopicDTO {
+public class TopicDTO implements NewAMSConfigurationElementDTO {
 
 	@Column(name = "CDESCRIPTION", length=256)
 	private String description;
@@ -197,6 +197,14 @@ public class TopicDTO {
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getDescription());
 		return resultBuilder.toString();
+	}
+
+	public String getUniqueHumanReadableName() {
+		return this.getName();
+	}
+
+	public boolean isInCategory(int categoryDBId) {
+		return false;
 	}
 
 }

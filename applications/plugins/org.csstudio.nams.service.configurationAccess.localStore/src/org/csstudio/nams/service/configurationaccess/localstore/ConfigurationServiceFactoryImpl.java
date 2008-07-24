@@ -31,6 +31,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
+import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
@@ -40,7 +41,7 @@ public class ConfigurationServiceFactoryImpl implements
 
 	private Map<ConnectionData, LocalStoreConfigurationService> services = new HashMap<ConnectionData, LocalStoreConfigurationService>();
 	private List<SessionFactory> sessionFactoryList = new LinkedList<SessionFactory>();
-	private List<Session> sessionList = new LinkedList<Session>();
+//	private List<Session> sessionList = new LinkedList<Session>();
 	private final org.csstudio.nams.service.logging.declaration.Logger logger;
 	
 	public ConfigurationServiceFactoryImpl(
@@ -76,10 +77,11 @@ public class ConfigurationServiceFactoryImpl implements
 		
 		if (service == null) {
 			SessionFactory sessionFactory = createSessionFactory(connectionData);
-			Session session = sessionFactory.openSession();
-			service = new LocalStoreConfigurationServiceImpl(session, logger);
+//			Session session = sessionFactory.openSession();
+//			session.setFlushMode(FlushMode.COMMIT);
+			service = new LocalStoreConfigurationServiceImpl(sessionFactory, logger);
 			sessionFactoryList.add(sessionFactory);
-			sessionList.add(session);
+//			sessionList.add(session);
 			services.put(connectionData, service);
 		}
 		
@@ -119,13 +121,16 @@ public class ConfigurationServiceFactoryImpl implements
 				.setProperty("hibernate.connection.username", connectionData.getUsername())
 				.setProperty("hibernate.connection.password", connectionData.getPassword())
 
+				.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider")
+				.setProperty("hibernate.cache.use_minimal_puts", "false")
+				.setProperty("hibernate.cache.use_query_cache", "false")
+				.setProperty("hibernate.cache.use_second_level_cache", "false")
+
 				.setProperty("hibernate.connection.pool_size", "1")
 				.setProperty("current_session_context_class", "thread")
-				.setProperty("cache.provider_class", "org.hibernate.cache.NoCacheProvider")
 				.setProperty("show_sql", "true")
 				.setProperty("hbm2ddl.auto", "update") 
-				.setProperty("hibernate.mapping.precedence", "class")
-				;
+				.setProperty("hibernate.mapping.precedence", "class");
 
 		//TODO in die config auslagern
 		Logger.getLogger("org.hibernate").setLevel(Level.WARN);
@@ -134,10 +139,10 @@ public class ConfigurationServiceFactoryImpl implements
 	}
 	
 	public void closeSessions() {
-		for (Session session : sessionList) {
-			session.close();
-		}
-		sessionList.clear();
+//		for (Session session : sessionList) {
+//			session.close();
+//		}
+//		sessionList.clear();
 		for (SessionFactory sessionFactory : sessionFactoryList) {
 			sessionFactory.close();
 		}

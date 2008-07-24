@@ -2,6 +2,9 @@ package org.csstudio.nams.configurator.actions;
 
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,7 +26,15 @@ public class DeleteConfugurationBeanAction extends Action implements IViewAction
 
 	public void run(IAction action) {
 		if(bean != null) {
-			configurationBeanService.delete(bean);
+			try {
+				configurationBeanService.delete(bean);
+			} catch (StorageError e) {
+				throw new RuntimeException("failed to delete", e);
+			} catch (StorageException e) {
+				throw new RuntimeException("failed to delete", e);
+			} catch (InconsistentConfigurationException e) {
+				throw new RuntimeException("failed to delete", e);
+			}
 		}
 	}
 

@@ -56,7 +56,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 	 * codiert und muss ggf. in dieser Klasse angepasst werden!
 	 */
 	public static LocalStoreConfigurationService createAServiceForOracleTests() {
-		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl(new LoggerMock());
+		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl(
+				new LoggerMock());
 
 		LocalStoreConfigurationService result = factory
 				.getConfigurationService(
@@ -80,44 +81,55 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 	@Test
 	public void testReloadAndRefresh() throws Throwable {
 		LocalStoreConfigurationService secondService = createAServiceForOracleTests();
-		
+
 		AlarmbearbeiterDTO dto = new AlarmbearbeiterDTO();
 		dto.setUserName("Test-Troll");
 		service.saveAlarmbearbeiterDTO(dto);
 		assertTrue(dto.getUserId() != 0);
 		assertEquals("Test-Troll", dto.getUserName());
 
-		Collection<AlarmbearbeiterDTO> alleAlarmbearbeiter = secondService.getEntireConfiguration().gibAlleAlarmbearbeiter();
+		Collection<AlarmbearbeiterDTO> alleAlarmbearbeiter = secondService
+				.getEntireConfiguration().gibAlleAlarmbearbeiter();
 		AlarmbearbeiterDTO found = null;
 		for (AlarmbearbeiterDTO alarmbearbeiterDTO : alleAlarmbearbeiter) {
-			if( alarmbearbeiterDTO.getUserId() == dto.getUserId() )  { // Set by save op
-				assertEquals(dto.getUserName(), alarmbearbeiterDTO.getUserName());
+			if (alarmbearbeiterDTO.getUserId() == dto.getUserId()) { // Set
+																		// by
+																		// save
+																		// op
+				assertEquals(dto.getUserName(), alarmbearbeiterDTO
+						.getUserName());
 				found = alarmbearbeiterDTO;
 				break;
 			}
 		}
 		assertNotNull(found);
-		
+
 		int oldId = dto.getUserId();
 		dto.setUserName("Test-Dummy");
 		service.saveAlarmbearbeiterDTO(dto);
 		assertEquals(oldId, dto.getUserId());
 		assertEquals("Test-Dummy", dto.getUserName());
-		
-		Collection<AlarmbearbeiterDTO> alleAlarmbearbeiterNow = secondService.getEntireConfiguration().gibAlleAlarmbearbeiter();
+
+		Collection<AlarmbearbeiterDTO> alleAlarmbearbeiterNow = secondService
+				.getEntireConfiguration().gibAlleAlarmbearbeiter();
 		AlarmbearbeiterDTO foundNow = null;
 		for (AlarmbearbeiterDTO alarmbearbeiterDTO : alleAlarmbearbeiterNow) {
-			if( alarmbearbeiterDTO.getUserId() == dto.getUserId() )  { // Set by save op
-				assertEquals(dto.getUserName(), alarmbearbeiterDTO.getUserName());
+			if (alarmbearbeiterDTO.getUserId() == dto.getUserId()) { // Set
+																		// by
+																		// save
+																		// op
+				assertEquals(
+						"Der Datensatz ist auch für andere sichtbar verändert",
+						dto.getUserName(), alarmbearbeiterDTO.getUserName());
 				foundNow = alarmbearbeiterDTO;
 				break;
 			}
 		}
 		assertNotNull(foundNow);
-		
+
 		service.deleteDTO(dto);
 	}
-	
+
 	@Test
 	public void testFactoryAndServiceOnOracleFuerAlarmbearbeiter()
 			throws Throwable {
@@ -209,8 +221,11 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		assertTrue("neue fc ist jetzt gespeichert.", loadedList
 				.contains(neueFilterCondition));
 		for (FilterConditionDTO filterConditionDTO : loadedList) {
-			// Keine Benutzer mit altem Namen vorhanden.
-			assertFalse("Test".equals(filterConditionDTO.getCName()));
+			// Keine Benutzer mit altem Namen vorhanden. (ID check muss sein,
+			// wegen nebenläufigen Zugriffen auf der DB)
+			assertFalse("Test".equals(filterConditionDTO.getCName())
+					&& filterConditionDTO.getIFilterConditionID() == neueFilterCondition
+							.getIFilterConditionID());
 		}
 
 		// löschen
@@ -269,8 +284,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 				found = condition;
 			}
 		}
-		assertNotNull("neue fc ist jetzt gespeichert.", condition);
 		condition = found;
+		assertNotNull("neue fc ist jetzt gespeichert.", condition);
 
 		// verändern
 		condition.setCName("Modified");
@@ -302,7 +317,9 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 				.contains(condition));
 		JunctorConditionForFilterTreeDTO result = null;
 		for (FilterConditionDTO filterConditionDTO : loadedList) {
-			if (filterConditionDTO.getCName().equals("Modified")) {
+			if (filterConditionDTO.getIFilterConditionID() == condition
+					.getIFilterConditionID()) {
+				assertEquals("Modified", filterConditionDTO.getCName());
 				result = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
 			}
 		}
@@ -432,7 +449,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		service.deleteDTO(leftCondition);
 		service.deleteDTO(rightCondition);
 	}
-	
+
 	@Test
 	public void testStoreAndLoadFilterWithConditionNegations() throws Throwable {
 		// Conditions
@@ -464,7 +481,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 
 		NegationConditionForFilterTreeDTO notOR = new NegationConditionForFilterTreeDTO();
 		notOR.setNegatedFilterCondition(orCondition);
-		
+
 		// Filter
 		// Root-Ebene aufbauen
 		List<FilterConditionDTO> filterConditions = new LinkedList<FilterConditionDTO>();
@@ -523,7 +540,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		List<FilterConditionDTO> list = foundFilter.getFilterConditions();
 		assertEquals(1, list.size());
 		assertEquals(notOR, list.get(0));
-		NegationConditionForFilterTreeDTO notOrFound = (NegationConditionForFilterTreeDTO) list.get(0);
+		NegationConditionForFilterTreeDTO notOrFound = (NegationConditionForFilterTreeDTO) list
+				.get(0);
 		FilterConditionDTO foundNotOr = notOrFound.getNegatedFilterCondition();
 		assertTrue(foundNotOr instanceof JunctorConditionForFilterTreeDTO);
 		JunctorConditionForFilterTreeDTO junctionDTO = (JunctorConditionForFilterTreeDTO) foundNotOr;
