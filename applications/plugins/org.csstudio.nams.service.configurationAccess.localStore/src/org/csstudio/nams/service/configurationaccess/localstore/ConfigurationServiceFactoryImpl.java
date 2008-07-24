@@ -88,6 +88,23 @@ public class ConfigurationServiceFactoryImpl implements
 		return service;
 	}
 	
+	// TODO Add curstom connection provider
+	// TODO Add property for auto create: "hibernate.hbm2ddl.auto" = "create-drop" für HSQL
+	// ADD Configuration cfg = new Configuration().configure(); 
+	//     SchemaExport schemaExport = new SchemaExport(cfg); 
+	//     schemaExport.create(false, true); 
+	// OR 
+	//     Configuration cfg = new Configuration().configure(); 
+	//     SchemaUpdate schemaUpdate = new SchemaUpdate(cfg); 
+	//     schemaUpdate.execute(false); 
+	// CHECK
+	//     Configuration cfg = new Configuration().configure(); 
+	//     new SchemaValidator(cfg).validate(); 
+	//
+	// copied from: http://www.manning.com/bauer2/chapter2.pdf
+	// SEE PAGE 75 !!!!!!!!!!
+	// Download EM http://www.hibernate.org/30.html
+	 
 	private SessionFactory createSessionFactory(ConnectionData connectionData) {
 		AnnotationConfiguration configuration = new AnnotationConfiguration();
 		configuration
@@ -131,6 +148,18 @@ public class ConfigurationServiceFactoryImpl implements
 				.setProperty("show_sql", "true")
 				.setProperty("hbm2ddl.auto", "update") 
 				.setProperty("hibernate.mapping.precedence", "class");
+		
+		/*
+		 * Can I supply my own connections? Implement the    org.hibernate.connec- 
+tion.ConnectionProvider  interface, and name your implementation 
+with the hibernate.connection.provider_class configuration option. 
+Hibernate will now rely on your custom provider if it needs a database 
+connection.
+
+copied from: http://www.manning.com/bauer2/chapter2.pdf
+
+		 */
+		
 
 		//TODO in die config auslagern
 		Logger.getLogger("org.hibernate").setLevel(Level.WARN);
