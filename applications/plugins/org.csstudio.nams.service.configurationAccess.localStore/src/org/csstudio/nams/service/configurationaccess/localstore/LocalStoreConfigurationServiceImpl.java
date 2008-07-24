@@ -79,6 +79,17 @@ class LocalStoreConfigurationServiceImpl implements
 
 		return result;
 	}
+	
+	private void closeSession(Session session) throws HibernateException {
+		if (session != null && session.isOpen()) {
+			try {
+				session.flush();
+				session.close();
+			} catch (final HibernateException he) {
+				throw new StorageError("session could not be closed", he);
+			}
+		}
+	}
 
 	public ReplicationStateDTO getCurrentReplicationState()
 			throws StorageError, StorageException,
@@ -100,13 +111,7 @@ class LocalStoreConfigurationServiceImpl implements
 		} catch (final Throwable t) {
 			new StorageError("Failed to write replication flag", t);
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 
 		if (result == null) {
@@ -216,13 +221,7 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			t.printStackTrace();
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 		return result;
 	}
@@ -351,13 +350,7 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			throw new StorageException("unable to save replication state", t);
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 	}
 
@@ -378,13 +371,7 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			throw new StorageException("unable to save history element", t);
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 	}
 
@@ -425,13 +412,7 @@ class LocalStoreConfigurationServiceImpl implements
 					"failed to save configuration element of type "
 							+ dto.getClass().getSimpleName(), t);
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 	}
 
@@ -479,13 +460,7 @@ class LocalStoreConfigurationServiceImpl implements
 					"failed to delete configuration element of type "
 							+ dto.getClass().getSimpleName(), t);
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 	}
 
@@ -530,13 +505,7 @@ class LocalStoreConfigurationServiceImpl implements
 			tx.rollback();
 			throw new InconsistentConfigurationException(e.getMessage());
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 		return dto;
 	}
@@ -653,13 +622,7 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			throw new InconsistentConfigurationException(e.getMessage());
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 		return dto;
 	}
@@ -692,13 +655,7 @@ class LocalStoreConfigurationServiceImpl implements
 		} catch (final Throwable e) {
 			new InconsistentConfigurationException("Could not delete " + dto);
 		} finally {
-			if (session != null) {
-				try {
-					session.close();
-				} catch (final HibernateException he) {
-					throw new StorageError("session could not be closed", he);
-				}
-			}
+			closeSession(session);
 		}
 	}
 
