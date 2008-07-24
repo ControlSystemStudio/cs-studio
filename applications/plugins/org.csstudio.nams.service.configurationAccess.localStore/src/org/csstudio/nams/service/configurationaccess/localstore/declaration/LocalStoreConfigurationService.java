@@ -130,10 +130,6 @@ public interface LocalStoreConfigurationService {
 	public RubrikDTO saveRubrikDTO(RubrikDTO dto) throws StorageError,
 			StorageException, InconsistentConfigurationException;
 
-	public void deleteAlarmbearbeiterDTO(AlarmbearbeiterDTO dto)
-			throws StorageError, StorageException,
-			InconsistentConfigurationException;
-
 	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException;
