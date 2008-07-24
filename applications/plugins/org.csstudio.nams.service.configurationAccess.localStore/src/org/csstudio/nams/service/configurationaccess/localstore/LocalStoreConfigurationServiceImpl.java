@@ -72,7 +72,9 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			tx = session.beginTransaction();
-			final Collection<User2UserGroupDTO> user2GroupMappings = loadAll(session, User2UserGroupDTO.class);
+			tx.begin();
+			final Collection<User2UserGroupDTO> user2GroupMappings = loadAll(
+					session, User2UserGroupDTO.class);
 
 			for (final User2UserGroupDTO a : user2GroupMappings) {
 				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
@@ -96,8 +98,9 @@ class LocalStoreConfigurationServiceImpl implements
 		Session session = null;
 		try {
 			session = this.openNewSession();
-			
+
 			transaction = session.beginTransaction();
+			transaction.begin();
 			this.deleteDTONoTransaction(session, dto);
 
 			transaction.commit();
@@ -128,6 +131,7 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			final Transaction newTransaction = session.beginTransaction();
+			newTransaction.begin();
 			final List<?> messages = session.createQuery(
 					"from ReplicationStateDTO r where r.flagName = '"
 							+ ReplicationStateDTO.DB_FLAG_NAME + "'").list();
@@ -136,7 +140,6 @@ class LocalStoreConfigurationServiceImpl implements
 				result = (ReplicationStateDTO) messages.get(0);
 			}
 			newTransaction.commit();
-			session.close();
 		} catch (final Throwable t) {
 			new StorageError("Failed to write replication flag", t);
 		} finally {
@@ -161,6 +164,7 @@ class LocalStoreConfigurationServiceImpl implements
 			session = this.openNewSession();
 
 			transaction = session.beginTransaction();
+			transaction.begin();
 			// 
 			Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
 			Collection<TopicDTO> alleAlarmtopics;
@@ -175,7 +179,8 @@ class LocalStoreConfigurationServiceImpl implements
 
 			// PUBLICs
 			alleAlarmbarbeiter = loadAll(session, AlarmbearbeiterDTO.class);
-			alleAlarmbearbeiterGruppen = loadAll(session, AlarmbearbeiterGruppenDTO.class);
+			alleAlarmbearbeiterGruppen = loadAll(session,
+					AlarmbearbeiterGruppenDTO.class);
 
 			alleAlarmtopics = loadAll(session, TopicDTO.class);
 			allFilters = loadAll(session, FilterDTO.class);
@@ -199,15 +204,18 @@ class LocalStoreConfigurationServiceImpl implements
 
 			alleRubriken = loadAll(session, RubrikDTO.class);
 
-			alleUser2UserGroupMappings = loadAll(session, User2UserGroupDTO.class);
+			alleUser2UserGroupMappings = loadAll(session,
+					User2UserGroupDTO.class);
 
-			allFilterConditionMappings = loadAll(session, FilterConditionsToFilterDTO.class);
+			allFilterConditionMappings = loadAll(session,
+					FilterConditionsToFilterDTO.class);
 			this
 					.pruefeUndOrdnerFilterDieFilterConditionsZu(
 							allFilterConditionMappings, allFilterConditions,
 							allFilters);
 			this.setChildFilterConditionsInJunctorDTOs(allFilterConditions);
-			allCompareValues = loadAll(session, StringArrayFilterConditionCompareValuesDTO.class);
+			allCompareValues = loadAll(session,
+					StringArrayFilterConditionCompareValuesDTO.class);
 			this.setStringArrayCompareValues(allCompareValues,
 					allFilterConditions);
 
@@ -271,9 +279,11 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			tx = session.beginTransaction();
+			tx.begin();
 			session.saveOrUpdate(dto);
 
-			final Collection<User2UserGroupDTO> user2GroupMappings = loadAll(session, User2UserGroupDTO.class);
+			final Collection<User2UserGroupDTO> user2GroupMappings = loadAll(
+					session, User2UserGroupDTO.class);
 
 			for (final User2UserGroupDTO a : user2GroupMappings) {
 				if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
@@ -308,9 +318,9 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			newTransaction = session.beginTransaction();
+			newTransaction.begin();
 			session.saveOrUpdate(currentState);
 			newTransaction.commit();
-			session.close();
 		} catch (final Throwable t) {
 			if (newTransaction != null) {
 				newTransaction.rollback();
@@ -320,10 +330,13 @@ class LocalStoreConfigurationServiceImpl implements
 			closeSession(session);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(Session session, Class<T> clasz) {
-		return session.createCriteria(clasz).list();
+	private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+			Session session, Class<T> clasz) {
+		List<T> list = session.createCriteria(clasz).list();
+
+		return list;
 	}
 
 	public void saveDTO(final NewAMSConfigurationElementDTO dto)
@@ -334,14 +347,18 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			transaction = session.beginTransaction();
+			transaction.begin();
 			this.saveDTONoTransaction(session, dto);
 			if (dto instanceof StringArrayFilterConditionDTO) {
 				final StringArrayFilterConditionDTO filterDto = (StringArrayFilterConditionDTO) dto;
-				final List<StringArrayFilterConditionCompareValuesDTO> list = loadAll(session, StringArrayFilterConditionCompareValuesDTO.class);
+				final List<StringArrayFilterConditionCompareValuesDTO> list = loadAll(
+						session,
+						StringArrayFilterConditionCompareValuesDTO.class);
 				for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : list) {
 					if (filterDto.getIFilterConditionID() == stringArrayFilterConditionCompareValuesDTO
 							.getFilterConditionRef()) {
-						deleteDTONoTransaction(session, stringArrayFilterConditionCompareValuesDTO);
+						deleteDTONoTransaction(session,
+								stringArrayFilterConditionCompareValuesDTO);
 					}
 				}
 				for (final StringArrayFilterConditionCompareValuesDTO compValue : filterDto
@@ -370,6 +387,7 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			tx = session.beginTransaction();
+			tx.begin();
 
 			saveDTONoTransaction(session, dto);
 
@@ -390,7 +408,8 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 
 			// clean up join data
-			final Collection<FilterConditionsToFilterDTO> conditionMappings = loadAll(session, FilterConditionsToFilterDTO.class);
+			final Collection<FilterConditionsToFilterDTO> conditionMappings = loadAll(
+					session, FilterConditionsToFilterDTO.class);
 
 			for (final FilterConditionsToFilterDTO joinElement : conditionMappings) {
 				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
@@ -398,18 +417,22 @@ class LocalStoreConfigurationServiceImpl implements
 							.getIFilterConditionRef();
 
 					if (!zuSpeicherndeJoins.contains(joinElement)) {
-						deleteDTONoTransaction(session, joinElement); // nicht mehr verwendete
+						deleteDTONoTransaction(session, joinElement); // nicht
+																		// mehr
+																		// verwendete
 						// Knoten löschen
 					}
 
-					final Collection<JunctorConditionForFilterTreeDTO> junctorConditions = loadAll(session, JunctorConditionForFilterTreeDTO.class);
+					final Collection<JunctorConditionForFilterTreeDTO> junctorConditions = loadAll(
+							session, JunctorConditionForFilterTreeDTO.class);
 					if ((junctorConditions != null)
 							&& (junctorConditions.size() > 0)) {
 						for (final JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
-							if( junctorConditionForFilterTreeDTO.getIFilterConditionID() != filterConditionRef ) {
+							if (junctorConditionForFilterTreeDTO
+									.getIFilterConditionID() != filterConditionRef) {
 								continue;
 							}
-							
+
 							if (!filterConditions
 									.contains(junctorConditionForFilterTreeDTO)) {
 								this.deleteDTONoTransaction(session,
@@ -418,13 +441,15 @@ class LocalStoreConfigurationServiceImpl implements
 						}
 					}
 
-					final Collection<NegationConditionForFilterTreeDTO> notConditions = loadAll( session, NegationConditionForFilterTreeDTO.class);
+					final Collection<NegationConditionForFilterTreeDTO> notConditions = loadAll(
+							session, NegationConditionForFilterTreeDTO.class);
 					if ((notConditions != null) && (notConditions.size() > 0)) {
 						for (final NegationConditionForFilterTreeDTO notConditionForFilterTreeDTO : notConditions) {
-							if( notConditionForFilterTreeDTO.getIFilterConditionID() != filterConditionRef ) {
+							if (notConditionForFilterTreeDTO
+									.getIFilterConditionID() != filterConditionRef) {
 								continue;
 							}
-							
+
 							if (!filterConditions
 									.contains(notConditionForFilterTreeDTO)) {
 								this.deleteDTONoTransaction(session,
@@ -475,6 +500,7 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			session = this.openNewSession();
 			newTransaction = session.beginTransaction();
+			newTransaction.begin();
 			session.saveOrUpdate(historyDTO);
 			newTransaction.commit();
 		} catch (final Throwable t) {
@@ -489,13 +515,18 @@ class LocalStoreConfigurationServiceImpl implements
 
 	void deleteDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
-		NewAMSConfigurationElementDTO mergedDto = (NewAMSConfigurationElementDTO) session.merge(dto);
+//		if (session.contains(dto)) {
+//			session.delete(dto);
+//		} else {
+//			session.delete(session.merge(dto));
+//		}
+		session.delete(dto);
 		
-		if (mergedDto instanceof HasJoinedElements) {
-			((HasJoinedElements<?>) mergedDto).deleteJoinLinkData(session);
+		if (dto instanceof HasJoinedElements) {
+			((HasJoinedElements<?>) dto).deleteJoinLinkData(session);
 		}
 
-		session.delete(mergedDto);
+		session.delete(dto);
 	}
 
 	@Override
@@ -514,7 +545,7 @@ class LocalStoreConfigurationServiceImpl implements
 	protected void saveDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
 		session.saveOrUpdate(dto);
-
+		
 		if (dto instanceof HasJoinedElements) {
 			((HasJoinedElements<?>) dto).storeJoinLinkData(session);
 		}
@@ -537,34 +568,44 @@ class LocalStoreConfigurationServiceImpl implements
 					deleteDTONoTransaction(session, map);
 					this.logger.logWarningMessage(this,
 							"Deleted invalid User To UserGroup mapping, group "
-							+ map.getUser2UserGroupPK().getIUserGroupRef()
-							+ " doesn't exist");
+									+ map.getUser2UserGroupPK()
+											.getIUserGroupRef()
+									+ " doesn't exist");
 				} catch (Throwable e) {
 					this.logger.logErrorMessage(this,
 							"Failed to deleted invalid User To UserGroup mapping, group "
-							+ map.getUser2UserGroupPK().getIUserGroupRef()
-							+ " doesn't exist", e);
+									+ map.getUser2UserGroupPK()
+											.getIUserGroupRef()
+									+ " doesn't exist", e);
 				}
 			}
 		}
 	}
 
+	private Session sessionWorkingOn = null;
+
 	private void closeSession(Session session) throws HibernateException {
 		if (session != null && session.isOpen()) {
 			try {
 				session.flush();
-				session.close();
+				// session.close();
 			} catch (final HibernateException he) {
+				sessionWorkingOn.close();
+				sessionWorkingOn = null;
 				throw new StorageError("session could not be closed", he);
 			}
 		}
 	}
 
 	private Session openNewSession() throws HibernateException {
-		final Session result = this.sessionFactory.openSession();
-		result.setCacheMode(CacheMode.IGNORE);
-		result.setFlushMode(FlushMode.COMMIT);
-
+		Session result = null;
+		if (sessionWorkingOn == null) {
+			result = this.sessionFactory.openSession();
+			result.setCacheMode(CacheMode.IGNORE);
+			result.setFlushMode(FlushMode.COMMIT);
+		} else {
+			result = sessionWorkingOn;
+		}
 		return result;
 	}
 
