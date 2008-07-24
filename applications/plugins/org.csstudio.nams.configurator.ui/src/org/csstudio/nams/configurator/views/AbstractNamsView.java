@@ -124,6 +124,8 @@ public abstract class AbstractNamsView extends ViewPart {
 						.staticInject(configurationBeanService);
 				DuplicateConfigurationBeanAction
 						.staticInject(configurationBeanService);
+				
+				configurationBeanService.refreshData();
 			}
 			semaphore.release(1);
 
@@ -161,7 +163,7 @@ public abstract class AbstractNamsView extends ViewPart {
 						}
 					});
 
-			configurationBeanService.refreshData();
+			
 
 			isInitialized = true;
 		} catch (Throwable t) {
