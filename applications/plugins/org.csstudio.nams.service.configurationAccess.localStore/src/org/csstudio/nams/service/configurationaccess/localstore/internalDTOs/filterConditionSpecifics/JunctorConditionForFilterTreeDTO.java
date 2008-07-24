@@ -152,32 +152,24 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 * Here also sub-conditions of same type are ordered to load their join
 	 * data!
 	 * 
-	 * @param session
+	 * @param mapper
 	 *            The session to store to; it is guaranteed that only
 	 *            {@link JunctorConditionForFilterTreeDTO} will be loaded and
 	 *            nothing be deleted.
-	 * @param allFilterConditions
-	 *            All avail {@link FilterConditionDTO}; is is guaranteed that
-	 *            no {@link FilterConditionDTO} will be modified or deleted.
 	 * @throws If
 	 *             an error occurred
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized void loadJoinData(Session session,
-			Collection<?> allFilterConditionsParam)
+	public synchronized void loadJoinData(Mapper mapper)
 			throws Throwable {
 		Collection<FilterConditionDTO> allFilterConditions = new LinkedList<FilterConditionDTO>();
-		for (Object object : allFilterConditionsParam) {
+		for (Object object : mapper.loadAll(FilterConditionDTO.class)) {
 			allFilterConditions.add((FilterConditionDTO) object);
 		}
 		
-		
 		Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
 
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = session
-				.createCriteria(
-						JunctorConditionForFilterTreeConditionJoinDTO.class)
-				.list();
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class);
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {

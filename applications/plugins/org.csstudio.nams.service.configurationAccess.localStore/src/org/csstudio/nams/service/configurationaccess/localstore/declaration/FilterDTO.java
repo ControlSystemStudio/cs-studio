@@ -17,7 +17,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.hibernate.Session;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration eines Filters dar
@@ -189,8 +188,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 	}
 
-	public void loadJoinData(Session session,
-			Collection<?> allPotientielJoinedElements) throws Throwable {
+	public void loadJoinData(Mapper mapper) throws Throwable {
 		// Does the service
 		
 	}

@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
-import java.util.Collection;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -10,7 +8,6 @@ import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.hibernate.Session;
 
 /**
  * Dieses FC wird verwendet, um andere Condtions im Filter zu verneinen. Diese
@@ -85,11 +82,10 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadJoinData(Session session,
-			Collection allJoinedElements) throws Throwable {
+	public void loadJoinData(Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasJoinedElements) {
 			((HasJoinedElements) this.negatedFilterCondition)
-					.loadJoinData(session, allJoinedElements);
+					.loadJoinData(mapper);
 		}
 	}
 

@@ -1,6 +1,8 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -159,9 +161,10 @@ class LocalStoreConfigurationServiceImpl implements
 
 		Configuration result = null;
 		Transaction transaction = null;
-		Session session = null;
+		Session outerSession = null;
 		try {
-			session = this.openNewSession();
+			final Session session = this.openNewSession();
+			outerSession = session;
 
 			transaction = session.beginTransaction();
 			transaction.begin();
@@ -225,7 +228,31 @@ class LocalStoreConfigurationServiceImpl implements
 				if (fc instanceof JunctorConditionForFilterTreeDTO) {
 					final JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
 					try {
-						jcfft.loadJoinData(session, allFCs);
+						jcfft.loadJoinData(new HasJoinedElements.Mapper() {
+
+							public void delete(
+									NewAMSConfigurationElementDTO element)
+									throws Throwable {
+								deleteDTONoTransaction(session, element);
+							}
+
+							@SuppressWarnings("unchecked")
+							public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+									Class<T> clasz) throws Throwable {
+								if( FilterConditionDTO.class.isAssignableFrom(clasz)) {
+									return (List<T>) Arrays.asList(allFCs.toArray());
+								}
+								
+								return Collections.emptyList();
+							}
+
+							public void save(
+									NewAMSConfigurationElementDTO element)
+									throws Throwable {
+								saveDTONoTransaction(session, element);
+							}
+							
+						});
 					} catch (final Throwable e) {
 						throw new InconsistentConfigurationException(
 								"unable to load joined conditions of JunctionConditionForFilters",
@@ -248,7 +275,7 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			t.printStackTrace();
 		} finally {
-			closeSession(session);
+			closeSession(outerSession);
 		}
 		return result;
 	}

@@ -1,6 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -8,7 +7,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.hibernate.Session;
 
 /**
  * Indicates that the given Element has Joined-Elements to be load and stored
@@ -74,17 +72,12 @@ public interface HasJoinedElements {
 	 * {@link JunctorConditionForFilterTreeDTO}. IMPORTANT: This method has to
 	 * be called in a valid open transaction!
 	 * 
-	 * @param session
+	 * @param mapper
 	 *            The session to store to; it is guaranteed that only
 	 *            {@link JunctorConditionForFilterTreeDTO} will be loaded and
 	 *            nothing be deleted.
-	 * @param allJoinedElements
-	 *            All avail {@link NewAMSConfigurationElementDTO}; is is
-	 *            guaranteed that no {@link NewAMSConfigurationElementDTO} will
-	 *            be modified or deleted.
 	 * @throws If
 	 *             an error occurred
 	 */
-	public abstract void loadJoinData(Session session,
-			Collection<?> allPotientielJoinedElements) throws Throwable;
+	public abstract void loadJoinData(Mapper mapper) throws Throwable;
 }
