@@ -2,6 +2,8 @@ package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
@@ -21,7 +23,9 @@ public enum FilterConditionTypeRefToVersandRegelMapper {
 	TIMEBASED(TimeBasedFilterConditionDTO.class),
 	STRING_ARRAY(StringArrayFilterConditionDTO.class), 
 	PV(ProcessVariableFilterConditionDTO.class), 
-	JUNCTOR(JunctorConditionDTO.class);
+	JUNCTOR(JunctorConditionDTO.class),
+	JUNCTOR_FOR_TREE(JunctorConditionForFilterTreeDTO.class),
+	NEGATION(NegationConditionForFilterTreeDTO.class);
 
 	
 //	private final int id;

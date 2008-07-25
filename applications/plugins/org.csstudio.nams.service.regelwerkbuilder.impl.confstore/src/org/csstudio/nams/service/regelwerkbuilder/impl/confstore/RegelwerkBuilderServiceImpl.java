@@ -3,6 +3,7 @@ package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -19,9 +20,12 @@ import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
 import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
@@ -31,6 +35,7 @@ import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerksBuilderException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
+import org.eclipse.core.internal.content.ILazySource;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
@@ -59,8 +64,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 				// create a list of first level filterconditions
 				List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
 				for (FilterConditionDTO filterConditionDTO : filterConditions) {
-					versandRegels.add(createVersandRegel(filterConditionDTO,
-							confStoreService));
+					versandRegels.add(createVersandRegel(filterConditionDTO));
 				}
 				VersandRegel hauptRegel = new UndVersandRegel(versandRegels
 						.toArray(new VersandRegel[0]));
@@ -78,8 +82,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 	}
 
 	private VersandRegel createVersandRegel(
-			FilterConditionDTO filterConditionDTO,
-			LocalStoreConfigurationService confStoreService) {
+			FilterConditionDTO filterConditionDTO) {
 		// mapping the type information in the aggrFilterConditionTObject to a
 		// VersandRegel
 		FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
@@ -127,10 +130,8 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			FilterConditionDTO secondFilterCondition = junctorCondition
 					.getSecondFilterCondition();
 
-			versandRegels[0] = createVersandRegel(firstFilterCondition,
-					confStoreService);
-			versandRegels[1] = createVersandRegel(secondFilterCondition,
-					confStoreService);
+			versandRegels[0] = createVersandRegel(firstFilterCondition);
+			versandRegels[1] = createVersandRegel(secondFilterCondition);
 			switch (junctorCondition.getJunctor()) {
 			case OR:
 				return new OderVersandRegel(versandRegels);
@@ -165,6 +166,30 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			return new ProcessVariableRegel(pvConnectionService, pvCondition
 					.getPVAddress(), pvCondition.getPVOperator(), pvCondition
 					.getSuggestedPVType(), pvCondition.getCCompValue());
+		}
+		case NEGATION: {
+			NegationConditionForFilterTreeDTO notCondition = (NegationConditionForFilterTreeDTO) filterConditionDTO;
+			return new NichtVersandRegel(createVersandRegel(notCondition.getNegatedFilterCondition()));
+		}
+		case JUNCTOR_FOR_TREE: {
+			JunctorConditionForFilterTreeDTO junctorCondition = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
+			
+			Set<FilterConditionDTO> operands = junctorCondition.getOperands();
+			VersandRegel[] versandRegels = new VersandRegel[operands.size()];
+			FilterConditionDTO[] conditions = new FilterConditionDTO[operands.size()];
+			
+			for (int i = 0; i < versandRegels.length; i++) {
+				versandRegels[i] = createVersandRegel(conditions[i]);
+			}
+			if (junctorCondition.getOperator() == JunctorConditionType.AND){
+				return new UndVersandRegel(versandRegels);
+			} else if (junctorCondition.getOperator() == JunctorConditionType.OR){
+				return new OderVersandRegel(versandRegels);
+			} else {
+				throw new IllegalArgumentException("Unsupported FilterType, see "
+						+ this.getClass().getPackage() + "."
+						+ this.getClass().getName());
+				}
 		}
 		default:
 			throw new IllegalArgumentException("Unsupported FilterType, see "
