@@ -70,8 +70,9 @@ public class HttpServiceHelper
         final HttpService http = (HttpService) services[0];
         
         // Don't close the tracker?
-        // When closed, the registered servlets don't get called?!
-        http_tracker.close();
+        // When closed, the HttpService seems to get
+        // closed as well, at least in _some_ tests!?
+        // http_tracker.close();
         
         return http;
     }
