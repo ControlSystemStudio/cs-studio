@@ -87,7 +87,7 @@ public class TransactionProcessor {
 				// everything is to be stopped and checked!
 				// - closeSession(session);
 			}
-			new StorageException("failed to process unit of work", e);
+			throw new StorageException("failed to process unit of work", e);
 		} finally {
 			if (lock.isHeldByCurrentThread()) {
 				lock.unlock();
