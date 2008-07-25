@@ -68,9 +68,9 @@ public class TransactionProcessor {
 			tx = session.beginTransaction();
 			tx.begin();
 
-			logger.logInfoMessage(this, "Beginning work...");
+			logger.logDebugMessage(this, "Beginning unit of work of type " + work.getClass().getName() + "...");
 			result = work.doWork(new MapperImpl(session));
-			logger.logInfoMessage(this, "... done.");
+			logger.logDebugMessage(this, "... done.");
 
 			tx.commit();
 		} catch (final Throwable e) {

@@ -322,7 +322,7 @@ public abstract class AbstractNamsView extends ViewPart {
 									"Reload of entire configuration requested by user...");
 					configurationBeanService.refreshData();
 					logger
-					.logDebugMessage(this,
+					.logInfoMessage(this,
 					"Reload of entire configuration done.");
 				}
 			}
