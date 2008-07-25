@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class AlarmbearbeiterGruppenBean extends
-		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> {
+		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> implements IReceiverBean{
 
 	public static enum PropertyNames {
 		groupID, name, minGroupMember, timeOutSec, active, users

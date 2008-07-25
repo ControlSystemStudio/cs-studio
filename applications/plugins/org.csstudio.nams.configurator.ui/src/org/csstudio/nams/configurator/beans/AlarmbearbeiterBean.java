@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.beans;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 
 public class AlarmbearbeiterBean extends
-		AbstractConfigurationBean<AlarmbearbeiterBean> {
+		AbstractConfigurationBean<AlarmbearbeiterBean> implements IReceiverBean {
 
 	public static enum PropertyNames {
 		userID, confirmCode, name, email, mobilePhone, phone, statusCode, active, preferedAlarmType 

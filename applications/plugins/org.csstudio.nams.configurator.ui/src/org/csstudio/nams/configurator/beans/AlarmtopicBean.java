@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
 
-public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
+public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> implements IReceiverBean{
 
 	public static enum PropertyNames {
 		topicID, topicName, humanReadableName, description

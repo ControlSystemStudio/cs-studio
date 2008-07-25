@@ -147,11 +147,30 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		pcs.firePropertyChange(PropertyNames.conditions.name(), oldValue, conditions);
 	}
 
-	public List<FilterActionBean> getActions() {
+	public List<FilterAction> getActions() {
 		// TODO Auto-generated method stub
-		ArrayList<FilterActionBean> arrayList = new ArrayList<FilterActionBean>(2);
-		arrayList.add(new FilterActionBean());
-		arrayList.add(new FilterActionBean());
+		ArrayList<FilterAction> arrayList = new ArrayList<FilterAction>(2);
+		AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
+		AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
+		alarmbearbeiterBean.setName("test ABB");
+		alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
+		arrayList.add(alarmbearbeiterFilterAction);
+		
+		AlarmbearbeitergruppenFilterAction alarmbearbeitergruppenFilterAction = new AlarmbearbeitergruppenFilterAction();
+		
+		AlarmbearbeiterGruppenBean alarmbearbeiterGruppenBean = new AlarmbearbeiterGruppenBean();
+		alarmbearbeiterGruppenBean.setName("test ABGB");
+		alarmbearbeitergruppenFilterAction.setReceiver(alarmbearbeiterGruppenBean);
+		arrayList.add(alarmbearbeitergruppenFilterAction);
+		
+		
+		AlarmTopicFilterAction alarmTopicFilterAction = new AlarmTopicFilterAction();
+		
+		AlarmtopicBean alarmtopicBean = new AlarmtopicBean();
+		alarmtopicBean.setHumanReadableName("Bubu Topic");
+		alarmTopicFilterAction.setReceiver(alarmtopicBean);
+		arrayList.add(alarmTopicFilterAction);
+		
 		return arrayList;
 	}
 }

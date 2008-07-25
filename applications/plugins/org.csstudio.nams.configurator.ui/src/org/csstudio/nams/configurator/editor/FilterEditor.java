@@ -1,10 +1,16 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.actions.BeanToEditorId;
-import org.csstudio.nams.configurator.beans.FilterActionBean;
+import org.csstudio.nams.configurator.beans.AlarmTopicFilterAction;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
+import org.csstudio.nams.configurator.beans.AlarmtopicBean;
+import org.csstudio.nams.configurator.beans.FilterAction;
+import org.csstudio.nams.configurator.beans.FilterActionType;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -21,15 +27,12 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -37,26 +40,21 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
@@ -118,7 +116,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			new Label(treeAndButtonsComp, SWT.None).setText("Filterconditions");
 			{
 				filterConditionsTreeViewer = new TreeViewer(treeAndButtonsComp,
-						SWT.MULTI);
+						SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 				Tree filterTree = filterConditionsTreeViewer.getTree();
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
 						filterConditionsTreeViewer.getControl());
@@ -258,74 +256,90 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		int[] bounds = { 100, 100, 100 };
 
 		TableViewerColumn[] tableViewerColumns = new TableViewerColumn[3];
-		
+
 		for (int i = 0; i < titles.length; i++) {
-			tableViewerColumns[i] = new TableViewerColumn(actionTableViewer, SWT.LEFT);
-			
+			tableViewerColumns[i] = new TableViewerColumn(actionTableViewer,
+					SWT.LEFT);
+
 			TableColumn column = tableViewerColumns[i].getColumn();
 			column.setText(titles[i]);
 			column.setWidth(bounds[i]);
 			column.setResizable(true);
 		}
-		
+
 		// Empfänger
-		tableViewerColumns[0].setLabelProvider(new ColumnLabelProvider(){
+		tableViewerColumns[0].setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				// TODO 
-//				return ((FilterActionBean)element).toString();
-				return "TODO!!";
+				return ((FilterAction)element).getEmpfaengerName();
 			}
 		});
-		
+
 		// Alarmaktion
-		tableViewerColumns[1].setLabelProvider(new ColumnLabelProvider(){
+		tableViewerColumns[1].setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				// TODO 
-//				return super.getText(element);
-				return "TODO2";
+				FilterActionType type = ((FilterAction)element).getFilterActionType();
+				if (type != null) {
+					return type.getDescription();
+				}
+				return "<Bitte wählen>";
 			}
 		});
-		tableViewerColumns[1].setEditingSupport(new EditingSupport(actionTableViewer) {
+		tableViewerColumns[1].setEditingSupport(new EditingSupport(
+				actionTableViewer) {
 
 			@Override
 			protected boolean canEdit(Object element) {
 				// TODO schaun ob wir editieren können
+				if (element instanceof AlarmTopicFilterAction)
+					return false;
 				return true;
 			}
 
 			@Override
 			protected CellEditor getCellEditor(Object element) {
-				// TODO (gs) string array anpassen auf die jeweiligen Möglichkeiten
-				String[] strings = new String[]{"test", "test2"};
-				return new ComboBoxCellEditor(actionTableViewer.getTable(), strings, SWT.READ_ONLY);
+				FilterActionType[] types = ((FilterAction)element).getFilterActionTypeValues();
+				String[] strings = new String[types.length];
+				for (int i = 0; i < types.length; i++) {
+					strings[i] = types[i].getDescription();
+				}
+				return new ComboBoxCellEditor(actionTableViewer.getTable(),
+						strings, SWT.READ_ONLY);
 			}
 
 			@Override
 			protected Object getValue(Object element) {
-				// TODO index des selektierten
+				FilterActionType type = ((FilterAction)element).getFilterActionType();
+				if (type != null) {
+					FilterActionType[] types = ((FilterAction)element).getFilterActionTypeValues();
+					for (int i = 0; i < types.length; i++) {
+						if (type.equals(types[i])) {
+							return i;
+						}
+					}
+				}
 				return 0;
 			}
 
 			@Override
 			protected void setValue(Object element, Object value) {
-				// TODO Auto-generated method stub
-				
+				FilterActionType[] types = ((FilterAction)element).getFilterActionTypeValues();
+				((FilterAction)element).setType(types[((Integer)value).intValue()]);
+				actionTableViewer.refresh();
 			}
-			
+
 		});
-		
+
 		// Nachricht
-		tableViewerColumns[2].setLabelProvider(new ColumnLabelProvider(){
+		tableViewerColumns[2].setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				// TODO 
-//				return super.getText(element);
-				return "TODO3";
+				return ((FilterAction)element).getMessage();
 			}
 		});
-		tableViewerColumns[2].setEditingSupport(new EditingSupport(actionTableViewer) {
+		tableViewerColumns[2].setEditingSupport(new EditingSupport(
+				actionTableViewer) {
 			@Override
 			protected boolean canEdit(Object element) {
 				return true;
@@ -334,24 +348,25 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			@Override
 			protected CellEditor getCellEditor(Object element) {
 				// TODO (gs) validator hinzufügen
-				TextCellEditor textEditor = new TextCellEditor(actionTableViewer.getTable());
+				TextCellEditor textEditor = new TextCellEditor(
+						actionTableViewer.getTable());
 				((Text) textEditor.getControl()).setTextLimit(1024);
 				return textEditor;
 			}
 
 			@Override
 			protected Object getValue(Object element) {
-				//TODO 
-				return "test";
+				return ((FilterAction)element).getMessage();
 			}
 
 			@Override
 			protected void setValue(Object element, Object value) {
-				//TODO
+				((FilterAction)element).setMessage((String) value);
+				actionTableViewer.refresh();
 			}
-			
+
 		});
-		
+
 		actionTableViewer.setInput(getWorkingCopyOfEditorInput().getActions()
 				.toArray());
 
@@ -533,6 +548,48 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						}
 						return result;
 					}
+				});
+
+		actionTableViewer.addDropSupport(DND.DROP_LINK,
+				new Transfer[] { LocalSelectionTransfer.getTransfer() },
+				new ViewerDropAdapter(actionTableViewer) {
+
+					@Override
+					public boolean performDrop(Object data) {
+						boolean result = false;
+						IStructuredSelection selection = (IStructuredSelection) data;
+						Object selectedObject = selection.getFirstElement();
+						if (selectedObject instanceof AlarmbearbeiterBean) {
+							//TODO
+						} else if (selectedObject instanceof AlarmbearbeiterGruppenBean) {
+							//TODO
+						} else if (selectedObject instanceof AlarmtopicBean) {
+							//TODO
+						}
+						return result;
+					}
+
+					@Override
+					public void dragEnter(DropTargetEvent event) {
+						event.detail = DND.DROP_LINK;
+						super.dragEnter(event);
+					}
+
+					@Override
+					public boolean validateDrop(Object target, int operation,
+							TransferData transferType) {
+						boolean result = false;
+						IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+								.getTransfer().getSelection();
+						Object selectedElement = selection.getFirstElement();
+						if (selectedElement instanceof AlarmbearbeiterBean || 
+								selectedElement instanceof AlarmbearbeiterGruppenBean ||
+								selectedElement instanceof AlarmtopicBean) {
+							result = true;
+						}
+						return result;
+					}
+
 				});
 	}
 
