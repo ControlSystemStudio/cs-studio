@@ -206,6 +206,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		// ANdere FCs sind auf jeden Fall gespeichert.
 		List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(JunctorConditionForFilterTreeDTO.class, true);
 		List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(NegationConditionForFilterTreeDTO.class, true);
+		List<FilterConditionsToFilterDTO> alleRootKnotenZuordnungen = mapper.loadAll(FilterConditionsToFilterDTO.class, true);
 		
 		List<FilterConditionDTO> operands = this.getFilterConditions();
 		
@@ -229,6 +230,29 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 					mapper.save(operand);
 				}
 			}
+		}
+		
+		Collection<FilterConditionsToFilterDTO> neueJoins = new HashSet<FilterConditionsToFilterDTO>();
+		for (FilterConditionDTO fcFuerZuorndung : getFilterConditions()) {
+			FilterConditionsToFilterDTO newJoin = new FilterConditionsToFilterDTO(this.getIFilterID(), fcFuerZuorndung.getIFilterConditionID());
+			
+			if( !alleRootKnotenZuordnungen.contains(newJoin) ) {
+			neueJoins.add(newJoin);
+			}
+		}
+		
+		for (FilterConditionsToFilterDTO zuordnung: alleRootKnotenZuordnungen) {
+			if( zuordnung.getIFilterRef() == this.getIFilterID() ) {
+				FilterConditionDTO existing = findForId(zuordnung.getIFilterConditionRef(), getFilterConditions());
+				if( existing == null ) {
+					// Diese Zuordnung ist "tot"
+					mapper.delete(zuordnung);
+				} 
+			}
+		}
+		
+		for (FilterConditionsToFilterDTO toSave : neueJoins) {
+			mapper.save(toSave);
 		}
 	}
 

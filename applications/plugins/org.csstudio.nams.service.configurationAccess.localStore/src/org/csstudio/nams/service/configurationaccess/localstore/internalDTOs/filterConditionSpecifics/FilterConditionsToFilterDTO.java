@@ -32,6 +32,10 @@ public class FilterConditionsToFilterDTO implements NewAMSConfigurationElementDT
 	public FilterConditionsToFilterDTO() {
 		filterCTFPK = new FilterConditionsToFilterDTO_PK();
 	}
+
+	public FilterConditionsToFilterDTO(int iFilterRef, int iFilterConditionRef) {
+		filterCTFPK = new FilterConditionsToFilterDTO_PK(iFilterRef, iFilterConditionRef);
+	}
 	
 	/**
 	 * This column is no more in use.
