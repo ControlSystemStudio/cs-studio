@@ -35,6 +35,7 @@ import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
+import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 
 public class ConfigurationServiceFactoryImpl implements
 		ConfigurationServiceFactory {
@@ -62,17 +63,7 @@ public class ConfigurationServiceFactoryImpl implements
 		Contract.requireNotNull("password", password);
 		//Passwords of length 0 ok for development databaseses! Contract.require(password.length() > 0, "password.length() > 0");
 		
-		/*-if( dbType == DatabaseType.HSQL_1_8_0 ) {
-			try {
-				DriverManager.registerDriver(new jdbcDriver());
-			} catch (Throwable t) {
-				// TODO logging....
-				System.out
-						.println("ConfigurationServiceFactoryImpl.getConfigurationService() " + t);
-			}
-		}*/
-		
-		ConnectionData connectionData = new ConnectionData(dbType.getDriverName(), connectionURL, dbType.getHibernateDialect().getName(), username, password);
+		ConnectionData connectionData = new ConnectionData(dbType.getDriverName(), connectionURL, dbType.getHibernateDialect().getName(), username, password, dbType);
 		LocalStoreConfigurationService service = services.get(connectionData);
 		
 		if (service == null) {
@@ -149,6 +140,19 @@ public class ConfigurationServiceFactoryImpl implements
 				.setProperty("hbm2ddl.auto", "update") 
 				.setProperty("hibernate.mapping.precedence", "class");
 		
+		if( connectionData.getDatabaseType().equals(DatabaseType.HSQL_1_8_0) ) {
+			try {
+				Class.forName(DatabaseType.HSQL_1_8_0.getDriverName()).newInstance();
+				configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+				 SchemaUpdate schemaUpdate = new SchemaUpdate(configuration); 
+					    schemaUpdate.execute(false, true);
+			} catch (Throwable t) {
+				// TODO logging....
+				System.out
+						.println("ConfigurationServiceFactoryImpl.getConfigurationService() " + t);
+			}
+		}
+		
 		/*
 		 * Can I supply my own connections? Implement the    org.hibernate.connec- 
 tion.ConnectionProvider  interface, and name your implementation 
@@ -186,14 +190,16 @@ copied from: http://www.manning.com/bauer2/chapter2.pdf
 		private String dialect;
 		private String username;
 		private String password;
+		private final DatabaseType databaseType;
 		public ConnectionData(String connectionDriver, String connectionURL,
-				String dialect, String username, String password) {
+				String dialect, String username, String password, DatabaseType databaseType) {
 			super();
 			this.connectionDriver = connectionDriver;
 			this.connectionURL = connectionURL;
 			this.dialect = dialect;
 			this.username = username;
 			this.password = password;
+			this.databaseType = databaseType;
 		}
 		public String getConnectionDriver() {
 			return connectionDriver;
@@ -210,6 +216,10 @@ copied from: http://www.manning.com/bauer2/chapter2.pdf
 		public String getPassword() {
 			return password;
 		}
+		
+		public DatabaseType getDatabaseType() {
+			return databaseType;
+		}
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -220,6 +230,8 @@ copied from: http://www.manning.com/bauer2/chapter2.pdf
 							.hashCode());
 			result = prime * result
 					+ ((connectionURL == null) ? 0 : connectionURL.hashCode());
+			result = prime * result
+					+ ((databaseType == null) ? 0 : databaseType.hashCode());
 			result = prime * result
 					+ ((dialect == null) ? 0 : dialect.hashCode());
 			result = prime * result
@@ -234,7 +246,7 @@ copied from: http://www.manning.com/bauer2/chapter2.pdf
 				return true;
 			if (obj == null)
 				return false;
-			if (getClass() != obj.getClass())
+			if (!(obj instanceof ConnectionData))
 				return false;
 			final ConnectionData other = (ConnectionData) obj;
 			if (connectionDriver == null) {
@@ -246,6 +258,11 @@ copied from: http://www.manning.com/bauer2/chapter2.pdf
 				if (other.connectionURL != null)
 					return false;
 			} else if (!connectionURL.equals(other.connectionURL))
+				return false;
+			if (databaseType == null) {
+				if (other.databaseType != null)
+					return false;
+			} else if (!databaseType.equals(other.databaseType))
 				return false;
 			if (dialect == null) {
 				if (other.dialect != null)
@@ -264,6 +281,7 @@ copied from: http://www.manning.com/bauer2/chapter2.pdf
 				return false;
 			return true;
 		}
+		
 		
 		
 	}

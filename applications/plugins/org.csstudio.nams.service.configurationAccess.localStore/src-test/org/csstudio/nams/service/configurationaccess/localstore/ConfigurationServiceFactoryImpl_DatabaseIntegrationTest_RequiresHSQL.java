@@ -35,7 +35,7 @@ import org.junit.Test;
  * 
  * @author gs, mz
  */
-public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOracle
+public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQL
 		extends TestCase {
 
 	LocalStoreConfigurationService service;
@@ -60,9 +60,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 				new LoggerMock());
 
 		LocalStoreConfigurationService result = factory
-				.getConfigurationService(
-						"jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))",
-						DatabaseType.Oracle10g, "DESY", "DESY");
+				.getConfigurationService("jdbc:hsqldb:mem:namscfg",
+						DatabaseType.HSQL_1_8_0, "sa", "");
 
 		return result;
 	}
@@ -78,7 +77,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		service = null;
 	}
 
-	@Test
+	 @Test
 	public void testReloadAndRefresh() throws Throwable {
 		LocalStoreConfigurationService secondService = createAServiceForOracleTests();
 
@@ -93,9 +92,9 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		AlarmbearbeiterDTO found = null;
 		for (AlarmbearbeiterDTO alarmbearbeiterDTO : alleAlarmbearbeiter) {
 			if (alarmbearbeiterDTO.getUserId() == dto.getUserId()) { // Set
-																		// by
-																		// save
-																		// op
+				// by
+				// save
+				// op
 				assertEquals(dto.getUserName(), alarmbearbeiterDTO
 						.getUserName());
 				found = alarmbearbeiterDTO;
@@ -115,9 +114,9 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		AlarmbearbeiterDTO foundNow = null;
 		for (AlarmbearbeiterDTO alarmbearbeiterDTO : alleAlarmbearbeiterNow) {
 			if (alarmbearbeiterDTO.getUserId() == dto.getUserId()) { // Set
-																		// by
-																		// save
-																		// op
+				// by
+				// save
+				// op
 				assertEquals(
 						"Der Datensatz ist auch für andere sichtbar verändert",
 						dto.getUserName(), alarmbearbeiterDTO.getUserName());
@@ -171,8 +170,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 				.contains(neuerBearbeiter));
 		for (AlarmbearbeiterDTO alarmbearbeiterDTO : loadedList) {
 			// Keine Benutzer mit altem Namen vorhanden.
-//			assertFalse("Hans Otto Dietmar Struntz".equals(alarmbearbeiterDTO
-//					.getUserName()));
+			// assertFalse("Hans Otto Dietmar Struntz".equals(alarmbearbeiterDTO
+			// .getUserName()));
 		}
 
 		// loeschen
@@ -186,7 +185,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 						neuerBearbeiter));
 	}
 
-	@Test
+	 @Test
 	public void testFactoryAndServiceOnOracleFuerFilterCondition()
 			throws Throwable {
 		StringFilterConditionDTO neueFilterCondition = new StringFilterConditionDTO();
@@ -238,7 +237,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 				.gibAlleFilterConditions().contains(neueFilterCondition));
 	}
 
-	public void testReadAndWriteJunctorConditionForFilterTree()
+	public void untestReadAndWriteJunctorConditionForFilterTree()
 			throws Throwable {
 		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
 		leftCondition.setCName("Test-LeftCond");
@@ -341,6 +340,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		service.deleteDTO(rightCondition);
 	}
 
+	@Test
 	public void testSaveFilter() throws Throwable {
 		// Conditions
 		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
@@ -387,8 +387,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
 				service.deleteFilterDTO(filterDTO);
 			}
-//			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
-//					"Test Filter für JCFFT"));
+			// assertFalse("noch nicht enthalten", filterDTO.getName().equals(
+			// "Test Filter für JCFFT"));
 		}
 
 		// Save
@@ -450,8 +450,9 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 		service.deleteDTO(rightCondition);
 	}
 
-	@Test
-	public void testStoreAndLoadFilterWithConditionNegations() throws Throwable {
+	 @Test
+	public void testStoreAndLoadFilterWithConditionNegations()
+			throws Throwable {
 		// Conditions
 		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
 		leftCondition.setCName("Test-LeftCond");
@@ -500,8 +501,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresOra
 			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
 				service.deleteDTO(filterDTO);
 			}
-//			assertFalse("noch nicht enthalten", filterDTO.getName().equals(
-//					"Test Filter für JCFFT"));
+			// assertFalse("noch nicht enthalten", filterDTO.getName().equals(
+			// "Test Filter für JCFFT"));
 		}
 
 		// Save

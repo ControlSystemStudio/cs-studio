@@ -9,6 +9,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -32,16 +33,25 @@ public class TransactionProcessor {
 	private ReentrantLock lock;
 
 	/**
+	 * The logger to log to. TODO Produce log output
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger;
+
+	/**
 	 * Creates an instance for given Hibernate {@link SessionFactory}.
 	 */
-	public TransactionProcessor(SessionFactory sessionFactory) {
+	public TransactionProcessor(SessionFactory sessionFactory, Logger logger) {
 		this.sessionFactory = sessionFactory;
+		this.logger = logger;
 		this.lock = new ReentrantLock(true);
 	}
 
 	/**
 	 * Performs given one unit of work n a Hibernate session transaction.
 	 * Performs only one unit at time! (Using {@link ReentrantLock})
+	 * 
+	 * TODO Rename to doExclusiveInTransaction
 	 */
 	public <T> T doInTransaction(UnitOfWork<T> work) throws StorageException,
 			StorageError, InconsistentConfigurationException,

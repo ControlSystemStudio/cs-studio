@@ -71,6 +71,8 @@ class LocalStoreConfigurationServiceImpl implements
 			final SessionFactory sessionFactory, final Logger logger) {
 		this.sessionFactory = sessionFactory;
 		this.logger = logger;
+
+		transactionProcessor = new TransactionProcessor(sessionFactory, logger);
 	}
 
 	public void deleteAlarmbearbeiterGruppenDTO(
@@ -167,127 +169,226 @@ class LocalStoreConfigurationServiceImpl implements
 			StorageException, InconsistentConfigurationException {
 
 		Configuration result = null;
-		Transaction transaction = null;
-		Session outerSession = null;
-		try {
-			final Session session = this.openNewSession();
-			outerSession = session;
 
-			transaction = session.beginTransaction();
-			transaction.begin();
-			// 
-			Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
-			Collection<TopicDTO> alleAlarmtopics;
-			Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
-			Collection<FilterDTO> allFilters;
-			Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
+		UnitOfWork<Configuration> loadEntireConfigurationWork = new UnitOfWork<Configuration>() {
+			public Configuration doWork(Mapper mapper) throws Throwable {
+				Configuration resultOfUnit = null;
 
-			Collection<FilterConditionDTO> allFilterConditions;
-			Collection<RubrikDTO> alleRubriken;
-			List<User2UserGroupDTO> alleUser2UserGroupMappings;
-			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
+				Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
+				Collection<TopicDTO> alleAlarmtopics;
+				Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
+				Collection<FilterDTO> allFilters;
+				Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
+				Collection<FilterConditionDTO> allFilterConditions;
+				Collection<RubrikDTO> alleRubriken;
+				List<User2UserGroupDTO> alleUser2UserGroupMappings;
+				Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
 
-			// PUBLICs
-			alleAlarmbarbeiter = loadAll(session, AlarmbearbeiterDTO.class);
-			alleAlarmbearbeiterGruppen = loadAll(session,
-					AlarmbearbeiterGruppenDTO.class);
+				alleAlarmbarbeiter = mapper.loadAll(AlarmbearbeiterDTO.class);
+				alleAlarmbearbeiterGruppen = mapper
+						.loadAll(AlarmbearbeiterGruppenDTO.class);
+				alleAlarmtopics = mapper.loadAll(TopicDTO.class);
+				allFilters = mapper.loadAll(FilterDTO.class);
+				allFilterConditions = mapper.loadAll(FilterConditionDTO.class);
+				alleRubriken = mapper.loadAll(RubrikDTO.class);
+				alleUser2UserGroupMappings = mapper
+						.loadAll(User2UserGroupDTO.class);
+				allFilterConditionMappings = mapper
+						.loadAll(FilterConditionsToFilterDTO.class);
+				allCompareValues = mapper
+						.loadAll(StringArrayFilterConditionCompareValuesDTO.class);
 
-			alleAlarmtopics = loadAll(session, TopicDTO.class);
-			allFilters = loadAll(session, FilterDTO.class);
-
-			allFilterConditions = loadAll(session, FilterConditionDTO.class);
-
-			// Nots befüllen
-			for (final FilterConditionDTO filterConditionDTO : allFilterConditions) {
-				if (filterConditionDTO instanceof NegationConditionForFilterTreeDTO) {
-					final NegationConditionForFilterTreeDTO notCond = (NegationConditionForFilterTreeDTO) filterConditionDTO;
-					for (final FilterConditionDTO possibleCondition : allFilterConditions) {
-						if (notCond.getINegatedFCRef() == possibleCondition
-								.getIFilterConditionID()) {
-							notCond
-									.setNegatedFilterCondition(possibleCondition);
-							break;
+				// Nots befüllen
+				for (final FilterConditionDTO filterConditionDTO : allFilterConditions) {
+					if (filterConditionDTO instanceof NegationConditionForFilterTreeDTO) {
+						final NegationConditionForFilterTreeDTO notCond = (NegationConditionForFilterTreeDTO) filterConditionDTO;
+						for (final FilterConditionDTO possibleCondition : allFilterConditions) {
+							if (notCond.getINegatedFCRef() == possibleCondition
+									.getIFilterConditionID()) {
+								notCond
+										.setNegatedFilterCondition(possibleCondition);
+								break;
+							}
 						}
 					}
 				}
-			}
 
-			alleRubriken = loadAll(session, RubrikDTO.class);
+				pruefeUndOrdnerFilterDieFilterConditionsZu(
+						allFilterConditionMappings, allFilterConditions,
+						allFilters);
 
-			alleUser2UserGroupMappings = loadAll(session,
-					User2UserGroupDTO.class);
+				setChildFilterConditionsInJunctorDTOs(allFilterConditions);
 
-			allFilterConditionMappings = loadAll(session,
-					FilterConditionsToFilterDTO.class);
-			this
-					.pruefeUndOrdnerFilterDieFilterConditionsZu(
-							allFilterConditionMappings, allFilterConditions,
-							allFilters);
-			this.setChildFilterConditionsInJunctorDTOs(allFilterConditions);
-			allCompareValues = loadAll(session,
-					StringArrayFilterConditionCompareValuesDTO.class);
-			this.setStringArrayCompareValues(allCompareValues,
-					allFilterConditions);
+				setStringArrayCompareValues(allCompareValues,
+						allFilterConditions);
 
-			final Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(
-					allFilterConditions);
-			for (final FilterConditionDTO fc : allFCs) {
-				if (fc instanceof JunctorConditionForFilterTreeDTO) {
-					final JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
-					try {
-						jcfft.loadJoinData(new Mapper() {
+				final Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(
+						allFilterConditions);
 
-							public void delete(
-									NewAMSConfigurationElementDTO element)
-									throws Throwable {
-								deleteDTONoTransaction(session, element);
-							}
-
-							@SuppressWarnings("unchecked")
-							public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-									Class<T> clasz) throws Throwable {
-								if( FilterConditionDTO.class.isAssignableFrom(clasz)) {
-									return (List<T>) Arrays.asList(allFCs.toArray());
-								}
-								
-								return Collections.emptyList();
-							}
-
-							public void save(
-									NewAMSConfigurationElementDTO element)
-									throws Throwable {
-								saveDTONoTransaction(session, element);
-							}
-							
-						});
-					} catch (final Throwable e) {
-						throw new InconsistentConfigurationException(
-								"unable to load joined conditions of JunctionConditionForFilters",
-								e);
+				for (final FilterConditionDTO fc : allFCs) {
+					if (fc instanceof JunctorConditionForFilterTreeDTO) {
+						final JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
+						try {
+							jcfft.loadJoinData(mapper);
+						} catch (final Throwable e) {
+							throw new InconsistentConfigurationException(
+									"unable to load joined conditions of JunctionConditionForFilters",
+									e);
+						}
 					}
 				}
-			}
-			this.addUsersToGroups(session, alleAlarmbearbeiterGruppen,
-					alleUser2UserGroupMappings);
 
-			//
-			result = new Configuration(alleAlarmbarbeiter, alleAlarmtopics,
-					alleAlarmbearbeiterGruppen, allFilters,
-					allFilterConditionMappings, allFilterConditions,
-					alleRubriken, alleUser2UserGroupMappings, allCompareValues);
-			transaction.commit();
-		} catch (final Throwable t) {
-			if (transaction != null) {
-				transaction.rollback();
+				addUsersToGroups(alleAlarmbearbeiterGruppen,
+						alleUser2UserGroupMappings, logger);
+
+				resultOfUnit = new Configuration(alleAlarmbarbeiter,
+						alleAlarmtopics, alleAlarmbearbeiterGruppen,
+						allFilters, allFilterConditionMappings,
+						allFilterConditions, alleRubriken,
+						alleUser2UserGroupMappings, allCompareValues);
+
+				return resultOfUnit;
 			}
-			t.printStackTrace();
-		} finally {
-			closeSession(outerSession);
+		};
+
+		try {
+			result = this.transactionProcessor
+					.doInTransaction(loadEntireConfigurationWork);
+		} catch (InterruptedException e) {
+			logger.logWarningMessage(this,
+					"Load of entire configuration interrupted", e);
+			throw new StorageException(
+					"Load of entire configuration interrupted", e);
 		}
+
+		// Transaction transaction = null;
+		// Session outerSession = null;
+		// try {
+		// final Session session = this.openNewSession();
+		// outerSession = session;
+		//
+		// transaction = session.beginTransaction();
+		// transaction.begin();
+		// 
+		// Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
+		// Collection<TopicDTO> alleAlarmtopics;
+		// Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
+		// Collection<FilterDTO> allFilters;
+		// Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
+		//
+		// Collection<FilterConditionDTO> allFilterConditions;
+		// Collection<RubrikDTO> alleRubriken;
+		// List<User2UserGroupDTO> alleUser2UserGroupMappings;
+		// Collection<StringArrayFilterConditionCompareValuesDTO>
+		// allCompareValues;
+		//
+		// // PUBLICs
+		// alleAlarmbarbeiter = loadAll(session, AlarmbearbeiterDTO.class);
+		// alleAlarmbearbeiterGruppen = loadAll(session,
+		// AlarmbearbeiterGruppenDTO.class);
+
+		// alleAlarmtopics = loadAll(session, TopicDTO.class);
+		// allFilters = loadAll(session, FilterDTO.class);
+		//
+		// allFilterConditions = loadAll(session, FilterConditionDTO.class);
+
+		// // Nots befüllen
+		// for (final FilterConditionDTO filterConditionDTO :
+		// allFilterConditions) {
+		// if (filterConditionDTO instanceof NegationConditionForFilterTreeDTO)
+		// {
+		// final NegationConditionForFilterTreeDTO notCond =
+		// (NegationConditionForFilterTreeDTO) filterConditionDTO;
+		// for (final FilterConditionDTO possibleCondition :
+		// allFilterConditions) {
+		// if (notCond.getINegatedFCRef() == possibleCondition
+		// .getIFilterConditionID()) {
+		// notCond
+		// .setNegatedFilterCondition(possibleCondition);
+		// break;
+		// }
+		// }
+		// }
+		// }
+
+		// alleRubriken = loadAll(session, RubrikDTO.class);
+		//
+		// alleUser2UserGroupMappings = loadAll(session,
+		// User2UserGroupDTO.class);
+		//
+		// allFilterConditionMappings = loadAll(session,
+		// FilterConditionsToFilterDTO.class);
+		// this
+		// .pruefeUndOrdnerFilterDieFilterConditionsZu(
+		// allFilterConditionMappings, allFilterConditions,
+		// allFilters);
+		// this.setChildFilterConditionsInJunctorDTOs(allFilterConditions);
+		// allCompareValues = loadAll(session,
+		// StringArrayFilterConditionCompareValuesDTO.class);
+		// this.setStringArrayCompareValues(allCompareValues,
+		// allFilterConditions);
+
+		// final Collection<FilterConditionDTO> allFCs = new
+		// HashSet<FilterConditionDTO>(
+		// allFilterConditions);
+		// for (final FilterConditionDTO fc : allFCs) {
+		// if (fc instanceof JunctorConditionForFilterTreeDTO) {
+		// final JunctorConditionForFilterTreeDTO jcfft =
+		// (JunctorConditionForFilterTreeDTO) fc;
+		// try {
+		// jcfft.loadJoinData(new Mapper() {
+		//
+		// public void delete(
+		// NewAMSConfigurationElementDTO element)
+		// throws Throwable {
+		// deleteDTONoTransaction(session, element);
+		// }
+		//
+		// @SuppressWarnings("unchecked")
+		// public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+		// Class<T> clasz) throws Throwable {
+		// if( FilterConditionDTO.class.isAssignableFrom(clasz)) {
+		// return (List<T>) Arrays.asList(allFCs.toArray());
+		// }
+		//								
+		// return Collections.emptyList();
+		// }
+		//
+		// public void save(
+		// NewAMSConfigurationElementDTO element)
+		// throws Throwable {
+		// saveDTONoTransaction(session, element);
+		// }
+		//							
+		// });
+		// } catch (final Throwable e) {
+		// throw new InconsistentConfigurationException(
+		// "unable to load joined conditions of JunctionConditionForFilters",
+		// e);
+		// }
+		// }
+		// }
+		// this.addUsersToGroups(session, alleAlarmbearbeiterGruppen,
+		// alleUser2UserGroupMappings);
+
+		//
+		// result = new Configuration(alleAlarmbarbeiter, alleAlarmtopics,
+		// alleAlarmbearbeiterGruppen, allFilters,
+		// allFilterConditionMappings, allFilterConditions,
+		// alleRubriken, alleUser2UserGroupMappings, allCompareValues);
+		// transaction.commit();
+		// } catch (final Throwable t) {
+		// if (transaction != null) {
+		// transaction.rollback();
+		// }
+		// t.printStackTrace();
+		// } finally {
+		// closeSession(outerSession);
+		// }
 		return result;
 	}
 
-	public FilterConditionDTO getFilterConditionForId(final int id,
+	public static FilterConditionDTO getFilterConditionForId(final int id,
 			final Collection<FilterConditionDTO> allFilterConditions) {
 		for (final FilterConditionDTO filterCondition : allFilterConditions) {
 			if (filterCondition.getIFilterConditionID() == id) {
@@ -376,43 +477,66 @@ class LocalStoreConfigurationServiceImpl implements
 	public void saveDTO(final NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
-		Transaction transaction = null;
-		Session session = null;
+
+		UnitOfWork<NewAMSConfigurationElementDTO> saveWork = new UnitOfWork<NewAMSConfigurationElementDTO>() {
+			public NewAMSConfigurationElementDTO doWork(Mapper mapper)
+					throws Throwable {
+
+				mapper.save(dto); // performs "deep" save
+
+				return dto;
+			}
+		};
+
 		try {
-			session = this.openNewSession();
-			transaction = session.beginTransaction();
-			transaction.begin();
-			
-			this.saveDTONoTransaction(session, dto);
-			if (dto instanceof StringArrayFilterConditionDTO) {
-				final StringArrayFilterConditionDTO filterDto = (StringArrayFilterConditionDTO) dto;
-				final List<StringArrayFilterConditionCompareValuesDTO> list = loadAll(
-						session,
-						StringArrayFilterConditionCompareValuesDTO.class);
-				for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : list) {
-					if (filterDto.getIFilterConditionID() == stringArrayFilterConditionCompareValuesDTO
-							.getFilterConditionRef()) {
-						deleteDTONoTransaction(session,
-								stringArrayFilterConditionCompareValuesDTO);
-					}
-				}
-				for (final StringArrayFilterConditionCompareValuesDTO compValue : filterDto
-						.getCompareValueList()) {
-					compValue.setPK(filterDto.getIFilterConditionID());
-					saveDTONoTransaction(session, compValue);
-				}
-			}
-			transaction.commit();
-		} catch (final Throwable t) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			throw new StorageException(
-					"failed to save configuration element of type "
-							+ dto.getClass().getSimpleName(), t);
-		} finally {
-			closeSession(session);
+			this.transactionProcessor.doInTransaction(saveWork);
+		} catch (InterruptedException e) {
+			logger.logWarningMessage(this, "save has been interrupted", e);
+			throw new StorageException("save has been interrupted", e);
 		}
+
+		// Transaction transaction = null;
+		// Session session = null;
+		// try {
+		// session = this.openNewSession();
+		// transaction = session.beginTransaction();
+		// transaction.begin();
+		//			
+		// this.saveDTONoTransaction(session, dto);
+		// if (dto instanceof StringArrayFilterConditionDTO) {
+		// final StringArrayFilterConditionDTO filterDto =
+		// (StringArrayFilterConditionDTO) dto;
+		// final List<StringArrayFilterConditionCompareValuesDTO> list =
+		// loadAll(
+		// session,
+		// StringArrayFilterConditionCompareValuesDTO.class);
+		// for (final StringArrayFilterConditionCompareValuesDTO
+		// stringArrayFilterConditionCompareValuesDTO : list) {
+		// if (filterDto.getIFilterConditionID() ==
+		// stringArrayFilterConditionCompareValuesDTO
+		// .getFilterConditionRef()) {
+		// deleteDTONoTransaction(session,
+		// stringArrayFilterConditionCompareValuesDTO);
+		// }
+		// }
+		// for (final StringArrayFilterConditionCompareValuesDTO compValue :
+		// filterDto
+		// .getCompareValueList()) {
+		// compValue.setPK(filterDto.getIFilterConditionID());
+		// saveDTONoTransaction(session, compValue);
+		// }
+		// }
+		// transaction.commit();
+		// } catch (final Throwable t) {
+		// if (transaction != null) {
+		// transaction.rollback();
+		// }
+		// throw new StorageException(
+		// "failed to save configuration element of type "
+		// + dto.getClass().getSimpleName(), t);
+		// } finally {
+		// closeSession(session);
+		// }
 	}
 
 	public FilterDTO saveFilterDTO(final FilterDTO dto) throws StorageError,
@@ -453,8 +577,8 @@ class LocalStoreConfigurationServiceImpl implements
 
 					if (!zuSpeicherndeJoins.contains(joinElement)) {
 						deleteDTONoTransaction(session, joinElement); // nicht
-																		// mehr
-																		// verwendete
+						// mehr
+						// verwendete
 						// Knoten löschen
 					}
 
@@ -550,7 +674,7 @@ class LocalStoreConfigurationServiceImpl implements
 
 	void deleteDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
-		
+
 		if (dto instanceof HasManuallyJoinedElements) {
 			((HasManuallyJoinedElements) dto).deleteJoinLinkData(new Mapper() {
 
@@ -561,8 +685,10 @@ class LocalStoreConfigurationServiceImpl implements
 
 				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
 						Class<T> clasz) throws Throwable {
-					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this.loadAll(session, clasz);
-					allLoaded.remove(dto); // Muss raus sonst landen wir immer wieder hier! ;)
+					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this
+							.loadAll(session, clasz);
+					allLoaded.remove(dto); // Muss raus sonst landen wir immer
+											// wieder hier! ;)
 					return allLoaded;
 				}
 
@@ -570,7 +696,7 @@ class LocalStoreConfigurationServiceImpl implements
 						throws Throwable {
 					saveDTONoTransaction(session, element);
 				}
-				
+
 			});
 		}
 
@@ -592,20 +718,23 @@ class LocalStoreConfigurationServiceImpl implements
 	 */
 	protected void saveDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
-		
+
 		session.saveOrUpdate(dto);
-		
+
 		if (dto instanceof HasManuallyJoinedElements) {
 			((HasManuallyJoinedElements) dto).storeJoinLinkData(new Mapper() {
 
 				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-						Class<T> clasz)  throws Throwable {
-					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this.loadAll(session, clasz);
-					allLoaded.remove(dto); // Muss raus, sonst landen wir immer wieder hier! ;)
+						Class<T> clasz) throws Throwable {
+					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this
+							.loadAll(session, clasz);
+					allLoaded.remove(dto); // Muss raus, sonst landen wir immer
+											// wieder hier! ;)
 					return allLoaded;
 				}
 
-				public void save(NewAMSConfigurationElementDTO element)  throws Throwable {
+				public void save(NewAMSConfigurationElementDTO element)
+						throws Throwable {
 					saveDTONoTransaction(session, element);
 				}
 
@@ -613,15 +742,15 @@ class LocalStoreConfigurationServiceImpl implements
 						throws Throwable {
 					deleteDTONoTransaction(session, element);
 				}
-				
+
 			});
 		}
 	}
 
-	private void addUsersToGroups(
-			final Session session,
+	private static void addUsersToGroups(
 			final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
-			final List<User2UserGroupDTO> alleUser2UserGroupMappings) {
+			final List<User2UserGroupDTO> alleUser2UserGroupMappings,
+			Logger logger) {
 		final HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
 		for (final AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
 			gruppen.put(gruppe.getUserGroupId(), gruppe);
@@ -631,25 +760,19 @@ class LocalStoreConfigurationServiceImpl implements
 				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
 						.alarmbearbeiterZuordnen(map);
 			} catch (final NullPointerException npe) {
-				try {
-					deleteDTONoTransaction(session, map);
-					this.logger.logWarningMessage(this,
-							"Deleted invalid User To UserGroup mapping, group "
-									+ map.getUser2UserGroupPK()
-											.getIUserGroupRef()
-									+ " doesn't exist");
-				} catch (Throwable e) {
-					this.logger.logErrorMessage(this,
-							"Failed to deleted invalid User To UserGroup mapping, group "
-									+ map.getUser2UserGroupPK()
-											.getIUserGroupRef()
-									+ " doesn't exist", e);
-				}
+
+				// logger.logErrorMessage(this,
+				// "Contains invalid User To UserGroup mapping, group "
+				// + map.getUser2UserGroupPK()
+				// .getIUserGroupRef()
+				// + " doesn't exist", npe);
+
 			}
 		}
 	}
 
 	private Session sessionWorkingOn = null;
+	private TransactionProcessor transactionProcessor;
 
 	private void closeSession(Session session) throws HibernateException {
 		if (session != null && session.isOpen()) {
@@ -676,7 +799,7 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	private void pruefeUndOrdnerFilterDieFilterConditionsZu(
+	private static void pruefeUndOrdnerFilterDieFilterConditionsZu(
 			final Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter,
 			final Collection<FilterConditionDTO> allFilterConditions,
 			final Collection<FilterDTO> allFilters) {
@@ -691,12 +814,13 @@ class LocalStoreConfigurationServiceImpl implements
 			final FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO
 					.getIFilterRef());
 			if (filterDTO == null) {
-				this.logger.logWarningMessage(this, "no filter found for id: "
-						+ filterConditionsToFilterDTO.getIFilterRef());
+				// this.logger.logWarningMessage(this, "no filter found for id:
+				// "
+				// + filterConditionsToFilterDTO.getIFilterRef());
 			} else {
 				final List<FilterConditionDTO> filterConditions = filterDTO
 						.getFilterConditions();
-				filterConditions.add(this.getFilterConditionForId(
+				filterConditions.add(getFilterConditionForId(
 						filterConditionsToFilterDTO.getIFilterConditionRef(),
 						allFilterConditions));
 				filterDTO.setFilterConditions(filterConditions);
@@ -704,19 +828,17 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	private void setChildFilterConditionsInJunctorDTOs(
+	private static void setChildFilterConditionsInJunctorDTOs(
 			final Collection<FilterConditionDTO> allFilterConditions) {
 		for (final FilterConditionDTO filterCondition : allFilterConditions) {
 			if (filterCondition instanceof JunctorConditionDTO) {
 				final JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
-				final FilterConditionDTO firstFilterCondition = this
-						.getFilterConditionForId(junctorConditionDTO
-								.getFirstFilterConditionRef(),
-								allFilterConditions);
-				final FilterConditionDTO secondFilterCondition = this
-						.getFilterConditionForId(junctorConditionDTO
-								.getSecondFilterConditionRef(),
-								allFilterConditions);
+				final FilterConditionDTO firstFilterCondition = getFilterConditionForId(
+						junctorConditionDTO.getFirstFilterConditionRef(),
+						allFilterConditions);
+				final FilterConditionDTO secondFilterCondition = getFilterConditionForId(
+						junctorConditionDTO.getSecondFilterConditionRef(),
+						allFilterConditions);
 
 				junctorConditionDTO
 						.setFirstFilterCondition(firstFilterCondition);
@@ -726,7 +848,7 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	private void setStringArrayCompareValues(
+	private static void setStringArrayCompareValues(
 			final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues,
 			final Collection<FilterConditionDTO> allFilterConditions) {
 		final Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
