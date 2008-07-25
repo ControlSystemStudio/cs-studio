@@ -163,10 +163,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	@SuppressWarnings("unchecked")
 	public synchronized void loadJoinData(Mapper mapper)
 			throws Throwable {
-		Collection<FilterConditionDTO> allFilterConditions = new LinkedList<FilterConditionDTO>();
-		for (Object object : mapper.loadAll(FilterConditionDTO.class)) {
-			allFilterConditions.add((FilterConditionDTO) object);
-		}
+		//GEHT NICHT WEIL SONST ENDLOSSCHLEIFE BEIM LADEN DER FCs - Collection<FilterConditionDTO> allFilterConditions = mapper.loadAll(FilterConditionDTO.class);
 		
 		Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
 
@@ -174,12 +171,12 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {
-				for (FilterConditionDTO conditionDTO : allFilterConditions) {
-					if (conditionDTO.getIFilterConditionID() == joinElement
-							.getJoinedConditionsDatabaseId()) {
-						foundOperands.add(conditionDTO);
-					}
-				}
+//				for (FilterConditionDTO conditionDTO : allFilterConditions) {
+//					if (conditionDTO.getIFilterConditionID() == joinElement
+//							.getJoinedConditionsDatabaseId()) {
+//						foundOperands.add(conditionDTO);
+//					}
+//				}
 			}
 		}
 

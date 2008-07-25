@@ -231,6 +231,8 @@ class LocalStoreConfigurationServiceImpl implements
 						try {
 							jcfft.loadJoinData(mapper);
 						} catch (final Throwable e) {
+							logger.logErrorMessage(this, "unable to load joined conditions of JunctionConditionForFilters",
+									e);
 							throw new InconsistentConfigurationException(
 									"unable to load joined conditions of JunctionConditionForFilters",
 									e);
@@ -541,113 +543,115 @@ class LocalStoreConfigurationServiceImpl implements
 
 	public FilterDTO saveFilterDTO(final FilterDTO dto) throws StorageError,
 			StorageException, InconsistentConfigurationException {
-		Session session = null;
-		Transaction tx = null;
-		try {
-			session = this.openNewSession();
-			tx = session.beginTransaction();
-			tx.begin();
-
-			saveDTONoTransaction(session, dto);
-
-			final List<FilterConditionDTO> filterConditions = dto
-					.getFilterConditions();
-
-			final Set<FilterConditionsToFilterDTO> zuSpeicherndeJoins = new HashSet<FilterConditionsToFilterDTO>();
-
-			// erzeugen der zu schreibenden join daten
-			for (final FilterConditionDTO filterConditionDTO : filterConditions) {
-				final FilterConditionsToFilterDTO joinData = new FilterConditionsToFilterDTO();
-				joinData.setIFilterRef(dto.getIFilterID());
-				joinData.setIFilterConditionRef(filterConditionDTO
-						.getIFilterConditionID());
-
-				zuSpeicherndeJoins.add(joinData);
-
-			}
-
-			// clean up join data
-			final Collection<FilterConditionsToFilterDTO> conditionMappings = loadAll(
-					session, FilterConditionsToFilterDTO.class);
-
-			for (final FilterConditionsToFilterDTO joinElement : conditionMappings) {
-				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
-					final int filterConditionRef = joinElement
-							.getIFilterConditionRef();
-
-					if (!zuSpeicherndeJoins.contains(joinElement)) {
-						deleteDTONoTransaction(session, joinElement); // nicht
-						// mehr
-						// verwendete
-						// Knoten löschen
-					}
-
-					final Collection<JunctorConditionForFilterTreeDTO> junctorConditions = loadAll(
-							session, JunctorConditionForFilterTreeDTO.class);
-					if ((junctorConditions != null)
-							&& (junctorConditions.size() > 0)) {
-						for (final JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
-							if (junctorConditionForFilterTreeDTO
-									.getIFilterConditionID() != filterConditionRef) {
-								continue;
-							}
-
-							if (!filterConditions
-									.contains(junctorConditionForFilterTreeDTO)) {
-								this.deleteDTONoTransaction(session,
-										junctorConditionForFilterTreeDTO);
-							}
-						}
-					}
-
-					final Collection<NegationConditionForFilterTreeDTO> notConditions = loadAll(
-							session, NegationConditionForFilterTreeDTO.class);
-					if ((notConditions != null) && (notConditions.size() > 0)) {
-						for (final NegationConditionForFilterTreeDTO notConditionForFilterTreeDTO : notConditions) {
-							if (notConditionForFilterTreeDTO
-									.getIFilterConditionID() != filterConditionRef) {
-								continue;
-							}
-
-							if (!filterConditions
-									.contains(notConditionForFilterTreeDTO)) {
-								this.deleteDTONoTransaction(session,
-										notConditionForFilterTreeDTO);
-							}
-						}
-					}
-				}
-			}
-
-			// join speichern
-			for (final FilterConditionDTO filterConditionDTO : filterConditions) {
-				if ((filterConditionDTO instanceof JunctorConditionForFilterTreeDTO)
-						|| (filterConditionDTO instanceof NegationConditionForFilterTreeDTO)) {
-					// Diese Condition speichern, da sie von Editor angelegt
-					// wird.
-					this.saveDTONoTransaction(session, filterConditionDTO);
-				}
-
-				final FilterConditionsToFilterDTO joinData = new FilterConditionsToFilterDTO();
-				joinData.setIFilterRef(dto.getIFilterID());
-				joinData.setIFilterConditionRef(filterConditionDTO
-						.getIFilterConditionID());
-
-				if (!zuSpeicherndeJoins.contains(joinData)) {
-					this.saveDTONoTransaction(session, joinData);
-				}
-			}
-
-			tx.commit();
-		} catch (final Throwable e) {
-			e.printStackTrace();
-			if (tx != null) {
-				tx.rollback();
-			}
-			throw new InconsistentConfigurationException(e.getMessage());
-		} finally {
-			closeSession(session);
-		}
+		saveDTO(dto);
+		
+//		Session session = null;
+//		Transaction tx = null;
+//		try {
+//			session = this.openNewSession();
+//			tx = session.beginTransaction();
+//			tx.begin();
+//
+//			saveDTONoTransaction(session, dto);
+//
+//			final List<FilterConditionDTO> filterConditions = dto
+//					.getFilterConditions();
+//
+//			final Set<FilterConditionsToFilterDTO> zuSpeicherndeJoins = new HashSet<FilterConditionsToFilterDTO>();
+//
+//			// erzeugen der zu schreibenden join daten
+//			for (final FilterConditionDTO filterConditionDTO : filterConditions) {
+//				final FilterConditionsToFilterDTO joinData = new FilterConditionsToFilterDTO();
+//				joinData.setIFilterRef(dto.getIFilterID());
+//				joinData.setIFilterConditionRef(filterConditionDTO
+//						.getIFilterConditionID());
+//
+//				zuSpeicherndeJoins.add(joinData);
+//
+//			}
+//
+//			// clean up join data
+//			final Collection<FilterConditionsToFilterDTO> conditionMappings = loadAll(
+//					session, FilterConditionsToFilterDTO.class);
+//
+//			for (final FilterConditionsToFilterDTO joinElement : conditionMappings) {
+//				if (joinElement.getIFilterRef() == dto.getIFilterID()) {
+//					final int filterConditionRef = joinElement
+//							.getIFilterConditionRef();
+//
+//					if (!zuSpeicherndeJoins.contains(joinElement)) {
+//						deleteDTONoTransaction(session, joinElement); // nicht
+//						// mehr
+//						// verwendete
+//						// Knoten löschen
+//					}
+//
+//					final Collection<JunctorConditionForFilterTreeDTO> junctorConditions = loadAll(
+//							session, JunctorConditionForFilterTreeDTO.class);
+//					if ((junctorConditions != null)
+//							&& (junctorConditions.size() > 0)) {
+//						for (final JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : junctorConditions) {
+//							if (junctorConditionForFilterTreeDTO
+//									.getIFilterConditionID() != filterConditionRef) {
+//								continue;
+//							}
+//
+//							if (!filterConditions
+//									.contains(junctorConditionForFilterTreeDTO)) {
+//								this.deleteDTONoTransaction(session,
+//										junctorConditionForFilterTreeDTO);
+//							}
+//						}
+//					}
+//
+//					final Collection<NegationConditionForFilterTreeDTO> notConditions = loadAll(
+//							session, NegationConditionForFilterTreeDTO.class);
+//					if ((notConditions != null) && (notConditions.size() > 0)) {
+//						for (final NegationConditionForFilterTreeDTO notConditionForFilterTreeDTO : notConditions) {
+//							if (notConditionForFilterTreeDTO
+//									.getIFilterConditionID() != filterConditionRef) {
+//								continue;
+//							}
+//
+//							if (!filterConditions
+//									.contains(notConditionForFilterTreeDTO)) {
+//								this.deleteDTONoTransaction(session,
+//										notConditionForFilterTreeDTO);
+//							}
+//						}
+//					}
+//				}
+//			}
+//
+//			// join speichern
+//			for (final FilterConditionDTO filterConditionDTO : filterConditions) {
+//				if ((filterConditionDTO instanceof JunctorConditionForFilterTreeDTO)
+//						|| (filterConditionDTO instanceof NegationConditionForFilterTreeDTO)) {
+//					// Diese Condition speichern, da sie von Editor angelegt
+//					// wird.
+//					this.saveDTONoTransaction(session, filterConditionDTO);
+//				}
+//
+//				final FilterConditionsToFilterDTO joinData = new FilterConditionsToFilterDTO();
+//				joinData.setIFilterRef(dto.getIFilterID());
+//				joinData.setIFilterConditionRef(filterConditionDTO
+//						.getIFilterConditionID());
+//
+//				if (!zuSpeicherndeJoins.contains(joinData)) {
+//					this.saveDTONoTransaction(session, joinData);
+//				}
+//			}
+//
+//			tx.commit();
+//		} catch (final Throwable e) {
+//			e.printStackTrace();
+//			if (tx != null) {
+//				tx.rollback();
+//			}
+//			throw new InconsistentConfigurationException(e.getMessage());
+//		} finally {
+//			closeSession(session);
+//		}
 		return dto;
 	}
 

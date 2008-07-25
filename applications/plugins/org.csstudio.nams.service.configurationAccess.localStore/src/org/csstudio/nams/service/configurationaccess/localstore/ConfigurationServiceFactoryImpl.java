@@ -118,8 +118,8 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(HistoryDTO.class)
 				.addAnnotatedClass(RubrikDTO.class)
 				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
-				.addAnnotatedClass(JunctorConditionForFilterTreeDTO.class)
-				.addAnnotatedClass(JunctorConditionForFilterTreeConditionJoinDTO.class)
+//				.addAnnotatedClass(JunctorConditionForFilterTreeDTO.class)
+//				.addAnnotatedClass(JunctorConditionForFilterTreeConditionJoinDTO.class)
 				.addAnnotatedClass(User2UserGroupDTO.class)
 				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
 				

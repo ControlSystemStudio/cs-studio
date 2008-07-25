@@ -57,7 +57,7 @@ public class TransactionProcessor {
 			StorageError, InconsistentConfigurationException,
 			InterruptedException {
 		Contract.requireNotNull("work", work);
-		
+
 		Session session = null;
 		Transaction tx = null;
 		T result = null;
@@ -68,23 +68,30 @@ public class TransactionProcessor {
 			tx = session.beginTransaction();
 			tx.begin();
 
+			logger.logInfoMessage(this, "Beginning work...");
 			result = work.doWork(new MapperImpl(session));
+			logger.logInfoMessage(this, "... done.");
 
 			tx.commit();
 		} catch (final Throwable e) {
+			logger.logInfoMessage(this, "Error occurred in work process...", e);
 			try {
 				tx.rollback();
 			} catch (final Throwable t) {
 				new StorageError("unable to roll back failed transaction", t);
 			} finally {
-				lock.unlock();
+				if (lock.isHeldByCurrentThread()) {
+					lock.unlock();
+				}
 				// There is no need to close this session cause after this error
 				// everything is to be stopped and checked!
 				// - closeSession(session);
 			}
 			new StorageException("failed to process unit of work", e);
 		} finally {
-			lock.unlock();
+			if (lock.isHeldByCurrentThread()) {
+				lock.unlock();
+			}
 			closeSession(session);
 		}
 

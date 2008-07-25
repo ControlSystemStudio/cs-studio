@@ -18,6 +18,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration eines Filters dar
@@ -171,10 +172,17 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		
 		Collection<FilterConditionDTO> toRemove = new HashSet<FilterConditionDTO>();
 		for (FilterConditionDTO condition : getFilterConditions()) {
-			if( condition instanceof HasManuallyJoinedElements ) {
-				((HasManuallyJoinedElements)condition).deleteJoinLinkData(mapper);
-			}
 			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
+				if( condition instanceof HasManuallyJoinedElements ) {
+					((HasManuallyJoinedElements)condition).deleteJoinLinkData(mapper);
+				}
+				mapper.delete(condition);
+				toRemove.add(condition);
+			}
+			if( condition instanceof NegationConditionForFilterTreeDTO ) {
+				if( condition instanceof HasManuallyJoinedElements ) {
+					((HasManuallyJoinedElements)condition).deleteJoinLinkData(mapper);
+				}
 				mapper.delete(condition);
 				toRemove.add(condition);
 			}
@@ -185,13 +193,39 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-		// Ist momentan in Configuration erledigt.
-
+		for (FilterConditionDTO condition : getFilterConditions()) {
+			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
+				if( condition instanceof HasManuallyJoinedElements ) {
+					((HasManuallyJoinedElements)condition).storeJoinLinkData(mapper);
+				}
+				mapper.save(condition);
+			}
+			if( condition instanceof NegationConditionForFilterTreeDTO ) {
+				if( condition instanceof HasManuallyJoinedElements ) {
+					((HasManuallyJoinedElements)condition).storeJoinLinkData(mapper);
+				}
+				mapper.save(condition);
+			}
+		}
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		// Does the service
-		
+//		
+//		
+//		for (FilterConditionDTO condition : getFilterConditions()) {
+//			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
+//				if( condition instanceof HasManuallyJoinedElements ) {
+//					((HasManuallyJoinedElements)condition).loadJoinData(mapper);
+//				}
+//				mapper.save(condition);
+//			}
+//			if( condition instanceof NegationConditionForFilterTreeDTO ) {
+//				if( condition instanceof HasManuallyJoinedElements ) {
+//					((HasManuallyJoinedElements)condition).loadJoinData(mapper);
+//				}
+//				mapper.save(condition);
+//			}
+//		}
 	}
 
 }

@@ -55,9 +55,9 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 	 * Erstellt einen Service für die Oracle-DB. Die Konfiguration ist fest
 	 * codiert und muss ggf. in dieser Klasse angepasst werden!
 	 */
-	public static LocalStoreConfigurationService createAServiceForOracleTests() {
+	public LocalStoreConfigurationService createAServiceForOracleTests() {
 		ConfigurationServiceFactoryImpl factory = new ConfigurationServiceFactoryImpl(
-				new LoggerMock());
+				loggerMock);
 
 		LocalStoreConfigurationService result = factory
 				.getConfigurationService("jdbc:hsqldb:mem:namscfg",
@@ -75,6 +75,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		}
 
 		service = null;
+		
+		Thread.sleep(500);
 	}
 
 	 @Test

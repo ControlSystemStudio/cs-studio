@@ -79,8 +79,7 @@ public abstract class AbstractNamsView extends ViewPart {
 								.length() == 0)
 						|| (P_CONFIG_DATABASE_USER == null || P_CONFIG_DATABASE_USER
 								.length() == 0)
-						|| (P_CONFIG_DATABASE_PASSWORD == null || P_CONFIG_DATABASE_PASSWORD
-								.length() == 0)) {
+						|| (P_CONFIG_DATABASE_PASSWORD == null )) {
 					throw new RuntimeException("Missing database setting!");
 				}
 
