@@ -40,6 +40,7 @@ import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -71,13 +72,11 @@ public class AlarmLogView extends LogView {
 
 	private Timer timer = new Timer();
 
-	private final Vector<JMSMessage> jmsMessagesToRemove = new Vector<JMSMessage>();
+	private final Vector<JMSMessage> _jmsMessagesToRemove = new Vector<JMSMessage>();
 
 	private boolean working = false;
 
 	private RemoveAcknowledgedMessagesTask _removeMessageTask;
-
-	private Timer _timer = new Timer();
 
 	/**
 	 * Creates the view for the alarm log table.
@@ -98,7 +97,7 @@ public class AlarmLogView extends LogView {
 		columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
 
 		// create the table model
-		jmsml = new JMSAlarmMessageList(columnNames);
+		_messageList = new JMSAlarmMessageList(columnNames);
 
 		parentShell = parent.getShell();
 
@@ -168,7 +167,7 @@ public class AlarmLogView extends LogView {
 			 */
 			public void widgetSelected(SelectionEvent e) {
 
-				TableItem[] items = jlv.getTable().getItems();
+				TableItem[] items = _tableViewer.getTable().getItems();
 				JMSMessage message = null;
 
 				List<JMSMessage> msgList = new ArrayList<JMSMessage>();
@@ -203,19 +202,19 @@ public class AlarmLogView extends LogView {
 		});
 
 		// create jface table viewer with paramter 2 for alarm table version
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,
+		_tableViewer = new JMSLogTableViewer(parent, getSite(), columnNames, _messageList, 2,
 				SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
 
-		jlv.setAlarmSorting(true);
+		_tableViewer.setAlarmSorting(true);
 		makeActions();
 		IActionBars bars = getViewSite().getActionBars();
 		fillLocalToolBar(bars.getToolBarManager());
-		getSite().setSelectionProvider(jlv);
+		getSite().setSelectionProvider(_tableViewer);
 
 		parent.pack();
 
 		cl = new ColumnPropertyChangeListener(
-				AlarmViewerPreferenceConstants.P_STRINGAlarm, jlv);
+				AlarmViewerPreferenceConstants.P_STRINGAlarm, _tableViewer);
 
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.addPropertyChangeListener(cl);
@@ -229,14 +228,27 @@ public class AlarmLogView extends LogView {
 	 * @throws JMSException
 	 */
 	@Override
-	protected void setAck(MapMessage message) throws JMSException {
-		JmsLogsPlugin.logInfo("AlarmLogView Ack message received, MsgName: "
-				+ message.getString("NAME") + " MsgTime: "
-				+ message.getString("EVENTTIME"));
-		TableItem[] items = jlv.getTable().getItems();
-		for (TableItem item : items) {
+	protected void setAck(final MapMessage message) {
+
+//		Display.getDefault().asyncExec(new Runnable() {
+//		public void run() {
+			try {
+				JmsLogsPlugin.logInfo("AlarmLogView Ack message received, MsgName: "
+						+ message.getString("NAME") + " MsgTime: "
+						+ message.getString("EVENTTIME"));
+			
+			} catch (Exception e) {
+                e.printStackTrace();
+				JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+			}
+//		}
+//		});
+//		
+					TableItem[] items = _tableViewer.getTable().getItems();
+
+					for (final TableItem item : items) {
 			if (item.getData() instanceof JMSMessage) {
-				JMSMessage jmsMessage = (JMSMessage) item.getData();
+				final JMSMessage jmsMessage = (JMSMessage) item.getData();
 				try {
 					if (jmsMessage.getName().equals(message.getString("NAME"))
 							&& jmsMessage.getProperty("EVENTTIME").equals(
@@ -246,22 +258,34 @@ public class AlarmLogView extends LogView {
 										.equalsIgnoreCase("NO_ALARM"))
 								|| (jmsMessage.getProperty("SEVERITY_KEY")
 										.equalsIgnoreCase("INVALID"))) {
-							jmsMessagesToRemove.add(jmsMessage);
+							_jmsMessagesToRemove.add(jmsMessage);
 							CentralLogger.getInstance().debug(
 									this,
 									"add message, removelist size: "
-											+ jmsMessagesToRemove.size());
+											+ _jmsMessagesToRemove.size());
 							if ((_removeMessageTask == null)
-									|| (_removeMessageTask.is_isCanceled() == true)) {
+									|| (_removeMessageTask.getState() == Job.NONE)) {
 								CentralLogger.getInstance().debug(this, "Create new 'RemoveAckMessage Task'");
+								_removeMessageTask = null;
 								_removeMessageTask = new RemoveAcknowledgedMessagesTask(
-										jmsml, jmsMessagesToRemove);
-						        _timer.schedule(_removeMessageTask, 2000, 2000);
+										_messageList, _jmsMessagesToRemove);
+						        _removeMessageTask.schedule();
 							}
 						} else {
+//							Display.getDefault().asyncExec(new Runnable() {
+//								public void run() {
+//									try {
+//
 							item.setChecked(true);
 							jmsMessage.getHashMap().put("ACK_HIDDEN", "true");
 							jmsMessage.set_ackknowledgement(true);
+//									} catch (Exception e) {
+//					                    e.printStackTrace();
+//										JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+//									}
+//								}
+//								});
+
 						}
 						break;
 					}
@@ -271,6 +295,7 @@ public class AlarmLogView extends LogView {
 				}
 			}
 		}
+
 	}
 
 	// private synchronized void removeMessages() {
@@ -292,7 +317,7 @@ public class AlarmLogView extends LogView {
 		 * When dispose store the width for each column, excepting the first
 		 * column (ACK).
 		 */
-		int[] width = jlv.getColumnWidth();
+		int[] width = _tableViewer.getColumnWidth();
 		String newPreferenceColumnString = ""; //$NON-NLS-1$
 		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(

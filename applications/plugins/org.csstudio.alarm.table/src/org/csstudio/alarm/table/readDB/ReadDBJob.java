@@ -23,7 +23,6 @@
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;

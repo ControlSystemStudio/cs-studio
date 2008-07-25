@@ -23,10 +23,8 @@
 package org.csstudio.alarm.table;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import java.util.Timer;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -38,9 +36,9 @@ import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
-import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.libs.jms.MessageReceiver;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -62,7 +60,7 @@ import org.eclipse.ui.views.IViewRegistry;
 
 /**
  * View with table for all log messages from JMS. Creates the TableViewer
- * <code>JMSLogTableViewer</code>, hilds the model <code>JMSMessageList</code>
+ * <code>JMSLogTableViewer</code>, holds the model <code>JMSMessageList</code>
  * @author jhatje
  *
  */
@@ -72,9 +70,9 @@ public class LogView extends ViewPart implements MessageListener {
 
 	public Shell parentShell = null;
 
-	public JMSMessageList jmsml = null;
+	public JMSMessageList _messageList = null;
 
-	public JMSLogTableViewer jlv = null;
+	public JMSLogTableViewer _tableViewer = null;
 
 	private MessageReceiver receiver1;
 	private MessageReceiver receiver2;
@@ -93,11 +91,10 @@ public class LogView extends ViewPart implements MessageListener {
 	 */
 	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
 
-	
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
-		jmsml = new JMSLogMessageList(columnNames);
+		_messageList = new JMSLogMessageList(columnNames);
 
 		parentShell = parent.getShell();
 
@@ -121,11 +118,11 @@ public class LogView extends ViewPart implements MessageListener {
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
 		comp.setLayout(new GridLayout(4, true));
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 1,SWT.MULTI | SWT.FULL_SELECTION);
-		jlv.setAlarmSorting(false);
+		_tableViewer = new JMSLogTableViewer(parent, getSite(), columnNames, _messageList, 1,SWT.MULTI | SWT.FULL_SELECTION);
+		_tableViewer.setAlarmSorting(false);
 		parent.pack();
 		
-		getSite().setSelectionProvider(jlv);
+		getSite().setSelectionProvider(_tableViewer);
 
 		makeActions();
 		IActionBars bars = getViewSite().getActionBars();
@@ -134,7 +131,7 @@ public class LogView extends ViewPart implements MessageListener {
 		
 		cl = new ColumnPropertyChangeListener(
 				LogViewerPreferenceConstants.P_STRING,
-				jlv);
+				_tableViewer);
 		
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.addPropertyChangeListener(cl);
@@ -204,8 +201,8 @@ public class LogView extends ViewPart implements MessageListener {
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
 			box.setText("Failed to initialise secondary JMS Context"); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
-			// FIXME: This deadlocks the system if it happens during startup
-//			box.open();
+//			 FIXME: This deadlocks the system if it happens during startup
+			box.open();
 		}
 
 	}
@@ -218,25 +215,45 @@ public class LogView extends ViewPart implements MessageListener {
 	 * 
 	 * Receives the JMS message. If it is an ack 
 	 */
-	public void onMessage(final Message message) {
+	synchronized public void onMessage(final Message message) {
 		if (message == null) {
 			JmsLogsPlugin.logError("Message == null");
 		}
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+//		Display.getDefault().asyncExec(new Runnable() {
+//			public void run() {
 				try {
 					if (message instanceof TextMessage) {
 						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
-						MapMessage mm = (MapMessage) message;
-                        
+						final MapMessage mm = (MapMessage) message;
+                        CentralLogger.getInstance().debug(this, "received map message");
 //	DEBUG					JmsLogsPlugin.logInfo("LogView message received, MsgName: " + 
 //                        		mm.getString("NAME") + " Severity: " + mm.getString("SEVERITY") +
 //                        		" MsgTime: " + mm.getString("EVENTTIME"));
 						if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            setAck(mm);
-                        } else {
-                        	jmsml.addJMSMessage(mm);
+	                        CentralLogger.getInstance().debug(this, "received acknowledge message");
+	                		Display.getDefault().syncExec(new Runnable() {
+	                			public void run() {
+	                				try {
+	        							setAck(mm);
+	                				} catch (Exception e) {
+	                	                e.printStackTrace();
+	                					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+	                				}
+	                			}
+	                			});
+
+						} else {
+                    		Display.getDefault().asyncExec(new Runnable() {
+                    			public void run() {
+                    				try {
+                    					_messageList.addJMSMessage(mm);
+                    					} catch (Exception e) {
+                                        e.printStackTrace();
+                    					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+                    				}
+                    			}
+                    			});
                         }
 					} else {
 						JmsLogsPlugin.logError("received message is an unknown type");
@@ -245,25 +262,25 @@ public class LogView extends ViewPart implements MessageListener {
                     e.printStackTrace();
 					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
 				}
-			}
-		});
+//			}
+//		});
 	}
 
 	/**
      * @param message
 	 * @throws JMSException 
      */
-    protected void setAck(MapMessage message) throws JMSException {
+    synchronized protected void setAck(MapMessage message) {
 //DEBUG       JmsLogsPlugin.logInfo("LogView Ack message received, MsgName: " + 
 //       		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
-       TableItem[] items = jlv.getTable().getItems();
+       TableItem[] items = _tableViewer.getTable().getItems();
        	   for (TableItem item : items) {
            if (item.getData() instanceof JMSMessage) {
             JMSMessage jmsMessage = (JMSMessage) item.getData();
             try {
                 if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 	jmsMessage.getHashMap().put("ACK","true"); //$NON-NLS-1$ //$NON-NLS-2$
-                    jlv.refresh();
+                    _tableViewer.refresh();
                     break;
                 }
                 
@@ -300,7 +317,7 @@ public class LogView extends ViewPart implements MessageListener {
 	 * When dispose store the width for each column.
 	 */
 	public void saveColumn(){
-		int[] width = jlv.getColumnWidth();
+		int[] width = _tableViewer.getColumnWidth();
 		String newPreferenceColumnString=""; //$NON-NLS-1$
 		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
 		if(width.length!=columns.length){
