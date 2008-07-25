@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -144,5 +145,13 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		this.conditions = conditions;
 		Collections.sort(this.conditions);
 		pcs.firePropertyChange(PropertyNames.conditions.name(), oldValue, conditions);
+	}
+
+	public List<FilterActionBean> getActions() {
+		// TODO Auto-generated method stub
+		ArrayList<FilterActionBean> arrayList = new ArrayList<FilterActionBean>(2);
+		arrayList.add(new FilterActionBean());
+		arrayList.add(new FilterActionBean());
+		return arrayList;
 	}
 }
