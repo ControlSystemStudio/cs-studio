@@ -127,7 +127,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		}
 		setConditions(cloneList);
 		
-		LinkedList<FilterAction> cloneActions = new LinkedList<FilterAction>(bean.getActions());
+		LinkedList<FilterAction> cloneActions = new LinkedList<FilterAction>();
 		List<FilterAction> actions = bean.getActions();
 		for (FilterAction filterAction : actions) {
 			try {
@@ -171,13 +171,13 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	}
 
 	public List<FilterAction> getActions() {
-//		if (filterActions.size() == 0) {
-//			AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
-//			AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
-//			alarmbearbeiterBean.setName("Der Bubu");
-//			alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
-//			filterActions.add(alarmbearbeiterFilterAction);
-//		}
+		if (filterActions.size() == 0) {
+			AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
+			AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
+			alarmbearbeiterBean.setName("Der Bubu");
+			alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
+			filterActions.add(alarmbearbeiterFilterAction);
+		}
 		return filterActions;
 	}
 
