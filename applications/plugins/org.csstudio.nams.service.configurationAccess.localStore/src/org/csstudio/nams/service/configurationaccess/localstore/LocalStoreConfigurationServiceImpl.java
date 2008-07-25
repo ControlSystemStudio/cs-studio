@@ -204,11 +204,12 @@ class LocalStoreConfigurationServiceImpl implements
 					}
 				}
 
+				setChildFilterConditionsInJunctorDTOs(allFilterConditions);
+
 				pruefeUndOrdnerFilterDieFilterConditionsZu(
 						allFilterConditionMappings, allFilterConditions,
 						allFilters);
 
-				setChildFilterConditionsInJunctorDTOs(allFilterConditions);
 
 				setStringArrayCompareValues(allCompareValues,
 						allFilterConditions);
@@ -794,33 +795,65 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
+	private static <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
+		for (T t : fcs) {
+			if( t.getIFilterConditionID() == id ) {
+				return t;
+			}
+		}
+		return null;
+	}
+	private static <T extends FilterConditionsToFilterDTO> Collection<T> findAssignmentToFilterForFilterId(int id, Collection<T> fcs) {
+		Collection<T> result = new HashSet<T>();
+		
+		for (T t : fcs) {
+			if( t.getIFilterRef() == id ) {
+				result.add(t);
+			}
+		}
+		return result;
+	}
+	
 	private static void pruefeUndOrdnerFilterDieFilterConditionsZu(
 			final Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter,
 			final Collection<FilterConditionDTO> allFilterConditions,
 			final Collection<FilterDTO> allFilters) {
-		final Map<Integer, FilterDTO> filters = new HashMap<Integer, FilterDTO>();
-		for (final FilterDTO filter : allFilters) {
-			final List<FilterConditionDTO> list = filter.getFilterConditions();
-			list.clear();
-			filter.setFilterConditions(list);
-			filters.put(filter.getIFilterID(), filter);
-		}
-		for (final FilterConditionsToFilterDTO filterConditionsToFilterDTO : allFilterConditionToFilter) {
-			final FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO
-					.getIFilterRef());
-			if (filterDTO == null) {
-				// this.logger.logWarningMessage(this, "no filter found for id:
-				// "
-				// + filterConditionsToFilterDTO.getIFilterRef());
-			} else {
-				final List<FilterConditionDTO> filterConditions = filterDTO
-						.getFilterConditions();
-				filterConditions.add(getFilterConditionForId(
-						filterConditionsToFilterDTO.getIFilterConditionRef(),
-						allFilterConditions));
-				filterDTO.setFilterConditions(filterConditions);
+		
+		for (FilterDTO filterDTO : allFilters) {
+			Collection<FilterConditionsToFilterDTO> zuordnungenDiesesFilters = findAssignmentToFilterForFilterId(filterDTO.getIFilterID(), allFilterConditionToFilter);
+			
+			List<FilterConditionDTO> operanden = new LinkedList<FilterConditionDTO>();
+			for (FilterConditionsToFilterDTO zuorndungen : zuordnungenDiesesFilters) {
+				operanden.add(findForId(zuorndungen.getIFilterConditionRef(), allFilterConditions));
 			}
+			filterDTO.setFilterConditions(operanden);
 		}
+		
+//		
+//		
+//		final Map<Integer, FilterDTO> filters = new HashMap<Integer, FilterDTO>();
+//		for (final FilterDTO filter : allFilters) {
+//			final List<FilterConditionDTO> list = filter.getFilterConditions();
+//			list.clear();
+//			filter.setFilterConditions(list);
+//			filters.put(filter.getIFilterID(), filter);
+//		}
+//		for (final FilterConditionsToFilterDTO filterConditionsToFilterDTO : allFilterConditionToFilter) {
+//			final FilterDTO filterDTO = filters.get(filterConditionsToFilterDTO
+//					.getIFilterRef());
+//			if (filterDTO == null) {
+//				// this.logger.logWarningMessage(this, "no filter found for id:
+//				// "
+//				// + filterConditionsToFilterDTO.getIFilterRef());
+//			} else {
+//				final List<FilterConditionDTO> filterConditions = filterDTO
+//						.getFilterConditions();
+//				filterConditions.add(getFilterConditionForId(
+//						filterConditionsToFilterDTO.getIFilterConditionRef(),
+//						allFilterConditions));
+//				filterDTO.setFilterConditions(filterConditions);
+//			}
+//		}
 	}
 
 	private static void setChildFilterConditionsInJunctorDTOs(
