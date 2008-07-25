@@ -4,11 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Id;
 import javax.persistence.Transient;
+
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 
 @Entity
 @Table(name = "AMS_FILTERACTION")
@@ -32,6 +34,15 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO {
 	
 	@Column(name="CMESSAGE", length=1024)
 	private String message;
+	
+	@Transient
+	protected FilterActionType filterActionType;
+	
+	public FilterActionType getFilterActionType(){
+		if (filterActionType == null){
+			throw new RuntimeException("filterActionType in "+ this + " not set");
+		}return filterActionType;
+	}
 	
 	public String getMessage() {
 		return message;

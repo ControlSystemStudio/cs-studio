@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
+
 public abstract class AbstractFilterAction<Type extends FilterActionType>
 		implements FilterAction {
 

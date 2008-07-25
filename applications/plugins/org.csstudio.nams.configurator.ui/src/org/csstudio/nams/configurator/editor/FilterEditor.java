@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
@@ -11,7 +12,6 @@ import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
 import org.csstudio.nams.configurator.beans.AlarmbearbeitergruppenFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterAction;
-import org.csstudio.nams.configurator.beans.FilterActionType;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -19,6 +19,7 @@ import org.csstudio.nams.configurator.beans.IReceiverBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -51,6 +52,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -256,7 +258,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		actionTableViewer.setContentProvider(new ArrayContentProvider());
 
 		String[] titles = { "Empfänger", "Alarmaktion", "Nachricht" };
-		int[] bounds = { 150, 150, 100 };
+		int[] bounds = { 100, 100, 100 };
 
 		TableViewerColumn[] tableViewerColumns = new TableViewerColumn[3];
 
@@ -579,10 +581,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						
 						if (selectedObject instanceof AlarmbearbeiterBean) {
 							action = new AlarmbearbeiterFilterAction();
-							action.setType(action.getFilterActionTypeValues()[0]);
 						} else if (selectedObject instanceof AlarmbearbeiterGruppenBean) {
 							action = new AlarmbearbeitergruppenFilterAction();
-							action.setType(action.getFilterActionTypeValues()[0]);
 						} else if (selectedObject instanceof AlarmtopicBean) {
 							action = new AlarmTopicFilterAction();
 						}

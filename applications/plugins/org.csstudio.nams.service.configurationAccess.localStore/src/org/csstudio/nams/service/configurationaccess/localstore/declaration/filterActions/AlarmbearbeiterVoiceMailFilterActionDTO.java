@@ -2,11 +2,13 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration.fil
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Entity
 @DiscriminatorValue("4")
 public class AlarmbearbeiterVoiceMailFilterActionDTO extends
 		AbstractAlarmbearbeiterFilterActionDTO {
 
+	public AlarmbearbeiterVoiceMailFilterActionDTO(){
+		filterActionType = AlarmbearbeiterFilterActionType.VMAIL;
+	}
 }

@@ -1,28 +1,14 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmTopicFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
+
 /**
  * (10,'Message an Topic',NULL)
  *
  */
-public class AlarmTopicFilterAction extends AbstractFilterAction<AlarmTopicFilterAction.AlarmTopicFilterActionType> {
+public class AlarmTopicFilterAction extends AbstractFilterAction<AlarmTopicFilterActionType> {
 
-	public static enum AlarmTopicFilterActionType implements FilterActionType {
-		TOPIC(10, "Message an Topic");
-
-		private final int id;
-		private final String description;
-
-		private AlarmTopicFilterActionType(int id, String description) {
-			this.id = id;
-			this.description = description;
-		}
-		
-		public String getDescription() {
-			return description;
-		}
-		
-	}
-	
 	public AlarmTopicFilterAction() {
 		super(AlarmTopicFilterActionType.class);
 		setType(AlarmTopicFilterActionType.TOPIC);

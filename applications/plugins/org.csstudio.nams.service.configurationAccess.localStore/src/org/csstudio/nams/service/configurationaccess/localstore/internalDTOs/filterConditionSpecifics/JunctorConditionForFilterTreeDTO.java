@@ -2,7 +2,6 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,8 +18,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.JunctorConditionForFilterTreeConditionJoinDTO;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Dieses FC wird verwendet, um in den Filtern den Conjunction-Baum

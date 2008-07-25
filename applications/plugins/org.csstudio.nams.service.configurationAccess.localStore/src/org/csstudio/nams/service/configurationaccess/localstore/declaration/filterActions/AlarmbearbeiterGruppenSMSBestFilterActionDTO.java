@@ -2,11 +2,13 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration.fil
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Entity
 @DiscriminatorValue("3")
 public class AlarmbearbeiterGruppenSMSBestFilterActionDTO extends
 		AbstractAlarmbearbeiterGruppenFilterActionDTO {
 
+	public AlarmbearbeiterGruppenSMSBestFilterActionDTO(){
+		filterActionType = AlarmbearbeitergruppenFilterActionType.SMS;
+	}
 }

@@ -1,5 +1,8 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
+
 /**
  * (1,'SMS an Person',NULL)
  * (4,'VMail an Person',NULL)
@@ -7,28 +10,12 @@ package org.csstudio.nams.configurator.beans;
  * @param <AlarmbearbeiterFilterActionType>
  *  
  */
-public class AlarmbearbeiterFilterAction extends AbstractFilterAction<AlarmbearbeiterFilterAction.AlarmbearbeiterFilterActionType> {
+public class AlarmbearbeiterFilterAction extends AbstractFilterAction<AlarmbearbeiterFilterActionType> {
 
 	public AlarmbearbeiterFilterAction() {
 		super(AlarmbearbeiterFilterActionType.class);
 	}
 
-	public static enum AlarmbearbeiterFilterActionType implements FilterActionType {
-		SMS(1, "SMS an Person"),VMAIL(4, "VMail an Person"),EMAIL(7,"EMail an Person");
-		
-		private final int id;
-		private final String description;
-
-		private AlarmbearbeiterFilterActionType(int id, String description) {
-			this.id = id;
-			this.description = description;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-	}
-	
 	public FilterActionType[] getFilterActionTypeValues() {
 		return AlarmbearbeiterFilterActionType.values();
 	}

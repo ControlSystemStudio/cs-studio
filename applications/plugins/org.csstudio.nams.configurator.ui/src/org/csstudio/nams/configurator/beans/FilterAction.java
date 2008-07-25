@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
+
 
 public interface FilterAction extends Cloneable {
 	public String getEmpfaengerName();
