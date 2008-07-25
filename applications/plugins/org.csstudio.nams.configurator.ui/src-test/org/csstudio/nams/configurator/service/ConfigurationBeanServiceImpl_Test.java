@@ -12,6 +12,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
@@ -47,10 +48,11 @@ public class ConfigurationBeanServiceImpl_Test extends TestCase {
 		Collection<RubrikDTO> alleRubriken = new LinkedList<RubrikDTO>();
 		List<User2UserGroupDTO> alleUser2UserGroupMappings = new LinkedList<User2UserGroupDTO>();
 		Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+		Collection<DefaultFilterTextDTO> allDefaultFilterTexts = new LinkedList<DefaultFilterTextDTO>();
 		
 		// TODO Mit konsistenen!! daten füllen
 		
-		return new Configuration(alleAlarmbarbeiter, alleAlarmtopics, alleAlarmbearbeiterGruppen, allFilters, allFilterConditionMappings, allFilterConditions, alleRubriken, alleUser2UserGroupMappings, allCompareValues);
+		return new Configuration(alleAlarmbarbeiter, alleAlarmtopics, alleAlarmbearbeiterGruppen, allFilters, allFilterConditionMappings, allFilterConditions, alleRubriken, alleUser2UserGroupMappings, allCompareValues, allDefaultFilterTexts);
 	}
 
 	@Test

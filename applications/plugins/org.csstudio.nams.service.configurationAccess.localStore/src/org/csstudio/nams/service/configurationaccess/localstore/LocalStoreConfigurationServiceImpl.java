@@ -21,6 +21,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
@@ -174,6 +175,7 @@ class LocalStoreConfigurationServiceImpl implements
 				Collection<RubrikDTO> alleRubriken;
 				List<User2UserGroupDTO> alleUser2UserGroupMappings;
 				Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
+				Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO;
 
 				alleAlarmbarbeiter = mapper.loadAll(AlarmbearbeiterDTO.class, true);
 				alleAlarmbearbeiterGruppen = mapper
@@ -188,6 +190,7 @@ class LocalStoreConfigurationServiceImpl implements
 						.loadAll(FilterConditionsToFilterDTO.class, true);
 				allCompareValues = mapper
 						.loadAll(StringArrayFilterConditionCompareValuesDTO.class, true);
+				allDefaultFilterTextDTO = mapper.loadAll(DefaultFilterTextDTO.class, true);
 
 				// Nots befüllen
 				for (final FilterConditionDTO filterConditionDTO : allFilterConditions) {
@@ -239,7 +242,8 @@ class LocalStoreConfigurationServiceImpl implements
 						alleAlarmtopics, alleAlarmbearbeiterGruppen,
 						allFilters, allFilterConditionMappings,
 						allFilterConditions, alleRubriken,
-						alleUser2UserGroupMappings, allCompareValues);
+						alleUser2UserGroupMappings, allCompareValues, 
+						allDefaultFilterTextDTO);
 
 				return resultOfUnit;
 			}

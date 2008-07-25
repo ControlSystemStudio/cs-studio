@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
@@ -26,6 +27,7 @@ public class Configuration {
 	@SuppressWarnings("unused")
 	private static Logger logger;
 	private Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
+	private final Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO;
 
 	public Configuration(
 			Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter,
@@ -36,7 +38,8 @@ public class Configuration {
 			Collection<FilterConditionDTO> allFilterConditions,
 			Collection<RubrikDTO> alleRubriken,
 			List<User2UserGroupDTO> alleUser2UserGroupMappings,
-			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues) {
+			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues, 
+			Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO) {
 		super();
 		this.alleAlarmbarbeiter = alleAlarmbarbeiter;
 		this.alleAlarmtopics = alleAlarmtopics;
@@ -47,6 +50,7 @@ public class Configuration {
 		this.alleRubriken = alleRubriken;
 		this.alleUser2UserGroupMappings = alleUser2UserGroupMappings;
 		this.allCompareValues = allCompareValues;
+		this.allDefaultFilterTextDTO = allDefaultFilterTextDTO;
 	}
 
 	public Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter() {
@@ -55,6 +59,10 @@ public class Configuration {
 
 	public Collection<TopicDTO> gibAlleAlarmtopics() {
 		return alleAlarmtopics;
+	}
+
+	public Collection<DefaultFilterTextDTO> getAllDefaultFilterTexts() {
+		return allDefaultFilterTextDTO;
 	}
 
 	public Collection<AlarmbearbeiterGruppenDTO> gibAlleAlarmbearbeiterGruppen() {
