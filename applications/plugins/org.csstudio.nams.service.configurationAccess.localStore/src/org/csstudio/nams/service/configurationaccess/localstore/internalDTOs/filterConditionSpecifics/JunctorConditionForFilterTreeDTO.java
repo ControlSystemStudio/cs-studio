@@ -133,17 +133,18 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 *             an error occurred
 	 */
 	public synchronized void storeJoinLinkData(Mapper mapper) throws Throwable {
-		Collection<JunctorConditionForFilterTreeConditionJoinDTO> joinsToKeep = new HashSet<JunctorConditionForFilterTreeConditionJoinDTO>();
-
 		List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(
 				JunctorConditionForFilterTreeDTO.class, true);
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJCFFTJoins = mapper.loadAll(
+				JunctorConditionForFilterTreeConditionJoinDTO.class, true);
 		List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(
 				NegationConditionForFilterTreeDTO.class, true);
 
 		List<JunctorConditionForFilterTreeDTO> ehemalsReferenziert = new LinkedList<JunctorConditionForFilterTreeDTO>();
-		for (JunctorConditionForFilterTreeDTO inDb : allJCFFT) {
-			if( inDb.getIFilterConditionID() == this.getIFilterConditionID() ) {
-				ehemalsReferenziert.add(inDb);
+		for (JunctorConditionForFilterTreeConditionJoinDTO join : allJCFFTJoins) {
+			if( join.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
+				JunctorConditionForFilterTreeDTO found = findForId(join.getJoinedConditionsDatabaseId(), allJCFFT);
+				ehemalsReferenziert.add(found);
 			}
 		}
 		
@@ -156,6 +157,8 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 					ehemalsReferenziert.remove(existingJCFFT);
 				} else {
 					mapper.save(operand);
+					JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(this, operand);
+					mapper.save(newJoin);
 				}
 				
 			}
@@ -166,6 +169,8 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 					existingNot.storeJoinLinkData(mapper);
 				} else {
 					mapper.save(operand);
+					JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(this, operand);
+					mapper.save(newJoin);
 				}
 			}
 		}
