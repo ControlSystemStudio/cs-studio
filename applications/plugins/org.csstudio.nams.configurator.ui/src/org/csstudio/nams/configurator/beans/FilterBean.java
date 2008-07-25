@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.beans;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +16,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	private String name;
 	private String defaultMessage;
 	private List<FilterbedingungBean> conditions = new LinkedList<FilterbedingungBean>();
+	private List<FilterAction> filterActions = new LinkedList<FilterAction>();
 	
 	public FilterBean() {
 		filterID = -1;
@@ -148,29 +148,10 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	}
 
 	public List<FilterAction> getActions() {
-		// TODO Auto-generated method stub
-		ArrayList<FilterAction> arrayList = new ArrayList<FilterAction>(2);
-		AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
-		AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
-		alarmbearbeiterBean.setName("test ABB");
-		alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
-		arrayList.add(alarmbearbeiterFilterAction);
-		
-		AlarmbearbeitergruppenFilterAction alarmbearbeitergruppenFilterAction = new AlarmbearbeitergruppenFilterAction();
-		
-		AlarmbearbeiterGruppenBean alarmbearbeiterGruppenBean = new AlarmbearbeiterGruppenBean();
-		alarmbearbeiterGruppenBean.setName("test ABGB");
-		alarmbearbeitergruppenFilterAction.setReceiver(alarmbearbeiterGruppenBean);
-		arrayList.add(alarmbearbeitergruppenFilterAction);
-		
-		
-		AlarmTopicFilterAction alarmTopicFilterAction = new AlarmTopicFilterAction();
-		
-		AlarmtopicBean alarmtopicBean = new AlarmtopicBean();
-		alarmtopicBean.setHumanReadableName("Bubu Topic");
-		alarmTopicFilterAction.setReceiver(alarmtopicBean);
-		arrayList.add(alarmTopicFilterAction);
-		
-		return arrayList;
+		return filterActions;
+	}
+
+	public void addFilterAction(FilterAction action) {
+		this.filterActions .add(action);
 	}
 }

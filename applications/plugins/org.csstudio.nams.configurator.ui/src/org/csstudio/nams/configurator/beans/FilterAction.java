@@ -13,4 +13,8 @@ public interface FilterAction {
 	public String getMessage();
 
 	public void setMessage(String value);
+
+	public IReceiverBean getReceiver();
+	
+	public void setReceiver(IReceiverBean receiver);
 }

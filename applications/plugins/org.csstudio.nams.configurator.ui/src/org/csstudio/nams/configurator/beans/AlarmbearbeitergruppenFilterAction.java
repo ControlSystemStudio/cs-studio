@@ -33,7 +33,7 @@ public class AlarmbearbeitergruppenFilterAction extends AbstractFilterAction<Ala
 		
 	}
 	
-	protected AlarmbearbeitergruppenFilterAction() {
+	public AlarmbearbeitergruppenFilterAction() {
 		super(AlarmbearbeitergruppenFilterActionType.class);
 	}
 

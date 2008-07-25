@@ -7,13 +7,16 @@ import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.beans.AlarmTopicFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
+import org.csstudio.nams.configurator.beans.AlarmbearbeitergruppenFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterAction;
 import org.csstudio.nams.configurator.beans.FilterActionType;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.IReceiverBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
@@ -31,6 +34,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -48,6 +52,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -291,7 +296,6 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 			@Override
 			protected boolean canEdit(Object element) {
-				// TODO schaun ob wir editieren können
 				if (element instanceof AlarmTopicFilterAction)
 					return false;
 				return true;
@@ -340,6 +344,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		});
 		tableViewerColumns[2].setEditingSupport(new EditingSupport(
 				actionTableViewer) {
+			private TextCellEditor textEditor;
+
 			@Override
 			protected boolean canEdit(Object element) {
 				return true;
@@ -347,9 +353,15 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 			@Override
 			protected CellEditor getCellEditor(Object element) {
-				// TODO (gs) validator hinzufügen
-				TextCellEditor textEditor = new TextCellEditor(
+				textEditor = new TextCellEditor(
 						actionTableViewer.getTable());
+				textEditor.setValidator(new ICellEditorValidator() {
+					public String isValid(Object value) {
+						//TODO (gs)validator anpassen
+						
+						return null;
+					}
+				});
 				((Text) textEditor.getControl()).setTextLimit(1024);
 				return textEditor;
 			}
@@ -361,7 +373,11 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 			@Override
 			protected void setValue(Object element, Object value) {
-				((FilterAction)element).setMessage((String) value);
+				if (textEditor.getErrorMessage() == null) {
+					((FilterAction)element).setMessage((String) value);
+				} else {
+					((FilterAction)element).setMessage(textEditor.getErrorMessage());
+				}
 				actionTableViewer.refresh();
 			}
 
@@ -559,12 +575,20 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						boolean result = false;
 						IStructuredSelection selection = (IStructuredSelection) data;
 						Object selectedObject = selection.getFirstElement();
+						FilterAction action = null;
+						
 						if (selectedObject instanceof AlarmbearbeiterBean) {
-							//TODO
+							action = new AlarmbearbeiterFilterAction();
 						} else if (selectedObject instanceof AlarmbearbeiterGruppenBean) {
-							//TODO
+							action = new AlarmbearbeitergruppenFilterAction();
 						} else if (selectedObject instanceof AlarmtopicBean) {
-							//TODO
+							action = new AlarmTopicFilterAction();
+						}
+						if (action != null) {
+							action.setReceiver((IReceiverBean) selectedObject);
+							getWorkingCopyOfEditorInput().addFilterAction(action);
+							actionTableViewer.setInput(getWorkingCopyOfEditorInput().getActions().toArray());
+							result = true;
 						}
 						return result;
 					}

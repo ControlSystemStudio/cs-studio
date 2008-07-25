@@ -23,7 +23,7 @@ public class AlarmTopicFilterAction extends AbstractFilterAction<AlarmTopicFilte
 		
 	}
 	
-	protected AlarmTopicFilterAction() {
+	public AlarmTopicFilterAction() {
 		super(AlarmTopicFilterActionType.class);
 		setType(AlarmTopicFilterActionType.TOPIC);
 	}
