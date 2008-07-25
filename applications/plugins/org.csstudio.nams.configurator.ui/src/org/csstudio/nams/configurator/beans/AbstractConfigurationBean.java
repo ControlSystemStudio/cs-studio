@@ -38,7 +38,6 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		try {
 			cloneBean = (T) this.getClass().newInstance();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
