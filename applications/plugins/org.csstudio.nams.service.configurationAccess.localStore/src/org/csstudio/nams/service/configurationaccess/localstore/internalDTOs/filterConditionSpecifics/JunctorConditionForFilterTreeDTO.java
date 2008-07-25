@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.JunctorConditionForFilterTreeConditionJoinDTO;
@@ -46,7 +47,7 @@ import org.hibernate.criterion.Restrictions;
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterCondConj4FilterCommon")
 public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
-		implements HasJoinedElements {
+		implements HasManuallyJoinedElements {
 
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)

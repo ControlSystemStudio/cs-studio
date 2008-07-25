@@ -1,8 +1,8 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
-import java.util.List;
 import java.util.Set;
 
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
@@ -21,15 +21,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  * abstrahieren und im Service ausführen; der Typ {@link Configuration} ist dann
  * ein simpler Container
  */
-public interface HasJoinedElements {
-
-	static interface Mapper {
-		public void save(NewAMSConfigurationElementDTO element) throws Throwable;
-
-		public void delete(NewAMSConfigurationElementDTO element) throws Throwable;
-
-		public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(Class<T> clasz) throws Throwable;
-	}
+public interface HasManuallyJoinedElements {
 
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!

@@ -6,6 +6,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
@@ -27,7 +28,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMSFilterNegationCond4Filter")
 public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
-		implements HasJoinedElements {
+		implements HasManuallyJoinedElements {
 
 	@SuppressWarnings("unused")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
@@ -75,23 +76,23 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 	}
 
 	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements) this.negatedFilterCondition)
+		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
+			((HasManuallyJoinedElements) this.negatedFilterCondition)
 					.deleteJoinLinkData(mapper);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements) this.negatedFilterCondition)
+		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
+			((HasManuallyJoinedElements) this.negatedFilterCondition)
 					.loadJoinData(mapper);
 		}
 	}
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-		if (this.negatedFilterCondition instanceof HasJoinedElements) {
-			((HasJoinedElements) this.negatedFilterCondition)
+		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
+			((HasManuallyJoinedElements) this.negatedFilterCondition)
 					.storeJoinLinkData(mapper);
 		}
 	}

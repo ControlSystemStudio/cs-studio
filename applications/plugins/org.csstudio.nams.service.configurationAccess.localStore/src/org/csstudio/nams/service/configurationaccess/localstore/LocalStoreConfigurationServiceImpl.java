@@ -29,7 +29,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
@@ -235,7 +235,7 @@ class LocalStoreConfigurationServiceImpl implements
 				if (fc instanceof JunctorConditionForFilterTreeDTO) {
 					final JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
 					try {
-						jcfft.loadJoinData(new HasJoinedElements.Mapper() {
+						jcfft.loadJoinData(new Mapper() {
 
 							public void delete(
 									NewAMSConfigurationElementDTO element)
@@ -551,8 +551,8 @@ class LocalStoreConfigurationServiceImpl implements
 	void deleteDTONoTransaction(final Session session,
 			final NewAMSConfigurationElementDTO dto) throws Throwable {
 		
-		if (dto instanceof HasJoinedElements) {
-			((HasJoinedElements) dto).deleteJoinLinkData(new HasJoinedElements.Mapper() {
+		if (dto instanceof HasManuallyJoinedElements) {
+			((HasManuallyJoinedElements) dto).deleteJoinLinkData(new Mapper() {
 
 				public void delete(NewAMSConfigurationElementDTO element)
 						throws Throwable {
@@ -595,8 +595,8 @@ class LocalStoreConfigurationServiceImpl implements
 		
 		session.saveOrUpdate(dto);
 		
-		if (dto instanceof HasJoinedElements) {
-			((HasJoinedElements) dto).storeJoinLinkData(new HasJoinedElements.Mapper() {
+		if (dto instanceof HasManuallyJoinedElements) {
+			((HasManuallyJoinedElements) dto).storeJoinLinkData(new Mapper() {
 
 				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
 						Class<T> clasz)  throws Throwable {

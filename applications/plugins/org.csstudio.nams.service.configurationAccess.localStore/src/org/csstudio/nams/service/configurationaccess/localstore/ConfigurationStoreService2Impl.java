@@ -18,9 +18,6 @@ import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 
 public class ConfigurationStoreService2Impl {
-	static interface UnitOfWork<T> {
-		public T doWork(Session session) throws Throwable;
-	}
 	private final Logger logger;
 
 	private final SessionFactory sessionFactory;
@@ -40,12 +37,12 @@ public class ConfigurationStoreService2Impl {
 		
 		Collection<T> result = null;
 		
-		result = doInTransaction(new UnitOfWork<Collection<T>>() {
-			public Collection<T> doWork(Session session)
-					throws Throwable {
-				return loadAll(session, clasz);
-			}
-		});
+//		result = doInTransaction(new UnitOfWork<Collection<T>>() {
+//			public Collection<T> doWork(Session session)
+//					throws Throwable {
+//				return loadAll(session, clasz);
+//			}
+//		});
 		logger.logDebugMessage(this, "found " + result.size() + " elements of type " + clasz.getName());
 			
 			
@@ -74,7 +71,7 @@ public class ConfigurationStoreService2Impl {
 			tx = session.beginTransaction();
 			tx.begin();
 			
-			result = work.doWork(session);
+//			result = work.doWork(session);
 			
 			tx.commit();
 		} catch (final Throwable e) {

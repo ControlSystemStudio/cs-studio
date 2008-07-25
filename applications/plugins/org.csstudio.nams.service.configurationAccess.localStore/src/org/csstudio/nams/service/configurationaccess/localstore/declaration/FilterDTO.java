@@ -13,9 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 
 /**
@@ -37,7 +38,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 @Entity
 @Table(name = "AMS_Filter")
 public class FilterDTO implements NewAMSConfigurationElementDTO,
-		HasJoinedElements {
+		HasManuallyJoinedElements {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "iFilterID")
@@ -170,8 +171,8 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		
 		Collection<FilterConditionDTO> toRemove = new HashSet<FilterConditionDTO>();
 		for (FilterConditionDTO condition : getFilterConditions()) {
-			if( condition instanceof HasJoinedElements ) {
-				((HasJoinedElements)condition).deleteJoinLinkData(mapper);
+			if( condition instanceof HasManuallyJoinedElements ) {
+				((HasManuallyJoinedElements)condition).deleteJoinLinkData(mapper);
 			}
 			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
 				mapper.delete(condition);

@@ -4,14 +4,14 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasJoinedElements;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 
 /**
  * Ein Service zum Zugirff auf die NAMS-Konfiguration.
  * 
  * TODO Rename to ConfigurationStoreService TODO Alle konkreten Operationen auf
  * die allgemeinen DTO-Operationen umbauen; siehe auch Anmerkungen in
- * {@link HasJoinedElements}.
+ * {@link HasManuallyJoinedElements}.
  */
 public interface LocalStoreConfigurationService {
 
@@ -88,7 +88,7 @@ public interface LocalStoreConfigurationService {
 
 	/**
 	 * 
-	 * IMPORTANT: Auf {@link HasJoinedElements} achten!!!
+	 * IMPORTANT: Auf {@link HasManuallyJoinedElements} achten!!!
 	 * 
 	 * @param dto
 	 * @throws StorageError
@@ -100,7 +100,7 @@ public interface LocalStoreConfigurationService {
 
 	/**
 	 * 
-	 * IMPORTANT: Auf {@link HasJoinedElements} achten!!!
+	 * IMPORTANT: Auf {@link HasManuallyJoinedElements} achten!!!
 	 * 
 	 * @param dto
 	 * @throws StorageError
