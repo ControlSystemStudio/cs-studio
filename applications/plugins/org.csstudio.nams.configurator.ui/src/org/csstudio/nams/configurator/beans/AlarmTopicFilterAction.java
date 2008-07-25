@@ -32,4 +32,13 @@ public class AlarmTopicFilterAction extends AbstractFilterAction<AlarmTopicFilte
 		return AlarmTopicFilterActionType.values();
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		AlarmTopicFilterAction action = new AlarmTopicFilterAction();
+		action.message = this.message;
+		action.receiver = this.receiver;
+		action.type = this.type;
+		return action;
+	}
+
 }

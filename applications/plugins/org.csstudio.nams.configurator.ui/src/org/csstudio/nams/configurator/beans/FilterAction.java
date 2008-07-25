@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
 
-public interface FilterAction {
+public interface FilterAction extends Cloneable {
 	public String getEmpfaengerName();
 
 	public FilterActionType getFilterActionType();
@@ -17,4 +17,6 @@ public interface FilterAction {
 	public IReceiverBean getReceiver();
 	
 	public void setReceiver(IReceiverBean receiver);
+	
+	public Object clone() throws CloneNotSupportedException;
 }

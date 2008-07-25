@@ -331,6 +331,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				FilterActionType[] types = ((FilterAction)element).getFilterActionTypeValues();
 				((FilterAction)element).setType(types[((Integer)value).intValue()]);
 				actionTableViewer.refresh();
+				FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
 			}
 
 		});
@@ -379,6 +380,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					((FilterAction)element).setMessage(textEditor.getErrorMessage());
 				}
 				actionTableViewer.refresh();
+				FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
 			}
 
 		});
@@ -589,6 +591,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 							getWorkingCopyOfEditorInput().addFilterAction(action);
 							actionTableViewer.setInput(getWorkingCopyOfEditorInput().getActions().toArray());
 							result = true;
+							FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
 						}
 						return result;
 					}

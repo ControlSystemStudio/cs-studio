@@ -41,4 +41,13 @@ public class AlarmbearbeitergruppenFilterAction extends AbstractFilterAction<Ala
 		return AlarmbearbeitergruppenFilterActionType.values();
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		AlarmbearbeitergruppenFilterAction action = new AlarmbearbeitergruppenFilterAction();
+		action.message = this.message;
+		action.receiver = this.receiver;
+		action.type = this.type;
+		return action;
+	}
+
 }

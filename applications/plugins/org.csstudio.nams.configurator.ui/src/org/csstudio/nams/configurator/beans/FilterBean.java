@@ -30,10 +30,14 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 				+ ((conditions == null) ? 0 : conditions.hashCode());
 		result = prime * result
 				+ ((defaultMessage == null) ? 0 : defaultMessage.hashCode());
+		result = prime * result
+				+ ((filterActions == null) ? 0 : filterActions.hashCode());
 		result = prime * result + filterID;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -54,6 +58,11 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 				return false;
 		} else if (!defaultMessage.equals(other.defaultMessage))
 			return false;
+		if (filterActions == null) {
+			if (other.filterActions != null)
+				return false;
+		} else if (!filterActions.equals(other.filterActions))
+			return false;
 		if (filterID != other.filterID)
 			return false;
 		if (name == null) {
@@ -63,6 +72,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 			return false;
 		return true;
 	}
+
+
 
 	public int getFilterID() {
 		return filterID;
@@ -114,8 +125,20 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		for (FilterbedingungBean filterbedingungBean : list) {
 			cloneList.add(filterbedingungBean.getClone());
 		}
-		
 		setConditions(cloneList);
+		
+		LinkedList<FilterAction> cloneActions = new LinkedList<FilterAction>(bean.getActions());
+		List<FilterAction> actions = bean.getActions();
+		for (FilterAction filterAction : actions) {
+			try {
+				cloneActions.add((FilterAction) filterAction.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		this.filterActions = cloneActions;
 	}
 
 	public int getID() {
@@ -148,6 +171,13 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	}
 
 	public List<FilterAction> getActions() {
+//		if (filterActions.size() == 0) {
+//			AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
+//			AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
+//			alarmbearbeiterBean.setName("Der Bubu");
+//			alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
+//			filterActions.add(alarmbearbeiterFilterAction);
+//		}
 		return filterActions;
 	}
 

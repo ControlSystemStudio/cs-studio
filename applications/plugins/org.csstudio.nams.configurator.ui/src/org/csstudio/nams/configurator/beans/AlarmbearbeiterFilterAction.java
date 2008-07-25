@@ -31,5 +31,14 @@ public class AlarmbearbeiterFilterAction extends AbstractFilterAction<Alarmbearb
 	
 	public FilterActionType[] getFilterActionTypeValues() {
 		return AlarmbearbeiterFilterActionType.values();
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		AlarmbearbeiterFilterAction action = new AlarmbearbeiterFilterAction();
+		action.message = this.message;
+		action.receiver = this.receiver;
+		action.type = this.type;
+		return action;
 	}	
 }
