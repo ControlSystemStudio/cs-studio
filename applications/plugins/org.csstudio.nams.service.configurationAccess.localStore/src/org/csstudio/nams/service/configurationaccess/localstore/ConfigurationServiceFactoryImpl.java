@@ -143,7 +143,7 @@ public class ConfigurationServiceFactoryImpl implements
 		if( connectionData.getDatabaseType().equals(DatabaseType.HSQL_1_8_0) ) {
 			try {
 				Class.forName(DatabaseType.HSQL_1_8_0.getDriverName()).newInstance();
-				configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+//				configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 				 SchemaUpdate schemaUpdate = new SchemaUpdate(configuration); 
 					    schemaUpdate.execute(false, true);
 			} catch (Throwable t) {
