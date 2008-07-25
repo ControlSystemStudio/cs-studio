@@ -235,6 +235,9 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 					FilterConditionsToFilterDTO newJoin = new FilterConditionsToFilterDTO(this.getIFilterID(), fc.getIFilterConditionID());
 					mapper.save(newJoin);
 				}
+				if (operand instanceof JunctorConditionForFilterTreeDTO || operand instanceof NegationConditionForFilterTreeDTO) {
+					((HasManuallyJoinedElements)operand).storeJoinLinkData(mapper);
+				}
 			} else {
 				mapper.save(operand);
 				FilterConditionsToFilterDTO newJoin = new FilterConditionsToFilterDTO(this.getIFilterID(), operand.getIFilterConditionID());
