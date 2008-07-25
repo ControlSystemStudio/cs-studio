@@ -16,6 +16,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Data
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
@@ -79,6 +81,25 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		Thread.sleep(500);
 	}
 
+	public void testLoadAndStoreFilterActions() throws Throwable {
+		TopicDTO topic = new TopicDTO();
+		topic.setTopicName("TEST");
+		topic.setName("TEST-NAME");
+		topic.setDescription("TEst");
+		service.saveDTO(topic);
+		
+		TopicFilterActionDTO topicAction = new TopicFilterActionDTO();
+		topicAction.setMessage("Hallo Welt!");
+		topicAction.setReceiver(topic);
+		
+		service.saveDTO(topicAction);
+		
+		
+		
+		service.deleteDTO(topicAction);
+		service.deleteDTO(topic);
+	}
+	
 	 @Test
 	public void testReloadAndRefresh() throws Throwable {
 		LocalStoreConfigurationService secondService = createAServiceForOracleTests();

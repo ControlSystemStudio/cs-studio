@@ -12,11 +12,13 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Alar
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.JunctorConditionForFilterTreeConditionJoinDTO;
@@ -122,6 +124,9 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(JunctorConditionForFilterTreeConditionJoinDTO.class)
 				.addAnnotatedClass(User2UserGroupDTO.class)
 				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
+
+				.addAnnotatedClass(FilterActionDTO.class)
+				.addAnnotatedClass(TopicFilterActionDTO.class)
 				
 				.setProperty("hibernate.connection.driver_class", connectionData.getConnectionDriver())
 				.setProperty("hibernate.connection.url", connectionData.getConnectionURL())
