@@ -443,7 +443,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		alleFilter = entireConfiguration.gibAlleFilter();
 		FilterDTO foundFilter = null;
 		for (FilterDTO filterDTO : alleFilter) {
-			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
+			if (filterDTO.getIFilterID() == filter.getIFilterID() ) {
 				foundFilter = filterDTO;
 			}
 		}

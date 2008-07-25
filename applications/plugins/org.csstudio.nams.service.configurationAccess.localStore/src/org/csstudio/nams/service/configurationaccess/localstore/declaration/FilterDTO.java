@@ -233,22 +233,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		//		
-		//		
-		// for (FilterConditionDTO condition : getFilterConditions()) {
-		// if( condition instanceof JunctorConditionForFilterTreeDTO ) {
-		// if( condition instanceof HasManuallyJoinedElements ) {
-		// ((HasManuallyJoinedElements)condition).loadJoinData(mapper);
-		// }
-		// mapper.save(condition);
-		// }
-		// if( condition instanceof NegationConditionForFilterTreeDTO ) {
-		// if( condition instanceof HasManuallyJoinedElements ) {
-		// ((HasManuallyJoinedElements)condition).loadJoinData(mapper);
-		// }
-		// mapper.save(condition);
-		// }
-		// }
+		// Dieses wird außerhalb im Service gemacht!
 	}
 
 }
