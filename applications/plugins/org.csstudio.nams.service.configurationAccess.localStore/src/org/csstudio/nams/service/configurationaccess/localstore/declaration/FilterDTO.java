@@ -201,58 +201,56 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		}
 		return null;
 	}
+	
+	private FilterConditionsToFilterDTO findForId(int id, Collection<FilterConditionsToFilterDTO> fcs) {
+		for (FilterConditionsToFilterDTO t : fcs) {
+			if( t.getIFilterConditionRef() == id ) {
+				return t;
+			}
+		}
+		return null;
+	}
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-		// ANdere FCs sind auf jeden Fall gespeichert.
-		List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(JunctorConditionForFilterTreeDTO.class, true);
-		List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(NegationConditionForFilterTreeDTO.class, true);
-		List<FilterConditionsToFilterDTO> alleRootKnotenZuordnungen = mapper.loadAll(FilterConditionsToFilterDTO.class, true);
+		List<FilterConditionDTO> allFC = mapper.loadAll(FilterConditionDTO.class, true);
+		List<FilterConditionsToFilterDTO> joins = mapper.loadAll(FilterConditionsToFilterDTO.class, true);
+		
+		
+		List<FilterConditionDTO> ehemalsReferenziert = new LinkedList<FilterConditionDTO>();
+		
+		for (FilterConditionsToFilterDTO join : joins) {
+			if (join.getIFilterRef() == this.getIFilterID()) {
+				FilterConditionDTO found = findForId(join.getIFilterConditionRef(), allFC);
+				ehemalsReferenziert.add(found);
+			}
+		}
 		
 		List<FilterConditionDTO> operands = this.getFilterConditions();
 		
 		for (FilterConditionDTO operand : operands) {
-			if (operand instanceof JunctorConditionForFilterTreeDTO) {
-				JunctorConditionForFilterTreeDTO existingJCFFT = findForId(operand.getIFilterConditionID(), allJCFFT);
-				
-				if( existingJCFFT != null ) {
-					existingJCFFT.storeJoinLinkData(mapper);
-				} else {
-					mapper.save(operand);
-				}
-				
-			}
-			if (operand instanceof NegationConditionForFilterTreeDTO) {
-				NegationConditionForFilterTreeDTO existingNot = findForId(operand.getIFilterConditionID(), allNots);
-				
-				if( existingNot != null ) {
-					existingNot.storeJoinLinkData(mapper);
-				} else {
-					mapper.save(operand);
-				}
-			}
-		}
-		
-		Collection<FilterConditionsToFilterDTO> neueJoins = new HashSet<FilterConditionsToFilterDTO>();
-		for (FilterConditionDTO fcFuerZuorndung : getFilterConditions()) {
-			FilterConditionsToFilterDTO newJoin = new FilterConditionsToFilterDTO(this.getIFilterID(), fcFuerZuorndung.getIFilterConditionID());
+			FilterConditionDTO fc = findForId(operand.getIFilterConditionID(), allFC);
 			
-			if( !alleRootKnotenZuordnungen.contains(newJoin) ) {
-			neueJoins.add(newJoin);
+			if (fc != null) {
+				if (!ehemalsReferenziert.remove(fc)) {
+					FilterConditionsToFilterDTO newJoin = new FilterConditionsToFilterDTO(this.getIFilterID(), fc.getIFilterConditionID());
+					mapper.save(newJoin);
+				}
+			} else {
+				mapper.save(operand);
+				FilterConditionsToFilterDTO newJoin = new FilterConditionsToFilterDTO(this.getIFilterID(), operand.getIFilterConditionID());
+				mapper.save(newJoin);
 			}
 		}
 		
-		for (FilterConditionsToFilterDTO zuordnung: alleRootKnotenZuordnungen) {
-			if( zuordnung.getIFilterRef() == this.getIFilterID() ) {
-				FilterConditionDTO existing = findForId(zuordnung.getIFilterConditionRef(), getFilterConditions());
-				if( existing == null ) {
-					// Diese Zuordnung ist "tot"
-					mapper.delete(zuordnung);
-				} 
+		for (FilterConditionDTO toRemove : ehemalsReferenziert) {
+			FilterConditionsToFilterDTO found = findForId(toRemove.getIFilterConditionID(), joins);
+			mapper.delete(found);
+			if (toRemove instanceof JunctorConditionForFilterTreeDTO) {
+				mapper.delete(toRemove);
 			}
-		}
-		
-		for (FilterConditionsToFilterDTO toSave : neueJoins) {
-			mapper.save(toSave);
+			if (toRemove instanceof NegationConditionForFilterTreeDTO) {
+				mapper.delete(toRemove);
+			}
 		}
 	}
 
