@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JMS to RDB Sender
+Bundle-SymbolicName: org.csstudio.sns.jms2rdb;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kay Kasemir
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.utility.httpd,
+ org.csstudio.platform.utility.rdb,
+ org.csstudio.platform.utility.jms,
+ org.junit4
+Bundle-Activator: org.csstudio.sns.jms2rdb.Activator
+Eclipse-LazyStart: true
