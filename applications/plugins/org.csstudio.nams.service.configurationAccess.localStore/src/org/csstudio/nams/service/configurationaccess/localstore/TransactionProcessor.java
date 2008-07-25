@@ -130,13 +130,16 @@ public class TransactionProcessor {
 		 * {@inheritDoc}
 		 */
 		public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-				Class<T> clasz) throws Throwable {
+				Class<T> clasz, boolean loadManuallyJoinedMappingsIfAvailable)
+				throws Throwable {
 			List<T> result = loadAll(session, clasz);
 
-			for (T element : result) {
-				if (element instanceof HasManuallyJoinedElements) {
-					HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
-					elementAsElementWithJoins.loadJoinData(this);
+			if (loadManuallyJoinedMappingsIfAvailable) {
+				for (T element : result) {
+					if (element instanceof HasManuallyJoinedElements) {
+						HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
+						elementAsElementWithJoins.loadJoinData(this);
+					}
 				}
 			}
 

@@ -18,14 +18,22 @@ public interface Mapper {
 
 	/**
 	 * Deletes a given element in the database. Also deletes manually joined
-	 * elements if given element is instance of {@link HasManuallyJoinedElements}.
+	 * elements if given element is instance of
+	 * {@link HasManuallyJoinedElements}.
 	 */
 	public void delete(NewAMSConfigurationElementDTO element) throws Throwable;
 
 	/**
 	 * Loads all elements of given type from database. Also loads manually
-	 * joined elements if given element is instance of {@link HasManuallyJoinedElements}.
+	 * joined elements if given element is instance of
+	 * {@link HasManuallyJoinedElements}.
+	 * 
+	 * @param loadManuallyJoinedMappingsIfAvailable
+	 *            Indicates if elements inherits
+	 *            {@link HasManuallyJoinedElements} should be forced to load
+	 *            their joins.
 	 */
 	public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-			Class<T> clasz) throws Throwable;
+			Class<T> clasz, boolean loadManuallyJoinedMappingsIfAvailable)
+			throws Throwable;
 }

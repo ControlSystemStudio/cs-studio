@@ -59,7 +59,6 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	@Transient
 	private FilterConditionDTO[] operands = new FilterConditionDTO[0];
 
-	
 	/**
 	 * Setzt den Operator für diese Conjunction.
 	 * 
@@ -127,20 +126,54 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 * @throws If
 	 *             an error occurred
 	 */
-	public synchronized void storeJoinLinkData(Mapper mapper)
-			throws Throwable {
-		deleteJoinLinkData(mapper);
+	public synchronized void storeJoinLinkData(Mapper mapper) throws Throwable {
+		Collection<JunctorConditionForFilterTreeConditionJoinDTO> joinsToKeep = new HashSet<JunctorConditionForFilterTreeConditionJoinDTO>();
+
+		List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(
+				JunctorConditionForFilterTreeDTO.class, true);
+		List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(
+				NegationConditionForFilterTreeDTO.class, true);
 
 		for (FilterConditionDTO condition : this.getOperands()) {
-			if (condition instanceof JunctorConditionForFilterTreeDTO) {
-				mapper.save(condition);
+			if (condition instanceof JunctorConditionForFilterTreeDTO
+					&& condition != this) {
+				if (!allJCFFT.contains(condition)) {
+					mapper.save(condition);
+				}
 				((JunctorConditionForFilterTreeDTO) condition)
 						.storeJoinLinkData(mapper);
 			}
+			if (condition instanceof NegationConditionForFilterTreeDTO) {
+				if (!allNots.contains(condition)) {
+					mapper.save(condition);
+				}
+				((NegationConditionForFilterTreeDTO) condition)
+						.storeJoinLinkData(mapper);
+			}
+		}
+
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJCFFTJ = mapper.loadAll(
+				JunctorConditionForFilterTreeConditionJoinDTO.class, true);
+		for (FilterConditionDTO condition : this.getOperands()) {
 			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
 					this, condition);
-			mapper.save(newJoin);
+			if (!allJCFFTJ.contains(newJoin)) {
+				mapper.save(newJoin);
+			}
+			joinsToKeep.add(newJoin);
 		}
+		
+		
+		
+		List<JunctorConditionForFilterTreeConditionJoinDTO> oldJoins = mapper
+				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
+						true);
+		for (JunctorConditionForFilterTreeConditionJoinDTO oldJoin : oldJoins) {
+			if (!joinsToKeep.contains(oldJoin)) {
+				mapper.delete(oldJoin);
+			}
+		}
+
 	}
 
 	/**
@@ -161,22 +194,25 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 *             an error occurred
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized void loadJoinData(Mapper mapper)
-			throws Throwable {
-		//GEHT NICHT WEIL SONST ENDLOSSCHLEIFE BEIM LADEN DER FCs - Collection<FilterConditionDTO> allFilterConditions = mapper.loadAll(FilterConditionDTO.class);
-		
+	public synchronized void loadJoinData(Mapper mapper) throws Throwable {
+		// GEHT NICHT WEIL SONST ENDLOSSCHLEIFE BEIM LADEN DER FCs -
+		Collection<FilterConditionDTO> allFilterConditions = mapper.loadAll(
+				FilterConditionDTO.class, false);
+
 		Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
 
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class);
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper
+				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
+						true);
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {
-//				for (FilterConditionDTO conditionDTO : allFilterConditions) {
-//					if (conditionDTO.getIFilterConditionID() == joinElement
-//							.getJoinedConditionsDatabaseId()) {
-//						foundOperands.add(conditionDTO);
-//					}
-//				}
+				for (FilterConditionDTO conditionDTO : allFilterConditions) {
+					if (conditionDTO.getIFilterConditionID() == joinElement
+							.getJoinedConditionsDatabaseId()) {
+						foundOperands.add(conditionDTO);
+					}
+				}
 			}
 		}
 
@@ -185,21 +221,24 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized void deleteJoinLinkData(Mapper mapper)
-			throws Throwable {
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class);
-		
+	public synchronized void deleteJoinLinkData(Mapper mapper) throws Throwable {
+		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper
+				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
+						true);
+
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {
 				int joinId = joinElement.getJoinedConditionsDatabaseId();
 				mapper.delete(joinElement);
-				List<JunctorConditionForFilterTreeDTO> list = mapper.loadAll(JunctorConditionForFilterTreeDTO.class);
+				List<JunctorConditionForFilterTreeDTO> list = mapper.loadAll(
+						JunctorConditionForFilterTreeDTO.class, true);
 				for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : list) {
-					if( junctorConditionForFilterTreeDTO.getIFilterConditionID() != joinId ) {
+					if (junctorConditionForFilterTreeDTO
+							.getIFilterConditionID() != joinId) {
 						continue;
 					}
-					
+
 					junctorConditionForFilterTreeDTO.deleteJoinLinkData(mapper);
 					mapper.delete(junctorConditionForFilterTreeDTO);
 				}
@@ -208,13 +247,13 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		// Lösche auch Conditions dieses Typs, da diese nur für den Filter
 		// relevant und somit nicht als normale conditions genutzt werden
 		// (Achtung: Sonderfall!!)
-//		for (FilterConditionDTO operand : this.operands) {
-//			if (operand instanceof JunctorConditionForFilterTreeDTO) {
-//				((JunctorConditionForFilterTreeDTO) operand)
-//						.deleteJoinLinkData(session);
-//				session.delete(operand);
-//			}
-//		}
+		// for (FilterConditionDTO operand : this.operands) {
+		// if (operand instanceof JunctorConditionForFilterTreeDTO) {
+		// ((JunctorConditionForFilterTreeDTO) operand)
+		// .deleteJoinLinkData(session);
+		// session.delete(operand);
+		// }
+		// }
 	}
 
 	@Override

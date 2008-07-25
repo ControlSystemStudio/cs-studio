@@ -184,19 +184,19 @@ class LocalStoreConfigurationServiceImpl implements
 				List<User2UserGroupDTO> alleUser2UserGroupMappings;
 				Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
 
-				alleAlarmbarbeiter = mapper.loadAll(AlarmbearbeiterDTO.class);
+				alleAlarmbarbeiter = mapper.loadAll(AlarmbearbeiterDTO.class, true);
 				alleAlarmbearbeiterGruppen = mapper
-						.loadAll(AlarmbearbeiterGruppenDTO.class);
-				alleAlarmtopics = mapper.loadAll(TopicDTO.class);
-				allFilters = mapper.loadAll(FilterDTO.class);
-				allFilterConditions = mapper.loadAll(FilterConditionDTO.class);
-				alleRubriken = mapper.loadAll(RubrikDTO.class);
+						.loadAll(AlarmbearbeiterGruppenDTO.class, true);
+				alleAlarmtopics = mapper.loadAll(TopicDTO.class, true);
+				allFilters = mapper.loadAll(FilterDTO.class, true);
+				allFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
+				alleRubriken = mapper.loadAll(RubrikDTO.class, true);
 				alleUser2UserGroupMappings = mapper
-						.loadAll(User2UserGroupDTO.class);
+						.loadAll(User2UserGroupDTO.class, true);
 				allFilterConditionMappings = mapper
-						.loadAll(FilterConditionsToFilterDTO.class);
+						.loadAll(FilterConditionsToFilterDTO.class, true);
 				allCompareValues = mapper
-						.loadAll(StringArrayFilterConditionCompareValuesDTO.class);
+						.loadAll(StringArrayFilterConditionCompareValuesDTO.class, true);
 
 				// Nots befüllen
 				for (final FilterConditionDTO filterConditionDTO : allFilterConditions) {
@@ -688,7 +688,7 @@ class LocalStoreConfigurationServiceImpl implements
 				}
 
 				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-						Class<T> clasz) throws Throwable {
+						Class<T> clasz, boolean loadManuallyJoinedMappingsIfAvailable) throws Throwable {
 					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this
 							.loadAll(session, clasz);
 					allLoaded.remove(dto); // Muss raus sonst landen wir immer
@@ -729,7 +729,7 @@ class LocalStoreConfigurationServiceImpl implements
 			((HasManuallyJoinedElements) dto).storeJoinLinkData(new Mapper() {
 
 				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-						Class<T> clasz) throws Throwable {
+						Class<T> clasz, boolean loadManuallyJoinedMappingsIfAvailable) throws Throwable {
 					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this
 							.loadAll(session, clasz);
 					allLoaded.remove(dto); // Muss raus, sonst landen wir immer

@@ -163,25 +163,28 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		List<FilterConditionsToFilterDTO> list = mapper.loadAll(FilterConditionsToFilterDTO.class);
+		List<FilterConditionsToFilterDTO> list = mapper.loadAll(
+				FilterConditionsToFilterDTO.class, true);
 		for (FilterConditionsToFilterDTO fctf : list) {
-			if( fctf.getIFilterRef() == this.iFilterID ) {
+			if (fctf.getIFilterRef() == this.iFilterID) {
 				mapper.delete(fctf);
 			}
 		}
-		
+
 		Collection<FilterConditionDTO> toRemove = new HashSet<FilterConditionDTO>();
 		for (FilterConditionDTO condition : getFilterConditions()) {
-			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
-				if( condition instanceof HasManuallyJoinedElements ) {
-					((HasManuallyJoinedElements)condition).deleteJoinLinkData(mapper);
+			if (condition instanceof JunctorConditionForFilterTreeDTO) {
+				if (condition instanceof HasManuallyJoinedElements) {
+					((HasManuallyJoinedElements) condition)
+							.deleteJoinLinkData(mapper);
 				}
 				mapper.delete(condition);
 				toRemove.add(condition);
 			}
-			if( condition instanceof NegationConditionForFilterTreeDTO ) {
-				if( condition instanceof HasManuallyJoinedElements ) {
-					((HasManuallyJoinedElements)condition).deleteJoinLinkData(mapper);
+			if (condition instanceof NegationConditionForFilterTreeDTO) {
+				if (condition instanceof HasManuallyJoinedElements) {
+					((HasManuallyJoinedElements) condition)
+							.deleteJoinLinkData(mapper);
 				}
 				mapper.delete(condition);
 				toRemove.add(condition);
@@ -190,42 +193,43 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		this.filterConditons.removeAll(toRemove);
 	}
 
-
-
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
 		for (FilterConditionDTO condition : getFilterConditions()) {
-			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
-				if( condition instanceof HasManuallyJoinedElements ) {
-					((HasManuallyJoinedElements)condition).storeJoinLinkData(mapper);
+			List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(
+					JunctorConditionForFilterTreeDTO.class, true);
+			List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(
+					NegationConditionForFilterTreeDTO.class, true);
+
+			if (condition instanceof JunctorConditionForFilterTreeDTO) {
+				if (!allJCFFT.contains(condition)) {
+					mapper.save(condition);
 				}
-				mapper.save(condition);
 			}
-			if( condition instanceof NegationConditionForFilterTreeDTO ) {
-				if( condition instanceof HasManuallyJoinedElements ) {
-					((HasManuallyJoinedElements)condition).storeJoinLinkData(mapper);
+			if (condition instanceof NegationConditionForFilterTreeDTO) {
+				if (!allNots.contains(condition)) {
+					mapper.save(condition);
 				}
-				mapper.save(condition);
 			}
 		}
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-//		
-//		
-//		for (FilterConditionDTO condition : getFilterConditions()) {
-//			if( condition instanceof JunctorConditionForFilterTreeDTO ) {
-//				if( condition instanceof HasManuallyJoinedElements ) {
-//					((HasManuallyJoinedElements)condition).loadJoinData(mapper);
-//				}
-//				mapper.save(condition);
-//			}
-//			if( condition instanceof NegationConditionForFilterTreeDTO ) {
-//				if( condition instanceof HasManuallyJoinedElements ) {
-//					((HasManuallyJoinedElements)condition).loadJoinData(mapper);
-//				}
-//				mapper.save(condition);
-//			}
-//		}
+		//		
+		//		
+		// for (FilterConditionDTO condition : getFilterConditions()) {
+		// if( condition instanceof JunctorConditionForFilterTreeDTO ) {
+		// if( condition instanceof HasManuallyJoinedElements ) {
+		// ((HasManuallyJoinedElements)condition).loadJoinData(mapper);
+		// }
+		// mapper.save(condition);
+		// }
+		// if( condition instanceof NegationConditionForFilterTreeDTO ) {
+		// if( condition instanceof HasManuallyJoinedElements ) {
+		// ((HasManuallyJoinedElements)condition).loadJoinData(mapper);
+		// }
+		// mapper.save(condition);
+		// }
+		// }
 	}
 
 }
