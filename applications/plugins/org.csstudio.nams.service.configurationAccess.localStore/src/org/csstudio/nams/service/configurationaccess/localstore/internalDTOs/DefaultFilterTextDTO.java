@@ -2,24 +2,38 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 
-
+/**
+ * Templates für messages in den Filtern.
+ *
+ * <pre>
+ * create table AMS_DefMessageText
+ * (
+ * 	iDefMessageTextID	NUMBER(11)	NOT NULL,
+ * 	cName			VARCHAR2(128) 	NOT NULL,
+ * 	cText			VARCHAR2(1024)	NOT NULL,
+ * 	PRIMARY KEY(iDefMessageTextID)
+ * );
+ * </pre>
+ */
 @Entity
 @Table(name="AMS_DEFMESSAGETEXT")
 public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO{
 
 	@Column(name="IDEFMESSAGETEXTID")
 	@Id
-	private String textID;
+	@GeneratedValue
+	private int textID;
 	
-	@Column(name="CNAME")
+	@Column(name="CNAME", length=128)
 	private String messageName;
 	
-	@Column(name="CTEXT")
+	@Column(name="CTEXT", length=1024)
 	private String text;
 	
 	public String getUniqueHumanReadableName() {
@@ -28,14 +42,6 @@ public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO{
 
 	public boolean isInCategory(int categoryDBId) {
 		return false;
-	}
-
-	public String getTextID() {
-		return textID;
-	}
-
-	public void setTextID(String textID) {
-		this.textID = textID;
 	}
 
 	public String getMessageName() {
@@ -61,7 +67,7 @@ public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO{
 		result = prime * result
 				+ ((messageName == null) ? 0 : messageName.hashCode());
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
-		result = prime * result + ((textID == null) ? 0 : textID.hashCode());
+		result = prime * result + textID;
 		return result;
 	}
 
@@ -71,7 +77,7 @@ public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO{
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof DefaultFilterTextDTO))
 			return false;
 		final DefaultFilterTextDTO other = (DefaultFilterTextDTO) obj;
 		if (messageName == null) {
@@ -84,12 +90,11 @@ public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO{
 				return false;
 		} else if (!text.equals(other.text))
 			return false;
-		if (textID == null) {
-			if (other.textID != null)
-				return false;
-		} else if (!textID.equals(other.textID))
+		if (textID != other.textID)
 			return false;
 		return true;
 	}
+
+	
 
 }

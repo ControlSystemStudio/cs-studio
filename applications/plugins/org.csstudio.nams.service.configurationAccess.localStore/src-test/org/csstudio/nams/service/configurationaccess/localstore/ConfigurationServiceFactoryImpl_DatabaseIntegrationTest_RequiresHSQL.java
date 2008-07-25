@@ -18,6 +18,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Junc
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
@@ -363,6 +364,27 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		service.deleteDTO(rightCondition);
 	}
 
+	@Test
+	public void testDefaultFilterTexts() throws Throwable {
+		DefaultFilterTextDTO dto = new DefaultFilterTextDTO();
+		dto.setMessageName("TEST-Halöle Welt");
+		dto.setText("Hallo Welt!");
+		
+		service.saveDTO(dto);
+		
+		DefaultFilterTextDTO found = null;
+		Collection<DefaultFilterTextDTO> allDefaultFilterTexts = service.getEntireConfiguration().getAllDefaultFilterTexts();
+		for (DefaultFilterTextDTO defaultFilterTextDTO : allDefaultFilterTexts) {
+			if( defaultFilterTextDTO.getMessageName().equals("TEST-Halöle Welt") ) {
+				found = defaultFilterTextDTO;
+				break;
+			}
+		}
+		
+		assertNotNull(found);
+		assertEquals("Hallo Welt!", found.getText());
+	}
+	
 	@Test
 	public void testSaveFilter() throws Throwable {
 		// Conditions
