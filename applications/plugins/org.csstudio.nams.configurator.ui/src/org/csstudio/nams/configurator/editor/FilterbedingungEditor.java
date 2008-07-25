@@ -188,7 +188,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		Composite upperComposite = new Composite(outermain, SWT.NONE);
 		upperComposite.setLayout(new GridLayout(NUM_COLUMNS, false));
 		_nameTextEntry = this.createTextEntry(upperComposite, "Name:", true);
-		_rubrikComboEntryViewer = this.createRubrikCombo(upperComposite, "Rubrik:", true,
+		_rubrikComboEntryViewer = this.createComboEntry(upperComposite, "Rubrik:", true,
 				getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();

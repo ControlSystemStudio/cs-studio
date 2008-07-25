@@ -7,6 +7,7 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.MessageTemplateBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
@@ -37,4 +38,6 @@ public interface ConfigurationBeanService {
 
 	public void addConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);
 	public void removeConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);
+	
+	public MessageTemplateBean[] getMessageTemplates(); 
 }

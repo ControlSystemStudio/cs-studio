@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.editor;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
@@ -16,13 +15,16 @@ import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.beans.IReceiverBean;
+import org.csstudio.nams.configurator.beans.MessageTemplateBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -52,7 +54,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -84,6 +85,11 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	private ScrolledForm mainForm;
 	private TableViewer actionTableViewer;
 
+	public FilterEditor(){
+		super();
+		
+	}
+	
 	@Override
 	protected void afterSafe() {
 		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans
@@ -104,11 +110,34 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true,
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true,
 				getConfigurationBeanService().getRubrikNamesForType(
 						RubrikTypeEnum.FILTER));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
+		
+		final MessageTemplateBean[] messageTemplates = configurationBeanService.getMessageTemplates();
+		final String[] templateNames = new String[messageTemplates.length];
+		final String[] templateContent = new String[messageTemplates.length];
+		for (int i = 0; i < templateNames.length; i++) {
+			templateNames[i] = messageTemplates[i].getName();
+			templateContent[i] = messageTemplates[i].getMessage();
+		}
+		final ComboViewer templateComboViewer = this.createComboEntry(main, "Templates", false, templateNames);
+		Button addTemplateButton = createButtonEntry(main, "Template anhängen", true, 2);
+		addTemplateButton.addMouseListener(new MouseListener(){
+
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+			}
+
+			public void mouseUp(MouseEvent e) {
+				_defaultMessageTextEntry.append(templateContent[templateComboViewer.getCombo().getSelectionIndex()]);
+			}
+			
+		});
 		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
 
@@ -652,7 +681,16 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		// bind observables
 		context.bindValue(SWTObservables
 				.observeText(_nameTextEntry, SWT.Modify), nameTextObservable,
-				null, null);
+				new UpdateValueStrategy(){
+
+					@Override
+					protected IValidator createValidator(Object fromType,
+							Object toType) {
+						// TODO Validate FilterMessage Variables here
+						return super.createValidator(fromType, toType);
+					}
+			
+		}, null);
 
 		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
 				SWT.Modify), descriptionTextObservable, null, null);

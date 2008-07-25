@@ -179,7 +179,7 @@ public class AlarmbearbeitergruppenEditor extends
 				name = createTextEntry(textFieldComp, "Name", true);
 
 				_rubrikComboEntryViewer = this
-						.createRubrikCombo(
+						.createComboEntry(
 								textFieldComp,
 								"Rubrik:",
 								true,

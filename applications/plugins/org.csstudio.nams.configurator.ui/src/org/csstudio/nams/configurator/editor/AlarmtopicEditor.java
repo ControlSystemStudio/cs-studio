@@ -43,7 +43,7 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		main.setLayout(new GridLayout(NUM_COLUMNS, false));
 		this.addSeparator(main);
 		_topicIdTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createRubrikCombo(main, "Rubrik:", true, getConfigurationBeanService()
+		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true, getConfigurationBeanService()
 				.getRubrikNamesForType(RubrikTypeEnum.TOPIC));
 		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);

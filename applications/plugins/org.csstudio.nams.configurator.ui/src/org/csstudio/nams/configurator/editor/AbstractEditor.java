@@ -36,7 +36,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		extends EditorPart implements PropertyChangeListener,
 		ConfigurationBeanServiceListener {
 
-	private static ConfigurationBeanService configurationBeanService;
+	protected static ConfigurationBeanService configurationBeanService;
 	
 	/**
 	 * The configuration bean service all editors of current configuration working on. DO NOT chache this instance!
@@ -215,7 +215,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return textWidget;
 	}
 
-	protected ComboViewer createRubrikCombo(Composite parent, String labeltext,
+	protected ComboViewer createComboEntry(Composite parent, String labeltext,
 			boolean editable, String[] contents) {
 		Label label = new Label(parent, SWT.RIGHT);
 		label.setText(labeltext);

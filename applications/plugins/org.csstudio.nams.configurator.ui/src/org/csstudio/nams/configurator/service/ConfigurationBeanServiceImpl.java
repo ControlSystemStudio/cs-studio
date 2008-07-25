@@ -20,6 +20,7 @@ import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.MessageTemplateBean;
 import org.csstudio.nams.configurator.beans.User2GroupBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionBean;
@@ -38,6 +39,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Topi
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
@@ -70,6 +72,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private Collection<RubrikDTO> rubrikDTOs = new LinkedList<RubrikDTO>();
 
 	private static ConfigurationBeanService previosInstance;
+	private MessageTemplateBean[] messageTemplateBeans;
 
 	public ConfigurationBeanServiceImpl() {
 		if (previosInstance != null) {
@@ -102,6 +105,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 			Collection<AlarmbearbeiterDTO> alarmbearbeiter = entireConfiguration
 					.gibAlleAlarmbearbeiter();
+			
+			Collection<DefaultFilterTextDTO> allDefaultFilterTexts = entireConfiguration.getAllDefaultFilterTexts();
+			messageTemplateBeans = new MessageTemplateBean[allDefaultFilterTexts.size()];
+			int i = 0;
+			for (DefaultFilterTextDTO dto : allDefaultFilterTexts) {
+				messageTemplateBeans[i] = new MessageTemplateBean(dto.getMessageName(), dto.getText());
+				i++;
+			}
+			
 			for (AlarmbearbeiterDTO alarmbearbeiterDTO : alarmbearbeiter) {
 				AlarmbearbeiterBean bean = DTO2Bean(alarmbearbeiterDTO);
 				AlarmbearbeiterBean origBean = alarmbearbeiterBeans
@@ -1160,5 +1172,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 	public static void staticInject(Logger logger) {
 		ConfigurationBeanServiceImpl.logger = logger;
+	}
+
+	public MessageTemplateBean[] getMessageTemplates() {
+		return messageTemplateBeans;
 	}
 }
