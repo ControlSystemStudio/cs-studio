@@ -8,6 +8,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "AMS_FILTERACTION")
@@ -23,6 +24,9 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO {
 	/**
 	 * Entweder TOPIC, Alarmbearbeiter, AlarmbearbeiterGruppe
 	 */
+	@Transient
+	protected NewAMSConfigurationElementDTO receiver;
+	
 	@Column(name="IRECEIVERREF", nullable=false)
 	private int iReceiverRef;
 	
@@ -75,5 +79,16 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO {
 		return true;
 	}
 	
+	public String getUniqueHumanReadableName() {
+		return toString();
+	}
 	
+	public boolean isInCategory(int categoryDBId) {
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + ": Nachricht an Topic mit id: "+receiver;
+	}
 }

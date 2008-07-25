@@ -3,18 +3,13 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration.fil
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 
 @Entity
-@Table(name = "AMS_FILTERACTION")
 @DiscriminatorValue("10")
 public class TopicFilterActionDTO extends FilterActionDTO {
-
-	@Transient
-	private TopicDTO receiver;
 
 	public void setReceiver(TopicDTO receiver) {
 		this.setIReceiverRef(receiver.getId());
@@ -22,25 +17,33 @@ public class TopicFilterActionDTO extends FilterActionDTO {
 	}
 	
 	public TopicDTO getReceiver() {
-		return receiver;
+		return (TopicDTO) receiver;
 	}
-	
-	
-	
-	
-	
-	
-	public String getUniqueHumanReadableName() {
-		return toString();
-	}
-
-	public boolean isInCategory(int categoryDBId) {
-		return false;
-	}
-
 	
 	@Override
-	public String toString() {
-		return "TopicFilterActionDTO: Nachricht an Topic mit id: "+receiver;
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((receiver == null) ? 0 : receiver.hashCode());
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final TopicFilterActionDTO other = (TopicFilterActionDTO) obj;
+		if (receiver == null) {
+			if (other.receiver != null)
+				return false;
+		} else if (!receiver.equals(other.receiver))
+			return false;
+		return true;
+	}
+
 }

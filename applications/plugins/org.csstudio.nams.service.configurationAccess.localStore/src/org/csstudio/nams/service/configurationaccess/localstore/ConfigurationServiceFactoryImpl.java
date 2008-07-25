@@ -18,6 +18,15 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Hist
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterVoiceMailFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
@@ -127,6 +136,15 @@ public class ConfigurationServiceFactoryImpl implements
 
 				.addAnnotatedClass(FilterActionDTO.class)
 				.addAnnotatedClass(TopicFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterEmailFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenEmailBestFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenEmailFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenSMSBestFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenSMSFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenVMailBestFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenVMailFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterSMSFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterVoiceMailFilterActionDTO.class)
 				
 				.setProperty("hibernate.connection.driver_class", connectionData.getConnectionDriver())
 				.setProperty("hibernate.connection.url", connectionData.getConnectionURL())
