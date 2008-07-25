@@ -112,6 +112,15 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		return new HashSet<FilterConditionDTO>(asList);
 	}
 
+	private <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
+		for (T t : fcs) {
+			if( t.getIFilterConditionID() == id ) {
+				return t;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!
 	 * 
@@ -134,44 +143,38 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(
 				NegationConditionForFilterTreeDTO.class, true);
 
-		for (FilterConditionDTO condition : this.getOperands()) {
-			if (condition instanceof JunctorConditionForFilterTreeDTO
-					&& condition != this) {
-				if (!allJCFFT.contains(condition)) {
-					mapper.save(condition);
-				}
-				((JunctorConditionForFilterTreeDTO) condition)
-						.storeJoinLinkData(mapper);
+		List<JunctorConditionForFilterTreeDTO> ehemalsReferenziert = new LinkedList<JunctorConditionForFilterTreeDTO>();
+		for (JunctorConditionForFilterTreeDTO inDb : allJCFFT) {
+			if( inDb.getIFilterConditionID() == this.getIFilterConditionID() ) {
+				ehemalsReferenziert.add(inDb);
 			}
-			if (condition instanceof NegationConditionForFilterTreeDTO) {
-				if (!allNots.contains(condition)) {
-					mapper.save(condition);
+		}
+		
+		for (FilterConditionDTO operand : this.getOperands()) {
+			if (operand instanceof JunctorConditionForFilterTreeDTO && operand != this) {
+				JunctorConditionForFilterTreeDTO existingJCFFT = findForId(operand.getIFilterConditionID(), allJCFFT);
+				
+				if( existingJCFFT != null ) {
+					existingJCFFT.storeJoinLinkData(mapper);
+					ehemalsReferenziert.remove(existingJCFFT);
+				} else {
+					mapper.save(operand);
 				}
-				((NegationConditionForFilterTreeDTO) condition)
-						.storeJoinLinkData(mapper);
+				
+			}
+			if (operand instanceof NegationConditionForFilterTreeDTO) {
+				NegationConditionForFilterTreeDTO existingNot = findForId(operand.getIFilterConditionID(), allNots);
+				
+				if( existingNot != null ) {
+					existingNot.storeJoinLinkData(mapper);
+				} else {
+					mapper.save(operand);
+				}
 			}
 		}
 
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJCFFTJ = mapper.loadAll(
-				JunctorConditionForFilterTreeConditionJoinDTO.class, true);
-		for (FilterConditionDTO condition : this.getOperands()) {
-			JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
-					this, condition);
-			if (!allJCFFTJ.contains(newJoin)) {
-				mapper.save(newJoin);
-			}
-			joinsToKeep.add(newJoin);
-		}
-		
-		
-		
-		List<JunctorConditionForFilterTreeConditionJoinDTO> oldJoins = mapper
-				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
-						true);
-		for (JunctorConditionForFilterTreeConditionJoinDTO oldJoin : oldJoins) {
-			if (!joinsToKeep.contains(oldJoin)) {
-				mapper.delete(oldJoin);
-			}
+		for (JunctorConditionForFilterTreeDTO toBeDeleted : ehemalsReferenziert) {
+			mapper.delete(toBeDeleted);
 		}
 
 	}

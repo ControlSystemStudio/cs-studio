@@ -192,22 +192,41 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		}
 		this.filterConditons.removeAll(toRemove);
 	}
+	
+	private <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
+		for (T t : fcs) {
+			if( t.getIFilterConditionID() == id ) {
+				return t;
+			}
+		}
+		return null;
+	}
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-		for (FilterConditionDTO condition : getFilterConditions()) {
-			List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(
-					JunctorConditionForFilterTreeDTO.class, true);
-			List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(
-					NegationConditionForFilterTreeDTO.class, true);
-
-			if (condition instanceof JunctorConditionForFilterTreeDTO) {
-				if (!allJCFFT.contains(condition)) {
-					mapper.save(condition);
+		// ANdere FCs sind auf jeden Fall gespeichert.
+		List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(JunctorConditionForFilterTreeDTO.class, true);
+		List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(NegationConditionForFilterTreeDTO.class, true);
+		
+		List<FilterConditionDTO> operands = this.getFilterConditions();
+		
+		for (FilterConditionDTO operand : operands) {
+			if (operand instanceof JunctorConditionForFilterTreeDTO) {
+				JunctorConditionForFilterTreeDTO existingJCFFT = findForId(operand.getIFilterConditionID(), allJCFFT);
+				
+				if( existingJCFFT != null ) {
+					existingJCFFT.storeJoinLinkData(mapper);
+				} else {
+					mapper.save(operand);
 				}
+				
 			}
-			if (condition instanceof NegationConditionForFilterTreeDTO) {
-				if (!allNots.contains(condition)) {
-					mapper.save(condition);
+			if (operand instanceof NegationConditionForFilterTreeDTO) {
+				NegationConditionForFilterTreeDTO existingNot = findForId(operand.getIFilterConditionID(), allNots);
+				
+				if( existingNot != null ) {
+					existingNot.storeJoinLinkData(mapper);
+				} else {
+					mapper.save(operand);
 				}
 			}
 		}
