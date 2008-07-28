@@ -270,7 +270,7 @@ public class LogView extends ViewPart implements MessageListener {
      * @param message
 	 * @throws JMSException 
      */
-    synchronized protected void setAck(MapMessage message) {
+    protected void setAck(MapMessage message) {
 //DEBUG       JmsLogsPlugin.logInfo("LogView Ack message received, MsgName: " + 
 //       		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
        TableItem[] items = _tableViewer.getTable().getItems();
