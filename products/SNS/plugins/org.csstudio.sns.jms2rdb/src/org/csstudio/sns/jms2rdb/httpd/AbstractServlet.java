@@ -26,7 +26,7 @@ abstract public class AbstractServlet extends HttpServlet
     {
         try
         {
-            final HTMLWriter html = new HTMLWriter(resp, "JMS Log Tool");
+            final HTMLWriter html = new HTMLWriter(resp, "JMS-to-RDB Tool");
             fillBody(html);
             html.close();
         }

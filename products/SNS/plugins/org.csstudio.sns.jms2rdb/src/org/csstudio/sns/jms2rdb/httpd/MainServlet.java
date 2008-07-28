@@ -28,7 +28,7 @@ public class MainServlet extends AbstractServlet
 	@Override
     protected void fillBody(final HTMLWriter html)
     {
-        html.h1("<h1>JMS Log Tool Status</h1>\n");
+        html.h1("<h1>JMS-to-RDB Tool Status</h1>\n");
         
         html.h2("Message Count: " + log_client_thread.getMessageCount());
         
