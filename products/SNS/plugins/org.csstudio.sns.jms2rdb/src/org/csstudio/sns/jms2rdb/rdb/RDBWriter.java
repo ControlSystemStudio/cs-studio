@@ -3,7 +3,6 @@ package org.csstudio.sns.jms2rdb.rdb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Enumeration;
@@ -21,7 +20,11 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 @SuppressWarnings("nls")
 public class RDBWriter
 {
-    private static final int MAX_VALUE_LENGTH = 300;
+    private static final String DEFAULT_MESSAGE_TYPE = "log";
+
+	private static final String TYPE_PROPERTY = "TYPE";
+
+	private static final int MAX_VALUE_LENGTH = 300;
 
     /** RDB Utility */
     final private RDBUtil rdb_util;
@@ -29,9 +32,10 @@ public class RDBWriter
     /** SQL statements */
     final private SQL sql;
     
-    /** RDB Type ID for the messages */
-    final private int message_type_id;
-    
+    /** Cache of Message Type/ID mappings */
+	final private HashMap<String, Integer> message_type
+		= new HashMap<String, Integer>();
+
     /** Map of Property IDs, mapping property name to numeric ID */
     final private HashMap<String, Integer> property_id = 
     	new HashMap<String, Integer>();
@@ -57,7 +61,6 @@ public class RDBWriter
     {
         rdb_util = RDBUtil.connect(url);
         sql = new SQL(rdb_util, schema);
-        message_type_id = getLogMessageTypeID();
         
         getPropertyType(JMSLogMessage.TYPE);
         getPropertyType(JMSLogMessage.TEXT);
@@ -81,19 +84,28 @@ public class RDBWriter
             connection.prepareStatement(sql.insert_message_property_value);
     }
     
-    /** Query RDB for the numeric ID of a "log" message.
+    /** Query RDB for the numeric ID of message.
+     *  @param type Message type name
      *  @return Numeric ID
      *  @throws Exception on error
      */
-    private int getLogMessageTypeID() throws Exception
-    {
-        final Statement statement = rdb_util.getConnection().createStatement();
+    private int getMessageTypeID(final String type) throws Exception
+    {	// Cache lookup
+    	final Integer int_id = message_type.get(type);
+    	if (int_id != null)
+    		return int_id.intValue();
+        final PreparedStatement statement =
+        	rdb_util.getConnection().prepareStatement(sql.select_message_type);
         try
         {
-            final ResultSet result =
-                statement.executeQuery(sql.select_log_message_type);
+        	statement.setString(1, type);
+            final ResultSet result = statement.executeQuery();
             if (result.next())
-                return result.getInt(1);
+            {	// Add to cache
+                final int id = result.getInt(1);
+                message_type.put(type, id);
+				return id;
+            }
         }
         finally
         {
@@ -208,7 +220,7 @@ public class RDBWriter
     public void write(final JMSLogMessage message) throws Exception
     {
         final int message_id = getNextMessageID();
-        insertMessage(message_id);
+        insertMessage(message_id, DEFAULT_MESSAGE_TYPE);
         // Since batched inserts are only performed at the end,
         // a 'select' for the next content ID won't see them, yet.
         // So we have to count them up in here
@@ -255,8 +267,11 @@ public class RDBWriter
     @SuppressWarnings("unchecked")
 	public void write(final MapMessage map) throws Exception
     {
+    	String type = map.getString(TYPE_PROPERTY);
+    	if (type == null)
+    		type = DEFAULT_MESSAGE_TYPE;
         final int message_id = getNextMessageID();
-        insertMessage(message_id);
+        insertMessage(message_id, type);
         // Since batched inserts are only performed at the end,
         // a 'select' for the next content ID won't see them, yet.
         // So we have to count them up in here
@@ -287,13 +302,14 @@ public class RDBWriter
 
     /** Insert a new message
      *  @param message_id ID for the new message
+     *  @param type  Message type
      *  @throws Exception on error
      */
-    private void insertMessage(final int message_id) throws Exception
+    private void insertMessage(final int message_id, final String type) throws Exception
     {
         // Insert the main message
         insert_message_statement.setInt(1, message_id);
-        insert_message_statement.setInt(2, message_type_id);
+        insert_message_statement.setInt(2, getMessageTypeID(type));
         final Calendar now = Calendar.getInstance();
         insert_message_statement.setTimestamp(3, new Timestamp(now.getTimeInMillis()));
         final int rows = insert_message_statement.executeUpdate();

@@ -8,7 +8,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 @SuppressWarnings("nls")
 public class SQL
 {
-    final public String select_log_message_type;
+    final public String select_message_type;
 
     final public String select_property_id_by_name;
 
@@ -30,7 +30,7 @@ public class SQL
      */
     public SQL(final RDBUtil rdb_util, final String schema)
     {
-        select_log_message_type = "SELECT id FROM " + schema + "msg_type WHERE name='log'";
+        select_message_type = "SELECT id FROM " + schema + "msg_type WHERE name=?";
         
         select_property_id_by_name =
             "SELECT id FROM " + schema + "msg_property_type WHERE name=?";
