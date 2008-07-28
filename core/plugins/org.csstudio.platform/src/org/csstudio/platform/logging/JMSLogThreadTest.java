@@ -15,6 +15,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.apache.log4j.Level;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.junit.Test;
 
@@ -129,6 +130,7 @@ public class JMSLogThreadTest
             Calendar earlier = (Calendar) now.clone();
             earlier.add(Calendar.HOUR, -1);
             final JMSLogMessage log_msg = new JMSLogMessage("Test " + i,
+            		Level.INFO.toString(),
                     now, earlier,
                     "SomeClass", "some_method",
                     "SomeClass.java:315",

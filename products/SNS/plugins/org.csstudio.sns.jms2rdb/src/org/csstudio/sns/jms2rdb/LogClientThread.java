@@ -13,6 +13,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -181,7 +182,8 @@ public class LogClientThread extends Thread
         final String host = InetAddress.getLocalHost().getHostName();
         final String user = System.getProperty("user.name");
         final JMSLogMessage initial_msg = new JMSLogMessage(
-                "INFO: JMS Log Tool started", now, now,
+                "INFO: JMS Log Tool started",
+                Level.INFO.toString(), now, now,
                 "LogClientThread", "run", "", "JMSLogTool", host, user);
         rdb_writer.write(initial_msg);
     }

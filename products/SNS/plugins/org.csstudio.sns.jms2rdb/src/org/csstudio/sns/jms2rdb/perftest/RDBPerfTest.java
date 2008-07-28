@@ -57,7 +57,8 @@ public class RDBPerfTest
             ++count;
             final Calendar now = Calendar.getInstance();
             final JMSLogMessage msg = new JMSLogMessage(
-                    Integer.toString(count), now, now,
+                    Integer.toString(count),
+                    Level.INFO.toString(), now, now,
                     "RDBPerfTest", "run", "RDBPerfTest.java", "JMSLogTool",
                     host, user);
             rdb_writer.write(msg);

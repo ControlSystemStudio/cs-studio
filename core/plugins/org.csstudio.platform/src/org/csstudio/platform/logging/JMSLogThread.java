@@ -14,6 +14,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.helpers.LogLog;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
@@ -119,6 +120,7 @@ public class JMSLogThread extends Thread implements ExceptionListener
         queue_is_full = true;
         final Calendar now = Calendar.getInstance();
         final JMSLogMessage error = new JMSLogMessage("WARN: JMSLogThread queue is full",
+        		Level.ERROR.toString(),
                 now, now, null, null, null, null, null, null);
         LogLog.error(error.toString());
         queue.offer(error);

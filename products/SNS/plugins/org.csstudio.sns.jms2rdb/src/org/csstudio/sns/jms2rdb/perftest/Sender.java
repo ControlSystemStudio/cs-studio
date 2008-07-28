@@ -12,6 +12,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.apache.log4j.Level;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Thread that sends as many JMS messages as possible.
@@ -63,7 +64,8 @@ public class Sender implements ExceptionListener, Runnable
                 ++count;
                 Calendar now = Calendar.getInstance();
                 final JMSLogMessage msg = new JMSLogMessage(
-                        Integer.toString(count), now, now,
+                        Integer.toString(count),
+                        Level.INFO.toString(), now, now,
                         "run", "Sender", "Sender.java",
                         "JMSPerfTest", host, user);
                 final MapMessage map = session.createMapMessage();

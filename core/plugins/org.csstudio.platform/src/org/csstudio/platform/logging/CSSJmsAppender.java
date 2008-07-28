@@ -179,6 +179,8 @@ public class CSSJmsAppender extends AppenderSkeleton
     public void append(final LoggingEvent event)
     {
         final String text = layout.format(event).trim();
+        
+        final String severity = event.getLevel().toString();
 
         final Calendar event_time = Calendar.getInstance();
         event_time.setTimeInMillis(event.timeStamp);
@@ -207,7 +209,7 @@ public class CSSJmsAppender extends AppenderSkeleton
             user = pinfo.getUserId();
         }
         
-        final JMSLogMessage log_msg = new JMSLogMessage(text,
+        final JMSLogMessage log_msg = new JMSLogMessage(text, severity,
                 create_time, event_time,
                 clazz, method, file, app, host, user);
         synchronized (this)

@@ -34,6 +34,9 @@ public class JMSLogMessage
     /** Mandatory MapMessage element: content */
     final public static String TEXT = "TEXT";
 
+    /** Mandatory MapMessage element: Severity of the message */
+    final public static String SEVERITY = "SEVERITY";
+
     /** Mandatory MapMessage element: time of message creation */
     final public static String CREATETIME = "CREATETIME";
 
@@ -60,6 +63,7 @@ public class JMSLogMessage
     
     // Components of the Log Message
     final private String text;
+    final private String severity;
     final private Calendar create_time;
     final private Calendar event_time;
     final private String class_name;
@@ -71,6 +75,7 @@ public class JMSLogMessage
 
     /** Construct a new log message
      *  @param text Message text
+     *  @param severity Severity of the message
      *  @param create_time Time of message creation
      *  @param event_time Time of original event
      *  @param class_name Generating class or <code>null</code>
@@ -81,12 +86,14 @@ public class JMSLogMessage
      *  @param user User name or <code>null</code>
      */
     public JMSLogMessage(final String text,
+    		final String severity,
             final Calendar create_time, final Calendar event_time,
             final String class_name, final String method_name,
             final String file_name,
             final String application_id, final String host, final String user)
     {
         this.text = text;
+        this.severity = severity;
         this.create_time = create_time;
         this.event_time = event_time;
         this.class_name = class_name;
@@ -121,13 +128,14 @@ public class JMSLogMessage
         event_time.setTime(JMSLogMessage.date_format.parse(time_text));
 
         final String text = map.getString(JMSLogMessage.TEXT);
+        final String severity = map.getString(JMSLogMessage.SEVERITY);
         final String class_name = map.getString(JMSLogMessage.CLASS);
         final String method_name = map.getString(JMSLogMessage.NAME);
         final String file_name = map.getString(JMSLogMessage.FILENAME);
         final String application_id = map.getString(JMSLogMessage.APPLICATION_ID);
         final String host = map.getString(JMSLogMessage.HOST);
         final String user = map.getString(JMSLogMessage.USER);
-        return new JMSLogMessage(text, create_time, event_time,
+        return new JMSLogMessage(text, severity, create_time, event_time,
                 class_name, method_name, file_name, application_id, host, user);
     }
     
@@ -140,6 +148,7 @@ public class JMSLogMessage
     {
         map.setString(JMSLogMessage.TYPE, JMSLogMessage.TYPE_LOG);
         map.setString(JMSLogMessage.TEXT, text);
+        map.setString(JMSLogMessage.SEVERITY, severity);
         String time_text = JMSLogMessage.date_format.format(create_time.getTime());
         map.setString(JMSLogMessage.CREATETIME, time_text);
         time_text = JMSLogMessage.date_format.format(event_time.getTime());
@@ -170,6 +179,12 @@ public class JMSLogMessage
     public String getText()
     {
         return text;
+    }
+
+    /** @return Message severity */
+    public String getSeverity()
+    {
+        return severity;
     }
 
     /** @return Time of message creation */
