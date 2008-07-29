@@ -43,7 +43,7 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		setCName("NegationConditionForFilterTreeDTO");
 		setCDesc("The type NegationConditionForFilterTreeDTO is not to be used directly! It is used internally on filters.");
 	}
-	
+
 	/**
 	 * Returns the negated FilterCondition.
 	 * 
@@ -82,15 +82,16 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 
 	@SuppressWarnings("unchecked")
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		List<FilterConditionDTO> allFCs = mapper.loadAll(FilterConditionDTO.class, false);
-		
+		List<FilterConditionDTO> allFCs = mapper.loadAll(
+				FilterConditionDTO.class, false);
+
 		for (FilterConditionDTO fc : allFCs) {
-			if( fc.getIFilterConditionID() == this.getINegatedFCRef() ) {
+			if (fc.getIFilterConditionID() == this.getINegatedFCRef()) {
 				this.negatedFilterCondition = fc;
 				break;
 			}
 		}
-		
+
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
 			((HasManuallyJoinedElements) this.negatedFilterCondition)
 					.loadJoinData(mapper);
@@ -99,8 +100,48 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
-			((HasManuallyJoinedElements) this.negatedFilterCondition)
-					.storeJoinLinkData(mapper);
+			if (this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO
+					|| this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO) {
+				List<FilterConditionDTO> alleFCs = mapper.loadAll(
+						FilterConditionDTO.class, false);
+				FilterConditionDTO found = null;
+				for (FilterConditionDTO filterConditionDTO : alleFCs) {
+					if (filterConditionDTO.getIFilterConditionID() == this.negatedFilterCondition
+							.getIFilterConditionID()) {
+						found = filterConditionDTO;
+					}
+				}
+				if (found == null) {
+					mapper.save(this.negatedFilterCondition);
+				} else {
+					if (found instanceof JunctorConditionForFilterTreeDTO) {
+						JunctorConditionForFilterTreeDTO oldJCFFT = (JunctorConditionForFilterTreeDTO) found;
+						JunctorConditionForFilterTreeDTO newJCFFT = (JunctorConditionForFilterTreeDTO) this.negatedFilterCondition;
+						oldJCFFT.setCDesc(newJCFFT.getCDesc());
+						oldJCFFT.setCName(newJCFFT.getCName());
+						oldJCFFT.setIGroupRef(newJCFFT.getIGroupRef());
+						oldJCFFT.setOperands(newJCFFT.getOperands());
+						oldJCFFT.setOperator(newJCFFT.getOperator());
+						mapper.save(oldJCFFT);
+					} else {
+						NegationConditionForFilterTreeDTO oldNot = (NegationConditionForFilterTreeDTO) found;
+						NegationConditionForFilterTreeDTO newNot = (NegationConditionForFilterTreeDTO) this.negatedFilterCondition;
+
+						oldNot.setCDesc(newNot.getCDesc());
+						oldNot.setCName(newNot.getCName());
+						oldNot.setIGroupRef(newNot.getIGroupRef());
+						oldNot.setNegatedFilterCondition(newNot
+								.getNegatedFilterCondition());
+						mapper.save(oldNot);
+					}
+				}
+				this.iNegatedFCRef = this.negatedFilterCondition
+						.getIFilterConditionID();
+			} else {
+
+				((HasManuallyJoinedElements) this.negatedFilterCondition)
+						.storeJoinLinkData(mapper);
+			}
 		}
 	}
 

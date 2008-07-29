@@ -139,7 +139,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 */
 	public synchronized void storeJoinLinkData(Mapper mapper) throws Throwable {
 		
-		List<FilterConditionDTO> allFC = mapper.loadAll(FilterConditionDTO.class, true);
+		List<FilterConditionDTO> allFC = mapper.loadAll(FilterConditionDTO.class, false);
 		List<JunctorConditionForFilterTreeConditionJoinDTO> joins = mapper.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class, true);
 		
 		
@@ -241,7 +241,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 				mapper.delete(joinElement);
 				
 				List<JunctorConditionForFilterTreeDTO> list = mapper.loadAll(
-						JunctorConditionForFilterTreeDTO.class, true);
+						JunctorConditionForFilterTreeDTO.class, false);
 				for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : list) {
 					if (junctorConditionForFilterTreeDTO
 							.getIFilterConditionID() == joinId) {
@@ -250,7 +250,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 				}
 				
 				List<NegationConditionForFilterTreeDTO> negList = mapper.loadAll(
-						NegationConditionForFilterTreeDTO.class, true);
+						NegationConditionForFilterTreeDTO.class, false);
 				for (NegationConditionForFilterTreeDTO negationConditionForFilterTreeDTO: negList) {
 					if (negationConditionForFilterTreeDTO.getIFilterConditionID() == joinId) {
 						mapper.delete(negationConditionForFilterTreeDTO);					

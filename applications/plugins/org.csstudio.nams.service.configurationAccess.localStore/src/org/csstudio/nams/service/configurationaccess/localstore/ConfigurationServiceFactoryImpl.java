@@ -164,9 +164,9 @@ public class ConfigurationServiceFactoryImpl implements
 				.setProperty("hbm2ddl.auto", "update") 
 				.setProperty("hibernate.mapping.precedence", "class");
 		
-		if( connectionData.getDatabaseType().equals(DatabaseType.HSQL_1_8_0) ) {
+		if( connectionData.getDatabaseType().equals(DatabaseType.HSQL_1_8_0_FOR_TEST) ) {
 			try {
-				Class.forName(DatabaseType.HSQL_1_8_0.getDriverName()).newInstance();
+				Class.forName(DatabaseType.HSQL_1_8_0_FOR_TEST.getDriverName()).newInstance();
 //				configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 				 SchemaUpdate schemaUpdate = new SchemaUpdate(configuration); 
 					    schemaUpdate.execute(false, true);
