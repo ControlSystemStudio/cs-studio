@@ -42,6 +42,7 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO, 
 	@Transient
 	protected FilterActionType filterActionType;
 	
+	@Deprecated
 	public FilterActionType getFilterActionType(){
 		if (filterActionType == null){
 			throw new RuntimeException("filterActionType in "+ this + " not set");

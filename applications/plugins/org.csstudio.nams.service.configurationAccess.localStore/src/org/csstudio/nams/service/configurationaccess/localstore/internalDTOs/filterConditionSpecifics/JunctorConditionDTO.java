@@ -39,8 +39,9 @@ public class JunctorConditionDTO extends FilterConditionDTO implements HasManual
 	@Column(name = "iSecondFilterConditionRef")
 	private int secondFilterConditionRef;
 
-	@Column(name = "iOperand")
-	private short operand = 0;
+	@Transient
+	@Deprecated
+	private short operand = JunctorConditionType.shortOf(JunctorConditionType.OR);
 
 	
 	@Transient

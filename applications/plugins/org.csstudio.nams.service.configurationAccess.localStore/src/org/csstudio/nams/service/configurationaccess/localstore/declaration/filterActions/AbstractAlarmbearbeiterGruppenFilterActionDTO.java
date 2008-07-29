@@ -24,7 +24,7 @@ public abstract class AbstractAlarmbearbeiterGruppenFilterActionDTO extends Filt
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		List<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = mapper.loadAll(AlarmbearbeiterGruppenDTO.class, true);
+		List<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = mapper.loadAll(AlarmbearbeiterGruppenDTO.class, false);
 
 		for (AlarmbearbeiterGruppenDTO alarmbearbeiterGruppe : alleAlarmbearbeiterGruppen) {
 			if( alarmbearbeiterGruppe.getUserGroupId() == this.getIReceiverRef() ) {

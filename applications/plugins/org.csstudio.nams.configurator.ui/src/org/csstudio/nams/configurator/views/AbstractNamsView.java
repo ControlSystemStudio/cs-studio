@@ -52,9 +52,9 @@ public abstract class AbstractNamsView extends ViewPart {
 	private static ConfigurationServiceFactory configurationServiceFactory;
 	private static Logger logger;
 
-	boolean isInitialized = false;
+	static boolean isInitialized = false;
 
-	public boolean isInitialized() {
+	public static boolean isInitialized() {
 		return isInitialized;
 	}
 

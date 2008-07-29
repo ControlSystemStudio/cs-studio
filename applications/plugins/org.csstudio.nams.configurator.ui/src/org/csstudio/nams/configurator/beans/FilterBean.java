@@ -172,15 +172,15 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	public List<FilterAction> getActions() {
 		
-		//FIXME remove
-		if (filterActions.size() == 0) {
-			AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
-			AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
-			alarmbearbeiterBean.setName("Der Bubu");
-			alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
-			alarmbearbeiterFilterAction.setType(alarmbearbeiterFilterAction.getFilterActionTypeValues()[0]);
-			filterActions.add(alarmbearbeiterFilterAction);
-		}
+//		//FIXME remove
+//		if (filterActions.size() == 0) {
+//			AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
+//			AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
+//			alarmbearbeiterBean.setName("Der Bubu");
+//			alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
+//			alarmbearbeiterFilterAction.setType(alarmbearbeiterFilterAction.getFilterActionTypeValues()[0]);
+//			filterActions.add(alarmbearbeiterFilterAction);
+//		}
 		return filterActions;
 	}
 

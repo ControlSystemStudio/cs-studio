@@ -14,9 +14,13 @@ import java.util.Map;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.beans.AlarmTopicFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.beans.AlarmbearbeiterFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterGruppenBean;
+import org.csstudio.nams.configurator.beans.AlarmbearbeitergruppenFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
+import org.csstudio.nams.configurator.beans.FilterAction;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -33,12 +37,17 @@ import org.csstudio.nams.configurator.beans.filters.TimeBasedFilterConditionBean
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstractAlarmbearbeiterFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstractAlarmbearbeiterGruppenFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
@@ -312,7 +321,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return values.toArray(new FilterBean[values.size()]);
 	}
 
-	FilterBean DTO2Bean(FilterDTO filterDTO) {
+	FilterBean DTO2Bean(FilterDTO filterDTO) throws InconsistentConfigurationException {
 		FilterBean bean = new FilterBean();
 		bean.setDefaultMessage(filterDTO.getDefaultMessage());
 		bean.setFilterID(filterDTO.getIFilterID());
@@ -328,7 +337,34 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		bean.setConditions(conditions);
 		bean.setRubrikName(getRubrikNameForId(filterDTO.getIGroupRef()));
-
+		List<FilterActionDTO> filterActions = filterDTO.getFilterActions();
+		for (FilterActionDTO filterActionDTO : filterActions) {
+		    FilterAction filterAction = null;
+			if( filterActionDTO instanceof AbstractAlarmbearbeiterFilterActionDTO ) {
+				AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
+		    	alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBeans.get(
+		    			((AbstractAlarmbearbeiterFilterActionDTO)filterActionDTO).getReceiver().getUserId()) );
+		    	filterAction = alarmbearbeiterFilterAction;
+		    } else if( filterActionDTO instanceof AbstractAlarmbearbeiterGruppenFilterActionDTO ) {
+		    	AlarmbearbeitergruppenFilterAction alarmbearbeitergruppenFilterAction = new AlarmbearbeitergruppenFilterAction();
+		    	alarmbearbeitergruppenFilterAction.setReceiver(alarmbearbeitergruppenBeans.get(
+		    			((AbstractAlarmbearbeiterGruppenFilterActionDTO)filterActionDTO).getReceiver().getUserGroupId()) );
+		    	filterAction = alarmbearbeitergruppenFilterAction;
+		    } else if( filterActionDTO instanceof TopicFilterActionDTO ) {
+		    	AlarmTopicFilterAction alarmTopicFilterAction = new AlarmTopicFilterAction();
+		    	alarmTopicFilterAction.setReceiver(alarmtopicBeans.get(
+		    			((TopicFilterActionDTO)filterActionDTO).getReceiver().getId()) );
+		    	filterAction = alarmTopicFilterAction;
+		    } else {
+		    	throw new InconsistentConfigurationException("Falscher ActionType für Filter in db.");
+		    }
+			filterAction.setType(filterActionDTO.getFilterActionType());
+			filterAction.setMessage(filterActionDTO.getMessage());
+			logger.logDebugMessage(this, "found action: " + filterAction.toString());
+			
+			bean.addFilterAction(filterAction);
+		}
+		
 		return bean;
 	}
 

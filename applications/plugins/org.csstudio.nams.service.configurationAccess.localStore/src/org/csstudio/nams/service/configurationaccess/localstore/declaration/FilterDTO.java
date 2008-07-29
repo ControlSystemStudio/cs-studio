@@ -162,6 +162,10 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	public void setFilterConditions(List<FilterConditionDTO> filterConditonDTOs) {
 		filterConditons = filterConditonDTOs;
 	}
+	
+	public List<FilterActionDTO> getFilterActions() {
+		return filterActions;
+	}
 
 	public String getUniqueHumanReadableName() {
 		return toString();
