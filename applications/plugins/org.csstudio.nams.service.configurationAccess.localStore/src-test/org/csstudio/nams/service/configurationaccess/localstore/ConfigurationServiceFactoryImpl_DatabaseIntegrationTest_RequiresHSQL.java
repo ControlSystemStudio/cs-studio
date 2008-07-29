@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
@@ -26,6 +27,9 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.LoggerMock;
 import org.csstudio.nams.service.logging.declaration.LoggerMock.LogEntry;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.classic.Session;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,7 +85,98 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		
 		Thread.sleep(500);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIdentitaet() throws Exception {
+		
+		AlarmbearbeiterDTO bearbeiter =new AlarmbearbeiterDTO();
+		bearbeiter.setActive(true);
+		bearbeiter.setConfirmCode("1234");
+		bearbeiter.setEmail("abc@testland.de");
+		bearbeiter.setMobilePhone("0123456789");
+		bearbeiter.setPhone("987654321");
+		bearbeiter.setPreferedAlarmType(PreferedAlarmType.EMAIL);
+		bearbeiter.setStatusCode("42");
+		bearbeiter.setUserName("ABC");
+		
+		SessionFactory factory = ((LocalStoreConfigurationServiceImpl)service).getSessionFactory();
+		
+		Session session = factory.openSession();
+		Transaction transaction = session.beginTransaction();
+		transaction.begin();
+		
+		session.save(bearbeiter);
+		
+		transaction.commit();
+		session.close();
+		
+		// Laden und pruefen
+		
+		session = factory.openSession();
+		transaction = session.beginTransaction();
+		transaction.begin();
+	
+		List<AlarmbearbeiterDTO> list = session.createCriteria(AlarmbearbeiterDTO.class).list();
+		assertEquals(1, list.size());
+		
+		AlarmbearbeiterDTO found1 = list.get(0);
+		
+		list = session.createCriteria(AlarmbearbeiterDTO.class).list();
+		assertEquals(1, list.size());
+		
+		AlarmbearbeiterDTO found2 = list.get(0);
+		
+		assertSame("Identität", found1, found2);
+		
+		transaction.commit();
+		session.close();
+	}
+	
+	@Test
+	public void testLoadAndSaveAlarmbearbeiterGruppen() throws Throwable {
+		AlarmbearbeiterDTO bearbeiterEins =new AlarmbearbeiterDTO();
+		bearbeiterEins.setActive(true);
+		bearbeiterEins.setConfirmCode("1234");
+		bearbeiterEins.setEmail("abc@testland.de");
+		bearbeiterEins.setMobilePhone("0123456789");
+		bearbeiterEins.setPhone("987654321");
+		bearbeiterEins.setPreferedAlarmType(PreferedAlarmType.EMAIL);
+		bearbeiterEins.setStatusCode("42");
+		bearbeiterEins.setUserName("ABC");
+		
+		AlarmbearbeiterDTO bearbeiterZwei =new AlarmbearbeiterDTO();
+		bearbeiterZwei.setActive(true);
+		bearbeiterZwei.setConfirmCode("4321");
+		bearbeiterZwei.setEmail("efg@testland.de");
+		bearbeiterZwei.setMobilePhone("987654321");
+		bearbeiterZwei.setPhone("123456789");
+		bearbeiterZwei.setPreferedAlarmType(PreferedAlarmType.VOICE);
+		bearbeiterZwei.setStatusCode("23");
+		bearbeiterZwei.setUserName("EFG");
+		
+		service.saveDTO(bearbeiterEins);
+		service.saveDTO(bearbeiterZwei);
+		
+		List<AlarmbearbeiterDTO> bearbeiterListe = new LinkedList<AlarmbearbeiterDTO>();
+		bearbeiterListe.add(bearbeiterEins);
+		bearbeiterListe.add(bearbeiterZwei);
+		
+		AlarmbearbeiterGruppenDTO gruppe = new AlarmbearbeiterGruppenDTO();
+		gruppe.setActive(true);
+		gruppe.setAlarmbearbeiter(bearbeiterListe);
+		gruppe.setMinGroupMember((short)2);
+		gruppe.setTimeOutSec(100);
+		gruppe.setUserGroupName("Testland-Group");
+		
+		service.saveDTO(gruppe);
+		
+		service.deleteDTO(gruppe);
+		service.deleteDTO(bearbeiterEins);
+		service.deleteDTO(bearbeiterZwei);
+	}
 
+	@Test
 	public void testLoadAndStoreFilterActions() throws Throwable {
 		TopicDTO topic = new TopicDTO();
 		topic.setTopicName("TEST");
@@ -194,8 +289,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 				.contains(neuerBearbeiter));
 		for (AlarmbearbeiterDTO alarmbearbeiterDTO : loadedList) {
 			// Keine Benutzer mit altem Namen vorhanden.
-			// assertFalse("Hans Otto Dietmar Struntz".equals(alarmbearbeiterDTO
-			// .getUserName()));
+			 assertFalse("Hans Otto Dietmar Struntz".equals(alarmbearbeiterDTO
+			 .getUserName()));
 		}
 
 		// loeschen
@@ -430,14 +525,14 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		Collection<FilterDTO> alleFilter = entireConfiguration.gibAlleFilter();
 		for (FilterDTO filterDTO : alleFilter) {
 			if (filterDTO.getName().equals("Test Filter für JCFFT")) {
-				service.deleteFilterDTO(filterDTO);
+				service.deleteDTO(filterDTO);
 			}
 			// assertFalse("noch nicht enthalten", filterDTO.getName().equals(
 			// "Test Filter für JCFFT"));
 		}
 
 		// Save
-		service.saveFilterDTO(filter);
+		service.saveDTO(filter);
 
 		// Pruefen dass Filter jetzt da ist.
 		entireConfiguration = service.getEntireConfiguration();
@@ -457,7 +552,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		operands2.add(leftCondition);
 
 		orCondition.setOperands(operands2);
-		service.saveFilterDTO(filter);
+		service.saveDTO(filter);
 
 		// Filter finden
 		entireConfiguration = service.getEntireConfiguration();
@@ -551,7 +646,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		}
 
 		// Save
-		service.saveFilterDTO(filter);
+		service.saveDTO(filter);
 
 		// Pruefen dass Filter jetzt da ist.
 		entireConfiguration = service.getEntireConfiguration();
@@ -571,7 +666,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		operands2.add(leftCondition);
 
 		orCondition.setOperands(operands2);
-		service.saveFilterDTO(filter);
+		service.saveDTO(filter);
 
 		// Filter finden
 		entireConfiguration = service.getEntireConfiguration();

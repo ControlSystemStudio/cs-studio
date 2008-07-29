@@ -111,22 +111,6 @@ public interface LocalStoreConfigurationService {
 			throws StorageError, StorageException,
 			InconsistentConfigurationException;
 
-	public AlarmbearbeiterGruppenDTO saveAlarmbearbeiterGruppenDTO(
-			AlarmbearbeiterGruppenDTO alarmBearbeiterGruppenDTO)
-			throws InconsistentConfigurationException;
-
-	public FilterDTO saveFilterDTO(FilterDTO dto) throws StorageError,
-			StorageException, InconsistentConfigurationException;
-
-	public void deleteAlarmbearbeiterGruppenDTO(AlarmbearbeiterGruppenDTO dto)
-			throws StorageError, StorageException,
-			InconsistentConfigurationException;
-
-	public void deleteFilterDTO(FilterDTO dto)
-			throws InconsistentConfigurationException, StorageError,
-			StorageException;
-
-
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden
 	 * die SYN-Tabellen geschrieben.

@@ -18,10 +18,13 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.filt
 @DiscriminatorColumn(name="IFILTERACTIONTYPEREF", discriminatorType=DiscriminatorType.INTEGER)
 public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO {
 
-	@SuppressWarnings("unused")
 	@Id
 	@Column(name="IFILTERACTIONID", nullable=false)
 	private int iFilterActionID;
+	
+	public int getIFilterActionID() {
+		return iFilterActionID;
+	}
 	
 	/**
 	 * Entweder TOPIC, Alarmbearbeiter, AlarmbearbeiterGruppe

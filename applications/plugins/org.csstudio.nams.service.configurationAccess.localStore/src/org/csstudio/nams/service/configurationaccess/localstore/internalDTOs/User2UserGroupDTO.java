@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 
 /**
@@ -21,6 +23,15 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
 @Table(name = "AMS_USERGROUP_USER")
 public class User2UserGroupDTO implements NewAMSConfigurationElementDTO {
 
+	public User2UserGroupDTO() {
+	}
+	
+	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group, AlarmbearbeiterDTO user) {
+		super();
+		this.user2UserGroupPK = new User2UserGroupDTO_PK(group.getUserGroupId(), user.getUserId());
+	}
+
+	
 	@EmbeddedId
 	private User2UserGroupDTO_PK user2UserGroupPK;
 
@@ -83,6 +94,7 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO {
 		return user2UserGroupPK;
 	}
 
+	@Deprecated
 	public void setUser2UserGroupPK(User2UserGroupDTO_PK user2UserGroupPK) {
 		this.user2UserGroupPK = user2UserGroupPK;
 	}
@@ -136,4 +148,5 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO {
 		return false;
 	}
 
+	
 }

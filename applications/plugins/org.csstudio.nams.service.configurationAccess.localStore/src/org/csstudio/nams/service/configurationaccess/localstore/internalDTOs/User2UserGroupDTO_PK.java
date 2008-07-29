@@ -9,6 +9,15 @@ import javax.persistence.Embeddable;
 public class User2UserGroupDTO_PK implements Serializable{
 	private static final long serialVersionUID = 5698295964009594216L;
 
+	public User2UserGroupDTO_PK() {
+	}
+
+	public User2UserGroupDTO_PK(int userGroupRef, int userRef) {
+		super();
+		iUserGroupRef = userGroupRef;
+		iUserRef = userRef;
+	}
+	
 	@Column(name="iUserGroupRef")
 	private int iUserGroupRef;
 	
@@ -55,4 +64,6 @@ public class User2UserGroupDTO_PK implements Serializable{
 			return false;
 		return true;
 	}
+
+	
 }

@@ -239,20 +239,20 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return values.toArray(new AlarmbearbeiterGruppenBean[values.size()]);
 	}
 
-	AlarmbearbeiterGruppenBean DTO2Bean(AlarmbearbeiterGruppenDTO dto) {
+	AlarmbearbeiterGruppenBean DTO2Bean(AlarmbearbeiterGruppenDTO gruppe) {
 
 		AlarmbearbeiterGruppenBean bean = new AlarmbearbeiterGruppenBean();
-		bean.setActive(dto.isActive());
-		bean.setGroupID(dto.getUserGroupId());
-		bean.setMinGroupMember(dto.getMinGroupMember());
-		bean.setName(dto.getUserGroupName());
-		bean.setTimeOutSec(dto.getTimeOutSec());
-		bean.setRubrikName(getRubrikNameForId(dto.getGroupRef())); // GUI-Group
+		bean.setActive(gruppe.isActive());
+		bean.setGroupID(gruppe.getUserGroupId());
+		bean.setMinGroupMember(gruppe.getMinGroupMember());
+		bean.setName(gruppe.getUserGroupName());
+		bean.setTimeOutSec(gruppe.getTimeOutSec());
+		bean.setRubrikName(getRubrikNameForId(gruppe.getGroupRef())); // GUI-Group
 		// = Rubrik
 
 		List<User2GroupBean> list = new LinkedList<User2GroupBean>();
 		final Map<User2GroupBean, User2UserGroupDTO> beanDTOMap = new HashMap<User2GroupBean, User2UserGroupDTO>();
-		for (User2UserGroupDTO map : dto.gibZugehoerigeAlarmbearbeiter()) {
+		for (User2UserGroupDTO map : gruppe.gibZugehoerigeAlarmbearbeiterMapping()) {
 			User2GroupBean bean2 = DTO2Bean(map, bean);
 			list.add(bean2);
 			beanDTOMap.put(bean2, map);
@@ -591,7 +591,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setGroupRef(getRubrikIDForName(bean.getRubrikName(),
 				RubrikTypeEnum.USER_GROUP));
 
-		List<User2UserGroupDTO> list = new LinkedList<User2UserGroupDTO>();
+		Map<Integer, AlarmbearbeiterDTO> userDtos = new HashMap<Integer, AlarmbearbeiterDTO>();
+		for (AlarmbearbeiterDTO userDto : entireConfiguration.gibAlleAlarmbearbeiter()) {
+			userDtos.put(userDto.getUserId(), userDto);
+		}
+		
+		List<AlarmbearbeiterDTO> list = new LinkedList<AlarmbearbeiterDTO>();
 		List<User2GroupBean> users = bean.getUsers();
 		int positionCount = 0;
 		for (User2GroupBean bean2 : users) {
@@ -601,15 +606,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			mapDTO.setLastchange(bean2.getLastChange().getTime());
 			mapDTO.setPosition(positionCount);
 			positionCount++;
-			list.add(mapDTO);
+			list.add(userDtos.get(mapDTO.getUser2UserGroupPK().getIUserRef()));
 		}
 		dto.setAlarmbearbeiter(list);
 
 		try {
-			dto = configurationService.saveAlarmbearbeiterGruppenDTO(dto);
-		} catch (InconsistentConfigurationException e) {
+			configurationService.saveDTO(dto);
+		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.logFatalMessage(this, "failed to save group", e);
 		}
 		loadConfiguration();
 		AlarmbearbeiterGruppenBean resultBean = alarmbearbeitergruppenBeans
@@ -682,7 +687,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		dto.setIGroupRef(getRubrikIDForName(bean.getRubrikName(),
 				RubrikTypeEnum.FILTER));
 
-		dto = configurationService.saveFilterDTO(dto);
+		configurationService.saveDTO(dto);
 		loadConfiguration();
 		FilterBean resultBean = filterBeans
 				.get(new Integer(dto.getIFilterID()));
@@ -1096,7 +1101,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			}
 		}
 		if (dto != null) {
-			configurationService.deleteAlarmbearbeiterGruppenDTO(dto);
+			configurationService.deleteDTO(dto);
 			alarmbearbeitergruppenBeans.remove(dto.getUserGroupId());
 			logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() "
@@ -1135,7 +1140,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 		if (dto != null) {
 			try {
-				configurationService.deleteFilterDTO(dto);
+				configurationService.deleteDTO(dto);
 			} catch (StorageError e) {
 				throw new InconsistentConfigurationException(
 						"failed to deleteFilter()", e);

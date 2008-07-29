@@ -1,9 +1,12 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -35,7 +41,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Use
  */
 @Entity
 @Table(name = "AMS_UserGroup")
-public class AlarmbearbeiterGruppenDTO implements NewAMSConfigurationElementDTO {
+public class AlarmbearbeiterGruppenDTO implements NewAMSConfigurationElementDTO, HasManuallyJoinedElements {
 
 	// HAT funktuioniert, ist Vorlage für auto-mapping.
 	// @OneToMany
@@ -76,7 +82,10 @@ public class AlarmbearbeiterGruppenDTO implements NewAMSConfigurationElementDTO 
 	 * Dieses Feld wird nachträglich manuelle gestzt!! Um Object-Identität zu gewährleisten.
 	 */
 	@Transient
-	private Set<User2UserGroupDTO> alarmbearbeiterDieserGruppe = new HashSet<User2UserGroupDTO>();
+	private List<AlarmbearbeiterDTO> alarmbearbeiterDieserGruppe = new LinkedList<AlarmbearbeiterDTO>();
+
+	@Transient
+	private Map<AlarmbearbeiterDTO, Boolean> alarmbearbeiterAktiv = new HashMap<AlarmbearbeiterDTO, Boolean>();
 
 	/**
 	 * @return the userGroupId
@@ -247,15 +256,27 @@ public class AlarmbearbeiterGruppenDTO implements NewAMSConfigurationElementDTO 
 	/**
 	 * Liefert alle zugehörigen Alarmbearbeiter.
 	 */
-	public Set<User2UserGroupDTO> gibZugehoerigeAlarmbearbeiter() {
-		return Collections.unmodifiableSet(this.alarmbearbeiterDieserGruppe);
+	public List<AlarmbearbeiterDTO> gibZugehoerigeAlarmbearbeiter() {
+		return Collections.unmodifiableList(this.alarmbearbeiterDieserGruppe);
 	}
 
-    public void alarmbearbeiterZuordnen(User2UserGroupDTO map) {
+	
+	
+	public boolean isUserActiveInGroup(AlarmbearbeiterDTO user) {
+		Contract.require(gibZugehoerigeAlarmbearbeiter().contains(user), "gibZugehoerigeAlarmbearbeiter().contains(user)");
+		return alarmbearbeiterAktiv.get(user);
+	}
+	
+    public void alarmbearbeiterZuordnen(AlarmbearbeiterDTO map) {
+    	alarmbearbeiterAktiv.put(map, map.isActive());
     	alarmbearbeiterDieserGruppe.add(map);
 	}
-    public void setAlarmbearbeiter(List<User2UserGroupDTO> list){
-    	alarmbearbeiterDieserGruppe = new HashSet<User2UserGroupDTO>(list);
+    public void setAlarmbearbeiter(List<AlarmbearbeiterDTO> list){
+    	alarmbearbeiterDieserGruppe = new LinkedList<AlarmbearbeiterDTO>(list);
+    	alarmbearbeiterAktiv.clear();
+    	for (AlarmbearbeiterDTO alarmbearbeiterDTO : alarmbearbeiterDieserGruppe) {
+			alarmbearbeiterAktiv.put(alarmbearbeiterDTO, alarmbearbeiterDTO.isActive());
+		}
     }
 
 	public String getUniqueHumanReadableName() {
@@ -264,5 +285,95 @@ public class AlarmbearbeiterGruppenDTO implements NewAMSConfigurationElementDTO 
 
 	public boolean isInCategory(int categoryDBId) {
 		return false;
+	}
+
+	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+		// TODO Auto-generated method stub
+//		final Collection<User2UserGroupDTO> user2GroupMappings = loadAll(
+//				session, User2UserGroupDTO.class);
+//
+//		for (final User2UserGroupDTO a : user2GroupMappings) {
+//			if (a.getUser2UserGroupPK().getIUserGroupRef() == dto
+//					.getUserGroupId()) {
+//				deleteDTONoTransaction(session, a);
+//			}
+//		}
+//		deleteDTONoTransaction(session, dto);
+		
+	}
+
+	public void loadJoinData(Mapper mapper) throws Throwable {
+		List<User2UserGroupDTO> joins = mapper.loadAll(User2UserGroupDTO.class, true);
+		Collections.sort(joins, new Comparator<User2UserGroupDTO>() {
+			public int compare(User2UserGroupDTO joinLeft, User2UserGroupDTO joinRight) {
+				return joinRight.getPosition() - joinLeft.getPosition();
+			}
+		});
+		
+		List<AlarmbearbeiterDTO> alleAlarmbearbeiter = mapper.loadAll(AlarmbearbeiterDTO.class, true);
+		
+		Map<Integer, AlarmbearbeiterDTO> alarmbearbeiterNachSchluessel = new HashMap<Integer, AlarmbearbeiterDTO>();
+		for (AlarmbearbeiterDTO alarmbearbeiter : alleAlarmbearbeiter) {
+			alarmbearbeiterNachSchluessel.put(alarmbearbeiter.getUserId(), alarmbearbeiter);
+		}
+		
+		alarmbearbeiterDieserGruppe.clear();
+		
+		for (User2UserGroupDTO join : joins) {
+			if( join.getUser2UserGroupPK().getIUserGroupRef() == this.getUserGroupId() ) {
+				int userRef = join.getUser2UserGroupPK().getIUserRef();
+				AlarmbearbeiterDTO alarmbearbeiter = alarmbearbeiterNachSchluessel.get(userRef);
+				assert alarmbearbeiter != null : "Alarmbearbeiter für ID " + userRef + " exisitiert";
+				
+				alarmbearbeiterDieserGruppe.add(alarmbearbeiter);
+			}
+		}
+	}
+
+	public void storeJoinLinkData(Mapper mapper) throws Throwable {
+		final Collection<User2UserGroupDTO> user2GroupMappings = mapper.loadAll(User2UserGroupDTO.class, true);
+
+		for (final User2UserGroupDTO a : user2GroupMappings) {
+			if (a.getUser2UserGroupPK().getIUserGroupRef() == this
+					.getUserGroupId()) {
+				mapper.delete(a);
+			}
+		}
+		// for all used FC
+		// get the mappingDTO, if no DTO exists, create one
+		final List<AlarmbearbeiterDTO> zugehoerigeAlarmbearbeiter = this
+				.gibZugehoerigeAlarmbearbeiter();
+
+		// save the used Mappings
+		for (int position = 0; position < zugehoerigeAlarmbearbeiter.size(); position++) {
+			AlarmbearbeiterDTO user = zugehoerigeAlarmbearbeiter.get(position);
+			
+			User2UserGroupDTO user2userGroup = new User2UserGroupDTO(this, user);
+			user2userGroup.setActive(alarmbearbeiterAktiv.get(user));
+			user2userGroup.setActiveReason("TODO!"); // FIXME Das hier muss noch gemacht werden!
+			user2userGroup.setLastchange(0); // FIXME Das hier muss noch gemacht werden!
+			user2userGroup.setPosition(position);
+			mapper.save(user2userGroup);
+		}
+	}
+
+	@Deprecated
+	public Collection<User2UserGroupDTO> gibZugehoerigeAlarmbearbeiterMapping() {
+		final List<AlarmbearbeiterDTO> zugehoerigeAlarmbearbeiter = this
+		.gibZugehoerigeAlarmbearbeiter();
+		
+		final Collection<User2UserGroupDTO> result = new LinkedList<User2UserGroupDTO>();
+		
+		for (int position = 0; position < zugehoerigeAlarmbearbeiter.size(); position++) {
+			AlarmbearbeiterDTO user = zugehoerigeAlarmbearbeiter.get(position);
+			
+			User2UserGroupDTO user2userGroup = new User2UserGroupDTO();
+			user2userGroup.setActive(alarmbearbeiterAktiv.get(user));
+			user2userGroup.setActiveReason("TODO!"); // FIXME Das hier muss noch gemacht werden!
+			user2userGroup.setLastchange(0); // FIXME Das hier muss noch gemacht werden!
+			user2userGroup.setPosition(position);
+			result.add(user2userGroup);
+		}
+		return result;
 	}
 }

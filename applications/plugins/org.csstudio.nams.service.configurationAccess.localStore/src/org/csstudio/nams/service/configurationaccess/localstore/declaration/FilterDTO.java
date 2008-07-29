@@ -1,9 +1,13 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterAction2FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
@@ -56,6 +61,9 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 	@Transient
 	private List<FilterConditionDTO> filterConditons = new LinkedList<FilterConditionDTO>();
+
+	@Transient
+	private List<FilterActionDTO> filterActions = new LinkedList<FilterActionDTO>();
 
 	public int getIFilterID() {
 		return iFilterID;
@@ -258,7 +266,49 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		// Dieses wird außerhalb im Service gemacht!
+		List<FilterConditionDTO> alleFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
+		List<FilterConditionsToFilterDTO> joins = mapper.loadAll(FilterConditionsToFilterDTO.class, true);
+		
+		List<FilterActionDTO> alleFilterActions = mapper.loadAll(FilterActionDTO.class, true);
+		List<FilterAction2FilterDTO> actionJoins = mapper.loadAll(FilterAction2FilterDTO.class, true);
+		Collections.sort(actionJoins, new Comparator<FilterAction2FilterDTO>() {
+			public int compare(FilterAction2FilterDTO o1,
+					FilterAction2FilterDTO o2) {
+				return o2.getIPos()-o1.getIPos();
+			}
+		});
+		
+		Map<Integer, FilterConditionDTO> filterConditionNachSchluessel = new HashMap<Integer, FilterConditionDTO>();
+		for (FilterConditionDTO filterCondition : alleFilterConditions) {
+			filterConditionNachSchluessel.put(filterCondition.getIFilterConditionID(), filterCondition);
+		}
+		Map<Integer, FilterActionDTO> filterActionMap = new HashMap<Integer, FilterActionDTO>();
+		for (FilterActionDTO filterAction : alleFilterActions) {
+			filterActionMap.put(filterAction.getIFilterActionID(), filterAction);
+		}
+		
+		
+		filterConditons.clear();
+		
+		for (FilterConditionsToFilterDTO join : joins) {
+			if( join.getIFilterRef() == this.getIFilterID() ) {
+				FilterConditionDTO gefunden = filterConditionNachSchluessel.get(join.getIFilterConditionRef());
+				assert gefunden != null : "Es existiert eine FC mit der ID " + join.getIFilterConditionRef();
+				
+				filterConditons.add(gefunden);
+			}
+		}
+		
+		filterActions.clear();
+		
+		for (FilterAction2FilterDTO actionJoin : actionJoins) {
+			if ( actionJoin.getId().getIFilterRef() == this.getIFilterID() ) {
+				FilterActionDTO foundAction = filterActionMap.get(actionJoin.getId().getIFilterActionRef());
+				assert foundAction != null : "Es existiert eine Action mit der ID " + actionJoin.getId().getIFilterActionRef();
+				
+				filterActions.add(foundAction);
+			}
+		}
 	}
 
 }
