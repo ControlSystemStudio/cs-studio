@@ -108,11 +108,19 @@ public class Waveform extends Widget {
      * @throws WrongADLFormatException 
      */
     private void yAxis(ADLWidget waveformPart) throws WrongADLFormatException {
-        int idInt = Integer.parseInt(waveformPart.getType().substring(waveformPart.getType().indexOf('y'),waveformPart.getType().indexOf('_')));
         String id ="";
-        if(idInt>1){
-            id = Integer.toString(idInt-1);
+        int start = waveformPart.getType().indexOf('y');
+        if(start >=0){
+            int stop = waveformPart.getType().indexOf('_', start);
+            if(stop>0){
+                int idInt = Integer.parseInt(waveformPart.getType().substring(start+1,stop));
+                
+                if(idInt>1){
+                    id = Integer.toString(idInt-1);
+                }
+            }
         }
+
         
         for (String waveform : waveformPart.getBody()){
             String[] row = waveform.split("=");
@@ -204,10 +212,17 @@ public class Waveform extends Widget {
      * @throws WrongADLFormatException 
      */
     private void trace(ADLWidget waveformPart) throws WrongADLFormatException {
-        int idInt = Integer.parseInt(waveformPart.getType().substring(waveformPart.getType().indexOf('y'),waveformPart.getType().indexOf('_')));
         String id ="";
-        if(idInt>1){
-            id = Integer.toString(idInt-1);
+        int start = waveformPart.getType().indexOf('[');
+        if(start >=0){
+            int stop = waveformPart.getType().indexOf(']', start);
+            if(stop>0){
+                int idInt = Integer.parseInt(waveformPart.getType().substring(start+1,stop));
+                
+                if(idInt>1){
+                    id = Integer.toString(idInt-1);
+                }
+            }
         }
         for (String waveform : waveformPart.getBody()){
             String[] row = waveform.split("=");
