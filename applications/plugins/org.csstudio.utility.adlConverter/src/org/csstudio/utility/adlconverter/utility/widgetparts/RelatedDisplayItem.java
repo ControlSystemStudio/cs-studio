@@ -31,7 +31,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
-import org.csstudio.sds.model.properties.actions.OpenDisplayWidgetAction;
+import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -121,11 +121,11 @@ public class RelatedDisplayItem extends WidgetPart{
         }
         
         // new Open Shell Action
-        OpenDisplayWidgetAction action = (OpenDisplayWidgetAction) ActionType.OPEN_SHELL
+        OpenDisplayActionModel action = (OpenDisplayActionModel) ActionType.OPEN_SHELL
         .getActionFactory().createWidgetAction();
         
         if(_label!=null){
-            action.getProperty(OpenDisplayWidgetAction.PROP_DESCRIPTION)
+            action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION)
             .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
@@ -133,7 +133,7 @@ public class RelatedDisplayItem extends WidgetPart{
         if(_name!=null){
             IPath path = new Path(_path);
             path = path.append(_name);
-            action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
+            action.getProperty(OpenDisplayActionModel.PROP_RESOURCE)
             .setPropertyValue(path);
         }
         
@@ -151,7 +151,7 @@ public class RelatedDisplayItem extends WidgetPart{
                 }
             }
             
-            action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
+            action.getProperty(OpenDisplayActionModel.PROP_ALIASES)
             .setPropertyValue(map);
         }
         actionData.addAction(action);

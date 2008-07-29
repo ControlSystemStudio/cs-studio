@@ -28,7 +28,7 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
-import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
+import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -72,16 +72,16 @@ public class ActionButton extends Widget {
             }else if(row[0].equals("press_msg")){ //$NON-NLS-1$
 ////            <property type="sds.double" id="click_value" value="0.0" /> 
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
+                CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
                 .getActionFactory().createWidgetAction();
-                action.getProperty(CommitValueWidgetAction.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 pressIndex = actionIndex++;
             }else if(row[0].equals("release_msg")){ //$NON-NLS-1$
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
+                CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
                 .getActionFactory().createWidgetAction();
-                action.getProperty(CommitValueWidgetAction.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 releasIndex = actionIndex++;
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$

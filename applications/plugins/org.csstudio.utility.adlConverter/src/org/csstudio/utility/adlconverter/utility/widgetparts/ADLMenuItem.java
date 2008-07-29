@@ -31,8 +31,8 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
-import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
-import org.csstudio.sds.model.properties.actions.OpenDisplayWidgetAction;
+import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
+import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -127,11 +127,11 @@ public class ADLMenuItem extends WidgetPart{
             }
             
             // new Open Shell Action
-            OpenDisplayWidgetAction action = (OpenDisplayWidgetAction) ActionType.OPEN_SHELL
+            OpenDisplayActionModel action = (OpenDisplayActionModel) ActionType.OPEN_SHELL
             .getActionFactory().createWidgetAction();
             
             if(_label!=null){
-                action.getProperty(OpenDisplayWidgetAction.PROP_DESCRIPTION)
+                action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION)
                 .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
@@ -139,7 +139,7 @@ public class ADLMenuItem extends WidgetPart{
             if(_path!=null){
                 IPath path = new Path(_path);
                 path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
+                action.getProperty(OpenDisplayActionModel.PROP_RESOURCE)
                 .setPropertyValue(path);//TODO: set the correct Path 
                 actionData.addAction(action);
             }
@@ -159,7 +159,7 @@ public class ADLMenuItem extends WidgetPart{
                     }
                 }
                 
-                action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
+                action.getProperty(OpenDisplayActionModel.PROP_ALIASES)
                 .setPropertyValue(map);
             }
             actionData.addAction(action);
@@ -169,14 +169,14 @@ public class ADLMenuItem extends WidgetPart{
             if(actionData==null){
                 actionData = new ActionData();
             }
-            CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
+            CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
             .getActionFactory().createWidgetAction();
 
-            action.getProperty(CommitValueWidgetAction.PROP_VALUE)
+            action.getProperty(CommitValueActionModel.PROP_VALUE)
             .setPropertyValue(new Path(_label.replaceAll("\"",""))); //$NON-NLS-1$ //$NON-NLS-2$
             actionData.addAction(action);
 
-            action.getProperty(CommitValueWidgetAction.PROP_DESCRIPTION)
+            action.getProperty(CommitValueActionModel.PROP_DESCRIPTION)
             .setPropertyValue(new Path(_label.replaceAll("\"",""))); //$NON-NLS-1$ //$NON-NLS-2$
             actionData.addAction(action);
             _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
