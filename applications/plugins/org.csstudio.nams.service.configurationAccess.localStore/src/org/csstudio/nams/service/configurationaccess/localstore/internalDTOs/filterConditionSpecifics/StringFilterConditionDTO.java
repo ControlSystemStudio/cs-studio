@@ -32,10 +32,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 public class StringFilterConditionDTO extends FilterConditionDTO {
 
 	
-	
-	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
-	private int iFilterConditionRef;
-
 	@Column(name = "cKeyValue", length = 16)
 	private String keyValue;
 
@@ -46,25 +42,9 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	private String compValue;
 
 	/**
-	 * @return the filterConditionRef
-	 */
-	@SuppressWarnings("unused")
-	private int getIFilterConditionRef() {
-		return iFilterConditionRef;
-	}
-
-	/**
-	 * @param filterConditionRef
-	 *            the filterConditionRef to set
-	 */
-	@SuppressWarnings("unused")
-	private void setIFilterConditionRef(int filterConditionRef) {
-		this.iFilterConditionRef = filterConditionRef;
-	}
-
-	/**
 	 * @return the keyValue
 	 */
+	@SuppressWarnings("unused")
 	private String getKeyValue() {
 		return keyValue;
 	}
@@ -150,7 +130,6 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 		int result = super.hashCode();
 		result = prime * result
 				+ ((compValue == null) ? 0 : compValue.hashCode());
-		result = prime * result + iFilterConditionRef;
 		result = prime * result
 				+ ((keyValue == null) ? 0 : keyValue.hashCode());
 		result = prime * result + operator;
@@ -170,8 +149,6 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 			if (other.compValue != null)
 				return false;
 		} else if (!compValue.equals(other.compValue))
-			return false;
-		if (iFilterConditionRef != other.iFilterConditionRef)
 			return false;
 		if (keyValue == null) {
 			if (other.keyValue != null)

@@ -1,10 +1,11 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId_Test;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId_Test;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO_Test;
 
 public class ConfigurationaccessLocalStoreWithoutDBAllTestsSuite extends TestCase {
 
@@ -17,6 +18,8 @@ public class ConfigurationaccessLocalStoreWithoutDBAllTestsSuite extends TestCas
 		
 		suite.addTestSuite(LocalConfigurationStoreServiceActivator_Test.class);
 		suite.addTestSuite(TopicConfigurationId_Test.class);
+		
+		suite.addTestSuite(StringFilterConditionDTO_Test.class);
 		
 		//$JUnit-END$
 		return suite;

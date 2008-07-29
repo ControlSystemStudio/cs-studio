@@ -41,9 +41,6 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	@Transient 
 	private List<StringArrayFilterConditionCompareValuesDTO> compareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 	
-	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
-	private int filterConditionRef;
-
 	@Column(name = "cKeyValue", length = 16)
 	private String keyValue;
 
@@ -51,22 +48,6 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	private short operator;
 	
 	
-	/**
-	 * @return the filterConditionRef
-	 */
-	@SuppressWarnings("unused")
-	private int getFilterConditionRef() {
-		return filterConditionRef;
-	}
-
-	/**
-	 * @param filterConditionRef
-	 *            the filterConditionRef to set
-	 */
-	@SuppressWarnings("unused")
-	private void setFilterConditionRef(int filterConditionRef) {
-		this.filterConditionRef = filterConditionRef;
-	}
 
 	/**
 	 * @return the keyValue
@@ -128,8 +109,6 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 		final StringBuilder resultBuilder = new StringBuilder(super.toString());
 
 		resultBuilder.append(": ");
-		resultBuilder.append(this.getFilterConditionRef());
-		resultBuilder.append(" ");
 		resultBuilder.append(compareValues.toString());
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getKeyValue());
@@ -144,7 +123,6 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 		int result = 1;
 		result = prime * result
 				+ ((compareValues == null) ? 0 : compareValues.hashCode());
-		result = prime * result + filterConditionRef;
 		result = prime * result
 				+ ((keyValue == null) ? 0 : keyValue.hashCode());
 		result = prime * result + operator;
@@ -164,8 +142,6 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 			if (other.compareValues != null)
 				return false;
 		} else if (!compareValues.equals(other.compareValues))
-			return false;
-		if (filterConditionRef != other.filterConditionRef)
 			return false;
 		if (keyValue == null) {
 			if (other.keyValue != null)
@@ -193,8 +169,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	}
 
 	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		// TODO Auto-generated method stub
-		
+		// TODO CLEAN UP
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -171,34 +172,27 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		List<FilterConditionsToFilterDTO> list = mapper.loadAll(
+		List<FilterConditionDTO> alleFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
+		
+		List<FilterConditionsToFilterDTO> joins = mapper.loadAll(
 				FilterConditionsToFilterDTO.class, true);
-		for (FilterConditionsToFilterDTO fctf : list) {
+		
+		for (FilterConditionsToFilterDTO fctf : joins) {
 			if (fctf.getIFilterRef() == this.iFilterID) {
 				mapper.delete(fctf);
 			}
 		}
+		
 
-		Collection<FilterConditionDTO> toRemove = new HashSet<FilterConditionDTO>();
 		for (FilterConditionDTO condition : getFilterConditions()) {
-			if (condition instanceof JunctorConditionForFilterTreeDTO) {
-				if (condition instanceof HasManuallyJoinedElements) {
-					((HasManuallyJoinedElements) condition)
+			if (condition instanceof JunctorConditionForFilterTreeDTO || condition instanceof NegationConditionForFilterTreeDTO) {
+				FilterConditionDTO foundFC = findForId(condition.getIFilterConditionID(), alleFilterConditions);
+					((HasManuallyJoinedElements) foundFC)
 							.deleteJoinLinkData(mapper);
-				}
-				mapper.delete(condition);
-				toRemove.add(condition);
-			}
-			if (condition instanceof NegationConditionForFilterTreeDTO) {
-				if (condition instanceof HasManuallyJoinedElements) {
-					((HasManuallyJoinedElements) condition)
-							.deleteJoinLinkData(mapper);
-				}
-				mapper.delete(condition);
-				toRemove.add(condition);
+				
+				mapper.delete(foundFC);
 			}
 		}
-		this.filterConditons.removeAll(toRemove);
 	}
 	
 	private <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {

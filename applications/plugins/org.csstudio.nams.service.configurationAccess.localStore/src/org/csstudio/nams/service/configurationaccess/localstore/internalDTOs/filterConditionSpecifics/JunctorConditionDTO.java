@@ -33,9 +33,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Table(name = "AMS_FilterCond_Conj_Common")
 public class JunctorConditionDTO extends FilterConditionDTO implements HasManuallyJoinedElements {
 
-	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
-	private int iFilterConditionRef;
-
 	@Column(name = "iFirstFilterConditionRef")
 	private int firstFilterConditionRef;
 
@@ -50,23 +47,6 @@ public class JunctorConditionDTO extends FilterConditionDTO implements HasManual
 	private FilterConditionDTO firstFilterCondition;
 	@Transient
 	private FilterConditionDTO secondFilterCondition;
-
-	/**
-	 * @return the filterConditionRef
-	 */
-	@SuppressWarnings("unused")
-	private int getFilterConditionRef() {
-		return iFilterConditionRef;
-	}
-
-	/**
-	 * @param filterConditionRef
-	 *            the filterConditionRef to set
-	 */
-	@SuppressWarnings("unused")
-	private void setFilterConditionRef(int filterConditionRef) {
-		this.iFilterConditionRef = filterConditionRef;
-	}
 
 	public JunctorConditionType getJunctor() {
 		return JunctorConditionType.valueOf(operand);
@@ -90,7 +70,6 @@ public class JunctorConditionDTO extends FilterConditionDTO implements HasManual
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + iFilterConditionRef;
 		result = prime * result + operand;
 		return result;
 	}
@@ -104,22 +83,11 @@ public class JunctorConditionDTO extends FilterConditionDTO implements HasManual
 		if (getClass() != obj.getClass())
 			return false;
 		final JunctorConditionDTO other = (JunctorConditionDTO) obj;
-		if (iFilterConditionRef != other.iFilterConditionRef)
-			return false;
 		if (operand != other.operand)
 			return false;
 		return true;
 	}
 
-	@SuppressWarnings("unused")
-	private int getIFilterConditionRef() {
-		return iFilterConditionRef;
-	}
-
-	@SuppressWarnings("unused")
-	private void setIFilterConditionRef(int filterConditionRef) {
-		iFilterConditionRef = filterConditionRef;
-	}
 
 	@SuppressWarnings("unused")
 	public int getFirstFilterConditionRef() {

@@ -46,10 +46,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Jun
 public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		implements HasManuallyJoinedElements {
 
-	@SuppressWarnings("unused")
-	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
-	private int iFilterConditionRef;
-
 	@Column(name = "Operator", nullable = false)
 	private String operator;
 
@@ -186,62 +182,6 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 				mapper.delete(toRemove);
 			}
 		}
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		List<JunctorConditionForFilterTreeDTO> allJCFFT = mapper.loadAll(
-//				JunctorConditionForFilterTreeDTO.class, true);
-//		List<JunctorConditionForFilterTreeConditionJoinDTO> allJCFFTJoins = mapper.loadAll(
-//				JunctorConditionForFilterTreeConditionJoinDTO.class, true);
-//		List<NegationConditionForFilterTreeDTO> allNots = mapper.loadAll(
-//				NegationConditionForFilterTreeDTO.class, true);
-//
-//		List<JunctorConditionForFilterTreeDTO> ehemalsReferenziert = new LinkedList<JunctorConditionForFilterTreeDTO>();
-//		for (JunctorConditionForFilterTreeConditionJoinDTO join : allJCFFTJoins) {
-//			if( join.getJoinParentsDatabaseId() == this.getIFilterConditionID() ) {
-//				JunctorConditionForFilterTreeDTO found = findForId(join.getJoinedConditionsDatabaseId(), allJCFFT);
-//				ehemalsReferenziert.add(found);
-//			}
-//		}
-//		
-//		for (FilterConditionDTO operand : this.getOperands()) {
-//			findForId(operand.getIFilterConditionID(), fcs)
-//			if (operand instanceof JunctorConditionForFilterTreeDTO && operand != this) {
-//				JunctorConditionForFilterTreeDTO existingJCFFT = findForId(operand.getIFilterConditionID(), allJCFFT);
-//				
-//				if( existingJCFFT != null ) {
-//					existingJCFFT.storeJoinLinkData(mapper);
-//					ehemalsReferenziert.remove(existingJCFFT);
-//				} else {
-//					mapper.save(operand);
-//					JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(this, operand);
-//					mapper.save(newJoin);
-//				}
-//				
-//			}
-//			if (operand instanceof NegationConditionForFilterTreeDTO) {
-//				NegationConditionForFilterTreeDTO existingNot = findForId(operand.getIFilterConditionID(), allNots);
-//				
-//				if( existingNot != null ) {
-//					existingNot.storeJoinLinkData(mapper);
-//				} else {
-//					mapper.save(operand);
-//					JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(this, operand);
-//					mapper.save(newJoin);
-//				}
-//			}
-//		}
-//
-//		for (JunctorConditionForFilterTreeDTO toBeDeleted : ehemalsReferenziert) {
-//			mapper.delete(toBeDeleted);
-//		}
-
 	}
 
 	/**
@@ -324,7 +264,6 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + iFilterConditionRef;
 		result = prime * result + Arrays.hashCode(operands);
 		result = prime * result
 				+ ((operator == null) ? 0 : operator.hashCode());
@@ -340,8 +279,6 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		if (!(obj instanceof JunctorConditionForFilterTreeDTO))
 			return false;
 		final JunctorConditionForFilterTreeDTO other = (JunctorConditionForFilterTreeDTO) obj;
-		if (iFilterConditionRef != other.iFilterConditionRef)
-			return false;
 		if (!Arrays.equals(operands, other.operands))
 			return false;
 		if (operator == null) {

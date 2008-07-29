@@ -354,7 +354,8 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 				.gibAlleFilterConditions().contains(neueFilterCondition));
 	}
 
-	public void untestReadAndWriteJunctorConditionForFilterTree()
+	 @Test
+	public void testReadAndWriteJunctorConditionForFilterTree()
 			throws Throwable {
 		StringFilterConditionDTO leftCondition = new StringFilterConditionDTO();
 		leftCondition.setCName("Test-LeftCond");
@@ -493,13 +494,13 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		rightCondition.setKeyValue(MessageKeyEnum.DESTINATION);
 		rightCondition.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
 
-		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
-		operands.add(leftCondition);
-		operands.add(rightCondition);
-
 		// Speicher die FC nicht(!) die Tree-FC (andCondition)
 		service.saveDTO(leftCondition);
 		service.saveDTO(rightCondition);
+
+		Set<FilterConditionDTO> operands = new HashSet<FilterConditionDTO>();
+		operands.add(leftCondition);
+		operands.add(rightCondition);
 
 		JunctorConditionForFilterTreeDTO orCondition = new JunctorConditionForFilterTreeDTO();
 		orCondition.setCName("TEST-Con JCFFT");

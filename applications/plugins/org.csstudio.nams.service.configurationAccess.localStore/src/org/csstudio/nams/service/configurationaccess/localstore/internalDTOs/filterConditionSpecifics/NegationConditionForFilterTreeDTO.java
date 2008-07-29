@@ -33,10 +33,6 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		implements HasManuallyJoinedElements {
 
 	@SuppressWarnings("unused")
-	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
-	private int iFilterConditionRef;
-
-	@SuppressWarnings("unused")
 	@Column(name = "iNegatedFCRef", nullable = false)
 	private int iNegatedFCRef;
 
@@ -112,7 +108,6 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + iFilterConditionRef;
 		result = prime * result + iNegatedFCRef;
 		result = prime
 				* result
@@ -130,8 +125,6 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		if (!(obj instanceof NegationConditionForFilterTreeDTO))
 			return false;
 		final NegationConditionForFilterTreeDTO other = (NegationConditionForFilterTreeDTO) obj;
-		if (iFilterConditionRef != other.iFilterConditionRef)
-			return false;
 		if (iNegatedFCRef != other.iNegatedFCRef)
 			return false;
 		if (negatedFilterCondition == null) {
@@ -145,7 +138,6 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + ": iFilterConditionRef="
-				+ this.iFilterConditionRef + ", iNegatedFCRef="
 				+ this.iNegatedFCRef + ", assigned FC by mapping: "
 				+ this.negatedFilterCondition;
 	}

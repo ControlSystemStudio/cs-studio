@@ -33,11 +33,6 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 @Table(name = "AMS_FilterCondition_PV")
 public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 
-	
-	
-	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
-	private int iFilterConditionRef;
-
 	@Column(name = "cPvChannelName")
 	private String cPvChannelName;
 	
@@ -83,16 +78,6 @@ public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 	}
 	
 	@SuppressWarnings("unused")
-	private int getIFilterConditionRef() {
-		return iFilterConditionRef;
-	}
-	
-	@SuppressWarnings("unused")
-	private void setIFilterConditionRef(int filterConditionRef) {
-		iFilterConditionRef = filterConditionRef;
-	}
-
-	@SuppressWarnings("unused")
 	public String getCPvChannelName() {
 		return cPvChannelName;
 	}
@@ -120,4 +105,45 @@ public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 	private void setSOperatorId(short operatorId) {
 		sOperatorId = operatorId;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((cCompValue == null) ? 0 : cCompValue.hashCode());
+		result = prime * result
+				+ ((cPvChannelName == null) ? 0 : cPvChannelName.hashCode());
+		result = prime * result + sOperatorId;
+		result = prime * result + sSuggestedPvTypeId;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof ProcessVariableFilterConditionDTO))
+			return false;
+		final ProcessVariableFilterConditionDTO other = (ProcessVariableFilterConditionDTO) obj;
+		if (cCompValue == null) {
+			if (other.cCompValue != null)
+				return false;
+		} else if (!cCompValue.equals(other.cCompValue))
+			return false;
+		if (cPvChannelName == null) {
+			if (other.cPvChannelName != null)
+				return false;
+		} else if (!cPvChannelName.equals(other.cPvChannelName))
+			return false;
+		if (sOperatorId != other.sOperatorId)
+			return false;
+		if (sSuggestedPvTypeId != other.sSuggestedPvTypeId)
+			return false;
+		return true;
+	}
+	
+	
 }
