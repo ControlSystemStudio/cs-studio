@@ -11,6 +11,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 
@@ -32,7 +33,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @Table(name = "AMS_FilterCond_ArrStr")
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
-public class StringArrayFilterConditionDTO extends FilterConditionDTO{
+public class StringArrayFilterConditionDTO extends FilterConditionDTO implements HasManuallyJoinedElements {
 
 	/**
 	 * Die Compare-Values. Werden manuell zugeordnet.
@@ -189,6 +190,28 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 			list.add(value.getCompValue());
 		}
 		return list;
+	}
+
+	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void loadJoinData(Mapper mapper) throws Throwable {
+		List<StringArrayFilterConditionCompareValuesDTO> alleVergleichswerte = mapper.loadAll(StringArrayFilterConditionCompareValuesDTO.class, true);
+		
+		this.compareValues.clear();
+		
+		for (StringArrayFilterConditionCompareValuesDTO vergleichswert : alleVergleichswerte) {
+			if( vergleichswert.getFilterConditionRef() == this.getIFilterConditionID() ) {
+				this.compareValues.add(vergleichswert);
+			}
+		}
+	}
+
+	public void storeJoinLinkData(Mapper mapper) throws Throwable {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

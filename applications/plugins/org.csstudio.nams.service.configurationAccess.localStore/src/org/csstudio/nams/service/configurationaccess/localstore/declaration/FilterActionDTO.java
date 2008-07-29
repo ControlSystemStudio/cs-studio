@@ -11,12 +11,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 
 @Entity
 @Table(name = "AMS_FILTERACTION")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="IFILTERACTIONTYPEREF", discriminatorType=DiscriminatorType.INTEGER)
-public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO {
+public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO, HasManuallyJoinedElements {
 
 	@Id
 	@Column(name="IFILTERACTIONID", nullable=false)

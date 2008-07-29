@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -34,22 +35,19 @@ public class Configuration {
 			Collection<TopicDTO> alleAlarmtopics,
 			Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
 			Collection<FilterDTO> allFilters,
-			Collection<FilterConditionsToFilterDTO> allFilterConditionMappings,
 			Collection<FilterConditionDTO> allFilterConditions,
 			Collection<RubrikDTO> alleRubriken,
-			List<User2UserGroupDTO> alleUser2UserGroupMappings,
-			Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues, 
 			Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO) {
 		super();
 		this.alleAlarmbarbeiter = alleAlarmbarbeiter;
 		this.alleAlarmtopics = alleAlarmtopics;
 		this.alleAlarmbearbeiterGruppen = alleAlarmbearbeiterGruppen;
 		this.allFilters = allFilters;
-		this.allFilterConditionMappings = allFilterConditionMappings;
+		this.allFilterConditionMappings = new LinkedList<FilterConditionsToFilterDTO>();
 		this.allFilterConditions = allFilterConditions;
 		this.alleRubriken = alleRubriken;
-		this.alleUser2UserGroupMappings = alleUser2UserGroupMappings;
-		this.allCompareValues = allCompareValues;
+		this.alleUser2UserGroupMappings =  new LinkedList<User2UserGroupDTO>();
+		this.allCompareValues =  new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 		this.allDefaultFilterTextDTO = allDefaultFilterTextDTO;
 	}
 
@@ -80,6 +78,7 @@ public class Configuration {
 		return allFilterConditions;
 	}
 
+	@Deprecated
 	public Collection<FilterConditionsToFilterDTO> getAllFilterConditionMappings() {
 		return allFilterConditionMappings;
 	}
@@ -87,7 +86,9 @@ public class Configuration {
 	public Collection<RubrikDTO> gibAlleRubriken() {
 		return alleRubriken;
 	}
-
+	
+	
+	@Deprecated
 	public List<User2UserGroupDTO> getAllUser2UserGroupDTOs() {
 		return alleUser2UserGroupMappings;
 	}
@@ -96,6 +97,7 @@ public class Configuration {
 		Configuration.logger = logger;
 	}
 
+	@Deprecated
 	public Collection<StringArrayFilterConditionCompareValuesDTO> getAllStringArrayCompareValues() {
 		return allCompareValues;
 	}

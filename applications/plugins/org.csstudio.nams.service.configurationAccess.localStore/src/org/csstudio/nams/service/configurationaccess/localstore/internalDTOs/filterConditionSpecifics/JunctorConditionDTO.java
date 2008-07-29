@@ -1,11 +1,14 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
@@ -28,7 +31,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMS_FilterCond_Conj_Common")
-public class JunctorConditionDTO extends FilterConditionDTO {
+public class JunctorConditionDTO extends FilterConditionDTO implements HasManuallyJoinedElements {
 
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int iFilterConditionRef;
@@ -166,6 +169,34 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 	public void setSecondFilterCondition(FilterConditionDTO filterCondition) {
 		setSecondFilterConditionRef(filterCondition.getIFilterConditionID());
 		secondFilterCondition = filterCondition;
+	}
+
+	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+		// Nichts zu tun, da es genau diese Tabellenzeile betrifft.
+	}
+
+	public void loadJoinData(Mapper mapper) throws Throwable {
+		List<FilterConditionDTO> allFCs = mapper.loadAll(FilterConditionDTO.class, false);
+		
+		boolean firstFound = false;
+		boolean secondFound = false;
+		for (FilterConditionDTO fc : allFCs) {
+			if( !firstFound && fc.getIFilterConditionID() == this.firstFilterConditionRef ) {
+				this.firstFilterCondition = fc;
+				firstFound = true;
+			} else if( !secondFound && fc.getIFilterConditionID() == this.secondFilterConditionRef ) {
+				this.secondFilterCondition = fc;
+				secondFound = true;
+			}
+			
+			if( firstFound && secondFound ) {
+				break;
+			}
+		}
+	}
+
+	public void storeJoinLinkData(Mapper mapper) throws Throwable {
+		throw new UnsupportedOperationException("This type is deprecated and should not be saved any more.");
 	}
 
 }

@@ -1,8 +1,12 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions;
 
+import java.util.List;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 
@@ -47,6 +51,27 @@ public class TopicFilterActionDTO extends FilterActionDTO {
 		} else if (!receiver.equals(other.receiver))
 			return false;
 		return true;
+	}
+
+	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void loadJoinData(Mapper mapper) throws Throwable {
+		List<TopicDTO> alleTopics = mapper.loadAll(TopicDTO.class, true);
+
+		for (TopicDTO topic : alleTopics) {
+			if( topic.getId() == this.getIReceiverRef() ) {
+				this.setReceiver(topic);
+				break;
+			}
+		}
+	}
+
+	public void storeJoinLinkData(Mapper mapper) throws Throwable {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

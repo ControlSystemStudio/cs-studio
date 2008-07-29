@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.service;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -15,9 +14,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Topi
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -43,16 +39,13 @@ public class ConfigurationBeanServiceImpl_Test extends TestCase {
 		Collection<TopicDTO> alleAlarmtopics = new LinkedList<TopicDTO>();
 		Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = new LinkedList<AlarmbearbeiterGruppenDTO>();
 		Collection<FilterDTO> allFilters = new LinkedList<FilterDTO>();
-		Collection<FilterConditionsToFilterDTO> allFilterConditionMappings = new LinkedList<FilterConditionsToFilterDTO>();
 		Collection<FilterConditionDTO> allFilterConditions = new LinkedList<FilterConditionDTO>();
 		Collection<RubrikDTO> alleRubriken = new LinkedList<RubrikDTO>();
-		List<User2UserGroupDTO> alleUser2UserGroupMappings = new LinkedList<User2UserGroupDTO>();
-		Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 		Collection<DefaultFilterTextDTO> allDefaultFilterTexts = new LinkedList<DefaultFilterTextDTO>();
 		
 		// TODO Mit konsistenen!! daten füllen
 		
-		return new Configuration(alleAlarmbarbeiter, alleAlarmtopics, alleAlarmbearbeiterGruppen, allFilters, allFilterConditionMappings, allFilterConditions, alleRubriken, alleUser2UserGroupMappings, allCompareValues, allDefaultFilterTexts);
+		return new Configuration(alleAlarmbarbeiter, alleAlarmtopics, alleAlarmbearbeiterGruppen, allFilters, allFilterConditions, alleRubriken, allDefaultFilterTexts);
 	}
 
 	@Test

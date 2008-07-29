@@ -1,11 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
@@ -23,14 +19,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
@@ -135,88 +124,19 @@ class LocalStoreConfigurationServiceImpl implements
 			public Configuration doWork(Mapper mapper) throws Throwable {
 				Configuration resultOfUnit = null;
 
+				Collection<RubrikDTO> alleRubriken = mapper.loadAll(RubrikDTO.class, true); // FIXME Bei Joined hinzufuegen fuer entsprechende Elemente zuordnen!!!!
+
 				Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = mapper.loadAll(AlarmbearbeiterDTO.class, true);
 				Collection<TopicDTO> alleAlarmtopics = mapper.loadAll(TopicDTO.class, true);
 				Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = mapper.loadAll(AlarmbearbeiterGruppenDTO.class, true);
-				
-				
-				
+				Collection<FilterConditionDTO> allFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
 				Collection<FilterDTO> allFilters = mapper.loadAll(FilterDTO.class, true);
-				
-				
-				
-				Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
-				Collection<FilterConditionDTO> allFilterConditions;
-				Collection<RubrikDTO> alleRubriken;
-				List<User2UserGroupDTO> alleUser2UserGroupMappings;
-				Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
-				Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO;
+				Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO = mapper.loadAll(DefaultFilterTextDTO.class, true);
 
-				alleAlarmbearbeiterGruppen = mapper
-						.loadAll(AlarmbearbeiterGruppenDTO.class, true);
-				
-				allFilters = mapper.loadAll(FilterDTO.class, true);
-				allFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
-				alleRubriken = mapper.loadAll(RubrikDTO.class, true);
-				alleUser2UserGroupMappings = mapper
-						.loadAll(User2UserGroupDTO.class, true);
-				allFilterConditionMappings = mapper
-						.loadAll(FilterConditionsToFilterDTO.class, true);
-				allCompareValues = mapper
-						.loadAll(StringArrayFilterConditionCompareValuesDTO.class, true);
-				allDefaultFilterTextDTO = mapper.loadAll(DefaultFilterTextDTO.class, true);
-
-				// Nots befüllen
-				for (final FilterConditionDTO filterConditionDTO : allFilterConditions) {
-					if (filterConditionDTO instanceof NegationConditionForFilterTreeDTO) {
-						final NegationConditionForFilterTreeDTO notCond = (NegationConditionForFilterTreeDTO) filterConditionDTO;
-						for (final FilterConditionDTO possibleCondition : allFilterConditions) {
-							if (notCond.getINegatedFCRef() == possibleCondition
-									.getIFilterConditionID()) {
-								notCond
-										.setNegatedFilterCondition(possibleCondition);
-								break;
-							}
-						}
-					}
-				}
-
-				setChildFilterConditionsInJunctorDTOs(allFilterConditions);
-
-				pruefeUndOrdnerFilterDieFilterConditionsZu(
-						allFilterConditionMappings, allFilterConditions,
-						allFilters);
-
-
-				setStringArrayCompareValues(allCompareValues,
-						allFilterConditions);
-
-				final Collection<FilterConditionDTO> allFCs = new HashSet<FilterConditionDTO>(
-						allFilterConditions);
-
-				for (final FilterConditionDTO fc : allFCs) {
-					if (fc instanceof JunctorConditionForFilterTreeDTO) {
-						final JunctorConditionForFilterTreeDTO jcfft = (JunctorConditionForFilterTreeDTO) fc;
-						try {
-							jcfft.loadJoinData(mapper);
-						} catch (final Throwable e) {
-							logger.logErrorMessage(this, "unable to load joined conditions of JunctionConditionForFilters",
-									e);
-							throw new InconsistentConfigurationException(
-									"unable to load joined conditions of JunctionConditionForFilters",
-									e);
-						}
-					}
-				}
-
-				addUsersToGroups(alleAlarmbearbeiterGruppen,
-						alleUser2UserGroupMappings, logger, alleAlarmbarbeiter);
 
 				resultOfUnit = new Configuration(alleAlarmbarbeiter,
 						alleAlarmtopics, alleAlarmbearbeiterGruppen,
-						allFilters, allFilterConditionMappings,
-						allFilterConditions, alleRubriken,
-						alleUser2UserGroupMappings, allCompareValues, 
+						allFilters, allFilterConditions, alleRubriken,
 						allDefaultFilterTextDTO);
 
 				return resultOfUnit;
@@ -236,15 +156,15 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	private static FilterConditionDTO getFilterConditionForId(final int id,
-			final Collection<FilterConditionDTO> allFilterConditions) {
-		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition.getIFilterConditionID() == id) {
-				return filterCondition;
-			}
-		}
-		return null;
-	}
+//	private static FilterConditionDTO getFilterConditionForId(final int id,
+//			final Collection<FilterConditionDTO> allFilterConditions) {
+//		for (final FilterConditionDTO filterCondition : allFilterConditions) {
+//			if (filterCondition.getIFilterConditionID() == id) {
+//				return filterCondition;
+//			}
+//		}
+//		return null;
+//	}
 
 	public void prepareSynchonization() throws StorageError, StorageException,
 			InconsistentConfigurationException {
@@ -400,36 +320,36 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	private static void addUsersToGroups(
-			final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
-			final List<User2UserGroupDTO> alleUser2UserGroupMappings,
-			Logger logger, Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter) {
-		final HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
-		for (final AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
-			gruppen.put(gruppe.getUserGroupId(), gruppe);
-		}
-
-		final HashMap<Integer, AlarmbearbeiterDTO> users = new HashMap<Integer, AlarmbearbeiterDTO>();
-		for (final AlarmbearbeiterDTO user : alleAlarmbarbeiter) {
-			users.put(user.getUserId(), user);
-		}
-		
-		
-		for (final User2UserGroupDTO map : alleUser2UserGroupMappings) {
-			try {
-				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
-						.alarmbearbeiterZuordnen(users.get(map.getUser2UserGroupPK().getIUserRef()));
-			} catch (final NullPointerException npe) {
-
-				// logger.logErrorMessage(this,
-				// "Contains invalid User To UserGroup mapping, group "
-				// + map.getUser2UserGroupPK()
-				// .getIUserGroupRef()
-				// + " doesn't exist", npe);
-
-			}
-		}
-	}
+//	private static void addUsersToGroups(
+//			final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
+//			final List<User2UserGroupDTO> alleUser2UserGroupMappings,
+//			Logger logger, Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter) {
+//		final HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
+//		for (final AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
+//			gruppen.put(gruppe.getUserGroupId(), gruppe);
+//		}
+//
+//		final HashMap<Integer, AlarmbearbeiterDTO> users = new HashMap<Integer, AlarmbearbeiterDTO>();
+//		for (final AlarmbearbeiterDTO user : alleAlarmbarbeiter) {
+//			users.put(user.getUserId(), user);
+//		}
+//		
+//		
+//		for (final User2UserGroupDTO map : alleUser2UserGroupMappings) {
+//			try {
+//				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
+//						.alarmbearbeiterZuordnen(users.get(map.getUser2UserGroupPK().getIUserRef()));
+//			} catch (final NullPointerException npe) {
+//
+//				// logger.logErrorMessage(this,
+//				// "Contains invalid User To UserGroup mapping, group "
+//				// + map.getUser2UserGroupPK()
+//				// .getIUserGroupRef()
+//				// + " doesn't exist", npe);
+//
+//			}
+//		}
+//	}
 
 	private Session sessionWorkingOn = null;
 	private TransactionProcessor transactionProcessor;
@@ -459,85 +379,85 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	private static <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
-		for (T t : fcs) {
-			if( t.getIFilterConditionID() == id ) {
-				return t;
-			}
-		}
-		return null;
-	}
-	private static <T extends FilterConditionsToFilterDTO> Collection<T> findAssignmentToFilterForFilterId(int id, Collection<T> fcs) {
-		Collection<T> result = new HashSet<T>();
-		
-		for (T t : fcs) {
-			if( t.getIFilterRef() == id ) {
-				result.add(t);
-			}
-		}
-		return result;
-	}
+//	private static <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
+//		for (T t : fcs) {
+//			if( t.getIFilterConditionID() == id ) {
+//				return t;
+//			}
+//		}
+//		return null;
+//	}
+//	private static <T extends FilterConditionsToFilterDTO> Collection<T> findAssignmentToFilterForFilterId(int id, Collection<T> fcs) {
+//		Collection<T> result = new HashSet<T>();
+//		
+//		for (T t : fcs) {
+//			if( t.getIFilterRef() == id ) {
+//				result.add(t);
+//			}
+//		}
+//		return result;
+//	}
 	
-	private static void pruefeUndOrdnerFilterDieFilterConditionsZu(
-			final Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter,
-			final Collection<FilterConditionDTO> allFilterConditions,
-			final Collection<FilterDTO> allFilters) {
-		
-		for (FilterDTO filterDTO : allFilters) {
-			Collection<FilterConditionsToFilterDTO> zuordnungenDiesesFilters = findAssignmentToFilterForFilterId(filterDTO.getIFilterID(), allFilterConditionToFilter);
-			
-			List<FilterConditionDTO> operanden = new LinkedList<FilterConditionDTO>();
-			for (FilterConditionsToFilterDTO zuorndungen : zuordnungenDiesesFilters) {
-				operanden.add(findForId(zuorndungen.getIFilterConditionRef(), allFilterConditions));
-			}
-			filterDTO.setFilterConditions(operanden);
-		}
-		
-	}
+//	private static void pruefeUndOrdnerFilterDieFilterConditionsZu(
+//			final Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter,
+//			final Collection<FilterConditionDTO> allFilterConditions,
+//			final Collection<FilterDTO> allFilters) {
+//		
+//		for (FilterDTO filterDTO : allFilters) {
+//			Collection<FilterConditionsToFilterDTO> zuordnungenDiesesFilters = findAssignmentToFilterForFilterId(filterDTO.getIFilterID(), allFilterConditionToFilter);
+//			
+//			List<FilterConditionDTO> operanden = new LinkedList<FilterConditionDTO>();
+//			for (FilterConditionsToFilterDTO zuorndungen : zuordnungenDiesesFilters) {
+//				operanden.add(findForId(zuorndungen.getIFilterConditionRef(), allFilterConditions));
+//			}
+//			filterDTO.setFilterConditions(operanden);
+//		}
+//		
+//	}
 
-	private static void setChildFilterConditionsInJunctorDTOs(
-			final Collection<FilterConditionDTO> allFilterConditions) {
-		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition instanceof JunctorConditionDTO) {
-				final JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
-				final FilterConditionDTO firstFilterCondition = getFilterConditionForId(
-						junctorConditionDTO.getFirstFilterConditionRef(),
-						allFilterConditions);
-				final FilterConditionDTO secondFilterCondition = getFilterConditionForId(
-						junctorConditionDTO.getSecondFilterConditionRef(),
-						allFilterConditions);
+//	private static void setChildFilterConditionsInJunctorDTOs(
+//			final Collection<FilterConditionDTO> allFilterConditions) {
+//		for (final FilterConditionDTO filterCondition : allFilterConditions) {
+//			if (filterCondition instanceof JunctorConditionDTO) {
+//				final JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
+//				final FilterConditionDTO firstFilterCondition = getFilterConditionForId(
+//						junctorConditionDTO.getFirstFilterConditionRef(),
+//						allFilterConditions);
+//				final FilterConditionDTO secondFilterCondition = getFilterConditionForId(
+//						junctorConditionDTO.getSecondFilterConditionRef(),
+//						allFilterConditions);
+//
+//				junctorConditionDTO
+//						.setFirstFilterCondition(firstFilterCondition);
+//				junctorConditionDTO
+//						.setSecondFilterCondition(secondFilterCondition);
+//			}
+//		}
+//	}
 
-				junctorConditionDTO
-						.setFirstFilterCondition(firstFilterCondition);
-				junctorConditionDTO
-						.setSecondFilterCondition(secondFilterCondition);
-			}
-		}
-	}
-
-	private static void setStringArrayCompareValues(
-			final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues,
-			final Collection<FilterConditionDTO> allFilterConditions) {
-		final Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
-		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-			if (filterCondition instanceof StringArrayFilterConditionDTO) {
-				stringAFC.put(filterCondition.getIFilterConditionID(),
-						(StringArrayFilterConditionDTO) filterCondition);
-				final StringArrayFilterConditionDTO sFC = (StringArrayFilterConditionDTO) filterCondition;
-				sFC
-						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
-			}
-		}
-		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
-			final StringArrayFilterConditionDTO conditionDTO = stringAFC
-					.get(stringArrayFilterConditionCompareValuesDTO
-							.getFilterConditionRef());
-			final List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO
-					.getCompareValueList();
-			list.add(stringArrayFilterConditionCompareValuesDTO);
-			conditionDTO.setCompareValues(list);
-		}
-
-	}
+//	private static void setStringArrayCompareValues(
+//			final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues,
+//			final Collection<FilterConditionDTO> allFilterConditions) {
+//		final Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
+//		for (final FilterConditionDTO filterCondition : allFilterConditions) {
+//			if (filterCondition instanceof StringArrayFilterConditionDTO) {
+//				stringAFC.put(filterCondition.getIFilterConditionID(),
+//						(StringArrayFilterConditionDTO) filterCondition);
+//				final StringArrayFilterConditionDTO sFC = (StringArrayFilterConditionDTO) filterCondition;
+//				sFC
+//						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
+//			}
+//		}
+//		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
+//			final StringArrayFilterConditionDTO conditionDTO = stringAFC
+//					.get(stringArrayFilterConditionCompareValuesDTO
+//							.getFilterConditionRef());
+//			final List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO
+//					.getCompareValueList();
+//			list.add(stringArrayFilterConditionCompareValuesDTO);
+//			conditionDTO.setCompareValues(list);
+//		}
+//
+//	}
 
 }

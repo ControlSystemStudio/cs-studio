@@ -1,5 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -84,6 +86,15 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 
 	@SuppressWarnings("unchecked")
 	public void loadJoinData(Mapper mapper) throws Throwable {
+		List<FilterConditionDTO> allFCs = mapper.loadAll(FilterConditionDTO.class, false);
+		
+		for (FilterConditionDTO fc : allFCs) {
+			if( fc.getIFilterConditionID() == this.getINegatedFCRef() ) {
+				this.negatedFilterCondition = fc;
+				break;
+			}
+		}
+		
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
 			((HasManuallyJoinedElements) this.negatedFilterCondition)
 					.loadJoinData(mapper);
