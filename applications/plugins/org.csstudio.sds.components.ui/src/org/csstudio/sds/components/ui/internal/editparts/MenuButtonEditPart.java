@@ -33,7 +33,7 @@ import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.model.properties.actions.WidgetAction;
+import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
@@ -119,7 +119,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
 			final Shell shell = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell();
 			MenuManager menuManager = new MenuManager();
-			for (WidgetAction action : ((MenuButtonModel) this.getCastedModel())
+			for (AbstractWidgetActionModel action : ((MenuButtonModel) this.getCastedModel())
 					.getActionData().getWidgetActions()) {
 				menuManager.add(new MenuAction(action));
 			}
@@ -197,24 +197,24 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
 	}
 
 	/**
-	 * An Action, which encapsulates a {@link WidgetAction}.
+	 * An Action, which encapsulates a {@link AbstractWidgetActionModel}.
 	 * 
 	 * @author Kai Meyer
 	 * 
 	 */
 	private final class MenuAction extends Action {
 		/**
-		 * The {@link WidgetAction}.
+		 * The {@link AbstractWidgetActionModel}.
 		 */
-		private WidgetAction _widgetAction;
+		private AbstractWidgetActionModel _widgetAction;
 
 		/**
 		 * Constructor.
 		 * 
 		 * @param widgetAction
-		 *            The encapsulated {@link WidgetAction}
+		 *            The encapsulated {@link AbstractWidgetActionModel}
 		 */
-		public MenuAction(final WidgetAction widgetAction) {
+		public MenuAction(final AbstractWidgetActionModel widgetAction) {
 			_widgetAction = widgetAction;
 			this.setText(_widgetAction.getActionLabel());
 			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform

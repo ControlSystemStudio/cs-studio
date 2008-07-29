@@ -27,7 +27,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.model.properties.actions.WidgetAction;
+import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
@@ -81,7 +81,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	}
 
 	/**
-	 * Configures a listener for performing a {@link WidgetAction}.
+	 * Configures a listener for performing a {@link AbstractWidgetActionModel}.
 	 * 
 	 * @param figure
 	 *            The figure of the widget
@@ -130,7 +130,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 								index = 0;
 							}
 							if (index >= 0 && index < size) {
-								WidgetAction type = model.getActionData()
+								AbstractWidgetActionModel type = model.getActionData()
 										.getWidgetActions().get(index);
 
 								WidgetActionHandlerService.getInstance()
