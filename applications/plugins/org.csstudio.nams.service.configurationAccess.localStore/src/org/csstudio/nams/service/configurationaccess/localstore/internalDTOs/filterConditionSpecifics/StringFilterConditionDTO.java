@@ -143,4 +143,45 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 		builder.append(this.compValue);
 		return builder.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((compValue == null) ? 0 : compValue.hashCode());
+		result = prime * result + iFilterConditionRef;
+		result = prime * result
+				+ ((keyValue == null) ? 0 : keyValue.hashCode());
+		result = prime * result + operator;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof StringFilterConditionDTO))
+			return false;
+		final StringFilterConditionDTO other = (StringFilterConditionDTO) obj;
+		if (compValue == null) {
+			if (other.compValue != null)
+				return false;
+		} else if (!compValue.equals(other.compValue))
+			return false;
+		if (iFilterConditionRef != other.iFilterConditionRef)
+			return false;
+		if (keyValue == null) {
+			if (other.keyValue != null)
+				return false;
+		} else if (!keyValue.equals(other.keyValue))
+			return false;
+		if (operator != other.operator)
+			return false;
+		return true;
+	}
+	
+	
 }

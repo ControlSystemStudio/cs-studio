@@ -22,4 +22,16 @@ public interface NewAMSConfigurationElementDTO {
 	 */
 	@Deprecated
 	public boolean isInCategory(int categoryDBId);
+	
+	/**
+	 * Equals have to be implemented by each DTO!.
+	 * @see Object#equals(Object)
+	 */
+	public boolean equals(Object obj);
+
+	/**
+	 * Equals have to be implemented by each DTO!.
+	 * @see Object#hashCode()
+	 */
+	public int hashCode();
 }

@@ -158,7 +158,7 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof FilterConditionDTO))
 			return false;
 		final FilterConditionDTO other = (FilterConditionDTO) obj;
 		if (cDesc == null) {
