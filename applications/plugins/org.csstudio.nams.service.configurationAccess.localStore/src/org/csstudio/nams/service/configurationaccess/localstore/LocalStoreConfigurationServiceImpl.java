@@ -156,16 +156,6 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-//	private static FilterConditionDTO getFilterConditionForId(final int id,
-//			final Collection<FilterConditionDTO> allFilterConditions) {
-//		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-//			if (filterCondition.getIFilterConditionID() == id) {
-//				return filterCondition;
-//			}
-//		}
-//		return null;
-//	}
-
 	public void prepareSynchonization() throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
@@ -245,111 +235,12 @@ class LocalStoreConfigurationServiceImpl implements
 		}
 	}
 
-	void deleteDTONoTransaction(final Session session,
-			final NewAMSConfigurationElementDTO dto) throws Throwable {
-
-		if (dto instanceof HasManuallyJoinedElements) {
-			((HasManuallyJoinedElements) dto).deleteJoinLinkData(new Mapper() {
-
-				public void delete(NewAMSConfigurationElementDTO element)
-						throws Throwable {
-					deleteDTONoTransaction(session, element);
-				}
-
-				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-						Class<T> clasz, boolean loadManuallyJoinedMappingsIfAvailable) throws Throwable {
-					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this
-							.loadAll(session, clasz);
-					allLoaded.remove(dto); // Muss raus sonst landen wir immer
-											// wieder hier! ;)
-					return allLoaded;
-				}
-
-				public void save(NewAMSConfigurationElementDTO element)
-						throws Throwable {
-					saveDTONoTransaction(session, element);
-				}
-
-			});
-		}
-
-		session.delete(dto);
-	}
-
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
 		this.sessionFactory.close();
 	}
 
-	/**
-	 * Für interne Verwendung innerhalb einer Transaction, da Transaction in
-	 * JDBC nicht verschachtelt werden dürfen. ACHTUNG: Führt KEIN
-	 * {@link org.hibernate.Session#flush()} aus!
-	 * 
-	 * @see {@link #saveDTO(NewAMSConfigurationElementDTO)}
-	 */
-	protected void saveDTONoTransaction(final Session session,
-			final NewAMSConfigurationElementDTO dto) throws Throwable {
-
-		session.saveOrUpdate(dto);
-
-		if (dto instanceof HasManuallyJoinedElements) {
-			((HasManuallyJoinedElements) dto).storeJoinLinkData(new Mapper() {
-
-				public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-						Class<T> clasz, boolean loadManuallyJoinedMappingsIfAvailable) throws Throwable {
-					List<T> allLoaded = LocalStoreConfigurationServiceImpl.this
-							.loadAll(session, clasz);
-					allLoaded.remove(dto); // Muss raus, sonst landen wir immer
-											// wieder hier! ;)
-					return allLoaded;
-				}
-
-				public void save(NewAMSConfigurationElementDTO element)
-						throws Throwable {
-					saveDTONoTransaction(session, element);
-				}
-
-				public void delete(NewAMSConfigurationElementDTO element)
-						throws Throwable {
-					deleteDTONoTransaction(session, element);
-				}
-
-			});
-		}
-	}
-
-//	private static void addUsersToGroups(
-//			final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
-//			final List<User2UserGroupDTO> alleUser2UserGroupMappings,
-//			Logger logger, Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter) {
-//		final HashMap<Integer, AlarmbearbeiterGruppenDTO> gruppen = new HashMap<Integer, AlarmbearbeiterGruppenDTO>();
-//		for (final AlarmbearbeiterGruppenDTO gruppe : alleAlarmbearbeiterGruppen) {
-//			gruppen.put(gruppe.getUserGroupId(), gruppe);
-//		}
-//
-//		final HashMap<Integer, AlarmbearbeiterDTO> users = new HashMap<Integer, AlarmbearbeiterDTO>();
-//		for (final AlarmbearbeiterDTO user : alleAlarmbarbeiter) {
-//			users.put(user.getUserId(), user);
-//		}
-//		
-//		
-//		for (final User2UserGroupDTO map : alleUser2UserGroupMappings) {
-//			try {
-//				gruppen.get(map.getUser2UserGroupPK().getIUserGroupRef())
-//						.alarmbearbeiterZuordnen(users.get(map.getUser2UserGroupPK().getIUserRef()));
-//			} catch (final NullPointerException npe) {
-//
-//				// logger.logErrorMessage(this,
-//				// "Contains invalid User To UserGroup mapping, group "
-//				// + map.getUser2UserGroupPK()
-//				// .getIUserGroupRef()
-//				// + " doesn't exist", npe);
-//
-//			}
-//		}
-//	}
 
 	private Session sessionWorkingOn = null;
 	private TransactionProcessor transactionProcessor;
@@ -379,85 +270,5 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-//	private static <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
-//		for (T t : fcs) {
-//			if( t.getIFilterConditionID() == id ) {
-//				return t;
-//			}
-//		}
-//		return null;
-//	}
-//	private static <T extends FilterConditionsToFilterDTO> Collection<T> findAssignmentToFilterForFilterId(int id, Collection<T> fcs) {
-//		Collection<T> result = new HashSet<T>();
-//		
-//		for (T t : fcs) {
-//			if( t.getIFilterRef() == id ) {
-//				result.add(t);
-//			}
-//		}
-//		return result;
-//	}
-	
-//	private static void pruefeUndOrdnerFilterDieFilterConditionsZu(
-//			final Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter,
-//			final Collection<FilterConditionDTO> allFilterConditions,
-//			final Collection<FilterDTO> allFilters) {
-//		
-//		for (FilterDTO filterDTO : allFilters) {
-//			Collection<FilterConditionsToFilterDTO> zuordnungenDiesesFilters = findAssignmentToFilterForFilterId(filterDTO.getIFilterID(), allFilterConditionToFilter);
-//			
-//			List<FilterConditionDTO> operanden = new LinkedList<FilterConditionDTO>();
-//			for (FilterConditionsToFilterDTO zuorndungen : zuordnungenDiesesFilters) {
-//				operanden.add(findForId(zuorndungen.getIFilterConditionRef(), allFilterConditions));
-//			}
-//			filterDTO.setFilterConditions(operanden);
-//		}
-//		
-//	}
-
-//	private static void setChildFilterConditionsInJunctorDTOs(
-//			final Collection<FilterConditionDTO> allFilterConditions) {
-//		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-//			if (filterCondition instanceof JunctorConditionDTO) {
-//				final JunctorConditionDTO junctorConditionDTO = (JunctorConditionDTO) filterCondition;
-//				final FilterConditionDTO firstFilterCondition = getFilterConditionForId(
-//						junctorConditionDTO.getFirstFilterConditionRef(),
-//						allFilterConditions);
-//				final FilterConditionDTO secondFilterCondition = getFilterConditionForId(
-//						junctorConditionDTO.getSecondFilterConditionRef(),
-//						allFilterConditions);
-//
-//				junctorConditionDTO
-//						.setFirstFilterCondition(firstFilterCondition);
-//				junctorConditionDTO
-//						.setSecondFilterCondition(secondFilterCondition);
-//			}
-//		}
-//	}
-
-//	private static void setStringArrayCompareValues(
-//			final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues,
-//			final Collection<FilterConditionDTO> allFilterConditions) {
-//		final Map<Integer, StringArrayFilterConditionDTO> stringAFC = new HashMap<Integer, StringArrayFilterConditionDTO>();
-//		for (final FilterConditionDTO filterCondition : allFilterConditions) {
-//			if (filterCondition instanceof StringArrayFilterConditionDTO) {
-//				stringAFC.put(filterCondition.getIFilterConditionID(),
-//						(StringArrayFilterConditionDTO) filterCondition);
-//				final StringArrayFilterConditionDTO sFC = (StringArrayFilterConditionDTO) filterCondition;
-//				sFC
-//						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
-//			}
-//		}
-//		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allCompareValues) {
-//			final StringArrayFilterConditionDTO conditionDTO = stringAFC
-//					.get(stringArrayFilterConditionCompareValuesDTO
-//							.getFilterConditionRef());
-//			final List<StringArrayFilterConditionCompareValuesDTO> list = conditionDTO
-//					.getCompareValueList();
-//			list.add(stringArrayFilterConditionCompareValuesDTO);
-//			conditionDTO.setCompareValues(list);
-//		}
-//
-//	}
 
 }

@@ -596,25 +596,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			userDtos.put(userDto.getUserId(), userDto);
 		}
 		
-		List<AlarmbearbeiterDTO> list = new LinkedList<AlarmbearbeiterDTO>();
-		List<User2GroupBean> users = bean.getUsers();
-		int positionCount = 0;
-		for (User2GroupBean bean2 : users) {
-			User2UserGroupDTO mapDTO = getDTO4Bean(bean2, bean);
-			mapDTO.setActive(bean2.isActive());
-			mapDTO.setActiveReason(bean2.getActiveReason());
-			mapDTO.setLastchange(bean2.getLastChange().getTime());
-			mapDTO.setPosition(positionCount);
-			positionCount++;
-			list.add(userDtos.get(mapDTO.getUser2UserGroupPK().getIUserRef()));
+		List<User2GroupBean> user2groupss = bean.getUsers();
+		for (User2GroupBean user2groupBean : user2groupss) {
+			dto.alarmbearbeiterZuordnen(userDtos.get(user2groupBean.getUserBean().getID()), user2groupBean.isActive(), user2groupBean.getActiveReason(), user2groupBean.getLastChange());
 		}
-		dto.setAlarmbearbeiter(list);
 
 		try {
 			configurationService.saveDTO(dto);
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
 			logger.logFatalMessage(this, "failed to save group", e);
+			throw new StorageException("failed to save alarmbearbeitergruppe.", e);
 		}
 		loadConfiguration();
 		AlarmbearbeiterGruppenBean resultBean = alarmbearbeitergruppenBeans

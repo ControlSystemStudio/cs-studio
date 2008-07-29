@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -158,14 +159,11 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		service.saveDTO(bearbeiterEins);
 		service.saveDTO(bearbeiterZwei);
 		
-		List<AlarmbearbeiterDTO> bearbeiterListe = new LinkedList<AlarmbearbeiterDTO>();
-		bearbeiterListe.add(bearbeiterEins);
-		bearbeiterListe.add(bearbeiterZwei);
-		
 		AlarmbearbeiterGruppenDTO gruppe = new AlarmbearbeiterGruppenDTO();
 		gruppe.setActive(true);
-		gruppe.setAlarmbearbeiter(bearbeiterListe);
-		gruppe.setMinGroupMember((short)2);
+		gruppe.alarmbearbeiterZuordnen(bearbeiterEins, true, "", new Date(42));
+		gruppe.alarmbearbeiterZuordnen(bearbeiterZwei, false, "Urlaub", new Date(23));
+		gruppe.setMinGroupMember((short)1);
 		gruppe.setTimeOutSec(100);
 		gruppe.setUserGroupName("Testland-Group");
 		

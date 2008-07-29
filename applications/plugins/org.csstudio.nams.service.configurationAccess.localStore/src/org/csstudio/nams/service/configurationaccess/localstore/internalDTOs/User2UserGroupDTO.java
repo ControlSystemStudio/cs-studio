@@ -1,14 +1,19 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 
 /**
  * drop table AMS_UserGroup_User; create table AMS_UserGroup_User (
@@ -21,16 +26,34 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
  */
 @Entity
 @Table(name = "AMS_USERGROUP_USER")
-public class User2UserGroupDTO implements NewAMSConfigurationElementDTO {
+public class User2UserGroupDTO implements NewAMSConfigurationElementDTO, HasManuallyJoinedElements {
 
 	public User2UserGroupDTO() {
+		alarmbearbeiter = null;
 	}
 	
 	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group, AlarmbearbeiterDTO user) {
 		super();
 		this.user2UserGroupPK = new User2UserGroupDTO_PK(group.getUserGroupId(), user.getUserId());
+		alarmbearbeiter = user;
 	}
 
+	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group, AlarmbearbeiterDTO user, int position, boolean active, String activeReason, Date lastChange) {
+		super();
+		this.position = position;
+		this.user2UserGroupPK = new User2UserGroupDTO_PK(group.getUserGroupId(), user.getUserId());
+		alarmbearbeiter = user;
+		this.active = (short) (active ? 1 : 0);
+		this.activeReason = activeReason;
+		this.lastchange = lastChange.getTime();
+	}
+
+	@Transient
+	private AlarmbearbeiterDTO alarmbearbeiter;
+	
+	public AlarmbearbeiterDTO getAlarmbearbeiter() {
+		return alarmbearbeiter;
+	}
 	
 	@EmbeddedId
 	private User2UserGroupDTO_PK user2UserGroupPK;
@@ -146,6 +169,25 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO {
 
 	public boolean isInCategory(int categoryDBId) {
 		return false;
+	}
+
+	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
+		this.alarmbearbeiter = null;
+	}
+
+	public void loadJoinData(Mapper mapper) throws Throwable {
+		List<AlarmbearbeiterDTO> alleAlarmbearbeiter = mapper.loadAll(AlarmbearbeiterDTO.class, true);
+		
+		for (AlarmbearbeiterDTO alarmbearbeiter : alleAlarmbearbeiter) {
+			if( alarmbearbeiter.getUserId() == this.getUser2UserGroupPK().getIUserRef() ) {
+				this.alarmbearbeiter = alarmbearbeiter;
+				break;
+			}
+		}
+	}
+
+	public void storeJoinLinkData(Mapper mapper) throws Throwable {
+		// Nothing to do.
 	}
 
 	
