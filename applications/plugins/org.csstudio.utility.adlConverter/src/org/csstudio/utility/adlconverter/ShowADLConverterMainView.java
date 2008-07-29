@@ -1,5 +1,7 @@
 package org.csstudio.utility.adlconverter;
 
+import java.lang.annotation.Inherited;
+
 import org.csstudio.utility.adlconverter.ui.ADLConverterMainView;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,14 +48,23 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
     /** A workbench window handle. */
     private IWorkbenchWindow _window;
 
+    /**
+     * {@inheritDoc}
+     */
     public void dispose() {
     }
 
-    public void init(IWorkbenchWindow window) {
+    /**
+     * {@inheritDoc}
+     */
+    public final void init(final IWorkbenchWindow window) {
         _window = window;
     }
 
-    public void run(IAction action) {
+    /**
+     * {@inheritDoc}
+     */
+    public void run(final IAction action) {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
@@ -63,10 +74,16 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
             e.printStackTrace();
         }
     }
-
-    public void selectionChanged(IAction action, ISelection selection) {
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void selectionChanged(final IAction action, final ISelection selection) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IWorkbenchWindow getWorkbenchWindow() {
         return _window;
     }

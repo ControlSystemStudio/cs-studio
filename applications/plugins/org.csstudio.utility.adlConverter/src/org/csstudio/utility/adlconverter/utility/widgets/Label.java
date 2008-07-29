@@ -94,7 +94,6 @@ public class Label extends Widget {
                 //TODO: Label-->clrmod (CSS-SDS unterstüzung fehlt!)
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 String test = row[1];
-                CentralLogger.getInstance().debug(this,Messages.Label_Format_Debug + test);
                 if(test.equals("\"exponential\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->exponential wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"decimal\"")){ //$NON-NLS-1$

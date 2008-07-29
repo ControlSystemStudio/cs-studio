@@ -63,7 +63,7 @@ public final class ADLHelper {
      */
     public static RGB getRGB(final String clr) {
         int colorID = Integer.parseInt(clr);
-        if (0 > colorID && colorID >= _rgbColor.length) {
+        if (0 > colorID || colorID >= _rgbColor.length) {
             return null;
         }
 
@@ -200,18 +200,18 @@ public final class ADLHelper {
         if (cleanString[0].endsWith(".adl")) { //$NON-NLS-1$
             cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (cleanString[1].startsWith("$")) { //$NON-NLS-1$
-        // String temp =
-        // cleanString[1].substring(cleanString[1].indexOf(')')+1);
-            cleanString[1] = cleanString[1].replace("(", "").replace(')', '$'); //$NON-NLS-1$ //$NON-NLS-2$
-            // cleanString[1] ="$channel$"+temp; //$NON-NLS-1$
-        }
-        // if(cleanString.length>2){
-        // cleanString[1]=cleanString[1]+"_"+cleanString[2]; //$NON-NLS-1$
-        // if(param!=null){
-        // cleanString[2]=param+"_"+cleanString[2]; //$NON-NLS-1$
-        // }
-        // }
+//        if (cleanString[1].startsWith("$")) { //$NON-NLS-1$
+//        // String temp =
+//        // cleanString[1].substring(cleanString[1].indexOf(')')+1);
+//            cleanString[1] = cleanString[1].replace("(", "").replace(')', '$'); //$NON-NLS-1$ //$NON-NLS-2$
+//            // cleanString[1] ="$channel$"+temp; //$NON-NLS-1$
+//        }
+//        // if(cleanString.length>2){
+//        // cleanString[1]=cleanString[1]+"_"+cleanString[2]; //$NON-NLS-1$
+//        // if(param!=null){
+//        // cleanString[2]=param+"_"+cleanString[2]; //$NON-NLS-1$
+//        // }
+//        // }
         if (cleanString.length > 3) {
             cleanString[cleanString.length - 1] = delimiter + cleanString[cleanString.length - 1];
         }

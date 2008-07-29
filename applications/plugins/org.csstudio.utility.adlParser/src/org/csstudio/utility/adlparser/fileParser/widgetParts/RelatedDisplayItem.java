@@ -106,7 +106,7 @@ public class RelatedDisplayItem extends WidgetPart{
           }else if(head.equals("policy")){ //$NON-NLS-1$
               //TODO: RelatedDisplay --> policy="replace display"
           }else {
-              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter);
+              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter+"("+display.getObjectNr()+":"+display.getType()+")");
           }
       }
     }

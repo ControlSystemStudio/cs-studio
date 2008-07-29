@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.ui;
 
 import java.io.File;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.layers.Layer;
@@ -102,11 +103,14 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLActionLayerName,Messages.ADLDisplayImporter_ADLActionLayerDes),2);
         for (ADLWidget strings : root.getObjects()) {
             try {
+                // Display
                 display(strings, displayModel);
                 if(strings.getType().equals("arc")){ //$NON-NLS-1$
                     displayModel.addWidget(new Arc(strings, displayModel).getElement());
                 }else if(strings.getType().equals("bar")){ //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(strings).getElement());
+                }else if(strings.getType().equals("\"cartesian plot\"")){ //$NON-NLS-1$
+                    displayModel.addWidget(new Waveform(strings).getElement());
                 }else if(strings.getType().equals("\"color map\"")){ //$NON-NLS-1$
                         ADLHelper.setColorMap(strings);
                         _colormapSet=true;
@@ -114,6 +118,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                     displayModel.addWidget(new GroupingContainer(strings).getElement());
                 }else if(strings.getType().equals("\"dynamic symbol\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new Symbol(strings).getElement());
+                }else if(strings.getType().equals("file")){ //$NON-NLS-1$
+//                    TODO: FILE --> Name and Version
                 }else if(strings.getType().equals("image")){ //$NON-NLS-1$
                     displayModel.addWidget(new Image(strings, displayModel).getElement());
                 }else if(strings.getType().equals("indicator")){ //$NON-NLS-1$
@@ -146,6 +152,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                     displayModel.addWidget(new Textinput(strings).getElement());
                 }else if(strings.getType().equals("valuator")){ //$NON-NLS-1$
                     displayModel.addWidget(new Valuator(strings).getElement());
+                }else{
+                    CentralLogger.getInstance().warn(this, "Found unhandled type "+strings.getType());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
