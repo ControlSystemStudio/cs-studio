@@ -447,6 +447,9 @@ public class LogViewArchive extends ViewPart implements Observer {
                     ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
                     		LogViewArchive.this._dbAnswer, from, to, _filter, 
                     		dlg.get_filterConditions());
+                    
+                    _countLabel.setText("*");
+                    _jmsLogTableViewer.getTable().setEnabled(false);
                     readDB.schedule();
 				}
 			}
@@ -556,7 +559,9 @@ public class LogViewArchive extends ViewPart implements Observer {
             		jmsMessage.setProperty(firstColumnName, Messages.LogViewArchive_NoMessageInDB);
                 	_jmsMessageList.addJMSMessage(jmsMessage);
                 }
-               }
+                _jmsLogTableViewer.getTable().setEnabled(true);
+
+           }
 		});
 	}
 
