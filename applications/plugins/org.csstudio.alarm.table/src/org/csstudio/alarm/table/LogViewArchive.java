@@ -544,8 +544,8 @@ public class LogViewArchive extends ViewPart implements Observer {
                 _jmsLogTableViewer.refresh();
                 ArrayList<HashMap<String, String>> answer = _dbAnswer.getDBAnswer();
                 int size = answer.size();
+                _countLabel.setText(Integer.toString(size));
                 if (size > 0) {
-                    _countLabel.setText(Integer.toString(size));
                 	_jmsMessageList.addJMSMessageList(answer);
                 } else {
             		String[] propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
