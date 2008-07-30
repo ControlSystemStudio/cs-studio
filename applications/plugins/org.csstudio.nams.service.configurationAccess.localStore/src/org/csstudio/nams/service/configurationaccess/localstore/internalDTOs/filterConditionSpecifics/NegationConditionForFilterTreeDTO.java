@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -75,22 +73,29 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 
 	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
-			((HasManuallyJoinedElements) this.negatedFilterCondition)
+			if (this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO
+					|| this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO) {
+				mapper.delete(this.negatedFilterCondition);
+			} else {
+				((HasManuallyJoinedElements) this.negatedFilterCondition)
 					.deleteJoinLinkData(mapper);
+			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		List<FilterConditionDTO> allFCs = mapper.loadAll(
-				FilterConditionDTO.class, false);
+//		List<FilterConditionDTO> allFCs = mapper.loadAll(
+//				FilterConditionDTO.class, false);
 
-		for (FilterConditionDTO fc : allFCs) {
-			if (fc.getIFilterConditionID() == this.getINegatedFCRef()) {
-				this.negatedFilterCondition = fc;
-				break;
-			}
-		}
+		this.negatedFilterCondition = mapper.findForId(FilterConditionDTO.class, this.getINegatedFCRef(), false);
+		
+//		for (FilterConditionDTO fc : allFCs) {
+//			if (fc.getIFilterConditionID() == this.getINegatedFCRef()) {
+//				this.negatedFilterCondition = fc;
+//				break;
+//			}
+//		}
 
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
 			((HasManuallyJoinedElements) this.negatedFilterCondition)
@@ -102,15 +107,18 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
 			if (this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO
 					|| this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO) {
-				List<FilterConditionDTO> alleFCs = mapper.loadAll(
-						FilterConditionDTO.class, false);
-				FilterConditionDTO found = null;
-				for (FilterConditionDTO filterConditionDTO : alleFCs) {
-					if (filterConditionDTO.getIFilterConditionID() == this.negatedFilterCondition
-							.getIFilterConditionID()) {
-						found = filterConditionDTO;
-					}
-				}
+//				List<FilterConditionDTO> alleFCs = mapper.loadAll(
+//						FilterConditionDTO.class, false);
+				
+				
+				
+				FilterConditionDTO found = mapper.findForId(FilterConditionDTO.class, this.negatedFilterCondition.getIFilterConditionID(), false);
+//				for (FilterConditionDTO filterConditionDTO : alleFCs) {
+//					if (filterConditionDTO.getIFilterConditionID() == this.negatedFilterCondition
+//							.getIFilterConditionID()) {
+//						found = filterConditionDTO;
+//					}
+//				}
 				if (found == null) {
 					mapper.save(this.negatedFilterCondition);
 				} else {
