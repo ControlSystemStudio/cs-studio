@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Speech Plug-in
+Bundle-SymbolicName: org.csstudio.utility.speech
+Bundle-Version: 1.0.0
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit4;bundle-version="4.3.1"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.csstudio.utility.speech
+Bundle-ClassPath: lib/cmu_time_awb.jar,
+ lib/cmu_us_kal.jar,
+ lib/cmudict04.jar,
+ lib/cmulex.jar,
+ lib/cmutimelex.jar,
+ lib/en_us.jar,
+ lib/freetts.jar,
+ .
