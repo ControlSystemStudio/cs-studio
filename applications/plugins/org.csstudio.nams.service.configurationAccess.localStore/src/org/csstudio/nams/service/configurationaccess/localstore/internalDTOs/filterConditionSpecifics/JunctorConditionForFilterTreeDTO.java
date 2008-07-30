@@ -218,9 +218,6 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized void loadJoinData(Mapper mapper) throws Throwable {
-		// GEHT NICHT WEIL SONST ENDLOSSCHLEIFE BEIM LADEN DER FCs -
-		// Collection<FilterConditionDTO> allFilterConditions = mapper.loadAll(
-		// FilterConditionDTO.class, false);
 
 		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper
 				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
@@ -231,14 +228,8 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {
-				FilterConditionDTO conditionDTO = mapper.findForId(FilterConditionDTO.class, joinElement.getJoinedConditionsDatabaseId(), false);
+				FilterConditionDTO conditionDTO = mapper.findForId(FilterConditionDTO.class, joinElement.getJoinedConditionsDatabaseId(), true);
 				foundOperands.add(conditionDTO);
-//				for (FilterConditionDTO conditionDTO : allFilterConditions) {
-//					if (conditionDTO.getIFilterConditionID() == joinElement
-//							.getJoinedConditionsDatabaseId()) {
-//						foundOperands.add(conditionDTO);
-//					}
-//				}
 			}
 		}
 
@@ -268,23 +259,6 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 					mapper.delete(ncfft);
 				}
 				
-//				List<JunctorConditionForFilterTreeDTO> list = mapper.loadAll(
-//						JunctorConditionForFilterTreeDTO.class, false);
-//				for (JunctorConditionForFilterTreeDTO junctorConditionForFilterTreeDTO : list) {
-//					if (junctorConditionForFilterTreeDTO
-//							.getIFilterConditionID() == joinId) {
-//						mapper.delete(junctorConditionForFilterTreeDTO);
-//					}
-//				}
-
-//				List<NegationConditionForFilterTreeDTO> negList = mapper
-//						.loadAll(NegationConditionForFilterTreeDTO.class, false);
-//				for (NegationConditionForFilterTreeDTO negationConditionForFilterTreeDTO : negList) {
-//					if (negationConditionForFilterTreeDTO
-//							.getIFilterConditionID() == joinId) {
-//						mapper.delete(negationConditionForFilterTreeDTO);
-//					}
-//				}
 			}
 		}
 	}

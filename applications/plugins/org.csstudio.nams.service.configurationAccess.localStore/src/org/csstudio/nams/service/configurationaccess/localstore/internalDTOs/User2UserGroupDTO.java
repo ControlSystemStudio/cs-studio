@@ -184,7 +184,7 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO,
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
 		this.alarmbearbeiter = mapper.findForId(AlarmbearbeiterDTO.class, this
-				.getUser2UserGroupPK().getIUserRef(), true);
+				.getUser2UserGroupPK().getIUserRef(), false);
 		if (this.alarmbearbeiter == null) {
 			throw new InconsistentConfigurationException(
 					"Join zu unbekantem Alarmbearbeiter: Join-ID: "

@@ -8,6 +8,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
@@ -85,40 +86,19 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 
 	@SuppressWarnings("unchecked")
 	public void loadJoinData(Mapper mapper) throws Throwable {
-//		List<FilterConditionDTO> allFCs = mapper.loadAll(
-//				FilterConditionDTO.class, false);
-
-		this.negatedFilterCondition = mapper.findForId(FilterConditionDTO.class, this.getINegatedFCRef(), false);
+		if (this.getIFilterConditionID() == this.getINegatedFCRef())
+			throw new InconsistentConfigurationException("NegationConditionForFilterTree id == iNegatedFCRef");
 		
-//		for (FilterConditionDTO fc : allFCs) {
-//			if (fc.getIFilterConditionID() == this.getINegatedFCRef()) {
-//				this.negatedFilterCondition = fc;
-//				break;
-//			}
-//		}
-
-		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
-			((HasManuallyJoinedElements) this.negatedFilterCondition)
-					.loadJoinData(mapper);
-		}
+		this.negatedFilterCondition = mapper.findForId(FilterConditionDTO.class, this.getINegatedFCRef(), true);
 	}
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
 			if (this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO
 					|| this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO) {
-//				List<FilterConditionDTO> alleFCs = mapper.loadAll(
-//						FilterConditionDTO.class, false);
-				
-				
-				
+
 				FilterConditionDTO found = mapper.findForId(FilterConditionDTO.class, this.negatedFilterCondition.getIFilterConditionID(), false);
-//				for (FilterConditionDTO filterConditionDTO : alleFCs) {
-//					if (filterConditionDTO.getIFilterConditionID() == this.negatedFilterCondition
-//							.getIFilterConditionID()) {
-//						found = filterConditionDTO;
-//					}
-//				}
+
 				if (found == null) {
 					mapper.save(this.negatedFilterCondition);
 				} else {
