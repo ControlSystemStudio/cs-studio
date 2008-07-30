@@ -72,7 +72,7 @@ import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
 
 /**
- * Simple view more like console, used to write log messages.
+ * View for message read from oracel DB.
  * 
  * @author jhatje
  * @author $Author$
@@ -451,6 +451,7 @@ public class LogViewArchive extends ViewPart implements Observer {
     	GregorianCalendar from = new GregorianCalendar();
     	GregorianCalendar to = new GregorianCalendar();
     	from.setTimeInMillis(to.getTimeInMillis() - 1000*60*60*24);
+    	showNewTime(from, to);
     	System.out.println("from: " + from.toString() + "   to: " + to.toString()); //$NON-NLS-1$ //$NON-NLS-2$
     	_filter = "AND ( (lower(aam.PROPERTY) like lower('NAME') AND lower(aam.VALUE) like lower('" + //$NON-NLS-1$
     	pv.getName() + "')))"; //$NON-NLS-1$

@@ -28,7 +28,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-/** Handle activation of Probe from the object contrib. context menu.
+/** Handle activation of archive view the object contrib. context menu.
  *  @author Jan Hatje
  */
 public class ArchivePopupAction extends ProcessVariablePopupAction {
