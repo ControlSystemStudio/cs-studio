@@ -1,7 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,6 +12,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 
 /**
@@ -26,22 +26,28 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  */
 @Entity
 @Table(name = "AMS_USERGROUP_USER")
-public class User2UserGroupDTO implements NewAMSConfigurationElementDTO, HasManuallyJoinedElements {
+public class User2UserGroupDTO implements NewAMSConfigurationElementDTO,
+		HasManuallyJoinedElements {
 
 	public User2UserGroupDTO() {
 		alarmbearbeiter = null;
 	}
-	
-	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group, AlarmbearbeiterDTO user) {
+
+	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group,
+			AlarmbearbeiterDTO user) {
 		super();
-		this.user2UserGroupPK = new User2UserGroupDTO_PK(group.getUserGroupId(), user.getUserId());
+		this.user2UserGroupPK = new User2UserGroupDTO_PK(
+				group.getUserGroupId(), user.getUserId());
 		alarmbearbeiter = user;
 	}
 
-	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group, AlarmbearbeiterDTO user, int position, boolean active, String activeReason, Date lastChange) {
+	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group,
+			AlarmbearbeiterDTO user, int position, boolean active,
+			String activeReason, Date lastChange) {
 		super();
 		this.position = position;
-		this.user2UserGroupPK = new User2UserGroupDTO_PK(group.getUserGroupId(), user.getUserId());
+		this.user2UserGroupPK = new User2UserGroupDTO_PK(
+				group.getUserGroupId(), user.getUserId());
 		alarmbearbeiter = user;
 		this.active = (short) (active ? 1 : 0);
 		this.activeReason = activeReason;
@@ -50,11 +56,11 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO, HasManu
 
 	@Transient
 	private AlarmbearbeiterDTO alarmbearbeiter;
-	
+
 	public AlarmbearbeiterDTO getAlarmbearbeiter() {
 		return alarmbearbeiter;
 	}
-	
+
 	@EmbeddedId
 	private User2UserGroupDTO_PK user2UserGroupPK;
 
@@ -150,6 +156,7 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO, HasManu
 	public boolean isActive() {
 		return active == 0 ? false : true;
 	}
+
 	@Transient
 	public void setActive(boolean value) {
 		active = value ? (short) 1 : (short) 0;
@@ -176,13 +183,14 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO, HasManu
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		List<AlarmbearbeiterDTO> alleAlarmbearbeiter = mapper.loadAll(AlarmbearbeiterDTO.class, true);
-		
-		for (AlarmbearbeiterDTO alarmbearbeiter : alleAlarmbearbeiter) {
-			if( alarmbearbeiter.getUserId() == this.getUser2UserGroupPK().getIUserRef() ) {
-				this.alarmbearbeiter = alarmbearbeiter;
-				break;
-			}
+		this.alarmbearbeiter = mapper.findForId(AlarmbearbeiterDTO.class, this
+				.getUser2UserGroupPK().getIUserRef(), true);
+		if (this.alarmbearbeiter == null) {
+			throw new InconsistentConfigurationException(
+					"Join zu unbekantem Alarmbearbeiter: Join-ID: "
+							+ this.getUser2UserGroupPK().toString()
+							+ ", referenzierte id: "
+							+ this.getUser2UserGroupPK().getIUserRef());
 		}
 	}
 
@@ -190,5 +198,4 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO, HasManu
 		// Nothing to do.
 	}
 
-	
 }
