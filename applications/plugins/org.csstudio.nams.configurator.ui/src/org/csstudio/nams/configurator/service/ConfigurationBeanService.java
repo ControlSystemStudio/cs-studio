@@ -13,11 +13,12 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 
 public interface ConfigurationBeanService {
-	
-	/**
-	 * XXX Ein sehr inperformanter Weg alle Daten neu zu laden,...
-	 */
-	public void refreshData();
+
+	public void addConfigurationBeanServiceListener(
+			ConfigurationBeanServiceListener listener);
+
+	public void delete(IConfigurationBean bean) throws StorageError,
+			StorageException, InconsistentConfigurationException;
 
 	public abstract AlarmbearbeiterBean[] getAlarmBearbeiterBeans();
 
@@ -26,18 +27,24 @@ public interface ConfigurationBeanService {
 	public abstract AlarmtopicBean[] getAlarmTopicBeans();
 
 	public abstract FilterBean[] getFilterBeans();
-	
+
 	public abstract FilterbedingungBean[] getFilterConditionBeans();
+
 	public FilterbedingungBean[] getFilterConditionsBeans();
+
+	public MessageTemplateBean[] getMessageTemplates();
 
 	public abstract String[] getRubrikNamesForType(RubrikTypeEnum type);
 
-	public <T extends IConfigurationBean> T save(T bean) throws InconsistentConfigurationException, StorageError, StorageException;
-	
-	public void delete(IConfigurationBean bean) throws StorageError, StorageException, InconsistentConfigurationException;
+	/**
+	 * XXX Ein sehr inperformanter Weg alle Daten neu zu laden,...
+	 */
+	public void refreshData();
 
-	public void addConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);
-	public void removeConfigurationBeanServiceListener(ConfigurationBeanServiceListener listener);
-	
-	public MessageTemplateBean[] getMessageTemplates(); 
+	public void removeConfigurationBeanServiceListener(
+			ConfigurationBeanServiceListener listener);
+
+	public <T extends IConfigurationBean> T save(T bean)
+			throws InconsistentConfigurationException, StorageError,
+			StorageException;
 }

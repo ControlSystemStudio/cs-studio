@@ -16,13 +16,13 @@ public class Find implements IArgumentMatcher {
 		this.regex = regex;
 	}
 
-	public boolean matches(final Object actual) {
-		return (actual instanceof String)
-				&& Pattern.compile(this.regex).matcher((String) actual).find();
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("find(\"" + this.regex.replaceAll("\\\\", "\\\\\\\\")
 				+ "\")");
+	}
+
+	public boolean matches(final Object actual) {
+		return (actual instanceof String)
+				&& Pattern.compile(this.regex).matcher((String) actual).find();
 	}
 }

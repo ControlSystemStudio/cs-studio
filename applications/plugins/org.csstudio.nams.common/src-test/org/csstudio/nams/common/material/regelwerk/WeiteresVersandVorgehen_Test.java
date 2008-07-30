@@ -1,16 +1,18 @@
 package org.csstudio.nams.common.material.regelwerk;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 
 public class WeiteresVersandVorgehen_Test extends
 		AbstractObject_TestCase<WeiteresVersandVorgehen> /*
-															 * TODO TestCase
-															 * fuer Enums
-															 * erstellen!
-															 */{
+ * TODO TestCase
+ * fuer Enums
+ * erstellen!
+ */{
 
 	public void testAnzahlDerElemente() {
-		assertEquals(4, WeiteresVersandVorgehen.values().length);
+		Assert.assertEquals(4, WeiteresVersandVorgehen.values().length);
 	}
 
 	@Override

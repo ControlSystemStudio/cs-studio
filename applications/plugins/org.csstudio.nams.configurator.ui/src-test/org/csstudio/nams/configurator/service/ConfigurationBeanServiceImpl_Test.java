@@ -3,6 +3,7 @@ package org.csstudio.nams.configurator.service;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
@@ -23,46 +24,54 @@ public class ConfigurationBeanServiceImpl_Test extends TestCase {
 
 	private LocalStoreConfigurationService confService;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
-		confService = EasyMock.createMock(LocalStoreConfigurationService.class);
+		this.confService = EasyMock
+				.createMock(LocalStoreConfigurationService.class);
 	}
 
+	@Override
 	@After
 	public void tearDown() throws Exception {
-		EasyMock.verify(confService);
-		confService = null;
-	}
-	
-	private Configuration createTestData() {
-		Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = new LinkedList<AlarmbearbeiterDTO>();
-		Collection<TopicDTO> alleAlarmtopics = new LinkedList<TopicDTO>();
-		Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = new LinkedList<AlarmbearbeiterGruppenDTO>();
-		Collection<FilterDTO> allFilters = new LinkedList<FilterDTO>();
-		Collection<FilterConditionDTO> allFilterConditions = new LinkedList<FilterConditionDTO>();
-		Collection<RubrikDTO> alleRubriken = new LinkedList<RubrikDTO>();
-		Collection<DefaultFilterTextDTO> allDefaultFilterTexts = new LinkedList<DefaultFilterTextDTO>();
-		
-		// TODO Mit konsistenen!! daten füllen
-		
-		return new Configuration(alleAlarmbarbeiter, alleAlarmtopics, alleAlarmbearbeiterGruppen, allFilters, allFilterConditions, alleRubriken, allDefaultFilterTexts);
+		EasyMock.verify(this.confService);
+		this.confService = null;
 	}
 
 	@Test
 	public void testConfigurationBeanServiceImpl() throws Throwable {
-		fail("Diesen Test implementieren, wenn der Conf-Service aufgeräumt ist, also das Configuration ein reines Material!");
-		
-		Configuration startConfiguration = createTestData();
-		
-		EasyMock.expect(confService.getEntireConfiguration()).andReturn(startConfiguration).once();
-		EasyMock.replay(confService);
-		
-		ConfigurationBeanService service = new ConfigurationBeanServiceImpl();
-		((ConfigurationBeanServiceImpl)service).setNewConfigurationStore(confService);
-		
+		Assert
+				.fail("Diesen Test implementieren, wenn der Conf-Service aufgeräumt ist, also das Configuration ein reines Material!");
+
+		final Configuration startConfiguration = this.createTestData();
+
+		EasyMock.expect(this.confService.getEntireConfiguration()).andReturn(
+				startConfiguration).once();
+		EasyMock.replay(this.confService);
+
+		final ConfigurationBeanService service = new ConfigurationBeanServiceImpl();
+		((ConfigurationBeanServiceImpl) service)
+				.setNewConfigurationStore(this.confService);
+
 		service.refreshData();
-		
+
 		// TODO check here...
+	}
+
+	private Configuration createTestData() {
+		final Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = new LinkedList<AlarmbearbeiterDTO>();
+		final Collection<TopicDTO> alleAlarmtopics = new LinkedList<TopicDTO>();
+		final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = new LinkedList<AlarmbearbeiterGruppenDTO>();
+		final Collection<FilterDTO> allFilters = new LinkedList<FilterDTO>();
+		final Collection<FilterConditionDTO> allFilterConditions = new LinkedList<FilterConditionDTO>();
+		final Collection<RubrikDTO> alleRubriken = new LinkedList<RubrikDTO>();
+		final Collection<DefaultFilterTextDTO> allDefaultFilterTexts = new LinkedList<DefaultFilterTextDTO>();
+
+		// TODO Mit konsistenen!! daten füllen
+
+		return new Configuration(alleAlarmbarbeiter, alleAlarmtopics,
+				alleAlarmbearbeiterGruppen, allFilters, allFilterConditions,
+				alleRubriken, allDefaultFilterTexts);
 	}
 
 }

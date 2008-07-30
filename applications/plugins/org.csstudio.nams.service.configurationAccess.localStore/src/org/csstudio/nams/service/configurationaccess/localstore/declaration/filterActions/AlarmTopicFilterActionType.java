@@ -9,17 +9,17 @@ public enum AlarmTopicFilterActionType implements FilterActionType {
 	private final int id;
 	private final String description;
 
-	private AlarmTopicFilterActionType(int id, String description) {
+	private AlarmTopicFilterActionType(final int id, final String description) {
 		this.id = id;
 		this.description = description;
 	}
-	
-	public String getDescription() {
-		return description;
-	}
 
 	public short asDatabaseId() {
-		return (short) id;
+		return (short) this.id;
 	}
-	
+
+	public String getDescription() {
+		return this.description;
+	}
+
 }

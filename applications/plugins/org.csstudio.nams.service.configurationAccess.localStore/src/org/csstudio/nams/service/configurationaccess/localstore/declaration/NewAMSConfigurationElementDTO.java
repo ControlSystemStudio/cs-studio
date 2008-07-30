@@ -8,12 +8,27 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Rub
  * TODO Rename to NamsDTO.
  */
 public interface NewAMSConfigurationElementDTO {
-	
+
 	/**
-	 * Liefert eine menschenlesbare, eindeutige Bezeichnung; z.B. den Name eines Filters.
+	 * Equals have to be implemented by each DTO!.
+	 * 
+	 * @see Object#equals(Object)
+	 */
+	public boolean equals(Object obj);
+
+	/**
+	 * Liefert eine menschenlesbare, eindeutige Bezeichnung; z.B. den Name eines
+	 * Filters.
 	 */
 	public String getUniqueHumanReadableName();
-	
+
+	/**
+	 * Equals have to be implemented by each DTO!.
+	 * 
+	 * @see Object#hashCode()
+	 */
+	public int hashCode();
+
 	/**
 	 * Prueft, ob dieses Konfigurationselement in der Rubrik mit dem angegebenen
 	 * Datenbank-Rubrik-Primaerschluessel (GroupRef) enthalten ist.
@@ -22,16 +37,4 @@ public interface NewAMSConfigurationElementDTO {
 	 */
 	@Deprecated
 	public boolean isInCategory(int categoryDBId);
-	
-	/**
-	 * Equals have to be implemented by each DTO!.
-	 * @see Object#equals(Object)
-	 */
-	public boolean equals(Object obj);
-
-	/**
-	 * Equals have to be implemented by each DTO!.
-	 * @see Object#hashCode()
-	 */
-	public int hashCode();
 }

@@ -33,24 +33,64 @@ import org.csstudio.nams.common.wam.Fachwert;
 @Fachwert
 public final class Millisekunden {
 
-	private final long value;
-
-	private Millisekunden(long value) {
-		this.value = value;
-	}
-
 	/**
 	 * Liefert die Millisekunden, die durch einen long repraesentiert werden.
 	 * 
-	 * @param value Ein positiver long-Wert.
+	 * @param value
+	 *            Ein positiver long-Wert.
 	 */
-	public static Millisekunden valueOf(long value) {
+	public static Millisekunden valueOf(final long value) {
 		Contract.require(value >= 0, "value >= 0");
 		return new Millisekunden(value);
 	}
-	
-	public Millisekunden differenz(Millisekunden millisekunden) {
-		return Millisekunden.valueOf(Math.abs(millisekunden.value - this.value));
+
+	private final long value;
+
+	private Millisekunden(final long value) {
+		this.value = value;
+	}
+
+	public long alsLongVonMillisekunden() {
+		return this.value;
+	}
+
+	public Millisekunden differenz(final Millisekunden millisekunden) {
+		return Millisekunden
+				.valueOf(Math.abs(millisekunden.value - this.value));
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final Millisekunden other = (Millisekunden) obj;
+		if (this.value != other.value) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (this.value ^ (this.value >>> 32));
+		return result;
+	}
+
+	public boolean istGroesser(final Millisekunden millisekunden) {
+		return millisekunden.value < this.value;
+	}
+
+	public boolean istKleiner(final Millisekunden millisekunden) {
+		return millisekunden.value > this.value;
 	}
 
 	public boolean istNull() {
@@ -61,41 +101,5 @@ public final class Millisekunden {
 	public String toString() {
 		return String.valueOf(this.value);
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (value ^ (value >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final Millisekunden other = (Millisekunden) obj;
-		if (value != other.value)
-			return false;
-		return true;
-	}
-
-	public boolean istKleiner(Millisekunden millisekunden) {
-		return millisekunden.value > this.value;
-	}
-
-	public boolean istGroesser(Millisekunden millisekunden) {
-		return millisekunden.value < this.value;
-	}
-
-	public long alsLongVonMillisekunden() {
-		return this.value;
-	}
-	
-	
 
 }

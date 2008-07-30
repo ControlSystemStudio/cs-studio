@@ -1,63 +1,62 @@
 package org.csstudio.nams.common.service;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public abstract class AbstractExecutionService_TestCase {
 
-	private static enum TestIds implements ThreadType{
+	private static enum TestIds implements ThreadType {
 		A, B, C;
-	}
-	
-	protected abstract ExecutionService getNewInstance();
-	
-	@Test
-	public void testRegisterGroup() {
-		ExecutionService executionService = getNewInstance();
-		
-		ThreadGroup threadGroupA = new ThreadGroup("A");
-		executionService.registerGroup(TestIds.A, threadGroupA);
-		
-		ThreadGroup threadGroupB = new ThreadGroup("B");
-		executionService.registerGroup(TestIds.B, threadGroupB);
-		
-		assertTrue(executionService.hasGroupRegistered(TestIds.A));
-		assertTrue(executionService.hasGroupRegistered(TestIds.B));
-		assertFalse(executionService.hasGroupRegistered(TestIds.C));
-		
-		ThreadGroup threadGroupC = new ThreadGroup("C");
-		executionService.registerGroup(TestIds.C, threadGroupC);
-
-		assertTrue(executionService.hasGroupRegistered(TestIds.A));
-		assertTrue(executionService.hasGroupRegistered(TestIds.B));
-		assertTrue(executionService.hasGroupRegistered(TestIds.C));
-		
-		ThreadGroup containedGroupA = executionService.getRegisteredGroup(TestIds.A);
-		ThreadGroup containedGroupB = executionService.getRegisteredGroup(TestIds.B);
-		ThreadGroup containedGroupC = executionService.getRegisteredGroup(TestIds.C);
-		
-		assertSame(threadGroupA, containedGroupA);
-		assertSame(threadGroupB, containedGroupB);
-		assertSame(threadGroupC, containedGroupC);
 	}
 
 	@Test
 	public void testExecuteAsynchronsly() {
-		fail("Not yet implemented");
+		Assert.fail("Not yet implemented");
 	}
 
 	@Test
 	public void testGetCurrentlyUsedGroupIds() {
-		fail("Not yet implemented");
+		Assert.fail("Not yet implemented");
 	}
 
 	@Test
 	public void testGetRunnablesOfGroupId() {
-		fail("Not yet implemented");
+		Assert.fail("Not yet implemented");
 	}
+
+	@Test
+	public void testRegisterGroup() {
+		final ExecutionService executionService = this.getNewInstance();
+
+		final ThreadGroup threadGroupA = new ThreadGroup("A");
+		executionService.registerGroup(TestIds.A, threadGroupA);
+
+		final ThreadGroup threadGroupB = new ThreadGroup("B");
+		executionService.registerGroup(TestIds.B, threadGroupB);
+
+		Assert.assertTrue(executionService.hasGroupRegistered(TestIds.A));
+		Assert.assertTrue(executionService.hasGroupRegistered(TestIds.B));
+		Assert.assertFalse(executionService.hasGroupRegistered(TestIds.C));
+
+		final ThreadGroup threadGroupC = new ThreadGroup("C");
+		executionService.registerGroup(TestIds.C, threadGroupC);
+
+		Assert.assertTrue(executionService.hasGroupRegistered(TestIds.A));
+		Assert.assertTrue(executionService.hasGroupRegistered(TestIds.B));
+		Assert.assertTrue(executionService.hasGroupRegistered(TestIds.C));
+
+		final ThreadGroup containedGroupA = executionService
+				.getRegisteredGroup(TestIds.A);
+		final ThreadGroup containedGroupB = executionService
+				.getRegisteredGroup(TestIds.B);
+		final ThreadGroup containedGroupC = executionService
+				.getRegisteredGroup(TestIds.C);
+
+		Assert.assertSame(threadGroupA, containedGroupA);
+		Assert.assertSame(threadGroupB, containedGroupB);
+		Assert.assertSame(threadGroupC, containedGroupC);
+	}
+
+	protected abstract ExecutionService getNewInstance();
 
 }

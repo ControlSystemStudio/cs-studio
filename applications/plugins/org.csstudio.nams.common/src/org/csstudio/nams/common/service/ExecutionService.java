@@ -24,8 +24,8 @@ public interface ExecutionService {
 	 *            Das Runnable, welches ausgeführt werden soll.
 	 * @require hasGroupRegistered(groupId)
 	 */
-	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(GT groupId,
-			StepByStepProcessor runnable);
+	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(
+			GT groupId, StepByStepProcessor runnable);
 
 	/**
 	 * Liefert alle bis dato benutzten Gruppen-Ids.
@@ -36,7 +36,7 @@ public interface ExecutionService {
 	 * @return Etwas aufzählbare, welches über die Gruppen-Ids iterieren kann.
 	 */
 	public <GT extends Enum<?> & ThreadType> Iterable<GT> getCurrentlyUsedGroupIds();
-	
+
 	/**
 	 * Liefert die Gruppe, welche unter der angegebenen Id registriert ist.
 	 * 
@@ -49,9 +49,9 @@ public interface ExecutionService {
 	 * @return Liefert die ThreadGroup.
 	 * @require hasGroupRegistered(groupId)
 	 */
-	public <GT extends Enum<?> & ThreadType> ThreadGroup getRegisteredGroup(GT groupId);
-	
-	
+	public <GT extends Enum<?> & ThreadType> ThreadGroup getRegisteredGroup(
+			GT groupId);
+
 	/**
 	 * 
 	 * Der Typ der Gruppenidentifikation - ein beliebiges Enum-Element.
@@ -76,7 +76,8 @@ public interface ExecutionService {
 	 * @return {@code true} wenn eine Gruppe mit der angegebenen Id existiert,
 	 *         {@code false} sonst.
 	 */
-	public <GT extends Enum<?> & ThreadType> boolean hasGroupRegistered(GT groupId);
+	public <GT extends Enum<?> & ThreadType> boolean hasGroupRegistered(
+			GT groupId);
 
 	/**
 	 * Registriert eine neue {@link ThreadGroup}.
@@ -90,5 +91,6 @@ public interface ExecutionService {
 	 * @param group
 	 *            Die {@link ThreadGroup}.
 	 */
-	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId, ThreadGroup group);
+	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId,
+			ThreadGroup group);
 }

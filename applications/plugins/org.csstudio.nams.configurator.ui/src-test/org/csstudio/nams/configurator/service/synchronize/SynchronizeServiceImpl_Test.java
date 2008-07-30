@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.service.synchronize;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.service.ExecutionServiceMock;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
@@ -23,96 +25,115 @@ public class SynchronizeServiceImpl_Test extends
 	private SynchronizeService.Callback callback;
 	private ExecutionServiceMock executionServiceMock;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
-		localStoreConfigurationServiceMock = EasyMock.createStrictMock(LocalStoreConfigurationService.class);
-		callback = EasyMock.createStrictMock(SynchronizeService.Callback.class);
-		executionServiceMock = new ExecutionServiceMock();
-		executionServiceMock.registerGroup(SynchronizeService.ThreadTypes.SYNCHRONIZER, null);
+		this.localStoreConfigurationServiceMock = EasyMock
+				.createStrictMock(LocalStoreConfigurationService.class);
+		this.callback = EasyMock
+				.createStrictMock(SynchronizeService.Callback.class);
+		this.executionServiceMock = new ExecutionServiceMock();
+		this.executionServiceMock.registerGroup(
+				SynchronizeService.ThreadTypes.SYNCHRONIZER, null);
 	}
 
+	@Override
 	@After
 	public void tearDown() throws Exception {
-		// Verify in concrete TESTS: EasyMock.verify(localStoreConfigurationServiceMock);
+		// Verify in concrete TESTS:
+		// EasyMock.verify(localStoreConfigurationServiceMock);
 		// Verify in concrete TESTS: EasyMock.verify(callback);
-		localStoreConfigurationServiceMock = null;
-		callback = null;
-		executionServiceMock = null;
+		this.localStoreConfigurationServiceMock = null;
+		this.callback = null;
+		this.executionServiceMock = null;
 	}
 
 	@Test
-	public void testAbgebrocheneSynchronizationWegenUngesicherterAenderungen() throws Throwable {
-		synAbgebrochenGerufen = false;
+	public void testAbgebrocheneBeimVorbereitenDerSynchronization()
+			throws Throwable {
+		this.synAbgebrochenGerufen = false;
+		final StorageException expectedSorageException = new StorageException(
+				"Test");
 
-		EasyMock.replay(localStoreConfigurationServiceMock);
-		
-		EasyMock.expect(callback.pruefeObSynchronisationAusgefuehrtWerdenDarf()).andReturn(false).once();
-		callback.synchronisationAbgebrochen();
-		EasyMock.expectLastCall().once();
-		EasyMock.replay(callback);
-		
-		
-		SynchronizeService synchronizeService = getNewInstanceOfClassUnderTest();
-		
-		synchronizeService.sychronizeAlarmSystem(callback);
-		executionServiceMock.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
-
-		
-		EasyMock.verify(localStoreConfigurationServiceMock);
-		EasyMock.verify(callback);
-	}
-	
-	@Test
-	public void testAbgebrocheneBeimVorbereitenDerSynchronization() throws Throwable {
-		synAbgebrochenGerufen = false;
-		StorageException expectedSorageException = new StorageException("Test");
-
-		localStoreConfigurationServiceMock.prepareSynchonization();
+		this.localStoreConfigurationServiceMock.prepareSynchonization();
 		EasyMock.expectLastCall().andThrow(expectedSorageException).once();
-		EasyMock.replay(localStoreConfigurationServiceMock);
-		
-		EasyMock.expect(callback.pruefeObSynchronisationAusgefuehrtWerdenDarf()).andReturn(true).once();
-		callback.bereiteSynchronisationVor();
+		EasyMock.replay(this.localStoreConfigurationServiceMock);
+
+		EasyMock.expect(
+				this.callback.pruefeObSynchronisationAusgefuehrtWerdenDarf())
+				.andReturn(true).once();
+		this.callback.bereiteSynchronisationVor();
 		EasyMock.expectLastCall().once();
-		callback.fehlerBeimVorbereitenDerSynchronisation(expectedSorageException);
+		this.callback
+				.fehlerBeimVorbereitenDerSynchronisation(expectedSorageException);
 		EasyMock.expectLastCall().once();
-		callback.synchronisationAbgebrochen();
+		this.callback.synchronisationAbgebrochen();
 		EasyMock.expectLastCall().once();
-		EasyMock.replay(callback);
-		
-		
-		SynchronizeService synchronizeService = getNewInstanceOfClassUnderTest();
-		
-		synchronizeService.sychronizeAlarmSystem(callback);
-		executionServiceMock.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
-		
-		EasyMock.verify(localStoreConfigurationServiceMock, callback);
+		EasyMock.replay(this.callback);
+
+		final SynchronizeService synchronizeService = this
+				.getNewInstanceOfClassUnderTest();
+
+		synchronizeService.sychronizeAlarmSystem(this.callback);
+		this.executionServiceMock
+				.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
+
+		EasyMock.verify(this.localStoreConfigurationServiceMock, this.callback);
+	}
+
+	@Test
+	public void testAbgebrocheneSynchronizationWegenUngesicherterAenderungen()
+			throws Throwable {
+		this.synAbgebrochenGerufen = false;
+
+		EasyMock.replay(this.localStoreConfigurationServiceMock);
+
+		EasyMock.expect(
+				this.callback.pruefeObSynchronisationAusgefuehrtWerdenDarf())
+				.andReturn(false).once();
+		this.callback.synchronisationAbgebrochen();
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(this.callback);
+
+		final SynchronizeService synchronizeService = this
+				.getNewInstanceOfClassUnderTest();
+
+		synchronizeService.sychronizeAlarmSystem(this.callback);
+		this.executionServiceMock
+				.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
+
+		EasyMock.verify(this.localStoreConfigurationServiceMock);
+		EasyMock.verify(this.callback);
 	}
 
 	@Test
 	public void testErfolgreicheSynchronization() throws Throwable {
 
-		localStoreConfigurationServiceMock.prepareSynchonization();
+		this.localStoreConfigurationServiceMock.prepareSynchonization();
 		EasyMock.expectLastCall().once();
-		
-		EasyMock.replay(localStoreConfigurationServiceMock);
-		
-		EasyMock.expect(callback.pruefeObSynchronisationAusgefuehrtWerdenDarf()).andReturn(true).once();
-		callback.bereiteSynchronisationVor();
+
+		EasyMock.replay(this.localStoreConfigurationServiceMock);
+
+		EasyMock.expect(
+				this.callback.pruefeObSynchronisationAusgefuehrtWerdenDarf())
+				.andReturn(true).once();
+		this.callback.bereiteSynchronisationVor();
 		EasyMock.expectLastCall().once();
-		callback.sendeNachrichtAnHintergrundSystem();
+		this.callback.sendeNachrichtAnHintergrundSystem();
 		EasyMock.expectLastCall().once();
-		callback.wartetAufAntowrtDesHintergrundSystems();
+		this.callback.wartetAufAntowrtDesHintergrundSystems();
 		EasyMock.expectLastCall().once();
-		callback.synchronisationsDurchHintergrundsystemsErfolgreich();
+		this.callback.synchronisationsDurchHintergrundsystemsErfolgreich();
 		EasyMock.expectLastCall().once();
-		EasyMock.replay(callback);
-		
-		SynchronizeService synchronizeService = getNewInstanceOfClassUnderTest();
-		
-		synchronizeService.sychronizeAlarmSystem(callback);
-		executionServiceMock.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
-		
+		EasyMock.replay(this.callback);
+
+		final SynchronizeService synchronizeService = this
+				.getNewInstanceOfClassUnderTest();
+
+		synchronizeService.sychronizeAlarmSystem(this.callback);
+		this.executionServiceMock
+				.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
+
 		/*-
 		 * FIXME mz 2008-07-10: TODOS Hier und im der Impl!:
 		 * - Neue SystemNachricht 
@@ -122,45 +143,49 @@ public class SynchronizeServiceImpl_Test extends
 		 *   # für JMS-Fehler beim senden
 		 *   # für JMS Fehler beim empfangen
 		 */
-		
-		EasyMock.verify(localStoreConfigurationServiceMock);
-		EasyMock.verify(callback);
+
+		EasyMock.verify(this.localStoreConfigurationServiceMock);
+		EasyMock.verify(this.callback);
 	}
 
 	@Override
 	protected SynchronizeService getNewInstanceOfClassUnderTest() {
-		return new SynchronizeServiceImpl(new LoggerMock(), executionServiceMock, new PreferenceService() {
+		return new SynchronizeServiceImpl(new LoggerMock(),
+				this.executionServiceMock, new PreferenceService() {
 
-			public <T extends Enum<?> & HoldsAPreferenceId> boolean getBoolean(
-					T key) {
-				fail("unexpectedmethod call!");
-				return false;
-			}
+					public <T extends Enum<?> & HoldsAPreferenceId> void addPreferenceChangeListenerFor(
+							final T[] preferenceIds,
+							final PreferenceChangeListener changeListener) {
+						Assert.fail("unexpectedmethod call!");
+					}
 
-			public <T extends Enum<?> & HoldsAPreferenceId> int getInt(T key) {
-				fail("unexpectedmethod call!");
-				return 0;
-			}
+					public <T extends Enum<?> & HoldsAPreferenceId> boolean getBoolean(
+							final T key) {
+						Assert.fail("unexpectedmethod call!");
+						return false;
+					}
 
-			public <T extends Enum<?> & HoldsAPreferenceId> String getString(
-					T key) {
-				return "A Test Setting";
-			}
+					public <T extends Enum<?> & HoldsAPreferenceId> int getInt(
+							final T key) {
+						Assert.fail("unexpectedmethod call!");
+						return 0;
+					}
 
-			public <T extends Enum<?> & HoldsAPreferenceId> void addPreferenceChangeListenerFor(
-					T[] preferenceIds, PreferenceChangeListener changeListener) {
-				fail("unexpectedmethod call!");
-			}
-			
-		}, new ConfigurationServiceFactory() {
+					public <T extends Enum<?> & HoldsAPreferenceId> String getString(
+							final T key) {
+						return "A Test Setting";
+					}
 
-			public LocalStoreConfigurationService getConfigurationService(
-					String connectionURL, DatabaseType dbType, String username,
-					String password) throws StorageError {
-				return localStoreConfigurationServiceMock;
-			}
-			
-		});
+				}, new ConfigurationServiceFactory() {
+
+					public LocalStoreConfigurationService getConfigurationService(
+							final String connectionURL,
+							final DatabaseType dbType, final String username,
+							final String password) throws StorageError {
+						return SynchronizeServiceImpl_Test.this.localStoreConfigurationServiceMock;
+					}
+
+				});
 	}
 
 	@Override
@@ -170,10 +195,10 @@ public class SynchronizeServiceImpl_Test extends
 
 	@Override
 	protected SynchronizeService[] getThreeDiffrentNewInstanceOfClassUnderTest() {
-		SynchronizeService[] result = new SynchronizeService[3];
-		result[0] = getNewInstanceOfClassUnderTest();
-		result[1] = getNewInstanceOfClassUnderTest();
-		result[2] = getNewInstanceOfClassUnderTest();
+		final SynchronizeService[] result = new SynchronizeService[3];
+		result[0] = this.getNewInstanceOfClassUnderTest();
+		result[1] = this.getNewInstanceOfClassUnderTest();
+		result[2] = this.getNewInstanceOfClassUnderTest();
 		return result;
 	}
 }

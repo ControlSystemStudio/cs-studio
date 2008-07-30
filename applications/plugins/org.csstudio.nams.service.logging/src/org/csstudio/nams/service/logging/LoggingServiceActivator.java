@@ -38,7 +38,8 @@ import org.osgi.framework.BundleActivator;
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 18.04.2008
  */
-public class LoggingServiceActivator extends AbstractBundleActivator implements BundleActivator {
+public class LoggingServiceActivator extends AbstractBundleActivator implements
+		BundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.logging";
@@ -48,8 +49,8 @@ public class LoggingServiceActivator extends AbstractBundleActivator implements 
 	 */
 	@OSGiBundleActivationMethod
 	public OSGiServiceOffers startBundle() throws Exception {
-		OSGiServiceOffers offers = new OSGiServiceOffers();
-		
+		final OSGiServiceOffers offers = new OSGiServiceOffers();
+
 		offers.put(Logger.class, new LoggerImpl());
 		return offers;
 	}

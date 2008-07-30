@@ -15,31 +15,22 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 
 	private JunctorConditionForFilterTreeBean[] results;
 
-	/**
-	 * Gives the content of the root-and condition.
-	 */
-	public List<FilterbedingungBean> getContentsOfRootANDCondition() {
-		List<FilterbedingungBean> result = new LinkedList<FilterbedingungBean>();
-		
-		if( results != null ) {
-			result.addAll( results[0].getOperands() );
-		}
-		
-		return result;
+	public void dispose() {
+
 	}
-	
-	public Object[] getChildren(Object parentElement) {
+
+	public Object[] getChildren(final Object parentElement) {
 		FilterbedingungBean[] result = new FilterbedingungBean[0];
 		if (parentElement instanceof JunctorConditionForFilterTreeBean) {
-			JunctorConditionForFilterTreeBean junctorEditionElement = (JunctorConditionForFilterTreeBean) parentElement;
-			Set<FilterbedingungBean> operands = junctorEditionElement
+			final JunctorConditionForFilterTreeBean junctorEditionElement = (JunctorConditionForFilterTreeBean) parentElement;
+			final Set<FilterbedingungBean> operands = junctorEditionElement
 					.getOperands();
 			result = operands.toArray(new FilterbedingungBean[operands.size()]);
 		}
 		if (parentElement instanceof NotConditionForFilterTreeBean) {
-			NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) parentElement;
+			final NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) parentElement;
 			if (not.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
-				Set<FilterbedingungBean> operands = ((JunctorConditionForFilterTreeBean) not
+				final Set<FilterbedingungBean> operands = ((JunctorConditionForFilterTreeBean) not
 						.getFilterbedingungBean()).getOperands();
 				result = operands.toArray(new FilterbedingungBean[operands
 						.size()]);
@@ -48,37 +39,48 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return result;
 	}
 
-	public Object getParent(Object element) {
-		if (results != null) {
-			JunctorConditionForFilterTreeBean root = results[0];
-			return rekursiv(root, element);
+	/**
+	 * Gives the content of the root-and condition.
+	 */
+	public List<FilterbedingungBean> getContentsOfRootANDCondition() {
+		final List<FilterbedingungBean> result = new LinkedList<FilterbedingungBean>();
+
+		if (this.results != null) {
+			result.addAll(this.results[0].getOperands());
 		}
-		return null;
+
+		return result;
 	}
 
-	private Object rekursiv(Object potentialParent, Object element) {
-
-		if (hasChildren(potentialParent)) {
-			FilterbedingungBean[] children = (FilterbedingungBean[]) getChildren(potentialParent);
-			for (FilterbedingungBean child : children) {
-				if (child == element) {
-					return potentialParent;
-				}
-				Object result = rekursiv(child, element);
-				if (result != null) {
-					return result;
-				}
+	@SuppressWarnings("unchecked")
+	public Object[] getElements(final Object inputElement) {
+		if (this.results == null) {
+			final List<FilterbedingungBean> inputList = (List<FilterbedingungBean>) inputElement;
+			final JunctorConditionForFilterTreeBean root = new JunctorConditionForFilterTreeBean();
+			root.setJunctorConditionType(JunctorConditionType.AND);
+			for (final FilterbedingungBean configurationBean : inputList) {
+				root.addOperand(configurationBean);
 			}
+			this.results = new JunctorConditionForFilterTreeBean[1];
+			this.results[0] = root;
+		}
+		return this.results;
+	}
+
+	public Object getParent(final Object element) {
+		if (this.results != null) {
+			final JunctorConditionForFilterTreeBean root = this.results[0];
+			return this.rekursiv(root, element);
 		}
 		return null;
 	}
 
-	public boolean hasChildren(Object element) {
+	public boolean hasChildren(final Object element) {
 		if (element instanceof JunctorConditionForFilterTreeBean) {
 			return ((JunctorConditionForFilterTreeBean) element).hasOperands();
 		} else {
 			if (element instanceof NotConditionForFilterTreeBean) {
-				NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) element;
+				final NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) element;
 				if (not.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
 					return ((JunctorConditionForFilterTreeBean) not
 							.getFilterbedingungBean()).hasOperands();
@@ -89,27 +91,27 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object[] getElements(Object inputElement) {
-		if (results == null) {
-			List<FilterbedingungBean> inputList = (List<FilterbedingungBean>) inputElement;
-			JunctorConditionForFilterTreeBean root = new JunctorConditionForFilterTreeBean();
-			root.setJunctorConditionType(JunctorConditionType.AND);
-			for (FilterbedingungBean configurationBean : inputList) {
-				root.addOperand(configurationBean);
+	public void inputChanged(final Viewer viewer, final Object oldInput,
+			final Object newInput) {
+
+	}
+
+	private Object rekursiv(final Object potentialParent, final Object element) {
+
+		if (this.hasChildren(potentialParent)) {
+			final FilterbedingungBean[] children = (FilterbedingungBean[]) this
+					.getChildren(potentialParent);
+			for (final FilterbedingungBean child : children) {
+				if (child == element) {
+					return potentialParent;
+				}
+				final Object result = this.rekursiv(child, element);
+				if (result != null) {
+					return result;
+				}
 			}
-			results = new JunctorConditionForFilterTreeBean[1];
-			results[0] = root;
 		}
-		return results;
-	}
-
-	public void dispose() {
-
-	}
-
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+		return null;
 	}
 
 }

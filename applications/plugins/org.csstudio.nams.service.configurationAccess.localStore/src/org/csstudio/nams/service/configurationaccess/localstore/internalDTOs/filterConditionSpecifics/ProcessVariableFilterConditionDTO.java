@@ -29,81 +29,78 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
  * </pre>
  */
 @Entity
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMS_FilterCondition_PV")
 public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 
 	@Column(name = "cPvChannelName")
 	private String cPvChannelName;
-	
+
 	@Column(name = "sSuggestedPvTypeId")
 	private short sSuggestedPvTypeId;
-	
+
 	@Column(name = "sOperatorId")
 	private short sOperatorId;
-	
+
 	@Column(name = "cCompValue")
 	private String cCompValue;
 
-	public IProcessVariableAddress getPVAddress() {
-		return ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(cPvChannelName);
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof ProcessVariableFilterConditionDTO)) {
+			return false;
+		}
+		final ProcessVariableFilterConditionDTO other = (ProcessVariableFilterConditionDTO) obj;
+		if (this.cCompValue == null) {
+			if (other.cCompValue != null) {
+				return false;
+			}
+		} else if (!this.cCompValue.equals(other.cCompValue)) {
+			return false;
+		}
+		if (this.cPvChannelName == null) {
+			if (other.cPvChannelName != null) {
+				return false;
+			}
+		} else if (!this.cPvChannelName.equals(other.cPvChannelName)) {
+			return false;
+		}
+		if (this.sOperatorId != other.sOperatorId) {
+			return false;
+		}
+		if (this.sSuggestedPvTypeId != other.sSuggestedPvTypeId) {
+			return false;
+		}
+		return true;
 	}
-	
-	public void setPVAddress (IProcessVariableAddress pvAddress) {
-		cPvChannelName = pvAddress.getRawName();
-	}
-	
-	public Operator getPVOperator() {
-		return Operator.findOperatorOfDBId(sOperatorId);
-	}
-	
-	public void setPVOperator (Operator pvOperator) {
-		sOperatorId = pvOperator.asDatabaseId();
-	}
-	
-	public SuggestedProcessVariableType getSuggestedPVType(){
-		return SuggestedProcessVariableType.findOperatorOfDBId(sSuggestedPvTypeId);
-	}
-	
-	public void setSuggestedPVType(SuggestedProcessVariableType suggestedProcessVariableType){
-		sSuggestedPvTypeId = suggestedProcessVariableType.asDatabaseId();
-	}
-	
+
 	public String getCCompValue() {
-		return cCompValue;
+		return this.cCompValue;
 	}
-	
-	public void setCCompValue(String compValue) {
-		cCompValue = compValue;
-	}
-	
+
 	@SuppressWarnings("unused")
 	public String getCPvChannelName() {
-		return cPvChannelName;
+		return this.cPvChannelName;
 	}
-	
-	public void setCPvChannelName(String pvChannelName) {
-		cPvChannelName = pvChannelName;
+
+	public IProcessVariableAddress getPVAddress() {
+		return ProcessVariableAdressFactory.getInstance()
+				.createProcessVariableAdress(this.cPvChannelName);
 	}
-	
-	@SuppressWarnings("unused")
-	private short getSSuggestedPvTypeId() {
-		return sSuggestedPvTypeId;
+
+	public Operator getPVOperator() {
+		return Operator.findOperatorOfDBId(this.sOperatorId);
 	}
-	
-	@SuppressWarnings("unused")
-	private void setSSuggestedPvTypeId(short suggestedPvTypeId) {
-		sSuggestedPvTypeId = suggestedPvTypeId;
-	}
-	
-	@SuppressWarnings("unused")
-	private short getSOperatorId() {
-		return sOperatorId;
-	}
-	
-	@SuppressWarnings("unused")
-	private void setSOperatorId(short operatorId) {
-		sOperatorId = operatorId;
+
+	public SuggestedProcessVariableType getSuggestedPVType() {
+		return SuggestedProcessVariableType
+				.findOperatorOfDBId(this.sSuggestedPvTypeId);
 	}
 
 	@Override
@@ -111,39 +108,55 @@ public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((cCompValue == null) ? 0 : cCompValue.hashCode());
-		result = prime * result
-				+ ((cPvChannelName == null) ? 0 : cPvChannelName.hashCode());
-		result = prime * result + sOperatorId;
-		result = prime * result + sSuggestedPvTypeId;
+				+ ((this.cCompValue == null) ? 0 : this.cCompValue.hashCode());
+		result = prime
+				* result
+				+ ((this.cPvChannelName == null) ? 0 : this.cPvChannelName
+						.hashCode());
+		result = prime * result + this.sOperatorId;
+		result = prime * result + this.sSuggestedPvTypeId;
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof ProcessVariableFilterConditionDTO))
-			return false;
-		final ProcessVariableFilterConditionDTO other = (ProcessVariableFilterConditionDTO) obj;
-		if (cCompValue == null) {
-			if (other.cCompValue != null)
-				return false;
-		} else if (!cCompValue.equals(other.cCompValue))
-			return false;
-		if (cPvChannelName == null) {
-			if (other.cPvChannelName != null)
-				return false;
-		} else if (!cPvChannelName.equals(other.cPvChannelName))
-			return false;
-		if (sOperatorId != other.sOperatorId)
-			return false;
-		if (sSuggestedPvTypeId != other.sSuggestedPvTypeId)
-			return false;
-		return true;
+	public void setCCompValue(final String compValue) {
+		this.cCompValue = compValue;
 	}
-	
-	
+
+	public void setCPvChannelName(final String pvChannelName) {
+		this.cPvChannelName = pvChannelName;
+	}
+
+	public void setPVAddress(final IProcessVariableAddress pvAddress) {
+		this.cPvChannelName = pvAddress.getRawName();
+	}
+
+	public void setPVOperator(final Operator pvOperator) {
+		this.sOperatorId = pvOperator.asDatabaseId();
+	}
+
+	public void setSuggestedPVType(
+			final SuggestedProcessVariableType suggestedProcessVariableType) {
+		this.sSuggestedPvTypeId = suggestedProcessVariableType.asDatabaseId();
+	}
+
+	@SuppressWarnings("unused")
+	private short getSOperatorId() {
+		return this.sOperatorId;
+	}
+
+	@SuppressWarnings("unused")
+	private short getSSuggestedPvTypeId() {
+		return this.sSuggestedPvTypeId;
+	}
+
+	@SuppressWarnings("unused")
+	private void setSOperatorId(final short operatorId) {
+		this.sOperatorId = operatorId;
+	}
+
+	@SuppressWarnings("unused")
+	private void setSSuggestedPvTypeId(final short suggestedPvTypeId) {
+		this.sSuggestedPvTypeId = suggestedPvTypeId;
+	}
+
 }

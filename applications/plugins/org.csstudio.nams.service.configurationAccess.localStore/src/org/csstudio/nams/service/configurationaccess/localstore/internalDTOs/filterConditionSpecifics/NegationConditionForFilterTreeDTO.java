@@ -39,28 +39,47 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 	private FilterConditionDTO negatedFilterCondition;
 
 	public NegationConditionForFilterTreeDTO() {
-		setCName("NegationConditionForFilterTreeDTO");
-		setCDesc("The type NegationConditionForFilterTreeDTO is not to be used directly! It is used internally on filters.");
+		this.setCName("NegationConditionForFilterTreeDTO");
+		this
+				.setCDesc("The type NegationConditionForFilterTreeDTO is not to be used directly! It is used internally on filters.");
 	}
 
-	/**
-	 * Returns the negated FilterCondition.
-	 * 
-	 * @return The filter condition, not null.
-	 */
-	public FilterConditionDTO getNegatedFilterCondition() {
-		return negatedFilterCondition;
+	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
+		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
+			if ((this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO)
+					|| (this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO)) {
+				mapper.delete(this.negatedFilterCondition);
+			} else {
+				((HasManuallyJoinedElements) this.negatedFilterCondition)
+						.deleteJoinLinkData(mapper);
+			}
+		}
 	}
 
-	/**
-	 * TO BE USED FOR MAPPING PURPOSES!
-	 * 
-	 * Sets the negated condition.
-	 */
-	public void setNegatedFilterCondition(
-			FilterConditionDTO negatedFilterCondition) {
-		this.negatedFilterCondition = negatedFilterCondition;
-		this.iNegatedFCRef = negatedFilterCondition.getIFilterConditionID();
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof NegationConditionForFilterTreeDTO)) {
+			return false;
+		}
+		final NegationConditionForFilterTreeDTO other = (NegationConditionForFilterTreeDTO) obj;
+		if (this.iNegatedFCRef != other.iNegatedFCRef) {
+			return false;
+		}
+		if (this.negatedFilterCondition == null) {
+			if (other.negatedFilterCondition != null) {
+				return false;
+			}
+		} else if (!this.negatedFilterCondition
+				.equals(other.negatedFilterCondition)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -72,39 +91,64 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		return this.iNegatedFCRef;
 	}
 
-	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
-			if (this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO
-					|| this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO) {
-				mapper.delete(this.negatedFilterCondition);
-			} else {
-				((HasManuallyJoinedElements) this.negatedFilterCondition)
-					.deleteJoinLinkData(mapper);
-			}
-		}
+	/**
+	 * Returns the negated FilterCondition.
+	 * 
+	 * @return The filter condition, not null.
+	 */
+	public FilterConditionDTO getNegatedFilterCondition() {
+		return this.negatedFilterCondition;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + this.iNegatedFCRef;
+		result = prime
+				* result
+				+ ((this.negatedFilterCondition == null) ? 0
+						: this.negatedFilterCondition.hashCode());
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadJoinData(Mapper mapper) throws Throwable {
-		if (this.getIFilterConditionID() == this.getINegatedFCRef())
-			throw new InconsistentConfigurationException("NegationConditionForFilterTree id == iNegatedFCRef");
-		
-		this.negatedFilterCondition = mapper.findForId(FilterConditionDTO.class, this.getINegatedFCRef(), true);
+	public void loadJoinData(final Mapper mapper) throws Throwable {
+		if (this.getIFilterConditionID() == this.getINegatedFCRef()) {
+			throw new InconsistentConfigurationException(
+					"NegationConditionForFilterTree id == iNegatedFCRef");
+		}
+
+		this.negatedFilterCondition = mapper.findForId(
+				FilterConditionDTO.class, this.getINegatedFCRef(), true);
 	}
 
-	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
-			if (this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO
-					|| this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO) {
+	/**
+	 * TO BE USED FOR MAPPING PURPOSES!
+	 * 
+	 * Sets the negated condition.
+	 */
+	public void setNegatedFilterCondition(
+			final FilterConditionDTO negatedFilterCondition) {
+		this.negatedFilterCondition = negatedFilterCondition;
+		this.iNegatedFCRef = negatedFilterCondition.getIFilterConditionID();
+	}
 
-				FilterConditionDTO found = mapper.findForId(FilterConditionDTO.class, this.negatedFilterCondition.getIFilterConditionID(), false);
+	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
+		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
+			if ((this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO)
+					|| (this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO)) {
+
+				final FilterConditionDTO found = mapper.findForId(
+						FilterConditionDTO.class, this.negatedFilterCondition
+								.getIFilterConditionID(), false);
 
 				if (found == null) {
 					mapper.save(this.negatedFilterCondition);
 				} else {
 					if (found instanceof JunctorConditionForFilterTreeDTO) {
-						JunctorConditionForFilterTreeDTO oldJCFFT = (JunctorConditionForFilterTreeDTO) found;
-						JunctorConditionForFilterTreeDTO newJCFFT = (JunctorConditionForFilterTreeDTO) this.negatedFilterCondition;
+						final JunctorConditionForFilterTreeDTO oldJCFFT = (JunctorConditionForFilterTreeDTO) found;
+						final JunctorConditionForFilterTreeDTO newJCFFT = (JunctorConditionForFilterTreeDTO) this.negatedFilterCondition;
 						oldJCFFT.setCDesc(newJCFFT.getCDesc());
 						oldJCFFT.setCName(newJCFFT.getCName());
 						oldJCFFT.setIGroupRef(newJCFFT.getIGroupRef());
@@ -112,8 +156,8 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 						oldJCFFT.setOperator(newJCFFT.getOperator());
 						mapper.save(oldJCFFT);
 					} else {
-						NegationConditionForFilterTreeDTO oldNot = (NegationConditionForFilterTreeDTO) found;
-						NegationConditionForFilterTreeDTO newNot = (NegationConditionForFilterTreeDTO) this.negatedFilterCondition;
+						final NegationConditionForFilterTreeDTO oldNot = (NegationConditionForFilterTreeDTO) found;
+						final NegationConditionForFilterTreeDTO newNot = (NegationConditionForFilterTreeDTO) this.negatedFilterCondition;
 
 						oldNot.setCDesc(newNot.getCDesc());
 						oldNot.setCName(newNot.getCName());
@@ -131,37 +175,6 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 						.storeJoinLinkData(mapper);
 			}
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + iNegatedFCRef;
-		result = prime
-				* result
-				+ ((negatedFilterCondition == null) ? 0
-						: negatedFilterCondition.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof NegationConditionForFilterTreeDTO))
-			return false;
-		final NegationConditionForFilterTreeDTO other = (NegationConditionForFilterTreeDTO) obj;
-		if (iNegatedFCRef != other.iNegatedFCRef)
-			return false;
-		if (negatedFilterCondition == null) {
-			if (other.negatedFilterCondition != null)
-				return false;
-		} else if (!negatedFilterCondition.equals(other.negatedFilterCondition))
-			return false;
-		return true;
 	}
 
 	@Override

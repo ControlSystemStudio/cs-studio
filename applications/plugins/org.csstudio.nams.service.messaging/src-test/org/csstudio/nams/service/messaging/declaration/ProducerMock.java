@@ -6,20 +6,20 @@ import org.junit.Assert;
 
 public class ProducerMock implements Producer {
 
-	public void tryToClose() {
-		Assert.fail("unexpected call of method.");
-	}
-
 	public boolean isClosed() {
 		Assert.fail("unexpected call of method.");
 		return false;
 	}
 
-	public void sendeSystemnachricht(SystemNachricht vorgangsmappe) {
+	public void sendeSystemnachricht(final SystemNachricht vorgangsmappe) {
 		Assert.fail("unexpected call of method.");
 	}
 
-	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) {
+	public void sendeVorgangsmappe(final Vorgangsmappe vorgangsmappe) {
+		Assert.fail("unexpected call of method.");
+	}
+
+	public void tryToClose() {
 		Assert.fail("unexpected call of method.");
 	}
 

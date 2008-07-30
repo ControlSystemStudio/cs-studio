@@ -31,7 +31,7 @@ import org.csstudio.nams.common.contract.Contract;
 @Table(name = "AMS_TOPIC")
 public class TopicDTO implements NewAMSConfigurationElementDTO {
 
-	@Column(name = "CDESCRIPTION", length=256)
+	@Column(name = "CDESCRIPTION", length = 256)
 	private String description;
 
 	/**
@@ -39,16 +39,16 @@ public class TopicDTO implements NewAMSConfigurationElementDTO {
 	 */
 	@Column(name = "IGROUPREF")
 	private int groupRef;
-	
+
 	@Id
 	@GeneratedValue
-	@Column(name = "ITOPICID", nullable=false, unique=true)
+	@Column(name = "ITOPICID", nullable = false, unique = true)
 	private int id = -1;
 
-	@Column(name = "CNAME", length=128)
+	@Column(name = "CNAME", length = 128)
 	private String name;
 
-	@Column(name = "CTOPICNAME", length=128)
+	@Column(name = "CTOPICNAME", length = 128)
 	private String topicName;
 
 	/**
@@ -122,6 +122,10 @@ public class TopicDTO implements NewAMSConfigurationElementDTO {
 		return this.topicName;
 	}
 
+	public String getUniqueHumanReadableName() {
+		return this.getName();
+	}
+
 	/**
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -141,6 +145,10 @@ public class TopicDTO implements NewAMSConfigurationElementDTO {
 		return result;
 	}
 
+	public boolean isInCategory(final int categoryDBId) {
+		return false;
+	}
+
 	/**
 	 * 
 	 * @param ame
@@ -153,6 +161,7 @@ public class TopicDTO implements NewAMSConfigurationElementDTO {
 		}
 		this.description = description;
 	}
+
 	public void setGroupRef(final int groupRef) {
 		this.groupRef = groupRef;
 	}
@@ -197,14 +206,6 @@ public class TopicDTO implements NewAMSConfigurationElementDTO {
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getDescription());
 		return resultBuilder.toString();
-	}
-
-	public String getUniqueHumanReadableName() {
-		return this.getName();
-	}
-
-	public boolean isInCategory(int categoryDBId) {
-		return false;
 	}
 
 }

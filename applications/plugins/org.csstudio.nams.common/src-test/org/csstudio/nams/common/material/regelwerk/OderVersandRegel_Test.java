@@ -25,6 +25,7 @@
 
 package org.csstudio.nams.common.material.regelwerk;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -32,117 +33,143 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.junit.Test;
 
-
 /**
  * OderVersandRegelTest
  * 
- *
- * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>,
- *         <a href="mailto:gs@c1-wps.de">Goesta Steen</a>,
- *         <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
+ * 
+ * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
+ *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
+ *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 09.04.2008
  */
 
 public class OderVersandRegel_Test extends TestCase {
 
 	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.OderVersandRegel#auswerten(org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.OderVersandRegel#auswerten(org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testAuswerten() {
-		VersandRegel versandRegel = new VersandRegel() {
+		final VersandRegel versandRegel = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 			}
+
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
 				return Millisekunden.valueOf(0);
 			}
+
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
 				return Millisekunden.valueOf(0);
 			}
 		};
 
-		VersandRegel versandRegel2 = new VersandRegel() {
+		final VersandRegel versandRegel2 = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 			}
+
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
 				return Millisekunden.valueOf(0);
 			}
+
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
 				return Millisekunden.valueOf(0);
 			}
 		};
-		
-		OderVersandRegel oderRegel = new OderVersandRegel();
+
+		final OderVersandRegel oderRegel = new OderVersandRegel();
 		oderRegel.addChild(versandRegel);
 		oderRegel.addChild(versandRegel2);
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), oderRegel);
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.NICHT_ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.NICHT_ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.NICHT_ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.NICHT_ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.NICHT_ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.NICHT_ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), oderRegel);
 
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.NICHT_ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.NICHT_ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.NICHT_ZUTREFFEND);
 
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.ZUTREFFEND);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.NOCH_NICHT_GEPRUEFT);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2, RegelErgebnis.NICHT_ZUTREFFEND);
-		
-		assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.NOCH_NICHT_GEPRUEFT);
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.NICHT_ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.NICHT_ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.NICHT_ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.NICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.NICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.NOCH_NICHT_GEPRUEFT);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel2,
+				RegelErgebnis.NICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(oderRegel.auswerten(pruefliste) == RegelErgebnis.NOCH_NICHT_GEPRUEFT);
 	}
 
 }

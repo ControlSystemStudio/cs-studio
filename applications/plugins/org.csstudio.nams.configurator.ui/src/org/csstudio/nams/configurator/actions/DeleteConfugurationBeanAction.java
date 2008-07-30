@@ -12,40 +12,44 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
-public class DeleteConfugurationBeanAction extends Action implements IViewActionDelegate {
+public class DeleteConfugurationBeanAction extends Action implements
+		IViewActionDelegate {
 
 	private static ConfigurationBeanService configurationBeanService;
+
+	public static void staticInject(final ConfigurationBeanService service) {
+		DeleteConfugurationBeanAction.configurationBeanService = service;
+	}
+
 	private IConfigurationBean bean;
-	
+
 	public DeleteConfugurationBeanAction() {
 	}
 
-	public void init(IViewPart view) {
-		
+	public void init(final IViewPart view) {
+
 	}
 
-	public void run(IAction action) {
-		if(bean != null) {
+	public void run(final IAction action) {
+		if (this.bean != null) {
 			try {
-				configurationBeanService.delete(bean);
-			} catch (StorageError e) {
+				DeleteConfugurationBeanAction.configurationBeanService
+						.delete(this.bean);
+			} catch (final StorageError e) {
 				throw new RuntimeException("failed to delete", e);
-			} catch (StorageException e) {
+			} catch (final StorageException e) {
 				throw new RuntimeException("failed to delete", e);
-			} catch (InconsistentConfigurationException e) {
+			} catch (final InconsistentConfigurationException e) {
 				throw new RuntimeException("failed to delete", e);
 			}
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		IStructuredSelection sSelection = (IStructuredSelection) selection;
-		Object source = sSelection.getFirstElement();
-		bean = (IConfigurationBean) source;
-	}
-	
-	public static void staticInject(ConfigurationBeanService service) {
-		configurationBeanService = service;
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
+		final IStructuredSelection sSelection = (IStructuredSelection) selection;
+		final Object source = sSelection.getFirstElement();
+		this.bean = (IConfigurationBean) source;
 	}
 
 }

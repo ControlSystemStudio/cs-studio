@@ -14,12 +14,12 @@ public class Contains implements IArgumentMatcher {
 		this.substring = substring;
 	}
 
+	public void appendTo(final StringBuffer buffer) {
+		buffer.append("contains(\"" + this.substring + "\")");
+	}
+
 	public boolean matches(final Object actual) {
 		return (actual instanceof String)
 				&& (((String) actual).indexOf(this.substring) >= 0);
-	}
-
-	public void appendTo(final StringBuffer buffer) {
-		buffer.append("contains(\"" + this.substring + "\")");
 	}
 }

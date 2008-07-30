@@ -9,26 +9,24 @@ import org.csstudio.nams.common.testhelper.ForTesting;
 
 public abstract class AbstractNodeVersandRegel implements VersandRegel {
 
-//	public void setHistoryService(HistoryService historyService) {
-//		super.setHistoryService(historyService);
-//		for (VersandRegel regel : children) {
-//			regel.setHistoryService(historyService);
-//		}
-//		
-//	}
+	// public void setHistoryService(HistoryService historyService) {
+	// super.setHistoryService(historyService);
+	// for (VersandRegel regel : children) {
+	// regel.setHistoryService(historyService);
+	// }
+	//		
+	// }
 
-	public AbstractNodeVersandRegel(VersandRegel[] versandRegeln) {
-		for (VersandRegel versandRegel : versandRegeln) {
-			addChild(versandRegel);
-		}
-	}
-	
+	@Deprecated
+	@ForTesting
+	public Set<VersandRegel> children = new HashSet<VersandRegel>();
+
 	@Deprecated
 	@ForTesting
 	public AbstractNodeVersandRegel() {
-		
+
 	}
-	
+
 	// public Millisekunden gibverbleibendeWartezeit(
 	// Millisekunden bereitsVerstricheneWarteZeit) {
 	// Millisekunden kuerzesteWartezeit = Millisekunden.valueOf(Long.MAX_VALUE);
@@ -42,25 +40,16 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	// return kuerzesteWartezeit;
 	// }
 
-	@Deprecated
-	@ForTesting
-	public Set<VersandRegel> children = new HashSet<VersandRegel>();
-
-	@Deprecated
-	@ForTesting
-	public void addChild(VersandRegel child) {
-		children.add(child);
-	}
-	@Deprecated
-	@ForTesting
-	public Set<RegelErgebnis> gibKinderErgebnisse(Pruefliste pruefliste) {
-		Set<RegelErgebnis> ergebnis = new HashSet<RegelErgebnis>();
-
-		for (VersandRegel regel : children) {
-			ergebnis.add(pruefliste.gibErgebnisFuerRegel(regel));
+	public AbstractNodeVersandRegel(final VersandRegel[] versandRegeln) {
+		for (final VersandRegel versandRegel : versandRegeln) {
+			this.addChild(versandRegel);
 		}
+	}
 
-		return ergebnis;
+	@Deprecated
+	@ForTesting
+	public void addChild(final VersandRegel child) {
+		this.children.add(child);
 	}
 
 	/**
@@ -73,6 +62,68 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	@ForTesting
 	public abstract RegelErgebnis auswerten(Pruefliste ergebnisListe);
 
+	@Deprecated
+	@ForTesting
+	public Set<RegelErgebnis> gibKinderErgebnisse(final Pruefliste pruefliste) {
+		final Set<RegelErgebnis> ergebnis = new HashSet<RegelErgebnis>();
+
+		for (final VersandRegel regel : this.children) {
+			ergebnis.add(pruefliste.gibErgebnisFuerRegel(regel));
+		}
+
+		return ergebnis;
+	}
+
+	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
+		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
+			for (final VersandRegel regel : this.children) {
+				regel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+						nachricht, bisherigesErgebnis);
+			}
+			final RegelErgebnis ergebnis = this.auswerten(bisherigesErgebnis);
+			bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
+					ergebnis);
+		}
+	}
+
+	public Millisekunden pruefeNachrichtAufTimeOuts(
+			final Pruefliste bisherigesErgebnis,
+			final Millisekunden zeitSeitErsterEvaluation) {
+		final Set<Millisekunden> warteZeiten = new HashSet<Millisekunden>();
+		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
+			for (final VersandRegel child : this.children) {
+				final Millisekunden wartezeit = child
+						.pruefeNachrichtAufTimeOuts(bisherigesErgebnis,
+								zeitSeitErsterEvaluation);
+				if (wartezeit != null) {
+					warteZeiten.add(wartezeit);
+				}
+			}
+			final RegelErgebnis ergebnis = this.auswerten(bisherigesErgebnis);
+			bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
+					ergebnis);
+		}
+		return this.gibKuerzesteWartezeit(warteZeiten);
+	}
+
+	public Millisekunden pruefeNachrichtErstmalig(
+			final AlarmNachricht nachricht, final Pruefliste ergebnisListe) {
+		final Set<Millisekunden> warteZeiten = new HashSet<Millisekunden>();
+		if (!ergebnisListe.gibErgebnisFuerRegel(this).istEntschieden()) {
+			for (final VersandRegel child : this.children) {
+				final Millisekunden wartezeit = child.pruefeNachrichtErstmalig(
+						nachricht, ergebnisListe);
+				if (wartezeit != null) {
+					warteZeiten.add(wartezeit);
+				}
+			}
+			final RegelErgebnis ergebnis = this.auswerten(ergebnisListe);
+			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, ergebnis);
+		}
+		return this.gibKuerzesteWartezeit(warteZeiten);
+	}
+
 	/**
 	 * 
 	 * @param warteZeiten
@@ -80,13 +131,14 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	 * @return die kuerzeste Wartezeit > 0 oder 0 wenn alle Wartezeiten == 0
 	 *         sind.
 	 */
-	private Millisekunden gibKuerzesteWartezeit(Set<Millisekunden> warteZeiten) {
+	private Millisekunden gibKuerzesteWartezeit(
+			final Set<Millisekunden> warteZeiten) {
 		Millisekunden kuerzesteWartezeit = Millisekunden
 				.valueOf(Long.MAX_VALUE);
-		for (Millisekunden millisekunden : warteZeiten) {
-			if (millisekunden.alsLongVonMillisekunden() > 0
-					&& kuerzesteWartezeit.alsLongVonMillisekunden() > millisekunden
-							.alsLongVonMillisekunden()) {
+		for (final Millisekunden millisekunden : warteZeiten) {
+			if ((millisekunden.alsLongVonMillisekunden() > 0)
+					&& (kuerzesteWartezeit.alsLongVonMillisekunden() > millisekunden
+							.alsLongVonMillisekunden())) {
 				kuerzesteWartezeit = millisekunden;
 			}
 		}
@@ -94,55 +146,6 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 			kuerzesteWartezeit = null;
 		}
 		return kuerzesteWartezeit;
-	}
-
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-			for (VersandRegel regel : children) {
-				regel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-						nachricht, bisherigesErgebnis);
-			}
-			RegelErgebnis ergebnis = auswerten(bisherigesErgebnis);
-			bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
-					ergebnis);
-		}
-	}
-
-	public Millisekunden pruefeNachrichtAufTimeOuts(
-			Pruefliste bisherigesErgebnis,
-			Millisekunden zeitSeitErsterEvaluation) {
-		Set<Millisekunden> warteZeiten = new HashSet<Millisekunden>();
-		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-			for (VersandRegel child : children) {
-				Millisekunden wartezeit = child.pruefeNachrichtAufTimeOuts(
-						bisherigesErgebnis, zeitSeitErsterEvaluation);
-				if (wartezeit != null) {
-					warteZeiten.add(wartezeit);
-				}
-			}
-			RegelErgebnis ergebnis = auswerten(bisherigesErgebnis);
-			bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
-					ergebnis);
-		}
-		return gibKuerzesteWartezeit(warteZeiten);
-	}
-
-	public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
-			Pruefliste ergebnisListe) {
-		Set<Millisekunden> warteZeiten = new HashSet<Millisekunden>();
-		if (!ergebnisListe.gibErgebnisFuerRegel(this).istEntschieden()) {
-			for (VersandRegel child : children) {
-				Millisekunden wartezeit = child.pruefeNachrichtErstmalig(nachricht,
-						ergebnisListe);
-				if (wartezeit != null) {
-					warteZeiten.add(wartezeit);
-				}
-			}
-			RegelErgebnis ergebnis = auswerten(ergebnisListe);
-			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, ergebnis);
-		}
-		return gibKuerzesteWartezeit(warteZeiten);
 	}
 
 }

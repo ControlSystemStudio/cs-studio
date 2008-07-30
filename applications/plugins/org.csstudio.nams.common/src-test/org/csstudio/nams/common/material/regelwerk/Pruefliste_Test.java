@@ -1,27 +1,32 @@
 package org.csstudio.nams.common.material.regelwerk;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 
 public class Pruefliste_Test extends AbstractObject_TestCase<Pruefliste> {
 	public void testPruefliste() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
 
-		assertEquals(WeiteresVersandVorgehen.NOCH_NICHT_GEPRUEFT, pruefliste
-				.gesamtErgebnis());
+		Assert.assertEquals(WeiteresVersandVorgehen.NOCH_NICHT_GEPRUEFT,
+				pruefliste.gesamtErgebnis());
 	}
 
 	public void testRegelwerkskennung() {
-		Regelwerkskennung regelwerkskennung1 = Regelwerkskennung.valueOf();
-		Regelwerkskennung regelwerkskennung2 = Regelwerkskennung.valueOf();
-		Pruefliste pruefliste1 = new Pruefliste(regelwerkskennung1, null);
-		Pruefliste pruefliste2 = new Pruefliste(regelwerkskennung1, null);
-		Pruefliste pruefliste3 = new Pruefliste(regelwerkskennung2, null);
+		final Regelwerkskennung regelwerkskennung1 = Regelwerkskennung
+				.valueOf();
+		final Regelwerkskennung regelwerkskennung2 = Regelwerkskennung
+				.valueOf();
+		final Pruefliste pruefliste1 = new Pruefliste(regelwerkskennung1, null);
+		final Pruefliste pruefliste2 = new Pruefliste(regelwerkskennung1, null);
+		final Pruefliste pruefliste3 = new Pruefliste(regelwerkskennung2, null);
 
-		assertEquals(pruefliste1.gibRegelwerkskennung(), pruefliste2
+		Assert.assertEquals(pruefliste1.gibRegelwerkskennung(), pruefliste2
 				.gibRegelwerkskennung());
-		assertFalse(regelwerkskennung1.equals(regelwerkskennung2));
-		assertFalse(pruefliste1.gibRegelwerkskennung().equals(
+		Assert.assertFalse(regelwerkskennung1.equals(regelwerkskennung2));
+		Assert.assertFalse(pruefliste1.gibRegelwerkskennung().equals(
 				pruefliste3.gibRegelwerkskennung()));
 
 	}
@@ -38,7 +43,8 @@ public class Pruefliste_Test extends AbstractObject_TestCase<Pruefliste> {
 
 	@Override
 	protected Pruefliste[] getThreeDiffrentNewInstanceOfClassUnderTest() {
-		return new Pruefliste[] { new Pruefliste(Regelwerkskennung.valueOf(), null),
+		return new Pruefliste[] {
+				new Pruefliste(Regelwerkskennung.valueOf(), null),
 				new Pruefliste(Regelwerkskennung.valueOf(), null),
 				new Pruefliste(Regelwerkskennung.valueOf(), null) };
 	}

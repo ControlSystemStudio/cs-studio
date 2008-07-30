@@ -16,51 +16,52 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 	private final ConfigurationServiceFactory configurationServiceFactory;
 	private final PreferenceService preferenceService;
 
-	public SynchronizeServiceImpl(
-			Logger logger,
-			ExecutionService executionService,
-			PreferenceService preferenceService,
-			ConfigurationServiceFactory configurationServiceFactory) {
-			this.logger = logger;
-			this.executionService = executionService;
-			this.preferenceService = preferenceService;
-			this.configurationServiceFactory = configurationServiceFactory;
+	public SynchronizeServiceImpl(final Logger logger,
+			final ExecutionService executionService,
+			final PreferenceService preferenceService,
+			final ConfigurationServiceFactory configurationServiceFactory) {
+		this.logger = logger;
+		this.executionService = executionService;
+		this.preferenceService = preferenceService;
+		this.configurationServiceFactory = configurationServiceFactory;
 	}
-
 
 	public void sychronizeAlarmSystem(final Callback callback) {
-		executionService.executeAsynchronsly(ThreadTypes.SYNCHRONIZER, new StepByStepProcessor() {
-			@Override
-			protected void doRunOneSingleStep() throws Throwable,
-					InterruptedException {
-				sychronizeAlarmSystemInternal(callback);
-				this.done();
-			}
-		});
+		this.executionService.executeAsynchronsly(ThreadTypes.SYNCHRONIZER,
+				new StepByStepProcessor() {
+					@Override
+					protected void doRunOneSingleStep() throws Throwable,
+							InterruptedException {
+						SynchronizeServiceImpl.this
+								.sychronizeAlarmSystemInternal(callback);
+						this.done();
+					}
+				});
 	}
+
 	private void sychronizeAlarmSystemInternal(final Callback callback) {
-		if( callback.pruefeObSynchronisationAusgefuehrtWerdenDarf() )
-		{
+		if (callback.pruefeObSynchronisationAusgefuehrtWerdenDarf()) {
 			callback.bereiteSynchronisationVor();
-			
+
 			try {
-				LocalStoreConfigurationService localStoreConfigurationService = 
-				configurationServiceFactory.getConfigurationService(
-						preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
-				DatabaseType.Oracle10g, 
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
+				final LocalStoreConfigurationService localStoreConfigurationService = this.configurationServiceFactory
+						.getConfigurationService(
+								this.preferenceService
+										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION),
+								DatabaseType.Oracle10g,
+								this.preferenceService
+										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER),
+								this.preferenceService
+										.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD));
 				localStoreConfigurationService.prepareSynchonization();
-			} catch (Throwable t) {
-				logger.logErrorMessage(this, "Error on preparation of synchronisation", t);
+			} catch (final Throwable t) {
+				this.logger.logErrorMessage(this,
+						"Error on preparation of synchronisation", t);
 				callback.fehlerBeimVorbereitenDerSynchronisation(t);
 				callback.synchronisationAbgebrochen();
-				return ;
+				return;
 			}
-			
+
 			// TODO Real fortfahren...
 			callback.sendeNachrichtAnHintergrundSystem();
 			callback.wartetAufAntowrtDesHintergrundSystems();

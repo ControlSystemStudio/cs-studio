@@ -8,17 +8,19 @@ public class HistoryServiceFactoryImpl implements HistoryServiceFactory {
 
 	private static LocalStoreConfigurationService localStoreConfigurationService;
 
+	public static void injectLocalStoreConfigurationService(
+			final LocalStoreConfigurationService localStoreConfigurationService) {
+		HistoryServiceFactoryImpl.localStoreConfigurationService = localStoreConfigurationService;
+	}
+
 	public HistoryServiceFactoryImpl() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public HistoryService createService() {
 		// TODO Auto-generated method stub
-		return new HistoryServiceImpl(localStoreConfigurationService);
-	}
-	
-	public static void injectLocalStoreConfigurationService(LocalStoreConfigurationService localStoreConfigurationService) {
-		HistoryServiceFactoryImpl.localStoreConfigurationService = localStoreConfigurationService;
+		return new HistoryServiceImpl(
+				HistoryServiceFactoryImpl.localStoreConfigurationService);
 	}
 
 }

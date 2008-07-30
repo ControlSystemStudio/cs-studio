@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.messaging;
 
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -10,9 +11,9 @@ import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage_Test;
 public class MessagingServiceAllTestsSuite extends TestCase {
 
 	public static Test suite() throws Throwable {
-		
-		TestSuite suite = new TestSuite("MessagingServiceAllTestsSuite");
-		//$JUnit-BEGIN$
+
+		final TestSuite suite = new TestSuite("MessagingServiceAllTestsSuite");
+		// $JUnit-BEGIN$
 
 		suite.addTestSuite(MessagingServiceAllTestsSuite.class);
 
@@ -20,18 +21,18 @@ public class MessagingServiceAllTestsSuite extends TestCase {
 
 		suite.addTestSuite(DefaultNAMSMessage_Test.class);
 
-		//$JUnit-END$
+		// $JUnit-END$
 		return suite;
 	}
 
 	@org.junit.Test
-	public void testAssertionsAktiviert()
-	{
+	public void testAssertionsAktiviert() {
 		try {
 			assert false : "Ok, Assertions sind aktiviert!";
-			fail("Nein, Assertions sind nicht aktiviert");
-		} catch(AssertionError ae) {
-			assertEquals("Ok, Assertions sind aktiviert!", ae.getMessage());
+			Assert.fail("Nein, Assertions sind nicht aktiviert");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Ok, Assertions sind aktiviert!", ae
+					.getMessage());
 		}
 	}
 }

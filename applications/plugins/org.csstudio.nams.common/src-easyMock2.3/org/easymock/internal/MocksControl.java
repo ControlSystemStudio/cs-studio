@@ -11,13 +11,28 @@ import org.easymock.IMocksControl;
 
 public class MocksControl implements IMocksControl {
 
-	private IMocksControlState state;
-
-	private IMocksBehavior behavior;
-
 	public enum MockType {
 		NICE, DEFAULT, STRICT
 	}
+
+	/**
+	 * Exactly one call.
+	 */
+	public static final Range ONCE = new Range(1);
+
+	/**
+	 * One or more calls.
+	 */
+	public static final Range AT_LEAST_ONCE = new Range(1, Integer.MAX_VALUE);
+
+	/**
+	 * Zero or more calls.
+	 */
+	public static final Range ZERO_OR_MORE = new Range(0, Integer.MAX_VALUE);
+
+	private IMocksControlState state;
+
+	private IMocksBehavior behavior;
 
 	private final MockType type;
 
@@ -26,8 +41,91 @@ public class MocksControl implements IMocksControl {
 		this.reset();
 	}
 
-	public IMocksControlState getState() {
-		return this.state;
+	public IExpectationSetters andAnswer(final IAnswer answer) {
+		try {
+			this.state.andAnswer(answer);
+			return this;
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public IExpectationSetters andReturn(final Object value) {
+		try {
+			this.state.andReturn(value);
+			return this;
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public void andStubAnswer(final IAnswer answer) {
+		try {
+			this.state.andStubAnswer(answer);
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public void andStubReturn(final Object value) {
+		try {
+			this.state.andStubReturn(value);
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public void andStubThrow(final Throwable throwable) {
+		try {
+			this.state.andStubThrow(throwable);
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	// methods from IBehaviorSetters
+
+	public IExpectationSetters andThrow(final Throwable throwable) {
+		try {
+			this.state.andThrow(throwable);
+			return this;
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public IExpectationSetters anyTimes() {
+		try {
+			this.state.times(MocksControl.ZERO_OR_MORE);
+			return this;
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public void asStub() {
+		try {
+			this.state.asStub();
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public IExpectationSetters atLeastOnce() {
+		try {
+			this.state.times(MocksControl.AT_LEAST_ONCE);
+			return this;
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
+	}
+
+	public void checkOrder(final boolean value) {
+		try {
+			this.state.checkOrder(value);
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
 	}
 
 	public <T> T createMock(final Class<T> toMock) {
@@ -54,15 +152,17 @@ public class MocksControl implements IMocksControl {
 		}
 	}
 
-	protected <T> IProxyFactory<T> createProxyFactory(final Class<T> toMock) {
-		return new JavaProxyFactory<T>();
+	public IMocksControlState getState() {
+		return this.state;
 	}
 
-	public final void reset() {
-		this.behavior = new MocksBehavior(this.type == MockType.NICE);
-		this.behavior.checkOrder(this.type == MockType.STRICT);
-		this.state = new RecordState(this.behavior);
-		LastControl.reportLastControl(null);
+	public IExpectationSetters once() {
+		try {
+			this.state.times(MocksControl.ONCE);
+			return this;
+		} catch (final RuntimeExceptionWrapper e) {
+			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		}
 	}
 
 	public void replay() {
@@ -75,80 +175,44 @@ public class MocksControl implements IMocksControl {
 		}
 	}
 
-	public void verify() {
-		try {
-			this.state.verify();
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		} catch (final AssertionErrorWrapper e) {
-			throw (AssertionError) e.getAssertionError().fillInStackTrace();
-		}
+	public final void reset() {
+		this.behavior = new MocksBehavior(this.type == MockType.NICE);
+		this.behavior.checkOrder(this.type == MockType.STRICT);
+		this.state = new RecordState(this.behavior);
+		LastControl.reportLastControl(null);
 	}
 
-	public void checkOrder(final boolean value) {
+	public void setLegacyDefaultMatcher(final ArgumentsMatcher matcher) {
 		try {
-			this.state.checkOrder(value);
+			this.state.setDefaultMatcher(matcher);
 		} catch (final RuntimeExceptionWrapper e) {
 			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
 		}
 	}
 
-	// methods from IBehaviorSetters
-
-	public IExpectationSetters andReturn(final Object value) {
+	public void setLegacyDefaultReturnValue(final Object value) {
 		try {
-			this.state.andReturn(value);
-			return this;
+			this.state.setDefaultReturnValue(value);
 		} catch (final RuntimeExceptionWrapper e) {
 			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
 		}
 	}
 
-	public IExpectationSetters andThrow(final Throwable throwable) {
+	public void setLegacyDefaultThrowable(final Throwable throwable) {
 		try {
-			this.state.andThrow(throwable);
-			return this;
+			this.state.setDefaultThrowable(throwable);
 		} catch (final RuntimeExceptionWrapper e) {
 			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
 		}
 	}
 
-	public IExpectationSetters andAnswer(final IAnswer answer) {
-		try {
-			this.state.andAnswer(answer);
-			return this;
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
+	public void setLegacyDefaultVoidCallable() {
+		this.state.setDefaultVoidCallable();
 	}
 
-	public void andStubReturn(final Object value) {
+	public void setLegacyMatcher(final ArgumentsMatcher matcher) {
 		try {
-			this.state.andStubReturn(value);
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	public void andStubThrow(final Throwable throwable) {
-		try {
-			this.state.andStubThrow(throwable);
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	public void andStubAnswer(final IAnswer answer) {
-		try {
-			this.state.andStubAnswer(answer);
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	public void asStub() {
-		try {
-			this.state.asStub();
+			this.state.setMatcher(null, matcher);
 		} catch (final RuntimeExceptionWrapper e) {
 			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
 		}
@@ -172,81 +236,17 @@ public class MocksControl implements IMocksControl {
 		}
 	}
 
-	public IExpectationSetters once() {
+	public void verify() {
 		try {
-			this.state.times(MocksControl.ONCE);
-			return this;
+			this.state.verify();
 		} catch (final RuntimeExceptionWrapper e) {
 			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
+		} catch (final AssertionErrorWrapper e) {
+			throw (AssertionError) e.getAssertionError().fillInStackTrace();
 		}
 	}
 
-	public IExpectationSetters atLeastOnce() {
-		try {
-			this.state.times(MocksControl.AT_LEAST_ONCE);
-			return this;
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	public IExpectationSetters anyTimes() {
-		try {
-			this.state.times(MocksControl.ZERO_OR_MORE);
-			return this;
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	/**
-	 * Exactly one call.
-	 */
-	public static final Range ONCE = new Range(1);
-
-	/**
-	 * One or more calls.
-	 */
-	public static final Range AT_LEAST_ONCE = new Range(1, Integer.MAX_VALUE);
-
-	/**
-	 * Zero or more calls.
-	 */
-	public static final Range ZERO_OR_MORE = new Range(0, Integer.MAX_VALUE);
-
-	public void setLegacyDefaultMatcher(final ArgumentsMatcher matcher) {
-		try {
-			this.state.setDefaultMatcher(matcher);
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	public void setLegacyMatcher(final ArgumentsMatcher matcher) {
-		try {
-			this.state.setMatcher(null, matcher);
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	public void setLegacyDefaultReturnValue(final Object value) {
-		try {
-			this.state.setDefaultReturnValue(value);
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
-	}
-
-	public void setLegacyDefaultVoidCallable() {
-		this.state.setDefaultVoidCallable();
-	}
-
-	public void setLegacyDefaultThrowable(final Throwable throwable) {
-		try {
-			this.state.setDefaultThrowable(throwable);
-		} catch (final RuntimeExceptionWrapper e) {
-			throw (RuntimeException) e.getRuntimeException().fillInStackTrace();
-		}
+	protected <T> IProxyFactory<T> createProxyFactory(final Class<T> toMock) {
+		return new JavaProxyFactory<T>();
 	}
 }

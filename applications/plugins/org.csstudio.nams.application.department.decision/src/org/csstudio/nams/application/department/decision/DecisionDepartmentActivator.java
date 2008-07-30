@@ -97,6 +97,45 @@ import org.osgi.framework.BundleActivator;
 public class DecisionDepartmentActivator extends AbstractBundleActivator
 		implements IApplication, BundleActivator {
 
+	class AusgangsKorbBearbeiter extends StepByStepProcessor {
+
+		private final Eingangskorb<Vorgangsmappe> vorgangskorb;
+
+		public AusgangsKorbBearbeiter(
+				final Eingangskorb<Vorgangsmappe> vorgangskorb) {
+			this.vorgangskorb = vorgangskorb;
+		}
+
+		@Override
+		protected void doRunOneSingleStep() throws Throwable {
+
+			try {
+				final Vorgangsmappe vorgangsmappe = this.vorgangskorb
+						.entnehmeAeltestenEingang();
+				if (vorgangsmappe.istAbgeschlossenDurchTimeOut()) {
+					DecisionDepartmentActivator.historyService
+							.logTimeOutForTimeBased(vorgangsmappe);
+				}
+				DecisionDepartmentActivator.logger.logDebugMessage(this,
+						"gesamtErgebnis: "
+								+ vorgangsmappe.gibPruefliste()
+										.gesamtErgebnis());
+
+				if (vorgangsmappe.gibPruefliste().gesamtErgebnis() == WeiteresVersandVorgehen.VERSENDEN) {
+					// Nachricht nicht anreichern. Wird im JMSProducer
+					// gemacht
+					// Versenden
+					DecisionDepartmentActivator.this.amsAusgangsProducer
+							.sendeVorgangsmappe(vorgangsmappe);
+				}
+
+			} catch (final InterruptedException e) {
+				// wird zum stoppen benötigt.
+				// hier muss nichts unternommen werden
+			}
+		}
+	}
+
 	/**
 	 * The plug-in ID of this bundle.
 	 */
@@ -114,6 +153,90 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	private static MessagingService messagingService;
 
 	/**
+	 * Service für das Entscheidungsbüro um das starten der asynchronen
+	 * Ausführung von Einzelaufgaben (Threads) zu kapseln.
+	 */
+	private static ExecutionService executionService;
+
+	private static PreferenceService preferenceService;
+
+	private static RegelwerkBuilderService regelwerkBuilderService;
+
+	private static HistoryService historyService;
+
+	/**
+	 * Service to receive configuration-data. Used by
+	 * {@link RegelwerkBuilderService}.
+	 */
+	private static LocalStoreConfigurationService localStoreConfigurationService;
+
+	/**
+	 * Versucht via dem Distributor eine Synchronisation auszufürehn. Das
+	 * Ergebnis gibt an, ob weitergearbeitet werden soll.
+	 * 
+	 * @param instance
+	 * @param logger
+	 * @param amsAusgangsProducer
+	 * @param amsCommandConsumer
+	 * @param localStoreConfigurationService
+	 * @return {@code true} bei Erfolg, {@false} sonst.
+	 */
+	private static boolean versucheZuSynchronisieren(
+			final DecisionDepartmentActivator instance, final Logger logger,
+			final Producer amsAusgangsProducer,
+			final Consumer amsCommandConsumer,
+			final LocalStoreConfigurationService localStoreConfigurationService) {
+		boolean result = false;
+		try {
+
+			logger
+					.logInfoMessage(
+							instance,
+							"Decision department application orders distributor to synchronize configuration...");
+			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
+					amsAusgangsProducer, amsCommandConsumer,
+					localStoreConfigurationService,
+					DecisionDepartmentActivator.historyService);
+			if (!SyncronisationsAutomat.hasBeenCanceled()) {
+				// Abbruch bei Syncrinisation
+				result = true;
+			}
+		} catch (final MessagingException messagingException) {
+			if (SyncronisationsAutomat.hasBeenCanceled()) {
+				// Abbruch bei Syncrinisation
+				logger
+						.logInfoMessage(
+								instance,
+								"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
+
+			} else {
+
+				logger.logFatalMessage(instance,
+						"Exception while synchronizing configuration.",
+						messagingException);
+				result = false;
+
+			}
+		} catch (final StorageException storageException) {
+			logger.logFatalMessage(instance,
+					"Exception while synchronizing configuration.",
+					storageException);
+			result = false;
+		} catch (final UnknownConfigurationElementError unknownConfigurationElementError) {
+			logger.logFatalMessage(instance,
+					"Exception while synchronizing configuration.",
+					unknownConfigurationElementError);
+			result = false;
+		} catch (final InconsistentConfigurationException inconsistentConfiguration) {
+			logger.logFatalMessage(instance,
+					"Exception while synchronizing configuration.",
+					inconsistentConfiguration);
+			result = false;
+		}
+		return result;
+	}
+
+	/**
 	 * Indicates if the application instance should continue working. Unused in
 	 * the activator instance.
 	 * 
@@ -128,18 +251,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * benutzt.
 	 */
 	private Thread _receiverThread;
-
-	/**
-	 * Service für das Entscheidungsbüro um das starten der asynchronen
-	 * Ausführung von Einzelaufgaben (Threads) zu kapseln.
-	 */
-	private static ExecutionService executionService;
-
-	private static PreferenceService preferenceService;
-
-	private static RegelwerkBuilderService regelwerkBuilderService;
-
-	private static HistoryService historyService;
 
 	private MessagingSession amsMessagingSessionForConsumer;
 
@@ -165,12 +276,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	private Producer amsAusgangsProducer;
 
 	/**
-	 * Service to receive configuration-data. Used by
-	 * {@link RegelwerkBuilderService}.
-	 */
-	private static LocalStoreConfigurationService localStoreConfigurationService;
-
-	/**
 	 * MessageSession für externe Quellen und Ziele.
 	 */
 	private MessagingSession extMessagingSessionForConsumer;
@@ -182,95 +287,16 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 	private AlarmEntscheidungsBuero _alarmEntscheidungsBuero;
 
+	// private AbstractMultiConsumerMessageHandler
+	// messageHandlerToRecieveUntilApplicationQuits;
+
 	private StepByStepProcessor _ausgangskorbBearbeiter;
 
 	private Integer _applicationExitStatus = IApplication.EXIT_OK;
 
-	// private AbstractMultiConsumerMessageHandler
-	// messageHandlerToRecieveUntilApplicationQuits;
-
 	private Eingangskorb<Vorgangsmappe> eingangskorbDesDecisionOffice;
 
 	private StandardAblagekorb<Vorgangsmappe> ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice;
-
-	/**
-	 * Starts the bundle activator instance. First Step.
-	 * 
-	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	@OSGiBundleActivationMethod
-	public void startBundle(@OSGiService
-	@Required
-	final Logger injectedLogger, @OSGiService
-	@Required
-	final MessagingService injectedMessagingService, @OSGiService
-	@Required
-	final PreferenceService injectedPreferenceService, @OSGiService
-	@Required
-	final RegelwerkBuilderService injectedBuilderService, @OSGiService
-	@Required
-	final HistoryService injectedHistoryService, @OSGiService
-	@Required
-	final ConfigurationServiceFactory injectedConfigurationServiceFactory,
-			@OSGiService
-			@Required
-			final ExecutionService injectedExecutionService) throws Exception {
-
-		// ** Services holen...
-
-		// Logging Service
-		DecisionDepartmentActivator.logger = injectedLogger;
-
-		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
-				+ DecisionDepartmentActivator.PLUGIN_ID
-				+ " initializing Services");
-
-		// Messaging Service
-		DecisionDepartmentActivator.messagingService = injectedMessagingService;
-
-		// Preference Service (wird als konfiguration verwendet!!)
-		DecisionDepartmentActivator.preferenceService = injectedPreferenceService;
-
-		// RegelwerkBuilder Service
-		DecisionDepartmentActivator.regelwerkBuilderService = injectedBuilderService;
-
-		// History Service
-		DecisionDepartmentActivator.historyService = injectedHistoryService;
-
-		// LocalStoreConfigurationService
-		DecisionDepartmentActivator.localStoreConfigurationService = injectedConfigurationServiceFactory
-				.getConfigurationService(
-						DecisionDepartmentActivator.preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-								DatabaseType.Oracle10g, // TODO mz2008-07-17: AUs PrefStore holen (PrefStore anpassen)
-						DecisionDepartmentActivator.preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
-						DecisionDepartmentActivator.preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
-
-		DecisionDepartmentActivator.executionService = injectedExecutionService;
-		
-		XMPPLoginCallbackHandler.staticInject(DecisionDepartmentActivator.logger);
-		XMPPRemoteShutdownAction.staticInject(DecisionDepartmentActivator.logger);
-
-		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
-				+ DecisionDepartmentActivator.PLUGIN_ID
-				+ " started succesfully.");
-	}
-
-	/**
-	 * Stops the bundle activator instance. Last Step.
-	 * 
-	 * @see BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	@OSGiBundleDeactivationMethod
-	public void stopBundle(@OSGiService
-	@Required
-	final Logger logger) throws Exception {
-		logger.logInfoMessage(this, "Plugin "
-				+ DecisionDepartmentActivator.PLUGIN_ID
-				+ " stopped succesfully.");
-	}
 
 	/**
 	 * Starts the bundle application instance. Second Step.
@@ -313,9 +339,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			this.amsMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
 					.createNewMessagingSession("amsConsumer", new String[] {
 							amsProvider1, amsProvider2 });
-			String extProvider1 = DecisionDepartmentActivator.preferenceService
+			final String extProvider1 = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1);
-			String extProvider2 = DecisionDepartmentActivator.preferenceService
+			final String extProvider2 = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2);
 			DecisionDepartmentActivator.logger.logDebugMessage(this,
 					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1 = "
@@ -324,63 +350,55 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2 = "
 							+ extProvider2);
 			this.extMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession(
-							"extConsumer",
-							new String[] {
-									extProvider1,
-									extProvider2 });
+					.createNewMessagingSession("extConsumer", new String[] {
+							extProvider1, extProvider2 });
 
-			String extAlarmTopic = DecisionDepartmentActivator.preferenceService
+			final String extAlarmTopic = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM);
 			DecisionDepartmentActivator.logger.logDebugMessage(this,
 					"PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM = "
 							+ extAlarmTopic);
 			this.extAlarmConsumer = this.extMessagingSessionForConsumer
-					.createConsumer(
-							extAlarmTopic,
-							PostfachArt.TOPIC);
-			
-			// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb beim Desy heruasgenommen, damit Comands nur lokal gelesen werden, Stelle 1 / 2 - 
+					.createConsumer(extAlarmTopic, PostfachArt.TOPIC);
+
+			// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb
+			// beim Desy heruasgenommen, damit Comands nur lokal gelesen werden,
+			// Stelle 1 / 2 -
 			// BEGIN
-//			this.extCommandConsumer = this.extMessagingSessionForConsumer
-//					.createConsumer(
-//							DecisionDepartmentActivator.preferenceService
-//									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
-//							PostfachArt.TOPIC);
+			// this.extCommandConsumer = this.extMessagingSessionForConsumer
+			// .createConsumer(
+			// DecisionDepartmentActivator.preferenceService
+			// .getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+			// PostfachArt.TOPIC);
 			// END
-			
-			String amsCommandTopic = DecisionDepartmentActivator.preferenceService
+
+			final String amsCommandTopic = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND);
 			DecisionDepartmentActivator.logger.logDebugMessage(this,
 					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND = "
 							+ amsCommandTopic);
 			this.amsCommandConsumer = this.amsMessagingSessionForConsumer
-					.createConsumer(
-							amsCommandTopic,
-							PostfachArt.TOPIC);
+					.createConsumer(amsCommandTopic, PostfachArt.TOPIC);
 			DecisionDepartmentActivator.logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
 
 			// FIXME clientid!!
-			String amsSenderProviderUrl = DecisionDepartmentActivator.preferenceService
+			final String amsSenderProviderUrl = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL);
 			DecisionDepartmentActivator.logger.logDebugMessage(this,
 					"PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL = "
 							+ amsSenderProviderUrl);
 			this.amsMessagingSessionForProducer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession(
-							"amsProducer",
+					.createNewMessagingSession("amsProducer",
 							new String[] { amsSenderProviderUrl });
 
-			String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
+			final String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER);
 			DecisionDepartmentActivator.logger.logDebugMessage(this,
 					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER(AusgangsTopic) = "
 							+ amsAusgangsTopic);
 			this.amsAusgangsProducer = this.amsMessagingSessionForProducer
-					.createProducer(
-							amsAusgangsTopic,
-							PostfachArt.TOPIC);
+					.createProducer(amsAusgangsTopic, PostfachArt.TOPIC);
 
 		} catch (final Throwable e) {
 			DecisionDepartmentActivator.logger
@@ -508,69 +526,107 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	}
 
 	/**
-	 * Versucht via dem Distributor eine Synchronisation auszufürehn. Das
-	 * Ergebnis gibt an, ob weitergearbeitet werden soll.
+	 * Starts the bundle activator instance. First Step.
 	 * 
-	 * @param instance
-	 * @param logger
-	 * @param amsAusgangsProducer
-	 * @param amsCommandConsumer
-	 * @param localStoreConfigurationService
-	 * @return {@code true} bei Erfolg, {@false} sonst.
+	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
-	private static boolean versucheZuSynchronisieren(
-			final DecisionDepartmentActivator instance, final Logger logger,
-			final Producer amsAusgangsProducer,
-			final Consumer amsCommandConsumer,
-			final LocalStoreConfigurationService localStoreConfigurationService) {
-		boolean result = false;
-		try {
+	@OSGiBundleActivationMethod
+	public void startBundle(@OSGiService
+	@Required
+	final Logger injectedLogger, @OSGiService
+	@Required
+	final MessagingService injectedMessagingService, @OSGiService
+	@Required
+	final PreferenceService injectedPreferenceService, @OSGiService
+	@Required
+	final RegelwerkBuilderService injectedBuilderService, @OSGiService
+	@Required
+	final HistoryService injectedHistoryService, @OSGiService
+	@Required
+	final ConfigurationServiceFactory injectedConfigurationServiceFactory,
+			@OSGiService
+			@Required
+			final ExecutionService injectedExecutionService) throws Exception {
 
-			logger
-					.logInfoMessage(
-							instance,
-							"Decision department application orders distributor to synchronize configuration...");
-			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
-					amsAusgangsProducer, amsCommandConsumer,
-					localStoreConfigurationService,
-					DecisionDepartmentActivator.historyService);
-			if (!SyncronisationsAutomat.hasBeenCanceled()) {
-				// Abbruch bei Syncrinisation
-				result = true;
-			}
-		} catch (final MessagingException messagingException) {
-			if (SyncronisationsAutomat.hasBeenCanceled()) {
-				// Abbruch bei Syncrinisation
-				logger
-						.logInfoMessage(
-								instance,
-								"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
+		// ** Services holen...
 
-			} else {
+		// Logging Service
+		DecisionDepartmentActivator.logger = injectedLogger;
 
-				logger.logFatalMessage(instance,
-						"Exception while synchronizing configuration.",
-						messagingException);
-				result = false;
+		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
+				+ DecisionDepartmentActivator.PLUGIN_ID
+				+ " initializing Services");
 
-			}
-		} catch (final StorageException storageException) {
-			logger.logFatalMessage(instance,
-					"Exception while synchronizing configuration.",
-					storageException);
-			result = false;
-		} catch (final UnknownConfigurationElementError unknownConfigurationElementError) {
-			logger.logFatalMessage(instance,
-					"Exception while synchronizing configuration.",
-					unknownConfigurationElementError);
-			result = false;
-		} catch (final InconsistentConfigurationException inconsistentConfiguration) {
-			logger.logFatalMessage(instance,
-					"Exception while synchronizing configuration.",
-					inconsistentConfiguration);
-			result = false;
+		// Messaging Service
+		DecisionDepartmentActivator.messagingService = injectedMessagingService;
+
+		// Preference Service (wird als konfiguration verwendet!!)
+		DecisionDepartmentActivator.preferenceService = injectedPreferenceService;
+
+		// RegelwerkBuilder Service
+		DecisionDepartmentActivator.regelwerkBuilderService = injectedBuilderService;
+
+		// History Service
+		DecisionDepartmentActivator.historyService = injectedHistoryService;
+
+		// LocalStoreConfigurationService
+		DecisionDepartmentActivator.localStoreConfigurationService = injectedConfigurationServiceFactory
+				.getConfigurationService(
+						DecisionDepartmentActivator.preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
+						DatabaseType.Oracle10g, // TODO mz2008-07-17: AUs
+												// PrefStore holen (PrefStore
+												// anpassen)
+						DecisionDepartmentActivator.preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
+						DecisionDepartmentActivator.preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
+
+		DecisionDepartmentActivator.executionService = injectedExecutionService;
+
+		XMPPLoginCallbackHandler
+				.staticInject(DecisionDepartmentActivator.logger);
+		XMPPRemoteShutdownAction
+				.staticInject(DecisionDepartmentActivator.logger);
+
+		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
+				+ DecisionDepartmentActivator.PLUGIN_ID
+				+ " started succesfully.");
+	}
+
+	/**
+	 * Stops the bundle application instance.Ppenultimate Step.
+	 * 
+	 * @see IApplication#start(IApplicationContext)
+	 */
+	public void stop() {
+		DecisionDepartmentActivator.logger
+				.logInfoMessage(this,
+						"Start to shut down decision department application on user request...");
+		this._continueWorking = false;
+		if (SyncronisationsAutomat.isRunning()) {
+			DecisionDepartmentActivator.logger.logInfoMessage(this,
+					"Canceling running syncronisation...");
+			SyncronisationsAutomat.cancel();
 		}
-		return result;
+
+		DecisionDepartmentActivator.logger.logInfoMessage(this,
+				"Interrupting working thread...");
+		this._receiverThread.interrupt();
+	}
+
+	/**
+	 * Stops the bundle activator instance. Last Step.
+	 * 
+	 * @see BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	@OSGiBundleDeactivationMethod
+	public void stopBundle(@OSGiService
+	@Required
+	final Logger logger) throws Exception {
+		logger.logInfoMessage(this, "Plugin "
+				+ DecisionDepartmentActivator.PLUGIN_ID
+				+ " stopped succesfully.");
 	}
 
 	private void initialisiereThredGroupTypes(
@@ -618,11 +674,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		final Consumer[] consumerArray = new Consumer[] {
 				this.amsCommandConsumer, this.extAlarmConsumer,
-				// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb beim Desy heruasgenommen, damit Comands nur lokal gelesen werden, Stelle 2 / 2 - 
-				// BEGIN
-				// this.extCommandConsumer
-				// END
-				};
+		// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb beim
+		// Desy heruasgenommen, damit Comands nur lokal gelesen werden, Stelle 2
+		// / 2 -
+		// BEGIN
+		// this.extCommandConsumer
+		// END
+		};
 
 		final MultiConsumersConsumer consumersConsumer = new MultiConsumersConsumer(
 				DecisionDepartmentActivator.logger, consumerArray,
@@ -697,65 +755,5 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		}
 
 		consumersConsumer.close();
-	}
-
-	/**
-	 * Stops the bundle application instance.Ppenultimate Step.
-	 * 
-	 * @see IApplication#start(IApplicationContext)
-	 */
-	public void stop() {
-		DecisionDepartmentActivator.logger
-				.logInfoMessage(this,
-						"Start to shut down decision department application on user request...");
-		this._continueWorking = false;
-		if (SyncronisationsAutomat.isRunning()) {
-			DecisionDepartmentActivator.logger.logInfoMessage(this,
-					"Canceling running syncronisation...");
-			SyncronisationsAutomat.cancel();
-		}
-
-		DecisionDepartmentActivator.logger.logInfoMessage(this,
-				"Interrupting working thread...");
-		this._receiverThread.interrupt();
-	}
-
-	class AusgangsKorbBearbeiter extends StepByStepProcessor {
-
-		private final Eingangskorb<Vorgangsmappe> vorgangskorb;
-
-		public AusgangsKorbBearbeiter(
-				final Eingangskorb<Vorgangsmappe> vorgangskorb) {
-			this.vorgangskorb = vorgangskorb;
-		}
-
-		@Override
-		protected void doRunOneSingleStep() throws Throwable {
-
-			try {
-				final Vorgangsmappe vorgangsmappe = this.vorgangskorb
-						.entnehmeAeltestenEingang();
-				if (vorgangsmappe.istAbgeschlossenDurchTimeOut()) {
-					DecisionDepartmentActivator.historyService
-							.logTimeOutForTimeBased(vorgangsmappe);
-				}
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"gesamtErgebnis: "
-								+ vorgangsmappe.gibPruefliste()
-										.gesamtErgebnis());
-
-				if (vorgangsmappe.gibPruefliste().gesamtErgebnis() == WeiteresVersandVorgehen.VERSENDEN) {
-					// Nachricht nicht anreichern. Wird im JMSProducer
-					// gemacht
-					// Versenden
-					DecisionDepartmentActivator.this.amsAusgangsProducer
-							.sendeVorgangsmappe(vorgangsmappe);
-				}
-
-			} catch (final InterruptedException e) {
-				// wird zum stoppen benötigt.
-				// hier muss nichts unternommen werden
-			}
-		}
 	};
 }

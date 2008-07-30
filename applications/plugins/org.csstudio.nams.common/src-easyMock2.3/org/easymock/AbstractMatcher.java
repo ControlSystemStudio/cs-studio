@@ -19,36 +19,6 @@ package org.easymock;
 public abstract class AbstractMatcher implements ArgumentsMatcher {
 
 	/**
-	 * Checks whether an expected argument matches an actual argument; the
-	 * method is used by {@link AbstractMatcher#matches(Object[], Object[])}.
-	 * The arguments provided to this method are always not <code>null</code>.
-	 * 
-	 * @param expected
-	 *            the expected argument.
-	 * @param actual
-	 *            the actual argument.
-	 * @return true if the arguments match, false otherwise.
-	 */
-	protected boolean argumentMatches(final Object expected, final Object actual) {
-		return expected.equals(actual);
-	}
-
-	/**
-	 * Converts an argument to a String, used by
-	 * {@link AbstractMatcher#toString(Object[])}.
-	 * 
-	 * @param argument
-	 *            the argument to convert to a String.
-	 * @return a <code>String</code> representation of the argument.
-	 */
-	protected String argumentToString(final Object argument) {
-		if (argument instanceof String) {
-			return "\"" + argument + "\"";
-		}
-		return "" + argument;
-	}
-
-	/**
 	 * Checks whether an expected argument array matches an actual argument
 	 * array. This convenience implementation uses
 	 * <code>argumentMatches(Object, Object)</code> to check whether arguments
@@ -121,5 +91,35 @@ public abstract class AbstractMatcher implements ArgumentsMatcher {
 			result.append(this.argumentToString(localArguments[i]));
 		}
 		return result.toString();
+	}
+
+	/**
+	 * Checks whether an expected argument matches an actual argument; the
+	 * method is used by {@link AbstractMatcher#matches(Object[], Object[])}.
+	 * The arguments provided to this method are always not <code>null</code>.
+	 * 
+	 * @param expected
+	 *            the expected argument.
+	 * @param actual
+	 *            the actual argument.
+	 * @return true if the arguments match, false otherwise.
+	 */
+	protected boolean argumentMatches(final Object expected, final Object actual) {
+		return expected.equals(actual);
+	}
+
+	/**
+	 * Converts an argument to a String, used by
+	 * {@link AbstractMatcher#toString(Object[])}.
+	 * 
+	 * @param argument
+	 *            the argument to convert to a String.
+	 * @return a <code>String</code> representation of the argument.
+	 */
+	protected String argumentToString(final Object argument) {
+		if (argument instanceof String) {
+			return "\"" + argument + "\"";
+		}
+		return "" + argument;
 	}
 }

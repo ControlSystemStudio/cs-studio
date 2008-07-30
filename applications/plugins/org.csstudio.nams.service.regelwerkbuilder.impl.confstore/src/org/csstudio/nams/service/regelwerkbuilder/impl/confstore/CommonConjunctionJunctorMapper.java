@@ -3,7 +3,7 @@ package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 public enum CommonConjunctionJunctorMapper {
 	OR, AND, NOT;
 
-	public CommonConjunctionJunctorMapper valueOf(int value) {
+	public CommonConjunctionJunctorMapper valueOf(final int value) {
 		switch (value) {
 		case 0:
 			return OR;

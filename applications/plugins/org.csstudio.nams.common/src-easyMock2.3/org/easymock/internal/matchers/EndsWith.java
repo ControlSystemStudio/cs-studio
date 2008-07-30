@@ -14,12 +14,12 @@ public class EndsWith implements IArgumentMatcher {
 		this.suffix = suffix;
 	}
 
+	public void appendTo(final StringBuffer buffer) {
+		buffer.append("endsWith(\"" + this.suffix + "\")");
+	}
+
 	public boolean matches(final Object actual) {
 		return (actual instanceof String)
 				&& ((String) actual).endsWith(this.suffix);
-	}
-
-	public void appendTo(final StringBuffer buffer) {
-		buffer.append("endsWith(\"" + this.suffix + "\")");
 	}
 }

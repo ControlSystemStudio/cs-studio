@@ -14,9 +14,11 @@ public class MessagingServiceMock implements MessagingService {
 	private final Map<String, String[]> expectedUrlsToConnectTo;
 	private final Map<String, MessagingSession> sessions;
 
-	public MessagingServiceMock(Map<String, String[]> expectedUrlsToConnectTo,
-			Map<String, MessagingSession> sessions) {
-		Assert.assertEquals(expectedUrlsToConnectTo.keySet().size(), sessions.keySet().size());
+	public MessagingServiceMock(
+			final Map<String, String[]> expectedUrlsToConnectTo,
+			final Map<String, MessagingSession> sessions) {
+		Assert.assertEquals(expectedUrlsToConnectTo.keySet().size(), sessions
+				.keySet().size());
 		this.expectedEnvironmentUniqueClientIds = expectedUrlsToConnectTo
 				.keySet();
 		Assert.assertEquals(this.expectedEnvironmentUniqueClientIds.size(),
@@ -28,8 +30,22 @@ public class MessagingServiceMock implements MessagingService {
 		this.sessions = sessions;
 	}
 
-	private boolean checkClientId(String clientId) {
-		for (String expectedClientId : expectedEnvironmentUniqueClientIds) {
+	public MessagingSession createNewMessagingSession(
+			final String environmentUniqueClientId, final String[] urls)
+			throws MessagingException, IllegalArgumentException {
+		Assert.assertTrue("An expected environmentUniqueClientId is used.",
+				this.checkClientId(environmentUniqueClientId));
+		Assert.assertTrue("An expected array of urls to connect to are used.",
+				this.checkURLs(environmentUniqueClientId, urls));
+
+		final MessagingSession session = this.sessions
+				.get(environmentUniqueClientId);
+		Assert.assertNotNull(session);
+		return session;
+	}
+
+	private boolean checkClientId(final String clientId) {
+		for (final String expectedClientId : this.expectedEnvironmentUniqueClientIds) {
 			if (expectedClientId.equals(clientId)) {
 				return true;
 			}
@@ -37,25 +53,13 @@ public class MessagingServiceMock implements MessagingService {
 		return false;
 	}
 
-	private boolean checkURLs(String clientId, String[] jmsURLs) {
-		String[] expectedURLs = this.expectedUrlsToConnectTo.get(clientId);
+	private boolean checkURLs(final String clientId, final String[] jmsURLs) {
+		final String[] expectedURLs = this.expectedUrlsToConnectTo
+				.get(clientId);
 		if (Arrays.equals(expectedURLs, jmsURLs)) {
 			return true;
 		}
 		return false;
-	}
-
-	public MessagingSession createNewMessagingSession(
-			String environmentUniqueClientId, String[] urls)
-			throws MessagingException, IllegalArgumentException {
-		Assert.assertTrue("An expected environmentUniqueClientId is used.",
-				checkClientId(environmentUniqueClientId));
-		Assert.assertTrue("An expected array of urls to connect to are used.",
-				checkURLs(environmentUniqueClientId, urls));
-
-		MessagingSession session = this.sessions.get(environmentUniqueClientId);
-		Assert.assertNotNull(session);
-		return session;
 	}
 
 }

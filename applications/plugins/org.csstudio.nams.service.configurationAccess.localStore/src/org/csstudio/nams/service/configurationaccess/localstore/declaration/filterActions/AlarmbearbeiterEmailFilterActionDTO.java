@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 public class AlarmbearbeiterEmailFilterActionDTO extends
 		AbstractAlarmbearbeiterFilterActionDTO {
 
-	public AlarmbearbeiterEmailFilterActionDTO(){
-		filterActionType = AlarmbearbeiterFilterActionType.EMAIL;
+	public AlarmbearbeiterEmailFilterActionDTO() {
+		this.filterActionType = AlarmbearbeiterFilterActionType.EMAIL;
 	}
 }

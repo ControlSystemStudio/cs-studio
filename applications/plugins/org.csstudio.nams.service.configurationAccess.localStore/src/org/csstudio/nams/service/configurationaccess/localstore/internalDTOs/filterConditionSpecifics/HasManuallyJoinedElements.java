@@ -26,23 +26,6 @@ public interface HasManuallyJoinedElements {
 	/**
 	 * ONLY USED FOR MAPPING PURPOSES!
 	 * 
-	 * For Example: This method is used to store the join-data for previously
-	 * set {@link FilterConditionDTO}s (see:
-	 * {@link JunctorConditionForFilterTreeDTO#setOperands(Set)}in class
-	 * {@link JunctorConditionForFilterTreeDTO}. IMPORTANT: This method has to
-	 * be called in a valid open transaction!
-	 * 
-	 * @param mapper
-	 *            The Mapper to store to; it is quaranted that only belonging
-	 *            mappings are stored..
-	 * @throws If
-	 *             an error occurred
-	 */
-	public abstract void storeJoinLinkData(Mapper mapper) throws Throwable;
-
-	/**
-	 * ONLY USED FOR MAPPING PURPOSES!
-	 * 
 	 * Deletes all join-data (link/mapping; NOT the joined elements)
 	 * 
 	 * IMPORTANT: This method has to be called in a valid open transaction!
@@ -72,4 +55,21 @@ public interface HasManuallyJoinedElements {
 	 *             an error occurred
 	 */
 	public abstract void loadJoinData(Mapper mapper) throws Throwable;
+
+	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
+	 * For Example: This method is used to store the join-data for previously
+	 * set {@link FilterConditionDTO}s (see:
+	 * {@link JunctorConditionForFilterTreeDTO#setOperands(Set)}in class
+	 * {@link JunctorConditionForFilterTreeDTO}. IMPORTANT: This method has to
+	 * be called in a valid open transaction!
+	 * 
+	 * @param mapper
+	 *            The Mapper to store to; it is quaranted that only belonging
+	 *            mappings are stored..
+	 * @throws If
+	 *             an error occurred
+	 */
+	public abstract void storeJoinLinkData(Mapper mapper) throws Throwable;
 }

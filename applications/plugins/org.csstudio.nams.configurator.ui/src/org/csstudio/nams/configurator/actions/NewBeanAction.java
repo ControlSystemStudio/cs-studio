@@ -13,8 +13,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 @Deprecated
-public class NewBeanAction extends Action implements
-		IViewActionDelegate {
+public class NewBeanAction extends Action implements IViewActionDelegate {
 
 	private Class<IConfigurationBean> bean;
 
@@ -22,36 +21,37 @@ public class NewBeanAction extends Action implements
 
 	}
 
-	public void init(IViewPart view) {
+	public void init(final IViewPart view) {
 
 	}
 
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		ConfigurationEditorInput editorInput;
 		try {
-			editorInput = new ConfigurationEditorInput(bean.newInstance());
+			editorInput = new ConfigurationEditorInput(this.bean.newInstance());
 
-			IWorkbenchPage activePage = PlatformUI.getWorkbench()
+			final IWorkbenchPage activePage = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage();
-			String editorId = BeanToEditorId.getEnumForClass(bean)
+			final String editorId = BeanToEditorId.getEnumForClass(this.bean)
 					.getEditorId();
 
 			activePage.openEditor(editorInput, editorId);
-		} catch (InstantiationException e1) {
+		} catch (final InstantiationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
+		} catch (final IllegalAccessException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} catch (PartInitException e) {
+		} catch (final PartInitException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		IStructuredSelection sSelection = (IStructuredSelection) selection;
-		Object source = sSelection.getFirstElement();
-		bean = (Class<IConfigurationBean>) source.getClass();
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
+		final IStructuredSelection sSelection = (IStructuredSelection) selection;
+		final Object source = sSelection.getFirstElement();
+		this.bean = (Class<IConfigurationBean>) source.getClass();
 	}
 
 }

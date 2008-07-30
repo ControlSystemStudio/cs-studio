@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * @version 0.3
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target( { ElementType.METHOD })
 public @interface OSGiBundleDeactivationMethod {
 
 }

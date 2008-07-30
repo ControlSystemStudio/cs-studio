@@ -30,12 +30,12 @@ public class PreferenceServiceUIActivator extends AbstractBundleActivator {
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService
 	@Required
-	final Logger logger, 
-	@OSGiService
-	@Required PreferenceStoreAccessor preferenceStoreAccessor
-	) {
-		IPreferenceStore preferenceStore = preferenceStoreAccessor.getPreferenceStore();
-		
+	final Logger logger, @OSGiService
+	@Required
+	final PreferenceStoreAccessor preferenceStoreAccessor) {
+		final IPreferenceStore preferenceStore = preferenceStoreAccessor
+				.getPreferenceStore();
+
 		PreferenceInitializer.staticInject(preferenceStore);
 		ConfigurationDatabaseSetUp.staticInject(preferenceStore);
 		ApplicationDatabaseSetUp.staticInject(preferenceStore);

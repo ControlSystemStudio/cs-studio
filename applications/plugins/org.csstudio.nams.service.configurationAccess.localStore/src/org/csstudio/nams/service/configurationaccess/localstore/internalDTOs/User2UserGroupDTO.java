@@ -29,37 +29,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 public class User2UserGroupDTO implements NewAMSConfigurationElementDTO,
 		HasManuallyJoinedElements {
 
-	public User2UserGroupDTO() {
-		alarmbearbeiter = null;
-	}
-
-	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group,
-			AlarmbearbeiterDTO user) {
-		super();
-		this.user2UserGroupPK = new User2UserGroupDTO_PK(
-				group.getUserGroupId(), user.getUserId());
-		alarmbearbeiter = user;
-	}
-
-	public User2UserGroupDTO(AlarmbearbeiterGruppenDTO group,
-			AlarmbearbeiterDTO user, int position, boolean active,
-			String activeReason, Date lastChange) {
-		super();
-		this.position = position;
-		this.user2UserGroupPK = new User2UserGroupDTO_PK(
-				group.getUserGroupId(), user.getUserId());
-		alarmbearbeiter = user;
-		this.active = (short) (active ? 1 : 0);
-		this.activeReason = activeReason;
-		this.lastchange = lastChange.getTime();
-	}
-
 	@Transient
 	private AlarmbearbeiterDTO alarmbearbeiter;
-
-	public AlarmbearbeiterDTO getAlarmbearbeiter() {
-		return alarmbearbeiter;
-	}
 
 	@EmbeddedId
 	private User2UserGroupDTO_PK user2UserGroupPK;
@@ -76,113 +47,131 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO,
 	@Column(name = "tTimeChange")
 	private long lastchange;
 
+	public User2UserGroupDTO() {
+		this.alarmbearbeiter = null;
+	}
+
+	public User2UserGroupDTO(final AlarmbearbeiterGruppenDTO group,
+			final AlarmbearbeiterDTO user) {
+		super();
+		this.user2UserGroupPK = new User2UserGroupDTO_PK(
+				group.getUserGroupId(), user.getUserId());
+		this.alarmbearbeiter = user;
+	}
+
+	public User2UserGroupDTO(final AlarmbearbeiterGruppenDTO group,
+			final AlarmbearbeiterDTO user, final int position,
+			final boolean active, final String activeReason,
+			final Date lastChange) {
+		super();
+		this.position = position;
+		this.user2UserGroupPK = new User2UserGroupDTO_PK(
+				group.getUserGroupId(), user.getUserId());
+		this.alarmbearbeiter = user;
+		this.active = (short) (active ? 1 : 0);
+		this.activeReason = activeReason;
+		this.lastchange = lastChange.getTime();
+	}
+
+	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
+		this.alarmbearbeiter = null;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final User2UserGroupDTO other = (User2UserGroupDTO) obj;
+		if (this.active != other.active) {
+			return false;
+		}
+		if (this.activeReason == null) {
+			if (other.activeReason != null) {
+				return false;
+			}
+		} else if (!this.activeReason.equals(other.activeReason)) {
+			return false;
+		}
+		if (this.lastchange != other.lastchange) {
+			return false;
+		}
+		if (this.position != other.position) {
+			return false;
+		}
+		if (this.user2UserGroupPK == null) {
+			if (other.user2UserGroupPK != null) {
+				return false;
+			}
+		} else if (!this.user2UserGroupPK.equals(other.user2UserGroupPK)) {
+			return false;
+		}
+		return true;
+	}
+
+	public short getActive() {
+		return this.active;
+	}
+
+	public String getActiveReason() {
+		return this.activeReason;
+	}
+
+	public AlarmbearbeiterDTO getAlarmbearbeiter() {
+		return this.alarmbearbeiter;
+	}
+
+	public long getLastchange() {
+		return this.lastchange;
+	}
+
+	public int getPosition() {
+		return this.position;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return this.toString();
+	}
+
+	public User2UserGroupDTO_PK getUser2UserGroupPK() {
+		return this.user2UserGroupPK;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + active;
-		result = prime * result
-				+ ((activeReason == null) ? 0 : activeReason.hashCode());
-		result = prime * result + (int) (lastchange ^ (lastchange >>> 32));
-		result = prime * result + position;
+		result = prime * result + this.active;
 		result = prime
 				* result
-				+ ((user2UserGroupPK == null) ? 0 : user2UserGroupPK.hashCode());
+				+ ((this.activeReason == null) ? 0 : this.activeReason
+						.hashCode());
+		result = prime * result
+				+ (int) (this.lastchange ^ (this.lastchange >>> 32));
+		result = prime * result + this.position;
+		result = prime
+				* result
+				+ ((this.user2UserGroupPK == null) ? 0 : this.user2UserGroupPK
+						.hashCode());
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final User2UserGroupDTO other = (User2UserGroupDTO) obj;
-		if (active != other.active)
-			return false;
-		if (activeReason == null) {
-			if (other.activeReason != null)
-				return false;
-		} else if (!activeReason.equals(other.activeReason))
-			return false;
-		if (lastchange != other.lastchange)
-			return false;
-		if (position != other.position)
-			return false;
-		if (user2UserGroupPK == null) {
-			if (other.user2UserGroupPK != null)
-				return false;
-		} else if (!user2UserGroupPK.equals(other.user2UserGroupPK))
-			return false;
-		return true;
-	}
-
-	public User2UserGroupDTO_PK getUser2UserGroupPK() {
-		return user2UserGroupPK;
-	}
-
-	@Deprecated
-	public void setUser2UserGroupPK(User2UserGroupDTO_PK user2UserGroupPK) {
-		this.user2UserGroupPK = user2UserGroupPK;
-	}
-
-	public int getPosition() {
-		return position;
-	}
-
-	public void setPosition(int position) {
-		this.position = position;
-	}
-
-	public short getActive() {
-		return active;
-	}
-
-	public void setActive(short active) {
-		this.active = active;
-	}
-
-	public String getActiveReason() {
-		return activeReason;
-	}
-
-	public void setActiveReason(String activeReason) {
-		this.activeReason = activeReason;
 	}
 
 	@Transient
 	public boolean isActive() {
-		return active == 0 ? false : true;
+		return this.active == 0 ? false : true;
 	}
 
-	@Transient
-	public void setActive(boolean value) {
-		active = value ? (short) 1 : (short) 0;
-	}
-
-	public long getLastchange() {
-		return lastchange;
-	}
-
-	public void setLastchange(long lastchange) {
-		this.lastchange = lastchange;
-	}
-
-	public String getUniqueHumanReadableName() {
-		return toString();
-	}
-
-	public boolean isInCategory(int categoryDBId) {
+	public boolean isInCategory(final int categoryDBId) {
 		return false;
 	}
 
-	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		this.alarmbearbeiter = null;
-	}
-
-	public void loadJoinData(Mapper mapper) throws Throwable {
+	public void loadJoinData(final Mapper mapper) throws Throwable {
 		this.alarmbearbeiter = mapper.findForId(AlarmbearbeiterDTO.class, this
 				.getUser2UserGroupPK().getIUserRef(), false);
 		if (this.alarmbearbeiter == null) {
@@ -194,7 +183,33 @@ public class User2UserGroupDTO implements NewAMSConfigurationElementDTO,
 		}
 	}
 
-	public void storeJoinLinkData(Mapper mapper) throws Throwable {
+	@Transient
+	public void setActive(final boolean value) {
+		this.active = value ? (short) 1 : (short) 0;
+	}
+
+	public void setActive(final short active) {
+		this.active = active;
+	}
+
+	public void setActiveReason(final String activeReason) {
+		this.activeReason = activeReason;
+	}
+
+	public void setLastchange(final long lastchange) {
+		this.lastchange = lastchange;
+	}
+
+	public void setPosition(final int position) {
+		this.position = position;
+	}
+
+	@Deprecated
+	public void setUser2UserGroupPK(final User2UserGroupDTO_PK user2UserGroupPK) {
+		this.user2UserGroupPK = user2UserGroupPK;
+	}
+
+	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
 		// Nothing to do.
 	}
 

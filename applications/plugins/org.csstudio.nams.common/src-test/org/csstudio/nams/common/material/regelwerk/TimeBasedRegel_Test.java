@@ -25,6 +25,8 @@
 
 package org.csstudio.nams.common.material.regelwerk;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
@@ -34,354 +36,356 @@ import org.junit.Test;
 /**
  * Test for TimeBasedRegel
  * 
- *
- * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>,
- *         <a href="mailto:gs@c1-wps.de">Goesta Steen</a>,
- *         <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
+ * 
+ * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
+ *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
+ *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 10.04.2008
  */
 
-public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel> {
-	
+public class TimeBasedRegel_Test extends
+		AbstractObject_TestCase<TimeBasedRegel> {
+
 	private VersandRegel _ausloesungsRegel;
 	private VersandRegel _bestaetigungsRegel;
 	private VersandRegel _aufhebungsRegel;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		_ausloesungsRegel = new VersandRegel() {
-			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
-			}
-
-			public Millisekunden pruefeNachrichtAufTimeOuts(
-					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
-				return null;
-			}
-
-			public Millisekunden pruefeNachrichtErstmalig(
-					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, RegelErgebnis.ZUTREFFEND);
-				return Millisekunden.valueOf(0);
-			}
-		};
-		_bestaetigungsRegel = new VersandRegel() {
-			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
-			}
-
-			public Millisekunden pruefeNachrichtAufTimeOuts(
-					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
-				return null;
-			}
-
-			public Millisekunden pruefeNachrichtErstmalig(
-					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, RegelErgebnis.ZUTREFFEND);
-				return Millisekunden.valueOf(0);
-			}
-		};
-		_aufhebungsRegel = new VersandRegel() {
-			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
-			}
-
-			public Millisekunden pruefeNachrichtAufTimeOuts(
-					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
-				return null;
-			}
-
-			public Millisekunden pruefeNachrichtErstmalig(
-					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, RegelErgebnis.ZUTREFFEND);
-				return Millisekunden.valueOf(0);
-			}
-		};
-	}
-
 	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
-	 */
-	@Test
-	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufOK() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		TimeBasedRegel timeBasedRegel = this.getNewInstanceOfClassUnderTest();
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(nachricht, pruefliste);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(timeBasedRegel));
-	}
-	
-	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
-	 */
-	@Test
-	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufNichtOK() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		VersandRegel bestaetigungsRegel = new VersandRegel() {
-
-			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
-			}
-
-			public Millisekunden pruefeNachrichtAufTimeOuts(
-					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
-				return null;
-			}
-
-			public Millisekunden pruefeNachrichtErstmalig(
-					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, RegelErgebnis.NICHT_ZUTREFFEND);
-				return Millisekunden.valueOf(0);
-			}
-			
-		};
-		
-		TimeBasedRegel timeBasedRegel = new TimeBasedRegel(_ausloesungsRegel, _aufhebungsRegel, bestaetigungsRegel, Millisekunden.valueOf(100));
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(nachricht, pruefliste);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(timeBasedRegel));
-	}
-	
-	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
-	 */
-	@Test
-	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufNichtFertig() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		VersandRegel regel = new VersandRegel() {
-
-			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
-			}
-
-			public Millisekunden pruefeNachrichtAufTimeOuts(
-					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
-				return null;
-			}
-
-			public Millisekunden pruefeNachrichtErstmalig(
-					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, RegelErgebnis.NICHT_ZUTREFFEND);
-				return Millisekunden.valueOf(0);
-			}
-			
-		};
-		
-		TimeBasedRegel timeBasedRegel = new TimeBasedRegel(_ausloesungsRegel, regel, regel, Millisekunden.valueOf(100));
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(nachricht, pruefliste);
-		assertEquals(RegelErgebnis.VIELLEICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(timeBasedRegel));
-	}
-	
-	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
-	 */
-	@Test
-	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufBereitsFertigZutreffend() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		VersandRegel regel = new VersandRegel() {
-
-			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
-			}
-
-			public Millisekunden pruefeNachrichtAufTimeOuts(
-					Pruefliste bisherigesErgebnis,
-					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
-				return null;
-			}
-
-			public Millisekunden pruefeNachrichtErstmalig(
-					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail("Shouldn't be called");
-				return null;
-			}
-			
-		};
-		
-		TimeBasedRegel timeBasedRegel = new TimeBasedRegel(_ausloesungsRegel, regel, regel, Millisekunden.valueOf(100));
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel, RegelErgebnis.ZUTREFFEND);
-		pruefliste.setzeAufNichtVeraendert();
-		
-		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(nachricht, pruefliste);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(timeBasedRegel));
-		assertFalse(pruefliste.hatSichGeaendert());
-	}
-	
-	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufBereitsFertigNichtZutreffend() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		VersandRegel regel = new VersandRegel() {
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		final AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final VersandRegel regel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
+				Assert.fail("Shouldn't be called");
 			}
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
+				Assert.fail("Shouldn't be called");
 				return null;
 			}
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail("Shouldn't be called");
+				Assert.fail("Shouldn't be called");
 				return null;
 			}
-			
+
 		};
-		
-		TimeBasedRegel timeBasedRegel = new TimeBasedRegel(_ausloesungsRegel, regel, regel, Millisekunden.valueOf(100));
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel, RegelErgebnis.NICHT_ZUTREFFEND);
+
+		final TimeBasedRegel timeBasedRegel = new TimeBasedRegel(
+				this._ausloesungsRegel, regel, regel, Millisekunden
+						.valueOf(100));
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel,
+				RegelErgebnis.NICHT_ZUTREFFEND);
 		pruefliste.setzeAufNichtVeraendert();
-		
-		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(nachricht, pruefliste);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(timeBasedRegel));
-		assertFalse(pruefliste.hatSichGeaendert());
+
+		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+				nachricht, pruefliste);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(timeBasedRegel));
+		Assert.assertFalse(pruefliste.hatSichGeaendert());
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(org.csstudio.nams.common.material.regelwerk.Pruefliste, org.csstudio.nams.common.fachwert.Millisekunden)}.
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 */
+	@Test
+	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufBereitsFertigZutreffend() {
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		final AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final VersandRegel regel = new VersandRegel() {
+
+			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
+				Assert.fail("Shouldn't be called");
+			}
+
+			public Millisekunden pruefeNachrichtAufTimeOuts(
+					Pruefliste bisherigesErgebnis,
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
+				Assert.fail("Shouldn't be called");
+				return null;
+			}
+
+			public Millisekunden pruefeNachrichtErstmalig(
+					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
+				Assert.fail("Shouldn't be called");
+				return null;
+			}
+
+		};
+
+		final TimeBasedRegel timeBasedRegel = new TimeBasedRegel(
+				this._ausloesungsRegel, regel, regel, Millisekunden
+						.valueOf(100));
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel,
+				RegelErgebnis.ZUTREFFEND);
+		pruefliste.setzeAufNichtVeraendert();
+
+		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+				nachricht, pruefliste);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(timeBasedRegel));
+		Assert.assertFalse(pruefliste.hatSichGeaendert());
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 */
+	@Test
+	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufNichtFertig() {
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		final AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final VersandRegel regel = new VersandRegel() {
+
+			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
+				Assert.fail("Shouldn't be called");
+			}
+
+			public Millisekunden pruefeNachrichtAufTimeOuts(
+					Pruefliste bisherigesErgebnis,
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
+				Assert.fail("Shouldn't be called");
+				return null;
+			}
+
+			public Millisekunden pruefeNachrichtErstmalig(
+					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
+				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+						RegelErgebnis.NICHT_ZUTREFFEND);
+				return Millisekunden.valueOf(0);
+			}
+
+		};
+
+		final TimeBasedRegel timeBasedRegel = new TimeBasedRegel(
+				this._ausloesungsRegel, regel, regel, Millisekunden
+						.valueOf(100));
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+				nachricht, pruefliste);
+		Assert.assertEquals(RegelErgebnis.VIELLEICHT_ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(timeBasedRegel));
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 */
+	@Test
+	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufNichtOK() {
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		final AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final VersandRegel bestaetigungsRegel = new VersandRegel() {
+
+			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
+				Assert.fail("Shouldn't be called");
+			}
+
+			public Millisekunden pruefeNachrichtAufTimeOuts(
+					Pruefliste bisherigesErgebnis,
+					Millisekunden verstricheneZeitSeitErsterPruefung) {
+				Assert.fail("Shouldn't be called");
+				return null;
+			}
+
+			public Millisekunden pruefeNachrichtErstmalig(
+					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
+				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+						RegelErgebnis.NICHT_ZUTREFFEND);
+				return Millisekunden.valueOf(0);
+			}
+
+		};
+
+		final TimeBasedRegel timeBasedRegel = new TimeBasedRegel(
+				this._ausloesungsRegel, this._aufhebungsRegel,
+				bestaetigungsRegel, Millisekunden.valueOf(100));
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+				nachricht, pruefliste);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(timeBasedRegel));
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 */
+	@Test
+	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufOK() {
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		final AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final TimeBasedRegel timeBasedRegel = this
+				.getNewInstanceOfClassUnderTest();
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(timeBasedRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		timeBasedRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+				nachricht, pruefliste);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(timeBasedRegel));
+	}
+
+	/**
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(org.csstudio.nams.common.material.regelwerk.Pruefliste, org.csstudio.nams.common.fachwert.Millisekunden)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufTimeOutsBevorTimeOut() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-//		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(tbRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		// AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(tbRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
 		pruefliste.setzeAufNichtVeraendert();
-		
-		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(10));
-		
-		assertFalse("pruefliste.hatSichGeaendert()", pruefliste.hatSichGeaendert());
-		assertEquals(RegelErgebnis.VIELLEICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(tbRegel));
+
+		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden
+				.valueOf(10));
+
+		Assert.assertFalse("pruefliste.hatSichGeaendert()", pruefliste
+				.hatSichGeaendert());
+		Assert.assertEquals(RegelErgebnis.VIELLEICHT_ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(tbRegel));
 	}
-	
+
 	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(org.csstudio.nams.common.material.regelwerk.Pruefliste, org.csstudio.nams.common.fachwert.Millisekunden)}.
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(org.csstudio.nams.common.material.regelwerk.Pruefliste, org.csstudio.nams.common.fachwert.Millisekunden)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufTimeOutsNachTimeOut() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-//		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(tbRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		// AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(tbRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
 		pruefliste.setzeAufNichtVeraendert();
-		
-		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden.valueOf(200));
-		
-		assertTrue("pruefliste.hatSichGeaendert()", pruefliste.hatSichGeaendert());
-		assertEquals(RegelErgebnis.ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(tbRegel));
+
+		tbRegel.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden
+				.valueOf(200));
+
+		Assert.assertTrue("pruefliste.hatSichGeaendert()", pruefliste
+				.hatSichGeaendert());
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(tbRegel));
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
-	 */
-	@Test
-	public void testPruefeNachrichtErstmaligAusloesungZutreffend() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
-				
-		tbRegel.pruefeNachrichtErstmalig(nachricht, pruefliste);
-		assertEquals(RegelErgebnis.VIELLEICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(tbRegel));
-	}
-	
-	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtErstmaligAusloesungNichtZutreffend() {
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), null);
-		AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
-		
-		VersandRegel ausloesungsRegel = new VersandRegel() {
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		final AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final VersandRegel ausloesungsRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail("Shouldn't be called");
+				Assert.fail("Shouldn't be called");
 			}
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeitSeitErsterPruefung) {
-				fail("Shouldn't be called");
+				Assert.fail("Shouldn't be called");
 				return null;
 			}
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this, RegelErgebnis.NICHT_ZUTREFFEND);
+				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+						RegelErgebnis.NICHT_ZUTREFFEND);
 				return Millisekunden.valueOf(0);
 			}
-			
+
 		};
-		
-		TimeBasedRegel tbRegel = new TimeBasedRegel(ausloesungsRegel, _aufhebungsRegel, _bestaetigungsRegel, Millisekunden.valueOf(100));
-				
+
+		final TimeBasedRegel tbRegel = new TimeBasedRegel(ausloesungsRegel,
+				this._aufhebungsRegel, this._bestaetigungsRegel, Millisekunden
+						.valueOf(100));
+
 		tbRegel.pruefeNachrichtErstmalig(nachricht, pruefliste);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pruefliste.gibErgebnisFuerRegel(tbRegel));
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(tbRegel));
 	}
 
-//	/**
-//	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#ermittleVerbleibendeWartezeit(de.c1wps.desy.ams.allgemeines.Millisekunden)}.
-//	 */
-//	@Test
-//	public void testGibverbleibendeWartezeit() {
-//		TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
-//		
-//		assertEquals(Millisekunden.valueOf(90), tbRegel.ermittleVerbleibendeWartezeit(Millisekunden.valueOf(10)));
-//		assertEquals(Millisekunden.valueOf(80), tbRegel.ermittleVerbleibendeWartezeit(Millisekunden.valueOf(20)));
-//		
-//		assertEquals(Millisekunden.valueOf(50), tbRegel.ermittleVerbleibendeWartezeit(Millisekunden.valueOf(50)));
-//	}
+	/**
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 */
+	@Test
+	public void testPruefeNachrichtErstmaligAusloesungZutreffend() {
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), null);
+		final AlarmNachricht nachricht = new AlarmNachricht("Hallo ihr");
+
+		final TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
+
+		tbRegel.pruefeNachrichtErstmalig(nachricht, pruefliste);
+		Assert.assertEquals(RegelErgebnis.VIELLEICHT_ZUTREFFEND, pruefliste
+				.gibErgebnisFuerRegel(tbRegel));
+	}
 
 	@Override
 	protected TimeBasedRegel getNewInstanceOfClassUnderTest() {
-		return new TimeBasedRegel(_ausloesungsRegel, _aufhebungsRegel, _bestaetigungsRegel, Millisekunden.valueOf(100));
+		return new TimeBasedRegel(this._ausloesungsRegel,
+				this._aufhebungsRegel, this._bestaetigungsRegel, Millisekunden
+						.valueOf(100));
 	}
+
+	// /**
+	// * Test method for {@link
+	// de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#ermittleVerbleibendeWartezeit(de.c1wps.desy.ams.allgemeines.Millisekunden)}.
+	// */
+	// @Test
+	// public void testGibverbleibendeWartezeit() {
+	// TimeBasedRegel tbRegel = this.getNewInstanceOfClassUnderTest();
+	//		
+	// assertEquals(Millisekunden.valueOf(90),
+	// tbRegel.ermittleVerbleibendeWartezeit(Millisekunden.valueOf(10)));
+	// assertEquals(Millisekunden.valueOf(80),
+	// tbRegel.ermittleVerbleibendeWartezeit(Millisekunden.valueOf(20)));
+	//		
+	// assertEquals(Millisekunden.valueOf(50),
+	// tbRegel.ermittleVerbleibendeWartezeit(Millisekunden.valueOf(50)));
+	// }
 
 	@Override
 	protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() {
@@ -390,11 +394,88 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 
 	@Override
 	protected TimeBasedRegel[] getThreeDiffrentNewInstanceOfClassUnderTest() {
-		TimeBasedRegel[] result = new TimeBasedRegel[3];
-		result[0] = new TimeBasedRegel(_ausloesungsRegel, _aufhebungsRegel, _bestaetigungsRegel, Millisekunden.valueOf(100));
-		result[1] = new TimeBasedRegel(_ausloesungsRegel, _aufhebungsRegel, _bestaetigungsRegel, Millisekunden.valueOf(300));
-		result[2] = new TimeBasedRegel(_ausloesungsRegel, _aufhebungsRegel, _bestaetigungsRegel, Millisekunden.valueOf(500));
+		final TimeBasedRegel[] result = new TimeBasedRegel[3];
+		result[0] = new TimeBasedRegel(this._ausloesungsRegel,
+				this._aufhebungsRegel, this._bestaetigungsRegel, Millisekunden
+						.valueOf(100));
+		result[1] = new TimeBasedRegel(this._ausloesungsRegel,
+				this._aufhebungsRegel, this._bestaetigungsRegel, Millisekunden
+						.valueOf(300));
+		result[2] = new TimeBasedRegel(this._ausloesungsRegel,
+				this._aufhebungsRegel, this._bestaetigungsRegel, Millisekunden
+						.valueOf(500));
 		return result;
+	}
+
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		this._ausloesungsRegel = new VersandRegel() {
+			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+					final AlarmNachricht nachricht,
+					final Pruefliste bisherigesErgebnis) {
+				Assert.fail("Shouldn't be called");
+			}
+
+			public Millisekunden pruefeNachrichtAufTimeOuts(
+					final Pruefliste bisherigesErgebnis,
+					final Millisekunden verstricheneZeitSeitErsterPruefung) {
+				Assert.fail("Shouldn't be called");
+				return null;
+			}
+
+			public Millisekunden pruefeNachrichtErstmalig(
+					final AlarmNachricht nachricht,
+					final Pruefliste ergebnisListe) {
+				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+						RegelErgebnis.ZUTREFFEND);
+				return Millisekunden.valueOf(0);
+			}
+		};
+		this._bestaetigungsRegel = new VersandRegel() {
+			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+					final AlarmNachricht nachricht,
+					final Pruefliste bisherigesErgebnis) {
+				Assert.fail("Shouldn't be called");
+			}
+
+			public Millisekunden pruefeNachrichtAufTimeOuts(
+					final Pruefliste bisherigesErgebnis,
+					final Millisekunden verstricheneZeitSeitErsterPruefung) {
+				Assert.fail("Shouldn't be called");
+				return null;
+			}
+
+			public Millisekunden pruefeNachrichtErstmalig(
+					final AlarmNachricht nachricht,
+					final Pruefliste ergebnisListe) {
+				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+						RegelErgebnis.ZUTREFFEND);
+				return Millisekunden.valueOf(0);
+			}
+		};
+		this._aufhebungsRegel = new VersandRegel() {
+			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+					final AlarmNachricht nachricht,
+					final Pruefliste bisherigesErgebnis) {
+				Assert.fail("Shouldn't be called");
+			}
+
+			public Millisekunden pruefeNachrichtAufTimeOuts(
+					final Pruefliste bisherigesErgebnis,
+					final Millisekunden verstricheneZeitSeitErsterPruefung) {
+				Assert.fail("Shouldn't be called");
+				return null;
+			}
+
+			public Millisekunden pruefeNachrichtErstmalig(
+					final AlarmNachricht nachricht,
+					final Pruefliste ergebnisListe) {
+				ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
+						RegelErgebnis.ZUTREFFEND);
+				return Millisekunden.valueOf(0);
+			}
+		};
 	}
 
 }

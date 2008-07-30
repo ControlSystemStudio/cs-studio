@@ -27,62 +27,55 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	// position, active, activeReason, lastChange
 	// }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = prime * 0 + (active ? 1231 : 1237);
-		result = prime * result
-				+ ((activeReason == null) ? 0 : activeReason.hashCode());
-		result = prime * result
-				+ ((lastChange == null) ? 0 : lastChange.hashCode());
-		result = prime * result
-				+ ((userBean == null) ? 0 : userBean.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (getClass() != obj.getClass())
-			return false;
-		final User2GroupBean other = (User2GroupBean) obj;
-		if (active != other.active)
-			return false;
-		if (activeReason == null) {
-			if (other.activeReason != null)
-				return false;
-		} else if (!activeReason.equals(other.activeReason))
-			return false;
-		if (lastChange == null) {
-			if (other.lastChange != null)
-				return false;
-		} else if (!lastChange.equals(other.lastChange))
-			return false;
-		if (userBean == null) {
-			if (other.userBean != null)
-				return false;
-		} else if (!userBean.equals(other.userBean))
-			return false;
-		return true;
-	}
-
-	public User2GroupBean(AlarmbearbeiterBean userBean) {
-		this.userBean = userBean;
-	}
 	/**
 	 * Just for getClone()
 	 */
-	public User2GroupBean(){
-		
+	public User2GroupBean() {
+
+	}
+
+	public User2GroupBean(final AlarmbearbeiterBean userBean) {
+		this.userBean = userBean;
 	}
 
 	@Override
-	protected void doUpdateState(User2GroupBean bean) {
-		userBean = bean.getUserBean();
-		setActive(bean.isActive());
-		setActiveReason(bean.getActiveReason());
-		setLastChange(bean.getLastChange());
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final User2GroupBean other = (User2GroupBean) obj;
+		if (this.active != other.active) {
+			return false;
+		}
+		if (this.activeReason == null) {
+			if (other.activeReason != null) {
+				return false;
+			}
+		} else if (!this.activeReason.equals(other.activeReason)) {
+			return false;
+		}
+		if (this.lastChange == null) {
+			if (other.lastChange != null) {
+				return false;
+			}
+		} else if (!this.lastChange.equals(other.lastChange)) {
+			return false;
+		}
+		if (this.userBean == null) {
+			if (other.userBean != null) {
+				return false;
+			}
+		} else if (!this.userBean.equals(other.userBean)) {
+			return false;
+		}
+		return true;
+	}
+
+	public String getActiveReason() {
+		return this.activeReason;
 	}
 
 	public String getDisplayName() {
@@ -93,46 +86,66 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 		return 0;
 	}
 
-	public void setID(int id) {
-	}
-
-	public String getUserName() {
-		return userBean.getName();
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		boolean oldValue = this.active;
-		this.active = active;
-		pcs.firePropertyChange(PropertyNames.active.name(), oldValue, active);
-	}
-
-	public String getActiveReason() {
-		return activeReason;
-	}
-
-	public void setActiveReason(String activeReason) {
-		String oldValue = this.activeReason;
-		this.activeReason = activeReason;
-		pcs.firePropertyChange(PropertyNames.activeReason.name(), oldValue,
-				activeReason);
-	}
-
 	public Date getLastChange() {
-		return lastChange;
-	}
-
-	public void setLastChange(Date lastChange) {
-		Date oldValue = this.lastChange;
-		this.lastChange = lastChange;
-		pcs.firePropertyChange(PropertyNames.lastChange.name(), oldValue,
-				lastChange);
+		return this.lastChange;
 	}
 
 	public AlarmbearbeiterBean getUserBean() {
-		return userBean;
+		return this.userBean;
+	}
+
+	public String getUserName() {
+		return this.userBean.getName();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = prime * 0 + (this.active ? 1231 : 1237);
+		result = prime
+				* result
+				+ ((this.activeReason == null) ? 0 : this.activeReason
+						.hashCode());
+		result = prime * result
+				+ ((this.lastChange == null) ? 0 : this.lastChange.hashCode());
+		result = prime * result
+				+ ((this.userBean == null) ? 0 : this.userBean.hashCode());
+		return result;
+	}
+
+	public boolean isActive() {
+		return this.active;
+	}
+
+	public void setActive(final boolean active) {
+		final boolean oldValue = this.active;
+		this.active = active;
+		this.pcs.firePropertyChange(PropertyNames.active.name(), oldValue,
+				active);
+	}
+
+	public void setActiveReason(final String activeReason) {
+		final String oldValue = this.activeReason;
+		this.activeReason = activeReason;
+		this.pcs.firePropertyChange(PropertyNames.activeReason.name(),
+				oldValue, activeReason);
+	}
+
+	public void setID(final int id) {
+	}
+
+	public void setLastChange(final Date lastChange) {
+		final Date oldValue = this.lastChange;
+		this.lastChange = lastChange;
+		this.pcs.firePropertyChange(PropertyNames.lastChange.name(), oldValue,
+				lastChange);
+	}
+
+	@Override
+	protected void doUpdateState(final User2GroupBean bean) {
+		this.userBean = bean.getUserBean();
+		this.setActive(bean.isActive());
+		this.setActiveReason(bean.getActiveReason());
+		this.setLastChange(bean.getLastChange());
 	}
 }

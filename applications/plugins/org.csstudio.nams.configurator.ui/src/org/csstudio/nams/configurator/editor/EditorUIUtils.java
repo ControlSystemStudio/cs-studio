@@ -31,31 +31,33 @@ import org.eclipse.swt.widgets.Composite;
  * This class/utilities are stateless, all methods are static and there is no
  * need for creating an instance.
  * 
- * This class need to be initialized before first used by injecting the {@link Logger}.
+ * This class need to be initialized before first used by injecting the
+ * {@link Logger}.
  */
 public final class EditorUIUtils {
-	
+
 	private static final class PropertyChangeListenerImplementation implements
 			PropertyChangeListener {
 		private final PropertyEditorUtil propertyEditor;
 		private final String propertyName;
 		private final ComboViewer viewer;
 
-		private PropertyChangeListenerImplementation(String propertyName,
-				PropertyEditorUtil propertyEditor, ComboViewer viewer) {
+		private PropertyChangeListenerImplementation(final String propertyName,
+				final PropertyEditorUtil propertyEditor,
+				final ComboViewer viewer) {
 			this.propertyName = propertyName;
 			this.propertyEditor = propertyEditor;
 			this.viewer = viewer;
 		}
 
-		public void propertyChange(PropertyChangeEvent event) {
-			if (propertyName.equals(event.getPropertyName())) {
-				Object newSelection = propertyEditor.getValue();
+		public void propertyChange(final PropertyChangeEvent event) {
+			if (this.propertyName.equals(event.getPropertyName())) {
+				final Object newSelection = this.propertyEditor.getValue();
 				if (newSelection != null) {
-					IStructuredSelection oldSelection = (IStructuredSelection) viewer
+					final IStructuredSelection oldSelection = (IStructuredSelection) this.viewer
 							.getSelection();
 					if (oldSelection.getFirstElement() != newSelection) {
-						viewer.setSelection(new StructuredSelection(
+						this.viewer.setSelection(new StructuredSelection(
 								newSelection));
 					}
 				}
@@ -67,28 +69,28 @@ public final class EditorUIUtils {
 		private final Object bean;
 		private final PropertyDescriptor propertyDescriptor;
 
-		public PropertyEditorUtil(PropertyDescriptor propertyDescriptor,
-				Object bean) {
+		public PropertyEditorUtil(final PropertyDescriptor propertyDescriptor,
+				final Object bean) {
 			this.propertyDescriptor = propertyDescriptor;
 			this.bean = bean;
 		}
 
 		public Object getValue() {
 			Object result = null;
-			Method readMethod = propertyDescriptor.getReadMethod();
+			final Method readMethod = this.propertyDescriptor.getReadMethod();
 			try {
-				result = readMethod.invoke(bean);
-			} catch (Throwable t) {
+				result = readMethod.invoke(this.bean);
+			} catch (final Throwable t) {
 				throw new RuntimeException("failed to write property", t);
 			}
 			return result;
 		}
 
-		public void setValue(Object value) {
-			Method writeMethod = propertyDescriptor.getWriteMethod();
+		public void setValue(final Object value) {
+			final Method writeMethod = this.propertyDescriptor.getWriteMethod();
 			try {
-				writeMethod.invoke(bean, value);
-			} catch (Throwable t) {
+				writeMethod.invoke(this.bean, value);
+			} catch (final Throwable t) {
 				throw new RuntimeException("failed to write property", t);
 			}
 		}
@@ -132,7 +134,7 @@ public final class EditorUIUtils {
 		Contract
 				.require(propertyName.length() > 0, "propertyName.length() > 0");
 
-		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(
+		final PropertyDescriptor propertyDescriptor = new PropertyDescriptor(
 				propertyName, boundBean.getClass());
 
 		Contract
@@ -147,25 +149,26 @@ public final class EditorUIUtils {
 
 		result.setContentProvider(new ArrayContentProvider());
 		result.setComparator(new ViewerComparator(new Comparator<Object>() {
-			public int compare(Object o1, Object o2) {
+			public int compare(final Object o1, final Object o2) {
 				return o1.toString().compareTo(o2.toString());
 			}
 		}));
 		result.setInput(enumValues);
 
-		Object startSelection = propertyEditor.getValue();
+		final Object startSelection = propertyEditor.getValue();
 		if (startSelection != null) {
 			result.setSelection(new StructuredSelection(startSelection));
 		}
 
 		result.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event
+			public void selectionChanged(final SelectionChangedEvent event) {
+				final IStructuredSelection selection = (IStructuredSelection) event
 						.getSelection();
-				Object selectedElement = selection.getFirstElement();
+				final Object selectedElement = selection.getFirstElement();
 				if (propertyEditor.getValue() != selectedElement) {
 					propertyEditor.setValue(selectedElement);
-					EditorUIUtils.logger.logDebugMessage(this, "#selectionListener.selectionChanged(SelectionChangedEvent): Set Property "
+					EditorUIUtils.logger.logDebugMessage(this,
+							"#selectionListener.selectionChanged(SelectionChangedEvent): Set Property "
 									+ propertyName + " to " + selectedElement);
 				}
 			}
@@ -176,7 +179,7 @@ public final class EditorUIUtils {
 		boundBean.addPropertyChangeListener(propertyChangeListenerOnBoundBean);
 
 		result.getCombo().addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
+			public void widgetDisposed(final DisposeEvent e) {
 				boundBean
 						.removePropertyChangeListener(propertyChangeListenerOnBoundBean);
 			}
@@ -186,8 +189,8 @@ public final class EditorUIUtils {
 		return result;
 	}
 
-	static public boolean isValidDigit(String value) {
-		char[] charArray = value.toCharArray();
+	static public boolean isValidDigit(final String value) {
+		final char[] charArray = value.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
 			if (!Character.isDigit(charArray[i])) {
 				return false;
@@ -196,37 +199,39 @@ public final class EditorUIUtils {
 		return true;
 	}
 
+	public static void staticInject(final Logger logger) {
+		EditorUIUtils.logger = logger;
+	}
+
 	/**
-	 * Creates a {@link String} of the message and stack trace reported by given {@link Throwable}.
-	 *  
-	 * @param t The {@link Throwable}, not null.
+	 * Creates a {@link String} of the message and stack trace reported by given
+	 * {@link Throwable}.
+	 * 
+	 * @param t
+	 *            The {@link Throwable}, not null.
 	 * @return A string containing all specified data, not null, may empty.
 	 */
-	static public String throwableAsMessageString(Throwable t) {
+	static public String throwableAsMessageString(final Throwable t) {
 		Contract.requireNotNull("t", t);
-		
+
 		String result = null;
-		
-		StringWriter resultWriter = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(resultWriter);
+
+		final StringWriter resultWriter = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(resultWriter);
 		t.printStackTrace(printWriter);
 		printWriter.flush();
 		resultWriter.flush();
 		result = resultWriter.toString();
-		
+
 		printWriter.close();
 		try {
 			resultWriter.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// Ignored.
 		}
-		
+
 		Contract.ensureResultNotNull(result);
 		return result;
-	}
-	
-	public static void staticInject(Logger logger) {
-		EditorUIUtils.logger = logger;
 	}
 
 	private EditorUIUtils() {

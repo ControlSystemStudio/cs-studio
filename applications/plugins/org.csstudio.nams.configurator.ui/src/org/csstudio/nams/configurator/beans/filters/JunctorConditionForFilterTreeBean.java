@@ -9,79 +9,88 @@ import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
 
-public class JunctorConditionForFilterTreeBean extends
-		FilterbedingungBean {
+public class JunctorConditionForFilterTreeBean extends FilterbedingungBean {
 
 	private JunctorConditionType junctorConditionType;
-	private Set<FilterbedingungBean> filterbedingungBeans = new TreeSet<FilterbedingungBean>();
+	private final Set<FilterbedingungBean> filterbedingungBeans = new TreeSet<FilterbedingungBean>();
 
 	public JunctorConditionForFilterTreeBean() {
-		setFilterSpecificBean(null);
+		this.setFilterSpecificBean(null);
 	}
 
-	public String getDisplayName() {
-		return junctorConditionType.name();
+	public boolean addOperand(final FilterbedingungBean bean) {
+		Contract.require(this != bean, "this != bean");
+		return this.filterbedingungBeans.add(bean);
 	}
-	
-	public int compareTo(FilterbedingungBean o) {
+
+	@Override
+	public int compareTo(final FilterbedingungBean o) {
 		if (o instanceof JunctorConditionForFilterTreeBean) {
-			return compareTo((JunctorConditionForFilterTreeBean) o);
-		} 
+			return this.compareTo((JunctorConditionForFilterTreeBean) o);
+		}
 		return -1;
 	}
 
-	public int compareTo(JunctorConditionForFilterTreeBean o) {
+	public int compareTo(final JunctorConditionForFilterTreeBean o) {
 		int result = -1;
 		if (o != null) {
-			result = this.junctorConditionType.compareTo(o.junctorConditionType);
-			if (result == 0){
-				result = filterbedingungBeans.hashCode() - o.filterbedingungBeans.hashCode();
+			result = this.junctorConditionType
+					.compareTo(o.junctorConditionType);
+			if (result == 0) {
+				result = this.filterbedingungBeans.hashCode()
+						- o.filterbedingungBeans.hashCode();
 			}
 		}
 		return result;
 	}
 
-	public boolean addOperand(FilterbedingungBean bean) {
-		Contract.require(this != bean, "this != bean");
-		return filterbedingungBeans.add(bean);
-	}
-
-	public JunctorConditionType getJunctorConditionType() {
-		return junctorConditionType;
-	}
-
-	public void setJunctorConditionType(JunctorConditionType junctorConditionType) {
-		this.junctorConditionType = junctorConditionType;
-	}
-
-	public boolean hasOperands() {
-		return !filterbedingungBeans.isEmpty();
-	}
-
-	public Set<FilterbedingungBean> getOperands() {
-		return Collections.unmodifiableSet(filterbedingungBeans);
-	}
-
-	public void removeOperand(FilterbedingungBean bean) {
-		filterbedingungBeans.remove(bean);
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final JunctorConditionForFilterTreeBean other = (JunctorConditionForFilterTreeBean) obj;
+		if (this.filterbedingungBeans == null) {
+			if (other.filterbedingungBeans != null) {
+				return false;
+			}
+		} else if (!this.filterbedingungBeans
+				.equals(other.filterbedingungBeans)) {
+			return false;
+		}
+		if (this.junctorConditionType == null) {
+			if (other.junctorConditionType != null) {
+				return false;
+			}
+		} else if (!this.junctorConditionType
+				.equals(other.junctorConditionType)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
-	protected void doUpdateState(FilterbedingungBean bean) {
-		if (bean instanceof JunctorConditionForFilterTreeBean) {
-			super.doUpdateState(bean);
-			this.filterbedingungBeans.clear();
-			JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) bean;
-			Set<FilterbedingungBean> operands = junctorBean.getOperands();
-			for (FilterbedingungBean filterbedingungBean : operands) {
-				if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
-					this.filterbedingungBeans.add(filterbedingungBean.getClone());
-				} else {
-					this.filterbedingungBeans.add(filterbedingungBean);
-				}
-			}
-			this.junctorConditionType = junctorBean.junctorConditionType;
-		}
+	public String getDisplayName() {
+		return this.junctorConditionType.name();
+	}
+
+	@Override
+	public AbstractConfigurationBean<?> getFilterSpecificBean() {
+		return null;
+	}
+
+	public JunctorConditionType getJunctorConditionType() {
+		return this.junctorConditionType;
+	}
+
+	public Set<FilterbedingungBean> getOperands() {
+		return Collections.unmodifiableSet(this.filterbedingungBeans);
 	}
 
 	@Override
@@ -90,45 +99,50 @@ public class JunctorConditionForFilterTreeBean extends
 		int result = super.hashCode();
 		result = prime
 				* result
-				+ ((filterbedingungBeans == null) ? 0 : filterbedingungBeans
-						.hashCode());
+				+ ((this.filterbedingungBeans == null) ? 0
+						: this.filterbedingungBeans.hashCode());
 		result = prime
 				* result
-				+ ((junctorConditionType == null) ? 0 : junctorConditionType
-						.hashCode());
+				+ ((this.junctorConditionType == null) ? 0
+						: this.junctorConditionType.hashCode());
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final JunctorConditionForFilterTreeBean other = (JunctorConditionForFilterTreeBean) obj;
-		if (filterbedingungBeans == null) {
-			if (other.filterbedingungBeans != null)
-				return false;
-		} else if (!filterbedingungBeans.equals(other.filterbedingungBeans))
-			return false;
-		if (junctorConditionType == null) {
-			if (other.junctorConditionType != null)
-				return false;
-		} else if (!junctorConditionType.equals(other.junctorConditionType))
-			return false;
-		return true;
+	public boolean hasOperands() {
+		return !this.filterbedingungBeans.isEmpty();
 	}
-	
+
+	public void removeOperand(final FilterbedingungBean bean) {
+		this.filterbedingungBeans.remove(bean);
+	}
+
 	@Override
 	public void setFilterSpecificBean(
 			FilterConditionAddOnBean filterSpecificBean) {
 		filterSpecificBean = null;
 	}
-	
+
+	public void setJunctorConditionType(
+			final JunctorConditionType junctorConditionType) {
+		this.junctorConditionType = junctorConditionType;
+	}
+
 	@Override
-	public AbstractConfigurationBean<?> getFilterSpecificBean() {
-		return null;
+	protected void doUpdateState(final FilterbedingungBean bean) {
+		if (bean instanceof JunctorConditionForFilterTreeBean) {
+			super.doUpdateState(bean);
+			this.filterbedingungBeans.clear();
+			final JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) bean;
+			final Set<FilterbedingungBean> operands = junctorBean.getOperands();
+			for (final FilterbedingungBean filterbedingungBean : operands) {
+				if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
+					this.filterbedingungBeans.add(filterbedingungBean
+							.getClone());
+				} else {
+					this.filterbedingungBeans.add(filterbedingungBean);
+				}
+			}
+			this.junctorConditionType = junctorBean.junctorConditionType;
+		}
 	}
 }

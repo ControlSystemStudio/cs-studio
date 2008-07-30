@@ -14,28 +14,32 @@ import org.osgi.framework.BundleActivator;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class CommonActivator extends AbstractBundleActivator implements BundleActivator {
+public class CommonActivator extends AbstractBundleActivator implements
+		BundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.nams.common";
 
 	@OSGiBundleActivationMethod
-	public OSGiServiceOffers bundleStart(
-			@OSGiService @Required Logger logger
-	) {
-		logger.logInfoMessage(this, "Plugin " + PLUGIN_ID
+	public OSGiServiceOffers bundleStart(@OSGiService
+	@Required
+	final Logger logger) {
+		logger.logInfoMessage(this, "Plugin " + CommonActivator.PLUGIN_ID
 				+ " is starting...");
-		
-		OSGiServiceOffers serviceOffers = new OSGiServiceOffers();
-		serviceOffers.put(ExecutionService.class, new DefaultExecutionService());
+
+		final OSGiServiceOffers serviceOffers = new OSGiServiceOffers();
+		serviceOffers
+				.put(ExecutionService.class, new DefaultExecutionService());
 		ProcessVariableRegel.staticInject(logger);
-		
+
 		return serviceOffers;
 	}
-	
+
 	@OSGiBundleDeactivationMethod
-	public void stopBundle(@OSGiService @Required Logger logger) throws Exception {
-		logger.logInfoMessage(this, "Plugin " + PLUGIN_ID
+	public void stopBundle(@OSGiService
+	@Required
+	final Logger logger) throws Exception {
+		logger.logInfoMessage(this, "Plugin " + CommonActivator.PLUGIN_ID
 				+ " stopped succesfully.");
 	}
 }

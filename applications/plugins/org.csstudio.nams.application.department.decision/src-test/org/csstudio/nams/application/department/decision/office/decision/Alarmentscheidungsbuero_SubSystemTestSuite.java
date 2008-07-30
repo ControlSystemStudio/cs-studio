@@ -7,15 +7,15 @@ import junit.framework.TestSuite;
 public class Alarmentscheidungsbuero_SubSystemTestSuite extends TestCase {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite(
+		final TestSuite suite = new TestSuite(
 				"Alarmentscheidungsbuero_SubSystemTestSuite");
-		//$JUnit-BEGIN$
+		// $JUnit-BEGIN$
 		suite.addTestSuite(AlarmEntscheidungsBuero_Test.class);
 		suite.addTestSuite(Abteilungsleiter_Test.class);
 		suite.addTestSuite(Sachbearbeiter_Test.class);
 		suite.addTestSuite(TerminAssistenz_Test.class);
 		suite.addTestSuite(Terminnotiz_Test.class);
-		//$JUnit-END$
+		// $JUnit-END$
 		return suite;
 	}
 

@@ -17,19 +17,6 @@ public class UnorderedBehavior {
 		this.checkOrder = checkOrder;
 	}
 
-	public void addExpected(final ExpectedInvocation expected,
-			final Result result, final Range count) {
-		for (final ExpectedInvocationAndResults entry : this.results) {
-			if (entry.getExpectedInvocation().equals(expected)) {
-				entry.getResults().add(result, count);
-				return;
-			}
-		}
-		final Results list = new Results();
-		list.add(result, count);
-		this.results.add(new ExpectedInvocationAndResults(expected, list));
-	}
-
 	public Result addActual(final Invocation actual) {
 		for (final ExpectedInvocationAndResults entry : this.results) {
 			if (!entry.getExpectedInvocation().matches(actual)) {
@@ -43,13 +30,30 @@ public class UnorderedBehavior {
 		return null;
 	}
 
-	public boolean verify() {
+	public void addExpected(final ExpectedInvocation expected,
+			final Result result, final Range count) {
 		for (final ExpectedInvocationAndResults entry : this.results) {
-			if (!entry.getResults().hasValidCallCount()) {
-				return false;
+			if (entry.getExpectedInvocation().equals(expected)) {
+				entry.getResults().add(result, count);
+				return;
 			}
 		}
-		return true;
+		final Results list = new Results();
+		list.add(result, count);
+		this.results.add(new ExpectedInvocationAndResults(expected, list));
+	}
+
+	public boolean allowsExpectedInvocation(final ExpectedInvocation expected,
+			final boolean checkOrder) {
+		if (this.checkOrder != checkOrder) {
+			return false;
+		} else if (this.results.isEmpty() || !this.checkOrder) {
+			return true;
+		} else {
+			final ExpectedInvocation lastMethodCall = this.results.get(
+					this.results.size() - 1).getExpectedInvocation();
+			return lastMethodCall.equals(expected);
+		}
 	}
 
 	@Override
@@ -77,17 +81,13 @@ public class UnorderedBehavior {
 		return result.toString();
 	}
 
-	public boolean allowsExpectedInvocation(final ExpectedInvocation expected,
-			final boolean checkOrder) {
-		if (this.checkOrder != checkOrder) {
-			return false;
-		} else if (this.results.isEmpty() || !this.checkOrder) {
-			return true;
-		} else {
-			final ExpectedInvocation lastMethodCall = this.results.get(
-					this.results.size() - 1).getExpectedInvocation();
-			return lastMethodCall.equals(expected);
+	public boolean verify() {
+		for (final ExpectedInvocationAndResults entry : this.results) {
+			if (!entry.getResults().hasValidCallCount()) {
+				return false;
+			}
 		}
+		return true;
 	}
 
 }

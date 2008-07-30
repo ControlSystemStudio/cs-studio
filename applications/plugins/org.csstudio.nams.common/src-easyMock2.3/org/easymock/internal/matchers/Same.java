@@ -14,16 +14,16 @@ public class Same implements IArgumentMatcher {
 		this.expected = expected;
 	}
 
-	public boolean matches(final Object actual) {
-		return this.expected == actual;
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("same(");
 		this.appendQuoting(buffer);
 		buffer.append(this.expected);
 		this.appendQuoting(buffer);
 		buffer.append(")");
+	}
+
+	public boolean matches(final Object actual) {
+		return this.expected == actual;
 	}
 
 	private void appendQuoting(final StringBuffer buffer) {

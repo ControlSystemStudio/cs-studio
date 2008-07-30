@@ -19,100 +19,108 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.nams.common.material.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.regex.Pattern;
 
-/*		Test-Results:
-String str = new String("ABCDEFGHIJKLMN abcdefghalloHALLO");
-System.out.println(WildcardStringCompare.compare(str, "*"));// true
-System.out.println(WildcardStringCompare.compare(str, "AB"));// false
-System.out.println(WildcardStringCompare.compare(str, "AB*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*AB"));// false
-System.out.println(WildcardStringCompare.compare(str, "*AB*"));// true
-System.out.println();
-System.out.println(WildcardStringCompare.compare(str, "*?AB*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*?BC*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*AB?D*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*BC*Hallo*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*BC*Hallo"));// true
-System.out.println();
-System.out.println(WildcardStringCompare.compare(str, "*BC?e?g*hallo"));// true
-System.out.println(WildcardStringCompare.compare(str, ""));// false
-System.out.println(WildcardStringCompare.compare(str, "*o"));// true
-System.out.println(WildcardStringCompare.compare(str, "* *"));// true
-System.out.println(WildcardStringCompare.compare(str, "*halloh*"));// true
-System.out.println();
-System.out.println(WildcardStringCompare.compare(str, "*HaLLO*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*H*aLLo"));// true
-System.out.println(WildcardStringCompare.compare(str, "*H*aLLo*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*hallo*hallo*"));// true
-System.out.println(WildcardStringCompare.compare(str, "*hallo?hallo*"));// false
-System.out.println();
-String string = new String("!�$%&/()=+#-._.gM@");
-System.out.println(WildcardStringCompare.compare(string, "*"));// true
-System.out.println(WildcardStringCompare.compare(string, "*!*"));// true
-System.out.println(WildcardStringCompare.compare(string, "*@"));// true
-System.out.println(WildcardStringCompare.compare(string, "*@*"));// true
-System.out.println(WildcardStringCompare.compare(string, "*()*"));// true
-System.out.println();
-System.out.println(WildcardStringCompare.compare(string, "*.*"));// true
-System.out.println(WildcardStringCompare.compare(string, "*._.*"));// true
-System.out.println(WildcardStringCompare.compare(string, "*.?.*"));// true
-System.out.println(WildcardStringCompare.compare(string, "*=*.*"));// true
-System.out.println(WildcardStringCompare.compare(string, "*!*@*"));// true
-System.out.println();
-*/
+/*
+ * Test-Results: String str = new String("ABCDEFGHIJKLMN abcdefghalloHALLO");
+ * System.out.println(WildcardStringCompare.compare(str, "*"));// true
+ * System.out.println(WildcardStringCompare.compare(str, "AB"));// false
+ * System.out.println(WildcardStringCompare.compare(str, "AB*"));// true
+ * System.out.println(WildcardStringCompare.compare(str, "*AB"));// false
+ * System.out.println(WildcardStringCompare.compare(str, "*AB*"));// true
+ * System.out.println(); System.out.println(WildcardStringCompare.compare(str,
+ * "*?AB*"));// true System.out.println(WildcardStringCompare.compare(str,
+ * "*?BC*"));// true System.out.println(WildcardStringCompare.compare(str,
+ * "*AB?D*"));// true System.out.println(WildcardStringCompare.compare(str,
+ * "*BC*Hallo*"));// true System.out.println(WildcardStringCompare.compare(str,
+ * "*BC*Hallo"));// true System.out.println();
+ * System.out.println(WildcardStringCompare.compare(str, "*BC?e?g*hallo"));//
+ * true System.out.println(WildcardStringCompare.compare(str, ""));// false
+ * System.out.println(WildcardStringCompare.compare(str, "*o"));// true
+ * System.out.println(WildcardStringCompare.compare(str, "* *"));// true
+ * System.out.println(WildcardStringCompare.compare(str, "*halloh*"));// true
+ * System.out.println(); System.out.println(WildcardStringCompare.compare(str,
+ * "*HaLLO*"));// true System.out.println(WildcardStringCompare.compare(str,
+ * "*H*aLLo"));// true System.out.println(WildcardStringCompare.compare(str,
+ * "*H*aLLo*"));// true System.out.println(WildcardStringCompare.compare(str,
+ * "*hallo*hallo*"));// true
+ * System.out.println(WildcardStringCompare.compare(str, "*hallo?hallo*"));//
+ * false System.out.println(); String string = new String("!�$%&/()=+#-._.gM@");
+ * System.out.println(WildcardStringCompare.compare(string, "*"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*!*"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*@"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*@*"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*()*"));// true
+ * System.out.println();
+ * System.out.println(WildcardStringCompare.compare(string, "*.*"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*._.*"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*.?.*"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*=*.*"));// true
+ * System.out.println(WildcardStringCompare.compare(string, "*!*@*"));// true
+ * System.out.println();
+ */
 // TODO Ist diese Klasse wirklich n�tig?
-abstract class WildcardStringCompare
-{
+abstract class WildcardStringCompare {
 	/**
 	 * Compare two Strings (ignore case)
 	 * 
-	 * @param strMsg		String came from message (may not contain wildcards)
-	 * @param wildCardStr	String typed by the user in filter condition (can contain "*" and "?" wildcards)
-	 * @return  true - EQUAL ; false - NOT_EQUAL, or null
+	 * @param strMsg
+	 *            String came from message (may not contain wildcards)
+	 * @param wildCardStr
+	 *            String typed by the user in filter condition (can contain "*"
+	 *            and "?" wildcards)
+	 * @return true - EQUAL ; false - NOT_EQUAL, or null
 	 * @throws Exception
 	 */
-	public static boolean compare(String strMsg, String wildCardStr) throws Exception
-	{
-		if ((strMsg == null) || (wildCardStr == null))
+	public static boolean compare(final String strMsg, final String wildCardStr)
+			throws Exception {
+		if ((strMsg == null) || (wildCardStr == null)) {
 			return false;
-		
-		return Pattern.compile(wildcardToRegex(wildCardStr), Pattern.CASE_INSENSITIVE).matcher(strMsg).matches();
+		}
+
+		return Pattern.compile(
+				WildcardStringCompare.wildcardToRegex(wildCardStr),
+				Pattern.CASE_INSENSITIVE).matcher(strMsg).matches();
 	}
 
-	// Search for "*" and "?" wildcards, make Regex conform 
-	private static String wildcardToRegex(String wildcard)
-	{
-	    StringBuffer s = new StringBuffer(wildcard.length());
-	    s.append('^');
-	
-		for (int i = 0, is = wildcard.length() ; i < is ; i++)
-		{
-		    char c = wildcard.charAt(i);
-		    
-			switch(c)
-			{
-				case '*':
-					s.append(".*");
-					break;
-				case '?':
-					s.append(".");
-					break;
-				// escape special regexp-characters
-				case '(': case ')': case '[': case ']': case '$':
-				case '^': case '.': case '{': case '}': case '|':
-				case '\\':
-					s.append("\\");
-					s.append(c);
-					break;
-				default:
-					s.append(c);
-					break;
+	// Search for "*" and "?" wildcards, make Regex conform
+	private static String wildcardToRegex(final String wildcard) {
+		final StringBuffer s = new StringBuffer(wildcard.length());
+		s.append('^');
+
+		for (int i = 0, is = wildcard.length(); i < is; i++) {
+			final char c = wildcard.charAt(i);
+
+			switch (c) {
+			case '*':
+				s.append(".*");
+				break;
+			case '?':
+				s.append(".");
+				break;
+			// escape special regexp-characters
+			case '(':
+			case ')':
+			case '[':
+			case ']':
+			case '$':
+			case '^':
+			case '.':
+			case '{':
+			case '}':
+			case '|':
+			case '\\':
+				s.append("\\");
+				s.append(c);
+				break;
+			default:
+				s.append(c);
+				break;
 			}
 		}
-	
+
 		s.append('$');
 		return (s.toString());
 	}

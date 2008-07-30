@@ -7,104 +7,120 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
-public class StringArrayFilterConditionBean extends AbstractConfigurationBean<StringArrayFilterConditionBean>
-		implements FilterConditionAddOnBean {
+public class StringArrayFilterConditionBean extends
+		AbstractConfigurationBean<StringArrayFilterConditionBean> implements
+		FilterConditionAddOnBean {
 
-	private List<String> compareValues = new LinkedList<String>();
-	private MessageKeyEnum keyValue = MessageKeyEnum.NAME;
-	private StringRegelOperator operator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
-	
 	public static enum PropertyNames {
 		compareValues, keyValue, operator;
 	}
-	
+
+	private List<String> compareValues = new LinkedList<String>();
+	private MessageKeyEnum keyValue = MessageKeyEnum.NAME;
+
+	private StringRegelOperator operator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
+
 	@Override
-	protected void doUpdateState(StringArrayFilterConditionBean bean) {
-		setCompareValues(bean.getCompareValues());
-		setKeyValue(bean.getKeyValue());
-		setOperator(bean.getOperator());
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final StringArrayFilterConditionBean other = (StringArrayFilterConditionBean) obj;
+		if (this.compareValues == null) {
+			if (other.compareValues != null) {
+				return false;
+			}
+		} else if (!this.compareValues.equals(other.compareValues)) {
+			return false;
+		}
+		if (this.keyValue == null) {
+			if (other.keyValue != null) {
+				return false;
+			}
+		} else if (!this.keyValue.equals(other.keyValue)) {
+			return false;
+		}
+		if (this.operator == null) {
+			if (other.operator != null) {
+				return false;
+			}
+		} else if (!this.operator.equals(other.operator)) {
+			return false;
+		}
+		return true;
+	}
+
+	public List<String> getCompareValues() {
+		return new LinkedList<String>(this.compareValues);
 	}
 
 	public String getDisplayName() {
-		return compareValues.toString() + " " + keyValue + " " + operator;
+		return this.compareValues.toString() + " " + this.keyValue + " "
+				+ this.operator;
 	}
 
 	public int getID() {
 		return 0;
 	}
 
-	public List<String> getCompareValues() {
-		return new LinkedList<String>(compareValues);
-	}
-
-	public void setCompareValues(List<String> compareValues) {
-		List<String> oldValue = this.compareValues;
-		this.compareValues = compareValues;
-		pcs.firePropertyChange(PropertyNames.compareValues.name(), oldValue, this.compareValues);
-	}
-
 	public MessageKeyEnum getKeyValue() {
-		return keyValue;
-	}
-
-	public void setKeyValue(MessageKeyEnum keyValue) {
-		MessageKeyEnum oldValue = this.keyValue;
-		this.keyValue = keyValue;
-		pcs.firePropertyChange(PropertyNames.keyValue.name(), oldValue, this.keyValue);
+		return this.keyValue;
 	}
 
 	public StringRegelOperator getOperator() {
-		return operator;
-	}
-
-	public void setOperator(StringRegelOperator operator) {
-		StringRegelOperator oldValue = this.operator;
-		this.operator = operator;
-		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, this.operator);
+		return this.operator;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime
+				* result
+				+ ((this.compareValues == null) ? 0 : this.compareValues
+						.hashCode());
 		result = prime * result
-				+ ((compareValues == null) ? 0 : compareValues.hashCode());
+				+ ((this.keyValue == null) ? 0 : this.keyValue.hashCode());
 		result = prime * result
-				+ ((keyValue == null) ? 0 : keyValue.hashCode());
-		result = prime * result
-				+ ((operator == null) ? 0 : operator.hashCode());
+				+ ((this.operator == null) ? 0 : this.operator.hashCode());
 		return result;
 	}
 
+	public void setCompareValues(final List<String> compareValues) {
+		final List<String> oldValue = this.compareValues;
+		this.compareValues = compareValues;
+		this.pcs.firePropertyChange(PropertyNames.compareValues.name(),
+				oldValue, this.compareValues);
+	}
+
+	public void setID(final int id) {
+	}
+
+	public void setKeyValue(final MessageKeyEnum keyValue) {
+		final MessageKeyEnum oldValue = this.keyValue;
+		this.keyValue = keyValue;
+		this.pcs.firePropertyChange(PropertyNames.keyValue.name(), oldValue,
+				this.keyValue);
+	}
+
+	public void setOperator(final StringRegelOperator operator) {
+		final StringRegelOperator oldValue = this.operator;
+		this.operator = operator;
+		this.pcs.firePropertyChange(PropertyNames.operator.name(), oldValue,
+				this.operator);
+	}
+
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final StringArrayFilterConditionBean other = (StringArrayFilterConditionBean) obj;
-		if (compareValues == null) {
-			if (other.compareValues != null)
-				return false;
-		} else if (!compareValues.equals(other.compareValues))
-			return false;
-		if (keyValue == null) {
-			if (other.keyValue != null)
-				return false;
-		} else if (!keyValue.equals(other.keyValue))
-			return false;
-		if (operator == null) {
-			if (other.operator != null)
-				return false;
-		} else if (!operator.equals(other.operator))
-			return false;
-		return true;
+	protected void doUpdateState(final StringArrayFilterConditionBean bean) {
+		this.setCompareValues(bean.getCompareValues());
+		this.setKeyValue(bean.getKeyValue());
+		this.setOperator(bean.getOperator());
 	}
-
-	public void setID(int id) {
-	}
-
 
 }

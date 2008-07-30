@@ -46,6 +46,10 @@ public class ObjectMethodsFilter implements InvocationHandler {
 		this.name = name;
 	}
 
+	public MockInvocationHandler getDelegate() {
+		return this.delegate;
+	}
+
 	public final Object invoke(final Object proxy, final Method method,
 			final Object[] args) throws Throwable {
 		if (this.equalsMethod.equals(method)) {
@@ -71,9 +75,5 @@ public class ObjectMethodsFilter implements InvocationHandler {
 		} else {
 			return proxy.getClass().getSuperclass().toString();
 		}
-	}
-
-	public MockInvocationHandler getDelegate() {
-		return this.delegate;
 	}
 }

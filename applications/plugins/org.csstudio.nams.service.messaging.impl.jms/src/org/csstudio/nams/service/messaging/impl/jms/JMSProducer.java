@@ -25,23 +25,23 @@ public class JMSProducer implements Producer {
 
 	private static Logger injectedLogger;
 
-	public static void staticInjectLogger(Logger logger) {
-		injectedLogger = logger;
+	public static void staticInjectLogger(final Logger logger) {
+		JMSProducer.injectedLogger = logger;
 	}
 
-	private MessageProducer[] producers;
+	private final MessageProducer[] producers;
 	private boolean isClosed;
-	private Logger logger;
+	private final Logger logger;
 	private final Session[] sessions;
 
-	public JMSProducer(String messageDestinationName,
-			PostfachArt artDesPostfaches, Session[] sessions)
+	public JMSProducer(final String messageDestinationName,
+			final PostfachArt artDesPostfaches, final Session[] sessions)
 			throws JMSException {
 
 		this.sessions = sessions;
-		logger = injectedLogger;
+		this.logger = JMSProducer.injectedLogger;
 
-		producers = new MessageProducer[sessions.length];
+		this.producers = new MessageProducer[sessions.length];
 		try {
 			for (int i = 0; i < sessions.length; i++) {
 				Destination destination = null;
@@ -55,85 +55,101 @@ public class JMSProducer implements Producer {
 							.createTopic(messageDestinationName);
 					break;
 				}
-				producers[i] = sessions[i].createProducer(destination);
+				this.producers[i] = sessions[i].createProducer(destination);
 			}
-		} catch (JMSException e) {
-			tryToClose();
-			logger.logErrorMessage(this, e.getLocalizedMessage(), e);
+		} catch (final JMSException e) {
+			this.tryToClose();
+			this.logger.logErrorMessage(this, e.getLocalizedMessage(), e);
 			throw e;
 		}
-		isClosed = false;
-	}
-
-	public void tryToClose() {
-		for (MessageProducer producer : producers) {
-			if (producer != null) {
-				try {
-					producer.close();
-				} catch (JMSException e) {
-				}
-			}
-		}
-		isClosed = true;
-		logger.logDebugMessage(this, "Producer closed");
+		this.isClosed = false;
 	}
 
 	public boolean isClosed() {
-		return isClosed;
+		return this.isClosed;
 	}
 
-	public void sendeSystemnachricht(SystemNachricht systemNachricht) throws MessagingException {
+	public void sendeSystemnachricht(final SystemNachricht systemNachricht)
+			throws MessagingException {
 		try {
 			if (systemNachricht.istSyncronisationsAufforderung()) {
-				for (int i = 0; i < sessions.length; i++) {
-					MapMessage mapMessage = sessions[i].createMapMessage();
-					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND.getStringValue(),
+				for (int i = 0; i < this.sessions.length; i++) {
+					final MapMessage mapMessage = this.sessions[i]
+							.createMapMessage();
+					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND
+							.getStringValue(),
 							MessageKeyUtil.MSGVALUE_TCMD_RELOAD_CFG_START);
 					mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
-					producers[i].send(mapMessage);
+					this.producers[i].send(mapMessage);
 				}
 			} else if (systemNachricht.istSyncronisationsBestaetigung()) {
-				for (int i = 0; i < sessions.length; i++) {
-					MapMessage mapMessage = sessions[i].createMapMessage();
-					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND.getStringValue(),
+				for (int i = 0; i < this.sessions.length; i++) {
+					final MapMessage mapMessage = this.sessions[i]
+							.createMapMessage();
+					mapMessage.setString(MessageKeyEnum.MSGPROP_COMMAND
+							.getStringValue(),
 							MessageKeyUtil.MSGVALUE_TCMD_RELOAD_CFG_END);
 					mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
-					producers[i].send(mapMessage);
+					this.producers[i].send(mapMessage);
 				}
 			} else {
-				logger.logErrorMessage(this, "unbekannte Systemnachricht.");
+				this.logger
+						.logErrorMessage(this, "unbekannte Systemnachricht.");
 			}
-		} catch (JMSException e) {
-			logger.logWarningMessage(this, "JMSException during send of system message", e);
-			throw new MessagingException("JMSException during send of system message", e);
+		} catch (final JMSException e) {
+			this.logger.logWarningMessage(this,
+					"JMSException during send of system message", e);
+			throw new MessagingException(
+					"JMSException during send of system message", e);
 		}
 	}
 
-	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe) throws MessagingException {
-		Regelwerkskennung regelwerkskennung = vorgangsmappe.gibPruefliste()
-				.gibRegelwerkskennung();
-		AlarmNachricht alarmNachricht = vorgangsmappe
+	public void sendeVorgangsmappe(final Vorgangsmappe vorgangsmappe)
+			throws MessagingException {
+		final Regelwerkskennung regelwerkskennung = vorgangsmappe
+				.gibPruefliste().gibRegelwerkskennung();
+		final AlarmNachricht alarmNachricht = vorgangsmappe
 				.gibAusloesendeAlarmNachrichtDiesesVorganges();
-		Map<MessageKeyEnum, String> contentMap = alarmNachricht.getContentMap();
-		
+		final Map<MessageKeyEnum, String> contentMap = alarmNachricht
+				.getContentMap();
+
 		try {
-			for (int i = 0; i < sessions.length; i++) {
+			for (int i = 0; i < this.sessions.length; i++) {
 				MapMessage mapMessage;
-				mapMessage = sessions[i].createMapMessage();
-				
-				Set<Entry<MessageKeyEnum,String>> entrySet = contentMap.entrySet();
-				for (Entry<MessageKeyEnum, String> entry : entrySet) {
-					mapMessage.setString(entry.getKey().getStringValue(), entry.getValue());
+				mapMessage = this.sessions[i].createMapMessage();
+
+				final Set<Entry<MessageKeyEnum, String>> entrySet = contentMap
+						.entrySet();
+				for (final Entry<MessageKeyEnum, String> entry : entrySet) {
+					mapMessage.setString(entry.getKey().getStringValue(), entry
+							.getValue());
 				}
-				
-				mapMessage.setString(MessageKeyEnum.AMS_FILTERID.getStringValue(), Integer.toString(regelwerkskennung.getRegelwerksId()));
-				
+
+				mapMessage.setString(MessageKeyEnum.AMS_FILTERID
+						.getStringValue(), Integer.toString(regelwerkskennung
+						.getRegelwerksId()));
+
 				mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
-				producers[i].send(mapMessage);
+				this.producers[i].send(mapMessage);
 			}
-		} catch (JMSException e) {
-			logger.logWarningMessage(this, "JMSException during send of Vorgangsmappe", e);
-			throw new MessagingException("JMSException during send of Vorgangsmappe", e);
+		} catch (final JMSException e) {
+			this.logger.logWarningMessage(this,
+					"JMSException during send of Vorgangsmappe", e);
+			throw new MessagingException(
+					"JMSException during send of Vorgangsmappe", e);
 		}
+	}
+
+	public void tryToClose() {
+		for (final MessageProducer producer : this.producers) {
+			if (producer != null) {
+				try {
+					producer.close();
+				} catch (final JMSException e) {
+				}
+			}
+		}
+		this.isClosed = true;
+		this.logger.logDebugMessage(this, "Producer closed");
 	}
 }

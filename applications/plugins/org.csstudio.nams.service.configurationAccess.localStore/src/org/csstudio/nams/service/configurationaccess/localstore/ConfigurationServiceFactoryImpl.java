@@ -50,64 +50,216 @@ import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 public class ConfigurationServiceFactoryImpl implements
 		ConfigurationServiceFactory {
 
-	private Map<ConnectionData, LocalStoreConfigurationService> services = new HashMap<ConnectionData, LocalStoreConfigurationService>();
-	private List<SessionFactory> sessionFactoryList = new LinkedList<SessionFactory>();
-//	private List<Session> sessionList = new LinkedList<Session>();
-	private final org.csstudio.nams.service.logging.declaration.Logger logger;
-	
-	public ConfigurationServiceFactoryImpl(
-			org.csstudio.nams.service.logging.declaration.Logger logger) {
-				this.logger = logger;
+	private class ConnectionData {
+		private final String connectionDriver;
+		private final String connectionURL;
+		private final String dialect;
+		private final String username;
+		private final String password;
+		private final DatabaseType databaseType;
+
+		public ConnectionData(final String connectionDriver,
+				final String connectionURL, final String dialect,
+				final String username, final String password,
+				final DatabaseType databaseType) {
+			super();
+			this.connectionDriver = connectionDriver;
+			this.connectionURL = connectionURL;
+			this.dialect = dialect;
+			this.username = username;
+			this.password = password;
+			this.databaseType = databaseType;
+		}
+
+		@Override
+		public boolean equals(final Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof ConnectionData)) {
+				return false;
+			}
+			final ConnectionData other = (ConnectionData) obj;
+			if (this.connectionDriver == null) {
+				if (other.connectionDriver != null) {
+					return false;
+				}
+			} else if (!this.connectionDriver.equals(other.connectionDriver)) {
+				return false;
+			}
+			if (this.connectionURL == null) {
+				if (other.connectionURL != null) {
+					return false;
+				}
+			} else if (!this.connectionURL.equals(other.connectionURL)) {
+				return false;
+			}
+			if (this.databaseType == null) {
+				if (other.databaseType != null) {
+					return false;
+				}
+			} else if (!this.databaseType.equals(other.databaseType)) {
+				return false;
+			}
+			if (this.dialect == null) {
+				if (other.dialect != null) {
+					return false;
+				}
+			} else if (!this.dialect.equals(other.dialect)) {
+				return false;
+			}
+			if (this.password == null) {
+				if (other.password != null) {
+					return false;
+				}
+			} else if (!this.password.equals(other.password)) {
+				return false;
+			}
+			if (this.username == null) {
+				if (other.username != null) {
+					return false;
+				}
+			} else if (!this.username.equals(other.username)) {
+				return false;
+			}
+			return true;
+		}
+
+		public String getConnectionDriver() {
+			return this.connectionDriver;
+		}
+
+		public String getConnectionURL() {
+			return this.connectionURL;
+		}
+
+		public DatabaseType getDatabaseType() {
+			return this.databaseType;
+		}
+
+		public String getDialect() {
+			return this.dialect;
+		}
+
+		public String getPassword() {
+			return this.password;
+		}
+
+		public String getUsername() {
+			return this.username;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime
+					* result
+					+ ((this.connectionDriver == null) ? 0
+							: this.connectionDriver.hashCode());
+			result = prime
+					* result
+					+ ((this.connectionURL == null) ? 0 : this.connectionURL
+							.hashCode());
+			result = prime
+					* result
+					+ ((this.databaseType == null) ? 0 : this.databaseType
+							.hashCode());
+			result = prime * result
+					+ ((this.dialect == null) ? 0 : this.dialect.hashCode());
+			result = prime * result
+					+ ((this.password == null) ? 0 : this.password.hashCode());
+			result = prime * result
+					+ ((this.username == null) ? 0 : this.username.hashCode());
+			return result;
+		}
+
 	}
 
-	public LocalStoreConfigurationService getConfigurationService(String connectionURL, DatabaseType dbType, String username, String password)
-	{
-		Contract.requireNotNull("dbType", dbType);
-		
-		Contract.requireNotNull("connectionURL", connectionURL);
-		Contract.require(connectionURL.length() > 0, "connectionURL.length() > 0");
-		
-		Contract.requireNotNull("username", username);
-		Contract.require(username.length() > 0, "username.length() > 0");
-		
-		Contract.requireNotNull("password", password);
-		//Passwords of length 0 ok for development databaseses! Contract.require(password.length() > 0, "password.length() > 0");
-		
-		ConnectionData connectionData = new ConnectionData(dbType.getDriverName(), connectionURL, dbType.getHibernateDialect().getName(), username, password, dbType);
-		LocalStoreConfigurationService service = services.get(connectionData);
-		
-		if (service == null) {
-			SessionFactory sessionFactory = createSessionFactory(connectionData);
-//			Session session = sessionFactory.openSession();
-//			session.setFlushMode(FlushMode.COMMIT);
-			service = new LocalStoreConfigurationServiceImpl(sessionFactory, logger);
-			sessionFactoryList.add(sessionFactory);
-//			sessionList.add(session);
-			services.put(connectionData, service);
-		}
-		
-		return service;
+	private final Map<ConnectionData, LocalStoreConfigurationService> services = new HashMap<ConnectionData, LocalStoreConfigurationService>();
+	private final List<SessionFactory> sessionFactoryList = new LinkedList<SessionFactory>();
+
+	// private List<Session> sessionList = new LinkedList<Session>();
+	private final org.csstudio.nams.service.logging.declaration.Logger logger;
+
+	public ConfigurationServiceFactoryImpl(
+			final org.csstudio.nams.service.logging.declaration.Logger logger) {
+		this.logger = logger;
 	}
-	
+
 	// TODO Add curstom connection provider
-	// TODO Add property for auto create: "hibernate.hbm2ddl.auto" = "create-drop" für HSQL
-	// ADD Configuration cfg = new Configuration().configure(); 
-	//     SchemaExport schemaExport = new SchemaExport(cfg); 
-	//     schemaExport.create(false, true); 
-	// OR 
-	//     Configuration cfg = new Configuration().configure(); 
-	//     SchemaUpdate schemaUpdate = new SchemaUpdate(cfg); 
-	//     schemaUpdate.execute(false); 
+	// TODO Add property for auto create: "hibernate.hbm2ddl.auto" =
+	// "create-drop" für HSQL
+	// ADD Configuration cfg = new Configuration().configure();
+	// SchemaExport schemaExport = new SchemaExport(cfg);
+	// schemaExport.create(false, true);
+	// OR
+	// Configuration cfg = new Configuration().configure();
+	// SchemaUpdate schemaUpdate = new SchemaUpdate(cfg);
+	// schemaUpdate.execute(false);
 	// CHECK
-	//     Configuration cfg = new Configuration().configure(); 
-	//     new SchemaValidator(cfg).validate(); 
+	// Configuration cfg = new Configuration().configure();
+	// new SchemaValidator(cfg).validate();
 	//
 	// copied from: http://www.manning.com/bauer2/chapter2.pdf
 	// SEE PAGE 75 !!!!!!!!!!
 	// Download EM http://www.hibernate.org/30.html
-	 
-	private SessionFactory createSessionFactory(ConnectionData connectionData) {
-		AnnotationConfiguration configuration = new AnnotationConfiguration();
+
+	public void closeSessions() {
+		// for (Session session : sessionList) {
+		// session.close();
+		// }
+		// sessionList.clear();
+		for (final SessionFactory sessionFactory : this.sessionFactoryList) {
+			sessionFactory.close();
+		}
+		this.sessionFactoryList.clear();
+		this.services.clear();
+	}
+
+	public LocalStoreConfigurationService getConfigurationService(
+			final String connectionURL, final DatabaseType dbType,
+			final String username, final String password) {
+		Contract.requireNotNull("dbType", dbType);
+
+		Contract.requireNotNull("connectionURL", connectionURL);
+		Contract.require(connectionURL.length() > 0,
+				"connectionURL.length() > 0");
+
+		Contract.requireNotNull("username", username);
+		Contract.require(username.length() > 0, "username.length() > 0");
+
+		Contract.requireNotNull("password", password);
+		// Passwords of length 0 ok for development databaseses!
+		// Contract.require(password.length() > 0, "password.length() > 0");
+
+		final ConnectionData connectionData = new ConnectionData(dbType
+				.getDriverName(), connectionURL, dbType.getHibernateDialect()
+				.getName(), username, password, dbType);
+		LocalStoreConfigurationService service = this.services
+				.get(connectionData);
+
+		if (service == null) {
+			final SessionFactory sessionFactory = this
+					.createSessionFactory(connectionData);
+			// Session session = sessionFactory.openSession();
+			// session.setFlushMode(FlushMode.COMMIT);
+			service = new LocalStoreConfigurationServiceImpl(sessionFactory,
+					this.logger);
+			this.sessionFactoryList.add(sessionFactory);
+			// sessionList.add(session);
+			this.services.put(connectionData, service);
+		}
+
+		return service;
+	}
+
+	private SessionFactory createSessionFactory(
+			final ConnectionData connectionData) {
+		final AnnotationConfiguration configuration = new AnnotationConfiguration();
 		configuration
 				.addAnnotatedClass(ReplicationStateDTO.class)
 				.addAnnotatedClass(AlarmbearbeiterDTO.class)
@@ -120,193 +272,96 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(JunctorConditionDTO.class)
 				.addAnnotatedClass(StringFilterConditionDTO.class)
 				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
-				
-				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class) // TODO Mapping in Configuration!!!
+
+				.addAnnotatedClass(
+						StringArrayFilterConditionCompareValuesDTO.class)
+				// TODO Mapping in Configuration!!!
 				.addAnnotatedClass(TimeBasedFilterConditionDTO.class)
 				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
-				.addAnnotatedClass(FilterDTO.class)
-				.addAnnotatedClass(HistoryDTO.class)
-				.addAnnotatedClass(RubrikDTO.class)
+				.addAnnotatedClass(FilterDTO.class).addAnnotatedClass(
+						HistoryDTO.class).addAnnotatedClass(RubrikDTO.class)
 				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
 				.addAnnotatedClass(JunctorConditionForFilterTreeDTO.class)
-				.addAnnotatedClass(JunctorConditionForFilterTreeConditionJoinDTO.class)
-				.addAnnotatedClass(User2UserGroupDTO.class)
-				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
+				.addAnnotatedClass(
+						JunctorConditionForFilterTreeConditionJoinDTO.class)
+				.addAnnotatedClass(User2UserGroupDTO.class).addAnnotatedClass(
+						NegationConditionForFilterTreeDTO.class)
 
-				.addAnnotatedClass(FilterActionDTO.class)
-				.addAnnotatedClass(TopicFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterEmailFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterGruppenEmailBestFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterGruppenEmailFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterGruppenSMSBestFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterGruppenSMSFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterGruppenVMailBestFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterGruppenVMailFilterActionDTO.class)
+				.addAnnotatedClass(FilterActionDTO.class).addAnnotatedClass(
+						TopicFilterActionDTO.class).addAnnotatedClass(
+						AlarmbearbeiterEmailFilterActionDTO.class)
+				.addAnnotatedClass(
+						AlarmbearbeiterGruppenEmailBestFilterActionDTO.class)
+				.addAnnotatedClass(
+						AlarmbearbeiterGruppenEmailFilterActionDTO.class)
+				.addAnnotatedClass(
+						AlarmbearbeiterGruppenSMSBestFilterActionDTO.class)
+				.addAnnotatedClass(
+						AlarmbearbeiterGruppenSMSFilterActionDTO.class)
+				.addAnnotatedClass(
+						AlarmbearbeiterGruppenVMailBestFilterActionDTO.class)
+				.addAnnotatedClass(
+						AlarmbearbeiterGruppenVMailFilterActionDTO.class)
 				.addAnnotatedClass(AlarmbearbeiterSMSFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterVoiceMailFilterActionDTO.class)
-				
-				.addAnnotatedClass(DefaultFilterTextDTO.class)
-				
-				.setProperty("hibernate.connection.driver_class", connectionData.getConnectionDriver())
-				.setProperty("hibernate.connection.url", connectionData.getConnectionURL())
-				.setProperty("hibernate.dialect", connectionData.getDialect())
-				.setProperty("hibernate.connection.username", connectionData.getUsername())
-				.setProperty("hibernate.connection.password", connectionData.getPassword())
+				.addAnnotatedClass(
+						AlarmbearbeiterVoiceMailFilterActionDTO.class)
 
-				.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider")
-				.setProperty("hibernate.cache.use_minimal_puts", "false")
+				.addAnnotatedClass(DefaultFilterTextDTO.class)
+
+				.setProperty("hibernate.connection.driver_class",
+						connectionData.getConnectionDriver()).setProperty(
+						"hibernate.connection.url",
+						connectionData.getConnectionURL()).setProperty(
+						"hibernate.dialect", connectionData.getDialect())
+				.setProperty("hibernate.connection.username",
+						connectionData.getUsername()).setProperty(
+						"hibernate.connection.password",
+						connectionData.getPassword())
+
+				.setProperty("hibernate.cache.provider_class",
+						"org.hibernate.cache.NoCacheProvider").setProperty(
+						"hibernate.cache.use_minimal_puts", "false")
 				.setProperty("hibernate.cache.use_query_cache", "false")
 				.setProperty("hibernate.cache.use_second_level_cache", "false")
 
 				.setProperty("hibernate.connection.pool_size", "1")
 				.setProperty("current_session_context_class", "thread")
-				.setProperty("show_sql", "true")
-				.setProperty("hbm2ddl.auto", "update") 
-				.setProperty("hibernate.mapping.precedence", "class");
-		
-		if( connectionData.getDatabaseType().equals(DatabaseType.HSQL_1_8_0_FOR_TEST) ) {
+				.setProperty("show_sql", "true").setProperty("hbm2ddl.auto",
+						"update").setProperty("hibernate.mapping.precedence",
+						"class");
+
+		if (connectionData.getDatabaseType().equals(
+				DatabaseType.HSQL_1_8_0_FOR_TEST)) {
 			try {
-				Class.forName(DatabaseType.HSQL_1_8_0_FOR_TEST.getDriverName()).newInstance();
-//				configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-				 SchemaUpdate schemaUpdate = new SchemaUpdate(configuration); 
-					    schemaUpdate.execute(false, true);
-			} catch (Throwable t) {
+				Class.forName(DatabaseType.HSQL_1_8_0_FOR_TEST.getDriverName())
+						.newInstance();
+				// configuration.setProperty("hibernate.hbm2ddl.auto",
+				// "create-drop");
+				final SchemaUpdate schemaUpdate = new SchemaUpdate(
+						configuration);
+				schemaUpdate.execute(false, true);
+			} catch (final Throwable t) {
 				// TODO logging....
 				System.out
-						.println("ConfigurationServiceFactoryImpl.getConfigurationService() " + t);
+						.println("ConfigurationServiceFactoryImpl.getConfigurationService() "
+								+ t);
 			}
 		}
-		
+
 		/*
-		 * Can I supply my own connections? Implement the    org.hibernate.connec- 
-tion.ConnectionProvider  interface, and name your implementation 
-with the hibernate.connection.provider_class configuration option. 
-Hibernate will now rely on your custom provider if it needs a database 
-connection.
-
-copied from: http://www.manning.com/bauer2/chapter2.pdf
-
+		 * Can I supply my own connections? Implement the org.hibernate.connec-
+		 * tion.ConnectionProvider interface, and name your implementation with
+		 * the hibernate.connection.provider_class configuration option.
+		 * Hibernate will now rely on your custom provider if it needs a
+		 * database connection.
+		 * 
+		 * copied from: http://www.manning.com/bauer2/chapter2.pdf
+		 * 
 		 */
-		
 
-		//TODO in die config auslagern
+		// TODO in die config auslagern
 		Logger.getLogger("org.hibernate").setLevel(Level.WARN);
-		
-		return configuration.buildSessionFactory();
-	}
-	
-	public void closeSessions() {
-//		for (Session session : sessionList) {
-//			session.close();
-//		}
-//		sessionList.clear();
-		for (SessionFactory sessionFactory : sessionFactoryList) {
-			sessionFactory.close();
-		}
-		sessionFactoryList.clear();
-		services.clear();
-	}
 
-	
-	private class ConnectionData {
-		private String connectionDriver;
-		private String connectionURL;
-		private String dialect;
-		private String username;
-		private String password;
-		private final DatabaseType databaseType;
-		public ConnectionData(String connectionDriver, String connectionURL,
-				String dialect, String username, String password, DatabaseType databaseType) {
-			super();
-			this.connectionDriver = connectionDriver;
-			this.connectionURL = connectionURL;
-			this.dialect = dialect;
-			this.username = username;
-			this.password = password;
-			this.databaseType = databaseType;
-		}
-		public String getConnectionDriver() {
-			return connectionDriver;
-		}
-		public String getConnectionURL() {
-			return connectionURL;
-		}
-		public String getDialect() {
-			return dialect;
-		}
-		public String getUsername() {
-			return username;
-		}
-		public String getPassword() {
-			return password;
-		}
-		
-		public DatabaseType getDatabaseType() {
-			return databaseType;
-		}
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime
-					* result
-					+ ((connectionDriver == null) ? 0 : connectionDriver
-							.hashCode());
-			result = prime * result
-					+ ((connectionURL == null) ? 0 : connectionURL.hashCode());
-			result = prime * result
-					+ ((databaseType == null) ? 0 : databaseType.hashCode());
-			result = prime * result
-					+ ((dialect == null) ? 0 : dialect.hashCode());
-			result = prime * result
-					+ ((password == null) ? 0 : password.hashCode());
-			result = prime * result
-					+ ((username == null) ? 0 : username.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (!(obj instanceof ConnectionData))
-				return false;
-			final ConnectionData other = (ConnectionData) obj;
-			if (connectionDriver == null) {
-				if (other.connectionDriver != null)
-					return false;
-			} else if (!connectionDriver.equals(other.connectionDriver))
-				return false;
-			if (connectionURL == null) {
-				if (other.connectionURL != null)
-					return false;
-			} else if (!connectionURL.equals(other.connectionURL))
-				return false;
-			if (databaseType == null) {
-				if (other.databaseType != null)
-					return false;
-			} else if (!databaseType.equals(other.databaseType))
-				return false;
-			if (dialect == null) {
-				if (other.dialect != null)
-					return false;
-			} else if (!dialect.equals(other.dialect))
-				return false;
-			if (password == null) {
-				if (other.password != null)
-					return false;
-			} else if (!password.equals(other.password))
-				return false;
-			if (username == null) {
-				if (other.username != null)
-					return false;
-			} else if (!username.equals(other.username))
-				return false;
-			return true;
-		}
-		
-		
-		
+		return configuration.buildSessionFactory();
 	}
 }

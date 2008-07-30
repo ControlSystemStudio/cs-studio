@@ -21,23 +21,24 @@ public class ConfiguratorModelActivator extends AbstractBundleActivator {
 	public static final String PLUGIN_ID = "org.csstudio.nams.configurator.model";
 
 	@OSGiBundleActivationMethod
-	public OSGiServiceOffers activateBundle(
-			@OSGiService @Required final Logger logger
-	) {
-		OSGiServiceOffers result = new OSGiServiceOffers();
-		
-		result.put(ConfigurationElementModelAccessService.class, new ConfigurationElementModelAccessService() {
+	public OSGiServiceOffers activateBundle(@OSGiService
+	@Required
+	final Logger logger) {
+		final OSGiServiceOffers result = new OSGiServiceOffers();
 
-			public SortedSet<AlarmbearbeiterDTO> getVisibleAlarmbearbeiterInAscendingOrder() {
-				ConfigurationsElementeAuflistung<AlarmbearbeiterDTO> auflistung = new ConfigurationsElementeAuflistung<AlarmbearbeiterDTO>();
-				
-				// TODO Auflistung füllen, ggf. von wo anders bezeihen...
-				
-				return auflistung.getVisibleElementsInAscendingOrder();
-			}
-			
-		});
-		
+		result.put(ConfigurationElementModelAccessService.class,
+				new ConfigurationElementModelAccessService() {
+
+					public SortedSet<AlarmbearbeiterDTO> getVisibleAlarmbearbeiterInAscendingOrder() {
+						final ConfigurationsElementeAuflistung<AlarmbearbeiterDTO> auflistung = new ConfigurationsElementeAuflistung<AlarmbearbeiterDTO>();
+
+						// TODO Auflistung füllen, ggf. von wo anders bezeihen...
+
+						return auflistung.getVisibleElementsInAscendingOrder();
+					}
+
+				});
+
 		return result;
 	}
 

@@ -1,56 +1,56 @@
 package org.csstudio.nams.common.activatorUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public class OSGiServiceOffers_Test {
 
-	static class MyService {};
-	static class MySecondService {};
-	
+	static class MySecondService {
+	};
+
+	static class MyService {
+	};
+
 	@Test
 	public void testNormalBehaviour() {
-		OSGiServiceOffers offers = new OSGiServiceOffers();
-		
+		final OSGiServiceOffers offers = new OSGiServiceOffers();
+
 		// at beginning
-		assertTrue(offers.isEmpty());
-		
-		assertTrue(offers.keySet().isEmpty());
-		assertFalse(offers.keySet().iterator().hasNext());
-		
-		assertTrue(offers.values().isEmpty());
-		assertFalse(offers.values().iterator().hasNext());
-		
+		Assert.assertTrue(offers.isEmpty());
+
+		Assert.assertTrue(offers.keySet().isEmpty());
+		Assert.assertFalse(offers.keySet().iterator().hasNext());
+
+		Assert.assertTrue(offers.values().isEmpty());
+		Assert.assertFalse(offers.values().iterator().hasNext());
+
 		// add a offer:
 		offers.put(MyService.class, new MyService());
-		
+
 		// contents...
-		assertFalse(offers.isEmpty());
-		
-		assertFalse(offers.keySet().isEmpty());
-		assertTrue(offers.keySet().iterator().hasNext());
-		
-		assertFalse(offers.values().isEmpty());
-		assertTrue(offers.values().iterator().hasNext());
-		
-		assertEquals(1, offers.size());
-		
+		Assert.assertFalse(offers.isEmpty());
+
+		Assert.assertFalse(offers.keySet().isEmpty());
+		Assert.assertTrue(offers.keySet().iterator().hasNext());
+
+		Assert.assertFalse(offers.values().isEmpty());
+		Assert.assertTrue(offers.values().iterator().hasNext());
+
+		Assert.assertEquals(1, offers.size());
+
 		// add a offer:
 		offers.put(MySecondService.class, new MySecondService());
-		
+
 		// contents...
-		assertFalse(offers.isEmpty());
-		
-		assertFalse(offers.keySet().isEmpty());
-		assertTrue(offers.keySet().iterator().hasNext());
-		
-		assertFalse(offers.values().isEmpty());
-		assertTrue(offers.values().iterator().hasNext());
-		
-		assertEquals(2, offers.size());
+		Assert.assertFalse(offers.isEmpty());
+
+		Assert.assertFalse(offers.keySet().isEmpty());
+		Assert.assertTrue(offers.keySet().iterator().hasNext());
+
+		Assert.assertFalse(offers.values().isEmpty());
+		Assert.assertTrue(offers.values().iterator().hasNext());
+
+		Assert.assertEquals(2, offers.size());
 	}
 
 }

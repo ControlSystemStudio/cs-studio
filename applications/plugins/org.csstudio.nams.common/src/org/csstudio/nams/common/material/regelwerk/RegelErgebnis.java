@@ -6,6 +6,5 @@ public enum RegelErgebnis {
 	public boolean istEntschieden() {
 		return ((this == ZUTREFFEND) || (this == NICHT_ZUTREFFEND));
 	}
-	
-	
+
 }

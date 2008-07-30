@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Indicates given param to be required and injecting of null is not permitted.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
+@Target( { ElementType.PARAMETER })
 public @interface Required {
 
 }

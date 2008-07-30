@@ -1,9 +1,8 @@
 package org.csstudio.nams.common.material.regelwerk;
 
-
-
 /**
- * Operators supported by this filter-condition. For example used by a PV-Condition.
+ * Operators supported by this filter-condition. For example used by a
+ * PV-Condition.
  */
 public enum Operator implements HoldsAnDatabaseId {
 	/**
@@ -30,8 +29,8 @@ public enum Operator implements HoldsAnDatabaseId {
 	 * Returns the Operator for given database-id or {@code null} if id is
 	 * unknown.
 	 */
-	public static Operator findOperatorOfDBId(short id) {
-		for (Operator op : Operator.values()) {
+	public static Operator findOperatorOfDBId(final short id) {
+		for (final Operator op : Operator.values()) {
 			if (op._dbid == id) {
 				return op;
 			}
@@ -51,17 +50,17 @@ public enum Operator implements HoldsAnDatabaseId {
 	 * @param id
 	 *            The id in database:
 	 */
-	Operator(short id) {
-		_dbid = id;
+	Operator(final short id) {
+		this._dbid = id;
 	}
 
 	/**
 	 * Returns the database-id of this Operator.
 	 * 
-	 * <strong>Pay attention:</strong> Please do never use this method
-	 * outside the DAOs!
+	 * <strong>Pay attention:</strong> Please do never use this method outside
+	 * the DAOs!
 	 */
 	public short asDatabaseId() {
-		return _dbid;
+		return this._dbid;
 	}
 }

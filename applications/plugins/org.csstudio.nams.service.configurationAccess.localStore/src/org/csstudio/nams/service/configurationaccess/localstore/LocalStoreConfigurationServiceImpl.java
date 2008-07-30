@@ -38,13 +38,10 @@ class LocalStoreConfigurationServiceImpl implements
 	private final Logger logger;
 	private final SessionFactory sessionFactory;
 
-	/**
-	 * Für Tests.
-	 */
-	SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-	
+	private Session sessionWorkingOn = null;
+
+	private final TransactionProcessor transactionProcessor;
+
 	/**
 	 * 
 	 * @param session
@@ -58,14 +55,15 @@ class LocalStoreConfigurationServiceImpl implements
 		this.sessionFactory = sessionFactory;
 		this.logger = logger;
 
-		transactionProcessor = new TransactionProcessor(sessionFactory, logger);
+		this.transactionProcessor = new TransactionProcessor(sessionFactory,
+				logger);
 	}
 
 	public void deleteDTO(final NewAMSConfigurationElementDTO dto)
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
-		
-		UnitOfWork<Object> loadEntireConfigurationWork = new UnitOfWork<Object>() {
+
+		final UnitOfWork<Object> loadEntireConfigurationWork = new UnitOfWork<Object>() {
 			public Object doWork(Mapper mapper) throws Throwable {
 				mapper.delete(dto);
 				return dto;
@@ -75,11 +73,9 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			this.transactionProcessor
 					.doInTransaction(loadEntireConfigurationWork);
-		} catch (InterruptedException e) {
-			logger.logWarningMessage(this,
-					"Delete of DTO interrupted", e);
-			throw new StorageException(
-					"Delete of DTO interrupted", e);
+		} catch (final InterruptedException e) {
+			this.logger.logWarningMessage(this, "Delete of DTO interrupted", e);
+			throw new StorageException("Delete of DTO interrupted", e);
 		}
 	}
 
@@ -103,7 +99,7 @@ class LocalStoreConfigurationServiceImpl implements
 		} catch (final Throwable t) {
 			new StorageError("Failed to write replication flag", t);
 		} finally {
-			closeSession(session);
+			this.closeSession(session);
 		}
 
 		if (result == null) {
@@ -119,19 +115,32 @@ class LocalStoreConfigurationServiceImpl implements
 
 		Configuration result = null;
 
-		UnitOfWork<Configuration> loadEntireConfigurationWork = new UnitOfWork<Configuration>() {
+		final UnitOfWork<Configuration> loadEntireConfigurationWork = new UnitOfWork<Configuration>() {
 			public Configuration doWork(Mapper mapper) throws Throwable {
 				Configuration resultOfUnit = null;
 
-				Collection<RubrikDTO> alleRubriken = mapper.loadAll(RubrikDTO.class, true); // FIXME Bei Joined hinzufuegen fuer entsprechende Elemente zuordnen!!!!
+				Collection<RubrikDTO> alleRubriken = mapper.loadAll(
+						RubrikDTO.class, true); // FIXME
+																							// Bei
+																							// Joined
+																							// hinzufuegen
+																							// fuer
+																							// entsprechende
+																							// Elemente
+																							// zuordnen!!!!
 
-				Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = mapper.loadAll(AlarmbearbeiterDTO.class, true);
-				Collection<TopicDTO> alleAlarmtopics = mapper.loadAll(TopicDTO.class, true);
-				Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = mapper.loadAll(AlarmbearbeiterGruppenDTO.class, true);
-				Collection<FilterConditionDTO> allFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
-				Collection<FilterDTO> allFilters = mapper.loadAll(FilterDTO.class, true);
-				Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO = mapper.loadAll(DefaultFilterTextDTO.class, true);
-
+				Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = mapper
+						.loadAll(AlarmbearbeiterDTO.class, true);
+				Collection<TopicDTO> alleAlarmtopics = mapper.loadAll(
+						TopicDTO.class, true);
+				Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = mapper
+						.loadAll(AlarmbearbeiterGruppenDTO.class, true);
+				Collection<FilterConditionDTO> allFilterConditions = mapper
+						.loadAll(FilterConditionDTO.class, true);
+				Collection<FilterDTO> allFilters = mapper.loadAll(
+						FilterDTO.class, true);
+				Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO = mapper
+						.loadAll(DefaultFilterTextDTO.class, true);
 
 				resultOfUnit = new Configuration(alleAlarmbarbeiter,
 						alleAlarmtopics, alleAlarmbearbeiterGruppen,
@@ -145,8 +154,8 @@ class LocalStoreConfigurationServiceImpl implements
 		try {
 			result = this.transactionProcessor
 					.doInTransaction(loadEntireConfigurationWork);
-		} catch (InterruptedException e) {
-			logger.logWarningMessage(this,
+		} catch (final InterruptedException e) {
+			this.logger.logWarningMessage(this,
 					"Load of entire configuration interrupted", e);
 			throw new StorageException(
 					"Load of entire configuration interrupted", e);
@@ -179,7 +188,7 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			throw new StorageException("unable to save replication state", t);
 		} finally {
-			closeSession(session);
+			this.closeSession(session);
 		}
 	}
 
@@ -187,7 +196,7 @@ class LocalStoreConfigurationServiceImpl implements
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 
-		UnitOfWork<NewAMSConfigurationElementDTO> saveWork = new UnitOfWork<NewAMSConfigurationElementDTO>() {
+		final UnitOfWork<NewAMSConfigurationElementDTO> saveWork = new UnitOfWork<NewAMSConfigurationElementDTO>() {
 			public NewAMSConfigurationElementDTO doWork(Mapper mapper)
 					throws Throwable {
 
@@ -199,8 +208,8 @@ class LocalStoreConfigurationServiceImpl implements
 
 		try {
 			this.transactionProcessor.doInTransaction(saveWork);
-		} catch (InterruptedException e) {
-			logger.logWarningMessage(this, "save has been interrupted", e);
+		} catch (final InterruptedException e) {
+			this.logger.logWarningMessage(this, "save has been interrupted", e);
 			throw new StorageException("save has been interrupted", e);
 		}
 	}
@@ -222,8 +231,15 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			throw new StorageException("unable to save history element", t);
 		} finally {
-			closeSession(session);
+			this.closeSession(session);
 		}
+	}
+
+	/**
+	 * Für Tests.
+	 */
+	SessionFactory getSessionFactory() {
+		return this.sessionFactory;
 	}
 
 	@Override
@@ -232,18 +248,14 @@ class LocalStoreConfigurationServiceImpl implements
 		this.sessionFactory.close();
 	}
 
-
-	private Session sessionWorkingOn = null;
-	private TransactionProcessor transactionProcessor;
-
-	private void closeSession(Session session) throws HibernateException {
-		if (session != null && session.isOpen()) {
+	private void closeSession(final Session session) throws HibernateException {
+		if ((session != null) && session.isOpen()) {
 			try {
 				session.flush();
 				// session.close();
 			} catch (final HibernateException he) {
-				sessionWorkingOn.close();
-				sessionWorkingOn = null;
+				this.sessionWorkingOn.close();
+				this.sessionWorkingOn = null;
 				throw new StorageError("session could not be closed", he);
 			}
 		}
@@ -251,15 +263,14 @@ class LocalStoreConfigurationServiceImpl implements
 
 	private Session openNewSession() throws HibernateException {
 		Session result = null;
-		if (sessionWorkingOn == null) {
+		if (this.sessionWorkingOn == null) {
 			result = this.sessionFactory.openSession();
 			result.setCacheMode(CacheMode.IGNORE);
 			result.setFlushMode(FlushMode.COMMIT);
 		} else {
-			result = sessionWorkingOn;
+			result = this.sessionWorkingOn;
 		}
 		return result;
 	}
-
 
 }

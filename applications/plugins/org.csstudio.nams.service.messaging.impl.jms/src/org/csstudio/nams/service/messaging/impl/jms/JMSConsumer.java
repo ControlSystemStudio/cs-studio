@@ -27,74 +27,174 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 class JMSConsumer implements Consumer {
 
+	private static class WorkThread extends Thread {
+		private static long instanceCount = 0;
+		private final LinkedBlockingQueue<Message> messageQueue;
+		private volatile boolean arbeitFortsetzen = true;
+		private MessageConsumer consumer;
+
+		private final Logger logger;
+
+		public WorkThread(final LinkedBlockingQueue<Message> messageQueue,
+				final Session session, final String source,
+				final String clientId, final PostfachArt art,
+				final Logger logger) throws JMSException {
+			super("JMSConsumer#WorkThread-" + (++WorkThread.instanceCount));
+			this.messageQueue = messageQueue;
+			this.logger = logger;
+
+			switch (art) {
+			case QUEUE:
+				final Queue queue = session.createQueue(source);
+				this.consumer = session.createConsumer(queue);
+
+				break;
+			case TOPIC:
+				final Topic topic = session.createTopic(source);
+
+				// FIXME begin
+				// (gs,mz) klaeren ob wir einen durable subscriber verwenden
+				// koennen
+
+				// xxx Consumer duerfen keine ID haben!!! Nur die
+				// DurableSubscriber brauchen eine ID!
+				this.consumer = session.createConsumer(topic);
+				// , clientId
+				// + topic.getTopicName()
+
+				// consumer = session.createDurableSubscriber(topic, clientId
+				// + "-" + topic.getTopicName());
+				// FIXME end
+				break;
+			default:
+				// TODO exception handling
+				break;
+			}
+		}
+
+		public void close() {
+			this.arbeitFortsetzen = false;
+			try {
+				this.consumer.close();
+			} catch (final JMSException e) {
+			}
+			this.interrupt(); // Keine Sorge, unbehandelte Nachricht wird
+			// nicht acknowledged und kommt daher wieder.
+			this.logger.logDebugMessage(this, "Consumer WorkThread stoped");
+		}
+
+		@Override
+		public void run() {
+			this.logger.logDebugMessage(this,
+					"start to receive jms Messages - " + this.consumer);
+			while (this.arbeitFortsetzen) {
+				try {
+					final Message message = this.consumer.receive();
+					if (message != null) {
+						this.logger.logInfoMessage(this, "Recieved message: "
+								+ message.toString());
+						this.messageQueue.put(message);
+						this.logger.logDebugMessage(this,
+								"Message put to working queue");
+					}
+					// Beachten das die connection geschlossen sein könnte
+					// und auch auf das failover protokoll achten
+				} catch (final JMSException e) {
+					// TODO exception handling
+					// wird von consumer.receive() geworfen
+					this.logger.logInfoMessage(this,
+							"Exception during recieving message from jms", e);
+				} catch (final InterruptedException e) {
+					// TODO exception handling
+					// wird von messageQueue.put(message) geworfen
+					this.logger
+							.logInfoMessage(
+									this,
+									"Put of recieved jms-message to local queue has been interrupted",
+									e);
+				} catch (final Throwable t) {
+					this.logger
+							.logFatalMessage(
+									this,
+									"Unexpected exception during recieving message from jms",
+									t);
+				}
+				Thread.yield();
+			}
+		}
+	}
+
 	private static Logger injectedLogger;
 
-	public static void staticInjectLogger(Logger logger) {
-		injectedLogger = logger;
+	public static void staticInjectLogger(final Logger logger) {
+		JMSConsumer.injectedLogger = logger;
 	}
 
 	private boolean isClosed = false;
-	private WorkThread[] workers;
-	private LinkedBlockingQueue<Message> messageQueue;
-	private Logger logger;
+	private final WorkThread[] workers;
+	private final LinkedBlockingQueue<Message> messageQueue;
 
-	public JMSConsumer(String clientId, String messageSourceName,
-			PostfachArt art, Session[] sessions) throws JMSException {
+	private final Logger logger;
 
-		logger = injectedLogger;
+	public JMSConsumer(final String clientId, final String messageSourceName,
+			final PostfachArt art, final Session[] sessions)
+			throws JMSException {
+
+		this.logger = JMSConsumer.injectedLogger;
 		// Schaufeln in BlockingQueue : Maximum size auf 1,
 		// damit nicht hunderte Nachrichten während eines updates gepufert
 		// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
 		// Siehe java.util.concurrent.BlockingQueue.
-		messageQueue = new LinkedBlockingQueue<Message>(1);
+		this.messageQueue = new LinkedBlockingQueue<Message>(1);
 
-		workers = new WorkThread[sessions.length];
+		this.workers = new WorkThread[sessions.length];
 
 		try {
 			for (int i = 0; i < sessions.length; i++) {
-				workers[i] = new WorkThread(messageQueue, sessions[i],
-						messageSourceName, clientId, art, logger);
-				workers[i].start();
+				this.workers[i] = new WorkThread(this.messageQueue,
+						sessions[i], messageSourceName, clientId, art,
+						this.logger);
+				this.workers[i].start();
 			}
-		} catch (JMSException e) {
-			close();
+		} catch (final JMSException e) {
+			this.close();
 			throw e;
 		}
 	}
 
 	public void close() {
-		for (WorkThread worker : workers) {
+		for (final WorkThread worker : this.workers) {
 			if (worker != null) {
 				worker.close();
 			}
 		}
-		isClosed = true;
-		logger.logDebugMessage(this, "Consumer closed");
+		this.isClosed = true;
+		this.logger.logDebugMessage(this, "Consumer closed");
 	}
 
 	public boolean isClosed() {
-		return isClosed;
+		return this.isClosed;
 	}
 
 	public NAMSMessage receiveMessage() throws MessagingException {
 		NAMSMessage result = null;
 		try {
-			Message message = messageQueue.take();
+			final Message message = this.messageQueue.take();
 
 			if (message instanceof MapMessage) {
 				final MapMessage mapMessage = (MapMessage) message;
-				Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
-				Enumeration<?> mapNames = mapMessage.getMapNames();
+				final Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
+				final Enumeration<?> mapNames = mapMessage.getMapNames();
 				if (!mapNames.hasMoreElements()) {
-					logger.logWarningMessage(this,
+					this.logger.logWarningMessage(this,
 							"Message does not contain any content: "
 									+ mapMessage.toString());
 					mapMessage.acknowledge();
 				} else {
 					while (mapNames.hasMoreElements()) {
-						String currentElement = mapNames.nextElement()
+						final String currentElement = mapNames.nextElement()
 								.toString();
-						MessageKeyEnum messageKeyEnum = MessageKeyEnum
+						final MessageKeyEnum messageKeyEnum = MessageKeyEnum
 								.getEnumFor(currentElement);
 						if (messageKeyEnum != null) {
 							String value = mapMessage.getString(currentElement);
@@ -105,10 +205,10 @@ class JMSConsumer implements Consumer {
 						}
 					}
 
-					AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
+					final AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
 						public void acknowledge() throws Throwable {
 							mapMessage.acknowledge();
-							logger.logDebugMessage(this,
+							JMSConsumer.this.logger.logDebugMessage(this,
 									"JMSConsumer.ackHandler.acknowledge() called for message "
 											+ mapMessage.toString());
 						}
@@ -149,17 +249,17 @@ class JMSConsumer implements Consumer {
 				}
 			} else {
 				final Message unknownMessage = message;
-				logger.logWarningMessage(this,
-						"unknown Message type received: " + unknownMessage.toString());
-				result = new DefaultNAMSMessage(
-						new AcknowledgeHandler() {
-							public void acknowledge() throws Throwable {
-								unknownMessage.acknowledge();
-								logger.logDebugMessage(this,
-										"JMSConsumer.ackHandler.acknowledge() called for message "
-												+ unknownMessage.toString());
-							}
-						}) {
+				this.logger.logWarningMessage(this,
+						"unknown Message type received: "
+								+ unknownMessage.toString());
+				result = new DefaultNAMSMessage(new AcknowledgeHandler() {
+					public void acknowledge() throws Throwable {
+						unknownMessage.acknowledge();
+						JMSConsumer.this.logger.logDebugMessage(this,
+								"JMSConsumer.ackHandler.acknowledge() called for message "
+										+ unknownMessage.toString());
+					}
+				}) {
 					@Override
 					public String toString() {
 						return "Unknown-message-type of message: JMS-Message: "
@@ -167,105 +267,11 @@ class JMSConsumer implements Consumer {
 					}
 				};
 			}
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			throw new MessagingException("message receiving interrupted", e);
-		} catch (JMSException e) {
+		} catch (final JMSException e) {
 			throw new MessagingException("message receiving failed", e);
 		}
 		return result;
-	}
-
-	private static class WorkThread extends Thread {
-		private final LinkedBlockingQueue<Message> messageQueue;
-		private volatile boolean arbeitFortsetzen = true;
-		private MessageConsumer consumer;
-		private final Logger logger;
-		
-		private static long instanceCount = 0;
-
-		public WorkThread(LinkedBlockingQueue<Message> messageQueue,
-				Session session, String source, String clientId,
-				PostfachArt art, Logger logger) throws JMSException {
-			super("JMSConsumer#WorkThread-"+(++instanceCount));
-			this.messageQueue = messageQueue;
-			this.logger = logger;
-
-			switch (art) {
-			case QUEUE:
-				Queue queue = session.createQueue(source);
-				consumer = session.createConsumer(queue);
-
-				break;
-			case TOPIC:
-				Topic topic = session.createTopic(source);
-				
-				
-				// FIXME begin
-				// (gs,mz) klaeren ob wir einen durable subscriber verwenden koennen
-				
-				//xxx Consumer duerfen keine ID haben!!! Nur die DurableSubscriber brauchen eine ID!
-				consumer = session.createConsumer(topic);
-				//, clientId
-				//+ topic.getTopicName()
-				
-//				consumer = session.createDurableSubscriber(topic, clientId
-//						+ "-" + topic.getTopicName());
-				// FIXME end
-				break;
-			default:
-				// TODO exception handling
-				break;
-			}
-		}
-
-		public void close() {
-			arbeitFortsetzen = false;
-			try {
-				consumer.close();
-			} catch (JMSException e) {
-			}
-			this.interrupt(); // Keine Sorge, unbehandelte Nachricht wird
-			// nicht acknowledged und kommt daher wieder.
-			logger.logDebugMessage(this, "Consumer WorkThread stoped");
-		}
-
-		@Override
-		public void run() {
-			logger.logDebugMessage(this, "start to receive jms Messages - "  + consumer);
-			while (arbeitFortsetzen) {
-				try {
-					Message message = consumer.receive();
-					if (message != null) {
-						logger.logInfoMessage(this, "Recieved message: "
-								+ message.toString());
-						messageQueue.put(message);
-						logger.logDebugMessage(this,
-								"Message put to working queue");
-					}
-					// Beachten das die connection geschlossen sein könnte
-					// und auch auf das failover protokoll achten
-				} catch (JMSException e) {
-					// TODO exception handling
-					// wird von consumer.receive() geworfen
-					logger.logInfoMessage(this,
-							"Exception during recieving message from jms", e);
-				} catch (InterruptedException e) {
-					// TODO exception handling
-					// wird von messageQueue.put(message) geworfen
-					logger
-							.logInfoMessage(
-									this,
-									"Put of recieved jms-message to local queue has been interrupted",
-									e);
-				} catch (Throwable t) {
-					logger
-							.logFatalMessage(
-									this,
-									"Unexpected exception during recieving message from jms",
-									t);
-				}
-				Thread.yield();
-			}
-		}
 	}
 }

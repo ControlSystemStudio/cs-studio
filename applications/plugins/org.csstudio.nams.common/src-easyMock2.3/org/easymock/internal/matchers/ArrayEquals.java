@@ -9,8 +9,30 @@ import java.util.Arrays;
 
 public class ArrayEquals extends Equals {
 
+	public static Object[] createObjectArray(final Object array) {
+		if (array instanceof Object[]) {
+			return (Object[]) array;
+		}
+		final Object[] result = new Object[Array.getLength(array)];
+		for (int i = 0; i < Array.getLength(array); i++) {
+			result[i] = Array.get(array, i);
+		}
+		return result;
+	}
+
 	public ArrayEquals(final Object expected) {
 		super(expected);
+	}
+
+	@Override
+	public void appendTo(final StringBuffer buffer) {
+		if ((this.getExpected() != null)
+				&& this.getExpected().getClass().isArray()) {
+			this.appendArray(ArrayEquals.createObjectArray(this.getExpected()),
+					buffer);
+		} else {
+			super.appendTo(buffer);
+		}
 	}
 
 	@Override
@@ -48,17 +70,6 @@ public class ArrayEquals extends Equals {
 		}
 	}
 
-	@Override
-	public void appendTo(final StringBuffer buffer) {
-		if ((this.getExpected() != null)
-				&& this.getExpected().getClass().isArray()) {
-			this.appendArray(ArrayEquals.createObjectArray(this.getExpected()),
-					buffer);
-		} else {
-			super.appendTo(buffer);
-		}
-	}
-
 	private void appendArray(final Object[] array, final StringBuffer buffer) {
 		buffer.append("[");
 		for (int i = 0; i < array.length; i++) {
@@ -68,16 +79,5 @@ public class ArrayEquals extends Equals {
 			}
 		}
 		buffer.append("]");
-	}
-
-	public static Object[] createObjectArray(final Object array) {
-		if (array instanceof Object[]) {
-			return (Object[]) array;
-		}
-		final Object[] result = new Object[Array.getLength(array)];
-		for (int i = 0; i < Array.getLength(array); i++) {
-			result[i] = Array.get(array, i);
-		}
-		return result;
 	}
 }

@@ -16,28 +16,34 @@ import org.csstudio.nams.service.logging.declaration.Logger;
 
 @Entity
 public class Configuration {
-	private Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
-	private Collection<TopicDTO> alleAlarmtopics;
-	private Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
-	private Collection<FilterDTO> allFilters;
-	private Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
-
-	private Collection<FilterConditionDTO> allFilterConditions;
-	private Collection<RubrikDTO> alleRubriken;
-	private List<User2UserGroupDTO> alleUser2UserGroupMappings;
 	@SuppressWarnings("unused")
 	private static Logger logger;
-	private Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
+
+	public static void staticInject(final Logger logger) {
+		Configuration.logger = logger;
+	}
+
+	private final Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
+	private final Collection<TopicDTO> alleAlarmtopics;
+	private final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
+
+	private final Collection<FilterDTO> allFilters;
+	private final Collection<FilterConditionsToFilterDTO> allFilterConditionMappings;
+	private final Collection<FilterConditionDTO> allFilterConditions;
+	private final Collection<RubrikDTO> alleRubriken;
+	private final List<User2UserGroupDTO> alleUser2UserGroupMappings;
+	private final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
+
 	private final Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO;
 
 	public Configuration(
-			Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter,
-			Collection<TopicDTO> alleAlarmtopics,
-			Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
-			Collection<FilterDTO> allFilters,
-			Collection<FilterConditionDTO> allFilterConditions,
-			Collection<RubrikDTO> alleRubriken,
-			Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO) {
+			final Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter,
+			final Collection<TopicDTO> alleAlarmtopics,
+			final Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen,
+			final Collection<FilterDTO> allFilters,
+			final Collection<FilterConditionDTO> allFilterConditions,
+			final Collection<RubrikDTO> alleRubriken,
+			final Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO) {
 		super();
 		this.alleAlarmbarbeiter = alleAlarmbarbeiter;
 		this.alleAlarmtopics = alleAlarmtopics;
@@ -46,60 +52,55 @@ public class Configuration {
 		this.allFilterConditionMappings = new LinkedList<FilterConditionsToFilterDTO>();
 		this.allFilterConditions = allFilterConditions;
 		this.alleRubriken = alleRubriken;
-		this.alleUser2UserGroupMappings =  new LinkedList<User2UserGroupDTO>();
-		this.allCompareValues =  new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+		this.alleUser2UserGroupMappings = new LinkedList<User2UserGroupDTO>();
+		this.allCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 		this.allDefaultFilterTextDTO = allDefaultFilterTextDTO;
 	}
 
-	public Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter() {
-		return alleAlarmbarbeiter;
-	}
-
-	public Collection<TopicDTO> gibAlleAlarmtopics() {
-		return alleAlarmtopics;
-	}
-
 	public Collection<DefaultFilterTextDTO> getAllDefaultFilterTexts() {
-		return allDefaultFilterTextDTO;
+		return this.allDefaultFilterTextDTO;
+	}
+
+	@Deprecated
+	public Collection<FilterConditionsToFilterDTO> getAllFilterConditionMappings() {
+		return this.allFilterConditionMappings;
+	}
+
+	@Deprecated
+	public Collection<StringArrayFilterConditionCompareValuesDTO> getAllStringArrayCompareValues() {
+		return this.allCompareValues;
+	}
+
+	@Deprecated
+	public List<User2UserGroupDTO> getAllUser2UserGroupDTOs() {
+		return this.alleUser2UserGroupMappings;
+	}
+
+	public Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter() {
+		return this.alleAlarmbarbeiter;
 	}
 
 	public Collection<AlarmbearbeiterGruppenDTO> gibAlleAlarmbearbeiterGruppen() {
-		return alleAlarmbearbeiterGruppen;
+		return this.alleAlarmbearbeiterGruppen;
+	}
+
+	public Collection<TopicDTO> gibAlleAlarmtopics() {
+		return this.alleAlarmtopics;
 	}
 
 	/**
 	 * Returns a list of all FilterDTO's
 	 */
 	public Collection<FilterDTO> gibAlleFilter() {
-		return allFilters;
+		return this.allFilters;
 	}
 
 	public Collection<FilterConditionDTO> gibAlleFilterConditions() {
-		return allFilterConditions;
-	}
-
-	@Deprecated
-	public Collection<FilterConditionsToFilterDTO> getAllFilterConditionMappings() {
-		return allFilterConditionMappings;
+		return this.allFilterConditions;
 	}
 
 	public Collection<RubrikDTO> gibAlleRubriken() {
-		return alleRubriken;
-	}
-	
-	
-	@Deprecated
-	public List<User2UserGroupDTO> getAllUser2UserGroupDTOs() {
-		return alleUser2UserGroupMappings;
-	}
-
-	public static void staticInject(Logger logger) {
-		Configuration.logger = logger;
-	}
-
-	@Deprecated
-	public Collection<StringArrayFilterConditionCompareValuesDTO> getAllStringArrayCompareValues() {
-		return allCompareValues;
+		return this.alleRubriken;
 	}
 
 }

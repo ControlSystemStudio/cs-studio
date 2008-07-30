@@ -9,12 +9,12 @@ package org.csstudio.nams.service.preferenceservice.declaration;
 public interface HoldsAPreferenceId {
 
 	/**
-	 * The Id to used in the Preference-Store.
-	 */
-	public String getPreferenceStoreId();
-
-	/**
 	 * A human readable description.
 	 */
 	public String getDescription();
+
+	/**
+	 * The Id to used in the Preference-Store.
+	 */
+	public String getPreferenceStoreId();
 }

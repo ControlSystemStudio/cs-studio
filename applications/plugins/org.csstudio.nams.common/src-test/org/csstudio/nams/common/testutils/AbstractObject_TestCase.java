@@ -27,6 +27,7 @@ package org.csstudio.nams.common.testutils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -40,176 +41,14 @@ import org.junit.Test;
  * @version 0.1, 2008-03-28
  */
 public abstract class AbstractObject_TestCase<T> extends TestCase {
-	abstract protected T getNewInstanceOfClassUnderTest();
-
-	abstract protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest();
-
-	abstract protected T[] getThreeDiffrentNewInstanceOfClassUnderTest();
-
-	@Test
-	public final void testEqualsWithIdenticalInstances() {
-		T x = getNewInstanceOfClassUnderTest();
-		T y = x;
-		T z = x;
-
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				x);
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				y);
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				z);
-
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "It is reflexive: for any non-null reference value x, x.equals(x) should return true",
-				x.equals(x));
-		// Note: x is non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "It is symmetric: for any non-null reference values x and y, x.equals(y) should return true if and only if y.equals(x) returns true",
-				x.equals(y) == true ? y.equals(x) == true : true
-		// Note: x, y are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "It is transitive: for any non-null reference values x, y, and z, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) should return true",
-				x.equals(y) == true & y.equals(z) == true ? x.equals(z) == true
-						: true
-		// Note: x, y, z are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5:"
-						+ " It is consistent: for any non-null reference values x and y, multiple invocations of x.equals(y) consistently return true or consistently return false, provided no information used in equals comparisons on the objects is modified",
-				x.equals(y) == x.equals(y)
-		// Note: x, y are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5:"
-						+ " For any non-null reference value x, x.equals(null) should return false",
-				x.equals(null) == false
-		// Note: x, y are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-	}
-
-	@Test
-	public final void testEqualsWithDiffrentInstances() {
-		T[] threeInstances = getThreeDiffrentNewInstanceOfClassUnderTest();
-
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
-				threeInstances);
-		assertEquals(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does deliver an array of elements",
-				3, threeInstances.length);
-
-		T x = threeInstances[0];
-		T y = threeInstances[1];
-		T z = threeInstances[2];
-
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
-				x);
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
-				y);
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
-				z);
-		assertNotSame(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver identical element",
-				x, y);
-		assertNotSame(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver identical element",
-				x, z);
-		assertNotSame(
-				"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver identical element",
-				y, z);
-
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "It is reflexive: for any non-null reference value x, x.equals(x) should return true",
-				x.equals(x));
-		// Note: x is non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "It is symmetric: for any non-null reference values x and y, x.equals(y) should return true if and only if y.equals(x) returns true",
-				x.equals(y) == true ? y.equals(x) == true : true
-		// Note: x, y are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "It is transitive: for any non-null reference values x, y, and z, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) should return true",
-				x.equals(y) == true && y.equals(z) == true ? x.equals(z) == true
-						: true
-		// Note: x, y, z are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5:"
-						+ " It is consistent: for any non-null reference values x and y, multiple invocations of x.equals(y) consistently return true or consistently return false, provided no information used in equals comparisons on the objects is modified",
-				x.equals(y) == x.equals(y)
-		// Note: x, y are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5:"
-						+ " For any non-null reference value x, x.equals(null) should return false",
-				x.equals(null) == false
-		// Note: x, y are non null cause of post-condition of
-		// #getNewInstanceOfClassUnderTest()
-		);
-	}
-
-	@Test
-	public final void testEqualsWithIncompareableOtherObjectInstance() {
-		T x = getNewInstanceOfClassUnderTest();
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				x);
-
-		Object incomparableObject = getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest();
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() does not deliver null",
-				incomparableObject);
-
-		assertFalse(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() does not deliver a instance of a type T which is assignable from the type of class under test C: C.isAssignableFrom(T) == false",
-				x.getClass().isAssignableFrom(incomparableObject.getClass()));
-
-		assertFalse(
-				"Equals returns false, if the type of the object to be compared to is incomparable to the type of the class under test",
-				x.equals(incomparableObject));
-	}
-
-	@Test
-	public final void testToString() {
-		T x = getNewInstanceOfClassUnderTest();
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				x);
-
-		assertNotNull("toString() does not deliver null", x.toString());
-	}
-
 	@SuppressWarnings("unchecked")
 	@Test
 	public final void testClone() {
-		T x = getNewInstanceOfClassUnderTest();
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				x);
+		final T x = this.getNewInstanceOfClassUnderTest();
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						x);
 
 		if (x instanceof Cloneable) {
 
@@ -218,37 +57,42 @@ public abstract class AbstractObject_TestCase<T> extends TestCase {
 			try {
 				Method cloneMethod = null;
 
-				for (Method m : x.getClass().getMethods()) {
+				for (final Method m : x.getClass().getMethods()) {
 					if (m.getName().equals("clone")) {
 						cloneMethod = m;
 						break;
 					}
 				}
-				assertNotNull(
-						"A cloneable class offers a public and accesible version of clone!",
-						cloneMethod);
+				Assert
+						.assertNotNull(
+								"A cloneable class offers a public and accesible version of clone!",
+								cloneMethod);
 
 				xClone = (T) x.getClass().cast(
 						cloneMethod.invoke(x, (Object[]) null));
-			} catch (SecurityException e) {
-				fail("A cloneable class offers a public and accesible version of clone!");
-			} catch (IllegalArgumentException e) {
-				fail("A cloneable class offers a paramless version of clone!");
-			} catch (IllegalAccessException e) {
-				fail("A cloneable class offers a public and accesible version of clone!");
-			} catch (InvocationTargetException e) {
-				fail("A cloneable class offers a public and accesible version of clone!");
+			} catch (final SecurityException e) {
+				Assert
+						.fail("A cloneable class offers a public and accesible version of clone!");
+			} catch (final IllegalArgumentException e) {
+				Assert
+						.fail("A cloneable class offers a paramless version of clone!");
+			} catch (final IllegalAccessException e) {
+				Assert
+						.fail("A cloneable class offers a public and accesible version of clone!");
+			} catch (final InvocationTargetException e) {
+				Assert
+						.fail("A cloneable class offers a public and accesible version of clone!");
 			}
 
 			// Check clone (if reached here clone succeded)
-			assertNotSame(x, xClone);
-			assertSame(x.getClass(), xClone.getClass());
-			assertEquals(x, xClone);
+			Assert.assertNotSame(x, xClone);
+			Assert.assertSame(x.getClass(), xClone.getClass());
+			Assert.assertEquals(x, xClone);
 		} else {
 			// Try to clone have to fail if Cloneable is not implemented:
 			try {
 				Method cloneMethod = null;
-				for (Method m : x.getClass().getDeclaredMethods()) {
+				for (final Method m : x.getClass().getDeclaredMethods()) {
 					if (m.getName().equals("clone")) {
 						cloneMethod = m;
 						break;
@@ -256,49 +100,224 @@ public abstract class AbstractObject_TestCase<T> extends TestCase {
 				}
 				if (cloneMethod != null) {
 					cloneMethod.invoke(x, (Object[]) null);
-					fail("clone have to fail if java.lang.Cloneable is not implemented");
-					dummyToSimulaizePossibilityToThrowCloneNotSupportedException();
+					Assert
+							.fail("clone have to fail if java.lang.Cloneable is not implemented");
+					this
+							.dummyToSimulaizePossibilityToThrowCloneNotSupportedException();
 				}
-			} catch (SecurityException e) {
+			} catch (final SecurityException e) {
 				// OK!
-			} catch (IllegalArgumentException iae) {
+			} catch (final IllegalArgumentException iae) {
 				// OK!
-			} catch (IllegalAccessException iace) {
+			} catch (final IllegalAccessException iace) {
 				// OK!
-			} catch (InvocationTargetException ite) {
+			} catch (final InvocationTargetException ite) {
 				// OK!
-			} catch (CloneNotSupportedException cle) {
+			} catch (final CloneNotSupportedException cle) {
 				// OK!
 			}
 		}
 	}
 
-	private void dummyToSimulaizePossibilityToThrowCloneNotSupportedException()
-			throws CloneNotSupportedException {
-		if (1 != 1)
-			throw new CloneNotSupportedException();
+	@Test
+	public final void testEqualsWithDiffrentInstances() {
+		final T[] threeInstances = this
+				.getThreeDiffrentNewInstanceOfClassUnderTest();
+
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
+						threeInstances);
+		Assert
+				.assertEquals(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does deliver an array of elements",
+						3, threeInstances.length);
+
+		final T x = threeInstances[0];
+		final T y = threeInstances[1];
+		final T z = threeInstances[2];
+
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
+						x);
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
+						y);
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver null or null element",
+						z);
+		Assert
+				.assertNotSame(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver identical element",
+						x, y);
+		Assert
+				.assertNotSame(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver identical element",
+						x, z);
+		Assert
+				.assertNotSame(
+						"Implementations of AbstractObject_TestCase<T>#getThreeDiffrentNewInstanceOfClassUnderTest() does not deliver identical element",
+						y, z);
+
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "It is reflexive: for any non-null reference value x, x.equals(x) should return true",
+						x.equals(x));
+		// Note: x is non null cause of post-condition of
+		// #getNewInstanceOfClassUnderTest()
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "It is symmetric: for any non-null reference values x and y, x.equals(y) should return true if and only if y.equals(x) returns true",
+						x.equals(y) == true ? y.equals(x) == true : true
+				// Note: x, y are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "It is transitive: for any non-null reference values x, y, and z, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) should return true",
+						(x.equals(y) == true) && (y.equals(z) == true) ? x
+								.equals(z) == true : true
+				// Note: x, y, z are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5:"
+								+ " It is consistent: for any non-null reference values x and y, multiple invocations of x.equals(y) consistently return true or consistently return false, provided no information used in equals comparisons on the objects is modified",
+						x.equals(y) == x.equals(y)
+				// Note: x, y are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5:"
+								+ " For any non-null reference value x, x.equals(null) should return false",
+						x.equals(null) == false
+				// Note: x, y are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+	}
+
+	@Test
+	public final void testEqualsWithIdenticalInstances() {
+		final T x = this.getNewInstanceOfClassUnderTest();
+		final T y = x;
+		final T z = x;
+
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						x);
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						y);
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						z);
+
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "It is reflexive: for any non-null reference value x, x.equals(x) should return true",
+						x.equals(x));
+		// Note: x is non null cause of post-condition of
+		// #getNewInstanceOfClassUnderTest()
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "It is symmetric: for any non-null reference values x and y, x.equals(y) should return true if and only if y.equals(x) returns true",
+						x.equals(y) == true ? y.equals(x) == true : true
+				// Note: x, y are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "It is transitive: for any non-null reference values x, y, and z, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) should return true",
+						(x.equals(y) == true) & (y.equals(z) == true) ? x
+								.equals(z) == true : true
+				// Note: x, y, z are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5:"
+								+ " It is consistent: for any non-null reference values x and y, multiple invocations of x.equals(y) consistently return true or consistently return false, provided no information used in equals comparisons on the objects is modified",
+						x.equals(y) == x.equals(y)
+				// Note: x, y are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5:"
+								+ " For any non-null reference value x, x.equals(null) should return false",
+						x.equals(null) == false
+				// Note: x, y are non null cause of post-condition of
+				// #getNewInstanceOfClassUnderTest()
+				);
+	}
+
+	@Test
+	public final void testEqualsWithIncompareableOtherObjectInstance() {
+		final T x = this.getNewInstanceOfClassUnderTest();
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						x);
+
+		final Object incomparableObject = this
+				.getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest();
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() does not deliver null",
+						incomparableObject);
+
+		Assert
+				.assertFalse(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() does not deliver a instance of a type T which is assignable from the type of class under test C: C.isAssignableFrom(T) == false",
+						x.getClass().isAssignableFrom(
+								incomparableObject.getClass()));
+
+		Assert
+				.assertFalse(
+						"Equals returns false, if the type of the object to be compared to is incomparable to the type of the class under test",
+						x.equals(incomparableObject));
 	}
 
 	@Test
 	public final void testHashCode() {
-		T x = getNewInstanceOfClassUnderTest();
-		T y = getNewInstanceOfClassUnderTest();
+		final T x = this.getNewInstanceOfClassUnderTest();
+		final T y = this.getNewInstanceOfClassUnderTest();
 
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				x);
-		assertNotNull(
-				"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
-				y);
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						x);
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						y);
 
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "Whenever it is invoked on the same object more than once during an execution of a Java application, the hashCode method must consistently return the same integer, provided no information used in equals comparisons on the object is modified. This integer need not remain consistent from one execution of an application to another execution of the same application",
-				x.hashCode() == x.hashCode());
-		assertTrue(
-				"Copied from Java API documentation version JDK 1.5: "
-						+ "If two objects are equal according to the equals(Object) method, then calling the hashCode method on each of the two objects must produce the same integer result",
-				x.equals(y) ? x.hashCode() == y.hashCode() : true);
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "Whenever it is invoked on the same object more than once during an execution of a Java application, the hashCode method must consistently return the same integer, provided no information used in equals comparisons on the object is modified. This integer need not remain consistent from one execution of an application to another execution of the same application",
+						x.hashCode() == x.hashCode());
+		Assert
+				.assertTrue(
+						"Copied from Java API documentation version JDK 1.5: "
+								+ "If two objects are equal according to the equals(Object) method, then calling the hashCode method on each of the two objects must produce the same integer result",
+						x.equals(y) ? x.hashCode() == y.hashCode() : true);
 		// Note (Copied from Java API documentation version JDK 1.5): It is not
 		// required that if two objects are unequal according to the
 		// equals(java.lang.Object) method, then calling the hashCode method on
@@ -306,5 +325,29 @@ public abstract class AbstractObject_TestCase<T> extends TestCase {
 		// However, the programmer should be aware that producing distinct
 		// integer results for unequal objects may improve the performance of
 		// hashtables.
+	}
+
+	@Test
+	public final void testToString() {
+		final T x = this.getNewInstanceOfClassUnderTest();
+		Assert
+				.assertNotNull(
+						"Implementations of AbstractObject_TestCase<T>#getNewInstanceOfClassUnderTest() does not deliver null",
+						x);
+
+		Assert.assertNotNull("toString() does not deliver null", x.toString());
+	}
+
+	abstract protected T getNewInstanceOfClassUnderTest();
+
+	abstract protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest();
+
+	abstract protected T[] getThreeDiffrentNewInstanceOfClassUnderTest();
+
+	private void dummyToSimulaizePossibilityToThrowCloneNotSupportedException()
+			throws CloneNotSupportedException {
+		if (1 != 1) {
+			throw new CloneNotSupportedException();
+		}
 	}
 }

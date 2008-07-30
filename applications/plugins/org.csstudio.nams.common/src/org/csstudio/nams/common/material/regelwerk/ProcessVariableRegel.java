@@ -45,20 +45,20 @@ public class ProcessVariableRegel implements VersandRegel {
 		 * Creates a new instance of this listener.
 		 */
 		public ProcessVariableChangeListener() {
-			_lastReceivedValue = null;
-			_isConnected = false;
+			this._lastReceivedValue = null;
+			this._isConnected = false;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public void connectionStateChanged(ConnectionState connectionState) {
-			logger.logDebugMessage(this, "ConnectionState changed, new state: "
-					+ connectionState);
+		public void connectionStateChanged(final ConnectionState connectionState) {
+			ProcessVariableRegel.logger.logDebugMessage(this,
+					"ConnectionState changed, new state: " + connectionState);
 			if (ConnectionState.CONNECTED.equals(connectionState)) {
-				_isConnected = true;
+				this._isConnected = true;
 			} else {
-				_isConnected = false;
+				this._isConnected = false;
 			}
 		}
 
@@ -68,62 +68,74 @@ public class ProcessVariableRegel implements VersandRegel {
 		 * @return Last received value, may be null.
 		 */
 		public T currentValue() {
-			return _lastReceivedValue;
+			return this._lastReceivedValue;
+		}
+
+		public void errorOccured(final String error) {
+
 		}
 
 		/**
 		 * Determines if last state is the connected state.
 		 */
 		public boolean isConnected() {
-			return _isConnected;
+			return this._isConnected;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public void valueChanged(T value, Timestamp e) {
-			logger.logDebugMessage(this, e.toString() + " Value changed, new Value: "
-					+ value.toString());
-			_lastReceivedValue = value;
+		public void valueChanged(final T value, final Timestamp e) {
+			ProcessVariableRegel.logger.logDebugMessage(this, e.toString()
+					+ " Value changed, new Value: " + value.toString());
+			this._lastReceivedValue = value;
 		}
+	}
 
-		public void errorOccured(String error) {
+	private static Logger logger;
 
-		}
+	public static Logger getLogger() {
+		return ProcessVariableRegel.logger;
+	}
+
+	public static void staticInject(
+			final org.csstudio.nams.service.logging.declaration.Logger logger) {
+		ProcessVariableRegel.logger = logger;
+
 	}
 
 	private ProcessVariableChangeListener<?> _processVariableChangeListener;
 	private final Operator operator;
 	private final SuggestedProcessVariableType suggestedProcessVariableType;
-	private final Object compValue;
-	private final IProcessVariableAddress channelName;
-	private final IProcessVariableConnectionService pvService;
-	private static Logger logger;
 
-	public ProcessVariableRegel(IProcessVariableConnectionService pvService,
-			IProcessVariableAddress channelName, Operator operator,
-			SuggestedProcessVariableType suggestedProcessVariableType,
-			Object compValue) {
-		this.pvService = pvService;
+	private final Object compValue;
+
+	private final IProcessVariableAddress channelName;
+
+	public ProcessVariableRegel(
+			final IProcessVariableConnectionService pvService,
+			final IProcessVariableAddress channelName, final Operator operator,
+			final SuggestedProcessVariableType suggestedProcessVariableType,
+			final Object compValue) {
 		this.channelName = channelName;
 		this.operator = operator;
 		this.suggestedProcessVariableType = suggestedProcessVariableType;
 		this.compValue = compValue;
 		if (SuggestedProcessVariableType.LONG
 				.equals(suggestedProcessVariableType)) {
-			ProcessVariableChangeListener<Long> intListener = new ProcessVariableChangeListener<Long>();
+			final ProcessVariableChangeListener<Long> intListener = new ProcessVariableChangeListener<Long>();
 			pvService.registerForLongValues(intListener, channelName);
-			_processVariableChangeListener = intListener;
+			this._processVariableChangeListener = intListener;
 		} else if (SuggestedProcessVariableType.DOUBLE
 				.equals(suggestedProcessVariableType)) {
-			ProcessVariableChangeListener<Double> doubleListener = new ProcessVariableChangeListener<Double>();
+			final ProcessVariableChangeListener<Double> doubleListener = new ProcessVariableChangeListener<Double>();
 			pvService.registerForDoubleValues(doubleListener, channelName);
-			_processVariableChangeListener = doubleListener;
+			this._processVariableChangeListener = doubleListener;
 		} else if (SuggestedProcessVariableType.STRING
 				.equals(suggestedProcessVariableType)) {
-			ProcessVariableChangeListener<String> stringListener = new ProcessVariableChangeListener<String>();
+			final ProcessVariableChangeListener<String> stringListener = new ProcessVariableChangeListener<String>();
 			pvService.registerForStringValues(stringListener, channelName);
-			_processVariableChangeListener = stringListener;
+			this._processVariableChangeListener = stringListener;
 		} else {
 			throw new RuntimeException("Unknown suggested type: "
 					+ suggestedProcessVariableType.toString());
@@ -137,7 +149,7 @@ public class ProcessVariableRegel implements VersandRegel {
 	 *      de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)
 	 */
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
+			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
 		// evaluation is done on first processing
 	}
 
@@ -148,8 +160,8 @@ public class ProcessVariableRegel implements VersandRegel {
 	 *      de.c1wps.desy.ams.allgemeines.Millisekunden)
 	 */
 	public Millisekunden pruefeNachrichtAufTimeOuts(
-			Pruefliste bisherigesErgebnis,
-			Millisekunden verstricheneZeitSeitErsterPruefung) {
+			final Pruefliste bisherigesErgebnis,
+			final Millisekunden verstricheneZeitSeitErsterPruefung) {
 		// timeouts are irrelevant
 		return Millisekunden.valueOf(0);
 	}
@@ -160,29 +172,30 @@ public class ProcessVariableRegel implements VersandRegel {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht,
 	 *      de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)
 	 */
-	public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
-			Pruefliste ergebnisListe) {
-		if (_processVariableChangeListener.isConnected()) {
-			Object currentValue = _processVariableChangeListener.currentValue();
-			if (currentValue != null
-					&& suggestedProcessVariableType.getSuggestedTypeClass()
-							.isAssignableFrom(currentValue.getClass())) {
-				logger.logDebugMessage(
-						this,
+	public Millisekunden pruefeNachrichtErstmalig(
+			final AlarmNachricht nachricht, final Pruefliste ergebnisListe) {
+		if (this._processVariableChangeListener.isConnected()) {
+			final Object currentValue = this._processVariableChangeListener
+					.currentValue();
+			if ((currentValue != null)
+					&& this.suggestedProcessVariableType
+							.getSuggestedTypeClass().isAssignableFrom(
+									currentValue.getClass())) {
+				ProcessVariableRegel.logger.logDebugMessage(this,
 						"Current value from PV: " + currentValue
-								+ " will be compared to: " + compValue);
+								+ " will be compared to: " + this.compValue);
 
 				// equals: the default result that will be used if the
 				// currentValue is not an instance of Number. This means that
 				// string-based comparison (equals/unequals) also works, but
 				// support for additional string comparison operators would
 				// have to be added explicitly.
-				boolean equals = compValue.equals(currentValue);
+				boolean equals = this.compValue.equals(currentValue);
 
-				if (operator.equals(Operator.EQUALS)) {
+				if (this.operator.equals(Operator.EQUALS)) {
 					if (currentValue instanceof Number) {
-						BigDecimal compareValueAsBigDecimal = new BigDecimal(
-								compValue.toString());
+						final BigDecimal compareValueAsBigDecimal = new BigDecimal(
+								this.compValue.toString());
 						BigDecimal currentValueAsBigDecimal = new BigDecimal(
 								currentValue.toString());
 
@@ -224,10 +237,10 @@ public class ProcessVariableRegel implements VersandRegel {
 								this, RegelErgebnis.NICHT_ZUTREFFEND);
 					}
 					return Millisekunden.valueOf(0);
-				} else if (operator.equals(Operator.UNEQUALS)) {
+				} else if (this.operator.equals(Operator.UNEQUALS)) {
 					if (currentValue instanceof Number) {
-						BigDecimal compareValueAsBigDecimal = new BigDecimal(
-								compValue.toString());
+						final BigDecimal compareValueAsBigDecimal = new BigDecimal(
+								this.compValue.toString());
 						BigDecimal currentValueAsBigDecimal = new BigDecimal(
 								currentValue.toString());
 
@@ -258,13 +271,13 @@ public class ProcessVariableRegel implements VersandRegel {
 								this, RegelErgebnis.NICHT_ZUTREFFEND);
 					}
 					return Millisekunden.valueOf(0);
-				} else if (operator.equals(Operator.SMALLER)) {
+				} else if (this.operator.equals(Operator.SMALLER)) {
 					if (currentValue instanceof Number) {
-						Number currentValueAsNumber = (Number) currentValue;
-						double currentValueAsDouble = currentValueAsNumber
+						final Number currentValueAsNumber = (Number) currentValue;
+						final double currentValueAsDouble = currentValueAsNumber
 								.doubleValue();
 
-						double compValueAsDouble = ((Number) compValue)
+						final double compValueAsDouble = ((Number) this.compValue)
 								.doubleValue();
 
 						if (currentValueAsDouble < compValueAsDouble) {
@@ -282,13 +295,13 @@ public class ProcessVariableRegel implements VersandRegel {
 						throw new RuntimeException("illegal type: "
 								+ currentValue.getClass().getSimpleName());
 					}
-				} else if (operator.equals(Operator.GREATER)) {
+				} else if (this.operator.equals(Operator.GREATER)) {
 					if (currentValue instanceof Number) {
-						Number currentValueAsNumber = (Number) currentValue;
-						double currentValueAsDouble = currentValueAsNumber
+						final Number currentValueAsNumber = (Number) currentValue;
+						final double currentValueAsDouble = currentValueAsNumber
 								.doubleValue();
 
-						double compValueAsDouble = ((Number) compValue)
+						final double compValueAsDouble = ((Number) this.compValue)
 								.doubleValue();
 
 						if (currentValueAsDouble > compValueAsDouble) {
@@ -308,46 +321,39 @@ public class ProcessVariableRegel implements VersandRegel {
 					}
 				}
 			} else {
-				if( currentValue == null ) {
+				if (currentValue == null) {
 					// es besteht zwar eine Verbindung aber es steht kein Wert
 					// zur Verfügung:
 					// Sicherheitsverhalten: Nachricht senden:
-					logger.logWarningMessage(this,
-							"No value recieved from connected PV Service to PV (via DAL), Channel: " 
-							+ channelName 
-							+ ". Message will be accepted as fail-over behavior.");
+					ProcessVariableRegel.logger
+							.logWarningMessage(
+									this,
+									"No value recieved from connected PV Service to PV (via DAL), Channel: "
+											+ this.channelName
+											+ ". Message will be accepted as fail-over behavior.");
 					ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
 							RegelErgebnis.ZUTREFFEND);
 				}
 			}
 		} else {
-			logger.logErrorMessage(this,
-					"No connection to PV (via DAL), Channel: " + channelName);
+			ProcessVariableRegel.logger.logErrorMessage(this,
+					"No connection to PV (via DAL), Channel: "
+							+ this.channelName);
 			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
 					RegelErgebnis.ZUTREFFEND);
 		}
 		return Millisekunden.valueOf(0);
 	}
 
-	public static void staticInject(
-			org.csstudio.nams.service.logging.declaration.Logger logger) {
-		ProcessVariableRegel.logger = logger;
-
-	}
-
-	public static Logger getLogger() {
-		return logger;
-	}
-
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder("(PVRegel: ");
+		final StringBuilder stringBuilder = new StringBuilder("(PVRegel: ");
 		stringBuilder.append("Channelname: ");
-		stringBuilder.append(channelName);
+		stringBuilder.append(this.channelName);
 		stringBuilder.append(" Operator: ");
-		stringBuilder.append(operator);
+		stringBuilder.append(this.operator);
 		stringBuilder.append(" compValue: ");
-		stringBuilder.append(compValue);
+		stringBuilder.append(this.compValue);
 		stringBuilder.append(")");
 		return stringBuilder.toString();
 	}

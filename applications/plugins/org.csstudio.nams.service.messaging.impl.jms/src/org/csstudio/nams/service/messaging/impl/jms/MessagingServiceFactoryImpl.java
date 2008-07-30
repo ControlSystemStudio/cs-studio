@@ -6,7 +6,7 @@ import org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactor
 public class MessagingServiceFactoryImpl implements MessagingServiceFactory {
 
 	public MessagingServiceFactoryImpl() {
-		
+
 	}
 
 	public MessagingService createService() {

@@ -52,42 +52,60 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	@Transient
 	private FilterConditionDTO[] operands = new FilterConditionDTO[0];
 
-	/**
-	 * Setzt den Operator für diese Conjunction.
-	 * 
-	 * @param operator
-	 *            Der Operator, nicht null.
-	 */
-	public void setOperator(final JunctorConditionType operator) {
-		Contract.requireNotNull("operator", operator);
+	@SuppressWarnings("unchecked")
+	public synchronized void deleteJoinLinkData(final Mapper mapper)
+			throws Throwable {
+		final List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper
+				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
+						false);
 
-		this.operator = operator.name();
+		for (final JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
+			if (joinElement.getJoinParentsDatabaseId() == this
+					.getIFilterConditionID()) {
+				final int joinId = joinElement.getJoinedConditionsDatabaseId();
+				mapper.delete(joinElement);
+
+				final JunctorConditionForFilterTreeDTO jcfft = mapper
+						.findForId(JunctorConditionForFilterTreeDTO.class,
+								joinId, false);
+				if (jcfft != null) {
+					mapper.delete(jcfft);
+				}
+
+				final NegationConditionForFilterTreeDTO ncfft = mapper
+						.findForId(NegationConditionForFilterTreeDTO.class,
+								joinId, false);
+				if (ncfft != null) {
+					mapper.delete(ncfft);
+				}
+
+			}
+		}
 	}
 
-	/**
-	 * Liefert den Operator für diese Conjunction.
-	 * 
-	 * @return Der Operator, null, wenn das DTO noch nicht gefüllt wurde.
-	 */
-	public JunctorConditionType getOperator() {
-		return JunctorConditionType.valueOf(this.operator);
-	}
-
-	/**
-	 * ONLY USED FOR MAPPING PURPOSES!
-	 * 
-	 * Setzt die Operanden der Junction. Dieses geschiet nicht durch das Mapping
-	 * sondern manuell nach dem Laden.
-	 * 
-	 * @param operands
-	 *            Eine, potentiell leere, Menge von Operanden, nicht null.
-	 */
-	@Transient
-	public void setOperands(final Set<FilterConditionDTO> operands) {
-		Contract.requireNotNull("operands", operands);
-
-		this.operands = operands
-				.toArray(new FilterConditionDTO[operands.size()]);
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof JunctorConditionForFilterTreeDTO)) {
+			return false;
+		}
+		final JunctorConditionForFilterTreeDTO other = (JunctorConditionForFilterTreeDTO) obj;
+		if (!Arrays.equals(this.operands, other.operands)) {
+			return false;
+		}
+		if (this.operator == null) {
+			if (other.operator != null) {
+				return false;
+			}
+		} else if (!this.operator.equals(other.operator)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -101,102 +119,37 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 */
 	@Transient
 	public Set<FilterConditionDTO> getOperands() {
-		List<FilterConditionDTO> asList = Arrays.asList(this.operands);
+		final List<FilterConditionDTO> asList = Arrays.asList(this.operands);
 		return new HashSet<FilterConditionDTO>(asList);
 	}
 
-//	private <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
-//		for (T t : fcs) {
-//			if (t.getIFilterConditionID() == id) {
-//				return t;
-//			}
-//		}
-//		return null;
-//	}
-
-	private JunctorConditionForFilterTreeConditionJoinDTO findForId(int id,
-			Collection<JunctorConditionForFilterTreeConditionJoinDTO> fcs) {
-		for (JunctorConditionForFilterTreeConditionJoinDTO t : fcs) {
-			if (t.getJoinedConditionsDatabaseId() == id) {
-				return t;
-			}
-		}
-		return null;
+	/**
+	 * Liefert den Operator für diese Conjunction.
+	 * 
+	 * @return Der Operator, null, wenn das DTO noch nicht gefüllt wurde.
+	 */
+	public JunctorConditionType getOperator() {
+		return JunctorConditionType.valueOf(this.operator);
 	}
 
-	/**
-	 * ONLY USED FOR MAPPING PURPOSES!
-	 * 
-	 * This method is used to store the join-data for previously set
-	 * {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}. IMPORTANT:
-	 * This method has to be called in a valid open transaction!
-	 * 
-	 * @param session
-	 *            The session to store to; it is guaranteed that only
-	 *            {@link JunctorConditionForFilterTreeDTO} will be stored and/or
-	 *            deleted.
-	 * @throws If
-	 *             an error occurred
-	 */
-	public synchronized void storeJoinLinkData(Mapper mapper) throws Throwable {
+	// private <T extends FilterConditionDTO> T findForId(int id, Collection<T>
+	// fcs) {
+	// for (T t : fcs) {
+	// if (t.getIFilterConditionID() == id) {
+	// return t;
+	// }
+	// }
+	// return null;
+	// }
 
-		// List<FilterConditionDTO> allFC =
-		// mapper.loadAll(FilterConditionDTO.class, false);
-		List<JunctorConditionForFilterTreeConditionJoinDTO> joins = mapper
-				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
-						true);
-
-		List<FilterConditionDTO> ehemalsReferenziert = new LinkedList<FilterConditionDTO>();
-
-		for (JunctorConditionForFilterTreeConditionJoinDTO join : joins) {
-			if (join.getJoinParentsDatabaseId() == this.getIFilterConditionID()) {
-				// FilterConditionDTO found =
-				// findForId(join.getJoinedConditionsDatabaseId(), allFC);
-				FilterConditionDTO found = mapper.findForId(
-						FilterConditionDTO.class, join
-								.getJoinedConditionsDatabaseId(), false);
-				ehemalsReferenziert.add(found);
-			}
-		}
-
-		Set<FilterConditionDTO> operands = this.getOperands();
-
-		for (FilterConditionDTO operand : operands) {
-			// FilterConditionDTO fc =
-			// findForId(operand.getIFilterConditionID(), allFC);
-			FilterConditionDTO fc = mapper.findForId(FilterConditionDTO.class,
-					operand.getIFilterConditionID(), false);
-
-			if (fc != null) {
-				if (!ehemalsReferenziert.remove(fc)) {
-					JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
-							this, fc);
-					mapper.save(newJoin);
-				}
-				if (operand instanceof JunctorConditionForFilterTreeDTO
-						|| operand instanceof NegationConditionForFilterTreeDTO) {
-					((HasManuallyJoinedElements) operand)
-							.storeJoinLinkData(mapper);
-				}
-			} else {
-				mapper.save(operand);
-				JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
-						this, operand);
-				mapper.save(newJoin);
-			}
-		}
-
-		for (FilterConditionDTO toRemove : ehemalsReferenziert) {
-			JunctorConditionForFilterTreeConditionJoinDTO found = findForId(
-					toRemove.getIFilterConditionID(), joins);
-			mapper.delete(found);
-			if (toRemove instanceof JunctorConditionForFilterTreeDTO) {
-				mapper.delete(toRemove);
-			}
-			if (toRemove instanceof NegationConditionForFilterTreeDTO) {
-				mapper.delete(toRemove);
-			}
-		}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.hashCode(this.operands);
+		result = prime * result
+				+ ((this.operator == null) ? 0 : this.operator.hashCode());
+		return result;
 	}
 
 	/**
@@ -217,18 +170,20 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 *             an error occurred
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized void loadJoinData(Mapper mapper) throws Throwable {
+	public synchronized void loadJoinData(final Mapper mapper) throws Throwable {
 
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper
+		final List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper
 				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
 						false);
 
-		Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
+		final Set<FilterConditionDTO> foundOperands = new HashSet<FilterConditionDTO>();
 
-		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
+		for (final JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
 			if (joinElement.getJoinParentsDatabaseId() == this
 					.getIFilterConditionID()) {
-				FilterConditionDTO conditionDTO = mapper.findForId(FilterConditionDTO.class, joinElement.getJoinedConditionsDatabaseId(), true);
+				final FilterConditionDTO conditionDTO = mapper.findForId(
+						FilterConditionDTO.class, joinElement
+								.getJoinedConditionsDatabaseId(), true);
 				foundOperands.add(conditionDTO);
 			}
 		}
@@ -237,58 +192,120 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 				.toArray(new FilterConditionDTO[foundOperands.size()]);
 	}
 
-	@SuppressWarnings("unchecked")
-	public synchronized void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		List<JunctorConditionForFilterTreeConditionJoinDTO> allJoins = mapper
+	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
+	 * Setzt die Operanden der Junction. Dieses geschiet nicht durch das Mapping
+	 * sondern manuell nach dem Laden.
+	 * 
+	 * @param operands
+	 *            Eine, potentiell leere, Menge von Operanden, nicht null.
+	 */
+	@Transient
+	public void setOperands(final Set<FilterConditionDTO> operands) {
+		Contract.requireNotNull("operands", operands);
+
+		this.operands = operands
+				.toArray(new FilterConditionDTO[operands.size()]);
+	}
+
+	/**
+	 * Setzt den Operator für diese Conjunction.
+	 * 
+	 * @param operator
+	 *            Der Operator, nicht null.
+	 */
+	public void setOperator(final JunctorConditionType operator) {
+		Contract.requireNotNull("operator", operator);
+
+		this.operator = operator.name();
+	}
+
+	/**
+	 * ONLY USED FOR MAPPING PURPOSES!
+	 * 
+	 * This method is used to store the join-data for previously set
+	 * {@link FilterConditionDTO}s (see: {@link #setOperands(Set)}. IMPORTANT:
+	 * This method has to be called in a valid open transaction!
+	 * 
+	 * @param session
+	 *            The session to store to; it is guaranteed that only
+	 *            {@link JunctorConditionForFilterTreeDTO} will be stored and/or
+	 *            deleted.
+	 * @throws If
+	 *             an error occurred
+	 */
+	public synchronized void storeJoinLinkData(final Mapper mapper)
+			throws Throwable {
+
+		// List<FilterConditionDTO> allFC =
+		// mapper.loadAll(FilterConditionDTO.class, false);
+		final List<JunctorConditionForFilterTreeConditionJoinDTO> joins = mapper
 				.loadAll(JunctorConditionForFilterTreeConditionJoinDTO.class,
-						false);
+						true);
 
-		for (JunctorConditionForFilterTreeConditionJoinDTO joinElement : allJoins) {
-			if (joinElement.getJoinParentsDatabaseId() == this
-					.getIFilterConditionID()) {
-				int joinId = joinElement.getJoinedConditionsDatabaseId();
-				mapper.delete(joinElement);
+		final List<FilterConditionDTO> ehemalsReferenziert = new LinkedList<FilterConditionDTO>();
 
-				JunctorConditionForFilterTreeDTO jcfft = mapper.findForId(JunctorConditionForFilterTreeDTO.class, joinId, false);
-				if (jcfft != null) {
-					mapper.delete(jcfft);
+		for (final JunctorConditionForFilterTreeConditionJoinDTO join : joins) {
+			if (join.getJoinParentsDatabaseId() == this.getIFilterConditionID()) {
+				// FilterConditionDTO found =
+				// findForId(join.getJoinedConditionsDatabaseId(), allFC);
+				final FilterConditionDTO found = mapper.findForId(
+						FilterConditionDTO.class, join
+								.getJoinedConditionsDatabaseId(), false);
+				ehemalsReferenziert.add(found);
+			}
+		}
+
+		final Set<FilterConditionDTO> operands = this.getOperands();
+
+		for (final FilterConditionDTO operand : operands) {
+			// FilterConditionDTO fc =
+			// findForId(operand.getIFilterConditionID(), allFC);
+			final FilterConditionDTO fc = mapper.findForId(
+					FilterConditionDTO.class, operand.getIFilterConditionID(),
+					false);
+
+			if (fc != null) {
+				if (!ehemalsReferenziert.remove(fc)) {
+					final JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
+							this, fc);
+					mapper.save(newJoin);
 				}
-				
-				NegationConditionForFilterTreeDTO ncfft = mapper.findForId(NegationConditionForFilterTreeDTO.class, joinId, false);
-				if (ncfft != null) {
-					mapper.delete(ncfft);
+				if ((operand instanceof JunctorConditionForFilterTreeDTO)
+						|| (operand instanceof NegationConditionForFilterTreeDTO)) {
+					((HasManuallyJoinedElements) operand)
+							.storeJoinLinkData(mapper);
 				}
-				
+			} else {
+				mapper.save(operand);
+				final JunctorConditionForFilterTreeConditionJoinDTO newJoin = new JunctorConditionForFilterTreeConditionJoinDTO(
+						this, operand);
+				mapper.save(newJoin);
+			}
+		}
+
+		for (final FilterConditionDTO toRemove : ehemalsReferenziert) {
+			final JunctorConditionForFilterTreeConditionJoinDTO found = this
+					.findForId(toRemove.getIFilterConditionID(), joins);
+			mapper.delete(found);
+			if (toRemove instanceof JunctorConditionForFilterTreeDTO) {
+				mapper.delete(toRemove);
+			}
+			if (toRemove instanceof NegationConditionForFilterTreeDTO) {
+				mapper.delete(toRemove);
 			}
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Arrays.hashCode(operands);
-		result = prime * result
-				+ ((operator == null) ? 0 : operator.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof JunctorConditionForFilterTreeDTO))
-			return false;
-		final JunctorConditionForFilterTreeDTO other = (JunctorConditionForFilterTreeDTO) obj;
-		if (!Arrays.equals(operands, other.operands))
-			return false;
-		if (operator == null) {
-			if (other.operator != null)
-				return false;
-		} else if (!operator.equals(other.operator))
-			return false;
-		return true;
+	private JunctorConditionForFilterTreeConditionJoinDTO findForId(
+			final int id,
+			final Collection<JunctorConditionForFilterTreeConditionJoinDTO> fcs) {
+		for (final JunctorConditionForFilterTreeConditionJoinDTO t : fcs) {
+			if (t.getJoinedConditionsDatabaseId() == id) {
+				return t;
+			}
+		}
+		return null;
 	}
 }

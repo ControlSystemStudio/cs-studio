@@ -21,277 +21,290 @@ class ConnectionServiceMock implements IProcessVariableConnectionService {
 	@SuppressWarnings("unchecked")
 	IProcessVariableValueListener _listener;
 
-	public void registerForDoubleValues(
-			IProcessVariableValueListener<Double> listener,
-			IProcessVariableAddress pv) {
-		_listener = listener;
+	public int getConnectorCount() {
+		Assert.fail("unexpected call of method.");
+		return 0;
 	}
 
-	public void registerForLongValues(
-			IProcessVariableValueListener<Long> listener,
-			IProcessVariableAddress pv) {
-		_listener = listener;
+	public List<IConnectorStatistic> getConnectorStatistic() {
+		Assert.fail("unexpected call of method.");
+		return null;
 	}
 
-	public void registerForStringValues(
-			IProcessVariableValueListener<String> listener,
-			IProcessVariableAddress pv) {
-		_listener = listener;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void sendNewValue(Object value) {
-		_listener.valueChanged(value, new Timestamp());
-	}
-
-	public void sendNewConnectionState(ConnectionState state) {
-		_listener.connectionStateChanged(state);
-	}
-
-	public Object getValue(IProcessVariableAddress processVariableAddress,
-			ValueType valueType) throws ConnectionException {
+	public Object getValue(
+			final IProcessVariableAddress processVariableAddress,
+			final ValueType valueType) throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
 	public double getValueAsDouble(
-			IProcessVariableAddress processVariableAddress)
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return 0;
 	}
 
 	public double[] getValueAsDoubleSequence(
-			IProcessVariableAddress processVariableAddress)
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
 	@SuppressWarnings("unchecked")
-	public Enum getValueAsEnum(IProcessVariableAddress processVariableAddress)
+	public Enum getValueAsEnum(
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
-	public long getValueAsLong(IProcessVariableAddress processVariableAddress)
+	public long getValueAsLong(
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return 0;
 	}
 
 	public long[] getValueAsLongSequence(
-			IProcessVariableAddress processVariableAddress)
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
 	public Object getValueAsObject(
-			IProcessVariableAddress processVariableAddress)
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
 	public Object[] getValueAsObjectSequence(
-			IProcessVariableAddress processVariableAddress)
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
 	public String getValueAsString(
-			IProcessVariableAddress processVariableAddress)
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
 	public String[] getValueAsStringSequence(
-			IProcessVariableAddress processVariableAddress)
+			final IProcessVariableAddress processVariableAddress)
 			throws ConnectionException {
 		Assert.fail("unexpected call of method.");
 		return null;
 	}
 
-	public void getValueAsync(IProcessVariableAddress processVariableAddress,
-			ValueType valueType, IProcessVariableValueListener<Double> listener) {
+	public void getValueAsync(
+			final IProcessVariableAddress processVariableAddress,
+			final ValueType valueType,
+			final IProcessVariableValueListener<Double> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsDouble(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Double> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<Double> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsDoubleSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<double[]> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<double[]> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	@SuppressWarnings("unchecked")
 	public void getValueAsyncAsEnum(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Enum> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<Enum> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsLong(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Long> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<Long> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsLongSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<long[]> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<long[]> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsObject(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Object> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<Object> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsObjectSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Object[]> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<Object[]> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsString(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<String> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<String> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void getValueAsyncAsStringSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<String[]> listener) {
+			final IProcessVariableAddress processVariableAddress,
+			final IProcessVariableValueListener<String[]> listener) {
 		Assert.fail("unexpected call of method.");
 	}
 
+	public SettableState isSettable(final IProcessVariableAddress pv) {
+		Assert.fail("unexpected call of method.");
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
-	public void register(IProcessVariableValueListener listener,
-			IProcessVariableAddress pv, ValueType valueType) {
+	public void register(final IProcessVariableValueListener listener,
+			final IProcessVariableAddress pv, final ValueType valueType) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void registerForDoubleSequenceValues(
-			IProcessVariableValueListener<double[]> listener,
-			IProcessVariableAddress pv) {
+			final IProcessVariableValueListener<double[]> listener,
+			final IProcessVariableAddress pv) {
 		Assert.fail("unexpected call of method.");
+	}
+
+	public void registerForDoubleValues(
+			final IProcessVariableValueListener<Double> listener,
+			final IProcessVariableAddress pv) {
+		this._listener = listener;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void registerForEnumValues(
-			IProcessVariableValueListener<Enum> listener,
-			IProcessVariableAddress pv) {
+			final IProcessVariableValueListener<Enum> listener,
+			final IProcessVariableAddress pv) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void registerForLongSequenceValues(
-			IProcessVariableValueListener<long[]> listener,
-			IProcessVariableAddress pv) {
+			final IProcessVariableValueListener<long[]> listener,
+			final IProcessVariableAddress pv) {
 		Assert.fail("unexpected call of method.");
 	}
 
+	public void registerForLongValues(
+			final IProcessVariableValueListener<Long> listener,
+			final IProcessVariableAddress pv) {
+		this._listener = listener;
+	}
+
 	public void registerForObjectSequenceValues(
-			IProcessVariableValueListener<Object[]> listener,
-			IProcessVariableAddress pv) {
+			final IProcessVariableValueListener<Object[]> listener,
+			final IProcessVariableAddress pv) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void registerForObjectValues(
-			IProcessVariableValueListener<Object> listener,
-			IProcessVariableAddress pv) {
+			final IProcessVariableValueListener<Object> listener,
+			final IProcessVariableAddress pv) {
 		Assert.fail("unexpected call of method.");
 	}
 
 	public void registerForStringSequenceValues(
-			IProcessVariableValueListener<String[]> listener,
-			IProcessVariableAddress pv) {
+			final IProcessVariableValueListener<String[]> listener,
+			final IProcessVariableAddress pv) {
 		Assert.fail("unexpected call of method.");
 	}
 
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			long value) {
-		Assert.fail("unexpected call of method.");
-		return false;
+	public void registerForStringValues(
+			final IProcessVariableValueListener<String> listener,
+			final IProcessVariableAddress pv) {
+		this._listener = listener;
 	}
 
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			long[] value) {
-		Assert.fail("unexpected call of method.");
-		return false;
+	public void sendNewConnectionState(final ConnectionState state) {
+		this._listener.connectionStateChanged(state);
 	}
 
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			double value) {
-		Assert.fail("unexpected call of method.");
-		return false;
-	}
-
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			double[] value) {
-		Assert.fail("unexpected call of method.");
-		return false;
-	}
-
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			String value) {
-		Assert.fail("unexpected call of method.");
-		return false;
-	}
-
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			String[] value) {
-		Assert.fail("unexpected call of method.");
-		return false;
-	}
-
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			Object value, ValueType expectedValueType) {
-		Assert.fail("unexpected call of method.");
-		return false;
-	}
-
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			Object[] value) {
-		Assert.fail("unexpected call of method.");
-		return false;
-	}
-
-	
 	@SuppressWarnings("unchecked")
-	public boolean setValue(IProcessVariableAddress processVariableAddress,
-			Enum value) {
+	public void sendNewValue(final Object value) {
+		this._listener.valueChanged(value, new Timestamp());
+	}
+
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final double value) {
+		Assert.fail("unexpected call of method.");
+		return false;
+	}
+
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final double[] value) {
 		Assert.fail("unexpected call of method.");
 		return false;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void unregister(IProcessVariableValueListener listener) {
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final Enum value) {
 		Assert.fail("unexpected call of method.");
+		return false;
 	}
 
-	public int getConnectorCount() {
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final long value) {
 		Assert.fail("unexpected call of method.");
-		return 0;
+		return false;
 	}
 
-	public SettableState isSettable(IProcessVariableAddress pv) {
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final long[] value) {
 		Assert.fail("unexpected call of method.");
-		return null;
+		return false;
 	}
 
-	public List<IConnectorStatistic> getConnectorStatistic() {
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final Object value, final ValueType expectedValueType) {
 		Assert.fail("unexpected call of method.");
-		return null;
+		return false;
+	}
+
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final Object[] value) {
+		Assert.fail("unexpected call of method.");
+		return false;
+	}
+
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final String value) {
+		Assert.fail("unexpected call of method.");
+		return false;
+	}
+
+	public boolean setValue(
+			final IProcessVariableAddress processVariableAddress,
+			final String[] value) {
+		Assert.fail("unexpected call of method.");
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void unregister(final IProcessVariableValueListener listener) {
+		Assert.fail("unexpected call of method.");
 	}
 }

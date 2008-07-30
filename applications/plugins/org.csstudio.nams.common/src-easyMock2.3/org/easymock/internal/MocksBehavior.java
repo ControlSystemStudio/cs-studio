@@ -23,46 +23,10 @@ public class MocksBehavior implements IMocksBehavior {
 
 	private int position = 0;
 
+	private LegacyMatcherProvider legacyMatcherProvider;
+
 	public MocksBehavior(final boolean nice) {
 		this.nice = nice;
-	}
-
-	public final void addStub(final ExpectedInvocation expected,
-			final Result result) {
-		this.stubResults.add(new ExpectedInvocationAndResult(expected, result));
-	}
-
-	public void addExpected(final ExpectedInvocation expected,
-			final Result result, final Range count) {
-		ExpectedInvocation localExpected = expected;
-		if (this.legacyMatcherProvider != null) {
-			localExpected = localExpected
-					.withMatcher(this.legacyMatcherProvider
-							.getMatcher(localExpected.getMethod()));
-		}
-		this.addBehaviorListIfNecessary(localExpected);
-		this.lastBehaviorList().addExpected(localExpected, result, count);
-	}
-
-	private final Result getStubResult(final Invocation actual) {
-		for (final ExpectedInvocationAndResult each : this.stubResults) {
-			if (each.getExpectedInvocation().matches(actual)) {
-				return each.getResult();
-			}
-		}
-		return null;
-	}
-
-	private void addBehaviorListIfNecessary(final ExpectedInvocation expected) {
-		if (this.behaviorLists.isEmpty()
-				|| !this.lastBehaviorList().allowsExpectedInvocation(expected,
-						this.checkOrder)) {
-			this.behaviorLists.add(new UnorderedBehavior(this.checkOrder));
-		}
-	}
-
-	private UnorderedBehavior lastBehaviorList() {
-		return this.behaviorLists.get(this.behaviorLists.size() - 1);
 	}
 
 	public final Result addActual(final Invocation actual) {
@@ -96,6 +60,42 @@ public class MocksBehavior implements IMocksBehavior {
 						+ errorMessage.toString()));
 	}
 
+	public void addExpected(final ExpectedInvocation expected,
+			final Result result, final Range count) {
+		ExpectedInvocation localExpected = expected;
+		if (this.legacyMatcherProvider != null) {
+			localExpected = localExpected
+					.withMatcher(this.legacyMatcherProvider
+							.getMatcher(localExpected.getMethod()));
+		}
+		this.addBehaviorListIfNecessary(localExpected);
+		this.lastBehaviorList().addExpected(localExpected, result, count);
+	}
+
+	public final void addStub(final ExpectedInvocation expected,
+			final Result result) {
+		this.stubResults.add(new ExpectedInvocationAndResult(expected, result));
+	}
+
+	public void checkOrder(final boolean value) {
+		this.checkOrder = value;
+	}
+
+	public LegacyMatcherProvider getLegacyMatcherProvider() {
+		if (this.legacyMatcherProvider == null) {
+			this.legacyMatcherProvider = new LegacyMatcherProvider();
+		}
+		return this.legacyMatcherProvider;
+	}
+
+	public void setDefaultMatcher(final ArgumentsMatcher matcher) {
+		this.getLegacyMatcherProvider().setDefaultMatcher(matcher);
+	}
+
+	public void setMatcher(final Method method, final ArgumentsMatcher matcher) {
+		this.getLegacyMatcherProvider().setMatcher(method, matcher);
+	}
+
 	public void verify() {
 		boolean verified = true;
 		final StringBuffer errorMessage = new StringBuffer();
@@ -115,24 +115,24 @@ public class MocksBehavior implements IMocksBehavior {
 				"\n  Expectation failure on verify:" + errorMessage.toString()));
 	}
 
-	public void checkOrder(final boolean value) {
-		this.checkOrder = value;
-	}
-
-	private LegacyMatcherProvider legacyMatcherProvider;
-
-	public LegacyMatcherProvider getLegacyMatcherProvider() {
-		if (this.legacyMatcherProvider == null) {
-			this.legacyMatcherProvider = new LegacyMatcherProvider();
+	private void addBehaviorListIfNecessary(final ExpectedInvocation expected) {
+		if (this.behaviorLists.isEmpty()
+				|| !this.lastBehaviorList().allowsExpectedInvocation(expected,
+						this.checkOrder)) {
+			this.behaviorLists.add(new UnorderedBehavior(this.checkOrder));
 		}
-		return this.legacyMatcherProvider;
 	}
 
-	public void setDefaultMatcher(final ArgumentsMatcher matcher) {
-		this.getLegacyMatcherProvider().setDefaultMatcher(matcher);
+	private final Result getStubResult(final Invocation actual) {
+		for (final ExpectedInvocationAndResult each : this.stubResults) {
+			if (each.getExpectedInvocation().matches(actual)) {
+				return each.getResult();
+			}
+		}
+		return null;
 	}
 
-	public void setMatcher(final Method method, final ArgumentsMatcher matcher) {
-		this.getLegacyMatcherProvider().setMatcher(method, matcher);
+	private UnorderedBehavior lastBehaviorList() {
+		return this.behaviorLists.get(this.behaviorLists.size() - 1);
 	}
 }

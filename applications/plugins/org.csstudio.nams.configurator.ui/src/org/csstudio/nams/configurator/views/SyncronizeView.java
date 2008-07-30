@@ -28,43 +28,49 @@ import org.eclipse.ui.part.ViewPart;
 public class SyncronizeView extends ViewPart {
 
 	private static SynchronizeService synchronizeService = null;
-	private Text statusText;
-	private Button syncButton;
 
 	/**
 	 * Injiziert den {@link SynchronizeService} für diese View. Must be called
 	 * before View is used.
 	 */
 	public static void staticInjectSynchronizeService(
-			SynchronizeService synchronizeService) {
+			final SynchronizeService synchronizeService) {
 		SyncronizeView.synchronizeService = synchronizeService;
 	}
 
+	private Text statusText;
+
+	private Button syncButton;
+
 	public SyncronizeView() {
-		if (synchronizeService == null) {
+		if (SyncronizeView.synchronizeService == null) {
 			throw new RuntimeException(
 					"View class is not probably initialised, missing: SynchronizeService!");
 		}
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 
-		Composite composite = new Composite(parent, SWT.NONE);
+		final Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new FillLayout(SWT.VERTICAL | SWT.HORIZONTAL));
 
-		Composite innerComposite = new Composite(composite, SWT.NONE);
+		final Composite innerComposite = new Composite(composite, SWT.NONE);
 		innerComposite.setLayout(new GridLayout(1, false));
 
-		syncButton = new Button(innerComposite, SWT.TOGGLE);
-		syncButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+		this.syncButton = new Button(innerComposite, SWT.TOGGLE);
+		this.syncButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false));
-		syncButton.setText("Perform synchronization of background-system");
-		syncButton.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				Button source = (Button) e.getSource();
+		this.syncButton.setText("Perform synchronization of background-system");
+		this.syncButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(final SelectionEvent e) {
+				// will never be called by a button.
+			}
+
+			public void widgetSelected(final SelectionEvent e) {
+				final Button source = (Button) e.getSource();
 				if (source.getSelection()) {
-					statusText.setText("");
+					SyncronizeView.this.statusText.setText("");
 					SyncronizeView.this.doSynchronize();
 				} else {
 					// deselect nur aus dem code erlaubt!
@@ -72,26 +78,128 @@ public class SyncronizeView extends ViewPart {
 				}
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// will never be called by a button.
-			}
-
 		});
 
-		statusText = new Text(innerComposite, SWT.SCROLL_LINE | SWT.V_SCROLL
-				| SWT.H_SCROLL);
-		statusText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		statusText.setEditable(false);
-		statusText
+		this.statusText = new Text(innerComposite, SWT.SCROLL_LINE
+				| SWT.V_SCROLL | SWT.H_SCROLL);
+		this.statusText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
+		this.statusText.setEditable(false);
+		this.statusText
 				.setText("Push \"Perform synchronization of background-system\" to begin syncronization.");
+	}
+
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+
+	}
+
+	protected synchronized void doSynchronize() {
+		this.appendStatusText("Beginning synchronization...");
+
+		try {
+			SyncronizeView.synchronizeService
+					.sychronizeAlarmSystem(new SynchronizeService.Callback() {
+						volatile Boolean result = null;
+
+						public void bereiteSynchronisationVor() {
+							SyncronizeView.this
+									.appendStatusText("Preparing synchronization...\n");
+						}
+
+						public void fehlerBeimVorbereitenDerSynchronisation(
+								final Throwable t) {
+							SyncronizeView.this
+									.appendStatusText(
+											"Failed to prepare synchronization.\nReason:",
+											t);
+							this.buttonFreigben();
+						}
+
+						public boolean pruefeObSynchronisationAusgefuehrtWerdenDarf() {
+							SyncronizeView.this
+									.appendStatusText("Looking for unsaved changes...");
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									result = SyncronizeView.this
+											.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding();
+								}
+							});
+							while (this.result == null) {
+								Thread.yield();
+							}
+							SyncronizeView.this.appendStatusText("Done.\n");
+							return this.result.booleanValue();
+						}
+
+						public void sendeNachrichtAnHintergrundSystem() {
+							SyncronizeView.this
+									.appendStatusText("Sending sychronization request to back-end-system...\n");
+						}
+
+						public void sendenDerNachrichtAnHintergrundSystemFehlgeschalgen(
+								final Throwable t) {
+							SyncronizeView.this
+									.appendStatusText(
+											"Failed to send sychronization request to back-end-system.\nReason:",
+											t);
+							this.buttonFreigben();
+						}
+
+						public void synchronisationAbgebrochen() {
+							SyncronizeView.this
+									.appendStatusText("Sychronization has been canceled.\n");
+							this.buttonFreigben();
+						}
+
+						public void synchronisationsDurchHintergrundsystemsErfolgreich() {
+							SyncronizeView.this
+									.appendStatusText("\n\nSynchronization successfully finished!");
+							this.buttonFreigben();
+						}
+
+						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
+								final String fehlertext) {
+							SyncronizeView.this
+									.appendStatusText("Back-end-system reporting failure of sychronization.\nReported reason: "
+											+ fehlertext);
+							this.buttonFreigben();
+						}
+
+						public void wartetAufAntowrtDesHintergrundSystems() {
+							SyncronizeView.this
+									.appendStatusText("Waiting for sychronization commitment to back-end-system...\n");
+						}
+
+						private void buttonFreigben() {
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									SyncronizeView.this.syncButton
+											.setSelection(false);
+								}
+							});
+						}
+
+					});
+		} catch (final Throwable t) {
+			this.appendStatusText("\n\nSynchronization failed!\nReason: ", t);
+		}
+
+		// Display.getDefault().asyncExec(new Runnable() {
+		// public void run() {
+		// syncButton.setSelection(false);
+		// }
+		// });
 	}
 
 	protected boolean lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding() {
 		boolean hasADirtyNamsEditor = false;
-		IWorkbenchPage[] pages = this.getSite().getWorkbenchWindow().getPages();
-		for (IWorkbenchPage page : pages) {
-			IEditorPart[] dirtyEditors = page.getDirtyEditors();
-			for (IEditorPart editor : dirtyEditors) {
+		final IWorkbenchPage[] pages = this.getSite().getWorkbenchWindow()
+				.getPages();
+		for (final IWorkbenchPage page : pages) {
+			final IEditorPart[] dirtyEditors = page.getDirtyEditors();
+			for (final IEditorPart editor : dirtyEditors) {
 				if (editor instanceof AbstractEditor<?>) {
 					hasADirtyNamsEditor = true;
 				}
@@ -103,8 +211,8 @@ public class SyncronizeView extends ViewPart {
 			// möchten
 			// Sie verfahren?" mit Aktionen: "Anderungen sichten" vs. "trozdem
 			// fortfahren".
-			MessageBox messageBox = new MessageBox(this.getSite().getShell(),
-					SWT.ICON_WARNING | SWT.YES | SWT.NO);
+			final MessageBox messageBox = new MessageBox(this.getSite()
+					.getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 			messageBox.setText("Unsaved NAMS-Editors!");
 			messageBox
 					.setMessage("You still have unsaved changes in NAMS-Editors."
@@ -112,100 +220,16 @@ public class SyncronizeView extends ViewPart {
 							+ "Do you want to review your changes before continuing?");
 			if (messageBox.open() == SWT.YES) {
 				// The User likes to check his changes.
-//				System.out
-//						.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): false");
+				// System.out
+				// .println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding():
+				// false");
 				return false;
 			}
 		}
-//		System.out
-//				.println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding(): true");
+		// System.out
+		// .println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding():
+		// true");
 		return true;
-	}
-
-	protected synchronized void doSynchronize() {
-		appendStatusText("Beginning synchronization...");
-
-		try {
-			synchronizeService
-					.sychronizeAlarmSystem(new SynchronizeService.Callback() {
-						public void bereiteSynchronisationVor() {
-							appendStatusText("Preparing synchronization...\n");
-						}
-
-						public void fehlerBeimVorbereitenDerSynchronisation(
-								Throwable t) {
-							appendStatusText(
-									"Failed to prepare synchronization.\nReason:",
-									t);
-							buttonFreigben();
-						}
-
-						volatile Boolean result = null;
-
-						public boolean pruefeObSynchronisationAusgefuehrtWerdenDarf() {
-							appendStatusText("Looking for unsaved changes...");
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									result = lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding();
-								}
-							});
-							while (result == null)
-								Thread.yield();
-							appendStatusText("Done.\n");
-							return result.booleanValue();
-						}
-
-						public void sendeNachrichtAnHintergrundSystem() {
-							appendStatusText("Sending sychronization request to back-end-system...\n");
-						}
-
-						public void sendenDerNachrichtAnHintergrundSystemFehlgeschalgen(
-								Throwable t) {
-							appendStatusText(
-									"Failed to send sychronization request to back-end-system.\nReason:",
-									t);
-							buttonFreigben();
-						}
-
-						public void synchronisationAbgebrochen() {
-							appendStatusText("Sychronization has been canceled.\n");
-							buttonFreigben();
-						}
-
-						public void synchronisationsDurchHintergrundsystemsErfolgreich() {
-							appendStatusText("\n\nSynchronization successfully finished!");
-							buttonFreigben();
-						}
-
-						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
-								String fehlertext) {
-							appendStatusText("Back-end-system reporting failure of sychronization.\nReported reason: "
-									+ fehlertext);
-							buttonFreigben();
-						}
-
-						private void buttonFreigben() {
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									syncButton.setSelection(false);
-								}
-							});
-						}
-
-						public void wartetAufAntowrtDesHintergrundSystems() {
-							appendStatusText("Waiting for sychronization commitment to back-end-system...\n");
-						}
-
-					});
-		} catch (Throwable t) {
-			appendStatusText("\n\nSynchronization failed!\nReason: ", t);
-		}
-
-		// Display.getDefault().asyncExec(new Runnable() {
-		// public void run() {
-		// syncButton.setSelection(false);
-		// }
-		// });
 	}
 
 	private void appendStatusText(final String text) {
@@ -220,24 +244,18 @@ public class SyncronizeView extends ViewPart {
 	}
 
 	private void appendStatusText(final String text, final Throwable t) {
-		appendStatusText(text);
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(stringWriter);
+		this.appendStatusText(text);
+		final StringWriter stringWriter = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(stringWriter);
 		t.printStackTrace(printWriter);
 		printWriter.flush();
 		stringWriter.flush();
-		appendStatusText(stringWriter.toString());
+		this.appendStatusText(stringWriter.toString());
 		printWriter.close();
 		try {
 			stringWriter.close();
-		} catch (IOException e) { // Ignored!
+		} catch (final IOException e) { // Ignored!
 		}
-	}
-
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

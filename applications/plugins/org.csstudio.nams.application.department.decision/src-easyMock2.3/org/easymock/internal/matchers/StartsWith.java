@@ -14,12 +14,12 @@ public class StartsWith implements IArgumentMatcher {
 		this.prefix = prefix;
 	}
 
+	public void appendTo(final StringBuffer buffer) {
+		buffer.append("startsWith(\"" + this.prefix + "\")");
+	}
+
 	public boolean matches(final Object actual) {
 		return (actual instanceof String)
 				&& ((String) actual).startsWith(this.prefix);
-	}
-
-	public void appendTo(final StringBuffer buffer) {
-		buffer.append("startsWith(\"" + this.prefix + "\")");
 	}
 }

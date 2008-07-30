@@ -7,23 +7,27 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 
 public class SelectionDragSourceListener implements DragSourceListener {
-	
+
 	private final Viewer viewer;
-	public SelectionDragSourceListener(Viewer viewer) {
+
+	public SelectionDragSourceListener(final Viewer viewer) {
 		this.viewer = viewer;
 	}
-	
-	public void dragFinished(DragSourceEvent event) {
+
+	public void dragFinished(final DragSourceEvent event) {
 		LocalSelectionTransfer.getTransfer().setSelection(null);
 		LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
 	}
-	public void dragSetData(DragSourceEvent event) {
+
+	public void dragSetData(final DragSourceEvent event) {
 		event.data = LocalSelectionTransfer.getTransfer().getSelection();
 	}
-	public void dragStart(DragSourceEvent event) {
-		ISelection selection = viewer.getSelection();
+
+	public void dragStart(final DragSourceEvent event) {
+		final ISelection selection = this.viewer.getSelection();
 		event.doit = !selection.isEmpty();
 		LocalSelectionTransfer.getTransfer().setSelection(selection);
-		LocalSelectionTransfer.getTransfer().setSelectionSetTime(event.time & 0xFFFF);
+		LocalSelectionTransfer.getTransfer().setSelectionSetTime(
+				event.time & 0xFFFF);
 	}
 }

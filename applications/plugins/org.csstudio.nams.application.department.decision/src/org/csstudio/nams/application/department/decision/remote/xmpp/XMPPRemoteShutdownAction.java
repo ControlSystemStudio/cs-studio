@@ -20,6 +20,22 @@ public class XMPPRemoteShutdownAction implements IAction {
 	private static Logger logger;
 	private static RemotelyStoppable thingToBeStopped;
 
+	/**
+	 * Injection of logger. Note: This method have to be called before any
+	 * instance of this class is created!
+	 */
+	public static void staticInject(final Logger logger) {
+		XMPPRemoteShutdownAction.logger = logger;
+	}
+
+	/**
+	 * Injection of stoppable thing. Note: This method have to be called before
+	 * any instance of this class is created!
+	 */
+	public static void staticInject(final RemotelyStoppable thingToBeStopped) {
+		XMPPRemoteShutdownAction.thingToBeStopped = thingToBeStopped;
+	}
+
 	public XMPPRemoteShutdownAction() {
 		if (XMPPRemoteShutdownAction.logger == null) {
 			throw new RuntimeException(
@@ -43,12 +59,12 @@ public class XMPPRemoteShutdownAction implements IAction {
 	public Object run(final Object param) {
 		Contract.requireNotNull("param", param);
 		Contract.require(param instanceof Map, "param instanceof Map");
-		final Map<Object, Object> paramMap = castToMap(param);
+		final Map<Object, Object> paramMap = this.castToMap(param);
 		Contract.require(paramMap.containsKey("authorisation"),
 				"((Map)param).containsKey(\"authorisation\")");
 
-		String value = paramMap.get("authorisation").toString();
-		String[] valueParts = value.split("=");
+		final String value = paramMap.get("authorisation").toString();
+		final String[] valueParts = value.split("=");
 
 		if (valueParts.length == 2) {
 			if (XMPPLoginCallbackHandler.USER.equals(valueParts[0])) {
@@ -56,36 +72,20 @@ public class XMPPRemoteShutdownAction implements IAction {
 					XMPPRemoteShutdownAction.thingToBeStopped
 							.stopRemotely(XMPPRemoteShutdownAction.logger);
 					XMPPRemoteShutdownAction.logger.logInfoMessage(this,
-							ACTION_LOGIN_SUCCEDED);
-					return ACTION_LOGIN_SUCCEDED;
+							XMPPRemoteShutdownAction.ACTION_LOGIN_SUCCEDED);
+					return XMPPRemoteShutdownAction.ACTION_LOGIN_SUCCEDED;
 				}
 			}
 		}
 
 		XMPPRemoteShutdownAction.logger.logWarningMessage(this,
-				ACTION_LOGIN_FAILED);
-		return ACTION_LOGIN_FAILED;
+				XMPPRemoteShutdownAction.ACTION_LOGIN_FAILED);
+		return XMPPRemoteShutdownAction.ACTION_LOGIN_FAILED;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<Object, Object> castToMap(Object param) {
+	private Map<Object, Object> castToMap(final Object param) {
 		return (Map) param;
-	}
-
-	/**
-	 * Injection of logger. Note: This method have to be called before any
-	 * instance of this class is created!
-	 */
-	public static void staticInject(Logger logger) {
-		XMPPRemoteShutdownAction.logger = logger;
-	}
-
-	/**
-	 * Injection of stoppable thing. Note: This method have to be called before
-	 * any instance of this class is created!
-	 */
-	public static void staticInject(RemotelyStoppable thingToBeStopped) {
-		XMPPRemoteShutdownAction.thingToBeStopped = thingToBeStopped;
 	}
 
 }

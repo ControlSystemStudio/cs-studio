@@ -78,14 +78,14 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	 * @param historyService
 	 */
 	public Sachbearbeiter(
-			ExecutionService executionService,
-			String nameDesSachbearbeiters,
-			Eingangskorb<Vorgangsmappe> eingangskorbFuerNeueVorgangsmappen,
-			Eingangskorb<Terminnotiz> eingangskorbFuerTerminnotizen,
-			Zwischenablagekorb<Vorgangsmappe> ablagekorbFuerOffeneVorgaenge,
-			Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz,
-			Ausgangskorb<Vorgangsmappe> ausgangskorbFuerBearbeiteteVorgangsmappen,
-			Regelwerk regelwerk
+			final ExecutionService executionService,
+			final String nameDesSachbearbeiters,
+			final Eingangskorb<Vorgangsmappe> eingangskorbFuerNeueVorgangsmappen,
+			final Eingangskorb<Terminnotiz> eingangskorbFuerTerminnotizen,
+			final Zwischenablagekorb<Vorgangsmappe> ablagekorbFuerOffeneVorgaenge,
+			final Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz,
+			final Ausgangskorb<Vorgangsmappe> ausgangskorbFuerBearbeiteteVorgangsmappen,
+			final Regelwerk regelwerk
 	// ,
 	// HistoryService historyService
 	) {
@@ -102,7 +102,8 @@ class Sachbearbeiter implements Arbeitsfaehig {
 
 		this.achteAufVorgangsmappenEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(
 				new DokumentenBearbeiter<Vorgangsmappe>() {
-					public void bearbeiteVorgang(Vorgangsmappe aeltestenEingang)
+					public void bearbeiteVorgang(
+							final Vorgangsmappe aeltestenEingang)
 							throws InterruptedException {
 						internerEingangskorb.ablegen(aeltestenEingang);
 					}
@@ -110,7 +111,8 @@ class Sachbearbeiter implements Arbeitsfaehig {
 
 		this.achteAufTerminnotizEingaenge = new DokumentVerbraucherArbeiter<Terminnotiz>(
 				new DokumentenBearbeiter<Terminnotiz>() {
-					public void bearbeiteVorgang(Terminnotiz aeltestenEingang)
+					public void bearbeiteVorgang(
+							final Terminnotiz aeltestenEingang)
 							throws InterruptedException {
 						internerEingangskorb.ablegen(aeltestenEingang);
 					}
@@ -118,7 +120,8 @@ class Sachbearbeiter implements Arbeitsfaehig {
 
 		this.achteAufInterneEingaenge = new DokumentVerbraucherArbeiter<Ablagefaehig>(
 				new DokumentenBearbeiter<Ablagefaehig>() {
-					public void bearbeiteVorgang(Ablagefaehig aeltestenEingang)
+					public void bearbeiteVorgang(
+							final Ablagefaehig aeltestenEingang)
 							throws InterruptedException {
 						Sachbearbeiter.this
 								.bearbeiteVorgangBeimSachbearbeiter(aeltestenEingang);
@@ -126,63 +129,79 @@ class Sachbearbeiter implements Arbeitsfaehig {
 				}, internerEingangskorb);
 	}
 
-	// protected 4 testing
-	protected void bearbeiteVorgangBeimSachbearbeiter(Ablagefaehig eingang)
-			throws InterruptedException {
-		if (eingang instanceof Vorgangsmappe) {
-			Vorgangsmappe vorgangsmappe = (Vorgangsmappe) eingang;
-			// Prüfe ob Alarmnachricht was mit Offenenvorgaengen zu tun hat
-			boolean alarmNachrichtHatAuswirkungAufOffeneVorgaenge = this
-					.bearbeiteOffeneVorgaenge(vorgangsmappe);
+	/**
+	 * Beendet die Arbeit.
+	 */
+	public void beendeArbeit() {
+		this.achteAufVorgangsmappenEingaenge.stopWorking();
+		this.achteAufTerminnotizEingaenge.stopWorking();
+		this.achteAufInterneEingaenge.stopWorking();
 
-			// Alarmnachricht mit neuer Pruefliste prüfen
-			if (!alarmNachrichtHatAuswirkungAufOffeneVorgaenge) {
-				this.bearbeiteNeuenVorgang(vorgangsmappe);
-			}
-		} else if (eingang instanceof Terminnotiz) {
-			// Terminnotiz bearbeiten
-			Terminnotiz notiz = (Terminnotiz) eingang;
-			this.bearbeiteTerminNotiz(notiz);
-		} else
-			throw new RuntimeException(
-					"Eingang kann nicht bearbeitet werden! (einfang ist weder Vorgangsmappe noch Terminnotiz");
+		// TODO Sende offene Vorgänge...
 	}
 
-	protected void bearbeiteTerminNotiz(Terminnotiz notiz)
+	/**
+	 * Beginnt mit der Arbeit.
+	 */
+	public void beginneArbeit() {
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
+				this.achteAufVorgangsmappenEingaenge);
+		while (!this.achteAufVorgangsmappenEingaenge.isCurrentlyRunning()) {
+			Thread.yield();
+		}
+
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
+				this.achteAufTerminnotizEingaenge);
+		while (!this.achteAufTerminnotizEingaenge.isCurrentlyRunning()) {
+			Thread.yield();
+		}
+
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
+				this.achteAufInterneEingaenge);
+		while (!this.achteAufInterneEingaenge.isCurrentlyRunning()) {
+			Thread.yield();
+		}
+	}
+
+	public String gibName() {
+		return this.nameDesSachbearbeiters;
+	}
+
+	public boolean istAmArbeiten() {
+		return this.achteAufInterneEingaenge.isCurrentlyRunning()
+				&& this.achteAufVorgangsmappenEingaenge.isCurrentlyRunning()
+				&& this.achteAufTerminnotizEingaenge.isCurrentlyRunning();
+	}
+
+	protected void bearbeiteNeuenVorgang(final Vorgangsmappe vorgangsmappe)
 			throws InterruptedException {
-		Millisekunden zeitSeitLetzterBearbeitung = notiz.gibWartezeit();
-		Vorgangsmappenkennung mappenKennung = notiz.gibVorgangsmappenkennung();
+		final AlarmNachricht neueAlarmNachricht = vorgangsmappe
+				.gibAusloesendeAlarmNachrichtDiesesVorganges();
 
-		Iterator<Vorgangsmappe> mappenIterator = this.ablagekorbFuerOffeneVorgaenge
-				.iterator();
-		while (mappenIterator.hasNext()) {
-			Vorgangsmappe offenerVorgang = mappenIterator.next();
-			if (offenerVorgang.gibMappenkennung().equals(mappenKennung)) {
-				regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang
-						.gibPruefliste(), zeitSeitLetzterBearbeitung);
-				if (this.pruefungAbgeschlossen(offenerVorgang.gibPruefliste()
-						.gesamtErgebnis())) {
+		vorgangsmappe.setzePruefliste(this.regelwerk.gibNeueLeerePruefliste());
+		this.regelwerk.pruefeNachrichtErstmalig(neueAlarmNachricht,
+				vorgangsmappe.gibPruefliste());
 
-					// FIXME History nicht in AlarmNachrichten loggen. Soll in
-					// die Application!
-					// historyService.logTimeOutForTimeBased(regelwerk.gibRegelwerkskennung(),
-					// offenerVorgang);
+		if (this.pruefungAbgeschlossen(vorgangsmappe.gibPruefliste()
+				.gesamtErgebnis())) {
+			vorgangsmappe.pruefungAbgeschlossenDurch(vorgangsmappe
+					.gibMappenkennung());
+			this.ausgangkorb.ablegen(vorgangsmappe);
 
-					offenerVorgang.abgeschlossenDurchTimeOut();
-					this.ausgangkorb.ablegen(offenerVorgang);
+			// FIXME History Eintrag erstellen. Klaeren ob hier oder in dem
+			// PreferenceServiceActivator.
 
-					mappenIterator.remove();
-				} else {
-					Millisekunden zeitBisZumErneutenFragen = offenerVorgang
-							.gibPruefliste()
-							.gibMillisekundenBisZurNaechstenPruefung();
-					Terminnotiz terminnotiz = Terminnotiz.valueOf(
-							offenerVorgang.gibMappenkennung(),
-							zeitBisZumErneutenFragen,
-							this.nameDesSachbearbeiters);
-					this.ausgangskorbZurAssistenz.ablegen(terminnotiz);
-				}
-			}
+		} else {
+			this.ablagekorbFuerOffeneVorgaenge.ablegen(vorgangsmappe);
+			final Millisekunden zeitBisZumErneutenFragen = vorgangsmappe
+					.gibPruefliste().gibMillisekundenBisZurNaechstenPruefung();
+			final Terminnotiz terminnotiz = Terminnotiz.valueOf(vorgangsmappe
+					.gibMappenkennung(), zeitBisZumErneutenFragen,
+					this.nameDesSachbearbeiters);
+			this.ausgangskorbZurAssistenz.ablegen(terminnotiz);
 		}
 	}
 
@@ -197,21 +216,22 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	 *         Vorgangsmappen hat, andernfalls false.
 	 * @throws InterruptedException
 	 */
-	protected boolean bearbeiteOffeneVorgaenge(Vorgangsmappe vorgangsmappe)
+	protected boolean bearbeiteOffeneVorgaenge(final Vorgangsmappe vorgangsmappe)
 			throws InterruptedException {
 
-		AlarmNachricht neueAlarmNachricht = vorgangsmappe
+		final AlarmNachricht neueAlarmNachricht = vorgangsmappe
 				.gibAusloesendeAlarmNachrichtDiesesVorganges();
 
 		boolean alarmNachrichtHatAuswirkungAufOffeneVorgaenge = false;
-		Iterator<Vorgangsmappe> iterator = ablagekorbFuerOffeneVorgaenge
+		final Iterator<Vorgangsmappe> iterator = this.ablagekorbFuerOffeneVorgaenge
 				.iterator();
 		while (iterator.hasNext()) {
-			Vorgangsmappe offenerVorgang = iterator.next();
-			Pruefliste altePruefliste = offenerVorgang.gibPruefliste();
+			final Vorgangsmappe offenerVorgang = iterator.next();
+			final Pruefliste altePruefliste = offenerVorgang.gibPruefliste();
 			altePruefliste.setzeAufNichtVeraendert();
-			regelwerk.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					neueAlarmNachricht, altePruefliste);
+			this.regelwerk
+					.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+							neueAlarmNachricht, altePruefliste);
 
 			if (altePruefliste.hatSichGeaendert()) {
 				if (this.pruefungAbgeschlossen(altePruefliste.gesamtErgebnis())) {
@@ -237,7 +257,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 			// neue Vorgangsmappe auch in den Ausgangskorb (zum
 			// loggen)
 			// DummyPruefliste ersetzen
-			vorgangsmappe.setzePruefliste(regelwerk
+			vorgangsmappe.setzePruefliste(this.regelwerk
 					.gibDummyPrueflisteNichtSenden());
 			this.ausgangkorb.ablegen(vorgangsmappe);
 		}
@@ -245,88 +265,75 @@ class Sachbearbeiter implements Arbeitsfaehig {
 		return alarmNachrichtHatAuswirkungAufOffeneVorgaenge;
 	}
 
-	protected void bearbeiteNeuenVorgang(Vorgangsmappe vorgangsmappe)
+	protected void bearbeiteTerminNotiz(final Terminnotiz notiz)
 			throws InterruptedException {
-		AlarmNachricht neueAlarmNachricht = vorgangsmappe
-				.gibAusloesendeAlarmNachrichtDiesesVorganges();
+		final Millisekunden zeitSeitLetzterBearbeitung = notiz.gibWartezeit();
+		final Vorgangsmappenkennung mappenKennung = notiz
+				.gibVorgangsmappenkennung();
 
-		vorgangsmappe.setzePruefliste(regelwerk.gibNeueLeerePruefliste());
-		regelwerk.pruefeNachrichtErstmalig(neueAlarmNachricht, vorgangsmappe
-				.gibPruefliste());
+		final Iterator<Vorgangsmappe> mappenIterator = this.ablagekorbFuerOffeneVorgaenge
+				.iterator();
+		while (mappenIterator.hasNext()) {
+			final Vorgangsmappe offenerVorgang = mappenIterator.next();
+			if (offenerVorgang.gibMappenkennung().equals(mappenKennung)) {
+				this.regelwerk.pruefeNachrichtAufTimeOuts(offenerVorgang
+						.gibPruefliste(), zeitSeitLetzterBearbeitung);
+				if (this.pruefungAbgeschlossen(offenerVorgang.gibPruefliste()
+						.gesamtErgebnis())) {
 
-		if (this.pruefungAbgeschlossen(vorgangsmappe.gibPruefliste()
-				.gesamtErgebnis())) {
-			vorgangsmappe.pruefungAbgeschlossenDurch(vorgangsmappe
-					.gibMappenkennung());
-			this.ausgangkorb.ablegen(vorgangsmappe);
+					// FIXME History nicht in AlarmNachrichten loggen. Soll in
+					// die Application!
+					// historyService.logTimeOutForTimeBased(regelwerk.gibRegelwerkskennung(),
+					// offenerVorgang);
 
-			// FIXME History Eintrag erstellen. Klaeren ob hier oder in dem
-			// PreferenceServiceActivator.
+					offenerVorgang.abgeschlossenDurchTimeOut();
+					this.ausgangkorb.ablegen(offenerVorgang);
 
-		} else {
-			this.ablagekorbFuerOffeneVorgaenge.ablegen(vorgangsmappe);
-			Millisekunden zeitBisZumErneutenFragen = vorgangsmappe
-					.gibPruefliste().gibMillisekundenBisZurNaechstenPruefung();
-			Terminnotiz terminnotiz = Terminnotiz.valueOf(vorgangsmappe
-					.gibMappenkennung(), zeitBisZumErneutenFragen,
-					this.nameDesSachbearbeiters);
-			this.ausgangskorbZurAssistenz.ablegen(terminnotiz);
+					mappenIterator.remove();
+				} else {
+					final Millisekunden zeitBisZumErneutenFragen = offenerVorgang
+							.gibPruefliste()
+							.gibMillisekundenBisZurNaechstenPruefung();
+					final Terminnotiz terminnotiz = Terminnotiz.valueOf(
+							offenerVorgang.gibMappenkennung(),
+							zeitBisZumErneutenFragen,
+							this.nameDesSachbearbeiters);
+					this.ausgangskorbZurAssistenz.ablegen(terminnotiz);
+				}
+			}
 		}
 	}
 
-	private boolean pruefungAbgeschlossen(WeiteresVersandVorgehen gesamtErgebnis) {
+	// protected 4 testing
+	protected void bearbeiteVorgangBeimSachbearbeiter(final Ablagefaehig eingang)
+			throws InterruptedException {
+		if (eingang instanceof Vorgangsmappe) {
+			final Vorgangsmappe vorgangsmappe = (Vorgangsmappe) eingang;
+			// Prüfe ob Alarmnachricht was mit Offenenvorgaengen zu tun hat
+			boolean alarmNachrichtHatAuswirkungAufOffeneVorgaenge = this
+					.bearbeiteOffeneVorgaenge(vorgangsmappe);
+
+			// Alarmnachricht mit neuer Pruefliste prüfen
+			if (!alarmNachrichtHatAuswirkungAufOffeneVorgaenge) {
+				this.bearbeiteNeuenVorgang(vorgangsmappe);
+			}
+		} else if (eingang instanceof Terminnotiz) {
+			// Terminnotiz bearbeiten
+			final Terminnotiz notiz = (Terminnotiz) eingang;
+			this.bearbeiteTerminNotiz(notiz);
+		} else {
+			throw new RuntimeException(
+					"Eingang kann nicht bearbeitet werden! (einfang ist weder Vorgangsmappe noch Terminnotiz");
+		}
+	}
+
+	private boolean pruefungAbgeschlossen(
+			final WeiteresVersandVorgehen gesamtErgebnis) {
 		switch (gesamtErgebnis) {
 		case VERSENDEN:
 		case NICHT_VERSENDEN:
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Beginnt mit der Arbeit.
-	 */
-	public void beginneArbeit() {
-		this.executionService.executeAsynchronsly(
-				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
-				achteAufVorgangsmappenEingaenge);
-		while(!achteAufVorgangsmappenEingaenge.isCurrentlyRunning()) {
-			Thread.yield();
-		}
-		
-		this.executionService.executeAsynchronsly(
-				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
-				achteAufTerminnotizEingaenge);
-		while(!achteAufTerminnotizEingaenge.isCurrentlyRunning()) {
-			Thread.yield();
-		}
-		
-		this.executionService.executeAsynchronsly(
-				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
-				achteAufInterneEingaenge);
-		while(!achteAufInterneEingaenge.isCurrentlyRunning()) {
-			Thread.yield();
-		}
-	}
-
-	public boolean istAmArbeiten() {
-		return achteAufInterneEingaenge.isCurrentlyRunning()
-				&& achteAufVorgangsmappenEingaenge.isCurrentlyRunning()
-				&& achteAufTerminnotizEingaenge.isCurrentlyRunning();
-	}
-
-	/**
-	 * Beendet die Arbeit.
-	 */
-	public void beendeArbeit() {
-		this.achteAufVorgangsmappenEingaenge.stopWorking();
-		this.achteAufTerminnotizEingaenge.stopWorking();
-		this.achteAufInterneEingaenge.stopWorking();
-
-		// TODO Sende offene Vorgänge...
-	}
-
-	public String gibName() {
-		return this.nameDesSachbearbeiters;
 	}
 }

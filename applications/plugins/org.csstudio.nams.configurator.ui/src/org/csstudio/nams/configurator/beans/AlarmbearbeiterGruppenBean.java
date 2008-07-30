@@ -4,7 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class AlarmbearbeiterGruppenBean extends
-		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> implements IReceiverBean{
+		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> implements
+		IReceiverBean {
 
 	public static enum PropertyNames {
 		groupID, name, minGroupMember, timeOutSec, active, users
@@ -18,147 +19,163 @@ public class AlarmbearbeiterGruppenBean extends
 	private List<User2GroupBean> users = new LinkedList<User2GroupBean>();
 
 	public AlarmbearbeiterGruppenBean() {
-		groupID = -1;
-	}
-
-	public int getGroupID() {
-		return groupID;
-	}
-
-	public void setGroupID(int groupID) {
-		int oldValue = getGroupID();
-		this.groupID = groupID;
-
-		pcs.firePropertyChange(PropertyNames.groupID.name(), oldValue, groupID);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		String oldValue = getName();
-		this.name = name;
-		pcs.firePropertyChange(PropertyNames.name.name(), oldValue, getName());
-	}
-
-	public short getMinGroupMember() {
-		return minGroupMember;
-	}
-
-	public void setMinGroupMember(short minGroupMember) {
-		short oldValue = minGroupMember;
-		this.minGroupMember = minGroupMember;
-		pcs.firePropertyChange(PropertyNames.minGroupMember.name(), oldValue,
-				minGroupMember);
-	}
-
-	public int getTimeOutSec() {
-		return timeOutSec;
-	}
-
-	public void setTimeOutSec(int timeOutSec) {
-		int oldValue = this.timeOutSec;
-		this.timeOutSec = timeOutSec;
-		pcs.firePropertyChange(PropertyNames.timeOutSec.name(), oldValue,
-				timeOutSec);
-	}
-
-	public boolean isActive() {
-		return isActive;
-	}
-
-	public void setActive(boolean isActive) {
-		boolean oldValue = isActive();
-		this.isActive = isActive;
-		pcs.firePropertyChange(PropertyNames.active.name(), oldValue,
-				isActive());
-	}
-
-	public String getDisplayName() {
-		return getName() == null ? "(ohne Name)" : getName();
+		this.groupID = -1;
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + groupID;
-		result = prime * result + (isActive ? 1231 : 1237);
-		result = prime * result + minGroupMember;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + timeOutSec;
-		result = prime * result + ((users == null) ? 0 : users.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (this.getClass() != obj.getClass()) {
 			return false;
+		}
 		final AlarmbearbeiterGruppenBean other = (AlarmbearbeiterGruppenBean) obj;
-		if (groupID != other.groupID)
+		if (this.groupID != other.groupID) {
 			return false;
-		if (isActive != other.isActive)
+		}
+		if (this.isActive != other.isActive) {
 			return false;
-		if (minGroupMember != other.minGroupMember)
+		}
+		if (this.minGroupMember != other.minGroupMember) {
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		}
+		if (this.name == null) {
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!this.name.equals(other.name)) {
 			return false;
-		if (timeOutSec != other.timeOutSec)
+		}
+		if (this.timeOutSec != other.timeOutSec) {
 			return false;
-		if (users == null) {
-			if (other.users != null)
+		}
+		if (this.users == null) {
+			if (other.users != null) {
 				return false;
-		} else if (!users.equals(other.users))
+			}
+		} else if (!this.users.equals(other.users)) {
 			return false;
+		}
 		return true;
 	}
 
-	@Override
-	protected void doUpdateState(AlarmbearbeiterGruppenBean bean) {
-		setActive(bean.isActive());
-		setGroupID(bean.getGroupID());
-		setMinGroupMember(bean.getMinGroupMember());
-		setName(bean.getName());
-		setTimeOutSec(bean.getTimeOutSec());
-		List<User2GroupBean> newList = new LinkedList<User2GroupBean>();
-		for (User2GroupBean mapBean : bean.getUsers()) {
-			newList.add(mapBean.getClone());
-		}
-		setUsers(newList);
+	public String getDisplayName() {
+		return this.getName() == null ? "(ohne Name)" : this.getName();
+	}
+
+	public int getGroupID() {
+		return this.groupID;
 	}
 
 	public int getID() {
 		return this.getGroupID();
 	}
 
-	@Override
-	public String toString() {
-		return getDisplayName();
+	public short getMinGroupMember() {
+		return this.minGroupMember;
 	}
 
-	public void setID(int id) {
-		setGroupID(id);
+	public String getName() {
+		return this.name;
+	}
+
+	public int getTimeOutSec() {
+		return this.timeOutSec;
 	}
 
 	public List<User2GroupBean> getUsers() {
-		return new LinkedList<User2GroupBean>(users);
+		return new LinkedList<User2GroupBean>(this.users);
 	}
 
-	public void setUsers(List<User2GroupBean> users) {
-		List<User2GroupBean> oldValue = this.users;
-//		this.users.clear();
-//		this.users.addAll(users);
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + this.groupID;
+		result = prime * result + (this.isActive ? 1231 : 1237);
+		result = prime * result + this.minGroupMember;
+		result = prime * result
+				+ ((this.name == null) ? 0 : this.name.hashCode());
+		result = prime * result + this.timeOutSec;
+		result = prime * result
+				+ ((this.users == null) ? 0 : this.users.hashCode());
+		return result;
+	}
+
+	public boolean isActive() {
+		return this.isActive;
+	}
+
+	public void setActive(final boolean isActive) {
+		final boolean oldValue = this.isActive();
+		this.isActive = isActive;
+		this.pcs.firePropertyChange(PropertyNames.active.name(), oldValue, this
+				.isActive());
+	}
+
+	public void setGroupID(final int groupID) {
+		final int oldValue = this.getGroupID();
+		this.groupID = groupID;
+
+		this.pcs.firePropertyChange(PropertyNames.groupID.name(), oldValue,
+				groupID);
+	}
+
+	public void setID(final int id) {
+		this.setGroupID(id);
+	}
+
+	public void setMinGroupMember(final short minGroupMember) {
+		final short oldValue = minGroupMember;
+		this.minGroupMember = minGroupMember;
+		this.pcs.firePropertyChange(PropertyNames.minGroupMember.name(),
+				oldValue, minGroupMember);
+	}
+
+	public void setName(final String name) {
+		final String oldValue = this.getName();
+		this.name = name;
+		this.pcs.firePropertyChange(PropertyNames.name.name(), oldValue, this
+				.getName());
+	}
+
+	public void setTimeOutSec(final int timeOutSec) {
+		final int oldValue = this.timeOutSec;
+		this.timeOutSec = timeOutSec;
+		this.pcs.firePropertyChange(PropertyNames.timeOutSec.name(), oldValue,
+				timeOutSec);
+	}
+
+	public void setUsers(final List<User2GroupBean> users) {
+		final List<User2GroupBean> oldValue = this.users;
+		// this.users.clear();
+		// this.users.addAll(users);
 		this.users = users;
-		pcs.firePropertyChange(PropertyNames.users.name(), oldValue, users);
+		this.pcs
+				.firePropertyChange(PropertyNames.users.name(), oldValue, users);
+	}
+
+	@Override
+	public String toString() {
+		return this.getDisplayName();
+	}
+
+	@Override
+	protected void doUpdateState(final AlarmbearbeiterGruppenBean bean) {
+		this.setActive(bean.isActive());
+		this.setGroupID(bean.getGroupID());
+		this.setMinGroupMember(bean.getMinGroupMember());
+		this.setName(bean.getName());
+		this.setTimeOutSec(bean.getTimeOutSec());
+		final List<User2GroupBean> newList = new LinkedList<User2GroupBean>();
+		for (final User2GroupBean mapBean : bean.getUsers()) {
+			newList.add(mapBean.getClone());
+		}
+		this.setUsers(newList);
 	}
 
 }

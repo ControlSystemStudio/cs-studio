@@ -13,19 +13,20 @@ public class AlarmtopicView extends AbstractNamsView {
 	public static final String ID = "org.csstudio.nams.configurator.alarmtopic";
 
 	@Override
-	protected IConfigurationBean[] getTableContent() {
-		return getConfigurationBeanService().getAlarmTopicBeans();
+	protected Class<? extends IConfigurationBean> getBeanClass() {
+		return AlarmtopicBean.class;
 	}
-	
+
+	@Override
+	protected IConfigurationBean[] getTableContent() {
+		return AbstractNamsView.getConfigurationBeanService()
+				.getAlarmTopicBeans();
+	}
+
 	@Override
 	protected void initDragAndDrop(final FilterableBeanList filterableBeanList) {
 		filterableBeanList.getTable().addDragSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new SelectionDragSourceListener(filterableBeanList.getTable()));
-	}
-	
-	@Override
-	protected Class<? extends IConfigurationBean> getBeanClass() {
-		return AlarmtopicBean.class;
 	}
 }

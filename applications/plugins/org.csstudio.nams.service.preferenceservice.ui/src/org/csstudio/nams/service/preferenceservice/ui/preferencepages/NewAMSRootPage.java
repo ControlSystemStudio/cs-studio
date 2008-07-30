@@ -11,15 +11,16 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class NewAMSRootPage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	@Override
-	protected Control createContents(Composite parent) {
-		Label label = new Label(parent, SWT.WRAP);
-		label.setText("On the sub-pages of this node you may configure the settings of\nthe new alarm-management-system.");
-		return label;
+	public void init(final IWorkbench workbench) {
+		this.noDefaultAndApplyButton();
 	}
 
-	public void init(IWorkbench workbench) {
-		noDefaultAndApplyButton();
+	@Override
+	protected Control createContents(final Composite parent) {
+		final Label label = new Label(parent, SWT.WRAP);
+		label
+				.setText("On the sub-pages of this node you may configure the settings of\nthe new alarm-management-system.");
+		return label;
 	}
 
 }

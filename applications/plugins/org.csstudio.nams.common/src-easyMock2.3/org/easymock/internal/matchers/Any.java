@@ -14,11 +14,11 @@ public class Any implements IArgumentMatcher {
 
 	}
 
-	public boolean matches(final Object actual) {
-		return true;
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("<any>");
+	}
+
+	public boolean matches(final Object actual) {
+		return true;
 	}
 }

@@ -10,6 +10,15 @@ package org.easymock;
  */
 public interface IMocksControl extends IExpectationSetters {
 	/**
+	 * Switches order checking on and off.
+	 * 
+	 * @param state
+	 *            <code>true</code> switches order checking on,
+	 *            <code>false</code> switches it off.
+	 */
+	void checkOrder(boolean state);
+
+	/**
 	 * Creates a mock object that implements the given interface.
 	 * 
 	 * @param <T>
@@ -38,26 +47,17 @@ public interface IMocksControl extends IExpectationSetters {
 	<T> T createMock(String name, Class<T> toMock);
 
 	/**
-	 * Removes all expectations for the mock objects of this control.
-	 */
-	void reset();
-
-	/**
 	 * Switches the control from record mode to replay mode.
 	 */
 	void replay();
 
 	/**
+	 * Removes all expectations for the mock objects of this control.
+	 */
+	void reset();
+
+	/**
 	 * Verifies that all expectations were met.
 	 */
 	void verify();
-
-	/**
-	 * Switches order checking on and off.
-	 * 
-	 * @param state
-	 *            <code>true</code> switches order checking on,
-	 *            <code>false</code> switches it off.
-	 */
-	void checkOrder(boolean state);
 }

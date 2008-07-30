@@ -5,37 +5,41 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 
 public abstract class AbstractTimeBasedVersandRegel implements VersandRegel {
-	
-	public AbstractTimeBasedVersandRegel(VersandRegel ausloesungsregel,
-			VersandRegel bestaetigungsregel, Millisekunden timeOut){
-				this.ausloesungsregel = ausloesungsregel;
-				this.bestaetigungsregel = bestaetigungsregel;
-				this.timeOut = timeOut;
-				internePruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
-						ausloesungsregel);
-	}
-	
+
 	protected final VersandRegel ausloesungsregel;
+
 	protected final VersandRegel bestaetigungsregel;
 	protected final Millisekunden timeOut;
 	protected Pruefliste internePruefliste;
-	
-	public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
-			Pruefliste ergebnisListe) {
-		ausloesungsregel.pruefeNachrichtErstmalig(nachricht, internePruefliste);
-		if (internePruefliste.gibErgebnisFuerRegel(ausloesungsregel) == RegelErgebnis.ZUTREFFEND) {
+
+	public AbstractTimeBasedVersandRegel(final VersandRegel ausloesungsregel,
+			final VersandRegel bestaetigungsregel, final Millisekunden timeOut) {
+		this.ausloesungsregel = ausloesungsregel;
+		this.bestaetigungsregel = bestaetigungsregel;
+		this.timeOut = timeOut;
+		this.internePruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
+				ausloesungsregel);
+	}
+
+	public Millisekunden pruefeNachrichtErstmalig(
+			final AlarmNachricht nachricht, final Pruefliste ergebnisListe) {
+		this.ausloesungsregel.pruefeNachrichtErstmalig(nachricht,
+				this.internePruefliste);
+		if (this.internePruefliste.gibErgebnisFuerRegel(this.ausloesungsregel) == RegelErgebnis.ZUTREFFEND) {
 			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
 					RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-			return timeOut;
+			return this.timeOut;
 		} else {
 			ergebnisListe.setzeErgebnisFuerRegelFallsVeraendert(this,
 					RegelErgebnis.NICHT_ZUTREFFEND);
 			return Millisekunden.valueOf(0);
 		}
 	}
-	
-//	protected void mayWriteToHistory(Pruefliste pruefliste, AlarmNachricht nachricht) {
-//		getHistoryService().logTimeOutForTimeBased(
-//				pruefliste.gibRegelwerkskennung().toString(), nachricht.toString(), toString());
-//	}
+
+	// protected void mayWriteToHistory(Pruefliste pruefliste, AlarmNachricht
+	// nachricht) {
+	// getHistoryService().logTimeOutForTimeBased(
+	// pruefliste.gibRegelwerkskennung().toString(), nachricht.toString(),
+	// toString());
+	// }
 }

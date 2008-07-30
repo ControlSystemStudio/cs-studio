@@ -7,18 +7,20 @@ import org.osgi.framework.BundleContext;
 
 public abstract class AbstractBundleActivator implements BundleActivator {
 
-	final public void start(BundleContext context) throws Exception {
-		Method bundleStartMethod = AnnotatedActivatorUtils.findAnnotatedMethod(this,
-				OSGiBundleActivationMethod.class);
+	final public void start(final BundleContext context) throws Exception {
+		final Method bundleStartMethod = AnnotatedActivatorUtils
+				.findAnnotatedMethod(this, OSGiBundleActivationMethod.class);
 
 		if (bundleStartMethod == null) {
-			throw new RuntimeException("No Activator-start-method present! (start-method has to be annotated with: @OSGiBundleActivationMethod)");
+			throw new RuntimeException(
+					"No Activator-start-method present! (start-method has to be annotated with: @OSGiBundleActivationMethod)");
 		}
 
-		RequestedParam[] requestedParams = AnnotatedActivatorUtils.getAllRequestedMethodParams(bundleStartMethod);
+		final RequestedParam[] requestedParams = AnnotatedActivatorUtils
+				.getAllRequestedMethodParams(bundleStartMethod);
 
 		// check is all requested params are valid...
-		for (RequestedParam requestedParam : requestedParams) {
+		for (final RequestedParam requestedParam : requestedParams) {
 			// currently only OSGiService injection is supported
 			if (!(RequestedParam.RequestType.OSGiServiceRequest
 					.equals(requestedParam.requestType) || RequestedParam.RequestType.ExecuteableExtensionRequest
@@ -31,7 +33,7 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		}
 
 		// check if optional return value is valid.
-		Class<?> returnType = bundleStartMethod.getReturnType();
+		final Class<?> returnType = bundleStartMethod.getReturnType();
 		if (!Void.TYPE.isAssignableFrom(returnType)) {
 			if (!OSGiServiceOffers.class.isAssignableFrom(returnType)) {
 				throw new RuntimeException(
@@ -42,14 +44,15 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		}
 
 		// INVOKE
-		Object[] paramValues = AnnotatedActivatorUtils.evaluateParamValues(context, requestedParams);
-		Object result = bundleStartMethod.invoke(this, paramValues);
+		final Object[] paramValues = AnnotatedActivatorUtils
+				.evaluateParamValues(context, requestedParams);
+		final Object result = bundleStartMethod.invoke(this, paramValues);
 
-		if (result != null
+		if ((result != null)
 				&& OSGiServiceOffers.class.isAssignableFrom(result.getClass())) {
-			OSGiServiceOffers offers = (OSGiServiceOffers) result;
-			for (Class<?> key : offers.keySet()) {
-				Object service = offers.get(key);
+			final OSGiServiceOffers offers = (OSGiServiceOffers) result;
+			for (final Class<?> key : offers.keySet()) {
+				final Object service = offers.get(key);
 				if (service == null) {
 					throw new RuntimeException(
 							"illegal service offer for type. " + key.getName()
@@ -60,15 +63,16 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		}
 	}
 
-	final public void stop(BundleContext context) throws Exception {
-		Method bundleSopMethod = AnnotatedActivatorUtils.findAnnotatedMethod(this,
-				OSGiBundleDeactivationMethod.class);
+	final public void stop(final BundleContext context) throws Exception {
+		final Method bundleSopMethod = AnnotatedActivatorUtils
+				.findAnnotatedMethod(this, OSGiBundleDeactivationMethod.class);
 
 		if (bundleSopMethod != null) {
-			RequestedParam[] requestedParams = AnnotatedActivatorUtils.getAllRequestedMethodParams(bundleSopMethod);
+			final RequestedParam[] requestedParams = AnnotatedActivatorUtils
+					.getAllRequestedMethodParams(bundleSopMethod);
 
 			// check is all requested params are valid...
-			for (RequestedParam requestedParam : requestedParams) {
+			for (final RequestedParam requestedParam : requestedParams) {
 				// currently only OSGiService injection is supported
 				if (!RequestedParam.RequestType.OSGiServiceRequest
 						.equals(requestedParam.requestType)) {
@@ -80,7 +84,7 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 			}
 
 			// check if return value is void.
-			Class<?> returnType = bundleSopMethod.getReturnType();
+			final Class<?> returnType = bundleSopMethod.getReturnType();
 			if (!Void.TYPE.isAssignableFrom(returnType)) {
 				throw new RuntimeException(
 						"Illegal return value of stop-method. "
@@ -89,7 +93,8 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 			}
 
 			// INVOKE
-			Object[] paramValues = AnnotatedActivatorUtils.evaluateParamValues(context, requestedParams);
+			final Object[] paramValues = AnnotatedActivatorUtils
+					.evaluateParamValues(context, requestedParams);
 			bundleSopMethod.invoke(this, paramValues);
 		}
 	}

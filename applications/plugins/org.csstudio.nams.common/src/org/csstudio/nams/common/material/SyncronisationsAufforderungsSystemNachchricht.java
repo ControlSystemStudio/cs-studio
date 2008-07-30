@@ -1,6 +1,7 @@
 package org.csstudio.nams.common.material;
 
-public class SyncronisationsAufforderungsSystemNachchricht implements SystemNachricht {
+public class SyncronisationsAufforderungsSystemNachchricht implements
+		SystemNachricht {
 
 	public boolean istSyncronisationsAufforderung() {
 		return true;

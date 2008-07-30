@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.nams.common.material.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 /**
  * Elements containing a database id should implement this interface.
@@ -30,8 +30,8 @@ public interface HoldsAnDatabaseId {
 	/**
 	 * Returns the database-id of this Value.
 	 * 
-	 * <strong>Pay attention:</strong> Please do never use this method
-	 * outside the DAOs or UI combos!
+	 * <strong>Pay attention:</strong> Please do never use this method outside
+	 * the DAOs or UI combos!
 	 */
 	short asDatabaseId();
 }

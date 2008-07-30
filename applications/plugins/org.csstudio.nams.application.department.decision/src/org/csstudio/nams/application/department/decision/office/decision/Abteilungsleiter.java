@@ -31,45 +31,44 @@ import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.wam.Automat;
 
-
 /**
  * Der Abteilungsleiter ist verantwortlich für die Bearbeitung von Nachrichten.
  */
 @Automat
 class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 		Arbeitsfaehig {
-	private DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufEingaenge;
+	private final DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufEingaenge;
 	private final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe;
 	private final ExecutionService executionService;
 
 	/**
-	 * Legt den Abteilungsleiter an, der die Alarmvorgänge an seine Sachbearbeiter verteilt.
+	 * Legt den Abteilungsleiter an, der die Alarmvorgänge an seine
+	 * Sachbearbeiter verteilt.
 	 * 
 	 * @param eingangskorbNeuerAlarmVorgaenge
 	 * @param sachbearbeiterEingangkoerbe
 	 */
-	public Abteilungsleiter(
-			ExecutionService executionService,
+	public Abteilungsleiter(final ExecutionService executionService,
 			final Eingangskorb<Vorgangsmappe> eingangskorbNeuerAlarmVorgaenge,
 			final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe) {
 		this.executionService = executionService;
 		this.sachbearbeiterEingangkoerbe = sachbearbeiterEingangkoerbe;
 
-		achteAufEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(
+		this.achteAufEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(
 				this, eingangskorbNeuerAlarmVorgaenge);
 	}
 
 	/**
 	 * Delegiert Vorgaende an die {@link Sachbearbeiter}.
 	 */
-	public void bearbeiteVorgang(Vorgangsmappe mappe) {
+	public void bearbeiteVorgang(final Vorgangsmappe mappe) {
 		// Nachricht kopieren.
-		for (Eingangskorb<Vorgangsmappe> eingangskorb : sachbearbeiterEingangkoerbe) {
-			Vorgangsmappe erstelleKopieFuer = mappe
+		for (final Eingangskorb<Vorgangsmappe> eingangskorb : this.sachbearbeiterEingangkoerbe) {
+			final Vorgangsmappe erstelleKopieFuer = mappe
 					.erstelleKopieFuer(eingangskorb.toString());
 			try {
 				eingangskorb.ablegen(erstelleKopieFuer);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				// TODO Ist ein Interrupt hier OK? Wenn ja, wie mit der
 				// Vorgangsmappe verfahren, wenn nein, wie den Fehler behandeln?
 				e.printStackTrace();
@@ -78,25 +77,27 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 	}
 
 	/**
+	 * Beendet die Arbeit.
+	 */
+	public void beendeArbeit() {
+		this.achteAufEingaenge.stopWorking();
+	}
+
+	/**
 	 * Beginnt mit der Arbeit, das auslesen neuer Nachrichten und das delegieren
 	 * der Aufgaben etc..
 	 */
 	public void beginneArbeit() {
-		this.executionService.executeAsynchronsly(ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER, achteAufEingaenge);
-		
-		while(!achteAufEingaenge.isCurrentlyRunning()) {
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER,
+				this.achteAufEingaenge);
+
+		while (!this.achteAufEingaenge.isCurrentlyRunning()) {
 			Thread.yield();
 		}
 	}
 
 	public boolean istAmArbeiten() {
-		return achteAufEingaenge.isCurrentlyRunning();
-	}
-
-	/**
-	 * Beendet die Arbeit.
-	 */
-	public void beendeArbeit() {
-		achteAufEingaenge.stopWorking();
+		return this.achteAufEingaenge.isCurrentlyRunning();
 	}
 }

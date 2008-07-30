@@ -14,29 +14,10 @@ public class Equals implements IArgumentMatcher {
 		this.expected = expected;
 	}
 
-	public boolean matches(final Object actual) {
-		if (this.expected == null) {
-			return actual == null;
-		}
-		return this.expected.equals(actual);
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		this.appendQuoting(buffer);
 		buffer.append(this.expected);
 		this.appendQuoting(buffer);
-	}
-
-	private void appendQuoting(final StringBuffer buffer) {
-		if (this.expected instanceof String) {
-			buffer.append("\"");
-		} else if (this.expected instanceof Character) {
-			buffer.append("'");
-		}
-	}
-
-	protected final Object getExpected() {
-		return this.expected;
 	}
 
 	@Override
@@ -53,6 +34,25 @@ public class Equals implements IArgumentMatcher {
 	@Override
 	public int hashCode() {
 		throw new UnsupportedOperationException("hashCode() is not supported");
+	}
+
+	public boolean matches(final Object actual) {
+		if (this.expected == null) {
+			return actual == null;
+		}
+		return this.expected.equals(actual);
+	}
+
+	protected final Object getExpected() {
+		return this.expected;
+	}
+
+	private void appendQuoting(final StringBuffer buffer) {
+		if (this.expected instanceof String) {
+			buffer.append("\"");
+		} else if (this.expected instanceof Character) {
+			buffer.append("'");
+		}
 	}
 
 }

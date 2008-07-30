@@ -7,9 +7,7 @@ package org.csstudio.nams.common.fachwert;
 public enum RubrikTypeEnum {
 	USER(1), USER_GROUP(2), FILTER_COND(3), FILTER(4), TOPIC(5);
 
-	private final short ordinal;
-
-	public static RubrikTypeEnum valueOf(short value) {
+	public static RubrikTypeEnum valueOf(final short value) {
 		switch (value) {
 		case 1:
 			return USER;
@@ -26,12 +24,14 @@ public enum RubrikTypeEnum {
 		}
 
 	}
-	
-	private RubrikTypeEnum (int ordinal) {
+
+	private final short ordinal;
+
+	private RubrikTypeEnum(final int ordinal) {
 		this.ordinal = (short) ordinal;
 	}
 
 	public short getShortFor() {
-		return ordinal;
+		return this.ordinal;
 	}
 }

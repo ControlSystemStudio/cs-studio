@@ -40,173 +40,6 @@ import org.eclipse.ui.part.ViewPart;
 
 public abstract class AbstractNamsView extends ViewPart {
 
-	protected static ConfigurationBeanService configurationBeanService;
-
-	protected static ConfigurationBeanService getConfigurationBeanService() {
-		return configurationBeanService;
-	}
-
-	private FilterableBeanList filterableBeanList;
-	private StackLayout viewsRootLayout;
-	private static PreferenceService preferenceService;
-	private static ConfigurationServiceFactory configurationServiceFactory;
-	private static Logger logger;
-
-	static boolean isInitialized = false;
-
-	public static boolean isInitialized() {
-		return isInitialized;
-	}
-
-	private static Semaphore semaphore = new Semaphore(1);
-
-	synchronized private void initialize() throws Throwable {
-		try {
-			semaphore.acquire(1);
-			if (!isInitialized()) {
-				String P_CONFIG_DATABASE_CONNECTION = preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION);
-				String P_CONFIG_DATABASE_TYPE_asString = preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE);
-				String P_CONFIG_DATABASE_USER = preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER);
-				String P_CONFIG_DATABASE_PASSWORD = preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD);
-
-				if ((P_CONFIG_DATABASE_CONNECTION == null || P_CONFIG_DATABASE_CONNECTION
-						.length() == 0)
-						|| (P_CONFIG_DATABASE_TYPE_asString == null || P_CONFIG_DATABASE_TYPE_asString
-								.length() == 0)
-						|| (P_CONFIG_DATABASE_USER == null || P_CONFIG_DATABASE_USER
-								.length() == 0)
-						|| (P_CONFIG_DATABASE_PASSWORD == null )) {
-					throw new RuntimeException("Missing database setting!");
-				}
-
-				DatabaseType P_CONFIG_DATABASE_TYPE = DatabaseType
-						.valueOf(P_CONFIG_DATABASE_TYPE_asString);
-
-				LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
-						.getConfigurationService(P_CONFIG_DATABASE_CONNECTION,
-								P_CONFIG_DATABASE_TYPE, P_CONFIG_DATABASE_USER,
-								P_CONFIG_DATABASE_PASSWORD);
-
-				logger.logDebugMessage(this,
-						"DB connected with P_CONFIG_DATABASE_CONNECTION: "
-								+ P_CONFIG_DATABASE_CONNECTION);
-				logger.logDebugMessage(this,
-						"DB connected with P_CONFIG_DATABASE_TYPE: "
-								+ P_CONFIG_DATABASE_TYPE);
-				logger.logDebugMessage(this,
-						"DB connected with P_CONFIG_DATABASE_USER: "
-								+ P_CONFIG_DATABASE_USER);
-				logger
-						.logDebugMessage(
-								this,
-								"DB P_CONFIG_DATABASE_PASSWORD is: "
-										+ (P_CONFIG_DATABASE_PASSWORD != null
-												&& P_CONFIG_DATABASE_PASSWORD
-														.length() > 0 ? "available"
-												: "missing"));
-
-				if (configurationBeanService == null) {
-					configurationBeanService = new ConfigurationBeanServiceImpl();
-				}
-				((ConfigurationBeanServiceImpl) configurationBeanService)
-						.setNewConfigurationStore(localStoreConfigurationService);
-
-				// prepare editors
-				AbstractEditor.staticInject(configurationBeanService);
-
-				// prepare actions
-				DeleteConfugurationBeanAction
-						.staticInject(configurationBeanService);
-				DuplicateConfigurationBeanAction
-						.staticInject(configurationBeanService);
-				
-				configurationBeanService.refreshData();
-			}
-			semaphore.release(1);
-
-			configurationBeanService
-					.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
-						// TODO updateView() is in most cases overkill
-						@Override
-						public void onBeanInsert(IConfigurationBean bean) {
-							if (filterableBeanList != null) {
-								filterableBeanList.updateView();
-							}
-						}
-
-						@Override
-						public void onBeanUpdate(IConfigurationBean bean) {
-							if (filterableBeanList != null) {
-								filterableBeanList.updateView();
-							}
-						}
-
-						@Override
-						public void onBeanDeleted(IConfigurationBean bean) {
-							if (filterableBeanList != null) {
-								filterableBeanList.updateView();
-							}
-						}
-
-						public void onConfigurationReload() {
-							if (filterableBeanList != null) {
-								logger
-								.logDebugMessage(this,
-										"Refreshing list for "+AbstractNamsView.this.getClass().getSimpleName()+"...");
-								filterableBeanList.updateView();
-							}
-						}
-					});
-
-			
-
-			isInitialized = true;
-		} catch (Throwable t) {
-			isInitialized = false;
-
-			semaphore.release();
-
-			throw t;
-		}
-	}
-
-	private void performInitializeAndSetCorrespondingViewMode() {
-		logger.logInfoMessage(this, "perfoming initialization...");
-		try {
-			initialize();
-			logger.logDebugMessage(this, "init done, update ui...");
-		} catch (Throwable e) {
-			logger.logFatalMessage(this, "Failed to initialize bean service!",
-					e);
-			assert isInitialized == false;
-		}
-		if (isInitialized()) {
-			logger.logDebugMessage(this, "ui goes to normal view...");
-			Composite composite = viewStackContents.get(ViewModes.NORMAL);
-			assert composite != null;
-			viewsRootLayout.topControl = composite;
-			if (filterableBeanList != null) {
-				filterableBeanList.updateView();
-			}
-		} else {
-			logger.logDebugMessage(this, "ui goes to error view...");
-			Composite composite = viewStackContents
-					.get(ViewModes.NOT_INITIALIZED);
-			assert composite != null;
-			viewsRootLayout.topControl = composite;
-		}
-
-		viewsRoot.layout();
-	}
-
-	public AbstractNamsView() {
-
-	}
-
 	/**
 	 * Gibt an, in welchem Modus die View ist, also u.a. welches Stack der View
 	 * (Medlung) gezeigt wird.
@@ -218,81 +51,119 @@ public abstract class AbstractNamsView extends ViewPart {
 		NOT_INITIALIZED, NORMAL;
 	}
 
-	private Map<ViewModes, Composite> viewStackContents = new HashMap<ViewModes, Composite>();
+	static boolean isInitialized = false;
+
+	protected static ConfigurationBeanService configurationBeanService;
+	private static PreferenceService preferenceService;
+	private static ConfigurationServiceFactory configurationServiceFactory;
+	private static Logger logger;
+	private static Semaphore semaphore = new Semaphore(1);
+
+	public static boolean isInitialized() {
+		return AbstractNamsView.isInitialized;
+	}
+
+	public static void staticInject(
+			final ConfigurationServiceFactory configurationServiceFactory) {
+		AbstractNamsView.configurationServiceFactory = configurationServiceFactory;
+	}
+
+	public static void staticInject(final Logger logger) {
+		AbstractNamsView.logger = logger;
+	}
+
+	public static void staticInject(final PreferenceService preferenceService) {
+		AbstractNamsView.preferenceService = preferenceService;
+	}
+
+	protected static ConfigurationBeanService getConfigurationBeanService() {
+		return AbstractNamsView.configurationBeanService;
+	}
+
+	private FilterableBeanList filterableBeanList;
+
+	private StackLayout viewsRootLayout;
+
+	private final Map<ViewModes, Composite> viewStackContents = new HashMap<ViewModes, Composite>();
 	private Composite viewsRoot;
 
-	@Override
-	public void createPartControl(Composite rootComposite) {
-		viewsRoot = new Composite(rootComposite, SWT.NONE);
-		viewsRootLayout = new StackLayout();
-		viewsRoot.setLayout(viewsRootLayout);
+	public AbstractNamsView() {
 
-		Composite normalViewElements = new Composite(viewsRoot, SWT.TOP);
+	}
+
+	@Override
+	public void createPartControl(final Composite rootComposite) {
+		this.viewsRoot = new Composite(rootComposite, SWT.NONE);
+		this.viewsRootLayout = new StackLayout();
+		this.viewsRoot.setLayout(this.viewsRootLayout);
+
+		final Composite normalViewElements = new Composite(this.viewsRoot,
+				SWT.TOP);
 		normalViewElements.setLayout(new GridLayout(1, true));
 
-		Composite error = new Composite(viewsRoot, SWT.TOP);
+		final Composite error = new Composite(this.viewsRoot, SWT.TOP);
 		error.setLayout(new GridLayout(1, true));
-		Label errorLabel = new Label(error, SWT.WRAP);
+		final Label errorLabel = new Label(error, SWT.WRAP);
 		errorLabel
 				.setText("Konnte keine Verbindung zur Datenbank herstellen.\nBitte überprüfen Sie die Einstellungen unter:\nCSS-Application/Configuration/New AMS.");
 
-		viewStackContents.put(ViewModes.NORMAL, normalViewElements);
-		viewStackContents.put(ViewModes.NOT_INITIALIZED, error);
+		this.viewStackContents.put(ViewModes.NORMAL, normalViewElements);
+		this.viewStackContents.put(ViewModes.NOT_INITIALIZED, error);
 
-		performInitializeAndSetCorrespondingViewMode();
+		this.performInitializeAndSetCorrespondingViewMode();
 
-		filterableBeanList = new FilterableBeanList(normalViewElements,
+		this.filterableBeanList = new FilterableBeanList(normalViewElements,
 				SWT.None) {
 			@Override
 			protected IConfigurationBean[] getTableInput() {
-				if (isInitialized()) {
-					return getTableContent();
+				if (AbstractNamsView.isInitialized()) {
+					return AbstractNamsView.this.getTableContent();
 				}
 				return new IConfigurationBean[0];
 			}
 		};
 
-		MenuManager menuManager = new MenuManager();
-		TableViewer table = filterableBeanList.getTable();
-		Menu menu = menuManager.createContextMenu(table.getTable());
+		final MenuManager menuManager = new MenuManager();
+		final TableViewer table = this.filterableBeanList.getTable();
+		final Menu menu = menuManager.createContextMenu(table.getTable());
 		table.getTable().setMenu(menu);
-		getSite().registerContextMenu(menuManager, table);
-		getSite().setSelectionProvider(table);
+		this.getSite().registerContextMenu(menuManager, table);
+		this.getSite().setSelectionProvider(table);
 
 		menuManager.add(new Action() {
-			@Override
-			public void run() {
-				ConfigurationEditorInput editorInput;
-				try {
-					editorInput = new ConfigurationEditorInput(getBeanClass()
-							.newInstance());
-
-					IWorkbenchPage activePage = PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage();
-					String editorId = BeanToEditorId.getEnumForClass(
-							getBeanClass()).getEditorId();
-
-					activePage.openEditor(editorInput, editorId);
-				} catch (InstantiationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
-			}
-
 			@Override
 			public String getText() {
 				return "Neu";
 			}
+
+			@Override
+			public void run() {
+				ConfigurationEditorInput editorInput;
+				try {
+					editorInput = new ConfigurationEditorInput(
+							AbstractNamsView.this.getBeanClass().newInstance());
+
+					final IWorkbenchPage activePage = PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage();
+					final String editorId = BeanToEditorId.getEnumForClass(
+							AbstractNamsView.this.getBeanClass()).getEditorId();
+
+					activePage.openEditor(editorInput, editorId);
+				} catch (final InstantiationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (final IllegalAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (final PartInitException e) {
+					e.printStackTrace();
+				}
+			}
 		});
 
-		initDragAndDrop(filterableBeanList);
+		this.initDragAndDrop(this.filterableBeanList);
 
-		preferenceService
+		AbstractNamsView.preferenceService
 				.addPreferenceChangeListenerFor(
 						new PreferenceServiceDatabaseKeys[] {
 								PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION,
@@ -301,30 +172,19 @@ public abstract class AbstractNamsView extends ViewPart {
 								PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE },
 						new PreferenceChangeListener() {
 							public <T extends Enum<?> & HoldsAPreferenceId> void preferenceUpdated(
-									T id, Object oldValue, Object newValue) {
-								isInitialized = false;
-								performInitializeAndSetCorrespondingViewMode();
+									final T id, final Object oldValue,
+									final Object newValue) {
+								AbstractNamsView.isInitialized = false;
+								AbstractNamsView.this
+										.performInitializeAndSetCorrespondingViewMode();
 							}
 						});
-		
-		IActionBars actionBar = getViewSite().getActionBars();
+
+		final IActionBars actionBar = this.getViewSite().getActionBars();
 		actionBar.getToolBarManager().add(new Action() {
 			@Override
-			public void run() {
-				if (MessageDialog
-						.openQuestion(
-								getViewSite().getShell(),
-								"Reload entire configuration?",
-								"Do you realy like to reload the entire configuration?" +
-								"\n\nUnsaved changes may get lost.")) {
-					logger
-							.logDebugMessage(this,
-									"Reload of entire configuration requested by user...");
-					configurationBeanService.refreshData();
-					logger
-					.logInfoMessage(this,
-					"Reload of entire configuration done.");
-				}
+			public int getStyle() {
+				return SWT.BORDER | SWT.ICON_WORKING;
 			}
 
 			@Override
@@ -338,36 +198,188 @@ public abstract class AbstractNamsView extends ViewPart {
 			}
 
 			@Override
-			public int getStyle() {
-				return SWT.BORDER | SWT.ICON_WORKING;
+			public void run() {
+				if (MessageDialog.openQuestion(AbstractNamsView.this
+						.getViewSite().getShell(),
+						"Reload entire configuration?",
+						"Do you realy like to reload the entire configuration?"
+								+ "\n\nUnsaved changes may get lost.")) {
+					AbstractNamsView.logger
+							.logDebugMessage(this,
+									"Reload of entire configuration requested by user...");
+					AbstractNamsView.configurationBeanService.refreshData();
+					AbstractNamsView.logger.logInfoMessage(this,
+							"Reload of entire configuration done.");
+				}
 			}
 
 		});
 	}
 
-	protected void initDragAndDrop(FilterableBeanList filterableBeanList) {
-
-	}
-
 	@Override
 	public void setFocus() {
-		filterableBeanList.getTable().getTable().setFocus();
+		this.filterableBeanList.getTable().getTable().setFocus();
 	}
-
-	protected abstract IConfigurationBean[] getTableContent();
 
 	protected abstract Class<? extends IConfigurationBean> getBeanClass();
 
-	public static void staticInject(PreferenceService preferenceService) {
-		AbstractNamsView.preferenceService = preferenceService;
+	protected abstract IConfigurationBean[] getTableContent();
+
+	protected void initDragAndDrop(final FilterableBeanList filterableBeanList) {
+
 	}
 
-	public static void staticInject(
-			ConfigurationServiceFactory configurationServiceFactory) {
-		AbstractNamsView.configurationServiceFactory = configurationServiceFactory;
+	synchronized private void initialize() throws Throwable {
+		try {
+			AbstractNamsView.semaphore.acquire(1);
+			if (!AbstractNamsView.isInitialized()) {
+				final String P_CONFIG_DATABASE_CONNECTION = AbstractNamsView.preferenceService
+						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION);
+				final String P_CONFIG_DATABASE_TYPE_asString = AbstractNamsView.preferenceService
+						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE);
+				final String P_CONFIG_DATABASE_USER = AbstractNamsView.preferenceService
+						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER);
+				final String P_CONFIG_DATABASE_PASSWORD = AbstractNamsView.preferenceService
+						.getString(PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD);
+
+				if (((P_CONFIG_DATABASE_CONNECTION == null) || (P_CONFIG_DATABASE_CONNECTION
+						.length() == 0))
+						|| ((P_CONFIG_DATABASE_TYPE_asString == null) || (P_CONFIG_DATABASE_TYPE_asString
+								.length() == 0))
+						|| ((P_CONFIG_DATABASE_USER == null) || (P_CONFIG_DATABASE_USER
+								.length() == 0))
+						|| (P_CONFIG_DATABASE_PASSWORD == null)) {
+					throw new RuntimeException("Missing database setting!");
+				}
+
+				final DatabaseType P_CONFIG_DATABASE_TYPE = DatabaseType
+						.valueOf(P_CONFIG_DATABASE_TYPE_asString);
+
+				final LocalStoreConfigurationService localStoreConfigurationService = AbstractNamsView.configurationServiceFactory
+						.getConfigurationService(P_CONFIG_DATABASE_CONNECTION,
+								P_CONFIG_DATABASE_TYPE, P_CONFIG_DATABASE_USER,
+								P_CONFIG_DATABASE_PASSWORD);
+
+				AbstractNamsView.logger.logDebugMessage(this,
+						"DB connected with P_CONFIG_DATABASE_CONNECTION: "
+								+ P_CONFIG_DATABASE_CONNECTION);
+				AbstractNamsView.logger.logDebugMessage(this,
+						"DB connected with P_CONFIG_DATABASE_TYPE: "
+								+ P_CONFIG_DATABASE_TYPE);
+				AbstractNamsView.logger.logDebugMessage(this,
+						"DB connected with P_CONFIG_DATABASE_USER: "
+								+ P_CONFIG_DATABASE_USER);
+				AbstractNamsView.logger
+						.logDebugMessage(
+								this,
+								"DB P_CONFIG_DATABASE_PASSWORD is: "
+										+ ((P_CONFIG_DATABASE_PASSWORD != null)
+												&& (P_CONFIG_DATABASE_PASSWORD
+														.length() > 0) ? "available"
+												: "missing"));
+
+				if (AbstractNamsView.configurationBeanService == null) {
+					AbstractNamsView.configurationBeanService = new ConfigurationBeanServiceImpl();
+				}
+				((ConfigurationBeanServiceImpl) AbstractNamsView.configurationBeanService)
+						.setNewConfigurationStore(localStoreConfigurationService);
+
+				// prepare editors
+				AbstractEditor
+						.staticInject(AbstractNamsView.configurationBeanService);
+
+				// prepare actions
+				DeleteConfugurationBeanAction
+						.staticInject(AbstractNamsView.configurationBeanService);
+				DuplicateConfigurationBeanAction
+						.staticInject(AbstractNamsView.configurationBeanService);
+
+				AbstractNamsView.configurationBeanService.refreshData();
+			}
+			AbstractNamsView.semaphore.release(1);
+
+			AbstractNamsView.configurationBeanService
+					.addConfigurationBeanServiceListener(new AbstractConfigurationBeanServiceListener() {
+						@Override
+						public void onBeanDeleted(final IConfigurationBean bean) {
+							if (AbstractNamsView.this.filterableBeanList != null) {
+								AbstractNamsView.this.filterableBeanList
+										.updateView();
+							}
+						}
+
+						// TODO updateView() is in most cases overkill
+						@Override
+						public void onBeanInsert(final IConfigurationBean bean) {
+							if (AbstractNamsView.this.filterableBeanList != null) {
+								AbstractNamsView.this.filterableBeanList
+										.updateView();
+							}
+						}
+
+						@Override
+						public void onBeanUpdate(final IConfigurationBean bean) {
+							if (AbstractNamsView.this.filterableBeanList != null) {
+								AbstractNamsView.this.filterableBeanList
+										.updateView();
+							}
+						}
+
+						public void onConfigurationReload() {
+							if (AbstractNamsView.this.filterableBeanList != null) {
+								AbstractNamsView.logger.logDebugMessage(this,
+										"Refreshing list for "
+												+ AbstractNamsView.this
+														.getClass()
+														.getSimpleName()
+												+ "...");
+								AbstractNamsView.this.filterableBeanList
+										.updateView();
+							}
+						}
+					});
+
+			AbstractNamsView.isInitialized = true;
+		} catch (final Throwable t) {
+			AbstractNamsView.isInitialized = false;
+
+			AbstractNamsView.semaphore.release();
+
+			throw t;
+		}
 	}
 
-	public static void staticInject(Logger logger) {
-		AbstractNamsView.logger = logger;
+	private void performInitializeAndSetCorrespondingViewMode() {
+		AbstractNamsView.logger.logInfoMessage(this,
+				"perfoming initialization...");
+		try {
+			this.initialize();
+			AbstractNamsView.logger.logDebugMessage(this,
+					"init done, update ui...");
+		} catch (final Throwable e) {
+			AbstractNamsView.logger.logFatalMessage(this,
+					"Failed to initialize bean service!", e);
+			assert AbstractNamsView.isInitialized == false;
+		}
+		if (AbstractNamsView.isInitialized()) {
+			AbstractNamsView.logger.logDebugMessage(this,
+					"ui goes to normal view...");
+			final Composite composite = this.viewStackContents
+					.get(ViewModes.NORMAL);
+			assert composite != null;
+			this.viewsRootLayout.topControl = composite;
+			if (this.filterableBeanList != null) {
+				this.filterableBeanList.updateView();
+			}
+		} else {
+			AbstractNamsView.logger.logDebugMessage(this,
+					"ui goes to error view...");
+			final Composite composite = this.viewStackContents
+					.get(ViewModes.NOT_INITIALIZED);
+			assert composite != null;
+			this.viewsRootLayout.topControl = composite;
+		}
+
+		this.viewsRoot.layout();
 	}
 }

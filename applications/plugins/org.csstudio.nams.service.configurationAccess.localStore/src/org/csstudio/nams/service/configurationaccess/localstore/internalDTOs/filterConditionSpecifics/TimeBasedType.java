@@ -5,15 +5,8 @@ public enum TimeBasedType {
 	TIMEBEHAVIOR_CONFIRMED_THEN_ALARM((short) 0),
 	// aufhebungsalarm und bei timeout alarm?
 	TIMEBEHAVIOR_TIMEOUT_THEN_ALARM((short) 1);
-	
-	private final short intId;
 
-	private TimeBasedType(short intID){
-		this.intId = intID;
-		
-	}
-
-	public static TimeBasedType valueOf(short value) {
+	public static TimeBasedType valueOf(final short value) {
 		switch (value) {
 		case 0:
 			return TIMEBEHAVIOR_CONFIRMED_THEN_ALARM;
@@ -23,8 +16,15 @@ public enum TimeBasedType {
 			throw new IllegalArgumentException("Unknown timebehavior");
 		}
 	}
-	
-	public short asShort(){
-		return intId;
+
+	private final short intId;
+
+	private TimeBasedType(final short intID) {
+		this.intId = intID;
+
+	}
+
+	public short asShort() {
+		return this.intId;
 	}
 }

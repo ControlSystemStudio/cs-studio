@@ -14,7 +14,7 @@ import org.csstudio.nams.common.service.ThreadType;
 public class DefaultExecutionService implements ExecutionService {
 
 	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(
-			GT groupId, StepByStepProcessor runnable) {
+			final GT groupId, final StepByStepProcessor runnable) {
 		// TODO ThreadGroup anlegen!
 		new Thread(runnable, groupId.name()).start();
 	}
@@ -25,25 +25,25 @@ public class DefaultExecutionService implements ExecutionService {
 	}
 
 	public <GT extends Enum<?> & ThreadType> ThreadGroup getRegisteredGroup(
-			GT groupId) {
+			final GT groupId) {
 		// TODO registrierte ThreadGroup liefern!
 		return null;
 	}
 
 	public <GT extends Enum<?> & ThreadType> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
-			GT groupId) {
+			final GT groupId) {
 		// TODO runnables of ThreadGroups liefern!
 		return null;
 	}
 
 	public <GT extends Enum<?> & ThreadType> boolean hasGroupRegistered(
-			GT groupId) {
+			final GT groupId) {
 		// TODO Check for registred group
 		return false;
 	}
 
-	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId,
-			ThreadGroup group) {
+	public <GT extends Enum<?> & ThreadType> void registerGroup(
+			final GT groupId, final ThreadGroup group) {
 		// TODO register group
 	}
 }

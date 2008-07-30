@@ -29,20 +29,13 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 
 public interface VersandRegel {
 	/**
-	 * Evaluiert initial ob eine Nachricht ausgeliefert werden soll. Dieses
-	 * geschieht duch eintragen von TRUE, FALSE oder MAYBE in das
-	 * "Ergebnis-Array".
+	 * Wendet die Aufhebungs und Bestätigungsregeln auf eine Nachricht an.
 	 * 
 	 * @param nachricht
-	 * @param ergebnisListe
-	 * @return Die Anzahl der Millisekunden, bis die
-	 *         {@link #pruefeNachricht(AlarmNachricht, Ergebnis, Millisekunden)}
-	 *         Operation gerufen werden soll, falls der Vorgang nicht vorher
-	 *         abgeschlossen werden kann, oder {@code null}, falls die Regel
-	 *         unverzueglich ausgewertet wurde.
+	 * @param bisherigesErgebnis
 	 */
-	public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
-			Pruefliste ergebnisListe);
+	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis);
 
 	/**
 	 * Führt eine erneute Evaluation aufgrund einer Benachrichtigung durch die
@@ -62,15 +55,22 @@ public interface VersandRegel {
 			Millisekunden verstricheneZeitSeitErsterPruefung);
 
 	/**
-	 * Wendet die Aufhebungs und Bestätigungsregeln auf eine Nachricht an.
+	 * Evaluiert initial ob eine Nachricht ausgeliefert werden soll. Dieses
+	 * geschieht duch eintragen von TRUE, FALSE oder MAYBE in das
+	 * "Ergebnis-Array".
 	 * 
 	 * @param nachricht
-	 * @param bisherigesErgebnis
+	 * @param ergebnisListe
+	 * @return Die Anzahl der Millisekunden, bis die
+	 *         {@link #pruefeNachricht(AlarmNachricht, Ergebnis, Millisekunden)}
+	 *         Operation gerufen werden soll, falls der Vorgang nicht vorher
+	 *         abgeschlossen werden kann, oder {@code null}, falls die Regel
+	 *         unverzueglich ausgewertet wurde.
 	 */
-	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis);
+	public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
+			Pruefliste ergebnisListe);
 
-//	public void setHistoryService(HistoryService historyService);
+	// public void setHistoryService(HistoryService historyService);
 
 	// public Millisekunden gibverbleibendeWartezeit(Millisekunden
 	// bereitsVerstricheneWarteZeit);

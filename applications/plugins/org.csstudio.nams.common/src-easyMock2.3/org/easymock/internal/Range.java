@@ -32,8 +32,12 @@ public class Range {
 		this.maximum = maximum;
 	}
 
-	public boolean hasFixedCount() {
-		return this.minimum == this.maximum;
+	public boolean contains(final int count) {
+		return (this.minimum <= count) && (count <= this.maximum);
+	}
+
+	public String expectedAndActual(final int count) {
+		return "expected: " + this.toString() + ", actual: " + count;
 	}
 
 	public int getMaximum() {
@@ -42,6 +46,14 @@ public class Range {
 
 	public int getMinimum() {
 		return this.minimum;
+	}
+
+	public boolean hasFixedCount() {
+		return this.minimum == this.maximum;
+	}
+
+	public boolean hasOpenCount() {
+		return this.maximum == Integer.MAX_VALUE;
 	}
 
 	@Override
@@ -53,17 +65,5 @@ public class Range {
 		} else {
 			return "between " + this.minimum + " and " + this.maximum;
 		}
-	}
-
-	public String expectedAndActual(final int count) {
-		return "expected: " + this.toString() + ", actual: " + count;
-	}
-
-	public boolean contains(final int count) {
-		return (this.minimum <= count) && (count <= this.maximum);
-	}
-
-	public boolean hasOpenCount() {
-		return this.maximum == Integer.MAX_VALUE;
 	}
 }

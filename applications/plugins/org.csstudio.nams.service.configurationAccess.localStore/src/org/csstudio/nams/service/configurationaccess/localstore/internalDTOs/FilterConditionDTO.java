@@ -57,24 +57,63 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	@Column(name = "cDesc", length = 256)
 	private String cDesc;
 
-	/**
-	 * ONLY TO BE USED FOR MAPPING PURPOSES. 
-	 * 
-	 *  Returns the database id of this condition.
-	 */
-	@SuppressWarnings("unused")
-	public int getIFilterConditionID() {
-		return iFilterConditionID;
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof FilterConditionDTO)) {
+			return false;
+		}
+		final FilterConditionDTO other = (FilterConditionDTO) obj;
+		if (this.cDesc == null) {
+			if (other.cDesc != null) {
+				return false;
+			}
+		} else if (!this.cDesc.equals(other.cDesc)) {
+			return false;
+		}
+		if (this.cName == null) {
+			if (other.cName != null) {
+				return false;
+			}
+		} else if (!this.cName.equals(other.cName)) {
+			return false;
+		}
+		if (this.iFilterConditionID != other.iFilterConditionID) {
+			return false;
+		}
+		if (this.iGroupRef != other.iGroupRef) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
-	 * ONLY TO BE USED FOR MAPPING PURPOSES. 
+	 * @return the cDesc
+	 */
+	public String getCDesc() {
+		return this.cDesc;
+	}
+
+	/**
+	 * @return the cName
+	 */
+	public String getCName() {
+		return this.cName;
+	}
+
+	/**
+	 * ONLY TO BE USED FOR MAPPING PURPOSES.
 	 * 
-	 *  Sets the database id of this condition.
+	 * Returns the database id of this condition.
 	 */
 	@SuppressWarnings("unused")
-	public void setIFilterConditionID(int filterConditionID) {
-		iFilterConditionID = filterConditionID;
+	public int getIFilterConditionID() {
+		return this.iFilterConditionID;
 	}
 
 	/**
@@ -82,25 +121,36 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	 */
 	@SuppressWarnings("unused")
 	public int getIGroupRef() {
-		return iGroupRef;
+		return this.iGroupRef;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return this.getCName();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((this.cDesc == null) ? 0 : this.cDesc.hashCode());
+		result = prime * result
+				+ ((this.cName == null) ? 0 : this.cName.hashCode());
+		result = prime * result + this.iFilterConditionID;
+		result = prime * result + this.iGroupRef;
+		return result;
+	}
+
+	public boolean isInCategory(final int categoryDBId) {
+		return this.getIGroupRef() == categoryDBId;
 	}
 
 	/**
-	 * ONLY TO BE USED FOR MAPPING PURPOSES. 
-	 * 
-	 * @param groupRef
-	 *            Die Rubrik dieses DTOs.
+	 * @param desc
+	 *            the cDesc to set
 	 */
-	@SuppressWarnings("unused")
-	public void setIGroupRef(int groupRef) {
-		iGroupRef = groupRef;
-	}
-
-	/**
-	 * @return the cName
-	 */
-	public String getCName() {
-		return cName;
+	public void setCDesc(final String desc) {
+		this.cDesc = desc;
 	}
 
 	/**
@@ -108,23 +158,29 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	 *            the cName to set
 	 */
 	@SuppressWarnings("unused")
-	public void setCName(String name) {
-		cName = name;
+	public void setCName(final String name) {
+		this.cName = name;
 	}
 
 	/**
-	 * @return the cDesc
+	 * ONLY TO BE USED FOR MAPPING PURPOSES.
+	 * 
+	 * Sets the database id of this condition.
 	 */
-	public String getCDesc() {
-		return cDesc;
+	@SuppressWarnings("unused")
+	public void setIFilterConditionID(final int filterConditionID) {
+		this.iFilterConditionID = filterConditionID;
 	}
 
 	/**
-	 * @param desc
-	 *            the cDesc to set
+	 * ONLY TO BE USED FOR MAPPING PURPOSES.
+	 * 
+	 * @param groupRef
+	 *            Die Rubrik dieses DTOs.
 	 */
-	public void setCDesc(String desc) {
-		cDesc = desc;
+	@SuppressWarnings("unused")
+	public void setIGroupRef(final int groupRef) {
+		this.iGroupRef = groupRef;
 	}
 
 	@Override
@@ -139,51 +195,6 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 		resultBuilder.append(", description: ");
 		resultBuilder.append(this.getCDesc());
 		return resultBuilder.toString();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((cDesc == null) ? 0 : cDesc.hashCode());
-		result = prime * result + ((cName == null) ? 0 : cName.hashCode());
-		result = prime * result + iFilterConditionID;
-		result = prime * result + iGroupRef;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof FilterConditionDTO))
-			return false;
-		final FilterConditionDTO other = (FilterConditionDTO) obj;
-		if (cDesc == null) {
-			if (other.cDesc != null)
-				return false;
-		} else if (!cDesc.equals(other.cDesc))
-			return false;
-		if (cName == null) {
-			if (other.cName != null)
-				return false;
-		} else if (!cName.equals(other.cName))
-			return false;
-		if (iFilterConditionID != other.iFilterConditionID)
-			return false;
-		if (iGroupRef != other.iGroupRef)
-			return false;
-		return true;
-	}
-
-	public String getUniqueHumanReadableName() {
-		return getCName();
-	}
-
-	public boolean isInCategory(int categoryDBId) {
-		return getIGroupRef() == categoryDBId;
 	}
 
 }

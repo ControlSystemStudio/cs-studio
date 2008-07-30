@@ -15,6 +15,10 @@ public final class MockInvocationHandler implements InvocationHandler {
 		this.control = control;
 	}
 
+	public MocksControl getControl() {
+		return this.control;
+	}
+
 	public Object invoke(final Object proxy, final Method method,
 			final Object[] args) throws Throwable {
 		try {
@@ -30,9 +34,5 @@ public final class MockInvocationHandler implements InvocationHandler {
 		} catch (final ThrowableWrapper t) {
 			throw t.getThrowable().fillInStackTrace();
 		}
-	}
-
-	public MocksControl getControl() {
-		return this.control;
 	}
 }

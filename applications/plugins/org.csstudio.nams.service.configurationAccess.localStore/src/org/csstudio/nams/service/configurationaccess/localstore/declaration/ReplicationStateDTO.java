@@ -7,41 +7,23 @@ import javax.persistence.Table;
 
 /**
  * TODO table name: AMS_FLAG columns: CFLAGNAME ("ReplicationState") (ID)
- * SFLAGVALUE ( 0 (repliziert/synchron), 1 (?), 2 (soll/darf repliziert
- * werden) oder 3 (starte replizieren) kp was diese bedeuten)
+ * SFLAGVALUE ( 0 (repliziert/synchron), 1 (?), 2 (soll/darf repliziert werden)
+ * oder 3 (starte replizieren) kp was diese bedeuten)
  * 
- * public final static short FLAGVALUE_SYNCH_IDLE = 0; public final static
- * short FLAGVALUE_SYNCH_FMR_RPL = 1; public final static short
- * FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED = 2; Filtermanger hat eine
- * Syncronizations Nachricht an den Distributor gesendet public final static
- * short FLAGVALUE_SYNCH_DIST_RPL = 3; public final static short
+ * public final static short FLAGVALUE_SYNCH_IDLE = 0; public final static short
+ * FLAGVALUE_SYNCH_FMR_RPL = 1; public final static short
+ * FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED = 2; Filtermanger hat eine Syncronizations
+ * Nachricht an den Distributor gesendet public final static short
+ * FLAGVALUE_SYNCH_DIST_RPL = 3; public final static short
  * FLAGVALUE_SYNCH_DIST_NOTIFY_FMR = 4;
  */
 @Entity
-@Table(name="AMS_FLAG")
+@Table(name = "AMS_FLAG")
 public class ReplicationStateDTO {
 	// TODO Design this DTO to fit table
 	// TODO Register this DTO class in mapping file
 	// TODO Register this DTO class in annotation configuration
 
-	public final static String DB_FLAG_NAME = "ReplicationState";
-	
-	@Id
-	@Column(unique=true,name="CFLAGNAME")
-	private String flagName = DB_FLAG_NAME;
-	
-	@Column(name="SFLAGVALUE")
-	private short value = ReplicationState.INVALID_STATE.getDbValue();
-	
-	public ReplicationState getReplicationState() {
-		return ReplicationState.valueOf(getValue());
-	}
-	
-	public void setReplicationState(ReplicationState replicationState) {
-		setValue(replicationState.getDbValue());
-	}
-	
-	
 	public static enum ReplicationState {
 		/**
 		 * (0) Es muss nicht Repliziert werden
@@ -49,7 +31,8 @@ public class ReplicationStateDTO {
 		FLAGVALUE_SYNCH_IDLE((short) 0),
 
 		/**
-		 * (1) FilterManager beginnt zu Replizieren und schreibt history Eintrag.
+		 * (1) FilterManager beginnt zu Replizieren und schreibt history
+		 * Eintrag.
 		 * 
 		 * <pre>
 		 * private static void logHistoryRplStart(java.sql.Connection conDb, boolean bStart) {
@@ -88,8 +71,9 @@ public class ReplicationStateDTO {
 		FLAGVALUE_SYNCH_DIST_RPL((short) 3),
 
 		/**
-		 * (4) Distributor ist fertig mit Replizieren und sendet Command an das interne JMS Topic.
-		 * Der Distributor setzt den Status wieder auf FLAGVALUE_SYNCH_IDLE (0).
+		 * (4) Distributor ist fertig mit Replizieren und sendet Command an das
+		 * interne JMS Topic. Der Distributor setzt den Status wieder auf
+		 * FLAGVALUE_SYNCH_IDLE (0).
 		 */
 		FLAGVALUE_SYNCH_DIST_NOTIFY_FMR((short) 4),
 
@@ -98,20 +82,7 @@ public class ReplicationStateDTO {
 		 */
 		INVALID_STATE((short) -1);
 
-		/**
-		 * Wert wie er in der Datenbank steht
-		 */
-		private final short dbValue;
-
-		ReplicationState(short dbValue) {
-			this.dbValue = dbValue;
-		}
-
-		short getDbValue() {
-			return dbValue;
-		}
-
-		static ReplicationState valueOf(short dbValue) {
+		static ReplicationState valueOf(final short dbValue) {
 			switch (dbValue) {
 			case 0:
 				return FLAGVALUE_SYNCH_IDLE;
@@ -127,26 +98,57 @@ public class ReplicationStateDTO {
 				return INVALID_STATE;
 			}
 		}
+
+		/**
+		 * Wert wie er in der Datenbank steht
+		 */
+		private final short dbValue;
+
+		ReplicationState(final short dbValue) {
+			this.dbValue = dbValue;
+		}
+
+		short getDbValue() {
+			return this.dbValue;
+		}
 	}
 
-	@SuppressWarnings("unused")
-	private String getFlagName() {
-		return flagName;
+	public final static String DB_FLAG_NAME = "ReplicationState";
+
+	@Id
+	@Column(unique = true, name = "CFLAGNAME")
+	private String flagName = ReplicationStateDTO.DB_FLAG_NAME;
+
+	@Column(name = "SFLAGVALUE")
+	private short value = ReplicationState.INVALID_STATE.getDbValue();
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ReplicationStateDTO)) {
+			return false;
+		}
+		final ReplicationStateDTO other = (ReplicationStateDTO) obj;
+		if (this.flagName == null) {
+			if (other.flagName != null) {
+				return false;
+			}
+		} else if (!this.flagName.equals(other.flagName)) {
+			return false;
+		}
+		if (this.value != other.value) {
+			return false;
+		}
+		return true;
 	}
 
-	@SuppressWarnings("unused")
-	private void setFlagName(String flagName) {
-		this.flagName = flagName;
-	}
-
-	@SuppressWarnings("unused")
-	private short getValue() {
-		return value;
-	}
-
-	@SuppressWarnings("unused")
-	private void setValue(short value) {
-		this.value = value;
+	public ReplicationState getReplicationState() {
+		return ReplicationState.valueOf(this.getValue());
 	}
 
 	@Override
@@ -154,29 +156,33 @@ public class ReplicationStateDTO {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((flagName == null) ? 0 : flagName.hashCode());
-		result = prime * result + value;
+				+ ((this.flagName == null) ? 0 : this.flagName.hashCode());
+		result = prime * result + this.value;
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof ReplicationStateDTO))
-			return false;
-		final ReplicationStateDTO other = (ReplicationStateDTO) obj;
-		if (flagName == null) {
-			if (other.flagName != null)
-				return false;
-		} else if (!flagName.equals(other.flagName))
-			return false;
-		if (value != other.value)
-			return false;
-		return true;
+	public void setReplicationState(final ReplicationState replicationState) {
+		this.setValue(replicationState.getDbValue());
 	}
 
+	@SuppressWarnings("unused")
+	private String getFlagName() {
+		return this.flagName;
+	}
+
+	@SuppressWarnings("unused")
+	private short getValue() {
+		return this.value;
+	}
+
+	@SuppressWarnings("unused")
+	private void setFlagName(final String flagName) {
+		this.flagName = flagName;
+	}
+
+	@SuppressWarnings("unused")
+	private void setValue(final short value) {
+		this.value = value;
+	}
 
 }

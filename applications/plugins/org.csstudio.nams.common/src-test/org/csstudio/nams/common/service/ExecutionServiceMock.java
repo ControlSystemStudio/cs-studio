@@ -8,7 +8,6 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-
 /**
  * Ein Mock-Execution service, das ausführen erfolgt synchron und manuell.
  * 
@@ -18,68 +17,77 @@ import junit.framework.Assert;
  */
 public class ExecutionServiceMock implements ExecutionService {
 
-//		return errors; Marek: -2602
+	// return errors; Marek: -2602
 
-	public <GT extends Enum<?> & ThreadType> void mockExecuteOneStepOf(GT groupId) throws Throwable {
-		List<StepByStepProcessor> list = allStepByStepProcessors.get(groupId);
-		if( list == null )
-		{ 
-			Assert.fail("group not registered.");
-		}
-		for (StepByStepProcessor stepByStepProcessor : list) {
-			stepByStepProcessor.doRunOneSingleStep();
-		}
-	}
-	
-	private Map<Enum<?>, List<StepByStepProcessor>> allStepByStepProcessors = new HashMap<Enum<?>, List<StepByStepProcessor>>();
-	
+	private final Map<Enum<?>, List<StepByStepProcessor>> allStepByStepProcessors = new HashMap<Enum<?>, List<StepByStepProcessor>>();
+
 	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(
-			GT groupId, StepByStepProcessor runnable) {
-//		System.out.println("ExecutionServiceMock.executeAsynchronsly(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
-		
-//		for (Enum<?> enuum :allStepByStepProcessors.keySet()) {
-//			System.out.println(enuum.toString() + " = " + groupId.toString() + " is " + (enuum == groupId));
-//		}
-		
-		List<StepByStepProcessor> list = allStepByStepProcessors.get(groupId);
-		if( list == null )
-		{ 
-//			System.out.println("ExecutionServiceMock.executeAsynchronsly(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
-			Assert.fail("group not registered: "+groupId);
+			final GT groupId, final StepByStepProcessor runnable) {
+		// System.out.println("ExecutionServiceMock.executeAsynchronsly():
+		// "+groupId+ ", time: "+System.nanoTime()+", all:
+		// "+allStepByStepProcessors.toString());
+
+		// for (Enum<?> enuum :allStepByStepProcessors.keySet()) {
+		// System.out.println(enuum.toString() + " = " + groupId.toString() + "
+		// is " + (enuum == groupId));
+		// }
+
+		final List<StepByStepProcessor> list = this.allStepByStepProcessors
+				.get(groupId);
+		if (list == null) {
+			// System.out.println("ExecutionServiceMock.executeAsynchronsly():
+			// "+groupId+ ", time: "+System.nanoTime()+", all:
+			// "+allStepByStepProcessors.toString());
+			Assert.fail("group not registered: " + groupId);
 		}
 		list.add(runnable);
-		allStepByStepProcessors.put(groupId, list);
+		this.allStepByStepProcessors.put(groupId, list);
+	}
+
+	public <GT extends Enum<?> & ThreadType> Iterable<GT> getCurrentlyUsedGroupIds() {
+		Assert.fail("unexpected method call");
+		return null;
 	}
 
 	public <GT extends Enum<?> & ThreadType> ThreadGroup getRegisteredGroup(
-			GT groupId) {
+			final GT groupId) {
 		Assert.fail("unexpected method call");
 		return null;
 	}
 
 	public <GT extends Enum<?> & ThreadType> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
-			GT groupId) {
-		List<StepByStepProcessor> list = allStepByStepProcessors.get(groupId);
-		if( list == null )
-		{ 
+			final GT groupId) {
+		List<StepByStepProcessor> list = this.allStepByStepProcessors
+				.get(groupId);
+		if (list == null) {
 			list = Collections.emptyList();
 		}
 		return list;
 	}
 
 	public <GT extends Enum<?> & ThreadType> boolean hasGroupRegistered(
-			GT groupId) {
-		return allStepByStepProcessors.keySet().contains(groupId);
+			final GT groupId) {
+		return this.allStepByStepProcessors.keySet().contains(groupId);
 	}
 
-	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId,
-			ThreadGroup group) {
-		allStepByStepProcessors.put(groupId, new LinkedList<StepByStepProcessor>());
-//		System.out.println("ExecutionServiceMock.registerGroup(): "+groupId+ ", time: "+System.nanoTime()+", all: "+allStepByStepProcessors.toString());
+	public <GT extends Enum<?> & ThreadType> void mockExecuteOneStepOf(
+			final GT groupId) throws Throwable {
+		final List<StepByStepProcessor> list = this.allStepByStepProcessors
+				.get(groupId);
+		if (list == null) {
+			Assert.fail("group not registered.");
+		}
+		for (final StepByStepProcessor stepByStepProcessor : list) {
+			stepByStepProcessor.doRunOneSingleStep();
+		}
 	}
 
-	public <GT extends Enum<?> & ThreadType> Iterable<GT> getCurrentlyUsedGroupIds() {
-		Assert.fail("unexpected method call");
-		return null;
+	public <GT extends Enum<?> & ThreadType> void registerGroup(
+			final GT groupId, final ThreadGroup group) {
+		this.allStepByStepProcessors.put(groupId,
+				new LinkedList<StepByStepProcessor>());
+		// System.out.println("ExecutionServiceMock.registerGroup(): "+groupId+
+		// ", time: "+System.nanoTime()+", all:
+		// "+allStepByStepProcessors.toString());
 	}
 }

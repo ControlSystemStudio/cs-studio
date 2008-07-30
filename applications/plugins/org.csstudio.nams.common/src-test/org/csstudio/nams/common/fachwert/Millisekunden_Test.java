@@ -1,73 +1,75 @@
 package org.csstudio.nams.common.fachwert;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
 
 public class Millisekunden_Test extends AbstractValue_TestCase<Millisekunden> {
 	@Test
-	public void testValueOf() {
-		// Anlegen
-		Millisekunden millisekunden = Millisekunden.valueOf(2000);
-		assertNotNull(millisekunden);
-		Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
-		assertNotNull(millisekunden2);
-		Millisekunden millisekunden3 = Millisekunden.valueOf(0);
-		assertNotNull(millisekunden3);
-		
-		try {
-			Millisekunden.valueOf(-42);
-			fail("Anfrage eines ungueltigen Wertes muss fehlschlagen!");
-		} catch(AssertionError ae) {
-			// Ok, call have to fail!
-		}
-	}
-
-	@Test
-	public void testEquals() {
-		Millisekunden millisekunden = Millisekunden.valueOf(2000);
-		Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
-
-		// Gleichheit
-		assertEquals(Millisekunden.valueOf(2000), millisekunden);
-		assertEquals(Millisekunden.valueOf(4000), millisekunden2);
-		assertFalse(millisekunden.equals(millisekunden2));
-		assertFalse(millisekunden2.equals(millisekunden));
-	}
-
-	@Test
 	public void testDifferenz() {
-		Millisekunden millisekunden = Millisekunden.valueOf(2000);
-		Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
+		final Millisekunden millisekunden = Millisekunden.valueOf(2000);
+		final Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
 
-		assertEquals(Millisekunden.valueOf(2000), millisekunden
+		Assert.assertEquals(Millisekunden.valueOf(2000), millisekunden
 				.differenz(millisekunden2));
-		assertEquals(Millisekunden.valueOf(2000), millisekunden2
+		Assert.assertEquals(Millisekunden.valueOf(2000), millisekunden2
 				.differenz(millisekunden));
 	}
 
 	@Test
-	public void testIstNull() {
-		Millisekunden millisekunden = Millisekunden.valueOf(2000);
-		Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
-		Millisekunden millisekunden3 = Millisekunden.valueOf(0);
+	public void testEquals() {
+		final Millisekunden millisekunden = Millisekunden.valueOf(2000);
+		final Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
 
-		assertFalse(millisekunden.istNull());
-		assertFalse(millisekunden2.istNull());
-		assertTrue(millisekunden3.istNull());
+		// Gleichheit
+		Assert.assertEquals(Millisekunden.valueOf(2000), millisekunden);
+		Assert.assertEquals(Millisekunden.valueOf(4000), millisekunden2);
+		Assert.assertFalse(millisekunden.equals(millisekunden2));
+		Assert.assertFalse(millisekunden2.equals(millisekunden));
+	}
+
+	@Test
+	public void testIstNull() {
+		final Millisekunden millisekunden = Millisekunden.valueOf(2000);
+		final Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
+		final Millisekunden millisekunden3 = Millisekunden.valueOf(0);
+
+		Assert.assertFalse(millisekunden.istNull());
+		Assert.assertFalse(millisekunden2.istNull());
+		Assert.assertTrue(millisekunden3.istNull());
 	}
 
 	@Test
 	public void testKleinerGroesser() {
-		Millisekunden millisekunden = Millisekunden.valueOf(2000);
-		Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
+		final Millisekunden millisekunden = Millisekunden.valueOf(2000);
+		final Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
 
-		assertTrue(millisekunden.istKleiner(millisekunden2));
-		assertFalse(millisekunden.istGroesser(millisekunden2));
-		assertFalse(millisekunden2.istKleiner(millisekunden));
-		assertTrue(millisekunden2.istGroesser(millisekunden));
+		Assert.assertTrue(millisekunden.istKleiner(millisekunden2));
+		Assert.assertFalse(millisekunden.istGroesser(millisekunden2));
+		Assert.assertFalse(millisekunden2.istKleiner(millisekunden));
+		Assert.assertTrue(millisekunden2.istGroesser(millisekunden));
 
-		assertFalse(millisekunden.istKleiner(millisekunden));
-		assertFalse(millisekunden.istGroesser(millisekunden));
+		Assert.assertFalse(millisekunden.istKleiner(millisekunden));
+		Assert.assertFalse(millisekunden.istGroesser(millisekunden));
+	}
+
+	@Test
+	public void testValueOf() {
+		// Anlegen
+		final Millisekunden millisekunden = Millisekunden.valueOf(2000);
+		Assert.assertNotNull(millisekunden);
+		final Millisekunden millisekunden2 = Millisekunden.valueOf(4000);
+		Assert.assertNotNull(millisekunden2);
+		final Millisekunden millisekunden3 = Millisekunden.valueOf(0);
+		Assert.assertNotNull(millisekunden3);
+
+		try {
+			Millisekunden.valueOf(-42);
+			Assert.fail("Anfrage eines ungueltigen Wertes muss fehlschlagen!");
+		} catch (final AssertionError ae) {
+			// Ok, call have to fail!
+		}
 	}
 
 	@Override

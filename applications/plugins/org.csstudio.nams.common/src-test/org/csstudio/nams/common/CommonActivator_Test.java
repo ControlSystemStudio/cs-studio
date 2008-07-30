@@ -1,5 +1,6 @@
 package org.csstudio.nams.common;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
@@ -12,19 +13,20 @@ public class CommonActivator_Test extends TestCase {
 
 	@Test
 	public void testBundleLifecycle() throws Throwable {
-		Logger logger = EasyMock.createNiceMock(Logger.class);
+		final Logger logger = EasyMock.createNiceMock(Logger.class);
 		EasyMock.replay(logger);
-		
-		CommonActivator activator = new CommonActivator();
-		
-		OSGiServiceOffers serviceOffers = activator.bundleStart(logger);
-		
-//		assertSame(logger, ProcessVariableRegel.getLogger());
-		
-		Object offeredService = serviceOffers.get(ExecutionService.class);
-		assertNotNull(offeredService);
-		assertTrue(ExecutionService.class.isAssignableFrom(offeredService.getClass()));
-		
+
+		final CommonActivator activator = new CommonActivator();
+
+		final OSGiServiceOffers serviceOffers = activator.bundleStart(logger);
+
+		// assertSame(logger, ProcessVariableRegel.getLogger());
+
+		final Object offeredService = serviceOffers.get(ExecutionService.class);
+		Assert.assertNotNull(offeredService);
+		Assert.assertTrue(ExecutionService.class
+				.isAssignableFrom(offeredService.getClass()));
+
 		activator.stopBundle(logger);
 	}
 }

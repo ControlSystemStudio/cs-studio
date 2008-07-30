@@ -20,41 +20,50 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
-	private Text _topicIdTextEntry;
-	private Combo _rubrikComboEntry;
-	private Text _topicNameTextEntry;
-	private Text _descriptionTextEntry;
-	
 	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmtopicEditor";
-	private ComboViewer _rubrikComboEntryViewer;
-	private FormToolkit formToolkit;
-	private ScrolledForm mainForm;
 
 	public static String getId() {
-		return EDITOR_ID;
+		return AlarmtopicEditor.EDITOR_ID;
 	}
 
+	private Text _topicIdTextEntry;
+	private Combo _rubrikComboEntry;
+
+	private Text _topicNameTextEntry;
+	private Text _descriptionTextEntry;
+	private ComboViewer _rubrikComboEntryViewer;
+	private FormToolkit formToolkit;
+
+	private ScrolledForm mainForm;
+
 	@Override
-	public void createPartControl(Composite parent) {
-		formToolkit = new FormToolkit(parent.getDisplay());
-		mainForm = formToolkit.createScrolledForm(parent);
-		Composite main = mainForm.getBody();
+	public void createPartControl(final Composite parent) {
+		this.formToolkit = new FormToolkit(parent.getDisplay());
+		this.mainForm = this.formToolkit.createScrolledForm(parent);
+		final Composite main = this.mainForm.getBody();
 		main.setBackground(parent.getBackground());
-		main.setLayout(new GridLayout(NUM_COLUMNS, false));
+		main.setLayout(new GridLayout(this.NUM_COLUMNS, false));
 		this.addSeparator(main);
-		_topicIdTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true, getConfigurationBeanService()
-				.getRubrikNamesForType(RubrikTypeEnum.TOPIC));
-		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
+		this._topicIdTextEntry = this.createTextEntry(main, "Name:", true);
+		this._rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:",
+				true, AbstractEditor.getConfigurationBeanService()
+						.getRubrikNamesForType(RubrikTypeEnum.TOPIC));
+		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
-		_topicNameTextEntry = this.createTextEntry(main, "Topic name:", true);
-		_descriptionTextEntry = this.createDescriptionTextEntry(main,
-				"Description:");	
-		initDataBinding();
+		this._topicNameTextEntry = this.createTextEntry(main, "Topic name:",
+				true);
+		this._descriptionTextEntry = this.createDescriptionTextEntry(main,
+				"Description:");
+		this.initDataBinding();
 	}
 
 	@Override
-	protected void doInit(IEditorSite site, IEditorInput input) {
+	public void setFocus() {
+		this._topicNameTextEntry.setFocus();
+	}
+
+	@Override
+	protected void doInit(final IEditorSite site, final IEditorInput input) {
 	}
 
 	@Override
@@ -64,41 +73,38 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	protected void initDataBinding() {
-		DataBindingContext context = new DataBindingContext();
+		final DataBindingContext context = new DataBindingContext();
 
-		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.humanReadableName.name());
+		final IObservableValue nameTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmtopicBean.PropertyNames.humanReadableName.name());
 
-		IObservableValue topicNameTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.topicName.name());
+		final IObservableValue topicNameTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmtopicBean.PropertyNames.topicName.name());
 
-		IObservableValue descriptionTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.PropertyNames.description
-						.name());
-		
-		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmtopicBean.AbstractPropertyNames.rubrikName.name());
+		final IObservableValue descriptionTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmtopicBean.PropertyNames.description.name());
+
+		final IObservableValue rubrikTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmtopicBean.AbstractPropertyNames.rubrikName.name());
 
 		// bind observables
-		context.bindValue(SWTObservables
-				.observeText(_topicIdTextEntry, SWT.Modify), nameTextObservable,
-				null, null);
+		context.bindValue(SWTObservables.observeText(this._topicIdTextEntry,
+				SWT.Modify), nameTextObservable, null, null);
 
-		context.bindValue(SWTObservables.observeText(_topicNameTextEntry,
+		context.bindValue(SWTObservables.observeText(this._topicNameTextEntry,
 				SWT.Modify), topicNameTextObservable, null, null);
 
-		context.bindValue(
-				SWTObservables.observeText(_descriptionTextEntry, SWT.Modify),
+		context.bindValue(SWTObservables.observeText(
+				this._descriptionTextEntry, SWT.Modify),
 				descriptionTextObservable, null, null);
-		
-		context.bindValue(SWTObservables
-				.observeSelection(_rubrikComboEntry),
-				rubrikTextObservable, null, null);
-	}
 
-	@Override
-	public void setFocus() {
-		_topicNameTextEntry.setFocus();
+		context.bindValue(SWTObservables
+				.observeSelection(this._rubrikComboEntry),
+				rubrikTextObservable, null, null);
 	}
 
 }

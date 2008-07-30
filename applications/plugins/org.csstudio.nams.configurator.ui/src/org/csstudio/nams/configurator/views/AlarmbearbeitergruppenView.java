@@ -13,19 +13,20 @@ public class AlarmbearbeitergruppenView extends AbstractNamsView {
 	public static final String ID = "org.csstudio.nams.configurator.alarmbearbeitergruppen";
 
 	@Override
-	protected IConfigurationBean[] getTableContent() {
-		return getConfigurationBeanService().getAlarmBearbeiterGruppenBeans();
+	protected Class<? extends IConfigurationBean> getBeanClass() {
+		return AlarmbearbeiterGruppenBean.class;
 	}
-	
+
+	@Override
+	protected IConfigurationBean[] getTableContent() {
+		return AbstractNamsView.getConfigurationBeanService()
+				.getAlarmBearbeiterGruppenBeans();
+	}
+
 	@Override
 	protected void initDragAndDrop(final FilterableBeanList filterableBeanList) {
 		filterableBeanList.getTable().addDragSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new SelectionDragSourceListener(filterableBeanList.getTable()));
-	}
-	
-	@Override
-	protected Class<? extends IConfigurationBean> getBeanClass() {
-		return AlarmbearbeiterGruppenBean.class;
 	}
 }

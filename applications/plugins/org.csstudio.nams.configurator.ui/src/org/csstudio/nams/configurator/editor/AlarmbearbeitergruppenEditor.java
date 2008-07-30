@@ -64,42 +64,63 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class AlarmbearbeitergruppenEditor extends
 		AbstractEditor<AlarmbearbeiterGruppenBean> {
 
-	private static final Image checkedImage = AbstractUIPlugin
-			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
-					"icons/checked.gif").createImage();
-	private static final Image uncheckedImage = AbstractUIPlugin
-			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
-					"icons/unchecked.gif").createImage();
-
 	private final class IStructuredContentProviderImplementation extends
 			AbstractConfigurationBean<IStructuredContentProviderImplementation>
 			implements IStructuredContentProvider {
 		private List<User2GroupBean> entries = new ArrayList<User2GroupBean>();
 
-		public Object[] getElements(Object inputElement) {
-			return entries.toArray();
-		}
-
 		public void dispose() {
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			List<User2GroupBean> oldList = (List<User2GroupBean>) oldInput;
-			List<User2GroupBean> newList = (List<User2GroupBean>) newInput;
-			if (oldList != null)
-				for (User2GroupBean item : oldList) {
-					removeDatabinding(item);
-				}
-
-			if (newList != null) {
-				for (User2GroupBean item : newList) {
-					initDataBindingOnUser2GroupBean(item);
-				}
-			}
-			entries = (List<User2GroupBean>) newInput;
+		public String getDisplayName() {
+			return "";
 		}
 
-		private void initDataBindingOnUser2GroupBean(User2GroupBean item) {
+		public Object[] getElements(final Object inputElement) {
+			return this.entries.toArray();
+		}
+
+		public List<User2GroupBean> getEntries() {
+			return this.entries;
+		}
+
+		public int getID() {
+			return 0;
+		}
+
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
+			final List<User2GroupBean> oldList = (List<User2GroupBean>) oldInput;
+			final List<User2GroupBean> newList = (List<User2GroupBean>) newInput;
+			if (oldList != null) {
+				for (final User2GroupBean item : oldList) {
+					this.removeDatabinding(item);
+				}
+			}
+
+			if (newList != null) {
+				for (final User2GroupBean item : newList) {
+					this.initDataBindingOnUser2GroupBean(item);
+				}
+			}
+			this.entries = (List<User2GroupBean>) newInput;
+		}
+
+		public void setEntries(final List<User2GroupBean> entries) {
+			final List<User2GroupBean> oldValue = this.entries;
+			this.entries = entries;
+			this.pcs.firePropertyChange("entries", oldValue, entries);
+		}
+
+		public void setID(final int id) {
+		}
+
+		@Override
+		protected void doUpdateState(
+				final IStructuredContentProviderImplementation bean) {
+		}
+
+		private void initDataBindingOnUser2GroupBean(final User2GroupBean item) {
 			item.addPropertyChangeListener(User2GroupBean.PropertyNames.active
 					.name(), AlarmbearbeitergruppenEditor.this);
 			item.addPropertyChangeListener(
@@ -107,7 +128,7 @@ public class AlarmbearbeitergruppenEditor extends
 					AlarmbearbeitergruppenEditor.this);
 		}
 
-		private void removeDatabinding(User2GroupBean item) {
+		private void removeDatabinding(final User2GroupBean item) {
 			item.removePropertyChangeListener(
 					User2GroupBean.PropertyNames.active.name(),
 					AlarmbearbeitergruppenEditor.this);
@@ -116,150 +137,138 @@ public class AlarmbearbeitergruppenEditor extends
 					AlarmbearbeitergruppenEditor.this);
 
 		}
+	}
 
-		public List<User2GroupBean> getEntries() {
-			return entries;
-		}
+	private static final Image checkedImage = AbstractUIPlugin
+			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
+					"icons/checked.gif").createImage();
 
-		public void setEntries(List<User2GroupBean> entries) {
-			List<User2GroupBean> oldValue = this.entries;
-			this.entries = entries;
-			pcs.firePropertyChange("entries", oldValue, entries);
-		}
+	private static final Image uncheckedImage = AbstractUIPlugin
+			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
+					"icons/unchecked.gif").createImage();
 
-		@Override
-		protected void doUpdateState(
-				IStructuredContentProviderImplementation bean) {
-		}
+	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor";
 
-		public String getDisplayName() {
-			return "";
-		}
-
-		public int getID() {
-			return 0;
-		}
-
-		public void setID(int id) {
-		}
+	public static String getId() {
+		return AlarmbearbeitergruppenEditor.EDITOR_ID;
 	}
 
 	private Text name;
 	private Combo _rubrikComboEntry;
 	private Text aktiveMitglieder;
+
 	private Text wartezeit;
 	private Button activeButton;
-
-	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor";
 	private TableViewer tableViewer;
 	private ComboViewer _rubrikComboEntryViewer;
 	private FormToolkit formToolkit;
 	private ScrolledForm mainForm;
+
 	private IStructuredContentProviderImplementation userContentProvider;
 
-	public static String getId() {
-		return EDITOR_ID;
-	}
-
 	@Override
-	public void createPartControl(Composite parent) {
-		formToolkit = new FormToolkit(parent.getDisplay());
-		mainForm = formToolkit.createScrolledForm(parent);
-		Composite main = mainForm.getBody();
+	public void createPartControl(final Composite parent) {
+		this.formToolkit = new FormToolkit(parent.getDisplay());
+		this.mainForm = this.formToolkit.createScrolledForm(parent);
+		final Composite main = this.mainForm.getBody();
 		main.setBackground(parent.getBackground());
 		main.setLayout(new GridLayout(1, true));
-//		main.setLayout(new FillLayout(SWT.VERTICAL));
+		// main.setLayout(new FillLayout(SWT.VERTICAL));
 		{
-			Composite textFieldComp = new Composite(main, SWT.None);
+			final Composite textFieldComp = new Composite(main, SWT.None);
 			textFieldComp.setLayout(new GridLayout(2, false));
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
 					textFieldComp);
 
 			{
-				name = createTextEntry(textFieldComp, "Name", true);
+				this.name = this.createTextEntry(textFieldComp, "Name", true);
 
-				_rubrikComboEntryViewer = this
-						.createComboEntry(
-								textFieldComp,
-								"Rubrik:",
-								true,
-								getConfigurationBeanService()
-										.getRubrikNamesForType(RubrikTypeEnum.USER_GROUP));
-				_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
-				aktiveMitglieder = createTextEntry(textFieldComp,
+				this._rubrikComboEntryViewer = this.createComboEntry(
+						textFieldComp, "Rubrik:", true, AbstractEditor
+								.getConfigurationBeanService()
+								.getRubrikNamesForType(
+										RubrikTypeEnum.USER_GROUP));
+				this._rubrikComboEntry = this._rubrikComboEntryViewer
+						.getCombo();
+				this.aktiveMitglieder = this.createTextEntry(textFieldComp,
 						"Minimale Anzahl aktiver Mitglieder", true);
-				wartezeit = createTextEntry(textFieldComp,
+				this.wartezeit = this.createTextEntry(textFieldComp,
 						"Wartezeit bis Rückmeldung (Sek)", true);
-				activeButton = createCheckBoxEntry(textFieldComp,
+				this.activeButton = this.createCheckBoxEntry(textFieldComp,
 						"Alarmgruppe aktiv", true);
 			}
 
 			{
-				Composite tabelleUndButtonsComp = new Composite(main, SWT.None);
+				final Composite tabelleUndButtonsComp = new Composite(main,
+						SWT.None);
 				tabelleUndButtonsComp.setLayout(new GridLayout(2, false));
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
 						tabelleUndButtonsComp);
 
 				{
-					Composite tabellenComposite = new Composite(
+					final Composite tabellenComposite = new Composite(
 							tabelleUndButtonsComp, SWT.NONE);
 					tabellenComposite.setLayout(new GridLayout(2, false));
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
 							tabellenComposite);
-					tableViewer = new TableViewer(tabellenComposite,
-							SWT.MULTI | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
-					Table table = tableViewer.getTable();
+					this.tableViewer = new TableViewer(tabellenComposite,
+							SWT.MULTI | SWT.FULL_SELECTION | SWT.H_SCROLL
+									| SWT.V_SCROLL);
+					final Table table = this.tableViewer.getTable();
 
-					TableViewerColumn nameColumn = new TableViewerColumn(
-							tableViewer, SWT.NONE);
+					final TableViewerColumn nameColumn = new TableViewerColumn(
+							this.tableViewer, SWT.NONE);
 					TableColumn column = nameColumn.getColumn();
 					column.setText("Alarmbearbeiter");
 					column.setWidth(200);
-					TableViewerColumn tableViewerColumn = new TableViewerColumn(
-							tableViewer, SWT.None);
+					final TableViewerColumn tableViewerColumn = new TableViewerColumn(
+							this.tableViewer, SWT.None);
 					column = tableViewerColumn.getColumn();
 					column.setText("Aktiv");
 					column.setWidth(100);
 
-					TableViewerColumn hinweisColumn = new TableViewerColumn(
-							tableViewer, SWT.None);
+					final TableViewerColumn hinweisColumn = new TableViewerColumn(
+							this.tableViewer, SWT.None);
 					tabellenComposite
 							.addControlListener(new TableColumnResizeAdapter(
 									tabellenComposite, table, hinweisColumn
 											.getColumn(), 300));
 					hinweisColumn.setEditingSupport(new EditingSupport(
-							tableViewer) {
+							this.tableViewer) {
 
 						@Override
-						protected boolean canEdit(Object element) {
+						protected boolean canEdit(final Object element) {
 							return true;
 						}
 
 						@Override
-						protected CellEditor getCellEditor(Object element) {
-							TextCellEditor editor = new TextCellEditor(
-									tableViewer.getTable());
+						protected CellEditor getCellEditor(final Object element) {
+							final TextCellEditor editor = new TextCellEditor(
+									AlarmbearbeitergruppenEditor.this.tableViewer
+											.getTable());
 							((Text) editor.getControl()).setTextLimit(128);
 							return editor;
 						}
 
 						@Override
-						protected Object getValue(Object element) {
+						protected Object getValue(final Object element) {
 							return ((User2GroupBean) element).getActiveReason();
 						}
 
 						@Override
-						protected void setValue(Object element, Object value) {
+						protected void setValue(final Object element,
+								final Object value) {
 							((User2GroupBean) element)
 									.setActiveReason((String) value);
-							tableViewer.refresh();
+							AlarmbearbeitergruppenEditor.this.tableViewer
+									.refresh();
 						}
 					});
 					column = hinweisColumn.getColumn();
 					column.setText("Hinweise vom Alarmbearbeiter");
 					column.setWidth(300);
-					EditingSupport editingSupport = new EditingSupport(
-							tableViewer) {
+					final EditingSupport editingSupport = new EditingSupport(
+							this.tableViewer) {
 
 						@Override
 						protected boolean canEdit(Object element) {
@@ -280,99 +289,119 @@ public class AlarmbearbeitergruppenEditor extends
 						protected void setValue(Object element, Object value) {
 							((User2GroupBean) element)
 									.setActive((Boolean) value);
-							tableViewer.refresh();
+							AlarmbearbeitergruppenEditor.this.tableViewer
+									.refresh();
 						}
 
 					};
 					tableViewerColumn.setEditingSupport(editingSupport);
-					tableViewer.setLabelProvider(new ITableLabelProvider() {
+					this.tableViewer
+							.setLabelProvider(new ITableLabelProvider() {
 
-						public Image getColumnImage(Object element,
-								int columnIndex) {
-							if (columnIndex == 1)
-								if (element instanceof User2GroupBean) {
-									User2GroupBean displayedBean = (User2GroupBean) element;
-									if (displayedBean.isActive()) {
-										return checkedImage;
-									} else {
-										return uncheckedImage;
+								public void addListener(
+										final ILabelProviderListener listener) {
+								}
+
+								public void dispose() {
+								}
+
+								public Image getColumnImage(
+										final Object element,
+										final int columnIndex) {
+									if (columnIndex == 1) {
+										if (element instanceof User2GroupBean) {
+											final User2GroupBean displayedBean = (User2GroupBean) element;
+											if (displayedBean.isActive()) {
+												return AlarmbearbeitergruppenEditor.checkedImage;
+											} else {
+												return AlarmbearbeitergruppenEditor.uncheckedImage;
+											}
+										}
 									}
+									return null;
 								}
-							return null;
-						}
 
-						public String getColumnText(Object element,
-								int columnIndex) {
-							if (element instanceof User2GroupBean) {
-								User2GroupBean displayedBean = (User2GroupBean) element;
-								switch (columnIndex) {
-								case 0:
-									return displayedBean.getUserName();
-								case 1:
-									return String.valueOf(displayedBean
-											.isActive());
-								case 2:
-									return displayedBean.getActiveReason();
+								public String getColumnText(
+										final Object element,
+										final int columnIndex) {
+									if (element instanceof User2GroupBean) {
+										final User2GroupBean displayedBean = (User2GroupBean) element;
+										switch (columnIndex) {
+										case 0:
+											return displayedBean.getUserName();
+										case 1:
+											return String.valueOf(displayedBean
+													.isActive());
+										case 2:
+											return displayedBean
+													.getActiveReason();
+										}
+									}
+									return null;
 								}
-							}
-							return null;
-						}
 
-						public void addListener(ILabelProviderListener listener) {
-						}
+								public boolean isLabelProperty(
+										final Object element,
+										final String property) {
+									return false;
+								}
 
-						public void dispose() {
-						}
+								public void removeListener(
+										final ILabelProviderListener listener) {
+								}
 
-						public boolean isLabelProperty(Object element,
-								String property) {
-							return false;
-						}
-
-						public void removeListener(
-								ILabelProviderListener listener) {
-						}
-
-					});
+							});
 
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							tableViewer.getControl());
+							this.tableViewer.getControl());
 
-					initDND();
+					this.initDND();
 
-					userContentProvider = new IStructuredContentProviderImplementation();
-					tableViewer.setContentProvider(userContentProvider);
+					this.userContentProvider = new IStructuredContentProviderImplementation();
+					this.tableViewer
+							.setContentProvider(this.userContentProvider);
 
 					table.setHeaderVisible(true);
 					table.setLinesVisible(true);
 					table.setSize(400, 300);
-					
-					table.addMouseListener(new MouseListener(){
 
-						public void mouseDoubleClick(MouseEvent e) {
+					table.addMouseListener(new MouseListener() {
+
+						public void mouseDoubleClick(final MouseEvent e) {
 							try {
 								ConfigurationEditorInput editorInput;
 								editorInput = new ConfigurationEditorInput(
-										getWorkingCopyOfEditorInput().getUsers().get(tableViewer.getTable().getSelectionIndex()).getUserBean());
-								
-								IWorkbenchPage activePage = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage();
-								String editorId = BeanToEditorId.getEnumForClass(AlarmbearbeiterBean.class)
-								.getEditorId();
-								
+										AlarmbearbeitergruppenEditor.this
+												.getWorkingCopyOfEditorInput()
+												.getUsers()
+												.get(
+														AlarmbearbeitergruppenEditor.this.tableViewer
+																.getTable()
+																.getSelectionIndex())
+												.getUserBean());
+
+								final IWorkbenchPage activePage = PlatformUI
+										.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getActivePage();
+								final String editorId = BeanToEditorId
+										.getEnumForClass(
+												AlarmbearbeiterBean.class)
+										.getEditorId();
+
 								activePage.openEditor(editorInput, editorId);
-							} catch (PartInitException pie) {
+							} catch (final PartInitException pie) {
 								pie.printStackTrace();
 							}
 						}
 
-						public void mouseDown(MouseEvent e) {
+						public void mouseDown(final MouseEvent e) {
 						}
 
-						public void mouseUp(MouseEvent e) {
+						public void mouseUp(final MouseEvent e) {
 						}
 					});
-					
+
 					// TableColumn alarmbearbieter = new TableColumn(table,
 					// SWT.LEFT);
 					// alarmbearbieter.setText("Alarmbearbeiter");
@@ -388,139 +417,165 @@ public class AlarmbearbeitergruppenEditor extends
 				}
 
 				{
-					Composite buttonsComp = new Composite(
+					final Composite buttonsComp = new Composite(
 							tabelleUndButtonsComp, SWT.None);
 					buttonsComp.setLayout(new GridLayout(1, false));
 					GridDataFactory.fillDefaults().grab(false, true).applyTo(
 							buttonsComp);
 					{
 
-						Button upup = createButtonEntry(buttonsComp, "to top",
-								true , 1);
+						final Button upup = this.createButtonEntry(buttonsComp,
+								"to top", true, 1);
 						upup.addMouseListener(new MouseListener() {
 
-							public void mouseDoubleClick(MouseEvent e) {
+							public void mouseDoubleClick(final MouseEvent e) {
 							}
 
-							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
+							public void mouseDown(final MouseEvent e) {
+								final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
 										.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer
+								final IStructuredSelection selection = (IStructuredSelection) AlarmbearbeitergruppenEditor.this.tableViewer
 										.getSelection();
-								Object element = selection.getFirstElement();
-								users.remove(element);
-								users.add(0, (User2GroupBean) element);
-								getWorkingCopyOfEditorInput().setUsers(users);
-								tableViewer.refresh();
-							}
-
-							public void mouseUp(MouseEvent e) {
-							}
-						});
-						Button up = createButtonEntry(buttonsComp, "up", true, 1);
-						up.addMouseListener(new MouseListener() {
-
-							public void mouseDoubleClick(MouseEvent e) {
-							}
-
-							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
-										.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer
-										.getSelection();
-								Object element = selection.getFirstElement();
-								int index = tableViewer.getTable()
-										.getSelectionIndex();
-								if (index > 0)
-									index--;
-								users.remove(element);
-								users.add(index, (User2GroupBean) element);
-								getWorkingCopyOfEditorInput().setUsers(users);
-								tableViewer.refresh();
-							}
-
-							public void mouseUp(MouseEvent e) {
-							}
-
-						});
-						Button down = createButtonEntry(buttonsComp, "down",
-								true, 1);
-						down.addMouseListener(new MouseListener() {
-
-							public void mouseDoubleClick(MouseEvent e) {
-							}
-
-							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
-										.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer
-										.getSelection();
-								Object element = selection.getFirstElement();
-								int index = tableViewer.getTable()
-										.getSelectionIndex();
-								if (index < tableViewer.getTable()
-										.getItemCount())
-									index++;
-								users.remove(element);
-								users.add(index, (User2GroupBean) element);
-								getWorkingCopyOfEditorInput().setUsers(users);
-								tableViewer.refresh();
-							}
-
-							public void mouseUp(MouseEvent e) {
-							}
-
-						});
-						Button downdown = createButtonEntry(buttonsComp,
-								"to bottom", true, 1);
-						downdown.addMouseListener(new MouseListener() {
-
-							public void mouseDoubleClick(MouseEvent e) {
-							}
-
-							public void mouseDown(MouseEvent e) {
-								List<User2GroupBean> users = getWorkingCopyOfEditorInput()
-										.getUsers();
-								IStructuredSelection selection = (IStructuredSelection) tableViewer
-										.getSelection();
-								User2GroupBean element = (User2GroupBean) selection
+								final Object element = selection
 										.getFirstElement();
 								users.remove(element);
-								users.add((User2GroupBean) element);
-								getWorkingCopyOfEditorInput().setUsers(users);
-								tableViewer.refresh();
-
+								users.add(0, (User2GroupBean) element);
+								AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.setUsers(users);
+								AlarmbearbeitergruppenEditor.this.tableViewer
+										.refresh();
 							}
 
-							public void mouseUp(MouseEvent e) {
+							public void mouseUp(final MouseEvent e) {
+							}
+						});
+						final Button up = this.createButtonEntry(buttonsComp,
+								"up", true, 1);
+						up.addMouseListener(new MouseListener() {
+
+							public void mouseDoubleClick(final MouseEvent e) {
+							}
+
+							public void mouseDown(final MouseEvent e) {
+								final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.getUsers();
+								final IStructuredSelection selection = (IStructuredSelection) AlarmbearbeitergruppenEditor.this.tableViewer
+										.getSelection();
+								final Object element = selection
+										.getFirstElement();
+								int index = AlarmbearbeitergruppenEditor.this.tableViewer
+										.getTable().getSelectionIndex();
+								if (index > 0) {
+									index--;
+								}
+								users.remove(element);
+								users.add(index, (User2GroupBean) element);
+								AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.setUsers(users);
+								AlarmbearbeitergruppenEditor.this.tableViewer
+										.refresh();
+							}
+
+							public void mouseUp(final MouseEvent e) {
 							}
 
 						});
-						addSeparator(buttonsComp);
-						Button deleteButton = createButtonEntry(buttonsComp,
-								"löschen", true, 1);
-						deleteButton.addMouseListener(new MouseListener() {
+						final Button down = this.createButtonEntry(buttonsComp,
+								"down", true, 1);
+						down.addMouseListener(new MouseListener() {
 
-							public void mouseDoubleClick(MouseEvent e) {
+							public void mouseDoubleClick(final MouseEvent e) {
 							}
 
-							public void mouseDown(MouseEvent e) {
-								Table table = tableViewer.getTable();
+							public void mouseDown(final MouseEvent e) {
+								final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.getUsers();
+								final IStructuredSelection selection = (IStructuredSelection) AlarmbearbeitergruppenEditor.this.tableViewer
+										.getSelection();
+								final Object element = selection
+										.getFirstElement();
+								int index = AlarmbearbeitergruppenEditor.this.tableViewer
+										.getTable().getSelectionIndex();
+								if (index < AlarmbearbeitergruppenEditor.this.tableViewer
+										.getTable().getItemCount()) {
+									index++;
+								}
+								users.remove(element);
+								users.add(index, (User2GroupBean) element);
+								AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.setUsers(users);
+								AlarmbearbeitergruppenEditor.this.tableViewer
+										.refresh();
+							}
+
+							public void mouseUp(final MouseEvent e) {
+							}
+
+						});
+						final Button downdown = this.createButtonEntry(
+								buttonsComp, "to bottom", true, 1);
+						downdown.addMouseListener(new MouseListener() {
+
+							public void mouseDoubleClick(final MouseEvent e) {
+							}
+
+							public void mouseDown(final MouseEvent e) {
+								final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.getUsers();
+								final IStructuredSelection selection = (IStructuredSelection) AlarmbearbeitergruppenEditor.this.tableViewer
+										.getSelection();
+								final User2GroupBean element = (User2GroupBean) selection
+										.getFirstElement();
+								users.remove(element);
+								users.add(element);
+								AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.setUsers(users);
+								AlarmbearbeitergruppenEditor.this.tableViewer
+										.refresh();
+
+							}
+
+							public void mouseUp(final MouseEvent e) {
+							}
+
+						});
+						this.addSeparator(buttonsComp);
+						final Button deleteButton = this.createButtonEntry(
+								buttonsComp, "löschen", true, 1);
+						deleteButton.addMouseListener(new MouseListener() {
+
+							public void mouseDoubleClick(final MouseEvent e) {
+							}
+
+							public void mouseDown(final MouseEvent e) {
+								final Table table = AlarmbearbeitergruppenEditor.this.tableViewer
+										.getTable();
 								if (table.getSelectionIndex() > -1) {
-									List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
+									final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
+											.getWorkingCopyOfEditorInput()
 											.getUsers();
-									int[] items = table.getSelectionIndices();
-									List<User2GroupBean> removeList = new LinkedList<User2GroupBean>();
-									for (int i = 0; i < items.length; i++) {
-										removeList.add(users.get(items[i]));
+									final int[] items = table
+											.getSelectionIndices();
+									final List<User2GroupBean> removeList = new LinkedList<User2GroupBean>();
+									for (final int element : items) {
+										removeList.add(users.get(element));
 									}
 									users.removeAll(removeList);
-									AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
+									AlarmbearbeitergruppenEditor.this
+											.getWorkingCopyOfEditorInput()
 											.setUsers(users);
 								}
 							}
 
-							public void mouseUp(MouseEvent e) {
+							public void mouseUp(final MouseEvent e) {
 							}
 						});
 					}
@@ -528,61 +583,33 @@ public class AlarmbearbeitergruppenEditor extends
 				}
 			}
 		}
-		initDataBinding();
+		this.initDataBinding();
 
-	}
-
-	private void initDND() {
-		tableViewer.addDropSupport(DND.DROP_LINK,
-				new Transfer[] { LocalSelectionTransfer.getTransfer() },
-				new DropTargetAdapter() {
-
-					public void dragEnter(DropTargetEvent event) {
-						try {
-							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
-									.getTransfer().getSelection();
-							if (selection.getFirstElement() instanceof AlarmbearbeiterBean && 
-									!containsAlarmbearbeiter((AlarmbearbeiterBean)selection.getFirstElement()) )
-									{
-									event.detail = DND.DROP_LINK;
-							} else {
-								event.detail = DND.DROP_NONE;
-							}
-						} catch (Throwable e) {
-						}
-					}
-
-					private boolean containsAlarmbearbeiter(AlarmbearbeiterBean newUser) {
-						List<User2GroupBean> users = getWorkingCopyOfEditorInput().getUsers();
-						
-						for (User2GroupBean user2GroupBean : users) {
-							if( user2GroupBean.getUserBean().equals(newUser) )
-								return true;
-						}
-						
-						return false;
-					}
-					
-					public void drop(DropTargetEvent event) {
-						try {
-							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
-									.getTransfer().getSelection();
-							AlarmbearbeiterBean bean = (AlarmbearbeiterBean) selection
-									.getFirstElement();
-							List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
-									.getUsers();
-							users.add(new User2GroupBean(bean));
-							AlarmbearbeitergruppenEditor.this.getWorkingCopyOfEditorInput()
-									.setUsers(users);
-						} catch (Throwable e) {
-						}
-					}
-
-				});
 	}
 
 	@Override
-	protected void doInit(IEditorSite site, IEditorInput input) {
+	public void onBeanInsert(final IConfigurationBean bean) {
+		if (this.tableViewer != null) {
+			this.tableViewer.refresh();
+		}
+		super.onBeanInsert(bean);
+	}
+
+	@Override
+	public void onBeanUpdate(final IConfigurationBean bean) {
+		if (this.tableViewer != null) {
+			this.tableViewer.refresh();
+		}
+		super.onBeanUpdate(bean);
+	}
+
+	@Override
+	public void setFocus() {
+		this.name.setFocus();
+	}
+
+	@Override
+	protected void doInit(final IEditorSite site, final IEditorInput input) {
 	}
 
 	@Override
@@ -592,50 +619,56 @@ public class AlarmbearbeitergruppenEditor extends
 
 	@Override
 	protected void initDataBinding() {
-		DataBindingContext context = new DataBindingContext();
+		final DataBindingContext context = new DataBindingContext();
 
-		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterGruppenBean.PropertyNames.name
-						.name());
+		final IObservableValue nameTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterGruppenBean.PropertyNames.name.name());
 
-		IObservableValue aktiveMitgliederTextObservable = BeansObservables
+		final IObservableValue aktiveMitgliederTextObservable = BeansObservables
 				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterGruppenBean.PropertyNames.minGroupMember
 								.name());
 
-		IObservableValue warteZeitTextObservable = BeansObservables
+		final IObservableValue warteZeitTextObservable = BeansObservables
 				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterGruppenBean.PropertyNames.timeOutSec
 								.name());
 
-		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(),
-				AlarmbearbeiterBean.AbstractPropertyNames.rubrikName.name());
+		final IObservableValue rubrikTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.AbstractPropertyNames.rubrikName
+								.name());
 
-		IObservableList usersListObservable = BeansObservables.observeList(
-				context.getValidationRealm(), this.getWorkingCopyOfEditorInput(),
-				AlarmbearbeiterGruppenBean.PropertyNames.users.name());
+		final IObservableList usersListObservable = BeansObservables
+				.observeList(context.getValidationRealm(), this
+						.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterGruppenBean.PropertyNames.users.name());
 
-		IObservableValue activeCheckboxObservable = BeansObservables
+		final IObservableValue activeCheckboxObservable = BeansObservables
 				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterGruppenBean.PropertyNames.active.name());
 
-		IObservableList usersListInTableObservable = BeansObservables
-				.observeList(context.getValidationRealm(), userContentProvider,
-						"entries");
+		final IObservableList usersListInTableObservable = BeansObservables
+				.observeList(context.getValidationRealm(),
+						this.userContentProvider, "entries");
 
 		// bind observables
 		context.bindList(usersListInTableObservable, usersListObservable, null,
 				new UpdateListStrategy() {
 
 					@Override
-					protected IStatus doAdd(IObservableList observableList,
-							Object element, int index) {
+					protected IStatus doAdd(
+							final IObservableList observableList,
+							final Object element, final int index) {
 						IStatus status;
 						status = super.doAdd(observableList, element, index);
 						Display.getCurrent().asyncExec(new Runnable() {
 							public void run() {
-								tableViewer.setInput(getWorkingCopyOfEditorInput().getUsers());
+								AlarmbearbeitergruppenEditor.this.tableViewer
+										.setInput(AlarmbearbeitergruppenEditor.this
+												.getWorkingCopyOfEditorInput()
+												.getUsers());
 
 							}
 						});
@@ -643,32 +676,45 @@ public class AlarmbearbeitergruppenEditor extends
 					}
 
 					@Override
-					protected IStatus doRemove(IObservableList observableList,
-							int index) {
-						IStatus status = super.doRemove(observableList, index);
-						tableViewer.setInput(getWorkingCopyOfEditorInput().getUsers());
-						tableViewer.refresh();
+					protected IStatus doRemove(
+							final IObservableList observableList,
+							final int index) {
+						final IStatus status = super.doRemove(observableList,
+								index);
+						AlarmbearbeitergruppenEditor.this.tableViewer
+								.setInput(AlarmbearbeitergruppenEditor.this
+										.getWorkingCopyOfEditorInput()
+										.getUsers());
+						AlarmbearbeitergruppenEditor.this.tableViewer.refresh();
 						return status;
 					}
 
 				});
 
-		context.bindValue(SWTObservables.observeText(name, SWT.Modify),
+		context.bindValue(SWTObservables.observeText(this.name, SWT.Modify),
 				nameTextObservable, null, null);
 
-		context.bindValue(SWTObservables.observeText(aktiveMitglieder,
+		context.bindValue(SWTObservables.observeText(this.aktiveMitglieder,
 				SWT.Modify), aktiveMitgliederTextObservable,
 				new UpdateValueStrategy() {
-					
+
 					@Override
-					public IStatus validateAfterGet(Object value) {
+					public IStatus validateAfterGet(final Object value) {
 						if (!EditorUIUtils.isValidDigit((String) value)) {
-							aktiveMitglieder.setText("0");
+							AlarmbearbeitergruppenEditor.this.aktiveMitglieder
+									.setText("0");
 							return Status.CANCEL_STATUS;
-						} else { 
-							Short convertedValue = Short.parseShort((String) value);
-							if (convertedValue > getWorkingCopyOfEditorInput().getUsers().size()){
-								aktiveMitglieder.setText("" + getWorkingCopyOfEditorInput().getUsers().size());
+						} else {
+							final Short convertedValue = Short
+									.parseShort((String) value);
+							if (convertedValue > AlarmbearbeitergruppenEditor.this
+									.getWorkingCopyOfEditorInput().getUsers()
+									.size()) {
+								AlarmbearbeitergruppenEditor.this.aktiveMitglieder
+										.setText(""
+												+ AlarmbearbeitergruppenEditor.this
+														.getWorkingCopyOfEditorInput()
+														.getUsers().size());
 								return Status.CANCEL_STATUS;
 							}
 						}
@@ -676,45 +722,83 @@ public class AlarmbearbeitergruppenEditor extends
 					}
 				}, null);
 
-		context.bindValue(SWTObservables.observeText(wartezeit, SWT.Modify),
+		context.bindValue(SWTObservables
+				.observeText(this.wartezeit, SWT.Modify),
 				warteZeitTextObservable, new UpdateValueStrategy() {
 
 					@Override
-					public IStatus validateAfterGet(Object value) {
-							if (!EditorUIUtils.isValidDigit((String) value)) {
-								wartezeit.setText("0");
-								return Status.CANCEL_STATUS;
-							}
+					public IStatus validateAfterGet(final Object value) {
+						if (!EditorUIUtils.isValidDigit((String) value)) {
+							AlarmbearbeitergruppenEditor.this.wartezeit
+									.setText("0");
+							return Status.CANCEL_STATUS;
+						}
 						return super.validateAfterGet(value);
 					}
 				}, null);
 
-		context.bindValue(SWTObservables.observeSelection(activeButton),
+		context.bindValue(SWTObservables.observeSelection(this.activeButton),
 				activeCheckboxObservable, null, null);
 
-		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
+		context.bindValue(SWTObservables
+				.observeSelection(this._rubrikComboEntry),
 				rubrikTextObservable, null, null);
 
 	}
-	
-	@Override
-	public void onBeanUpdate(IConfigurationBean bean) {
-		if (tableViewer != null) {
-			tableViewer.refresh();
-		}
-		super.onBeanUpdate(bean);
-	}
-	
-	@Override
-	public void onBeanInsert(IConfigurationBean bean) {
-		if (tableViewer != null) {
-			tableViewer.refresh();
-		}
-		super.onBeanInsert(bean);
-	}
 
-	@Override
-	public void setFocus() {
-		name.setFocus();
+	private void initDND() {
+		this.tableViewer.addDropSupport(DND.DROP_LINK,
+				new Transfer[] { LocalSelectionTransfer.getTransfer() },
+				new DropTargetAdapter() {
+
+					@Override
+					public void dragEnter(final DropTargetEvent event) {
+						try {
+							final IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+									.getTransfer().getSelection();
+							if ((selection.getFirstElement() instanceof AlarmbearbeiterBean)
+									&& !this
+											.containsAlarmbearbeiter((AlarmbearbeiterBean) selection
+													.getFirstElement())) {
+								event.detail = DND.DROP_LINK;
+							} else {
+								event.detail = DND.DROP_NONE;
+							}
+						} catch (final Throwable e) {
+						}
+					}
+
+					@Override
+					public void drop(final DropTargetEvent event) {
+						try {
+							final IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+									.getTransfer().getSelection();
+							final AlarmbearbeiterBean bean = (AlarmbearbeiterBean) selection
+									.getFirstElement();
+							final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
+									.getWorkingCopyOfEditorInput().getUsers();
+							users.add(new User2GroupBean(bean));
+							AlarmbearbeitergruppenEditor.this
+									.getWorkingCopyOfEditorInput().setUsers(
+											users);
+						} catch (final Throwable e) {
+						}
+					}
+
+					private boolean containsAlarmbearbeiter(
+							final AlarmbearbeiterBean newUser) {
+						final List<User2GroupBean> users = AlarmbearbeitergruppenEditor.this
+								.getWorkingCopyOfEditorInput().getUsers();
+
+						for (final User2GroupBean user2GroupBean : users) {
+							if (user2GroupBean.getUserBean().equals(newUser)) {
+								return true;
+							}
+						}
+
+						return false;
+					}
+
+				});
 	}
 }

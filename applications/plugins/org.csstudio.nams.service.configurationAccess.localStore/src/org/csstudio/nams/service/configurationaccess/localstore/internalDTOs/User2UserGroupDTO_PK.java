@@ -6,64 +6,68 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class User2UserGroupDTO_PK implements Serializable{
+public class User2UserGroupDTO_PK implements Serializable {
 	private static final long serialVersionUID = 5698295964009594216L;
+
+	@Column(name = "iUserGroupRef")
+	private int iUserGroupRef;
+
+	@Column(name = "iUserRef", nullable = false)
+	private int iUserRef;
 
 	public User2UserGroupDTO_PK() {
 	}
 
-	public User2UserGroupDTO_PK(int userGroupRef, int userRef) {
+	public User2UserGroupDTO_PK(final int userGroupRef, final int userRef) {
 		super();
-		iUserGroupRef = userGroupRef;
-		iUserRef = userRef;
+		this.iUserGroupRef = userGroupRef;
+		this.iUserRef = userRef;
 	}
-	
-	@Column(name="iUserGroupRef")
-	private int iUserGroupRef;
-	
-	@Column(name="iUserRef", nullable=false)
-	private int iUserRef;
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final User2UserGroupDTO_PK other = (User2UserGroupDTO_PK) obj;
+		if (this.iUserGroupRef != other.iUserGroupRef) {
+			return false;
+		}
+		if (this.iUserRef != other.iUserRef) {
+			return false;
+		}
+		return true;
+	}
 
 	public int getIUserGroupRef() {
-		return iUserGroupRef;
-	}
-
-	public void setIUserGroupRef(int userGroupRef) {
-		iUserGroupRef = userGroupRef;
+		return this.iUserGroupRef;
 	}
 
 	public int getIUserRef() {
-		return iUserRef;
-	}
-
-	public void setIUserRef(int userRef) {
-		iUserRef = userRef;
+		return this.iUserRef;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + iUserGroupRef;
-		result = prime * result + iUserRef;
+		result = prime * result + this.iUserGroupRef;
+		result = prime * result + this.iUserRef;
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final User2UserGroupDTO_PK other = (User2UserGroupDTO_PK) obj;
-		if (iUserGroupRef != other.iUserGroupRef)
-			return false;
-		if (iUserRef != other.iUserRef)
-			return false;
-		return true;
+	public void setIUserGroupRef(final int userGroupRef) {
+		this.iUserGroupRef = userGroupRef;
 	}
 
-	
+	public void setIUserRef(final int userRef) {
+		this.iUserRef = userRef;
+	}
+
 }

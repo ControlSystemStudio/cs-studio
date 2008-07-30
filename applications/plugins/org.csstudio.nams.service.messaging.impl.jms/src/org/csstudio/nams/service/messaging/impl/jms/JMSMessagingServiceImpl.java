@@ -10,19 +10,23 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 public class JMSMessagingServiceImpl implements MessagingService {
 
 	public MessagingSession createNewMessagingSession(
-			String environmentUniqueClientId, String[] urls)
+			final String environmentUniqueClientId, final String[] urls)
 			throws MessagingException, IllegalArgumentException {
-		
-		//TODO urls prüfen
-		
+
+		// TODO urls prüfen
+
 		try {
 			return new JMSMessagingSessionImpl(environmentUniqueClientId, urls);
-		} catch (NamingException e) {
+		} catch (final NamingException e) {
 			// TODO exception handling
-			throw new MessagingException("NamingException during creation of JMSMessagingSessionImpl",e);
-		} catch (JMSException e) {
+			throw new MessagingException(
+					"NamingException during creation of JMSMessagingSessionImpl",
+					e);
+		} catch (final JMSException e) {
 			// TODO exception handling
-			throw new MessagingException("JMSException during creation of JMSMessagingSessionImpl",e);
+			throw new MessagingException(
+					"JMSException during creation of JMSMessagingSessionImpl",
+					e);
 		}
 	}
 

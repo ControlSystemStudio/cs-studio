@@ -8,12 +8,12 @@ public class FilterView extends AbstractNamsView {
 	public static final String ID = "org.csstudio.nams.configurator.filter";
 
 	@Override
-	protected IConfigurationBean[] getTableContent() {
-		return getConfigurationBeanService().getFilterBeans();
-	}
-	
-	@Override
 	protected Class<? extends IConfigurationBean> getBeanClass() {
 		return FilterBean.class;
+	}
+
+	@Override
+	protected IConfigurationBean[] getTableContent() {
+		return AbstractNamsView.getConfigurationBeanService().getFilterBeans();
 	}
 }

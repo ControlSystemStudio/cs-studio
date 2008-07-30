@@ -28,10 +28,9 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @Table(name = "AMS_FilterCondition_String")
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 public class StringFilterConditionDTO extends FilterConditionDTO {
 
-	
 	@Column(name = "cKeyValue", length = 16)
 	private String keyValue;
 
@@ -41,59 +40,36 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	@Column(name = "cCompValue", length = 128)
 	private String compValue;
 
-	/**
-	 * @return the keyValue
-	 */
-	@SuppressWarnings("unused")
-	private String getKeyValue() {
-		return keyValue;
-	}
-
-	public MessageKeyEnum getKeyValueEnum() {
-		MessageKeyEnum valueOf = MessageKeyEnum.getEnumFor(keyValue);
-		return valueOf;
-	}
-
-	/**
-	 * @param keyValue
-	 *            the keyValue to set
-	 */
-	protected void setKeyValue(String keyValue) {
-		this.keyValue = keyValue;
-	}
-	
-	public void setKeyValue(MessageKeyEnum keyValue){
-		Contract.requireNotNull("keyValue", keyValue);
-		
-		setKeyValue( keyValue.getStringValue() );
-	}
-
-	/**
-	 * @return the operator
-	 */
-	@SuppressWarnings("unused")
-	private short getOperator() {
-		return operator;
-	}
-
-	public StringRegelOperator getOperatorEnum(){
-		return StringRegelOperator.valueOf(operator);
-	}
-	
-	/**
-	 * TODO Rename to sth. like setStringOperator
-	 */
-	public void setOperatorEnum(StringRegelOperator op){
-		setOperator((short) op.databaseValue());
-	}
-	
-	/**
-	 * @param operator
-	 *            the operator to set
-	 */
-	@SuppressWarnings("unused")
-	private void setOperator(short operator) {
-		this.operator = operator;
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof StringFilterConditionDTO)) {
+			return false;
+		}
+		final StringFilterConditionDTO other = (StringFilterConditionDTO) obj;
+		if (this.compValue == null) {
+			if (other.compValue != null) {
+				return false;
+			}
+		} else if (!this.compValue.equals(other.compValue)) {
+			return false;
+		}
+		if (this.keyValue == null) {
+			if (other.keyValue != null) {
+				return false;
+			}
+		} else if (!this.keyValue.equals(other.keyValue)) {
+			return false;
+		}
+		if (this.operator != other.operator) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -101,20 +77,54 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 */
 	@SuppressWarnings("unused")
 	public String getCompValue() {
-		return compValue;
+		return this.compValue;
+	}
+
+	public MessageKeyEnum getKeyValueEnum() {
+		final MessageKeyEnum valueOf = MessageKeyEnum.getEnumFor(this.keyValue);
+		return valueOf;
+	}
+
+	public StringRegelOperator getOperatorEnum() {
+		return StringRegelOperator.valueOf(this.operator);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((this.compValue == null) ? 0 : this.compValue.hashCode());
+		result = prime * result
+				+ ((this.keyValue == null) ? 0 : this.keyValue.hashCode());
+		result = prime * result + this.operator;
+		return result;
 	}
 
 	/**
 	 * @param compValue
 	 *            the compValue to set
 	 */
-	public void setCompValue(String compValue) {
+	public void setCompValue(final String compValue) {
 		this.compValue = compValue;
+	}
+
+	public void setKeyValue(final MessageKeyEnum keyValue) {
+		Contract.requireNotNull("keyValue", keyValue);
+
+		this.setKeyValue(keyValue.getStringValue());
+	}
+
+	/**
+	 * TODO Rename to sth. like setStringOperator
+	 */
+	public void setOperatorEnum(final StringRegelOperator op) {
+		this.setOperator(op.databaseValue());
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(super.toString());
+		final StringBuilder builder = new StringBuilder(super.toString());
 		builder.append(" + key: ");
 		builder.append(this.keyValue);
 		builder.append(", operator: ");
@@ -124,41 +134,37 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 		return builder.toString();
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result
-				+ ((compValue == null) ? 0 : compValue.hashCode());
-		result = prime * result
-				+ ((keyValue == null) ? 0 : keyValue.hashCode());
-		result = prime * result + operator;
-		return result;
+	/**
+	 * @param keyValue
+	 *            the keyValue to set
+	 */
+	protected void setKeyValue(final String keyValue) {
+		this.keyValue = keyValue;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof StringFilterConditionDTO))
-			return false;
-		final StringFilterConditionDTO other = (StringFilterConditionDTO) obj;
-		if (compValue == null) {
-			if (other.compValue != null)
-				return false;
-		} else if (!compValue.equals(other.compValue))
-			return false;
-		if (keyValue == null) {
-			if (other.keyValue != null)
-				return false;
-		} else if (!keyValue.equals(other.keyValue))
-			return false;
-		if (operator != other.operator)
-			return false;
-		return true;
+	/**
+	 * @return the keyValue
+	 */
+	@SuppressWarnings("unused")
+	private String getKeyValue() {
+		return this.keyValue;
 	}
-	
-	
+
+	/**
+	 * @return the operator
+	 */
+	@SuppressWarnings("unused")
+	private short getOperator() {
+		return this.operator;
+	}
+
+	/**
+	 * @param operator
+	 *            the operator to set
+	 */
+	@SuppressWarnings("unused")
+	private void setOperator(final short operator) {
+		this.operator = operator;
+	}
+
 }

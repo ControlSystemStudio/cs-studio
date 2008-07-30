@@ -14,11 +14,11 @@ public class NotNull implements IArgumentMatcher {
 
 	}
 
-	public boolean matches(final Object actual) {
-		return actual != null;
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("notNull()");
+	}
+
+	public boolean matches(final Object actual) {
+		return actual != null;
 	}
 }

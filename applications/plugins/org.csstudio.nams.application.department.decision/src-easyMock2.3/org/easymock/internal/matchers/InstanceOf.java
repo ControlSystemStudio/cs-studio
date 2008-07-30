@@ -14,12 +14,12 @@ public class InstanceOf implements IArgumentMatcher {
 		this.clazz = clazz;
 	}
 
+	public void appendTo(final StringBuffer buffer) {
+		buffer.append("isA(" + this.clazz.getName() + ")");
+	}
+
 	public boolean matches(final Object actual) {
 		return (actual != null)
 				&& this.clazz.isAssignableFrom(actual.getClass());
-	}
-
-	public void appendTo(final StringBuffer buffer) {
-		buffer.append("isA(" + this.clazz.getName() + ")");
 	}
 }

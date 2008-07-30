@@ -63,7 +63,7 @@ public enum WeiteresVersandVorgehen {
 	NOCH_NICHT_GEPRUEFT;
 
 	public static WeiteresVersandVorgehen fromRegelErgebnis(
-			RegelErgebnis regelErgebnis) {
+			final RegelErgebnis regelErgebnis) {
 		switch (regelErgebnis) {
 		case NICHT_ZUTREFFEND:
 			return WeiteresVersandVorgehen.NICHT_VERSENDEN;
@@ -71,7 +71,8 @@ public enum WeiteresVersandVorgehen {
 			return WeiteresVersandVorgehen.NOCH_NICHT_GEPRUEFT;
 		case VIELLEICHT_ZUTREFFEND:
 			return WeiteresVersandVorgehen.ERNEUT_PRUEFEN;
-		default://case ZUTREFFEND: sollte ein fünfter fall existieren trozdem versenden(stichwort BUGfix)
+		default:// case ZUTREFFEND: sollte ein fünfter fall existieren trozdem
+				// versenden(stichwort BUGfix)
 			return WeiteresVersandVorgehen.VERSENDEN;
 		}
 	}

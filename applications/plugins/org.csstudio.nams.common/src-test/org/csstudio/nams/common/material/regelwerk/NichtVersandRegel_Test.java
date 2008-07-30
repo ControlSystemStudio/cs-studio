@@ -25,6 +25,7 @@
 
 package org.csstudio.nams.common.material.regelwerk;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -32,56 +33,63 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.junit.Test;
 
-
 /**
  * Test for NichtVersandRegel
  * 
- *
- * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>,
- *         <a href="mailto:gs@c1-wps.de">Goesta Steen</a>,
- *         <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
+ * 
+ * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
+ *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
+ *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 09.04.2008
  */
 
 public class NichtVersandRegel_Test extends TestCase {
 
 	/**
-	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.NichtVersandRegel#auswerten(org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
+	 * Test method for
+	 * {@link org.csstudio.nams.common.material.regelwerk.NichtVersandRegel#auswerten(org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testAuswerten() {
-		VersandRegel versandRegel = new VersandRegel() {
+		final VersandRegel versandRegel = new VersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 			}
+
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
 				return Millisekunden.valueOf(0);
 			}
+
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
 				return Millisekunden.valueOf(0);
 			}
 		};
-		
-		NichtVersandRegel nichtRegel = new NichtVersandRegel(versandRegel);
-		
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(), nichtRegel);
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.NICHT_ZUTREFFEND);
-		
-		assertTrue(nichtRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		assertTrue(nichtRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
-		
-		
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel, RegelErgebnis.ZUTREFFEND);
-		
-		assertTrue(nichtRegel.auswerten(pruefliste) == RegelErgebnis.NICHT_ZUTREFFEND);
+
+		final NichtVersandRegel nichtRegel = new NichtVersandRegel(versandRegel);
+
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), nichtRegel);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.NICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(nichtRegel.auswerten(pruefliste) == RegelErgebnis.ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		Assert
+				.assertTrue(nichtRegel.auswerten(pruefliste) == RegelErgebnis.VIELLEICHT_ZUTREFFEND);
+
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(versandRegel,
+				RegelErgebnis.ZUTREFFEND);
+
+		Assert
+				.assertTrue(nichtRegel.auswerten(pruefliste) == RegelErgebnis.NICHT_ZUTREFFEND);
 	}
 
 }

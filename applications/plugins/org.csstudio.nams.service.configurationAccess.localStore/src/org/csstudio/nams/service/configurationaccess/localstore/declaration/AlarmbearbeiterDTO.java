@@ -65,7 +65,7 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 
 	@Column(name = "sActive")
 	private short active;
-	
+
 	@Column(name = "SPREFERREDALARMINGTYPERR", length = 5)
 	private short preferedAlarmingType;
 
@@ -87,9 +87,11 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 * @param confirmCode
 	 * @param active
 	 */
-	public AlarmbearbeiterDTO(int userId, int groupRef, String userName,
-			String email, String mobilePhone, String phone, String statusCode,
-			String confirmCode, boolean active) {
+	public AlarmbearbeiterDTO(final int userId, final int groupRef,
+			final String userName, final String email,
+			final String mobilePhone, final String phone,
+			final String statusCode, final String confirmCode,
+			final boolean active) {
 		super();
 		this.userId = userId;
 		this.groupRef = groupRef;
@@ -102,108 +104,70 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 		this.active = (short) (active == true ? 1 : 0);
 	}
 
-	/**
-	 * @return the groupRef
-	 */
-	public int getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * @param groupRef
-	 *            the groupRef to set
-	 */
-	@SuppressWarnings("unused")
-	public void setGroupRef(int groupRef) {
-		this.groupRef = groupRef;
-	}
-
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
-
-	/**
-	 * @param userName
-	 *            the userName to set
-	 */
-	@SuppressWarnings("unused")
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	/**
-	 * @return the email
-	 * 
-	 * TODO Fachwert?????
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email
-	 *            the email to set
-	 */
-	@SuppressWarnings("unused")
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return the mobilePhone
-	 * 
-	 * TODO Fachwert???
-	 */
-	public String getMobilePhone() {
-		return mobilePhone;
-	}
-
-	/**
-	 * @param mobilePhone
-	 *            the mobilePhone to set
-	 */
-	@SuppressWarnings("unused")
-	public void setMobilePhone(String mobilePhone) {
-		this.mobilePhone = mobilePhone;
-	}
-
-	/**
-	 * @return the phone
-	 * 
-	 * TODO Fachwert???
-	 */
-	public String getPhone() {
-		return phone;
-	}
-
-	/**
-	 * @param phone
-	 *            the phone to set
-	 */
-	@SuppressWarnings("unused")
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	/**
-	 * @return the statusCode
-	 * 
-	 * TODO Fachwert???
-	 */
-	public String getStatusCode() {
-		return statusCode;
-	}
-
-	/**
-	 * @param statusCode
-	 *            the statusCode to set
-	 */
-	@SuppressWarnings("unused")
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof AlarmbearbeiterDTO)) {
+			return false;
+		}
+		final AlarmbearbeiterDTO other = (AlarmbearbeiterDTO) obj;
+		if (this.active != other.active) {
+			return false;
+		}
+		if (this.confirmCode == null) {
+			if (other.confirmCode != null) {
+				return false;
+			}
+		} else if (!this.confirmCode.equals(other.confirmCode)) {
+			return false;
+		}
+		if (this.email == null) {
+			if (other.email != null) {
+				return false;
+			}
+		} else if (!this.email.equals(other.email)) {
+			return false;
+		}
+		if (this.groupRef != other.groupRef) {
+			return false;
+		}
+		if (this.mobilePhone == null) {
+			if (other.mobilePhone != null) {
+				return false;
+			}
+		} else if (!this.mobilePhone.equals(other.mobilePhone)) {
+			return false;
+		}
+		if (this.phone == null) {
+			if (other.phone != null) {
+				return false;
+			}
+		} else if (!this.phone.equals(other.phone)) {
+			return false;
+		}
+		if (this.statusCode == null) {
+			if (other.statusCode != null) {
+				return false;
+			}
+		} else if (!this.statusCode.equals(other.statusCode)) {
+			return false;
+		}
+		if (this.userId != other.userId) {
+			return false;
+		}
+		if (this.userName == null) {
+			if (other.userName != null) {
+				return false;
+			}
+		} else if (!this.userName.equals(other.userName)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -212,7 +176,118 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 * TODO Fachwert???
 	 */
 	public String getConfirmCode() {
-		return confirmCode;
+		return this.confirmCode;
+	}
+
+	/**
+	 * @return the email
+	 * 
+	 * TODO Fachwert?????
+	 */
+	public String getEmail() {
+		return this.email;
+	}
+
+	/**
+	 * @return the groupRef
+	 */
+	public int getGroupRef() {
+		return this.groupRef;
+	}
+
+	/**
+	 * @return the mobilePhone
+	 * 
+	 * TODO Fachwert???
+	 */
+	public String getMobilePhone() {
+		return this.mobilePhone;
+	}
+
+	/**
+	 * @return the phone
+	 * 
+	 * TODO Fachwert???
+	 */
+	public String getPhone() {
+		return this.phone;
+	}
+
+	public PreferedAlarmType getPreferedAlarmType() {
+		return PreferedAlarmType.getValueForId(this.preferedAlarmingType);
+	}
+
+	/**
+	 * @return the statusCode
+	 * 
+	 * TODO Fachwert???
+	 */
+	public String getStatusCode() {
+		return this.statusCode;
+	}
+
+	public String getUniqueHumanReadableName() {
+		return this.getUserName();
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public int getUserId() {
+		return this.userId;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return this.userName;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.active;
+		result = prime
+				* result
+				+ ((this.confirmCode == null) ? 0 : this.confirmCode.hashCode());
+		result = prime * result
+				+ ((this.email == null) ? 0 : this.email.hashCode());
+		result = prime * result + this.groupRef;
+		result = prime
+				* result
+				+ ((this.mobilePhone == null) ? 0 : this.mobilePhone.hashCode());
+		result = prime * result
+				+ ((this.phone == null) ? 0 : this.phone.hashCode());
+		result = prime * result
+				+ ((this.statusCode == null) ? 0 : this.statusCode.hashCode());
+		result = prime * result + this.userId;
+		result = prime * result
+				+ ((this.userName == null) ? 0 : this.userName.hashCode());
+		return result;
+	}
+
+	public boolean isActive() {
+		return this.getActive() == 1;
+	}
+
+	/**
+	 * Prueft, ob dieser Alarmbearbeiter in der Rubrik mit dem angegebenen
+	 * Datenbank-Rubrik-Primaerschluessel (GroupRef) enthalten ist.
+	 * 
+	 * TODO Besser hier ein CategoryDTO verwenden.
+	 * 
+	 * @param categoryDBId
+	 * @return
+	 */
+	public boolean isInCategory(final int categoryDBId) {
+		return this.groupRef == categoryDBId;
+	}
+
+	@SuppressWarnings("unused")
+	public void setActive(final boolean active) {
+		this.setActive((short) (active ? 1 : 0));
 	}
 
 	/**
@@ -220,120 +295,79 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	 *            the confirmCode to set
 	 */
 	@SuppressWarnings("unused")
-	public void setConfirmCode(String confirmCode) {
+	public void setConfirmCode(final String confirmCode) {
 		this.confirmCode = confirmCode;
 	}
 
 	/**
-	 * @return the active
+	 * @param email
+	 *            the email to set
 	 */
-	private short getActive() {
-		return active;
-	}
-
-	public boolean isActive() {
-		return getActive() == 1;
-	}
-
 	@SuppressWarnings("unused")
-	public void setActive(boolean active) {
-		setActive((short) (active ? 1 : 0));
+	public void setEmail(final String email) {
+		this.email = email;
 	}
 
 	/**
-	 * @param active
-	 *            the active to set
+	 * @param groupRef
+	 *            the groupRef to set
 	 */
-	private void setActive(short active) {
-		this.active = active;
+	@SuppressWarnings("unused")
+	public void setGroupRef(final int groupRef) {
+		this.groupRef = groupRef;
 	}
 
 	/**
-	 * @return the userId
+	 * @param mobilePhone
+	 *            the mobilePhone to set
 	 */
-	public int getUserId() {
-		return userId;
+	@SuppressWarnings("unused")
+	public void setMobilePhone(final String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	/**
+	 * @param phone
+	 *            the phone to set
+	 */
+	@SuppressWarnings("unused")
+	public void setPhone(final String phone) {
+		this.phone = phone;
+	}
+
+	public void setPreferedAlarmType(final PreferedAlarmType type) {
+		this.preferedAlarmingType = (short) type.ordinal();
+	}
+
+	/**
+	 * @param statusCode
+	 *            the statusCode to set
+	 */
+	@SuppressWarnings("unused")
+	public void setStatusCode(final String statusCode) {
+		this.statusCode = statusCode;
 	}
 
 	/**
 	 * @param userId
 	 *            the userId to set
 	 */
-	public void setUserId(int userId) {
+	public void setUserId(final int userId) {
 		this.userId = userId;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + active;
-		result = prime * result
-				+ ((confirmCode == null) ? 0 : confirmCode.hashCode());
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + groupRef;
-		result = prime * result
-				+ ((mobilePhone == null) ? 0 : mobilePhone.hashCode());
-		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
-		result = prime * result
-				+ ((statusCode == null) ? 0 : statusCode.hashCode());
-		result = prime * result + userId;
-		result = prime * result
-				+ ((userName == null) ? 0 : userName.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof AlarmbearbeiterDTO))
-			return false;
-		final AlarmbearbeiterDTO other = (AlarmbearbeiterDTO) obj;
-		if (active != other.active)
-			return false;
-		if (confirmCode == null) {
-			if (other.confirmCode != null)
-				return false;
-		} else if (!confirmCode.equals(other.confirmCode))
-			return false;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
-		if (groupRef != other.groupRef)
-			return false;
-		if (mobilePhone == null) {
-			if (other.mobilePhone != null)
-				return false;
-		} else if (!mobilePhone.equals(other.mobilePhone))
-			return false;
-		if (phone == null) {
-			if (other.phone != null)
-				return false;
-		} else if (!phone.equals(other.phone))
-			return false;
-		if (statusCode == null) {
-			if (other.statusCode != null)
-				return false;
-		} else if (!statusCode.equals(other.statusCode))
-			return false;
-		if (userId != other.userId)
-			return false;
-		if (userName == null) {
-			if (other.userName != null)
-				return false;
-		} else if (!userName.equals(other.userName))
-			return false;
-		return true;
+	/**
+	 * @param userName
+	 *            the userName to set
+	 */
+	@SuppressWarnings("unused")
+	public void setUserName(final String userName) {
+		this.userName = userName;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(this.getClass()
+		final StringBuilder builder = new StringBuilder(this.getClass()
 				.getSimpleName());
 		builder.append(": name: ");
 		builder.append(this.userName);
@@ -347,36 +381,27 @@ public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 	}
 
 	/**
-	 * Prueft, ob dieser Alarmbearbeiter in der Rubrik mit dem angegebenen
-	 * Datenbank-Rubrik-Primaerschluessel (GroupRef) enthalten ist.
-	 * 
-	 * TODO Besser hier ein CategoryDTO verwenden.
-	 * 
-	 * @param categoryDBId 
-	 * @return
+	 * @return the active
 	 */
-	public boolean isInCategory(int categoryDBId) {
-		return this.groupRef == categoryDBId;
-	}
-
-	public String getUniqueHumanReadableName() {
-		return getUserName();
+	private short getActive() {
+		return this.active;
 	}
 
 	@SuppressWarnings("unused")
 	private short getPreferedAlarmingType() {
-		return preferedAlarmingType;
+		return this.preferedAlarmingType;
+	}
+
+	/**
+	 * @param active
+	 *            the active to set
+	 */
+	private void setActive(final short active) {
+		this.active = active;
 	}
 
 	@SuppressWarnings("unused")
-	private void setPreferedAlarmingType(short preferedAlarmingType) {
+	private void setPreferedAlarmingType(final short preferedAlarmingType) {
 		this.preferedAlarmingType = preferedAlarmingType;
-	}
-	
-	public PreferedAlarmType getPreferedAlarmType(){
-		return PreferedAlarmType.getValueForId(preferedAlarmingType);
-	}
-	public void setPreferedAlarmType(PreferedAlarmType type){
-		preferedAlarmingType = (short) type.ordinal();
 	}
 }

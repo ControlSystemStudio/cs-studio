@@ -17,15 +17,6 @@ public class And implements IArgumentMatcher {
 		this.matchers = matchers;
 	}
 
-	public boolean matches(final Object actual) {
-		for (final IArgumentMatcher matcher : this.matchers) {
-			if (!matcher.matches(actual)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("and(");
 		for (final Iterator<IArgumentMatcher> it = this.matchers.iterator(); it
@@ -36,5 +27,14 @@ public class And implements IArgumentMatcher {
 			}
 		}
 		buffer.append(")");
+	}
+
+	public boolean matches(final Object actual) {
+		for (final IArgumentMatcher matcher : this.matchers) {
+			if (!matcher.matches(actual)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

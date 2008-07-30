@@ -31,53 +31,136 @@ import org.eclipse.swt.widgets.Text;
 
 public abstract class FilterableBeanList {
 
+	private class TableFilter extends ViewerFilter {
+
+		@Override
+		public boolean select(final Viewer viewer, final Object parentElement,
+				final Object element) {
+			final IConfigurationBean bean = (IConfigurationBean) element;
+
+			if ((FilterableBeanList.this.filterkriterium != null)
+					&& (FilterableBeanList.this.filterkriterium.length() != 0)
+					&& (!bean.getDisplayName().toLowerCase().contains(
+							FilterableBeanList.this.filterkriterium
+									.toLowerCase()))) {
+				return false;
+			}
+			if (FilterableBeanList.this.selectedgruppenname.equals("ALLE")) {
+				return true;
+			}
+
+			if (FilterableBeanList.this.selectedgruppenname
+					.equals("Ohne Rubrik")) {
+				return ((bean.getRubrikName() == null) || (bean.getRubrikName()
+						.length() == 0));
+			}
+
+			final boolean equals = ((bean.getRubrikName() != null) && bean
+					.getRubrikName().equals(
+							FilterableBeanList.this.selectedgruppenname));
+			return equals;
+		}
+
+	}
+
 	private static Logger logger;
-	
-	public static void staticInject(Logger logger) {
+
+	public static void staticInject(final Logger logger) {
 		FilterableBeanList.logger = logger;
 	}
-	
+
 	private String filterkriterium = "";
 	private String selectedgruppenname = "ALLE";
-	private Set<String> gruppenNamen = new TreeSet<String>();
 
+	private final Set<String> gruppenNamen = new TreeSet<String>();
 	private TableViewer table;
+
 	private ComboViewer gruppenCombo;
 
-	public FilterableBeanList(Composite parent, int style) {
+	public FilterableBeanList(final Composite parent, final int style) {
 		this.createPartControl(parent, style);
 	}
 
-	private void createPartControl(Composite parent, int style) {
-		Composite main = new Composite(parent, style);
+	public TableViewer getTable() {
+		return this.table;
+	}
+
+	public void updateView() {
+		final IConfigurationBean[] tableInput = this.getTableInput();
+
+		FilterableBeanList.logger.logDebugMessage(this, "new tableInput: "
+				+ Arrays.toString(tableInput));
+
+		this.gruppenNamen.clear();
+		for (final IConfigurationBean bean : tableInput) {
+			final String groupName = bean.getRubrikName();
+			if ((groupName != null) && !groupName.equals("")) {
+				this.gruppenNamen.add(groupName);
+			}
+		}
+
+		final Object[] newItems = new String[this.gruppenNamen.size() + 3];
+		newItems[0] = "ALLE";
+		newItems[1] = "Ohne Rubrik";
+		newItems[2] = "-------------";
+		System.arraycopy(this.gruppenNamen.toArray(new Object[this.gruppenNamen
+				.size()]), 0, newItems, 3, this.gruppenNamen.size());
+		this.gruppenCombo.setInput(newItems);
+
+		if (this.gruppenNamen.contains(this.selectedgruppenname)
+				|| this.selectedgruppenname.equals("Ohne Rubrik")) {
+			this.gruppenCombo.setSelection(new StructuredSelection(
+					this.selectedgruppenname), true);
+		} else {
+			this.gruppenCombo.setSelection(new StructuredSelection("ALLE"),
+					true);
+		}
+		Arrays.sort(tableInput);
+		this.table.setInput(tableInput);
+	}
+
+	protected abstract IConfigurationBean[] getTableInput();
+
+	protected void openEditor(final DoubleClickEvent event) {
+		final IStructuredSelection selection = (IStructuredSelection) event
+				.getSelection();
+		final Object source = selection.getFirstElement();
+		final AbstractConfigurationBean<?> configurationBean = (AbstractConfigurationBean<?>) source;
+
+		new OpenConfigurationEditorAction(configurationBean).run();
+	}
+
+	private void createPartControl(final Composite parent, final int style) {
+		final Composite main = new Composite(parent, style);
 		main.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
 
 		TableColumn column = null;
 
 		{
-			Composite compDown = new Composite(main, SWT.None);
+			final Composite compDown = new Composite(main, SWT.None);
 			compDown.setLayout(new GridLayout(4, false));
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(compDown);
 
 			{
 				new Label(compDown, SWT.READ_ONLY).setText("Rubrik");
 
-				gruppenCombo = new ComboViewer(compDown, SWT.BORDER
+				this.gruppenCombo = new ComboViewer(compDown, SWT.BORDER
 						| SWT.READ_ONLY);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
-						gruppenCombo.getControl());
-				gruppenCombo.setContentProvider(new ArrayContentProvider());
-				gruppenCombo
+						this.gruppenCombo.getControl());
+				this.gruppenCombo
+						.setContentProvider(new ArrayContentProvider());
+				this.gruppenCombo
 						.addSelectionChangedListener(new ISelectionChangedListener() {
 
 							public void selectionChanged(
-									SelectionChangedEvent event) {
-								IStructuredSelection selection = (IStructuredSelection) event
+									final SelectionChangedEvent event) {
+								final IStructuredSelection selection = (IStructuredSelection) event
 										.getSelection();
-								selectedgruppenname = (String) selection
+								FilterableBeanList.this.selectedgruppenname = (String) selection
 										.getFirstElement();
-								table.refresh();
+								FilterableBeanList.this.table.refresh();
 							}
 						});
 			}
@@ -89,9 +172,10 @@ public abstract class FilterableBeanList {
 				GridDataFactory.fillDefaults().grab(true, false)
 						.applyTo(filter);
 				filter.addListener(SWT.Modify, new Listener() {
-					public void handleEvent(Event event) {
-						filterkriterium = filter.getText();
-						table.refresh();
+					public void handleEvent(final Event event) {
+						FilterableBeanList.this.filterkriterium = filter
+								.getText();
+						FilterableBeanList.this.table.refresh();
 					}
 				});
 
@@ -99,94 +183,21 @@ public abstract class FilterableBeanList {
 		}
 
 		{
-			table = new TableViewer(main, SWT.FULL_SELECTION );
-			column = new TableColumn(table.getTable(), SWT.LEFT);
+			this.table = new TableViewer(main, SWT.FULL_SELECTION);
+			column = new TableColumn(this.table.getTable(), SWT.LEFT);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
-					table.getControl());
-			table.setContentProvider(new ArrayContentProvider());
-			updateView();
-			table.setFilters(new ViewerFilter[] { new TableFilter() });
-			table.addDoubleClickListener(new IDoubleClickListener() {
-				public void doubleClick(DoubleClickEvent event) {
-					openEditor(event);
+					this.table.getControl());
+			this.table.setContentProvider(new ArrayContentProvider());
+			this.updateView();
+			this.table.setFilters(new ViewerFilter[] { new TableFilter() });
+			this.table.addDoubleClickListener(new IDoubleClickListener() {
+				public void doubleClick(final DoubleClickEvent event) {
+					FilterableBeanList.this.openEditor(event);
 				}
 			});
 		}
 
-		main.addControlListener(new TableColumnResizeAdapter(main, table
+		main.addControlListener(new TableColumnResizeAdapter(main, this.table
 				.getTable(), column));
-	}
-
-	protected void openEditor(DoubleClickEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) event
-				.getSelection();
-		Object source = selection.getFirstElement();
-		AbstractConfigurationBean<?> configurationBean = (AbstractConfigurationBean<?>) source;
-
-		new OpenConfigurationEditorAction(configurationBean).run();
-	}
-
-	protected abstract IConfigurationBean[] getTableInput();
-
-	private class TableFilter extends ViewerFilter {
-
-		@Override
-		public boolean select(Viewer viewer, Object parentElement,
-				Object element) {
-			IConfigurationBean bean = (IConfigurationBean) element;
-
-			if (filterkriterium != null && filterkriterium.length() != 0 && (!bean.getDisplayName().toLowerCase().contains(
-					filterkriterium.toLowerCase()))) {
-				return false;
-			}
-			if (selectedgruppenname.equals("ALLE")) {
-				return true;
-			}
-
-			if (selectedgruppenname.equals("Ohne Rubrik")) {
-				return (bean.getRubrikName() == null || bean.getRubrikName().length() == 0);
-			}
-
-			boolean equals = (bean.getRubrikName() != null && bean
-					.getRubrikName().equals(selectedgruppenname));
-			return equals;
-		}
-
-	}
-
-	public TableViewer getTable() {
-		return table;
-	}
-
-	public void updateView() {
-		IConfigurationBean[] tableInput = this.getTableInput();
-
-		logger.logDebugMessage(this, "new tableInput: " + Arrays.toString(tableInput));
-		
-		gruppenNamen.clear();
-		for (IConfigurationBean bean : tableInput) {
-			String groupName = bean.getRubrikName();
-			if (groupName != null && !groupName.equals("")) {
-				gruppenNamen.add(groupName);
-			}
-		}
-
-		Object[] newItems = new String[gruppenNamen.size() + 3];
-		newItems[0] = "ALLE";
-		newItems[1] = "Ohne Rubrik";
-		newItems[2] = "-------------";
-		System.arraycopy(gruppenNamen.toArray(new Object[gruppenNamen.size()]),
-				0, newItems, 3, gruppenNamen.size());
-		gruppenCombo.setInput(newItems);
-
-		if (gruppenNamen.contains(selectedgruppenname) || selectedgruppenname.equals("Ohne Rubrik")) {
-			gruppenCombo.setSelection(new StructuredSelection(
-					selectedgruppenname), true);
-		} else {
-			gruppenCombo.setSelection(new StructuredSelection(
-					"ALLE"), true);
-		}
-		Arrays.sort(tableInput);
-		table.setInput(tableInput);
 	}
 }

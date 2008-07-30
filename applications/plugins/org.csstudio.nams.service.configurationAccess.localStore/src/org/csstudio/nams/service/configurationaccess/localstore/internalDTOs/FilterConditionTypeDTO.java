@@ -29,37 +29,63 @@ public class FilterConditionTypeDTO {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "iFilterConditionTypeID", nullable=false, unique=true)
+	@Column(name = "iFilterConditionTypeID", nullable = false, unique = true)
 	private int iFilterConditionTypeID;
 
-	@Column(name = "cName", length=128)
+	@Column(name = "cName", length = 128)
 	private String cName;
 
 	@Deprecated
-	@Column(name = "cClass", length=256)
+	@Column(name = "cClass", length = 256)
 	private String cClass;
 
 	/**
 	 * @deprecated No more in use.
 	 */
 	@Deprecated
-	@Column(name = "cClassUI", length=256)
+	@Column(name = "cClassUI", length = 256)
 	private String cClassUI = null;
 
 	/**
-	 * @return the iFilterConditionTypeID
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public int getIFilterConditionTypeID() {
-		return iFilterConditionTypeID;
-	}
-
-	/**
-	 * @param filterConditionTypeID
-	 *            the iFilterConditionTypeID to set
-	 */
-	@SuppressWarnings("unused")
-	private void setIFilterConditionTypeID(int filterConditionTypeID) {
-		iFilterConditionTypeID = filterConditionTypeID;
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof FilterConditionTypeDTO)) {
+			return false;
+		}
+		final FilterConditionTypeDTO other = (FilterConditionTypeDTO) obj;
+		if (this.cClass == null) {
+			if (other.cClass != null) {
+				return false;
+			}
+		} else if (!this.cClass.equals(other.cClass)) {
+			return false;
+		}
+		if (this.cClassUI == null) {
+			if (other.cClassUI != null) {
+				return false;
+			}
+		} else if (!this.cClassUI.equals(other.cClassUI)) {
+			return false;
+		}
+		if (this.cName == null) {
+			if (other.cName != null) {
+				return false;
+			}
+		} else if (!this.cName.equals(other.cName)) {
+			return false;
+		}
+		if (this.iFilterConditionTypeID != other.iFilterConditionTypeID) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -67,50 +93,14 @@ public class FilterConditionTypeDTO {
 	 */
 	@SuppressWarnings("unused")
 	public String getCName() {
-		return cName;
+		return this.cName;
 	}
 
 	/**
-	 * @param name
-	 *            the cName to set
+	 * @return the iFilterConditionTypeID
 	 */
-	@SuppressWarnings("unused")
-	private void setCName(String name) {
-		cName = name;
-	}
-
-	/**
-	 * @return the cClass
-	 */
-	@SuppressWarnings("unused")
-	private String getCClass() {
-		return cClass;
-	}
-
-	/**
-	 * @param class1
-	 *            the cClass to set
-	 */
-	@SuppressWarnings("unused")
-	private void setCClass(String class1) {
-		cClass = class1;
-	}
-
-	/**
-	 * @return the cClassUI
-	 */
-	@SuppressWarnings("unused")
-	private String getCClassUI() {
-		return cClassUI;
-	}
-
-	/**
-	 * @param classUI
-	 *            the cClassUI to set
-	 */
-	@SuppressWarnings("unused")
-	private void setCClassUI(String classUI) {
-		cClassUI = classUI;
+	public int getIFilterConditionTypeID() {
+		return this.iFilterConditionTypeID;
 	}
 
 	/**
@@ -120,49 +110,20 @@ public class FilterConditionTypeDTO {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cClass == null) ? 0 : cClass.hashCode());
 		result = prime * result
-				+ ((cClassUI == null) ? 0 : cClassUI.hashCode());
-		result = prime * result + ((cName == null) ? 0 : cName.hashCode());
-		result = prime * result + iFilterConditionTypeID;
+				+ ((this.cClass == null) ? 0 : this.cClass.hashCode());
+		result = prime * result
+				+ ((this.cClassUI == null) ? 0 : this.cClassUI.hashCode());
+		result = prime * result
+				+ ((this.cName == null) ? 0 : this.cName.hashCode());
+		result = prime * result + this.iFilterConditionTypeID;
 		return result;
 	}
 
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof FilterConditionTypeDTO))
-			return false;
-		final FilterConditionTypeDTO other = (FilterConditionTypeDTO) obj;
-		if (cClass == null) {
-			if (other.cClass != null)
-				return false;
-		} else if (!cClass.equals(other.cClass))
-			return false;
-		if (cClassUI == null) {
-			if (other.cClassUI != null)
-				return false;
-		} else if (!cClassUI.equals(other.cClassUI))
-			return false;
-		if (cName == null) {
-			if (other.cName != null)
-				return false;
-		} else if (!cName.equals(other.cName))
-			return false;
-		if (iFilterConditionTypeID != other.iFilterConditionTypeID)
-			return false;
-		return true;
-	}
-	
 	@Override
 	public String toString() {
-		final StringBuilder resultBuilder = new StringBuilder(this.getClass().getSimpleName());
+		final StringBuilder resultBuilder = new StringBuilder(this.getClass()
+				.getSimpleName());
 		resultBuilder.append(": ");
 		resultBuilder.append(this.getCName());
 		resultBuilder.append(" (");
@@ -172,5 +133,57 @@ public class FilterConditionTypeDTO {
 		resultBuilder.append("), UIClass: ");
 		resultBuilder.append(this.getCClassUI());
 		return resultBuilder.toString();
+	}
+
+	/**
+	 * @return the cClass
+	 */
+	@SuppressWarnings("unused")
+	private String getCClass() {
+		return this.cClass;
+	}
+
+	/**
+	 * @return the cClassUI
+	 */
+	@SuppressWarnings("unused")
+	private String getCClassUI() {
+		return this.cClassUI;
+	}
+
+	/**
+	 * @param class1
+	 *            the cClass to set
+	 */
+	@SuppressWarnings("unused")
+	private void setCClass(final String class1) {
+		this.cClass = class1;
+	}
+
+	/**
+	 * @param classUI
+	 *            the cClassUI to set
+	 */
+	@SuppressWarnings("unused")
+	private void setCClassUI(final String classUI) {
+		this.cClassUI = classUI;
+	}
+
+	/**
+	 * @param name
+	 *            the cName to set
+	 */
+	@SuppressWarnings("unused")
+	private void setCName(final String name) {
+		this.cName = name;
+	}
+
+	/**
+	 * @param filterConditionTypeID
+	 *            the iFilterConditionTypeID to set
+	 */
+	@SuppressWarnings("unused")
+	private void setIFilterConditionTypeID(final int filterConditionTypeID) {
+		this.iFilterConditionTypeID = filterConditionTypeID;
 	}
 }

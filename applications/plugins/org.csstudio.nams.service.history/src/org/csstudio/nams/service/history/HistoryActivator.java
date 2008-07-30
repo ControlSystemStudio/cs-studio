@@ -24,15 +24,16 @@ public class HistoryActivator extends AbstractBundleActivator implements
 	public OSGiServiceOffers startBundle(
 			@OSGiService
 			@Required
-			Logger logger,
+			final Logger logger,
 			@ExecutableEclipseRCPExtension(extensionId = HistoryServiceFactory.class)
 			@Required
-			Object historyServiceFactory) throws Exception {
-		OSGiServiceOffers result = new OSGiServiceOffers();
+			final Object historyServiceFactory) throws Exception {
+		final OSGiServiceOffers result = new OSGiServiceOffers();
 
-		logger.logInfoMessage(this, "starting bundle: " + PLUGIN_ID);
+		logger.logInfoMessage(this, "starting bundle: "
+				+ HistoryActivator.PLUGIN_ID);
 
-		HistoryServiceFactory factory = (HistoryServiceFactory) historyServiceFactory;
+		final HistoryServiceFactory factory = (HistoryServiceFactory) historyServiceFactory;
 		result.put(HistoryService.class, factory.createService());
 		return result;
 	}

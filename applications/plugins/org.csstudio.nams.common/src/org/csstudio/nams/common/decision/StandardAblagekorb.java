@@ -32,10 +32,10 @@ import org.csstudio.nams.common.wam.Material;
 @Material
 public class StandardAblagekorb<T extends Ablagefaehig> implements
 		Eingangskorb<T>, Ausgangskorb<T>, Zwischenablagekorb<T> {
-	private LinkedBlockingQueue<T> inhalt;
+	private final LinkedBlockingQueue<T> inhalt;
 
 	public StandardAblagekorb() {
-		inhalt = new LinkedBlockingQueue<T>();
+		this.inhalt = new LinkedBlockingQueue<T>();
 	}
 
 	/**
@@ -45,8 +45,8 @@ public class StandardAblagekorb<T extends Ablagefaehig> implements
 	 *            Das neue Dokuement,
 	 * @throws InterruptedException
 	 */
-	public void ablegen(T dokument) throws InterruptedException {
-		inhalt.put(dokument);
+	public void ablegen(final T dokument) throws InterruptedException {
+		this.inhalt.put(dokument);
 	}
 
 	/**
@@ -62,14 +62,14 @@ public class StandardAblagekorb<T extends Ablagefaehig> implements
 	 *             wird.
 	 */
 	public T entnehmeAeltestenEingang() throws InterruptedException {
-		return inhalt.take();
+		return this.inhalt.take();
+	}
+
+	public boolean istEnthalten(final T element) {
+		return this.inhalt.contains(element);
 	}
 
 	public Iterator<T> iterator() {
-		return inhalt.iterator();
-	}
-
-	public boolean istEnthalten(T element) {
-		return inhalt.contains(element);
+		return this.inhalt.iterator();
 	}
 }

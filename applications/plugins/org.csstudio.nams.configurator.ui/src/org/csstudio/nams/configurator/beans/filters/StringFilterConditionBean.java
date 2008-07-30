@@ -4,61 +4,85 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
-public class StringFilterConditionBean extends AbstractConfigurationBean<StringFilterConditionBean> implements FilterConditionAddOnBean{
+public class StringFilterConditionBean extends
+		AbstractConfigurationBean<StringFilterConditionBean> implements
+		FilterConditionAddOnBean {
 
-	
-	
-	private MessageKeyEnum keyValue = MessageKeyEnum.NAME;
-	private StringRegelOperator operator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
-	private String compValue = "";
-	
 	public static enum PropertyNames {
 		keyValue, operator, compValue;
 	}
-	
-	public MessageKeyEnum getKeyValue() {
-		return keyValue;
+
+	private MessageKeyEnum keyValue = MessageKeyEnum.NAME;
+	private StringRegelOperator operator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
+
+	private String compValue = "";
+
+	public StringFilterConditionBean() {
 	}
 
-	public void setKeyValue(MessageKeyEnum keyValue) {
-		MessageKeyEnum oldValue = this.keyValue;
+	public StringFilterConditionBean(final MessageKeyEnum keyValue,
+			final StringRegelOperator operator, final String compValue) {
+		super();
 		this.keyValue = keyValue;
-		pcs.firePropertyChange(PropertyNames.keyValue.name(), oldValue, this.keyValue);
-	}
-
-	public String getCompValue() {
-		return compValue;
-	}
-
-	public void setCompValue(String compValue) {
-		String oldValue = this.compValue;
-		this.compValue = compValue;
-		pcs.firePropertyChange(PropertyNames.compValue.name(), oldValue, this.compValue);
-	}
-
-	public StringRegelOperator getOperator() {
-		return operator;
-	}
-
-	public void setOperator(StringRegelOperator operator) {
-		StringRegelOperator oldValue = this.operator;
 		this.operator = operator;
-		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, this.operator);
+		this.compValue = compValue;
 	}
 
 	@Override
-	protected void doUpdateState(StringFilterConditionBean bean) {
-		setCompValue(bean.getCompValue());
-		setKeyValue(bean.getKeyValue());
-		setOperator(bean.getOperator());
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final StringFilterConditionBean other = (StringFilterConditionBean) obj;
+		if (this.compValue == null) {
+			if (other.compValue != null) {
+				return false;
+			}
+		} else if (!this.compValue.equals(other.compValue)) {
+			return false;
+		}
+		if (this.keyValue == null) {
+			if (other.keyValue != null) {
+				return false;
+			}
+		} else if (!this.keyValue.equals(other.keyValue)) {
+			return false;
+		}
+		if (this.operator == null) {
+			if (other.operator != null) {
+				return false;
+			}
+		} else if (!this.operator.equals(other.operator)) {
+			return false;
+		}
+		return true;
+	}
+
+	public String getCompValue() {
+		return this.compValue;
 	}
 
 	public String getDisplayName() {
-		return keyValue + " " + operator.toString() + " " + compValue;
+		return this.keyValue + " " + this.operator.toString() + " "
+				+ this.compValue;
 	}
 
 	public int getID() {
 		return 0;
+	}
+
+	public MessageKeyEnum getKeyValue() {
+		return this.keyValue;
+	}
+
+	public StringRegelOperator getOperator() {
+		return this.operator;
 	}
 
 	@Override
@@ -66,53 +90,43 @@ public class StringFilterConditionBean extends AbstractConfigurationBean<StringF
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((compValue == null) ? 0 : compValue.hashCode());
+				+ ((this.compValue == null) ? 0 : this.compValue.hashCode());
 		result = prime * result
-				+ ((keyValue == null) ? 0 : keyValue.hashCode());
+				+ ((this.keyValue == null) ? 0 : this.keyValue.hashCode());
 		result = prime * result
-				+ ((operator == null) ? 0 : operator.hashCode());
+				+ ((this.operator == null) ? 0 : this.operator.hashCode());
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final StringFilterConditionBean other = (StringFilterConditionBean) obj;
-		if (compValue == null) {
-			if (other.compValue != null)
-				return false;
-		} else if (!compValue.equals(other.compValue))
-			return false;
-		if (keyValue == null) {
-			if (other.keyValue != null)
-				return false;
-		} else if (!keyValue.equals(other.keyValue))
-			return false;
-		if (operator == null) {
-			if (other.operator != null)
-				return false;
-		} else if (!operator.equals(other.operator))
-			return false;
-		return true;
-	}
-
-	public void setID(int id) {
-	}
-
-	public StringFilterConditionBean() {
-	}
-	
-	public StringFilterConditionBean(MessageKeyEnum keyValue,
-			StringRegelOperator operator, String compValue) {
-		super();
-		this.keyValue = keyValue;
-		this.operator = operator;
+	public void setCompValue(final String compValue) {
+		final String oldValue = this.compValue;
 		this.compValue = compValue;
+		this.pcs.firePropertyChange(PropertyNames.compValue.name(), oldValue,
+				this.compValue);
+	}
+
+	public void setID(final int id) {
+	}
+
+	public void setKeyValue(final MessageKeyEnum keyValue) {
+		final MessageKeyEnum oldValue = this.keyValue;
+		this.keyValue = keyValue;
+		this.pcs.firePropertyChange(PropertyNames.keyValue.name(), oldValue,
+				this.keyValue);
+	}
+
+	public void setOperator(final StringRegelOperator operator) {
+		final StringRegelOperator oldValue = this.operator;
+		this.operator = operator;
+		this.pcs.firePropertyChange(PropertyNames.operator.name(), oldValue,
+				this.operator);
+	}
+
+	@Override
+	protected void doUpdateState(final StringFilterConditionBean bean) {
+		this.setCompValue(bean.getCompValue());
+		this.setKeyValue(bean.getKeyValue());
+		this.setOperator(bean.getOperator());
 	}
 
 }

@@ -47,8 +47,8 @@ class DokumentVerbraucherArbeiter<T extends Ablagefaehig> extends
 	private final DokumentenBearbeiter<T> vorgangsmappenBearbeiter;
 
 	public DokumentVerbraucherArbeiter(
-			DokumentenBearbeiter<T> vorgangsmappenBearbeiter,
-			Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge) {
+			final DokumentenBearbeiter<T> vorgangsmappenBearbeiter,
+			final Eingangskorb<T> eingangskorbNeuerAlarmVorgaenge) {
 		this.vorgangsmappenBearbeiter = vorgangsmappenBearbeiter;
 		this.eingangskorbNeuerAlarmVorgaenge = eingangskorbNeuerAlarmVorgaenge;
 	}

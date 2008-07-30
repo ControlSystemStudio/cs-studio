@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 @DiscriminatorValue("8")
 public class AlarmbearbeiterGruppenEmailFilterActionDTO extends
 		AbstractAlarmbearbeiterGruppenFilterActionDTO {
-	public AlarmbearbeiterGruppenEmailFilterActionDTO(){
-		filterActionType = AlarmbearbeitergruppenFilterActionType.EMAIL;
+	public AlarmbearbeiterGruppenEmailFilterActionDTO() {
+		this.filterActionType = AlarmbearbeitergruppenFilterActionType.EMAIL;
 	}
 
 }

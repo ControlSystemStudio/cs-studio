@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
-
-
 /**
  * Der Operator von Juntion-Conditions.
  * 
@@ -12,23 +10,23 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 public enum JunctorConditionType {
 	AND, OR;
 
-	public static JunctorConditionType valueOf(int value) {
-		switch (value) {
-		case 0:
-			return OR;
-		case 1:
-			return AND;
-		default:
-			throw new IllegalArgumentException("Unsupported Junctor");
-		}
-	}
-	
-	public static short asShort(JunctorConditionType junctor) {
+	public static short asShort(final JunctorConditionType junctor) {
 		switch (junctor) {
 		case OR:
 			return 0;
 		case AND:
 			return 1;
+		default:
+			throw new IllegalArgumentException("Unsupported Junctor");
+		}
+	}
+
+	public static JunctorConditionType valueOf(final int value) {
+		switch (value) {
+		case 0:
+			return OR;
+		case 1:
+			return AND;
 		default:
 			throw new IllegalArgumentException("Unsupported Junctor");
 		}

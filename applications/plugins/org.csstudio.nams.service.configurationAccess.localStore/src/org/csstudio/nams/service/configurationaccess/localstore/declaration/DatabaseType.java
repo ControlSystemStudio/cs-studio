@@ -15,43 +15,51 @@ import org.hibernate.dialect.Oracle9iDialect;
  */
 public enum DatabaseType {
 	/**
-	 * Treiber und Dialect für Oracle 10g. jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))
+	 * Treiber und Dialect für Oracle 10g. jdbc:oracle:thin:@(DESCRIPTION
+	 * =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT =
+	 * 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER =
+	 * DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES =
+	 * 180)(DELAY = 5))))
 	 */
-	Oracle10g("Oracle 10g", "oracle.jdbc.driver.OracleDriver", Oracle10gDialect.class),
+	Oracle10g("Oracle 10g", "oracle.jdbc.driver.OracleDriver",
+			Oracle10gDialect.class),
 
 	/**
 	 * Treiber und Dialect für Oracle 9i.
 	 */
-	Oracle9i("Oracle 9i", "oracle.jdbc.driver.OracleDriver", Oracle9iDialect.class),
+	Oracle9i("Oracle 9i", "oracle.jdbc.driver.OracleDriver",
+			Oracle9iDialect.class),
 
 	/**
 	 * Treiber und Dialect für Oracle 8i.
 	 */
-	Oracle8i("Oracle 8i", "oracle.jdbc.driver.OracleDriver", Oracle8iDialect.class),
+	Oracle8i("Oracle 8i", "oracle.jdbc.driver.OracleDriver",
+			Oracle8iDialect.class),
 
 	/**
 	 * Treiber und Dialect für Derby.
 	 */
-	Derby("Apache Derby", "org.apache.derby.jdbc.ClientDriver", DerbyDialect.class),
-	
+	Derby("Apache Derby", "org.apache.derby.jdbc.ClientDriver",
+			DerbyDialect.class),
+
 	/**
-	 * Treiber und Dialect für HSQL. jdbc:hsqldb:file:namsconfigurator.db / sa / 
+	 * Treiber und Dialect für HSQL. jdbc:hsqldb:file:namsconfigurator.db / sa /
 	 */
-	HSQL_1_8_0_FOR_TEST("HSQL database engine 1.8.0 or higher for test purposes", "org.hsqldb.jdbcDriver", HSQLDialect.class);
+	HSQL_1_8_0_FOR_TEST(
+			"HSQL database engine 1.8.0 or higher for test purposes",
+			"org.hsqldb.jdbcDriver", HSQLDialect.class);
 
 	private final String driverName;
 	private final Class<? extends Dialect> hibernateDialect;
 	private final String humanReadableName;
 
-	DatabaseType(
-			final String humanReadableName,
-			final String driverName,
+	DatabaseType(final String humanReadableName, final String driverName,
 			final Class<? extends Dialect> hibernateDialect) {
 		this.humanReadableName = humanReadableName;
 		Contract.requireNotNull("driverName", driverName);
 		Contract.require(driverName.length() > 0, "driverName.length() > 0");
 		Contract.requireNotNull("hibernateDialect", hibernateDialect);
-		
+
 		this.driverName = driverName;
 		this.hibernateDialect = hibernateDialect;
 	}
@@ -60,11 +68,11 @@ public enum DatabaseType {
 		return this.driverName;
 	}
 
-	public String getHumanReadableName() {
-		return this.humanReadableName;
-	}
-
 	public Class<? extends Dialect> getHibernateDialect() {
 		return this.hibernateDialect;
+	}
+
+	public String getHumanReadableName() {
+		return this.humanReadableName;
 	}
 }

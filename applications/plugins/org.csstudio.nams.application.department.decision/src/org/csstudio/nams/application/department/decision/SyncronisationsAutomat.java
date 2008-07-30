@@ -25,6 +25,30 @@ public class SyncronisationsAutomat {
 	private static volatile boolean isRunning;
 	private static boolean canceled;
 
+	public static void cancel() {
+		SyncronisationsAutomat.macheweiter = false;
+		SyncronisationsAutomat.workingThread.interrupt();
+		SyncronisationsAutomat.canceled = true;
+		while (SyncronisationsAutomat.isRunning()) {
+			Thread.yield();
+		}
+	}
+
+	/**
+	 * Indicates weather this automaton has been canceled. This may be done by
+	 * calling {@link #cancel()} or if an error has been occured during
+	 * processing.
+	 * 
+	 * @return true is canceled.
+	 */
+	public static boolean hasBeenCanceled() {
+		return SyncronisationsAutomat.canceled;
+	}
+
+	public static boolean isRunning() {
+		return SyncronisationsAutomat.isRunning;
+	}
+
 	/**
 	 * Fordert distributor auf die globale Konfiguration in die lokale zu
 	 * uebertragen. Die Zugangsdaten zu den Datenbanken kennt der distributor
@@ -36,7 +60,8 @@ public class SyncronisationsAutomat {
 	 * @param localStoreConfigurationService
 	 * @throws MessagingException
 	 * 
-	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).  (gs) Wird doch gemacht, oder?!?!
+	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).
+	 * (gs) Wird doch gemacht, oder?!?!
 	 * 
 	 * @throws InconsistentConfigurationException
 	 * @throws StorageException
@@ -44,20 +69,23 @@ public class SyncronisationsAutomat {
 	 * @throws UnknownConfigurationElementError
 	 */
 	public static void syncronisationUeberDistributorAusfueren(
-			Producer producer, Consumer consumer,
-			LocalStoreConfigurationService localStoreConfigurationService, HistoryService historyService)
-			throws MessagingException, StorageError, StorageException,
-			InconsistentConfigurationException, UnknownConfigurationElementError {
+			final Producer producer,
+			final Consumer consumer,
+			final LocalStoreConfigurationService localStoreConfigurationService,
+			final HistoryService historyService) throws MessagingException,
+			StorageError, StorageException, InconsistentConfigurationException,
+			UnknownConfigurationElementError {
 
 		/**
 		 * Wenn der ReplicationState gerade auf einem Zustand des Distributors
 		 * ist keine neue Aufforderung an ihn zum synchronisieren senden
 		 */
-		ReplicationStateDTO stateDTO = localStoreConfigurationService
+		final ReplicationStateDTO stateDTO = localStoreConfigurationService
 				.getCurrentReplicationState();
-		ReplicationState replicationState = stateDTO.getReplicationState();
-		if (replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_RPL
-				&& replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR) {
+		final ReplicationState replicationState = stateDTO
+				.getReplicationState();
+		if ((replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_RPL)
+				&& (replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR)) {
 			stateDTO
 					.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
 			localStoreConfigurationService
@@ -66,58 +94,34 @@ public class SyncronisationsAutomat {
 					.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 		}
 
-		macheweiter = true;
-		workingThread = Thread.currentThread();
-		canceled = false;
-		isRunning = true;
-		while (macheweiter) {
+		SyncronisationsAutomat.macheweiter = true;
+		SyncronisationsAutomat.workingThread = Thread.currentThread();
+		SyncronisationsAutomat.canceled = false;
+		SyncronisationsAutomat.isRunning = true;
+		while (SyncronisationsAutomat.macheweiter) {
 			try {
-				NAMSMessage receiveMessage = consumer.receiveMessage();
+				final NAMSMessage receiveMessage = consumer.receiveMessage();
 
 				if (receiveMessage.enthaeltSystemnachricht()) {
 					if (receiveMessage.alsSystemachricht()
 							.istSyncronisationsBestaetigung()) {
-						macheweiter = false;
+						SyncronisationsAutomat.macheweiter = false;
 						historyService.logReceivedReplicationDoneMessage();
 					}
 				}
 				// TODO Klären: Alle Arten von Nachrichten acknowledgen?
 				receiveMessage.acknowledge();
-			} catch (MessagingException e) {
+			} catch (final MessagingException e) {
 				// TODO Prüfen ob nötig.
 				if (e.getCause() instanceof InterruptedException) {
-					canceled = true;
+					SyncronisationsAutomat.canceled = true;
 				}
 				throw e;
-			} catch (InterruptedException is) {
-				canceled = true;
+			} catch (final InterruptedException is) {
+				SyncronisationsAutomat.canceled = true;
 			}
 		}
-		isRunning = false;
-	}
-
-	public static boolean isRunning() {
-		return isRunning;
-	}
-
-	/**
-	 * Indicates weather this automaton has been canceled. This may be done by
-	 * calling {@link #cancel()} or if an error has been occured during
-	 * processing.
-	 * 
-	 * @return true is canceled.
-	 */
-	public static boolean hasBeenCanceled() {
-		return canceled;
-	}
-
-	public static void cancel() {
-		macheweiter = false;
-		workingThread.interrupt();
-		canceled = true;
-		while (isRunning()) {
-			Thread.yield();
-		}
+		SyncronisationsAutomat.isRunning = false;
 	}
 
 }

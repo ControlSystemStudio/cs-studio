@@ -19,39 +19,6 @@ import org.csstudio.nams.common.service.ExecutionService;
  * @version 0.1, 31.03.2008
  */
 public class TerminAssistenz implements Arbeitsfaehig {
-	private final DokumentVerbraucherArbeiter<Terminnotiz> dokumentVerbraucherArbeiter;
-	private final Timer timer;
-	private final ExecutionService executionService;
-
-	public TerminAssistenz(
-			final ExecutionService executionService,
-			final Eingangskorb<Terminnotiz> eingehendeTerminnotizen,
-			final Map<String, Eingangskorb<Terminnotiz>> eingangskoerbeDerSachbearbeiterNachNamen,
-			final Timer timer) {
-		this.executionService = executionService;
-		this.timer = timer;
-		this.dokumentVerbraucherArbeiter = new DokumentVerbraucherArbeiter<Terminnotiz>(
-				new Terminbearbeitung(eingangskoerbeDerSachbearbeiterNachNamen),
-				eingehendeTerminnotizen);
-	}
-
-	public void beginneArbeit() {
-		this.executionService.executeAsynchronsly(
-				ThreadTypesOfDecisionDepartment.TERMINASSISTENZ,
-				this.dokumentVerbraucherArbeiter);
-		while(!dokumentVerbraucherArbeiter.isCurrentlyRunning()) {
-			Thread.yield();
-		}
-	}
-
-	public boolean istAmArbeiten() {
-		return this.dokumentVerbraucherArbeiter.isCurrentlyRunning();
-	}
-
-	public void beendeArbeit() {
-		this.dokumentVerbraucherArbeiter.stopWorking();
-	}
-
 	private class Terminbearbeitung implements
 			DokumentenBearbeiter<Terminnotiz> {
 		private final Map<String, Eingangskorb<Terminnotiz>> eingangskoerbeDerSachbearbeiterNachNamen;
@@ -86,5 +53,39 @@ public class TerminAssistenz implements Arbeitsfaehig {
 			TerminAssistenz.this.timer.schedule(futureTask, wartezeit
 					.alsLongVonMillisekunden());
 		}
+	}
+
+	private final DokumentVerbraucherArbeiter<Terminnotiz> dokumentVerbraucherArbeiter;
+	private final Timer timer;
+
+	private final ExecutionService executionService;
+
+	public TerminAssistenz(
+			final ExecutionService executionService,
+			final Eingangskorb<Terminnotiz> eingehendeTerminnotizen,
+			final Map<String, Eingangskorb<Terminnotiz>> eingangskoerbeDerSachbearbeiterNachNamen,
+			final Timer timer) {
+		this.executionService = executionService;
+		this.timer = timer;
+		this.dokumentVerbraucherArbeiter = new DokumentVerbraucherArbeiter<Terminnotiz>(
+				new Terminbearbeitung(eingangskoerbeDerSachbearbeiterNachNamen),
+				eingehendeTerminnotizen);
+	}
+
+	public void beendeArbeit() {
+		this.dokumentVerbraucherArbeiter.stopWorking();
+	}
+
+	public void beginneArbeit() {
+		this.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.TERMINASSISTENZ,
+				this.dokumentVerbraucherArbeiter);
+		while (!this.dokumentVerbraucherArbeiter.isCurrentlyRunning()) {
+			Thread.yield();
+		}
+	}
+
+	public boolean istAmArbeiten() {
+		return this.dokumentVerbraucherArbeiter.isCurrentlyRunning();
 	}
 }

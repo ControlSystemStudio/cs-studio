@@ -17,10 +17,12 @@ public class DefaultNAMSMessage_Test extends
 
 	protected boolean acknowledged;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
 	}
 
+	@Override
 	@After
 	public void tearDown() throws Exception {
 	}
@@ -32,7 +34,7 @@ public class DefaultNAMSMessage_Test extends
 				new SyncronisationsBestaetigungSystemNachricht(),
 				new AcknowledgeHandler() {
 					public void acknowledge() throws Throwable {
-						acknowledged = true;
+						DefaultNAMSMessage_Test.this.acknowledged = true;
 					}
 				});
 
@@ -47,7 +49,7 @@ public class DefaultNAMSMessage_Test extends
 				new SyncronisationsAufforderungsSystemNachchricht(),
 				new AcknowledgeHandler() {
 					public void acknowledge() throws Throwable {
-						acknowledged = true;
+						DefaultNAMSMessage_Test.this.acknowledged = true;
 					}
 				});
 
@@ -74,7 +76,7 @@ public class DefaultNAMSMessage_Test extends
 
 	@Override
 	protected NAMSMessage[] getThreeDiffrentNewInstanceOfClassUnderTest() {
-		NAMSMessage[] result = new NAMSMessage[3];
+		final NAMSMessage[] result = new NAMSMessage[3];
 
 		result[0] = new DefaultNAMSMessage(
 				new DefaultNAMSMessage.AcknowledgeHandler() {

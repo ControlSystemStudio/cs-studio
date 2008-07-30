@@ -38,95 +38,102 @@ public class Vorgangsmappe implements Ablagefaehig {
 	private Vorgangsmappenkennung abgeschlossenDurchMappenkennung;
 	private boolean abgeschlossenDurchTimeOut = false;
 
-//	@Deprecated
-//	public Vorgangsmappe(AlarmNachricht nachricht) {
-//		Contract.requireNotNull("nachricht", nachricht);
-//
-//		this.alarmNachricht = nachricht;
-//		this.kennung = null;
-//	}
+	// @Deprecated
+	// public Vorgangsmappe(AlarmNachricht nachricht) {
+	// Contract.requireNotNull("nachricht", nachricht);
+	//
+	// this.alarmNachricht = nachricht;
+	// this.kennung = null;
+	// }
 
-	public Vorgangsmappe(Vorgangsmappenkennung kennung, AlarmNachricht nachricht) {
+	public Vorgangsmappe(final Vorgangsmappenkennung kennung,
+			final AlarmNachricht nachricht) {
 		Contract.requireNotNull("nachricht", nachricht);
 
 		this.alarmNachricht = nachricht;
 		this.kennung = kennung;
 	}
 
-	public AlarmNachricht gibAusloesendeAlarmNachrichtDiesesVorganges() {
-		return alarmNachricht;
+	public void abgeschlossenDurchTimeOut() {
+		this.abgeschlossenDurchMappenkennung = this.kennung;
+		this.abgeschlossenDurchTimeOut = true;
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + alarmNachricht.hashCode();
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!getClass().isAssignableFrom(obj.getClass()))
+		}
+		if (!this.getClass().isAssignableFrom(obj.getClass())) {
 			return false;
+		}
 		final Vorgangsmappe other = (Vorgangsmappe) obj;
-		if (!alarmNachricht.equals(other.alarmNachricht))
+		if (!this.alarmNachricht.equals(other.alarmNachricht)) {
 			return false;
-		if (!this.kennung.equals(other.kennung))
+		}
+		if (!this.kennung.equals(other.kennung)) {
 			return false;
+		}
 		return true;
 	}
 
-	public Pruefliste gibPruefliste() {
-		return this.pruefliste;
-	}
-
-	public void setzePruefliste(Pruefliste pruefliste) {
-		this.pruefliste = pruefliste;
-	}
-
-	public void pruefungAbgeschlossenDurch(Vorgangsmappenkennung mappenkennung) {
-		this.abgeschlossenDurchMappenkennung = mappenkennung;
-	}
-	
-	public Vorgangsmappenkennung gibAbschliessendeMappenkennung() {
-		return abgeschlossenDurchMappenkennung;
-	}
-	
-	public boolean istAbgeschlossen() {
-		return (abgeschlossenDurchMappenkennung!=null);
-	}
-
-	public boolean istAbgeschlossenDurchTimeOut(){
-		return abgeschlossenDurchTimeOut;
-	}
-	
-	public Vorgangsmappenkennung gibMappenkennung() {
-		return this.kennung;
-	}
-
-	public Vorgangsmappe erstelleKopieFuer(String bearbeiter) {
-		Vorgangsmappe kopie = new Vorgangsmappe(Vorgangsmappenkennung.valueOf(
-				this.kennung, bearbeiter), this.alarmNachricht.clone());
-		Pruefliste prueflisteHier = this.gibPruefliste();
+	public Vorgangsmappe erstelleKopieFuer(final String bearbeiter) {
+		final Vorgangsmappe kopie = new Vorgangsmappe(Vorgangsmappenkennung
+				.valueOf(this.kennung, bearbeiter), this.alarmNachricht.clone());
+		final Pruefliste prueflisteHier = this.gibPruefliste();
 		if (prueflisteHier != null) {
 			kopie.setzePruefliste(prueflisteHier.clone());
 		}
 		return kopie;
 	}
 
-	@Override
-	public String toString() {
-		return this.kennung.toString() + " " + alarmNachricht;
+	public Vorgangsmappenkennung gibAbschliessendeMappenkennung() {
+		return this.abgeschlossenDurchMappenkennung;
 	}
 
-	public void abgeschlossenDurchTimeOut() {
-		abgeschlossenDurchMappenkennung = kennung;
-		abgeschlossenDurchTimeOut  = true;
+	public AlarmNachricht gibAusloesendeAlarmNachrichtDiesesVorganges() {
+		return this.alarmNachricht;
+	}
+
+	public Vorgangsmappenkennung gibMappenkennung() {
+		return this.kennung;
+	}
+
+	public Pruefliste gibPruefliste() {
+		return this.pruefliste;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.alarmNachricht.hashCode();
+		return result;
+	}
+
+	public boolean istAbgeschlossen() {
+		return (this.abgeschlossenDurchMappenkennung != null);
+	}
+
+	public boolean istAbgeschlossenDurchTimeOut() {
+		return this.abgeschlossenDurchTimeOut;
+	}
+
+	public void pruefungAbgeschlossenDurch(
+			final Vorgangsmappenkennung mappenkennung) {
+		this.abgeschlossenDurchMappenkennung = mappenkennung;
+	}
+
+	public void setzePruefliste(final Pruefliste pruefliste) {
+		this.pruefliste = pruefliste;
+	}
+
+	@Override
+	public String toString() {
+		return this.kennung.toString() + " " + this.alarmNachricht;
 	}
 
 	// TODO Ggf. spaeter Kapitel einfuehren für einzelne Bereiche!

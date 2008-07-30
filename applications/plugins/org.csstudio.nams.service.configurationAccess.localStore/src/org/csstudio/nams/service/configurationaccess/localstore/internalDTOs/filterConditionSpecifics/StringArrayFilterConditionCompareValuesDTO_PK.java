@@ -6,37 +6,55 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class StringArrayFilterConditionCompareValuesDTO_PK implements Serializable{
+public class StringArrayFilterConditionCompareValuesDTO_PK implements
+		Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7501395016232068023L;
 
-	@Column(name = "iFilterConditionRef", nullable = false, insertable=false, updatable=false)
+	public static long getSerialVersionUID() {
+		return StringArrayFilterConditionCompareValuesDTO_PK.serialVersionUID;
+	}
+
+	@Column(name = "iFilterConditionRef", nullable = false, insertable = false, updatable = false)
 	private int filterConditionRef;
 
 	@Column(name = "cCompValue", length = 128)
 	private String compValue;
 
-	public int getFilterConditionRef() {
-		return filterConditionRef;
-	}
-
-	public void setFilterConditionRef(int filterConditionRef) {
-		this.filterConditionRef = filterConditionRef;
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final StringArrayFilterConditionCompareValuesDTO_PK other = (StringArrayFilterConditionCompareValuesDTO_PK) obj;
+		if (this.compValue == null) {
+			if (other.compValue != null) {
+				return false;
+			}
+		} else if (!this.compValue.equals(other.compValue)) {
+			return false;
+		}
+		if (this.filterConditionRef != other.filterConditionRef) {
+			return false;
+		}
+		return true;
 	}
 
 	public String getCompValue() {
-		return compValue;
+		return this.compValue;
 	}
 
-	public void setCompValue(String compValue) {
-		this.compValue = compValue;
-	}
-
-	public static long getSerialVersionUID() {
-		return serialVersionUID;
+	public int getFilterConditionRef() {
+		return this.filterConditionRef;
 	}
 
 	@Override
@@ -44,28 +62,17 @@ public class StringArrayFilterConditionCompareValuesDTO_PK implements Serializab
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((compValue == null) ? 0 : compValue.hashCode());
-		result = prime * result + filterConditionRef;
+				+ ((this.compValue == null) ? 0 : this.compValue.hashCode());
+		result = prime * result + this.filterConditionRef;
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final StringArrayFilterConditionCompareValuesDTO_PK other = (StringArrayFilterConditionCompareValuesDTO_PK) obj;
-		if (compValue == null) {
-			if (other.compValue != null)
-				return false;
-		} else if (!compValue.equals(other.compValue))
-			return false;
-		if (filterConditionRef != other.filterConditionRef)
-			return false;
-		return true;
+	public void setCompValue(final String compValue) {
+		this.compValue = compValue;
 	}
-	
+
+	public void setFilterConditionRef(final int filterConditionRef) {
+		this.filterConditionRef = filterConditionRef;
+	}
+
 }

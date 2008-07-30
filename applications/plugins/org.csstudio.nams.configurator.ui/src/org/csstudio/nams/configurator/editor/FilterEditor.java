@@ -64,124 +64,247 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.part.EditorPart;
 
 public class FilterEditor extends AbstractEditor<FilterBean> {
+
+	private class NewJunctorAction extends Action implements
+			ISelectionChangedListener {
+		private JunctorConditionForFilterTreeBean selectedBean;
+		private final JunctorConditionType type;
+
+		private NewJunctorAction(final JunctorConditionType type) {
+			this.type = type;
+		}
+
+		@Override
+		public String getText() {
+			return "add " + this.type.name();
+		}
+
+		@Override
+		public void run() {
+			final JunctorConditionForFilterTreeBean node = new JunctorConditionForFilterTreeBean();
+			node.setJunctorConditionType(this.type);
+			final boolean added = this.selectedBean.addOperand(node);
+			FilterEditor.this.filterConditionsTreeViewer.refresh();
+			if (added) {
+				FilterEditor.this.filterConditionsTreeViewer.expandToLevel(
+						node, 0);
+				FilterEditor.this.filterConditionsTreeViewer
+						.setSelection(new StructuredSelection(node));
+				FilterEditor.this.updateBeanAndFireEvent();
+			}
+		}
+
+		public void selectionChanged(final SelectionChangedEvent event) {
+			final IStructuredSelection selection = (IStructuredSelection) event
+					.getSelection();
+			final Object element = selection.getFirstElement();
+			this.selectedBean = null;
+			if (element instanceof JunctorConditionForFilterTreeBean) {
+				this.selectedBean = (JunctorConditionForFilterTreeBean) element;
+				this.setEnabled(true);
+			} else if (element instanceof NotConditionForFilterTreeBean) {
+				final NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) element;
+				if (notBean.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
+					this.selectedBean = (JunctorConditionForFilterTreeBean) notBean
+							.getFilterbedingungBean();
+					this.setEnabled(true);
+				} else {
+					this.setEnabled(false);
+				}
+			} else {
+				this.setEnabled(false);
+			}
+		}
+	}
+
+	private class NewNotAction extends Action implements
+			ISelectionChangedListener {
+		private FilterbedingungBean selectedBean;
+		private boolean not;
+
+		@Override
+		public void run() {
+			final FilterbedingungBean parent = (FilterbedingungBean) FilterEditor.this.filterTreeContentProvider
+					.getParent(this.selectedBean);
+			FilterbedingungBean newBean = null;
+			if (parent != null) {
+				JunctorConditionForFilterTreeBean junction = null;
+				if (parent instanceof NotConditionForFilterTreeBean) {
+					junction = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent)
+							.getFilterbedingungBean();
+				} else if (parent instanceof JunctorConditionForFilterTreeBean) {
+					junction = (JunctorConditionForFilterTreeBean) parent;
+				}
+				if (this.not) {
+					final NotConditionForFilterTreeBean notBean = new NotConditionForFilterTreeBean();
+					newBean = notBean;
+					junction.removeOperand(this.selectedBean);
+					notBean.setFilterbedingungBean(this.selectedBean);
+					junction.addOperand(notBean);
+				} else {
+					junction.removeOperand(this.selectedBean);
+					final NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) this.selectedBean;
+					final FilterbedingungBean filterbedingungBean = notBean
+							.getFilterbedingungBean();
+					newBean = filterbedingungBean;
+					junction.addOperand(filterbedingungBean);
+				}
+				FilterEditor.this.updateBeanAndFireEvent();
+			}
+
+			FilterEditor.this.filterConditionsTreeViewer.refresh();
+			if (newBean != null) {
+				FilterEditor.this.filterConditionsTreeViewer.expandToLevel(
+						newBean, 0);
+				FilterEditor.this.filterConditionsTreeViewer
+						.setSelection(new StructuredSelection(newBean));
+			}
+
+		}
+
+		public void selectionChanged(final SelectionChangedEvent event) {
+			final IStructuredSelection selection = (IStructuredSelection) event
+					.getSelection();
+			final Object element = selection.getFirstElement();
+			this.setEnabled(true);
+			if (element instanceof FilterbedingungBean) {
+				this.selectedBean = (FilterbedingungBean) element;
+				if (!(element instanceof NotConditionForFilterTreeBean)) {
+					this.setText("NOT hinzufügen");
+					this.not = true;
+				} else {
+					this.setText("NOT entfernen");
+					this.not = false;
+				}
+			}
+		}
+	}
+
+	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
+
+	public static String getId() {
+		return FilterEditor.EDITOR_ID;
+	}
 
 	private final FilterTreeContentProvider filterTreeContentProvider = new FilterTreeContentProvider();
 	private Text _nameTextEntry;
 	private Combo _rubrikComboEntry;
 	private Text _defaultMessageTextEntry;
-	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
 	private ComboViewer _rubrikComboEntryViewer;
 	private TreeViewer filterConditionsTreeViewer;
+
 	private FormToolkit formToolkit;
+
 	private ScrolledForm mainForm;
+
 	private TableViewer actionTableViewer;
 
-	public FilterEditor(){
+	public FilterEditor() {
 		super();
-		
-	}
-	
-	@Override
-	protected void afterSafe() {
-		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans
-		// enthält.
-		this.getWorkingCopyOfEditorInput().updateState(
-				this.getOriginalEditorInput());
+
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
-		formToolkit = new FormToolkit(parent.getDisplay());
-		mainForm = formToolkit.createScrolledForm(parent);
-		Composite outerFormMain = mainForm.getBody();
+	public void createPartControl(final Composite parent) {
+		this.formToolkit = new FormToolkit(parent.getDisplay());
+		this.mainForm = this.formToolkit.createScrolledForm(parent);
+		final Composite outerFormMain = this.mainForm.getBody();
 		outerFormMain.setBackground(parent.getBackground());
 		outerFormMain.setLayout(new GridLayout(1, false));
 
-		Composite main = new Composite(outerFormMain, SWT.NONE);
-		main.setLayout(new GridLayout(NUM_COLUMNS, false));
+		final Composite main = new Composite(outerFormMain, SWT.NONE);
+		main.setLayout(new GridLayout(this.NUM_COLUMNS, false));
 		this.addSeparator(main);
-		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true,
-				getConfigurationBeanService().getRubrikNamesForType(
-						RubrikTypeEnum.FILTER));
-		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
+		this._nameTextEntry = this.createTextEntry(main, "Name:", true);
+		this._rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:",
+				true, AbstractEditor.getConfigurationBeanService()
+						.getRubrikNamesForType(RubrikTypeEnum.FILTER));
+		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
-		
-		final MessageTemplateBean[] messageTemplates = configurationBeanService.getMessageTemplates();
+
+		final MessageTemplateBean[] messageTemplates = AbstractEditor.configurationBeanService
+				.getMessageTemplates();
 		final String[] templateNames = new String[messageTemplates.length];
 		final String[] templateContent = new String[messageTemplates.length];
 		for (int i = 0; i < templateNames.length; i++) {
 			templateNames[i] = messageTemplates[i].getName();
 			templateContent[i] = messageTemplates[i].getMessage();
 		}
-		final ComboViewer templateComboViewer = this.createComboEntry(main, "Templates", false, templateNames);
-		Button addTemplateButton = createButtonEntry(main, "Template anhängen", true, 2);
-		addTemplateButton.addMouseListener(new MouseListener(){
+		final ComboViewer templateComboViewer = this.createComboEntry(main,
+				"Templates", false, templateNames);
+		final Button addTemplateButton = this.createButtonEntry(main,
+				"Template anhängen", true, 2);
+		addTemplateButton.addMouseListener(new MouseListener() {
 
-			public void mouseDoubleClick(MouseEvent e) {
+			public void mouseDoubleClick(final MouseEvent e) {
 			}
 
-			public void mouseDown(MouseEvent e) {
+			public void mouseDown(final MouseEvent e) {
 			}
 
-			public void mouseUp(MouseEvent e) {
-				_defaultMessageTextEntry.append(templateContent[templateComboViewer.getCombo().getSelectionIndex()]);
+			public void mouseUp(final MouseEvent e) {
+				FilterEditor.this._defaultMessageTextEntry
+						.append(templateContent[templateComboViewer.getCombo()
+								.getSelectionIndex()]);
 			}
-			
+
 		});
-		_defaultMessageTextEntry = this.createDescriptionTextEntry(main,
+		this._defaultMessageTextEntry = this.createDescriptionTextEntry(main,
 				"Description:");
 
 		{
-			Composite treeAndButtonsComp = new Composite(outerFormMain,
+			final Composite treeAndButtonsComp = new Composite(outerFormMain,
 					SWT.None);
 			treeAndButtonsComp.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					treeAndButtonsComp);
 			new Label(treeAndButtonsComp, SWT.None).setText("Filterconditions");
 			{
-				filterConditionsTreeViewer = new TreeViewer(treeAndButtonsComp,
-						SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-				Tree filterTree = filterConditionsTreeViewer.getTree();
+				this.filterConditionsTreeViewer = new TreeViewer(
+						treeAndButtonsComp, SWT.MULTI | SWT.V_SCROLL
+								| SWT.H_SCROLL | SWT.BORDER);
+				final Tree filterTree = this.filterConditionsTreeViewer
+						.getTree();
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
-						filterConditionsTreeViewer.getControl());
+						this.filterConditionsTreeViewer.getControl());
 
-				GridData treeLayout = (GridData) filterTree.getLayoutData();
+				final GridData treeLayout = (GridData) filterTree
+						.getLayoutData();
 				treeLayout.minimumHeight = 100;
 				treeLayout.minimumWidth = 300;
 
-				filterConditionsTreeViewer
-						.setContentProvider(filterTreeContentProvider);
-				filterConditionsTreeViewer
+				this.filterConditionsTreeViewer
+						.setContentProvider(this.filterTreeContentProvider);
+				this.filterConditionsTreeViewer
 						.setLabelProvider(new FilterTreeLabelProvider());
-				filterConditionsTreeViewer
-						.setInput(getWorkingCopyOfEditorInput().getConditions());
+				this.filterConditionsTreeViewer.setInput(this
+						.getWorkingCopyOfEditorInput().getConditions());
 
-				NewJunctorAction newAndAction = new NewJunctorAction(
+				final NewJunctorAction newAndAction = new NewJunctorAction(
 						JunctorConditionType.AND);
-				NewJunctorAction newOrAction = new NewJunctorAction(
+				final NewJunctorAction newOrAction = new NewJunctorAction(
 						JunctorConditionType.OR);
-				NewNotAction newNotAction = new NewNotAction();
+				final NewNotAction newNotAction = new NewNotAction();
 
-				filterConditionsTreeViewer
+				this.filterConditionsTreeViewer
 						.addSelectionChangedListener(newAndAction);
-				filterConditionsTreeViewer
+				this.filterConditionsTreeViewer
 						.addSelectionChangedListener(newOrAction);
-				filterConditionsTreeViewer
+				this.filterConditionsTreeViewer
 						.addSelectionChangedListener(newNotAction);
 
-				filterConditionsTreeViewer.expandAll();
+				this.filterConditionsTreeViewer.expandAll();
 
-				MenuManager menuManager = new MenuManager();
+				final MenuManager menuManager = new MenuManager();
 				menuManager.add(newAndAction);
 				menuManager.add(newOrAction);
 				menuManager.add(newNotAction);
@@ -190,60 +313,59 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 				filterTree.addMouseListener(new MouseListener() {
 
-					public void mouseDoubleClick(MouseEvent e) {
+					public void mouseDoubleClick(final MouseEvent e) {
 						try {
 							ConfigurationEditorInput editorInput;
-							IStructuredSelection selection = (IStructuredSelection) filterConditionsTreeViewer
+							final IStructuredSelection selection = (IStructuredSelection) FilterEditor.this.filterConditionsTreeViewer
 									.getSelection();
-							IConfigurationBean filterBedingung = (IConfigurationBean) selection
+							final IConfigurationBean filterBedingung = (IConfigurationBean) selection
 									.getFirstElement();
-							if (!(filterBedingung instanceof JunctorConditionForFilterTreeBean || filterBedingung instanceof NotConditionForFilterTreeBean)) {
+							if (!((filterBedingung instanceof JunctorConditionForFilterTreeBean) || (filterBedingung instanceof NotConditionForFilterTreeBean))) {
 								editorInput = new ConfigurationEditorInput(
 										filterBedingung);
 
-								IWorkbenchPage activePage = PlatformUI
+								final IWorkbenchPage activePage = PlatformUI
 										.getWorkbench()
 										.getActiveWorkbenchWindow()
 										.getActivePage();
-								String editorId = BeanToEditorId
+								final String editorId = BeanToEditorId
 										.getEnumForClass(
 												FilterbedingungBean.class)
 										.getEditorId();
 
 								activePage.openEditor(editorInput, editorId);
 							}
-						} catch (PartInitException pie) {
+						} catch (final PartInitException pie) {
 							pie.printStackTrace();
 						}
 					}
 
-					public void mouseDown(MouseEvent e) {
+					public void mouseDown(final MouseEvent e) {
 					}
 
-					public void mouseUp(MouseEvent e) {
+					public void mouseUp(final MouseEvent e) {
 					}
 				});
 
-				createFilterActionWidget(outerFormMain);
+				this.createFilterActionWidget(outerFormMain);
 
-				initDND();
+				this.initDND();
 			}
-			Button button = new Button(treeAndButtonsComp, SWT.PUSH);
+			final Button button = new Button(treeAndButtonsComp, SWT.PUSH);
 			button.setText("Remove Filterconditions");
 			button.addMouseListener(new MouseListener() {
 
-				public void mouseDoubleClick(MouseEvent e) {
+				public void mouseDoubleClick(final MouseEvent e) {
 				}
 
 				@SuppressWarnings("unchecked")
-				public void mouseDown(MouseEvent e) {
-					TreeSelection selection = (TreeSelection) filterConditionsTreeViewer
+				public void mouseDown(final MouseEvent e) {
+					final TreeSelection selection = (TreeSelection) FilterEditor.this.filterConditionsTreeViewer
 							.getSelection();
-					for (Iterator<FilterbedingungBean> iter = selection
+					for (final Iterator<FilterbedingungBean> iter = selection
 							.iterator(); iter.hasNext();) {
-						FilterbedingungBean bean2remove = (FilterbedingungBean) iter
-								.next();
-						Object parent = filterTreeContentProvider
+						final FilterbedingungBean bean2remove = iter.next();
+						final Object parent = FilterEditor.this.filterTreeContentProvider
 								.getParent(bean2remove);
 						JunctorConditionForFilterTreeBean junctorParent = null;
 						if (parent instanceof NotConditionForFilterTreeBean) {
@@ -255,47 +377,146 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						}
 						if (junctorParent != null) {
 							junctorParent.removeOperand(bean2remove);
-							filterConditionsTreeViewer.refresh();
-							updateBeanAndFireEvent();
+							FilterEditor.this.filterConditionsTreeViewer
+									.refresh();
+							FilterEditor.this.updateBeanAndFireEvent();
 						}
 
 					}
 
 				}
 
-				public void mouseUp(MouseEvent e) {
+				public void mouseUp(final MouseEvent e) {
 				}
 			});
 		}
 
-		initDataBinding();
+		this.initDataBinding();
 	}
 
-	private void createFilterActionWidget(Composite outerFormMain) {
-		actionTableViewer = new TableViewer(outerFormMain);
+	@Override
+	public void onBeanInsert(final IConfigurationBean bean) {
+		// FIXME synchronize bean and beanClone
+		if (this.filterConditionsTreeViewer != null) {
+			this.filterConditionsTreeViewer.refresh();
+		}
+		// if (!isDirty()) {
+		// afterSafe();
+		// }
+		super.onBeanInsert(bean);
+	}
+
+	@Override
+	public void onBeanUpdate(final IConfigurationBean bean) {
+		// FIXME synchronize bean and beanClone
+		if (this.filterConditionsTreeViewer != null) {
+			this.filterConditionsTreeViewer.refresh();
+		}
+		// if (!isDirty()) {
+		// afterSafe();
+		// }
+		super.onBeanUpdate(bean);
+	}
+
+	@Override
+	public void setFocus() {
+		this._nameTextEntry.setFocus();
+	}
+
+	@Override
+	protected void afterSafe() {
+		// Sonderfall für die Filterbean, da sie einen Baum von unterbeans
+		// enthält.
+		this.getWorkingCopyOfEditorInput().updateState(
+				this.getOriginalEditorInput());
+	}
+
+	@Override
+	protected void doInit(final IEditorSite site, final IEditorInput input) {
+	}
+
+	@Override
+	protected int getNumColumns() {
+		return 2;
+	}
+
+	@Override
+	protected void initDataBinding() {
+		final DataBindingContext context = new DataBindingContext();
+
+		final IObservableValue nameTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						FilterBean.PropertyNames.name.name());
+
+		final IObservableValue descriptionTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						FilterBean.PropertyNames.defaultMessage.name());
+
+		// IObservableTree filterConditionsObservable = BeansObservables
+		// .observeList(context.getValidationRealm(), this.beanClone,
+		// FilterBean.PropertyNames.conditions.name());
+
+		final IObservableValue rubrikTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						FilterBean.AbstractPropertyNames.rubrikName.name());
+
+		// bind observables
+		context.bindValue(SWTObservables.observeText(this._nameTextEntry,
+				SWT.Modify), nameTextObservable, new UpdateValueStrategy() {
+
+			@Override
+			protected IValidator createValidator(final Object fromType,
+					final Object toType) {
+				// TODO Validate FilterMessage Variables here
+				return super.createValidator(fromType, toType);
+			}
+
+		}, null);
+
+		context.bindValue(SWTObservables.observeText(
+				this._defaultMessageTextEntry, SWT.Modify),
+				descriptionTextObservable, null, null);
+		// IObservableTree observeItems = SWTObservables
+		// .observeItems(filterConditionsTreeViewer.getTree());
+		// context.bindList(observeItems, filterConditionsObservable, null,
+		// null);
+
+		context.bindValue(SWTObservables
+				.observeSelection(this._rubrikComboEntry),
+				rubrikTextObservable, null, null);
+	}
+
+	protected void updateBeanAndFireEvent() {
+		this.getWorkingCopyOfEditorInput().setConditions(
+				this.filterTreeContentProvider.getContentsOfRootANDCondition());
+		FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
+	}
+
+	private void createFilterActionWidget(final Composite outerFormMain) {
+		this.actionTableViewer = new TableViewer(outerFormMain);
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(
-				actionTableViewer.getControl());
+				this.actionTableViewer.getControl());
 
-		GridData treeLayout = (GridData) actionTableViewer.getTable()
-				.getLayoutData();
+		final GridData treeLayout = (GridData) this.actionTableViewer
+				.getTable().getLayoutData();
 		treeLayout.minimumHeight = 100;
 		treeLayout.minimumWidth = 300;
 
-		actionTableViewer.getTable().setHeaderVisible(true);
-		actionTableViewer.getTable().setLinesVisible(true);
-		actionTableViewer.setContentProvider(new ArrayContentProvider());
+		this.actionTableViewer.getTable().setHeaderVisible(true);
+		this.actionTableViewer.getTable().setLinesVisible(true);
+		this.actionTableViewer.setContentProvider(new ArrayContentProvider());
 
-		String[] titles = { "Empfänger", "Alarmaktion", "Nachricht" };
-		int[] bounds = { 100, 100, 100 };
+		final String[] titles = { "Empfänger", "Alarmaktion", "Nachricht" };
+		final int[] bounds = { 100, 100, 100 };
 
-		TableViewerColumn[] tableViewerColumns = new TableViewerColumn[3];
+		final TableViewerColumn[] tableViewerColumns = new TableViewerColumn[3];
 
 		for (int i = 0; i < titles.length; i++) {
-			tableViewerColumns[i] = new TableViewerColumn(actionTableViewer,
-					SWT.LEFT);
+			tableViewerColumns[i] = new TableViewerColumn(
+					this.actionTableViewer, SWT.LEFT);
 
-			TableColumn column = tableViewerColumns[i].getColumn();
+			final TableColumn column = tableViewerColumns[i].getColumn();
 			column.setText(titles[i]);
 			column.setWidth(bounds[i]);
 			column.setResizable(true);
@@ -304,16 +525,17 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		// Empfänger
 		tableViewerColumns[0].setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				return ((FilterAction)element).getEmpfaengerName();
+			public String getText(final Object element) {
+				return ((FilterAction) element).getEmpfaengerName();
 			}
 		});
 
 		// Alarmaktion
 		tableViewerColumns[1].setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				FilterActionType type = ((FilterAction)element).getFilterActionType();
+			public String getText(final Object element) {
+				final FilterActionType type = ((FilterAction) element)
+						.getFilterActionType();
 				if (type != null) {
 					return type.getDescription();
 				}
@@ -321,31 +543,36 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			}
 		});
 		tableViewerColumns[1].setEditingSupport(new EditingSupport(
-				actionTableViewer) {
+				this.actionTableViewer) {
 
 			@Override
-			protected boolean canEdit(Object element) {
-				if (element instanceof AlarmTopicFilterAction)
+			protected boolean canEdit(final Object element) {
+				if (element instanceof AlarmTopicFilterAction) {
 					return false;
+				}
 				return true;
 			}
 
 			@Override
-			protected CellEditor getCellEditor(Object element) {
-				FilterActionType[] types = ((FilterAction)element).getFilterActionTypeValues();
-				String[] strings = new String[types.length];
+			protected CellEditor getCellEditor(final Object element) {
+				final FilterActionType[] types = ((FilterAction) element)
+						.getFilterActionTypeValues();
+				final String[] strings = new String[types.length];
 				for (int i = 0; i < types.length; i++) {
 					strings[i] = types[i].getDescription();
 				}
-				return new ComboBoxCellEditor(actionTableViewer.getTable(),
+				return new ComboBoxCellEditor(
+						FilterEditor.this.actionTableViewer.getTable(),
 						strings, SWT.READ_ONLY);
 			}
 
 			@Override
-			protected Object getValue(Object element) {
-				FilterActionType type = ((FilterAction)element).getFilterActionType();
+			protected Object getValue(final Object element) {
+				final FilterActionType type = ((FilterAction) element)
+						.getFilterActionType();
 				if (type != null) {
-					FilterActionType[] types = ((FilterAction)element).getFilterActionTypeValues();
+					final FilterActionType[] types = ((FilterAction) element)
+							.getFilterActionTypeValues();
 					for (int i = 0; i < types.length; i++) {
 						if (type.equals(types[i])) {
 							return i;
@@ -356,11 +583,13 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			}
 
 			@Override
-			protected void setValue(Object element, Object value) {
-				FilterActionType[] types = ((FilterAction)element).getFilterActionTypeValues();
-				((FilterAction)element).setType(types[((Integer)value).intValue()]);
-				actionTableViewer.refresh();
-				FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
+			protected void setValue(final Object element, final Object value) {
+				final FilterActionType[] types = ((FilterAction) element)
+						.getFilterActionTypeValues();
+				((FilterAction) element).setType(types[((Integer) value)
+						.intValue()]);
+				FilterEditor.this.actionTableViewer.refresh();
+				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 
 		});
@@ -368,226 +597,109 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		// Nachricht
 		tableViewerColumns[2].setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				return ((FilterAction)element).getMessage();
+			public String getText(final Object element) {
+				return ((FilterAction) element).getMessage();
 			}
 		});
 		tableViewerColumns[2].setEditingSupport(new EditingSupport(
-				actionTableViewer) {
+				this.actionTableViewer) {
 			private TextCellEditor textEditor;
 
 			@Override
-			protected boolean canEdit(Object element) {
+			protected boolean canEdit(final Object element) {
 				return true;
 			}
 
 			@Override
-			protected CellEditor getCellEditor(Object element) {
-				textEditor = new TextCellEditor(
-						actionTableViewer.getTable());
-				textEditor.setValidator(new ICellEditorValidator() {
-					public String isValid(Object value) {
-						//TODO (gs)validator anpassen
-						
+			protected CellEditor getCellEditor(final Object element) {
+				this.textEditor = new TextCellEditor(
+						FilterEditor.this.actionTableViewer.getTable());
+				this.textEditor.setValidator(new ICellEditorValidator() {
+					public String isValid(final Object value) {
+						// TODO (gs)validator anpassen
+
 						return null;
 					}
 				});
-				((Text) textEditor.getControl()).setTextLimit(1024);
-				return textEditor;
+				((Text) this.textEditor.getControl()).setTextLimit(1024);
+				return this.textEditor;
 			}
 
 			@Override
-			protected Object getValue(Object element) {
-				return ((FilterAction)element).getMessage();
+			protected Object getValue(final Object element) {
+				return ((FilterAction) element).getMessage();
 			}
 
 			@Override
-			protected void setValue(Object element, Object value) {
-				if (textEditor.getErrorMessage() == null) {
-					((FilterAction)element).setMessage((String) value);
+			protected void setValue(final Object element, final Object value) {
+				if (this.textEditor.getErrorMessage() == null) {
+					((FilterAction) element).setMessage((String) value);
 				} else {
-					((FilterAction)element).setMessage(textEditor.getErrorMessage());
+					((FilterAction) element).setMessage(this.textEditor
+							.getErrorMessage());
 				}
-				actionTableViewer.refresh();
-				FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
+				FilterEditor.this.actionTableViewer.refresh();
+				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 
 		});
 
-		actionTableViewer.setInput(getWorkingCopyOfEditorInput().getActions()
-				.toArray());
+		this.actionTableViewer.setInput(this.getWorkingCopyOfEditorInput()
+				.getActions().toArray());
 
-	}
-
-	protected void updateBeanAndFireEvent() {
-		getWorkingCopyOfEditorInput().setConditions(
-				filterTreeContentProvider.getContentsOfRootANDCondition());
-		FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
-	}
-
-	private class NewJunctorAction extends Action implements
-			ISelectionChangedListener {
-		private JunctorConditionForFilterTreeBean selectedBean;
-		private final JunctorConditionType type;
-
-		private NewJunctorAction(JunctorConditionType type) {
-			this.type = type;
-		}
-
-		@Override
-		public void run() {
-			JunctorConditionForFilterTreeBean node = new JunctorConditionForFilterTreeBean();
-			node.setJunctorConditionType(type);
-			boolean added = selectedBean.addOperand(node);
-			filterConditionsTreeViewer.refresh();
-			if (added) {
-				filterConditionsTreeViewer.expandToLevel(node, 0);
-				filterConditionsTreeViewer
-						.setSelection(new StructuredSelection(node));
-				updateBeanAndFireEvent();
-			}
-		}
-
-		public void selectionChanged(SelectionChangedEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) event
-					.getSelection();
-			Object element = selection.getFirstElement();
-			selectedBean = null;
-			if (element instanceof JunctorConditionForFilterTreeBean) {
-				selectedBean = (JunctorConditionForFilterTreeBean) element;
-				setEnabled(true);
-			} else if (element instanceof NotConditionForFilterTreeBean) {
-				NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) element;
-				if (notBean.getFilterbedingungBean() instanceof JunctorConditionForFilterTreeBean) {
-					selectedBean = (JunctorConditionForFilterTreeBean) notBean
-							.getFilterbedingungBean();
-					setEnabled(true);
-				} else {
-					setEnabled(false);
-				}
-			} else {
-				setEnabled(false);
-			}
-		}
-
-		@Override
-		public String getText() {
-			return "add " + type.name();
-		}
-	}
-
-	private class NewNotAction extends Action implements
-			ISelectionChangedListener {
-		private FilterbedingungBean selectedBean;
-		private boolean not;
-
-		@Override
-		public void run() {
-			FilterbedingungBean parent = (FilterbedingungBean) filterTreeContentProvider
-					.getParent(selectedBean);
-			FilterbedingungBean newBean = null;
-			if (parent != null) {
-				JunctorConditionForFilterTreeBean junction = null;
-				if (parent instanceof NotConditionForFilterTreeBean) {
-					junction = (JunctorConditionForFilterTreeBean) ((NotConditionForFilterTreeBean) parent)
-							.getFilterbedingungBean();
-				} else if (parent instanceof JunctorConditionForFilterTreeBean) {
-					junction = (JunctorConditionForFilterTreeBean) parent;
-				}
-				if (not) {
-					NotConditionForFilterTreeBean notBean = new NotConditionForFilterTreeBean();
-					newBean = notBean;
-					junction.removeOperand(selectedBean);
-					notBean.setFilterbedingungBean(selectedBean);
-					junction.addOperand(notBean);
-				} else {
-					junction.removeOperand(selectedBean);
-					NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) selectedBean;
-					FilterbedingungBean filterbedingungBean = notBean
-							.getFilterbedingungBean();
-					newBean = filterbedingungBean;
-					junction.addOperand(filterbedingungBean);
-				}
-				updateBeanAndFireEvent();
-			}
-
-			filterConditionsTreeViewer.refresh();
-			if (newBean != null) {
-				filterConditionsTreeViewer.expandToLevel(newBean, 0);
-				filterConditionsTreeViewer
-						.setSelection(new StructuredSelection(newBean));
-			}
-
-		}
-
-		public void selectionChanged(SelectionChangedEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) event
-					.getSelection();
-			Object element = selection.getFirstElement();
-			setEnabled(true);
-			if (element instanceof FilterbedingungBean) {
-				selectedBean = (FilterbedingungBean) element;
-				if (!(element instanceof NotConditionForFilterTreeBean)) {
-					setText("NOT hinzufügen");
-					not = true;
-				} else {
-					setText("NOT entfernen");
-					not = false;
-				}
-			}
-		}
 	}
 
 	private void initDND() {
-		filterConditionsTreeViewer.addDropSupport(DND.DROP_LINK,
+		this.filterConditionsTreeViewer.addDropSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
-				new ViewerDropAdapter(filterConditionsTreeViewer) {
+				new ViewerDropAdapter(this.filterConditionsTreeViewer) {
 
 					@Override
-					public boolean performDrop(Object data) {
-						Object target = getCurrentTarget();
-						IStructuredSelection selection = (IStructuredSelection) data;
-						FilterbedingungBean bean = (FilterbedingungBean) selection
-								.getFirstElement();
-						boolean result = false;
-						if (target instanceof JunctorConditionForFilterTreeBean) {
-							JunctorConditionForFilterTreeBean targetBean = (JunctorConditionForFilterTreeBean) target;
-							targetBean.addOperand(bean);
-							result = true;
-						} else if (target instanceof NotConditionForFilterTreeBean) {
-
-							NotConditionForFilterTreeBean targetBean = (NotConditionForFilterTreeBean) target;
-							FilterbedingungBean filterbedingungBean = targetBean
-									.getFilterbedingungBean();
-							if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
-								JunctorConditionForFilterTreeBean junctorFilterbedingungBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
-								junctorFilterbedingungBean.addOperand(bean);
-								result = true;
-							}
-						}
-						filterConditionsTreeViewer.refresh();
-						if (result) {
-							filterConditionsTreeViewer.expandToLevel(bean, 0);
-							filterConditionsTreeViewer
-									.setSelection(new StructuredSelection(bean));
-							updateBeanAndFireEvent();
-						}
-						return result;
-					}
-
-					@Override
-					public void dragEnter(DropTargetEvent event) {
+					public void dragEnter(final DropTargetEvent event) {
 						event.detail = DND.DROP_LINK;
 						super.dragEnter(event);
 					}
 
 					@Override
-					public boolean validateDrop(Object target, int operation,
-							TransferData transferType) {
+					public boolean performDrop(final Object data) {
+						final Object target = this.getCurrentTarget();
+						final IStructuredSelection selection = (IStructuredSelection) data;
+						final FilterbedingungBean bean = (FilterbedingungBean) selection
+								.getFirstElement();
 						boolean result = false;
-						if (target instanceof JunctorConditionForFilterTreeBean
-								|| target instanceof NotConditionForFilterTreeBean) {
-							IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+						if (target instanceof JunctorConditionForFilterTreeBean) {
+							final JunctorConditionForFilterTreeBean targetBean = (JunctorConditionForFilterTreeBean) target;
+							targetBean.addOperand(bean);
+							result = true;
+						} else if (target instanceof NotConditionForFilterTreeBean) {
+
+							final NotConditionForFilterTreeBean targetBean = (NotConditionForFilterTreeBean) target;
+							final FilterbedingungBean filterbedingungBean = targetBean
+									.getFilterbedingungBean();
+							if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
+								final JunctorConditionForFilterTreeBean junctorFilterbedingungBean = (JunctorConditionForFilterTreeBean) filterbedingungBean;
+								junctorFilterbedingungBean.addOperand(bean);
+								result = true;
+							}
+						}
+						FilterEditor.this.filterConditionsTreeViewer.refresh();
+						if (result) {
+							FilterEditor.this.filterConditionsTreeViewer
+									.expandToLevel(bean, 0);
+							FilterEditor.this.filterConditionsTreeViewer
+									.setSelection(new StructuredSelection(bean));
+							FilterEditor.this.updateBeanAndFireEvent();
+						}
+						return result;
+					}
+
+					@Override
+					public boolean validateDrop(final Object target,
+							final int operation, final TransferData transferType) {
+						boolean result = false;
+						if ((target instanceof JunctorConditionForFilterTreeBean)
+								|| (target instanceof NotConditionForFilterTreeBean)) {
+							final IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
 									.getTransfer().getSelection();
 							if (selection.getFirstElement() instanceof FilterbedingungBean) {
 								result = true;
@@ -597,17 +709,24 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 					}
 				});
 
-		actionTableViewer.addDropSupport(DND.DROP_LINK,
+		this.actionTableViewer.addDropSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
-				new ViewerDropAdapter(actionTableViewer) {
+				new ViewerDropAdapter(this.actionTableViewer) {
 
 					@Override
-					public boolean performDrop(Object data) {
+					public void dragEnter(final DropTargetEvent event) {
+						event.detail = DND.DROP_LINK;
+						super.dragEnter(event);
+					}
+
+					@Override
+					public boolean performDrop(final Object data) {
 						boolean result = false;
-						IStructuredSelection selection = (IStructuredSelection) data;
-						Object selectedObject = selection.getFirstElement();
+						final IStructuredSelection selection = (IStructuredSelection) data;
+						final Object selectedObject = selection
+								.getFirstElement();
 						FilterAction action = null;
-						
+
 						if (selectedObject instanceof AlarmbearbeiterBean) {
 							action = new AlarmbearbeiterFilterAction();
 						} else if (selectedObject instanceof AlarmbearbeiterGruppenBean) {
@@ -617,122 +736,35 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 						}
 						if (action != null) {
 							action.setReceiver((IReceiverBean) selectedObject);
-							getWorkingCopyOfEditorInput().addFilterAction(action);
-							actionTableViewer.setInput(getWorkingCopyOfEditorInput().getActions().toArray());
+							FilterEditor.this.getWorkingCopyOfEditorInput()
+									.addFilterAction(action);
+							FilterEditor.this.actionTableViewer
+									.setInput(FilterEditor.this
+											.getWorkingCopyOfEditorInput()
+											.getActions().toArray());
 							result = true;
-							FilterEditor.this.firePropertyChange(EditorPart.PROP_DIRTY);
+							FilterEditor.this
+									.firePropertyChange(IEditorPart.PROP_DIRTY);
 						}
 						return result;
 					}
 
 					@Override
-					public void dragEnter(DropTargetEvent event) {
-						event.detail = DND.DROP_LINK;
-						super.dragEnter(event);
-					}
-
-					@Override
-					public boolean validateDrop(Object target, int operation,
-							TransferData transferType) {
+					public boolean validateDrop(final Object target,
+							final int operation, final TransferData transferType) {
 						boolean result = false;
-						IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
+						final IStructuredSelection selection = (IStructuredSelection) LocalSelectionTransfer
 								.getTransfer().getSelection();
-						Object selectedElement = selection.getFirstElement();
-						if (selectedElement instanceof AlarmbearbeiterBean || 
-								selectedElement instanceof AlarmbearbeiterGruppenBean ||
-								selectedElement instanceof AlarmtopicBean) {
+						final Object selectedElement = selection
+								.getFirstElement();
+						if ((selectedElement instanceof AlarmbearbeiterBean)
+								|| (selectedElement instanceof AlarmbearbeiterGruppenBean)
+								|| (selectedElement instanceof AlarmtopicBean)) {
 							result = true;
 						}
 						return result;
 					}
 
 				});
-	}
-
-	@Override
-	protected void doInit(IEditorSite site, IEditorInput input) {
-	}
-
-	@Override
-	protected int getNumColumns() {
-		return 2;
-	}
-
-	@Override
-	protected void initDataBinding() {
-		DataBindingContext context = new DataBindingContext();
-
-		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(),
-				FilterBean.PropertyNames.name.name());
-
-		IObservableValue descriptionTextObservable = BeansObservables
-				.observeValue(this.getWorkingCopyOfEditorInput(),
-						FilterBean.PropertyNames.defaultMessage.name());
-
-		// IObservableTree filterConditionsObservable = BeansObservables
-		// .observeList(context.getValidationRealm(), this.beanClone,
-		// FilterBean.PropertyNames.conditions.name());
-
-		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(),
-				FilterBean.AbstractPropertyNames.rubrikName.name());
-
-		// bind observables
-		context.bindValue(SWTObservables
-				.observeText(_nameTextEntry, SWT.Modify), nameTextObservable,
-				new UpdateValueStrategy(){
-
-					@Override
-					protected IValidator createValidator(Object fromType,
-							Object toType) {
-						// TODO Validate FilterMessage Variables here
-						return super.createValidator(fromType, toType);
-					}
-			
-		}, null);
-
-		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
-				SWT.Modify), descriptionTextObservable, null, null);
-		// IObservableTree observeItems = SWTObservables
-		// .observeItems(filterConditionsTreeViewer.getTree());
-		// context.bindList(observeItems, filterConditionsObservable, null,
-		// null);
-
-		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
-				rubrikTextObservable, null, null);
-	}
-
-	@Override
-	public void onBeanInsert(IConfigurationBean bean) {
-		// FIXME synchronize bean and beanClone
-		if (filterConditionsTreeViewer != null) {
-			filterConditionsTreeViewer.refresh();
-		}
-		// if (!isDirty()) {
-		// afterSafe();
-		// }
-		super.onBeanInsert(bean);
-	}
-
-	@Override
-	public void onBeanUpdate(IConfigurationBean bean) {
-		// FIXME synchronize bean and beanClone
-		if (filterConditionsTreeViewer != null) {
-			filterConditionsTreeViewer.refresh();
-		}
-		// if (!isDirty()) {
-		// afterSafe();
-		// }
-		super.onBeanUpdate(bean);
-	}
-
-	@Override
-	public void setFocus() {
-		_nameTextEntry.setFocus();
-	}
-
-	public static String getId() {
-		return EDITOR_ID;
 	}
 }

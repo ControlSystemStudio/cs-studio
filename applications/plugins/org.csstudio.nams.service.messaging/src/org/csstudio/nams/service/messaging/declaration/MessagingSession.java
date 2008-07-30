@@ -4,6 +4,8 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 public interface MessagingSession {
 
+	public void close();
+
 	/**
 	 * 
 	 * 
@@ -20,8 +22,6 @@ public interface MessagingSession {
 
 	public Producer createProducer(String messageDestinationName,
 			PostfachArt artDesPostfaches) throws MessagingException;
-
-	public void close();
 
 	public boolean isClosed();
 }

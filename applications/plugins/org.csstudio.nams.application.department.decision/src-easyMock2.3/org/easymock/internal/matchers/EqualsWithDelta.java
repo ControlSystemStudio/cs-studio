@@ -16,15 +16,15 @@ public class EqualsWithDelta implements IArgumentMatcher {
 		this.delta = delta;
 	}
 
+	public void appendTo(final StringBuffer buffer) {
+		buffer.append("eq(" + this.expected + ", " + this.delta + ")");
+	}
+
 	public boolean matches(final Object actual) {
 		final Number actualNumber = (Number) actual;
 		return (this.expected.doubleValue() - this.delta.doubleValue() <= actualNumber
 				.doubleValue())
 				&& (actualNumber.doubleValue() <= this.expected.doubleValue()
 						+ this.delta.doubleValue());
-	}
-
-	public void appendTo(final StringBuffer buffer) {
-		buffer.append("eq(" + this.expected + ", " + this.delta + ")");
 	}
 }

@@ -7,54 +7,54 @@ import java.util.Set;
 
 public class OSGiServiceOffers implements Map<Class<?>, Object> {
 
-	private Map<Class<?>, Object> contents = new HashMap<Class<?>, Object>();
-	
+	private final Map<Class<?>, Object> contents = new HashMap<Class<?>, Object>();
+
 	public void clear() {
-		contents.clear();
+		this.contents.clear();
 	}
 
-	public boolean containsKey(Object key) {
-		return contents.containsKey(key);
+	public boolean containsKey(final Object key) {
+		return this.contents.containsKey(key);
 	}
 
-	public boolean containsValue(Object value) {
-		return contents.containsValue(value);
+	public boolean containsValue(final Object value) {
+		return this.contents.containsValue(value);
 	}
 
 	public Set<java.util.Map.Entry<Class<?>, Object>> entrySet() {
-		return contents.entrySet();
+		return this.contents.entrySet();
 	}
 
-	public Object get(Object key) {
-		return contents.get(key);
+	public Object get(final Object key) {
+		return this.contents.get(key);
 	}
 
 	public boolean isEmpty() {
-		return contents.isEmpty();
+		return this.contents.isEmpty();
 	}
 
 	public Set<Class<?>> keySet() {
-		return contents.keySet();
+		return this.contents.keySet();
 	}
 
-	public Object put(Class<?> key, Object value) {
-		return contents.put(key, value);
+	public Object put(final Class<?> key, final Object value) {
+		return this.contents.put(key, value);
 	}
 
-	public void putAll(Map<? extends Class<?>, ? extends Object> map) {
-		contents.putAll(map);
+	public void putAll(final Map<? extends Class<?>, ? extends Object> map) {
+		this.contents.putAll(map);
 	}
 
-	public Object remove(Object key) {
-		return contents.remove(key);
+	public Object remove(final Object key) {
+		return this.contents.remove(key);
 	}
 
 	public int size() {
-		return contents.size();
+		return this.contents.size();
 	}
 
 	public Collection<Object> values() {
-		return contents.values();
+		return this.contents.values();
 	}
 
 }

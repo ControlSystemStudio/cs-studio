@@ -48,10 +48,10 @@ public class MessagingActivator extends AbstractBundleActivator implements
 	public OSGiServiceOffers startBundle(
 			@ExecutableEclipseRCPExtension(extensionId = MessagingServiceFactory.class)
 			@Required
-			Object messagingServiceFactory) throws Exception {
-		OSGiServiceOffers offers = new OSGiServiceOffers();
+			final Object messagingServiceFactory) throws Exception {
+		final OSGiServiceOffers offers = new OSGiServiceOffers();
 
-		MessagingServiceFactory factory = (MessagingServiceFactory) messagingServiceFactory;
+		final MessagingServiceFactory factory = (MessagingServiceFactory) messagingServiceFactory;
 		offers.put(MessagingService.class, factory.createService());
 		return offers;
 	}

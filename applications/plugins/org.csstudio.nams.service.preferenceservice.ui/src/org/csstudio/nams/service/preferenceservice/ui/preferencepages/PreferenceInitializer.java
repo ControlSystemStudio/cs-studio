@@ -12,11 +12,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	public static void staticInject(IPreferenceStore preferenceStore) {
+	private static IPreferenceStore preferenceStore;
+
+	public static void staticInject(final IPreferenceStore preferenceStore) {
 		PreferenceInitializer.preferenceStore = preferenceStore;
 	}
-
-	private static IPreferenceStore preferenceStore;
 
 	public PreferenceInitializer() {
 		if (PreferenceInitializer.preferenceStore == null) {
@@ -25,20 +25,21 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		}
 	}
 
+	@Override
 	public void initializeDefaultPreferences() {
 		// configuration db
-		preferenceStore.setDefault(
+		PreferenceInitializer.preferenceStore.setDefault(
 				PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_TYPE
 						.getPreferenceStoreId(), DatabaseType.Oracle10g.name());
-		preferenceStore
+		PreferenceInitializer.preferenceStore
 				.setDefault(
 						PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_CONNECTION
 								.getPreferenceStoreId(),
 						"jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))");
-		preferenceStore.setDefault(
+		PreferenceInitializer.preferenceStore.setDefault(
 				PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_USER
 						.getPreferenceStoreId(), "DESY");
-		preferenceStore.setDefault(
+		PreferenceInitializer.preferenceStore.setDefault(
 				PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD
 						.getPreferenceStoreId(), "DESY");
 		// TODO Initialize other things here...

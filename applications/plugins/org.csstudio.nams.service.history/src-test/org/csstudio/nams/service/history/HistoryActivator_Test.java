@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.history;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
@@ -13,20 +14,24 @@ public class HistoryActivator_Test extends TestCase {
 
 	@Test
 	public void testStartBundle() throws Throwable {
-		Logger logger = EasyMock.createNiceMock(Logger.class);
-		HistoryService historyService = EasyMock.createMock(HistoryService.class);
-		HistoryServiceFactory factory = EasyMock.createMock(HistoryServiceFactory.class);
+		final Logger logger = EasyMock.createNiceMock(Logger.class);
+		final HistoryService historyService = EasyMock
+				.createMock(HistoryService.class);
+		final HistoryServiceFactory factory = EasyMock
+				.createMock(HistoryServiceFactory.class);
 		EasyMock.expect(factory.createService()).andReturn(historyService);
 		EasyMock.replay(logger, historyService, factory);
-		
-		HistoryActivator activator = new HistoryActivator();
-		
-		OSGiServiceOffers serviceOffers = activator.startBundle(logger, factory);
-		
-		assertNotNull(serviceOffers);
-		Object service = serviceOffers.get(HistoryService.class);
-		assertTrue(HistoryService.class.isAssignableFrom(service.getClass()));
-		assertSame(historyService, service);
+
+		final HistoryActivator activator = new HistoryActivator();
+
+		final OSGiServiceOffers serviceOffers = activator.startBundle(logger,
+				factory);
+
+		Assert.assertNotNull(serviceOffers);
+		final Object service = serviceOffers.get(HistoryService.class);
+		Assert.assertTrue(HistoryService.class.isAssignableFrom(service
+				.getClass()));
+		Assert.assertSame(historyService, service);
 	}
 
 }

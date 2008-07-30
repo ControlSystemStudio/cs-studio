@@ -27,21 +27,23 @@ public class MultiConsumersConsumer implements Consumer {
 	 */
 	private final BlockingQueue<NAMSMessage> queue = new ArrayBlockingQueue<NAMSMessage>(
 			1);
-	private List<StepByStepProcessor> processors;
+	private final List<StepByStepProcessor> processors;
 	private boolean isClosed = true;
 
-	public MultiConsumersConsumer(final Logger logger, Consumer[] consumerArray,
-			ExecutionService executionService) {
-		processors = new LinkedList<StepByStepProcessor>();
+	public MultiConsumersConsumer(final Logger logger,
+			final Consumer[] consumerArray,
+			final ExecutionService executionService) {
+		this.processors = new LinkedList<StepByStepProcessor>();
 
 		for (final Consumer consumer : consumerArray) {
-			StepByStepProcessor stepByStepProcessor = new StepByStepProcessor() {
+			final StepByStepProcessor stepByStepProcessor = new StepByStepProcessor() {
 				@Override
 				protected void doRunOneSingleStep() throws Throwable {
 					try {
 						NAMSMessage receivedMessage = consumer.receiveMessage();
 						if (receivedMessage != null) {
-							queue.put(receivedMessage);
+							MultiConsumersConsumer.this.queue
+									.put(receivedMessage);
 						}
 					} catch (MessagingException me) {
 						if (me.getCause() instanceof InterruptedException) {
@@ -51,7 +53,9 @@ public class MultiConsumersConsumer implements Consumer {
 							// Sollen die Exceptions gespeichert und beim
 							// "globalen" recieve zurückgeliefert werden??
 							// throw me.fillInStackTrace();
-							logger.logErrorMessage(this, "Exception during recieving message from: "+consumer.toString(), me);
+							logger.logErrorMessage(this,
+									"Exception during recieving message from: "
+											+ consumer.toString(), me);
 						}
 					}
 				}
@@ -59,25 +63,25 @@ public class MultiConsumersConsumer implements Consumer {
 			executionService.executeAsynchronsly(
 					MultiConsumerMessageThreads.CONSUMER_THREAD,
 					stepByStepProcessor);
-			processors.add(stepByStepProcessor);
+			this.processors.add(stepByStepProcessor);
 		}
-		isClosed = false;
+		this.isClosed = false;
 	}
 
 	public void close() {
-		for (StepByStepProcessor processor : processors) {
+		for (final StepByStepProcessor processor : this.processors) {
 			processor.stopWorking();
 		}
-		isClosed = true;
+		this.isClosed = true;
 	}
 
 	public boolean isClosed() {
-		return isClosed;
+		return this.isClosed;
 	}
 
 	public NAMSMessage receiveMessage() throws MessagingException,
 			InterruptedException {
-		return queue.take();
+		return this.queue.take();
 	}
 
 }

@@ -10,6 +10,16 @@ package org.easymock;
 public interface IArgumentMatcher {
 
 	/**
+	 * Appends a string representation of this matcher to the given buffer. In
+	 * case of failure, the printed message will show this string to allow to
+	 * know which matcher was used for the failing call.
+	 * 
+	 * @param buffer
+	 *            the buffer to which the string representation is appended.
+	 */
+	void appendTo(StringBuffer buffer);
+
+	/**
 	 * Returns whether this matcher accepts the given argument.
 	 * <p>
 	 * Like Object.equals(), it should be aware that the argument passed might
@@ -25,14 +35,4 @@ public interface IArgumentMatcher {
 	 * @return whether this matcher accepts the given argument.
 	 */
 	boolean matches(Object argument);
-
-	/**
-	 * Appends a string representation of this matcher to the given buffer. In
-	 * case of failure, the printed message will show this string to allow to
-	 * know which matcher was used for the failing call.
-	 * 
-	 * @param buffer
-	 *            the buffer to which the string representation is appended.
-	 */
-	void appendTo(StringBuffer buffer);
 }

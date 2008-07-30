@@ -11,21 +11,22 @@ import org.osgi.framework.BundleActivator;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class JMSActivator extends AbstractBundleActivator implements BundleActivator {
+public class JMSActivator extends AbstractBundleActivator implements
+		BundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.messaging.impl.jms";
 	private PreferenceService preferenceService;
-	
+
 	@OSGiBundleActivationMethod
-	public void startBundle(
-			@OSGiService @Required Logger logger, @OSGiService
-			@Required
-			PreferenceService injectedPreferenceService
-	) {
+	public void startBundle(@OSGiService
+	@Required
+	final Logger logger, @OSGiService
+	@Required
+	final PreferenceService injectedPreferenceService) {
 		this.preferenceService = injectedPreferenceService;
 		JMSConsumer.staticInjectLogger(logger);
 		JMSProducer.staticInjectLogger(logger);
-		JMSMessagingSessionImpl.staticInject(preferenceService);
+		JMSMessagingSessionImpl.staticInject(this.preferenceService);
 	}
 }

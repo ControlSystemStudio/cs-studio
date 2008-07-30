@@ -10,36 +10,11 @@ import org.csstudio.nams.common.service.ThreadType;
  */
 public interface SynchronizeService {
 
-	static public enum ThreadTypes implements ThreadType {
-		SYNCHRONIZER
-	}
-	
-	/**
-	 * Synchronisiert asynchron(!) die eingegebenen und gespeicherten Änderungen
-	 * mit dem Hintergrundsystem. Zum Verlauf studieren Sie die Dokumentation
-	 * der Operationen der Klasse {@link SynchronizeService.Callback}.
-	 * 
-	 * @param callback
-	 *            Über diesen Callback werden Rückfragen an den Aufrufer
-	 *            gestellt und (Zwischen-)Ergebnisse mitgeteilt.
-	 */
-	public void sychronizeAlarmSystem(Callback callback) throws Throwable;
-
 	/**
 	 * Callback für den Service um den Aufrufer über den Arbeitsverlauf zu
 	 * informieren.
 	 */
 	public abstract static interface Callback {
-		/**
-		 * (1) Prüft, ob es ungesicherte Änderungen gibt, aufgrund derer nicht
-		 * synchronisiert werden kann oder sollte. Ggf. Rückfrage an den
-		 * Anwender.
-		 * 
-		 * @return {@code true} if and only if synchronize should be proceeded,
-		 *         {@code false} otherwise.
-		 */
-		public abstract boolean pruefeObSynchronisationAusgefuehrtWerdenDarf();
-
 		/**
 		 * (2) Informiert die Callback darüber, dass der Service nun beginnt,
 		 * die Synchronisation vorzubereiten.
@@ -55,6 +30,16 @@ public interface SynchronizeService {
 		 *            Der aufgetreten Fehler.
 		 */
 		public void fehlerBeimVorbereitenDerSynchronisation(Throwable t);
+
+		/**
+		 * (1) Prüft, ob es ungesicherte Änderungen gibt, aufgrund derer nicht
+		 * synchronisiert werden kann oder sollte. Ggf. Rückfrage an den
+		 * Anwender.
+		 * 
+		 * @return {@code true} if and only if synchronize should be proceeded,
+		 *         {@code false} otherwise.
+		 */
+		public abstract boolean pruefeObSynchronisationAusgefuehrtWerdenDarf();
 
 		/**
 		 * (3) Informiert die Callback darüber, dass der Service nun eine
@@ -73,11 +58,13 @@ public interface SynchronizeService {
 				Throwable t);
 
 		/**
-		 * (4) Informiert die Callback darüber, dass der Service eine Nachricht
-		 * an das Hintergrundsystem gesendet hat und nun auf Antwort warten
-		 * wird..
+		 * (Fehler-Folge) Informiert über den abbruch den
+		 * Synchrisationsvorhabens, wird gerufen, wenn der Benutzer
+		 * {@link #pruefeObSynchronisationAusgefuehrtWerdenDarf()} verneint oder
+		 * die synchronisation nach einem zuvor gemeldeten Fehler abgebrochen
+		 * wird.
 		 */
-		public void wartetAufAntowrtDesHintergrundSystems();
+		public abstract void synchronisationAbgebrochen();
 
 		/**
 		 * (5) Gibt an, dass das der Service eine Antwort des Hintergrundsystems
@@ -97,12 +84,25 @@ public interface SynchronizeService {
 				String fehlertext);
 
 		/**
-		 * (Fehler-Folge) Informiert über den abbruch den
-		 * Synchrisationsvorhabens, wird gerufen, wenn der Benutzer
-		 * {@link #pruefeObSynchronisationAusgefuehrtWerdenDarf()} verneint oder
-		 * die synchronisation nach einem zuvor gemeldeten Fehler abgebrochen
-		 * wird.
+		 * (4) Informiert die Callback darüber, dass der Service eine Nachricht
+		 * an das Hintergrundsystem gesendet hat und nun auf Antwort warten
+		 * wird..
 		 */
-		public abstract void synchronisationAbgebrochen();
+		public void wartetAufAntowrtDesHintergrundSystems();
 	}
+
+	static public enum ThreadTypes implements ThreadType {
+		SYNCHRONIZER
+	}
+
+	/**
+	 * Synchronisiert asynchron(!) die eingegebenen und gespeicherten Änderungen
+	 * mit dem Hintergrundsystem. Zum Verlauf studieren Sie die Dokumentation
+	 * der Operationen der Klasse {@link SynchronizeService.Callback}.
+	 * 
+	 * @param callback
+	 *            Über diesen Callback werden Rückfragen an den Aufrufer
+	 *            gestellt und (Zwischen-)Ergebnisse mitgeteilt.
+	 */
+	public void sychronizeAlarmSystem(Callback callback) throws Throwable;
 }

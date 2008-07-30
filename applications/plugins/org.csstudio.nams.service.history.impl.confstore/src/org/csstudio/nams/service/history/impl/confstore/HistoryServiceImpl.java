@@ -18,61 +18,54 @@ public class HistoryServiceImpl implements HistoryService {
 	private final LocalStoreConfigurationService localStoreConfigurationService;
 
 	public HistoryServiceImpl(
-			LocalStoreConfigurationService localStoreConfigurationService) {
+			final LocalStoreConfigurationService localStoreConfigurationService) {
 		this.localStoreConfigurationService = localStoreConfigurationService;
 	}
 
 	public void logReceivedReplicationDoneMessage() {
 
-		HistoryDTO historyDTO = prepareReplicationHistoryDTO();
+		final HistoryDTO historyDTO = this.prepareReplicationHistoryDTO();
 		historyDTO
 				.setCDescription("Filtermanager stops normal work, wait for Distributor.");
 		try {
-			localStoreConfigurationService.saveHistoryDTO(historyDTO);
-		} catch (StorageError e) {
+			this.localStoreConfigurationService.saveHistoryDTO(historyDTO);
+		} catch (final StorageError e) {
 			throw new HistoryStorageException(
 					"could not log replication done message", e);
-		} catch (StorageException e) {
+		} catch (final StorageException e) {
 			throw new HistoryStorageException(
 					"could not log replication done message", e);
-		} catch (InconsistentConfigurationException e) {
+		} catch (final InconsistentConfigurationException e) {
 			throw new HistoryStorageException(
 					"could not log replication done message", e);
 		}
 	}
 
 	public void logReceivedStartReplicationMessage() {
-		HistoryDTO historyDTO = prepareReplicationHistoryDTO();
+		final HistoryDTO historyDTO = this.prepareReplicationHistoryDTO();
 		historyDTO
 				.setCDescription("Filtermanager got config replication end, goes to normal work.");
 		try {
-			localStoreConfigurationService.saveHistoryDTO(historyDTO);
-		} catch (StorageError e) {
+			this.localStoreConfigurationService.saveHistoryDTO(historyDTO);
+		} catch (final StorageError e) {
 			throw new HistoryStorageException(
 					"could not log replication done message", e);
-		} catch (StorageException e) {
+		} catch (final StorageException e) {
 			throw new HistoryStorageException(
 					"could not log replication done message", e);
-		} catch (InconsistentConfigurationException e) {
+		} catch (final InconsistentConfigurationException e) {
 			throw new HistoryStorageException(
 					"could not log replication done message", e);
 		}
 	}
 
-	private HistoryDTO prepareReplicationHistoryDTO() {
-		HistoryDTO historyDTO = new HistoryDTO();
-		historyDTO.setTTimeNew(new Date(System.currentTimeMillis()).getTime());
-		historyDTO.setCActionType("Config Synch");
-		return historyDTO;
-	}
-
-	public void logTimeOutForTimeBased(Vorgangsmappe vorgangsmappe) {
-		Regelwerkskennung regelwerkId = vorgangsmappe.gibPruefliste()
+	public void logTimeOutForTimeBased(final Vorgangsmappe vorgangsmappe) {
+		final Regelwerkskennung regelwerkId = vorgangsmappe.gibPruefliste()
 				.gibRegelwerkskennung();
-		AlarmNachricht alarmNachricht = vorgangsmappe
+		final AlarmNachricht alarmNachricht = vorgangsmappe
 				.gibAusloesendeAlarmNachrichtDiesesVorganges();
 
-		HistoryDTO historyDTO = new HistoryDTO();
+		final HistoryDTO historyDTO = new HistoryDTO();
 		historyDTO.setTTimeNew(new Date(System.currentTimeMillis()).getTime());
 		historyDTO.setCActionType("TimeBased");
 		historyDTO.setCDescription("Timeout for Msg "
@@ -86,17 +79,24 @@ public class HistoryServiceImpl implements HistoryService {
 				// + "/"
 				+ "F=" + regelwerkId.getRegelwerksId() + ")");
 		try {
-			localStoreConfigurationService.saveHistoryDTO(historyDTO);
-		} catch (StorageError e) {
+			this.localStoreConfigurationService.saveHistoryDTO(historyDTO);
+		} catch (final StorageError e) {
 			throw new HistoryStorageException("could not log time-out message",
 					e);
-		} catch (StorageException e) {
+		} catch (final StorageException e) {
 			throw new HistoryStorageException("could not log time-out message",
 					e);
-		} catch (InconsistentConfigurationException e) {
+		} catch (final InconsistentConfigurationException e) {
 			throw new HistoryStorageException("could not log time-out message",
 					e);
 		}
+	}
+
+	private HistoryDTO prepareReplicationHistoryDTO() {
+		final HistoryDTO historyDTO = new HistoryDTO();
+		historyDTO.setTTimeNew(new Date(System.currentTimeMillis()).getTime());
+		historyDTO.setCActionType("Config Synch");
+		return historyDTO;
 	}
 
 }

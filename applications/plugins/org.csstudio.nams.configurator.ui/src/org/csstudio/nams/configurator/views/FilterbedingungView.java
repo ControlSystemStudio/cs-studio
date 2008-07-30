@@ -16,15 +16,23 @@ public class FilterbedingungView extends AbstractNamsView {
 	public static final String ID = "org.csstudio.nams.configurator.filterbedingung";
 
 	@Override
+	protected Class<? extends IConfigurationBean> getBeanClass() {
+		return FilterbedingungBean.class;
+	}
+
+	@Override
 	protected IConfigurationBean[] getTableContent() {
-		FilterbedingungBean[] conditionsBeans = getConfigurationBeanService().getFilterConditionsBeans();
-		List<FilterbedingungBean> result = new LinkedList<FilterbedingungBean>();
-		for (FilterbedingungBean filterbedingungBean : conditionsBeans) {
+		final FilterbedingungBean[] conditionsBeans = AbstractNamsView
+				.getConfigurationBeanService().getFilterConditionsBeans();
+		final List<FilterbedingungBean> result = new LinkedList<FilterbedingungBean>();
+		for (final FilterbedingungBean filterbedingungBean : conditionsBeans) {
 			// TODO (gs) nur zum testen auskommentiert
-//			if (!(filterbedingungBean instanceof JunctorConditionForFilterTreeBean) &&
-//					!(filterbedingungBean instanceof NotConditionForFilterTreeBean)) {
-				result.add(filterbedingungBean);
-//			}
+			// if (!(filterbedingungBean instanceof
+			// JunctorConditionForFilterTreeBean) &&
+			// !(filterbedingungBean instanceof NotConditionForFilterTreeBean))
+			// {
+			result.add(filterbedingungBean);
+			// }
 		}
 		return result.toArray(new FilterbedingungBean[result.size()]);
 	}
@@ -34,10 +42,5 @@ public class FilterbedingungView extends AbstractNamsView {
 		filterableBeanList.getTable().addDragSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new SelectionDragSourceListener(filterableBeanList.getTable()));
-	}
-	
-	@Override
-	protected Class<? extends IConfigurationBean> getBeanClass() {
-		return FilterbedingungBean.class;
 	}
 }

@@ -92,25 +92,19 @@ public abstract class AbstractEclipseRCPApplication implements BundleActivator,
 	 * This method should only be called by the Eclipse-framework; do never call
 	 * it directly!
 	 */
-	final public void stop(final BundleContext bundleContext) throws Exception {
-		AbstractEclipseRCPApplication.bundleContext = null;
-	}
-
-	/**
-	 * This method should only be called by the Eclipse-framework; do never call
-	 * it directly!
-	 */
-	final public Object start(IApplicationContext context) throws Exception {
+	final public Object start(final IApplicationContext context)
+			throws Exception {
 
 		// Run Steps....
-		Method applicationStepperMethod = AnnotatedActivatorUtils
+		final Method applicationStepperMethod = AnnotatedActivatorUtils
 				.findAnnotatedMethod(this, ApplicationStep.class);
 
 		// check result
-		Class<?> applicationStartMethodReturnType = applicationStepperMethod
+		final Class<?> applicationStartMethodReturnType = applicationStepperMethod
 				.getReturnType();
 		if (!Void.TYPE.equals(applicationStartMethodReturnType)) {
-			if (!ApplicationStepResult.class.equals(applicationStartMethodReturnType)) {
+			if (!ApplicationStepResult.class
+					.equals(applicationStartMethodReturnType)) {
 				throw new RuntimeException(
 						"Invalid return type of application-start-method: \""
 								+ applicationStartMethodReturnType.getName()
@@ -121,11 +115,11 @@ public abstract class AbstractEclipseRCPApplication implements BundleActivator,
 		}
 
 		// get params...
-		RequestedParam[] requestedParams = AnnotatedActivatorUtils
+		final RequestedParam[] requestedParams = AnnotatedActivatorUtils
 				.getAllRequestedMethodParams(applicationStepperMethod);
 
 		// check is all requested params are valid...
-		for (RequestedParam requestedParam : requestedParams) {
+		for (final RequestedParam requestedParam : requestedParams) {
 			// currently only OSGiService injection is supported
 			if (!RequestedParam.RequestType.OSGiServiceRequest
 					.equals(requestedParam.requestType)) {
@@ -137,16 +131,18 @@ public abstract class AbstractEclipseRCPApplication implements BundleActivator,
 		}
 
 		// INVOKE
-		Object[] paramValues = AnnotatedActivatorUtils.evaluateParamValues(
-				AbstractEclipseRCPApplication.bundleContext, requestedParams);
+		final Object[] paramValues = AnnotatedActivatorUtils
+				.evaluateParamValues(
+						AbstractEclipseRCPApplication.bundleContext,
+						requestedParams);
 
 		ApplicationStepResult stepResult = null;
 		do {
 			try {
 				stepResult = (ApplicationStepResult) applicationStepperMethod
 						.invoke(this, paramValues);
-			} catch (InvocationTargetException wrappedApplicationStepError) {
-				Throwable applicationStepError = wrappedApplicationStepError
+			} catch (final InvocationTargetException wrappedApplicationStepError) {
+				final Throwable applicationStepError = wrappedApplicationStepError
 						.getCause();
 				// TODO If Exception handler is avail, call exception handler
 				// with
@@ -178,6 +174,14 @@ public abstract class AbstractEclipseRCPApplication implements BundleActivator,
 		// TODO Auto-generated method stub
 		throw new RuntimeException("Not implemented yet.");
 
+	}
+
+	/**
+	 * This method should only be called by the Eclipse-framework; do never call
+	 * it directly!
+	 */
+	final public void stop(final BundleContext bundleContext) throws Exception {
+		AbstractEclipseRCPApplication.bundleContext = null;
 	}
 
 }

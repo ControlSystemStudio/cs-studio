@@ -18,6 +18,6 @@ public class Regelwerkskennung_Test extends
 	@Override
 	protected Regelwerkskennung[] doGetDifferentInstancesOfTypeUnderTest() {
 		return new Regelwerkskennung[] { Regelwerkskennung.valueOf(),
-		Regelwerkskennung.valueOf(), Regelwerkskennung.valueOf() };
+				Regelwerkskennung.valueOf(), Regelwerkskennung.valueOf() };
 	}
 }

@@ -6,17 +6,17 @@ import org.eclipse.jface.viewers.LabelProvider;
 public class FilterTreeLabelProvider extends LabelProvider {
 
 	@Override
-	public String getText(Object element) {
+	public String getText(final Object element) {
 		String result = "unknown";
 		if (element instanceof FilterbedingungBean) {
-			FilterbedingungBean bean = (FilterbedingungBean) element;
+			final FilterbedingungBean bean = (FilterbedingungBean) element;
 			result = bean.getDisplayName();
-			String description = bean.getDescription();
-			if (description != null && !description.equals("")) {
+			final String description = bean.getDescription();
+			if ((description != null) && !description.equals("")) {
 				result += "     [" + description + "]";
 			}
 		}
-		
+
 		return result;
 	}
 }

@@ -27,13 +27,13 @@ package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.Set;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.junit.Test;
-
 
 /**
  * Test for AbstractNodeVersandRegel
@@ -53,21 +53,21 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 	 */
 	@Test
 	public void testAddChild() {
-		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
+		final AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
-		VersandRegel childRegel = new AbstractNodeVersandRegel() {
+		final VersandRegel childRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
 		parentRegel.addChild(childRegel);
-		assertTrue(parentRegel.children.size() == 1);
-		assertTrue(parentRegel.children.contains(childRegel));
+		Assert.assertTrue(parentRegel.children.size() == 1);
+		Assert.assertTrue(parentRegel.children.contains(childRegel));
 	}
 
 	/**
@@ -76,46 +76,48 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 	 */
 	@Test
 	public void testGibKinderErgebnisse() {
-		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
+		final AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
-		VersandRegel childRegel = new AbstractNodeVersandRegel() {
+		final VersandRegel childRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
-		AbstractNodeVersandRegel childRegel2 = new AbstractNodeVersandRegel() {
+		final AbstractNodeVersandRegel childRegel2 = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
-				parentRegel);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), parentRegel);
 		Set<RegelErgebnis> kinderErgebnisse = parentRegel
 				.gibKinderErgebnisse(pruefliste);
 
-		assertTrue(kinderErgebnisse.isEmpty());
+		Assert.assertTrue(kinderErgebnisse.isEmpty());
 
 		parentRegel.addChild(childRegel);
-		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(childRegel, RegelErgebnis.ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(childRegel,
+				RegelErgebnis.ZUTREFFEND);
 
 		kinderErgebnisse = parentRegel.gibKinderErgebnisse(pruefliste);
-		assertTrue(kinderErgebnisse.size() == 1);
-		assertTrue(kinderErgebnisse.contains(RegelErgebnis.ZUTREFFEND));
+		Assert.assertTrue(kinderErgebnisse.size() == 1);
+		Assert.assertTrue(kinderErgebnisse.contains(RegelErgebnis.ZUTREFFEND));
 
 		parentRegel.addChild(childRegel2);
 		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(childRegel2,
 				RegelErgebnis.NICHT_ZUTREFFEND);
 
 		kinderErgebnisse = parentRegel.gibKinderErgebnisse(pruefliste);
-		assertTrue(kinderErgebnisse.size() == 2);
-		assertTrue(kinderErgebnisse.contains(RegelErgebnis.ZUTREFFEND));
-		assertTrue(kinderErgebnisse.contains(RegelErgebnis.NICHT_ZUTREFFEND));
+		Assert.assertTrue(kinderErgebnisse.size() == 2);
+		Assert.assertTrue(kinderErgebnisse.contains(RegelErgebnis.ZUTREFFEND));
+		Assert.assertTrue(kinderErgebnisse
+				.contains(RegelErgebnis.NICHT_ZUTREFFEND));
 	}
 
 	/**
@@ -124,18 +126,18 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtErfolgreich() {
-		AlarmNachricht alarmNachricht = new AlarmNachricht("nachricht");
+		final AlarmNachricht alarmNachricht = new AlarmNachricht("nachricht");
 
 		final boolean[] child1PruefeAufgerufen = { false };
 		final boolean[] child2PruefeAufgerufen = { false };
 
-		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
+		final AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new VersandRegel() {
+		final VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -145,17 +147,17 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 		};
-		VersandRegel childRegel2 = new VersandRegel() {
+		final VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -165,18 +167,18 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 		};
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
-				parentRegel);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), parentRegel);
 
 		parentRegel.addChild(childRegel);
 		parentRegel.addChild(childRegel2);
@@ -184,10 +186,11 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 		parentRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 				alarmNachricht, pruefliste);
 
-		assertTrue(child1PruefeAufgerufen[0]);
-		assertTrue(child2PruefeAufgerufen[0]);
+		Assert.assertTrue(child1PruefeAufgerufen[0]);
+		Assert.assertTrue(child2PruefeAufgerufen[0]);
 
-		assertTrue(pruefliste.gibErgebnisFuerRegel(parentRegel) == RegelErgebnis.ZUTREFFEND);
+		Assert
+				.assertTrue(pruefliste.gibErgebnisFuerRegel(parentRegel) == RegelErgebnis.ZUTREFFEND);
 	}
 
 	/**
@@ -196,18 +199,18 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtSchonEntschieden() {
-		AlarmNachricht alarmNachricht = new AlarmNachricht("nachricht");
+		final AlarmNachricht alarmNachricht = new AlarmNachricht("nachricht");
 
 		final boolean[] child1PruefeAufgerufen = { false };
 		final boolean[] child2PruefeAufgerufen = { false };
 
-		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
+		final AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new VersandRegel() {
+		final VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -217,17 +220,17 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 		};
-		VersandRegel childRegel2 = new VersandRegel() {
+		final VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
@@ -237,32 +240,33 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 		};
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
-				parentRegel);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), parentRegel);
 
 		parentRegel.addChild(childRegel);
 		parentRegel.addChild(childRegel2);
 
-		pruefliste
-				.setzeErgebnisFuerRegelFallsVeraendert(parentRegel, RegelErgebnis.ZUTREFFEND);
+		pruefliste.setzeErgebnisFuerRegelFallsVeraendert(parentRegel,
+				RegelErgebnis.ZUTREFFEND);
 
 		parentRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 				alarmNachricht, pruefliste);
 
-		assertFalse(child1PruefeAufgerufen[0]);
-		assertFalse(child2PruefeAufgerufen[0]);
+		Assert.assertFalse(child1PruefeAufgerufen[0]);
+		Assert.assertFalse(child2PruefeAufgerufen[0]);
 
-		assertTrue(pruefliste.gibErgebnisFuerRegel(parentRegel) == RegelErgebnis.ZUTREFFEND);
+		Assert
+				.assertTrue(pruefliste.gibErgebnisFuerRegel(parentRegel) == RegelErgebnis.ZUTREFFEND);
 	}
 
 	/**
@@ -274,17 +278,17 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 		final boolean[] child1PruefeAufgerufen = { false };
 		final boolean[] child2PruefeAufgerufen = { false };
 
-		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
+		final AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new VersandRegel() {
+		final VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail();
+				Assert.fail();
 			}
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
@@ -296,15 +300,15 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 		};
-		VersandRegel childRegel2 = new VersandRegel() {
+		final VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail();
+				Assert.fail();
 			}
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
@@ -316,36 +320,35 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 		};
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
-				parentRegel);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), parentRegel);
 
 		parentRegel.addChild(childRegel);
 		parentRegel.addChild(childRegel2);
 
-		Millisekunden wartezeit = parentRegel
-				.pruefeNachrichtAufTimeOuts(pruefliste, Millisekunden
-						.valueOf(100));
+		Millisekunden wartezeit = parentRegel.pruefeNachrichtAufTimeOuts(
+				pruefliste, Millisekunden.valueOf(100));
 
-		assertTrue(child1PruefeAufgerufen[0]);
-		assertTrue(child2PruefeAufgerufen[0]);
-		assertEquals(Millisekunden.valueOf(200), wartezeit);
-		assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
+		Assert.assertTrue(child1PruefeAufgerufen[0]);
+		Assert.assertTrue(child2PruefeAufgerufen[0]);
+		Assert.assertEquals(Millisekunden.valueOf(200), wartezeit);
+		Assert.assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
 				RegelErgebnis.ZUTREFFEND);
 
 		child1PruefeAufgerufen[0] = false;
 		child2PruefeAufgerufen[0] = false;
 
-		wartezeit = parentRegel.pruefeNachrichtAufTimeOuts(
-				pruefliste, Millisekunden.valueOf(100));
-		
-		assertFalse(child1PruefeAufgerufen[0]);
-		assertFalse(child2PruefeAufgerufen[0]);
-		assertNull( wartezeit);
-		assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
+		wartezeit = parentRegel.pruefeNachrichtAufTimeOuts(pruefliste,
+				Millisekunden.valueOf(100));
+
+		Assert.assertFalse(child1PruefeAufgerufen[0]);
+		Assert.assertFalse(child2PruefeAufgerufen[0]);
+		Assert.assertNull(wartezeit);
+		Assert.assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
 				RegelErgebnis.ZUTREFFEND);
 	}
 
@@ -358,43 +361,43 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 		final boolean[] child1PruefeAufgerufen = { false };
 		final boolean[] child2PruefeAufgerufen = { false };
 
-		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
+		final AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
 			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
-		VersandRegel childRegel = new VersandRegel() {
+		final VersandRegel childRegel = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail();
+				Assert.fail();
 			}
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public Millisekunden pruefeNachrichtErstmalig(
 					AlarmNachricht nachricht, Pruefliste ergebnisListe) {
 				child1PruefeAufgerufen[0] = true;
-				return  Millisekunden.valueOf(100);
+				return Millisekunden.valueOf(100);
 			}
 		};
-		VersandRegel childRegel2 = new VersandRegel() {
+		final VersandRegel childRegel2 = new VersandRegel() {
 
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-				fail();
+				Assert.fail();
 			}
 
 			public Millisekunden pruefeNachrichtAufTimeOuts(
 					Pruefliste bisherigesErgebnis,
 					Millisekunden verstricheneZeit) {
-				fail();
+				Assert.fail();
 				return Millisekunden.valueOf(0);
 			}
 
@@ -404,31 +407,33 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 				return Millisekunden.valueOf(200);
 			}
 		};
-		Pruefliste pruefliste = new Pruefliste(Regelwerkskennung.valueOf(),
-				parentRegel);
+		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
+				.valueOf(), parentRegel);
 
 		parentRegel.addChild(childRegel);
 		parentRegel.addChild(childRegel2);
-		
-		Millisekunden wartezeit = parentRegel.pruefeNachrichtErstmalig(new AlarmNachricht("nachricht"), pruefliste);
-		
-		assertTrue(child1PruefeAufgerufen[0]);
-		assertTrue(child2PruefeAufgerufen[0]);
-		assertEquals(Millisekunden.valueOf(100), wartezeit);
-		assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
+
+		Millisekunden wartezeit = parentRegel.pruefeNachrichtErstmalig(
+				new AlarmNachricht("nachricht"), pruefliste);
+
+		Assert.assertTrue(child1PruefeAufgerufen[0]);
+		Assert.assertTrue(child2PruefeAufgerufen[0]);
+		Assert.assertEquals(Millisekunden.valueOf(100), wartezeit);
+		Assert.assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
 				RegelErgebnis.ZUTREFFEND);
 
 		child1PruefeAufgerufen[0] = false;
 		child2PruefeAufgerufen[0] = false;
 
-		wartezeit = parentRegel.pruefeNachrichtErstmalig(new AlarmNachricht("nachricht"), pruefliste);
-		
-		assertFalse(child1PruefeAufgerufen[0]);
-		assertFalse(child2PruefeAufgerufen[0]);
-		assertNull( wartezeit);
-		assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
+		wartezeit = parentRegel.pruefeNachrichtErstmalig(new AlarmNachricht(
+				"nachricht"), pruefliste);
+
+		Assert.assertFalse(child1PruefeAufgerufen[0]);
+		Assert.assertFalse(child2PruefeAufgerufen[0]);
+		Assert.assertNull(wartezeit);
+		Assert.assertEquals(pruefliste.gibErgebnisFuerRegel(parentRegel),
 				RegelErgebnis.ZUTREFFEND);
-		
+
 	}
 
 }

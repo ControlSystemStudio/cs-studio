@@ -9,20 +9,35 @@ public class ConfigurationEditorInput implements IEditorInput {
 
 	private IConfigurationBean bean;
 
-	public ConfigurationEditorInput(IConfigurationBean newBean) {
+	public ConfigurationEditorInput(final IConfigurationBean newBean) {
 		this.bean = newBean;
 	}
 
-	public IConfigurationBean getBean() {
-		return bean;
-	}
-	
-	public void setBean(IConfigurationBean bean) {
-		this.bean = bean;
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ConfigurationEditorInput)) {
+			return false;
+		}
+
+		final ConfigurationEditorInput editorInput = (ConfigurationEditorInput) obj;
+
+		return editorInput.getBean() == this.getBean();
 	}
 
 	public boolean exists() {
 		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(final Class adapter) {
+		return null;
+	}
+
+	public IConfigurationBean getBean() {
+		return this.bean;
 	}
 
 	public ImageDescriptor getImageDescriptor() {
@@ -41,18 +56,8 @@ public class ConfigurationEditorInput implements IEditorInput {
 		return "Configuration Editor";
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
-
-	public boolean equals(Object obj) {
-		if (obj == null) return false;
-		if (!(obj instanceof ConfigurationEditorInput)) return false;
-		
-		ConfigurationEditorInput editorInput = (ConfigurationEditorInput) obj;
-		
-		return editorInput.getBean() == this.getBean();
+	public void setBean(final IConfigurationBean bean) {
+		this.bean = bean;
 	}
 
 }

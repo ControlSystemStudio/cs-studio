@@ -24,15 +24,16 @@
  */
 package org.csstudio.nams.service.logging.declaration;
 
-
 /**
  * A service for logging. This service will be avail from the bundles service
  * registry with id <code>Logger.class.getName()</code>. Note: Use the class
  * to identify id to make sure this plugin will be started before use!
  * 
  * Example (Variables with underscore are fields):
+ * 
  * <pre>
- * _serviceTrackerLogger = new ServiceTracker(context, Logger.class.getName(), null);
+ * _serviceTrackerLogger = new ServiceTracker(context, Logger.class.getName(),
+ * 		null);
  * _serviceTrackerLogger.open();
  * _logger = (Logger) _serviceTrackerLogger.getService();
  * </pre>
@@ -45,21 +46,26 @@ package org.csstudio.nams.service.logging.declaration;
 public interface Logger {
 	public void logDebugMessage(Object caller, String message);
 
-	public void logDebugMessage(Object caller, String message, Throwable throwable);
-
-	public void logInfoMessage(Object caller, String message);
-
-	public void logInfoMessage(Object caller, String message, Throwable throwable);
-
-	public void logWarningMessage(Object caller, String message);
-
-	public void logWarningMessage(Object caller, String message, Throwable throwable);
+	public void logDebugMessage(Object caller, String message,
+			Throwable throwable);
 
 	public void logErrorMessage(Object caller, String message);
 
-	public void logErrorMessage(Object caller, String message, Throwable throwable);
+	public void logErrorMessage(Object caller, String message,
+			Throwable throwable);
 
 	public void logFatalMessage(Object caller, String message);
 
-	public void logFatalMessage(Object caller, String message, Throwable throwable);
+	public void logFatalMessage(Object caller, String message,
+			Throwable throwable);
+
+	public void logInfoMessage(Object caller, String message);
+
+	public void logInfoMessage(Object caller, String message,
+			Throwable throwable);
+
+	public void logWarningMessage(Object caller, String message);
+
+	public void logWarningMessage(Object caller, String message,
+			Throwable throwable);
 }

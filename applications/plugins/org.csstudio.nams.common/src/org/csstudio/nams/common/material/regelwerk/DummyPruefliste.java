@@ -3,12 +3,11 @@ package org.csstudio.nams.common.material.regelwerk;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testhelper.ForTesting;
 
-
 public class DummyPruefliste extends Pruefliste {
 
 	@Deprecated
 	@ForTesting
-	public DummyPruefliste(Regelwerkskennung regelwerkskennung) {
+	public DummyPruefliste(final Regelwerkskennung regelwerkskennung) {
 		super(regelwerkskennung, null);
 	}
 
@@ -17,5 +16,4 @@ public class DummyPruefliste extends Pruefliste {
 		return WeiteresVersandVorgehen.NICHT_VERSENDEN;
 	}
 
-	
 }

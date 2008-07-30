@@ -5,9 +5,11 @@ package org.csstudio.nams.service.messaging.declaration;
  */
 public interface MessageHandler {
 	/**
-	 * Behandelt eine {@link NAMSMessage}.
-	 * Fehler sollten intern behandelt werden.
-	 * @param message {@link NAMSMessage} nicht <code>null</code>
+	 * Behandelt eine {@link NAMSMessage}. Fehler sollten intern behandelt
+	 * werden.
+	 * 
+	 * @param message
+	 *            {@link NAMSMessage} nicht <code>null</code>
 	 */
 	public void handleMessage(NAMSMessage message);
 }

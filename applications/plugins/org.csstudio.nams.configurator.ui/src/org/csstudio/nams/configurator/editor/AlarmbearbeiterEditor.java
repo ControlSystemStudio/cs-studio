@@ -24,6 +24,10 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 
 	private final static String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor";
 
+	public static String getId() {
+		return AlarmbearbeiterEditor.EDITOR_ID;
+	}
+
 	private Text _nameTextEntry;
 	private Text _emailTextEntry;
 	private Combo _rubrikComboEntry;
@@ -32,48 +36,60 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 	private Combo _prefAlarmingTypeComboEntry;
 	private Text _statusCodeTextEntry;
 	private Text _confirmCodeTextEntry;
+
 	private Button _activeCheckBoxEntry;
 
 	private ComboViewer _rubrikComboEntryViewer;
 
 	private ComboViewer _prefAlarmingTypeComboEntryViewer;
-
 	private FormToolkit formToolkit;
+
 	private ScrolledForm mainForm;
 
 	@Override
-	public void createPartControl(Composite parent) {
-		formToolkit = new FormToolkit(parent.getDisplay());
-		mainForm = formToolkit.createScrolledForm(parent);
-		Composite main = mainForm.getBody();
+	public void createPartControl(final Composite parent) {
+		this.formToolkit = new FormToolkit(parent.getDisplay());
+		this.mainForm = this.formToolkit.createScrolledForm(parent);
+		final Composite main = this.mainForm.getBody();
 		main.setBackground(parent.getBackground());
-		main.setLayout(new GridLayout(NUM_COLUMNS, false));
+		main.setLayout(new GridLayout(this.NUM_COLUMNS, false));
 		this.addSeparator(main);
-		_nameTextEntry = this.createTextEntry(main, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:", true, getConfigurationBeanService()
+		this._nameTextEntry = this.createTextEntry(main, "Name:", true);
+		this._rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:",
+				true, AbstractEditor.getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.USER));
-		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
+		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
-		_emailTextEntry = this.createTextEntry(main, "Email:", true);
-		_smsTextEntry = this.createTextEntry(main, "SMS number:", true);
-		_voiceMailTextEntry = this.createTextEntry(main, "VoiceMail number:",
-				true);
-		_prefAlarmingTypeComboEntryViewer = this.createTitledComboForEnumValues(main,
-				"Prefered alarming type:", PreferedAlarmType.values(), this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.preferedAlarmType.name() );
-		_prefAlarmingTypeComboEntry = _prefAlarmingTypeComboEntryViewer
+		this._emailTextEntry = this.createTextEntry(main, "Email:", true);
+		this._smsTextEntry = this.createTextEntry(main, "SMS number:", true);
+		this._voiceMailTextEntry = this.createTextEntry(main,
+				"VoiceMail number:", true);
+		this._prefAlarmingTypeComboEntryViewer = this
+				.createTitledComboForEnumValues(main,
+						"Prefered alarming type:", PreferedAlarmType.values(),
+						this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.PropertyNames.preferedAlarmType
+								.name());
+		this._prefAlarmingTypeComboEntry = this._prefAlarmingTypeComboEntryViewer
 				.getCombo();
 		this.addSeparator(main);
-		_statusCodeTextEntry = this.createTextEntry(main, "Status code:", true);
-		_confirmCodeTextEntry = this.createTextEntry(main, "Confirm code:",
+		this._statusCodeTextEntry = this.createTextEntry(main, "Status code:",
 				true);
+		this._confirmCodeTextEntry = this.createTextEntry(main,
+				"Confirm code:", true);
 		this.addSeparator(main);
-		_activeCheckBoxEntry = this.createCheckBoxEntry(main,
+		this._activeCheckBoxEntry = this.createCheckBoxEntry(main,
 				"User is active:", true);
-		initDataBinding();
+		this.initDataBinding();
 	}
 
 	@Override
-	protected void doInit(IEditorSite site, IEditorInput input) {
+	public void setFocus() {
+		this._nameTextEntry.setFocus();
+	}
+
+	@Override
+	protected void doInit(final IEditorSite site, final IEditorInput input) {
 
 	}
 
@@ -84,93 +100,87 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 
 	@Override
 	protected void initDataBinding() {
-		DataBindingContext context = new DataBindingContext();
+		final DataBindingContext context = new DataBindingContext();
 
-		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.name.name());
+		final IObservableValue nameTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.PropertyNames.name.name());
 
-		IObservableValue emailTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.email.name());
+		final IObservableValue emailTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.PropertyNames.email.name());
 
-		IObservableValue smsTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.mobilePhone
-						.name());
+		final IObservableValue smsTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.PropertyNames.mobilePhone.name());
 
-		IObservableValue voicemailTextObservable = BeansObservables
+		final IObservableValue voicemailTextObservable = BeansObservables
 				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterBean.PropertyNames.phone.name());
 
-		IObservableValue statusTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.statusCode
-						.name());
+		final IObservableValue statusTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.PropertyNames.statusCode.name());
 
-		IObservableValue confirmTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.PropertyNames.confirmCode
-						.name());
+		final IObservableValue confirmTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.PropertyNames.confirmCode.name());
 
-		IObservableValue activeCheckboxObservable = BeansObservables
+		final IObservableValue activeCheckboxObservable = BeansObservables
 				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterBean.PropertyNames.active.name());
 
-		IObservableValue prefAlarmingTypeObservable = BeansObservables
+		final IObservableValue prefAlarmingTypeObservable = BeansObservables
 				.observeValue(this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterBean.PropertyNames.preferedAlarmType
 								.name());
 
-		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), AlarmbearbeiterBean.AbstractPropertyNames.rubrikName.name());
+		final IObservableValue rubrikTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						AlarmbearbeiterBean.AbstractPropertyNames.rubrikName
+								.name());
 
 		// bind observables
-		context.bindValue(SWTObservables
-				.observeText(_nameTextEntry, SWT.Modify), nameTextObservable,
-				null, null);
+		context.bindValue(SWTObservables.observeText(this._nameTextEntry,
+				SWT.Modify), nameTextObservable, null, null);
 
-		context.bindValue(SWTObservables.observeText(_emailTextEntry,
+		context.bindValue(SWTObservables.observeText(this._emailTextEntry,
 				SWT.Modify), emailTextObservable, null, null);
 
-		context.bindValue(
-				SWTObservables.observeText(_smsTextEntry, SWT.Modify),
-				smsTextObservable, null, null);
+		context.bindValue(SWTObservables.observeText(this._smsTextEntry,
+				SWT.Modify), smsTextObservable, null, null);
 
-		context.bindValue(SWTObservables.observeText(_voiceMailTextEntry,
+		context.bindValue(SWTObservables.observeText(this._voiceMailTextEntry,
 				SWT.Modify), voicemailTextObservable, null, null);
 
-		context.bindValue(SWTObservables.observeText(_statusCodeTextEntry,
+		context.bindValue(SWTObservables.observeText(this._statusCodeTextEntry,
 				SWT.Modify), statusTextObservable, null, null);
 
-		context.bindValue(SWTObservables.observeText(_confirmCodeTextEntry,
-				SWT.Modify), confirmTextObservable, null, null);
+		context.bindValue(SWTObservables.observeText(
+				this._confirmCodeTextEntry, SWT.Modify), confirmTextObservable,
+				null, null);
 
-		context.bindValue(
-				SWTObservables.observeSelection(_activeCheckBoxEntry),
+		context.bindValue(SWTObservables
+				.observeSelection(this._activeCheckBoxEntry),
 				activeCheckboxObservable, null, null);
 
 		context.bindValue(SWTObservables
-				.observeSelection(_prefAlarmingTypeComboEntry),
+				.observeSelection(this._prefAlarmingTypeComboEntry),
 				prefAlarmingTypeObservable, new UpdateValueStrategy() {
 					@Override
-					public Object convert(Object value) {
+					public Object convert(final Object value) {
 						return PreferedAlarmType.valueOf((String) value);
 					}
 				}, new UpdateValueStrategy() {
 					@Override
-					public Object convert(Object value) {
+					public Object convert(final Object value) {
 						return ((PreferedAlarmType) value).name();
 					}
 				});
 
 		context.bindValue(SWTObservables
-				.observeSelection(_rubrikComboEntry),
+				.observeSelection(this._rubrikComboEntry),
 				rubrikTextObservable, null, null);
-	}
-
-	@Override
-	public void setFocus() {
-		this._nameTextEntry.setFocus();
-	}
-
-	public static String getId() {
-		return EDITOR_ID;
 	}
 
 }

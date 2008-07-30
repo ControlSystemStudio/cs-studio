@@ -7,15 +7,15 @@ public class HistoryStorageException extends RuntimeException {
 		super();
 	}
 
-	public HistoryStorageException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public HistoryStorageException(String message) {
+	public HistoryStorageException(final String message) {
 		super(message);
 	}
 
-	public HistoryStorageException(Throwable cause) {
+	public HistoryStorageException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
+
+	public HistoryStorageException(final Throwable cause) {
 		super(cause);
 	}
 }

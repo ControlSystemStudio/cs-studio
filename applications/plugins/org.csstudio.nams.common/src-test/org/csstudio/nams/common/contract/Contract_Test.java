@@ -1,10 +1,10 @@
 package org.csstudio.nams.common.contract;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
-
 
 /**
  * Dies ist kein {@link AbstractObject_TestCase}, da Exemplare nicht möglich
@@ -16,10 +16,66 @@ public class Contract_Test extends TestCase {
 	public void testCreationImpossible() {
 		try {
 			new Contract();
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Creation of instances of this class is undesired!",
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals(
+					"Creation of instances of this class is undesired!", ae
+							.getMessage());
+		}
+	}
+
+	@Test
+	public void testEnsure() {
+		try {
+			Contract.ensure(false, "false");
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Precondition unsatisfied: false", ae
+					.getMessage());
+		}
+	}
+
+	@Test
+	public void testEnsureResultNotNull() {
+		try {
+			Contract.ensureResultNotNull(null);
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Postcondition unsatisfied: §result != null",
 					ae.getMessage());
+		}
+	}
+
+	@Test
+	public void testEnsureResultNotNullSuccess() {
+		Contract.ensureResultNotNull(new Object());
+	}
+
+	@Test
+	public void testEnsureSuccess() {
+		Contract.ensure(true, "true");
+	}
+
+	@Test
+	public void testRequireFail() {
+		try {
+			Contract.require(false, "false");
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Precondition unsatisfied: false", ae
+					.getMessage());
+		}
+	}
+
+	@Test
+	public void testRequireFailWithoutConditionDescriptio() {
+		try {
+			Contract.require(false, null);
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals(
+					"Precondition unsatisfied: description != null", ae
+							.getMessage());
 		}
 	}
 
@@ -27,9 +83,9 @@ public class Contract_Test extends TestCase {
 	public void testRequireNotNull() {
 		try {
 			Contract.requireNotNull("null", null);
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Precondition unsatisfied: null != null", ae
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Precondition unsatisfied: null != null", ae
 					.getMessage());
 		}
 	}
@@ -40,45 +96,24 @@ public class Contract_Test extends TestCase {
 	}
 
 	@Test
-	public void testRequireNotNullWithoutValueName() {
-		try {
-			Contract.requireNotNull(null, new Object());
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Precondition unsatisfied: valueName != null", ae
-					.getMessage());
-		}
-	}
-
-	@Test
 	public void testRequireNotNullWithoutAnything() {
 		try {
 			Contract.requireNotNull(null, null);
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Precondition unsatisfied: valueName != null", ae
-					.getMessage());
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Precondition unsatisfied: valueName != null",
+					ae.getMessage());
 		}
 	}
 
 	@Test
-	public void testRequireFail() {
+	public void testRequireNotNullWithoutValueName() {
 		try {
-			Contract.require(false, "false");
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Precondition unsatisfied: false", ae.getMessage());
-		}
-	}
-
-	@Test
-	public void testRequireFailWithoutConditionDescriptio() {
-		try {
-			Contract.require(false, null);
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Precondition unsatisfied: description != null", ae
-					.getMessage());
+			Contract.requireNotNull(null, new Object());
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Precondition unsatisfied: valueName != null",
+					ae.getMessage());
 		}
 	}
 
@@ -91,42 +126,12 @@ public class Contract_Test extends TestCase {
 	public void testRequireSuccessWithoutConditionDescriptio() {
 		try {
 			Contract.require(false, null);
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Precondition unsatisfied: description != null", ae
-					.getMessage());
+			Assert.fail("failed expected assertion error");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals(
+					"Precondition unsatisfied: description != null", ae
+							.getMessage());
 		}
-	}
-
-	@Test
-	public void testEnsure() {
-		try {
-			Contract.ensure(false, "false");
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Precondition unsatisfied: false", ae.getMessage());
-		}
-	}
-
-	@Test
-	public void testEnsureSuccess() {
-		Contract.ensure(true, "true");
-	}
-
-	@Test
-	public void testEnsureResultNotNull() {
-		try {
-			Contract.ensureResultNotNull(null);
-			fail("failed expected assertion error");
-		} catch (AssertionError ae) {
-			assertEquals("Postcondition unsatisfied: §result != null", ae
-					.getMessage());
-		}
-	}
-
-	@Test
-	public void testEnsureResultNotNullSuccess() {
-		Contract.ensureResultNotNull(new Object());
 	}
 
 }

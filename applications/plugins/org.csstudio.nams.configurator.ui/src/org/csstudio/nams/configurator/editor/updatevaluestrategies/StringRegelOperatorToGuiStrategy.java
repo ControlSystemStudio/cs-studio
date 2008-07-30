@@ -8,7 +8,7 @@ import org.eclipse.core.databinding.UpdateValueStrategy;
 
 public class StringRegelOperatorToGuiStrategy extends UpdateValueStrategy {
 	@Override
-	public Object convert(Object value) {
+	public Object convert(final Object value) {
 		return ((StringRegelOperator) value).name();
 	}
 }

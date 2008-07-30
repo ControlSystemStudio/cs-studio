@@ -32,13 +32,48 @@ public class ConfigurationsElementeAuflistung<T extends NewAMSConfigurationEleme
 	private Integer currentCategoryFilter = null;
 
 	/**
+	 * Returns the "visible" elements for current filtering settings.
+	 * 
+	 * @return A by
+	 *         {@link NewAMSConfigurationElementDTO#getUniqueHumanReadableName()}
+	 *         sorted set to make sure that no element is duplicated; returned
+	 *         set is unmodifiable.
+	 * 
+	 * @see ConfigurationsElementeAuflistung#setCategoryFilter(int)
+	 * @see ConfigurationsElementeAuflistung#setNameFilter(String)
+	 */
+	public SortedSet<T> getVisibleElementsInAscendingOrder() {
+		return Collections.unmodifiableSortedSet(this.visibleElements);
+	}
+
+	public void releaseCategoryFilter() {
+		this.currentCategoryFilter = null;
+		this.updateVisibleElements();
+	}
+
+	public void releaseNameFilter() {
+		this.currentNameFilter = null;
+		this.updateVisibleElements();
+	}
+
+	/**
+	 * 
+	 * @param categoryDatabseId
+	 *            TODO Besser ein CategoryDTO benutzen
+	 */
+	public void setCategoryFilter(final int categoryDatabseId) {
+		this.currentCategoryFilter = new Integer(categoryDatabseId);
+		this.updateVisibleElements();
+	}
+
+	/**
 	 * 
 	 * @param elements
 	 *            The Set of elements to show; this Set will be sorted in
 	 *            ascending order to the name-property.
 	 */
-	public void setElements(Set<T> elements) {
-		Comparator<T> comparator = new Comparator<T>() {
+	public void setElements(final Set<T> elements) {
+		final Comparator<T> comparator = new Comparator<T>() {
 			public int compare(T element1, T element2) {
 				return element1.getUniqueHumanReadableName().compareTo(
 						element2.getUniqueHumanReadableName());
@@ -52,36 +87,12 @@ public class ConfigurationsElementeAuflistung<T extends NewAMSConfigurationEleme
 		this.updateVisibleElements();
 	}
 
-	/**
-	 * Returns the "visible" elements for current filtering settings.
-	 * 
-	 * @return A by
-	 *         {@link NewAMSConfigurationElementDTO#getUniqueHumanReadableName()}
-	 *         sorted set to make sure that no element is duplicated; returned
-	 *         set is unmodifiable.
-	 *         
-	 * @see ConfigurationsElementeAuflistung#setCategoryFilter(int)
-	 * @see ConfigurationsElementeAuflistung#setNameFilter(String)
-	 */
-	public SortedSet<T> getVisibleElementsInAscendingOrder() {
-		return Collections.unmodifiableSortedSet(this.visibleElements);
-	}
-
-	public void setNameFilter(String visibleNameFilter) {
+	public void setNameFilter(final String visibleNameFilter) {
 		this.currentNameFilter = visibleNameFilter;
 		this.updateVisibleElements();
 	}
 
-	private void updateVisibleElements() {
-		this.visibleElements.clear();
-		for (T element : this.elements) {
-			if (matchCurrentFilterSettings(element)) {
-				this.visibleElements.add(element);
-			}
-		}
-	}
-
-	private boolean matchCurrentFilterSettings(T element) {
+	private boolean matchCurrentFilterSettings(final T element) {
 		boolean result = true;
 
 		if (this.currentNameFilter != null) {
@@ -89,8 +100,8 @@ public class ConfigurationsElementeAuflistung<T extends NewAMSConfigurationEleme
 					.contains(this.currentNameFilter.toLowerCase());
 		}
 
-		if (result && this.currentCategoryFilter != null) {
-			int categoryDBId = this.currentCategoryFilter.intValue();
+		if (result && (this.currentCategoryFilter != null)) {
+			final int categoryDBId = this.currentCategoryFilter.intValue();
 
 			result = element.isInCategory(categoryDBId);
 		}
@@ -98,24 +109,13 @@ public class ConfigurationsElementeAuflistung<T extends NewAMSConfigurationEleme
 		return result;
 	}
 
-	/**
-	 * 
-	 * @param categoryDatabseId
-	 *            TODO Besser ein CategoryDTO benutzen
-	 */
-	public void setCategoryFilter(int categoryDatabseId) {
-		this.currentCategoryFilter = new Integer(categoryDatabseId);
-		this.updateVisibleElements();
-	}
-
-	public void releaseNameFilter() {
-		this.currentNameFilter = null;
-		this.updateVisibleElements();
-	}
-
-	public void releaseCategoryFilter() {
-		this.currentCategoryFilter = null;
-		this.updateVisibleElements();
+	private void updateVisibleElements() {
+		this.visibleElements.clear();
+		for (final T element : this.elements) {
+			if (this.matchCurrentFilterSettings(element)) {
+				this.visibleElements.add(element);
+			}
+		}
 	}
 
 }

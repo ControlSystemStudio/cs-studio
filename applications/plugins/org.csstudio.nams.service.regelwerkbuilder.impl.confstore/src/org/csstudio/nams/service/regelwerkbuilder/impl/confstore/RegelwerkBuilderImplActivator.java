@@ -24,28 +24,29 @@ public class RegelwerkBuilderImplActivator extends AbstractBundleActivator
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.regelwerkbuilder.impl.confstore";
 
 	@OSGiBundleActivationMethod
-	public void startBundle(
-			@OSGiService @Required
-	        ProcessVariableConnectionServiceFactory pvConnectionServiceFactory,
-	        @OSGiService @Required
-	        PreferenceService preferenceService,
-	        @OSGiService @Required
-	        ConfigurationServiceFactory configurationServiceFactory,
-	        @OSGiService @Required
-	        Logger logger
-	) {
-		
-		
-		LocalStoreConfigurationService configurationStoreService = configurationServiceFactory.getConfigurationService(
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-				DatabaseType.Derby,
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
-		
-		IProcessVariableConnectionService pvConnectionService = pvConnectionServiceFactory
+	public void startBundle(@OSGiService
+	@Required
+	final ProcessVariableConnectionServiceFactory pvConnectionServiceFactory,
+			@OSGiService
+			@Required
+			final PreferenceService preferenceService, @OSGiService
+			@Required
+			final ConfigurationServiceFactory configurationServiceFactory,
+			@OSGiService
+			@Required
+			final Logger logger) {
+
+		final LocalStoreConfigurationService configurationStoreService = configurationServiceFactory
+				.getConfigurationService(
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
+						DatabaseType.Derby,
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
+
+		final IProcessVariableConnectionService pvConnectionService = pvConnectionServiceFactory
 				.createProcessVariableConnectionService();
 
 		RegelwerkBuilderServiceImpl.staticInject(logger);

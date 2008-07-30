@@ -10,25 +10,99 @@ public abstract class AbstractFilterAction<Type extends FilterActionType>
 	protected IReceiverBean receiver;
 	protected final Class<Type> clazz;
 
-	protected AbstractFilterAction(Class<Type> clazz) {
+	protected AbstractFilterAction(final Class<Type> clazz) {
 		this.clazz = clazz;
 	}
 
-	public String getMessage() {
-		return message;
+	@Override
+	public abstract Object clone() throws CloneNotSupportedException;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final AbstractFilterAction<Type> other = (AbstractFilterAction<Type>) obj;
+		if (this.clazz == null) {
+			if (other.clazz != null) {
+				return false;
+			}
+		} else if (!this.clazz.equals(other.clazz)) {
+			return false;
+		}
+		if (this.message == null) {
+			if (other.message != null) {
+				return false;
+			}
+		} else if (!this.message.equals(other.message)) {
+			return false;
+		}
+		if (this.receiver == null) {
+			if (other.receiver != null) {
+				return false;
+			}
+		} else if (!this.receiver.equals(other.receiver)) {
+			return false;
+		}
+		if (this.type == null) {
+			if (other.type != null) {
+				return false;
+			}
+		} else if (!this.type.equals(other.type)) {
+			return false;
+		}
+		return true;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public String getEmpfaengerName() {
+		return this.receiver.getDisplayName();
 	}
 
 	public FilterActionType getFilterActionType() {
-		return type;
+		return this.type;
+	}
+
+	public String getMessage() {
+		return this.message;
+	}
+
+	public IReceiverBean getReceiver() {
+		return this.receiver;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((this.clazz == null) ? 0 : this.clazz.hashCode());
+		result = prime * result
+				+ ((this.message == null) ? 0 : this.message.hashCode());
+		result = prime * result
+				+ ((this.receiver == null) ? 0 : this.receiver.hashCode());
+		result = prime * result
+				+ ((this.type == null) ? 0 : this.type.hashCode());
+		return result;
+	}
+
+	public void setMessage(final String message) {
+		this.message = message;
+	}
+
+	public void setReceiver(final IReceiverBean receiver) {
+		this.receiver = receiver;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setType(FilterActionType type) {
-		if (clazz.isInstance(type)) {
+	public void setType(final FilterActionType type) {
+		if (this.clazz.isInstance(type)) {
 			this.type = (Type) type;
 		} else {
 			throw new IllegalArgumentException(
@@ -36,64 +110,4 @@ public abstract class AbstractFilterAction<Type extends FilterActionType>
 							+ type.getClass().getSimpleName());
 		}
 	}
-
-	public IReceiverBean getReceiver() {
-		return receiver;
-	}
-
-	public void setReceiver(IReceiverBean receiver) {
-		this.receiver = receiver;
-	}
-
-	public String getEmpfaengerName() {
-		return receiver.getDisplayName();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((clazz == null) ? 0 : clazz.hashCode());
-		result = prime * result + ((message == null) ? 0 : message.hashCode());
-		result = prime * result
-				+ ((receiver == null) ? 0 : receiver.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AbstractFilterAction<Type> other = (AbstractFilterAction<Type>) obj;
-		if (clazz == null) {
-			if (other.clazz != null)
-				return false;
-		} else if (!clazz.equals(other.clazz))
-			return false;
-		if (message == null) {
-			if (other.message != null)
-				return false;
-		} else if (!message.equals(other.message))
-			return false;
-		if (receiver == null) {
-			if (other.receiver != null)
-				return false;
-		} else if (!receiver.equals(other.receiver))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
-	
-	@Override
-	public abstract Object clone() throws CloneNotSupportedException;
 }

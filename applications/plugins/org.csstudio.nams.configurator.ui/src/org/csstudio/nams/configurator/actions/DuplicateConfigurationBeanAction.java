@@ -17,48 +17,51 @@ import org.eclipse.ui.PlatformUI;
 public class DuplicateConfigurationBeanAction extends Action implements
 		IViewActionDelegate {
 
-	private IConfigurationBean bean;
 	private static ConfigurationBeanService beanService;
 
-	public void init(IViewPart view) {
+	public static void staticInject(final ConfigurationBeanService beanService) {
+		DuplicateConfigurationBeanAction.beanService = beanService;
+	}
+
+	private IConfigurationBean bean;
+
+	public void init(final IViewPart view) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		ConfigurationEditorInput editorInput;
 		try {
-			IConfigurationBean duplicateBean = bean.getClone();
+			IConfigurationBean duplicateBean = this.bean.getClone();
 			duplicateBean.setID(-1);
-			IWorkbenchPage activePage = PlatformUI.getWorkbench()
+			final IWorkbenchPage activePage = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage();
 			try {
-				duplicateBean = beanService.save(duplicateBean);
-			} catch (Throwable e) {
-				MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getShell());
+				duplicateBean = DuplicateConfigurationBeanAction.beanService
+						.save(duplicateBean);
+			} catch (final Throwable e) {
+				final MessageBox messageBox = new MessageBox(PlatformUI
+						.getWorkbench().getActiveWorkbenchWindow().getShell());
 				messageBox.setText(e.getClass().toString());
 				messageBox.setMessage(e.getMessage());
 			}
 			editorInput = new ConfigurationEditorInput(duplicateBean);
 
-			String editorId = BeanToEditorId.getEnumForClass(
-					(Class<IConfigurationBean>) bean.getClass()).getEditorId();
+			final String editorId = BeanToEditorId.getEnumForClass(
+					this.bean.getClass()).getEditorId();
 
 			activePage.openEditor(editorInput, editorId);
-		} catch (PartInitException e) {
+		} catch (final PartInitException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		IStructuredSelection sSelection = (IStructuredSelection) selection;
-		Object source = sSelection.getFirstElement();
-		bean = (IConfigurationBean) source;
-	}
-
-	public static void staticInject(ConfigurationBeanService beanService) {
-		DuplicateConfigurationBeanAction.beanService = beanService;
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
+		final IStructuredSelection sSelection = (IStructuredSelection) selection;
+		final Object source = sSelection.getFirstElement();
+		this.bean = (IConfigurationBean) source;
 	}
 
 }

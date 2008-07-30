@@ -39,11 +39,16 @@ import org.csstudio.nams.common.wam.Material;
 @Material
 public class AlarmNachricht implements Cloneable {
 	private String nachricht;
-	private Date zeitFuerToString;
+	private final Date zeitFuerToString;
 	private final Map<MessageKeyEnum, String> content;
 
+	public AlarmNachricht(final Map<MessageKeyEnum, String> map) {
+		this.content = map;
+		this.zeitFuerToString = new Date();
+	}
+
 	@Deprecated
-	public AlarmNachricht(String nachricht) {
+	public AlarmNachricht(final String nachricht) {
 		Contract.requireNotNull("nachricht", nachricht);
 		this.nachricht = nachricht;
 		this.zeitFuerToString = new Date(); // TODO Entfernen!
@@ -51,87 +56,95 @@ public class AlarmNachricht implements Cloneable {
 		this.content = new HashMap<MessageKeyEnum, String>();
 	}
 
-	private AlarmNachricht(String nachricht, Date zeitFuerToString, Map<MessageKeyEnum, String> content){
+	private AlarmNachricht(final String nachricht, final Date zeitFuerToString,
+			final Map<MessageKeyEnum, String> content) {
 		this.nachricht = nachricht;
 		this.zeitFuerToString = zeitFuerToString;
 		this.content = content;
-		
-	}
-	
-	public AlarmNachricht(Map<MessageKeyEnum, String> map) {
-		this.content = map;
-		this.zeitFuerToString = new Date();
-	}
 
-	public String getValueFor(MessageKeyEnum key) {
-		String result = "";
-		if (content.containsKey(key)) {
-			result = content.get(key);
-		}
-		return result;
 	}
 
 	@Override
 	public AlarmNachricht clone() {
-		return new AlarmNachricht(nachricht, zeitFuerToString, content);
+		return new AlarmNachricht(this.nachricht, this.zeitFuerToString,
+				this.content);
 	}
 
 	@Override
-	public String toString() {
-		return nachricht + "\t" + zeitFuerToString;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final AlarmNachricht other = (AlarmNachricht) obj;
+		if (this.content == null) {
+			if (other.content != null) {
+				return false;
+			}
+		} else if (!this.content.equals(other.content)) {
+			return false;
+		}
+		if (this.nachricht == null) {
+			if (other.nachricht != null) {
+				return false;
+			}
+		} else if (!this.nachricht.equals(other.nachricht)) {
+			return false;
+		}
+		if (this.zeitFuerToString == null) {
+			if (other.zeitFuerToString != null) {
+				return false;
+			}
+		} else if (!this.zeitFuerToString.equals(other.zeitFuerToString)) {
+			return false;
+		}
+		return true;
 	}
 
-	// TODO mz: Name sprechender gestalten.
-	public void matchedMessageWithRegelwerk(Regelwerkskennung kennung) {
-		content.put(MessageKeyEnum.AMS_REINSERTED, Integer.valueOf(
-				kennung.getRegelwerksId()).toString());
+	public Map<MessageKeyEnum, String> getContentMap() {
+		return Collections.unmodifiableMap(this.content);
+	}
+
+	public String getValueFor(final MessageKeyEnum key) {
+		String result = "";
+		if (this.content.containsKey(key)) {
+			result = this.content.get(key);
+		}
+		return result;
+	}
+
+	public String gibNachrichtenText() {
+		return this.nachricht;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((content == null) ? 0 : content.hashCode());
 		result = prime * result
-				+ ((nachricht == null) ? 0 : nachricht.hashCode());
+				+ ((this.content == null) ? 0 : this.content.hashCode());
+		result = prime * result
+				+ ((this.nachricht == null) ? 0 : this.nachricht.hashCode());
 		result = prime
 				* result
-				+ ((zeitFuerToString == null) ? 0 : zeitFuerToString.hashCode());
+				+ ((this.zeitFuerToString == null) ? 0 : this.zeitFuerToString
+						.hashCode());
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AlarmNachricht other = (AlarmNachricht) obj;
-		if (content == null) {
-			if (other.content != null)
-				return false;
-		} else if (!content.equals(other.content))
-			return false;
-		if (nachricht == null) {
-			if (other.nachricht != null)
-				return false;
-		} else if (!nachricht.equals(other.nachricht))
-			return false;
-		if (zeitFuerToString == null) {
-			if (other.zeitFuerToString != null)
-				return false;
-		} else if (!zeitFuerToString.equals(other.zeitFuerToString))
-			return false;
-		return true;
+	// TODO mz: Name sprechender gestalten.
+	public void matchedMessageWithRegelwerk(final Regelwerkskennung kennung) {
+		this.content.put(MessageKeyEnum.AMS_REINSERTED, Integer.valueOf(
+				kennung.getRegelwerksId()).toString());
 	}
 
-	public String gibNachrichtenText() {
-		return nachricht;
-	}
-	
-	public Map<MessageKeyEnum, String> getContentMap() {
-		return Collections.unmodifiableMap(content);
+	@Override
+	public String toString() {
+		return this.nachricht + "\t" + this.zeitFuerToString;
 	}
 }

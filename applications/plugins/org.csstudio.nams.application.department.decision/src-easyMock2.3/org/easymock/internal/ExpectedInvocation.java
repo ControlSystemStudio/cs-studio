@@ -36,6 +36,48 @@ public class ExpectedInvocation {
 				invocation, matchers) : null;
 	}
 
+	@Override
+	public boolean equals(final Object o) {
+		if ((o == null) || !this.getClass().equals(o.getClass())) {
+			return false;
+		}
+
+		final ExpectedInvocation other = (ExpectedInvocation) o;
+		return this.invocation.equals(other.invocation)
+				&& (((this.matcher == null) && (other.matcher == null)) || ((this.matcher != null) && this.matcher
+						.equals(other.matcher)))
+				&& (((this.matchers == null) && (other.matchers == null)) || ((this.matchers != null) && this.matchers
+						.equals(other.matchers)));
+	}
+
+	public Method getMethod() {
+		return this.invocation.getMethod();
+	}
+
+	@Override
+	public int hashCode() {
+		return this.invocation.hashCode();
+	}
+
+	public boolean matches(final Invocation actual) {
+		return this.matchers != null ? this.invocation.getMock().equals(
+				actual.getMock())
+				&& this.invocation.getMethod().equals(actual.getMethod())
+				&& this.matches(actual.getArguments()) : this.invocation
+				.matches(actual, this.matcher);
+	}
+
+	@Override
+	public String toString() {
+		return this.matchers != null ? this.myToString() : this.invocation
+				.toString(this.matcher);
+	}
+
+	public ExpectedInvocation withMatcher(@SuppressWarnings("deprecation")
+	final org.easymock.ArgumentsMatcher matcher) {
+		return new ExpectedInvocation(this.invocation, null, matcher);
+	}
+
 	private List<IArgumentMatcher> createMissingMatchers(
 			final Invocation invocation, final List<IArgumentMatcher> matchers) {
 		if (matchers != null) {
@@ -55,33 +97,6 @@ public class ExpectedInvocation {
 		return result;
 	}
 
-	@Override
-	public boolean equals(final Object o) {
-		if ((o == null) || !this.getClass().equals(o.getClass())) {
-			return false;
-		}
-
-		final ExpectedInvocation other = (ExpectedInvocation) o;
-		return this.invocation.equals(other.invocation)
-				&& (((this.matcher == null) && (other.matcher == null)) || ((this.matcher != null) && this.matcher
-						.equals(other.matcher)))
-				&& (((this.matchers == null) && (other.matchers == null)) || ((this.matchers != null) && this.matchers
-						.equals(other.matchers)));
-	}
-
-	@Override
-	public int hashCode() {
-		return this.invocation.hashCode();
-	}
-
-	public boolean matches(final Invocation actual) {
-		return this.matchers != null ? this.invocation.getMock().equals(
-				actual.getMock())
-				&& this.invocation.getMethod().equals(actual.getMethod())
-				&& this.matches(actual.getArguments()) : this.invocation
-				.matches(actual, this.matcher);
-	}
-
 	private boolean matches(final Object[] arguments) {
 		if (arguments.length != this.matchers.size()) {
 			return false;
@@ -92,12 +107,6 @@ public class ExpectedInvocation {
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return this.matchers != null ? this.myToString() : this.invocation
-				.toString(this.matcher);
 	}
 
 	private String myToString() {
@@ -113,14 +122,5 @@ public class ExpectedInvocation {
 		}
 		result.append(")");
 		return result.toString();
-	}
-
-	public Method getMethod() {
-		return this.invocation.getMethod();
-	}
-
-	public ExpectedInvocation withMatcher(@SuppressWarnings("deprecation")
-	final org.easymock.ArgumentsMatcher matcher) {
-		return new ExpectedInvocation(this.invocation, null, matcher);
 	}
 }

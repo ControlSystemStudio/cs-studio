@@ -5,122 +5,145 @@ import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class PVFilterConditionBean extends
-		AbstractConfigurationBean<PVFilterConditionBean> implements FilterConditionAddOnBean {
+		AbstractConfigurationBean<PVFilterConditionBean> implements
+		FilterConditionAddOnBean {
+
+	public enum PropertyNames {
+		suggestedType, channelName, operator, compareValue;
+	}
 
 	private SuggestedProcessVariableType suggestedType = SuggestedProcessVariableType.STRING;
 	private String channelName = "";
 	private Operator operator = Operator.EQUALS;
+
 	private String compareValue = "";
-	
-	public enum PropertyNames{
-		suggestedType, channelName, operator, compareValue;
-	}
 
-	public SuggestedProcessVariableType getSuggestedType() {
-		return suggestedType;
-	}
-
-	public void setSuggestedType(SuggestedProcessVariableType suggestedType) {
-		SuggestedProcessVariableType type = this.suggestedType;
-		this.suggestedType = suggestedType;
-		pcs.firePropertyChange(PropertyNames.suggestedType.name(), type, suggestedType);
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final PVFilterConditionBean other = (PVFilterConditionBean) obj;
+		if (this.channelName == null) {
+			if (other.channelName != null) {
+				return false;
+			}
+		} else if (!this.channelName.equals(other.channelName)) {
+			return false;
+		}
+		if (this.compareValue == null) {
+			if (other.compareValue != null) {
+				return false;
+			}
+		} else if (!this.compareValue.equals(other.compareValue)) {
+			return false;
+		}
+		if (this.operator == null) {
+			if (other.operator != null) {
+				return false;
+			}
+		} else if (!this.operator.equals(other.operator)) {
+			return false;
+		}
+		if (this.suggestedType == null) {
+			if (other.suggestedType != null) {
+				return false;
+			}
+		} else if (!this.suggestedType.equals(other.suggestedType)) {
+			return false;
+		}
+		return true;
 	}
 
 	public String getChannelName() {
-		return channelName;
-	}
-
-	public void setChannelName(String channelName) {
-		String oldValue = this.channelName;
-		this.channelName = channelName;
-		pcs.firePropertyChange(PropertyNames.channelName.name(), oldValue, channelName);
-	}
-
-	public Operator getOperator() {
-		return operator;
-	}
-
-	public void setOperator(Operator operator) {
-		Operator oldValue = this.operator;
-		this.operator = operator;
-		pcs.firePropertyChange(PropertyNames.operator.name(), oldValue, operator);
+		return this.channelName;
 	}
 
 	public String getCompareValue() {
-		return compareValue;
-	}
-
-	public void setCompareValue(String compareValue) {
-		String oldValue = this.compareValue;
-		this.compareValue = compareValue;
-		pcs.firePropertyChange(PropertyNames.compareValue.name(), oldValue, compareValue);
-	}
-
-	@Override
-	protected void doUpdateState(PVFilterConditionBean bean) {
-		setChannelName(bean.getChannelName());
-		setCompareValue(bean.getCompareValue());
-		setOperator(bean.getOperator());
-		setSuggestedType(bean.getSuggestedType());
+		return this.compareValue;
 	}
 
 	public String getDisplayName() {
-		return channelName + " " + operator.toString() + " " + compareValue
-				+ " " + suggestedType;
+		return this.channelName + " " + this.operator.toString() + " "
+				+ this.compareValue + " " + this.suggestedType;
 	}
 
 	public int getID() {
 		return 0;
 	}
 
+	public Operator getOperator() {
+		return this.operator;
+	}
+
+	public SuggestedProcessVariableType getSuggestedType() {
+		return this.suggestedType;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime
+				* result
+				+ ((this.channelName == null) ? 0 : this.channelName.hashCode());
+		result = prime
+				* result
+				+ ((this.compareValue == null) ? 0 : this.compareValue
+						.hashCode());
 		result = prime * result
-				+ ((channelName == null) ? 0 : channelName.hashCode());
-		result = prime * result
-				+ ((compareValue == null) ? 0 : compareValue.hashCode());
-		result = prime * result
-				+ ((operator == null) ? 0 : operator.hashCode());
-		result = prime * result
-				+ ((suggestedType == null) ? 0 : suggestedType.hashCode());
+				+ ((this.operator == null) ? 0 : this.operator.hashCode());
+		result = prime
+				* result
+				+ ((this.suggestedType == null) ? 0 : this.suggestedType
+						.hashCode());
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final PVFilterConditionBean other = (PVFilterConditionBean) obj;
-		if (channelName == null) {
-			if (other.channelName != null)
-				return false;
-		} else if (!channelName.equals(other.channelName))
-			return false;
-		if (compareValue == null) {
-			if (other.compareValue != null)
-				return false;
-		} else if (!compareValue.equals(other.compareValue))
-			return false;
-		if (operator == null) {
-			if (other.operator != null)
-				return false;
-		} else if (!operator.equals(other.operator))
-			return false;
-		if (suggestedType == null) {
-			if (other.suggestedType != null)
-				return false;
-		} else if (!suggestedType.equals(other.suggestedType))
-			return false;
-		return true;
+	public void setChannelName(final String channelName) {
+		final String oldValue = this.channelName;
+		this.channelName = channelName;
+		this.pcs.firePropertyChange(PropertyNames.channelName.name(), oldValue,
+				channelName);
 	}
 
-	public void setID(int id) {
+	public void setCompareValue(final String compareValue) {
+		final String oldValue = this.compareValue;
+		this.compareValue = compareValue;
+		this.pcs.firePropertyChange(PropertyNames.compareValue.name(),
+				oldValue, compareValue);
+	}
+
+	public void setID(final int id) {
+	}
+
+	public void setOperator(final Operator operator) {
+		final Operator oldValue = this.operator;
+		this.operator = operator;
+		this.pcs.firePropertyChange(PropertyNames.operator.name(), oldValue,
+				operator);
+	}
+
+	public void setSuggestedType(
+			final SuggestedProcessVariableType suggestedType) {
+		final SuggestedProcessVariableType type = this.suggestedType;
+		this.suggestedType = suggestedType;
+		this.pcs.firePropertyChange(PropertyNames.suggestedType.name(), type,
+				suggestedType);
+	}
+
+	@Override
+	protected void doUpdateState(final PVFilterConditionBean bean) {
+		this.setChannelName(bean.getChannelName());
+		this.setCompareValue(bean.getCompareValue());
+		this.setOperator(bean.getOperator());
+		this.setSuggestedType(bean.getSuggestedType());
 	}
 
 }

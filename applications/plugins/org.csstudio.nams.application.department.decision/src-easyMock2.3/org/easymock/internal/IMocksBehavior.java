@@ -6,15 +6,15 @@ package org.easymock.internal;
 
 public interface IMocksBehavior extends ILegacyMatcherMethods {
 
+	// replay
+	Result addActual(Invocation invocation);
+
 	// record
 	void addExpected(ExpectedInvocation expected, Result result, Range count);
 
 	void addStub(ExpectedInvocation expected, Result result);
 
 	void checkOrder(boolean value);
-
-	// replay
-	Result addActual(Invocation invocation);
 
 	// verify
 	void verify();

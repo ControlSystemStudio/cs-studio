@@ -22,10 +22,10 @@ public class RegelwerkBuilderActivator extends AbstractBundleActivator
 	public OSGiServiceOffers startBundle(
 			@ExecutableEclipseRCPExtension(extensionId = RegelwerkBuilderServiceFactory.class)
 			@Required
-			Object regelwerkBuilderServiceFactory) {
-		OSGiServiceOffers result = new OSGiServiceOffers();
+			final Object regelwerkBuilderServiceFactory) {
+		final OSGiServiceOffers result = new OSGiServiceOffers();
 
-		RegelwerkBuilderServiceFactory factory = (RegelwerkBuilderServiceFactory) regelwerkBuilderServiceFactory;
+		final RegelwerkBuilderServiceFactory factory = (RegelwerkBuilderServiceFactory) regelwerkBuilderServiceFactory;
 		result.put(RegelwerkBuilderService.class, factory.createService());
 		return result;
 	}

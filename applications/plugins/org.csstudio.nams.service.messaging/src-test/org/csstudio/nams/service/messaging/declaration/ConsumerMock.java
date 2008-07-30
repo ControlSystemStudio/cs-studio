@@ -10,34 +10,35 @@ public class ConsumerMock implements Consumer {
 	private boolean throwInterruptedOnNextCall = false;
 	private NAMSMessage nextToBeDeliviered = null;
 
-	public void mockSetNextToBeDelivered(NAMSMessage message) {
-		nextToBeDeliviered = message;
-		throwInterruptedOnNextCall = false;
-	}
-	
-	public void mockThrowInterruptedExceptionOnNextCall() {
-		throwInterruptedOnNextCall = true;
-		nextToBeDeliviered = null;
-	}
-	
 	public void close() {
-		isClosed = true;
+		this.isClosed = true;
 	}
 
 	public boolean isClosed() {
-		return isClosed;
+		return this.isClosed;
+	}
+
+	public void mockSetNextToBeDelivered(final NAMSMessage message) {
+		this.nextToBeDeliviered = message;
+		this.throwInterruptedOnNextCall = false;
+	}
+
+	public void mockThrowInterruptedExceptionOnNextCall() {
+		this.throwInterruptedOnNextCall = true;
+		this.nextToBeDeliviered = null;
 	}
 
 	public NAMSMessage receiveMessage() throws MessagingException,
 			InterruptedException {
-		Assert.assertFalse(isClosed());
+		Assert.assertFalse(this.isClosed());
 
-		if( throwInterruptedOnNextCall ) {
+		if (this.throwInterruptedOnNextCall) {
 			throw new InterruptedException("requested by test");
 		}
-		
-		Assert.assertNotNull("Eine Nachricht steht zu Auslieferung bereit.", nextToBeDeliviered);
-		return nextToBeDeliviered;
+
+		Assert.assertNotNull("Eine Nachricht steht zu Auslieferung bereit.",
+				this.nextToBeDeliviered);
+		return this.nextToBeDeliviered;
 	}
 
 }

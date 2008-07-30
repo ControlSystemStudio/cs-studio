@@ -15,16 +15,6 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
  * den "deliver type persistent" setzen!
  */
 public interface NAMSMessage {
-	public boolean enthaeltAlarmnachricht();
-
-	public boolean enthaeltSystemnachricht();
-	
-	public AlarmNachricht alsAlarmnachricht();
-
-	public SystemNachricht alsSystemachricht();
-	
-	public String toString();
-
 	/**
 	 * <p>
 	 * Indicates this message is handled successfully. The message will be
@@ -40,4 +30,14 @@ public interface NAMSMessage {
 	 *             If acknowledgment failed.
 	 */
 	public void acknowledge() throws MessagingException;
+
+	public AlarmNachricht alsAlarmnachricht();
+
+	public SystemNachricht alsSystemachricht();
+
+	public boolean enthaeltAlarmnachricht();
+
+	public boolean enthaeltSystemnachricht();
+
+	public String toString();
 }

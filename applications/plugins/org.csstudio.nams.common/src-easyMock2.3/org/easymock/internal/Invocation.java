@@ -11,17 +11,17 @@ import org.easymock.internal.matchers.ArrayEquals;
 
 public class Invocation {
 
-	private final Object mock;
-
-	private final Method method;
-
-	private final Object[] arguments;
-
-	public Invocation(final Object mock, final Method method,
-			final Object[] args) {
-		this.mock = mock;
-		this.method = method;
-		this.arguments = Invocation.expandVarArgs(method.isVarArgs(), args);
+	public static boolean isJavaIdentifier(final String mockName) {
+		if ((mockName.length() == 0) || (mockName.indexOf(' ') > -1)
+				|| !Character.isJavaIdentifierStart(mockName.charAt(0))) {
+			return false;
+		}
+		for (final char c : mockName.substring(1).toCharArray()) {
+			if (!Character.isJavaIdentifierPart(c)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static Object[] expandVarArgs(final boolean isVarArgs,
@@ -41,16 +41,17 @@ public class Invocation {
 		return newArgs;
 	}
 
-	public Object getMock() {
-		return this.mock;
-	}
+	private final Object mock;
 
-	public Method getMethod() {
-		return this.method;
-	}
+	private final Method method;
 
-	public Object[] getArguments() {
-		return this.arguments;
+	private final Object[] arguments;
+
+	public Invocation(final Object mock, final Method method,
+			final Object[] args) {
+		this.mock = mock;
+		this.method = method;
+		this.arguments = Invocation.expandVarArgs(method.isVarArgs(), args);
 	}
 
 	@Override
@@ -65,9 +66,44 @@ public class Invocation {
 				&& this.equalArguments(other.arguments);
 	}
 
+	public Object[] getArguments() {
+		return this.arguments;
+	}
+
+	public Method getMethod() {
+		return this.method;
+	}
+
+	public Object getMock() {
+		return this.mock;
+	}
+
+	public String getMockAndMethodName() {
+		final String mockName = this.mock.toString();
+		final String methodName = this.method.getName();
+		if (this.toStringIsDefined(this.mock)
+				&& Invocation.isJavaIdentifier(mockName)) {
+			return mockName + "." + methodName;
+		} else {
+			return methodName;
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		throw new UnsupportedOperationException("hashCode() is not implemented");
+	}
+
+	public boolean matches(final Invocation actual,
+			final ArgumentsMatcher matcher) {
+		return this.mock.equals(actual.mock)
+				&& this.method.equals(actual.method)
+				&& matcher.matches(this.arguments, actual.arguments);
+	}
+
+	public String toString(final ArgumentsMatcher matcher) {
+		return this.getMockAndMethodName() + "("
+				+ matcher.toString(this.arguments) + ")";
 	}
 
 	private boolean equalArguments(final Object[] arguments) {
@@ -101,29 +137,6 @@ public class Invocation {
 		return parameterTypes[localParameterPosition].isPrimitive();
 	}
 
-	public boolean matches(final Invocation actual,
-			final ArgumentsMatcher matcher) {
-		return this.mock.equals(actual.mock)
-				&& this.method.equals(actual.method)
-				&& matcher.matches(this.arguments, actual.arguments);
-	}
-
-	public String toString(final ArgumentsMatcher matcher) {
-		return this.getMockAndMethodName() + "("
-				+ matcher.toString(this.arguments) + ")";
-	}
-
-	public String getMockAndMethodName() {
-		final String mockName = this.mock.toString();
-		final String methodName = this.method.getName();
-		if (this.toStringIsDefined(this.mock)
-				&& Invocation.isJavaIdentifier(mockName)) {
-			return mockName + "." + methodName;
-		} else {
-			return methodName;
-		}
-	}
-
 	private boolean toStringIsDefined(final Object o) {
 		try {
 			o.getClass().getDeclaredMethod("toString", (Class[]) null)
@@ -139,18 +152,5 @@ public class Invocation {
 					"The toString() method could not be found!");
 			// ///CLOVER:ON
 		}
-	}
-
-	public static boolean isJavaIdentifier(final String mockName) {
-		if ((mockName.length() == 0) || (mockName.indexOf(' ') > -1)
-				|| !Character.isJavaIdentifierStart(mockName.charAt(0))) {
-			return false;
-		}
-		for (final char c : mockName.substring(1).toCharArray()) {
-			if (!Character.isJavaIdentifierPart(c)) {
-				return false;
-			}
-		}
-		return true;
 	}
 }

@@ -25,18 +25,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @Table(name = "AMS_Filter_FilterCondition")
-public class FilterConditionsToFilterDTO implements NewAMSConfigurationElementDTO {
+public class FilterConditionsToFilterDTO implements
+		NewAMSConfigurationElementDTO {
 	@EmbeddedId
 	private FilterConditionsToFilterDTO_PK filterCTFPK;
 
-	public FilterConditionsToFilterDTO() {
-		filterCTFPK = new FilterConditionsToFilterDTO_PK();
-	}
-
-	public FilterConditionsToFilterDTO(int iFilterRef, int iFilterConditionRef) {
-		filterCTFPK = new FilterConditionsToFilterDTO_PK(iFilterRef, iFilterConditionRef);
-	}
-	
 	/**
 	 * This column is no more in use.
 	 */
@@ -44,81 +37,116 @@ public class FilterConditionsToFilterDTO implements NewAMSConfigurationElementDT
 	@Column(name = "iPos")
 	private int iPos = 0; // INT
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
-		builder.append(": ");
-		builder.append("iFilterRef: ");
-		builder.append(filterCTFPK.getIFilterRef());
-		builder.append(", iFilterConditionRef: ");
-		builder.append(filterCTFPK.getIFilterConditionRef());
-		builder.append(", iPos: ");
-		builder.append(iPos);
-		return builder.toString();
+	public FilterConditionsToFilterDTO() {
+		this.filterCTFPK = new FilterConditionsToFilterDTO_PK();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + filterCTFPK.getIFilterConditionRef();
-		result = prime * result + filterCTFPK.getIFilterRef();
-//		result = prime * result + iPos;
-		return result;
+	public FilterConditionsToFilterDTO(final int iFilterRef,
+			final int iFilterConditionRef) {
+		this.filterCTFPK = new FilterConditionsToFilterDTO_PK(iFilterRef,
+				iFilterConditionRef);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof FilterConditionsToFilterDTO))
+		}
+		if (!(obj instanceof FilterConditionsToFilterDTO)) {
 			return false;
+		}
 		final FilterConditionsToFilterDTO other = (FilterConditionsToFilterDTO) obj;
-		if (filterCTFPK.getIFilterRef() != other.getIFilterRef())
+		if (this.filterCTFPK.getIFilterRef() != other.getIFilterRef()) {
 			return false;
-		if (filterCTFPK.getIFilterRef() != other.getIFilterRef())
+		}
+		if (this.filterCTFPK.getIFilterRef() != other.getIFilterRef()) {
 			return false;
-//		if (iPos != other.iPos)
-//			return false;
+		}
+		// if (iPos != other.iPos)
+		// return false;
 		return true;
-	}
-
-	/**
-	 * @return the iFilterRef
-	 */
-	public int getIFilterRef() {
-		return filterCTFPK.getIFilterRef();
-	}
-
-	/**
-	 * @param filterRef the iFilterRef to set
-	 */
-	@SuppressWarnings("unused")
-	public void setIFilterRef(int filterRef) {
-		filterCTFPK.setIFilterRef(filterRef);
 	}
 
 	/**
 	 * @return the iFilterConditionRef
 	 */
 	public int getIFilterConditionRef() {
-		return filterCTFPK.getIFilterConditionRef();
+		return this.filterCTFPK.getIFilterConditionRef();
 	}
 
 	/**
-	 * @param filterConditionRef the iFilterConditionRef to set
+	 * @return the iFilterRef
+	 */
+	public int getIFilterRef() {
+		return this.filterCTFPK.getIFilterRef();
+	}
+
+	public String getUniqueHumanReadableName() {
+		return this.toString();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.filterCTFPK.getIFilterConditionRef();
+		result = prime * result + this.filterCTFPK.getIFilterRef();
+		// result = prime * result + iPos;
+		return result;
+	}
+
+	public boolean isInCategory(final int categoryDBId) {
+		return false;
+	}
+
+	public void setFilterConditionsToFilterDTO_PK(
+			final FilterConditionsToFilterDTO_PK key) {
+		this.filterCTFPK = key;
+	}
+
+	/**
+	 * @param filterConditionRef
+	 *            the iFilterConditionRef to set
 	 */
 	@SuppressWarnings("unused")
-	public void setIFilterConditionRef(int filterConditionRef) {
-		filterCTFPK.setIFilterConditionRef(filterConditionRef);
+	public void setIFilterConditionRef(final int filterConditionRef) {
+		this.filterCTFPK.setIFilterConditionRef(filterConditionRef);
+	}
+
+	/**
+	 * @param filterRef
+	 *            the iFilterRef to set
+	 */
+	@SuppressWarnings("unused")
+	public void setIFilterRef(final int filterRef) {
+		this.filterCTFPK.setIFilterRef(filterRef);
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder(this.getClass()
+				.getSimpleName());
+		builder.append(": ");
+		builder.append("iFilterRef: ");
+		builder.append(this.filterCTFPK.getIFilterRef());
+		builder.append(", iFilterConditionRef: ");
+		builder.append(this.filterCTFPK.getIFilterConditionRef());
+		builder.append(", iPos: ");
+		builder.append(this.iPos);
+		return builder.toString();
 	}
 
 	/**
@@ -126,26 +154,16 @@ public class FilterConditionsToFilterDTO implements NewAMSConfigurationElementDT
 	 */
 	@SuppressWarnings("unused")
 	private int getIPos() {
-		return iPos;
+		return this.iPos;
 	}
 
 	/**
-	 * @param pos the iPos to set
+	 * @param pos
+	 *            the iPos to set
 	 */
 	@SuppressWarnings("unused")
-	private void setIPos(int pos) {
-		iPos = pos;
-	}
-	public void setFilterConditionsToFilterDTO_PK(FilterConditionsToFilterDTO_PK key) {
-		filterCTFPK = key;
+	private void setIPos(final int pos) {
+		this.iPos = pos;
 	}
 
-	public String getUniqueHumanReadableName() {
-		return toString();
-	}
-
-	public boolean isInCategory(int categoryDBId) {
-		return false;
-	}
-	
 }

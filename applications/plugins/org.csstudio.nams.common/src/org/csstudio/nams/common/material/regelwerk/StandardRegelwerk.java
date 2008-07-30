@@ -32,24 +32,26 @@ public class StandardRegelwerk implements Regelwerk {
 	private final Regelwerkskennung regelwerkskennung;
 	private final VersandRegel hauptRegel;
 
-
-	
 	// still in for testing purposes
 	@Deprecated
-	public StandardRegelwerk(Regelwerkskennung regelwerkskennung) {
+	public StandardRegelwerk(final Regelwerkskennung regelwerkskennung) {
 		this(regelwerkskennung, null);
 	}
 
-	public StandardRegelwerk(Regelwerkskennung regelwerkskennung,
-			VersandRegel hauptRegel) {
+	public StandardRegelwerk(final Regelwerkskennung regelwerkskennung,
+			final VersandRegel hauptRegel) {
 		this.regelwerkskennung = regelwerkskennung;
 		this.hauptRegel = hauptRegel;
 	}
-	
+
 	@Deprecated
-	public StandardRegelwerk(VersandRegel hauptRegel){
+	public StandardRegelwerk(final VersandRegel hauptRegel) {
 		this.hauptRegel = hauptRegel;
 		this.regelwerkskennung = Regelwerkskennung.valueOf();
+	}
+
+	public Pruefliste gibDummyPrueflisteNichtSenden() {
+		return new DummyPruefliste(this.regelwerkskennung);
 	}
 
 	/*
@@ -58,34 +60,11 @@ public class StandardRegelwerk implements Regelwerk {
 	 * @see de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk#gibNeueLeerePruefliste()
 	 */
 	public Pruefliste gibNeueLeerePruefliste() {
-		return new Pruefliste(gibRegelwerkskennung(), hauptRegel);
+		return new Pruefliste(this.gibRegelwerkskennung(), this.hauptRegel);
 	}
 
-	public Pruefliste gibDummyPrueflisteNichtSenden() {
-		return new DummyPruefliste(regelwerkskennung);
-	}
-
-	public void pruefeNachrichtErstmalig(AlarmNachricht alarmNachricht,
-			Pruefliste pruefliste) {
-		if (hauptRegel != null) {
-			Millisekunden zeitBisZurNaechstenAuswertung = hauptRegel
-					.pruefeNachrichtErstmalig(alarmNachricht, pruefliste);
-			pruefliste
-					.setzeMillisekundenBisZurNaechstenPruefung(zeitBisZurNaechstenAuswertung);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void pruefeNachrichtAufTimeOuts(Pruefliste pruefliste,
-			Millisekunden msSeitLetzterPruefung) {
-		pruefliste.msGewartet(msSeitLetzterPruefung);
-		if (hauptRegel != null) {
-			Millisekunden zeitBisZumNaechstenTimeOut = hauptRegel.pruefeNachrichtAufTimeOuts(pruefliste,
-					pruefliste.gibBereitsGewarteteZeit());
-			pruefliste.setzeMillisekundenBisZurNaechstenPruefung(zeitBisZumNaechstenTimeOut);
-		}
+	public Regelwerkskennung gibRegelwerkskennung() {
+		return this.regelwerkskennung;
 	}
 
 	/**
@@ -95,37 +74,57 @@ public class StandardRegelwerk implements Regelwerk {
 	 * @param pruefliste
 	 */
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-			AlarmNachricht alarmNachricht, Pruefliste pruefliste) {
-		if (hauptRegel != null)
-			hauptRegel.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-					alarmNachricht, pruefliste);
-	}
-
-	public Regelwerkskennung gibRegelwerkskennung() {
-		return regelwerkskennung;
-	}
-
-//	public void injectHistoryService(HistoryService historyService) {
-//		hauptRegel.setHistoryService(historyService);
-//	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder("Regelwerkskennung: ");
-		builder.append(regelwerkskennung.toString());
-		builder.append(" Hauptregel: ");
-		builder.append(hauptRegel.toString());
-		return builder.toString();
+			final AlarmNachricht alarmNachricht, final Pruefliste pruefliste) {
+		if (this.hauptRegel != null) {
+			this.hauptRegel
+					.pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+							alarmNachricht, pruefliste);
+		}
 	}
 
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-			AlarmNachricht alarmNachricht, Pruefliste pruefliste,
-			AlarmNachricht initialeNachricht) {
+			final AlarmNachricht alarmNachricht, final Pruefliste pruefliste,
+			final AlarmNachricht initialeNachricht) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void pruefeNachrichtAufTimeOuts(final Pruefliste pruefliste,
+			final Millisekunden msSeitLetzterPruefung) {
+		pruefliste.msGewartet(msSeitLetzterPruefung);
+		if (this.hauptRegel != null) {
+			final Millisekunden zeitBisZumNaechstenTimeOut = this.hauptRegel
+					.pruefeNachrichtAufTimeOuts(pruefliste, pruefliste
+							.gibBereitsGewarteteZeit());
+			pruefliste
+					.setzeMillisekundenBisZurNaechstenPruefung(zeitBisZumNaechstenTimeOut);
+		}
+	}
 
-	
-	
+	// public void injectHistoryService(HistoryService historyService) {
+	// hauptRegel.setHistoryService(historyService);
+	// }
+
+	public void pruefeNachrichtErstmalig(final AlarmNachricht alarmNachricht,
+			final Pruefliste pruefliste) {
+		if (this.hauptRegel != null) {
+			final Millisekunden zeitBisZurNaechstenAuswertung = this.hauptRegel
+					.pruefeNachrichtErstmalig(alarmNachricht, pruefliste);
+			pruefliste
+					.setzeMillisekundenBisZurNaechstenPruefung(zeitBisZurNaechstenAuswertung);
+		}
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder("Regelwerkskennung: ");
+		builder.append(this.regelwerkskennung.toString());
+		builder.append(" Hauptregel: ");
+		builder.append(this.hauptRegel.toString());
+		return builder.toString();
+	}
+
 }

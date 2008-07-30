@@ -13,41 +13,22 @@ public class PreferenceStoreServiceImpl implements PreferenceService {
 
 	private static IPreferenceStore preferenceStore;
 
-	public <T extends Enum<?> & HoldsAPreferenceId> boolean getBoolean(T key) {
-		return PreferenceStoreServiceImpl.preferenceStore.getBoolean(key
-				.getPreferenceStoreId());
-	}
-
-	public <T extends Enum<?> & HoldsAPreferenceId> int getInt(T key) {
-		return PreferenceStoreServiceImpl.preferenceStore.getInt(key
-				.getPreferenceStoreId());
-	}
-
-	public <T extends Enum<?> & HoldsAPreferenceId> String getString(T key) {
-		return PreferenceStoreServiceImpl.preferenceStore.getString(key
-				.getPreferenceStoreId());
-	}
-
-	public static void staticInject(IPreferenceStore preferenceStore) {
+	public static void staticInject(final IPreferenceStore preferenceStore) {
 		PreferenceStoreServiceImpl.preferenceStore = preferenceStore;
 	}
 
-//	public interface PreferenceChangeListener {
-//		public <T extends Enum<?> & HoldsAPreferenceId> void preferenceUpdated(
-//				T id, Object oldValue, Object newValue);
-//	}
-
 	public <T extends Enum<?> & HoldsAPreferenceId> void addPreferenceChangeListenerFor(
-			T[] preferenceIds, final PreferenceChangeListener changeListener) {
+			final T[] preferenceIds,
+			final PreferenceChangeListener changeListener) {
 
 		final Map<String, T> ids = new HashMap<String, T>();
-		for (T id : preferenceIds) {
+		for (final T id : preferenceIds) {
 			ids.put(id.getPreferenceStoreId(), id);
 		}
 
-		preferenceStore
+		PreferenceStoreServiceImpl.preferenceStore
 				.addPropertyChangeListener(new IPropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent event) {
+					public void propertyChange(final PropertyChangeEvent event) {
 						if (ids.keySet().contains(event.getProperty())) {
 							changeListener.preferenceUpdated(ids.get(event
 									.getProperty()), event.getOldValue(), event
@@ -55,5 +36,26 @@ public class PreferenceStoreServiceImpl implements PreferenceService {
 						}
 					}
 				});
+	}
+
+	public <T extends Enum<?> & HoldsAPreferenceId> boolean getBoolean(
+			final T key) {
+		return PreferenceStoreServiceImpl.preferenceStore.getBoolean(key
+				.getPreferenceStoreId());
+	}
+
+	public <T extends Enum<?> & HoldsAPreferenceId> int getInt(final T key) {
+		return PreferenceStoreServiceImpl.preferenceStore.getInt(key
+				.getPreferenceStoreId());
+	}
+
+	// public interface PreferenceChangeListener {
+	// public <T extends Enum<?> & HoldsAPreferenceId> void preferenceUpdated(
+	// T id, Object oldValue, Object newValue);
+	// }
+
+	public <T extends Enum<?> & HoldsAPreferenceId> String getString(final T key) {
+		return PreferenceStoreServiceImpl.preferenceStore.getString(key
+				.getPreferenceStoreId());
 	}
 }

@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 public class AlarmbearbeiterGruppenSMSBestFilterActionDTO extends
 		AbstractAlarmbearbeiterGruppenFilterActionDTO {
 
-	public AlarmbearbeiterGruppenSMSBestFilterActionDTO(){
-		filterActionType = AlarmbearbeitergruppenFilterActionType.SMS;
+	public AlarmbearbeiterGruppenSMSBestFilterActionDTO() {
+		this.filterActionType = AlarmbearbeitergruppenFilterActionType.SMS;
 	}
 }

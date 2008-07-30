@@ -13,8 +13,14 @@ public class AlarmbearbeiterView extends AbstractNamsView {
 	public static final String ID = "org.csstudio.nams.configurator.alarmbearbeiter";
 
 	@Override
+	protected Class<? extends IConfigurationBean> getBeanClass() {
+		return AlarmbearbeiterBean.class;
+	}
+
+	@Override
 	protected IConfigurationBean[] getTableContent() {
-		return getConfigurationBeanService().getAlarmBearbeiterBeans();
+		return AbstractNamsView.getConfigurationBeanService()
+				.getAlarmBearbeiterBeans();
 	}
 
 	@Override
@@ -22,10 +28,5 @@ public class AlarmbearbeiterView extends AbstractNamsView {
 		filterableBeanList.getTable().addDragSupport(DND.DROP_LINK,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new SelectionDragSourceListener(filterableBeanList.getTable()));
-	}
-
-	@Override
-	protected Class<? extends IConfigurationBean> getBeanClass() {
-		return AlarmbearbeiterBean.class;
 	}
 }

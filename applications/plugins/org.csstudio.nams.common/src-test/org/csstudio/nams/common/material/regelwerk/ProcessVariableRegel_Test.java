@@ -1,5 +1,7 @@
 package org.csstudio.nams.common.material.regelwerk;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
@@ -16,484 +18,589 @@ import org.junit.Test;
 public class ProcessVariableRegel_Test extends
 		AbstractObject_TestCase<ProcessVariableRegel> {
 
-	
 	private ConnectionServiceMock _connectionServiceMock;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		_connectionServiceMock = createPVServiceMock();
-		ProcessVariableRegel.staticInject(new Logger(){
-
-			public void logDebugMessage(Object caller, String message) {
-			}
-
-			public void logDebugMessage(Object caller, String message,
-					Throwable throwable) {
-			}
-
-			public void logErrorMessage(Object caller, String message) {
-			}
-
-			public void logErrorMessage(Object caller, String message,
-					Throwable throwable) {
-			}
-
-			public void logFatalMessage(Object caller, String message) {
-			}
-			
-			public void logFatalMessage(Object caller, String message,
-					Throwable throwable) {
-			}
-
-			public void logInfoMessage(Object caller, String message) {
-			}
-
-			public void logInfoMessage(Object caller, String message,
-					Throwable throwable) {
-			}
-
-			public void logWarningMessage(Object caller, String message) {
-			}
-
-			public void logWarningMessage(Object caller, String message,
-					Throwable throwable) {
-			}});
-	}
-	
 	@Test
-	public void testMatchOfLongValuesSmallerThan5() throws Throwable {
-		
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.SMALLER;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
-		Object compValue = 5l;
+	public void testMatchOfDoubleValuesEquals5() throws Throwable {
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.EQUALS;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
+		final Object compValue = 5d;
 
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
 		// Without connection:
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
 		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Long(6));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Long(5));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		this._connectionServiceMock.sendNewValue(new Double(4.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Double(5.1));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With matching value:
-		_connectionServiceMock.sendNewValue(new Long(4));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
+		this._connectionServiceMock.sendNewValue(new Double(5.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Double(5.0000001));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+	}
+
+	@Test
+	public void testMatchOfDoubleValuesGreaterThan5() throws Throwable {
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.GREATER;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
+		final Object compValue = 5d;
+
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
+		// Without connection:
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// Now all with connection...
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
+		// Without any current value:
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With a not matching value:
+		this._connectionServiceMock.sendNewValue(new Double(4.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Double(5.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With matching value:
+		this._connectionServiceMock.sendNewValue(new Double(6.1));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
 	}
 
 	@Test
 	public void testMatchOfDoubleValuesSmallerThan5() throws Throwable {
 
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.SMALLER;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
-		Object compValue = 5d;
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.SMALLER;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
+		final Object compValue = 5d;
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
 		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
 		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Double(6.0));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Double(5.0));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		this._connectionServiceMock.sendNewValue(new Double(6.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Double(5.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With matching value:
-		_connectionServiceMock.sendNewValue(new Double(4.9));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
+		this._connectionServiceMock.sendNewValue(new Double(4.9));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+	}
+
+	@Test
+	public void testMatchOfDoubleValuesUnequals5() throws Throwable {
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.UNEQUALS;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
+		final Object compValue = 5d;
+
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
+		// Without connection:
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// Now all with connection...
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
+		// Without any current value:
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With a not matching value:
+		this._connectionServiceMock.sendNewValue(new Double(5.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Double(5.000001));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With matching value:
+		this._connectionServiceMock.sendNewValue(new Double(4.9));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Double(5.1));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+	}
+
+	@Test
+	public void testMatchOfLongValuesEquals5() throws Throwable {
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.EQUALS;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
+		final Object compValue = 5l;
+
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
+		// Without connection:
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// Now all with connection...
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
+		// Without any current value:
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With a not matching value:
+		this._connectionServiceMock.sendNewValue(new Long(4));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Long(6));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Long(50));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With matching value:
+		this._connectionServiceMock.sendNewValue(new Long(5));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
 	}
 
 	@Test
 	public void testMatchOfLongValuesGreaterThan5() throws Throwable {
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.GREATER;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
-		Object compValue = 5l;
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.GREATER;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
+		final Object compValue = 5l;
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
 		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
 		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Long(4));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Long(5));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		this._connectionServiceMock.sendNewValue(new Long(4));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Long(5));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With matching value:
-		_connectionServiceMock.sendNewValue(new Long(6));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
+		this._connectionServiceMock.sendNewValue(new Long(6));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
 	}
-	
+
 	@Test
-	public void testMatchOfDoubleValuesGreaterThan5() throws Throwable {
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.GREATER;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
-		Object compValue = 5d;
+	public void testMatchOfLongValuesSmallerThan5() throws Throwable {
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
-		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
-		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Double(4.0));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Double(5.0));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// With matching value:
-		_connectionServiceMock.sendNewValue(new Double(6.1));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-	}
-	
-	@Test
-	public void testMatchOfLongValuesEquals5() throws Throwable {
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.EQUALS;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
-		Object compValue = 5l;
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.SMALLER;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
+		final Object compValue = 5l;
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
-		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
-		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Long(4));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Long(6));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Long(50));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// With matching value:
-		_connectionServiceMock.sendNewValue(new Long(5));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-	}
-	
-	@Test
-	public void testMatchOfDoubleValuesEquals5() throws Throwable {
-		
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.EQUALS;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
-		Object compValue = 5d;
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+
 		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
 		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Double(4.0));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Double(5.1));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-				
+		this._connectionServiceMock.sendNewValue(new Long(6));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Long(5));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With matching value:
-		_connectionServiceMock.sendNewValue(new Double(5.0));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Double(5.0000001));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
+		this._connectionServiceMock.sendNewValue(new Long(4));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test2"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
 	}
-	
+
 	@Test
 	public void testMatchOfLongValuesUnequals5() throws Throwable {
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.UNEQUALS;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
-		Object compValue = 5l;
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.UNEQUALS;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
+		final Object compValue = 5l;
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
-		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
-		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Long(5));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		// With matching value:
-		_connectionServiceMock.sendNewValue(new Long(4));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Long(6));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Long(50));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-	}
-	
-	@Test
-	public void testMatchOfDoubleValuesUnequals5() throws Throwable {
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.UNEQUALS;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
-		Object compValue = 5d;
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
 		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
 		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With a not matching value:
-		_connectionServiceMock.sendNewValue(new Double(5.0));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Double(5.000001));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		this._connectionServiceMock.sendNewValue(new Long(5));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With matching value:
-		_connectionServiceMock.sendNewValue(new Double(4.9));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
-		_connectionServiceMock.sendNewValue(new Double(5.1));
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
+		this._connectionServiceMock.sendNewValue(new Long(4));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Long(6));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Long(50));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
 	}
-	
+
 	@Test
 	public void testMatchOfStringValueEquals() throws Throwable {
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.EQUALS;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
-		Object compValue = "Foo";
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.EQUALS;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
+		final Object compValue = "Foo";
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
-		
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
 		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
 		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With a not matching value:
-		_connectionServiceMock.sendNewValue("NotFoo");
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		this._connectionServiceMock.sendNewValue("NotFoo");
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With matching value:
-		_connectionServiceMock.sendNewValue("Foo");
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
+		this._connectionServiceMock.sendNewValue("Foo");
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
 	}
-	
+
 	@Test
 	public void testMatchOfStringValueUnequals() throws Throwable {
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.UNEQUALS;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
-		Object compValue = "Foo";
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.UNEQUALS;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
+		final Object compValue = "Foo";
 
-		ProcessVariableRegel pvRegel = new ProcessVariableRegel(_connectionServiceMock, channelName,
-				operator, suggestedProcessVariableType, compValue);
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
 
 		// Without connection:
-		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// Now all with connection...
-		_connectionServiceMock.sendNewConnectionState(ConnectionState.CONNECTED);
-		
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
 		// Without any current value:
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With a not matching value:
-		_connectionServiceMock.sendNewValue("Foo");
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
-		
+		this._connectionServiceMock.sendNewValue("Foo");
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
 		// With matching value:
-		_connectionServiceMock.sendNewValue("NotFoo");
-		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),pvRegel);
-		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"), pListe);
-		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(pvRegel));
+		this._connectionServiceMock.sendNewValue("NotFoo");
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
 	}
-	
-	
-	
+
+	ConnectionServiceMock createPVServiceMock() {
+		return new ConnectionServiceMock();
+	}
+
 	@Override
 	protected ProcessVariableRegel getNewInstanceOfClassUnderTest() {
-		IProcessVariableConnectionService pvService = createPVServiceMock();
-		IProcessVariableAddress channelName = createDefaultPVAdress();
-		Operator operator = Operator.EQUALS;
-		SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
-		Object compValue = "test";
+		final IProcessVariableConnectionService pvService = this
+				.createPVServiceMock();
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.EQUALS;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
+		final Object compValue = "test";
 
 		return new ProcessVariableRegel(pvService, channelName, operator,
 				suggestedProcessVariableType, compValue);
@@ -506,33 +613,39 @@ public class ProcessVariableRegel_Test extends
 
 	@Override
 	protected ProcessVariableRegel[] getThreeDiffrentNewInstanceOfClassUnderTest() {
-		ProcessVariableRegel[] regels = new ProcessVariableRegel[3];
+		final ProcessVariableRegel[] regels = new ProcessVariableRegel[3];
 		{
-			IProcessVariableConnectionService pvService = createPVServiceMock();
-			IProcessVariableAddress channelName = createDefaultPVAdress();
-			Operator operator = Operator.EQUALS;
-			SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
-			Object compValue = "test2";
+			final IProcessVariableConnectionService pvService = this
+					.createPVServiceMock();
+			final IProcessVariableAddress channelName = this
+					.createDefaultPVAdress();
+			final Operator operator = Operator.EQUALS;
+			final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
+			final Object compValue = "test2";
 
 			regels[0] = new ProcessVariableRegel(pvService, channelName,
 					operator, suggestedProcessVariableType, compValue);
 		}
 		{
-			IProcessVariableConnectionService pvService = createPVServiceMock();
-			IProcessVariableAddress channelName = createDefaultPVAdress();
-			Operator operator = Operator.UNEQUALS;
-			SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
-			Object compValue = "test";
+			final IProcessVariableConnectionService pvService = this
+					.createPVServiceMock();
+			final IProcessVariableAddress channelName = this
+					.createDefaultPVAdress();
+			final Operator operator = Operator.UNEQUALS;
+			final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.STRING;
+			final Object compValue = "test";
 
 			regels[1] = new ProcessVariableRegel(pvService, channelName,
 					operator, suggestedProcessVariableType, compValue);
 		}
 		{
-			IProcessVariableConnectionService pvService = createPVServiceMock();
-			IProcessVariableAddress channelName = createDefaultPVAdress();
-			Operator operator = Operator.EQUALS;
-			SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
-			Object compValue = 42l;
+			final IProcessVariableConnectionService pvService = this
+					.createPVServiceMock();
+			final IProcessVariableAddress channelName = this
+					.createDefaultPVAdress();
+			final Operator operator = Operator.EQUALS;
+			final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.LONG;
+			final Object compValue = 42l;
 
 			regels[2] = new ProcessVariableRegel(pvService, channelName,
 					operator, suggestedProcessVariableType, compValue);
@@ -540,60 +653,103 @@ public class ProcessVariableRegel_Test extends
 		return regels;
 	}
 
-	ConnectionServiceMock createPVServiceMock() {
-		return new ConnectionServiceMock();
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		this._connectionServiceMock = this.createPVServiceMock();
+		ProcessVariableRegel.staticInject(new Logger() {
+
+			public void logDebugMessage(final Object caller,
+					final String message) {
+			}
+
+			public void logDebugMessage(final Object caller,
+					final String message, final Throwable throwable) {
+			}
+
+			public void logErrorMessage(final Object caller,
+					final String message) {
+			}
+
+			public void logErrorMessage(final Object caller,
+					final String message, final Throwable throwable) {
+			}
+
+			public void logFatalMessage(final Object caller,
+					final String message) {
+			}
+
+			public void logFatalMessage(final Object caller,
+					final String message, final Throwable throwable) {
+			}
+
+			public void logInfoMessage(final Object caller, final String message) {
+			}
+
+			public void logInfoMessage(final Object caller,
+					final String message, final Throwable throwable) {
+			}
+
+			public void logWarningMessage(final Object caller,
+					final String message) {
+			}
+
+			public void logWarningMessage(final Object caller,
+					final String message, final Throwable throwable) {
+			}
+		});
 	}
 
 	private IProcessVariableAddress createDefaultPVAdress() {
 		return new IProcessVariableAddress() {
 
 			public String getCharacteristic() {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public ControlSystemEnum getControlSystem() {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public String getDevice() {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public String getFullName() {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public String getProperty() {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public String getRawName() {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public DalPropertyTypes getTypeHint() {
-				fail();
-				return null;
-			}
-
-			public boolean isCharacteristic() {
-				fail();
-				return false;
-			}
-
-			public RemoteInfo toDalRemoteInfo() {
-				fail();
+				Assert.fail();
 				return null;
 			}
 
 			public ValueType getValueTypeHint() {
-				fail();
+				Assert.fail();
+				return null;
+			}
+
+			public boolean isCharacteristic() {
+				Assert.fail();
+				return false;
+			}
+
+			public RemoteInfo toDalRemoteInfo() {
+				Assert.fail();
 				return null;
 			}
 		};

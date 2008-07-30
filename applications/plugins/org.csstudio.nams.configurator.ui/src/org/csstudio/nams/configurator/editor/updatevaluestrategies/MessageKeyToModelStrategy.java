@@ -8,7 +8,7 @@ import org.eclipse.core.databinding.UpdateValueStrategy;
 
 public class MessageKeyToModelStrategy extends UpdateValueStrategy {
 	@Override
-	public Object convert(Object value) {
+	public Object convert(final Object value) {
 		return MessageKeyEnum.getEnumFor((String) value);
 	}
 }

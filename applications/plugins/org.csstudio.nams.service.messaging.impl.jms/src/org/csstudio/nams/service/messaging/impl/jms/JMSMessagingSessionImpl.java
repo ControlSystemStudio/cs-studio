@@ -20,111 +20,123 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 
 public class JMSMessagingSessionImpl implements MessagingSession {
 
+	private static PreferenceService preferenceService;
+
+	public static void staticInject(final PreferenceService service) {
+		JMSMessagingSessionImpl.preferenceService = service;
+	}
+
 	private Context[] contexts;
 	private ConnectionFactory[] factorys;
 	private Connection[] connections;
 	private Session[] sessions;
 	private boolean isClosed;
-	private final String environmentUniqueClientId;
-	private static PreferenceService preferenceService;
 
-	public JMSMessagingSessionImpl(String environmentUniqueClientId,
-			String[] urls) throws NamingException, JMSException {
-		
+	private final String environmentUniqueClientId;
+
+	public JMSMessagingSessionImpl(final String environmentUniqueClientId,
+			final String[] urls) throws NamingException, JMSException {
+
 		this.environmentUniqueClientId = environmentUniqueClientId;
-		contexts = new Context[urls.length];
-		factorys = new ConnectionFactory[urls.length];
-		connections = new Connection[urls.length];
-		sessions = new Session[urls.length];
+		this.contexts = new Context[urls.length];
+		this.factorys = new ConnectionFactory[urls.length];
+		this.connections = new Connection[urls.length];
+		this.sessions = new Session[urls.length];
 
 		try {
 			for (int i = 0; i < urls.length; i++) {
-				Hashtable<String, String> properties = new Hashtable<String, String>();
-				properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-						preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
+				final Hashtable<String, String> properties = new Hashtable<String, String>();
+				properties
+						.put(
+								Context.INITIAL_CONTEXT_FACTORY,
+								JMSMessagingSessionImpl.preferenceService
+										.getString(PreferenceServiceJMSKeys.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
 				properties.put(Context.PROVIDER_URL, urls[i]);
-	
-				contexts[i] = new InitialContext(properties);
-				factorys[i] = (ConnectionFactory) contexts[i]
+
+				this.contexts[i] = new InitialContext(properties);
+				this.factorys[i] = (ConnectionFactory) this.contexts[i]
 						.lookup("ConnectionFactory");
-				connections[i] = factorys[i].createConnection();
-				connections[i].setClientID(environmentUniqueClientId);
-				sessions[i] = connections[i].createSession(false,
+				this.connections[i] = this.factorys[i].createConnection();
+				this.connections[i].setClientID(environmentUniqueClientId);
+				this.sessions[i] = this.connections[i].createSession(false,
 						Session.CLIENT_ACKNOWLEDGE);
-	
-				connections[i].start();
+
+				this.connections[i].start();
 			}
-		} catch (NamingException e) {
-			close();
+		} catch (final NamingException e) {
+			this.close();
 			throw e;
-		} catch (JMSException e) {
-			close();
+		} catch (final JMSException e) {
+			this.close();
 			throw e;
 		}
-		isClosed = false;
+		this.isClosed = false;
 	}
 
 	public void close() {
-		for (Session session : sessions) {
+		for (final Session session : this.sessions) {
 			if (session != null) {
 				try {
 					session.close();
-				} catch (JMSException e) {}
+				} catch (final JMSException e) {
+				}
 			}
 		}
-		sessions = null;
-		for (Connection connection : connections) {
+		this.sessions = null;
+		for (final Connection connection : this.connections) {
 			if (connection != null) {
 				try {
 					connection.close();
-				} catch (JMSException e) {}
+				} catch (final JMSException e) {
+				}
 			}
 		}
-		connections = null;
-		factorys = null;
-		for (Context context : contexts) {
+		this.connections = null;
+		this.factorys = null;
+		for (final Context context : this.contexts) {
 			if (context != null) {
 				try {
 					context.close();
-				} catch (NamingException e) {}
+				} catch (final NamingException e) {
+				}
 			}
 		}
-		contexts = null;
-		isClosed = true;
+		this.contexts = null;
+		this.isClosed = true;
 	}
 
-	public Consumer createConsumer(String messageSourceName,
-			PostfachArt artDesPostfaches) throws MessagingException {
-		
+	public Consumer createConsumer(final String messageSourceName,
+			final PostfachArt artDesPostfaches) throws MessagingException {
+
 		JMSConsumer consumer;
 		try {
-			consumer = new JMSConsumer(environmentUniqueClientId, messageSourceName, artDesPostfaches, sessions);
-		} catch (JMSException e) {
-			throw new MessagingException("JMSException during creation of JMSConsumer",e);
+			consumer = new JMSConsumer(this.environmentUniqueClientId,
+					messageSourceName, artDesPostfaches, this.sessions);
+		} catch (final JMSException e) {
+			throw new MessagingException(
+					"JMSException during creation of JMSConsumer", e);
 		}
-		
+
 		return consumer;
 	}
 
-	public Producer createProducer(String messageDestinationName,
-			PostfachArt artDesPostfaches) throws MessagingException {
-		
+	public Producer createProducer(final String messageDestinationName,
+			final PostfachArt artDesPostfaches) throws MessagingException {
+
 		JMSProducer producer;
 		try {
-			producer = new JMSProducer(messageDestinationName, artDesPostfaches, sessions);
-		} catch (JMSException e) {
-			throw new MessagingException("JMSException during creation of JMSProducer",e);
+			producer = new JMSProducer(messageDestinationName,
+					artDesPostfaches, this.sessions);
+		} catch (final JMSException e) {
+			throw new MessagingException(
+					"JMSException during creation of JMSProducer", e);
 		}
-		
+
 		return producer;
 	}
 
 	public boolean isClosed() {
-		return isClosed;
-	}
-	
-	public static void  staticInject(PreferenceService service){
-		JMSMessagingSessionImpl.preferenceService = service;
+		return this.isClosed;
 	}
 
 }

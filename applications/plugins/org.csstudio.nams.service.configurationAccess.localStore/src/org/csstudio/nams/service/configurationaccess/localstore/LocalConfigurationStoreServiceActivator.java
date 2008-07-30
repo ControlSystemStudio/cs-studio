@@ -1,6 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
-
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
@@ -23,30 +22,33 @@ public class LocalConfigurationStoreServiceActivator extends
 	private ConfigurationServiceFactoryImpl configurationServiceFactoryImpl;
 
 	@OSGiBundleActivationMethod
-	public OSGiServiceOffers startBundle(
-			@OSGiService @Required Logger logger) throws Exception {
+	public OSGiServiceOffers startBundle(@OSGiService
+	@Required
+	final Logger logger) throws Exception {
 
 		/*- XXX Needed for HSQL-Mode.
 		Class.forName("org.hsqldb.jdbcDriver");*/
-		
-		OSGiServiceOffers result = new OSGiServiceOffers();
+
+		final OSGiServiceOffers result = new OSGiServiceOffers();
 		try {
-			configurationServiceFactoryImpl = new ConfigurationServiceFactoryImpl(logger);
-			result.put(ConfigurationServiceFactory.class, configurationServiceFactoryImpl);
+			this.configurationServiceFactoryImpl = new ConfigurationServiceFactoryImpl(
+					logger);
+			result.put(ConfigurationServiceFactory.class,
+					this.configurationServiceFactoryImpl);
 		} catch (final Throwable t) {
 			throw new RuntimeException(
 					"Failed to start LocalConfigurationStoreService's bundle",
 					t);
 		}
-		
+
 		// prepare Configuration
 		Configuration.staticInject(logger);
-		
+
 		return result;
 	}
 
 	@OSGiBundleDeactivationMethod
 	public void stopBundle() throws Exception {
-		configurationServiceFactoryImpl.closeSessions();
+		this.configurationServiceFactoryImpl.closeSessions();
 	}
 }

@@ -29,6 +29,14 @@ public class Results {
 		this.results.add(result);
 	}
 
+	public int getCallCount() {
+		return this.callCount;
+	}
+
+	public boolean hasValidCallCount() {
+		return this.getMainInterval().contains(this.getCallCount());
+	}
+
 	public Result next() {
 		int currentPosition = 0;
 		for (int i = 0; i < this.ranges.size(); i++) {
@@ -44,10 +52,6 @@ public class Results {
 			}
 		}
 		return null;
-	}
-
-	public boolean hasValidCallCount() {
-		return this.getMainInterval().contains(this.getCallCount());
 	}
 
 	@Override
@@ -68,9 +72,5 @@ public class Results {
 		}
 
 		return new Range(min, max);
-	}
-
-	public int getCallCount() {
-		return this.callCount;
 	}
 }

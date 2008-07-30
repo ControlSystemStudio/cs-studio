@@ -10,6 +10,39 @@ public abstract class StepByStepProcessor implements Runnable {
 	private volatile Thread executionThread = null;
 	private volatile boolean continueRunning = true;
 
+	/**
+	 * Gets the {@link Thread} that currently runns this
+	 * {@link StepByStepProcessor}.
+	 * 
+	 * @return The {@link Thread} or null, if this processor is currently not
+	 *         running.
+	 * @see #isCurrentlyRunning()
+	 */
+	public final Thread getCurrentOwnerThread() {
+		return this.executionThread;
+	}
+
+	public final boolean isCurrentlyRunning() {
+		return this.executionThread != null;
+	}
+
+	/**
+	 * Waits to this processor to completely finishing work or to be interrupted
+	 * on work by another {@link Thread}.
+	 * 
+	 * @throws InterruptedException
+	 *             If waiting has been interupted by another {@link Thread}
+	 *             holding waitings {@link Thread} monitor.
+	 */
+	public void joinThread() throws InterruptedException {
+		while (this.continueRunning && !this.isCurrentlyRunning()) {
+			Thread.yield();
+		}
+		if (this.isCurrentlyRunning()) {
+			this.executionThread.join();
+		}
+	}
+
 	public final void run() {
 		if (this.executionThread != null) {
 			throw new IllegalThreadStateException(
@@ -31,29 +64,6 @@ public abstract class StepByStepProcessor implements Runnable {
 		this.executionThread = null;
 	}
 
-	public final boolean isCurrentlyRunning() {
-		return this.executionThread != null;
-	}
-
-	/**
-	 * Runs one and only one unit of work which is able to be executed as one
-	 * transaction (that may be interrupted!).
-	 * 
-	 * @throws Throwable
-	 *             An unexpected error/exception occured.
-	 * @throws InterruptedException
-	 *             Indicates that processing was "normally" interrupted.
-	 */
-	protected abstract void doRunOneSingleStep() throws Throwable,
-			InterruptedException;
-
-	/**
-	 * Called internally to indicate that no further steps are required.
-	 */
-	protected void done() {
-		this.continueRunning = false;
-	}
-	
 	/**
 	 * Executes exactly one step. Should not be called directly outside from
 	 * tests. Call {@link #done()} to complete.
@@ -87,18 +97,6 @@ public abstract class StepByStepProcessor implements Runnable {
 	}
 
 	/**
-	 * Gets the {@link Thread} that currently runns this
-	 * {@link StepByStepProcessor}.
-	 * 
-	 * @return The {@link Thread} or null, if this processor is currently not
-	 *         running.
-	 * @see #isCurrentlyRunning()
-	 */
-	public final Thread getCurrentOwnerThread() {
-		return this.executionThread;
-	}
-
-	/**
 	 * Stops the work of this processor and blocks until pending work-step is
 	 * done. A running step will may receive an {@link InterruptedException}
 	 * 
@@ -117,19 +115,21 @@ public abstract class StepByStepProcessor implements Runnable {
 	}
 
 	/**
-	 * Waits to this processor to completely finishing work or to be interrupted
-	 * on work by another {@link Thread}.
-	 * 
-	 * @throws InterruptedException
-	 *             If waiting has been interupted by another {@link Thread}
-	 *             holding waitings {@link Thread} monitor.
+	 * Called internally to indicate that no further steps are required.
 	 */
-	public void joinThread() throws InterruptedException {
-		while (this.continueRunning && !this.isCurrentlyRunning()) {
-			Thread.yield();
-		}
-		if (this.isCurrentlyRunning()) {
-			this.executionThread.join();
-		}
+	protected void done() {
+		this.continueRunning = false;
 	}
+
+	/**
+	 * Runs one and only one unit of work which is able to be executed as one
+	 * transaction (that may be interrupted!).
+	 * 
+	 * @throws Throwable
+	 *             An unexpected error/exception occured.
+	 * @throws InterruptedException
+	 *             Indicates that processing was "normally" interrupted.
+	 */
+	protected abstract void doRunOneSingleStep() throws Throwable,
+			InterruptedException;
 }

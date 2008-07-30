@@ -13,64 +13,69 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Topi
 @DiscriminatorValue("10")
 public class TopicFilterActionDTO extends FilterActionDTO {
 
-	public TopicFilterActionDTO(){
-		filterActionType = AlarmTopicFilterActionType.TOPIC;
+	public TopicFilterActionDTO() {
+		this.filterActionType = AlarmTopicFilterActionType.TOPIC;
 	}
-	
-	public void setReceiver(TopicDTO receiver) {
-		this.setIReceiverRef(receiver.getId());
-		this.receiver = receiver;
+
+	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
+		// TODO Auto-generated method stub
+
 	}
-	
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final TopicFilterActionDTO other = (TopicFilterActionDTO) obj;
+		if (this.receiver == null) {
+			if (other.receiver != null) {
+				return false;
+			}
+		} else if (!this.receiver.equals(other.receiver)) {
+			return false;
+		}
+		return true;
+	}
+
 	public TopicDTO getReceiver() {
-		return (TopicDTO) receiver;
+		return (TopicDTO) this.receiver;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((receiver == null) ? 0 : receiver.hashCode());
+				+ ((this.receiver == null) ? 0 : this.receiver.hashCode());
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final TopicFilterActionDTO other = (TopicFilterActionDTO) obj;
-		if (receiver == null) {
-			if (other.receiver != null)
-				return false;
-		} else if (!receiver.equals(other.receiver))
-			return false;
-		return true;
-	}
+	public void loadJoinData(final Mapper mapper) throws Throwable {
+		final List<TopicDTO> alleTopics = mapper.loadAll(TopicDTO.class, true);
 
-	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void loadJoinData(Mapper mapper) throws Throwable {
-		List<TopicDTO> alleTopics = mapper.loadAll(TopicDTO.class, true);
-
-		for (TopicDTO topic : alleTopics) {
-			if( topic.getId() == this.getIReceiverRef() ) {
+		for (final TopicDTO topic : alleTopics) {
+			if (topic.getId() == this.getIReceiverRef()) {
 				this.setReceiver(topic);
 				break;
 			}
 		}
 	}
 
-	public void storeJoinLinkData(Mapper mapper) throws Throwable {
+	public void setReceiver(final TopicDTO receiver) {
+		this.setIReceiverRef(receiver.getId());
+		this.receiver = receiver;
+	}
+
+	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

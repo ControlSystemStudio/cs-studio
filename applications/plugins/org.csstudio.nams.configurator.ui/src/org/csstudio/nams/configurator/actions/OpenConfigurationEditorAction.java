@@ -15,27 +15,28 @@ public class OpenConfigurationEditorAction extends Action {
 
 	private final IConfigurationBean bean;
 
-	public OpenConfigurationEditorAction(IConfigurationBean bean) {
+	public OpenConfigurationEditorAction(final IConfigurationBean bean) {
 		this.bean = bean;
 	}
 
 	@Override
 	public void run() {
 
-		ConfigurationEditorInput editorInput = new ConfigurationEditorInput(bean);
+		final ConfigurationEditorInput editorInput = new ConfigurationEditorInput(
+				this.bean);
 
-		IWorkbenchPage activePage = PlatformUI.getWorkbench()
+		final IWorkbenchPage activePage = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();
 
-		String editorId = BeanToEditorId.getEnumForClass(bean.getClass()).getEditorId();
-		
+		final String editorId = BeanToEditorId.getEnumForClass(
+				this.bean.getClass()).getEditorId();
+
 		try {
 			activePage.openEditor(editorInput, editorId);
-		} catch (PartInitException e) {
+		} catch (final PartInitException e) {
 			e.printStackTrace();
 		}
 
 	}
-	
-	
+
 }

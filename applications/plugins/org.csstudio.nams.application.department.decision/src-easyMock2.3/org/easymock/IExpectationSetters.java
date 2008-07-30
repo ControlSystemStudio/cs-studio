@@ -12,6 +12,16 @@ package org.easymock;
 public interface IExpectationSetters<T> {
 
 	/**
+	 * Sets an object that will be used to calculate the answer for the expected
+	 * invocation (either return a value, or throw an exception).
+	 * 
+	 * @param answer
+	 *            the object used to answer the invocation.
+	 * @return this object to allow method call chaining.
+	 */
+	IExpectationSetters<T> andAnswer(IAnswer<T> answer);
+
+	/**
 	 * Sets a return value that will be returned for the expected invocation.
 	 * 
 	 * @param value
@@ -21,23 +31,13 @@ public interface IExpectationSetters<T> {
 	IExpectationSetters<T> andReturn(T value);
 
 	/**
-	 * Sets a throwable that will be thrown for the expected invocation.
-	 * 
-	 * @param throwable
-	 *            the throwable to throw.
-	 * @return this object to allow method call chaining.
-	 */
-	IExpectationSetters<T> andThrow(Throwable throwable);
-
-	/**
-	 * Sets an object that will be used to calculate the answer for the expected
-	 * invocation (either return a value, or throw an exception).
+	 * Sets a stub object that will be used to calculate the answer for the
+	 * expected invocation (either return a value, or throw an exception).
 	 * 
 	 * @param answer
 	 *            the object used to answer the invocation.
-	 * @return this object to allow method call chaining.
 	 */
-	IExpectationSetters<T> andAnswer(IAnswer<T> answer);
+	void andStubAnswer(IAnswer<T> answer);
 
 	/**
 	 * Sets a stub return value that will be returned for the expected
@@ -57,19 +57,40 @@ public interface IExpectationSetters<T> {
 	void andStubThrow(Throwable throwable);
 
 	/**
-	 * Sets a stub object that will be used to calculate the answer for the
-	 * expected invocation (either return a value, or throw an exception).
+	 * Sets a throwable that will be thrown for the expected invocation.
 	 * 
-	 * @param answer
-	 *            the object used to answer the invocation.
+	 * @param throwable
+	 *            the throwable to throw.
+	 * @return this object to allow method call chaining.
 	 */
-	void andStubAnswer(IAnswer<T> answer);
+	IExpectationSetters<T> andThrow(Throwable throwable);
+
+	/**
+	 * Expect the last invocation any times.
+	 * 
+	 * @return this object to allow method call chaining.
+	 */
+	IExpectationSetters<T> anyTimes();
 
 	/**
 	 * Sets stub behavior for the expected invocation (this is needed for void
 	 * methods).
 	 */
 	void asStub();
+
+	/**
+	 * Expect the last invocation at least once.
+	 * 
+	 * @return this object to allow method call chaining.
+	 */
+	IExpectationSetters<T> atLeastOnce();
+
+	/**
+	 * Expect the last invocation once. This is default in EasyMock.
+	 * 
+	 * @return this object to allow method call chaining.
+	 */
+	IExpectationSetters<T> once();
 
 	/**
 	 * Expect the last invocation <code>count</code> times.
@@ -91,25 +112,4 @@ public interface IExpectationSetters<T> {
 	 * @return this object to allow method call chaining.
 	 */
 	IExpectationSetters<T> times(int min, int max);
-
-	/**
-	 * Expect the last invocation once. This is default in EasyMock.
-	 * 
-	 * @return this object to allow method call chaining.
-	 */
-	IExpectationSetters<T> once();
-
-	/**
-	 * Expect the last invocation at least once.
-	 * 
-	 * @return this object to allow method call chaining.
-	 */
-	IExpectationSetters<T> atLeastOnce();
-
-	/**
-	 * Expect the last invocation any times.
-	 * 
-	 * @return this object to allow method call chaining.
-	 */
-	IExpectationSetters<T> anyTimes();
 }

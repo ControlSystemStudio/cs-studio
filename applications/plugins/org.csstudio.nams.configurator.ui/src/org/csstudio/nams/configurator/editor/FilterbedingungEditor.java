@@ -59,21 +59,6 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			AbstractConfigurationBean<FilterTypeBean> {
 		private SupportedFilterTypes type;
 
-		public SupportedFilterTypes getType() {
-			return type;
-		}
-
-		public void setType(SupportedFilterTypes type) {
-			SupportedFilterTypes oldValue = this.type;
-			this.type = type;
-			pcs.firePropertyChange("type", oldValue, type);
-		}
-
-		@Override
-		protected void doUpdateState(FilterTypeBean bean) {
-			// Kommt nicht vor...
-		}
-
 		public String getDisplayName() {
 			return "(internal bean for storing selcted filter type in filter condition editor)";
 		}
@@ -82,12 +67,25 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			return 0;
 		}
 
-		public void setID(int id) {
+		public SupportedFilterTypes getType() {
+			return this.type;
+		}
+
+		public void setID(final int id) {
 			// Ignored.
 		}
-	}
 
-	private FilterTypeBean selectedFilterType = new FilterTypeBean();
+		public void setType(final SupportedFilterTypes type) {
+			final SupportedFilterTypes oldValue = this.type;
+			this.type = type;
+			this.pcs.firePropertyChange("type", oldValue, type);
+		}
+
+		@Override
+		protected void doUpdateState(final FilterTypeBean bean) {
+			// Kommt nicht vor...
+		}
+	}
 
 	public enum SupportedFilterTypes {
 		JUNCTOR_CONDITION("Or Condition", JunctorConditionBean.class), STRING_CONDITION(
@@ -96,30 +94,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				"PV Condition", PVFilterConditionBean.class), TIMEBASED_CONDITION(
 				"TimeBased Condition", TimeBasedFilterConditionBean.class);
 
-		private final String filterName;
-		private final Class<?> cls;
-
-		private SupportedFilterTypes(String name, Class<?> cls) {
-			filterName = name;
-			this.cls = cls;
-		}
-
-		@Override
-		public String toString() {
-			return filterName;
-		}
-
-		public static SupportedFilterTypes fromString(String value) {
-			for (SupportedFilterTypes pValue : values()) {
-				if (pValue.getFilterName().equals(value)) {
-					return pValue;
-				}
-			}
-			throw new RuntimeException("Unsupported Filtertype : " + value);
-		}
-
-		public static SupportedFilterTypes fromClass(Class<?> cls) {
-			for (SupportedFilterTypes pValue : values()) {
+		public static SupportedFilterTypes fromClass(final Class<?> cls) {
+			for (final SupportedFilterTypes pValue : SupportedFilterTypes
+					.values()) {
 				if (pValue.getCls().equals(cls)) {
 					return pValue;
 				}
@@ -127,28 +104,65 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			throw new RuntimeException("Unsupported Filtertype : " + cls);
 		}
 
-		public String getFilterName() {
-			return filterName;
+		public static SupportedFilterTypes fromString(final String value) {
+			for (final SupportedFilterTypes pValue : SupportedFilterTypes
+					.values()) {
+				if (pValue.getFilterName().equals(value)) {
+					return pValue;
+				}
+			}
+			throw new RuntimeException("Unsupported Filtertype : " + value);
+		}
+
+		private final String filterName;
+
+		private final Class<?> cls;
+
+		private SupportedFilterTypes(final String name, final Class<?> cls) {
+			this.filterName = name;
+			this.cls = cls;
 		}
 
 		public Class<?> getCls() {
-			return cls;
+			return this.cls;
+		}
+
+		public String getFilterName() {
+			return this.filterName;
+		}
+
+		@Override
+		public String toString() {
+			return this.filterName;
 		}
 	}
+
+	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterbedingungEditor";
+
+	private static IProcessVariableConnectionService pvConnectionService;
+
+	public static String getId() {
+		return FilterbedingungEditor.EDITOR_ID;
+	}
+
+	public static void staticInject(
+			final IProcessVariableConnectionService pvConnectionService) {
+		FilterbedingungEditor.pvConnectionService = pvConnectionService;
+	}
+
+	private final FilterTypeBean selectedFilterType = new FilterTypeBean();
 
 	private Text _nameTextEntry;
 	private Combo _rubrikComboEntry;
 	private Text _defaultMessageTextEntry;
+
 	private Composite filterSpecificComposite;
 
-	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterbedingungEditor";
 	private StackLayout filterLayout;
+
 	private Composite[] stackComposites;
-
 	private Text stringCompareValueText;
-
 	private Map<SupportedFilterTypes, AbstractConfigurationBean<?>> specificBeans;
-
 	private Text pvChannelName;
 	private Text pvCompareValue;
 	private List arrayCompareValueList;
@@ -158,92 +172,88 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	private ListViewer arrayCompareValueListViewer;
 	private ComboViewer _rubrikComboEntryViewer;
 	private FormToolkit formToolkit;
+
 	private ScrolledForm mainForm;
+
 	private Text timeStopCompareText;
-	private static IProcessVariableConnectionService pvConnectionService;
 
-	public static String getId() {
-		return EDITOR_ID;
-	}
-
-	private void addStringArrayCompareValue(final Text newCompareValue) {
-		StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) getWorkingCopyOfEditorInput()
-		.getFilterSpecificBean();
-		java.util.List<String> list = specificBean.getCompareValues();
-		if (!list.contains(newCompareValue.getText())) {
-			list.add(newCompareValue.getText());
-			specificBean.setCompareValues(list);
-			newCompareValue.setText("");
-		}
-	}
-	
 	@Override
-	public void createPartControl(Composite parent) {
-		formToolkit = new FormToolkit(parent.getDisplay());
-		mainForm = formToolkit.createScrolledForm(parent);
-		Composite outermain = mainForm.getBody();
+	public void createPartControl(final Composite parent) {
+		this.formToolkit = new FormToolkit(parent.getDisplay());
+		this.mainForm = this.formToolkit.createScrolledForm(parent);
+		final Composite outermain = this.mainForm.getBody();
 		outermain.setBackground(parent.getBackground());
 		outermain.setLayout(new GridLayout(1, true));
-		
-		Composite upperComposite = new Composite(outermain, SWT.NONE);
-		upperComposite.setLayout(new GridLayout(NUM_COLUMNS, false));
-		_nameTextEntry = this.createTextEntry(upperComposite, "Name:", true);
-		_rubrikComboEntryViewer = this.createComboEntry(upperComposite, "Rubrik:", true,
-				getConfigurationBeanService()
+
+		final Composite upperComposite = new Composite(outermain, SWT.NONE);
+		upperComposite.setLayout(new GridLayout(this.NUM_COLUMNS, false));
+		this._nameTextEntry = this.createTextEntry(upperComposite, "Name:",
+				true);
+		this._rubrikComboEntryViewer = this.createComboEntry(upperComposite,
+				"Rubrik:", true, AbstractEditor.getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
-		_rubrikComboEntry = _rubrikComboEntryViewer.getCombo();
+		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
 		this.addSeparator(upperComposite);
-		_defaultMessageTextEntry = this.createDescriptionTextEntry(upperComposite,
-				"Description:");
+		this._defaultMessageTextEntry = this.createDescriptionTextEntry(
+				upperComposite, "Description:");
 		this.createTitledComboForEnumValues(upperComposite, "Filtertype: ",
 				SupportedFilterTypes.values(), this.selectedFilterType, "type");
 
-		initializeAddOnBeans();
+		this.initializeAddOnBeans();
 
 		this.selectedFilterType
 				.addPropertyChangeListener(new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
-						filterLayout.topControl = stackComposites[FilterbedingungEditor.this.selectedFilterType
+					public void propertyChange(final PropertyChangeEvent evt) {
+						FilterbedingungEditor.this.filterLayout.topControl = FilterbedingungEditor.this.stackComposites[FilterbedingungEditor.this.selectedFilterType
 								.getType().ordinal()];
-						filterSpecificComposite.layout();
+						FilterbedingungEditor.this.filterSpecificComposite
+								.layout();
 
-						getWorkingCopyOfEditorInput()
-								.setFilterSpecificBean((FilterConditionAddOnBean) specificBeans
-										.get(FilterbedingungEditor.this.selectedFilterType
-												.getType()));
+						FilterbedingungEditor.this
+								.getWorkingCopyOfEditorInput()
+								.setFilterSpecificBean(
+										(FilterConditionAddOnBean) FilterbedingungEditor.this.specificBeans
+												.get(FilterbedingungEditor.this.selectedFilterType
+														.getType()));
 					}
 				});
 
-		filterSpecificComposite = new Composite(outermain, SWT.NONE);
-		filterLayout = new StackLayout();
-		filterSpecificComposite.setLayout(filterLayout);
+		this.filterSpecificComposite = new Composite(outermain, SWT.NONE);
+		this.filterLayout = new StackLayout();
+		this.filterSpecificComposite.setLayout(this.filterLayout);
 
-		stackComposites = new Composite[5];
+		this.stackComposites = new Composite[5];
 
 		// ConjunctionFilterComposite
-		stackComposites[0] = new Composite(filterSpecificComposite, SWT.TOP);
-		stackComposites[0].setLayout(new GridLayout(NUM_COLUMNS, false));
-		new Label(stackComposites[0], SWT.NONE);
-		Label label = new Label(stackComposites[0], SWT.LEFT | SWT.WRAP);
+		this.stackComposites[0] = new Composite(this.filterSpecificComposite,
+				SWT.TOP);
+		this.stackComposites[0].setLayout(new GridLayout(this.NUM_COLUMNS,
+				false));
+		new Label(this.stackComposites[0], SWT.NONE);
+		final Label label = new Label(this.stackComposites[0], SWT.LEFT
+				| SWT.WRAP);
 		label.setText("Dieses Filterbedingung  existiert nur aus Gründen der\n"
 				+ "Abwärtskompatibilität, bitte realisieren Sie das\n"
 				+ "gewünschte Verhalten über die neuen Funktionen des Filters");
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		createTextEntry(stackComposites[0], "Filtercondition", false);
-		createTextEntry(stackComposites[0], "Filtercondition", false);
+		this.createTextEntry(this.stackComposites[0], "Filtercondition", false);
+		this.createTextEntry(this.stackComposites[0], "Filtercondition", false);
 
 		// StringFilterComposite
-		stackComposites[1] = new Composite(filterSpecificComposite, SWT.TOP);
-		stackComposites[1].setLayout(new GridLayout(NUM_COLUMNS, false));
-		IConfigurationBean stringConfigurationBean = specificBeans
+		this.stackComposites[1] = new Composite(this.filterSpecificComposite,
+				SWT.TOP);
+		this.stackComposites[1].setLayout(new GridLayout(this.NUM_COLUMNS,
+				false));
+		final IConfigurationBean stringConfigurationBean = this.specificBeans
 				.get(SupportedFilterTypes.STRING_CONDITION);
 
-		createTitledComboForEnumValues(stackComposites[1], "CompareKey",
-				MessageKeyEnum.values(), stringConfigurationBean,
+		this.createTitledComboForEnumValues(this.stackComposites[1],
+				"CompareKey", MessageKeyEnum.values(), stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.keyValue.name());
 
-		createTitledComboForEnumValues(stackComposites[1], "Operator",
-				StringRegelOperator.values(), stringConfigurationBean,
+		this.createTitledComboForEnumValues(this.stackComposites[1],
+				"Operator", StringRegelOperator.values(),
+				stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.operator.name());
 
 		//			
@@ -251,188 +261,222 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// "Operator", false, array2StringArray(StringRegelOperator
 		// .values()));
 
-		stringCompareValueText = createTextEntry(stackComposites[1],
-				"CompareValue", true);
+		this.stringCompareValueText = this.createTextEntry(
+				this.stackComposites[1], "CompareValue", true);
 		// StringArrayFilterComposite
-		stackComposites[2] = new Composite(filterSpecificComposite, SWT.TOP);
-		stackComposites[2].setLayout(new GridLayout(NUM_COLUMNS, false));
+		this.stackComposites[2] = new Composite(this.filterSpecificComposite,
+				SWT.TOP);
+		this.stackComposites[2].setLayout(new GridLayout(this.NUM_COLUMNS,
+				false));
 
-		IConfigurationBean stringArrayConfigurationBean = specificBeans
+		final IConfigurationBean stringArrayConfigurationBean = this.specificBeans
 				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
-		createTitledComboForEnumValues(stackComposites[2], "MessageKey",
-				MessageKeyEnum.values(), stringArrayConfigurationBean,
+		this.createTitledComboForEnumValues(this.stackComposites[2],
+				"MessageKey", MessageKeyEnum.values(),
+				stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.keyValue.name());
 
-		createTitledComboForEnumValues(stackComposites[2], "Operator",
-				StringRegelOperator.values(), stringArrayConfigurationBean,
+		this.createTitledComboForEnumValues(this.stackComposites[2],
+				"Operator", StringRegelOperator.values(),
+				stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.operator.name());
 
-		arrayCompareValueListViewer = createListEntry(stackComposites[2],
-				"CompareValues", true);
-		arrayCompareValueList = arrayCompareValueListViewer.getList();
-		final Text arrayNewCompareValueText = createTextEntry(
-				stackComposites[2], "Neues CompareValue", true);
+		this.arrayCompareValueListViewer = this.createListEntry(
+				this.stackComposites[2], "CompareValues", true);
+		this.arrayCompareValueList = this.arrayCompareValueListViewer.getList();
+		final Text arrayNewCompareValueText = this.createTextEntry(
+				this.stackComposites[2], "Neues CompareValue", true);
 		arrayNewCompareValueText.addKeyListener(new KeyListener() {
 
-			public void keyPressed(KeyEvent e) {
+			public void keyPressed(final KeyEvent e) {
 				if (e.character == SWT.CR) {
-					addStringArrayCompareValue(arrayNewCompareValueText);
+					FilterbedingungEditor.this
+							.addStringArrayCompareValue(arrayNewCompareValueText);
 				}
 			}
 
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(final KeyEvent e) {
 			}
 		});
-		Button buttonAdd = createButtonEntry(stackComposites[2],
-				"Eingabe hinzufügen", true, 2);
+		final Button buttonAdd = this.createButtonEntry(
+				this.stackComposites[2], "Eingabe hinzufügen", true, 2);
 		buttonAdd.addMouseListener(new MouseListener() {
 
-			public void mouseDoubleClick(MouseEvent e) {
+			public void mouseDoubleClick(final MouseEvent e) {
 			}
 
-			public void mouseDown(MouseEvent e) {
+			public void mouseDown(final MouseEvent e) {
 			}
 
-			public void mouseUp(MouseEvent e) {
-				addStringArrayCompareValue(arrayNewCompareValueText);
+			public void mouseUp(final MouseEvent e) {
+				FilterbedingungEditor.this
+						.addStringArrayCompareValue(arrayNewCompareValueText);
 			}
 		});
-		Button button = createButtonEntry(stackComposites[2],
-				"Vergleichswert löschen", true,2);
+		final Button button = this.createButtonEntry(this.stackComposites[2],
+				"Vergleichswert löschen", true, 2);
 		button.addMouseListener(new MouseListener() {
 
-			public void mouseDoubleClick(MouseEvent e) {
+			public void mouseDoubleClick(final MouseEvent e) {
 			}
 
-			public void mouseDown(MouseEvent e) {
-				if (arrayCompareValueList.getSelectionIndex() > -1) {
-					String[] items = ((StringArrayFilterConditionBean) getWorkingCopyOfEditorInput()
+			public void mouseDown(final MouseEvent e) {
+				if (FilterbedingungEditor.this.arrayCompareValueList
+						.getSelectionIndex() > -1) {
+					final String[] items = ((StringArrayFilterConditionBean) FilterbedingungEditor.this
+							.getWorkingCopyOfEditorInput()
 							.getFilterSpecificBean()).getCompareValues()
 							.toArray(new String[0]);
-					ArrayList<String> itemList = new ArrayList<String>();
+					final ArrayList<String> itemList = new ArrayList<String>();
 					for (int i = 0; i < items.length; i++) {
-						if (arrayCompareValueList.getSelectionIndex() != i)
+						if (FilterbedingungEditor.this.arrayCompareValueList
+								.getSelectionIndex() != i) {
 							itemList.add(items[i]);
+						}
 					}
-					((StringArrayFilterConditionBean) getWorkingCopyOfEditorInput()
+					((StringArrayFilterConditionBean) FilterbedingungEditor.this
+							.getWorkingCopyOfEditorInput()
 							.getFilterSpecificBean())
 							.setCompareValues(itemList);
 				}
 			}
 
-			public void mouseUp(MouseEvent e) {
+			public void mouseUp(final MouseEvent e) {
 			}
 		});
 		// PVComposite
-		stackComposites[3] = new Composite(filterSpecificComposite, SWT.TOP);
-		stackComposites[3].setLayout(new GridLayout(NUM_COLUMNS, false));
-		pvChannelName = createTextEntry(stackComposites[3], "channelName", true);
+		this.stackComposites[3] = new Composite(this.filterSpecificComposite,
+				SWT.TOP);
+		this.stackComposites[3].setLayout(new GridLayout(this.NUM_COLUMNS,
+				false));
+		this.pvChannelName = this.createTextEntry(this.stackComposites[3],
+				"channelName", true);
 
-		final PVFilterConditionBean pvConfigurationBean = (PVFilterConditionBean) specificBeans
+		final PVFilterConditionBean pvConfigurationBean = (PVFilterConditionBean) this.specificBeans
 				.get(SupportedFilterTypes.PV_CONDITION);
-		createTitledComboForEnumValues(stackComposites[3], "SuggestedType",
-				SuggestedProcessVariableType.values(), pvConfigurationBean,
+		this.createTitledComboForEnumValues(this.stackComposites[3],
+				"SuggestedType", SuggestedProcessVariableType.values(),
+				pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.suggestedType.name());
 
-		createTitledComboForEnumValues(stackComposites[3], "Operator", Operator
-				.values(), pvConfigurationBean,
+		this.createTitledComboForEnumValues(this.stackComposites[3],
+				"Operator", Operator.values(), pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.operator.name());
 
-		pvCompareValue = createTextEntry(stackComposites[3], "Compare value",
-				true);
-		Button checkPVChannel = createButtonEntry(stackComposites[3],
-				"PV Verbindung überprüfen", true,2);
+		this.pvCompareValue = this.createTextEntry(this.stackComposites[3],
+				"Compare value", true);
+		final Button checkPVChannel = this.createButtonEntry(
+				this.stackComposites[3], "PV Verbindung überprüfen", true, 2);
 		checkPVChannel.addMouseListener(new MouseListener() {
-			public void mouseDoubleClick(MouseEvent e) {
+			public void mouseDoubleClick(final MouseEvent e) {
 			}
 
-			public void mouseDown(MouseEvent e) {
-				String channelName = pvChannelName.getText();
-				if (channelName != null && channelName.length() > 0) {
+			public void mouseDown(final MouseEvent e) {
+				final String channelName = FilterbedingungEditor.this.pvChannelName
+						.getText();
+				if ((channelName != null) && (channelName.length() > 0)) {
 					try {
-						SuggestedProcessVariableType suggestedType = pvConfigurationBean
+						final SuggestedProcessVariableType suggestedType = pvConfigurationBean
 								.getSuggestedType();
 						if (SuggestedProcessVariableType.DOUBLE
 								.equals(suggestedType)) {
-							pvConnectionService
+							FilterbedingungEditor.pvConnectionService
 									.getValueAsDouble(ProcessVariableAdressFactory
 											.getInstance()
 											.createProcessVariableAdress(
 													channelName));
 						} else if (SuggestedProcessVariableType.LONG
 								.equals(suggestedType)) {
-							pvConnectionService
+							FilterbedingungEditor.pvConnectionService
 									.getValueAsLong(ProcessVariableAdressFactory
 											.getInstance()
 											.createProcessVariableAdress(
 													channelName));
 						} else if (SuggestedProcessVariableType.STRING
 								.equals(suggestedType)) {
-							pvConnectionService
+							FilterbedingungEditor.pvConnectionService
 									.getValueAsString(ProcessVariableAdressFactory
 											.getInstance()
 											.createProcessVariableAdress(
 													channelName));
 						}
-					} catch (ConnectionException connectionException) {
+					} catch (final ConnectionException connectionException) {
 						MessageDialog
-						.openError(
-								e.widget.getDisplay().getActiveShell(),
-								"PV channel state for channel: " + channelName,
-								"Connection to PV channel failed.\n\n" +
-								"Reason:\n" + 
-								EditorUIUtils.throwableAsMessageString(connectionException));
+								.openError(
+										e.widget.getDisplay().getActiveShell(),
+										"PV channel state for channel: "
+												+ channelName,
+										"Connection to PV channel failed.\n\n"
+												+ "Reason:\n"
+												+ EditorUIUtils
+														.throwableAsMessageString(connectionException));
 						connectionException.printStackTrace();
 						return;
 					}
 					MessageDialog
 							.openInformation(
 									e.widget.getDisplay().getActiveShell(),
-									"PV channel state for channel: " + channelName,
-									"Connection to PV channel successfully established.\n\n" +
-									"(This only indicates that your adress is correct and the PV is currently accessible\n" +
-									"It is no quaranty for successfully access all over the time.\n" +
-									"If the connection fails during message processing, this condition will match constantly)");
+									"PV channel state for channel: "
+											+ channelName,
+									"Connection to PV channel successfully established.\n\n"
+											+ "(This only indicates that your adress is correct and the PV is currently accessible\n"
+											+ "It is no quaranty for successfully access all over the time.\n"
+											+ "If the connection fails during message processing, this condition will match constantly)");
 				}
 			}
 
-			public void mouseUp(MouseEvent e) {
+			public void mouseUp(final MouseEvent e) {
 			}
 		});
 
 		// TimeBasedComposite
-		stackComposites[4] = new Composite(filterSpecificComposite, SWT.TOP);
-		stackComposites[4].setLayout(new GridLayout(NUM_COLUMNS, false));
-		IConfigurationBean timeBasedConfigurationBean = specificBeans
+		this.stackComposites[4] = new Composite(this.filterSpecificComposite,
+				SWT.TOP);
+		this.stackComposites[4].setLayout(new GridLayout(this.NUM_COLUMNS,
+				false));
+		final IConfigurationBean timeBasedConfigurationBean = this.specificBeans
 				.get(SupportedFilterTypes.TIMEBASED_CONDITION);
 
-		timeDelayText = createTextEntry(stackComposites[4], "Wartezeit", true);
-		timeBehaviorCheck = createCheckBoxEntry(stackComposites[4],
-				"Alarm bei Timeout", true);
-		addSeparator(stackComposites[4]);
-		createTitledComboForEnumValues(stackComposites[4], "Start KeyValue",
-				MessageKeyEnum.values(), timeBasedConfigurationBean,
-				TimeBasedFilterConditionBean.PropertyNames.startKeyValue.name());
+		this.timeDelayText = this.createTextEntry(this.stackComposites[4],
+				"Wartezeit", true);
+		this.timeBehaviorCheck = this.createCheckBoxEntry(
+				this.stackComposites[4], "Alarm bei Timeout", true);
+		this.addSeparator(this.stackComposites[4]);
+		this
+				.createTitledComboForEnumValues(
+						this.stackComposites[4],
+						"Start KeyValue",
+						MessageKeyEnum.values(),
+						timeBasedConfigurationBean,
+						TimeBasedFilterConditionBean.PropertyNames.startKeyValue
+								.name());
 
-		createTitledComboForEnumValues(stackComposites[4], "Start Operator",
-				StringRegelOperator.values(), timeBasedConfigurationBean,
-				TimeBasedFilterConditionBean.PropertyNames.startOperator.name());
+		this
+				.createTitledComboForEnumValues(
+						this.stackComposites[4],
+						"Start Operator",
+						StringRegelOperator.values(),
+						timeBasedConfigurationBean,
+						TimeBasedFilterConditionBean.PropertyNames.startOperator
+								.name());
 
-		timeStartCompareText = createTextEntry(stackComposites[4],
-				"Start CompareValue", true);
-		addSeparator(stackComposites[4]);
-		createTitledComboForEnumValues(stackComposites[4], "Stop KeyValue",
-				MessageKeyEnum.values(), timeBasedConfigurationBean,
+		this.timeStartCompareText = this.createTextEntry(
+				this.stackComposites[4], "Start CompareValue", true);
+		this.addSeparator(this.stackComposites[4]);
+		this.createTitledComboForEnumValues(this.stackComposites[4],
+				"Stop KeyValue", MessageKeyEnum.values(),
+				timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.confirmKeyValue
 						.name());
 
-		createTitledComboForEnumValues(stackComposites[4], "Stop Operator",
-				StringRegelOperator.values(), timeBasedConfigurationBean,
+		this.createTitledComboForEnumValues(this.stackComposites[4],
+				"Stop Operator", StringRegelOperator.values(),
+				timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.confirmOperator
 						.name());
 
-		timeStopCompareText = createTextEntry(stackComposites[4],
-				"Stop CompareValue", true);
+		this.timeStopCompareText = this.createTextEntry(
+				this.stackComposites[4], "Stop CompareValue", true);
 
 		// LinkedList<String> types = new LinkedList<String>();
 		// for (JunctorConditionType type : JunctorConditionType.values()) {
@@ -440,8 +484,8 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// }
 		// junctorTypeCombo.setItems(types.toArray(new String[types.size()]));
 
-		FilterConditionAddOnBean filterSpecificBean = (FilterConditionAddOnBean) getOriginalEditorInput()
-				.getFilterSpecificBean();
+		final FilterConditionAddOnBean filterSpecificBean = (FilterConditionAddOnBean) this
+				.getOriginalEditorInput().getFilterSpecificBean();
 		if (filterSpecificBean instanceof JunctorConditionBean) {
 			this.selectedFilterType
 					.setType(SupportedFilterTypes.JUNCTOR_CONDITION);
@@ -456,11 +500,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		} else if (filterSpecificBean instanceof TimeBasedFilterConditionBean) {
 			this.selectedFilterType
 					.setType(SupportedFilterTypes.TIMEBASED_CONDITION);
-		} else
+		} else {
 			throw new RuntimeException("Unsupported AddOnBean "
 					+ filterSpecificBean.getClass());
-		initDataBinding();
-		initDND();
+		}
+		this.initDataBinding();
+		this.initDND();
 		// listener.handleEvent(null); // zur initialisierung
 		// checkJunktionType();
 	}
@@ -479,22 +524,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	// }
 	// }
 
-	private void initDND() {
-		// DropTarget target1 = new DropTarget(junctorFirstFilterText,
-		// DND.DROP_LINK);
-		// DropTarget target2 = new DropTarget(junctorSecondFilterText,
-		// DND.DROP_LINK);
-		//
-		// target1.setTransfer(new Transfer[] { LocalSelectionTransfer
-		// .getTransfer() });
-		// target2.setTransfer(new Transfer[] { LocalSelectionTransfer
-		// .getTransfer() });
-		//
-		// target1
-		// .addDropListener(new TextDropTarget(junctorFirstFilterText,
-		// true));
-		// target2.addDropListener(new TextDropTarget(junctorSecondFilterText,
-		// false));
+	@Override
+	public boolean isDirty() {
+		return super.isDirty()
+				&& !(this.getWorkingCopyOfEditorInput().getFilterSpecificBean() instanceof JunctorConditionBean);
 	}
 
 	/*-class TextDropTarget extends DropTargetAdapter {
@@ -536,222 +569,113 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		}
 	}*/
 
+	@Override
+	public void setFocus() {
+		this._nameTextEntry.setFocus();
+	}
+
+	@Override
+	protected void doInit(final IEditorSite site, final IEditorInput input) {
+	}
+
+	@Override
+	protected int getNumColumns() {
+		return 2;
+	}
+
+	@Override
+	protected void initDataBinding() {
+		final DataBindingContext context = new DataBindingContext();
+
+		final IObservableValue nameTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						FilterbedingungBean.PropertyNames.name.name());
+
+		final IObservableValue descriptionTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						FilterbedingungBean.PropertyNames.description.name());
+
+		final IObservableValue rubrikTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						FilterbedingungBean.AbstractPropertyNames.rubrikName
+								.name());
+
+		// bind observables
+		context.bindValue(SWTObservables.observeText(this._nameTextEntry,
+				SWT.Modify), nameTextObservable, null, null);
+
+		context.bindValue(SWTObservables.observeText(
+				this._defaultMessageTextEntry, SWT.Modify),
+				descriptionTextObservable, null, null);
+
+		this.initStringAddOnBeanDataBinding(context);
+		this.initJunctorAddOnBeanDataBinding(context);
+		this.initPVAddOnBeanDataBinding(context);
+		this.initStringArrayAddOnBeanDataBinding(context);
+		this.initTimeBasedAddOnBeanDataBinding(context);
+
+		context.bindValue(SWTObservables
+				.observeSelection(this._rubrikComboEntry),
+				rubrikTextObservable, null, null);
+
+	}
+
+	private void addStringArrayCompareValue(final Text newCompareValue) {
+		final StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) this
+				.getWorkingCopyOfEditorInput().getFilterSpecificBean();
+		final java.util.List<String> list = specificBean.getCompareValues();
+		if (!list.contains(newCompareValue.getText())) {
+			list.add(newCompareValue.getText());
+			specificBean.setCompareValues(list);
+			newCompareValue.setText("");
+		}
+	}
+
+	private void initDND() {
+		// DropTarget target1 = new DropTarget(junctorFirstFilterText,
+		// DND.DROP_LINK);
+		// DropTarget target2 = new DropTarget(junctorSecondFilterText,
+		// DND.DROP_LINK);
+		//
+		// target1.setTransfer(new Transfer[] { LocalSelectionTransfer
+		// .getTransfer() });
+		// target2.setTransfer(new Transfer[] { LocalSelectionTransfer
+		// .getTransfer() });
+		//
+		// target1
+		// .addDropListener(new TextDropTarget(junctorFirstFilterText,
+		// true));
+		// target2.addDropListener(new TextDropTarget(junctorSecondFilterText,
+		// false));
+	}
+
 	private void initializeAddOnBeans() {
-		specificBeans = new HashMap<SupportedFilterTypes, AbstractConfigurationBean<?>>();
-		specificBeans.put(SupportedFilterTypes.JUNCTOR_CONDITION,
+		this.specificBeans = new HashMap<SupportedFilterTypes, AbstractConfigurationBean<?>>();
+		this.specificBeans.put(SupportedFilterTypes.JUNCTOR_CONDITION,
 				new JunctorConditionBean());
-		specificBeans.put(SupportedFilterTypes.STRING_CONDITION,
+		this.specificBeans.put(SupportedFilterTypes.STRING_CONDITION,
 				new StringFilterConditionBean());
-		specificBeans.put(SupportedFilterTypes.STRING_ARRAY_CONDITION,
+		this.specificBeans.put(SupportedFilterTypes.STRING_ARRAY_CONDITION,
 				new StringArrayFilterConditionBean());
-		specificBeans.put(SupportedFilterTypes.PV_CONDITION,
+		this.specificBeans.put(SupportedFilterTypes.PV_CONDITION,
 				new PVFilterConditionBean());
-		specificBeans.put(SupportedFilterTypes.TIMEBASED_CONDITION,
+		this.specificBeans.put(SupportedFilterTypes.TIMEBASED_CONDITION,
 				new TimeBasedFilterConditionBean());
-		AbstractConfigurationBean<?> filterSpecificBean = (AbstractConfigurationBean<?>) getWorkingCopyOfEditorInput()
-				.getFilterSpecificBean();
+		final AbstractConfigurationBean<?> filterSpecificBean = this
+				.getWorkingCopyOfEditorInput().getFilterSpecificBean();
 
-		specificBeans.put(SupportedFilterTypes.fromClass(filterSpecificBean
-				.getClass()), filterSpecificBean);
+		this.specificBeans.put(SupportedFilterTypes
+				.fromClass(filterSpecificBean.getClass()), filterSpecificBean);
 
-		for (AbstractConfigurationBean<?> bean : specificBeans.values()) {
+		for (final AbstractConfigurationBean<?> bean : this.specificBeans
+				.values()) {
 			bean.addPropertyChangeListener(this);
 		}
 
 	}
 
-	private void initTimeBasedAddOnBeanDataBinding(DataBindingContext context) {
-		TimeBasedFilterConditionBean addOn = (TimeBasedFilterConditionBean) specificBeans
-				.get(SupportedFilterTypes.TIMEBASED_CONDITION);
-
-		IObservableValue timeBasedStartCompareObservable = BeansObservables
-				.observeValue(
-						addOn,
-						TimeBasedFilterConditionBean.PropertyNames.startCompValue
-								.name());
-
-		// IObservableValue timeBasedStartKeyObservable = BeansObservables
-		// .observeValue(
-		// addOn,
-		// TimeBasedFilterConditionBean.PropertyNames.startKeyValue
-		// .name());
-
-		// IObservableValue timeBasedStartOperator = BeansObservables
-		// .observeValue(
-		// addOn,
-		// TimeBasedFilterConditionBean.PropertyNames.startOperator
-		// .name());
-		IObservableValue timeDelayObservable = BeansObservables.observeValue(
-				addOn, TimeBasedFilterConditionBean.PropertyNames.timePeriod
-						.name());
-		// bind observables
-		context.bindValue(
-				SWTObservables.observeText(timeDelayText, SWT.Modify),
-				timeDelayObservable, new UpdateValueStrategy() {
-
-					@Override
-					public Object convert(Object value) {
-						Millisekunden result = Millisekunden.valueOf(0);
-						try {
-							result = Millisekunden.valueOf(Long
-									.parseLong((String) value));
-						} catch (Throwable e) {
-							timeDelayText.setText("0");
-						}
-
-						return result;
-					}
-
-				}, null);
-
-		context.bindValue(SWTObservables.observeText(timeStartCompareText,
-				SWT.Modify), timeBasedStartCompareObservable, null, null);
-
-		// context.bindValue(SWTObservables.observeSelection(timeStartKeyCombo),
-		// timeBasedStartKeyObservable, new MessageKeyToModelStrategy(),
-		// null);
-		//
-		// context.bindValue(SWTObservables
-		// .observeSelection(timeStartOperatorCombo),
-		// timeBasedStartOperator,
-		// new StringRegelOperatorToModelStrategy(),
-		// new StringRegelOperatorToGuiStrategy());
-
-		IObservableValue timeBasedStopCompareObservable = BeansObservables
-				.observeValue(
-						addOn,
-						TimeBasedFilterConditionBean.PropertyNames.confirmCompValue
-								.name());
-
-		// IObservableValue timeBasedStopKeyObservable = BeansObservables
-		// .observeValue(
-		// addOn,
-		// TimeBasedFilterConditionBean.PropertyNames.confirmKeyValue
-		// .name());
-		//
-		// IObservableValue timeBasedStopOperator =
-		// BeansObservables.observeValue(
-		// addOn,
-		// TimeBasedFilterConditionBean.PropertyNames.confirmOperator
-		// .name());
-
-		IObservableValue timeBehaviorObservable = BeansObservables
-				.observeValue(addOn,
-						TimeBasedFilterConditionBean.PropertyNames.timeBehavior
-								.name());
-		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(),
-				FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
-
-		// bind observables
-		context.bindValue(SWTObservables.observeText(timeStopCompareText,
-				SWT.Modify), timeBasedStopCompareObservable, null, null);
-
-		// context.bindValue(SWTObservables.observeSelection(timeStopKeyCombo),
-		// timeBasedStopKeyObservable, new MessageKeyToModelStrategy(),
-		// null);
-
-		context.bindValue(SWTObservables.observeSelection(timeBehaviorCheck),
-				timeBehaviorObservable, new UpdateValueStrategy() {
-
-					@Override
-					public Object convert(Object value) {
-						Boolean status = (Boolean) value;
-						return status ? TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM
-								: TimeBasedType.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM;
-					}
-
-				}, new UpdateValueStrategy() {
-
-					@Override
-					public Object convert(Object value) {
-						return TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM == value ? true
-								: false;
-					}
-
-				});
-		//
-		// context.bindValue(SWTObservables
-		// .observeSelection(timeStopOperatorCombo),
-		// timeBasedStopOperator,
-		// new StringRegelOperatorToModelStrategy(),
-		// new StringRegelOperatorToGuiStrategy());
-
-		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
-				rubrikTextObservable, null, null);
-	}
-
-	private void initStringArrayAddOnBeanDataBinding(DataBindingContext context) {
-		StringArrayFilterConditionBean addOn = (StringArrayFilterConditionBean) specificBeans
-				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
-
-		// IObservableValue arrayKeyValueComboObservable = BeansObservables
-		// .observeValue(addOn,
-		// StringArrayFilterConditionBean.PropertyNames.keyValue
-		// .name());
-		//
-		// IObservableValue arrayOperatorComboObservable = BeansObservables
-		// .observeValue(addOn,
-		// StringArrayFilterConditionBean.PropertyNames.operator
-		// .name());
-
-		IObservableList arrayCompareValueListObservable = BeansObservables
-				.observeList(
-						context.getValidationRealm(),
-						addOn,
-						StringArrayFilterConditionBean.PropertyNames.compareValues
-								.name());
-
-		// bind observables
-		// context.bindValue(
-		// SWTObservables.observeSelection(arrayMessageKeyCombo),
-		// arrayKeyValueComboObservable, null, null);
-		//
-		// context.bindValue(SWTObservables.observeSelection(arrayOperatorCombo),
-		// arrayOperatorComboObservable, null, null);
-
-		context.bindList(SWTObservables.observeItems(arrayCompareValueList),
-				arrayCompareValueListObservable, null, null);
-
-	}
-
-	private void initPVAddOnBeanDataBinding(DataBindingContext context) {
-		IObservableValue pvChannelNameTextObservable = BeansObservables
-				.observeValue(specificBeans
-						.get(SupportedFilterTypes.PV_CONDITION),
-						PVFilterConditionBean.PropertyNames.channelName.name());
-
-		IObservableValue pvCompareValueTextObservable = BeansObservables
-				.observeValue(specificBeans
-						.get(SupportedFilterTypes.PV_CONDITION),
-						PVFilterConditionBean.PropertyNames.compareValue.name());
-
-		// IObservableValue pvOperatorObservable =
-		// BeansObservables.observeValue(
-		// specificBeans.get(SupportedFilterTypes.PV_CONDITION),
-		// PVFilterConditionBean.PropertyNames.operator.name());
-
-		// IObservableValue pvTypeObservable = BeansObservables.observeValue(
-		// specificBeans.get(SupportedFilterTypes.PV_CONDITION),
-		// PVFilterConditionBean.PropertyNames.suggestedType.name());
-
-		// bind observables
-		// context.bindValue(SWTObservables.observeSelection(pvOperator),
-		// pvOperatorObservable, null, null);
-
-		context.bindValue(
-				SWTObservables.observeText(pvChannelName, SWT.Modify),
-				pvChannelNameTextObservable, null, null);
-
-		context.bindValue(SWTObservables
-				.observeText(pvCompareValue, SWT.Modify),
-				pvCompareValueTextObservable, null, null);
-
-		// context.bindValue(SWTObservables.observeSelection(pvSuggestedType),
-		// pvTypeObservable, null, null);
-	}
-
-	private void initJunctorAddOnBeanDataBinding(DataBindingContext context) {
+	private void initJunctorAddOnBeanDataBinding(
+			final DataBindingContext context) {
 		// IObservableValue firstConditionTextObservable = BeansObservables
 		// .observeValue(specificBeans
 		// .get(SupportedFilterTypes.JUNCTOR_CONDITION),
@@ -803,13 +727,47 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 	}
 
-	private void initStringAddOnBeanDataBinding(DataBindingContext context) {
+	private void initPVAddOnBeanDataBinding(final DataBindingContext context) {
+		final IObservableValue pvChannelNameTextObservable = BeansObservables
+				.observeValue(this.specificBeans
+						.get(SupportedFilterTypes.PV_CONDITION),
+						PVFilterConditionBean.PropertyNames.channelName.name());
+
+		final IObservableValue pvCompareValueTextObservable = BeansObservables
+				.observeValue(this.specificBeans
+						.get(SupportedFilterTypes.PV_CONDITION),
+						PVFilterConditionBean.PropertyNames.compareValue.name());
+
+		// IObservableValue pvOperatorObservable =
+		// BeansObservables.observeValue(
+		// specificBeans.get(SupportedFilterTypes.PV_CONDITION),
+		// PVFilterConditionBean.PropertyNames.operator.name());
+
+		// IObservableValue pvTypeObservable = BeansObservables.observeValue(
+		// specificBeans.get(SupportedFilterTypes.PV_CONDITION),
+		// PVFilterConditionBean.PropertyNames.suggestedType.name());
+
+		// bind observables
+		// context.bindValue(SWTObservables.observeSelection(pvOperator),
+		// pvOperatorObservable, null, null);
+
+		context.bindValue(SWTObservables.observeText(this.pvChannelName,
+				SWT.Modify), pvChannelNameTextObservable, null, null);
+
+		context.bindValue(SWTObservables.observeText(this.pvCompareValue,
+				SWT.Modify), pvCompareValueTextObservable, null, null);
+
+		// context.bindValue(SWTObservables.observeSelection(pvSuggestedType),
+		// pvTypeObservable, null, null);
+	}
+
+	private void initStringAddOnBeanDataBinding(final DataBindingContext context) {
 		// IObservableValue keyComboObservable = BeansObservables.observeValue(
 		// specificBeans.get(SupportedFilterTypes.STRING_CONDITION),
 		// StringFilterConditionBean.PropertyNames.keyValue.name());
 
-		IObservableValue stringCompareValueTextObservable = BeansObservables
-				.observeValue(specificBeans
+		final IObservableValue stringCompareValueTextObservable = BeansObservables
+				.observeValue(this.specificBeans
 						.get(SupportedFilterTypes.STRING_CONDITION),
 						StringFilterConditionBean.PropertyNames.compValue
 								.name());
@@ -829,66 +787,170 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// .observeSelection(stringCompareKeyCombo), keyComboObservable,
 		// new MessageKeyToModelStrategy(), null);
 
-		context.bindValue(SWTObservables.observeText(stringCompareValueText,
-				SWT.Modify), stringCompareValueTextObservable, null, null);
+		context.bindValue(SWTObservables.observeText(
+				this.stringCompareValueText, SWT.Modify),
+				stringCompareValueTextObservable, null, null);
 	}
 
-	@Override
-	protected void doInit(IEditorSite site, IEditorInput input) {
-	}
+	private void initStringArrayAddOnBeanDataBinding(
+			final DataBindingContext context) {
+		final StringArrayFilterConditionBean addOn = (StringArrayFilterConditionBean) this.specificBeans
+				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
 
-	@Override
-	protected int getNumColumns() {
-		return 2;
-	}
+		// IObservableValue arrayKeyValueComboObservable = BeansObservables
+		// .observeValue(addOn,
+		// StringArrayFilterConditionBean.PropertyNames.keyValue
+		// .name());
+		//
+		// IObservableValue arrayOperatorComboObservable = BeansObservables
+		// .observeValue(addOn,
+		// StringArrayFilterConditionBean.PropertyNames.operator
+		// .name());
 
-	@Override
-	protected void initDataBinding() {
-		DataBindingContext context = new DataBindingContext();
-
-		IObservableValue nameTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(), FilterbedingungBean.PropertyNames.name.name());
-
-		IObservableValue descriptionTextObservable = BeansObservables
-				.observeValue(this.getWorkingCopyOfEditorInput(),
-						FilterbedingungBean.PropertyNames.description.name());
-
-		IObservableValue rubrikTextObservable = BeansObservables.observeValue(
-				this.getWorkingCopyOfEditorInput(),
-				FilterbedingungBean.AbstractPropertyNames.rubrikName.name());
+		final IObservableList arrayCompareValueListObservable = BeansObservables
+				.observeList(
+						context.getValidationRealm(),
+						addOn,
+						StringArrayFilterConditionBean.PropertyNames.compareValues
+								.name());
 
 		// bind observables
+		// context.bindValue(
+		// SWTObservables.observeSelection(arrayMessageKeyCombo),
+		// arrayKeyValueComboObservable, null, null);
+		//
+		// context.bindValue(SWTObservables.observeSelection(arrayOperatorCombo),
+		// arrayOperatorComboObservable, null, null);
+
+		context.bindList(SWTObservables
+				.observeItems(this.arrayCompareValueList),
+				arrayCompareValueListObservable, null, null);
+
+	}
+
+	private void initTimeBasedAddOnBeanDataBinding(
+			final DataBindingContext context) {
+		final TimeBasedFilterConditionBean addOn = (TimeBasedFilterConditionBean) this.specificBeans
+				.get(SupportedFilterTypes.TIMEBASED_CONDITION);
+
+		final IObservableValue timeBasedStartCompareObservable = BeansObservables
+				.observeValue(
+						addOn,
+						TimeBasedFilterConditionBean.PropertyNames.startCompValue
+								.name());
+
+		// IObservableValue timeBasedStartKeyObservable = BeansObservables
+		// .observeValue(
+		// addOn,
+		// TimeBasedFilterConditionBean.PropertyNames.startKeyValue
+		// .name());
+
+		// IObservableValue timeBasedStartOperator = BeansObservables
+		// .observeValue(
+		// addOn,
+		// TimeBasedFilterConditionBean.PropertyNames.startOperator
+		// .name());
+		final IObservableValue timeDelayObservable = BeansObservables
+				.observeValue(addOn,
+						TimeBasedFilterConditionBean.PropertyNames.timePeriod
+								.name());
+		// bind observables
+		context.bindValue(SWTObservables.observeText(this.timeDelayText,
+				SWT.Modify), timeDelayObservable, new UpdateValueStrategy() {
+
+			@Override
+			public Object convert(final Object value) {
+				Millisekunden result = Millisekunden.valueOf(0);
+				try {
+					result = Millisekunden.valueOf(Long
+							.parseLong((String) value));
+				} catch (final Throwable e) {
+					FilterbedingungEditor.this.timeDelayText.setText("0");
+				}
+
+				return result;
+			}
+
+		}, null);
+
+		context.bindValue(SWTObservables.observeText(this.timeStartCompareText,
+				SWT.Modify), timeBasedStartCompareObservable, null, null);
+
+		// context.bindValue(SWTObservables.observeSelection(timeStartKeyCombo),
+		// timeBasedStartKeyObservable, new MessageKeyToModelStrategy(),
+		// null);
+		//
+		// context.bindValue(SWTObservables
+		// .observeSelection(timeStartOperatorCombo),
+		// timeBasedStartOperator,
+		// new StringRegelOperatorToModelStrategy(),
+		// new StringRegelOperatorToGuiStrategy());
+
+		final IObservableValue timeBasedStopCompareObservable = BeansObservables
+				.observeValue(
+						addOn,
+						TimeBasedFilterConditionBean.PropertyNames.confirmCompValue
+								.name());
+
+		// IObservableValue timeBasedStopKeyObservable = BeansObservables
+		// .observeValue(
+		// addOn,
+		// TimeBasedFilterConditionBean.PropertyNames.confirmKeyValue
+		// .name());
+		//
+		// IObservableValue timeBasedStopOperator =
+		// BeansObservables.observeValue(
+		// addOn,
+		// TimeBasedFilterConditionBean.PropertyNames.confirmOperator
+		// .name());
+
+		final IObservableValue timeBehaviorObservable = BeansObservables
+				.observeValue(addOn,
+						TimeBasedFilterConditionBean.PropertyNames.timeBehavior
+								.name());
+		final IObservableValue rubrikTextObservable = BeansObservables
+				.observeValue(this.getWorkingCopyOfEditorInput(),
+						FilterbedingungBean.AbstractPropertyNames.rubrikName
+								.name());
+
+		// bind observables
+		context.bindValue(SWTObservables.observeText(this.timeStopCompareText,
+				SWT.Modify), timeBasedStopCompareObservable, null, null);
+
+		// context.bindValue(SWTObservables.observeSelection(timeStopKeyCombo),
+		// timeBasedStopKeyObservable, new MessageKeyToModelStrategy(),
+		// null);
+
 		context.bindValue(SWTObservables
-				.observeText(_nameTextEntry, SWT.Modify), nameTextObservable,
-				null, null);
+				.observeSelection(this.timeBehaviorCheck),
+				timeBehaviorObservable, new UpdateValueStrategy() {
 
-		context.bindValue(SWTObservables.observeText(_defaultMessageTextEntry,
-				SWT.Modify), descriptionTextObservable, null, null);
+					@Override
+					public Object convert(final Object value) {
+						final Boolean status = (Boolean) value;
+						return status ? TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM
+								: TimeBasedType.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM;
+					}
 
-		initStringAddOnBeanDataBinding(context);
-		initJunctorAddOnBeanDataBinding(context);
-		initPVAddOnBeanDataBinding(context);
-		initStringArrayAddOnBeanDataBinding(context);
-		initTimeBasedAddOnBeanDataBinding(context);
+				}, new UpdateValueStrategy() {
 
-		context.bindValue(SWTObservables.observeSelection(_rubrikComboEntry),
+					@Override
+					public Object convert(final Object value) {
+						return TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM == value ? true
+								: false;
+					}
+
+				});
+		//
+		// context.bindValue(SWTObservables
+		// .observeSelection(timeStopOperatorCombo),
+		// timeBasedStopOperator,
+		// new StringRegelOperatorToModelStrategy(),
+		// new StringRegelOperatorToGuiStrategy());
+
+		context.bindValue(SWTObservables
+				.observeSelection(this._rubrikComboEntry),
 				rubrikTextObservable, null, null);
-
-	}
-
-	@Override
-	public void setFocus() {
-		_nameTextEntry.setFocus();
-	}
-
-	public static void staticInject(
-			IProcessVariableConnectionService pvConnectionService) {
-		FilterbedingungEditor.pvConnectionService = pvConnectionService;
-	}
-
-	@Override
-	public boolean isDirty() {
-		return super.isDirty() && !(getWorkingCopyOfEditorInput().getFilterSpecificBean() instanceof JunctorConditionBean);
 	}
 
 }

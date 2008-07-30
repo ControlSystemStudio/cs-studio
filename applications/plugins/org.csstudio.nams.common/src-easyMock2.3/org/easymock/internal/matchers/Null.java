@@ -13,11 +13,11 @@ public class Null implements IArgumentMatcher {
 	private Null() {
 	}
 
-	public boolean matches(final Object actual) {
-		return actual == null;
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("isNull()");
+	}
+
+	public boolean matches(final Object actual) {
+		return actual == null;
 	}
 }

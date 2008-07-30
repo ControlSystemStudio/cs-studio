@@ -14,6 +14,10 @@ public abstract class CompareTo<T extends Comparable<T>> implements
 		this.expected = value;
 	}
 
+	public void appendTo(final StringBuffer buffer) {
+		buffer.append(this.getName() + "(" + this.expected + ")");
+	}
+
 	@SuppressWarnings("unchecked")
 	public boolean matches(final Object actual) {
 
@@ -22,10 +26,6 @@ public abstract class CompareTo<T extends Comparable<T>> implements
 		}
 
 		return this.matchResult(((Comparable) actual).compareTo(this.expected));
-	}
-
-	public void appendTo(final StringBuffer buffer) {
-		buffer.append(this.getName() + "(" + this.expected + ")");
 	}
 
 	protected abstract String getName();

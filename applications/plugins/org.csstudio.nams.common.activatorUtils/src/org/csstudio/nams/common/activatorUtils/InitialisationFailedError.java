@@ -8,15 +8,15 @@ public class InitialisationFailedError extends Error {
 		super();
 	}
 
-	public InitialisationFailedError(String message, Throwable t) {
-		super(message, t);
-	}
-
-	public InitialisationFailedError(String message) {
+	public InitialisationFailedError(final String message) {
 		super(message);
 	}
 
-	public InitialisationFailedError(Throwable t) {
+	public InitialisationFailedError(final String message, final Throwable t) {
+		super(message, t);
+	}
+
+	public InitialisationFailedError(final Throwable t) {
 		super(t);
 	}
 

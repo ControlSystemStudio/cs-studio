@@ -27,6 +27,8 @@ package org.csstudio.nams.application.department.decision.office.decision;
 import java.net.InetAddress;
 import java.util.Date;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
@@ -51,54 +53,56 @@ public class Abteilungsleiter_Test extends
 				Vorgangsmappenkennung.valueOf(InetAddress
 						.getByAddress(new byte[] { 127, 0, 0, 1 }), new Date(
 						123)), new AlarmNachricht("Test-Nachricht"));
-		anzahlDerSachbearbeiterDieEineMappeErhaltenHaben = 0;
+		this.anzahlDerSachbearbeiterDieEineMappeErhaltenHaben = 0;
 
-		Eingangskorb<Vorgangsmappe> eingangskorb = EasyMock
+		final Eingangskorb<Vorgangsmappe> eingangskorb = EasyMock
 				.createMock(Eingangskorb.class);
 		EasyMock.expect(eingangskorb.entnehmeAeltestenEingang()).andReturn(
 				vorgangsmappe).times(1).andStubAnswer(
 				new IAnswer<Vorgangsmappe>() {
 					public Vorgangsmappe answer() throws Throwable {
 						Thread.sleep(Integer.MAX_VALUE);
-						fail();
+						Assert.fail();
 						return null;
 					}
 				});
 
-		Eingangskorb<Vorgangsmappe> sachbearbeiter1 = new Eingangskorb<Vorgangsmappe>() {
-			public Vorgangsmappe entnehmeAeltestenEingang()
-					throws InterruptedException {
-				fail("not to be called!");
-				return null;
-			}
-
+		final Eingangskorb<Vorgangsmappe> sachbearbeiter1 = new Eingangskorb<Vorgangsmappe>() {
 			public void ablegen(Vorgangsmappe dokument) {
 				try {
-					assertNotSame("Vorgangsmappen nicht identisch",
+					Assert.assertNotSame("Vorgangsmappen nicht identisch",
 							vorgangsmappe, dokument);
-					assertFalse("Vorgangsmappen nicht gleich", vorgangsmappe
-							.equals(dokument));
+					Assert.assertFalse("Vorgangsmappen nicht gleich",
+							vorgangsmappe.equals(dokument));
 
-					assertNotSame(
-							"Vorgangsmappen.Alarmnachricht nicht identisch",
-							vorgangsmappe
-									.gibAusloesendeAlarmNachrichtDiesesVorganges(),
-							dokument
-									.gibAusloesendeAlarmNachrichtDiesesVorganges());
-					assertEquals(
-							"Vorgangsmappen.Alarmnachrichten bleiben in diesem Büro gleich",
-							vorgangsmappe
-									.gibAusloesendeAlarmNachrichtDiesesVorganges(),
-							dokument
-									.gibAusloesendeAlarmNachrichtDiesesVorganges());
+					Assert
+							.assertNotSame(
+									"Vorgangsmappen.Alarmnachricht nicht identisch",
+									vorgangsmappe
+											.gibAusloesendeAlarmNachrichtDiesesVorganges(),
+									dokument
+											.gibAusloesendeAlarmNachrichtDiesesVorganges());
+					Assert
+							.assertEquals(
+									"Vorgangsmappen.Alarmnachrichten bleiben in diesem Büro gleich",
+									vorgangsmappe
+											.gibAusloesendeAlarmNachrichtDiesesVorganges(),
+									dokument
+											.gibAusloesendeAlarmNachrichtDiesesVorganges());
 
-					anzahlDerSachbearbeiterDieEineMappeErhaltenHaben++;
+					Abteilungsleiter_Test.this.anzahlDerSachbearbeiterDieEineMappeErhaltenHaben++;
 				} catch (Throwable t) {
-					testFailed = t;
+					Abteilungsleiter_Test.this.testFailed = t;
 				}
 			}
+
+			public Vorgangsmappe entnehmeAeltestenEingang()
+					throws InterruptedException {
+				Assert.fail("not to be called!");
+				return null;
+			}
 		};
-		Eingangskorb<Vorgangsmappe> sachbearbeiter2 = sachbearbeiter1; // Da
+		final Eingangskorb<Vorgangsmappe> sachbearbeiter2 = sachbearbeiter1; // Da
 		// die
 		// Exemplare
 		// nicht
@@ -106,11 +110,11 @@ public class Abteilungsleiter_Test extends
 		// derzeit möglich!
 
 		EasyMock.replay(eingangskorb);
-		testFailed = null;
+		this.testFailed = null;
 
-		Eingangskorb<Vorgangsmappe>[] sachbearbeiterkoerbe = new Eingangskorb[] {
+		final Eingangskorb<Vorgangsmappe>[] sachbearbeiterkoerbe = new Eingangskorb[] {
 				sachbearbeiter1, sachbearbeiter2 };
-		Abteilungsleiter abteilungsleiter = new Abteilungsleiter(
+		final Abteilungsleiter abteilungsleiter = new Abteilungsleiter(
 				new DefaultExecutionService(), eingangskorb,
 				sachbearbeiterkoerbe);
 
@@ -121,31 +125,32 @@ public class Abteilungsleiter_Test extends
 
 		// Warte bis der Bearbeiter fertig sein müsste...
 		for (int wartezeit = 0; wartezeit < 3000; wartezeit += 10) {
-			if (anzahlDerSachbearbeiterDieEineMappeErhaltenHaben > 1)
+			if (this.anzahlDerSachbearbeiterDieEineMappeErhaltenHaben > 1) {
 				break;
+			}
 			Thread.sleep(10);
 		}
 
 		abteilungsleiter.beendeArbeit();
 
-		if (testFailed != null) {
-			throw testFailed;
+		if (this.testFailed != null) {
+			throw this.testFailed;
 		}
 		EasyMock.verify(eingangskorb);
 	}
 
 	@Test
 	public void testArbeit() throws InterruptedException {
-		Abteilungsleiter abteilungsleiter = this
+		final Abteilungsleiter abteilungsleiter = this
 				.getNewInstanceOfClassUnderTest();
-		assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter
+		Assert.assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter
 				.istAmArbeiten());
 		abteilungsleiter.beginneArbeit();
-		assertTrue("abteilungsleiter.istAmArbeiten()", abteilungsleiter
+		Assert.assertTrue("abteilungsleiter.istAmArbeiten()", abteilungsleiter
 				.istAmArbeiten());
 		abteilungsleiter.beendeArbeit();
 		Thread.sleep(100);
-		assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter
+		Assert.assertFalse("abteilungsleiter.istAmArbeiten()", abteilungsleiter
 				.istAmArbeiten());
 	}
 

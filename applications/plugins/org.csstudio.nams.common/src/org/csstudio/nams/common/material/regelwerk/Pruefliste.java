@@ -38,103 +38,113 @@ public class Pruefliste implements Cloneable {
 	private final Regelwerkskennung regelwerkskennung;
 	private final VersandRegel hauptRegel;
 	private Millisekunden millisekundenBisZurNaechstenPruefung = Millisekunden
-	.valueOf(0);
-	
+			.valueOf(0);
+
 	private Millisekunden bereitsGewarteteZeit = Millisekunden.valueOf(0);
 	private boolean hatSichGeaendert;
 
-	@Override
-	public Pruefliste clone() {
-		// TODO sollte so nich mehr klappen
-		Pruefliste pruefliste = new Pruefliste(regelwerkskennung, hauptRegel);
-		return pruefliste;
-	}
-
-//	@Deprecated TODO warum?
-//	@ForTesting
-	public Pruefliste(Regelwerkskennung regelwerkskennung,
-			VersandRegel hauptRegel) {
+	// @Deprecated TODO warum?
+	// @ForTesting
+	public Pruefliste(final Regelwerkskennung regelwerkskennung,
+			final VersandRegel hauptRegel) {
 		this.hauptRegel = hauptRegel;
 		Contract.require(regelwerkskennung != null, "regelwerkskennung!=null");
 		this.regelwerkskennung = regelwerkskennung;
 	}
 
-	public void setzeErgebnisFuerRegelFallsVeraendert(VersandRegel regel, RegelErgebnis ergebnis) {
-		RegelErgebnis regelErgebnis = ergebnisse.put(regel, ergebnis);
-		if (ergebnis != regelErgebnis)
-			this.hatSichGeaendert = true;
+	@Override
+	public Pruefliste clone() {
+		// TODO sollte so nich mehr klappen
+		final Pruefliste pruefliste = new Pruefliste(this.regelwerkskennung,
+				this.hauptRegel);
+		return pruefliste;
 	}
 
-	public RegelErgebnis gibErgebnisFuerRegel(VersandRegel versandRegel) {
-		RegelErgebnis regelErgebnis = ergebnisse.get(versandRegel);
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Pruefliste)) {
+			return false;
+		}
+		final Pruefliste other = (Pruefliste) obj;
+		if (!this.regelwerkskennung.equals(other.regelwerkskennung)) {
+			return false;
+		}
+		return true;
+	}
+
+	public WeiteresVersandVorgehen gesamtErgebnis() {
+		final RegelErgebnis regelErgebnis = this
+				.gibErgebnisFuerRegel(this.hauptRegel);
+		return WeiteresVersandVorgehen.fromRegelErgebnis(regelErgebnis);
+	}
+
+	/**
+	 * Die Zeit wird nur hochgesetzt nach einem timeout!
+	 */
+	public Millisekunden gibBereitsGewarteteZeit() {
+		return this.bereitsGewarteteZeit;
+	}
+
+	public RegelErgebnis gibErgebnisFuerRegel(final VersandRegel versandRegel) {
+		RegelErgebnis regelErgebnis = this.ergebnisse.get(versandRegel);
 		if (regelErgebnis == null) {
 			regelErgebnis = RegelErgebnis.NOCH_NICHT_GEPRUEFT;
 		}
 		return regelErgebnis;
 	}
 
-	public WeiteresVersandVorgehen gesamtErgebnis() {
-		RegelErgebnis regelErgebnis = gibErgebnisFuerRegel(hauptRegel);
-		return WeiteresVersandVorgehen.fromRegelErgebnis(regelErgebnis);
-	}
-
-	public void setzeMillisekundenBisZurNaechstenPruefung(Millisekunden warteZeit){
-		millisekundenBisZurNaechstenPruefung = warteZeit;
-	}
-	
 	/**
 	 * 
 	 * @return
 	 */
 	public Millisekunden gibMillisekundenBisZurNaechstenPruefung() {
-		return millisekundenBisZurNaechstenPruefung;
-	}
-
-	public void msGewartet(Millisekunden gewarteteZeit) {
-		bereitsGewarteteZeit = Millisekunden.valueOf(gewarteteZeit
-				.alsLongVonMillisekunden()
-				+ bereitsGewarteteZeit.alsLongVonMillisekunden());
-	}
-	
-	/**
-	 * Die Zeit wird nur hochgesetzt nach einem timeout!
-	 */
-	public Millisekunden gibBereitsGewarteteZeit(){
-		return bereitsGewarteteZeit;
+		return this.millisekundenBisZurNaechstenPruefung;
 	}
 
 	public Regelwerkskennung gibRegelwerkskennung() {
-		return regelwerkskennung;
+		return this.regelwerkskennung;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + regelwerkskennung.hashCode();
+		result = prime * result + this.regelwerkskennung.hashCode();
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Pruefliste))
-			return false;
-		final Pruefliste other = (Pruefliste) obj;
-		if (!regelwerkskennung.equals(other.regelwerkskennung))
-			return false;
-		return true;
+	public boolean hatSichGeaendert() {
+		return this.hatSichGeaendert;
+	}
+
+	public void msGewartet(final Millisekunden gewarteteZeit) {
+		this.bereitsGewarteteZeit = Millisekunden.valueOf(gewarteteZeit
+				.alsLongVonMillisekunden()
+				+ this.bereitsGewarteteZeit.alsLongVonMillisekunden());
 	}
 
 	public void setzeAufNichtVeraendert() {
 		this.hatSichGeaendert = false;
 	}
 
-	public boolean hatSichGeaendert() {
-		return this.hatSichGeaendert;
+	public void setzeErgebnisFuerRegelFallsVeraendert(final VersandRegel regel,
+			final RegelErgebnis ergebnis) {
+		final RegelErgebnis regelErgebnis = this.ergebnisse
+				.put(regel, ergebnis);
+		if (ergebnis != regelErgebnis) {
+			this.hatSichGeaendert = true;
+		}
+	}
+
+	public void setzeMillisekundenBisZurNaechstenPruefung(
+			final Millisekunden warteZeit) {
+		this.millisekundenBisZurNaechstenPruefung = warteZeit;
 	}
 
 }

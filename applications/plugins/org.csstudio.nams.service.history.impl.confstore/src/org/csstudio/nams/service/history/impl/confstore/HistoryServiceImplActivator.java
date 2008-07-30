@@ -14,23 +14,30 @@ import org.osgi.framework.BundleActivator;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class HistoryServiceImplActivator extends AbstractBundleActivator implements BundleActivator {
+public class HistoryServiceImplActivator extends AbstractBundleActivator
+		implements BundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.history.impl.confstore";
-	
+
 	@OSGiBundleActivationMethod
-	public void startBundle(@OSGiService @Required PreferenceService preferenceService, @OSGiService @Required ConfigurationServiceFactory configurationServiceFactory) {
-		
-		LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory.getConfigurationService(
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-				DatabaseType.Derby,
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
-				preferenceService
-						.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
-		
-		HistoryServiceFactoryImpl.injectLocalStoreConfigurationService(localStoreConfigurationService);
+	public void startBundle(@OSGiService
+	@Required
+	final PreferenceService preferenceService, @OSGiService
+	@Required
+	final ConfigurationServiceFactory configurationServiceFactory) {
+
+		final LocalStoreConfigurationService localStoreConfigurationService = configurationServiceFactory
+				.getConfigurationService(
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
+						DatabaseType.Derby,
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
+						preferenceService
+								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
+
+		HistoryServiceFactoryImpl
+				.injectLocalStoreConfigurationService(localStoreConfigurationService);
 	}
 }

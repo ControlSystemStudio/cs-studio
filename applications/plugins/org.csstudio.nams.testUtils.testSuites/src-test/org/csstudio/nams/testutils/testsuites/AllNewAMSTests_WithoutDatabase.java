@@ -1,5 +1,6 @@
 package org.csstudio.nams.testutils.testsuites;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -24,14 +25,14 @@ import org.junit.Test;
 public class AllNewAMSTests_WithoutDatabase extends TestCase {
 
 	public static junit.framework.Test suite() throws Throwable {
-		TestSuite suite = new TestSuite(
-				"AllNewAMSTests_WithoutDatabase");
+		final TestSuite suite = new TestSuite("AllNewAMSTests_WithoutDatabase");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(AllNewAMSTests_WithoutDatabase.class);
 		suite.addTest(DecisionDepartmentAllTestsSuite.suite());
 		suite.addTest(NAMSCommonAllTestsSuite.suite());
 		suite.addTest(NAMSNewConfiguratorAllTestsSuite.suite());
-		suite.addTest(ConfigurationaccessLocalStoreWithoutDBAllTestsSuite.suite());
+		suite.addTest(ConfigurationaccessLocalStoreWithoutDBAllTestsSuite
+				.suite());
 		suite.addTest(HistoryServiceAllTestsSuite.suite());
 		suite.addTest(HistoryServiceConfStroeImplAllTestsSuite.suite());
 		suite.addTest(LoggingServiceAllTestsSuite.suite());
@@ -41,18 +42,18 @@ public class AllNewAMSTests_WithoutDatabase extends TestCase {
 		suite.addTest(PreferenceServiceUIAllTestsSuite.suite());
 		suite.addTest(RegelwerksbuilderAllTestsSuite.suite());
 		suite.addTest(RegelwerksbuilderConfStoreImplAllTestsSuite.suite());
-		//$JUnit-END$
+		// $JUnit-END$
 		return suite;
 	}
-	
+
 	@Test
-	public void testAssertionsAktiviert()
-	{
+	public void testAssertionsAktiviert() {
 		try {
 			assert false : "Ok, Assertions sind aktiviert!";
-			fail("Nein, Assertions sind nicht aktiviert");
-		} catch(AssertionError ae) {
-			assertEquals("Ok, Assertions sind aktiviert!", ae.getMessage());
+			Assert.fail("Nein, Assertions sind nicht aktiviert");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Ok, Assertions sind aktiviert!", ae
+					.getMessage());
 		}
 	}
 }

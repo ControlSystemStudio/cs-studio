@@ -14,13 +14,13 @@ public class Matches implements IArgumentMatcher {
 		this.regex = regex;
 	}
 
-	public boolean matches(final Object actual) {
-		return (actual instanceof String)
-				&& ((String) actual).matches(this.regex);
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("matches(\"" + this.regex.replaceAll("\\\\", "\\\\\\\\")
 				+ "\")");
+	}
+
+	public boolean matches(final Object actual) {
+		return (actual instanceof String)
+				&& ((String) actual).matches(this.regex);
 	}
 }

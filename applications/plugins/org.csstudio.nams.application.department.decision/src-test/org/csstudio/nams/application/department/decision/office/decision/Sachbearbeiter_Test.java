@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
@@ -32,202 +34,69 @@ import org.junit.Test;
 public class Sachbearbeiter_Test extends
 		AbstractObject_TestCase<Sachbearbeiter> {
 
-	private Eingangskorb<Vorgangsmappe> eingangskorb;
-	private Vorgangsmappe vorgangsmappe;
-	private Ausgangskorb<Vorgangsmappe> ausgangskorb;
-	private Zwischenablagekorb<Vorgangsmappe> zwischenablagekorb;
-	private Regelwerk regelwerk;
-	protected volatile boolean eineMappeIstfertig;
-	private Ausgangskorb<Terminnotiz> assistenzkorb;
-	private Eingangskorb<Terminnotiz> terminnotizEingangskorb;
+	static class IdComparator<T> implements Comparator<T> {
+		public int compare(final T expected, final T actual) {
+			return expected == actual ? 0 : -1;
+		}
+	}
 
 	private class Test_Pruefliste extends Pruefliste {
 
-		Test_Pruefliste(Regelwerkskennung regelwerkskennung) {
+		Test_Pruefliste(final Regelwerkskennung regelwerkskennung) {
 			super(regelwerkskennung, null);
 		}
 
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	@Before
-	protected void setUp() throws Exception {
-		super.setUp();
-		eingangskorb = EasyMock.createMock(Eingangskorb.class);
-		zwischenablagekorb = EasyMock.createMock(Zwischenablagekorb.class);
-		assistenzkorb = EasyMock.createMock(Ausgangskorb.class);
-		terminnotizEingangskorb = EasyMock.createMock(Eingangskorb.class);
-		ausgangskorb = EasyMock.createMock(Ausgangskorb.class);
-		regelwerk = EasyMock.createMock(Regelwerk.class);
+	protected volatile boolean eineMappeIstfertig;
+	private Eingangskorb<Vorgangsmappe> eingangskorb;
+	private Vorgangsmappe vorgangsmappe;
+	private Ausgangskorb<Vorgangsmappe> ausgangskorb;
+	private Zwischenablagekorb<Vorgangsmappe> zwischenablagekorb;
+	private Regelwerk regelwerk;
 
-		eineMappeIstfertig = false;
+	private Ausgangskorb<Terminnotiz> assistenzkorb;
 
-		alarmNachricht = new AlarmNachricht(/*
-											 * Die ist egal, weil wir hier true
-											 * testen
-											 */"Test-Nachricht");
+	private Eingangskorb<Terminnotiz> terminnotizEingangskorb;
 
-		vorgangsmappe = new Vorgangsmappe(Vorgangsmappenkennung.valueOf(
-				InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }),
-				new Date(123456)), alarmNachricht);
-	}
+	private WeiteresVersandVorgehen aktuellesGesamtErgebnisDesRegelwerk;
 
-	@Override
-	@After
-	protected void tearDown() throws Exception {
-		if (eingangskorb != null) {
-			EasyMock.verify(eingangskorb);
-		}
-		if (zwischenablagekorb != null) {
-			EasyMock.verify(zwischenablagekorb);
-		}
-		if (assistenzkorb != null) {
-			EasyMock.verify(assistenzkorb);
-		}
-		if (terminnotizEingangskorb != null) {
-			EasyMock.verify(terminnotizEingangskorb);
-		}
-		if (ausgangskorb != null) {
-			EasyMock.verify(ausgangskorb);
-		}
-		if (regelwerk != null) {
-			EasyMock.verify(regelwerk);
-		}
-		vorgangsmappe = null;
-		alarmNachricht = null;
-		super.tearDown();
-	}
+	private AlarmNachricht alarmNachricht;;
 
-	static class IdComparator<T> implements Comparator<T> {
-		public int compare(T expected, T actual) {
-			return expected == actual ? 0 : -1;
-		}
-	};
+	@Test
+	public void testachteAufTerminnotizEingaenge() throws InterruptedException {
+		this.mocksAufIgnorierenSetzen();
 
-	@SuppressWarnings("unchecked")
-	@Test(timeout = 4000)
-	public void testVerarbeiteNachrichtDieSofortEntschiedenWerdenKann()
-			throws Throwable {
-		// Eingangskorb
-		EasyMock.expect(eingangskorb.entnehmeAeltestenEingang()).andReturn(
-				vorgangsmappe).times(1).andStubAnswer(
-				new IAnswer<Vorgangsmappe>() {
-					public Vorgangsmappe answer() throws Throwable {
-						eineMappeIstfertig = true;
-						Thread.sleep(5000);
-						fail("Thread sollte längst tot sein.");
-						return null;
-					}
-				});
-		EasyMock.replay(eingangskorb);
+		final StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
+		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
+		final boolean[] bloedeSensingVariable = { false };
+		final Terminnotiz notiz = Terminnotiz.valueOf(this.vorgangsmappe
+				.gibMappenkennung(), Millisekunden.valueOf(100), "Fritz");
+		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
+				new StandardAblagekorb<Vorgangsmappe>(), notizKorb,
+				zwischenablage, new StandardAblagekorb<Terminnotiz>(),
+				ausgangskorb,
+				new StandardRegelwerk(Regelwerkskennung.valueOf())) {
 
-		// Ausgangskorb
-		Comparator<Vorgangsmappe> vorlagenMappenComparator = new IdComparator<Vorgangsmappe>();// Die
-		// gleiche
-		// Mappe
-		// kam raus, d.h.
-		// ich kann die
-		// von mir refenzierte Mappe auf das Ergebnix ;)
-		// prüfen.
-		ausgangskorb.ablegen(EasyMock.cmp(vorgangsmappe,
-				vorlagenMappenComparator, LogicalOperator.EQUAL));
-		EasyMock.expectLastCall().once();
-		EasyMock.replay(ausgangskorb);
+			@Override
+			protected void bearbeiteVorgangBeimSachbearbeiter(
+					Ablagefaehig eingang) throws InterruptedException {
+				bloedeSensingVariable[0] = true;
 
-		// Zwischenablage
-		EasyMock.expect(zwischenablagekorb.iterator()).andReturn(
-				new Iterator<Vorgangsmappe>() {
-					public boolean hasNext() {
-						return false;
-					}
-
-					public Vorgangsmappe next() {
-						fail();
-						return null;
-					}
-
-					public void remove() {
-						fail();
-					}
-				});
-		EasyMock.replay(zwischenablagekorb);
-
-		// Korb der Assistenz
-		EasyMock.replay(assistenzkorb);
-
-		// eingangsKorb für notizen
-		EasyMock.expect(terminnotizEingangskorb.entnehmeAeltestenEingang())
-				.andStubAnswer(new IAnswer<Terminnotiz>() {
-					public Terminnotiz answer() throws Throwable {
-						eineMappeIstfertig = true;
-						Thread.sleep(5000);
-						fail("Thread sollte längst tot sein.");
-						return null;
-					}
-				});
-		EasyMock.replay(terminnotizEingangskorb);
-
-		// Regelwerk
-		aktuellesGesamtErgebnisDesRegelwerk = WeiteresVersandVorgehen.NOCH_NICHT_GEPRUEFT;
-		Regelwerkskennung regelwerkskennungDesBenutztenRegelwerkes = Regelwerkskennung
-				.valueOf();
-		Pruefliste pruefliste = new Test_Pruefliste(
-				regelwerkskennungDesBenutztenRegelwerkes) {
-			public WeiteresVersandVorgehen gesamtErgebnis() {
-				return aktuellesGesamtErgebnisDesRegelwerk;
-			}
-
-			public Millisekunden gibMillisekundenBisZurNaechstenPruefung() {
-				fail();
-				return null;
+				Assert.assertTrue(eingang instanceof Terminnotiz);
+				Assert.assertTrue(notiz == eingang);
 			}
 		};
 
-		EasyMock.expect(regelwerk.gibNeueLeerePruefliste()).andReturn(
-				pruefliste);
-		regelwerk.pruefeNachrichtErstmalig(EasyMock.cmp(alarmNachricht,
-				new IdComparator<AlarmNachricht>(), LogicalOperator.EQUAL),
-				EasyMock.cmp(pruefliste, new IdComparator<Pruefliste>() {
-					@Override
-					public int compare(Pruefliste expected, Pruefliste actual) {
-						int compareResult = super.compare(expected, actual);
-						if (compareResult == 0) {
-							// TODO aktuell wird diese Zeile nicht aufgerufen,
-							// dadurch schlägt der Test fehl
-							aktuellesGesamtErgebnisDesRegelwerk = WeiteresVersandVorgehen.VERSENDEN;
-						}
-						return compareResult;
-					}
-				}, LogicalOperator.EQUAL));
-		EasyMock.expectLastCall().once();
-		EasyMock.replay(regelwerk);
-
-		// Test beginnen
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Horst Senkel", eingangskorb,
-				terminnotizEingangskorb, zwischenablagekorb, assistenzkorb,
-				ausgangskorb, regelwerk);
-
 		sachbearbeiter.beginneArbeit();
-		// Warte bis der Bearbeiter fertig sein müsste...
-		for (int zaehler = 0; zaehler < 3000; zaehler += 10) {
-			Thread.sleep(10);
-			if (eineMappeIstfertig) {
-				Thread.sleep(10);
-				break;
-			}
-		}
+		notizKorb.ablegen(notiz);
+		Thread.sleep(500);
+
+		Assert.assertTrue(bloedeSensingVariable[0]);
 		sachbearbeiter.beendeArbeit();
 
-		// Ergebnisse in Mappe prüfen
-		Pruefliste prueflisteAusDerMappe = vorgangsmappe.gibPruefliste();
-		assertNotNull(prueflisteAusDerMappe);
-		assertEquals(WeiteresVersandVorgehen.VERSENDEN, prueflisteAusDerMappe
-				.gesamtErgebnis());
-
-		assertEquals(regelwerkskennungDesBenutztenRegelwerkes,
-				prueflisteAusDerMappe.gibRegelwerkskennung());
 	}
 
 	/*
@@ -287,80 +156,234 @@ public class Sachbearbeiter_Test extends
 
 	@Test
 	public void testArbeit() throws InterruptedException {
-		Sachbearbeiter sachbearbeiter = this.getNewInstanceOfClassUnderTest();
-		assertFalse("sachbearbeiter.istAmArbeiten()", sachbearbeiter
+		final Sachbearbeiter sachbearbeiter = this
+				.getNewInstanceOfClassUnderTest();
+		Assert.assertFalse("sachbearbeiter.istAmArbeiten()", sachbearbeiter
 				.istAmArbeiten());
 		sachbearbeiter.beginneArbeit();
-		assertTrue("sachbearbeiter.istAmArbeiten()", sachbearbeiter
+		Assert.assertTrue("sachbearbeiter.istAmArbeiten()", sachbearbeiter
 				.istAmArbeiten());
 		sachbearbeiter.beendeArbeit();
 		Thread.sleep(100);
-		assertFalse("sachbearbeiter.istAmArbeiten()", sachbearbeiter
+		Assert.assertFalse("sachbearbeiter.istAmArbeiten()", sachbearbeiter
 				.istAmArbeiten());
 	}
 
-	private WeiteresVersandVorgehen aktuellesGesamtErgebnisDesRegelwerk;
-	private AlarmNachricht alarmNachricht;
+	@Test
+	public void testBearbeiteNeuenVorgang() throws UnknownHostException,
+			InterruptedException {
+		this.mocksAufIgnorierenSetzen();
 
-	@Override
-	protected Sachbearbeiter getNewInstanceOfClassUnderTest() {
-		mocksAufIgnorierenSetzen();
-
-		String name = "Horst Senkel";
-		return erzeugeSachbearbeiter(name);
-	}
-
-	private void mocksAufIgnorierenSetzen() {
-		eingangskorb = null;
-		zwischenablagekorb = null;
-		terminnotizEingangskorb = null;
-		ausgangskorb = null;
-		regelwerk = null;
-		assistenzkorb = null;
-	}
-
-	private Sachbearbeiter erzeugeSachbearbeiter(String name) {
-		return new Sachbearbeiter(new DefaultExecutionService(), name,
+		final StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
+		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
+		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
 				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(),
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(),
-				new StandardAblagekorb<Vorgangsmappe>(), new StandardRegelwerk(
-						Regelwerkskennung.valueOf()));
-	}
+				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
+				ausgangskorb,
+				new StandardRegelwerk(Regelwerkskennung.valueOf()));
 
-	@Override
-	protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() {
-		mocksAufIgnorierenSetzen();
-		return new Object();
-	}
+		final WeiteresVersandVorgehen[] gesammt = new WeiteresVersandVorgehen[] { WeiteresVersandVorgehen.ERNEUT_PRUEFEN };
 
-	@Override
-	protected Sachbearbeiter[] getThreeDiffrentNewInstanceOfClassUnderTest() {
-		mocksAufIgnorierenSetzen();
-		return new Sachbearbeiter[] { erzeugeSachbearbeiter("1"),
-				erzeugeSachbearbeiter("2"), erzeugeSachbearbeiter("3") };
+		final Vorgangsmappe vorgangsmappe = new Vorgangsmappe(
+				Vorgangsmappenkennung.valueOf(InetAddress
+						.getByName("127.0.0.1"), new Date(12345)),
+				new AlarmNachricht("Alarm")) {
+			private Pruefliste pruefliste = new Test_Pruefliste(
+					Regelwerkskennung.valueOf()) {
+				@Override
+				public WeiteresVersandVorgehen gesamtErgebnis() {
+					return gesammt[0];
+				}
+			};
+
+			@Override
+			public Pruefliste gibPruefliste() {
+				return this.pruefliste;
+			}
+
+			@Override
+			public void setzePruefliste(Pruefliste pruefliste) {
+
+			}
+		};
+		sachbearbeiter.bearbeiteNeuenVorgang(vorgangsmappe);
+		Assert.assertEquals(vorgangsmappe, ablage.entnehmeAeltestenEingang());
+		final Terminnotiz notiz = notizKorb.entnehmeAeltestenEingang();
+		Assert.assertNotNull(notiz);
+		Assert.assertEquals(vorgangsmappe.gibMappenkennung(), notiz
+				.gibVorgangsmappenkennung());
+
+		gesammt[0] = WeiteresVersandVorgehen.NICHT_VERSENDEN;
+		sachbearbeiter.bearbeiteNeuenVorgang(vorgangsmappe);
+		Assert.assertEquals(vorgangsmappe, ausgangskorb
+				.entnehmeAeltestenEingang());
+
 	}
 
 	@Test
-	public void testGibNamen() {
-		mocksAufIgnorierenSetzen();
-		Sachbearbeiter[] sachbearbeiter = getThreeDiffrentNewInstanceOfClassUnderTest();
-		assertEquals("1", sachbearbeiter[0].gibName());
-		assertEquals("2", sachbearbeiter[1].gibName());
-		assertEquals("3", sachbearbeiter[2].gibName());
+	public void testBearbeiteOffeneVorgaenge() throws InterruptedException,
+			UnknownHostException {
+		this.mocksAufIgnorierenSetzen();
+
+		final StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
+		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
+		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Terminnotiz>(), zwischenablage,
+				notizKorb, ausgangskorb, new StandardRegelwerk(
+						Regelwerkskennung.valueOf()));
+
+		Vorgangsmappenkennung vorgangsmappenkennung = Vorgangsmappenkennung
+				.valueOf(InetAddress.getByName("127.0.0.8"), new Date(6789));
+		vorgangsmappenkennung = Vorgangsmappenkennung.valueOf(
+				vorgangsmappenkennung, "Fritz");
+
+		final Vorgangsmappe vorgangsmappe2 = new Vorgangsmappe(
+				vorgangsmappenkennung, this.alarmNachricht);
+		this.vorgangsmappe.setzePruefliste(new Test_Pruefliste(
+				Regelwerkskennung.valueOf()) {
+			@Override
+			public WeiteresVersandVorgehen gesamtErgebnis() {
+				return WeiteresVersandVorgehen.VERSENDEN;
+			}
+
+			@Override
+			public boolean hatSichGeaendert() {
+				return true;
+			}
+		});
+		zwischenablage.ablegen(this.vorgangsmappe);
+
+		sachbearbeiter.bearbeiteOffeneVorgaenge(vorgangsmappe2);
+
+		/*
+		 * Pruefe, dass uebergebene Vorgangsmappe ordentlich abgearbeitet und
+		 * aus der Zwischenablage in den Ausgangskorb gelegt wurde
+		 */
+		Vorgangsmappe mappeImAusgang = ausgangskorb.entnehmeAeltestenEingang();
+		Assert.assertNotNull(mappeImAusgang);
+		Assert.assertEquals(this.vorgangsmappe, mappeImAusgang);
+		mappeImAusgang = ausgangskorb.entnehmeAeltestenEingang();
+		Assert.assertNotNull(mappeImAusgang);
+		Assert.assertEquals(vorgangsmappe2, mappeImAusgang);
+		Assert.assertFalse(zwischenablage.istEnthalten(vorgangsmappe2));
+		Assert.assertFalse(zwischenablage.istEnthalten(this.vorgangsmappe));
+
+		// weiterer weg
+		this.vorgangsmappe.setzePruefliste(new Test_Pruefliste(
+				Regelwerkskennung.valueOf()) {
+			@Override
+			public WeiteresVersandVorgehen gesamtErgebnis() {
+				return WeiteresVersandVorgehen.ERNEUT_PRUEFEN;
+			}
+
+			@Override
+			public boolean hatSichGeaendert() {
+				return true;
+			}
+		});
+
+		zwischenablage.ablegen(this.vorgangsmappe);
+		sachbearbeiter.bearbeiteOffeneVorgaenge(vorgangsmappe2);
+
+		Assert.assertFalse(ausgangskorb.istEnthalten(this.vorgangsmappe));
+		mappeImAusgang = ausgangskorb.entnehmeAeltestenEingang();
+		Assert.assertNotNull(mappeImAusgang);
+		Assert.assertEquals(vorgangsmappe2, mappeImAusgang);
+		Assert.assertFalse(zwischenablage.istEnthalten(vorgangsmappe2));
+		mappeImAusgang = zwischenablage.entnehmeAeltestenEingang();
+		Assert.assertNotNull(mappeImAusgang);
+		Assert.assertEquals(this.vorgangsmappe, mappeImAusgang);
+
+		this.vorgangsmappe.setzePruefliste(new Test_Pruefliste(
+				Regelwerkskennung.valueOf()) {
+			@Override
+			public WeiteresVersandVorgehen gesamtErgebnis() {
+				return WeiteresVersandVorgehen.ERNEUT_PRUEFEN;
+			}
+
+			@Override
+			public boolean hatSichGeaendert() {
+				return false;
+			}
+		});
+
+		zwischenablage.ablegen(this.vorgangsmappe);
+		sachbearbeiter.bearbeiteOffeneVorgaenge(vorgangsmappe2);
+
+		Assert.assertFalse(ausgangskorb.istEnthalten(this.vorgangsmappe));
+		Assert.assertFalse(ausgangskorb.istEnthalten(vorgangsmappe2));
+		Assert.assertFalse(zwischenablage.istEnthalten(vorgangsmappe2));
+		Assert.assertTrue(zwischenablage.istEnthalten(this.vorgangsmappe));
+	}
+
+	@Test
+	public void testBearbeiteTerminNotiz() throws UnknownHostException,
+			InterruptedException {
+		this.mocksAufIgnorierenSetzen();
+
+		final StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
+		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
+		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Fritz",
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
+				ausgangskorb,
+				new StandardRegelwerk(Regelwerkskennung.valueOf()));
+
+		Terminnotiz terminnotiz = Terminnotiz.valueOf(Vorgangsmappenkennung
+				.valueOf(InetAddress.getByName("127.0.0.8"), new Date(6789)),
+				Millisekunden.valueOf(1000), "Fritz");
+
+		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
+		this.vorgangsmappe.setzePruefliste(new Test_Pruefliste(
+				Regelwerkskennung.valueOf()));
+		ablage.ablegen(this.vorgangsmappe);
+		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
+		terminnotiz = Terminnotiz.valueOf(
+				this.vorgangsmappe.gibMappenkennung(), Millisekunden
+						.valueOf(1000), "Fritz");
+		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
+		final Terminnotiz notiz = notizKorb.entnehmeAeltestenEingang();
+		Assert.assertNotNull(notiz);
+		Assert.assertEquals(this.vorgangsmappe.gibMappenkennung(), notiz
+				.gibVorgangsmappenkennung());
+
+		this.vorgangsmappe.setzePruefliste(new Test_Pruefliste(
+				Regelwerkskennung.valueOf()) {
+			@Override
+			public WeiteresVersandVorgehen gesamtErgebnis() {
+				return WeiteresVersandVorgehen.VERSENDEN;
+			}
+		});
+
+		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
+		final Vorgangsmappe mappeImAusgang = ausgangskorb
+				.entnehmeAeltestenEingang();
+		Assert.assertNotNull(mappeImAusgang);
+		Assert.assertEquals(this.vorgangsmappe, mappeImAusgang);
+		//		
+		// gesammt[0] = WeiteresVersandVorgehen.NICHT_VERSENDEN;
+		// sachbearbeiter.bearbeiteNeuenVorgang(vorgangsmappe);
+		// assertEquals(vorgangsmappe, ausgangskorb.entnehmeAeltestenEingang());
+
 	}
 
 	@Test
 	public void testBearbeiteVorgang() throws InterruptedException {
-		mocksAufIgnorierenSetzen();
+		this.mocksAufIgnorierenSetzen();
 
 		final boolean[] isMethodBearbeiteNeuenVorgangCalled = new boolean[] { false };
 		final boolean[] isMethodBearbeiteOffeneVorgaengeCalled = new boolean[] { false };
 		final boolean[] isMethodBearbeiteTerminNotizCalled = new boolean[] { false };
 		final boolean[] returnBearbeiteOffeneVorgaenge = new boolean[] { false };
 
-		Sachbearbeiter bearbeiter = new Sachbearbeiter(
+		final Sachbearbeiter bearbeiter = new Sachbearbeiter(
 				new DefaultExecutionService(), "Hans",
 				new StandardAblagekorb<Vorgangsmappe>(),
 				new StandardAblagekorb<Terminnotiz>(),
@@ -390,12 +413,12 @@ public class Sachbearbeiter_Test extends
 		};
 
 		// Bearbeite neuen Vorgang
-		bearbeiter.bearbeiteVorgangBeimSachbearbeiter(vorgangsmappe);
-		assertTrue("bearbeiteNeuenVorgang",
+		bearbeiter.bearbeiteVorgangBeimSachbearbeiter(this.vorgangsmappe);
+		Assert.assertTrue("bearbeiteNeuenVorgang",
 				isMethodBearbeiteNeuenVorgangCalled[0]);
-		assertTrue("bearbeiteNeuenVorgang",
+		Assert.assertTrue("bearbeiteNeuenVorgang",
 				isMethodBearbeiteOffeneVorgaengeCalled[0]);
-		assertFalse("bearbeiteNeuenVorgang",
+		Assert.assertFalse("bearbeiteNeuenVorgang",
 				isMethodBearbeiteTerminNotizCalled[0]);
 
 		// Bearbeite offenen Vorgang
@@ -404,12 +427,12 @@ public class Sachbearbeiter_Test extends
 		isMethodBearbeiteTerminNotizCalled[0] = false;
 		returnBearbeiteOffeneVorgaenge[0] = true;
 
-		bearbeiter.bearbeiteVorgangBeimSachbearbeiter(vorgangsmappe);
-		assertFalse("bearbeiteNeuenVorgang",
+		bearbeiter.bearbeiteVorgangBeimSachbearbeiter(this.vorgangsmappe);
+		Assert.assertFalse("bearbeiteNeuenVorgang",
 				isMethodBearbeiteNeuenVorgangCalled[0]);
-		assertTrue("bearbeiteNeuenVorgang",
+		Assert.assertTrue("bearbeiteNeuenVorgang",
 				isMethodBearbeiteOffeneVorgaengeCalled[0]);
-		assertFalse("bearbeiteNeuenVorgang",
+		Assert.assertFalse("bearbeiteNeuenVorgang",
 				isMethodBearbeiteTerminNotizCalled[0]);
 
 		// Bearbeite Notiz
@@ -418,259 +441,259 @@ public class Sachbearbeiter_Test extends
 		isMethodBearbeiteTerminNotizCalled[0] = false;
 		returnBearbeiteOffeneVorgaenge[0] = false;
 
-		Terminnotiz terminnotiz = Terminnotiz.valueOf(vorgangsmappe
+		final Terminnotiz terminnotiz = Terminnotiz.valueOf(this.vorgangsmappe
 				.gibMappenkennung(), Millisekunden.valueOf(1000), bearbeiter
 				.gibName());
 		bearbeiter.bearbeiteVorgangBeimSachbearbeiter(terminnotiz);
-		assertFalse("bearbeiteTerminNotiz",
+		Assert.assertFalse("bearbeiteTerminNotiz",
 				isMethodBearbeiteNeuenVorgangCalled[0]);
-		assertFalse("bearbeiteTerminNotiz",
+		Assert.assertFalse("bearbeiteTerminNotiz",
 				isMethodBearbeiteOffeneVorgaengeCalled[0]);
-		assertTrue("bearbeiteTerminNotiz",
+		Assert.assertTrue("bearbeiteTerminNotiz",
 				isMethodBearbeiteTerminNotizCalled[0]);
 
 		// Fehler fall
-		Ablagefaehig errorAblage = new Ablagefaehig() {
+		final Ablagefaehig errorAblage = new Ablagefaehig() {
 		};
 		try {
 			bearbeiter.bearbeiteVorgangBeimSachbearbeiter(errorAblage);
-			assertFalse(true);
-		} catch (RuntimeException re) {
-			assertTrue(true);
+			Assert.assertFalse(true);
+		} catch (final RuntimeException re) {
+			Assert.assertTrue(true);
 		}
 	}
 
 	@Test
-	public void testBearbeiteNeuenVorgang() throws UnknownHostException,
-			InterruptedException {
-		mocksAufIgnorierenSetzen();
+	public void testGibNamen() {
+		this.mocksAufIgnorierenSetzen();
+		final Sachbearbeiter[] sachbearbeiter = this
+				.getThreeDiffrentNewInstanceOfClassUnderTest();
+		Assert.assertEquals("1", sachbearbeiter[0].gibName());
+		Assert.assertEquals("2", sachbearbeiter[1].gibName());
+		Assert.assertEquals("3", sachbearbeiter[2].gibName());
+	}
 
-		StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
-		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
-		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
-				ausgangskorb,
-				new StandardRegelwerk(Regelwerkskennung.valueOf()));
+	@SuppressWarnings("unchecked")
+	@Test(timeout = 4000)
+	public void testVerarbeiteNachrichtDieSofortEntschiedenWerdenKann()
+			throws Throwable {
+		// Eingangskorb
+		EasyMock.expect(this.eingangskorb.entnehmeAeltestenEingang())
+				.andReturn(this.vorgangsmappe).times(1).andStubAnswer(
+						new IAnswer<Vorgangsmappe>() {
+							public Vorgangsmappe answer() throws Throwable {
+								Sachbearbeiter_Test.this.eineMappeIstfertig = true;
+								Thread.sleep(5000);
+								Assert.fail("Thread sollte längst tot sein.");
+								return null;
+							}
+						});
+		EasyMock.replay(this.eingangskorb);
 
-		final WeiteresVersandVorgehen[] gesammt = new WeiteresVersandVorgehen[] { WeiteresVersandVorgehen.ERNEUT_PRUEFEN };
+		// Ausgangskorb
+		final Comparator<Vorgangsmappe> vorlagenMappenComparator = new IdComparator<Vorgangsmappe>();// Die
+		// gleiche
+		// Mappe
+		// kam raus, d.h.
+		// ich kann die
+		// von mir refenzierte Mappe auf das Ergebnix ;)
+		// prüfen.
+		this.ausgangskorb.ablegen(EasyMock.cmp(this.vorgangsmappe,
+				vorlagenMappenComparator, LogicalOperator.EQUAL));
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(this.ausgangskorb);
 
-		Vorgangsmappe vorgangsmappe = new Vorgangsmappe(Vorgangsmappenkennung
-				.valueOf(InetAddress.getByName("127.0.0.1"), new Date(12345)),
-				new AlarmNachricht("Alarm")) {
-			private Pruefliste pruefliste = new Test_Pruefliste(
-					Regelwerkskennung.valueOf()) {
-				@Override
-				public WeiteresVersandVorgehen gesamtErgebnis() {
-					return gesammt[0];
-				}
-			};
+		// Zwischenablage
+		EasyMock.expect(this.zwischenablagekorb.iterator()).andReturn(
+				new Iterator<Vorgangsmappe>() {
+					public boolean hasNext() {
+						return false;
+					}
 
+					public Vorgangsmappe next() {
+						Assert.fail();
+						return null;
+					}
+
+					public void remove() {
+						Assert.fail();
+					}
+				});
+		EasyMock.replay(this.zwischenablagekorb);
+
+		// Korb der Assistenz
+		EasyMock.replay(this.assistenzkorb);
+
+		// eingangsKorb für notizen
+		EasyMock
+				.expect(this.terminnotizEingangskorb.entnehmeAeltestenEingang())
+				.andStubAnswer(new IAnswer<Terminnotiz>() {
+					public Terminnotiz answer() throws Throwable {
+						Sachbearbeiter_Test.this.eineMappeIstfertig = true;
+						Thread.sleep(5000);
+						Assert.fail("Thread sollte längst tot sein.");
+						return null;
+					}
+				});
+		EasyMock.replay(this.terminnotizEingangskorb);
+
+		// Regelwerk
+		this.aktuellesGesamtErgebnisDesRegelwerk = WeiteresVersandVorgehen.NOCH_NICHT_GEPRUEFT;
+		final Regelwerkskennung regelwerkskennungDesBenutztenRegelwerkes = Regelwerkskennung
+				.valueOf();
+		final Pruefliste pruefliste = new Test_Pruefliste(
+				regelwerkskennungDesBenutztenRegelwerkes) {
 			@Override
-			public void setzePruefliste(Pruefliste pruefliste) {
-
+			public WeiteresVersandVorgehen gesamtErgebnis() {
+				return Sachbearbeiter_Test.this.aktuellesGesamtErgebnisDesRegelwerk;
 			}
 
 			@Override
-			public Pruefliste gibPruefliste() {
-				return pruefliste;
+			public Millisekunden gibMillisekundenBisZurNaechstenPruefung() {
+				Assert.fail();
+				return null;
 			}
 		};
-		sachbearbeiter.bearbeiteNeuenVorgang(vorgangsmappe);
-		assertEquals(vorgangsmappe, ablage.entnehmeAeltestenEingang());
-		Terminnotiz notiz = notizKorb.entnehmeAeltestenEingang();
-		assertNotNull(notiz);
-		assertEquals(vorgangsmappe.gibMappenkennung(), notiz
-				.gibVorgangsmappenkennung());
 
-		gesammt[0] = WeiteresVersandVorgehen.NICHT_VERSENDEN;
-		sachbearbeiter.bearbeiteNeuenVorgang(vorgangsmappe);
-		assertEquals(vorgangsmappe, ausgangskorb.entnehmeAeltestenEingang());
+		EasyMock.expect(this.regelwerk.gibNeueLeerePruefliste()).andReturn(
+				pruefliste);
+		this.regelwerk.pruefeNachrichtErstmalig(EasyMock.cmp(
+				this.alarmNachricht, new IdComparator<AlarmNachricht>(),
+				LogicalOperator.EQUAL), EasyMock.cmp(pruefliste,
+				new IdComparator<Pruefliste>() {
+					@Override
+					public int compare(final Pruefliste expected,
+							final Pruefliste actual) {
+						final int compareResult = super.compare(expected,
+								actual);
+						if (compareResult == 0) {
+							// TODO aktuell wird diese Zeile nicht aufgerufen,
+							// dadurch schlägt der Test fehl
+							Sachbearbeiter_Test.this.aktuellesGesamtErgebnisDesRegelwerk = WeiteresVersandVorgehen.VERSENDEN;
+						}
+						return compareResult;
+					}
+				}, LogicalOperator.EQUAL));
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(this.regelwerk);
 
-	}
-
-	@Test
-	public void testBearbeiteTerminNotiz() throws UnknownHostException,
-			InterruptedException {
-		mocksAufIgnorierenSetzen();
-
-		StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
-		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
-		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
-				ausgangskorb,
-				new StandardRegelwerk(Regelwerkskennung.valueOf()));
-
-		Terminnotiz terminnotiz = Terminnotiz.valueOf(Vorgangsmappenkennung
-				.valueOf(InetAddress.getByName("127.0.0.8"), new Date(6789)),
-				Millisekunden.valueOf(1000), "Fritz");
-
-		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
-		vorgangsmappe.setzePruefliste(new Test_Pruefliste(Regelwerkskennung
-				.valueOf()));
-		ablage.ablegen(vorgangsmappe);
-		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
-		terminnotiz = Terminnotiz.valueOf(vorgangsmappe.gibMappenkennung(),
-				Millisekunden.valueOf(1000), "Fritz");
-		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
-		Terminnotiz notiz = notizKorb.entnehmeAeltestenEingang();
-		assertNotNull(notiz);
-		assertEquals(vorgangsmappe.gibMappenkennung(), notiz
-				.gibVorgangsmappenkennung());
-
-		vorgangsmappe.setzePruefliste(new Test_Pruefliste(Regelwerkskennung
-				.valueOf()) {
-			@Override
-			public WeiteresVersandVorgehen gesamtErgebnis() {
-				return WeiteresVersandVorgehen.VERSENDEN;
-			}
-		});
-
-		sachbearbeiter.bearbeiteTerminNotiz(terminnotiz);
-		Vorgangsmappe mappeImAusgang = ausgangskorb.entnehmeAeltestenEingang();
-		assertNotNull(mappeImAusgang);
-		assertEquals(vorgangsmappe, mappeImAusgang);
-		//		
-		// gesammt[0] = WeiteresVersandVorgehen.NICHT_VERSENDEN;
-		// sachbearbeiter.bearbeiteNeuenVorgang(vorgangsmappe);
-		// assertEquals(vorgangsmappe, ausgangskorb.entnehmeAeltestenEingang());
-
-	}
-
-	@Test
-	public void testBearbeiteOffeneVorgaenge() throws InterruptedException,
-			UnknownHostException {
-		mocksAufIgnorierenSetzen();
-
-		StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
-		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
-		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(), zwischenablage,
-				notizKorb, ausgangskorb, new StandardRegelwerk(
-						Regelwerkskennung.valueOf()));
-
-		Vorgangsmappenkennung vorgangsmappenkennung = Vorgangsmappenkennung
-				.valueOf(InetAddress.getByName("127.0.0.8"), new Date(6789));
-		vorgangsmappenkennung = Vorgangsmappenkennung.valueOf(
-				vorgangsmappenkennung, "Fritz");
-
-		Vorgangsmappe vorgangsmappe2 = new Vorgangsmappe(vorgangsmappenkennung,
-				alarmNachricht);
-		vorgangsmappe.setzePruefliste(new Test_Pruefliste(Regelwerkskennung
-				.valueOf()) {
-			public WeiteresVersandVorgehen gesamtErgebnis() {
-				return WeiteresVersandVorgehen.VERSENDEN;
-			}
-
-			@Override
-			public boolean hatSichGeaendert() {
-				return true;
-			}
-		});
-		zwischenablage.ablegen(vorgangsmappe);
-
-		sachbearbeiter.bearbeiteOffeneVorgaenge(vorgangsmappe2);
-
-		/*
-		 * Pruefe, dass uebergebene Vorgangsmappe ordentlich abgearbeitet und
-		 * aus der Zwischenablage in den Ausgangskorb gelegt wurde
-		 */
-		Vorgangsmappe mappeImAusgang = ausgangskorb.entnehmeAeltestenEingang();
-		assertNotNull(mappeImAusgang);
-		assertEquals(vorgangsmappe, mappeImAusgang);
-		mappeImAusgang = ausgangskorb.entnehmeAeltestenEingang();
-		assertNotNull(mappeImAusgang);
-		assertEquals(vorgangsmappe2, mappeImAusgang);
-		assertFalse(zwischenablage.istEnthalten(vorgangsmappe2));
-		assertFalse(zwischenablage.istEnthalten(vorgangsmappe));
-
-		// weiterer weg
-		vorgangsmappe.setzePruefliste(new Test_Pruefliste(Regelwerkskennung
-				.valueOf()) {
-			public WeiteresVersandVorgehen gesamtErgebnis() {
-				return WeiteresVersandVorgehen.ERNEUT_PRUEFEN;
-			}
-
-			@Override
-			public boolean hatSichGeaendert() {
-				return true;
-			}
-		});
-
-		zwischenablage.ablegen(vorgangsmappe);
-		sachbearbeiter.bearbeiteOffeneVorgaenge(vorgangsmappe2);
-
-		assertFalse(ausgangskorb.istEnthalten(vorgangsmappe));
-		mappeImAusgang = ausgangskorb.entnehmeAeltestenEingang();
-		assertNotNull(mappeImAusgang);
-		assertEquals(vorgangsmappe2, mappeImAusgang);
-		assertFalse(zwischenablage.istEnthalten(vorgangsmappe2));
-		mappeImAusgang = zwischenablage.entnehmeAeltestenEingang();
-		assertNotNull(mappeImAusgang);
-		assertEquals(vorgangsmappe, mappeImAusgang);
-
-		vorgangsmappe.setzePruefliste(new Test_Pruefliste(Regelwerkskennung
-				.valueOf()) {
-			public WeiteresVersandVorgehen gesamtErgebnis() {
-				return WeiteresVersandVorgehen.ERNEUT_PRUEFEN;
-			}
-
-			@Override
-			public boolean hatSichGeaendert() {
-				return false;
-			}
-		});
-
-		zwischenablage.ablegen(vorgangsmappe);
-		sachbearbeiter.bearbeiteOffeneVorgaenge(vorgangsmappe2);
-
-		assertFalse(ausgangskorb.istEnthalten(vorgangsmappe));
-		assertFalse(ausgangskorb.istEnthalten(vorgangsmappe2));
-		assertFalse(zwischenablage.istEnthalten(vorgangsmappe2));
-		assertTrue(zwischenablage.istEnthalten(vorgangsmappe));
-	}
-
-	@Test
-	public void testachteAufTerminnotizEingaenge() throws InterruptedException {
-		mocksAufIgnorierenSetzen();
-
-		StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
-		StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
-		StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
-		final boolean[] bloedeSensingVariable = { false };
-		final Terminnotiz notiz = Terminnotiz.valueOf(vorgangsmappe
-				.gibMappenkennung(), Millisekunden.valueOf(100), "Fritz");
-		Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(), notizKorb,
-				zwischenablage, new StandardAblagekorb<Terminnotiz>(),
-				ausgangskorb,
-				new StandardRegelwerk(Regelwerkskennung.valueOf())) {
-
-			@Override
-			protected void bearbeiteVorgangBeimSachbearbeiter(
-					Ablagefaehig eingang) throws InterruptedException {
-				bloedeSensingVariable[0] = true;
-
-				assertTrue(eingang instanceof Terminnotiz);
-				assertTrue(notiz == eingang);
-			}
-		};
+		// Test beginnen
+		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
+				new DefaultExecutionService(), "Horst Senkel",
+				this.eingangskorb, this.terminnotizEingangskorb,
+				this.zwischenablagekorb, this.assistenzkorb, this.ausgangskorb,
+				this.regelwerk);
 
 		sachbearbeiter.beginneArbeit();
-		notizKorb.ablegen(notiz);
-		Thread.sleep(500);
-
-		assertTrue(bloedeSensingVariable[0]);
+		// Warte bis der Bearbeiter fertig sein müsste...
+		for (int zaehler = 0; zaehler < 3000; zaehler += 10) {
+			Thread.sleep(10);
+			if (this.eineMappeIstfertig) {
+				Thread.sleep(10);
+				break;
+			}
+		}
 		sachbearbeiter.beendeArbeit();
 
+		// Ergebnisse in Mappe prüfen
+		final Pruefliste prueflisteAusDerMappe = this.vorgangsmappe
+				.gibPruefliste();
+		Assert.assertNotNull(prueflisteAusDerMappe);
+		Assert.assertEquals(WeiteresVersandVorgehen.VERSENDEN,
+				prueflisteAusDerMappe.gesamtErgebnis());
+
+		Assert.assertEquals(regelwerkskennungDesBenutztenRegelwerkes,
+				prueflisteAusDerMappe.gibRegelwerkskennung());
+	}
+
+	@Override
+	protected Sachbearbeiter getNewInstanceOfClassUnderTest() {
+		this.mocksAufIgnorierenSetzen();
+
+		final String name = "Horst Senkel";
+		return this.erzeugeSachbearbeiter(name);
+	}
+
+	@Override
+	protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() {
+		this.mocksAufIgnorierenSetzen();
+		return new Object();
+	}
+
+	@Override
+	protected Sachbearbeiter[] getThreeDiffrentNewInstanceOfClassUnderTest() {
+		this.mocksAufIgnorierenSetzen();
+		return new Sachbearbeiter[] { this.erzeugeSachbearbeiter("1"),
+				this.erzeugeSachbearbeiter("2"),
+				this.erzeugeSachbearbeiter("3") };
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Before
+	protected void setUp() throws Exception {
+		super.setUp();
+		this.eingangskorb = EasyMock.createMock(Eingangskorb.class);
+		this.zwischenablagekorb = EasyMock.createMock(Zwischenablagekorb.class);
+		this.assistenzkorb = EasyMock.createMock(Ausgangskorb.class);
+		this.terminnotizEingangskorb = EasyMock.createMock(Eingangskorb.class);
+		this.ausgangskorb = EasyMock.createMock(Ausgangskorb.class);
+		this.regelwerk = EasyMock.createMock(Regelwerk.class);
+
+		this.eineMappeIstfertig = false;
+
+		this.alarmNachricht = new AlarmNachricht(/*
+													 * Die ist egal, weil wir
+													 * hier true testen
+													 */"Test-Nachricht");
+
+		this.vorgangsmappe = new Vorgangsmappe(Vorgangsmappenkennung.valueOf(
+				InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }),
+				new Date(123456)), this.alarmNachricht);
+	}
+
+	@Override
+	@After
+	protected void tearDown() throws Exception {
+		if (this.eingangskorb != null) {
+			EasyMock.verify(this.eingangskorb);
+		}
+		if (this.zwischenablagekorb != null) {
+			EasyMock.verify(this.zwischenablagekorb);
+		}
+		if (this.assistenzkorb != null) {
+			EasyMock.verify(this.assistenzkorb);
+		}
+		if (this.terminnotizEingangskorb != null) {
+			EasyMock.verify(this.terminnotizEingangskorb);
+		}
+		if (this.ausgangskorb != null) {
+			EasyMock.verify(this.ausgangskorb);
+		}
+		if (this.regelwerk != null) {
+			EasyMock.verify(this.regelwerk);
+		}
+		this.vorgangsmappe = null;
+		this.alarmNachricht = null;
+		super.tearDown();
+	}
+
+	private Sachbearbeiter erzeugeSachbearbeiter(final String name) {
+		return new Sachbearbeiter(new DefaultExecutionService(), name,
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Terminnotiz>(),
+				new StandardAblagekorb<Vorgangsmappe>(),
+				new StandardAblagekorb<Terminnotiz>(),
+				new StandardAblagekorb<Vorgangsmappe>(), new StandardRegelwerk(
+						Regelwerkskennung.valueOf()));
+	}
+
+	private void mocksAufIgnorierenSetzen() {
+		this.eingangskorb = null;
+		this.zwischenablagekorb = null;
+		this.terminnotizEingangskorb = null;
+		this.ausgangskorb = null;
+		this.regelwerk = null;
+		this.assistenzkorb = null;
 	}
 }

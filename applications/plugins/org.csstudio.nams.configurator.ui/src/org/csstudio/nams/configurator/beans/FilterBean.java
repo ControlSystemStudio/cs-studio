@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	public static enum PropertyNames {
@@ -17,9 +16,104 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	private String defaultMessage;
 	private List<FilterbedingungBean> conditions = new LinkedList<FilterbedingungBean>();
 	private List<FilterAction> filterActions = new LinkedList<FilterAction>();
-	
+
 	public FilterBean() {
-		filterID = -1;
+		this.filterID = -1;
+	}
+
+	public void addFilterAction(final FilterAction action) {
+		this.filterActions.add(action);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final FilterBean other = (FilterBean) obj;
+		if (this.conditions == null) {
+			if (other.conditions != null) {
+				return false;
+			}
+		} else if (!this.conditions.equals(other.conditions)) {
+			return false;
+		}
+		if (this.defaultMessage == null) {
+			if (other.defaultMessage != null) {
+				return false;
+			}
+		} else if (!this.defaultMessage.equals(other.defaultMessage)) {
+			return false;
+		}
+		if (this.filterActions == null) {
+			if (other.filterActions != null) {
+				return false;
+			}
+		} else if (!this.filterActions.equals(other.filterActions)) {
+			return false;
+		}
+		if (this.filterID != other.filterID) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		return true;
+	}
+
+	public List<FilterAction> getActions() {
+
+		// //FIXME remove
+		// if (filterActions.size() == 0) {
+		// AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new
+		// AlarmbearbeiterFilterAction();
+		// AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
+		// alarmbearbeiterBean.setName("Der Bubu");
+		// alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
+		// alarmbearbeiterFilterAction.setType(alarmbearbeiterFilterAction.getFilterActionTypeValues()[0]);
+		// filterActions.add(alarmbearbeiterFilterAction);
+		// }
+		return this.filterActions;
+	}
+
+	/**
+	 * returns a list of an and combined {@link FilterbedingungBean} list. this
+	 * is done for backwards compatibility
+	 * 
+	 * @return
+	 */
+	public List<FilterbedingungBean> getConditions() {
+		return new LinkedList<FilterbedingungBean>(this.conditions);
+	}
+
+	public String getDefaultMessage() {
+		return this.defaultMessage;
+	}
+
+	public String getDisplayName() {
+		return this.getName() != null ? this.getName() : "(ohne Namen)";
+	}
+
+	public int getFilterID() {
+		return this.filterID;
+	}
+
+	public int getID() {
+		return this.getFilterID();
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	@Override
@@ -27,164 +121,83 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((conditions == null) ? 0 : conditions.hashCode());
+				+ ((this.conditions == null) ? 0 : this.conditions.hashCode());
+		result = prime
+				* result
+				+ ((this.defaultMessage == null) ? 0 : this.defaultMessage
+						.hashCode());
+		result = prime
+				* result
+				+ ((this.filterActions == null) ? 0 : this.filterActions
+						.hashCode());
+		result = prime * result + this.filterID;
 		result = prime * result
-				+ ((defaultMessage == null) ? 0 : defaultMessage.hashCode());
-		result = prime * result
-				+ ((filterActions == null) ? 0 : filterActions.hashCode());
-		result = prime * result + filterID;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+				+ ((this.name == null) ? 0 : this.name.hashCode());
 		return result;
 	}
 
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final FilterBean other = (FilterBean) obj;
-		if (conditions == null) {
-			if (other.conditions != null)
-				return false;
-		} else if (!conditions.equals(other.conditions))
-			return false;
-		if (defaultMessage == null) {
-			if (other.defaultMessage != null)
-				return false;
-		} else if (!defaultMessage.equals(other.defaultMessage))
-			return false;
-		if (filterActions == null) {
-			if (other.filterActions != null)
-				return false;
-		} else if (!filterActions.equals(other.filterActions))
-			return false;
-		if (filterID != other.filterID)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+	public void setConditions(final List<FilterbedingungBean> conditions) {
+		final List<FilterbedingungBean> oldValue = this.conditions;
+		this.conditions = conditions;
+		Collections.sort(this.conditions);
+		this.pcs.firePropertyChange(PropertyNames.conditions.name(), oldValue,
+				conditions);
 	}
 
-
-
-	public int getFilterID() {
-		return filterID;
-	}
-
-	public void setFilterID(int filterID) {
-		int oldValue = getFilterID();
-		this.filterID = filterID;
-		pcs.firePropertyChange(
-				PropertyNames.filterID.name(), oldValue,
-				getFilterID());
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		String oldValue = getName();
-		this.name = name;
-		pcs.firePropertyChange(PropertyNames.name
-				.name(), oldValue, getName());
-	}
-
-	public String getDefaultMessage() {
-		return defaultMessage;
-	}
-
-	public void setDefaultMessage(String defaultMessage) {
-		String oldValue = getDefaultMessage();
+	public void setDefaultMessage(final String defaultMessage) {
+		final String oldValue = this.getDefaultMessage();
 		this.defaultMessage = defaultMessage;
-		pcs.firePropertyChange(
-				PropertyNames.defaultMessage.name(), oldValue,
-				getDefaultMessage());
+		this.pcs.firePropertyChange(PropertyNames.defaultMessage.name(),
+				oldValue, this.getDefaultMessage());
 	}
 
-	public String getDisplayName() {
-		return getName() != null ? getName() : "(ohne Namen)";
+	public void setFilterID(final int filterID) {
+		final int oldValue = this.getFilterID();
+		this.filterID = filterID;
+		this.pcs.firePropertyChange(PropertyNames.filterID.name(), oldValue,
+				this.getFilterID());
+	}
+
+	public void setID(final int id) {
+		this.setFilterID(id);
+	}
+
+	public void setName(final String name) {
+		final String oldValue = this.getName();
+		this.name = name;
+		this.pcs.firePropertyChange(PropertyNames.name.name(), oldValue, this
+				.getName());
 	}
 
 	@Override
-	protected void doUpdateState(FilterBean bean) {
-		setDefaultMessage(bean.getDefaultMessage());
-		setName(bean.getName());
-		setFilterID(bean.getFilterID());
-		
-		List<FilterbedingungBean> cloneList = new LinkedList<FilterbedingungBean>();
-		List<FilterbedingungBean> list = bean.getConditions();
-		for (FilterbedingungBean filterbedingungBean : list) {
+	public String toString() {
+		return this.getDisplayName();
+	}
+
+	@Override
+	protected void doUpdateState(final FilterBean bean) {
+		this.setDefaultMessage(bean.getDefaultMessage());
+		this.setName(bean.getName());
+		this.setFilterID(bean.getFilterID());
+
+		final List<FilterbedingungBean> cloneList = new LinkedList<FilterbedingungBean>();
+		final List<FilterbedingungBean> list = bean.getConditions();
+		for (final FilterbedingungBean filterbedingungBean : list) {
 			cloneList.add(filterbedingungBean.getClone());
 		}
-		setConditions(cloneList);
-		
-		LinkedList<FilterAction> cloneActions = new LinkedList<FilterAction>();
-		List<FilterAction> actions = bean.getActions();
-		for (FilterAction filterAction : actions) {
+		this.setConditions(cloneList);
+
+		final LinkedList<FilterAction> cloneActions = new LinkedList<FilterAction>();
+		final List<FilterAction> actions = bean.getActions();
+		for (final FilterAction filterAction : actions) {
 			try {
 				cloneActions.add((FilterAction) filterAction.clone());
-			} catch (CloneNotSupportedException e) {
+			} catch (final CloneNotSupportedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 		this.filterActions = cloneActions;
-	}
-
-	public int getID() {
-		return this.getFilterID();
-	}
-	
-	@Override
-	public String toString() {
-		return getDisplayName();
-	}
-
-	public void setID(int id) {
-		setFilterID(id);
-	}
-
-	/**
-	 * returns a list of an and combined {@link FilterbedingungBean} list.
-	 *  this is done for backwards compatibility
-	 * @return
-	 */
-	public List<FilterbedingungBean> getConditions() {
-		return new LinkedList<FilterbedingungBean>(this.conditions);
-	}
-
-	public void setConditions(List<FilterbedingungBean> conditions) {
-		List<FilterbedingungBean> oldValue = this.conditions;
-		this.conditions = conditions;
-		Collections.sort(this.conditions);
-		pcs.firePropertyChange(PropertyNames.conditions.name(), oldValue, conditions);
-	}
-
-	public List<FilterAction> getActions() {
-		
-//		//FIXME remove
-//		if (filterActions.size() == 0) {
-//			AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
-//			AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
-//			alarmbearbeiterBean.setName("Der Bubu");
-//			alarmbearbeiterFilterAction.setReceiver(alarmbearbeiterBean);
-//			alarmbearbeiterFilterAction.setType(alarmbearbeiterFilterAction.getFilterActionTypeValues()[0]);
-//			filterActions.add(alarmbearbeiterFilterAction);
-//		}
-		return filterActions;
-	}
-
-	public void addFilterAction(FilterAction action) {
-		this.filterActions.add(action);
 	}
 }

@@ -8,29 +8,29 @@ import org.easymock.IAnswer;
 
 public interface IMocksControlState extends ILegacyMethods {
 
-	Object invoke(Invocation invocation) throws Throwable;
-
-	void assertRecordState();
+	void andAnswer(IAnswer answer);
 
 	void andReturn(Object value);
 
-	void andThrow(Throwable throwable);
-
-	void andAnswer(IAnswer answer);
+	void andStubAnswer(IAnswer answer);
 
 	void andStubReturn(Object value);
 
 	void andStubThrow(Throwable throwable);
 
-	void andStubAnswer(IAnswer answer);
+	void andThrow(Throwable throwable);
+
+	void assertRecordState();
 
 	void asStub();
 
-	void times(Range range);
-
 	void checkOrder(boolean value);
 
+	Object invoke(Invocation invocation) throws Throwable;
+
 	void replay();
+
+	void times(Range range);
 
 	void verify();
 }

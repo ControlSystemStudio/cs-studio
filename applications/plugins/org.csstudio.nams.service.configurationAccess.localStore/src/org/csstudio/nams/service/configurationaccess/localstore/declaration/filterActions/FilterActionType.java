@@ -2,7 +2,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration.fil
 
 import org.csstudio.nams.common.material.regelwerk.HoldsAnDatabaseId;
 
-public interface FilterActionType extends HoldsAnDatabaseId{
+public interface FilterActionType extends HoldsAnDatabaseId {
 
 	public String getDescription();
 }

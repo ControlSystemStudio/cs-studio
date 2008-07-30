@@ -6,25 +6,26 @@ public enum PreferenceServiceFilterKeys implements HoldsAPreferenceId {
 	private String _key;
 	private String _description;
 
-	private PreferenceServiceFilterKeys(String key, String description) {
-		_key = key;
-		_description = description;
-	}
-	
-	private PreferenceServiceFilterKeys(String key) {
+	private PreferenceServiceFilterKeys(final String key) {
 		this(key, "Description not available");
 	}
-	
-	public String getKey() {
-		return _key;
-	}
-	
-	public String getPreferenceStoreId() {
-		return _key;
+
+	private PreferenceServiceFilterKeys(final String key,
+			final String description) {
+		this._key = key;
+		this._description = description;
 	}
 
 	public String getDescription() {
-		return _description;
+		return this._description;
+	}
+
+	public String getKey() {
+		return this._key;
+	}
+
+	public String getPreferenceStoreId() {
+		return this._key;
 	}
 
 }

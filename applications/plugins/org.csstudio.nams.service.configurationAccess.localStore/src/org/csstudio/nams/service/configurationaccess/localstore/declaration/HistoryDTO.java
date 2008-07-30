@@ -21,7 +21,7 @@ import javax.persistence.Table;
 @Table(name = "AMS_History")
 public class HistoryDTO {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "iHistoryID")
 	private int iHistoryID;
 	@Column(name = "tTimeNew")
@@ -52,94 +52,124 @@ public class HistoryDTO {
 	private String cDestType;
 	@Column(name = "cDestAdress")
 	private String cDestAdress;
-	public int getIHistoryID() {
-		return iHistoryID;
-	}
-	public void setIHistoryID(int historyID) {
-		iHistoryID = historyID;
-	}
-	public long getTTimeNew() {
-		return tTimeNew;
-	}
-	public void setTTimeNew(long timeNew) {
-		tTimeNew = timeNew;
-	}
-	public String getCMsgHost() {
-		return cMsgHost;
-	}
-	public void setCMsgHost(String msgHost) {
-		cMsgHost = msgHost;
-	}
-	public String getCMsgProc() {
-		return cMsgProc;
-	}
-	public void setCMsgProc(String msgProc) {
-		cMsgProc = msgProc;
-	}
-	public String getCMsgName() {
-		return cMsgName;
-	}
-	public void setCMsgName(String msgName) {
-		cMsgName = msgName;
-	}
-	public String getCMsgEventTime() {
-		return cMsgEventTime;
-	}
-	public void setCMsgEventTime(String msgEventTime) {
-		cMsgEventTime = msgEventTime;
-	}
-	public String getCDescription() {
-		return cDescription;
-	}
-	public void setCDescription(String description) {
-		cDescription = description;
-	}
+
 	public String getCActionType() {
-		return cActionType;
+		return this.cActionType;
 	}
-	public void setCActionType(String actionType) {
-		cActionType = actionType;
+
+	public String getCDescription() {
+		return this.cDescription;
 	}
-	public int getIGroupRef() {
-		return iGroupRef;
-	}
-	public void setIGroupRef(int groupRef) {
-		iGroupRef = groupRef;
-	}
-	public String getCGroupName() {
-		return cGroupName;
-	}
-	public void setCGroupName(String groupName) {
-		cGroupName = groupName;
-	}
-	public int getIReceiverPos() {
-		return iReceiverPos;
-	}
-	public void setIReceiverPos(int receiverPos) {
-		iReceiverPos = receiverPos;
-	}
-	public int getIUserRef() {
-		return iUserRef;
-	}
-	public void setIUserRef(int userRef) {
-		iUserRef = userRef;
-	}
-	public String getCUserName() {
-		return cUserName;
-	}
-	public void setCUserName(String userName) {
-		cUserName = userName;
-	}
-	public String getCDestType() {
-		return cDestType;
-	}
-	public void setCDestType(String destType) {
-		cDestType = destType;
-	}
+
 	public String getCDestAdress() {
-		return cDestAdress;
+		return this.cDestAdress;
 	}
-	public void setCDestAdress(String destAdress) {
-		cDestAdress = destAdress;
+
+	public String getCDestType() {
+		return this.cDestType;
+	}
+
+	public String getCGroupName() {
+		return this.cGroupName;
+	}
+
+	public String getCMsgEventTime() {
+		return this.cMsgEventTime;
+	}
+
+	public String getCMsgHost() {
+		return this.cMsgHost;
+	}
+
+	public String getCMsgName() {
+		return this.cMsgName;
+	}
+
+	public String getCMsgProc() {
+		return this.cMsgProc;
+	}
+
+	public String getCUserName() {
+		return this.cUserName;
+	}
+
+	public int getIGroupRef() {
+		return this.iGroupRef;
+	}
+
+	public int getIHistoryID() {
+		return this.iHistoryID;
+	}
+
+	public int getIReceiverPos() {
+		return this.iReceiverPos;
+	}
+
+	public int getIUserRef() {
+		return this.iUserRef;
+	}
+
+	public long getTTimeNew() {
+		return this.tTimeNew;
+	}
+
+	public void setCActionType(final String actionType) {
+		this.cActionType = actionType;
+	}
+
+	public void setCDescription(final String description) {
+		this.cDescription = description;
+	}
+
+	public void setCDestAdress(final String destAdress) {
+		this.cDestAdress = destAdress;
+	}
+
+	public void setCDestType(final String destType) {
+		this.cDestType = destType;
+	}
+
+	public void setCGroupName(final String groupName) {
+		this.cGroupName = groupName;
+	}
+
+	public void setCMsgEventTime(final String msgEventTime) {
+		this.cMsgEventTime = msgEventTime;
+	}
+
+	public void setCMsgHost(final String msgHost) {
+		this.cMsgHost = msgHost;
+	}
+
+	public void setCMsgName(final String msgName) {
+		this.cMsgName = msgName;
+	}
+
+	public void setCMsgProc(final String msgProc) {
+		this.cMsgProc = msgProc;
+	}
+
+	public void setCUserName(final String userName) {
+		this.cUserName = userName;
+	}
+
+	public void setIGroupRef(final int groupRef) {
+		this.iGroupRef = groupRef;
+	}
+
+	public void setIHistoryID(final int historyID) {
+		this.iHistoryID = historyID;
+	}
+
+	public void setIReceiverPos(final int receiverPos) {
+		this.iReceiverPos = receiverPos;
+	}
+
+	public void setIUserRef(final int userRef) {
+		this.iUserRef = userRef;
+	}
+
+	public void setTTimeNew(final long timeNew) {
+		this.tTimeNew = timeNew;
 	}
 }

@@ -6,135 +6,155 @@ import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
 
-	private int filterbedinungID;
-	private String description = "";
-	private String name = "";
-	
-	private FilterConditionAddOnBean filterSpecificBean;
-
 	public static enum PropertyNames {
 		filterbedingungID, description, name, filterSpecificBean
 	}
-	
-	public int getFilterbedinungID() {
-		return filterbedinungID;
-	}
 
-	public void setFilterbedinungID(int filterbedinungID) {
-		int oldValue = this.filterbedinungID;
-		this.filterbedinungID = filterbedinungID;
-		pcs.firePropertyChange(PropertyNames.filterbedingungID.name(), oldValue, filterbedinungID);
-	}
+	private int filterbedinungID;
+	private String description = "";
+
+	private String name = "";
+
+	private FilterConditionAddOnBean filterSpecificBean;
 
 	public FilterbedingungBean() {
-		filterSpecificBean = new StringFilterConditionBean();
-	}
-
-	public String getDisplayName() {
-		return name == null ? "(ohne Namen)" : name;
+		this.filterSpecificBean = new StringFilterConditionBean();
 	}
 
 	@Override
-	protected void doUpdateState(FilterbedingungBean bean) {
-		setDescription(bean.getDescription());
-		setName(bean.getName());
-		setFilterbedinungID(bean.getFilterbedinungID());
-		setFilterSpecificBean((FilterConditionAddOnBean) bean.getFilterSpecificBean());
-
-		if (filterSpecificBean != null) {
-			bean.setFilterSpecificBean((FilterConditionAddOnBean) filterSpecificBean.getClone());
-		} else {
-			// TODO mw: default is always ODER, i'm not sure about this here
-			StringFilterConditionBean junctorConditionBean = new StringFilterConditionBean();
-			filterSpecificBean = junctorConditionBean;
-			bean.setFilterSpecificBean(junctorConditionBean);
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
 		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		final FilterbedingungBean other = (FilterbedingungBean) obj;
+		if (this.description == null) {
+			if (other.description != null) {
+				return false;
+			}
+		} else if (!this.description.equals(other.description)) {
+			return false;
+		}
+		if (this.filterSpecificBean == null) {
+			if (other.filterSpecificBean != null) {
+				return false;
+			}
+		} else if (!this.filterSpecificBean.equals(other.filterSpecificBean)) {
+			return false;
+		}
+		if (this.filterbedinungID != other.filterbedinungID) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		return true;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public String getDisplayName() {
+		return this.name == null ? "(ohne Namen)" : this.name;
+	}
+
+	public int getFilterbedinungID() {
+		return this.filterbedinungID;
+	}
+
+	public AbstractConfigurationBean<?> getFilterSpecificBean() {
+		return (AbstractConfigurationBean<?>) this.filterSpecificBean;
 	}
 
 	public int getID() {
 		return this.getFilterbedinungID();
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		String oldValue = this.description;
-		this.description = description;
-		pcs.firePropertyChange(PropertyNames.description.name(), oldValue, description);
-	}
-
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		String oldValue = this.name;
-		this.name = name;
-		pcs.firePropertyChange(PropertyNames.name.name(), oldValue, name);
-	}
-	
-	@Override
-	public String toString() {
-		return getDisplayName();
+		return this.name;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
 		result = prime
 				* result
-				+ ((filterSpecificBean == null) ? 0 : filterSpecificBean
-						.hashCode());
-		result = prime * result + filterbedinungID;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+				+ ((this.description == null) ? 0 : this.description.hashCode());
+		result = prime
+				* result
+				+ ((this.filterSpecificBean == null) ? 0
+						: this.filterSpecificBean.hashCode());
+		result = prime * result + this.filterbedinungID;
+		result = prime * result
+				+ ((this.name == null) ? 0 : this.name.hashCode());
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final FilterbedingungBean other = (FilterbedingungBean) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (filterSpecificBean == null) {
-			if (other.filterSpecificBean != null)
-				return false;
-		} else if (!filterSpecificBean.equals(other.filterSpecificBean))
-			return false;
-		if (filterbedinungID != other.filterbedinungID)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+	public void setDescription(final String description) {
+		final String oldValue = this.description;
+		this.description = description;
+		this.pcs.firePropertyChange(PropertyNames.description.name(), oldValue,
+				description);
 	}
 
-	public AbstractConfigurationBean<?> getFilterSpecificBean() {
-		return (AbstractConfigurationBean<?>) filterSpecificBean;
+	public void setFilterbedinungID(final int filterbedinungID) {
+		final int oldValue = this.filterbedinungID;
+		this.filterbedinungID = filterbedinungID;
+		this.pcs.firePropertyChange(PropertyNames.filterbedingungID.name(),
+				oldValue, filterbedinungID);
 	}
 
-	public void setFilterSpecificBean(FilterConditionAddOnBean filterSpecificBean) {
-		FilterConditionAddOnBean oldValue = this.filterSpecificBean;
+	public void setFilterSpecificBean(
+			final FilterConditionAddOnBean filterSpecificBean) {
+		final FilterConditionAddOnBean oldValue = this.filterSpecificBean;
 		this.filterSpecificBean = filterSpecificBean;
-		pcs.firePropertyChange(PropertyNames.filterSpecificBean.name(), oldValue, filterSpecificBean);
+		this.pcs.firePropertyChange(PropertyNames.filterSpecificBean.name(),
+				oldValue, filterSpecificBean);
 	}
 
-	public void setID(int id) {
-		setFilterbedinungID(id);
+	public void setID(final int id) {
+		this.setFilterbedinungID(id);
+	}
+
+	public void setName(final String name) {
+		final String oldValue = this.name;
+		this.name = name;
+		this.pcs.firePropertyChange(PropertyNames.name.name(), oldValue, name);
+	}
+
+	@Override
+	public String toString() {
+		return this.getDisplayName();
+	}
+
+	@Override
+	protected void doUpdateState(final FilterbedingungBean bean) {
+		this.setDescription(bean.getDescription());
+		this.setName(bean.getName());
+		this.setFilterbedinungID(bean.getFilterbedinungID());
+		this.setFilterSpecificBean((FilterConditionAddOnBean) bean
+				.getFilterSpecificBean());
+
+		if (this.filterSpecificBean != null) {
+			bean
+					.setFilterSpecificBean((FilterConditionAddOnBean) this.filterSpecificBean
+							.getClone());
+		} else {
+			// TODO mw: default is always ODER, i'm not sure about this here
+			final StringFilterConditionBean junctorConditionBean = new StringFilterConditionBean();
+			this.filterSpecificBean = junctorConditionBean;
+			bean.setFilterSpecificBean(junctorConditionBean);
+		}
 	}
 }

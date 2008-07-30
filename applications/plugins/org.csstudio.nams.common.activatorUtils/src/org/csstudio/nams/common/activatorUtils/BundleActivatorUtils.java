@@ -37,10 +37,6 @@ import org.osgi.util.tracker.ServiceTracker;
 @Deprecated
 public final class BundleActivatorUtils {
 
-	private BundleActivatorUtils() {
-		// Ensure no instantation of this class.
-	}
-
 	/**
 	 * Gets the currently avail service of requested type from the bundle
 	 * contexts service registry using the full
@@ -60,13 +56,17 @@ public final class BundleActivatorUtils {
 	 *             {@linkplain Class#isAssignableFrom(Class) not assignable} to
 	 *             the requested type.
 	 */
-	static public <T> T getAvailableService(BundleContext bundleContext,
-			Class<T> requestedServiceType) throws ClassCastException {
-		ServiceTracker serviceTracker = new ServiceTracker(bundleContext,
+	static public <T> T getAvailableService(final BundleContext bundleContext,
+			final Class<T> requestedServiceType) throws ClassCastException {
+		final ServiceTracker serviceTracker = new ServiceTracker(bundleContext,
 				requestedServiceType.getName(), null);
 		serviceTracker.open();
-		T result = requestedServiceType.cast(serviceTracker.getService());
+		final T result = requestedServiceType.cast(serviceTracker.getService());
 		serviceTracker.close();
 		return result;
+	}
+
+	private BundleActivatorUtils() {
+		// Ensure no instantation of this class.
 	}
 }

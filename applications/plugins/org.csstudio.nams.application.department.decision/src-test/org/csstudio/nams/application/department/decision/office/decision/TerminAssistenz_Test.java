@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
+import junit.framework.Assert;
+
 import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
@@ -18,42 +20,36 @@ import org.junit.Test;
 public class TerminAssistenz_Test extends
 		AbstractObject_TestCase<TerminAssistenz> {
 
-	@Override
-	protected TerminAssistenz getNewInstanceOfClassUnderTest() {
-		Eingangskorb<Terminnotiz> korb = new StandardAblagekorb<Terminnotiz>();
-		Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
-		sachbearbeiterKoerbe.put("test", new StandardAblagekorb<Terminnotiz>());
-		return new TerminAssistenz(new DefaultExecutionService(), korb,
-				sachbearbeiterKoerbe, new Timer("TerminAssistenz"));
-	}
-
-	@Override
-	protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() {
-		return new Object();
-	}
-
-	@Override
-	protected TerminAssistenz[] getThreeDiffrentNewInstanceOfClassUnderTest() {
-		return new TerminAssistenz[] { getNewInstanceOfClassUnderTest(),
-				getNewInstanceOfClassUnderTest(),
-				getNewInstanceOfClassUnderTest() };
+	@Test
+	public void testArbeit() throws InterruptedException {
+		final TerminAssistenz terminassistenz = this
+				.getNewInstanceOfClassUnderTest();
+		Assert.assertFalse("terminassistenz.istAmArbeiten()", terminassistenz
+				.istAmArbeiten());
+		terminassistenz.beginneArbeit();
+		Assert.assertTrue("terminassistenz.istAmArbeiten()", terminassistenz
+				.istAmArbeiten());
+		terminassistenz.beendeArbeit();
+		Thread.sleep(100);
+		Assert.assertFalse("terminassistenz.istAmArbeiten()", terminassistenz
+				.istAmArbeiten());
 	}
 
 	@Test
 	public void testAssistenz() throws UnknownHostException,
 			InterruptedException {
-		Eingangskorb<Terminnotiz> assistenzEingangskorb = new StandardAblagekorb<Terminnotiz>();
-		StandardAblagekorb<Terminnotiz> sachbearbeitersKorb = new StandardAblagekorb<Terminnotiz>();
-		Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
+		final Eingangskorb<Terminnotiz> assistenzEingangskorb = new StandardAblagekorb<Terminnotiz>();
+		final StandardAblagekorb<Terminnotiz> sachbearbeitersKorb = new StandardAblagekorb<Terminnotiz>();
+		final Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
 		sachbearbeiterKoerbe.put("test", sachbearbeitersKorb);
-		Timer timer = new Timer("TerminAssistenz");
+		final Timer timer = new Timer("TerminAssistenz");
 
 		final Terminnotiz terminnotiz = Terminnotiz.valueOf(
 				Vorgangsmappenkennung.valueOf(InetAddress
 						.getByAddress(new byte[] { 127, 0, 0, 1 }),
 						new Date(42)), Millisekunden.valueOf(42), "test");
 
-		TerminAssistenz assistenz = new TerminAssistenz(
+		final TerminAssistenz assistenz = new TerminAssistenz(
 				new DefaultExecutionService(), assistenzEingangskorb,
 				sachbearbeiterKoerbe, timer);
 
@@ -71,26 +67,34 @@ public class TerminAssistenz_Test extends
 
 		assistenz.beendeArbeit();
 
-		Terminnotiz ausDemKorb = sachbearbeitersKorb.entnehmeAeltestenEingang();
-		assertNotNull(ausDemKorb);
-		assertEquals(terminnotiz, ausDemKorb);
-		assertTrue(terminnotiz == ausDemKorb);
+		final Terminnotiz ausDemKorb = sachbearbeitersKorb
+				.entnehmeAeltestenEingang();
+		Assert.assertNotNull(ausDemKorb);
+		Assert.assertEquals(terminnotiz, ausDemKorb);
+		Assert.assertTrue(terminnotiz == ausDemKorb);
 
 		timer.cancel();
 	}
 
-	@Test
-	public void testArbeit() throws InterruptedException {
-		TerminAssistenz terminassistenz = this.getNewInstanceOfClassUnderTest();
-		assertFalse("terminassistenz.istAmArbeiten()", terminassistenz
-				.istAmArbeiten());
-		terminassistenz.beginneArbeit();
-		assertTrue("terminassistenz.istAmArbeiten()", terminassistenz
-				.istAmArbeiten());
-		terminassistenz.beendeArbeit();
-		Thread.sleep(100);
-		assertFalse("terminassistenz.istAmArbeiten()", terminassistenz
-				.istAmArbeiten());
+	@Override
+	protected TerminAssistenz getNewInstanceOfClassUnderTest() {
+		final Eingangskorb<Terminnotiz> korb = new StandardAblagekorb<Terminnotiz>();
+		final Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
+		sachbearbeiterKoerbe.put("test", new StandardAblagekorb<Terminnotiz>());
+		return new TerminAssistenz(new DefaultExecutionService(), korb,
+				sachbearbeiterKoerbe, new Timer("TerminAssistenz"));
+	}
+
+	@Override
+	protected Object getNewInstanceOfIncompareableTypeInAccordingToClassUnderTest() {
+		return new Object();
+	}
+
+	@Override
+	protected TerminAssistenz[] getThreeDiffrentNewInstanceOfClassUnderTest() {
+		return new TerminAssistenz[] { this.getNewInstanceOfClassUnderTest(),
+				this.getNewInstanceOfClassUnderTest(),
+				this.getNewInstanceOfClassUnderTest() };
 	}
 
 }

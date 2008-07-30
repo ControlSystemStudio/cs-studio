@@ -28,15 +28,15 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService
 	@Required
-	PreferenceService preferenceService, @OSGiService
+	final PreferenceService preferenceService, @OSGiService
 	@Required
-	ConfigurationServiceFactory configurationServiceFactory, @OSGiService
+	final ConfigurationServiceFactory configurationServiceFactory, @OSGiService
 	@Required
-	Logger logger, @OSGiService
+	final Logger logger, @OSGiService
 	@Required
-	ExecutionService executionService, @OSGiService
+	final ExecutionService executionService, @OSGiService
 	@Required
-	ProcessVariableConnectionServiceFactory pvConnectionServiceFactory) {
+	final ProcessVariableConnectionServiceFactory pvConnectionServiceFactory) {
 		// prepare bean-service
 		ConfigurationBeanServiceImpl.staticInject(logger);
 
@@ -49,15 +49,16 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		// prepare Views (Editors will be injected by views!)
 		AbstractNamsView.staticInject(logger);
 		AbstractNamsView.staticInject(preferenceService);
-		AbstractNamsView.staticInject(configurationServiceFactory);		
+		AbstractNamsView.staticInject(configurationServiceFactory);
 
-		IProcessVariableConnectionService pvConnectionService = pvConnectionServiceFactory
+		final IProcessVariableConnectionService pvConnectionService = pvConnectionServiceFactory
 				.createProcessVariableConnectionService();
 		FilterbedingungEditor.staticInject(pvConnectionService);
 
 		// prepare sync-view
 		SyncronizeView
 				.staticInjectSynchronizeService(new SynchronizeServiceImpl(
-						logger, executionService, preferenceService, configurationServiceFactory));
+						logger, executionService, preferenceService,
+						configurationServiceFactory));
 	}
 }

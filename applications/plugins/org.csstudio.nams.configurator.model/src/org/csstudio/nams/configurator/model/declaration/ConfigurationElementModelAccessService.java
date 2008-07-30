@@ -8,7 +8,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Alar
  * Dieser Service bietet den UI Komponenten Zugriff auf die zugehörigen Modells.
  */
 public interface ConfigurationElementModelAccessService {
-	
+
 	/**
 	 * Liefert Alarmbearbeiter in aufsteigender Reihenfolge,
 	 * 

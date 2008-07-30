@@ -14,13 +14,13 @@ public class Not implements IArgumentMatcher {
 		this.first = first;
 	}
 
-	public boolean matches(final Object actual) {
-		return !this.first.matches(actual);
-	}
-
 	public void appendTo(final StringBuffer buffer) {
 		buffer.append("not(");
 		this.first.appendTo(buffer);
 		buffer.append(")");
+	}
+
+	public boolean matches(final Object actual) {
+		return !this.first.matches(actual);
 	}
 }

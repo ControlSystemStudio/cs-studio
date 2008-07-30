@@ -6,62 +6,64 @@ public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 
 	private FilterbedingungBean bean;
 
-	public String getDisplayName() {
-		String result = "NOT ";
-		if (bean != null) {
-			if (bean instanceof JunctorConditionForFilterTreeBean) {
-				result = "N";
-			}
-			result = result + bean.getDisplayName();
-		}
-		return result;
-	}
-
 	@Override
-	public int compareTo(FilterbedingungBean o) {
+	public int compareTo(final FilterbedingungBean o) {
 		if (o instanceof NotConditionForFilterTreeBean) {
-			return compareTo((NotConditionForFilterTreeBean) o); 
+			return this.compareTo((NotConditionForFilterTreeBean) o);
 		}
 		return -1;
 	}
-	
-	public int compareTo(NotConditionForFilterTreeBean o) {
-		if (this == o){
+
+	public int compareTo(final NotConditionForFilterTreeBean o) {
+		if (this == o) {
 			return 0;
 		}
 		return this.bean.compareTo(o.bean);
 	}
 
 	@Override
-	protected void doUpdateState(FilterbedingungBean bean) {
-		if (bean instanceof NotConditionForFilterTreeBean) {
-			super.doUpdateState(bean);
-			NotConditionForFilterTreeBean ncffBean = (NotConditionForFilterTreeBean) bean;
-			this.bean = ncffBean.getFilterbedingungBean();
+	public boolean equals(final Object obj) {
+		if (obj instanceof NotConditionForFilterTreeBean) {
+			return this.bean.equals(((NotConditionForFilterTreeBean) obj).bean);
 		}
+		return false;
 	}
 
-	public void setFilterbedingungBean(FilterbedingungBean bean) {
-		this.bean = bean;
+	@Override
+	public String getDisplayName() {
+		String result = "NOT ";
+		if (this.bean != null) {
+			if (this.bean instanceof JunctorConditionForFilterTreeBean) {
+				result = "N";
+			}
+			result = result + this.bean.getDisplayName();
+		}
+		return result;
 	}
 
 	public FilterbedingungBean getFilterbedingungBean() {
-		return bean;
+		return this.bean;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((bean == null) ? 0 : bean.hashCode());
+		result = prime * result
+				+ ((this.bean == null) ? 0 : this.bean.hashCode());
 		return result;
 	}
 
+	public void setFilterbedingungBean(final FilterbedingungBean bean) {
+		this.bean = bean;
+	}
+
 	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof NotConditionForFilterTreeBean) {
-			return this.bean.equals(((NotConditionForFilterTreeBean)obj).bean);
+	protected void doUpdateState(final FilterbedingungBean bean) {
+		if (bean instanceof NotConditionForFilterTreeBean) {
+			super.doUpdateState(bean);
+			final NotConditionForFilterTreeBean ncffBean = (NotConditionForFilterTreeBean) bean;
+			this.bean = ncffBean.getFilterbedingungBean();
 		}
-		return false;
 	}
 }

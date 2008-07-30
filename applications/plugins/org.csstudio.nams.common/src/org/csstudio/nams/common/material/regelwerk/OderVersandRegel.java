@@ -6,36 +6,38 @@ import org.csstudio.nams.common.testhelper.ForTesting;
 
 public class OderVersandRegel extends AbstractNodeVersandRegel {
 
-	public OderVersandRegel(VersandRegel[] versandRegeln) {
+	@Deprecated
+	@ForTesting
+	public OderVersandRegel() {
+
+	}
+
+	public OderVersandRegel(final VersandRegel[] versandRegeln) {
 		super(versandRegeln);
 	}
 
-	@Deprecated
-	@ForTesting
-	public OderVersandRegel()
-	{
-		
-	}
-			
-	
 	@Override
 	@ForTesting
 	@Deprecated
-	public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
-		Set<RegelErgebnis> kinderErgebnisse = gibKinderErgebnisse(ergebnisListe);
-		if (kinderErgebnisse.contains(RegelErgebnis.ZUTREFFEND))
+	public RegelErgebnis auswerten(final Pruefliste ergebnisListe) {
+		final Set<RegelErgebnis> kinderErgebnisse = this
+				.gibKinderErgebnisse(ergebnisListe);
+		if (kinderErgebnisse.contains(RegelErgebnis.ZUTREFFEND)) {
 			return RegelErgebnis.ZUTREFFEND;
-		if (kinderErgebnisse.contains(RegelErgebnis.VIELLEICHT_ZUTREFFEND))
+		}
+		if (kinderErgebnisse.contains(RegelErgebnis.VIELLEICHT_ZUTREFFEND)) {
 			return RegelErgebnis.VIELLEICHT_ZUTREFFEND;
-		if (kinderErgebnisse.contains(RegelErgebnis.NOCH_NICHT_GEPRUEFT))
+		}
+		if (kinderErgebnisse.contains(RegelErgebnis.NOCH_NICHT_GEPRUEFT)) {
 			return RegelErgebnis.NOCH_NICHT_GEPRUEFT;
+		}
 		return RegelErgebnis.NICHT_ZUTREFFEND;
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder("Oder-Regel [");
-		for (VersandRegel regel : children) {
+		final StringBuilder stringBuilder = new StringBuilder("Oder-Regel [");
+		for (final VersandRegel regel : this.children) {
 			stringBuilder.append(regel.toString());
 			stringBuilder.append(",");
 		}

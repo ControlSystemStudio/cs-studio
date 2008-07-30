@@ -13,31 +13,31 @@ import org.csstudio.nams.common.material.AlarmNachricht;
  *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 08.04.2008
  */
-public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements VersandRegel {
+public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements
+		VersandRegel {
 
-	
 	private final VersandRegel aufhebungsregel;
-
 
 	/**
 	 * TODO ggf. in einer factory bauen. tr: der BuilderService benutzt diesen
 	 * Konstruktor, eine Factory erscheint mir unsinnig
 	 */
-	public TimeBasedRegel(VersandRegel ausloesungsregel, VersandRegel aufhebungsregel,
-			VersandRegel bestaetigungsregel, Millisekunden timeOut) {
-		super(ausloesungsregel,bestaetigungsregel, timeOut);
+	public TimeBasedRegel(final VersandRegel ausloesungsregel,
+			final VersandRegel aufhebungsregel,
+			final VersandRegel bestaetigungsregel, final Millisekunden timeOut) {
+		super(ausloesungsregel, bestaetigungsregel, timeOut);
 		this.aufhebungsregel = aufhebungsregel;
 	}
 
 	public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-			AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
+			final AlarmNachricht nachricht, final Pruefliste bisherigesErgebnis) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-			if (bestaetigungsregel != null) {
+			if (this.bestaetigungsregel != null) {
 
-				bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
-						internePruefliste);
-				RegelErgebnis bestaetigungsregelErgebnis = internePruefliste
-						.gibErgebnisFuerRegel(bestaetigungsregel);
+				this.bestaetigungsregel.pruefeNachrichtErstmalig(nachricht,
+						this.internePruefliste);
+				final RegelErgebnis bestaetigungsregelErgebnis = this.internePruefliste
+						.gibErgebnisFuerRegel(this.bestaetigungsregel);
 
 				if (bestaetigungsregelErgebnis == RegelErgebnis.ZUTREFFEND) {
 					bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(
@@ -45,13 +45,13 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 					return;
 				}
 			}
-			
-			if (aufhebungsregel != null) {
 
-				aufhebungsregel.pruefeNachrichtErstmalig(nachricht,
-						internePruefliste);
-				RegelErgebnis aufhebungsregelErgebnis = internePruefliste
-						.gibErgebnisFuerRegel(aufhebungsregel);
+			if (this.aufhebungsregel != null) {
+
+				this.aufhebungsregel.pruefeNachrichtErstmalig(nachricht,
+						this.internePruefliste);
+				final RegelErgebnis aufhebungsregelErgebnis = this.internePruefliste
+						.gibErgebnisFuerRegel(this.aufhebungsregel);
 
 				if (aufhebungsregelErgebnis == RegelErgebnis.ZUTREFFEND) {
 					bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(
@@ -65,31 +65,34 @@ public class TimeBasedRegel extends AbstractTimeBasedVersandRegel implements Ver
 	}
 
 	public Millisekunden pruefeNachrichtAufTimeOuts(
-			Pruefliste bisherigesErgebnis, Millisekunden verstricheneZeit) {
+			final Pruefliste bisherigesErgebnis,
+			final Millisekunden verstricheneZeit) {
 		if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-			if (verstricheneZeit.istKleiner(timeOut)) {
-				return timeOut.differenz(verstricheneZeit);
+			if (verstricheneZeit.istKleiner(this.timeOut)) {
+				return this.timeOut.differenz(verstricheneZeit);
 			} else {
 				// TODO TimeBased und TimeBasedBeiBeastaetigung zusammenfuegen
 				// Das Ergebnis ueber den Konstruktor setzen
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
 						RegelErgebnis.ZUTREFFEND);
 			}
-//			if (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
-//				mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
-//			}
+			// if
+			// (bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()){
+			// mayWriteToHistory(bisherigesErgebnis, initialeNachricht);
+			// }
 		}
 		return null;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder("(TimebasedRegel: TimeBehavior: Alarm bei TimeOut: ");
-		stringBuilder.append(timeOut);
+		final StringBuilder stringBuilder = new StringBuilder(
+				"(TimebasedRegel: TimeBehavior: Alarm bei TimeOut: ");
+		stringBuilder.append(this.timeOut);
 		stringBuilder.append(" Startregel: ");
-		stringBuilder.append(ausloesungsregel);
+		stringBuilder.append(this.ausloesungsregel);
 		stringBuilder.append(" Aufhebungsregel: ");
-		stringBuilder.append(ausloesungsregel);
+		stringBuilder.append(this.ausloesungsregel);
 		stringBuilder.append(")");
 		return stringBuilder.toString();
 	}

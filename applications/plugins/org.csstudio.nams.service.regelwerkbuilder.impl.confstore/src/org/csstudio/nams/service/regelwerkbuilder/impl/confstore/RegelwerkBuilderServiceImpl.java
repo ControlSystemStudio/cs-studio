@@ -42,12 +42,26 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 	private static LocalStoreConfigurationService configurationStoreService;
 	private static Logger logger;
 
+	public static void staticInject(
+			final IProcessVariableConnectionService pvConnectionService) {
+		RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
+	}
+
+	public static void staticInject(
+			final LocalStoreConfigurationService configurationStoreService) {
+		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
+	}
+
+	public static void staticInject(final Logger logger) {
+		RegelwerkBuilderServiceImpl.logger = logger;
+	}
+
 	public List<Regelwerk> gibAlleRegelwerke()
 			throws RegelwerksBuilderException {
-		List<Regelwerk> results = new LinkedList<Regelwerk>();
+		final List<Regelwerk> results = new LinkedList<Regelwerk>();
 		try {
 
-			LocalStoreConfigurationService confStoreService = configurationStoreService;
+			final LocalStoreConfigurationService confStoreService = RegelwerkBuilderServiceImpl.configurationStoreService;
 			// get all filters
 			Collection<FilterDTO> listOfFilters = null;
 			listOfFilters = confStoreService.getEntireConfiguration()
@@ -55,25 +69,27 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			// TODO Auto-generated catch blocks
 
 			// we do assume, that the first level filtercondition are conjugated
-			for (FilterDTO filterDTO : listOfFilters) {
+			for (final FilterDTO filterDTO : listOfFilters) {
 
-				List<FilterConditionDTO> filterConditions = filterDTO
+				final List<FilterConditionDTO> filterConditions = filterDTO
 						.getFilterConditions();
 
 				// create a list of first level filterconditions
-				List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
-				for (FilterConditionDTO filterConditionDTO : filterConditions) {
-					versandRegels.add(createVersandRegel(filterConditionDTO));
+				final List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
+				for (final FilterConditionDTO filterConditionDTO : filterConditions) {
+					versandRegels.add(this
+							.createVersandRegel(filterConditionDTO));
 				}
-				VersandRegel hauptRegel = new UndVersandRegel(versandRegels
-						.toArray(new VersandRegel[0]));
+				final VersandRegel hauptRegel = new UndVersandRegel(
+						versandRegels.toArray(new VersandRegel[0]));
 				results.add(new StandardRegelwerk(Regelwerkskennung.valueOf(
 						filterDTO.getIFilterID(), filterDTO.getName()),
 						hauptRegel));
 			}
 
-		} catch (Throwable t) {
-			logger.logErrorMessage(this, "failed to load Regelwerke!", t);
+		} catch (final Throwable t) {
+			RegelwerkBuilderServiceImpl.logger.logErrorMessage(this,
+					"failed to load Regelwerke!", t);
 			throw new RegelwerksBuilderException("failed to load Regelwerke!",
 					t);
 		}
@@ -81,56 +97,58 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 	}
 
 	private VersandRegel createVersandRegel(
-			FilterConditionDTO filterConditionDTO) {
+			final FilterConditionDTO filterConditionDTO) {
 		// mapping the type information in the aggrFilterConditionTObject to a
 		// VersandRegel
-		FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
+		final FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
 				.valueOf(filterConditionDTO.getClass());
 		switch (fctr) {
 		//
 		case STRING: {
-			StringFilterConditionDTO stringCondition = (StringFilterConditionDTO) filterConditionDTO;
+			final StringFilterConditionDTO stringCondition = (StringFilterConditionDTO) filterConditionDTO;
 			return new StringRegel(stringCondition.getOperatorEnum(),
 					stringCondition.getKeyValueEnum(), stringCondition
 							.getCompValue());
 		}
 		case TIMEBASED: {
-			TimeBasedFilterConditionDTO timeBasedCondition = (TimeBasedFilterConditionDTO) filterConditionDTO;
-			VersandRegel startRegel = new StringRegel(timeBasedCondition
+			final TimeBasedFilterConditionDTO timeBasedCondition = (TimeBasedFilterConditionDTO) filterConditionDTO;
+			final VersandRegel startRegel = new StringRegel(timeBasedCondition
 					.getTBStartOperator(), timeBasedCondition
 					.getStartKeyValue(), timeBasedCondition
 					.getCStartCompValue());
-			VersandRegel confirmCancelRegel = new StringRegel(
+			final VersandRegel confirmCancelRegel = new StringRegel(
 					timeBasedCondition.getTBConfirmOperator(),
 					timeBasedCondition.getConfirmKeyValue(), timeBasedCondition
 							.getCConfirmCompValue());
 
-			Millisekunden delayUntilAlarm = timeBasedCondition.getTimePeriod();
-			TimeBasedType timeBehaviorAlarm = timeBasedCondition
+			final Millisekunden delayUntilAlarm = timeBasedCondition
+					.getTimePeriod();
+			final TimeBasedType timeBehaviorAlarm = timeBasedCondition
 					.getTimeBehavior();
 
 			VersandRegel timeBasedRegel = null;
-			if (timeBehaviorAlarm == TimeBasedType.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
+			if (timeBehaviorAlarm == TimeBasedType.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM) {
 				timeBasedRegel = new TimeBasedAlarmBeiBestaetigungRegel(
 						startRegel, confirmCancelRegel, delayUntilAlarm);
-			else if (timeBehaviorAlarm == TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
+			} else if (timeBehaviorAlarm == TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM) {
 				timeBasedRegel = new TimeBasedRegel(startRegel,
 						confirmCancelRegel, null, delayUntilAlarm);
-			else
+			} else {
 				throw new IllegalArgumentException("Unsupported Timebehavior");
+			}
 			return timeBasedRegel;
 		}
 		case JUNCTOR: {
-			VersandRegel[] versandRegels = new VersandRegel[2];
+			final VersandRegel[] versandRegels = new VersandRegel[2];
 
-			JunctorConditionDTO junctorCondition = (JunctorConditionDTO) filterConditionDTO;
-			FilterConditionDTO firstFilterCondition = junctorCondition
+			final JunctorConditionDTO junctorCondition = (JunctorConditionDTO) filterConditionDTO;
+			final FilterConditionDTO firstFilterCondition = junctorCondition
 					.getFirstFilterCondition();
-			FilterConditionDTO secondFilterCondition = junctorCondition
+			final FilterConditionDTO secondFilterCondition = junctorCondition
 					.getSecondFilterCondition();
 
-			versandRegels[0] = createVersandRegel(firstFilterCondition);
-			versandRegels[1] = createVersandRegel(secondFilterCondition);
+			versandRegels[0] = this.createVersandRegel(firstFilterCondition);
+			versandRegels[1] = this.createVersandRegel(secondFilterCondition);
 			switch (junctorCondition.getJunctor()) {
 			case OR:
 				return new OderVersandRegel(versandRegels);
@@ -142,16 +160,18 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		}
 			// oder verknüpfte Stringregeln
 		case STRING_ARRAY: {
-			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
+			final List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
 
-			StringArrayFilterConditionDTO stringArayCondition = (StringArrayFilterConditionDTO) filterConditionDTO;
+			final StringArrayFilterConditionDTO stringArayCondition = (StringArrayFilterConditionDTO) filterConditionDTO;
 
-			List<String> compareValueList = stringArayCondition.getCompareValueStringList();
+			final List<String> compareValueList = stringArayCondition
+					.getCompareValueStringList();
 
-			MessageKeyEnum keyValue = stringArayCondition.getKeyValueEnum();
-			StringRegelOperator operatorEnum = stringArayCondition
+			final MessageKeyEnum keyValue = stringArayCondition
+					.getKeyValueEnum();
+			final StringRegelOperator operatorEnum = stringArayCondition
 					.getOperatorEnum();
-			for (String string : compareValueList) {
+			for (final String string : compareValueList) {
 				versandRegels.add(new StringRegel(operatorEnum, keyValue,
 						string));
 			}
@@ -159,53 +179,46 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 					.toArray(new VersandRegel[versandRegels.size()]));
 		}
 		case PV: {
-			ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;
-			return new ProcessVariableRegel(pvConnectionService, pvCondition
-					.getPVAddress(), pvCondition.getPVOperator(), pvCondition
-					.getSuggestedPVType(), pvCondition.getCCompValue());
+			final ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;
+			return new ProcessVariableRegel(
+					RegelwerkBuilderServiceImpl.pvConnectionService,
+					pvCondition.getPVAddress(), pvCondition.getPVOperator(),
+					pvCondition.getSuggestedPVType(), pvCondition
+							.getCCompValue());
 		}
 		case NEGATION: {
-			NegationConditionForFilterTreeDTO notCondition = (NegationConditionForFilterTreeDTO) filterConditionDTO;
-			return new NichtVersandRegel(createVersandRegel(notCondition.getNegatedFilterCondition()));
+			final NegationConditionForFilterTreeDTO notCondition = (NegationConditionForFilterTreeDTO) filterConditionDTO;
+			return new NichtVersandRegel(this.createVersandRegel(notCondition
+					.getNegatedFilterCondition()));
 		}
 		case JUNCTOR_FOR_TREE: {
-			JunctorConditionForFilterTreeDTO junctorCondition = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
-			
-			Set<FilterConditionDTO> operands = junctorCondition.getOperands();
-			VersandRegel[] versandRegels = new VersandRegel[operands.size()];
-			FilterConditionDTO[] conditions = new FilterConditionDTO[operands.size()];
-			
+			final JunctorConditionForFilterTreeDTO junctorCondition = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
+
+			final Set<FilterConditionDTO> operands = junctorCondition
+					.getOperands();
+			final VersandRegel[] versandRegels = new VersandRegel[operands
+					.size()];
+			final FilterConditionDTO[] conditions = new FilterConditionDTO[operands
+					.size()];
+
 			for (int i = 0; i < versandRegels.length; i++) {
-				versandRegels[i] = createVersandRegel(conditions[i]);
+				versandRegels[i] = this.createVersandRegel(conditions[i]);
 			}
-			if (junctorCondition.getOperator() == JunctorConditionType.AND){
+			if (junctorCondition.getOperator() == JunctorConditionType.AND) {
 				return new UndVersandRegel(versandRegels);
-			} else if (junctorCondition.getOperator() == JunctorConditionType.OR){
+			} else if (junctorCondition.getOperator() == JunctorConditionType.OR) {
 				return new OderVersandRegel(versandRegels);
 			} else {
-				throw new IllegalArgumentException("Unsupported FilterType, see "
-						+ this.getClass().getPackage() + "."
-						+ this.getClass().getName());
-				}
+				throw new IllegalArgumentException(
+						"Unsupported FilterType, see "
+								+ this.getClass().getPackage() + "."
+								+ this.getClass().getName());
+			}
 		}
 		default:
 			throw new IllegalArgumentException("Unsupported FilterType, see "
 					+ this.getClass().getPackage() + "."
 					+ this.getClass().getName());
 		}
-	}
-
-	public static void staticInject(
-			IProcessVariableConnectionService pvConnectionService) {
-		RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
-	}
-
-	public static void staticInject(
-			LocalStoreConfigurationService configurationStoreService) {
-		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
-	}
-
-	public static void staticInject(Logger logger) {
-		RegelwerkBuilderServiceImpl.logger = logger;
 	}
 }

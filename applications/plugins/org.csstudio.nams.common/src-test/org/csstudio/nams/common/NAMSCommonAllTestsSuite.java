@@ -1,5 +1,6 @@
 package org.csstudio.nams.common;
 
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -28,24 +29,24 @@ import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen_Test;
 public class NAMSCommonAllTestsSuite extends TestCase {
 
 	public static Test suite() throws Throwable {
-		TestSuite suite = new TestSuite("NAMSCommonAllTestsSuite");
-		//$JUnit-BEGIN$
+		final TestSuite suite = new TestSuite("NAMSCommonAllTestsSuite");
+		// $JUnit-BEGIN$
 
 		suite.addTestSuite(NAMSCommonAllTestsSuite.class);
 		suite.addTestSuite(CommonActivator_Test.class);
-		
+
 		suite.addTestSuite(Contract_Test.class);
-		
+
 		suite.addTestSuite(StandardAblagekorb_Test.class);
 		suite.addTestSuite(Vorgangsmappe_Test.class);
 		suite.addTestSuite(Vorgangsmappenkennung_Test.class);
-		
+
 		suite.addTestSuite(Millisekunden_Test.class);
 		suite.addTestSuite(MessageKeyEnum_Test.class);
 
 		suite.addTestSuite(AlarmNachricht_Test.class);
 		suite.addTestSuite(Regelwerkskennung_Test.class);
-		
+
 		suite.addTestSuite(AbstractNodeVersandRegel_Test.class);
 		suite.addTestSuite(NichtVersandRegel_Test.class);
 		suite.addTestSuite(OderVersandRegel_Test.class);
@@ -59,19 +60,19 @@ public class NAMSCommonAllTestsSuite extends TestCase {
 		suite.addTestSuite(TimeBasedRegelAlarmBeiBestaetigung_Test.class);
 		suite.addTestSuite(UndVersandRegel_Test.class);
 		suite.addTestSuite(WeiteresVersandVorgehen_Test.class);
-		
-		//$JUnit-END$
+
+		// $JUnit-END$
 		return suite;
 	}
 
 	@org.junit.Test
-	public void testAssertionsAktiviert()
-	{
+	public void testAssertionsAktiviert() {
 		try {
 			assert false : "Ok, Assertions sind aktiviert!";
-			fail("Nein, Assertions sind nicht aktiviert");
-		} catch(AssertionError ae) {
-			assertEquals("Ok, Assertions sind aktiviert!", ae.getMessage());
+			Assert.fail("Nein, Assertions sind nicht aktiviert");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Ok, Assertions sind aktiviert!", ae
+					.getMessage());
 		}
 	}
 }

@@ -9,42 +9,6 @@ import org.junit.Assert;
  */
 public final class Contract {
 
-	Contract() {
-		throw new AssertionError(
-				"Creation of instances of this class is undesired!");
-	}
-
-	/**
-	 * Checks if given object is not null.
-	 * 
-	 * @param valueName
-	 *            The name of the checked value, should not be null.
-	 * @param obj
-	 *            The value to be checked.
-	 */
-	public static void requireNotNull(final String valueName, final Object obj) {
-		Assert.assertNotNull("Precondition unsatisfied: valueName != null",
-				valueName);
-		Assert.assertNotNull("Precondition unsatisfied: " + valueName
-				+ " != null", obj);
-	}
-
-	/**
-	 * Checks if given condition is true.
-	 * 
-	 * @param condition
-	 *            The condition to be checked.
-	 * @param description
-	 *            The description of that condition.
-	 */
-	public static void require(final boolean condition, final String description) {
-		Assert.assertNotNull("Precondition unsatisfied: description != null",
-				description);
-		Assert
-				.assertTrue("Precondition unsatisfied: " + description,
-						condition);
-	}
-
 	/**
 	 * Checks if given condition is true.
 	 * 
@@ -70,5 +34,41 @@ public final class Contract {
 	public static void ensureResultNotNull(final Object object) {
 		Assert.assertNotNull("Postcondition unsatisfied: §result != null",
 				object);
+	}
+
+	/**
+	 * Checks if given condition is true.
+	 * 
+	 * @param condition
+	 *            The condition to be checked.
+	 * @param description
+	 *            The description of that condition.
+	 */
+	public static void require(final boolean condition, final String description) {
+		Assert.assertNotNull("Precondition unsatisfied: description != null",
+				description);
+		Assert
+				.assertTrue("Precondition unsatisfied: " + description,
+						condition);
+	}
+
+	/**
+	 * Checks if given object is not null.
+	 * 
+	 * @param valueName
+	 *            The name of the checked value, should not be null.
+	 * @param obj
+	 *            The value to be checked.
+	 */
+	public static void requireNotNull(final String valueName, final Object obj) {
+		Assert.assertNotNull("Precondition unsatisfied: valueName != null",
+				valueName);
+		Assert.assertNotNull("Precondition unsatisfied: " + valueName
+				+ " != null", obj);
+	}
+
+	Contract() {
+		throw new AssertionError(
+				"Creation of instances of this class is undesired!");
 	}
 }

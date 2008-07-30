@@ -16,7 +16,8 @@ class RequestedParam {
 	final Annotation annotation;
 
 	public RequestedParam(final Class<?> type, final boolean required,
-			final RequestedParam.RequestType requestType, Annotation annotation) {
+			final RequestedParam.RequestType requestType,
+			final Annotation annotation) {
 		this.type = type;
 		this.required = required;
 		this.requestType = requestType;

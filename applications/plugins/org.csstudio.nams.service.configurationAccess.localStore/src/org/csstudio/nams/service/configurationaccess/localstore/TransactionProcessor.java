@@ -25,6 +25,108 @@ import org.hibernate.criterion.Restrictions;
 public class TransactionProcessor {
 
 	/**
+	 * A implementation of Mapper working on current session of this processors.
+	 */
+	private class MapperImpl implements Mapper {
+		private final Session session;
+
+		/**
+		 * Creates a new mapper with given session. No check is be done on
+		 * working if session is open!
+		 */
+		public MapperImpl(final Session session) {
+			this.session = session;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void delete(final NewAMSConfigurationElementDTO element)
+				throws Throwable {
+			if (element instanceof HasManuallyJoinedElements) {
+				final HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
+				elementAsElementWithJoins.deleteJoinLinkData(this);
+			}
+
+			this.session.delete(element);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public <T extends NewAMSConfigurationElementDTO> T findForId(
+				final Class<T> clasz, final Serializable id,
+				final boolean loadManuallyJoinedMappingsIfAvailable)
+				throws Throwable {
+			final T result = this.loadForId(this.session, clasz, id);
+
+			if (loadManuallyJoinedMappingsIfAvailable) {
+				if (result instanceof HasManuallyJoinedElements) {
+					final HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) result;
+					elementAsElementWithJoins.loadJoinData(this);
+				}
+			}
+
+			return result;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+				final Class<T> clasz,
+				final boolean loadManuallyJoinedMappingsIfAvailable)
+				throws Throwable {
+			final List<T> result = this.loadAll(this.session, clasz);
+
+			if (loadManuallyJoinedMappingsIfAvailable) {
+				for (final T element : result) {
+					if (element instanceof HasManuallyJoinedElements) {
+						final HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
+						elementAsElementWithJoins.loadJoinData(this);
+					}
+				}
+			}
+
+			return result;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void save(final NewAMSConfigurationElementDTO element)
+				throws Throwable {
+			this.session.saveOrUpdate(element);
+
+			if (element instanceof HasManuallyJoinedElements) {
+				final HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
+				elementAsElementWithJoins.storeJoinLinkData(this);
+			}
+		}
+
+		/**
+		 * Loads a list of all elements from session and performs the unsafe
+		 * cast.
+		 */
+		@SuppressWarnings("unchecked")
+		private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
+				final Session session, final Class<T> clasz) throws Throwable {
+			return session.createCriteria(clasz).list();
+		}
+
+		/**
+		 * Loads an element from session and performs the unsafe cast.
+		 */
+		@SuppressWarnings("unchecked")
+		private <T extends NewAMSConfigurationElementDTO> T loadForId(
+				final Session session, final Class<T> clasz,
+				final Serializable id) throws Throwable {
+			return (T) session.createCriteria(clasz).add(Restrictions.idEq(id))
+					.uniqueResult();
+		}
+	}
+
+	/**
 	 * The session factory used to open sessions.
 	 */
 	private final SessionFactory sessionFactory;
@@ -32,7 +134,7 @@ public class TransactionProcessor {
 	/**
 	 * The lock used to lock the transactive behaviour of unit of works.
 	 */
-	private ReentrantLock lock;
+	private final ReentrantLock lock;
 
 	/**
 	 * The logger to log to. TODO Produce log output
@@ -43,7 +145,8 @@ public class TransactionProcessor {
 	/**
 	 * Creates an instance for given Hibernate {@link SessionFactory}.
 	 */
-	public TransactionProcessor(SessionFactory sessionFactory, Logger logger) {
+	public TransactionProcessor(final SessionFactory sessionFactory,
+			final Logger logger) {
 		this.sessionFactory = sessionFactory;
 		this.logger = logger;
 		this.lock = new ReentrantLock(true);
@@ -55,9 +158,9 @@ public class TransactionProcessor {
 	 * 
 	 * TODO Rename to doExclusiveInTransaction
 	 */
-	public <T> T doInTransaction(UnitOfWork<T> work) throws StorageException,
-			StorageError, InconsistentConfigurationException,
-			InterruptedException {
+	public <T> T doInTransaction(final UnitOfWork<T> work)
+			throws StorageException, StorageError,
+			InconsistentConfigurationException, InterruptedException {
 		Contract.requireNotNull("work", work);
 
 		Session session = null;
@@ -70,14 +173,15 @@ public class TransactionProcessor {
 			tx = session.beginTransaction();
 			tx.begin();
 
-			logger.logDebugMessage(this, "Beginning unit of work of type "
+			this.logger.logDebugMessage(this, "Beginning unit of work of type "
 					+ work.getClass().getName() + "...");
 			result = work.doWork(new MapperImpl(session));
-			logger.logDebugMessage(this, "... done.");
+			this.logger.logDebugMessage(this, "... done.");
 
 			tx.commit();
 		} catch (final Throwable e) {
-			logger.logInfoMessage(this, "Error occurred in work process...", e);
+			this.logger.logInfoMessage(this,
+					"Error occurred in work process...", e);
 			try {
 				tx.rollback();
 			} catch (final Throwable t) {
@@ -95,7 +199,7 @@ public class TransactionProcessor {
 			if (lock.isHeldByCurrentThread()) {
 				lock.unlock();
 			}
-			closeSession(session);
+			this.closeSession(session);
 		}
 
 		Contract.ensureResultNotNull(result);
@@ -103,102 +207,16 @@ public class TransactionProcessor {
 	}
 
 	/**
-	 * A implementation of Mapper working on current session of this processors.
+	 * Closes given session if session is open.
 	 */
-	private class MapperImpl implements Mapper {
-		private final Session session;
-
-		/**
-		 * Creates a new mapper with given session. No check is be done on
-		 * working if session is open!
-		 */
-		public MapperImpl(Session session) {
-			this.session = session;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void delete(NewAMSConfigurationElementDTO element)
-				throws Throwable {
-			if (element instanceof HasManuallyJoinedElements) {
-				HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
-				elementAsElementWithJoins.deleteJoinLinkData(this);
+	private void closeSession(final Session session) throws StorageError {
+		if ((session != null) && session.isOpen()) {
+			try {
+				session.flush();
+				session.close();
+			} catch (final HibernateException he) {
+				throw new StorageError("session could not be closed", he);
 			}
-
-			session.delete(element);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-				Class<T> clasz, boolean loadManuallyJoinedMappingsIfAvailable)
-				throws Throwable {
-			List<T> result = loadAll(session, clasz);
-
-			if (loadManuallyJoinedMappingsIfAvailable) {
-				for (T element : result) {
-					if (element instanceof HasManuallyJoinedElements) {
-						HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
-						elementAsElementWithJoins.loadJoinData(this);
-					}
-				}
-			}
-
-			return result;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void save(NewAMSConfigurationElementDTO element)
-				throws Throwable {
-			session.saveOrUpdate(element);
-
-			if (element instanceof HasManuallyJoinedElements) {
-				HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) element;
-				elementAsElementWithJoins.storeJoinLinkData(this);
-			}
-		}
-
-		/**
-		 * Loads a list of all elements from session and performs the unsafe
-		 * cast.
-		 */
-		@SuppressWarnings("unchecked")
-		private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-				Session session, Class<T> clasz) throws Throwable {
-			return session.createCriteria(clasz).list();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public <T extends NewAMSConfigurationElementDTO> T findForId(
-				Class<T> clasz, Serializable id,
-				boolean loadManuallyJoinedMappingsIfAvailable) throws Throwable {
-			T result = loadForId(session, clasz, id);
-
-			if (loadManuallyJoinedMappingsIfAvailable) {
-				if (result instanceof HasManuallyJoinedElements) {
-					HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) result;
-					elementAsElementWithJoins.loadJoinData(this);
-				}
-			}
-
-			return result;
-		}
-
-		/**
-		 * Loads an element from session and performs the unsafe cast.
-		 */
-		@SuppressWarnings("unchecked")
-		private <T extends NewAMSConfigurationElementDTO> T loadForId(
-				Session session, Class<T> clasz, Serializable id)
-				throws Throwable {
-			return (T) session.createCriteria(clasz).add(Restrictions.idEq(id))
-					.uniqueResult();
 		}
 	}
 
@@ -211,19 +229,5 @@ public class TransactionProcessor {
 		result.setCacheMode(CacheMode.IGNORE);
 		result.setFlushMode(FlushMode.COMMIT);
 		return result;
-	}
-
-	/**
-	 * Closes given session if session is open.
-	 */
-	private void closeSession(Session session) throws StorageError {
-		if (session != null && session.isOpen()) {
-			try {
-				session.flush();
-				session.close();
-			} catch (final HibernateException he) {
-				throw new StorageError("session could not be closed", he);
-			}
-		}
 	}
 }

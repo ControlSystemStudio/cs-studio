@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
@@ -22,12 +23,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.history.declaration.HistoryService;
-import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.logging.declaration.LoggerMock;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.ConsumerMock;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
-import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.messaging.declaration.MessagingServiceMock;
 import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.MessagingSessionMock;
@@ -48,6 +47,8 @@ import org.junit.Test;
 
 public class DecisionDepartmentActivator_Test extends TestCase {
 
+	boolean syncronisationBestaetigungAcknowledged;
+	volatile Throwable occuredThrowable = null;
 	private LoggerMock logger;
 	private MessagingServiceMock messagingService;
 	private PreferenceService preferenceService;
@@ -55,52 +56,53 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	private HistoryService historyService;
 	private LocalStoreConfigurationService localStoreConfigurationService;
 	private ExecutionServiceMock executionService;
+
 	private ProducerMock amsToDistributorProducerMock;
+
 	private ConsumerMock amsCommandConsumerMock;
-
-	boolean syncronisationBestaetigungAcknowledged;
-
-	volatile Throwable occuredThrowable = null;
-	private ThreadGroup catchingThreadGroup = new ThreadGroup(Thread
+	private final ThreadGroup catchingThreadGroup = new ThreadGroup(Thread
 			.currentThread().getThreadGroup(), "DDA") {
 		@Override
 		public void uncaughtException(Thread t, Throwable e) {
-			occuredThrowable = e;
+			DecisionDepartmentActivator_Test.this.occuredThrowable = e;
 		}
 	};
 
 	// FIXME mz 2008-07-18: This Test has to be fixed and conitnued
 	@Test
 	public void testBundleAndApplicationLifecycle() throws Throwable {
-		
-		if( 1== 1) return ; // FIXME mz: 2008-07-21 Test wieder ausführen, dringend!
-		
+
+		if (1 == 1) {
+			return; // FIXME mz: 2008-07-21 Test wieder ausführen, dringend!
+		}
+
 		final DecisionDepartmentActivator bundleInsance = new DecisionDepartmentActivator();
 		final DecisionDepartmentActivator applicationInsance = new DecisionDepartmentActivator();
 
-		bundleInsance.startBundle((Logger) logger,
-				(MessagingService) messagingService, preferenceService,
-				regelwerksBuilderService, historyService,
-				new ConfigurationServiceFactory() {
+		bundleInsance.startBundle(this.logger, this.messagingService,
+				this.preferenceService, this.regelwerksBuilderService,
+				this.historyService, new ConfigurationServiceFactory() {
 					public LocalStoreConfigurationService getConfigurationService(
-							String connectionURL, DatabaseType dbType,
-							String username, String password) {
-						return localStoreConfigurationService;
+							final String connectionURL,
+							final DatabaseType dbType, final String username,
+							final String password) {
+						return DecisionDepartmentActivator_Test.this.localStoreConfigurationService;
 					}
-				}, executionService);
+				}, this.executionService);
 
 		Thread.yield();
 
-		syncronisationBestaetigungAcknowledged = false;
-		amsCommandConsumerMock.mockSetNextToBeDelivered(new DefaultNAMSMessage(
-				new SyncronisationsBestaetigungSystemNachricht(),
-				new AcknowledgeHandler() {
-					public void acknowledge() throws Throwable {
-						syncronisationBestaetigungAcknowledged = true;
-					}
-				}));
+		this.syncronisationBestaetigungAcknowledged = false;
+		this.amsCommandConsumerMock
+				.mockSetNextToBeDelivered(new DefaultNAMSMessage(
+						new SyncronisationsBestaetigungSystemNachricht(),
+						new AcknowledgeHandler() {
+							public void acknowledge() throws Throwable {
+								DecisionDepartmentActivator_Test.this.syncronisationBestaetigungAcknowledged = true;
+							}
+						}));
 
-		Runnable appRun = new Runnable() {
+		final Runnable appRun = new Runnable() {
 			public void run() {
 				try {
 					Thread.sleep(2000); // FIXME Was besseres übelegen!
@@ -109,83 +111,180 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 					// ausgelagert werden.)
 
 					// Hier läuft der Test!!!!!!!!!!!
-					executionService
+					DecisionDepartmentActivator_Test.this.executionService
 							.mockExecuteOneStepOf(MultiConsumerConsumerThreads.CONSUMER_THREAD);
 
 					Thread.sleep(2000);
 
 					applicationInsance.stop();
 
-					bundleInsance.stopBundle(logger);
+					bundleInsance
+							.stopBundle(DecisionDepartmentActivator_Test.this.logger);
 
-					assertTrue(syncronisationBestaetigungAcknowledged);
+					Assert
+							.assertTrue(DecisionDepartmentActivator_Test.this.syncronisationBestaetigungAcknowledged);
 
 				} catch (Throwable e) {
-					occuredThrowable = e;
+					DecisionDepartmentActivator_Test.this.occuredThrowable = e;
 				}
 			}
 		};
-		new Thread(catchingThreadGroup, appRun).start();
+		new Thread(this.catchingThreadGroup, appRun).start();
 
-		
-		
 		// ApplicationContext wird nicht verwendet!
 		// Blockiert bis Test-Thread stop() rufft.
 		applicationInsance.start((IApplicationContext) null);
-		
+
 		// FIXME mz 2008-07-18: This Test has to be fixed and conitnued
-//		fail("This Test has to be fixed!");
+		// fail("This Test has to be fixed!");
 
 		applicationInsance.stop();
 	}
 
 	// FIXME setUp wieder rein!
-//	@Before
+	// @Before
 	public void UNsetUp() throws Exception {
 		// ** Prepare Mocks...
 		// Logger
-		logger = new LoggerMock();
+		this.logger = new LoggerMock();
 
 		// * MessagingService
-		messagingService = createMessagingServiceMock();
+		this.messagingService = this.createMessagingServiceMock();
 
 		// * PrefeenceService
-		preferenceService = createPreferenceServiceMock();
+		this.preferenceService = this.createPreferenceServiceMock();
 
 		// * LocalStoreConfigurationService
-		localStoreConfigurationService = createLocalStoreConfigurationService();
+		this.localStoreConfigurationService = this
+				.createLocalStoreConfigurationService();
 
 		// * Andere...
 		// * Andere...
-		regelwerksBuilderService = EasyMock
+		this.regelwerksBuilderService = EasyMock
 				.createMock(RegelwerkBuilderService.class);
-		List<Regelwerk> list = Collections.emptyList();
+		final List<Regelwerk> list = Collections.emptyList();
 		// FIXME Die nächste Zeile muss wieder rein:
-//		EasyMock.expect(regelwerksBuilderService.gibAlleRegelwerke())
-//				.andReturn(list).once();
+		// EasyMock.expect(regelwerksBuilderService.gibAlleRegelwerke())
+		// .andReturn(list).once();
 
-		historyService = EasyMock.createNiceMock(HistoryService.class);
+		this.historyService = EasyMock.createNiceMock(HistoryService.class);
 
-		executionService = new ExecutionServiceMock();
+		this.executionService = new ExecutionServiceMock();
 
 		// Replay....
-		EasyMock.replay(preferenceService, regelwerksBuilderService,
-				historyService, localStoreConfigurationService);
+		EasyMock.replay(this.preferenceService, this.regelwerksBuilderService,
+				this.historyService, this.localStoreConfigurationService);
+	}
+
+	// FIXME tearDown wieder rein!
+	// @After
+	public void UNtearDown() {
+		// Clean-Ups.
+		if (this.occuredThrowable != null) {
+			throw new RuntimeException("Unhandled exception occurred.",
+					this.occuredThrowable);
+		}
+		// Verify Mocks...
+		EasyMock.verify(this.preferenceService, this.regelwerksBuilderService,
+				this.historyService, this.localStoreConfigurationService);
+	}
+
+	private MessagingSessionMock createAMSConsumerSession() {
+		// TODO Maps befüllen
+		// P_JMS_AMS_PROVIDER_URL_1
+		// P_JMS_AMS_PROVIDER_URL_2
+		// 
+		final Map<String, PostfachArt> expectedPostfachArtenForSources = new HashMap<String, PostfachArt>();
+		final Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
+		final Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
+		final Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
+
+		expectedPostfachArtenForSources.put("P_JMS_AMS_TOPIC_COMMAND",
+				PostfachArt.TOPIC);
+		this.amsCommandConsumerMock = new ConsumerMock() {
+			@Override
+			public NAMSMessage receiveMessage() throws MessagingException,
+					InterruptedException {
+				throw new InterruptedException();
+			}
+		};
+		consumerForSources.put("P_JMS_AMS_TOPIC_COMMAND",
+				this.amsCommandConsumerMock);
+
+		final MessagingSessionMock amsConsumerSession = new MessagingSessionMock(
+				expectedPostfachArtenForSources, consumerForSources,
+				expectedPostfachArtenForDestination, producerForDestination);
+		return amsConsumerSession;
+	}
+
+	private MessagingSession createAMSProducerSession() {
+		// TODO Auto-generated method stub
+		final Map<String, PostfachArt> expectedPostfachArtenForSources = new HashMap<String, PostfachArt>();
+		final Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
+		final Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
+		final Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
+
+		expectedPostfachArtenForDestination.put(
+				"P_JMS_AMS_TOPIC_MESSAGEMINDER", PostfachArt.TOPIC);
+
+		this.amsToDistributorProducerMock = new ProducerMock() {
+			@Override
+			public void sendeSystemnachricht(final SystemNachricht nachricht) {
+				Assert
+						.assertTrue((nachricht instanceof SyncronisationsAufforderungsSystemNachchricht));
+			}
+
+			@Override
+			public void tryToClose() {
+			}
+		};
+		producerForDestination.put("P_JMS_AMS_TOPIC_MESSAGEMINDER",
+				this.amsToDistributorProducerMock);
+
+		final MessagingSessionMock amsProducerSession = new MessagingSessionMock(
+				expectedPostfachArtenForSources, consumerForSources,
+				expectedPostfachArtenForDestination, producerForDestination);
+		return amsProducerSession;
+	}
+
+	private MessagingSessionMock createEXTConsumerSession() {
+		// TODO Maps befüllen
+		// P_JMS_EXTERN_PROVIDER_URL_1
+		// P_JMS_EXTERN_PROVIDER_URL_2
+		final Map<String, PostfachArt> expectedPostfachArtenForSources = new HashMap<String, PostfachArt>();
+		final Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
+		final Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
+		final Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
+
+		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_COMMAND",
+				PostfachArt.TOPIC);
+		final ConsumerMock extCommandConsumerMock = new ConsumerMock();
+		consumerForSources.put("P_JMS_EXT_TOPIC_COMMAND",
+				extCommandConsumerMock);
+		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_ALARM",
+				PostfachArt.TOPIC);
+		final ConsumerMock extAlarmConsumerMock = new ConsumerMock();
+		consumerForSources.put("P_JMS_EXT_TOPIC_ALARM", extAlarmConsumerMock);
+
+		final MessagingSessionMock amsConsumerSession = new MessagingSessionMock(
+				expectedPostfachArtenForSources, consumerForSources,
+				expectedPostfachArtenForDestination, producerForDestination);
+		return amsConsumerSession;
 	}
 
 	private LocalStoreConfigurationService createLocalStoreConfigurationService()
 			throws StorageError, StorageException,
 			InconsistentConfigurationException,
 			UnknownConfigurationElementError {
-		LocalStoreConfigurationService result = EasyMock
+		final LocalStoreConfigurationService result = EasyMock
 				.createMock(LocalStoreConfigurationService.class);
 
-		ReplicationStateDTO rplStateIdle = new ReplicationStateDTO();
+		final ReplicationStateDTO rplStateIdle = new ReplicationStateDTO();
 		rplStateIdle.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_IDLE);
 		EasyMock.expect(result.getCurrentReplicationState()).andReturn(
 				rplStateIdle).once();
 
-		ReplicationStateDTO rplStartSyncronisation = new ReplicationStateDTO();
+		final ReplicationStateDTO rplStartSyncronisation = new ReplicationStateDTO();
 		rplStartSyncronisation
 				.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
 		result.saveCurrentReplicationState(EasyMock.eq(rplStartSyncronisation));
@@ -194,8 +293,31 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		return result;
 	}
 
+	private MessagingServiceMock createMessagingServiceMock() {
+		// URLs
+		final Map<String, String[]> expectedUrlsForClientIds = new HashMap<String, String[]>();
+		expectedUrlsForClientIds.put("amsConsumer", new String[] {
+				"P_JMS_AMS_PROVIDER_URL_1", "P_JMS_AMS_PROVIDER_URL_2" });
+		expectedUrlsForClientIds.put("extConsumer", new String[] {
+				"P_JMS_EXTERN_PROVIDER_URL_1", "P_JMS_EXTERN_PROVIDER_URL_2" });
+		expectedUrlsForClientIds.put("amsProducer",
+				new String[] { "P_JMS_AMS_SENDER_PROVIDER_URL" });
+		// Session
+		final Map<String, MessagingSession> sessionsForClientIds = new HashMap<String, MessagingSession>();
+		sessionsForClientIds
+				.put("amsConsumer", this.createAMSConsumerSession());
+		sessionsForClientIds
+				.put("extConsumer", this.createEXTConsumerSession());
+		sessionsForClientIds
+				.put("amsProducer", this.createAMSProducerSession());
+		// Service
+		return new MessagingServiceMock(expectedUrlsForClientIds,
+				sessionsForClientIds);
+	}
+
 	private PreferenceService createPreferenceServiceMock() {
-		PreferenceService result = EasyMock.createMock(PreferenceService.class);
+		final PreferenceService result = EasyMock
+				.createMock(PreferenceService.class);
 
 		EasyMock
 				.expect(
@@ -266,119 +388,5 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 				.andReturn("P_JMS_AMS_TOPIC_MESSAGEMINDER").anyTimes();
 
 		return result;
-	}
-
-	private MessagingServiceMock createMessagingServiceMock() {
-		// URLs
-		Map<String, String[]> expectedUrlsForClientIds = new HashMap<String, String[]>();
-		expectedUrlsForClientIds.put("amsConsumer", new String[] {
-				"P_JMS_AMS_PROVIDER_URL_1", "P_JMS_AMS_PROVIDER_URL_2" });
-		expectedUrlsForClientIds.put("extConsumer", new String[] {
-				"P_JMS_EXTERN_PROVIDER_URL_1", "P_JMS_EXTERN_PROVIDER_URL_2" });
-		expectedUrlsForClientIds.put("amsProducer",
-				new String[] { "P_JMS_AMS_SENDER_PROVIDER_URL" });
-		// Session
-		Map<String, MessagingSession> sessionsForClientIds = new HashMap<String, MessagingSession>();
-		sessionsForClientIds.put("amsConsumer", createAMSConsumerSession());
-		sessionsForClientIds.put("extConsumer", createEXTConsumerSession());
-		sessionsForClientIds.put("amsProducer", createAMSProducerSession());
-		// Service
-		return new MessagingServiceMock(expectedUrlsForClientIds,
-				sessionsForClientIds);
-	}
-
-	private MessagingSession createAMSProducerSession() {
-		// TODO Auto-generated method stub
-		Map<String, PostfachArt> expectedPostfachArtenForSources = new HashMap<String, PostfachArt>();
-		Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
-		Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
-		Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
-
-		expectedPostfachArtenForDestination.put(
-				"P_JMS_AMS_TOPIC_MESSAGEMINDER", PostfachArt.TOPIC);
-
-		amsToDistributorProducerMock = new ProducerMock() {
-			@Override
-			public void sendeSystemnachricht(SystemNachricht nachricht) {
-				assertTrue((nachricht instanceof SyncronisationsAufforderungsSystemNachchricht));
-			}
-			
-			@Override
-			public void tryToClose() {
-			}
-		};
-		producerForDestination.put("P_JMS_AMS_TOPIC_MESSAGEMINDER",
-				amsToDistributorProducerMock);
-
-		MessagingSessionMock amsProducerSession = new MessagingSessionMock(
-				expectedPostfachArtenForSources, consumerForSources,
-				expectedPostfachArtenForDestination, producerForDestination);
-		return amsProducerSession;
-	}
-
-	private MessagingSessionMock createAMSConsumerSession() {
-		// TODO Maps befüllen
-		// P_JMS_AMS_PROVIDER_URL_1
-		// P_JMS_AMS_PROVIDER_URL_2
-		// 
-		Map<String, PostfachArt> expectedPostfachArtenForSources = new HashMap<String, PostfachArt>();
-		Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
-		Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
-		Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
-
-		expectedPostfachArtenForSources.put("P_JMS_AMS_TOPIC_COMMAND",
-				PostfachArt.TOPIC);
-		amsCommandConsumerMock = new ConsumerMock() {
-			@Override
-			public NAMSMessage receiveMessage() throws MessagingException,
-					InterruptedException {
-				throw new InterruptedException();
-			}
-		};
-		consumerForSources.put("P_JMS_AMS_TOPIC_COMMAND",
-				amsCommandConsumerMock);
-
-		MessagingSessionMock amsConsumerSession = new MessagingSessionMock(
-				expectedPostfachArtenForSources, consumerForSources,
-				expectedPostfachArtenForDestination, producerForDestination);
-		return amsConsumerSession;
-	}
-
-	private MessagingSessionMock createEXTConsumerSession() {
-		// TODO Maps befüllen
-		// P_JMS_EXTERN_PROVIDER_URL_1
-		// P_JMS_EXTERN_PROVIDER_URL_2
-		Map<String, PostfachArt> expectedPostfachArtenForSources = new HashMap<String, PostfachArt>();
-		Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
-		Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
-		Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
-
-		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_COMMAND",
-				PostfachArt.TOPIC);
-		ConsumerMock extCommandConsumerMock = new ConsumerMock();
-		consumerForSources.put("P_JMS_EXT_TOPIC_COMMAND",
-				extCommandConsumerMock);
-		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_ALARM",
-				PostfachArt.TOPIC);
-		ConsumerMock extAlarmConsumerMock = new ConsumerMock();
-		consumerForSources.put("P_JMS_EXT_TOPIC_ALARM", extAlarmConsumerMock);
-
-		MessagingSessionMock amsConsumerSession = new MessagingSessionMock(
-				expectedPostfachArtenForSources, consumerForSources,
-				expectedPostfachArtenForDestination, producerForDestination);
-		return amsConsumerSession;
-	}
-
-	// FIXME tearDown wieder rein!
-//	@After
-	public void UNtearDown() {
-		// Clean-Ups.
-		if (occuredThrowable != null) {
-			throw new RuntimeException("Unhandled exception occurred.",
-					occuredThrowable);
-		}
-		// Verify Mocks...
-		EasyMock.verify(preferenceService, regelwerksBuilderService,
-				historyService, localStoreConfigurationService);
 	}
 }

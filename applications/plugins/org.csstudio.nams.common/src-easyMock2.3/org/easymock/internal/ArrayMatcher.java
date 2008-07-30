@@ -9,14 +9,14 @@ import org.easymock.internal.matchers.ArrayEquals;
 
 public class ArrayMatcher extends AbstractMatcher {
 	@Override
+	public boolean argumentMatches(final Object expected, final Object actual) {
+		return new ArrayEquals(expected).matches(actual);
+	}
+
+	@Override
 	public String argumentToString(final Object argument) {
 		final StringBuffer result = new StringBuffer();
 		new ArrayEquals(argument).appendTo(result);
 		return result.toString();
-	}
-
-	@Override
-	public boolean argumentMatches(final Object expected, final Object actual) {
-		return new ArrayEquals(expected).matches(actual);
 	}
 }

@@ -1,5 +1,6 @@
 package org.csstudio.nams.application.department.decision;
 
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -11,8 +12,8 @@ import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteS
 public class DecisionDepartmentAllTestsSuite extends TestCase {
 
 	public static Test suite() throws Throwable {
-		TestSuite suite = new TestSuite("NAMSCommonAllTestsSuite");
-		//$JUnit-BEGIN$
+		final TestSuite suite = new TestSuite("NAMSCommonAllTestsSuite");
+		// $JUnit-BEGIN$
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 		suite.addTestSuite(DecisionDepartmentActivator_Test.class);
 		suite.addTestSuite(DecisionDepartmentAllTestsSuite.class);
@@ -20,18 +21,18 @@ public class DecisionDepartmentAllTestsSuite extends TestCase {
 		suite.addTestSuite(ThreadTypesOfDecisionDepartment_Test.class);
 		suite.addTestSuite(XMPPLoginCallbackHandler_Test.class);
 		suite.addTestSuite(XMPPRemoteShutdownAction_Test.class);
-		//$JUnit-END$
+		// $JUnit-END$
 		return suite;
 	}
 
 	@org.junit.Test
-	public void testAssertionsAktiviert()
-	{
+	public void testAssertionsAktiviert() {
 		try {
 			assert false : "Ok, Assertions sind aktiviert!";
-			fail("Nein, Assertions sind nicht aktiviert");
-		} catch(AssertionError ae) {
-			assertEquals("Ok, Assertions sind aktiviert!", ae.getMessage());
+			Assert.fail("Nein, Assertions sind nicht aktiviert");
+		} catch (final AssertionError ae) {
+			Assert.assertEquals("Ok, Assertions sind aktiviert!", ae
+					.getMessage());
 		}
 	}
 }

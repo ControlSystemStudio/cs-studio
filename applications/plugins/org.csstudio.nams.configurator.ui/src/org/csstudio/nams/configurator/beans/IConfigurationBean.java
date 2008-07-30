@@ -4,12 +4,19 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public interface IConfigurationBean {
-	public String getDisplayName();
-	public IConfigurationBean getClone();
 	public void addPropertyChangeListener(PropertyChangeListener listener);
-	public void removePropertyChangeListener(PropertyChangeListener listener);
-	public PropertyChangeSupport getPropertyChangeSupport();
+
+	public IConfigurationBean getClone();
+
+	public String getDisplayName();
+
 	public int getID();
-	public void setID(int id);
+
+	public PropertyChangeSupport getPropertyChangeSupport();
+
 	public String getRubrikName();
+
+	public void removePropertyChangeListener(PropertyChangeListener listener);
+
+	public void setID(int id);
 }
