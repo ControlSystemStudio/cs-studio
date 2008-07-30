@@ -100,14 +100,15 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 
 	public void setDescription(final String description) {
 		final String oldValue = this.getDescription();
-		this.description = description;
+		this.description = (description != null) ? description : "";
 		this.pcs.firePropertyChange(PropertyNames.description.name(), oldValue,
 				this.getDescription());
 	}
 
 	public void setHumanReadableName(final String humanReadableName) {
 		final String oldValue = this.getHumanReadableName();
-		this.humanReadableName = humanReadableName;
+		this.humanReadableName = (humanReadableName != null) ? humanReadableName
+				: "";
 		this.pcs.firePropertyChange(PropertyNames.humanReadableName.name(),
 				oldValue, this.getHumanReadableName());
 	}
@@ -125,7 +126,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 
 	public void setTopicName(final String topicName) {
 		final String oldValue = this.getTopicName();
-		this.topicName = topicName;
+		this.topicName = (topicName != null) ? topicName : "";
 		this.pcs.firePropertyChange(PropertyNames.topicName.name(), oldValue,
 				this.getTopicName());
 	}

@@ -173,14 +173,14 @@ public class AlarmbearbeiterBean extends
 
 	public void setConfirmCode(final String confirmCode) {
 		final String oldValue = this.getConfirmCode();
-		this.confirmCode = confirmCode;
+		this.confirmCode = (confirmCode != null) ? confirmCode : "";
 		this.pcs.firePropertyChange(PropertyNames.confirmCode.name(), oldValue,
 				this.getConfirmCode());
 	}
 
 	public void setEmail(final String email) {
 		final String oldValue = this.getEmail();
-		this.email = email;
+		this.email = (email != null) ? email : "";
 		this.pcs.firePropertyChange(PropertyNames.email.name(), oldValue, this
 				.getEmail());
 	}
@@ -191,21 +191,21 @@ public class AlarmbearbeiterBean extends
 
 	public void setMobilePhone(final String mobilePhone) {
 		final String oldValue = this.getMobilePhone();
-		this.mobilePhone = mobilePhone;
+		this.mobilePhone = (mobilePhone != null) ? mobilePhone : "";
 		this.pcs.firePropertyChange(PropertyNames.mobilePhone.name(), oldValue,
 				this.getMobilePhone());
 	}
 
 	public void setName(final String name) {
 		final String oldValue = this.getName();
-		this.name = name;
+		this.name = (name != null) ? name : "";
 		this.pcs.firePropertyChange(PropertyNames.name.name(), oldValue, this
 				.getName());
 	}
 
 	public void setPhone(final String phone) {
 		final String oldValue = this.getPhone();
-		this.phone = phone;
+		this.phone = (phone != null) ? phone : "";
 		this.pcs.firePropertyChange(PropertyNames.phone.name(), oldValue, this
 				.getPhone());
 	}
@@ -219,7 +219,7 @@ public class AlarmbearbeiterBean extends
 
 	public void setStatusCode(final String statusCode) {
 		final String oldValue = this.getStatusCode();
-		this.statusCode = statusCode;
+		this.statusCode = (statusCode != null) ? statusCode : "";
 		this.pcs.firePropertyChange(PropertyNames.statusCode.name(), oldValue,
 				this.getStatusCode());
 	}
