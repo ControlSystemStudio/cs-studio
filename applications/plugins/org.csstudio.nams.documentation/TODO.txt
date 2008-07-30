@@ -9,6 +9,10 @@
 - FilterActions im BeanService auf die DTOs mappen und andersherum (5)
 - Messaging JMS Impl: Exception-Handling (Listener für Connection, Exceptions durchreichen) (1)
 
+---SYN-SQL (bsp. Topics):
+delete * from AMS_TOPIC_SYN;
+insert into AMS_TOPIC_SYN ({topic.*}) VALUES select {topic.*} from AMS_TOPIC {topic};
+
 ----------------------------------------------------------------------------------------------------------
 --------------- Tests --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
