@@ -29,6 +29,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.filt
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterVoiceMailFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterAction2FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.JunctorConditionForFilterTreeConditionJoinDTO;
@@ -305,6 +306,7 @@ public class ConfigurationServiceFactoryImpl implements
 				.addAnnotatedClass(AlarmbearbeiterSMSFilterActionDTO.class)
 				.addAnnotatedClass(
 						AlarmbearbeiterVoiceMailFilterActionDTO.class)
+				.addAnnotatedClass(FilterAction2FilterDTO.class)
 
 				.addAnnotatedClass(DefaultFilterTextDTO.class)
 

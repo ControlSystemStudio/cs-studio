@@ -152,9 +152,10 @@ public class FilterbedingungBean extends
 							.getClone());
 		} else {
 			// TODO mw: default is always ODER, i'm not sure about this here
-			final StringFilterConditionBean junctorConditionBean = new StringFilterConditionBean();
-			this.filterSpecificBean = junctorConditionBean;
-			bean.setFilterSpecificBean(junctorConditionBean);
+			// (gs) no default is null
+//			final StringFilterConditionBean junctorConditionBean = new StringFilterConditionBean();
+//			this.filterSpecificBean = junctorConditionBean;
+//			bean.setFilterSpecificBean(junctorConditionBean);
 		}
 	}
 }

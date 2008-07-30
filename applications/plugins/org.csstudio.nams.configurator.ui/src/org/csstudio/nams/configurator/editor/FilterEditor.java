@@ -259,7 +259,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		});
 		this._defaultMessageTextEntry = this.createDescriptionTextEntry(main,
-				"Description:");
+				"Default Message:");
 
 		{
 			final Composite treeAndButtonsComp = new Composite(outerFormMain,

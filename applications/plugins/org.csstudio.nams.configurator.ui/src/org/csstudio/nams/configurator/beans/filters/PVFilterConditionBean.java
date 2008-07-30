@@ -108,14 +108,14 @@ public class PVFilterConditionBean extends
 
 	public void setChannelName(final String channelName) {
 		final String oldValue = this.channelName;
-		this.channelName = channelName;
+		this.channelName = (channelName != null) ? channelName : "";
 		this.pcs.firePropertyChange(PropertyNames.channelName.name(), oldValue,
 				channelName);
 	}
 
 	public void setCompareValue(final String compareValue) {
 		final String oldValue = this.compareValue;
-		this.compareValue = compareValue;
+		this.compareValue = (compareValue != null) ? compareValue : "";
 		this.pcs.firePropertyChange(PropertyNames.compareValue.name(),
 				oldValue, compareValue);
 	}

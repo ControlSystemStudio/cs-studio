@@ -3,10 +3,8 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -175,24 +173,17 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 	public void loadJoinData(final Mapper mapper) throws Throwable {
 		final List<FilterConditionsToFilterDTO> joins = mapper.loadAll(
-				FilterConditionsToFilterDTO.class, true);
-
-		final List<FilterActionDTO> alleFilterActions = mapper.loadAll(
-				FilterActionDTO.class, true);
+				FilterConditionsToFilterDTO.class, false);
+		
 		final List<FilterAction2FilterDTO> actionJoins = mapper.loadAll(
-				FilterAction2FilterDTO.class, true);
+				FilterAction2FilterDTO.class, false);
+		
 		Collections.sort(actionJoins, new Comparator<FilterAction2FilterDTO>() {
 			public int compare(final FilterAction2FilterDTO o1,
 					final FilterAction2FilterDTO o2) {
 				return o2.getIPos() - o1.getIPos();
 			}
 		});
-
-		final Map<Integer, FilterActionDTO> filterActionMap = new HashMap<Integer, FilterActionDTO>();
-		for (final FilterActionDTO filterAction : alleFilterActions) {
-			filterActionMap
-					.put(filterAction.getIFilterActionID(), filterAction);
-		}
 
 		this.filterConditons.clear();
 
@@ -212,8 +203,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 		for (final FilterAction2FilterDTO actionJoin : actionJoins) {
 			if (actionJoin.getId().getIFilterRef() == this.getIFilterID()) {
-				final FilterActionDTO foundAction = filterActionMap
-						.get(actionJoin.getId().getIFilterActionRef());
+				final FilterActionDTO foundAction = mapper.findForId(FilterActionDTO.class, actionJoin.getId().getIFilterActionRef(), true); 
 				assert foundAction != null : "Es existiert eine Action mit der ID "
 						+ actionJoin.getId().getIFilterActionRef();
 

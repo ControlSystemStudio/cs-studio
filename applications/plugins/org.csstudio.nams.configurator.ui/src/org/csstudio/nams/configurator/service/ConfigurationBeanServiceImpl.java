@@ -720,22 +720,22 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return filterConditionDTO;
 	}
 
-	private StringArrayFilterConditionCompareValuesDTO getCompareValueDTO(
-			final List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues,
-			final FilterbedingungBean bean, final String compValue) {
-		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : oldCompareValues) {
-			if (stringArrayFilterConditionCompareValuesDTO.getCompValue() == compValue) {
-				return stringArrayFilterConditionCompareValuesDTO;
-			}
-		}
-		final StringArrayFilterConditionCompareValuesDTO result = new StringArrayFilterConditionCompareValuesDTO();
-		final StringArrayFilterConditionCompareValuesDTO_PK pk = new StringArrayFilterConditionCompareValuesDTO_PK();
-		pk.setCompValue(compValue);
-		pk.setFilterConditionRef(bean.getFilterbedinungID());
-		result.setPk(pk);
-
-		return result;
-	}
+//	private StringArrayFilterConditionCompareValuesDTO getCompareValueDTO(
+//			final List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues,
+//			final FilterbedingungBean bean, final String compValue) {
+//		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : oldCompareValues) {
+//			if (stringArrayFilterConditionCompareValuesDTO.getCompValue() == compValue) {
+//				return stringArrayFilterConditionCompareValuesDTO;
+//			}
+//		}
+//		final StringArrayFilterConditionCompareValuesDTO result = new StringArrayFilterConditionCompareValuesDTO();
+//		final StringArrayFilterConditionCompareValuesDTO_PK pk = new StringArrayFilterConditionCompareValuesDTO_PK();
+//		pk.setCompValue(compValue);
+//		pk.setFilterConditionRef(bean.getFilterbedinungID());
+//		result.setPk(pk);
+//
+//		return result;
+//	}
 
 	private AlarmbearbeiterDTO getDTO4Bean(final AlarmbearbeiterBean bean) {
 		AlarmbearbeiterDTO dto = null;
@@ -1169,27 +1169,34 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			if ((dto4Bean != null)
 					&& (dto4Bean instanceof StringArrayFilterConditionDTO)) {
 				stringArrayFilterConditionDTO = (StringArrayFilterConditionDTO) dto4Bean;
-				stringArrayFilterConditionDTO
-						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
+//				stringArrayFilterConditionDTO
+//						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
 			} else {
 				stringArrayFilterConditionDTO = new StringArrayFilterConditionDTO();
 				inserted = true;
 			}
 
-			final List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
-			final Collection<StringArrayFilterConditionCompareValuesDTO> allStringArrayCompareValues = this.entireConfiguration
-					.getAllStringArrayCompareValues();
-			for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allStringArrayCompareValues) {
-				if (stringArrayFilterConditionCompareValuesDTO
-						.getFilterConditionRef() == bean.getFilterbedinungID()) {
-					oldCompareValues
-							.add(stringArrayFilterConditionCompareValuesDTO);
-				}
-			}
+//			final List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+//			final Collection<StringArrayFilterConditionCompareValuesDTO> allStringArrayCompareValues = this.entireConfiguration
+//					.getAllStringArrayCompareValues();
+//			for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allStringArrayCompareValues) {
+//				if (stringArrayFilterConditionCompareValuesDTO
+//						.getFilterConditionRef() == bean.getFilterbedinungID()) {
+//					oldCompareValues
+//							.add(stringArrayFilterConditionCompareValuesDTO);
+//				}
+//			}
 			final List<StringArrayFilterConditionCompareValuesDTO> currentCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 			for (final String compValue : specificBean.getCompareValues()) {
-				currentCompareValues.add(this.getCompareValueDTO(
-						oldCompareValues, bean, compValue));
+//				currentCompareValues.add(this.getCompareValueDTO(
+//						oldCompareValues, bean, compValue));
+				
+				final StringArrayFilterConditionCompareValuesDTO newCompValue = new StringArrayFilterConditionCompareValuesDTO();
+				final StringArrayFilterConditionCompareValuesDTO_PK pk = new StringArrayFilterConditionCompareValuesDTO_PK();
+				pk.setCompValue(compValue);
+				pk.setFilterConditionRef(bean.getFilterbedinungID());
+				newCompValue.setPk(pk);
+				currentCompareValues.add(newCompValue);
 			}
 
 			stringArrayFilterConditionDTO

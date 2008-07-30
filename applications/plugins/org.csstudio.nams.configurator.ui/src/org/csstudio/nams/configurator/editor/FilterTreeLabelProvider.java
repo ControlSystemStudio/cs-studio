@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
+import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.eclipse.jface.viewers.LabelProvider;
 
 public class FilterTreeLabelProvider extends LabelProvider {
@@ -11,7 +12,13 @@ public class FilterTreeLabelProvider extends LabelProvider {
 		if (element instanceof FilterbedingungBean) {
 			final FilterbedingungBean bean = (FilterbedingungBean) element;
 			result = bean.getDisplayName();
-			final String description = bean.getDescription();
+			String description = bean.getDescription();
+
+			if (bean instanceof NotConditionForFilterTreeBean) {
+				NotConditionForFilterTreeBean notBean = (NotConditionForFilterTreeBean) bean;
+				description = notBean.getFilterbedingungBean().getDescription();
+			}
+
 			if ((description != null) && !description.equals("")) {
 				result += "     [" + description + "]";
 			}

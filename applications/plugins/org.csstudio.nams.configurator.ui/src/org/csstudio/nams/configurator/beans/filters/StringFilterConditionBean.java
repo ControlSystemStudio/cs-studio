@@ -100,7 +100,7 @@ public class StringFilterConditionBean extends
 
 	public void setCompValue(final String compValue) {
 		final String oldValue = this.compValue;
-		this.compValue = compValue;
+		this.compValue = (compValue != null) ? compValue : "";
 		this.pcs.firePropertyChange(PropertyNames.compValue.name(), oldValue,
 				this.compValue);
 	}

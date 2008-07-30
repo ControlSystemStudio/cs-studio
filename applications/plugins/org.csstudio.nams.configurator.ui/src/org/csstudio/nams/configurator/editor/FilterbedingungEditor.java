@@ -863,7 +863,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				Millisekunden result = Millisekunden.valueOf(0);
 				try {
 					result = Millisekunden.valueOf(Long
-							.parseLong((String) value));
+							.parseLong((String) value)*1000);
 				} catch (final Throwable e) {
 					FilterbedingungEditor.this.timeDelayText.setText("0");
 				}
@@ -871,7 +871,14 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				return result;
 			}
 
-		}, null);
+		}, new UpdateValueStrategy() {
+
+			@Override
+			public Object convert(final Object value) {
+				return ((Millisekunden)value).alsLongVonMillisekunden() / 1000;
+			}
+
+		});
 
 		context.bindValue(SWTObservables.observeText(this.timeStartCompareText,
 				SWT.Modify), timeBasedStartCompareObservable, null, null);

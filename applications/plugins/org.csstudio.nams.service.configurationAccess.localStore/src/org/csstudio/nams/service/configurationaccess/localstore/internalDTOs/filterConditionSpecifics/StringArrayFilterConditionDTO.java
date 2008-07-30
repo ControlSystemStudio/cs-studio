@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +49,14 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	private short operator;
 
 	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
-		// TODO CLEAN UP
+		List<StringArrayFilterConditionCompareValuesDTO> allCompList = mapper
+				.loadAll(StringArrayFilterConditionCompareValuesDTO.class,
+						false);
+		for (StringArrayFilterConditionCompareValuesDTO comp : allCompList) {
+			if (comp.getFilterConditionRef() == this.getIFilterConditionID()) {
+				mapper.delete(comp);
+			}
+		}
 	}
 
 	@Override
@@ -170,8 +178,27 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	}
 
 	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
-		// TODO Auto-generated method stub
+		List<StringArrayFilterConditionCompareValuesDTO> compList = new ArrayList<StringArrayFilterConditionCompareValuesDTO>(
+				this.compareValues.size());
 
+		List<StringArrayFilterConditionCompareValuesDTO> allCompList = mapper
+				.loadAll(StringArrayFilterConditionCompareValuesDTO.class,
+						false);
+		for (StringArrayFilterConditionCompareValuesDTO comp : allCompList) {
+			if (comp.getFilterConditionRef() == this.getIFilterConditionID()) {
+				if (!this.compareValues.contains(comp)) {
+					mapper.delete(comp);
+				} else {
+					compList.add(comp);
+				}
+			}
+		}
+
+		for (StringArrayFilterConditionCompareValuesDTO element : this.compareValues) {
+			if (!compList.contains(element)) {
+				mapper.save(element);
+			}
+		}
 	}
 
 	@Override

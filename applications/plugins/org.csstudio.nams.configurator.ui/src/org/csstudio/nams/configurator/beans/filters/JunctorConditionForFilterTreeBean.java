@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.beans.filters;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -12,7 +13,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Junc
 public class JunctorConditionForFilterTreeBean extends FilterbedingungBean {
 
 	private JunctorConditionType junctorConditionType;
-	private final Set<FilterbedingungBean> filterbedingungBeans = new TreeSet<FilterbedingungBean>();
+	private final Set<FilterbedingungBean> filterbedingungBeans = new TreeSet<FilterbedingungBean>(
+			new JunctorConditionForFilterTreeBeanComparator());
 
 	public JunctorConditionForFilterTreeBean() {
 		this.setFilterSpecificBean(null);
@@ -135,7 +137,8 @@ public class JunctorConditionForFilterTreeBean extends FilterbedingungBean {
 			final JunctorConditionForFilterTreeBean junctorBean = (JunctorConditionForFilterTreeBean) bean;
 			final Set<FilterbedingungBean> operands = junctorBean.getOperands();
 			for (final FilterbedingungBean filterbedingungBean : operands) {
-				if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean) {
+				if (filterbedingungBean instanceof JunctorConditionForFilterTreeBean
+						|| filterbedingungBean instanceof NotConditionForFilterTreeBean) {
 					this.filterbedingungBeans.add(filterbedingungBean
 							.getClone());
 				} else {
@@ -144,5 +147,37 @@ public class JunctorConditionForFilterTreeBean extends FilterbedingungBean {
 			}
 			this.junctorConditionType = junctorBean.junctorConditionType;
 		}
+	}
+
+	private static class JunctorConditionForFilterTreeBeanComparator implements
+			Comparator<FilterbedingungBean> {
+
+		public int compare(FilterbedingungBean o1, FilterbedingungBean o2) {
+			if (o1 instanceof NotConditionForFilterTreeBean) {
+				if (o2 instanceof NotConditionForFilterTreeBean) {
+					return o1.compareTo(o2);
+				} else {
+					return -1;
+				}
+			}
+			if (o2 instanceof NotConditionForFilterTreeBean) {
+				return 1;
+			}			
+			if (o1 instanceof JunctorConditionForFilterTreeBean) {
+				if (o2 instanceof JunctorConditionForFilterTreeBean) {
+					return o1.compareTo(o2);
+				} else if (o2 instanceof NotConditionForFilterTreeBean) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+			if (o2 instanceof JunctorConditionForFilterTreeBean) {
+				return 1;
+			}
+				
+			return o1.compareTo(o2);
+		}
+
 	}
 }

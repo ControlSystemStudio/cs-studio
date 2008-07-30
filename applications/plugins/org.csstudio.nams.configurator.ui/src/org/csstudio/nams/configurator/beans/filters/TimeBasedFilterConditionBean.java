@@ -182,7 +182,8 @@ public class TimeBasedFilterConditionBean extends
 
 	public void setConfirmCompValue(final String confirmCompValue) {
 		final String oldValue = this.confirmCompValue;
-		this.confirmCompValue = confirmCompValue;
+		this.confirmCompValue = (confirmCompValue != null) ? confirmCompValue
+				: "";
 		this.pcs.firePropertyChange(PropertyNames.confirmCompValue.name(),
 				oldValue, confirmCompValue);
 	}
@@ -206,7 +207,7 @@ public class TimeBasedFilterConditionBean extends
 
 	public void setStartCompValue(final String startCompValue) {
 		final String oldValue = this.startCompValue;
-		this.startCompValue = startCompValue;
+		this.startCompValue = (startCompValue != null) ? startCompValue : "";
 		this.pcs.firePropertyChange(PropertyNames.startCompValue.name(),
 				oldValue, startCompValue);
 	}
