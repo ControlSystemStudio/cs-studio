@@ -1,22 +1,33 @@
 ----------------------------------------------------------------------------------------------------------
+--------------- Services --- (Priorität, je höher, desto wichtiger) --------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+- LocalStoreConfigurationService:
+  - Vereinheitlichen: Auch bei RPL-State und History mit UnitOfWork 
+    arbeiten und aufräumen (2)
+  - prepareSyncronisation() : SYN Tabellen füllen (fehlende Tabellen hinzufügen) (5)
+- FilterActions im BeanService auf die DTOs mappen und andersherum (5)
+- Messaging JMS Impl: Exception-Handling (Listener für Connection, Exceptions durchreichen) (1)
+
+----------------------------------------------------------------------------------------------------------
 --------------- Tests --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
 
-- DecisionDepartmentActivator_Test#testBundleAndApplicationLifecycle()
+- DecisionDepartmentActivator_Test#testBundleAndApplicationLifecycle() (3)
 
 ----------------------------------------------------------------------------------------------------------
 --------------- EDITOREN --- (Priorität, je höher, desto wichtiger) --------------------------------------
 ----------------------------------------------------------------------------------------------------------
 
-- PrefPanes
-	- die meisten prefpages fehlen!
+- PrefPanes (*service.preference.ui)
+	- prefpages für Topics/JMS fehlen! (5)
 
 - Filter Editor (gs, mz)
 	- (X) man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen (=> soll so bleiben)
 	- das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen. (3)
-	- Alarmaktionen fehlt noch ganz (Tabelle und Co) (5)
+	- (X) Alarmaktionen fehlt noch ganz (Tabelle und Co) (5)
 	- Filterbedingungen per DND im Baum verschieben (1)
-	- DoubleClick auf Filetrbedingung öffnet einen FilterbedingungEditor für beanCLone und nicht für die Bean. 
+	- (X) DoubleClick auf Filetrbedingung öffnet einen FilterbedingungEditor für beanCLone und nicht für die Bean. 
 	
 - Filterbedingung Editor
 	- speicher NUR bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
@@ -34,6 +45,9 @@
 ----------------------------------------------------------------------------------------------------------
 --------------- Views ------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------
+
+- Syncronisations-View
+    - Syncronisationsprozess fertigstellen
 
 - Alarmbearbeiter View
 	- ok

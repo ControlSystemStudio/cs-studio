@@ -19,7 +19,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
@@ -182,14 +181,6 @@ class LocalStoreConfigurationServiceImpl implements
 		} finally {
 			closeSession(session);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
-			Session session, Class<T> clasz) {
-		List<T> list = session.createCriteria(clasz).list();
-
-		return list;
 	}
 
 	public void saveDTO(final NewAMSConfigurationElementDTO dto)
