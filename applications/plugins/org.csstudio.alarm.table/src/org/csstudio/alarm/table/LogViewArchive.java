@@ -352,36 +352,43 @@ public class LogViewArchive extends ViewPart implements Observer {
 		bFlexSearch.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
 
 		bFlexSearch.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(final SelectionEvent e) {
-				StartEndDialog dlg = new StartEndDialog(_parentShell);
-				if (dlg.open() == StartEndDialog.OK) {
-					String lowString = dlg.getStartSpecification();
-					String highString = dlg.getEndSpecification();
-					try {
-						StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
-						Calendar from = parser.getStart();
-						Calendar to = parser.getEnd();
-//    					ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-    					showNewTime(from, to);
-//    					ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
-//    					_jmsMessageList.clearList();
-//    					_jmsLogTableViewer.refresh();
-//    					_jmsMessageList.addJMSMessageList(am);
+		    public void widgetSelected(final SelectionEvent e) {
+                StartEndDialog dlg;
+                if(_fromTime!=null&&_toTime!=null){
+                    dlg = new StartEndDialog(_parentShell,_fromTime.toString(),_toTime.toString());
+                }else {
+                    dlg = new StartEndDialog(_parentShell);
+                }
+                if (dlg.open() == StartEndDialog.OK) {
+                    String lowString = dlg.getStartSpecification();
+                    String highString = dlg.getEndSpecification();
+                    try {
+                        StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
+                        Calendar from = parser.getStart();
+                        _fromTime = TimestampFactory.fromCalendar(from);
+                        Calendar to = parser.getEnd();
+                        _toTime =  TimestampFactory.fromCalendar(to);
+//                      ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+                        showNewTime(from, to);
+//                      ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
+//                      _jmsMessageList.clearList();
+//                      _jmsLogTableViewer.refresh();
+//                      _jmsMessageList.addJMSMessageList(am);
 
-    	                ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-    	                		LogViewArchive.this._dbAnswer, from, to);
-//    	                ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-//    	                        from, to);
-    	                readDB.schedule();
+                        ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
+                                LogViewArchive.this._dbAnswer, from, to);
+//                      ArrayList<HashMap<String, String>> am = adba.getLogMessages(
+//                              from, to);
+                        readDB.schedule();
 
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						JmsLogsPlugin.logInfo(e1.getMessage());
-					}
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        JmsLogsPlugin.logInfo(e1.getMessage());
+                    }
 
-				}
-			}
-		});
+                }
+            }
+        });
 
 	}
     /** 
