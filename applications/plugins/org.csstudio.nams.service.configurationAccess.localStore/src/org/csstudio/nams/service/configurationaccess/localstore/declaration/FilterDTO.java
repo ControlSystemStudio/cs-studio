@@ -4,11 +4,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -176,8 +174,6 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void deleteJoinLinkData(Mapper mapper) throws Throwable {
-		List<FilterConditionDTO> alleFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
-		
 		List<FilterConditionsToFilterDTO> joins = mapper.loadAll(
 				FilterConditionsToFilterDTO.class, true);
 		
@@ -190,22 +186,13 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 		for (FilterConditionDTO condition : getFilterConditions()) {
 			if (condition instanceof JunctorConditionForFilterTreeDTO || condition instanceof NegationConditionForFilterTreeDTO) {
-				FilterConditionDTO foundFC = findForId(condition.getIFilterConditionID(), alleFilterConditions);
+				FilterConditionDTO foundFC = mapper.findForId(FilterConditionDTO.class, condition.getIFilterConditionID(), true);
 					((HasManuallyJoinedElements) foundFC)
 							.deleteJoinLinkData(mapper);
 				
 				mapper.delete(foundFC);
 			}
 		}
-	}
-	
-	private <T extends FilterConditionDTO> T findForId(int id, Collection<T> fcs) {
-		for (T t : fcs) {
-			if( t.getIFilterConditionID() == id ) {
-				return t;
-			}
-		}
-		return null;
 	}
 	
 	private FilterConditionsToFilterDTO findForId(int id, Collection<FilterConditionsToFilterDTO> fcs) {
@@ -218,7 +205,6 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
-		List<FilterConditionDTO> allFC = mapper.loadAll(FilterConditionDTO.class, true);
 		List<FilterConditionsToFilterDTO> joins = mapper.loadAll(FilterConditionsToFilterDTO.class, true);
 		
 		
@@ -226,7 +212,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		
 		for (FilterConditionsToFilterDTO join : joins) {
 			if (join.getIFilterRef() == this.getIFilterID()) {
-				FilterConditionDTO found = findForId(join.getIFilterConditionRef(), allFC);
+				FilterConditionDTO found = mapper.findForId(FilterConditionDTO.class, join.getIFilterConditionRef(), true);
 				ehemalsReferenziert.add(found);
 			}
 		}
@@ -234,7 +220,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		List<FilterConditionDTO> operands = this.getFilterConditions();
 		
 		for (FilterConditionDTO operand : operands) {
-			FilterConditionDTO fc = findForId(operand.getIFilterConditionID(), allFC);
+			FilterConditionDTO fc = mapper.findForId(FilterConditionDTO.class, operand.getIFilterConditionID(), true);
 			
 			if (fc != null) {
 				if (!ehemalsReferenziert.remove(fc)) {
