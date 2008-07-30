@@ -85,7 +85,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 * @return ArrayList of messages in a HashMap
 	 */
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
-			Calendar to, String filter, ArrayList<FilterSetting> filterSetting,
+			Calendar to, String filter, ArrayList<FilterItem> filterSetting,
 			int maxAnserSize) {
 		ArrayList<ResultSet> result = queryDatabase(filterSetting, from, to);
 		ArrayList<HashMap<String, String>> ergebniss = processResult(result);
@@ -124,8 +124,8 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 						// current row has the same message_id->
 						// it belongs to the current message
 						if (message != null) {
-							message.put(resultSet.getString(4), resultSet
-									.getString(5));
+							message.put(resultSet.getString(2), resultSet
+									.getString(3));
 						}
 					} else {
 						// this result row belongs to a new message
@@ -140,8 +140,8 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 						currentMessageID = Integer.parseInt(resultSet
 								.getString(1));
 						message = new HashMap<String, String>();
-						message.put(resultSet.getString(4), resultSet
-								.getString(5));
+						message.put(resultSet.getString(2), resultSet
+								.getString(3));
 					}
 				}
 				// put the last message to the messageResultList
@@ -165,7 +165,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 * @param to
 	 * @return
 	 */
-	private ArrayList<ResultSet> queryDatabase(ArrayList<FilterSetting> filter,
+	private ArrayList<ResultSet> queryDatabase(ArrayList<FilterItem> filter,
 			Calendar from, Calendar to) {
 
 		// list of result sets (for each OR relation in the FilterSetting
@@ -177,9 +177,9 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			PreparedStatement getMessages = null;
 			// the filter setting has to be separated at the OR relation
 			// because the SQL statement is designed only for AND.
-			ArrayList<ArrayList<FilterSetting>> separatedFilterSettings = separateFilterSettings(filter);
+			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filter);
 			ResultSet result = null;
-			for (ArrayList<FilterSetting> currentFilterSettingList : separatedFilterSettings) {
+			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
 				switch (currentFilterSettingList.size()) {
 				case 0:
 					getMessages = _databaseConnection
@@ -203,7 +203,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 				int parameterIndex = 0;
 				// set the preparedStatement parameters
 				if (getMessages != null) {
-					for (FilterSetting filterSetting : currentFilterSettingList) {
+					for (FilterItem filterSetting : currentFilterSettingList) {
 						parameterIndex++;
 						getMessages.setString(parameterIndex, filterSetting
 								.get_property());
@@ -262,32 +262,32 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 	/**
-	 * The list of Filter settings consists of of property value pairs
+	 * The list of Filter settings consists of property value pairs
 	 * associated with AND or OR. Because the sql statement is created only for
 	 * the AND parts (for a better performance the or will be merged in java)
 	 * this method split the FilterSetting list on the OR association and
-	 * returns a list of lists of filtersettings associated only with AND.
+	 * returns a list of lists of filter settings associated only with AND.
 	 * 
 	 * @param filter
 	 * @return
 	 */
-	private ArrayList<ArrayList<FilterSetting>> separateFilterSettings(
-			ArrayList<FilterSetting> filter) {
+	private ArrayList<ArrayList<FilterItem>> separateFilterSettings(
+			ArrayList<FilterItem> filter) {
 
 		// list of list of AND associated Filter settings we want to return.
-		ArrayList<ArrayList<FilterSetting>> separatedFilterSettings = new ArrayList<ArrayList<FilterSetting>>();
+		ArrayList<ArrayList<FilterItem>> separatedFilterSettings = new ArrayList<ArrayList<FilterItem>>();
 		// list of filterSettings associated with AND to put in
 		// separatedFilterSettings.
-		ArrayList<FilterSetting> filterSettingsAndAssociated = null;
+		ArrayList<FilterItem> filterSettingsAndAssociated = null;
 		// if filter is null (user searches only for time period) set one
 		// empty list of filter settings.
 		if (filter == null) {
-			filterSettingsAndAssociated = new ArrayList<FilterSetting>();
+			filterSettingsAndAssociated = new ArrayList<FilterItem>();
 			separatedFilterSettings.add(filterSettingsAndAssociated);
 			return separatedFilterSettings;
 		}
 		String association = "BEGIN";
-		for (FilterSetting setting : filter) {
+		for (FilterItem setting : filter) {
 			if (association.equalsIgnoreCase("AND")) {
 				if (filterSettingsAndAssociated != null) {
 					association = setting.get_relation();
@@ -301,12 +301,12 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			if (association.equalsIgnoreCase("OR")) {
 				separatedFilterSettings.add(filterSettingsAndAssociated);
 				association = setting.get_relation();
-				filterSettingsAndAssociated = new ArrayList<FilterSetting>();
+				filterSettingsAndAssociated = new ArrayList<FilterItem>();
 				filterSettingsAndAssociated.add(setting);
 				continue;
 			}
 			if (association.equalsIgnoreCase("BEGIN")) {
-				filterSettingsAndAssociated = new ArrayList<FilterSetting>();
+				filterSettingsAndAssociated = new ArrayList<FilterItem>();
 				filterSettingsAndAssociated.add(setting);
 				association = setting.get_relation();
 				continue;

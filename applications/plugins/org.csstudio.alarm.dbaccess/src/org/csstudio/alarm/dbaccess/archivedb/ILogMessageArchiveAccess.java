@@ -23,13 +23,13 @@
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import org.csstudio.alarm.dbaccess.FilterSetting;
+import org.csstudio.alarm.dbaccess.FilterItem;
+
 
 public interface ILogMessageArchiveAccess {
 
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, int maxAnswerSize);
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, ArrayList<FilterSetting> settings, int maxAnswerSize);
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, ArrayList<FilterItem> settings, int maxAnswerSize);
 }

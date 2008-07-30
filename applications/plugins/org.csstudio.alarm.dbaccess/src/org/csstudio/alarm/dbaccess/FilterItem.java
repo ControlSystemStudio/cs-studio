@@ -31,7 +31,7 @@
  * @version $Revision$
  * @since 14.05.2008
  */
-public class FilterSetting {
+public class FilterItem {
 
 	private String _property;
 
@@ -39,14 +39,14 @@ public class FilterSetting {
 	
 	private String _relation;
 
-	public FilterSetting(String _property, String _value, String _relation) {
+	public FilterItem(String _property, String _value, String _relation) {
 		super();
 		this._property = _property;
 		this._value = _value;
 		this._relation = _relation;
 	}
 
-	public FilterSetting() {
+	public FilterItem() {
 	}
 
 	public String get_property() {

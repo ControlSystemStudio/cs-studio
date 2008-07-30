@@ -36,69 +36,65 @@ public class SQLStatements {
 
 	public static String test = "select * from message_content where value = ?";
 	
-	public static String MAX_ROWNUM = "5000000";
+	public static String MAX_ROWNUM = "50000";
 
-	public static String ARCHIVE_SIMPLE = "select  mct.message_id, mt.name as MsgType, m.datum, mpt.name as Property,  mct.value "
-		+ "from  message m, message_content mct,msg_type mt, msg_property_type mpt "
-		+ "where  mpt.id = mct.msg_property_type_id "
-		+ "and  m.id = mct.MESSAGE_ID "
-		+ "and  m.msg_type_id = mt.id "
+	public static String ARCHIVE_SIMPLE = "select  mc.message_id, mpt.name as Property,  mc.value "
+		+ "from  message m, message_content mc, msg_property_type mpt "
+		+ "where  mpt.id = mc.msg_property_type_id "
+		+ "and  m.id = mc.MESSAGE_ID "
 		+ "and  m.DATUM between to_date(? , 'YYYY-MM-DD HH24:MI:SS') and "
 		+ "to_date(? , 'YYYY-MM-DD HH24:MI:SS') "
 		+ "and ROWNUM < "
-		+ MAX_ROWNUM + " " + "order by mct.MESSAGE_ID desc ";
+		+ MAX_ROWNUM + " " + "order by mc.MESSAGE_ID desc ";
 
-	public static String ARCHIVE_MESSAGES_1 = "select  mct.message_id, mt.name as MsgType, m.datum, mpt.name as Property,  mct.value "
-			+ "from  message m, message_content mct,msg_type mt, msg_property_type mpt "
-			+ "where  mpt.id = mct.msg_property_type_id "
-			+ "and  m.id = mct.MESSAGE_ID "
-			+ "and  m.msg_type_id = mt.id "
-			+ "and  mct.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
+	public static String ARCHIVE_MESSAGES_1 = "select  mc.message_id, mpt.name as Property,  mc.value "
+			+ "from  message m, message_content mc, msg_property_type mpt "
+			+ "where  mpt.id = mc.msg_property_type_id "
+			+ "and  m.id = mc.MESSAGE_ID "
+			+ "and  mc.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
 			+ "where mpt.ID = mc.MSG_PROPERTY_TYPE_ID "
 			+ "and (mpt.NAME = ? and mc.VALUE = ?) "
 			+ ") "
 			+ "and  m.DATUM between to_date(? , 'YYYY-MM-DD HH24:MI:SS') and "
 			+ "to_date(? , 'YYYY-MM-DD HH24:MI:SS') "
 			+ "and ROWNUM < "
-			+ MAX_ROWNUM + " " + "order by mct.MESSAGE_ID desc ";
+			+ MAX_ROWNUM + " " + "order by mc.MESSAGE_ID desc ";
 
-	public static String ARCHIVE_MESSAGES_2 = "select  mct.message_id, mt.name as MsgType, m.datum, mpt.name as Property,  mct.value "
-			+ "from  message m, message_content mct,msg_type mt, msg_property_type mpt "
-			+ "where  mpt.id = mct.msg_property_type_id "
-			+ "and  m.id = mct.MESSAGE_ID "
-			+ "and  m.msg_type_id = mt.id "
-			+ "and  mct.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
+	public static String ARCHIVE_MESSAGES_2 = "select  mc.message_id, mpt.name as Property,  mc.value "
+			+ "from  message m, message_content mc, msg_property_type mpt "
+			+ "where  mpt.id = mc.msg_property_type_id "
+			+ "and  m.id = mc.MESSAGE_ID "
+			+ "and  mc.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
 			+ "where mpt.ID = mc.MSG_PROPERTY_TYPE_ID "
 			+ "and (mpt.NAME = ? and mc.VALUE = ?) "
 			+ ") "
-			+ "and  mct.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
+			+ "and  mc.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
 			+ "where mpt.ID = mc.MSG_PROPERTY_TYPE_ID "
 			+ "and (mpt.NAME = ? and mc.VALUE = ?) "
 			+ ") "
 			+ "and  m.DATUM between to_date(? , 'YYYY-MM-DD HH24:MI:SS') and "
 			+ "to_date(? , 'YYYY-MM-DD HH24:MI:SS') "
 			+ "and ROWNUM < "
-			+ MAX_ROWNUM + " " + "order by mct.MESSAGE_ID desc ";
+			+ MAX_ROWNUM + " " + "order by mc.MESSAGE_ID desc ";
 
-	public static String ARCHIVE_MESSAGES_3 = "select  mct.message_id, mt.name as MsgType, m.datum, mpt.name as Property,  mct.value "
-			+ "from  message m, message_content mct,msg_type mt, msg_property_type mpt "
-			+ "where  mpt.id = mct.msg_property_type_id "
-			+ "and  m.id = mct.MESSAGE_ID "
-			+ "and  m.msg_type_id = mt.id "
-			+ "and  mct.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
+	public static String ARCHIVE_MESSAGES_3 = "select  mc.message_id, mpt.name as Property,  mc.value "
+			+ "from  message m, message_content mc, msg_property_type mpt "
+			+ "where  mpt.id = mc.msg_property_type_id "
+			+ "and  m.id = mc.MESSAGE_ID "
+			+ "and  mc.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
 			+ "where mpt.ID = mc.MSG_PROPERTY_TYPE_ID "
 			+ "and (mpt.NAME = ? and mc.VALUE = ?) "
 			+ ") "
-			+ "and  mct.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
+			+ "and  mc.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
 			+ "where mpt.ID = mc.MSG_PROPERTY_TYPE_ID "
 			+ "and (mpt.NAME = ? and mc.VALUE = ?) "
 			+ ") "
-			+ "and  mct.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
+			+ "and  mc.message_id in (select mc.MESSAGE_ID from message_content mc, msg_property_type mpt "
 			+ "where mpt.ID = mc.MSG_PROPERTY_TYPE_ID "
 			+ "and (mpt.NAME = ? and mc.VALUE = ?) "
 			+ ") "
 			+ "and  m.DATUM between to_date(?, 'YYYY-MM-DD HH24:MI:SS') and "
 			+ "to_date(?, 'YYYY-MM-DD HH24:MI:SS') "
 			+ "and ROWNUM < "
-			+ MAX_ROWNUM + " " + "order by mct.MESSAGE_ID desc ";
+			+ MAX_ROWNUM + " " + "order by mc.MESSAGE_ID desc ";
 }
