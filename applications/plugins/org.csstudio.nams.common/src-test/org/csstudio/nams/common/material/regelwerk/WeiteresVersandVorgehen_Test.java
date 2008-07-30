@@ -1,6 +1,5 @@
 package org.csstudio.nams.common.material.regelwerk;
 
-import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 
 public class WeiteresVersandVorgehen_Test extends

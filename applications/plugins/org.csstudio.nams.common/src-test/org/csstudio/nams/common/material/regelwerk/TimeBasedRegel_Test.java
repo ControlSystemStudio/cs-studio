@@ -28,10 +28,6 @@ package org.csstudio.nams.common.material.regelwerk;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.material.regelwerk.Pruefliste;
-import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
-import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
-import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
 

@@ -44,8 +44,6 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.easymock.EasyMock;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class DecisionDepartmentActivator_Test extends TestCase {

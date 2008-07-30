@@ -3,7 +3,6 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration.fil
 import java.util.List;
 
 import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
 

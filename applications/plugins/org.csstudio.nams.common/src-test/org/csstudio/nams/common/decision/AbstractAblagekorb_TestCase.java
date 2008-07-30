@@ -1,7 +1,5 @@
 package org.csstudio.nams.common.decision;
 
-import org.csstudio.nams.common.decision.Ablagefaehig;
-import org.csstudio.nams.common.decision.Ablagekorb;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
 

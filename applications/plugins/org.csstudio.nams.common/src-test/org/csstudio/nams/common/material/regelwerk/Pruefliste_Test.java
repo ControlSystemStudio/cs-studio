@@ -1,8 +1,6 @@
 package org.csstudio.nams.common.material.regelwerk;
 
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.material.regelwerk.Pruefliste;
-import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 
 public class Pruefliste_Test extends AbstractObject_TestCase<Pruefliste> {

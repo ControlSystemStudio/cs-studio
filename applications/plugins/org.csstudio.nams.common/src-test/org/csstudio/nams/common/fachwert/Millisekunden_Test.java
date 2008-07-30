@@ -1,6 +1,5 @@
 package org.csstudio.nams.common.fachwert;
 
-import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
 

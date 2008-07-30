@@ -30,10 +30,6 @@ import junit.framework.TestCase;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.material.regelwerk.Pruefliste;
-import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
-import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
-import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.junit.Test;
 
 

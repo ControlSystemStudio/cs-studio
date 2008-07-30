@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
-import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
-import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;
 import org.csstudio.nams.configurator.dnd.SelectionDragSourceListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;

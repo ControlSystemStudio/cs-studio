@@ -1,6 +1,5 @@
 package org.csstudio.nams.common.material;
 
-import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
 

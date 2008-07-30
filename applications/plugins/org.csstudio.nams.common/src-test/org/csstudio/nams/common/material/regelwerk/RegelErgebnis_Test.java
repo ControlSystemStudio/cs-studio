@@ -1,6 +1,5 @@
 package org.csstudio.nams.common.material.regelwerk;
 
-import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
 

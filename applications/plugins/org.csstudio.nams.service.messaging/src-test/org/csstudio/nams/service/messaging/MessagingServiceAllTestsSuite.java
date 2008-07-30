@@ -1,11 +1,11 @@
 package org.csstudio.nams.service.messaging;
 
-import org.csstudio.nams.common.material.AlarmNachricht_Test;
-import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage_Test;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.csstudio.nams.common.material.AlarmNachricht_Test;
+import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage_Test;
 
 public class MessagingServiceAllTestsSuite extends TestCase {
 

@@ -4,7 +4,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 
-import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
 
