@@ -45,6 +45,19 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstractAlarmbearbeiterFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstractAlarmbearbeiterGruppenFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmTopicFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterVoiceMailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeitergruppenFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -515,7 +528,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				throw new InconsistentConfigurationException(
 						"failed to deleteFilter()", e);
 			}
-			this.filterbedingungBeans.remove(dto.getIFilterID());
+			this.filterBeans.remove(dto.getIFilterID());
 			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
 					"ConfigurationBeanServiceImpl.delete() "
 							+ dto.getIFilterID() + " " + dto.getName());
@@ -720,24 +733,28 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return filterConditionDTO;
 	}
 
-//	private StringArrayFilterConditionCompareValuesDTO getCompareValueDTO(
-//			final List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues,
-//			final FilterbedingungBean bean, final String compValue) {
-//		for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : oldCompareValues) {
-//			if (stringArrayFilterConditionCompareValuesDTO.getCompValue() == compValue) {
-//				return stringArrayFilterConditionCompareValuesDTO;
-//			}
-//		}
-//		final StringArrayFilterConditionCompareValuesDTO result = new StringArrayFilterConditionCompareValuesDTO();
-//		final StringArrayFilterConditionCompareValuesDTO_PK pk = new StringArrayFilterConditionCompareValuesDTO_PK();
-//		pk.setCompValue(compValue);
-//		pk.setFilterConditionRef(bean.getFilterbedinungID());
-//		result.setPk(pk);
-//
-//		return result;
-//	}
+	// private StringArrayFilterConditionCompareValuesDTO getCompareValueDTO(
+	// final List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues,
+	// final FilterbedingungBean bean, final String compValue) {
+	// for (final StringArrayFilterConditionCompareValuesDTO
+	// stringArrayFilterConditionCompareValuesDTO : oldCompareValues) {
+	// if (stringArrayFilterConditionCompareValuesDTO.getCompValue() ==
+	// compValue) {
+	// return stringArrayFilterConditionCompareValuesDTO;
+	// }
+	// }
+	// final StringArrayFilterConditionCompareValuesDTO result = new
+	// StringArrayFilterConditionCompareValuesDTO();
+	// final StringArrayFilterConditionCompareValuesDTO_PK pk = new
+	// StringArrayFilterConditionCompareValuesDTO_PK();
+	// pk.setCompValue(compValue);
+	// pk.setFilterConditionRef(bean.getFilterbedinungID());
+	// result.setPk(pk);
+	//
+	// return result;
+	// }
 
-	private AlarmbearbeiterDTO getDTO4Bean(final AlarmbearbeiterBean bean) {
+	private AlarmbearbeiterDTO findDTO4Bean(final AlarmbearbeiterBean bean) {
 		AlarmbearbeiterDTO dto = null;
 		for (final AlarmbearbeiterDTO potentialdto : this.entireConfiguration
 				.gibAlleAlarmbearbeiter()) {
@@ -749,7 +766,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return dto;
 	}
 
-	private AlarmbearbeiterGruppenDTO getDTO4Bean(
+	private AlarmbearbeiterGruppenDTO findDTO4Bean(
 			final AlarmbearbeiterGruppenBean bean) {
 		AlarmbearbeiterGruppenDTO dto = null;
 		for (final AlarmbearbeiterGruppenDTO potentialdto : this.entireConfiguration
@@ -762,7 +779,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return dto;
 	}
 
-	private TopicDTO getDTO4Bean(final AlarmtopicBean bean) {
+	private TopicDTO findDTO4Bean(final AlarmtopicBean bean) {
 		TopicDTO dto = null;
 		for (final TopicDTO potentialdto : this.entireConfiguration
 				.gibAlleAlarmtopics()) {
@@ -956,7 +973,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			final AlarmbearbeiterBean bean) throws StorageError,
 			StorageException, InconsistentConfigurationException {
 		boolean inserted = false;
-		AlarmbearbeiterDTO dto = this.getDTO4Bean(bean);
+		AlarmbearbeiterDTO dto = this.findDTO4Bean(bean);
 		if (dto == null) {
 			dto = new AlarmbearbeiterDTO();
 			inserted = true;
@@ -986,7 +1003,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			final AlarmbearbeiterGruppenBean bean) throws StorageError,
 			StorageException, InconsistentConfigurationException {
 		boolean inserted = false;
-		AlarmbearbeiterGruppenDTO dto = this.getDTO4Bean(bean);
+		AlarmbearbeiterGruppenDTO dto = this.findDTO4Bean(bean);
 		if (dto == null) {
 			dto = new AlarmbearbeiterGruppenDTO();
 			inserted = true;
@@ -1031,7 +1048,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		boolean inserted = false;
-		TopicDTO dto = this.getDTO4Bean(bean);
+		TopicDTO dto = this.findDTO4Bean(bean);
 		if (dto == null) {
 			dto = new TopicDTO();
 			inserted = true;
@@ -1069,6 +1086,71 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				.createFilterConditionDTOListForFilter(bean.getConditions());
 
 		dto.setFilterConditions(list);
+
+		List<FilterActionDTO> actionDTOs = new ArrayList<FilterActionDTO>(bean
+				.getActions().size());
+		List<FilterAction> actions = bean.getActions();
+		for (FilterAction filterAction : actions) {
+			FilterActionType filterActionType = filterAction
+					.getFilterActionType();
+			if (filterActionType instanceof AlarmbearbeiterFilterActionType) {
+				AlarmbearbeiterFilterActionType type = (AlarmbearbeiterFilterActionType) filterActionType;
+				AbstractAlarmbearbeiterFilterActionDTO actiondto = null;
+				switch (type) {
+				case EMAIL:
+					actiondto = new AlarmbearbeiterEmailFilterActionDTO();
+					break;
+				case SMS:
+					actiondto = new AlarmbearbeiterSMSFilterActionDTO();
+					break;
+				case VMAIL:
+					actiondto = new AlarmbearbeiterVoiceMailFilterActionDTO();
+					break;
+				}
+				actiondto
+						.setReceiver(findDTO4Bean((AlarmbearbeiterBean) filterAction
+								.getReceiver()));
+				actiondto.setMessage(filterAction.getMessage());
+				actionDTOs.add(actiondto);
+			} else if (filterActionType instanceof AlarmbearbeitergruppenFilterActionType) {
+				AlarmbearbeitergruppenFilterActionType type = (AlarmbearbeitergruppenFilterActionType) filterActionType;
+				AbstractAlarmbearbeiterGruppenFilterActionDTO actiondto = null;
+				switch (type) {
+				case EMAIL:
+					actiondto = new AlarmbearbeiterGruppenEmailFilterActionDTO();
+					break;
+				case EMAIL_Best:
+					actiondto = new AlarmbearbeiterGruppenEmailBestFilterActionDTO();
+					break;
+				case SMS:
+					actiondto = new AlarmbearbeiterGruppenSMSFilterActionDTO();
+					break;
+				case SMS_Best:
+					actiondto = new AlarmbearbeiterGruppenSMSBestFilterActionDTO();
+					break;
+				case VMAIL:
+					actiondto = new AlarmbearbeiterGruppenVMailFilterActionDTO();
+					break;
+				case VMAIL_Best:
+					actiondto = new AlarmbearbeiterGruppenVMailBestFilterActionDTO();
+					break;
+				}
+				actiondto
+						.setReceiver(findDTO4Bean((AlarmbearbeiterGruppenBean) filterAction
+								.getReceiver()));
+				actiondto.setMessage(filterAction.getMessage());
+				actionDTOs.add(actiondto);
+			} else if (filterActionType instanceof AlarmTopicFilterActionType) {
+				TopicFilterActionDTO actiondto = new TopicFilterActionDTO();
+				actiondto
+						.setReceiver(findDTO4Bean((AlarmtopicBean) filterAction
+								.getReceiver()));
+				actiondto.setMessage(filterAction.getMessage());
+				actionDTOs.add(actiondto);
+			}
+		}
+
+		dto.setFilterActions(actionDTOs);
 		dto.setName(bean.getName());
 		dto.setIGroupRef(this.getRubrikIDForName(bean.getRubrikName(),
 				RubrikTypeEnum.FILTER));
@@ -1169,28 +1251,34 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			if ((dto4Bean != null)
 					&& (dto4Bean instanceof StringArrayFilterConditionDTO)) {
 				stringArrayFilterConditionDTO = (StringArrayFilterConditionDTO) dto4Bean;
-//				stringArrayFilterConditionDTO
-//						.setCompareValues(new LinkedList<StringArrayFilterConditionCompareValuesDTO>());
+				// stringArrayFilterConditionDTO
+				// .setCompareValues(new
+				// LinkedList<StringArrayFilterConditionCompareValuesDTO>());
 			} else {
 				stringArrayFilterConditionDTO = new StringArrayFilterConditionDTO();
 				inserted = true;
 			}
 
-//			final List<StringArrayFilterConditionCompareValuesDTO> oldCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
-//			final Collection<StringArrayFilterConditionCompareValuesDTO> allStringArrayCompareValues = this.entireConfiguration
-//					.getAllStringArrayCompareValues();
-//			for (final StringArrayFilterConditionCompareValuesDTO stringArrayFilterConditionCompareValuesDTO : allStringArrayCompareValues) {
-//				if (stringArrayFilterConditionCompareValuesDTO
-//						.getFilterConditionRef() == bean.getFilterbedinungID()) {
-//					oldCompareValues
-//							.add(stringArrayFilterConditionCompareValuesDTO);
-//				}
-//			}
+			// final List<StringArrayFilterConditionCompareValuesDTO>
+			// oldCompareValues = new
+			// LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+			// final Collection<StringArrayFilterConditionCompareValuesDTO>
+			// allStringArrayCompareValues = this.entireConfiguration
+			// .getAllStringArrayCompareValues();
+			// for (final StringArrayFilterConditionCompareValuesDTO
+			// stringArrayFilterConditionCompareValuesDTO :
+			// allStringArrayCompareValues) {
+			// if (stringArrayFilterConditionCompareValuesDTO
+			// .getFilterConditionRef() == bean.getFilterbedinungID()) {
+			// oldCompareValues
+			// .add(stringArrayFilterConditionCompareValuesDTO);
+			// }
+			// }
 			final List<StringArrayFilterConditionCompareValuesDTO> currentCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
 			for (final String compValue : specificBean.getCompareValues()) {
-//				currentCompareValues.add(this.getCompareValueDTO(
-//						oldCompareValues, bean, compValue));
-				
+				// currentCompareValues.add(this.getCompareValueDTO(
+				// oldCompareValues, bean, compValue));
+
 				final StringArrayFilterConditionCompareValuesDTO newCompValue = new StringArrayFilterConditionCompareValuesDTO();
 				final StringArrayFilterConditionCompareValuesDTO_PK pk = new StringArrayFilterConditionCompareValuesDTO_PK();
 				pk.setCompValue(compValue);

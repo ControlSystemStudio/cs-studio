@@ -60,7 +60,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	private List<FilterConditionDTO> filterConditons = new LinkedList<FilterConditionDTO>();
 
 	@Transient
-	private final List<FilterActionDTO> filterActions = new LinkedList<FilterActionDTO>();
+	private List<FilterActionDTO> filterActions = new LinkedList<FilterActionDTO>();
 
 	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
 		final List<FilterConditionsToFilterDTO> joins = mapper.loadAll(
@@ -83,6 +83,14 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 				mapper.delete(foundFC);
 			}
+		}
+
+		int iPos = 0;
+		for (FilterActionDTO action : getFilterActions()) {
+			mapper.delete(new FilterAction2FilterDTO(action, this, iPos));
+			mapper.delete(mapper.findForId(FilterActionDTO.class, action
+					.getIFilterActionID(), false));
+			iPos++;
 		}
 	}
 
@@ -174,10 +182,10 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	public void loadJoinData(final Mapper mapper) throws Throwable {
 		final List<FilterConditionsToFilterDTO> joins = mapper.loadAll(
 				FilterConditionsToFilterDTO.class, false);
-		
+
 		final List<FilterAction2FilterDTO> actionJoins = mapper.loadAll(
 				FilterAction2FilterDTO.class, false);
-		
+
 		Collections.sort(actionJoins, new Comparator<FilterAction2FilterDTO>() {
 			public int compare(final FilterAction2FilterDTO o1,
 					final FilterAction2FilterDTO o2) {
@@ -203,7 +211,9 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 
 		for (final FilterAction2FilterDTO actionJoin : actionJoins) {
 			if (actionJoin.getId().getIFilterRef() == this.getIFilterID()) {
-				final FilterActionDTO foundAction = mapper.findForId(FilterActionDTO.class, actionJoin.getId().getIFilterActionRef(), true); 
+				final FilterActionDTO foundAction = mapper.findForId(
+						FilterActionDTO.class, actionJoin.getId()
+								.getIFilterActionRef(), true);
 				assert foundAction != null : "Es existiert eine Action mit der ID "
 						+ actionJoin.getId().getIFilterActionRef();
 
@@ -219,6 +229,10 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	public void setFilterConditions(
 			final List<FilterConditionDTO> filterConditonDTOs) {
 		this.filterConditons = filterConditonDTOs;
+	}
+
+	public void setFilterActions(List<FilterActionDTO> filterActions) {
+		this.filterActions = filterActions;
 	}
 
 	@SuppressWarnings("unused")
@@ -281,6 +295,30 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 			if (toRemove instanceof NegationConditionForFilterTreeDTO) {
 				mapper.delete(toRemove);
 			}
+		}
+
+		// Actionen speichern
+		List<FilterActionDTO> noNeedToSave = new LinkedList<FilterActionDTO>();
+		List<FilterAction2FilterDTO> allActionJoins = mapper.loadAll(FilterAction2FilterDTO.class, false);
+		for (FilterAction2FilterDTO filterAction2FilterDTO : allActionJoins) {
+			if (filterAction2FilterDTO.getId().getIFilterRef() == this.getIFilterID()) {
+				FilterActionDTO filterActionDTO = mapper.findForId(FilterActionDTO.class, filterAction2FilterDTO.getId().getIFilterActionRef(), false);
+				mapper.delete(filterAction2FilterDTO);
+				if (!getFilterActions().contains(filterActionDTO)) {
+					mapper.delete(filterActionDTO);
+				} else {
+					noNeedToSave.add(filterActionDTO);
+				}
+			}
+		}
+		
+		int iPos = 0;
+		for (FilterActionDTO actionDTO : getFilterActions()) {
+			if (!noNeedToSave.contains(actionDTO)) {
+				mapper.save(actionDTO);
+			}
+			mapper.save(new FilterAction2FilterDTO(actionDTO, this, iPos));
+			iPos++;
 		}
 	}
 

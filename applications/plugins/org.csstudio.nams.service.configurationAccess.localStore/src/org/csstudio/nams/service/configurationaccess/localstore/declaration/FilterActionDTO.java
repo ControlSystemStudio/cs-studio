@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -30,6 +32,7 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 	protected FilterActionType filterActionType;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "IFILTERACTIONID", nullable = false)
 	private int iFilterActionID;
 
@@ -67,7 +70,6 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 		return true;
 	}
 
-	@Deprecated
 	public FilterActionType getFilterActionType() {
 		if (this.filterActionType == null) {
 			throw new RuntimeException("filterActionType in " + this
@@ -105,6 +107,10 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 
 	public void setMessage(final String message) {
 		this.message = message;
+	}
+
+	public void setReceiver(NewAMSConfigurationElementDTO receiver) {
+		this.receiver = receiver;
 	}
 
 	@Override

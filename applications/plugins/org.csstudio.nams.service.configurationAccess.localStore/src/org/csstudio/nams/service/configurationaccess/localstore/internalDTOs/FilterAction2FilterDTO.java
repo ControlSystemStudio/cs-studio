@@ -8,6 +8,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 
 @Entity
@@ -74,6 +76,18 @@ public class FilterAction2FilterDTO implements NewAMSConfigurationElementDTO {
 
 	@Column(name = "IPOS")
 	int iPos;
+
+	public FilterAction2FilterDTO() {
+		
+	}
+	
+	public FilterAction2FilterDTO(FilterActionDTO filterAction,
+			FilterDTO filterDTO, int pos) {
+		this.id = new JoinPK();
+		this.id.iFilterActionRef = filterAction.getIFilterActionID();
+		this.id.iFilterRef = filterDTO.getIFilterID();
+		this.iPos = pos;
+	}
 
 	@Override
 	public boolean equals(final Object obj) {
