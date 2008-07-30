@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,6 +17,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Performs {@link UnitOfWork}s in a Hibernate sessions transaction.
@@ -68,7 +70,8 @@ public class TransactionProcessor {
 			tx = session.beginTransaction();
 			tx.begin();
 
-			logger.logDebugMessage(this, "Beginning unit of work of type " + work.getClass().getName() + "...");
+			logger.logDebugMessage(this, "Beginning unit of work of type "
+					+ work.getClass().getName() + "...");
 			result = work.doWork(new MapperImpl(session));
 			logger.logDebugMessage(this, "... done.");
 
@@ -167,6 +170,35 @@ public class TransactionProcessor {
 		private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
 				Session session, Class<T> clasz) throws Throwable {
 			return session.createCriteria(clasz).list();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public <T extends NewAMSConfigurationElementDTO> T findForId(
+				Class<T> clasz, Serializable id,
+				boolean loadManuallyJoinedMappingsIfAvailable) throws Throwable {
+			T result = loadForId(session, clasz, id);
+
+			if (loadManuallyJoinedMappingsIfAvailable) {
+				if (result instanceof HasManuallyJoinedElements) {
+					HasManuallyJoinedElements elementAsElementWithJoins = (HasManuallyJoinedElements) result;
+					elementAsElementWithJoins.loadJoinData(this);
+				}
+			}
+
+			return result;
+		}
+
+		/**
+		 * Loads an element from session and performs the unsafe cast.
+		 */
+		@SuppressWarnings("unchecked")
+		private <T extends NewAMSConfigurationElementDTO> T loadForId(
+				Session session, Class<T> clasz, Serializable id)
+				throws Throwable {
+			return (T) session.createCriteria(clasz).add(Restrictions.idEq(id))
+					.uniqueResult();
 		}
 	}
 
