@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="lib/cmulex.jar"/>
 	<classpathentry kind="lib" path="lib/cmutimelex.jar"/>
 	<classpathentry kind="lib" path="lib/en_us.jar"/>
-	<classpathentry kind="lib" path="lib/cmu_time_awb.jar"/>
+	<classpathentry kind="lib" path="lib/cmu_time_awb.jar" sourcepath="lib/freetts-1.2.1"/>
 	<classpathentry kind="lib" path="lib/cmu_us_kal.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

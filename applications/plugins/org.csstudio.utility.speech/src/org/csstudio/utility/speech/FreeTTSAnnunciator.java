@@ -30,6 +30,11 @@ public class FreeTTSAnnunciator implements Annunciator
 	 */
 	public FreeTTSAnnunciator(final String voice_name) throws Exception
 	{
+		// Setting this property eliminates the need for voices.txt
+		System.setProperty("freetts.voices",
+				"com.sun.speech.freetts.en.us.cmu_time_awb.AlanVoiceDirectory," +
+				"com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+		
     	// The VoiceManager manages all the voices for FreeTTS.
     	final VoiceManager voiceManager = VoiceManager.getInstance();
         voice = voiceManager.getVoice(voice_name);
