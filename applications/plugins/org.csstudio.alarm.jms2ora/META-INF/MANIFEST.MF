@@ -10,8 +10,8 @@ Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
  org.csstudio.platform.libs.jms,
  org.csstudio.platform.libs.jdbc,
  org.csstudio.platform.libs.xmpp,
- org.csstudio.platform,
  org.csstudio.platform.libs.dcf,
+ org.csstudio.platform,
  org.csstudio.platform.utility.rdb
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,

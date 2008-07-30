@@ -20,9 +20,7 @@ CREATE TABLE msg_type_property_type
 (
     id INT PRIMARY KEY NOT NULL,
     msg_type_id INT NOT NULL,
-    msg_property_type_id INT NOT NULL,
-    FOREIGN KEY (msg_property_type_id) REFERENCES msg_property_type (id),
-    FOREIGN KEY (msg_type_id) REFERENCES msg_type (id)
+    msg_property_type_id INT NOT NULL
 );
 
 CREATE TABLE message_content
@@ -30,17 +28,14 @@ CREATE TABLE message_content
     id INT PRIMARY KEY NOT NULL,
     message_id INT NOT NULL,
     msg_property_type_id INT NOT NULL,
-    value VARCHAR(300),
-    FOREIGN KEY (msg_property_type_id) REFERENCES msg_property_type (id),
-    FOREIGN KEY (message_id) REFERENCES message (id) ON DELETE CASCADE
+    value VARCHAR(300)
 );
 
 CREATE TABLE message
 (
     id INT PRIMARY KEY NOT NULL,
     msg_type_id INT NOT NULL,
-    datum TIMESTAMP,
-    FOREIGN KEY (msg_type_id) REFERENCES msg_type(id)
+    datum TIMESTAMP
 );
 
 CREATE USER krykams IDENTIFIED BY 'krykams';

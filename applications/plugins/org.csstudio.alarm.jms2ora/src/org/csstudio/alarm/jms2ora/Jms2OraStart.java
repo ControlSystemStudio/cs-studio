@@ -30,7 +30,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 /**
  * The starting class.
  * 
- * @author Markus Möller
+ * @author Markus Mï¿½ller
  *
  */
 
@@ -51,7 +51,7 @@ public class Jms2OraStart implements IApplication
         if(applic.isInitialized() == true)
         {
             // Start...
-            applic.executeMe();
+            applic.run();
         }
         else // Sorry, some errors were caused...
         {

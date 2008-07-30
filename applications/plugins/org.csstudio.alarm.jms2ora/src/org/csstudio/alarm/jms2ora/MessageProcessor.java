@@ -42,8 +42,10 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.database.OracleService;
+import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
 import org.csstudio.alarm.jms2ora.util.WaifFileHandler;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import de.desy.epics.singleton.EpicsSingleton;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -51,6 +53,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 /**
@@ -59,30 +62,28 @@ import java.sql.SQLException;
  * 
  * Steps:
  * 
- * 1. Read all message type and message properties from the database and store them into two hash tables
+ * 1. Read all message properties from the database and store them into a hash table
  * 2. Create a receiver and set the asynchronous message receiving.
  * 3. Wait for messages
  * 4. If a message is received, process it. If the processing fails, store the message in a file.
  * 
  * Message processing:
  * 
- * 1. Check for the TYPE and EVENTTIME properties
- *    Set the type to 'unknown', if the message does not contain the property TYPE.
+ * 1. Check for the EVENTTIME property
  *    Set the property EVENTTIME to the current date, if the message does not contain it.
  * 2. Create a hash table with the following entries:
  *    Long   - The key (ID from MSG_PROPERTY_TYPE)
  *    String - The value (value from the received map message)
- * 3. Get the ID of the message type or set it to 'unknown'
- * 4. Create an entry in the table MESSAGE and return the ID for the entry
- * 5. With the ID from step 4 create the entries in the table MESSAGE_CONTENT
- * 6. If the last step fails, delete all created entries in MESSAGE and MESSAGE_CONTENT
+ * 3. Create an entry in the table MESSAGE and return the ID for the entry
+ * 4. With the ID from step 3 create the entries in the table MESSAGE_CONTENT
+ * 5. If the last step fails, delete all created entries in MESSAGE and MESSAGE_CONTENT
  * 
  * @author  Markus Moeller
- * @version 1.3.0
+ * @version 2.0.0
  */
 
 /*
- * TODO:    Auslagern von bestimmten Funktionen in eigenst�ndige Klassen
+ * TODO:    Auslagern von bestimmten Funktionen in eigenständige Klassen
  *          - Die Properties der Datenbanktabellen
  */
 
@@ -100,9 +101,6 @@ public class MessageProcessor implements MessageListener
     
     /** Array of message receivers */
     private MessageReceiver[] receivers = null;
-    
-    /** Hashtable with message types. Key -> name, value -> database table id */
-    private Hashtable<String, Long> msgType = null;
     
     /** Hashtable with message properties. Key -> name, value -> database table id  */
     private Hashtable<String, Long> msgProperty = null;
@@ -125,21 +123,26 @@ public class MessageProcessor implements MessageListener
     /** Number of stored message files */
     private int fileNumber = 0;
     
+    /** Number of bytes that can be stored in the column value of the table MESSAGE_CONTENT  */
+    private int valueLength = 0;
+    
     /** Indicates if the application was initialized or not */
     private boolean initialized = false;
     
-    /** Indicates wether or not the application should shut down */
+    /** Indicates wether or not the application should stop */
     private boolean running = true;
     
     /** True if the folder 'nirvana' exists. This folder holds the stored message object content. */
     private boolean existsObjectFolder = false;
 
     private final String version = " 2.0.0";
-    private final String build = " - BUILD 2008-06-25 14:00";
+    private final String build = " - BUILD 2008-07-30 10:00";
     private final String application = "Jms2Ora";
+    private final String objectDir = ".\\nirvana\\";
     private final String formatStd = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}";
     private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
     private final String formatOneDigit = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
+    
     
     public final long RET_ERROR = -1;
     public static final int CONSOLE = 1;
@@ -159,20 +162,23 @@ public class MessageProcessor implements MessageListener
     /**
      * A nice private constructor...
      *
-     */
-    
+     */    
     private MessageProcessor()
     {
         int i;
         
+        // Create the logger
         createLogger();
 
+        // Create the folder that will hold message objects that could not be stored into the database
         checkObjectFolder();
         
+        // Get the configuration
         config = Jms2OraPlugin.getDefault().getConfiguration();
         
         dbLayer = new DatabaseLayer(logger, config.getString("database.url"), config.getString("database.user"), config.getString("database.password"));
-        initialized = readMessageTypeAndProperties();
+        initialized = readMessageProperties();
+        valueLength = getMaxNumberOfValueBytes();
         
         lastQuotaUpdate = Calendar.getInstance().getTime();
         
@@ -217,8 +223,6 @@ public class MessageProcessor implements MessageListener
         {
             initialized = false;
         }
-        
-
     }
     
     public static synchronized MessageProcessor getInstance()
@@ -236,7 +240,7 @@ public class MessageProcessor implements MessageListener
      *
      */
     
-    public void executeMe()
+    public void run()
     {
         MapMessage mapMessage  = null;
         int result;
@@ -344,7 +348,7 @@ public class MessageProcessor implements MessageListener
 
     public int processMessage(MapMessage mmsg)
     {
-        Hashtable<Long, String> msgContent  = null;
+        MessageContent msgContent = null;
         Date currentDate = null;
         Enumeration<?> lst = null;
         String[] recordNames = null;
@@ -357,8 +361,8 @@ public class MessageProcessor implements MessageListener
         int result = PM_RETURN_OK;
         boolean reload = false;
         
-        // ACHTUNG: Die Message ist f�r den Client READ-ONLY!!! Jeder Versuch in die Message zu schreiben
-        //          l�st eine Exception aus.
+        // ACHTUNG: Die Message ist für den Client READ-ONLY!!! Jeder Versuch in die Message zu schreiben
+        //          löst eine Exception aus.
                 
         try
         {
@@ -411,7 +415,7 @@ public class MessageProcessor implements MessageListener
             }
             
             // Create a new hash table for the content of the message
-            msgContent = new Hashtable<Long, String>();
+            msgContent = new MessageContent();
             
             // Copy the type and the event time
             msgContent.put(msgProperty.get("TYPE"), type);
@@ -423,6 +427,13 @@ public class MessageProcessor implements MessageListener
             {
                 name = (String)lst.nextElement();
                 
+                // Get the value(String) and check its length
+                temp = mmsg.getString(name);
+                if(temp.length() > valueLength)
+                {
+                    temp = temp.substring(0, valueLength - 3) + "{*}";
+                }
+                
                 // Do not copy the TYPE and EVENTTIME properties
                 if((name.compareTo("TYPE") != 0) && (name.compareTo("EVENTTIME") != 0))
                 {
@@ -430,29 +441,44 @@ public class MessageProcessor implements MessageListener
                     if(msgProperty.containsKey(name))
                     {
                         // Get the ID of the property and store it into the hash table
-                        msgContent.put(msgProperty.get(name), mmsg.getString(name));
+                        msgContent.put(msgProperty.get(name), temp);
                     }
                     else
-                    {
+                    {                        
                         // Reload the tables if they are not reloaded
                         if(!reload)
                         {
-                            readMessageTypeAndProperties();
+                            readMessageProperties();
                             reload = true;
                             
                             // Check again
                             if(msgProperty.containsKey(name))
                             {
-                                msgContent.put(msgProperty.get(name), mmsg.getString(name));
+                                msgContent.put(msgProperty.get(name), temp);
                             }
                             else
                             {
-                                msgContent.put(msgProperty.get("UNKNOWN"), "[" + name + "]:" + mmsg.getString(name));
+                                // ...so we have to store them seperately
+                                temp = "[" + name + "] [" + temp + "]";
+                                if(temp.length() > valueLength)
+                                {
+                                    temp = temp.substring(0, valueLength - 4) + "{*}]";
+                                }
+
+                                msgContent.addUnknownProperty(temp);
+                                msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
                             }
                         }
                         else
                         {
-                            msgContent.put(msgProperty.get("UNKNOWN"), "[" + name + "]:" + mmsg.getString(name));
+                            temp = "[" + name + "] [" + temp + "]";
+                            if(temp.length() > valueLength)
+                            {
+                                temp = temp.substring(0, valueLength - 4) + "{*}]";
+                            }
+                            
+                            msgContent.addUnknownProperty(temp);
+                            msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
                         }
                     }                    
                 }
@@ -469,6 +495,7 @@ public class MessageProcessor implements MessageListener
          
         // Get the ID of the message type
         // If the type is not valid return the ID for 'unknown'
+        /*
         typeId = getMessageTypeId(type);
         if(typeId == RET_ERROR)
         {
@@ -477,8 +504,9 @@ public class MessageProcessor implements MessageListener
             // Return value is -1, so there was an error
             return PM_ERROR_GENERAL;
         }
-        
+        */
         // Create an entry in the table MESSAGE
+        // TODO: typeId is always 0!!! We don not use it anymore. Delete the column in a future version.
         msgId = dbLayer.createMessageEntry(typeId, et);
         if(msgId == RET_ERROR)
         {
@@ -497,39 +525,48 @@ public class MessageProcessor implements MessageListener
         }
         else
         {
-            currentDate = Calendar.getInstance().getTime();
-            
-            // Wait min. 5 minutes for updating the EPICS record
-            if((currentDate.getTime() - lastQuotaUpdate.getTime()) >= 300000)
+            // Refresh the used table quota
+            // ONLY if we use ORACLE!!!!!
+            if(dbLayer.getDialect() == Dialect.Oracle)
             {
-                if(config.containsKey("record.tablequota"))
+                currentDate = Calendar.getInstance().getTime();
+                
+                // Wait min. 5 minutes for updating the EPICS record
+                if((currentDate.getTime() - lastQuotaUpdate.getTime()) >= 300000)
                 {
-                    recordNames = config.getStringArray("record.tablequota");
-                    for(int i = 0;i < recordNames.length;i++)
+                    if(config.containsKey("record.tablequota"))
                     {
-                        temp = createDatabaseNameFromRecord(recordNames[i]);
-                        
-                        if(temp.compareToIgnoreCase(config.getString("database.user")) != 0)
+                        recordNames = config.getStringArray("record.tablequota");
+                        for(int i = 0;i < recordNames.length;i++)
                         {
-                            updateDBRecord(recordNames[i], temp, temp.toLowerCase());
-                        }
-                        else
-                        {
-                            updateDBRecord(recordNames[i]);
+                            temp = createDatabaseNameFromRecord(recordNames[i]);
+                            
+                            if(temp.compareToIgnoreCase(config.getString("database.user")) != 0)
+                            {
+                                updateDBRecord(recordNames[i], temp, temp.toLowerCase());
+                            }
+                            else
+                            {
+                                updateDBRecord(recordNames[i]);
+                            }
                         }
                     }
+                    else
+                    {
+                        logger.warn("No EPICS record name for the database quota is defined.");
+                    }
+                    
+                    // Always get the quota for user KRYKLOG
+                    // NOT USED: The MAX_BYTES value seemed always to be -1 (unlimited)
+                    // updateDBRecord("krykLog:UsedQuota_ai", "KRYKLOG", "kryklog");
+                    
+                    lastQuotaUpdate = currentDate;
+                    currentDate = null;
                 }
-                else
-                {
-                    logger.warn("No EPICS record name for the database quota is defined.");
-                }
-                
-                // Always get the quota for user KRYKLOG
-                // NOT USED: The MAX_BYTES value seemed always to be -1 (unlimited)
-                // updateDBRecord("krykLog:UsedQuota_ai", "KRYKLOG", "kryklog");
-                
-                lastQuotaUpdate = currentDate;
-                currentDate = null;
+            }
+            else
+            {
+                logger.warn("Database system is NOT ORACLE. No update of the used table quota record started.");
             }
             
             result = PM_RETURN_OK;
@@ -668,41 +705,6 @@ public class MessageProcessor implements MessageListener
         
         return content;
     }
-
-    public long getMessageTypeId(String type)
-    {
-        long    result = 0;
-        
-        // Does the table contain the name of the type?
-        if(msgType.containsKey(type))
-        {
-            // Yes, get it 
-            result = msgType.get(type);
-        }
-        else // No, we have to read the tables again
-        {
-            // Read again the message types and properties
-            if(readMessageTypeAndProperties())
-            {
-                // Do we now have a valid ID?
-                if(msgType.containsKey(type))
-                {
-                    result = msgType.get(type);
-                }
-                else
-                {
-                    // No, so we set the type to unknown
-                    result = msgType.get("unknown");
-                }
-            }
-            else
-            {
-                result = -1;
-            }
-        }
-        
-        return result;
-    }
     
     /**
      * <code>isInitialized</code>
@@ -722,91 +724,58 @@ public class MessageProcessor implements MessageListener
      *  @return true/false
      */
     
-    private boolean readMessageTypeAndProperties()
+    private boolean readMessageProperties()
     {
-        ResultSet               rsType      = null;
-        ResultSet               rsProperty  = null;
+        ResultSet rsProperty = null;
+        boolean result = false;
         
-        // Delete old hash tables, if there are any
-        msgType     = null;
-        msgProperty = null;
+        // Delete old hash table, if there are any
+        if(msgProperty != null)
+        {
+            msgProperty.clear();
+            msgProperty = null;
+        }
 
+        msgProperty = new Hashtable<String, Long>();
+        
         // Connect the database
         if(dbLayer.connect() == false)
         {
-            return false;
-        }
-
-        // Execute the first query
-        rsType      = dbLayer.executeSQLQuery("SELECT * from MSG_TYPE");
-        
-        // Execute the second query
-        rsProperty  = dbLayer.executeSQLQuery("SELECT * from MSG_PROPERTY_TYPE");
-        
-        // Check the result sets 
-        if((rsType == null) || (rsProperty == null))
-        {           
-            try
-            {
-                if(rsType != null)  rsType.close();
-                rsType = null;
-            }
-            catch(SQLException sqle)
-            {
-                rsType = null;
-            }
-            
-            try
-            {
-                if(rsProperty != null) rsProperty.close();
-                rsProperty = null;
-            }
-            catch(SQLException sqle)
-            {
-                rsProperty = null;
-            }
-            
-            return false;
+            return result;
         }
         
-        msgType     = new Hashtable<String, Long>();
-        msgProperty = new Hashtable<String, Long>();
-        
-        // Fill the hash tables with the received data of the tables
         try
         {
-            while(rsType.next())
+            // Execute the query to get all properties
+            rsProperty = dbLayer.executeSQLQuery("SELECT * from MSG_PROPERTY_TYPE");
+        
+            // Check the result sets 
+            if(rsProperty != null)
             {
-                msgType.put(rsType.getString(2), rsType.getLong(1)); 
-            }
-            
-            rsType.close();
-            rsType = null;
-            
-            while(rsProperty.next())
-            {
-                msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));                 
-            }
+                // Fill the hash table with the received data of the property table
+                while(rsProperty.next())
+                {
+                    msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));                 
+                }
 
-            rsProperty.close();
-            rsProperty = null;
+                rsProperty.close();
+                rsProperty = null;
+            }
         }
         catch(SQLException sqle)
         {
-            if(dbLayer.isConnected() == true)
-            {
-                dbLayer.close();
-            }
+            logger.error("*** SQLException *** : " + sqle.getMessage());
             
-            return false;            
+            result = false;
+        }
+        finally
+        {
+            if(rsProperty!=null){try{rsProperty.close();}catch(Exception e){}rsProperty=null;}
+            
+            // Close the database
+            if(dbLayer.isConnected() == true){dbLayer.close();}                
         }
         
-        // Close the database
-        if(dbLayer.isConnected() == true)
-        {
-            dbLayer.close();
-        }                
-
         return true;
     }
 
@@ -823,6 +792,53 @@ public class MessageProcessor implements MessageListener
         return sdf.format(cal.getTime());
     }
 
+    public int getMaxNumberOfValueBytes()
+    {
+        ResultSet rs = null;
+        ResultSetMetaData rsMetaData = null;        
+        int result = 0;
+        
+        // Connect the database
+        if(dbLayer.connect() == false)
+        {
+            return result;
+        }
+        
+        rs = dbLayer.executeSQLQuery("SELECT * FROM message_content WHERE id = 1");
+        
+        try
+        {
+            rsMetaData = rs.getMetaData();
+            
+            int size = rsMetaData.getColumnCount();
+            
+            // Run through all rows
+            for(int i = 1; i <= size; i++)
+            {
+                // Get the name of the column and compare it to 'VALUE'
+                if(rsMetaData.getColumnName(i).compareToIgnoreCase("VALUE") == 0)
+                {
+                    // Get the max. number of characters
+                    result = rsMetaData.getPrecision(i);
+                    
+                    break;
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+        }
+        finally
+        {
+            if(rs!=null){try{rs.close();}catch(Exception e){}rs=null;}
+            
+            // Close the database
+            if(dbLayer.isConnected() == true){dbLayer.close();}                
+        }
+        
+        return result;
+    }
+    
     /**
      * Converts the time and date string using only one or two digits for the mili seconds
      * to a string using 3 digits for the mili seconds with leading zeros
@@ -1076,9 +1092,12 @@ public class MessageProcessor implements MessageListener
         return result;
     }
     
+    /**
+     * 
+     */
     private void checkObjectFolder()
     {
-        File folder = new File(".\\nirvana\\");
+        File folder = new File(objectDir);
         
         existsObjectFolder = true;
         
@@ -1087,13 +1106,13 @@ public class MessageProcessor implements MessageListener
             boolean result = folder.mkdir();
             if(result)
             {
-                logger.info("Folder 'nirvana' was created.");
+                logger.info("Folder " + objectDir + " was created.");
                 
                 existsObjectFolder = true;
             }
             else
             {
-                logger.warn("Folder 'nirvana' was NOT created.");
+                logger.warn("Folder " + objectDir + " was NOT created.");
                 
                 existsObjectFolder = false;
             }

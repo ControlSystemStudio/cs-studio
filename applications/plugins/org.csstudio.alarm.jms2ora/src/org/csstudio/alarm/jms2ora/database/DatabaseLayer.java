@@ -28,9 +28,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /**
  *  @author Markus Moeller
@@ -84,6 +85,14 @@ public class DatabaseLayer
         }
         
         return true;
+    }
+    
+    /**
+     * 
+     */
+    public Dialect getDialect()
+    {
+        return dbService.getDialect();
     }
     
     /**
@@ -150,6 +159,37 @@ public class DatabaseLayer
     }
 
     /**
+     * <code>executeSQLQuery</code>
+     * 
+     * @param query - String with the SQL statement
+     * @return The ResultSet-Object containing the results of the query.
+     */
+    
+    public long executeSQLUpdateQuery(String query)
+    {
+        Statement stmt = null;
+        long result = 0;
+        
+        try
+        {
+            stmt = dbService.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            result = stmt.executeUpdate(query);
+        }
+        catch (SQLException sqle)
+        {
+            logger.error("*** EXCEPTION *** : " + sqle.getMessage());
+            
+            result = -1;
+        }
+        finally
+        {
+            if(stmt!=null){try{stmt.close();}catch(Exception e){}stmt=null;}
+        }
+
+        return result;
+    }
+
+    /**
      * <code>createMessageEntry</code> creates an entry in the table <i>MESSAGE</i>.
      * 
      * @param typeId - The ID of the message type which is defined in the table <i>MSG_TYPE</i>.
@@ -159,9 +199,9 @@ public class DatabaseLayer
     
     public long createMessageEntry(long typeId, String datum)
     {
-        ResultSet   rsMsg   = null;
-        String      query   = null;
-        long        msgId   = -1;
+        ResultSet rsMsg   = null;
+        String query   = null;
+        long msgId = -1;
         
         // Connect the database
         if(connect() == false)
@@ -170,7 +210,7 @@ public class DatabaseLayer
         }
 
         // Get the highest ID in the table
-        rsMsg      = executeSQLQuery("SELECT MAX(ID) from MESSAGE");
+        rsMsg = executeSQLQuery("SELECT MAX(ID) from MESSAGE");
         if(rsMsg != null)
         {
             try
@@ -201,19 +241,9 @@ public class DatabaseLayer
             
             // System.out.println(query + "\n");
             
-            rsMsg = executeSQLQuery(query);
-            if(rsMsg == null)
+            if(executeSQLUpdateQuery(query) == -1)
             {
                 msgId = -1;
-            }
-            else
-            {
-                try
-                {
-                    rsMsg.getStatement().close();
-                    rsMsg.close();
-                }
-                catch (SQLException sqle) { sqle.printStackTrace(); }
             }
         }
         
@@ -231,15 +261,15 @@ public class DatabaseLayer
      * 
      */
     
-    public boolean createMessageContentEntries(long msgId, Hashtable<Long, String> msgContent)
+    public boolean createMessageContentEntries(long msgId, MessageContent msgContent)
     {
-        Enumeration<?>  lst         = null;
-        ResultSet       rsMsg       = null;
-        String          value       = null;
-        String          query       = null;
-        boolean         result      = false;
-        long            contentId   = -1;
-        long            key;
+        Enumeration<?> lst = null;
+        ResultSet rsMsg = null;
+        String  value = null;
+        String query = null;
+        boolean result = false;
+        long contentId = -1;
+        long key;
         
         // Connect the database
         if(connect() == false)
@@ -275,21 +305,21 @@ public class DatabaseLayer
         // Did we get an valid ID?
         if(contentId > 0)
         {
+            // First write the known message content
             lst = msgContent.keys();
             while(lst.hasMoreElements())
             {
                 query = "INSERT INTO message_content VALUES(";
             
                 key = (Long)lst.nextElement();
-                value = msgContent.get(key);
-                
+                value = msgContent.getPropertyValue(key);
+
                 // Replace a single ' with '' (then the entry could be stored into the database)
                 value = value.replace("'", "''");
                 
                 query = query + contentId + "," + msgId + "," + key + ",'" + value + "')";
                 
-                rsMsg = executeSQLQuery(query);
-                if(rsMsg == null)
+                if(executeSQLUpdateQuery(query) == -1)
                 {
                     result = false;
                     
@@ -297,17 +327,36 @@ public class DatabaseLayer
                 }
                 else
                 {
-                    try
-                    {
-                        rsMsg.getStatement().close();
-                        rsMsg.close();
-                    }
-                    catch (SQLException sqle) { sqle.printStackTrace(); }
-                    
                     result = true;
                 }
                 
                 contentId++;
+            }
+            
+            // Write the unknown properties, if we have some
+            if((result == true) && (msgContent.unknownPropertiesAvailable()))
+            {
+                for(int i = 0;i < msgContent.countUnknownProperties();i++)
+                {
+                    query = "INSERT INTO message_content VALUES("
+                        + contentId + ","
+                        + msgId + ","
+                        + msgContent.getUnknownTableId() + ","
+                        + "'" + msgContent.getUnknownProperty(i) + "')";
+                    
+                    if(executeSQLUpdateQuery(query) == -1)
+                    {
+                        result = false;
+                        
+                        break;
+                    }
+                    else
+                    {
+                        result = true;
+                    }
+                    
+                    contentId++;  
+                }
             }
         }
         
@@ -322,28 +371,15 @@ public class DatabaseLayer
      *  @param msgId The id of the message that has to be deleted.
      */
     public void deleteMessage(long msgId)
-    {
-        ResultSet rsMsg = null;
-        
+    {        
         // Connect the database
         if(connect() == false)
         {
             return;
         }
 
-        try
-        {
-            rsMsg = executeSQLQuery("DELETE FROM message_content where message_id=" + msgId);
-            rsMsg.getStatement().close();
-        }
-        catch (SQLException sqle) { }
-
-        try
-        {
-            rsMsg = executeSQLQuery("DELETE FROM message where id=" + msgId);
-            rsMsg.getStatement().close();
-        }
-        catch (SQLException sqle) { }              
+        executeSQLUpdateQuery("DELETE FROM message_content where message_id=" + msgId);
+        executeSQLUpdateQuery("DELETE FROM message where id=" + msgId);
 
         close();
     }
@@ -370,13 +406,16 @@ public class DatabaseLayer
         {
             rsMsg = executeSQLQuery("SELECT BYTES,MAX_BYTES FROM USER_TS_QUOTAS WHERE TABLESPACE_NAME LIKE 'DATA%'");
             
-            while(rsMsg.next())
+            if(rsMsg != null)
             {
-                usedBytes = rsMsg.getLong("BYTES");
-                maxBytes = rsMsg.getLong("MAX_BYTES");
+                while(rsMsg.next())
+                {
+                    usedBytes = rsMsg.getLong("BYTES");
+                    maxBytes = rsMsg.getLong("MAX_BYTES");
+                }
+                
+                rsMsg.getStatement().close();
             }
-            
-            rsMsg.getStatement().close();
         }
         catch(SQLException sqle)
         {
