@@ -35,7 +35,6 @@ import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerksBuilderException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
-import org.eclipse.core.internal.content.ILazySource;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
@@ -137,8 +136,6 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 				return new OderVersandRegel(versandRegels);
 			case AND:
 				return new UndVersandRegel(versandRegels);
-			case NOT:
-				return new NichtVersandRegel(versandRegels[0]);
 			default:
 				throw new IllegalArgumentException("Unsupported Junctor.");
 			}

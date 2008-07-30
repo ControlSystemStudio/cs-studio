@@ -10,13 +10,7 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
  * XXX REname to Operator
  */
 public enum JunctorConditionType {
-	AND, OR, 
-	
-	/**
-	 * @deprecated NOT is NOT supported any more!!
-	 */
-	@Deprecated
-	NOT;
+	AND, OR;
 
 	public static JunctorConditionType valueOf(int value) {
 		switch (value) {
@@ -24,21 +18,17 @@ public enum JunctorConditionType {
 			return OR;
 		case 1:
 			return AND;
-		case 2:
-			return NOT;
 		default:
 			throw new IllegalArgumentException("Unsupported Junctor");
 		}
 	}
 	
-	public static short shortOf(JunctorConditionType junctor) {
+	public static short asShort(JunctorConditionType junctor) {
 		switch (junctor) {
 		case OR:
 			return 0;
 		case AND:
 			return 1;
-		case NOT:
-			return 2;
 		default:
 			throw new IllegalArgumentException("Unsupported Junctor");
 		}

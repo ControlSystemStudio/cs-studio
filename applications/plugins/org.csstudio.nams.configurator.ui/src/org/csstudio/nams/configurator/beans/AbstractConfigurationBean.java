@@ -20,7 +20,7 @@ import java.beans.PropertyChangeSupport;
  * 
  * @param <T>
  */
-public abstract class AbstractConfigurationBean<T extends IConfigurationBean> 
+public abstract class AbstractConfigurationBean<T extends AbstractConfigurationBean<T> & IConfigurationBean> 
 					implements IConfigurationBean, Comparable<T> {
 
 	public static enum AbstractPropertyNames {
@@ -33,6 +33,7 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		return this.getDisplayName().compareTo(o.getDisplayName());
 	}
 
+	@SuppressWarnings("unchecked")
 	public T getClone() {
 		T cloneBean = null;
 		try {
@@ -42,7 +43,7 @@ public abstract class AbstractConfigurationBean<T extends IConfigurationBean>
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		((AbstractConfigurationBean) cloneBean).updateState(this);
+		cloneBean.updateState((T)this);
 		return cloneBean;
 	}
 

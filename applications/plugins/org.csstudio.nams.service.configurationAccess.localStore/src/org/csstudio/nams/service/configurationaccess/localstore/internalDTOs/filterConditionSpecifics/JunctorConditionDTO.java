@@ -39,7 +39,7 @@ public class JunctorConditionDTO extends FilterConditionDTO implements HasManual
 
 	@Transient
 	@Deprecated
-	private short operand = JunctorConditionType.shortOf(JunctorConditionType.OR);
+	private short operand = JunctorConditionType.asShort(JunctorConditionType.OR);
 
 	
 	@Transient
@@ -52,7 +52,7 @@ public class JunctorConditionDTO extends FilterConditionDTO implements HasManual
 	}
 
 	public void setJunctor(JunctorConditionType junctor) {
-		operand = JunctorConditionType.shortOf(junctor);
+		operand = JunctorConditionType.asShort(junctor);
 	}
 
 	@SuppressWarnings("unused")
