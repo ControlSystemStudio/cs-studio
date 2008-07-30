@@ -26,7 +26,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
-import org.csstudio.alarm.dbaccess.FilterSetting;
+import org.csstudio.alarm.dbaccess.FilterItem;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -48,7 +48,7 @@ public class ReadDBJob extends Job {
 	private final DBAnswer dbAnswer;
 	private final String _filter;
 	private final int _maxAnswerSize;
-	private ArrayList<FilterSetting> _filterSettings;
+	private ArrayList<FilterItem> _filterSettings;
 	
 	public ReadDBJob(String name, DBAnswer dbAnswer,
 			Calendar from, Calendar to) {
@@ -62,7 +62,7 @@ public class ReadDBJob extends Job {
 	}
 
 	public ReadDBJob(String name, DBAnswer dbAnswer,
-			Calendar from, Calendar to, String filter, ArrayList<FilterSetting> filterSettings) {
+			Calendar from, Calendar to, String filter, ArrayList<FilterItem> filterSettings) {
 		super(name);
 		this.dbAnswer = dbAnswer;
 		this.from = from;

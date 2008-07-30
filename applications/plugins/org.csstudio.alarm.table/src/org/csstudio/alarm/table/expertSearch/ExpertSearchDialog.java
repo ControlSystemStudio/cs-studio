@@ -27,7 +27,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
-import org.csstudio.alarm.dbaccess.FilterSetting;
+import org.csstudio.alarm.dbaccess.FilterItem;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
@@ -130,7 +130,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 	private String filterString;
 	
 	/** List of all conditions (Property, Value, AND /OR relation) for the filter settings. */
-	private ArrayList<FilterSetting> _filterConditions = new ArrayList<FilterSetting>();
+	private ArrayList<FilterItem> _filterConditions = new ArrayList<FilterItem>();
 	
 	private Label info;
     /** The widht of the Dialog. */
@@ -506,7 +506,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                     if(typeAndValueComposite.length==2 && typeAndValueComposite[0] instanceof Composite && typeAndValueComposite[1] instanceof Composite){
                         Control[] typeComboAndValueText = ((Composite)typeAndValueComposite[0]).getChildren();
 
-                        FilterSetting filterSetting = new FilterSetting();
+                        FilterItem filterSetting = new FilterItem();
 
                         // First part a Composite with a Combo for the Typ and a Text for the value.
                         if(typeComboAndValueText[0] instanceof Combo && typeComboAndValueText[1] instanceof Text){
@@ -589,7 +589,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         }
     }
 
-	public ArrayList<FilterSetting> get_filterConditions() {
+	public ArrayList<FilterItem> get_filterConditions() {
 		return _filterConditions;
 	}
 
