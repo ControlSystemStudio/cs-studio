@@ -103,7 +103,7 @@ public class FilterbedingungBean extends
 
 	public void setDescription(final String description) {
 		final String oldValue = this.description;
-		this.description = description;
+		this.description = (description != null) ? description : "";
 		this.pcs.firePropertyChange(PropertyNames.description.name(), oldValue,
 				description);
 	}
@@ -129,7 +129,7 @@ public class FilterbedingungBean extends
 
 	public void setName(final String name) {
 		final String oldValue = this.name;
-		this.name = name;
+		this.name = (name != null) ? name : "";
 		this.pcs.firePropertyChange(PropertyNames.name.name(), oldValue, name);
 	}
 
