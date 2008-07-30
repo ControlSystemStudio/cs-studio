@@ -250,7 +250,6 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		List<FilterConditionDTO> alleFilterConditions = mapper.loadAll(FilterConditionDTO.class, true);
 		List<FilterConditionsToFilterDTO> joins = mapper.loadAll(FilterConditionsToFilterDTO.class, true);
 		
 		List<FilterActionDTO> alleFilterActions = mapper.loadAll(FilterActionDTO.class, true);
@@ -262,10 +261,6 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 			}
 		});
 		
-		Map<Integer, FilterConditionDTO> filterConditionNachSchluessel = new HashMap<Integer, FilterConditionDTO>();
-		for (FilterConditionDTO filterCondition : alleFilterConditions) {
-			filterConditionNachSchluessel.put(filterCondition.getIFilterConditionID(), filterCondition);
-		}
 		Map<Integer, FilterActionDTO> filterActionMap = new HashMap<Integer, FilterActionDTO>();
 		for (FilterActionDTO filterAction : alleFilterActions) {
 			filterActionMap.put(filterAction.getIFilterActionID(), filterAction);
@@ -276,7 +271,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		
 		for (FilterConditionsToFilterDTO join : joins) {
 			if( join.getIFilterRef() == this.getIFilterID() ) {
-				FilterConditionDTO gefunden = filterConditionNachSchluessel.get(join.getIFilterConditionRef());
+				FilterConditionDTO gefunden = mapper.findForId(FilterConditionDTO.class, join.getIFilterConditionRef(), true);
 				assert gefunden != null : "Es existiert eine FC mit der ID " + join.getIFilterConditionRef();
 				
 				filterConditons.add(gefunden);

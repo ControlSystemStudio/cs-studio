@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -145,23 +143,8 @@ public class JunctorConditionDTO extends FilterConditionDTO implements HasManual
 	}
 
 	public void loadJoinData(Mapper mapper) throws Throwable {
-		List<FilterConditionDTO> allFCs = mapper.loadAll(FilterConditionDTO.class, false);
-		
-		boolean firstFound = false;
-		boolean secondFound = false;
-		for (FilterConditionDTO fc : allFCs) {
-			if( !firstFound && fc.getIFilterConditionID() == this.firstFilterConditionRef ) {
-				this.firstFilterCondition = fc;
-				firstFound = true;
-			} else if( !secondFound && fc.getIFilterConditionID() == this.secondFilterConditionRef ) {
-				this.secondFilterCondition = fc;
-				secondFound = true;
-			}
-			
-			if( firstFound && secondFound ) {
-				break;
-			}
-		}
+		this.firstFilterCondition = mapper.findForId(FilterConditionDTO.class, this.firstFilterConditionRef, false);
+		this.secondFilterCondition = mapper.findForId(FilterConditionDTO.class, this.secondFilterConditionRef, false);
 	}
 
 	public void storeJoinLinkData(Mapper mapper) throws Throwable {
