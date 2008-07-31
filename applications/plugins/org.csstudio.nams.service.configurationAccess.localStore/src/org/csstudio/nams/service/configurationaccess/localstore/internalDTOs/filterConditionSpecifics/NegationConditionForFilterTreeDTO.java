@@ -27,7 +27,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
  */
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
-@Table(name = "AMSFilterNegationCond4Filter")
+@Table(name = "AMS_FILTERCOND_NEGATION")
 public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		implements HasManuallyJoinedElements {
 

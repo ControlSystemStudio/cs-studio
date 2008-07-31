@@ -185,7 +185,7 @@ public class SynchronizeServiceImpl_Test extends
 						return SynchronizeServiceImpl_Test.this.localStoreConfigurationServiceMock;
 					}
 
-				});
+				}, null); //FIXME (gs) einen Mock bauen
 	}
 
 	@Override

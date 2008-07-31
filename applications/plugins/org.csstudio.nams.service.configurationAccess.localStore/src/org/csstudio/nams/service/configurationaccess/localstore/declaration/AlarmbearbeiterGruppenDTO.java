@@ -236,7 +236,7 @@ public class AlarmbearbeiterGruppenDTO implements
 
 	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
 		final Collection<User2UserGroupDTO> oldJoins = mapper.loadAll(
-				User2UserGroupDTO.class, true);
+				User2UserGroupDTO.class, false);
 
 		final Map<User2UserGroupDTO_PK, User2UserGroupDTO> oldJoinsNachPk = new HashMap<User2UserGroupDTO_PK, User2UserGroupDTO>();
 		for (final User2UserGroupDTO oldJoin : oldJoins) {
@@ -260,6 +260,7 @@ public class AlarmbearbeiterGruppenDTO implements
 				mapper.save(oldJoin);
 				oldJoinsNachPk.remove(oldJoin.getUser2UserGroupPK());
 			} else {
+				join.getUser2UserGroupPK().setIUserGroupRef(this.getUserGroupId());
 				mapper.save(join);
 			}
 

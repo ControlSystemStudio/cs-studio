@@ -126,7 +126,7 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 
 	public void setActiveReason(final String activeReason) {
 		final String oldValue = this.activeReason;
-		this.activeReason = activeReason;
+		this.activeReason = (activeReason != null) ? activeReason : "";
 		this.pcs.firePropertyChange(PropertyNames.activeReason.name(),
 				oldValue, activeReason);
 	}

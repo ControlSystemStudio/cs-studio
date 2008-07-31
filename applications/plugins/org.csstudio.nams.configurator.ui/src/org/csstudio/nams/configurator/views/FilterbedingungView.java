@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
+import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;
 import org.csstudio.nams.configurator.dnd.SelectionDragSourceListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -26,13 +28,11 @@ public class FilterbedingungView extends AbstractNamsView {
 				.getConfigurationBeanService().getFilterConditionsBeans();
 		final List<FilterbedingungBean> result = new LinkedList<FilterbedingungBean>();
 		for (final FilterbedingungBean filterbedingungBean : conditionsBeans) {
-			// TODO (gs) nur zum testen auskommentiert
-			// if (!(filterbedingungBean instanceof
-			// JunctorConditionForFilterTreeBean) &&
-			// !(filterbedingungBean instanceof NotConditionForFilterTreeBean))
-			// {
-			result.add(filterbedingungBean);
-			// }
+			// (gs) filtern der AND, OR, NOT Bedingungen
+			if (!(filterbedingungBean instanceof JunctorConditionForFilterTreeBean)
+					&& !(filterbedingungBean instanceof NotConditionForFilterTreeBean)) {
+				result.add(filterbedingungBean);
+			}
 		}
 		return result.toArray(new FilterbedingungBean[result.size()]);
 	}

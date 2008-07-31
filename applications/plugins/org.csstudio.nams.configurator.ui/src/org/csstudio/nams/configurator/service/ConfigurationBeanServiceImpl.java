@@ -1021,6 +1021,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			userDtos.put(userDto.getUserId(), userDto);
 		}
 
+		dto.alleAlarmbearbeiterEntfernen();
+		
 		final List<User2GroupBean> user2groupss = bean.getUsers();
 		for (final User2GroupBean user2groupBean : user2groupss) {
 			dto.alarmbearbeiterZuordnen(userDtos.get(user2groupBean

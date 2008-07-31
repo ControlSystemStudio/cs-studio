@@ -27,7 +27,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * 
  */
 @Entity
-@Table(name = "AMSFilterCondConj4FilterFCJoin")
+@Table(name = "AMS_FILTERCOND_FILTERCOND")
 public class JunctorConditionForFilterTreeConditionJoinDTO implements
 		NewAMSConfigurationElementDTO {
 	// /**

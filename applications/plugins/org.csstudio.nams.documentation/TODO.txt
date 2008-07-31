@@ -6,7 +6,7 @@
   - Vereinheitlichen: Auch bei RPL-State und History mit UnitOfWork 
     arbeiten und aufräumen (2)
   - prepareSyncronisation() : SYN Tabellen füllen (fehlende Tabellen hinzufügen) (5)
-- FilterActions im BeanService auf die DTOs mappen und andersherum (5)
+- (X) FilterActions im BeanService auf die DTOs mappen und andersherum (5) (gs: erledigt)
 - Messaging JMS Impl: Exception-Handling (Listener für Connection, Exceptions durchreichen) (1)
 
 ---SYN-SQL (bsp. Topics):
@@ -28,7 +28,7 @@ insert into AMS_TOPIC_SYN ({topic.*}) VALUES select {topic.*} from AMS_TOPIC {to
 
 - Filter Editor (gs, mz)
 	- (X) man kann die gleiche Filterbedingung mehrfach per DND in den Baum ziehen (=> soll so bleiben)
-	- das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen. (3)
+	- (X) das Dirty Flag spinnt rum. Ich (gs) kann keine Regelmäßigkeit erkennen. (3)
 	- (X) Alarmaktionen fehlt noch ganz (Tabelle und Co) (5)
 	- Filterbedingungen per DND im Baum verschieben (1)
 	- (X) DoubleClick auf Filetrbedingung öffnet einen FilterbedingungEditor für beanCLone und nicht für die Bean. 
@@ -44,7 +44,7 @@ insert into AMS_TOPIC_SYN ({topic.*}) VALUES select {topic.*} from AMS_TOPIC {to
 	- ok
 
 - Alarmbearbeitergruppen Editor (mw)
-	- Speichern funktioniert nicht!
+	- (X) Speichern funktioniert nicht!
 	
 ----------------------------------------------------------------------------------------------------------
 --------------- Views ------------------------------------------------------------------------------------

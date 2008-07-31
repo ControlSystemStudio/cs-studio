@@ -14,6 +14,7 @@ import org.csstudio.nams.configurator.views.AbstractNamsView;
 import org.csstudio.nams.configurator.views.SyncronizeView;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
@@ -36,7 +37,10 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 	@Required
 	final ExecutionService executionService, @OSGiService
 	@Required
-	final ProcessVariableConnectionServiceFactory pvConnectionServiceFactory) {
+	final ProcessVariableConnectionServiceFactory pvConnectionServiceFactory,
+	@OSGiService
+	@Required
+	final MessagingService messagingService) {
 		// prepare bean-service
 		ConfigurationBeanServiceImpl.staticInject(logger);
 
@@ -59,6 +63,6 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		SyncronizeView
 				.staticInjectSynchronizeService(new SynchronizeServiceImpl(
 						logger, executionService, preferenceService,
-						configurationServiceFactory));
+						configurationServiceFactory, messagingService));
 	}
 }

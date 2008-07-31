@@ -42,7 +42,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Jun
  */
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
-@Table(name = "AMSFilterCondConj4FilterCommon")
+@Table(name = "AMS_FILTERCOND_JUNCTION")
 public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		implements HasManuallyJoinedElements {
 

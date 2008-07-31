@@ -23,6 +23,7 @@ import org.csstudio.nams.service.logging.declaration.Logger;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
@@ -121,13 +122,13 @@ class LocalStoreConfigurationServiceImpl implements
 
 				Collection<RubrikDTO> alleRubriken = mapper.loadAll(
 						RubrikDTO.class, true); // FIXME
-																							// Bei
-																							// Joined
-																							// hinzufuegen
-																							// fuer
-																							// entsprechende
-																							// Elemente
-																							// zuordnen!!!!
+				// Bei
+				// Joined
+				// hinzufuegen
+				// fuer
+				// entsprechende
+				// Elemente
+				// zuordnen!!!!
 
 				Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = mapper
 						.loadAll(AlarmbearbeiterDTO.class, true);
@@ -166,9 +167,47 @@ class LocalStoreConfigurationServiceImpl implements
 
 	public void prepareSynchonization() throws StorageError, StorageException,
 			InconsistentConfigurationException {
-		// TODO Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
+		// Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein
 		// HSQL-Statement.
-		throw new UnsupportedOperationException("not implemented yet.");
+		
+		Transaction newTransaction = null;
+		Session session = null;
+		try {
+			session = this.openNewSession();
+			newTransaction = session.beginTransaction();
+			newTransaction.begin();
+
+			SQLQuery query = null;
+			String[] tabellen = new String[] { "AMS_FILTER",
+					"AMS_FILTERACTION", "AMS_FILTERACTIONTYPE",
+					"AMS_FILTERCONDITION", "AMS_FILTERCONDITIONTYPE",
+					"AMS_FILTERCONDITION_PV", "AMS_FILTERCONDITION_STRING",
+					"AMS_FILTERCOND_ARRSTR", "AMS_FILTERCOND_ARRSTRVAL",
+					"AMS_FILTERCOND_CONJ_COMMON", "AMS_FILTERCOND_TIMEBASED",
+					"AMS_FILTER_FILTERACTION", "AMS_FILTER_FILTERCONDITION",
+					"AMS_TOPIC", "AMS_USER", "AMS_USERGROUP",
+					"AMS_USERGROUP_USER", "AMS_FILTERCOND_JUNCTION",
+					"AMS_FILTERCOND_FILTERCOND", "AMS_FILTERCOND_NEGATION" };
+
+			for (String tabelle : tabellen) {
+				query = session.createSQLQuery("delete from " + tabelle
+						+ "_SYN");
+				query.executeUpdate();
+
+				query = session.createSQLQuery("INSERT INTO " + tabelle
+						+ "_SYN SELECT * FROM " + tabelle);
+				query.executeUpdate();
+			}
+
+			newTransaction.commit();
+		} catch (final Throwable t) {
+			if (newTransaction != null) {
+				newTransaction.rollback();
+			}
+			throw new StorageException("unable to save replication state", t);
+		} finally {
+			this.closeSession(session);
+		}
 	}
 
 	public void saveCurrentReplicationState(
