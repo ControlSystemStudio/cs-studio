@@ -285,10 +285,7 @@ public class LogViewArchive extends ViewPart implements Observer {
                 GregorianCalendar to = new GregorianCalendar();
                 GregorianCalendar from = (GregorianCalendar) to.clone();
                 from.add(GregorianCalendar.HOUR_OF_DAY, -24);
-                showNewTime(from, to);
-                ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-                		LogViewArchive.this._dbAnswer, from, to);
-                readDB.schedule();
+                startSearch(from, to);
             }
         });
 
@@ -310,10 +307,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				from.add(GregorianCalendar.HOUR_OF_DAY, -72);
-				showNewTime(from, to);
-                ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-                		LogViewArchive.this._dbAnswer, from, to);
-                readDB.schedule();
+				startSearch(from, to);
 			}
 		});
 	}
@@ -332,11 +326,9 @@ public class LogViewArchive extends ViewPart implements Observer {
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				from.add(GregorianCalendar.HOUR_OF_DAY, -168);
-				showNewTime(from, to);
-                ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-                		LogViewArchive.this._dbAnswer, from, to);
-                readDB.schedule();
+				startSearch(from, to);
 			}
+
 		});
 
 	}
@@ -428,31 +420,13 @@ public class LogViewArchive extends ViewPart implements Observer {
 						from.setTimeInMillis((long) high * 1000);
 						to.setTimeInMillis((long) low * 1000);
 					}
-					showNewTime(from, to);
 
 					_filter = dlg.getFilterString();
 					
-    //				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-    //				from.add(GregorianCalendar.HOUR, -504);
-    				showNewTime(from, to);
-    //				ArrayList<HashMap<String, String>> am;
-    //				if(_filter.trim().length()>0){
-    //					am = adba.getLogMessages(from, to, _filter);
-    //				}else{
-    //					am = adba.getLogMessages(from, to);
-    //				}
-    //				_jmsMessageList.clearList();
-    //				_jmsLogTableViewer.refresh();
-    //				_jmsMessageList.addJMSMessageList(am);
-                    ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-                    		LogViewArchive.this._dbAnswer, from, to, _filter, 
-                    		dlg.get_filterConditions());
-                    
-                    _countLabel.setText("*");
-                    _jmsLogTableViewer.getTable().setEnabled(false);
-                    readDB.schedule();
+					startSearch(from, to, _filter, dlg.get_filterConditions());
 				}
 			}
+
 		});
 	}
 
@@ -539,6 +513,26 @@ public class LogViewArchive extends ViewPart implements Observer {
 		}
 	}
 
+    private void startSearch(GregorianCalendar from, GregorianCalendar to) {
+        showNewTime(from, to);
+        ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
+                LogViewArchive.this._dbAnswer, from, to);
+        _countLabel.setText("*");
+        _jmsLogTableViewer.getTable().setEnabled(false);
+        readDB.schedule();
+    }
+
+    private void startSearch(GregorianCalendar from, GregorianCalendar to, String filter,
+            ArrayList<FilterItem> filterConditions) {
+        showNewTime(from, to);
+        ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
+                LogViewArchive.this._dbAnswer, from, to, filter, 
+                filterConditions);
+        _countLabel.setText("*");
+        _jmsLogTableViewer.getTable().setEnabled(false);
+        readDB.schedule();
+    }
+
 
 	public void update(Observable arg0, Object arg1) {
 		_disp.syncExec(new Runnable() {
@@ -548,6 +542,7 @@ public class LogViewArchive extends ViewPart implements Observer {
                 ArrayList<HashMap<String, String>> answer = _dbAnswer.getDBAnswer();
                 int size = answer.size();
                 _countLabel.setText(Integer.toString(size));
+                _jmsLogTableViewer.getTable().setEnabled(true);
                 if (size > 0) {
                 	_jmsMessageList.addJMSMessageList(answer);
                 } else {
@@ -559,7 +554,7 @@ public class LogViewArchive extends ViewPart implements Observer {
             		jmsMessage.setProperty(firstColumnName, Messages.LogViewArchive_NoMessageInDB);
                 	_jmsMessageList.addJMSMessage(jmsMessage);
                 }
-                _jmsLogTableViewer.getTable().setEnabled(true);
+                
 
            }
 		});
