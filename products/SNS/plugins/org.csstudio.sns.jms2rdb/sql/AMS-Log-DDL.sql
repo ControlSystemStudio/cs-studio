@@ -1,3 +1,8 @@
+# TODO Update to latest schema
+# Removed tables: msg_type, msg_type_property_type
+# Removed columns: message.msg_type_id
+
+
 -- Tabelle MESSAGE
 DROP TABLE message
 

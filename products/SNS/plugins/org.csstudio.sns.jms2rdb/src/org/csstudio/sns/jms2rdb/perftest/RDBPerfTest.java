@@ -13,12 +13,13 @@ import org.junit.Test;
 /** Simple RDB 'write' performance test.
  *  <p>
  *  Log messages have about 10 properties.
- *  Test with laptop to local MySQL: about 60..70 msg/sec.
- *  Test with laptop to SNS Oracle 'devl': about 10 msg/sec.
- *  <p>
- *  Using 'batched' inserts for the properties:
- *  Local MySQL: about 100 msg/sec.
- *  SNS Oracle 'devl': about 15..20 msg/sec.
+ *  Using 'batched' inserts for the properties.
+ *  
+ *  Local or networked MySQL: about 100 msg/sec.
+ *
+ *  TODO Update old data for SNS Oracle 'devl': about 15..20 msg/sec.
+ *
+ *  For a similar 'read' test, see org.csstudio.sns.msghist 
  *  
  *  @author Kay Kasemir
  */
@@ -29,12 +30,12 @@ public class RDBPerfTest
     final private static String URL =
     // TODO Don't put the epics_mon PW into CVS!
 //        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdev3.sns.ornl.gov:1521/devl";
-      "jdbc:mysql://localhost/log?user=log&password=$log";
+      "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
     
     final private static String SCHEMA = ""; //"EPICS.";
 
     /** Test runtime */
-    final private static int SECONDS = 30;
+    final private static int SECONDS = 60;
 
     @Test
     public void perfTest() throws Exception

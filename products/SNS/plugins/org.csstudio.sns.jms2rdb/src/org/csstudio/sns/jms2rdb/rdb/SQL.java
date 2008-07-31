@@ -8,8 +8,6 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 @SuppressWarnings("nls")
 public class SQL
 {
-    final public String select_message_type;
-
     final public String select_property_id_by_name;
 
     final public String select_next_property_id;
@@ -18,7 +16,7 @@ public class SQL
     
     final public String select_next_message_id;
 
-    final public String insert_message_type_datum;
+    final public String insert_message_id_datum;
 
     final public String select_next_content_id;
 
@@ -30,8 +28,6 @@ public class SQL
      */
     public SQL(final RDBUtil rdb_util, final String schema)
     {
-        select_message_type = "SELECT id FROM " + schema + "msg_type WHERE name=?";
-        
         select_property_id_by_name =
             "SELECT id FROM " + schema + "msg_property_type WHERE name=?";
         
@@ -43,8 +39,8 @@ public class SQL
 
         select_next_message_id = "SELECT MAX(id)+1 FROM " + schema + "message";
         
-        insert_message_type_datum =
-            "INSERT INTO " + schema + "message (id, msg_type_id, datum) VALUES (?,?,?)";
+        insert_message_id_datum =
+            "INSERT INTO " + schema + "message (id, datum) VALUES (?,?)";
 
         select_next_content_id = "SELECT MAX(id)+1 FROM " + schema + "message_content";
         

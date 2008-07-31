@@ -20,11 +20,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 @SuppressWarnings("nls")
 public class RDBWriter
 {
-    private static final String DEFAULT_MESSAGE_TYPE = "log";
-
-	private static final String TYPE_PROPERTY = "TYPE";
-
-	private static final int MAX_VALUE_LENGTH = 300;
+	private static final int MAX_VALUE_LENGTH = 100;
 
     /** RDB Utility */
     final private RDBUtil rdb_util;
@@ -32,10 +28,6 @@ public class RDBWriter
     /** SQL statements */
     final private SQL sql;
     
-    /** Cache of Message Type/ID mappings */
-	final private HashMap<String, Integer> message_type
-		= new HashMap<String, Integer>();
-
     /** Map of Property IDs, mapping property name to numeric ID */
     final private HashMap<String, Integer> property_id = 
     	new HashMap<String, Integer>();
@@ -61,59 +53,22 @@ public class RDBWriter
     {
         rdb_util = RDBUtil.connect(url);
         sql = new SQL(rdb_util, schema);
-        
+
+        // Pre-fetch some essential properties
         getPropertyType(JMSLogMessage.TYPE);
         getPropertyType(JMSLogMessage.TEXT);
-        getPropertyType(JMSLogMessage.CREATETIME);
-        getPropertyType(JMSLogMessage.EVENTTIME);
-        getPropertyType(JMSLogMessage.CLASS);
-        getPropertyType(JMSLogMessage.NAME);
-        getPropertyType(JMSLogMessage.FILENAME);
-        getPropertyType(JMSLogMessage.APPLICATION_ID);
-        getPropertyType(JMSLogMessage.HOST);
-        getPropertyType(JMSLogMessage.USER);
         
         final Connection connection = rdb_util.getConnection();
         next_message_id_statement =
             connection.prepareStatement(sql.select_next_message_id);
         insert_message_statement =
-            connection.prepareStatement(sql.insert_message_type_datum);
+            connection.prepareStatement(sql.insert_message_id_datum);
         next_property_id =
             connection.prepareStatement(sql.select_next_content_id);
         insert_property_statement =
             connection.prepareStatement(sql.insert_message_property_value);
     }
     
-    /** Query RDB for the numeric ID of message.
-     *  @param type Message type name
-     *  @return Numeric ID
-     *  @throws Exception on error
-     */
-    private int getMessageTypeID(final String type) throws Exception
-    {	// Cache lookup
-    	final Integer int_id = message_type.get(type);
-    	if (int_id != null)
-    		return int_id.intValue();
-        final PreparedStatement statement =
-        	rdb_util.getConnection().prepareStatement(sql.select_message_type);
-        try
-        {
-        	statement.setString(1, type);
-            final ResultSet result = statement.executeQuery();
-            if (result.next())
-            {	// Add to cache
-                final int id = result.getInt(1);
-                message_type.put(type, id);
-				return id;
-            }
-        }
-        finally
-        {
-            statement.close();
-        }
-        throw new Exception("Cannot locate ID for 'log' messages");
-    }
-
     /** Get numeric ID of a property, using either the local cache
      *  or querying the RDB.
      *  @param property_name
@@ -220,7 +175,7 @@ public class RDBWriter
     public void write(final JMSLogMessage message) throws Exception
     {
         final int message_id = getNextMessageID();
-        insertMessage(message_id, DEFAULT_MESSAGE_TYPE);
+        insertMessage(message_id);
         // Since batched inserts are only performed at the end,
         // a 'select' for the next content ID won't see them, yet.
         // So we have to count them up in here
@@ -267,11 +222,8 @@ public class RDBWriter
     @SuppressWarnings("unchecked")
 	public void write(final MapMessage map) throws Exception
     {
-    	String type = map.getString(TYPE_PROPERTY);
-    	if (type == null)
-    		type = DEFAULT_MESSAGE_TYPE;
         final int message_id = getNextMessageID();
-        insertMessage(message_id, type);
+        insertMessage(message_id);
         // Since batched inserts are only performed at the end,
         // a 'select' for the next content ID won't see them, yet.
         // So we have to count them up in here
@@ -305,13 +257,12 @@ public class RDBWriter
      *  @param type  Message type
      *  @throws Exception on error
      */
-    private void insertMessage(final int message_id, final String type) throws Exception
+    private void insertMessage(final int message_id) throws Exception
     {
         // Insert the main message
         insert_message_statement.setInt(1, message_id);
-        insert_message_statement.setInt(2, getMessageTypeID(type));
         final Calendar now = Calendar.getInstance();
-        insert_message_statement.setTimestamp(3, new Timestamp(now.getTimeInMillis()));
+        insert_message_statement.setTimestamp(2, new Timestamp(now.getTimeInMillis()));
         final int rows = insert_message_statement.executeUpdate();
         if (rows != 1)
             throw new Exception("Inserted " + rows + " instead of 1 Message");
