@@ -508,7 +508,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		this.actionTableViewer.setContentProvider(new ArrayContentProvider());
 
 		final String[] titles = { "Empfänger", "Alarmaktion", "Nachricht" };
-		final int[] bounds = { 100, 100, 100 };
+		final int[] bounds = { 150, 150, 100 };
 
 		final TableViewerColumn[] tableViewerColumns = new TableViewerColumn[3];
 
