@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="org.csstudio.alarm.jms2ora"
+         id="org.csstudio.alarm.Jms2OraId"
          name="Jms2Ora"
          point="org.eclipse.core.runtime.applications">
       <application
@@ -11,18 +11,6 @@
                class="org.csstudio.alarm.jms2ora.Jms2OraStart">
          </run>
       </application>
-   </extension>
-   <extension
-         id="Jms2OraProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.alarm.jms2ora"
-            name="Jms2Ora">
-         <property
-               name="appName"
-               value="Jms2Ora">
-         </property>
-      </product>
    </extension>
    <extension
          point="org.csstudio.platform.libs.xmpp.loginHandlers">
@@ -82,6 +70,14 @@
       <initializer
             class="org.csstudio.alarm.jms2ora.preferences.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         id="Jms2OraProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.alarm.Jms2OraId"
+            name="Jms2Ora">
+      </product>
    </extension>
 
 </plugin>
