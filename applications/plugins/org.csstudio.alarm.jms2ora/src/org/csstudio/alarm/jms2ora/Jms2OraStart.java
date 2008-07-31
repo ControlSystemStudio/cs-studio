@@ -24,13 +24,15 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /**
  * The starting class.
  * 
- * @author Markus M�ller
+ * @author Markus Möller
  *
  */
 
@@ -42,6 +44,25 @@ public class Jms2OraStart implements IApplication
     /**  */
     private MessageProcessor applic = null;
     
+    /**  */
+    private Logger logger = null;
+    
+    public Jms2OraStart()
+    {
+        createLogger();
+    }
+    
+    private boolean createLogger()
+    {
+        boolean result = false;
+        
+        PropertyConfigurator.configure("log4j-jms2ora.properties");
+        
+        logger = Logger.getLogger(Jms2OraStart.class);
+        
+        return result;
+    }
+
     public Object start(IApplicationContext context) throws Exception
     {        
         // Create an object from this class
@@ -55,10 +76,7 @@ public class Jms2OraStart implements IApplication
         }
         else // Sorry, some errors were caused...
         {
-            if(applic.getLogger() != null)
-            {
-                applic.getLogger().error("Could not initialize the class 'StoreMessages' -> Shutting down.");
-            }
+            logger.error("Could not initialize the class 'StoreMessages' -> Shutting down.");
             
             try
             {

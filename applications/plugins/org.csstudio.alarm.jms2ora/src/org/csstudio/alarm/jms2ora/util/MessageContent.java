@@ -39,34 +39,52 @@ public class MessageContent implements Serializable
     private static final long serialVersionUID = -5582704742047919825L;
 
     /** Hash table that contains the values of the known message properties */
-    private Hashtable<Long, String> msgContent = null;
+    private Hashtable<Long, String> msgIdContent = null;
     
+    /** Hash table that contains the values of the known message properties */
+    private Hashtable<String, String> msgNameContent = null;
+
     /** Hash table that contains the values of the unknown message properties */
     private Vector<String> unknownContent = null;
     
     /** ID of the property 'UNKNOWN' in the database table */
     private long unknownId;
     
+    /** Flag, that indicates whether or not the message should be discarded */
+    private boolean discard = false;
+    
     public MessageContent()
     {
-        msgContent = new Hashtable<Long, String>();
+        msgIdContent = new Hashtable<Long, String>();
+        msgNameContent = new Hashtable<String, String>();
         unknownContent = new Vector<String>();
         unknownId = -1;
     }
     
     public String getPropertyValue(Long key)
     {
-        return msgContent.get(key);
+        return msgIdContent.get(key);
     }
     
+    public void put(Long key, String name, String value)
+    {
+        msgIdContent.put(key, value);
+        msgNameContent.put(name, value);
+    }
+
+    public String getPropertyValue(String name)
+    {
+        return msgNameContent.get(name);
+    }
+
     public Enumeration<Long> keys()
     {
-        return msgContent.keys();
+        return msgIdContent.keys();
     }
-    
-    public void put(Long key, String value)
+        
+    public boolean hasContent()
     {
-        msgContent.put(key, value);
+        return(!msgIdContent.isEmpty());
     }
     
     /**
@@ -101,5 +119,46 @@ public class MessageContent implements Serializable
     public long getUnknownTableId()
     {
         return this.unknownId;
+    }
+    
+    public void setDiscard(boolean discard)
+    {
+        this.discard = discard;
+    }
+    
+    public boolean discard()
+    {
+        return discard;
+    }
+    
+    public String toString()
+    {
+        String temp = null;
+        String result = "MessageContent\n";
+        
+        result = result + " Known properties\n";
+        
+        Enumeration<String> list = msgNameContent.keys();
+        while(list.hasMoreElements())
+        {
+            temp = list.nextElement();
+            result = result + "  " + temp + " = " + msgNameContent.get(temp) + "\n";
+        }
+        
+        result = result + "\n Unknown properties\n";
+
+        list = unknownContent.elements();
+        while(list.hasMoreElements())
+        {
+            temp = list.nextElement();
+            result = result + "  " + temp + "\n";
+        }
+        
+        result = result + "\n Object attributes\n";
+        
+        result = result + "  unknownId = " + unknownId + "\n";
+        result = result + "  discard = " + discard + "\n";
+
+        return result;
     }
 }

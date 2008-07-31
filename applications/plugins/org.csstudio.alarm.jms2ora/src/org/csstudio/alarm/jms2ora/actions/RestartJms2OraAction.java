@@ -26,6 +26,7 @@ package org.csstudio.alarm.jms2ora.actions;
 
 import java.util.Map;
 
+import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.Jms2OraStart;
 import org.csstudio.alarm.jms2ora.MessageProcessor;
 import org.csstudio.platform.libs.dcf.actions.IAction;
@@ -48,7 +49,7 @@ public class RestartJms2OraAction implements IAction
         {
             password = (String)map.get("Password");
         
-            if(password.compareTo("admin4AMS") != 0)
+            if(password.compareTo(Jms2OraPlugin.getDefault().getConfiguration().getString("xmpp.shutdown")) != 0)
             {
                 return "Invalid password";
             }

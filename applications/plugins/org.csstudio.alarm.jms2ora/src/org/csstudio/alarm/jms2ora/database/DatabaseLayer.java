@@ -54,14 +54,13 @@ public class DatabaseLayer
     /** Logger */
     private Logger logger = null;
 
-    public DatabaseLayer(Logger logger, String url, String user, String password)
+    public DatabaseLayer(String url, String user, String password)
     {
-        // dbService = RDBUtil.connect(url);
-        this.logger = logger;
+        logger = Logger.getLogger(DatabaseLayer.class);
+        
         this.url = url;
         this.password = password;
-        this.user = user;
-        
+        this.user = user;  
     }
     
     /**
@@ -117,9 +116,7 @@ public class DatabaseLayer
         
         try
         {
-            result = dbService.getConnection().isClosed();
-            
-            result = !result;
+            result = !(dbService.getConnection().isClosed());
         }
         catch(SQLException sqle)
         {
@@ -278,7 +275,7 @@ public class DatabaseLayer
         }
         
         // Get the highest ID in the table
-        rsMsg      = executeSQLQuery("SELECT MAX(id) FROM message_content");
+        rsMsg = executeSQLQuery("SELECT MAX(id) FROM message_content");
         if(rsMsg != null)
         {
             try
@@ -307,6 +304,7 @@ public class DatabaseLayer
         {
             // First write the known message content
             lst = msgContent.keys();
+            
             while(lst.hasMoreElements())
             {
                 query = "INSERT INTO message_content VALUES(";

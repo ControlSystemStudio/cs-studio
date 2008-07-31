@@ -24,13 +24,11 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
-import java.util.Hashtable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -38,23 +36,21 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.database.OracleService;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
+import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
 import org.csstudio.alarm.jms2ora.util.WaifFileHandler;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import de.desy.epics.singleton.EpicsSingleton;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
@@ -96,15 +92,13 @@ public class MessageProcessor implements MessageListener
     private ConcurrentLinkedQueue<MapMessage> messages = new ConcurrentLinkedQueue<MapMessage>();
     
     /** Object for database handling */
-    // private OracleService oracle = null;
     private DatabaseLayer dbLayer = null;
+    
+    private MessageContentCreator contentCreator = null;
     
     /** Array of message receivers */
     private MessageReceiver[] receivers = null;
     
-    /** Hashtable with message properties. Key -> name, value -> database table id  */
-    private Hashtable<String, Long> msgProperty = null;
-
     /** Reads and holds the configuration stored in the confid file */
     private PropertiesConfiguration config = null;
     
@@ -122,10 +116,7 @@ public class MessageProcessor implements MessageListener
     
     /** Number of stored message files */
     private int fileNumber = 0;
-    
-    /** Number of bytes that can be stored in the column value of the table MESSAGE_CONTENT  */
-    private int valueLength = 0;
-    
+        
     /** Indicates if the application was initialized or not */
     private boolean initialized = false;
     
@@ -136,12 +127,9 @@ public class MessageProcessor implements MessageListener
     private boolean existsObjectFolder = false;
 
     private final String version = " 2.0.0";
-    private final String build = " - BUILD 2008-07-30 10:00";
+    private final String build = " - BUILD 2008-07-31 16:00";
     private final String application = "Jms2Ora";
     private final String objectDir = ".\\nirvana\\";
-    private final String formatStd = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}";
-    private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
-    private final String formatOneDigit = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
     
     
     public final long RET_ERROR = -1;
@@ -149,12 +137,14 @@ public class MessageProcessor implements MessageListener
     
     public final int PM_RETURN_OK = 0;
     public final int PM_RETURN_DISCARD = 1;
-    public final int PM_ERROR_DB = 2;
-    public final int PM_ERROR_JMS = 3;
-    public final int PM_ERROR_GENERAL = 4;
+    public final int PM_RETURN_EMPTY = 2;
+    public final int PM_ERROR_DB = 3;
+    public final int PM_ERROR_JMS = 4;
+    public final int PM_ERROR_GENERAL = 5;
     
     public final String[] infoText = { "Message have been written into the database.",
                                        "Message have been discarded.",
+                                       "Message is empty.",
                                        "Database error",
                                        "JMS error",
                                        "General error"};
@@ -168,7 +158,7 @@ public class MessageProcessor implements MessageListener
         int i;
         
         // Create the logger
-        createLogger();
+        logger = Logger.getLogger(MessageProcessor.class);
 
         // Create the folder that will hold message objects that could not be stored into the database
         checkObjectFolder();
@@ -176,9 +166,9 @@ public class MessageProcessor implements MessageListener
         // Get the configuration
         config = Jms2OraPlugin.getDefault().getConfiguration();
         
-        dbLayer = new DatabaseLayer(logger, config.getString("database.url"), config.getString("database.user"), config.getString("database.password"));
-        initialized = readMessageProperties();
-        valueLength = getMaxNumberOfValueBytes();
+        dbLayer = new DatabaseLayer(config.getString("database.url"), config.getString("database.user"), config.getString("database.password"));
+        
+        contentCreator = new MessageContentCreator(dbLayer);
         
         lastQuotaUpdate = Calendar.getInstance().getTime();
         
@@ -207,11 +197,11 @@ public class MessageProcessor implements MessageListener
                     
                     receivers[i].startListener(this, application);
                     
-                    initialized = (initialized == true)? true : false;
+                    initialized = true;
                 }
                 catch(Exception e)
                 {
-                    logger.info("*** Exception *** : " + e.getMessage());
+                    logger.error("*** Exception *** : " + e.getMessage());
                     
                     initialized = false;
                 }
@@ -242,10 +232,13 @@ public class MessageProcessor implements MessageListener
     
     public void run()
     {
+        MessageContent content = null;
         MapMessage mapMessage  = null;
         int result;
         
         logger.info("Started" + application + version + build);
+        
+        logger.info("Waiting for messages...");
         
         while(running)
         {
@@ -253,35 +246,30 @@ public class MessageProcessor implements MessageListener
             {
                 mapMessage = messages.poll();
                 
-                /*
-                try
-                {
-                    logger.info("Received a map message: " + mapMessage.getJMSDestination().toString());
-                }
-                catch(JMSException e)
-                {
-                    logger.info(e.getMessage());
-                }
-                */
-                
-                result = processMessage(mapMessage);
-                if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD))
+                content = contentCreator.convertMapMessage(mapMessage);               
+                result = processMessage(content);
+                if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
                 {                    
                     // Store the message in a file, if it was not possible to write it to the DB.
-                    writeMapMessageToFile(mapMessage);
+                    writeMessageContentToFile(content);
                     
                     logger.warn(infoText[result] + ": Could not store the message in the database. Message is written on disk.");
                 }
                 else
                 {
-                    logger.info(infoText[result]);                        
+                    if(result != PM_RETURN_OK)
+                    {
+                        logger.info(infoText[result]);
+                    }
+                    else
+                    {
+                        logger.debug(infoText[result]);
+                    }
                 }
             }
 
             if(running)
             {
-                logger.info("Waiting for messages...");
-                
                 synchronized(this)
                 {
                     try
@@ -307,11 +295,13 @@ public class MessageProcessor implements MessageListener
         while(!messages.isEmpty())
         {
             mapMessage = messages.poll();
-            result = processMessage(mapMessage);
-            if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD))
+            content = contentCreator.convertMapMessage(mapMessage);
+            
+            result = processMessage(content);
+            if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
             {                    
                 // Store the message in a file, if it was not possible to write it to the DB.
-                writeMapMessageToFile(mapMessage);
+                writeMessageContentToFile(content);
                 
                 writtenToHd++;
             }
@@ -346,176 +336,36 @@ public class MessageProcessor implements MessageListener
         }        
     }
 
-    public int processMessage(MapMessage mmsg)
+    public int processMessage(MessageContent content)
     {
-        MessageContent msgContent = null;
         Date currentDate = null;
-        Enumeration<?> lst = null;
         String[] recordNames = null;
-        String name = null;
-        String type = null;
-        String et = null;
         String temp = null;
         long typeId = 0;
         long msgId = 0;
         int result = PM_RETURN_OK;
-        boolean reload = false;
-        
-        // ACHTUNG: Die Message ist für den Client READ-ONLY!!! Jeder Versuch in die Message zu schreiben
-        //          löst eine Exception aus.
-                
-        try
-        {
-            // Does the message contain the key TYPE?
-            if(mmsg.itemExists("TYPE"))
-            {
-                // Get the value of the item TYPE
-                type = mmsg.getString("TYPE").toLowerCase();                
-            }
-            else
-            {
-                // The message does not contain the item TYPE. We set it to UNKNOWN
-                type = "unknown";                
-            }
-            
-            // Discard messages with the type 'simulator'
-            if(type.compareToIgnoreCase("simulator") == 0)
-            {
-                return PM_RETURN_DISCARD;
-            }
-            
-            // Does the message contain the key EVENTTIME?
-            if(mmsg.itemExists("EVENTTIME"))
-            {
-                // Yes. Get it
-                et = mmsg.getString("EVENTTIME");
-                
-                // Check the date format
-                temp = checkDateString(et);
-                
-                // If there is something wrong with the format...
-                if(temp == null)
-                {
-                    logger.info("Property EVENTTIME contains invalid format: " + et);
-                    
-                    // ... create a new date string
-                    et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
-                }
-                else
-                {
-                    // ... otherwise 'temp' contains a valid date string
-                    et = temp;
-                }
-            }
-            else
-            {
-                // Get the current date and time
-                // Format: 2006.07.26 12:49:12.345
-                et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
-            }
-            
-            // Create a new hash table for the content of the message
-            msgContent = new MessageContent();
-            
-            // Copy the type and the event time
-            msgContent.put(msgProperty.get("TYPE"), type);
-            msgContent.put(msgProperty.get("EVENTTIME"), et);
-                        
-            // Copy the content of the message into the hash table
-            lst = mmsg.getMapNames();
-            while(lst.hasMoreElements())
-            {
-                name = (String)lst.nextElement();
-                
-                // Get the value(String) and check its length
-                temp = mmsg.getString(name);
-                if(temp.length() > valueLength)
-                {
-                    temp = temp.substring(0, valueLength - 3) + "{*}";
-                }
-                
-                // Do not copy the TYPE and EVENTTIME properties
-                if((name.compareTo("TYPE") != 0) && (name.compareTo("EVENTTIME") != 0))
-                {
-                    // If we know the property
-                    if(msgProperty.containsKey(name))
-                    {
-                        // Get the ID of the property and store it into the hash table
-                        msgContent.put(msgProperty.get(name), temp);
-                    }
-                    else
-                    {                        
-                        // Reload the tables if they are not reloaded
-                        if(!reload)
-                        {
-                            readMessageProperties();
-                            reload = true;
-                            
-                            // Check again
-                            if(msgProperty.containsKey(name))
-                            {
-                                msgContent.put(msgProperty.get(name), temp);
-                            }
-                            else
-                            {
-                                // ...so we have to store them seperately
-                                temp = "[" + name + "] [" + temp + "]";
-                                if(temp.length() > valueLength)
-                                {
-                                    temp = temp.substring(0, valueLength - 4) + "{*}]";
-                                }
 
-                                msgContent.addUnknownProperty(temp);
-                                msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
-                            }
-                        }
-                        else
-                        {
-                            temp = "[" + name + "] [" + temp + "]";
-                            if(temp.length() > valueLength)
-                            {
-                                temp = temp.substring(0, valueLength - 4) + "{*}]";
-                            }
-                            
-                            msgContent.addUnknownProperty(temp);
-                            msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
-                        }
-                    }                    
-                }
-            }
-        }
-        catch(JMSException jmse)
+        if(content.discard())
         {
-            msgContent = null;
-            
-            jmse.printStackTrace();
-            
-            return PM_ERROR_JMS;
-        }        
-         
-        // Get the ID of the message type
-        // If the type is not valid return the ID for 'unknown'
-        /*
-        typeId = getMessageTypeId(type);
-        if(typeId == RET_ERROR)
-        {
-            logger.error("getMessageTypeId()");
-            
-            // Return value is -1, so there was an error
-            return PM_ERROR_GENERAL;
+            return PM_RETURN_DISCARD;
         }
-        */
+
+        if(!content.hasContent())
+        {
+            return PM_RETURN_EMPTY;
+        }
+                
         // Create an entry in the table MESSAGE
         // TODO: typeId is always 0!!! We don not use it anymore. Delete the column in a future version.
-        msgId = dbLayer.createMessageEntry(typeId, et);
+        msgId = dbLayer.createMessageEntry(typeId, content.getPropertyValue("EVENTTIME"));
         if(msgId == RET_ERROR)
         {
-            logger.error("createMessageEntry()");
+            logger.error("createMessageEntry(): No message entry created");
             
             return PM_ERROR_DB;
         }
         
-        if(dbLayer.createMessageContentEntries(msgId, msgContent) == false)
+        if(dbLayer.createMessageContentEntries(msgId, content) == false)
         {
             logger.error("createMessageContentEntries()");
             
@@ -532,7 +382,7 @@ public class MessageProcessor implements MessageListener
                 currentDate = Calendar.getInstance().getTime();
                 
                 // Wait min. 5 minutes for updating the EPICS record
-                if((currentDate.getTime() - lastQuotaUpdate.getTime()) >= 300000)
+                if((currentDate.getTime() - lastQuotaUpdate.getTime()) >= 10000 /*300000*/)
                 {
                     if(config.containsKey("record.tablequota"))
                     {
@@ -622,22 +472,20 @@ public class MessageProcessor implements MessageListener
     /**
      * <code>writeMapMessageToFile</code> writes a map message object to disk.
      * 
-     * @param mm - The MapMessage object which have to be stored on disk.
+     * @param content - The MessageContent object that have to be stored on disk.
      */
 
-    public void writeMapMessageToFile(MapMessage mm)
+    public void writeMessageContentToFile(MessageContent content)
     {
-        SimpleDateFormat    dfm         = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
-        GregorianCalendar   cal         = null;
-        FileOutputStream    fos         = null;
-        ObjectOutputStream  oos         = null;
-        String              fn          = null;
+        SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
+        GregorianCalendar cal = null;
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        String fn = null;
 
-        // Create a hash table with the content of the MapMessage object
-        Hashtable<String, String> content = getMessageContent(mm);
-        if(content.isEmpty())
+        if(!content.hasContent())
         {
-            logger.warn("Content of MapMessage can not be read or MapMessage is empty.");
+            logger.info("Message does not contain content.");
             
             return;
         }
@@ -657,8 +505,7 @@ public class MessageProcessor implements MessageListener
             fos = new FileOutputStream(".\\nirvana\\" + fn + ".ser");
             oos = new ObjectOutputStream(fos);
             
-            // Write the Hashtable to disk
-            // MapMessage does not implement the interface Serializable
+            // Write the MessageContent object to disk
             oos.writeObject(content);            
         }
         catch(FileNotFoundException fnfe)
@@ -675,35 +522,50 @@ public class MessageProcessor implements MessageListener
             if(fos != null){try{fos.close();}catch(IOException ioe){}}
             
             oos = null;
-            fos = null;
-            
-            content.clear();
-            content = null;
+            fos = null;            
         }
+        
+        System.out.println(content.toString());
+        
+        readMessageContent(".\\nirvana\\" + fn + ".ser");
     }
     
-    public Hashtable<String, String> getMessageContent(MapMessage msg)
+    private void readMessageContent(String fileName)
     {
-        String key = null;
-        Hashtable<String, String> content = new Hashtable<String, String>();
-        
+        MessageContent content = null;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+
         try
         {
-            Enumeration<?> e = msg.getMapNames();
+            fis = new FileInputStream(fileName);
+            ois = new ObjectInputStream(fis);
             
-            while(e.hasMoreElements())
-            {
-                key = (String)e.nextElement();
-                
-                content.put(key, msg.getString(key));
-            }
+            // Write the MessageContent object to disk
+            content = (MessageContent)ois.readObject();            
         }
-        catch(JMSException jmse)
+        catch(FileNotFoundException fnfe)
         {
-            content.clear();
+            logger.error("FileNotFoundException : " + fnfe.getMessage());
         }
-        
-        return content;
+        catch(IOException ioe)
+        {
+            logger.error("IOException : " + ioe.getMessage());
+        }
+        catch (ClassNotFoundException e)
+        {
+            logger.error("ClassNotFoundException : " + e.getMessage());
+        }
+        finally
+        {
+            if(ois != null){try{ois.close();}catch(IOException ioe){}}
+            if(fis != null){try{fis.close();}catch(IOException ioe){}}
+            
+            ois = null;
+            fis = null;            
+        }
+
+        System.out.println(content.toString());
     }
     
     /**
@@ -715,199 +577,6 @@ public class MessageProcessor implements MessageListener
     public boolean isInitialized()
     {
         return initialized;
-    }
-
-    /**
-     *  The method <code>readMessageTypeAndProperties()</code> fills two hash tables with the information from
-     *  the database tables MSG_TYPE and MSG_PROPERTY_TYPE.
-     *  
-     *  @return true/false
-     */
-    
-    private boolean readMessageProperties()
-    {
-        ResultSet rsProperty = null;
-        boolean result = false;
-        
-        // Delete old hash table, if there are any
-        if(msgProperty != null)
-        {
-            msgProperty.clear();
-            msgProperty = null;
-        }
-
-        msgProperty = new Hashtable<String, Long>();
-        
-        // Connect the database
-        if(dbLayer.connect() == false)
-        {
-            return result;
-        }
-        
-        try
-        {
-            // Execute the query to get all properties
-            rsProperty = dbLayer.executeSQLQuery("SELECT * from MSG_PROPERTY_TYPE");
-        
-            // Check the result sets 
-            if(rsProperty != null)
-            {
-                // Fill the hash table with the received data of the property table
-                while(rsProperty.next())
-                {
-                    msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));                 
-                }
-
-                rsProperty.close();
-                rsProperty = null;
-            }
-        }
-        catch(SQLException sqle)
-        {
-            logger.error("*** SQLException *** : " + sqle.getMessage());
-            
-            result = false;
-        }
-        finally
-        {
-            if(rsProperty!=null){try{rsProperty.close();}catch(Exception e){}rsProperty=null;}
-            
-            // Close the database
-            if(dbLayer.isConnected() == true){dbLayer.close();}                
-        }
-        
-        return true;
-    }
-
-    public String getDateAndTimeString()
-    {
-        return getDateAndTimeString("[yyyy-MM-dd HH:mm:ss] ");
-    }
-    
-    public String getDateAndTimeString(String frm)
-    {
-        SimpleDateFormat    sdf = new SimpleDateFormat(frm);
-        GregorianCalendar   cal = new GregorianCalendar();
-        
-        return sdf.format(cal.getTime());
-    }
-
-    public int getMaxNumberOfValueBytes()
-    {
-        ResultSet rs = null;
-        ResultSetMetaData rsMetaData = null;        
-        int result = 0;
-        
-        // Connect the database
-        if(dbLayer.connect() == false)
-        {
-            return result;
-        }
-        
-        rs = dbLayer.executeSQLQuery("SELECT * FROM message_content WHERE id = 1");
-        
-        try
-        {
-            rsMetaData = rs.getMetaData();
-            
-            int size = rsMetaData.getColumnCount();
-            
-            // Run through all rows
-            for(int i = 1; i <= size; i++)
-            {
-                // Get the name of the column and compare it to 'VALUE'
-                if(rsMetaData.getColumnName(i).compareToIgnoreCase("VALUE") == 0)
-                {
-                    // Get the max. number of characters
-                    result = rsMetaData.getPrecision(i);
-                    
-                    break;
-                }
-            }
-        }
-        catch (SQLException e)
-        {
-        }
-        finally
-        {
-            if(rs!=null){try{rs.close();}catch(Exception e){}rs=null;}
-            
-            // Close the database
-            if(dbLayer.isConnected() == true){dbLayer.close();}                
-        }
-        
-        return result;
-    }
-    
-    /**
-     * Converts the time and date string using only one or two digits for the mili seconds
-     * to a string using 3 digits for the mili seconds with leading zeros
-     * 
-     * @param dateString The date string that has to be converted
-     * @param sourceFormat The format of the converted string
-     * @param destinationFormat The format of the result string
-     * @throws ParseException If the date string does not match the source format
-     * @return The converted date and time string
-     */
-    public String convertDateString(String dateString, String sourceFormat, String destinationFormat) throws ParseException
-    {
-        SimpleDateFormat ssdf = new SimpleDateFormat(sourceFormat);
-        SimpleDateFormat dsdf = new SimpleDateFormat(destinationFormat);
-        String ds = null;
-        
-        try
-        {
-            Date date = ssdf.parse(dateString);
-            
-            ds = dsdf.format(date);
-        }
-        catch(ParseException pe)
-        {
-            throw new ParseException("String [" + dateString + "] is invalid: " + pe.getMessage(), pe.getErrorOffset());
-        }
-        
-        return ds;
-    }
-    
-    /**
-     * Checks wether or not the date and time string uses the standard format yyyy-MM-dd HH:mm:ss.SSS
-     * 
-     * @param dateString
-     * @return The date and time string that uses the standard format.
-     */
-    public String checkDateString(String dateString)
-    {
-        String r = null;
-        
-        if(dateString.matches(formatStd))
-        {
-            r = dateString;
-        }
-        else if(dateString.matches(formatTwoDigits))
-        {
-            try
-            {
-                r = convertDateString(dateString, "yyyy-MM-dd HH:mm:ss.SS", "yyyy-MM-dd HH:mm:ss.SSS");
-            }
-            catch(ParseException pe)
-            {
-                r = null;
-            }
-
-        }
-        else if(dateString.matches(formatOneDigit))
-        {
-            try
-            {
-                r = convertDateString(dateString, "yyyy-MM-dd HH:mm:ss.S", "yyyy-MM-dd HH:mm:ss.SSS");
-            }
-            catch(ParseException pe)
-            {
-                r = null;
-            }            
-        }
-        
-        return r;
     }
     
     /**
@@ -1118,34 +787,4 @@ public class MessageProcessor implements MessageListener
             }
         }
     }
-    
-    private boolean createLogger()
-    {
-        boolean result = false;
-        
-        logger = Logger.getRootLogger();
-        
-        PatternLayout layout = new PatternLayout("%d{ISO8601} %-5p [%t] %c: %m%n");
-        
-        try
-        {
-            RollingFileAppender fileAppender = new RollingFileAppender(layout, "log/" + application + ".log", true);
-            fileAppender.setMaxBackupIndex(100);
-            fileAppender.setMaxFileSize("1024KB");
-            logger.addAppender(fileAppender);
-                        
-            result = true;
-        }
-        catch(IOException ioe)
-        {
-            result = false;
-        }
-        
-        return result;
-    }
-    
-    public Logger getLogger()
-    {
-        return logger;
-    }    
 }
