@@ -73,6 +73,19 @@ public class TimeParserTests extends TestCase
         assertEquals( 0, cal2.get(Calendar.SECOND));
         assertEquals( 0, cal.get(Calendar.MILLISECOND));
 
+        // Only time, with millisecs
+        cal2 = AbsoluteTimeParser.parse(cal, "14:00:24.156959772");
+        // Should return new instance, not change the cal we passed in.
+        assertNotSame(cal, cal2);
+        System.out.println(cal2.getTime());
+        assertEquals(2007, cal2.get(Calendar.YEAR));
+        assertEquals( 1, cal2.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals(18, cal2.get(Calendar.DAY_OF_MONTH));
+        assertEquals(14, cal2.get(Calendar.HOUR_OF_DAY));
+        assertEquals(00, cal2.get(Calendar.MINUTE));
+        assertEquals(24, cal2.get(Calendar.SECOND));
+        assertEquals(156, cal2.get(Calendar.MILLISECOND));
+        
         // Only month and day, but no year
         cal = AbsoluteTimeParser.parse(cal, "02/15 13:45");
         System.out.println(cal.getTime());
