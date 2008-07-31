@@ -360,18 +360,8 @@ public class LogViewArchive extends ViewPart implements Observer {
                         _fromTime = TimestampFactory.fromCalendar(from);
                         Calendar to = parser.getEnd();
                         _toTime =  TimestampFactory.fromCalendar(to);
-//                      ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-                        showNewTime(from, to);
-//                      ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
-//                      _jmsMessageList.clearList();
-//                      _jmsLogTableViewer.refresh();
-//                      _jmsMessageList.addJMSMessageList(am);
-
-                        ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-                                LogViewArchive.this._dbAnswer, from, to);
-//                      ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-//                              from, to);
-                        readDB.schedule();
+                        
+                        startSearch(from, to);
 
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block
@@ -513,7 +503,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 		}
 	}
 
-    private void startSearch(GregorianCalendar from, GregorianCalendar to) {
+    private void startSearch(Calendar from, Calendar to) {
         showNewTime(from, to);
         ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
                 LogViewArchive.this._dbAnswer, from, to);

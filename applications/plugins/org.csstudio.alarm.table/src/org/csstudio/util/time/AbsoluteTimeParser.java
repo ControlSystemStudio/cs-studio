@@ -105,7 +105,7 @@ public class AbsoluteTimeParser {
         }
         // reduce time to milisec (from 2008/07/29 14:41:14.123456789 to 2008/07/29 14:41:14.123) 
         int index = cooked.indexOf(".");
-        if(cooked.length()-index>3){
+        if(index>0&&cooked.length()-index>3){
             cooked=cooked.substring(0,index+4);
         }
         
