@@ -382,7 +382,7 @@ public class MessageProcessor implements MessageListener
                 currentDate = Calendar.getInstance().getTime();
                 
                 // Wait min. 5 minutes for updating the EPICS record
-                if((currentDate.getTime() - lastQuotaUpdate.getTime()) >= 10000 /*300000*/)
+                if((currentDate.getTime() - lastQuotaUpdate.getTime()) >= 300000)
                 {
                     if(config.containsKey("record.tablequota"))
                     {

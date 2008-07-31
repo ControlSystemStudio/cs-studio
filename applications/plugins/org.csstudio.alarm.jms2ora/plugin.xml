@@ -77,6 +77,10 @@
       <product
             application="org.csstudio.alarm.Jms2OraId"
             name="Jms2Ora">
+         <property
+               name="appName"
+               value="Jms2Ora">
+         </property>
       </product>
    </extension>
 
