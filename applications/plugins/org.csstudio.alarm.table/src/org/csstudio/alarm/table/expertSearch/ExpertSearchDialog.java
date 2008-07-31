@@ -31,15 +31,15 @@ import org.csstudio.alarm.dbaccess.FilterItem;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
+import org.csstudio.apputil.time.AbsoluteTimeParser;
+import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.apputil.time.StartEndTimeParser;
+import org.csstudio.apputil.ui.time.CalendarWidget;
+import org.csstudio.apputil.ui.time.CalendarWidgetListener;
+import org.csstudio.apputil.ui.time.RelativeTimeWidget;
+import org.csstudio.apputil.ui.time.RelativeTimeWidgetListener;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.util.time.AbsoluteTimeParser;
-import org.csstudio.util.time.RelativeTime;
-import org.csstudio.util.time.StartEndTimeParser;
-import org.csstudio.util.time.swt.CalendarWidget;
-import org.csstudio.util.time.swt.CalendarWidgetListener;
-import org.csstudio.util.time.swt.RelativeTimeWidget;
-import org.csstudio.util.time.swt.RelativeTimeWidgetListener;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -194,31 +194,31 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         GridData gd;
 
         Composite[] c2 = makeTimeSelect(box,Messages.ExpertSearchDialog_startTime,
-                org.csstudio.util.time.swt.Messages.StartEnd_AbsStart,
-                org.csstudio.util.time.swt.Messages.StartEnd_AbsStart_TT,
-                org.csstudio.util.time.swt.Messages.StartEnd_RelStart,
-                org.csstudio.util.time.swt.Messages.StartEnd_RelStart_TT,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_AbsStart,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_AbsStart_TT,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_RelStart,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_RelStart_TT,
                 _start.toCalendar());
         _fromAbsWidget=(CalendarWidget) c2[0];
         _fromRelWidget=(RelativeTimeWidget) c2[1];
         c2 = makeTimeSelect(box,Messages.ExpertSearchDialog_endTime,
-                org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd,
-                org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd_TT,
-                org.csstudio.util.time.swt.Messages.StartEnd_RelEnd,
-                org.csstudio.util.time.swt.Messages.StartEnd_RelEnd_TT,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_AbsEnd,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_AbsEnd_TT,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_RelEnd,
+                org.csstudio.apputil.ui.time.Messages.StartEnd_RelEnd_TT,
                 _end.toCalendar());
         _toAbsWidget=(CalendarWidget) c2[0];
         _toRelWidget=(RelativeTimeWidget) c2[1];
 
         // New Row
         Label l = new Label(box, SWT.NULL);
-        l.setText(org.csstudio.util.time.swt.Messages.StartEnd_StartTime);
+        l.setText(org.csstudio.apputil.ui.time.Messages.StartEnd_StartTime);
         gd = new GridData();
         l.setLayoutData(gd);
         
         Calendar stamp = new GregorianCalendar();
         _fromText = new Text(box, SWT.LEFT);
-        _fromText.setToolTipText(org.csstudio.util.time.swt.Messages.StartEnd_StartTime_TT);
+        _fromText.setToolTipText(org.csstudio.apputil.ui.time.Messages.StartEnd_StartTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -226,12 +226,12 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         _fromText.setText(AbsoluteTimeParser.format(_fromAbsWidget.getCalendar()));
         
         l = new Label(box, SWT.NULL);
-        l.setText(org.csstudio.util.time.swt.Messages.StartEnd_EndTime);
+        l.setText(org.csstudio.apputil.ui.time.Messages.StartEnd_EndTime);
         gd = new GridData();
         l.setLayoutData(gd);
 
         _toText = new Text(box, SWT.LEFT);
-        _toText.setToolTipText(org.csstudio.util.time.swt.Messages.StartEnd_EndTime_TT);
+        _toText.setToolTipText(org.csstudio.apputil.ui.time.Messages.StartEnd_EndTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -487,7 +487,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
             try{
                 _startEnd = new StartEndTimeParser(_startSpecification, _endSpecification);
                 if (_startEnd.getStart().compareTo(_startEnd.getEnd()) >= 0){
-                    info.setText(org.csstudio.util.time.swt.Messages.StartEnd_StartExceedsEnd);
+                    info.setText(org.csstudio.apputil.ui.time.Messages.StartEnd_StartExceedsEnd);
                     return;
                 }
                 _start = TimestampFactory.fromCalendar(_startEnd.getStart());
