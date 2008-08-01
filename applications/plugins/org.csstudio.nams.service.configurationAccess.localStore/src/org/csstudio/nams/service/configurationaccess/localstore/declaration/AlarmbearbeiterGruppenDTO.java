@@ -12,7 +12,9 @@ import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -41,12 +43,13 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * </pre>
  */
 @Entity
+@SequenceGenerator(name="usergroup_id", sequenceName="AMS_UserGroup_ID")
 @Table(name = "AMS_UserGroup")
 public class AlarmbearbeiterGruppenDTO implements
 		NewAMSConfigurationElementDTO, HasManuallyJoinedElements {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usergroup_id")
 	@Column(name = "iUserGroupId", nullable = false, unique = true)
 	private int userGroupId;
 

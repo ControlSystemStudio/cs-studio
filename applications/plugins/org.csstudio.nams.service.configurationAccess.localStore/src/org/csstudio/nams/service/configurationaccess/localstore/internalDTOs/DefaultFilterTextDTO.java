@@ -2,7 +2,6 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -27,7 +26,6 @@ public class DefaultFilterTextDTO implements NewAMSConfigurationElementDTO {
 
 	@Column(name = "IDEFMESSAGETEXTID")
 	@Id
-	@GeneratedValue
 	private int textID;
 
 	@Column(name = "CNAME", length = 128)

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -16,6 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.filt
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 
 @Entity
+@SequenceGenerator(name="filter_action_id", sequenceName="AMS_FILTERACTION_ID")
 @Table(name = "AMS_FILTERACTION")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "IFILTERACTIONTYPEREF", discriminatorType = DiscriminatorType.INTEGER)
@@ -32,7 +34,7 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 	protected FilterActionType filterActionType;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="filter_action_id")
 	@Column(name = "IFILTERACTIONID", nullable = false)
 	private int iFilterActionID;
 

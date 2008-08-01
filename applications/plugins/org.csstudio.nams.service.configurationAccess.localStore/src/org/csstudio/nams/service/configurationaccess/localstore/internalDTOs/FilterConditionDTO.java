@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
@@ -30,6 +31,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
  * </pre>
  */
 @Entity
+@SequenceGenerator(name="filter_condition_id", sequenceName="AMS_FilterCondition_ID")
 @Table(name = "AMS_FilterCondition")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
@@ -44,7 +46,7 @@ public class FilterConditionDTO implements NewAMSConfigurationElementDTO {
 	private int filterCondtionTypeRef;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="filter_condition_id")
 	@Column(name = "iFilterConditionID", nullable = false, unique = true)
 	private int iFilterConditionID;
 

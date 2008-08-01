@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -39,11 +40,12 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * </pre>
  */
 @Entity
+@SequenceGenerator(name="filter_id", sequenceName="AMS_Filter_ID")
 @Table(name = "AMS_Filter")
 public class FilterDTO implements NewAMSConfigurationElementDTO,
 		HasManuallyJoinedElements {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="filter_id")
 	@Column(name = "iFilterID")
 	private int iFilterID; // INT,
 

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
@@ -31,11 +32,12 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Pre
  * </pre>
  */
 @Entity
+@SequenceGenerator(name="user_id", sequenceName="AMS_USER_ID")
 @Table(name = "AMS_User")
 public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id")
 	@Column(name = "iUserId", nullable = false, unique = true)
 	private int userId;
 

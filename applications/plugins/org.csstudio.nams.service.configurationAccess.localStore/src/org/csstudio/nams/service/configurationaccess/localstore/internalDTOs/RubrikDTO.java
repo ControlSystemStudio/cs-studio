@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
@@ -27,11 +28,12 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
  */
 
 @Entity
+@SequenceGenerator(name="rubrik_id", sequenceName="AMS_Groups_ID")
 @Table(name = "AMS_Groups")
 public class RubrikDTO implements NewAMSConfigurationElementDTO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="rubrik_id")
 	@Column(name = "iGroupId", nullable = false, unique = true)
 	private int iGroupId;
 

@@ -2,7 +2,6 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -24,11 +23,12 @@ import javax.persistence.Table;
  * </pre>
  */
 @Entity
+//@SequenceGenerator(name="filter_condition_type_id", sequenceName="AMS_FilterConditionType_ID")
 @Table(name = "AMS_FilterConditionType")
 public class FilterConditionTypeDTO {
 
 	@Id
-	@GeneratedValue
+//	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="filter_condition_type_id")
 	@Column(name = "iFilterConditionTypeID", nullable = false, unique = true)
 	private int iFilterConditionTypeID;
 

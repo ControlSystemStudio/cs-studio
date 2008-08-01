@@ -3,7 +3,9 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.csstudio.nams.common.contract.Contract;
@@ -28,6 +30,7 @@ import org.csstudio.nams.common.contract.Contract;
  * </pre>
  */
 @Entity
+@SequenceGenerator(name="topic_id", sequenceName="AMS_TOPIC_ID")
 @Table(name = "AMS_TOPIC")
 public class TopicDTO implements NewAMSConfigurationElementDTO {
 
@@ -41,7 +44,7 @@ public class TopicDTO implements NewAMSConfigurationElementDTO {
 	private int groupRef;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="topic_id")
 	@Column(name = "ITOPICID", nullable = false, unique = true)
 	private int id = -1;
 
