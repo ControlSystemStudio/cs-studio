@@ -75,6 +75,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			}
 
 			// TODO Real fortfahren...
+			// FIXME erst mal lokale topics fuer den ersten desz test
 			callback.sendeNachrichtAnHintergrundSystem();
 
 			try {
@@ -82,11 +83,11 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 						.createNewMessagingSession(
 								"syncServiceProducer",
 								new String[] { preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_SENDER_PROVIDER_URL) });
+										.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL) });
 				Producer producer = messagingSession
 						.createProducer(
 								preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+										.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND),
 								PostfachArt.TOPIC);
 
 				producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
@@ -111,13 +112,13 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 								"syncServiceConsumer",
 								new String[] {
 										preferenceService
-												.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
+												.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1),
 										preferenceService
-												.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
+												.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) });
 				Consumer consumer = messagingSession
 						.createConsumer(
 								preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+										.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND),
 								PostfachArt.TOPIC);
 				NAMSMessage message;
 				while ((message = consumer.receiveMessage()) != null) {
