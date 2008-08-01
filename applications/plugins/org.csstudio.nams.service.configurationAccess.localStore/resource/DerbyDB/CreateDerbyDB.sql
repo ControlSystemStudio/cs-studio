@@ -19,7 +19,28 @@ create table AMSFilterCondConj4FilterFCJoin (
    iFilterConditionID           INT NOT NULL,
    iFilterConditionRef		INT NOT NULL
  );
- 
+
+drop table AMS_FILTERCOND_JUNCTION;
+create table AMS_FILTERCOND_JUNCTION
+(
+   iFilterConditionRef INT NOT NULL,
+   operator varchar(3) NOT NULL
+);
+
+drop table AMS_FILTERCOND_FILTERCOND;
+create table AMS_FILTERCOND_FILTERCOND
+(
+   iFilterConditionID INT NOT NULL,
+   iFilterConditionRef INT NOT NULL
+);
+
+drop table AMS_FILTERCOND_NEGATION;
+create table AMS_FILTERCOND_NEGATION
+(
+   iFilterConditionRef INT NOT NULL,
+   iNegatedfcRef INT NOT NULL
+);
+
 -- AMS --
 
 drop table AMS_User;
