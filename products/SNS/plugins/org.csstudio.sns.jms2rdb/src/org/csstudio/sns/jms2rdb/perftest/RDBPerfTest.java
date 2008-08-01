@@ -12,10 +12,12 @@ import org.junit.Test;
 
 /** Simple RDB 'write' performance test.
  *  <p>
- *  Log messages have about 10 properties.
+ *  Log messages have about 10 properties;
+ *  3 in message table, 7 as message content.
+ *  
  *  Using 'batched' inserts for the properties.
  *  
- *  Local or networked MySQL: about 100 msg/sec.
+ *  Local or networked MySQL: about 150 msg/sec.
  *
  *  TODO Update old data for SNS Oracle 'devl': about 15..20 msg/sec.
  *

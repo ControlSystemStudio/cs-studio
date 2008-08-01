@@ -5,6 +5,7 @@
 #
 # Removed tables: msg_type, msg_type_property_type
 # Removed columns: message.msg_type_id
+# Added columns: message type, name, severity
 #
 # kasemirk@ornl.gov
 
@@ -48,7 +49,10 @@ DROP TABLE IF EXISTS message;
 CREATE TABLE IF NOT EXISTS message
 (
    id INT UNSIGNED NOT NULL PRIMARY KEY,
-   datum TIMESTAMP NOT NULL
+   datum TIMESTAMP NOT NULL,
+   type VARCHAR(10) NOT NULL,
+   name VARCHAR(80) NULL,
+   severity VARCHAR(20) NULL  
 );
 
 -- Elements of a Message

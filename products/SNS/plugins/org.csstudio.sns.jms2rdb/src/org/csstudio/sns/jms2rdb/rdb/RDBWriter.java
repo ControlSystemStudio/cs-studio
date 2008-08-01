@@ -54,15 +54,11 @@ public class RDBWriter
         rdb_util = RDBUtil.connect(url);
         sql = new SQL(rdb_util, schema);
 
-        // Pre-fetch some essential properties
-        getPropertyType(JMSLogMessage.TYPE);
-        getPropertyType(JMSLogMessage.TEXT);
-        
         final Connection connection = rdb_util.getConnection();
         next_message_id_statement =
             connection.prepareStatement(sql.select_next_message_id);
         insert_message_statement =
-            connection.prepareStatement(sql.insert_message_id_datum);
+            connection.prepareStatement(sql.insert_message_id_datum_type_name_severity);
         next_property_id =
             connection.prepareStatement(sql.select_next_content_id);
         insert_property_statement =
@@ -175,14 +171,12 @@ public class RDBWriter
     public void write(final JMSLogMessage message) throws Exception
     {
         final int message_id = getNextMessageID();
-        insertMessage(message_id);
+        insertMessage(message_id, JMSLogMessage.TYPE_LOG, message.getMethodName(),
+        		message.getSeverity());
         // Since batched inserts are only performed at the end,
         // a 'select' for the next content ID won't see them, yet.
         // So we have to count them up in here
         int content_id = getNextContentID();
-        if (batchProperty(message_id, content_id,
-        		getPropertyType(JMSLogMessage.TYPE), JMSLogMessage.TYPE_LOG))
-            ++content_id;
         if (batchProperty(message_id, content_id, 
         		getPropertyType(JMSLogMessage.TEXT), message.getText()))
             ++content_id;
@@ -191,14 +185,7 @@ public class RDBWriter
             JMSLogMessage.date_format.format(message.getCreateTime().getTime())))
             ++content_id;
         if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.EVENTTIME),
-            JMSLogMessage.date_format.format(message.getEventTime().getTime())))
-            ++content_id;
-        if (batchProperty(message_id, content_id, 
         		getPropertyType(JMSLogMessage.CLASS), message.getClassName()))
-            ++content_id;
-        if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.NAME), message.getMethodName()))
             ++content_id;
         if (batchProperty(message_id, content_id, 
         		getPropertyType(JMSLogMessage.FILENAME), message.getFileName()))
@@ -223,7 +210,10 @@ public class RDBWriter
 	public void write(final MapMessage map) throws Exception
     {
         final int message_id = getNextMessageID();
-        insertMessage(message_id);
+		String type = map.getString(JMSLogMessage.TYPE);
+		String name = map.getString(JMSLogMessage.NAME);
+        String severity = map.getString(JMSLogMessage.SEVERITY);
+		insertMessage(message_id, type, name, severity);
         // Since batched inserts are only performed at the end,
         // a 'select' for the next content ID won't see them, yet.
         // So we have to count them up in here
@@ -232,6 +222,11 @@ public class RDBWriter
         while (props.hasMoreElements())
         {
         	final String prop = props.nextElement();
+        	// Skip properties which are already in message table colums
+        	if (JMSLogMessage.TYPE.equals(prop) ||
+        	    JMSLogMessage.NAME.equals(prop) ||
+        	    JMSLogMessage.SEVERITY.equals(prop))
+        		continue;
         	final int prop_id = getPropertyType(prop);
             if (batchProperty(message_id, content_id,
             		prop_id, map.getString(prop)))
@@ -257,12 +252,17 @@ public class RDBWriter
      *  @param type  Message type
      *  @throws Exception on error
      */
-    private void insertMessage(final int message_id) throws Exception
+    private void insertMessage(final int message_id,
+    		final String type, final String name,
+    		final String severity) throws Exception
     {
         // Insert the main message
         insert_message_statement.setInt(1, message_id);
         final Calendar now = Calendar.getInstance();
         insert_message_statement.setTimestamp(2, new Timestamp(now.getTimeInMillis()));
+        insert_message_statement.setString(3, type);
+        insert_message_statement.setString(4, name);
+        insert_message_statement.setString(5, severity);
         final int rows = insert_message_statement.executeUpdate();
         if (rows != 1)
             throw new Exception("Inserted " + rows + " instead of 1 Message");

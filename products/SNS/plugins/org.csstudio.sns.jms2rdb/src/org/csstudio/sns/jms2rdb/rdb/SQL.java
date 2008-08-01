@@ -16,7 +16,7 @@ public class SQL
     
     final public String select_next_message_id;
 
-    final public String insert_message_id_datum;
+    final public String insert_message_id_datum_type_name_severity;
 
     final public String select_next_content_id;
 
@@ -28,7 +28,7 @@ public class SQL
      */
     public SQL(final RDBUtil rdb_util, final String schema)
     {
-        select_property_id_by_name =
+		select_property_id_by_name =
             "SELECT id FROM " + schema + "msg_property_type WHERE name=?";
         
         select_next_property_id =
@@ -39,8 +39,9 @@ public class SQL
 
         select_next_message_id = "SELECT MAX(id)+1 FROM " + schema + "message";
         
-        insert_message_id_datum =
-            "INSERT INTO " + schema + "message (id, datum) VALUES (?,?)";
+        insert_message_id_datum_type_name_severity =
+            "INSERT INTO " + schema +
+            "message (id, datum, type, name, severity) VALUES (?,?,?,?,?)";
 
         select_next_content_id = "SELECT MAX(id)+1 FROM " + schema + "message_content";
         
