@@ -26,6 +26,8 @@ package org.csstudio.alarm.jms2ora;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.csstudio.alarm.jms2ora.util.State;
+import org.csstudio.alarm.jms2ora.util.SynchObject;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -38,18 +40,39 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 public class Jms2OraStart implements IApplication
 {
-    /**  */
-    public static boolean SHUTDOWN = true;
+    private static Jms2OraStart instance = null;
     
-    /**  */
+    /** The MessageProcessor does all the work on messages */
     private MessageProcessor applic = null;
     
-    /**  */
+    /** Log4j logger */
     private Logger logger = null;
+    
+    /**  */
+    private SynchObject sync = null;
+    
+    /** Last state */
+    private int lastState = 0;
+    
+    /** Flag that indicates whether or not the application is/should running */
+    private boolean running = true;
+    
+    /** Flag that indicates whether or not the application should stop. */
+    public boolean shutdown = true;
+    
+    /** Time to sleep in ms */
+    private static long SLEEPING_TIME = 10000 ;
     
     public Jms2OraStart()
     {
         createLogger();
+        
+        sync = new SynchObject(State.INIT, System.currentTimeMillis());
+    }
+    
+    public static Jms2OraStart getInstance()
+    {
+        return instance;
     }
     
     private boolean createLogger()
@@ -64,37 +87,108 @@ public class Jms2OraStart implements IApplication
     }
 
     public Object start(IApplicationContext context) throws Exception
-    {        
+    {
+        String stateText = null;
+        int currentState = 0;
+        
         // Create an object from this class
         applic = MessageProcessor.getInstance();
+        applic.start();
 
-        // Was the initialization successful?
-        if(applic.isInitialized() == true)
+        sync.setSynchStatus(State.OK);
+        stateText = "ok";
+        
+        while(running)
         {
-            // Start...
-            applic.run();
-        }
-        else // Sorry, some errors were caused...
-        {
-            logger.error("Could not initialize the class 'StoreMessages' -> Shutting down.");
-            
-            try
+            synchronized(this)
             {
-                Thread.sleep(5000);
+                try
+                {
+                    this.wait(SLEEPING_TIME);
+                }
+                catch(InterruptedException ie) {}
             }
-            catch(InterruptedException e) { }
+            
+            SynchObject actSynch = new SynchObject(State.INIT, 0);
+            if (!sync.hasStatusSet(actSynch, 60, State.ERROR))    
+            {
+                logger.fatal("TIMEOUT: State has not changed the last 1 minute(s).");
+            }
+
+            currentState = actSynch.getStatus();
+            if(currentState != lastState)
+            {
+                switch(currentState)
+                {
+                    case State.INIT:
+                        stateText = "init";
+                        break;
+                        
+                    case State.OK:
+                        stateText = "ok";
+                        break;
+                        
+                    case State.ERROR:
+                        stateText = "error";
+                        
+                        running = false;
+                        
+                        break;
+                }
+                
+                logger.debug("set state to " + stateText + "(" + currentState + ")");
+                lastState = currentState;               
+            }
+            
+            logger.debug("Current state: " + stateText + "(" + currentState + ")");
         }
         
         // Clean up...
         applic.closeAllReceivers();
         
-        if(SHUTDOWN)
+        if(shutdown)
         {
             return IApplication.EXIT_OK;
         }
         else
         {
             return IApplication.EXIT_RESTART;
+        }
+    }
+    
+    public int getState()
+    {
+        return sync.getSynchStatus();
+    }
+    
+    public void setStatus(int status)
+    {
+        sync.setSynchStatus(status);
+    }
+
+    public void setShutdown()
+    {
+        running = false;
+        shutdown = true;
+        
+        logger.info("The application will shutdown...");
+        
+        synchronized(this)
+        {
+            notify();
+        }
+    }
+
+    public void setRestart()
+    {
+        running = false;
+        shutdown = false;
+        
+        logger.info("The application will restart...");
+        
+        synchronized(this)
+        {
+            notify();
         }
     }
 

@@ -83,7 +83,7 @@ import java.io.ObjectOutputStream;
  *          - Die Properties der Datenbanktabellen
  */
 
-public class MessageProcessor implements MessageListener
+public class MessageProcessor extends Thread implements MessageListener
 {
     /** The object instance of this class */
     private static MessageProcessor instance = null;
@@ -126,6 +126,8 @@ public class MessageProcessor implements MessageListener
     /** True if the folder 'nirvana' exists. This folder holds the stored message object content. */
     private boolean existsObjectFolder = false;
 
+    private Jms2OraStart parent = null;
+    
     private final String version = " 2.0.0";
     private final String build = " - BUILD 2008-07-31 16:00";
     private final String application = "Jms2Ora";
@@ -148,7 +150,7 @@ public class MessageProcessor implements MessageListener
                                        "Database error",
                                        "JMS error",
                                        "General error"};
-    
+
     /**
      * A nice private constructor...
      *
@@ -709,58 +711,6 @@ public class MessageProcessor implements MessageListener
         }
     }
     
-    public void shutdown()
-    {
-        running = false;
-        
-        logger.info("The application will shutdown now...");
-        
-        // Very important to close all receivers and connections!!!!!
-        closeAllReceivers();
-        
-        synchronized(this)
-        {
-            notify();
-        }
-    }
-
-    // Not used for the Jms2Ora headless eclipse application
-    public boolean restart()
-    {
-        boolean result = false;
-        
-        running  = false;
-        
-        // Very important to close all receivers and connections!!!!!
-        closeAllReceivers();
-        
-        ProcessBuilder pb = new ProcessBuilder("java.exe", "-Dcom.sun.management.jmxremote", "-Dcom.sun.management.jmxremote.port=8101", "-Dcom.sun.management.jmxremote.authenticate=false", "-Dcom.sun.management.jmxremote.ssl=false", "-jar", "JMS2Ora.jar");
-
-        pb.directory(new File(System.getProperty("user.dir")));
-        
-        try
-        {
-             pb.start();
-             
-             result = true;
-        }
-        catch(IOException ioe)
-        {
-            logger.info("ProcessRestart : restart() :\n   *** IOException *** : " + ioe.getMessage());
-            
-            result = false;
-        }
-        
-        logger.info("Restarting me...");
-        
-        synchronized(this)
-        {
-            notify();
-        }
-
-        return result;
-    }
-    
     /**
      * 
      */
@@ -786,5 +736,17 @@ public class MessageProcessor implements MessageListener
                 existsObjectFolder = false;
             }
         }
+    }
+    
+    public void setParent(Jms2OraStart parent)
+    {
+        this.parent = parent;
+    }
+    
+    public synchronized void stopWorking()
+    {
+        running = false;
+        
+        this.notify();
     }
 }
