@@ -38,13 +38,13 @@ import javax.jms.Message;
  * @version 1.0
  */
 
-public class WaifFileHandler implements FilenameFilter
+public class ObjectFileHandler implements FilenameFilter
 {
     private String[]    fileList    = null;
     
-    public WaifFileHandler()
+    public ObjectFileHandler()
     {
-        countWaifFiles();
+        countObjectFiles();
     }
         
     public boolean accept(File dir, String name)
@@ -52,14 +52,14 @@ public class WaifFileHandler implements FilenameFilter
         return name.toLowerCase().matches( "waif_\\d{8}_\\d{9}.ser" );
     }
     
-    private void countWaifFiles()
+    private void countObjectFiles()
     {
         File waifDir = new File("nirvana");
         
         fileList = waifDir.list(this);
     }
     
-    public int getNumberOfWaifFiles()
+    public int getNumberOfObjectFiles()
     {
         if(fileList != null)
         {
@@ -76,7 +76,7 @@ public class WaifFileHandler implements FilenameFilter
         return fileList;
     }
     
-    public MapMessage getWaifFileContent(int number)
+    public MapMessage getObjectFileContent(int number)
     {
         FileInputStream     fis         = null;
         ObjectInputStream   ois         = null;

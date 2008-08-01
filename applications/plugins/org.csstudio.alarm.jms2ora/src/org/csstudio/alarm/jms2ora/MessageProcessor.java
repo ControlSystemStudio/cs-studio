@@ -41,7 +41,7 @@ import org.csstudio.alarm.jms2ora.database.OracleService;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
-import org.csstudio.alarm.jms2ora.util.WaifFileHandler;
+import org.csstudio.alarm.jms2ora.util.ObjectFileHandler;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import de.desy.epics.singleton.EpicsSingleton;
 import java.io.File;
@@ -157,8 +157,6 @@ public class MessageProcessor extends Thread implements MessageListener
      */    
     private MessageProcessor()
     {
-        int i;
-        
         // Create the logger
         logger = Logger.getLogger(MessageProcessor.class);
 
@@ -179,19 +177,19 @@ public class MessageProcessor extends Thread implements MessageListener
             urlList = config.getStringArray("provider.url");
             topicList = config.getStringArray("topic.names");
             
-            for(i = 0;i < urlList.length;i++)
+            for(int i = 0;i < urlList.length;i++)
             {
                 logger.info("[" + urlList[i] + "]");
             }
             
-            for(i = 0;i < topicList.length;i++)
+            for(int i = 0;i < topicList.length;i++)
             {
                 logger.info("[" + topicList[i] + "]");
             }
             
             receivers = new MessageReceiver[urlList.length];
             
-            for(i = 0;i < urlList.length;i++)
+            for(int i = 0;i < urlList.length;i++)
             {
                 try
                 {
@@ -582,7 +580,7 @@ public class MessageProcessor extends Thread implements MessageListener
     }
     
     /**
-     * The method returns the number of MapMessage objects which were serialized. Uses the {@link WaifFileHandler}
+     * The method returns the number of MapMessage objects which were serialized. Uses the {@link ObjectFileHandler}
      * class.
      * 
      * @return Number of MapMessages objects which were written to the database because of errors during
@@ -591,10 +589,10 @@ public class MessageProcessor extends Thread implements MessageListener
     
     public int getNumberOfWaifFiles()
     {
-        WaifFileHandler waifFiles   = new WaifFileHandler();
+        ObjectFileHandler waifFiles   = new ObjectFileHandler();
         int             result      = 0;
 
-        result = waifFiles.getNumberOfWaifFiles();
+        result = waifFiles.getNumberOfObjectFiles();
         
         waifFiles = null;
         
@@ -603,14 +601,14 @@ public class MessageProcessor extends Thread implements MessageListener
     
     /**
      * The method returns an array of String with the file names of all serialized MapMessage objects.
-     * Uses the {@link WaifFileHandler} class.
+     * Uses the {@link ObjectFileHandler} class.
      * 
      * @return Array of String with the file names.
      */
     
     public String[] getNameOfWaifFiles()
     {
-        WaifFileHandler waifFiles   = new WaifFileHandler();
+        ObjectFileHandler waifFiles   = new ObjectFileHandler();
         String[]        result      = null;
 
         result = waifFiles.getWaifFileNames();
@@ -626,9 +624,9 @@ public class MessageProcessor extends Thread implements MessageListener
         String[]    result  = null;
         String      name    = null;
         
-        WaifFileHandler waifFiles   = new WaifFileHandler();
+        ObjectFileHandler waifFiles   = new ObjectFileHandler();
 
-        msg = waifFiles.getWaifFileContent(fileNumber);
+        msg = waifFiles.getObjectFileContent(fileNumber);
 
         waifFiles = null;
         
@@ -667,7 +665,7 @@ public class MessageProcessor extends Thread implements MessageListener
     {
         int result = 0;
         
-        WaifFileHandler waifFiles   = new WaifFileHandler();
+        ObjectFileHandler waifFiles   = new ObjectFileHandler();
 
         result = waifFiles.deleteAllFiles();
         

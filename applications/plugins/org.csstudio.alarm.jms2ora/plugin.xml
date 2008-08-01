@@ -37,25 +37,25 @@
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetNumberOfWaifFilesAction"
             id="org.csstudio.alarm.jms2ora.getNumberOfWaifFilesAction"
-            name="Get Number Of Waif Files"
+            name="Get Number Of Object Files"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.DeleteAllWaifFilesAction"
             id="org.csstudio.alarm.jms2ora.deleteAllWaifFilesAction"
-            name="Delete All Waif Files"
+            name="Delete All Object Files"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetWaifFileContentAction"
             id="org.csstudio.alarm.jms2ora.getWaifFileContentAction"
-            name="Get Waif File Content"
+            name="Get Object File Content"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetNameOfWaifFilesAction"
             id="org.csstudio.alarm.jms2ora.getNameOfWaifFilesAction"
-            name="Get Name Of Waif Files"
+            name="Get Name Of Object Files"
             visible="true">
       </simpleAction>
       <parametrizedAction
