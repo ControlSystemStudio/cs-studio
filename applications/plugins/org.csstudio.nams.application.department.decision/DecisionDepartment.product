@@ -3,7 +3,6 @@
 
 <product name="Decision Department" id="org.csstudio.nams.application.department.decision.decisionDepartment" application="org.csstudio.nams.application.department.decision.application" useFeatures="false">
 
-
    <configIni use="default"/>
 
    <launcherArgs>
@@ -12,14 +11,12 @@
 
    <windowImages/>
 
-
-   <launcher>
+   <launcher name="DecisionDepartment">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
