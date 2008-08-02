@@ -225,7 +225,7 @@ public class MessageProcessor extends Thread implements MessageListener
                 mapMessage = messages.poll();
                 
                 content = contentCreator.convertMapMessage(mapMessage);               
-                result = this.PM_ERROR_DB; // processMessage(content);
+                result = processMessage(content);
                 if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
                 {                    
                     // Store the message in a file, if it was not possible to write it to the DB.
@@ -275,7 +275,7 @@ public class MessageProcessor extends Thread implements MessageListener
             mapMessage = messages.poll();
             content = contentCreator.convertMapMessage(mapMessage);
             
-            result = this.PM_ERROR_DB; // processMessage(content);
+            result = processMessage(content);
             if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
             {                    
                 // Store the message in a file, if it was not possible to write it to the DB.
@@ -338,14 +338,14 @@ public class MessageProcessor extends Thread implements MessageListener
         msgId = dbLayer.createMessageEntry(typeId, content.getPropertyValue("EVENTTIME"));
         if(msgId == RET_ERROR)
         {
-            logger.error("createMessageEntry(): No message entry created");
+            logger.error("createMessageEntry(): No message entry created in database.");
             
             return PM_ERROR_DB;
         }
         
         if(dbLayer.createMessageContentEntries(msgId, content) == false)
         {
-            logger.error("createMessageContentEntries()");
+            logger.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
             
             dbLayer.deleteMessage(msgId);
             

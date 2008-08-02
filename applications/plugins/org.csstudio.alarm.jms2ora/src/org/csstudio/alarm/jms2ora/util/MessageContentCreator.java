@@ -260,37 +260,30 @@ public class MessageContentCreator
                         // Reload the tables if they are not reloaded
                         if(!reload)
                         {
-                            readMessageProperties();
-                            reload = true;
-                            
-                            // Check again
-                            if(msgProperty.containsKey(name))
+                            if(readMessageProperties())
                             {
-                                msgContent.put(msgProperty.get(name), name, temp);
+                                reload = true;
+                                
+                                // Check again
+                                if(msgProperty.containsKey(name))
+                                {
+                                    msgContent.put(msgProperty.get(name), name, temp);
+                                }
+                                else
+                                {
+                                    // ...so we have to store them seperately
+                                    prepareAndSetUnknownProperty(msgContent, name, temp);
+                                }
                             }
                             else
                             {
-                                // ...so we have to store them seperately
-                                temp = "[" + name + "] [" + temp + "]";
-                                if(temp.length() > valueLength)
-                                {
-                                    temp = temp.substring(0, valueLength - 4) + "{*}]";
-                                }
-    
-                                msgContent.addUnknownProperty(temp);
-                                msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
+                                logger.error("Cannot read the message properties. Use the old set of properties.");
+                                prepareAndSetUnknownProperty(msgContent, name, temp);
                             }
                         }
                         else
                         {
-                            temp = "[" + name + "] [" + temp + "]";
-                            if(temp.length() > valueLength)
-                            {
-                                temp = temp.substring(0, valueLength - 4) + "{*}]";
-                            }
-                            
-                            msgContent.addUnknownProperty(temp);
-                            msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
+                            prepareAndSetUnknownProperty(msgContent, name, temp);
                         }
                     }                    
                 }
@@ -298,6 +291,19 @@ public class MessageContentCreator
         }
         
         return msgContent;
+    }
+    
+    private void prepareAndSetUnknownProperty(MessageContent msgContent, String name, String value)
+    {
+        String temp = "[" + name + "] [" + value + "]";;
+
+        if(temp.length() > valueLength)
+        {
+            temp = temp.substring(0, valueLength - 4) + "{*}]";
+        }
+        
+        msgContent.addUnknownProperty(temp);
+        msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
     }
     
     public String getDateAndTimeString()
@@ -395,6 +401,12 @@ public class MessageContentCreator
     {
         ResultSet rsProperty = null;
         boolean result = false;
+                
+        // Connect the database
+        if(dbLayer.connect() == false)
+        {
+            return result;
+        }
         
         // Delete old hash table, if there are any
         if(msgProperty != null)
@@ -404,13 +416,7 @@ public class MessageContentCreator
         }
 
         msgProperty = new Hashtable<String, Long>();
-        
-        // Connect the database
-        if(dbLayer.connect() == false)
-        {
-            return result;
-        }
-        
+
         try
         {
             // Execute the query to get all properties
