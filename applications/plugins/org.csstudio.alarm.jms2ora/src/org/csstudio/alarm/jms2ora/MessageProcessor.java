@@ -34,6 +34,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.database.OracleService;
+import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
@@ -114,7 +115,10 @@ public class MessageProcessor extends Thread implements MessageListener
     private final String version = " 2.0.0";
     private final String build = " - BUILD 2008-07-31 16:00";
     private final String application = "Jms2Ora";
-        
+
+    /** Time to sleep in ms */
+    private static long SLEEPING_TIME = 5000 ;
+
     public final long RET_ERROR = -1;
     public static final int CONSOLE = 1;
     
@@ -220,6 +224,8 @@ public class MessageProcessor extends Thread implements MessageListener
         
         while(running)
         {
+            parent.setStatus(ApplicState.WORKING);
+
             while(!messages.isEmpty() && running)
             {
                 mapMessage = messages.poll();
@@ -248,11 +254,13 @@ public class MessageProcessor extends Thread implements MessageListener
 
             if(running)
             {
+                parent.setStatus(ApplicState.SLEEPING);
+                
                 synchronized(this)
                 {
                     try
                     {
-                        wait();                    
+                        wait(SLEEPING_TIME);                    
                     }
                     catch(InterruptedException ie)
                     {
@@ -263,6 +271,8 @@ public class MessageProcessor extends Thread implements MessageListener
                 }
             }
         }
+        
+        parent.setStatus(ApplicState.LEAVING);
         
         // Process the remaining messages
         logger.info("Remaining messages: " + messages.size() + " -> Processing...");
@@ -391,10 +401,6 @@ public class MessageProcessor extends Thread implements MessageListener
                     lastQuotaUpdate = currentDate;
                     currentDate = null;
                 }
-            }
-            else
-            {
-                logger.warn("Database system is NOT ORACLE. No update of the used table quota record started.");
             }
             
             result = PM_RETURN_OK;

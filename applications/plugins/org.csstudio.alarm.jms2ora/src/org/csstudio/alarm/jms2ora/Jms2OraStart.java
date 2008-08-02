@@ -26,7 +26,7 @@ package org.csstudio.alarm.jms2ora;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.csstudio.alarm.jms2ora.util.State;
+import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.SynchObject;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -69,7 +69,7 @@ public class Jms2OraStart implements IApplication
         
         createLogger();
         
-        sync = new SynchObject(State.INIT, System.currentTimeMillis());
+        sync = new SynchObject(ApplicState.INIT, System.currentTimeMillis());
     }
     
     public static Jms2OraStart getInstance()
@@ -98,7 +98,7 @@ public class Jms2OraStart implements IApplication
         applic.setParent(this);
         applic.start();
 
-        sync.setSynchStatus(State.OK);
+        sync.setSynchStatus(ApplicState.OK);
         stateText = "ok";
         
         while(running)
@@ -112,8 +112,8 @@ public class Jms2OraStart implements IApplication
                 catch(InterruptedException ie) {}
             }
             
-            SynchObject actSynch = new SynchObject(State.INIT, 0);
-            if (!sync.hasStatusSet(actSynch, 600, State.ERROR))    
+            SynchObject actSynch = new SynchObject(ApplicState.INIT, 0);
+            if(!sync.hasStatusSet(actSynch, 60, ApplicState.ERROR))    
             {
                 logger.fatal("TIMEOUT: State has not changed the last 1 minute(s).");
             }
@@ -123,19 +123,34 @@ public class Jms2OraStart implements IApplication
             {
                 switch(currentState)
                 {
-                    case State.INIT:
+                    case ApplicState.INIT:
                         stateText = "init";
                         break;
                         
-                    case State.OK:
+                    case ApplicState.OK:
                         stateText = "ok";
                         break;
                         
-                    case State.ERROR:
-                        stateText = "error";
+                    case ApplicState.WORKING:
+                        stateText = "working";
+                        break;
+
+                    case ApplicState.SLEEPING:
+                        stateText = "sleeping";
+                        break;
+
+                    case ApplicState.LEAVING:
+                        stateText = "leaving";
+                        break;
+
+                    case ApplicState.ERROR:
+                        stateText = "error";                        
+                        running = false;                        
+                        break;
                         
-                        running = false;
-                        
+                    case ApplicState.FATAL:
+                        stateText = "fatal";
+                        running = false;                        
                         break;
                 }
                 

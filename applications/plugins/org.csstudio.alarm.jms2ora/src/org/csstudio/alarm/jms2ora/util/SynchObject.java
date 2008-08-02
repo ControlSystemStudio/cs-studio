@@ -113,7 +113,7 @@ public class SynchObject extends Object
         boolean bRet = true;
         long lCurrentTime = System.currentTimeMillis();
 
-        if (lSetTime + (intervalInSec*1000) < lCurrentTime)                     // if timeout 
+        if(lSetTime + (intervalInSec*1000) < lCurrentTime)                     // if timeout 
         {
             state = errCode;
             lSetTime = lCurrentTime;
