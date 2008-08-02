@@ -50,5 +50,17 @@
          </property>
       </product>
    </extension>
+   <extension
+         id="MessageMinder"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.MessageMinder.MessageMinder"
+            name="Ams MessageMinder">
+         <property
+               name="appName"
+               value="Ams MessageMinder">
+         </property>
+      </product>
+   </extension>
 
 </plugin>

@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="EMailConnector"
+         id="AmsEMailConnector"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run class="org.csstudio.ams.connector.email.EMailConnectorStart"/>
@@ -21,18 +21,6 @@
             name="Connector EMail"/>
    </extension>
    <extension
-         id="AmsEMailConnector"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.connector.email.EMailConnector"
-            name="Ams EMailConnector">
-         <property
-               name="appName"
-               value="Ams EMailConnector">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.csstudio.platform.libs.xmpp.loginHandlers">
       <loginHandler
             class="org.csstudio.ams.connector.email.xmpp.EMailLoginCallbackHandler"
@@ -48,6 +36,18 @@
             name="Shutdown"
             parameters="Password">
       </parametrizedAction>
+   </extension>
+   <extension
+         id="AmsEMailConnectorProductId"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.email.AmsEMailConnector"
+            name="AmsEMailConnectorProduct">
+         <property
+               name="appName"
+               value="AmsEMailConnectorProduct">
+         </property>
+      </product>
    </extension>
 
 </plugin>
