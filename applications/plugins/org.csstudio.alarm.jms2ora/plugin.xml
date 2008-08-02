@@ -23,12 +23,6 @@
    <extension
          point="org.csstudio.platform.libs.dcf.action">
       <simpleAction
-            class="org.csstudio.alarm.jms2ora.actions.RestartJms2OraAction"
-            id="org.csstudio.alarm.jms2ora.restartJms2OraAction"
-            name="Restart"
-            visible="true">
-      </simpleAction>
-      <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetQueuedMessagesAction"
             id="org.csstudio.alarm.jms2ora.getQueuedMessagesAction"
             name="Get Number Of Queued Messages"
@@ -37,25 +31,31 @@
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetNumberOfMessageFilesAction"
             id="org.csstudio.alarm.jms2ora.getNumberOfWaifFilesAction"
-            name="Get Number Of Object Files"
+            name="Get Number Of Message Files"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.DeleteAllMessageFilesAction"
             id="org.csstudio.alarm.jms2ora.deleteAllWaifFilesAction"
-            name="Delete All Object Files"
+            name="Delete All Message Files"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetMessageFileContentAction"
             id="org.csstudio.alarm.jms2ora.getWaifFileContentAction"
-            name="Get Object File Content"
+            name="Get Message File Content"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetNameOfMessageFilesAction"
             id="org.csstudio.alarm.jms2ora.getNameOfWaifFilesAction"
-            name="Get Name Of Object Files"
+            name="Get Name Of Message File"
+            visible="true">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.RestartJms2OraAction"
+            id="org.csstudio.alarm.jms2ora.restartJms2OraAction"
+            name="Restart"
             visible="true">
       </simpleAction>
       <parametrizedAction
