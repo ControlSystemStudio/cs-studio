@@ -167,30 +167,31 @@ public class MessageContent implements Serializable
     public String toPrintableString()
     {
         String temp = null;
-        String result = "MessageContent\n";
+        String nl = System.getProperty("line.separator");
+        String result = "MessageContent" + nl;
         
-        result = result + " Known properties\n";
+        result = result + " Known properties" + nl;
         
         Enumeration<String> list = msgNameContent.keys();
         while(list.hasMoreElements())
         {
             temp = list.nextElement();
-            result = result + "  " + temp + " = " + msgNameContent.get(temp) + "\n";
+            result = result + "  " + temp + " = " + msgNameContent.get(temp) + nl;
         }
         
-        result = result + "\n Unknown properties\n";
+        result = result + nl + " Unknown properties" + nl;
 
         list = unknownContent.elements();
         while(list.hasMoreElements())
         {
             temp = list.nextElement();
-            result = result + "  " + temp + "\n";
+            result = result + "  " + temp + nl;
         }
         
-        result = result + "\n Object attributes\n";
+        result = result + nl + " Object attributes" + nl;
         
-        result = result + "  unknownId = " + unknownId + "\n";
-        result = result + "  discard = " + discard + "\n";
+        result = result + "  unknownId = " + unknownId + nl;
+        result = result + "  discard = " + discard + nl;
 
         return result;
     }

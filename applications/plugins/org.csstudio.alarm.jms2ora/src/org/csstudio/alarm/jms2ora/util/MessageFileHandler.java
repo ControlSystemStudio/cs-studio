@@ -117,12 +117,32 @@ public class MessageFileHandler implements FilenameFilter
         
         name = new File(objectDir);
         result = name.list(this);
+        System.out.println(result.length);
+        if(result.length == 0)
+        {
+            result = null;
+            result = new String[1];
+            result[0] = "No message file names available.";
+        }
         
         name = null;
 
         return result;
     }
 
+    private String[] collectMessageFilesName()
+    {
+        String[] result = null;
+        File name = null;
+        
+        name = new File(objectDir);
+        result = name.list(this);
+        
+        name = null;
+
+        return result;
+    }
+    
     /**
      * The method returns the message content of the stored message content objects.
      * 
@@ -134,7 +154,7 @@ public class MessageFileHandler implements FilenameFilter
         String[] result  = null;
         String[] name = null;
         
-        name = this.getMessageFileNames();
+        name = this.collectMessageFilesName();
         
         if(name != null)
         {
@@ -143,7 +163,7 @@ public class MessageFileHandler implements FilenameFilter
                 result = new String[name.length];
                 for(int i = 0;i < name.length;i++)
                 {
-                    content = this.readMessageContent(name[i]);
+                    content = this.readMessageContent(objectDir + name[i]);
                     result[i] = content.toString();
                 }
             }
@@ -188,7 +208,7 @@ public class MessageFileHandler implements FilenameFilter
         {
             del = new File(objectDir + fileList[i]);
             
-            if(!del.delete())
+            if(del.delete())
             {
                 result++;
             }

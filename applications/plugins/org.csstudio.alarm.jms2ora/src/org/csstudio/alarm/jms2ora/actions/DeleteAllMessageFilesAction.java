@@ -31,6 +31,8 @@ public class DeleteAllMessageFilesAction implements IAction
 {
     public Object run(Object param)
     {
-        return Integer.toString(MessageFileHandler.getInstance().deleteAllMessageFiles());
+        String result = Integer.toString(MessageFileHandler.getInstance().deleteAllMessageFiles());
+        
+        return (result + " files deleted.");
     }
 }

@@ -65,6 +65,8 @@ public class Jms2OraStart implements IApplication
     
     public Jms2OraStart()
     {
+        instance = this;
+        
         createLogger();
         
         sync = new SynchObject(State.INIT, System.currentTimeMillis());
@@ -111,7 +113,7 @@ public class Jms2OraStart implements IApplication
             }
             
             SynchObject actSynch = new SynchObject(State.INIT, 0);
-            if (!sync.hasStatusSet(actSynch, 60, State.ERROR))    
+            if (!sync.hasStatusSet(actSynch, 600, State.ERROR))    
             {
                 logger.fatal("TIMEOUT: State has not changed the last 1 minute(s).");
             }

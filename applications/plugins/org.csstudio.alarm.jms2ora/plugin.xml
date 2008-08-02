@@ -35,15 +35,15 @@
             visible="true">
       </simpleAction>
       <simpleAction
-            class="org.csstudio.alarm.jms2ora.actions.DeleteAllMessageFilesAction"
-            id="org.csstudio.alarm.jms2ora.deleteAllWaifFilesAction"
-            name="Delete All Message Files"
-            visible="true">
-      </simpleAction>
-      <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetMessageFileContentAction"
             id="org.csstudio.alarm.jms2ora.getWaifFileContentAction"
             name="Get Message File Content"
+            visible="true">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.DeleteAllMessageFilesAction"
+            id="org.csstudio.alarm.jms2ora.deleteAllWaifFilesAction"
+            name="Delete All Message Files"
             visible="true">
       </simpleAction>
       <simpleAction
