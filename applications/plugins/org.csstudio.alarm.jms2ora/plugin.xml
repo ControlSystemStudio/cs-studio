@@ -35,25 +35,25 @@
             visible="true">
       </simpleAction>
       <simpleAction
-            class="org.csstudio.alarm.jms2ora.actions.GetNumberOfWaifFilesAction"
+            class="org.csstudio.alarm.jms2ora.actions.GetNumberOfMessageFilesAction"
             id="org.csstudio.alarm.jms2ora.getNumberOfWaifFilesAction"
             name="Get Number Of Object Files"
             visible="true">
       </simpleAction>
       <simpleAction
-            class="org.csstudio.alarm.jms2ora.actions.DeleteAllWaifFilesAction"
+            class="org.csstudio.alarm.jms2ora.actions.DeleteAllMessageFilesAction"
             id="org.csstudio.alarm.jms2ora.deleteAllWaifFilesAction"
             name="Delete All Object Files"
             visible="true">
       </simpleAction>
       <simpleAction
-            class="org.csstudio.alarm.jms2ora.actions.GetWaifFileContentAction"
+            class="org.csstudio.alarm.jms2ora.actions.GetMessageFileContentAction"
             id="org.csstudio.alarm.jms2ora.getWaifFileContentAction"
             name="Get Object File Content"
             visible="true">
       </simpleAction>
       <simpleAction
-            class="org.csstudio.alarm.jms2ora.actions.GetNameOfWaifFilesAction"
+            class="org.csstudio.alarm.jms2ora.actions.GetNameOfMessageFilesAction"
             id="org.csstudio.alarm.jms2ora.getNameOfWaifFilesAction"
             name="Get Name Of Object Files"
             visible="true">

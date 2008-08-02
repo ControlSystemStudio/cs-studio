@@ -93,6 +93,7 @@ public class Jms2OraStart implements IApplication
         
         // Create an object from this class
         applic = MessageProcessor.getInstance();
+        applic.setParent(this);
         applic.start();
 
         sync.setSynchStatus(State.OK);

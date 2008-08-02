@@ -24,13 +24,9 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -41,16 +37,9 @@ import org.csstudio.alarm.jms2ora.database.OracleService;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
-import org.csstudio.alarm.jms2ora.util.ObjectFileHandler;
+import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import de.desy.epics.singleton.EpicsSingleton;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
@@ -114,26 +103,18 @@ public class MessageProcessor extends Thread implements MessageListener
     /** Date object that indicates the last update of the quota record */
     private Date lastQuotaUpdate = null;
     
-    /** Number of stored message files */
-    private int fileNumber = 0;
-        
     /** Indicates if the application was initialized or not */
     private boolean initialized = false;
     
     /** Indicates wether or not the application should stop */
     private boolean running = true;
-    
-    /** True if the folder 'nirvana' exists. This folder holds the stored message object content. */
-    private boolean existsObjectFolder = false;
 
     private Jms2OraStart parent = null;
     
     private final String version = " 2.0.0";
     private final String build = " - BUILD 2008-07-31 16:00";
     private final String application = "Jms2Ora";
-    private final String objectDir = ".\\nirvana\\";
-    
-    
+        
     public final long RET_ERROR = -1;
     public static final int CONSOLE = 1;
     
@@ -159,9 +140,6 @@ public class MessageProcessor extends Thread implements MessageListener
     {
         // Create the logger
         logger = Logger.getLogger(MessageProcessor.class);
-
-        // Create the folder that will hold message objects that could not be stored into the database
-        checkObjectFolder();
         
         // Get the configuration
         config = Jms2OraPlugin.getDefault().getConfiguration();
@@ -214,7 +192,7 @@ public class MessageProcessor extends Thread implements MessageListener
             initialized = false;
         }
     }
-    
+
     public static synchronized MessageProcessor getInstance()
     {
         if(instance == null)
@@ -247,11 +225,11 @@ public class MessageProcessor extends Thread implements MessageListener
                 mapMessage = messages.poll();
                 
                 content = contentCreator.convertMapMessage(mapMessage);               
-                result = processMessage(content);
+                result = this.PM_ERROR_DB; // processMessage(content);
                 if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
                 {                    
                     // Store the message in a file, if it was not possible to write it to the DB.
-                    writeMessageContentToFile(content);
+                    MessageFileHandler.getInstance().writeMessageContentToFile(content);
                     
                     logger.warn(infoText[result] + ": Could not store the message in the database. Message is written on disk.");
                 }
@@ -301,7 +279,7 @@ public class MessageProcessor extends Thread implements MessageListener
             if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
             {                    
                 // Store the message in a file, if it was not possible to write it to the DB.
-                writeMessageContentToFile(content);
+                MessageFileHandler.getInstance().writeMessageContentToFile(content);
                 
                 writtenToHd++;
             }
@@ -470,105 +448,6 @@ public class MessageProcessor extends Thread implements MessageListener
     }
     
     /**
-     * <code>writeMapMessageToFile</code> writes a map message object to disk.
-     * 
-     * @param content - The MessageContent object that have to be stored on disk.
-     */
-
-    public void writeMessageContentToFile(MessageContent content)
-    {
-        SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
-        GregorianCalendar cal = null;
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        String fn = null;
-
-        if(!content.hasContent())
-        {
-            logger.info("Message does not contain content.");
-            
-            return;
-        }
-
-        if(existsObjectFolder == false)
-        {
-            logger.warn("Object folder 'nirvana' does not exist. Message cannot be stored.");
-            
-            return;
-        }
-        
-        cal = new GregorianCalendar();
-        fn  = "waif_" + dfm.format(cal.getTime());                
-
-        try
-        {
-            fos = new FileOutputStream(".\\nirvana\\" + fn + ".ser");
-            oos = new ObjectOutputStream(fos);
-            
-            // Write the MessageContent object to disk
-            oos.writeObject(content);            
-        }
-        catch(FileNotFoundException fnfe)
-        {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
-        }
-        catch(IOException ioe)
-        {
-            logger.error("IOException : " + ioe.getMessage());
-        }
-        finally
-        {
-            if(oos != null){try{oos.close();}catch(IOException ioe){}}
-            if(fos != null){try{fos.close();}catch(IOException ioe){}}
-            
-            oos = null;
-            fos = null;            
-        }
-        
-        System.out.println(content.toString());
-        
-        readMessageContent(".\\nirvana\\" + fn + ".ser");
-    }
-    
-    private void readMessageContent(String fileName)
-    {
-        MessageContent content = null;
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-
-        try
-        {
-            fis = new FileInputStream(fileName);
-            ois = new ObjectInputStream(fis);
-            
-            // Write the MessageContent object to disk
-            content = (MessageContent)ois.readObject();            
-        }
-        catch(FileNotFoundException fnfe)
-        {
-            logger.error("FileNotFoundException : " + fnfe.getMessage());
-        }
-        catch(IOException ioe)
-        {
-            logger.error("IOException : " + ioe.getMessage());
-        }
-        catch (ClassNotFoundException e)
-        {
-            logger.error("ClassNotFoundException : " + e.getMessage());
-        }
-        finally
-        {
-            if(ois != null){try{ois.close();}catch(IOException ioe){}}
-            if(fis != null){try{fis.close();}catch(IOException ioe){}}
-            
-            ois = null;
-            fis = null;            
-        }
-
-        System.out.println(content.toString());
-    }
-    
-    /**
      * <code>isInitialized</code>
      * 
      * @return true, if the initialization was successfull ; false, if it was not
@@ -578,112 +457,7 @@ public class MessageProcessor extends Thread implements MessageListener
     {
         return initialized;
     }
-    
-    /**
-     * The method returns the number of MapMessage objects which were serialized. Uses the {@link ObjectFileHandler}
-     * class.
-     * 
-     * @return Number of MapMessages objects which were written to the database because of errors during
-     *         processing the objects.
-     */
-    
-    public int getNumberOfWaifFiles()
-    {
-        ObjectFileHandler waifFiles   = new ObjectFileHandler();
-        int             result      = 0;
-
-        result = waifFiles.getNumberOfObjectFiles();
         
-        waifFiles = null;
-        
-        return result;
-    }
-    
-    /**
-     * The method returns an array of String with the file names of all serialized MapMessage objects.
-     * Uses the {@link ObjectFileHandler} class.
-     * 
-     * @return Array of String with the file names.
-     */
-    
-    public String[] getNameOfWaifFiles()
-    {
-        ObjectFileHandler waifFiles   = new ObjectFileHandler();
-        String[]        result      = null;
-
-        result = waifFiles.getWaifFileNames();
-        
-        waifFiles = null;
-        
-        return result;
-    }
-
-    public String[] getWaifFileContent()
-    {
-        MapMessage  msg     = null;
-        String[]    result  = null;
-        String      name    = null;
-        
-        ObjectFileHandler waifFiles   = new ObjectFileHandler();
-
-        msg = waifFiles.getObjectFileContent(fileNumber);
-
-        waifFiles = null;
-        
-        if(msg != null)
-        {
-            try
-            {
-                Enumeration<?> lst = msg. getMapNames();
-             
-                int count = 0;
-                
-                result = new String[32];
-                
-                while(lst.hasMoreElements())
-                {
-                    name = (String)lst.nextElement();
-                    
-                    result[count++] = name + "=" + msg.getString(name);
-                }
-            }
-            catch (JMSException e)
-            {
-                result = null;
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
-     * 
-     * @return The number of files that could not be deleted.
-     */
-    
-    public int deleteAllObjectFiles()
-    {
-        int result = 0;
-        
-        ObjectFileHandler waifFiles   = new ObjectFileHandler();
-
-        result = waifFiles.deleteAllFiles();
-        
-        waifFiles = null;
-        
-        return result;
-    }
-    
-    public int getFileNumber()
-    {
-        return fileNumber;
-    }
-    
-    public void setFileNumber(int number)
-    {
-        fileNumber = number;
-    }
-    
     public int getNumberOfQueuedMessages()
     {
         if(messages != null)
@@ -705,33 +479,6 @@ public class MessageProcessor extends Thread implements MessageListener
             for(int i = 0;i < receivers.length;i++)
             {
                 receivers[i].stopListening();
-            }
-        }
-    }
-    
-    /**
-     * 
-     */
-    private void checkObjectFolder()
-    {
-        File folder = new File(objectDir);
-        
-        existsObjectFolder = true;
-        
-        if(!folder.exists())
-        {
-            boolean result = folder.mkdir();
-            if(result)
-            {
-                logger.info("Folder " + objectDir + " was created.");
-                
-                existsObjectFolder = true;
-            }
-            else
-            {
-                logger.warn("Folder " + objectDir + " was NOT created.");
-                
-                existsObjectFolder = false;
             }
         }
     }

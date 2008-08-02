@@ -134,6 +134,39 @@ public class MessageContent implements Serializable
     public String toString()
     {
         String temp = null;
+        String result = "{MessageContent";
+        
+        result = result + ":[Known properties]";
+        
+        Enumeration<String> list = msgNameContent.keys();
+        while(list.hasMoreElements())
+        {
+            temp = list.nextElement();
+            result = result + "(" + temp + "=" + msgNameContent.get(temp) + ")";
+        }
+        
+        result = result + ":[Unknown properties]";
+
+        list = unknownContent.elements();
+        while(list.hasMoreElements())
+        {
+            temp = list.nextElement();
+            result = result + "(" + temp + ")";
+        }
+        
+        result = result + ":[Object attributes]";
+        
+        result = result + "(unknownId=" + unknownId + ")";
+        result = result + "(discard=" + discard + ")";
+
+        result = result + "}";
+        
+        return result;
+    }
+    
+    public String toPrintableString()
+    {
+        String temp = null;
         String result = "MessageContent\n";
         
         result = result + " Known properties\n";

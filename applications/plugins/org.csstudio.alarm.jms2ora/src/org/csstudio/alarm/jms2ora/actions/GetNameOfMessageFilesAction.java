@@ -24,13 +24,13 @@
 
 package org.csstudio.alarm.jms2ora.actions;
 
-import org.csstudio.alarm.jms2ora.MessageProcessor;
+import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
-public class GetNameOfWaifFilesAction implements IAction
+public class GetNameOfMessageFilesAction implements IAction
 {
     public Object run(Object param)
     {
-        return MessageProcessor.getInstance().getNameOfWaifFiles();
+        return MessageFileHandler.getInstance().getMessageFileNames();
     }
 }

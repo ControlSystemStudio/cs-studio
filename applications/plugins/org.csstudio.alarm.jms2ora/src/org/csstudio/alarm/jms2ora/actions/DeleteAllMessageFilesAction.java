@@ -24,13 +24,13 @@
 
 package org.csstudio.alarm.jms2ora.actions;
 
-import org.csstudio.alarm.jms2ora.MessageProcessor;
+import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
-public class GetNumberOfWaifFilesAction implements IAction
+public class DeleteAllMessageFilesAction implements IAction
 {
     public Object run(Object param)
     {
-        return Integer.toString(MessageProcessor.getInstance().getNumberOfWaifFiles());
+        return Integer.toString(MessageFileHandler.getInstance().deleteAllMessageFiles());
     }
 }
