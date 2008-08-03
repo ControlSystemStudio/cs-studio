@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import oracle.jdbc.driver.OracleConnection;
 import oracle.jdbc.driver.OracleResultSet;
 import oracle.jdbc.driver.OracleStatement;
@@ -416,7 +417,7 @@ public class OracleService
         try
         {
             dataSource = new OracleDataSource();
-            dataSource.setURL(dbOracle);
+            dataSource.setURL(Jms2OraPlugin.getDefault().getConfiguration().getString("database.url"));
             
             conn = (OracleConnection)dataSource.getConnection(dbUser, dbPassword);
             stmt = (OracleStatement)conn.createStatement(OracleResultSet.TYPE_SCROLL_INSENSITIVE, OracleResultSet.CONCUR_UPDATABLE);
