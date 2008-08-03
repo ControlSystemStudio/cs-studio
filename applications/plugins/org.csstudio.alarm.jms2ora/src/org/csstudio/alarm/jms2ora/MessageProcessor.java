@@ -107,9 +107,12 @@ public class MessageProcessor extends Thread implements MessageListener
     /** Indicates if the application was initialized or not */
     private boolean initialized = false;
     
-    /** Indicates wether or not the application should stop */
+    /** Indicates whether or not the application should stop */
     private boolean running = true;
 
+    /** Indicates whether or not this thread stopped clean */
+    private boolean stoppedClean = false;
+    
     private Jms2OraStart parent = null;
     
     private final String version = " 2.0.0";
@@ -274,6 +277,8 @@ public class MessageProcessor extends Thread implements MessageListener
         
         parent.setStatus(ApplicState.LEAVING);
         
+        closeAllReceivers();
+        
         // Process the remaining messages
         logger.info("Remaining messages: " + messages.size() + " -> Processing...");
         
@@ -301,12 +306,21 @@ public class MessageProcessor extends Thread implements MessageListener
             mapMessage = null;
         }
         
+        stoppedClean = true;
+        
         logger.info("Remaining messages stored in the database: " + writtenToDb);
         logger.info("Remaining messages stored on disk:         " + writtenToHd);
+        
+        parent.setStatus(ApplicState.STOPPED);
 
         logger.info("executeMe() : ** DONE **");
     }
 
+    public boolean stoppedClean()
+    {
+        return stoppedClean;
+    }
+    
     public void onMessage(Message message)
     {
         if(message instanceof MapMessage)

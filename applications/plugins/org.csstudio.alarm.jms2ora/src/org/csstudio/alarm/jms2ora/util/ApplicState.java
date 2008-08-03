@@ -8,6 +8,7 @@ public class ApplicState
     public static final int WORKING = 4;
     public static final int SLEEPING = 8;
     public static final int LEAVING = 16;
+    public static final int STOPPED = 32;
     public static final int ERROR = 1;
     public static final int FATAL = 3;
     

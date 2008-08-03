@@ -43,7 +43,7 @@ public class Jms2OraStart implements IApplication
     private static Jms2OraStart instance = null;
     
     /** The MessageProcessor does all the work on messages */
-    private MessageProcessor applic = null;
+    private MessageProcessor messageProcessor = null;
     
     /** Log4j logger */
     private Logger logger = null;
@@ -61,8 +61,11 @@ public class Jms2OraStart implements IApplication
     public boolean shutdown = true;
     
     /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 10000 ;
-    
+    private static long SLEEPING_TIME = 60000 ;
+
+    /** Time to sleep in ms */
+    private long WAITFORTHREAD = 10000 ;
+
     public Jms2OraStart()
     {
         instance = this;
@@ -94,9 +97,9 @@ public class Jms2OraStart implements IApplication
         int currentState = 0;
         
         // Create an object from this class
-        applic = MessageProcessor.getInstance();
-        applic.setParent(this);
-        applic.start();
+        messageProcessor = MessageProcessor.getInstance();
+        messageProcessor.setParent(this);
+        messageProcessor.start();
 
         sync.setSynchStatus(ApplicState.OK);
         stateText = "ok";
@@ -160,9 +163,34 @@ public class Jms2OraStart implements IApplication
             
             logger.debug("Current state: " + stateText + "(" + currentState + ")");
         }
-        
-        // Clean up...
-        applic.closeAllReceivers();
+
+        if(messageProcessor != null)
+        {
+            // Clean stop of the working thread
+            messageProcessor.stopWorking();
+            
+            do
+            {
+                try
+                {
+                    messageProcessor.join(WAITFORTHREAD);
+                }
+                catch(InterruptedException ie) { }
+            }
+            while(sync.getSynchStatus() == ApplicState.LEAVING);
+            
+            if(messageProcessor.stoppedClean())
+            {
+                logger.info("Restart/Exit: Thread stopped clean.");
+                
+                messageProcessor = null;
+            }
+            else
+            {
+                logger.warn("Restart/Exit: Thread did NOT stop clean.");
+                messageProcessor = null;
+            }
+        }
         
         if(shutdown)
         {
