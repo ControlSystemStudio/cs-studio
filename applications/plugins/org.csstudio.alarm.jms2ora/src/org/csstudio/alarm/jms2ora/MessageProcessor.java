@@ -430,11 +430,27 @@ public class MessageProcessor extends Thread implements MessageListener
      */
     public void updateDBRecord(String name)
     {
+        String result = null;
+        String record = null;
         int quota = dbLayer.getUsedQuota();
-
-        EpicsSingleton.getInstance().setValue(name, String.valueOf(quota));
-        String record = EpicsSingleton.getInstance().get(name);
-        logger.info(name + " quota: " + record);    
+      
+        if(quota != -1)
+        {
+            result = EpicsSingleton.getInstance().setValue(name, String.valueOf(quota));
+            if(result.compareToIgnoreCase("ok") == 0)
+            {
+                record = EpicsSingleton.getInstance().get(name);
+                logger.info(name + " quota: " + record);
+            }
+            else
+            {
+                logger.error("EPICS record '" + name + "' could not be set.");
+            }
+        }
+        else
+        {
+            logger.error("Table quota cannot be queried");
+        }
     }
     
     /**
@@ -448,11 +464,27 @@ public class MessageProcessor extends Thread implements MessageListener
      */
     public void updateDBRecord(String recordName, String dbUser, String dbPassword)
     {
+        String result = null;
+        String record = null;
         int quota = OracleService.getUsedQuota(logger, dbUser, dbPassword);
-
-        EpicsSingleton.getInstance().setValue(recordName, String.valueOf(quota));
-        String record = EpicsSingleton.getInstance().get(recordName);
-        logger.info(recordName + " quota: " + record);    
+        
+        if(quota != -1)
+        {
+            result = EpicsSingleton.getInstance().setValue(recordName, String.valueOf(quota));
+            if(result.compareToIgnoreCase("ok") == 0)
+            {
+                record = EpicsSingleton.getInstance().get(recordName);
+                logger.info(recordName + " quota: " + record);
+            }
+            else
+            {
+                logger.error("EPICS record '" + recordName + "' could not be set.");
+            }
+        }
+        else
+        {
+            logger.error("Table quota cannot be queried");
+        }
     }
 
     public String createDatabaseNameFromRecord(String record)
