@@ -120,7 +120,7 @@ public class MessageProcessor extends Thread implements MessageListener
     private final String application = "Jms2Ora";
 
     /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 5000 ;
+    private static long SLEEPING_TIME = 15000 ;
 
     public final long RET_ERROR = -1;
     public static final int CONSOLE = 1;

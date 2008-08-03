@@ -61,7 +61,7 @@ public class Jms2OraStart implements IApplication
     public boolean shutdown = true;
     
     /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 60000 ;
+    private static long SLEEPING_TIME = 30000 ;
 
     /** Time to sleep in ms */
     private long WAITFORTHREAD = 10000 ;

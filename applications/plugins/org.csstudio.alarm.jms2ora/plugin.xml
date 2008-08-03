@@ -52,17 +52,18 @@
             name="Get Name Of Message File"
             visible="true">
       </simpleAction>
-      <simpleAction
-            class="org.csstudio.alarm.jms2ora.actions.RestartJms2OraAction"
-            id="org.csstudio.alarm.jms2ora.restartJms2OraAction"
-            name="Restart"
-            visible="true">
-      </simpleAction>
       <parametrizedAction
             class="org.csstudio.alarm.jms2ora.actions.StopJms2OraAction"
             id="org.csstudio.alarm.jms2ora.stopJms2OraAction"
             name="Shutdown"
             parameters="Password">
+      </parametrizedAction>
+      <parametrizedAction
+            class="org.csstudio.alarm.jms2ora.actions.RestartJms2OraAction"
+            id="org.csstudio.alarm.jms2ora.restartJms2OraAction"
+            name="Restart"
+            parameters="Password"
+            visible="true">
       </parametrizedAction>
    </extension>
    <extension
