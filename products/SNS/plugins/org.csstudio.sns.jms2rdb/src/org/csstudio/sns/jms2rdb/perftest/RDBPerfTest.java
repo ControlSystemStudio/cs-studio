@@ -3,8 +3,6 @@ package org.csstudio.sns.jms2rdb.perftest;
 import java.net.InetAddress;
 import java.util.Calendar;
 
-import javax.jms.MapMessage;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -20,8 +18,7 @@ import org.junit.Test;
  *  Using 'batched' inserts for the properties.
  *  
  *  Local or networked MySQL: about 150 msg/sec.
- *
- *  TODO Update old data for SNS Oracle 'devl': about 15..20 msg/sec.
+ *  SNS Oracle 'devl': about 60 msg/sec.
  *
  *  For a similar 'read' test, see org.csstudio.sns.msghist 
  *  
@@ -34,9 +31,11 @@ public class RDBPerfTest
     final private static String URL =
     // TODO Don't put the epics_mon PW into CVS!
 //        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdev3.sns.ornl.gov:1521/devl";
+//        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdb1.sns.ornl.gov:1521/prod";
+
       "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
     
-    final private static String SCHEMA = ""; //"EPICS.";
+    final private static String SCHEMA = ""; // "EPICS";
 
     /** Test runtime */
     final private static int SECONDS = 60;
@@ -51,6 +50,7 @@ public class RDBPerfTest
         final RDBWriter rdb_writer = new RDBWriter(URL, SCHEMA);
 
         // Run for some time
+        System.out.println("URL    : " + URL);
         System.out.println("Runtime: " + SECONDS + " seconds");
 
         final String host = InetAddress.getLocalHost().getHostName();

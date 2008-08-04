@@ -1,7 +1,7 @@
-# TODO Update to latest schema
+# Update to latest schema:
 # Removed tables: msg_type, msg_type_property_type
 # Removed columns: message.msg_type_id
-
+# Added columns: message type, name, severity
 
 -- Tabelle MESSAGE
 DROP TABLE message
@@ -9,8 +9,10 @@ DROP TABLE message
 CREATE TABLE message
 (
  id                             NUMBER NOT NULL,
- msg_type_id                    NUMBER,
  datum                          TIMESTAMP (6),
+ type                           VARCHAR2(10) NOT NULL,
+ name                           VARCHAR2(80),
+ severity                       VARCHAR2(20),
  CONSTRAINT MESSAGE_PK PRIMARY KEY (id) USING INDEX
 )
 /
@@ -19,12 +21,6 @@ ALTER TABLE message
 ADD CHECK ("ID" IS NOT NULL)
 DISABLE NOVALIDATE
 /
-
-ALTER TABLE message
-ADD CONSTRAINT message_msg_type_fk1 FOREIGN KEY (msg_type_id)
-REFERENCES msg_type (id)
-/
-
 
 -- Tabelle MESSAGE_CONTENT
 DROP TABLE message_content
@@ -63,19 +59,6 @@ REFERENCES message (id) ON DELETE CASCADE
 /
 
 
--- Tabelle MSG_TYPE
-DROP TABLE msg_type
-/
-
-CREATE TABLE msg_type
-(
-  id                             NUMBER NOT NULL,
-  name                           VARCHAR2(20),
-  CONSTRAINT MSG_TYPE_PK PRIMARY KEY (id) USING INDEX
-)
-/
-
-
 -- Tabelle MSG_PROPERTY_TYPE
 DROP TABLE msg_property_type
 /
@@ -88,26 +71,3 @@ CREATE TABLE msg_property_type
 )
 /
 
-
--- Tabelle MSG_TYPE_PROPERTY_TYPE
-DROP TABLE msg_type_property_type
-/
-
-CREATE TABLE msg_type_property_type
-(
-  id                             NUMBER NOT NULL,
-  msg_type_id                    NUMBER,
-  msg_property_type_id           NUMBER,
-  CONSTRAINT MSG_TYPE_PROPERTY_TYPE_PK PRIMARY KEY (id) USING INDEX
-)
-/
-
-ALTER TABLE msg_type_property_type
-ADD CONSTRAINT msg_type_property_type_ms_fk2 FOREIGN KEY (msg_property_type_id)
-REFERENCES msg_property_type (id)
-/
-
-ALTER TABLE msg_type_property_type
-ADD CONSTRAINT msg_type_property_type_ms_fk1 FOREIGN KEY (msg_type_id)
-REFERENCES msg_type (id)
-/

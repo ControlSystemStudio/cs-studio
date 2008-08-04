@@ -28,25 +28,27 @@ public class SQL
      */
     public SQL(final RDBUtil rdb_util, final String schema)
     {
+        final String prefix = (schema.length() > 0) ? schema + "."  :  "";
+            
 		select_property_id_by_name =
-            "SELECT id FROM " + schema + "msg_property_type WHERE name=?";
+            "SELECT id FROM " + prefix + "msg_property_type WHERE name=?";
         
         select_next_property_id =
-            "SELECT MAX(id)+1 FROM " + schema + "msg_property_type";
+            "SELECT MAX(id)+1 FROM " + prefix + "msg_property_type";
         
-        insert_property_id = "INSERT INTO " + schema + "msg_property_type " +
+        insert_property_id = "INSERT INTO " + prefix + "msg_property_type " +
         		"(id, name) VALUES (?,?)";
 
-        select_next_message_id = "SELECT MAX(id)+1 FROM " + schema + "message";
+        select_next_message_id = "SELECT MAX(id)+1 FROM " + prefix + "message";
         
         insert_message_id_datum_type_name_severity =
-            "INSERT INTO " + schema +
+            "INSERT INTO " + prefix +
             "message (id, datum, type, name, severity) VALUES (?,?,?,?,?)";
 
-        select_next_content_id = "SELECT MAX(id)+1 FROM " + schema + "message_content";
+        select_next_content_id = "SELECT MAX(id)+1 FROM " + prefix + "message_content";
         
         insert_message_property_value =
-            "INSERT INTO " + schema + "message_content" +
+            "INSERT INTO " + prefix + "message_content" +
             " (id, message_id, msg_property_type_id, value) VALUES(?,?,?,?)";
     }
 }
