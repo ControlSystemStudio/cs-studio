@@ -18,7 +18,7 @@ import org.junit.Test;
  *  Using 'batched' inserts for the properties.
  *  
  *  Local or networked MySQL: about 150 msg/sec.
- *  SNS Oracle 'devl': about 60 msg/sec.
+ *  SNS Oracle 'devl': about 50 msg/sec.
  *
  *  For a similar 'read' test, see org.csstudio.sns.msghist 
  *  
@@ -28,15 +28,15 @@ import org.junit.Test;
 public class RDBPerfTest
 {
     /** JMS Server URL */
-    final private static String URL =
     // TODO Don't put the epics_mon PW into CVS!
-//        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdev3.sns.ornl.gov:1521/devl";
+//    final private static String URL =
 //        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdb1.sns.ornl.gov:1521/prod";
+//    final private static String SCHEMA = "EPICS";
 
-      "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
+  final private static String URL =
+    "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
+    final private static String SCHEMA = ""; 
     
-    final private static String SCHEMA = ""; // "EPICS";
-
     /** Test runtime */
     final private static int SECONDS = 60;
 

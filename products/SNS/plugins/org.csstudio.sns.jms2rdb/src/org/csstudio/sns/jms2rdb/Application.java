@@ -55,7 +55,6 @@ public class Application implements IApplication
             service.getString(Activator.ID, "rdb_url", rdb_url, null);
         rdb_schema =
             service.getString(Activator.ID, "rdb_schema", rdb_schema, null);
-        // TODO max_queue_size currently not used
         
         // Log4j and logging setup
         logger = CentralLogger.getInstance().getLogger(this);
