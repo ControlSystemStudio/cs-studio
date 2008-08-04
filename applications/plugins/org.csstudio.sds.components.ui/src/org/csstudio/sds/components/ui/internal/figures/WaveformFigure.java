@@ -22,6 +22,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,11 +93,21 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * A rectangle with zero width and height.
 	 */
 	private static final Rectangle ZERO_RECTANGLE = new Rectangle(0, 0, 0, 0);
+	
+	/**
+	 * The number of data arrays displayed by this figure.
+	 */
+	private final int _dataCount;
 
 	/**
 	 * The displayed waveform data.
 	 */
-	private double[] _data;
+	private double[][] _data;
+	
+	/**
+	 * The plot colors for the data arrays.
+	 */
+	private Color[] _plotColor;
 
 	/**
 	 * A double, representing the maximum value of the data.
@@ -229,9 +240,20 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	
 	/**
 	 * Standard constructor.
+	 * 
+	 * @param dataCount
+	 *            the number of data arrays to be displayed by this figure. Must
+	 *            be a positive integer number.
 	 */
-	public WaveformFigure() {
-		_data = new double[0];
+	public WaveformFigure(final int dataCount) {
+		if (dataCount < 0) {
+			throw new IllegalArgumentException("dataCount must be >= 0");
+		}
+		_dataCount = dataCount;
+		_data = new double[_dataCount][0];
+		_plotColor = new Color[_dataCount];
+		Arrays.fill(_plotColor, ColorConstants.black);
+
 		this.setLayoutManager(new XYLayout());
 		
 		_yAxisGridLines = new Scale();
@@ -304,15 +326,19 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Set the waveform data that is to be displayed. Perform a repaint
+	 * Sets the data array with the specified index. Repaints this figure
 	 * afterwards.
 	 * 
+	 * @param index
+	 *            the index of the data to set. This must be a positive integer
+	 *            or zero, and smaller than the number of data arrays specified
+	 *            in the constructor of this figure.
 	 * @param data
-	 *            The waveform data that is to be displayed
+	 *            the waveform data.
 	 */
-	public void setData(final double[] data) {
-		 _data = data;
-		this.refreshConstraints();
+	public void setData(final int index, final double[] data) {
+		_data[index] = data;
+		refreshConstraints();
 		repaint();
 	}
 
@@ -343,7 +369,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		// Must use floating point division here to prevent truncating towards
 		// zero, which might result in a zero increment. FIXME: this will still
 		// fail if _data.length == 0.
-		double d = ((double) _data.length) / ((double) Math.max(1, _xAxisMaxTickmarks));
+		double d = ((double) _data[0].length) / ((double) Math.max(1, _xAxisMaxTickmarks));
 		_xAxisScale.setIncrement(d);
 		
 		Rectangle yAxisLabelBounds = calculateYAxisLabelBounds(bounds);
@@ -643,18 +669,37 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * if autoscaling is activated.
 	 */
 	private void adjustAutoscale() {
-		if (_autoScale && _data.length > 0) {
-			double min = _data[0];
-			double max = _data[0];
-
-			for (double value : _data) {
-				if (value < min) {
-					min = value;
-				} else if (value > max) {
-					max = value;
+		if (_autoScale) {
+			// Initialize min and max with the first value from the first data
+			// array that contains values.
+			// TODO: This is a bit complicated. It would be a lot simpler to
+			// adjust the autoscaling only when the data array has been set,
+			// not whenever the waveform redraws.
+			double min = 0;
+			double max = 0;
+			boolean initialized = false;
+			for (double[] data : _data) {
+				if (data.length > 0) {
+					min = data[0];
+					max = data[0];
+					initialized = true;
+					break;
 				}
 			}
+			if (!initialized) {
+				return;
+			}
 
+			// find the minimum and maximum
+			for (double[] data : _data) {
+				for (double value : data) {
+					if (value < min) {
+						min = value;
+					} else if (value > max) {
+						max = value;
+					}
+				}
+			}
 			if (min < _min - AUTOSCALE_TRESHOLD || min > _min + AUTOSCALE_TRESHOLD) {
 				_min = min;
 			}
@@ -766,25 +811,22 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Sets the color for the graph.
+	 * Sets the color to be used for the plot of the data with the specified
+	 * index.
 	 * 
-	 * @param graphRGB
-	 *            The RGB-value for the color
+	 * @param index
+	 *            the data index. This must be a positive integer or zero, and
+	 *            smaller than the number of data arrays specified in the
+	 *            constructor of this figure.
+	 * @param color
+	 *            the color.
 	 */
-	public void setGraphColor(final RGB graphRGB) {
-		_plotFigure.setDataPointColor(CustomMediaFactory.getInstance().getColor(
-				graphRGB));
-	}
-
-	/**
-	 * Sets the color for the connection lines.
-	 * 
-	 * @param lineRGB
-	 *            The RGB-value for the color
-	 */
-	public void setConnectionLineColor(final RGB lineRGB) {
-		_plotFigure.setConnectionLineColor(CustomMediaFactory.getInstance()
-				.getColor(lineRGB));
+	public void setPlotColor(final int index, final RGB color) {
+		if (index < 0 || index >= _dataCount) {
+			throw new IndexOutOfBoundsException(
+					"invalid index: " + index);
+		}
+		_plotColor[index] = CustomMediaFactory.getInstance().getColor(color);
 	}
 
 	/**
@@ -959,17 +1001,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * Figure for the actual plot.
 	 */
 	private final class PlotFigure extends RectangleFigure {
-
-		/**
-		 * The Color for the graph.
-		 */
-		private Color _dataPointColor = ColorConstants.red;
-
-		/**
-		 * The Color for the connection lines.
-		 */
-		private Color _connectionLineColor = ColorConstants.red;
-		
 		/**
 		 * The width of the lines of the graph.
 		 */
@@ -999,10 +1030,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			PointList pointList = calculatePlotPoints();
 			graphics.setLineWidth(_plotLineWidth);
 			if (_showConnectionLines) {
-				graphics.setForegroundColor(_connectionLineColor);
+				graphics.setForegroundColor(_plotColor[0]);
 				graphics.drawPolyline(pointList);
 			}
-			graphics.setForegroundColor(_dataPointColor);
+			graphics.setForegroundColor(_plotColor[0]);
 			for (int i = 0; i < pointList.size(); i++) {
 				Point p = pointList.getPoint(i);
 				_style.draw(graphics, p);
@@ -1022,38 +1053,18 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			// Note: subtracting 1 from data.length because the distance is
 			// only needed between the points, not before the first or after
 			// the last one.
-			double xDist = ((double) (bounds.width - 1)) / (_data.length - 1);
+			double xDist = ((double) (bounds.width - 1)) / (_data[0].length - 1);
 			PointList result = new PointList();
-			for (int i = 0; i < _data.length ; i++) {
+			for (int i = 0; i < _data[0].length ; i++) {
 				int x = (int) Math.round(xDist * i);
-				if (_yAxis.isLegalValue(_data[i])) {
-					int y = valueToYPos(_data[i]);
+				if (_yAxis.isLegalValue(_data[0][i])) {
+					int y = valueToYPos(_data[0][i]);
 					result.addPoint(new Point(bounds.x + x, bounds.y + y));
 				}
 			}
 			return result;
 		}
 
-		/**
-		 * Sets the color for the data points.
-		 * 
-		 * @param color
-		 *            The color
-		 */
-		private void setDataPointColor(final Color color) {
-			_dataPointColor = color;
-		}
-
-		/**
-		 * Sets the color for the connection lines.
-		 * 
-		 * @param lineColor
-		 *            The color
-		 */
-		private void setConnectionLineColor(final Color lineColor) {
-			_connectionLineColor = lineColor;
-		}
-		
 		/**
 		 * Sets the width of the lines of the plot.
 		 * @param lineWidth
@@ -1163,7 +1174,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				// This calculation of dataPointDistance MUST match the
 				// calculation in PlotFigure#calculatePlotPoints, otherwise
 				// rounding errors may occur!
-				double dataPointDistance = ((double) this.getBounds().width - 1) / (_data.length - 1);
+				double dataPointDistance = ((double) this.getBounds().width - 1) / (_data[0].length - 1);
 				// protect against _data.length < 2
 				if (dataPointDistance > this.getBounds().width - 1 || dataPointDistance < 0) {
 					dataPointDistance = this.getBounds().width - 1;

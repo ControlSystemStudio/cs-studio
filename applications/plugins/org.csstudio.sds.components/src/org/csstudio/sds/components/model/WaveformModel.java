@@ -44,7 +44,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	/**
 	 * The number of data arrays this model supports.
 	 */
-	public static final int MAX_DATA_COUNT = 4;
+	public static final int NUMBER_OF_ARRAYS = 4;
 	
 	/**
 	 * Property ID for the <i>autoscale</i> setting.
