@@ -7,6 +7,20 @@
 # Removed columns: message.msg_type_id
 # Added columns: message type, name, severity
 #
+# NOTE:
+# The msghist tool uses subselect queries as shown below to do a full search
+# for properties that are not optimized as MESSAGE columns.
+# Those subselect statements only work in MySQL 6.x.
+# MySQL 5.x will just hang forever in them as soon as there
+# are a few rows in the MESSAGE* tables!
+#
+# SELECT m.id, m.datum, m.TYPE, m.NAME, m.SEVERITY, c.msg_property_type_id p, c.value
+#   FROM message m, message_content c
+#  WHERE m.datum BETWEEN ? AND ? AND m.id=c.message_id
+#    AND m.id IN
+#      ( SELECT message_id FROM message_content WHERE msg_property_type_id=4 AND value LIKE ?)
+
+#
 # kasemirk@ornl.gov
 
 # Create a 'log' user who can access the 'log' tables
@@ -66,17 +80,14 @@ CREATE TABLE IF NOT EXISTS message_content
 );
 
 # Example Message with some elements
-INSERT INTO message VALUES(1, NOW());
-INSERT INTO message_content VALUES(1, 1, 1, NOW());
-INSERT INTO message_content VALUES(2, 1, 2, NOW());
+INSERT INTO message VALUES(1, NOW(), 'log', '', 'INFO');
 INSERT INTO message_content VALUES(3, 1, 3, NOW());
 INSERT INTO message_content VALUES(4, 1, 4, 'Message Text');
 INSERT INTO message_content VALUES(5, 1, 5, 'User Fred');
 INSERT INTO message_content VALUES(6, 1, 6, 'My Host');
-INSERT INTO message_content VALUES(7, 1, 7, 'MyClass');
 
 # Dump messages with all their properties
-SELECT m.id Msg, m.datum Date, p.name Property, c.value Value
+SELECT m.*, p.name Property, c.value Value
   FROM message m, msg_property_type p, message_content c
   WHERE m.id = c.message_id
     AND p.id = c.msg_property_type_id;

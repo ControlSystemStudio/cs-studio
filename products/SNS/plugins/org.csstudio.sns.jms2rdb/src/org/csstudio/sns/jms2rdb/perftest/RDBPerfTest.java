@@ -3,6 +3,8 @@ package org.csstudio.sns.jms2rdb.perftest;
 import java.net.InetAddress;
 import java.util.Calendar;
 
+import javax.jms.MapMessage;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
