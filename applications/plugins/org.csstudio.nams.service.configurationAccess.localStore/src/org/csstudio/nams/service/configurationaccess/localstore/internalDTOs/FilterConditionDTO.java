@@ -31,7 +31,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
  * </pre>
  */
 @Entity
-@SequenceGenerator(name="filter_condition_id", sequenceName="AMS_FilterCondition_ID")
+@SequenceGenerator(name="filter_condition_id", sequenceName="AMS_FilterCondition_ID", allocationSize=1)
 @Table(name = "AMS_FilterCondition")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class FilterConditionDTO implements NewAMSConfigurationElementDTO {

@@ -40,7 +40,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * </pre>
  */
 @Entity
-@SequenceGenerator(name="filter_id", sequenceName="AMS_Filter_ID")
+@SequenceGenerator(name="filter_id", sequenceName="AMS_Filter_ID", allocationSize=1)
 @Table(name = "AMS_Filter")
 public class FilterDTO implements NewAMSConfigurationElementDTO,
 		HasManuallyJoinedElements {

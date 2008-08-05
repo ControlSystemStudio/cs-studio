@@ -32,7 +32,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Pre
  * </pre>
  */
 @Entity
-@SequenceGenerator(name="user_id", sequenceName="AMS_USER_ID")
+@SequenceGenerator(name="user_id", sequenceName="AMS_USER_ID", allocationSize=1)
 @Table(name = "AMS_User")
 public class AlarmbearbeiterDTO implements NewAMSConfigurationElementDTO {
 

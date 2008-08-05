@@ -17,7 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.filt
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 
 @Entity
-@SequenceGenerator(name="filter_action_id", sequenceName="AMS_FILTERACTION_ID")
+@SequenceGenerator(name="filter_action_id", sequenceName="AMS_FILTERACTION_ID", allocationSize=1)
 @Table(name = "AMS_FILTERACTION")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "IFILTERACTIONTYPEREF", discriminatorType = DiscriminatorType.INTEGER)

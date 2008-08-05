@@ -28,7 +28,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
  */
 
 @Entity
-@SequenceGenerator(name="rubrik_id", sequenceName="AMS_Groups_ID")
+@SequenceGenerator(name="rubrik_id", sequenceName="AMS_Groups_ID", allocationSize=1)
 @Table(name = "AMS_Groups")
 public class RubrikDTO implements NewAMSConfigurationElementDTO {
 

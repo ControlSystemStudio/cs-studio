@@ -30,7 +30,7 @@ import org.csstudio.nams.common.contract.Contract;
  * </pre>
  */
 @Entity
-@SequenceGenerator(name="topic_id", sequenceName="AMS_TOPIC_ID")
+@SequenceGenerator(name="topic_id", sequenceName="AMS_TOPIC_ID", allocationSize=1)
 @Table(name = "AMS_TOPIC")
 public class TopicDTO implements NewAMSConfigurationElementDTO {
 

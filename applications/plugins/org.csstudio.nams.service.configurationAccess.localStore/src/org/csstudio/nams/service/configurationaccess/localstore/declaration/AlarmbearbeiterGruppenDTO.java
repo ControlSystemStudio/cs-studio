@@ -43,7 +43,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * </pre>
  */
 @Entity
-@SequenceGenerator(name="usergroup_id", sequenceName="AMS_UserGroup_ID")
+@SequenceGenerator(name="usergroup_id", sequenceName="AMS_UserGroup_ID", allocationSize=1)
 @Table(name = "AMS_UserGroup")
 public class AlarmbearbeiterGruppenDTO implements
 		NewAMSConfigurationElementDTO, HasManuallyJoinedElements {
