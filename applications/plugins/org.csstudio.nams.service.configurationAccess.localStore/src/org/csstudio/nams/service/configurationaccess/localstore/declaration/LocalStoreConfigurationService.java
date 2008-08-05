@@ -67,6 +67,10 @@ public interface LocalStoreConfigurationService {
 	public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfigurationException;
 
+	public FilterConfiguration getEntireFilterConfiguration()
+			throws StorageError, StorageException,
+			InconsistentConfigurationException;
+
 	/**
 	 * Bereitet die Synchronisation mit dem Hintergrudsystem vor. Hierzu werden
 	 * die SYN-Tabellen geschrieben.

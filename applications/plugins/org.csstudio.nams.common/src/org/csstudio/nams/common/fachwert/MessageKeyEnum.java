@@ -6,7 +6,12 @@ public enum MessageKeyEnum {
 			"NAME"), CLASS("CLASS"), DOMAIN("DOMAIN"), FACILITY("FACILITY"), LOCATION(
 			"LOCATION"), SEVERITY("SEVERITY"), STATUS("STATUS"), VALUE("VALUE"), DESTINATION(
 			"DESTINATION"), AMS_REINSERTED("AMS-REINSERTED"), MSGPROP_COMMAND(
-			"COMMAND"), AMS_FILTERID("AMS-FILTERID");
+			"COMMAND"), AMS_FILTERID("AMS-FILTERID"),
+			
+			STATUS_OLD("STATUS-OLD"),
+			HOST_PHYS("HOST-PHYS"),
+			SEVERITY_OLD("SEVERITY-OLD"),
+			APPLICATION("APPLICATION");
 
 	public static MessageKeyEnum getEnumFor(final String value) {
 		for (final MessageKeyEnum mke : MessageKeyEnum.values()) {

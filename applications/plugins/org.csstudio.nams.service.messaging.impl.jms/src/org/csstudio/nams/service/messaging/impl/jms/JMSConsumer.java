@@ -194,8 +194,13 @@ class JMSConsumer implements Consumer {
 					while (mapNames.hasMoreElements()) {
 						final String currentElement = mapNames.nextElement()
 								.toString();
-						final MessageKeyEnum messageKeyEnum = MessageKeyEnum
+						MessageKeyEnum messageKeyEnum = null;
+						try {
+							messageKeyEnum = MessageKeyEnum
 								.getEnumFor(currentElement);
+						} catch (RuntimeException e) {
+							logger.logWarningMessage(this, "unknown field", e);
+						}
 						if (messageKeyEnum != null) {
 							String value = mapMessage.getString(currentElement);
 							if (value == null) {

@@ -11,6 +11,7 @@ import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachc
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
@@ -190,6 +191,13 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 					public void saveHistoryDTO(final HistoryDTO historyDTO) {
 						Assert.fail("unexpected method call!");
+					}
+
+					public FilterConfiguration getEntireFilterConfiguration()
+							throws StorageError, StorageException,
+							InconsistentConfigurationException {
+						// TODO Auto-generated method stub
+						return null;
 					}
 
 				}, new HistoryService() {

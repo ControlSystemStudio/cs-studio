@@ -59,7 +59,7 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
 	@Override
 	public void setFocus() {
-		this._topicNameTextEntry.setFocus();
+		this._topicIdTextEntry.setFocus();
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.List;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.HistoryDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -121,7 +122,8 @@ class LocalStoreConfigurationServiceImpl implements
 				Configuration resultOfUnit = null;
 
 				Collection<RubrikDTO> alleRubriken = mapper.loadAll(
-						RubrikDTO.class, true); // FIXME
+						RubrikDTO.class, true); 
+				// FIXME (gs) was ist hier gemeint??
 				// Bei
 				// Joined
 				// hinzufuegen
@@ -165,6 +167,38 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
+	public FilterConfiguration getEntireFilterConfiguration()
+			throws StorageError, StorageException,
+			InconsistentConfigurationException {
+		
+		FilterConfiguration result = null;
+
+		final UnitOfWork<FilterConfiguration> loadEntireFilterConfigurationWork = new UnitOfWork<FilterConfiguration>() {
+			public FilterConfiguration doWork(Mapper mapper) throws Throwable {
+				FilterConfiguration resultOfUnit = null;
+
+				Collection<FilterDTO> allFilters = mapper.loadAll(
+						FilterDTO.class, true);
+
+				resultOfUnit = new FilterConfiguration(allFilters);
+
+				return resultOfUnit;
+			}
+		};
+
+		try {
+			result = this.transactionProcessor
+					.doInTransaction(loadEntireFilterConfigurationWork);
+		} catch (final InterruptedException e) {
+			this.logger.logWarningMessage(this,
+					"Load of entire configuration interrupted", e);
+			throw new StorageException(
+					"Load of entire configuration interrupted", e);
+		}
+
+		return result;
+	}
+	
 	public void prepareSynchonization() throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		// Hier die Syn-Tabellen anlegen / Datgen kopieren / GGf. über ein

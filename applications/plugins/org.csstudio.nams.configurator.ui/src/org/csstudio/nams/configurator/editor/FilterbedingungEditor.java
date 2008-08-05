@@ -915,10 +915,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				.observeValue(addOn,
 						TimeBasedFilterConditionBean.PropertyNames.timeBehavior
 								.name());
-		final IObservableValue rubrikTextObservable = BeansObservables
-				.observeValue(this.getWorkingCopyOfEditorInput(),
-						FilterbedingungBean.AbstractPropertyNames.rubrikName
-								.name());
+//		final IObservableValue rubrikTextObservable = BeansObservables
+//				.observeValue(this.getWorkingCopyOfEditorInput(),
+//						FilterbedingungBean.AbstractPropertyNames.rubrikName
+//								.name());
 
 		// bind observables
 		context.bindValue(SWTObservables.observeText(this.timeStopCompareText,
@@ -955,9 +955,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// new StringRegelOperatorToModelStrategy(),
 		// new StringRegelOperatorToGuiStrategy());
 
-		context.bindValue(SWTObservables
-				.observeSelection(this._rubrikComboEntry),
-				rubrikTextObservable, null, null);
+//		context.bindValue(SWTObservables
+//				.observeSelection(this._rubrikComboEntry),
+//				rubrikTextObservable, null, null);
 	}
 
 }

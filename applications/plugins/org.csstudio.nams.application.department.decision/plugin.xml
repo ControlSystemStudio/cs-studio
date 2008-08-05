@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="application"
+         id="org.csstudio.nams.application.department.decision.application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -27,6 +27,18 @@
             name="shutdown"
             parameters="authorisation">
       </parametrizedAction>
+   </extension>
+   <extension
+         id="decisionDepartment"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.nams.application.department.decision.application"
+            name="Decision Department">
+         <property
+               name="appName"
+               value="Decision Department">
+         </property>
+      </product>
    </extension>
 
 </plugin>

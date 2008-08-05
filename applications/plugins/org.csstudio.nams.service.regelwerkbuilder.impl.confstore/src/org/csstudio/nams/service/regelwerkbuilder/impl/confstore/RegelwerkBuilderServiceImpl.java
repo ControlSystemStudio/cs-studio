@@ -64,8 +64,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			final LocalStoreConfigurationService confStoreService = RegelwerkBuilderServiceImpl.configurationStoreService;
 			// get all filters
 			Collection<FilterDTO> listOfFilters = null;
-			listOfFilters = confStoreService.getEntireConfiguration()
-					.gibAlleFilter();
+			listOfFilters = confStoreService.getEntireFilterConfiguration().gibAlleFilter();
 			// TODO Auto-generated catch blocks
 
 			// we do assume, that the first level filtercondition are conjugated
