@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Spinner;
  *  and unfortunately those don't allow negative values.
  *  So instead, another checkbox is used to select negative times
  *  'before' some date.
+ *  @author Helge Rickens
  *  @author Kay Kasemir
  */
 public class RelativeTimeWidget extends Composite
@@ -38,7 +39,7 @@ public class RelativeTimeWidget extends Composite
      */
     private boolean in_GUI_update = false;
     
-    private ArrayList<RelativeTimeWidgetListener> listeners
+    final private ArrayList<RelativeTimeWidgetListener> listeners
        = new ArrayList<RelativeTimeWidgetListener>();
 
     /** Construct widget, initialized to zero offsets.
@@ -57,8 +58,7 @@ public class RelativeTimeWidget extends Composite
     public RelativeTimeWidget(Composite parent, int flags, RelativeTime relative_time)
     {
         super(parent, flags);
-        GridLayout layout = new GridLayout(4,true);
-//        layout.numColumns = 4;
+        final GridLayout layout = new GridLayout(4,true);
         setLayout(layout);
         GridData gd;
         
@@ -101,7 +101,7 @@ public class RelativeTimeWidget extends Composite
         hour.setIncrement(1);
         hour.setPageIncrement(6);
         
-     // New row (Month / Minutes)
+        // New row (Month / Minutes)
         l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Months);
         gd = new GridData();
@@ -166,39 +166,30 @@ public class RelativeTimeWidget extends Composite
         second.setPageIncrement(10);
 
         // Next Row
-        // box for all but the 'now' button
-//        Composite box = new Composite(this, 0);
-        Label emtpyRow = new Label(this,SWT.NONE);emtpyRow.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, false, 4,1));
+        final Label emtpyRow = new Label(this,SWT.NONE);
         emtpyRow.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, false, layout.numColumns,1));
         emtpyRow.setText("");
-        
-//        gd = new GridData();
-//        gd.grabExcessHorizontalSpace = true;
-//        gd.horizontalSpan = layout.numColumns;
-//        gd.horizontalAlignment = SWT.FILL;
-//        box.setLayoutData(gd);
-//        box.setLayout(new GridLayout(4,true));
-        
-        Button halfday = new Button(this, SWT.PUSH);
+                
+        // Next Row
+        final Button halfday = new Button(this, SWT.PUSH);
         halfday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         halfday.setText(Messages.half_day);
         halfday.setToolTipText(Messages.half_day_TT);
         
-        Button oneday = new Button(this, SWT.PUSH);
+        final Button oneday = new Button(this, SWT.PUSH);
         oneday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         oneday.setText(Messages.one_day);
         oneday.setToolTipText(Messages.one_day_TT);
         
-        Button threeday = new Button(this, SWT.PUSH);
+        final Button threeday = new Button(this, SWT.PUSH);
         threeday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         threeday.setText(Messages.three_days);
         threeday.setToolTipText(Messages.three_days_TT);
 
-        Button sevenday = new Button(this, SWT.PUSH);
+        final Button sevenday = new Button(this, SWT.PUSH);
         sevenday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         sevenday.setText(Messages.seven_days);
         sevenday.setToolTipText(Messages.seven_days_TT);
-        
         
         // Next Row for before and now
         before = new Button(this, SWT.CHECK);
@@ -308,7 +299,8 @@ public class RelativeTimeWidget extends Composite
                 }
             }
         });
-        SelectionAdapter update = new SelectionAdapter() 
+        
+        final SelectionAdapter update = new SelectionAdapter() 
         {
             @Override
             public void widgetSelected(SelectionEvent e)
@@ -357,8 +349,8 @@ public class RelativeTimeWidget extends Composite
     /** Update the data from the interactive GUI elements. */
     private void updateDataFromGUI()
     {
-        int sign = before.getSelection() ? -1 : 1;
-        int ymdhms[] = new int[]
+        final int sign = before.getSelection() ? -1 : 1;
+        final int ymdhms[] = new int[]
         {
             sign * year.getSelection(),
             sign * month.getSelection(),
@@ -375,7 +367,7 @@ public class RelativeTimeWidget extends Composite
     private void updateGUIfromData()
     {
         in_GUI_update = true;
-        int vals[] = new int[]
+        final int vals[] = new int[]
         {
             relative_time.get(RelativeTime.YEARS),
             relative_time.get(RelativeTime.MONTHS),
@@ -399,7 +391,7 @@ public class RelativeTimeWidget extends Composite
                 all_null = false;
             }
         }
-        boolean negative = all_null  ||  anything_negative;
+        final boolean negative = all_null  ||  anything_negative;
         // Apply sign to all
         before.setSelection(negative);
         for (int i=0; i<vals.length; ++i)
