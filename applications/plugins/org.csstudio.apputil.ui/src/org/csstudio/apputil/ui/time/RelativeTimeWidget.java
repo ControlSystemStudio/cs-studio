@@ -8,7 +8,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -58,17 +57,19 @@ public class RelativeTimeWidget extends Composite
     public RelativeTimeWidget(Composite parent, int flags, RelativeTime relative_time)
     {
         super(parent, flags);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 6;
+        GridLayout layout = new GridLayout(4,true);
+//        layout.numColumns = 4;
         setLayout(layout);
         GridData gd;
         
-        // Years: (year)+- Month:   (month)+-  Days: (day)+-
-        // Hours: (hour)+- Minutes: (minute)+- Secs: (second)+-
-        // [12h] [1 Day] [3 Days] [7 Days]  [now]
-        // [ ] before?
+        // Years: (year)+-  Hours: (hour)+-    
+        // Month: (month)+- Minutes: (minute)+- 
+        // Days: (day)+-    Secs: (second)+-
+        // 
+        // [12h] [1 Day] [3 Days] [7 Days]  
+        // [ ] before?              [now]
         
-        // New row
+        // New row (Years / Hours)
         Label l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Years);
         gd = new GridData();
@@ -86,6 +87,22 @@ public class RelativeTimeWidget extends Composite
         year.setPageIncrement(5);
         
         l = new Label(this, SWT.NONE);
+        l.setText(Messages.Time_Hours);
+        gd = new GridData();
+        l.setLayoutData(gd);
+        hour = new Spinner(this, SWT.BORDER | SWT.WRAP);
+        hour.setToolTipText(Messages.Time_SelectHour);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        hour.setLayoutData(gd);
+        hour.setMinimum(-23);
+        hour.setMaximum(+23);
+        hour.setIncrement(1);
+        hour.setPageIncrement(6);
+        
+     // New row (Month / Minutes)
+        l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Months);
         gd = new GridData();
         l.setLayoutData(gd);
@@ -100,38 +117,6 @@ public class RelativeTimeWidget extends Composite
         month.setIncrement(1);
         month.setPageIncrement(3);
         
-        l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Days);
-        gd = new GridData();
-        l.setLayoutData(gd);
-        
-        day = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        day.setToolTipText(Messages.Time_SelectDay);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        day.setLayoutData(gd);
-        day.setMinimum(-31);
-        day.setMaximum(+31);
-        day.setIncrement(1);
-        day.setPageIncrement(10);
-        
-        // New row
-        l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Hours);
-        gd = new GridData();
-        l.setLayoutData(gd);
-        hour = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        hour.setToolTipText(Messages.Time_SelectHour);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        hour.setLayoutData(gd);
-        hour.setMinimum(-23);
-        hour.setMaximum(+23);
-        hour.setIncrement(1);
-        hour.setPageIncrement(6);
-
         l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Minutes);
         gd = new GridData();
@@ -148,6 +133,23 @@ public class RelativeTimeWidget extends Composite
         minute.setIncrement(1);
         minute.setPageIncrement(10);
 
+        // New row (Days / Secs)
+        l = new Label(this, SWT.NONE);
+        l.setText(Messages.Time_Days);
+        gd = new GridData();
+        l.setLayoutData(gd);
+        
+        day = new Spinner(this, SWT.BORDER | SWT.WRAP);
+        day.setToolTipText(Messages.Time_SelectDay);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        day.setLayoutData(gd);
+        day.setMinimum(-31);
+        day.setMaximum(+31);
+        day.setIncrement(1);
+        day.setPageIncrement(10);
+        
         l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Seconds);
         gd = new GridData();
@@ -165,46 +167,54 @@ public class RelativeTimeWidget extends Composite
 
         // Next Row
         // box for all but the 'now' button
-        Composite box = new Composite(this, 0);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns - 1;
-        gd.horizontalAlignment = SWT.FILL;
-        box.setLayoutData(gd);
-        box.setLayout(new RowLayout());
+//        Composite box = new Composite(this, 0);
+        Label emtpyRow = new Label(this,SWT.NONE);emtpyRow.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, false, 4,1));
+        emtpyRow.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, false, layout.numColumns,1));
+        emtpyRow.setText("");
         
-        Button halfday = new Button(box, SWT.PUSH);
+//        gd = new GridData();
+//        gd.grabExcessHorizontalSpace = true;
+//        gd.horizontalSpan = layout.numColumns;
+//        gd.horizontalAlignment = SWT.FILL;
+//        box.setLayoutData(gd);
+//        box.setLayout(new GridLayout(4,true));
+        
+        Button halfday = new Button(this, SWT.PUSH);
+        halfday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         halfday.setText(Messages.half_day);
         halfday.setToolTipText(Messages.half_day_TT);
         
-        Button oneday = new Button(box, SWT.PUSH);
+        Button oneday = new Button(this, SWT.PUSH);
+        oneday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         oneday.setText(Messages.one_day);
         oneday.setToolTipText(Messages.one_day_TT);
         
-        Button threeday = new Button(box, SWT.PUSH);
+        Button threeday = new Button(this, SWT.PUSH);
+        threeday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         threeday.setText(Messages.three_days);
         threeday.setToolTipText(Messages.three_days_TT);
 
-        Button sevenday = new Button(box, SWT.PUSH);
+        Button sevenday = new Button(this, SWT.PUSH);
+        sevenday.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         sevenday.setText(Messages.seven_days);
         sevenday.setToolTipText(Messages.seven_days_TT);
         
-        Button now = new Button(this, SWT.PUSH);
-        now.setText(Messages.Time_Now);
-        now.setToolTipText(Messages.Time_Now_TT);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.RIGHT;
-        now.setLayoutData(gd);
         
-        // Next Row
+        // Next Row for before and now
         before = new Button(this, SWT.CHECK);
         before.setText(Messages.Time_Before);
         before.setToolTipText(Messages.Time_Before_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns;
+        gd.horizontalSpan = layout.numColumns-1;
         gd.horizontalAlignment = SWT.FILL;
         before.setLayoutData(gd);
+        
+        Button now = new Button(this, SWT.PUSH);
+        now.setText(Messages.Time_Now);
+        now.setToolTipText(Messages.Time_Now_TT);
+        gd = new GridData(SWT.FILL, SWT.FILL, false, false, 1,1);
+        now.setLayoutData(gd);
         
         // Initialize to given relative time pieces
         setRelativeTime(relative_time);
