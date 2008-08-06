@@ -60,30 +60,6 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * Property ID for the <i>maximum</i> scale value.
 	 */
 	public static final String PROP_MAX = "max"; //$NON-NLS-1$
-	
-	/**
-	 * Property ID for the <i>waveform data #1</i>.
-	 */
-	public static final String PROP_DATA0 = "wave"; //$NON-NLS-1$
-
-	/**
-	 * Property ID for the <i>waveform data #2</i>.
-	 */
-	// Note: the IDs use normal counting, starting from 1, while the names of
-	// the constants are zero-based. This is deliberate. This way, the names
-	// in the XML-file match those used in the user interface, while the names
-	// of the constants match the indices used internally in the API.
-	public static final String PROP_DATA1 = "wave2"; //$NON-NLS-1$
-	
-	/**
-	 * Property ID for the <i>waveform data #3</i>.
-	 */
-	public static final String PROP_DATA2 = "wave3"; //$NON-NLS-1$
-	
-	/**
-	 * Property ID for the <i>waveform data #4</i>.
-	 */
-	public static final String PROP_DATA3 = "wave4"; //$NON-NLS-1$
 
 	/**
 	 * Property ID for the scale.
@@ -109,26 +85,6 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * Property ID for the width of the connection lines.
 	 */
 	public static final String PROP_GRAPH_LINE_WIDTH = "connection_line_width"; //$NON-NLS-1$
-
-	/**
-	 * Property ID for the color used to plot the values of data #1.
-	 */
-	public static final String PROP_DATA0_COLOR = "graph_color"; //$NON-NLS-1$
-
-	/**
-	 * Property ID for the color used to plot the values of data #2.
-	 */
-	public static final String PROP_DATA1_COLOR = "graph_color_wave2"; //$NON-NLS-1$
-
-	/**
-	 * Property ID for the color used to plot the values of data #3.
-	 */
-	public static final String PROP_DATA2_COLOR = "graph_color_wave3"; //$NON-NLS-1$
-
-	/**
-	 * Property ID for the color used to plot the values of data #4.
-	 */
-	public static final String PROP_DATA3_COLOR = "graph_color_wave4"; //$NON-NLS-1$
 
 	/**
 	 * Property ID for the color of the connection lines.
@@ -201,6 +157,27 @@ public final class WaveformModel extends AbstractWidgetModel {
      * The ID of this widget model.
      */
     public static final String ID = "org.csstudio.sds.components.Waveform"; //$NON-NLS-1$
+    
+    /**
+     * Internal array of the property IDs for the data properties.
+     * Implementation note: the array is private to prevent modifications by
+     * clients (arrays cannot be immutable in Java). Clients should call
+     * {@link #dataPropertyId(int)} to request a property ID.
+     */
+    private static final String[] INTERNAL_DATA_PROPERTY_ID = {
+    	"wave", "wave2", "wave3", "wave4"
+    };
+    
+    /**
+     * Internal array of the property IDs for the plot color properties.
+     * Implementation note: the array is private to prevent modifications by
+     * clients (arrays cannot be immutable in Java). Clients should call
+     * {@link #plotColorPropertyId(int)} to request a property ID.
+     */
+    private static final String[] INTERNAL_PLOT_COLOR_PROPERTY_ID = {
+    	"graph_color", "graph_color_wave2", "graph_color_wave3",
+    	"graph_color_wave4" 
+    };
 
 	/**
 	 * Constructor.
@@ -208,13 +185,41 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public WaveformModel() {
 		setSize(100, 60);
 	}
+	
+	/**
+	 * Returns the property ID for the waveform data with the specified index.
+	 * 
+	 * @param index
+	 *            the data index. The index must be in the range
+	 *            <code>0..NUMBER_OF_ARRAYS</code>.
+	 * @return the property ID.
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is invalid.
+	 */
+	public static String dataPropertyId(final int index) {
+		return INTERNAL_DATA_PROPERTY_ID[index];
+	}
+
+	/**
+	 * Returns the property ID for the plot color with the specified index.
+	 * 
+	 * @param index
+	 *            the data index. The index must be in the range
+	 *            <code>0..NUMBER_OF_ARRAYS</code>.
+	 * @return the property ID.
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is invalid.
+	 */
+	public static String plotColorPropertyId(final int index) {
+		return INTERNAL_PLOT_COLOR_PROPERTY_ID[index];
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getDoubleSeqTestProperty() {
-		return PROP_DATA0;
+		return dataPropertyId(0);
 	}
 
 	/**
@@ -222,14 +227,14 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_DATA0, new DoubleArrayProperty("Data #1",
+		addProperty(dataPropertyId(0), new DoubleArrayProperty("Data #1",
 				WidgetPropertyCategory.Behaviour, new double[] { 20.0, 15.0,
 						33.0, 44.0, 22.0, 3.0, 25.0, 4.0 }));
-		addProperty(PROP_DATA1, new DoubleArrayProperty("Data #2",
+		addProperty(dataPropertyId(1), new DoubleArrayProperty("Data #2",
 				WidgetPropertyCategory.Behaviour, new double[] { }));
-		addProperty(PROP_DATA2, new DoubleArrayProperty("Data #3",
+		addProperty(dataPropertyId(2), new DoubleArrayProperty("Data #3",
 				WidgetPropertyCategory.Behaviour, new double[] { }));
-		addProperty(PROP_DATA3, new DoubleArrayProperty("Data #4",
+		addProperty(dataPropertyId(3), new DoubleArrayProperty("Data #4",
 				WidgetPropertyCategory.Behaviour, new double[] { }));
 		addProperty(PROP_SHOW_SCALE, new ArrayOptionProperty("Scale",
 				WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
@@ -237,13 +242,13 @@ public final class WaveformModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
 		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty(
 				"Show connection lines", WidgetPropertyCategory.Display, false));
-		addProperty(PROP_DATA0_COLOR, new ColorProperty("Plot color #1",
+		addProperty(plotColorPropertyId(0), new ColorProperty("Plot color #1",
 				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
-		addProperty(PROP_DATA1_COLOR, new ColorProperty("Plot color #2",
+		addProperty(plotColorPropertyId(1), new ColorProperty("Plot color #2",
 				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
-		addProperty(PROP_DATA2_COLOR, new ColorProperty("Plot color #3",
+		addProperty(plotColorPropertyId(2), new ColorProperty("Plot color #3",
 				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
-		addProperty(PROP_DATA3_COLOR, new ColorProperty("Plot color #4",
+		addProperty(plotColorPropertyId(3), new ColorProperty("Plot color #4",
 				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
 		addProperty(PROP_GRID_LINE_COLOR, new ColorProperty(
 				"Color grid lines", WidgetPropertyCategory.Display, new RGB(
@@ -304,25 +309,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * @return the waveform data array.
 	 */
 	public double[] getData(final int index) {
-		String property;
-		switch (index) {
-		case 0:
-			property = PROP_DATA0;
-			break;
-		case 1:
-			property = PROP_DATA1;
-			break;
-		case 2:
-			property = PROP_DATA2;
-			break;
-		case 3:
-			property = PROP_DATA3;
-			break;
-		default:
-			throw new IndexOutOfBoundsException(
-					"index must be in range 0..3, but was " + index);
-		}
-		return (double[]) getProperty(property).getPropertyValue();
+		return (double[]) getProperty(dataPropertyId(index)).getPropertyValue();
 	}
 
 	/**
@@ -371,25 +358,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * @return the color for the plot.
 	 */
 	public RGB getPlotColor(final int dataIndex) {
-		String property;
-		switch (dataIndex) {
-		case 0:
-			property = PROP_DATA0_COLOR;
-			break;
-		case 1:
-			property = PROP_DATA1_COLOR;
-			break;
-		case 2:
-			property = PROP_DATA2_COLOR;
-			break;
-		case 3:
-			property = PROP_DATA3_COLOR;
-			break;
-		default:
-			throw new IndexOutOfBoundsException(
-					"dataIndex must be in range 0..3, but was " + dataIndex);
-		}
-		return (RGB) getProperty(property).getPropertyValue();
+		return (RGB) getProperty(plotColorPropertyId(dataIndex)).getPropertyValue();
 	}
 
 	/**

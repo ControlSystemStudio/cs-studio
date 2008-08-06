@@ -341,13 +341,11 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		}
 		
-		setPropertyChangeHandler(WaveformModel.PROP_DATA0, new DataChangeHandler(0));
-		setPropertyChangeHandler(WaveformModel.PROP_DATA1, new DataChangeHandler(1));
-		setPropertyChangeHandler(WaveformModel.PROP_DATA2, new DataChangeHandler(2));
-		setPropertyChangeHandler(WaveformModel.PROP_DATA3, new DataChangeHandler(3));
-		setPropertyChangeHandler(WaveformModel.PROP_DATA0_COLOR, new PlotColorChangeHandler(0));
-		setPropertyChangeHandler(WaveformModel.PROP_DATA1_COLOR, new PlotColorChangeHandler(1));
-		setPropertyChangeHandler(WaveformModel.PROP_DATA2_COLOR, new PlotColorChangeHandler(2));
-		setPropertyChangeHandler(WaveformModel.PROP_DATA3_COLOR, new PlotColorChangeHandler(3));
+		for (int i = 0; i < WaveformModel.NUMBER_OF_ARRAYS; i++) {
+			setPropertyChangeHandler(WaveformModel.dataPropertyId(i),
+					new DataChangeHandler(i));
+			setPropertyChangeHandler(WaveformModel.plotColorPropertyId(i),
+					new PlotColorChangeHandler(i));
+		}
 	}
 }
