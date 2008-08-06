@@ -54,7 +54,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * A simple waveform figure.
+ * A waveform figure. This figure supports drawing an arbitrary number of data
+ * arrays. The actual maximum number of data arrays must be specified when
+ * the figure is created.
  * 
  * @author Sven Wende, Kai Meyer, Joerg Rathlev
  */
