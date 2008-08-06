@@ -46,6 +46,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		WaveformModel model = (WaveformModel) getWidgetModel();
 		WaveformFigure figure = new WaveformFigure(WaveformModel.NUMBER_OF_ARRAYS);
+		figure.setAliases(model.getAliases());
 		for (int i = 0; i < WaveformModel.NUMBER_OF_ARRAYS; i++) {
 			figure.setData(i, model.getData(i));
 			figure.setPlotColor(i, model.getPlotColor(i));

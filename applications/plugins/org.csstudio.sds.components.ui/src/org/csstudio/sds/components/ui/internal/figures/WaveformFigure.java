@@ -23,11 +23,17 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.util.ChannelReferenceValidationException;
+import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
@@ -242,6 +248,16 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * The length of the longest data array.
 	 */
 	private int _longestDataLength;
+
+	/**
+	 * The logger used by this object.
+	 */
+	private Logger _logger = CentralLogger.getInstance().getLogger(this);
+
+	/**
+	 * The aliases of this waveform.
+	 */
+	private Map<String, String> _aliases;
 	
 	/**
 	 * Standard constructor.
@@ -344,6 +360,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_data[index] = data;
 		if (data.length > _longestDataLength) {
 			_longestDataLength = data.length;
+			_logger.debug("New data array is longer than longest array so far." +
+					"New _longestDataLength = " + _longestDataLength);
 		} else {
 			// TODO: Refactor! Also, this is not safe in case of concurrent
 			// updates.
@@ -353,6 +371,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					_longestDataLength = dataArray.length;
 				}
 			}
+			_logger.debug("Recalculated _longestDataLength, new value is " + _longestDataLength);
 		}
 		_xAxis.setDataRange(0, _longestDataLength);
 		refreshConstraints();
@@ -389,7 +408,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		
 		Rectangle yAxisBounds = calculateYAxisBounds(bounds);
 		setConstraint(_yAxisScale, yAxisBounds);
-		_yAxisScale.refreshConstraints();
 		
 		_plotBounds = calculatePlotBounds(bounds);
 		setConstraint(_plotFigure, _plotBounds);
@@ -413,6 +431,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_yAxis.setDisplaySize(_plotBounds.height);
 		_xAxis.setDisplaySize(_plotBounds.width);
 		adjustAutoscale();
+		_yAxisScale.refreshConstraints();
+		_xAxisScale.refreshConstraints();
 	}
 
 	/**
@@ -1019,28 +1039,33 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			graphics.drawLine(figureBounds.x, figureBounds.bottom(),
 					figureBounds.x + figureBounds.width, figureBounds.bottom());
 			
-			// TODO: the points don't actually have to be recalculated everytime the plot
-			// is redrawn -- only if the data points have changed or if the size of the
-			// plot has changed.
-			PointList pointList = calculatePlotPoints();
-			graphics.setLineWidth(_plotLineWidth);
-			if (_showConnectionLines) {
-				graphics.setForegroundColor(_plotColor[0]);
-				graphics.drawPolyline(pointList);
-			}
-			graphics.setForegroundColor(_plotColor[0]);
-			graphics.setBackgroundColor(_plotColor[0]);
-			for (int i = 0; i < pointList.size(); i++) {
-				Point p = pointList.getPoint(i);
-				_style.draw(graphics, p);
+			for (int i = 0; i < _data.length; i++) {
+				double[] data = _data[i];
+				// TODO: the points don't actually have to be recalculated everytime the plot
+				// is redrawn -- only if the data points have changed or if the size of the
+				// plot has changed.
+				PointList pointList = calculatePlotPoints(data);
+				graphics.setForegroundColor(_plotColor[i]);
+				graphics.setBackgroundColor(_plotColor[i]);
+				graphics.setLineWidth(_plotLineWidth);
+				if (_showConnectionLines) {
+					graphics.drawPolyline(pointList);
+				}
+				for (int j = 0; j < pointList.size(); j++) {
+					Point p = pointList.getPoint(j);
+					_style.draw(graphics, p);
+				}
 			}
 		}
 
 		/**
 		 * Calculates the coordinates of the data points in the plot area.
+		 * 
+		 * @param data
+		 *            the data points.
 		 * @return a list of points to be plotted.
 		 */
-		private PointList calculatePlotPoints() {
+		private PointList calculatePlotPoints(final double[] data) {
 			Rectangle bounds = getBounds();
 			
 			// This algorithm always draws all data points, even if there are
@@ -1050,9 +1075,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			// only needed between the points, not before the first or after
 			// the last one.
 			PointList result = new PointList();
-			for (int i = 0; i < _data[0].length ; i++) {
-				if (_yAxis.isLegalValue(_data[0][i])) {
-					int y = valueToYPos(_data[0][i]);
+			for (int i = 0; i < data.length ; i++) {
+				if (_yAxis.isLegalValue(data[i])) {
+					int y = valueToYPos(data[i]);
 					int x = valueToXPos(i);
 					result.addPoint(new Point(bounds.x + x, bounds.y + y));
 				}
@@ -1619,7 +1644,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * @param label the label.
 	 */
 	public void setLabel(final String label) {
-		_waveformLabel.setText(label);
+		try {
+			_waveformLabel.setText(ChannelReferenceValidationUtil
+					.createCanonicalName(label, _aliases));
+		} catch (ChannelReferenceValidationException e) {
+			_waveformLabel.setText(label);
+			_logger.info("Waveform label contains unresolvable aliases: \""
+					+ label + "\"");
+		}
 		refreshConstraints();
 	}
 
@@ -1629,7 +1661,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * @param axisLabel the label.
 	 */
 	public void setXAxisLabel(final String axisLabel) {
-		_xAxisLabel.setText(axisLabel);
+		try {
+			_xAxisLabel.setText(ChannelReferenceValidationUtil
+					.createCanonicalName(axisLabel, _aliases));
+		} catch (ChannelReferenceValidationException e) {
+			_xAxisLabel.setText(axisLabel);
+			_logger.info("Waveform x-axis label contains unresolvable aliases: \""
+					+ axisLabel + "\"");
+		}
 		refreshConstraints();
 	}
 
@@ -1639,7 +1678,24 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * @param axisLabel the label.
 	 */
 	public void setYAxisLabel(final String axisLabel) {
-		_yAxisLabel.setText(axisLabel);
+		try {
+			_yAxisLabel.setText(ChannelReferenceValidationUtil
+					.createCanonicalName(axisLabel, _aliases));
+		} catch (ChannelReferenceValidationException e) {
+			_yAxisLabel.setText(axisLabel);
+			_logger.info("Waveform y-axis label contains unresolvable aliases: \""
+					+ axisLabel + "\"");
+		}
 		refreshConstraints();
+	}
+
+	/**
+	 * Sets the aliases of this waveform.
+	 * 
+	 * @param aliases
+	 *            the aliases of this waveform.
+	 */
+	public void setAliases(final Map<String, String> aliases) {
+		_aliases = aliases != null ? aliases : new HashMap<String, String>();
 	}
 }
