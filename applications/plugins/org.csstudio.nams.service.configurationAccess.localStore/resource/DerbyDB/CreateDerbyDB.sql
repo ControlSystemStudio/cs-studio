@@ -1,44 +1,26 @@
 connect 'jdbc:derby://localhost/amsdb;create=true';
 
 -- NAMS --
-drop table AMSFilterNegationCond4Filter;
-create table AMSFilterNegationCond4Filter (
-    iFilterConditionRef			INT NOT NULL,
-    iNegatedFCRef               INT NOT NULL
-);
 
-drop table AMSFilterCondConj4FilterCommon;
-create table AMSFilterCondConj4FilterCommon (
-   iFilterConditionRef		INT NOT NULL,
-   Operator                     VARCHAR(3) NOT NULL, 
-   CONSTRAINT AMSFilterCondConj4FilterCommon CHECK (Operator IN ('AND', 'OR'))
-);
-
-drop table AMSFilterCondConj4FilterFCJoin;
-create table AMSFilterCondConj4FilterFCJoin (
-   iFilterConditionID           INT NOT NULL,
-   iFilterConditionRef		INT NOT NULL
- );
-
-drop table AMS_FILTERCOND_JUNCTION;
-create table AMS_FILTERCOND_JUNCTION
+drop table AMS_FilterCond_Junction;
+create table AMS_FilterCond_Junction
 (
    iFilterConditionRef INT NOT NULL,
    operator varchar(3) NOT NULL
 );
 
-drop table AMS_FILTERCOND_FILTERCOND;
-create table AMS_FILTERCOND_FILTERCOND
+drop table AMS_FilterCond_FilterCond;
+create table AMS_FilterCond_FilterCond
 (
-   iFilterConditionID INT NOT NULL,
+   iFilterConditionId INT NOT NULL,
    iFilterConditionRef INT NOT NULL
 );
 
-drop table AMS_FILTERCOND_NEGATION;
-create table AMS_FILTERCOND_NEGATION
+drop table AMS_FilterCond_Negation;
+create table AMS_FilterCond_Negation
 (
    iFilterConditionRef INT NOT NULL,
-   iNegatedfcRef INT NOT NULL
+   iNegatedFCRef INT NOT NULL
 );
 
 -- AMS --

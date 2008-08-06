@@ -56,7 +56,7 @@ DROP TABLE AMS_FilterCond_Negation;
 CREATE TABLE AMS_FilterCond_Negation
 (
    iFilterConditionRef NUMBER(11) NOT NULL,
-   iNegateDfcRef NUMBER(11) NOT NULL
+   iNegatedFCRef NUMBER(11) NOT NULL
 );
 
 DROP TABLE AMS_FilterCond_Negation_Syn;
