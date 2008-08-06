@@ -1,5 +1,6 @@
--- NAMS Oracle --
---drop table AMSFilterNegationCond4Filter;
+
+/* Alte Tabellennamen - NICHT MEHR VERWENDEN
+drop table AMSFilterNegationCond4Filter;
 --create table AMSFilterNegationCond4Filter (
 --    iFilterConditionRef			NUMBER(11) NOT NULL,
 --    iNegatedFCRef               NUMBER(11) NOT NULL
@@ -17,52 +18,53 @@ create table AMSFilterCondConj4FilterFCJoin (
    iFilterConditionID           NUMBER(11) NOT NULL,
    iFilterConditionRef			NUMBER(11) NOT NULL
  );
+Alte Tabellennamen - NICHT MEHR VERWENDEN -- ENDE*/
 
-DROP TABLE "AMS_FILTERCOND_JUNCTION";
-CREATE TABLE "AMS_FILTERCOND_JUNCTION"
-(
-   IFILTERCONDITIONREF decimal(11) NOT NULL,
-   OPERATOR varchar2(3) NOT NULL
-)
-;
-DROP TABLE "AMS_FILTERCOND_JUNCTION_SYN";
-CREATE TABLE "AMS_FILTERCOND_JUNCTION_SYN"
-(
-   IFILTERCONDITIONREF decimal(11) NOT NULL,
-   OPERATOR varchar2(3) NOT NULL
-)
-;
-DROP TABLE "AMS_FILTERCOND_FILTERCOND";
-CREATE TABLE "AMS_FILTERCOND_FILTERCOND"
-(
-   IFILTERCONDITIONID decimal(11) NOT NULL,
-   IFILTERCONDITIONREF decimal(11) NOT NULL
-)
-;
-DROP TABLE "AMS_FILTERCOND_FILTERCOND_SYN";
-CREATE TABLE "AMS_FILTERCOND_FILTERCOND_SYN"
-(
-   IFILTERCONDITIONID decimal(11) NOT NULL,
-   IFILTERCONDITIONREF decimal(11) NOT NULL
-)
-;
-DROP TABLE "AMS_FILTERCOND_NEGATION";
-CREATE TABLE "AMS_FILTERCOND_NEGATION"
-(
-   IFILTERCONDITIONREF decimal(11) NOT NULL,
-   INEGATEDFCREF decimal(11) NOT NULL
-)
-;
-DROP TABLE "AMS_FILTERCOND_NEGATION_SYN";
-CREATE TABLE "AMS_FILTERCOND_NEGATION_SYN"
-(
-   IFILTERCONDITIONREF decimal(11) NOT NULL,
-   INEGATEDFCREF decimal(11) NOT NULL
-)
-;
+--
 
+-- NAMS Oracle --
 
+DROP TABLE AMS_FilterCond_Junction;
+CREATE TABLE AMS_FilterCond_Junction
+(
+   iFilterConditionRef NUMBER(11) NOT NULL,
+   Operator VARCHAR2(3) NOT NULL
+);
 
+DROP TABLE AMS_FilterCond_Junction_Syn;
+CREATE TABLE AMS_FilterCond_Junction_Syn
+(
+   iFilterConditionRef NUMBER(11) NOT NULL,
+   Operator VARCHAR2(3) NOT NULL
+);
+
+DROP TABLE AMS_FilterCond_FilterCond;
+CREATE TABLE AMS_FilterCond_FilterCond
+(
+   iFilterConditionId NUMBER(11) NOT NULL,
+   iFilterConditionRef NUMBER(11) NOT NULL
+);
+
+DROP TABLE AMS_FilterCond_FilterCond_Syn;
+CREATE TABLE AMS_FilterCond_FilterCond_Syn
+(
+   iFilterConditionId NUMBER(11) NOT NULL,
+   iFilterConditionRef NUMBER(11) NOT NULL
+);
+
+DROP TABLE AMS_FilterCond_Negation;
+CREATE TABLE AMS_FilterCond_Negation
+(
+   iFilterConditionRef NUMBER(11) NOT NULL,
+   iNegateDfcRef NUMBER(11) NOT NULL
+);
+
+DROP TABLE AMS_FilterCond_Negation_Syn;
+CREATE TABLE AMS_FilterCond_Negation_Syn
+(
+   iFilterConditionRef NUMBER(11) NOT NULL,
+   iNegateDfcRef NUMBER(11) NOT NULL
+);
 
 -- Create Oracle AMS --
 
