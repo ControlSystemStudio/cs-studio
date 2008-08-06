@@ -54,7 +54,6 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		figure.setMax(model.getMax());
 		figure.setAutoScale(model.getAutoscale());
 		figure.setShowScale(model.getShowScale());
-		figure.setXSectionCount(model.getXSectionCount());
 		figure.setShowValues(model.getShowValues());
 		figure.setShowGridLines(model.getShowLedgerLines());
 		figure.setGridLinesColor(model.getLedgerLineColor());
@@ -150,18 +149,6 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_SHOW_SCALE, scaleHandler);
-		
-		// x-axis section count
-		IWidgetPropertyChangeHandler xSectionHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
-				figure.setXSectionCount((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_X_AXIS_MAX_TICKMARKS, xSectionHandler);
 		
 		// show connection lines
 		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {

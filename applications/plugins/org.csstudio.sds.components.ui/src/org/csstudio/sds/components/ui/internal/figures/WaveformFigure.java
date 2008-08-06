@@ -214,14 +214,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
-	 * The maximum number of tickmarks to show on the x-axis.
-	 */
-	private int _xAxisMaxTickmarks = 10;
-	
-	/**
 	 * The y-axis data mapping.
 	 */
 	private IAxis _yAxis = new LinearAxis(0.0, 0.0, 0);
+	
+	/**
+	 * The x-axis data mapping.
+	 */
+	private IAxis _xAxis = new LinearAxis(0.0, 0.0, 0);
 	
 	/**
 	 * The label for this waveform.
@@ -237,6 +237,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * The y-axis label.
 	 */
 	private Label _yAxisLabel;
+
+	/**
+	 * The length of the longest data array.
+	 */
+	private int _longestDataLength;
 	
 	/**
 	 * Standard constructor.
@@ -277,7 +282,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		
 		_xAxisScale = new Scale();
 		_xAxisScale.setHorizontalOrientation(true);
-		_xAxisScale.setShowFirstMarker(false);
 		_xAxisScale.setShowValues(_showValues);
 		_xAxisScale.setAlignment(false);
 		_xAxisScale.setForegroundColor(this.getForegroundColor());
@@ -286,11 +290,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_plotFigure = new PlotFigure();
 		this.add(_plotFigure);
 		
-		_waveformLabel = new Label("Waveform"); // TODO: property for text
+		_waveformLabel = new Label("");
 		this.add(_waveformLabel);
-		_xAxisLabel = new Label("X-axis");
-		this.add(_xAxisLabel); // TODO: property for text
-		_yAxisLabel = new Label("Y-axis") {
+		_xAxisLabel = new Label("");
+		this.add(_xAxisLabel);
+		_yAxisLabel = new Label("") {
 			@Override
 			protected void paintFigure(final Graphics graphics) {
 				// TODO: this is recommended in the Eclipse newsgroup to draw
@@ -301,7 +305,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				super.paintFigure(graphics);
 			}
 		};
-		this.add(_yAxisLabel); // TODO: property for text
+		this.add(_yAxisLabel);
 
 		// listen to figure movement events
 		addFigureListener(new FigureListener() {
@@ -338,6 +342,19 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	public void setData(final int index, final double[] data) {
 		_data[index] = data;
+		if (data.length > _longestDataLength) {
+			_longestDataLength = data.length;
+		} else {
+			// TODO: Refactor! Also, this is not safe in case of concurrent
+			// updates.
+			_longestDataLength = 0;
+			for (double[] dataArray : _data) {
+				if (dataArray.length > _longestDataLength) {
+					_longestDataLength = dataArray.length;
+				}
+			}
+		}
+		_xAxis.setDataRange(0, _longestDataLength);
 		refreshConstraints();
 		repaint();
 	}
@@ -366,11 +383,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		
 		Rectangle xAxisBounds = calculateXAxisBounds(bounds);
 		setConstraint(_xAxisScale, xAxisBounds);
-		// Must use floating point division here to prevent truncating towards
-		// zero, which might result in a zero increment. FIXME: this will still
-		// fail if _data.length == 0.
-		double d = ((double) _data[0].length) / ((double) Math.max(1, _xAxisMaxTickmarks));
-		_xAxisScale.setIncrement(d);
 		
 		Rectangle yAxisLabelBounds = calculateYAxisLabelBounds(bounds);
 		setConstraint(_yAxisLabel, yAxisLabelBounds);
@@ -393,13 +405,13 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_yAxisGridLines.setWideness(_plotBounds.width);
 		setConstraint(_xAxisGridLines,
 				showXAxisGrid() ? _plotBounds.getCopy() : ZERO_RECTANGLE);
-		_xAxisGridLines.setIncrement(d);
 		_xAxisGridLines.setWideness(_plotBounds.height);
 
 		setToolTip(getToolTipFigure());
 
 		// Update the axis (for mapping the data points to display coordinates)
 		_yAxis.setDisplaySize(_plotBounds.height);
+		_xAxis.setDisplaySize(_plotBounds.width);
 		adjustAutoscale();
 	}
 
@@ -856,16 +868,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 	
 	/**
-	 * Sets the count of sections on the x-axis.
-	 * @param xSectionCount
-	 * 			The count of sections on the x-axis
-	 */
-	public void setXSectionCount(final int xSectionCount) {
-		_xAxisMaxTickmarks = xSectionCount;
-		this.refreshConstraints();
-	}
-	
-	/**
 	 * Sets the transparent state of the background.
 	 * 
 	 * @param transparent
@@ -876,10 +878,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 	
 	/**
-	 * Returns the y position relative to the top of the plot at which the
-	 * given value should be drawn.
+	 * Returns the y position relative to the top of the plot at which the given
+	 * value should be drawn.
 	 * 
-	 * @param value the value.
+	 * @param value
+	 *            the y value.
 	 * @return the y position.
 	 */
 	private int valueToYPos(final double value) {
@@ -890,6 +893,19 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		// range, but for the y coordinate, we need the distance from the top
 		// of the plot, so we subtract the returned value from plotHeight.
 		return plotHeight - _yAxis.valueToCoordinate(value);
+	}
+	
+	/**
+	 * Returns the x position relative to the left of the plot at which the
+	 * given value should be drawn.
+	 * 
+	 * @param value
+	 *            the x value. This is usually the index of the data point
+	 *            within the data array.
+	 * @return the x position.
+	 */
+	private int valueToXPos(final double value) {
+		return _xAxis.valueToCoordinate(value);
 	}
 	
 	/**
@@ -925,15 +941,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				//  #####
 				//    #
 				//    #
-				g.drawPoint(p.x, p.y);
-				g.drawPoint(p.x-1, p.y);
-				g.drawPoint(p.x+1, p.y);
-				g.drawPoint(p.x, p.y-1);
-				g.drawPoint(p.x, p.y+1);
-				g.drawPoint(p.x-2, p.y);
-				g.drawPoint(p.x+2, p.y);
-				g.drawPoint(p.x, p.y-2);
-				g.drawPoint(p.x, p.y+2);
+				g.drawLine(p.x, p.y-2, p.x, p.y+2);
+				g.drawLine(p.x-2, p.y, p.x+2, p.y);
 			}
 		},
 		
@@ -946,15 +955,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			 */
 			@Override
 			protected void draw(final Graphics g, final Point p) {
-				g.drawPoint(p.x-1, p.y-1);
-				g.drawPoint(p.x,   p.y-1);
-				g.drawPoint(p.x+1, p.y-1);
-				g.drawPoint(p.x-1, p.y);
-				g.drawPoint(p.x,   p.y);
-				g.drawPoint(p.x+1, p.y);
-				g.drawPoint(p.x-1, p.y+1);
-				g.drawPoint(p.x,   p.y+1);
-				g.drawPoint(p.x+1, p.y+1);
+				g.fillRectangle(p.x-1, p.y-1, 3, 3);
 			}
 		},
 		
@@ -972,19 +973,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				//  #####
 				//   ###
 				//    #
-				g.drawPoint(p.x,   p.y-2);
-				g.drawPoint(p.x-1, p.y-1);
-				g.drawPoint(p.x,   p.y-1);
-				g.drawPoint(p.x+1, p.y-1);
-				g.drawPoint(p.x-2, p.y);
-				g.drawPoint(p.x-1, p.y);
-				g.drawPoint(p.x,   p.y);
-				g.drawPoint(p.x+1, p.y);
-				g.drawPoint(p.x+2, p.y);
-				g.drawPoint(p.x-1, p.y+1);
-				g.drawPoint(p.x,   p.y+1);
-				g.drawPoint(p.x+1, p.y+1);
-				g.drawPoint(p.x,   p.y+2);
+				
+				// Note: the call to drawPolygon is required because otherwise
+				// for some reason the polygon drawn by fillPolygon is a bit
+				// too small (the right edge is drawn one pixel to the left). 
+				g.drawPolygon(new int[] {
+						p.x-2, p.y, p.x, p.y-2, p.x+2, p.y, p.x, p.y+2 });
+				g.fillPolygon(new int[] {
+						p.x-2, p.y, p.x, p.y-2, p.x+2, p.y, p.x, p.y+2 });
 			}
 		};
 		
@@ -1020,9 +1016,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.drawLine(figureBounds.x, figureBounds.y, figureBounds.x,
 					figureBounds.y + figureBounds.height);
-			graphics.drawLine(figureBounds.x, figureBounds.y + valueToYPos(0),
-					figureBounds.x + figureBounds.width, figureBounds.y
-							+ valueToYPos(0));
+			graphics.drawLine(figureBounds.x, figureBounds.bottom(),
+					figureBounds.x + figureBounds.width, figureBounds.bottom());
 			
 			// TODO: the points don't actually have to be recalculated everytime the plot
 			// is redrawn -- only if the data points have changed or if the size of the
@@ -1034,6 +1029,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				graphics.drawPolyline(pointList);
 			}
 			graphics.setForegroundColor(_plotColor[0]);
+			graphics.setBackgroundColor(_plotColor[0]);
 			for (int i = 0; i < pointList.size(); i++) {
 				Point p = pointList.getPoint(i);
 				_style.draw(graphics, p);
@@ -1053,12 +1049,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			// Note: subtracting 1 from data.length because the distance is
 			// only needed between the points, not before the first or after
 			// the last one.
-			double xDist = ((double) (bounds.width - 1)) / (_data[0].length - 1);
 			PointList result = new PointList();
 			for (int i = 0; i < _data[0].length ; i++) {
-				int x = (int) Math.round(xDist * i);
 				if (_yAxis.isLegalValue(_data[0][i])) {
 					int y = valueToYPos(_data[0][i]);
+					int x = valueToXPos(i);
 					result.addPoint(new Point(bounds.x + x, bounds.y + y));
 				}
 			}
@@ -1118,26 +1113,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 */
 		private int _wideness = 10;
 		/**
-		 * True, if the first Marker should be shown, false otherwise.
-		 */
-		private boolean _showFirst = true;		
-		/**
 		 * True, if the values of the Markers should be shown, false otherwise.
 		 */
 		private boolean _showValues = false;
-		/**
-		 * The size of one step in a Scale.
-		 */
-		private double _increment = 1;
 	
 		/**
 		 * The List of positive ScaleMarkers.
 		 */
 		private List<ScaleMarker> _posScaleMarkers = new LinkedList<ScaleMarker>();
-		/**
-		 * The List of negative ScaleMarkers.
-		 */
-		private List<ScaleMarker> _negScaleMarkers = new LinkedList<ScaleMarker>();
 		
 		/**
 		 * Constructor.
@@ -1159,49 +1142,29 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		private void refreshConstraints() {
 			if (this.getBounds().height==0 || this.getBounds().width==0) {
 				_posScaleMarkers.clear();
-				_negScaleMarkers.clear();
 				this.removeAll();
 				return;
 			}
 			int index = 0;
 			if (_isHorizontal) {
-				int x = 0;
 				int height = _wideness;
 				if (_showValues) {
 					height = TEXTHEIGHT + _wideness;
 				}
-				double value = 0;
-				// This calculation of dataPointDistance MUST match the
-				// calculation in PlotFigure#calculatePlotPoints, otherwise
-				// rounding errors may occur!
-				double dataPointDistance = ((double) this.getBounds().width - 1) / (_data[0].length - 1);
-				// protect against _data.length < 2
-				if (dataPointDistance > this.getBounds().width - 1 || dataPointDistance < 0) {
-					dataPointDistance = this.getBounds().width - 1;
-				}
-				// The counter is used only as a workaround/safeguard in case
-				// the _increment is set to zero (happens if _data.length == 0).
-				// This prevents trying to create infinitely many ticks. The
-				// real solution would be to use an IAxis object for the x-axis
-				// as well.
-				int count = 0;
-				while (x < this.getBounds().width && count < _xAxisMaxTickmarks) {
-					if (index>=_posScaleMarkers.size()) {
+				
+				int distance = TEXTWIDTH;
+				List<Tick> ticks = _xAxis.calculateIntegerTicks(distance, 3);
+				for (Tick tick : ticks) {
+					if (index >= _posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);
 					}
-					this.setConstraint(_posScaleMarkers.get(index), new Rectangle((int) Math.round(x-TEXTWIDTH/2),0,TEXTWIDTH,height));
-					this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
+					int x = valueToXPos(tick.value());
+					this.setConstraint(_posScaleMarkers.get(index),
+							new Rectangle(x - (TEXTWIDTH/2), 0, TEXTWIDTH, height));
+					this.refreshScaleMarker(_posScaleMarkers.get(index), tick.value(), _showValues);
 					index++;
-					value += _increment;
-					x = (int) Math.round(value * dataPointDistance);
-					count++;
 				}
 				this.removeScaleMarkers(index, _posScaleMarkers);
-				
-				// Note: negative scale markers are not supported by this
-				// figure for the x-axis because the axis always starts from
-				// zero.
-				
 			} else {
 				int width = _wideness;
 				if (_showValues) {
@@ -1316,16 +1279,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 		
 		/**
-		 * Sets, if the first Marker should be shown.
-		 * @param showFirst
-		 * 				True if the first Marker should be shown, false otherwise
-		 */
-		public void setShowFirstMarker(final boolean showFirst) {
-			_showFirst = showFirst;
-			this.refreshConstraints();
-		}
-		
-		/**
 		 * Sets, if the values of the Markers should be shown.
 		 * @param showValues
 		 * 				True if the values of the Markers should be shown, false otherwise
@@ -1344,19 +1297,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			for (ScaleMarker marker : _posScaleMarkers) {
 				marker.setForegroundColor(fg);
 			}
-			for (ScaleMarker marker : _negScaleMarkers) {
-				marker.setForegroundColor(fg);
-			}
-		}
-		
-		/**
-		 * Sets the increment for the Scale.
-		 * @param value
-		 * 			The value for the increment
-		 */
-		public void setIncrement(final double value) {
-			_increment = value;
-			this.refreshConstraints();
 		}
 		
 		/**

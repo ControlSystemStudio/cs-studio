@@ -85,6 +85,22 @@ interface IAxis {
 	List<Tick> calculateTicks(int minMajorDistance, int minMinorDistance);
 
 	/**
+	 * Calculates the ticks to display on this axis. This method places major
+	 * tickmarks only at integral values.
+	 * 
+	 * @param minMajorDistance
+	 *            the minimum distance of major ticks, in display units. Set
+	 *            this to a negative value or zero if you don't want any major
+	 *            ticks to be generated.
+	 * @param minMinorDistance
+	 *            the minimum distance of minor ticks, in display units. Set
+	 *            this to a negative value or zero if you don't want any minor
+	 *            ticks to be generated.
+	 * @return the list of ticks to display on this axis.
+	 */
+	List<Tick> calculateIntegerTicks(int minMajorDistance, int minMinorDistance);
+
+	/**
 	 * Sets the data range to a new range. The specified upper bound must be
 	 * greater than the specified lower bound. Implementations of this interface
 	 * may impose additional restrictions.

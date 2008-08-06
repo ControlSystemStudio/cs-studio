@@ -154,5 +154,14 @@ final class LogarithmicAxis implements IAxis {
 //		calc.setMaximumTickCount(_displaySize / minMajorDistance);
 //		return calc.calculateTicks();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Tick> calculateIntegerTicks(final int minMajorDistance,
+			final int minMinorDistance) {
+		// TODO filter to only integer ticks.
+		return calculateTicks(minMajorDistance, minMinorDistance);
+	}
 
 }

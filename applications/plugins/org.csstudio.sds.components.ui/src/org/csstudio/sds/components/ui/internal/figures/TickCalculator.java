@@ -76,6 +76,11 @@ class TickCalculator {
 	private double _tickDistance;
 
 	/**
+	 * Whether this calculator should create ticks only at integral values.
+	 */
+	private boolean _integerOnly;
+
+	/**
 	 * Sets the minimum value in the dataset.
 	 * @param d the minimum value in the dataset.
 	 */
@@ -100,6 +105,15 @@ class TickCalculator {
 	 */
 	public void setMaximumTickCount(final int i) {
 		this._maxTickCount = i;
+		recalculate();
+	}
+	
+	/**
+	 * Sets whether this calculator should create ticks only at integral values.
+	 * @param integerOnly the setting.
+	 */
+	public void setIntegerOnly(final boolean integerOnly) {
+		_integerOnly = integerOnly;
 		recalculate();
 	}
 	
@@ -154,6 +168,10 @@ class TickCalculator {
 		// tickmarks you have. With a small number of tickmarks, this will
 		// almost certainly NOT place them at nice numbers.
 		_tickDistance = Math.ceil(exactDist / Math.pow(10, o - 1)) * Math.pow(10, o - 1);
+		
+		if (_integerOnly) {
+			_tickDistance = Math.ceil(_tickDistance);
+		}
 		
 		// The algorithm below rounds to nice numbers, but is overly
 		// aggressive, so it is disabled for now.

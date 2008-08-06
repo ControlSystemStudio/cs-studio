@@ -110,6 +110,23 @@ final class LinearAxis implements IAxis {
 		calc.setMaximumTickCount(_displaySize / minMajorDistance);
 		return calc.calculateTicks();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Tick> calculateIntegerTicks(final int minMajorDistance,
+			final int minMinorDistance) {
+		
+		// TODO: calculate minor tickmarks. TickCalculator calculates only
+		// major tickmarks.
+		
+		TickCalculator calc = new TickCalculator();
+		calc.setMinimumValue(_dataLower);
+		calc.setMaximumValue(_dataUpper);
+		calc.setMaximumTickCount(_displaySize / minMajorDistance);
+		calc.setIntegerOnly(true);
+		return calc.calculateTicks();
+	}
 
 	/**
 	 * {@inheritDoc}

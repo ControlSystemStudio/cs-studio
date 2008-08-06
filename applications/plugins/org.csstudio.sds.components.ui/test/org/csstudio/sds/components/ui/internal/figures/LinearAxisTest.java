@@ -135,5 +135,18 @@ public class LinearAxisTest {
 			assertEquals(i, ticks.get(i).value());
 		}
 	}
+	
+	@Test
+	public void testCalculateIntegerTicks() throws Exception {
+		IAxis axis = new LinearAxis(0.0, 2.0, 1000);
+		// major ticks only
+		List<Tick> ticks = axis.calculateIntegerTicks(100, -1);
+		// Because we want ticks only at integral numbers, we expect 3 ticks
+		// at 0.0, 1.0, 2.0
+		assertEquals(3, ticks.size());
+		for (int i = 0; i < 3; i++) {
+			assertEquals(i, ticks.get(i).value());
+		}
+	}
 
 }

@@ -100,7 +100,9 @@ public final class WaveformModel extends AbstractWidgetModel {
 	
 	/**
 	 * Property ID for the maximum number of tickmarks to show on the x-axis.
+	 * @deprecated This property is no longer used.
 	 */
+	@Deprecated
 	public static final String PROP_X_AXIS_MAX_TICKMARKS = "x_axis_max_tickmarks"; //$NON-NLS-1$
 	
 	/**
@@ -261,8 +263,6 @@ public final class WaveformModel extends AbstractWidgetModel {
 				"Automatic Scaling", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_SHOW_VALUES, new BooleanProperty(
 				"Show values", WidgetPropertyCategory.Display,false));
-		addProperty(PROP_X_AXIS_MAX_TICKMARKS, new IntegerProperty(
-				"X-axis max. number of tickmarks",WidgetPropertyCategory.Display,10));
 		addProperty(PROP_GRAPH_LINE_WIDTH, new IntegerProperty(
 				"Graph line width",WidgetPropertyCategory.Display,1,1,100));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
@@ -427,16 +427,6 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	public boolean getShowValues() {
 		return (Boolean) getProperty(PROP_SHOW_VALUES).getPropertyValue();
-	}
-	
-	/**
-	 * Returns the count of sections on the x-axis.
-	 * @return int 
-	 * 				The count of sections on the x-axis
-	 */
-	public int getXSectionCount() {
-		return (Integer) getProperty(PROP_X_AXIS_MAX_TICKMARKS)
-				.getPropertyValue();
 	}
 	
 	/**
