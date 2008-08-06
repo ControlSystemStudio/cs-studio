@@ -30,6 +30,7 @@ import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -75,22 +76,39 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @param alarmSeverity the severity.
 	 * @return the character that represents the given severity.
 	 */
-	private char getIconChar(final Severity alarmSeverity) {
+	private String getIconName(final Severity alarmSeverity) {
 		switch (alarmSeverity) {
 		case NO_ALARM:
-			return 'g';
+			return "green";
 		case INVALID:
-			return 'b';
+			return "blue";
 		case MINOR:
-			return 'y';
+			return "yellow";
 		case MAJOR:
-			return 'r';
+			return "red";
 		default:
 			// should never get here
-		    return 'w';
+		    return "grey";
 		}
 	}
 	
+	/**
+	 * 
+     * @param activeAlarmSeverity
+     * @param unacknowledgedAlarmSeverity
+     * @return
+     */
+    private String[] getIconNames(Severity activeAlarmSeverity, Severity unacknowledgedAlarmSeverity) {
+        if(activeAlarmSeverity.equals(unacknowledgedAlarmSeverity)){
+            return new String[]{getIconName(unacknowledgedAlarmSeverity)};
+        }else if(activeAlarmSeverity.equals(Severity.NO_ALARM)){
+            return new String[]{getIconName(unacknowledgedAlarmSeverity),"checked"};
+        }else if(unacknowledgedAlarmSeverity.equals(Severity.NO_ALARM)){
+            return new String[]{getIconName(activeAlarmSeverity)};
+        }else{
+            return new String[]{getIconName(unacknowledgedAlarmSeverity),getIconName(activeAlarmSeverity)};
+        }
+    }
 	/**
 	 * Returns the icon for the given element.
 	 * @param element the element.
@@ -116,13 +134,13 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	private Image alarmImageFor(final IAlarmTreeNode node) {
 		Severity activeAlarmSeverity = node.getAlarmSeverity();
 		Severity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
-		char rightIconChar = getIconChar(activeAlarmSeverity);
-		char leftIconChar = getIconChar(unacknowledgedAlarmSeverity);
-		String iconName = "./icons/" + leftIconChar + rightIconChar + ".gif";
-		return loadImage(iconName);
+		String[] iconNames = getIconNames(activeAlarmSeverity,unacknowledgedAlarmSeverity);
+		return createImage(iconNames);
 	}
 	
-	/**
+	
+
+    /**
 	 * Returns the image for a leaf node that does not have any alarms set.
 	 * @return the image.
 	 */
@@ -141,11 +159,67 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 		if (_imageCache.containsKey(name)) {
 			return _imageCache.get(name);
 		} else {
-			Image image = AlarmTreePlugin.getImageDescriptor(name).createImage();
-			_imageCache.put(name, image);
-			return image;
+		    try{
+    			Image image = AlarmTreePlugin.getImageDescriptor(name).createImage();
+    			_imageCache.put(name, image);
+    			return image;
+		    }catch (NullPointerException e) {
+		        System.out.println("NullPointerException:"+name );
+            }
+		    return null;
 		}
 	}
+	
+	   /**
+     * Create an image. The image is added to a cache kept by this provider and
+     * is disposed of when this provider is disposed of.
+     * @param name the image name.
+	 * @param rightImage 
+	 * @param leftImage 
+     * @return the image.
+     */
+    private Image createImage(final String[] names) {
+        String name = "";
+        for (String string : names) {
+            name = name.concat(string);
+        }
+        if (_imageCache.containsKey(name)) {
+            return _imageCache.get(name);
+        } else {
+            Image leftImage; 
+            Image rightImage;
+            int width;
+            Image dualImage;
+            if(names.length==2){
+                leftImage=loadImage("/icons/"+names[0]+".gif");
+                rightImage = loadImage("/icons/"+names[1]+".gif");
+                width = leftImage.getBounds().width/3+2+ rightImage.getBounds().width;
+                dualImage = new Image(leftImage.getDevice(),width, leftImage.getBounds().height);
+                GC gc = new GC(dualImage);
+                if(names[1].equals("checked")){
+                    gc.drawImage(leftImage, leftImage.getBounds().width/3+2, 0);
+                    gc.drawImage(rightImage, 2, 0);
+                }else{
+                    gc.drawImage(leftImage, 0, 0);
+                    gc.drawImage(rightImage, leftImage.getBounds().width/3+2, 0);
+                }
+                gc.dispose();
+
+                
+            }else{
+                leftImage=loadImage("/icons/"+names[0]+".gif");
+                width = leftImage.getBounds().width/3+2+ leftImage.getBounds().width;
+                dualImage = new Image(leftImage.getDevice(),width, leftImage.getBounds().height);
+                GC gc = new GC(dualImage);
+                gc.drawImage(leftImage, leftImage.getBounds().width/3+2, 0);
+                gc.dispose();
+
+            }
+            _imageCache.put(name, dualImage);
+            return dualImage;
+        }
+    }
+
 	
 	/**
 	 * Disposes of the images created by this label provider.
