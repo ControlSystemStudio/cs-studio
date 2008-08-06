@@ -18,7 +18,7 @@ import org.junit.Test;
  *  Using 'batched' inserts for the properties.
  *  
  *  Local or networked MySQL: about 150 msg/sec.
- *  SNS Oracle 'devl': about 50 msg/sec.
+ *  SNS Oracle 'devl': about 90 msg/sec.
  *
  *  For a similar 'read' test, see org.csstudio.sns.msghist 
  *  
@@ -33,7 +33,7 @@ public class RDBPerfTest
 //        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdb1.sns.ornl.gov:1521/prod";
 //    final private static String SCHEMA = "EPICS";
 
-  final private static String URL =
+    final private static String URL =
     "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
     final private static String SCHEMA = ""; 
     
