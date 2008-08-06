@@ -125,5 +125,13 @@ public class LdapReferences {
 		//
 		return ldapEntries.containsKey( channelName);
 	}
+	
+	public void clearAll(){
+	    ldapEntries.clear();
+	}
+	
+	public void clear(String channelName){
+	    ldapEntries.remove(channelName);
+	}
 
 }

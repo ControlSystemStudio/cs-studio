@@ -725,6 +725,7 @@ public class Engine extends Job {
         //
         // is channel name already in ldearReference hash table?
         //
+        
         if (_ldapReferences.hasEntry(channel)) {
             // if ( false) { // test case with no hash table
             //
@@ -889,6 +890,23 @@ public class Engine extends Job {
         }
     }
 
+    /**
+     * Clear the complete cache
+     */
+    public void clearCache(){
+        _ldapReferences.clearAll();
+    }
+    
+    /**
+     * Clear the cache entry for the channel.
+     * 
+     * @param channel the channel to clear at the cache.
+     */
+    public void clearCache(String channel){
+        _ldapReferences.clear(channel);
+    }
+
+    
     // public void setLdapValueOld ( String channel, String severity, String
     // status, String timeStamp) {
     // ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp,
@@ -985,5 +1003,4 @@ public class Engine extends Job {
     public void setWriteVector(Vector<WriteRequest> writeVector) {
         this._writeVector = writeVector;
     }
-
 }
