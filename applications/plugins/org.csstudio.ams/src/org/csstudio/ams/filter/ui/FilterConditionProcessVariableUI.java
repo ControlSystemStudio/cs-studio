@@ -109,6 +109,12 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 								public void errorOccured(String error) {
 									
 								}
+
+                                public void valueChanged(Double value)
+                                {
+                                    // TODO Auto-generated method stub
+                                    
+                                }
 							}, pv);
 					break;
 				case LONG:
@@ -132,6 +138,12 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 
 								public void errorOccured(String error) {
 								}
+
+                                public void valueChanged(Long value)
+                                {
+                                    // TODO Auto-generated method stub
+                                    
+                                }
 							}, pv);
 					break;
 				case STRING:
@@ -155,6 +167,12 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 
 								public void errorOccured(String error) {
 								}
+
+                                public void valueChanged(String value)
+                                {
+                                    // TODO Auto-generated method stub
+                                    
+                                }
 							}, pv);
 					break;
 				default:

@@ -69,6 +69,12 @@ public class FilterConditionProcessVariable_IntegrationTestWithDAL {
 			public void errorOccured(String error) {
 				
 			}
+
+            public void valueChanged(Double value)
+            {
+                // TODO Auto-generated method stub
+                
+            }
 		}, address);
 
 		_filterConditionPV.doInit(configuration, FILTER_CONDITION_ID,

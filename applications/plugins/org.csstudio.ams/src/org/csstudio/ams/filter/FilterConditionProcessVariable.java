@@ -180,6 +180,12 @@ public strictfp class FilterConditionProcessVariable implements
 		public void errorOccured(String error) {
 			
 		}
+
+        public void valueChanged(T value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
 	}
 
 	/**

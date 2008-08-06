@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,6 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
  package org.csstudio.ams.configReplicator;
 
 import java.sql.Connection;
@@ -30,6 +32,9 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.configdb.CommonConjunctionFilterConditionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterActionTypeDAO;
+import org.csstudio.ams.dbAccess.configdb.FilterCondFilterCondDAO;
+import org.csstudio.ams.dbAccess.configdb.FilterCondJunctionDAO;
+import org.csstudio.ams.dbAccess.configdb.FilterCondNegationDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionArrayStringDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionArrayStringValuesDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionDAO;
@@ -64,7 +69,12 @@ public class ConfigReplicator implements AmsConstants
 						+ " from + " + FLAGVALUE_RPLCFG_IDLE + " to " + FLAGVALUE_RPLCFG_DIST_SYNC
 						, EXITERR_BUP_UPDATEFLAG_START);
 
-			Log.log(Log.INFO, "Start deleting local Configuration.");
+			Log.log(Log.INFO, "Start deleting local Configuration.");			
+			// ADDED: Markus Moeller 06.08.2008
+			FilterCondJunctionDAO.removeAll(localDB);			
+			FilterCondNegationDAO.removeAll(localDB);
+			FilterCondFilterCondDAO.removeAll(localDB);
+			
 			FilterConditionTypeDAO.removeAll(localDB);
 			FilterConditionDAO.removeAll(localDB);
 			FilterConditionStringDAO.removeAll(localDB);
@@ -92,8 +102,12 @@ public class ConfigReplicator implements AmsConstants
 			FilterConditionArrayStringDAO.copyFilterConditionArrayString(masterDB, localDB);
 			FilterConditionArrayStringValuesDAO.copyFilterConditionArrayStringValues(masterDB, localDB);
 			FilterConditionProcessVariableDAO.copy(masterDB, localDB);
-			CommonConjunctionFilterConditionDAO.copy(masterDB, localDB);
-			
+			CommonConjunctionFilterConditionDAO.copy(masterDB, localDB);            
+            // ADDED: Markus Moeller 2008-08-06
+            FilterCondJunctionDAO.copyFilterCondJunction(masterDB, localDB);
+            FilterCondNegationDAO.copyFilterCondNegation(masterDB, localDB);
+            FilterCondFilterCondDAO.copyFilterCondFilterCond(masterDB, localDB);
+            
 			FilterConditionTimeBasedDAO.copyFilterConditionTimeBased(masterDB, localDB);
 			FilterDAO.copyFilter(masterDB, localDB);
 			FilterFilterConditionDAO.copyFilterFilterCondition(masterDB, localDB);
@@ -117,21 +131,26 @@ public class ConfigReplicator implements AmsConstants
 		}
 		catch (Exception ex)
 		{
-			try{
+			try
+			{
 				masterDB.rollback();
-			}catch(Exception e)
+			}
+			catch(Exception e)
 			{
 				Log.log(Log.WARN, "rollback failed.", e);
 			}
 
 			Log.log(Log.FATAL, "replicateConfiguration failed.", ex);
+			
 			throw ex;
 		}
 		finally 
 		{
-			try{
+			try
+			{
 				masterDB.setAutoCommit(true);
-			}catch(Exception e){}
+			}
+			catch(Exception e){}
 		}
 		// All O.K.
 	}
