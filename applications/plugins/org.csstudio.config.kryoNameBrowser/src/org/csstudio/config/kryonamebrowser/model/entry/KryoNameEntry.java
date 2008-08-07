@@ -7,15 +7,15 @@ package org.csstudio.config.kryonamebrowser.model.entry;
  */
 public class KryoNameEntry {
 
-    private int id;
+    private int id = -1;
     private String name;
-    private int plantId;
-    private int objectId;
-    private int processId;
-    private int seqKryoNumber;
+    private int plantId = -1;
+    private int objectId = -1;
+    private String processId;
+    private int seqKryoNumber = -1;
     private String label;
 
-    public KryoNameEntry(int id, String name, int plantId, int objectId, int processId, int seqKryoNumber, String label) {
+    public KryoNameEntry(int id, String name, int plantId, int objectId, String processId, int seqKryoNumber, String label) {
         this.id = id;
         this.name = name;
         this.plantId = plantId;
@@ -23,6 +23,10 @@ public class KryoNameEntry {
         this.processId = processId;
         this.seqKryoNumber = seqKryoNumber;
         this.label = label;
+    }
+
+    public KryoNameEntry() {
+        
     }
 
 
@@ -42,7 +46,7 @@ public class KryoNameEntry {
         return objectId;
     }
 
-    public int getProcessId() {
+    public String getProcessId() {
         return processId;
     }
 
@@ -52,5 +56,33 @@ public class KryoNameEntry {
 
     public String getLabel() {
         return label;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPlantId(int plantId) {
+        this.plantId = plantId;
+    }
+
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
+    public void setSeqKryoNumber(int seqKryoNumber) {
+        this.seqKryoNumber = seqKryoNumber;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
