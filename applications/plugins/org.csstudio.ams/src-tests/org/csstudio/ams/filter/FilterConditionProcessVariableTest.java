@@ -145,7 +145,7 @@ public class FilterConditionProcessVariableTest {
 
 		@SuppressWarnings("unchecked")
 		public void sendNewValue(Object value) {
-			_listener.valueChanged(value);
+			_listener.valueChanged(value, null);
 		}
 
 		public void sendNewConnectionState(ConnectionState state) {
