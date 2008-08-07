@@ -35,17 +35,17 @@ public class KryoNameBrowserLogic {
 		for (int i = 0; i < 30; i++) {
 			new Thread(new Runnable() {
 				public void run() {
-					DBConnect database1 = new DBConnect(new OracleSettings());
-					database1.openConnection();
+					
 
 					KryoNameBrowserLogic logic = new KryoNameBrowserLogic(new OracleSettings());
-
+					
 					try {
+						logic.openConnection();
 						for (int i = 0; i < 100; i++) {
 
 							long l = System.currentTimeMillis();
 
-							logic.findProcessChoices();
+							logic.search(new KryoNameEntry());
 
 							System.out.println(""
 									+ Thread.currentThread().getName() + " "
@@ -64,14 +64,24 @@ public class KryoNameBrowserLogic {
 
 					} catch (SQLException e) {
 						e.printStackTrace();
-						database1.closeConnection();
-					}
+						
+					} 
 
-					database1.closeConnection();
+					try {
+						logic.closeConnection();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}).start();
 
 		}
+	}
+
+	public  void closeConnection() throws SQLException {
+		database.closeConnection();
+		
 	}
 
 	public KryoNameBrowserLogic(Settings settings) {
@@ -81,8 +91,9 @@ public class KryoNameBrowserLogic {
 	/**
 	 * Opens the underlying database connection. You should call this method
 	 * once before using the methods on this class.
+	 * @throws SQLException 
 	 */
-	public synchronized void openConnection() {
+	public synchronized void openConnection() throws SQLException {
 		database.openConnection();
 	}
 
@@ -98,6 +109,7 @@ public class KryoNameBrowserLogic {
 	public synchronized List<KryoNameResolved> search(KryoNameEntry example)
 			throws SQLException {
 
+		
 		StringBuffer buffer = new StringBuffer(
 				"SELECT IO_NAME_ID , IO_NAME , PLANT_ID , OBJECT_ID , CRYO_PROCESS_ID , SEQ_KRYO_NUMBER , KRYO_NAME_LABEL FROM ")
 				.append(TableNames.NAMES_TABLE);
