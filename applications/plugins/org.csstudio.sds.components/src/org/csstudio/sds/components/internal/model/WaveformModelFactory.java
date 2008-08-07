@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.IWidgetModelFactory;
@@ -44,7 +43,7 @@ public final class WaveformModelFactory implements IWidgetModelFactory {
 	/**
 	 * {@inheritDoc}.
 	 */
-	public Class getWidgetModelType() {
-		return TextInputModel.class;
+	public Class<?> getWidgetModelType() {
+		return WaveformModel.class;
 	}
 }
