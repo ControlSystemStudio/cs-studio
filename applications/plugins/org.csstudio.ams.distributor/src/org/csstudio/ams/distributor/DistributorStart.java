@@ -262,12 +262,12 @@ public class DistributorStart implements IApplication
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY));
             extConnection = extFactory.createConnection();
             
-            // ADDED BY: Markus Möller, 25.05.2007
+            // ADDED BY: Markus MÃ¶ller, 25.05.2007
             extConnection.setClientID("DistributorStartSenderExternal");
             
             extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus MÃ¶ller, 25.05.2007
             /*extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
             */
