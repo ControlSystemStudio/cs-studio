@@ -8,9 +8,8 @@ import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameContentProvider;
 import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -41,16 +40,22 @@ public class MainView extends ViewPart {
 			throw new RuntimeException(e);
 		}
 
-		parent.setLayout(new RowLayout());
-		createFilter(parent);
+		// set layout
+		final GridLayout gridLayout = new GridLayout();
+		gridLayout.verticalSpacing = 0;
+		parent.setLayout(gridLayout);
+
+		// add filter on top
+		FilterComposite filter = createFilter(parent);
+		// add table at the bottom
 		createTable(parent);
+		// bind table viewer to filter
+		filter.setViewer(viewer);
+
 	}
 
-	private void createFilter(Composite parent) {
-		Composite composite = new Composite(parent,0);
-		Button button = new Button(composite,0);
-		button.setText("Alen");
-		
+	private FilterComposite createFilter(Composite parent) {
+		return new FilterComposite(parent, SWT.NONE);
 	}
 
 	@Override
@@ -67,16 +72,32 @@ public class MainView extends ViewPart {
 
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+		//
+		// Table table = new Table(parent, style);
+		// TableColumn column = new TableColumn(table, SWT.CENTER, 0);
+		// column.setText("Firs tname");
+		// column.setWidth(200);
+		// column = new TableColumn(table, SWT.CENTER, 0);
+		// column.setText("Last tname");
+		// column.setWidth(200);
+		//
+		// table.setHeaderVisible(true);
 
 		Table table = new Table(parent, style);
-		TableColumn column = new TableColumn(table, SWT.CENTER, 0);
-		column.setText("Firs tname");
-		column.setWidth(200);
-		column = new TableColumn(table, SWT.CENTER, 0);
-		column.setText("Last tname");
-		column.setWidth(200);
-
+		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		final TableColumn newColumnTableColumn = new TableColumn(table,
+				SWT.NONE);
+		newColumnTableColumn.setWidth(100);
+		newColumnTableColumn.setText("Column");
+
+		final TableColumn newColumnTableColumn_1 = new TableColumn(table,
+				SWT.NONE);
+		newColumnTableColumn_1.setWidth(100);
+		newColumnTableColumn_1.setText("New column");
+
 		viewer = new TableViewer(table);
 
 		viewer.setContentProvider(new KryoNameContentProvider(logic));
