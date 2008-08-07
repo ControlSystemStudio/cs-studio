@@ -1,132 +1,93 @@
 package org.csstudio.config.kryonamebrowser.ui;
 
-import org.eclipse.jface.viewers.ComboViewer;
+import java.sql.SQLException;
+
+import org.csstudio.config.kryonamebrowser.config.OracleSettings;
+import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
+import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameContentProvider;
+import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameLabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * View for combo boxes to select name components, table with all
- * kryo names, buttons for save, delete...
+ * View for the filter and table of names.
  * 
- * @author jhatje
- *
+ * @author Alen Vrecko
+ * 
  */
 public class MainView extends ViewPart {
 
-    public static final String ID = MainView.class.getName();
-	
-    /** Composite for combo boxes with kryo name parts */
-    Composite compositeKryoNameParts;
-    
-    /** Composite for name field and control buttons */
-    Composite compositeNameField;
-    
-    /** Composite for table with kryo names */
-    Composite compositeNameTable;
-    
-    /** Combo box for plant name */
-    ComboViewer comboPlantName;
-    
-    /** Combo box for sub 1 plant name */
-    ComboViewer comboSub1PlantName;
-    
-    /** Combo box for sub 2 plant name */
-    ComboViewer comboSub2PlantName;
-    
-    /** Combo box for sub 3 plant name */
-    ComboViewer comboSub3PlantName;
-    
-    /** Text field for plant number */
-    Text textPlantNumber; 
-    
-    /** Text field for sub 1 plant number */
-    Text textSub1PlantNumber; 
-    
-    /** Text field for sub 2 plant number */
-    Text textSub2PlantNumber; 
-    
-    /** Text field for sub 3 plant number */
-    Text textSub3PlantNumber; 
-    
-	public MainView() {
-		// TODO Auto-generated constructor stub
-	}
+	public static final String ID = MainView.class.getName();
+
+	private KryoNameBrowserLogic logic;
+
+	private TableViewer viewer;
 
 	@Override
 	public void createPartControl(Composite parent) {
-		createCompositeKryoNameLayout(parent);
+		logic = new KryoNameBrowserLogic(new OracleSettings());
+
+		try {
+			logic.openConnection();
+		} catch (SQLException e) {
+			// TODO: maybe log?
+			throw new RuntimeException(e);
+		}
+
+		parent.setLayout(new RowLayout());
+		createFilter(parent);
+		createTable(parent);
 	}
 
-	private void createCompositeKryoNameLayout(Composite parent) {
-		compositeKryoNameParts = new Composite(parent, SWT.NONE);
-		RowLayout rowLayout = new RowLayout();
-		rowLayout.wrap = false;
-		compositeKryoNameParts.setLayout(rowLayout);
-		FillLayout fillLayout = new FillLayout();
-	    fillLayout.type = SWT.VERTICAL;
-	    
-	    Composite compositePlantName = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositePlantName.setLayout(fillLayout);
-	    Label labelPlantTitle = new Label(compositePlantName, SWT.NONE);
-	    labelPlantTitle.setText("Plant Name");
-		comboPlantName = new ComboViewer(compositePlantName);
-	    
-		Composite compositePlantNameNo = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositePlantNameNo.setLayout(fillLayout);
-		compositePlantNameNo.setLayoutData(new RowData(28, 42));
-		Label labelPlantNoTitle = new Label(compositePlantNameNo, SWT.NONE);
-	    labelPlantNoTitle.setText("No.");
-		textPlantNumber = new Text(compositePlantNameNo, SWT.BORDER);
-	    
-		Composite compositeSub1PlantName = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositeSub1PlantName.setLayout(fillLayout);
-	    Label labelSub1PlantTitle = new Label(compositeSub1PlantName, SWT.NONE);
-	    labelSub1PlantTitle.setText("Sub Plant 1");
-		comboSub1PlantName = new ComboViewer(compositeSub1PlantName);
+	private void createFilter(Composite parent) {
+		Composite composite = new Composite(parent,0);
+		Button button = new Button(composite,0);
+		button.setText("Alen");
 		
-		Composite compositeSub1PlantNameNo = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositeSub1PlantNameNo.setLayout(fillLayout);
-		compositeSub1PlantNameNo.setLayoutData(new RowData(28, 42));
-	    Label labelSub1PlantNoTitle = new Label(compositeSub1PlantNameNo, SWT.NONE);
-	    labelSub1PlantNoTitle.setText("No.");
-		textSub1PlantNumber = new Text(compositeSub1PlantNameNo, SWT.BORDER);
-		
-		Composite compositeSub2PlantName = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositeSub2PlantName.setLayout(fillLayout);
-	    Label labelSub2PlantTitle = new Label(compositeSub2PlantName, SWT.NONE);
-	    labelSub2PlantTitle.setText("Sub Plant 2");
-		comboSub2PlantName = new ComboViewer(compositeSub2PlantName);
-
-		Composite compositeSub2PlantNameNo = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositeSub2PlantNameNo.setLayout(fillLayout);
-		compositeSub2PlantNameNo.setLayoutData(new RowData(28, 42));
-	    Label labelSub2PlantNoTitle = new Label(compositeSub2PlantNameNo, SWT.NONE);
-	    labelSub2PlantNoTitle.setText("No.");
-	    textSub2PlantNumber = new Text(compositeSub2PlantNameNo, SWT.BORDER);
-	    
-	    Composite compositeSub3PlantName = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositeSub3PlantName.setLayout(fillLayout);
-	    Label labelSub3PlantTitle = new Label(compositeSub3PlantName, SWT.NONE);
-	    labelSub3PlantTitle.setText("Sub Plant 3");
-		comboSub3PlantName = new ComboViewer(compositeSub3PlantName);
-
-		Composite compositeSub3PlantNameNo = new Composite(compositeKryoNameParts, SWT.NONE);
-	    compositeSub3PlantNameNo.setLayout(fillLayout);
-		compositeSub3PlantNameNo.setLayoutData(new RowData(28, 42));
-	    Label labelSub3PlantNoTitle = new Label(compositeSub3PlantNameNo, SWT.NONE);
-	    labelSub3PlantNoTitle.setText("No.");
-		textSub3PlantNumber = new Text(compositeSub3PlantNameNo, SWT.BORDER);
-
-		compositeKryoNameParts.pack();
 	}
-	
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		try {
+			logic.closeConnection();
+		} catch (SQLException e) {
+			// TODO: maybe log? we can't do nothing
+		}
+	}
+
+	private void createTable(Composite parent) {
+
+		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+
+		Table table = new Table(parent, style);
+		TableColumn column = new TableColumn(table, SWT.CENTER, 0);
+		column.setText("Firs tname");
+		column.setWidth(200);
+		column = new TableColumn(table, SWT.CENTER, 0);
+		column.setText("Last tname");
+		column.setWidth(200);
+
+		table.setHeaderVisible(true);
+		viewer = new TableViewer(table);
+
+		viewer.setContentProvider(new KryoNameContentProvider(logic));
+		viewer.setLabelProvider(new KryoNameLabelProvider());
+
+		viewer.setInput(null);
+
+		getSite().setSelectionProvider(viewer);
+
+	}
+
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
