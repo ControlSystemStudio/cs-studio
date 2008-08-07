@@ -8,51 +8,40 @@ import java.sql.SQLException;
 
 /**
  * Enables opening and closing of the connection for the given {@link Settings}.
- *
+ * 
  * @author Alen Vrecko
  */
 public class DBConnect {
-    private Settings settings;
-    private Connection connection;
+	private Settings settings;
+	private Connection connection;
 
+	public DBConnect(Settings settings) {
+		this.settings = settings;
+	}
 
-    public DBConnect(Settings settings) {
-        this.settings = settings;
-    }
+	public void openConnection() throws SQLException {
 
-    public void openConnection() {
-        try {
-            DriverManager.registerDriver(settings.getDriver());
-        } catch (SQLException e) {
-            throw new RuntimeException("Missing oracle driver jar - missing dependency. Should not happen");
-        }
-        try {
-            connection = DriverManager.getConnection(settings.getConnection(),
-                    settings.getUsername(), settings.getPassword());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+		DriverManager.registerDriver(settings.getDriver());
 
-    public Connection getConnection() {
-        return connection;
-    }
+		connection = DriverManager.getConnection(settings.getConnection(),
+				settings.getUsername(), settings.getPassword());
 
-    public Settings getSettings() {
-        return settings;
-    }
+	}
 
-    public void closeConnection() {
+	public Connection getConnection() {
+		return connection;
+	}
 
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
+	public Settings getSettings() {
+		return settings;
+	}
 
-            throw new RuntimeException("Failed ", e);
-        }
-    }
+	public void closeConnection() throws SQLException {
 
+		if (connection != null && !connection.isClosed()) {
+			connection.close();
+		}
+
+	}
 
 }
