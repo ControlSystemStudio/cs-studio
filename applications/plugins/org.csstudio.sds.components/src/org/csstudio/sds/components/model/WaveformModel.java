@@ -136,7 +136,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public static final String PROP_Y_AXIS_LABEL = "y_axis_label";
 
 	/**
-	 * The display options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
+	 * The display options (0 = None; 1 = X-axis; 2 = Y-Axis; 3 = Both).
 	 */
 	private static final String[] DISPLAY_OPTIONS = new String[] { "None",
 			"X-axis", "Y-axis", "Both" };
