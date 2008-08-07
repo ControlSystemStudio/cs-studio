@@ -99,6 +99,9 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			final FilterConditionDTO filterConditionDTO) {
 		// mapping the type information in the aggrFilterConditionTObject to a
 		// VersandRegel
+		
+		//FIXME (gs) hier knallt es bei JCFF oder NCFF Bedingungen
+		
 		final FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
 				.valueOf(filterConditionDTO.getClass());
 		switch (fctr) {
