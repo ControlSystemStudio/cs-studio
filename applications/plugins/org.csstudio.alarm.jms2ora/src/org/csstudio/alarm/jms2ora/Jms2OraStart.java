@@ -116,9 +116,9 @@ public class Jms2OraStart implements IApplication
             }
             
             SynchObject actSynch = new SynchObject(ApplicState.INIT, 0);
-            if(!sync.hasStatusSet(actSynch, 60, ApplicState.ERROR))    
+            if(!sync.hasStatusSet(actSynch, 300, ApplicState.ERROR))    
             {
-                logger.fatal("TIMEOUT: State has not changed the last 1 minute(s).");
+                logger.fatal("TIMEOUT: State has not changed the last 5 minute(s).");
             }
 
             currentState = actSynch.getStatus();
