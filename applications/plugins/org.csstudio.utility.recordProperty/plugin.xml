@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.utility.recordProperty"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.utility.recordproperty.RecordPropertyAction"
+               id="org.csstudio.utility.recordProperty"
+               label="RecordProperty"
+               menubarPath="css/utility/"
+               style="push"
+               tooltip="RecordProperty">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.csstudio.utility.recordproperty.RecordPropertyView"
+            id="org.csstudio.utility.recordproperty"
+            name="Record Property">
+      </view>
+   </extension>
+
+</plugin>
