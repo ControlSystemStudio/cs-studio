@@ -226,6 +226,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	public void refreshData() {
+		alarmbearbeiterBeans.clear();
+		alarmbearbeitergruppenBeans.clear();
+		alarmtopicBeans.clear();
+		filterbedingungBeans.clear();
+		filterBeans.clear();
+		
 		this.loadConfiguration();
 		for (final ConfigurationBeanServiceListener listener : this.listeners) {
 			listener.onConfigurationReload();
