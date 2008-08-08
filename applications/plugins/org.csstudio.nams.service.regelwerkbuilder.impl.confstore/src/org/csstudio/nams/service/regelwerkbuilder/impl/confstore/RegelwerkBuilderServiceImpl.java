@@ -200,8 +200,8 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 					.getOperands();
 			final VersandRegel[] versandRegels = new VersandRegel[operands
 					.size()];
-			final FilterConditionDTO[] conditions = new FilterConditionDTO[operands
-					.size()];
+			final FilterConditionDTO[] conditions = operands.toArray(new FilterConditionDTO[operands
+					.size()]);
 
 			for (int i = 0; i < versandRegels.length; i++) {
 				versandRegels[i] = this.createVersandRegel(conditions[i]);

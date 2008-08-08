@@ -208,6 +208,7 @@ class JMSConsumer implements Consumer {
 							}
 							map.put(messageKeyEnum, value);
 						}
+						//TODO gegebenen falls in der NAMSMessage eine "dirty" Map hinzufügen, die alle unbekonnten Felder damit diese weiter geschickt werden können.
 					}
 
 					final AcknowledgeHandler ackHandler = new AcknowledgeHandler() {

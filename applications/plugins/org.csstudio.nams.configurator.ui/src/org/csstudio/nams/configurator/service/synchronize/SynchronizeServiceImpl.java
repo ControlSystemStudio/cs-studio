@@ -105,8 +105,10 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 
 			callback.wartetAufAntowrtDesHintergrundSystems();
 			
+			MessagingSession messagingSession = null;
+			Consumer consumer = null;
 			try {
-				MessagingSession messagingSession = this.messagingService
+				messagingSession = this.messagingService
 						.createNewMessagingSession(
 								"syncServiceConsumer",
 								new String[] {
@@ -114,7 +116,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 												.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
 										preferenceService
 												.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
-				Consumer consumer = messagingSession
+				consumer = messagingSession
 						.createConsumer(
 								preferenceService
 										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
@@ -141,6 +143,13 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 								.getMessage());
 				callback.synchronisationAbgebrochen();
 				return;
+			} finally {
+				if (consumer != null) {
+					consumer.close();
+				}
+				if (messagingSession != null) {
+					messagingSession.close();
+				}
 			}
 			
 			callback.synchronisationsDurchHintergrundsystemsErfolgreich();

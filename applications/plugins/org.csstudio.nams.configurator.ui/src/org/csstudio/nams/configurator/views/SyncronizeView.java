@@ -49,6 +49,29 @@ public class SyncronizeView extends ViewPart {
 		}
 	}
 
+	private void appendStatusText(final String text) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				SyncronizeView.this.statusText.append(text);
+			}
+		});
+	}
+
+	private void appendStatusText(final String text, final Throwable t) {
+		this.appendStatusText(text);
+		final StringWriter stringWriter = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(stringWriter);
+		t.printStackTrace(printWriter);
+		printWriter.flush();
+		stringWriter.flush();
+		this.appendStatusText(stringWriter.toString());
+		printWriter.close();
+		try {
+			stringWriter.close();
+		} catch (final IOException e) { // Ignored!
+		}
+	}
+
 	@Override
 	public void createPartControl(final Composite parent) {
 
@@ -89,14 +112,8 @@ public class SyncronizeView extends ViewPart {
 				.setText("Push \"Perform synchronization of background-system\" to begin syncronization.");
 	}
 
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
-	}
-
 	protected synchronized void doSynchronize() {
-		this.appendStatusText("Beginning synchronization...");
+		this.appendStatusText("Beginning synchronization...\n");
 
 		try {
 			SyncronizeView.synchronizeService
@@ -106,6 +123,15 @@ public class SyncronizeView extends ViewPart {
 						public void bereiteSynchronisationVor() {
 							SyncronizeView.this
 									.appendStatusText("Preparing synchronization...\n");
+						}
+
+						private void buttonFreigben() {
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									SyncronizeView.this.syncButton
+											.setSelection(false);
+								}
+							});
 						}
 
 						public void fehlerBeimVorbereitenDerSynchronisation(
@@ -172,25 +198,10 @@ public class SyncronizeView extends ViewPart {
 									.appendStatusText("Waiting for sychronization commitment to back-end-system...\n");
 						}
 
-						private void buttonFreigben() {
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									SyncronizeView.this.syncButton
-											.setSelection(false);
-								}
-							});
-						}
-
 					});
 		} catch (final Throwable t) {
 			this.appendStatusText("\n\nSynchronization failed!\nReason: ", t);
 		}
-
-		// Display.getDefault().asyncExec(new Runnable() {
-		// public void run() {
-		// syncButton.setSelection(false);
-		// }
-		// });
 	}
 
 	protected boolean lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding() {
@@ -220,42 +231,16 @@ public class SyncronizeView extends ViewPart {
 							+ "Do you want to review your changes before continuing?");
 			if (messageBox.open() == SWT.YES) {
 				// The User likes to check his changes.
-				// System.out
-				// .println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding():
-				// false");
 				return false;
 			}
 		}
-		// System.out
-		// .println("SyncronizeView.lookForUnsavedChangesAndDecideAboutSynchrinsationProceeding():
-		// true");
 		return true;
 	}
 
-	private void appendStatusText(final String text) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				String statusTextContent = SyncronizeView.this.statusText
-						.getText();
-				statusTextContent += text;
-				SyncronizeView.this.statusText.setText(statusTextContent);
-			}
-		});
-	}
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
 
-	private void appendStatusText(final String text, final Throwable t) {
-		this.appendStatusText(text);
-		final StringWriter stringWriter = new StringWriter();
-		final PrintWriter printWriter = new PrintWriter(stringWriter);
-		t.printStackTrace(printWriter);
-		printWriter.flush();
-		stringWriter.flush();
-		this.appendStatusText(stringWriter.toString());
-		printWriter.close();
-		try {
-			stringWriter.close();
-		} catch (final IOException e) { // Ignored!
-		}
 	}
 
 }
