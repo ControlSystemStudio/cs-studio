@@ -22,7 +22,7 @@ public class HistoryServiceImpl implements HistoryService {
 		this.localStoreConfigurationService = localStoreConfigurationService;
 	}
 
-	public void logReceivedReplicationDoneMessage() {
+	public void logReceivedStartReplicationMessage() {
 
 		final HistoryDTO historyDTO = this.prepareReplicationHistoryDTO();
 		historyDTO
@@ -41,7 +41,7 @@ public class HistoryServiceImpl implements HistoryService {
 		}
 	}
 
-	public void logReceivedStartReplicationMessage() {
+	public void logReceivedReplicationDoneMessage() {
 		final HistoryDTO historyDTO = this.prepareReplicationHistoryDTO();
 		historyDTO
 				.setCDescription("Filtermanager got config replication end, goes to normal work.");
@@ -66,7 +66,7 @@ public class HistoryServiceImpl implements HistoryService {
 				.gibAusloesendeAlarmNachrichtDiesesVorganges();
 
 		final HistoryDTO historyDTO = new HistoryDTO();
-		historyDTO.setTTimeNew(new Date(System.currentTimeMillis()).getTime());
+		historyDTO.setTTimeNewAsDate(new Date());
 		historyDTO.setCActionType("TimeBased");
 		historyDTO.setCDescription("Timeout for Msg "
 				+ alarmNachricht.toString()
@@ -94,8 +94,8 @@ public class HistoryServiceImpl implements HistoryService {
 
 	private HistoryDTO prepareReplicationHistoryDTO() {
 		final HistoryDTO historyDTO = new HistoryDTO();
-		historyDTO.setTTimeNew(new Date(System.currentTimeMillis()).getTime());
-		historyDTO.setCActionType("Config Synch");
+		historyDTO.setTTimeNewAsDate(new Date());
+		historyDTO.setCType("Config Synch");
 		return historyDTO;
 	}
 

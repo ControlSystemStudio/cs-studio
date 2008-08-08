@@ -1,5 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,12 +14,28 @@ import javax.persistence.Table;
 /**
  * @author tr, mw
  * 
- * create table AMS_History ( iHistoryID INT NOT NULL GENERATED ALWAYS AS
- * IDENTITY, tTimeNew BIGINT, cMsgHost VARCHAR(64), cMsgProc VARCHAR(64),
- * cMsgName VARCHAR(64), cMsgEventTime VARCHAR(32), cDescription VARCHAR(512),
- * cActionType VARCHAR(16), iGroupRef INT, cGroupName VARCHAR(64), iReceiverPos
- * INT, iUserRef INT, cUserName VARCHAR(128), cDestType VARCHAR(16), cDestAdress
- * VARCHAR(128), PRIMARY KEY(iHistoryID) );
+ * <pre>
+ * create table AMS_History
+ *  (
+ *  iHistoryID		INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+ *  tTimeNew		BIGINT,
+ *  cType			VARCHAR(16),
+ *  cMsgHost		VARCHAR(64),
+ *  cMsgProc		VARCHAR(64),
+ *  cMsgName		VARCHAR(64),
+ *  cMsgEventTime	VARCHAR(32),
+ *  cDescription	VARCHAR(512),
+ *  cActionType		VARCHAR(16),	
+ *  iGroupRef		INT,
+ *  cGroupName		VARCHAR(64),
+ *  iReceiverPos	INT,
+ *  iUserRef 		INT,
+ *  cUserName 		VARCHAR(128),
+ *  cDestType		VARCHAR(16),	
+ *  cDestAdress		VARCHAR(128),
+ *  PRIMARY KEY(iHistoryID)
+ *  );
+ * </pre>
  */
 @Entity
 @Table(name = "AMS_History")
@@ -26,6 +46,8 @@ public class HistoryDTO {
 	private int iHistoryID;
 	@Column(name = "tTimeNew")
 	private long tTimeNew;
+	@Column(name = "cType", length = 16)
+	private String cType;
 	@Column(name = "cMsgHost")
 	private String cMsgHost;
 	@Column(name = "cMsgProc")
@@ -169,7 +191,19 @@ public class HistoryDTO {
 		this.iUserRef = userRef;
 	}
 
-	public void setTTimeNew(final long timeNew) {
-		this.tTimeNew = timeNew;
+	public void setTTimeNewAsDate(final Date timeNew) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String sdate = sdf.format(timeNew);
+		
+		this.tTimeNew = Long.parseLong(sdate);
+	}
+
+	public String getCType() {
+		return cType;
+	}
+
+	public void setCType(String type) {
+		cType = type;
 	}
 }
