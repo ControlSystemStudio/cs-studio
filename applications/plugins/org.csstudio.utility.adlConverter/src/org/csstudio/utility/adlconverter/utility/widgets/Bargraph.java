@@ -178,9 +178,6 @@ public class Bargraph extends Widget {
 
 //      <property type="sds.double" id="loloLevel" value="0.2" />
         _widget.setPropertyValue(id+"Level", value); //$NON-NLS-1$
-//      <dynamicsDescriptor ruleId="directConnection">
-//          <inputChannel name="dal-epics://&lt;&lt;Channel&gt;&gt;" type="java.lang.Double" />
-//      </dynamicsDescriptor>
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         String temp = id.toUpperCase();
         if(temp.equals("HI")){

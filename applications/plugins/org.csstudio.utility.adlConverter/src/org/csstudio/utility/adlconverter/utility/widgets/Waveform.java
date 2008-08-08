@@ -24,8 +24,14 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import java.util.Formatter;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.WaveformModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -45,6 +51,10 @@ public class Waveform extends Widget {
      */
     public Waveform(final ADLWidget widget) throws WrongADLFormatException {
         super(widget);
+        
+        _widget.setPropertyValue(WaveformModel.PROP_SHOW_SCALE, 3);
+        _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
+        
         for (ADLWidget waveformPart : widget.getObjects()) {
             if(waveformPart.getType().equalsIgnoreCase("plotcom")){
                 plotcom(waveformPart);
@@ -57,50 +67,34 @@ public class Waveform extends Widget {
             }
         }
         for (String waveform : widget.getBody()) {
-            if(waveform.contains("{")){
-                waveform = waveform.trim();
-                if(waveform.startsWith("plotcom")){
-                    System.out.println("p");
-                }else if(waveform.startsWith("trace")){
-                    System.out.println("t");
-                }else if(waveform.startsWith("x_axis")){
-                    System.out.println("x");
-                }else if(waveform.startsWith("y[0-9]_axis")){
-                    System.out.println("y");
+            String[] row = waveform.trim().split("="); //$NON-NLS-1$
+            if(row.length!=2){
+                throw new WrongADLFormatException(Messages.Bargraph_1);
+            }
+            if(row[0].equals("count")){ //$NON-NLS-1$
+                System.out.println("co");
+            }else if(row[0].equals("erase")){ //$NON-NLS-1$
+                System.out.println("er");
+            }else if(row[0].equals("eraseMode")){ //$NON-NLS-1$
+                System.out.println("eM");
+            }else if(row[0].equals("erase_oldest")){ //$NON-NLS-1$
+                System.out.println("e_o");
+            }else if(row[0].equals("style")){ //$NON-NLS-1$
+                System.out.println("st");
+                String style = "1"; // Line //$NON-NLS-1$
+                String value = row[1].toLowerCase();
+                boolean line = value.contains("line");
+                int dot = 2;
+                if(value.contains("only")){
+                    dot=0;
                 }
-            }else{
-                String[] row = waveform.trim().split("="); //$NON-NLS-1$
-                if(row.length!=2){
-                    throw new WrongADLFormatException(Messages.Bargraph_1);
-                }
-                if(row[0].equals("count")){ //$NON-NLS-1$
-                    System.out.println("co");
-                }else if(row[0].equals("erase")){ //$NON-NLS-1$
-                    System.out.println("er");
-                }else if(row[0].equals("eraseMode")){ //$NON-NLS-1$
-                    System.out.println("eM");
-                }else if(row[0].equals("erase_oldest")){ //$NON-NLS-1$
-                    System.out.println("e_o");
-                }else if(row[0].equals("style")){ //$NON-NLS-1$
-                    System.out.println("st");
-                    String style = "1"; // Line //$NON-NLS-1$
-                    String value = row[1];
-                    if (value==null){
-                        style = "1";  // Line //$NON-NLS-1$
-                    }else if (value.equals("none")){ //$NON-NLS-1$
-                        style = "0";  // none //$NON-NLS-1$
-                    }else if (value.equals("shape")){ //$NON-NLS-1$
-                        style = "6";  // none //$NON-NLS-1$
-                    }else if(value.equals("\"dash\"")){ //$NON-NLS-1$
-                        style = "5";  // Striated //$NON-NLS-1$
-                    }
-                    _widget.setPropertyValue(WaveformModel.PROP_SHOW_CONNECTION_LINES, "true");
-                }else if(row[0].equals("trigger")){ //$NON-NLS-1$
-                }
+                _widget.setPropertyValue(WaveformModel.PROP_SHOW_CONNECTION_LINES, line);
+                _widget.setPropertyValue(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, dot);
+            }else if(row[0].equals("trigger")){ //$NON-NLS-1$
             }
             
         }
-        // TODO: The wrong Widget for stripchart or stripchart 
+        // TODO: The wrong Widget for stripchart
     }
 
     /**
@@ -150,7 +144,7 @@ public class Waveform extends Widget {
             }else if(parameter.equals("minRange")){
                 double min = Double.parseDouble(row[1].trim());
                 _widget.setPropertyValue(WaveformModel.PROP_MIN+id, min);
-            }else if(parameter.equals("mayRange")){
+            }else if(parameter.equals("maxRange")){
                 double max = Double.parseDouble(row[1].trim());
                 _widget.setPropertyValue(WaveformModel.PROP_MAX+id, max);
             }else{
@@ -212,16 +206,12 @@ public class Waveform extends Widget {
      * @throws WrongADLFormatException 
      */
     private void trace(ADLWidget waveformPart) throws WrongADLFormatException {
-        String id ="";
+        int idInt =0;
         int start = waveformPart.getType().indexOf('[');
         if(start >=0){
             int stop = waveformPart.getType().indexOf(']', start);
             if(stop>0){
-                int idInt = Integer.parseInt(waveformPart.getType().substring(start+1,stop));
-                
-                if(idInt>1){
-                    id = Integer.toString(idInt-1);
-                }
+                idInt = Integer.parseInt(waveformPart.getType().substring(start+1,stop));
             }
         }
         for (String waveform : waveformPart.getBody()){
@@ -239,9 +229,22 @@ public class Waveform extends Widget {
 //                _widget.
                 //TODO: trace
             }else if(parameter.equals("ydata")){
-                //TODO: trace
+                if(idInt<WaveformModel.NUMBER_OF_ARRAYS){
+                    String record = row[1].replaceAll("\"", "").trim();
+                    if(idInt==0){
+                        _widget.setPrimarPv(record);
+                    }
+                    DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+                    dynamicsDescriptor.addInputChannel(new ParameterDescriptor(record, String[].class ));
+                    _widget.setDynamicsDescriptor(WaveformModel.dataPropertyId(idInt), dynamicsDescriptor);
+                    //TODO: trace
+                }else{
+                    Formatter f = new Formatter();
+                    f.format("Can not convert correct the Waveform. The Source have to many Wave's. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
+                    CentralLogger.getInstance().info(this, f.toString());
+                }
             }else if(parameter.equals("data_clr")){
-                _widget.setPropertyValue(WaveformModel.PROP_GRAPH_COLOR+id, ADLHelper.getRGB(row[1]));
+                _widget.setPropertyValue(WaveformModel.plotColorPropertyId(idInt), ADLHelper.getRGB(row[1].trim()));
             }else{
                 CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
             }

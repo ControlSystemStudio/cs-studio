@@ -38,7 +38,7 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
  * @version $Revision$
  * @since 11.09.2007
  */
-public class Display extends Widget{
+public class ADLDisplay extends Widget{
 
     /** 
      * The Color of (front?) Object.
@@ -61,7 +61,7 @@ public class Display extends Widget{
      * @param root Root Model for the Display.
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Display(final ADLWidget display, final DisplayModel root) throws WrongADLFormatException {
+    public ADLDisplay(final ADLWidget display, final DisplayModel root) throws WrongADLFormatException {
         super(display, root);
         for (ADLWidget widget : display.getObjects()) {
             if(widget.isType("object")){ //$NON-NLS-1$

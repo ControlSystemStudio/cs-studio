@@ -39,7 +39,7 @@ import org.csstudio.utility.adlconverter.utility.ParserADL;
 import org.csstudio.utility.adlconverter.utility.widgets.ActionButton;
 import org.csstudio.utility.adlconverter.utility.widgets.Arc;
 import org.csstudio.utility.adlconverter.utility.widgets.Bargraph;
-import org.csstudio.utility.adlconverter.utility.widgets.Display;
+import org.csstudio.utility.adlconverter.utility.widgets.ADLDisplay;
 import org.csstudio.utility.adlconverter.utility.widgets.Ellipse;
 import org.csstudio.utility.adlconverter.utility.widgets.GroupingContainer;
 import org.csstudio.utility.adlconverter.utility.widgets.Image;
@@ -54,10 +54,13 @@ import org.csstudio.utility.adlconverter.utility.widgets.Textinput;
 import org.csstudio.utility.adlconverter.utility.widgets.Valuator;
 import org.csstudio.utility.adlconverter.utility.widgets.Waveform;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author hrickens
@@ -164,7 +167,20 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
 
         // create the target file in the workspace
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+        File f = targetProject.toFile();
         IPath filePath = targetProject.append(targetFileName);
+//        File f = filePath.toFile();
+        if(!workspaceRoot.exists(targetProject)){
+            //TODO: Make a Dialog to ask to generate the dir.
+            MessageDialog md = new MessageDialog(Display.getCurrent().getActiveShell(),"Dir not exist", null,"Dir \""+targetProject+"\" not exist!\r\nCreat this Folder?",MessageDialog.WARNING,new String[]{"yes", "no"}, 0);
+            
+            if(md.open()==0){
+                IFolder folder = workspaceRoot.getFolder(targetProject);
+                createFolder(folder);
+            }else{
+                return false;
+            }
+        }
         IFile fileOut = workspaceRoot.getFile(filePath);
 
 //        IPath test123 = filePath.removeFirstSegments(2);
@@ -179,6 +195,21 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
     
 
     /**
+     * @param folder
+     * @throws CoreException 
+     */
+    private void createFolder(IFolder folder) throws CoreException {
+        if(!folder.getParent().exists()){
+            if (folder.getParent() instanceof IFolder) {
+                createFolder((IFolder) folder.getParent());
+            }
+        }
+        folder.create(true, true, null);
+
+        
+    }
+
+    /**
      * @param adlWidget the Main display widget.
      * @param root the root Element of css-sds file.
      */
@@ -191,10 +222,10 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                     _storDisplay=adlWidget;
                     _displaySave=true;
                 }else if(!adlWidget.getType().startsWith("display")&&_colormapSet&&_displaySave){ //$NON-NLS-1$
-                    new Display(_storDisplay, root);
+                    new ADLDisplay(_storDisplay, root);
                     _displaySave=false;
                 }else if(adlWidget.getType().startsWith("display")&&_colormapSet&&!_displaySave){ //$NON-NLS-1$
-                    new Display(adlWidget, root);
+                    new ADLDisplay(adlWidget, root);
                 }
             }catch(Exception e){
                 e.printStackTrace();

@@ -28,10 +28,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
+import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -62,7 +65,8 @@ public class RelatedDisplayItem extends WidgetPart{
     /**
      * The root path for Widget.
      */
-    private String _path; 
+    private String _path;
+    private String _policy; 
 
     /**
      * The default constructor.
@@ -104,7 +108,7 @@ public class RelatedDisplayItem extends WidgetPart{
           }else if(head.equals("args")){ //$NON-NLS-1$
               _args=row;
           }else if(head.equals("policy")){ //$NON-NLS-1$
-              //TODO: RelatedDisplay --> policy="replace display"
+              _policy=row[0];
           }else {
               throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter+"("+display.getObjectNr()+":"+display.getType()+")");
           }
@@ -115,14 +119,16 @@ public class RelatedDisplayItem extends WidgetPart{
      * Generate all Elements from Related Display Item.
      */
     final void generateElements() {
+        _widgetModel.setPropertyValue(WaveformModel.PROP_SHOW_VALUES, true);
+        
         ActionData actionData = _widgetModel.getActionData();
         if(actionData==null){
             actionData = new ActionData();
         }
         
         // new Open Shell Action
-        OpenDisplayActionModel action = (OpenDisplayActionModel) ActionType.OPEN_SHELL
-        .getActionFactory().createWidgetAction();
+        OpenDisplayActionModelFactory factoy = new OpenDisplayActionModelFactory();
+        OpenDisplayActionModel action = (OpenDisplayActionModel) factoy.createWidgetAction();
         
         if(_label!=null){
             action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION)
@@ -132,9 +138,12 @@ public class RelatedDisplayItem extends WidgetPart{
         // Set the Resource
         if(_name!=null){
             IPath path = new Path(_path);
+            if(!_name.toLowerCase().endsWith(".css-sds")){
+                _name=_name.concat(".css-sds");
+            }
             path = path.append(_name);
-            action.getProperty(OpenDisplayActionModel.PROP_RESOURCE)
-            .setPropertyValue(path);
+            WidgetProperty prop = action.getProperty(OpenDisplayActionModel.PROP_RESOURCE);
+            prop.setPropertyValue(path);
         }
         
         if(_args!=null){
@@ -153,6 +162,10 @@ public class RelatedDisplayItem extends WidgetPart{
             
             action.getProperty(OpenDisplayActionModel.PROP_ALIASES)
             .setPropertyValue(map);
+        }
+        
+        if(_policy!=null){
+            action.getProperty(OpenDisplayActionModel.PROP_CLOSE).setPropertyValue(_policy.contains("replace display"));
         }
         actionData.addAction(action);
         _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);

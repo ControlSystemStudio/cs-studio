@@ -32,7 +32,9 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
+import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
+import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -127,8 +129,9 @@ public class ADLMenuItem extends WidgetPart{
             }
             
             // new Open Shell Action
-            OpenDisplayActionModel action = (OpenDisplayActionModel) ActionType.OPEN_SHELL
-            .getActionFactory().createWidgetAction();
+            OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory();
+            OpenDisplayActionModel action = (OpenDisplayActionModel) factory.createWidgetAction(); 
+            action.setEnabled(true);
             
             if(_label!=null){
                 action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION)
@@ -169,8 +172,8 @@ public class ADLMenuItem extends WidgetPart{
             if(actionData==null){
                 actionData = new ActionData();
             }
-            CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
-            .getActionFactory().createWidgetAction();
+            CommitValueActionModelFactory factory = new CommitValueActionModelFactory(); 
+            CommitValueActionModel action = (CommitValueActionModel) factory.createWidgetAction();
 
             action.getProperty(CommitValueActionModel.PROP_VALUE)
             .setPropertyValue(new Path(_label.replaceAll("\"",""))); //$NON-NLS-1$ //$NON-NLS-2$

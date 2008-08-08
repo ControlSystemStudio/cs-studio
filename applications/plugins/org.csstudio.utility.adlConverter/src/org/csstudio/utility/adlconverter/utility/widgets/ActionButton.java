@@ -27,8 +27,8 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
+import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -67,20 +67,21 @@ public class ActionButton extends Widget {
                     _widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_BUTTON, false);
                 }
             }else if(row[0].equals("label")){ //$NON-NLS-1$
-//                    <property type="sds.string" id="label" value="AButton" />
+                // <property type="sds.string" id="label" value="AButton" />
                 _widget.setPropertyValue(ActionButtonModel.PROP_LABEL, row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
             }else if(row[0].equals("press_msg")){ //$NON-NLS-1$
-////            <property type="sds.double" id="click_value" value="0.0" /> 
+                // <property type="sds.double" id="click_value" value="0.0" /> 
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
-                .getActionFactory().createWidgetAction();
+                CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
+                CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
+                action.setEnabled(true);
                 action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 pressIndex = actionIndex++;
             }else if(row[0].equals("release_msg")){ //$NON-NLS-1$
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
-                .getActionFactory().createWidgetAction();
+                CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
+                CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
                 action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 releasIndex = actionIndex++;
@@ -91,7 +92,7 @@ public class ActionButton extends Widget {
             }else{                
 
                 throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+row[0]);
-            } //polygon have no Parameter
+            }
         }
         _widget.setPropertyValue(ActionButtonModel.PROP_ACTION_PRESSED_INDEX, pressIndex);
         _widget.setPropertyValue(ActionButtonModel.PROP_ACTION_RELEASED_INDEX, releasIndex);
