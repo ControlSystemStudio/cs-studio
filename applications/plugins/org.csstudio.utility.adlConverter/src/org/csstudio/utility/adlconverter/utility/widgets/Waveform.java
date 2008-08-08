@@ -243,7 +243,7 @@ public class Waveform extends Widget {
                     f.format("Can not convert correct the Waveform. The Source have to many Wave's. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
                     CentralLogger.getInstance().info(this, f.toString());
                 }
-            }else if(parameter.equals("data_clr")){
+            }else if(parameter.equals("data_clr")&&idInt<WaveformModel.NUMBER_OF_ARRAYS){
                 _widget.setPropertyValue(WaveformModel.plotColorPropertyId(idInt), ADLHelper.getRGB(row[1].trim()));
             }else{
                 CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
