@@ -63,7 +63,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected int numberOfDataSeries() {
+	public int numberOfDataSeries() {
 		return NUMBER_OF_CHANNELS;
 	}
 
@@ -74,6 +74,9 @@ public final class StripChartModel extends AbstractChartModel {
 	protected void configureProperties() {
 		super.configureProperties();
 		
+		// The value properties. The strip chart reads only a single value from
+		// the channel. The edit part is responsible for aggregating the values
+		// into an array an forward that array to the figure.
 		for (int i = 0; i < numberOfDataSeries(); i++) {
 			addProperty(valuePropertyId(i), new DoubleProperty(
 					"Value #" + (i+1), WidgetPropertyCategory.Behaviour,
@@ -94,6 +97,17 @@ public final class StripChartModel extends AbstractChartModel {
 	}
 
 	/**
+	 * Returns the current value of the value property with the specified index.
+	 * 
+	 * @param index
+	 *            the value property index.
+	 * @return the current value of the property.
+	 */
+	public double getCurrentValue(final int index) {
+		return getProperty(valuePropertyId(index)).getPropertyValue();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -109,7 +123,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 *            the data index.
 	 * @return the property ID.
 	 */
-	private static String valuePropertyId(final int index) {
+	public static String valuePropertyId(final int index) {
 		return INTERNAL_PROP_VALUE + Integer.toString(index + 1);
 	}
 

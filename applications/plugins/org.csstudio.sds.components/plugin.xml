@@ -113,6 +113,13 @@
             name="Timer"
             typeId="org.csstudio.sds.components.Timer">
       </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.StripChartModelFactory"
+            description="Plots values over time"
+            icon="icons/waveform.gif"
+            name="Strip Chart"
+            typeId="org.csstudio.sds.components.StripChart">
+      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">

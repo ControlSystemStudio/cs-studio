@@ -88,7 +88,7 @@ public final class WaveformModel extends AbstractChartModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected int numberOfDataSeries() {
+	public int numberOfDataSeries() {
 		return NUMBER_OF_ARRAYS;
 	}
 
@@ -107,14 +107,6 @@ public final class WaveformModel extends AbstractChartModel {
 				WidgetPropertyCategory.Behaviour, new double[] { }));
 		addProperty(dataPropertyId(3), new DoubleArrayProperty("Data #4",
 				WidgetPropertyCategory.Behaviour, new double[] { }));
-		addProperty(plotColorPropertyId(0), new ColorProperty("Plot color #1",
-				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
-		addProperty(plotColorPropertyId(1), new ColorProperty("Plot color #2",
-				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
-		addProperty(plotColorPropertyId(2), new ColorProperty("Plot color #3",
-				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
-		addProperty(plotColorPropertyId(3), new ColorProperty("Plot color #4",
-				WidgetPropertyCategory.Display, new RGB(0, 0, 0)));
 	}
 
 	/**

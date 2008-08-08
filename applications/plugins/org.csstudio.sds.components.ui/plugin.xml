@@ -37,6 +37,10 @@
            class="org.csstudio.sds.components.ui.internal.editparts.TimerEditPart"
            typeId="org.csstudio.sds.components.Timer">
      </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.StripChartEditPart"
+           typeId="org.csstudio.sds.components.StripChart">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

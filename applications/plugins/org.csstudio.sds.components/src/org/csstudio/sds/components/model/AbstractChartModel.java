@@ -194,7 +194,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * 
 	 * @return the number of data series that this model supports.
 	 */
-	protected abstract int numberOfDataSeries();
+	public abstract int numberOfDataSeries();
 
 	/**
 	 * Returns whether automatic scaling for the y-axis is enabled.

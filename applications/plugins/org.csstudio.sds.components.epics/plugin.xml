@@ -49,6 +49,11 @@
             schemaId="schema.epics"
             widgetTypeId="org.csstudio.sds.components.MenuButton">
       </widgetModelInitializer>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.StripChartInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.StripChart">
+      </widgetModelInitializer>
    </extension>
    
       <extension
