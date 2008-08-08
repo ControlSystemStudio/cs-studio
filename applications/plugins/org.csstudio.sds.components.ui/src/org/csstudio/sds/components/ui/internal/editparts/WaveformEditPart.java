@@ -54,15 +54,15 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		figure.setMin(model.getMin());
 		figure.setMax(model.getMax());
 		figure.setAutoScale(model.getAutoscale());
-		figure.setShowScale(model.getShowScale());
-		figure.setShowValues(model.getShowValues());
-		figure.setShowGridLines(model.getShowLedgerLines());
-		figure.setGridLinesColor(model.getLedgerLineColor());
-		figure.setShowConnectionLines(model.getShowConnectionLines());
-		figure.setGraphLineWidth(model.getGraphLineWidth());
+		figure.setShowScale(model.getShowAxes());
+		figure.setShowValues(model.isLabeledTicksEnabled());
+		figure.setShowGridLines(model.getShowGridLines());
+		figure.setGridLinesColor(model.getGridLineColor());
+		figure.setShowConnectionLines(model.isLineChart());
+		figure.setGraphLineWidth(model.getPlotLineWidth());
 		figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
 		figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
-		figure.setTransparent(model.getTransparent());
+		figure.setTransparent(model.isTransparent());
 		figure.setYAxisScaling(model.getYAxisScaling());
 		figure.setLabel(model.getLabel());
 		figure.setXAxisLabel(model.getXAxisLabel());
@@ -112,7 +112,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_AUTO_SCALE, handler);
+		setPropertyChangeHandler(WaveformModel.PROP_AUTOSCALE, handler);
 
 		
 		// show values
@@ -125,7 +125,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_SHOW_VALUES, showValuesHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_LABELED_TICKS, showValuesHandler);
 		
 		// show ledger lines
 		IWidgetPropertyChangeHandler ledgerLinesHandler = new IWidgetPropertyChangeHandler() {
@@ -149,7 +149,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_SHOW_SCALE, scaleHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_AXES, scaleHandler);
 		
 		// show connection lines
 		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
@@ -161,7 +161,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_SHOW_CONNECTION_LINES, connectionLinesHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_LINE_CHART, connectionLinesHandler);
 		
 		// graph line width
 		IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
@@ -173,7 +173,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_GRAPH_LINE_WIDTH, lineWidthHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_PLOT_LINE_WIDTH, lineWidthHandler);
 		
 		// transparent
 		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {

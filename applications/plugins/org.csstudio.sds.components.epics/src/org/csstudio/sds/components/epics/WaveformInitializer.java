@@ -42,6 +42,6 @@ public final class WaveformInitializer extends AbstractWidgetModelInitializer {
 		// "$channel$.VAL");
 		initializeDynamicProperty(WaveformModel.PROP_MIN, "$channel$.LOPR");
 		initializeDynamicProperty(WaveformModel.PROP_MAX, "$channel$.HOPR");
-		initializeStaticProperty(WaveformModel.PROP_AUTO_SCALE, false);
+		initializeStaticProperty(WaveformModel.PROP_AUTOSCALE, false);
 	}
 }
