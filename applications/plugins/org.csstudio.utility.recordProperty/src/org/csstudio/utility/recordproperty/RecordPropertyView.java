@@ -16,7 +16,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * RecordPropertyView creates view for the plugin.
  * 
- * @author rpovsic
+ * @author Rok Povsic
  */
 public class RecordPropertyView extends ViewPart {
 	
@@ -53,6 +53,9 @@ public class RecordPropertyView extends ViewPart {
 	public RecordPropertyView() {
 	}
 	
+	/**
+	 * Creates a table.
+	 */
 	public void createPartControl(final Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 
@@ -71,6 +74,9 @@ public class RecordPropertyView extends ViewPart {
 		getSite().setSelectionProvider(tableViewer);
 	}
 	
+	/**
+	 * Inserts data to table columns.
+	 */
 	private void startRecordPropertyRequest() {
 		RecordPropertyGetRDB rdb = new RecordPropertyGetRDB();
 		

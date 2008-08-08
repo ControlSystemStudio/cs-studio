@@ -8,3 +8,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.ui
 Eclipse-LazyStart: true
+Bundle-ClassPath: .,
+ lib/ojdbc14.jar

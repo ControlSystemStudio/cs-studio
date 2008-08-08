@@ -3,15 +3,26 @@ package org.csstudio.utility.recordproperty.rdb.data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
+import org.csstudio.platform.simpledal.ConnectionException;
+import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
+import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
 
+/**
+ * RecordPropertyGetRDB gets data from database.
+ * 
+ * @author Rok Povsic
+ */
 public class RecordPropertyGetRDB {
 
 	ResultSet resultSet;
 	
-	ArrayList<RecordPropertyEntry> data;
+	ArrayList<RecordPropertyEntry> data = new ArrayList<RecordPropertyEntry>();
 	
 	public RecordPropertyEntry[] getData() {
 		/* Test data for table.
@@ -22,7 +33,7 @@ public class RecordPropertyGetRDB {
 		};
 		*/
 		
-		String record = "alarmTest:RAMPA_calc";
+		String record = "TS2ATH9V103_bi";
 		
 		DBConnect connect = new DBConnect(new OracleSettings());
 		
@@ -78,20 +89,44 @@ public class RecordPropertyGetRDB {
             e.printStackTrace();
         }
         
-        // ERROR HERE
         try {
 			while(resultSet.next()) {
-				String var = resultSet.getString("tv.field_name");
-				data.add(new RecordPropertyEntry(var, "test", "test", "test"));
+				String var1 = resultSet.getString("FIELD_NAME");
+				String var2 = resultSet.getString("VALUE");
+				
+				String value = "Field value not found";
+				
+				// getting the third column, value, from DAL
+				ProcessVariableAdressFactory _addressFactory;
+				
+				IProcessVariableConnectionService _connectionService;
+				
+				ProcessVariableConnectionServiceFactory _connectionFactory = ProcessVariableConnectionServiceFactory.getDefault();
+				
+				_addressFactory = ProcessVariableAdressFactory.getInstance();
+				
+				_connectionService = _connectionFactory.createProcessVariableConnectionService();
+				
+				try {
+					value = _connectionService.getValueAsString(_addressFactory
+							.createProcessVariableAdress("dal-epics://"+record+"."+var1));
+				} catch (ConnectionException e) {
+					CentralLogger.getInstance().getLogger(this).info("Field value not found: " + record + "." + var1);
+//					e.printStackTrace();
+				}
+				
+				RecordPropertyEntry entry = new RecordPropertyEntry(var1, var2, value, "test");
+				data.add(entry);
 			}
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
-
-        connect.closeConnection();
         
         RecordPropertyEntry[] stringArray = (RecordPropertyEntry[])data.toArray(new RecordPropertyEntry[data.size()]);
 		
+        connect.closeConnection();
+        
 		return stringArray;
+				
 	}
 }
