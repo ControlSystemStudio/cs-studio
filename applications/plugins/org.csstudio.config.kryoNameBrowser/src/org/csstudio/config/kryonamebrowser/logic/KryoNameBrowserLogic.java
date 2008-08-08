@@ -27,7 +27,7 @@ import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
 public class KryoNameBrowserLogic {
 
 	private DBConnect database;
-	private static final int NO_PARENT_PLANT_ID = 0;
+	private static final int NO_PARENT_PLANT_ID = 1;
 	private static final int NO_PARENT_OBJECT_ID = 0;
 	private static final int ROW_FETCH_SIZE = 50;
 
