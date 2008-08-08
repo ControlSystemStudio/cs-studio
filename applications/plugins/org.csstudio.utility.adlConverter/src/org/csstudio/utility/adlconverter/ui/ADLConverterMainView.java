@@ -207,7 +207,8 @@ public class ADLConverterMainView extends ViewPart {
             public void widgetSelected(final SelectionEvent e) {
                 StructuredSelection sel = (StructuredSelection) _avaibleFiles.getSelection();
                 ArrayList<Object> list = new ArrayList<Object>(sel.toList());
-                while (list.size() > 0) {
+                boolean work = true;
+                while (list.size() > 0&& true) {
                     ADLDisplayImporter di = new ADLDisplayImporter();
                     File file = (File) list.remove(0);
                     IPath targetProject;
@@ -219,13 +220,18 @@ public class ADLConverterMainView extends ViewPart {
                         targetProject = initial.getProjectRelativePath().append(_targetPath);
                     }
                     try {
-                        if (!di.importDisplay(file.getAbsolutePath(), targetProject, file.getName()
-                                .replace(".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                            if (di.getStatus() == 2) {
-                                // Job is canceled.
-                                break;
+                            work = di.importDisplay(file.getAbsolutePath(), targetProject, file.getName()
+                                .replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$
+                                
+                            if(!work){
+
+                                if(di.getStatus()==2){
+                                    // Job is canceled.
+                                    break;
+                                }else {
+                                    work=true;
+                                }
                             }
-                        }
                     } catch (Exception e1) {
                         CentralLogger.getInstance().error(this, e1);
                     }
