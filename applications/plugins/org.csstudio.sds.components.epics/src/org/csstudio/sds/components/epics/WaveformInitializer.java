@@ -26,10 +26,9 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 
 /**
- * Widget initializer for a simple slider for EPICs.
+ * Widget initializer for the waveform widget.
  * 
  * @author Sven Wende
- * 
  */
 public final class WaveformInitializer extends AbstractWidgetModelInitializer {
 
