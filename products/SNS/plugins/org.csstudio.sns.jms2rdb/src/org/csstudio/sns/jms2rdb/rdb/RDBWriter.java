@@ -3,6 +3,7 @@ package org.csstudio.sns.jms2rdb.rdb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Enumeration;
@@ -21,6 +22,9 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class RDBWriter
 {
 	private static final int MAX_VALUE_LENGTH = 100;
+	
+    /** Enable statistics for Jeff Patton ? */
+	private static final boolean enable_trace = true;
 
     /** RDB Utility */
     final private RDBUtil rdb_util;
@@ -52,6 +56,15 @@ public class RDBWriter
     public RDBWriter(final String url, final String schema) throws Exception
     {
         rdb_util = RDBUtil.connect(url);
+        
+        if (enable_trace)
+        {
+            final Statement statement = rdb_util.getConnection().createStatement();
+            statement.execute("alter session set tracefile_identifier='KayTest'");
+            statement.execute("ALTER SESSION SET events " +
+                    "'10046 trace name context forever, level 12'");
+        }
+        
         sql = new SQL(rdb_util, schema);
 
         final Connection connection = rdb_util.getConnection();
@@ -161,6 +174,20 @@ public class RDBWriter
             catch (Exception ex)
             { /* Ignore */ }
         }
+        
+        if (enable_trace)
+        {
+            try
+            {
+                final Statement statement = rdb_util.getConnection().createStatement();
+                statement.execute("ALTER SESSION SET events '10046 trace name context off'");
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        
         rdb_util.close();
     }
 
