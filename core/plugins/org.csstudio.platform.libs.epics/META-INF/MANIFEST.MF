@@ -12,6 +12,11 @@ Bundle-ClassPath: .,
  lib/jca-2.3.2.jar
 Export-Package: 
  com.cosylab.epics.caj,
+ com.cosylab.epics.caj.cas,
+ com.cosylab.epics.caj.cas.handlers,
+ com.cosylab.epics.caj.cas.requests,
+ com.cosylab.epics.caj.cas.util,
+ com.cosylab.epics.caj.cas.util.examples,
  com.cosylab.epics.caj.impl,
  com.cosylab.epics.caj.impl.handlers,
  com.cosylab.epics.caj.impl.reactor,
