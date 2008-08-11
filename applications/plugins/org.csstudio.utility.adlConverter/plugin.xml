@@ -45,5 +45,11 @@
             plugin="org.csstudio.utility.adlConverter">
       </contexts>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.utility.adlconverter.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

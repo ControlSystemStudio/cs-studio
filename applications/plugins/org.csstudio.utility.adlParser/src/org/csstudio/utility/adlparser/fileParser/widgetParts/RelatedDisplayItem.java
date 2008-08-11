@@ -119,7 +119,7 @@ public class RelatedDisplayItem extends WidgetPart{
      * Generate all Elements from Related Display Item.
      */
     final void generateElements() {
-        _widgetModel.setPropertyValue(WaveformModel.PROP_SHOW_VALUES, true);
+        _widgetModel.setPropertyValue(WaveformModel.PROP_LABELED_TICKS, true);
         
         ActionData actionData = _widgetModel.getActionData();
         if(actionData==null){

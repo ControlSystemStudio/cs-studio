@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import java.util.Formatter;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -52,8 +53,8 @@ public class Waveform extends Widget {
     public Waveform(final ADLWidget widget) throws WrongADLFormatException {
         super(widget);
         
-        _widget.setPropertyValue(WaveformModel.PROP_SHOW_SCALE, 3);
-        _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
+        _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
+        _widget.setPropertyValue(WaveformModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
         
         for (ADLWidget waveformPart : widget.getObjects()) {
             if(waveformPart.getType().equalsIgnoreCase("plotcom")){
@@ -88,7 +89,7 @@ public class Waveform extends Widget {
                 if(value.contains("only")){
                     dot=0;
                 }
-                _widget.setPropertyValue(WaveformModel.PROP_SHOW_CONNECTION_LINES, line);
+                _widget.setPropertyValue(WaveformModel.PROP_LINE_CHART, line);
                 _widget.setPropertyValue(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, dot);
             }else if(row[0].equals("trigger")){ //$NON-NLS-1$
             }
@@ -137,9 +138,9 @@ public class Waveform extends Widget {
             }else if(parameter.equals("rangeStyle")){
                 String rangeStyle = row[1].replaceAll("\"", "").trim();
                 if(rangeStyle.equalsIgnoreCase("auto-scale")){
-                    _widget.setPropertyValue(WaveformModel.PROP_AUTO_SCALE+id, true);
+                    _widget.setPropertyValue(WaveformModel.PROP_AUTOSCALE+id, true);
                 }else{
-                    _widget.setPropertyValue(WaveformModel.PROP_AUTO_SCALE+id, false);
+                    _widget.setPropertyValue(WaveformModel.PROP_AUTOSCALE+id, false);
                 }
             }else if(parameter.equals("minRange")){
                 double min = Double.parseDouble(row[1].trim());
@@ -194,7 +195,7 @@ public class Waveform extends Widget {
                 //TODO: timeFormat
                 String xLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(WaveformModel.PROP_X_AXIS_LABEL, xLabel);
-                _widget.setPropertyValue(WaveformModel.PROP_SHOW_SCALE, 3);
+                _widget.setPropertyValue(WaveformModel.PROP_SHOW_AXES, 3);
             }else{
                 CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
             }
