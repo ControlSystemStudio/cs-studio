@@ -127,6 +127,21 @@ public final class StripChartModel extends AbstractChartModel {
 	}
 
 	/**
+	 * Returns whether the data series with the specified index should be
+	 * plotted.
+	 * 
+	 * @param index
+	 *            the data index.
+	 * @return <code>true</code> if the plot is enabled, <code>false</code>
+	 *         otherwise.
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is invalid.
+	 */
+	public boolean isPlotEnabled(int index) {
+		return getProperty(enablePlotPropertyId(index)).getPropertyValue();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

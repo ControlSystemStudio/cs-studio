@@ -61,9 +61,11 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	private void initializeDataProperties(final WaveformFigure figure,
 			final StripChartModel model) {
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
-			double[] data = new double[10];
-			Arrays.fill(data, model.getCurrentValue(i));
-			figure.setData(i, data);			
+			if (model.isPlotEnabled(i)) {
+				double[] data = new double[10];
+				Arrays.fill(data, model.getCurrentValue(i));
+				figure.setData(i, data);
+			}
 		}
 	}
 
@@ -104,7 +106,45 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 				double value = (Double) newValue;
 				double[] data = new double[10];
 				Arrays.fill(data, value);
-				figure.setData(_index, data);
+				if (((StripChartModel) getWidgetModel()).isPlotEnabled(_index)) {
+					figure.setData(_index, data);
+				} else {
+					figure.setData(_index, new double[0]);
+				}
+				return true;
+			}
+		}
+		
+		/**
+		 * Change handler for the plot enablement properties.
+		 */
+		class EnablePlotChangeHandler implements IWidgetPropertyChangeHandler {
+			
+			private final int _index;
+
+			/**
+			 * Constructor.
+			 * @param index the index of the data array.
+			 */
+			EnablePlotChangeHandler(final int index) {
+				_index = index;
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 */
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				boolean enabled = (Boolean) newValue;
+				if (enabled) {
+					 double value = ((StripChartModel) getWidgetModel()).getCurrentValue(_index);
+					 double[] data = new double[10];
+					 Arrays.fill(data, value);
+					 figure.setData(_index, data);
+				} else {
+					figure.setData(_index, new double[0]);
+				}
 				return true;
 			}
 		}
@@ -113,6 +153,8 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
 			setPropertyChangeHandler(StripChartModel.valuePropertyId(i),
 					new DataChangeHandler(i));
+			setPropertyChangeHandler(StripChartModel.valuePropertyId(i),
+					new EnablePlotChangeHandler(i));
 		}
 	}
 
