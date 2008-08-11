@@ -12,8 +12,13 @@ import org.junit.Test;
 
 /** Simple RDB 'write' performance test.
  *  <p>
- *  Log messages have about 10 properties;
+ *  Log messages have 10 properties;
  *  3 in message table, 7 as message content.
+ *  One message insert really means:
+ *  SELECT new message id
+ *  SELECT new message_content id
+ *  INSERT message row
+ *  bulk INSERT of 7 message_content rows
  *  
  *  Using 'batched' inserts for the properties.
  *  
@@ -29,13 +34,13 @@ public class RDBPerfTest
 {
     /** JMS Server URL */
     // TODO Don't put the epics_mon PW into CVS!
-//    final private static String URL =
-//        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdb1.sns.ornl.gov:1521/prod";
-//    final private static String SCHEMA = "EPICS";
-
     final private static String URL =
-    "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
-    final private static String SCHEMA = ""; 
+        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdb1.sns.ornl.gov:1521/prod";
+    final private static String SCHEMA = "EPICS";
+
+//    final private static String URL =
+//    "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
+//    final private static String SCHEMA = ""; 
     
     /** Test runtime */
     final private static int SECONDS = 60;

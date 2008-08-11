@@ -24,7 +24,7 @@ public class RDBWriter
 	private static final int MAX_VALUE_LENGTH = 100;
 	
     /** Enable statistics for Jeff Patton ? */
-	private static final boolean enable_trace = true;
+	private static final boolean enable_trace = false;
 
     /** RDB Utility */
     final private RDBUtil rdb_util;
