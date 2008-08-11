@@ -243,7 +243,9 @@ public class RDBWriter
 		insertMessage(message_id, type, name, severity);
         // Since batched inserts are only performed at the end,
         // a 'select' for the next content ID won't see them, yet.
-        // So we have to count them up in here
+        // So we have to count them up in here.
+		// If the message_content.id was auto-generated
+		// (MySQL AUTO_INC, Oracle sequence) we could skip this step.
         int content_id = getNextContentID();
         final Enumeration<String> props = map.getMapNames();
         while (props.hasMoreElements())
