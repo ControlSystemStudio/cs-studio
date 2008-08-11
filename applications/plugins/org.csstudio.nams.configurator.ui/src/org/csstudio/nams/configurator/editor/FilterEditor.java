@@ -56,6 +56,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -646,9 +647,11 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		});
 
 		// Buttons
+		Composite buttonComposite = new Composite(outerFormMain, SWT.NONE);
+		buttonComposite.setLayout(new RowLayout());
 		// delete
-		Button deleteButton = new Button(outerFormMain, SWT.PUSH);
-		deleteButton.setText("remove action");
+		Button deleteButton = new Button(buttonComposite, SWT.PUSH);
+		deleteButton.setText("remove");
 		deleteButton.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}
@@ -668,8 +671,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			}
 		});
 		// up
-		Button upButton = new Button(outerFormMain, SWT.PUSH);
-		upButton.setText("move action up");
+		Button upButton = new Button(buttonComposite, SWT.PUSH);
+		upButton.setText("up");
 		upButton.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}
@@ -689,8 +692,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			}
 		});
 		// down
-		Button downButton = new Button(outerFormMain, SWT.PUSH);
-		downButton.setText("move action down");
+		Button downButton = new Button(buttonComposite, SWT.PUSH);
+		downButton.setText("down");
 		downButton.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}

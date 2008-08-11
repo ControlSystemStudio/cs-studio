@@ -47,4 +47,6 @@ public interface ConfigurationBeanService {
 	public <T extends IConfigurationBean> T save(T bean)
 			throws InconsistentConfigurationException, StorageError,
 			StorageException;
+
+	public boolean isDeleteable(IConfigurationBean bean);
 }

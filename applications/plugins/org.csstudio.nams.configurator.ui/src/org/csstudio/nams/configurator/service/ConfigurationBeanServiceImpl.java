@@ -23,6 +23,7 @@ import org.csstudio.nams.configurator.beans.FilterAction;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
+import org.csstudio.nams.configurator.beans.IReceiverBean;
 import org.csstudio.nams.configurator.beans.MessageTemplateBean;
 import org.csstudio.nams.configurator.beans.User2GroupBean;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
@@ -231,7 +232,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		alarmtopicBeans.clear();
 		filterbedingungBeans.clear();
 		filterBeans.clear();
-		
+
 		this.loadConfiguration();
 		for (final ConfigurationBeanServiceListener listener : this.listeners) {
 			listener.onConfigurationReload();
@@ -1028,7 +1029,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		}
 
 		dto.alleAlarmbearbeiterEntfernen();
-		
+
 		final List<User2GroupBean> user2groupss = bean.getUsers();
 		for (final User2GroupBean user2groupBean : user2groupss) {
 			dto.alarmbearbeiterZuordnen(userDtos.get(user2groupBean
@@ -1368,4 +1369,107 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			listener.onBeanUpdate(bean);
 		}
 	}
+
+	public boolean isDeleteable(IConfigurationBean bean) {
+		if (bean instanceof AlarmbearbeiterBean) {
+			if (isReferencedByFilterAction(bean,
+					AlarmbearbeiterFilterActionType.class)
+					|| isReferencedByAlarmbearbeiterGruppen(bean)) {
+				return false;
+			}
+		}
+		if (bean instanceof AlarmbearbeiterGruppenBean) {
+			if (isReferencedByFilterAction(bean,
+					AlarmbearbeitergruppenFilterActionType.class)) {
+				return false;
+			}
+		}
+		if (bean instanceof AlarmtopicBean) {
+			if (isReferencedByFilterAction(bean,
+					AlarmTopicFilterActionType.class)) {
+				return false;
+			}
+		}
+		if (bean instanceof FilterbedingungBean) {
+			Collection<FilterbedingungBean> filterConditions = this.filterbedingungBeans
+					.values();
+			for (FilterbedingungBean filterbedingungBean : filterConditions) {
+				if (filterbedingungBean.getFilterSpecificBean() instanceof JunctorConditionBean) {
+					JunctorConditionBean orBean = (JunctorConditionBean) filterbedingungBean
+							.getFilterSpecificBean();
+					if (orBean.getFirstCondition().getID() == bean.getID()
+							|| orBean.getSecondCondition().getID() == bean
+									.getID()) {
+						return false;
+					}
+				}
+			}
+
+			Collection<FilterBean> filters = this.filterBeans.values();
+			for (FilterBean filterBean : filters) {
+				List<FilterbedingungBean> conditions = filterBean
+						.getConditions();
+
+				if (isReferencedBySubCondition(bean, conditions)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean isReferencedBySubCondition(IConfigurationBean bean,
+			Collection<FilterbedingungBean> conditions) {
+		for (FilterbedingungBean condition : conditions) {
+			if (condition.getID() == bean.getID()) {
+				return true;
+			}
+			if (condition instanceof JunctorConditionForFilterTreeBean) {
+				JunctorConditionForFilterTreeBean jcfftb = (JunctorConditionForFilterTreeBean) condition;
+				if (isReferencedBySubCondition(bean, jcfftb.getOperands())) {
+					return true;
+				}
+			}
+			if (condition instanceof NotConditionForFilterTreeBean) {
+				NotConditionForFilterTreeBean ncfftb = (NotConditionForFilterTreeBean) condition;
+				if (isReferencedBySubCondition(bean, Collections
+						.singleton(ncfftb.getFilterbedingungBean()))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean isReferencedByAlarmbearbeiterGruppen(IConfigurationBean bean) {
+		Collection<AlarmbearbeiterGruppenBean> alarmbearbeitergruppen = this.alarmbearbeitergruppenBeans
+				.values();
+		for (AlarmbearbeiterGruppenBean alarmbearbeiterGruppenBean : alarmbearbeitergruppen) {
+			List<User2GroupBean> users = alarmbearbeiterGruppenBean.getUsers();
+			for (User2GroupBean user2GroupBean : users) {
+				if (user2GroupBean.getUserBean().getID() == bean.getID()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean isReferencedByFilterAction(IConfigurationBean bean,
+			Class<? extends FilterActionType> expectedActionType) {
+		Collection<FilterBean> filters = this.filterBeans.values();
+		for (FilterBean filterBean : filters) {
+			List<FilterAction> actions = filterBean.getActions();
+			for (FilterAction filterAction : actions) {
+				IReceiverBean receiver = filterAction.getReceiver();
+				if (filterAction.getFilterActionType().getClass()
+						.isAssignableFrom(expectedActionType)
+						&& receiver.getID() == bean.getID()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
