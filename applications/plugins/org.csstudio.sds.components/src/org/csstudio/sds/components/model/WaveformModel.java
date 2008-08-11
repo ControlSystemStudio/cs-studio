@@ -22,9 +22,7 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleArrayProperty;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines a simple waverform widget model.
@@ -46,14 +44,11 @@ public final class WaveformModel extends AbstractChartModel {
     public static final String ID = "org.csstudio.sds.components.Waveform"; //$NON-NLS-1$
     
     /**
-     * Internal array of the property IDs for the data properties.
-     * Implementation note: the array is private to prevent modifications by
-     * clients (arrays cannot be immutable in Java). Clients should call
-     * {@link #dataPropertyId(int)} to request a property ID.
+	 * The base property ID for the data properties. Use the
+	 * {@link #dataPropertyId(int)} method to get the property ID for the
+	 * value of a specific data series. 
      */
-    private static final String[] INTERNAL_DATA_PROPERTY_ID = {
-    	"wave", "wave2", "wave3", "wave4"
-    };
+    private static final String INTERNAL_PROP_DATA = "data";
 
 	/**
 	 * Constructor.
@@ -66,14 +61,18 @@ public final class WaveformModel extends AbstractChartModel {
 	 * Returns the property ID for the waveform data with the specified index.
 	 * 
 	 * @param index
-	 *            the data index. The index must be in the range
-	 *            <code>0..NUMBER_OF_ARRAYS</code>.
+	 *            the data index. The valid range for the index is
+	 *            <code>0 &lt;= index &lt; NUMBER_OF_ARRAYS</code>.
 	 * @return the property ID.
 	 * @throws IndexOutOfBoundsException
 	 *             if the index is invalid.
 	 */
 	public static String dataPropertyId(final int index) {
-		return INTERNAL_DATA_PROPERTY_ID[index];
+		if (index < 0 || index >= NUMBER_OF_ARRAYS) {
+			throw new IndexOutOfBoundsException("Invalid index: " + index);
+		}
+		
+		return INTERNAL_PROP_DATA + Integer.toString(index + 1);
 	}
 
 	/**
@@ -98,15 +97,13 @@ public final class WaveformModel extends AbstractChartModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addProperty(dataPropertyId(0), new DoubleArrayProperty("Data #1",
-				WidgetPropertyCategory.Behaviour, new double[] { 20.0, 15.0,
-						33.0, 44.0, 22.0, 3.0, 25.0, 4.0 }));
-		addProperty(dataPropertyId(1), new DoubleArrayProperty("Data #2",
-				WidgetPropertyCategory.Behaviour, new double[] { }));
-		addProperty(dataPropertyId(2), new DoubleArrayProperty("Data #3",
-				WidgetPropertyCategory.Behaviour, new double[] { }));
-		addProperty(dataPropertyId(3), new DoubleArrayProperty("Data #4",
-				WidgetPropertyCategory.Behaviour, new double[] { }));
+		
+		// The waveform data properties
+		for (int i = 0; i < numberOfDataSeries(); i++) {
+			addProperty(dataPropertyId(i), new DoubleArrayProperty(
+					"Data #" + (i+1), WidgetPropertyCategory.Behaviour,
+					new double[0]));
+		}
 	}
 
 	/**
@@ -121,9 +118,11 @@ public final class WaveformModel extends AbstractChartModel {
 	 * Returns the waveform data for the specified index.
 	 * 
 	 * @param index
-	 *            the zero-based index of the waveform data. Must be in range
-	 *            <code>0..NUMBER_OF_ARRAYS</code>.
+	 *            the data index.  The valid range for the index is
+	 *            <code>0 &lt;= index &lt; NUMBER_OF_ARRAYS</code>.
 	 * @return the waveform data array.
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is invalid.
 	 */
 	public double[] getData(final int index) {
 		return (double[]) getProperty(dataPropertyId(index)).getPropertyValue();

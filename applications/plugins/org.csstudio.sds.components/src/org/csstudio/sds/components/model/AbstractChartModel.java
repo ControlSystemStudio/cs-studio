@@ -42,22 +42,22 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the show axes property.
 	 */
-	public static final String PROP_SHOW_AXES = "show_scale";
+	public static final String PROP_SHOW_AXES = "show_axes";
 
 	/**
 	 * The ID of the show grid lines property.
 	 */
-	public static final String PROP_SHOW_GRID_LINES = "show_ledger_lines";
+	public static final String PROP_SHOW_GRID_LINES = "show_grid_lines";
 
 	/**
 	 * The ID of the line chart property.
 	 */
-	public static final String PROP_LINE_CHART = "show_connection_lines";
+	public static final String PROP_LINE_CHART = "line_chart";
 
 	/**
 	 * The ID of the grid line color property.
 	 */
-	public static final String PROP_GRID_LINE_COLOR = "ledger_lines_color";
+	public static final String PROP_GRID_LINE_COLOR = "grid_line_color";
 
 	/**
 	 * The ID of the minimum property.
@@ -77,17 +77,17 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the labeled ticks property.
 	 */
-	public static final String PROP_LABELED_TICKS = "show_values";
+	public static final String PROP_LABELED_TICKS = "labeled_ticks";
 
 	/**
 	 * The ID of the plot line width property.
 	 */
-	public static final String PROP_PLOT_LINE_WIDTH = "connection_line_width";
+	public static final String PROP_PLOT_LINE_WIDTH = "plot_line_width";
 
 	/**
 	 * The ID of the transparent property.
 	 */
-	public static final String PROP_TRANSPARENT = "transparency";
+	public static final String PROP_TRANSPARENT = "transparent";
 
 	/**
 	 * The ID of the data point drawing style property.
@@ -348,14 +348,24 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * Returns the property ID of the data color property for the data with the
-	 * specified index.
+	 * <p>Returns the property ID of the data color property for the data with
+	 * the specified index.</p>
+	 * 
+	 * <p>The valid range of the index depends on the concrete widget type and
+	 * is defined by the concrete subclass. Clients must not call this method
+	 * with an index outside the range of valid indices. If this method is
+	 * called with an invalid index, it will return a property ID which is not
+	 * defined for the concrete widget type.</p>
 	 * 
 	 * @param index
 	 *            the data index.
 	 * @return the property ID.
 	 */
 	public static String plotColorPropertyId(final int index) {
+		// Note: we cannot check here whether the index is valid because the
+		// valid range is defined by the subclass and Java does not have virtual
+		// static methods.
+
 		return INTERNAL_PROP_PLOT_COLOR + Integer.toString(index + 1);
 	}
 
