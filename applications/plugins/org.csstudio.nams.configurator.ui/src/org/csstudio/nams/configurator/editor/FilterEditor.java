@@ -493,7 +493,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 	}
 
 	private void createFilterActionWidget(final Composite outerFormMain) {
-		this.actionTableViewer = new TableViewer(outerFormMain);
+		this.actionTableViewer = new TableViewer(outerFormMain,
+				SWT.FULL_SELECTION);
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(
 				this.actionTableViewer.getControl());
@@ -508,7 +509,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		this.actionTableViewer.setContentProvider(new ArrayContentProvider());
 
 		final String[] titles = { "Empfänger", "Alarmaktion", "Nachricht" };
-		final int[] bounds = { 150, 150, 100 };
+		final int[] bounds = { 150, 150, 200 };
 
 		final TableViewerColumn[] tableViewerColumns = new TableViewerColumn[3];
 
@@ -642,6 +643,29 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 
+		});
+
+		// Buttons
+		// delete
+		Button deleteButton = new Button(outerFormMain, SWT.PUSH);
+		deleteButton.setText("remove action");
+		deleteButton.addMouseListener(new MouseListener() {
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+				FilterBean bean = FilterEditor.this
+						.getWorkingCopyOfEditorInput();
+				FilterAction action = (FilterAction) ((StructuredSelection) FilterEditor.this.actionTableViewer
+						.getSelection()).getFirstElement();
+				bean.removeAction(action);
+				FilterEditor.this.actionTableViewer.setInput(FilterEditor.this
+						.getWorkingCopyOfEditorInput().getActions().toArray());
+				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
+			}
+
+			public void mouseUp(MouseEvent e) {
+			}
 		});
 
 		this.actionTableViewer.setInput(this.getWorkingCopyOfEditorInput()

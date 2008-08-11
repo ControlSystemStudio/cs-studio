@@ -200,4 +200,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 		this.filterActions = cloneActions;
 	}
+
+	public void removeAction(FilterAction action) {
+		this.filterActions.remove(action);
+	}
 }

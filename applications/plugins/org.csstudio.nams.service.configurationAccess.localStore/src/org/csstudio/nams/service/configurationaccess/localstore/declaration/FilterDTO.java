@@ -191,7 +191,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		Collections.sort(actionJoins, new Comparator<FilterAction2FilterDTO>() {
 			public int compare(final FilterAction2FilterDTO o1,
 					final FilterAction2FilterDTO o2) {
-				return o2.getIPos() - o1.getIPos();
+				return o1.getIPos() - o2.getIPos();
 			}
 		});
 
@@ -210,7 +210,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		}
 
 		this.filterActions.clear();
-
+		
 		for (final FilterAction2FilterDTO actionJoin : actionJoins) {
 			if (actionJoin.getId().getIFilterRef() == this.getIFilterID()) {
 				final FilterActionDTO foundAction = mapper.findForId(
