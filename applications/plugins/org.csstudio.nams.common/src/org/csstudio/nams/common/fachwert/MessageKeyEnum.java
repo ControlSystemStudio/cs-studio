@@ -11,7 +11,8 @@ public enum MessageKeyEnum {
 			STATUS_OLD("STATUS-OLD"),
 			HOST_PHYS("HOST-PHYS"),
 			SEVERITY_OLD("SEVERITY-OLD"),
-			APPLICATION("APPLICATION");
+			APPLICATION("APPLICATION"),
+			CREATETIME("CREATETIME");
 
 	public static MessageKeyEnum getEnumFor(final String value) {
 		for (final MessageKeyEnum mke : MessageKeyEnum.values()) {
