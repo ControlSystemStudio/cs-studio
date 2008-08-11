@@ -28,7 +28,7 @@ public class DBConnect {
         try {
             DriverManager.registerDriver(settings.getDriver());
         } catch (SQLException e) {
-            throw new RuntimeException("Missing oracle driver jar - missing dependency. Should not happen");
+            throw new RuntimeException("Missing oracle driver jar - missing dependency. Should not happen.");
         }
         try {
             connection = DriverManager.getConnection(settings.getConnection(),

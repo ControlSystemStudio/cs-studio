@@ -1,5 +1,8 @@
 package org.csstudio.utility.recordproperty.rdb.data;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,11 +13,14 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.utility.recordproperty.Activator;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * RecordPropertyGetRDB gets data from database.
+ * RecordPropertyGetRDB gets data (record fields) from RDB, DAL and RMI.
  * 
  * @author Rok Povsic
  */
@@ -24,18 +30,52 @@ public class RecordPropertyGetRDB {
 	
 	ArrayList<RecordPropertyEntry> data = new ArrayList<RecordPropertyEntry>();
 	
-	public RecordPropertyEntry[] getData() {
-		/* Test data for table.
-		RecordPropertyEntry[] data = {
-				new RecordPropertyEntry("Test1", "Test", "Test", "Test"),
-				new RecordPropertyEntry("Test2", "Test", "Test", "Test"),
-				new RecordPropertyEntry("Test3", "Test", "Test", "Test")
-		};
-		*/
+	private String fieldName;
+	private String valueRdb;
+	private DBConnect connect;
+	
+	/**
+	 * If DAL does not have any data, it prints this.
+	 */
+	private String value = "Field value not found";
+	
+	/**
+	 * Record name, that you have to get data of
+	 */
+	private String record;
 		
-		String record = "TS2ATH9V103_bi";
+	public RecordPropertyEntry[] getData(String _record) {
+		record = _record;
 		
-		DBConnect connect = new DBConnect(new OracleSettings());
+		getDataFromRDB();
+        
+        try {
+			while(resultSet.next()) {
+			 fieldName = resultSet.getString("FIELD_NAME");
+			 valueRdb = resultSet.getString("VALUE");
+								
+				getDataFromDAL();
+				
+				RecordPropertyEntry entry = new RecordPropertyEntry(fieldName, valueRdb, value, "test");
+				data.add(entry);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        
+        RecordPropertyEntry[] stringArray = (RecordPropertyEntry[])data.toArray(new RecordPropertyEntry[data.size()]);
+		
+        connect.closeConnection();
+        
+		return stringArray;
+				
+	}
+	
+	/**
+	 * Gets data from RDB.
+	 */
+	private void getDataFromRDB() {
+		connect = new DBConnect(new OracleSettings());
 		
 		connect.openConnection();
 		
@@ -88,45 +128,48 @@ public class RecordPropertyGetRDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        try {
-			while(resultSet.next()) {
-				String var1 = resultSet.getString("FIELD_NAME");
-				String var2 = resultSet.getString("VALUE");
-				
-				String value = "Field value not found";
-				
-				// getting the third column, value, from DAL
-				ProcessVariableAdressFactory _addressFactory;
-				
-				IProcessVariableConnectionService _connectionService;
-				
-				ProcessVariableConnectionServiceFactory _connectionFactory = ProcessVariableConnectionServiceFactory.getDefault();
-				
-				_addressFactory = ProcessVariableAdressFactory.getInstance();
-				
-				_connectionService = _connectionFactory.createProcessVariableConnectionService();
-				
-				try {
-					value = _connectionService.getValueAsString(_addressFactory
-							.createProcessVariableAdress("dal-epics://"+record+"."+var1));
-				} catch (ConnectionException e) {
-					CentralLogger.getInstance().getLogger(this).info("Field value not found: " + record + "." + var1);
-//					e.printStackTrace();
-				}
-				
-				RecordPropertyEntry entry = new RecordPropertyEntry(var1, var2, value, "test");
-				data.add(entry);
-			}
-		} catch (SQLException e) {
+	}
+	
+	/**
+	 * Gets data from DAL.
+	 */
+	private void getDataFromDAL() {
+		ProcessVariableAdressFactory _addressFactory;
+		
+		IProcessVariableConnectionService _connectionService;
+		
+		ProcessVariableConnectionServiceFactory _connectionFactory = ProcessVariableConnectionServiceFactory.getDefault();
+		
+		_addressFactory = ProcessVariableAdressFactory.getInstance();
+		
+		_connectionService = _connectionFactory.createProcessVariableConnectionService();
+		
+		try {
+			value = _connectionService.getValueAsString(_addressFactory
+					.createProcessVariableAdress("dal-epics://"+record+"."+fieldName));
+		} catch (ConnectionException e) {
+			CentralLogger.getInstance().getLogger(this).info("Field value not found: " + record + "." + fieldName);
+//			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Gets data from RMI.
+	 */
+	private void getDataFromRMI() {
+		Registry reg;
+		
+		IPreferencesService prefs = Platform.getPreferencesService();
+		String registryHost = prefs.getString(
+				Activator.PLUGIN_ID,
+				"RmiRegistryServer",
+				null, null);
+		CentralLogger.getInstance().getLogger(this).info("Connecting to RMI registry."); //$NON-NLS-1$
+		try {
+			reg = LocateRegistry.getRegistry(registryHost);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        RecordPropertyEntry[] stringArray = (RecordPropertyEntry[])data.toArray(new RecordPropertyEntry[data.size()]);
-		
-        connect.closeConnection();
-        
-		return stringArray;
-				
 	}
 }
