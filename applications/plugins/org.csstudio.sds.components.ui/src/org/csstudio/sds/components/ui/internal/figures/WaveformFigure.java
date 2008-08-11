@@ -362,8 +362,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_data[index] = data;
 		if (data.length > _longestDataLength) {
 			_longestDataLength = data.length;
-			_logger.debug("New data array is longer than longest array so far." +
-					"New _longestDataLength = " + _longestDataLength);
 		} else {
 			// TODO: Refactor! Also, this is not safe in case of concurrent
 			// updates.
@@ -373,7 +371,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					_longestDataLength = dataArray.length;
 				}
 			}
-			_logger.debug("Recalculated _longestDataLength, new value is " + _longestDataLength);
 		}
 		_xAxis.setDataRange(0, _longestDataLength);
 		refreshConstraints();
@@ -1038,8 +1035,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.drawLine(figureBounds.x, figureBounds.y, figureBounds.x,
 					figureBounds.y + figureBounds.height);
-			graphics.drawLine(figureBounds.x, figureBounds.bottom(),
-					figureBounds.x + figureBounds.width, figureBounds.bottom());
+			graphics.drawLine(figureBounds.x, figureBounds.bottom() - 1,
+					figureBounds.x + figureBounds.width, figureBounds.bottom() - 1);
 			
 			for (int i = 0; i < _data.length; i++) {
 				double[] data = _data[i];
