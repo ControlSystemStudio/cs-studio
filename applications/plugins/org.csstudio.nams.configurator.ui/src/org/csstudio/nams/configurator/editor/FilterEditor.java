@@ -667,6 +667,49 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			public void mouseUp(MouseEvent e) {
 			}
 		});
+		// up
+		Button upButton = new Button(outerFormMain, SWT.PUSH);
+		upButton.setText("move action up");
+		upButton.addMouseListener(new MouseListener() {
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+				FilterBean bean = FilterEditor.this
+						.getWorkingCopyOfEditorInput();
+				FilterAction action = (FilterAction) ((StructuredSelection) FilterEditor.this.actionTableViewer
+						.getSelection()).getFirstElement();
+				bean.moveUpAction(action);
+				FilterEditor.this.actionTableViewer.setInput(FilterEditor.this
+						.getWorkingCopyOfEditorInput().getActions().toArray());
+				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
+			}
+
+			public void mouseUp(MouseEvent e) {
+			}
+		});
+		// down
+		Button downButton = new Button(outerFormMain, SWT.PUSH);
+		downButton.setText("move action down");
+		downButton.addMouseListener(new MouseListener() {
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+				FilterBean bean = FilterEditor.this
+						.getWorkingCopyOfEditorInput();
+				FilterAction action = (FilterAction) ((StructuredSelection) FilterEditor.this.actionTableViewer
+						.getSelection()).getFirstElement();
+				bean.moveDownAction(action);
+				FilterEditor.this.actionTableViewer.setInput(FilterEditor.this
+						.getWorkingCopyOfEditorInput().getActions().toArray());
+				FilterEditor.this.firePropertyChange(IEditorPart.PROP_DIRTY);
+			}
+
+			public void mouseUp(MouseEvent e) {
+			}
+		});
+				
 
 		this.actionTableViewer.setInput(this.getWorkingCopyOfEditorInput()
 				.getActions().toArray());

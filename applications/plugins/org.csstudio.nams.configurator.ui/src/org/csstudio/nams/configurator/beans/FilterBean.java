@@ -204,4 +204,18 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	public void removeAction(FilterAction action) {
 		this.filterActions.remove(action);
 	}
+
+	public void moveUpAction(FilterAction action) {
+		int indexOf = this.filterActions.indexOf(action);
+		if (indexOf > 0) {
+			Collections.swap(this.filterActions, indexOf, indexOf-1);
+		}
+	}
+
+	public void moveDownAction(FilterAction action) {
+		int indexOf = this.filterActions.indexOf(action);
+		if (indexOf < this.filterActions.size()-1) {
+			Collections.swap(this.filterActions, indexOf, indexOf+1);
+		}
+	}
 }
