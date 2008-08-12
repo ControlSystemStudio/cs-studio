@@ -30,12 +30,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -60,7 +57,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  * @author Sven Wende, Kai Meyer, Joerg Rathlev
  */
-public final class WaveformFigure extends Panel implements IAdaptable {
+public final class WaveformFigure extends AbstractChartFigure {
 	
 	/**
 	 * Maximum difference to tolerate between actual and displayed
@@ -78,24 +75,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * of the y-axis.
 	 */
 	private static final int TEXTWIDTH = 46;
-
-	/**
-	 * Constant value which represents that a scale or grid lines should be
-	 * shown for the x-axis.
-	 */
-	private static final int SHOW_X_AXIS = 1;
-
-	/**
-	 * Constant value which represents that a scale or grid lines should be
-	 * shown for the y-axis.
-	 */
-	private static final int SHOW_Y_AXIS = 2;
-
-	/**
-	 * Constant value which represents that a scale or grid lines should be
-	 * shown for both axes.
-	 */
-	private static final int SHOW_BOTH = 3;
 
 	/**
 	 * A rectangle with zero width and height.
@@ -138,11 +117,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * The minimum data value set in this waveform's properties.
 	 */
 	private double _propertyMin = 0;
-	
-	/**
-	 * The transparent state of the background.
-	 */
-	private boolean _transparent = false;
 
 	/**
 	 * The bounds of the plotting area (where the data points are drawn).
@@ -151,24 +125,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private Rectangle _plotBounds = new Rectangle(10, 10, 10, 10);
 
 	/**
-	 * An int, representing in which way the scale should be drawn. 0 = None; 1 =
-	 * Vertical; 2 = Horizontal; 3 = Both
-	 */
-	private int _showScale = 0;
-
-	/**
 	 * The size of an axis with ticks in pixels. For a horizontal axis, this is
 	 * the height of the axis; for a vertical axis, this is its width.
 	 */
 	private static final int AXIS_SIZE = 10;
-
-	/**
-	 * The axes for which grid lines are drawn.
-	 * @see #SHOW_X_AXIS
-	 * @see #SHOW_Y_AXIS
-	 * @see #SHOW_BOTH
-	 */
-	private int _showGridLines = 0;
 
 	/**
 	 * A boolean, which indicates, if the lines from point to point should be
@@ -215,11 +175,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * True, if this figure has to be initiated, false otherwise.
 	 */
 	private boolean _init = true;
-
-	/**
-	 * A border adapter, which covers all border handlings.
-	 */
-	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
 	 * The y-axis data mapping.
@@ -331,20 +286,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				refreshConstraints();
 			}
 		});
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Class adapter) {
-		if (adapter == IBorderEquippedWidget.class) {
-			if (_borderAdapter == null) {
-				_borderAdapter = new BorderAdapter(this);
-			}
-			return _borderAdapter;
-		}
-		return null;
 	}
 
 	/**
@@ -627,53 +568,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Checks whether the x-axis is displayed.
-	 * 
-	 * @return <code>true</code> if the x-axis is displayed,
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean showXAxis() {
-		return (_showScale == SHOW_X_AXIS || _showScale == SHOW_BOTH);
-	}
-
-	/**
-	 * Checks whether the y-axis is displayed.
-	 * 
-	 * @return <code>true</code> if the y-axis is displayed,
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean showYAxis() {
-		return (_showScale == SHOW_Y_AXIS || _showScale == SHOW_BOTH);
-	}
-
-	/**
-	 * Checks whether gridlines are displayed for the x-axis.
-	 * 
-	 * @return <code>true</code> if gridlines are displayed,
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean showXAxisGrid() {
-		return (_showGridLines == SHOW_X_AXIS || _showGridLines == SHOW_BOTH);
-	}
-
-	/**
-	 * Checks whether gridlines are displayed for the y-axis.
-	 * 
-	 * @return <code>true</code> if gridlines are displayed,
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean showYAxisGrid() {
-		return (_showGridLines == SHOW_Y_AXIS || _showGridLines == SHOW_BOTH);
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void paintFigure(final Graphics graphics) {
-		if (!_transparent) {
-			super.paintFigure(graphics);
-		}
+		super.paintFigure(graphics);
 		if (_init) {
 			_init = false;
 			this.refreshConstraints();
@@ -781,31 +680,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Sets in which way the scale should be drawn.
-	 * 
-	 * @param showScale
-	 *            0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
-	 */
-	public void setShowScale(final int showScale) {
-		_showScale = showScale;
-		this.refreshConstraints();
-	}
-
-	/**
-	 * Sets the axes for which grid lines should be displayed.
-	 * 
-	 * @param showGridLines a value representing for which axes grid lines
-	 * should be displayed.
-	 * @see #SHOW_X_AXIS
-	 * @see #SHOW_Y_AXIS
-	 * @see #SHOW_BOTH
-	 */
-	public void setShowGridLines(final int showGridLines) {
-		_showGridLines = showGridLines;
-		this.refreshConstraints();
-	}
-
-	/**
 	 * Sets if the point lines should be drawn.
 	 * 
 	 * @param showPointLines
@@ -884,16 +758,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_yAxisScale.setShowValues(showValues);
 		_xAxisScale.setShowValues(showValues);
 		this.refreshConstraints();
-	}
-	
-	/**
-	 * Sets the transparent state of the background.
-	 * 
-	 * @param transparent
-	 *            the transparent state.
-	 */
-	public void setTransparent(final boolean transparent) {
-		_transparent = transparent;
 	}
 	
 	/**
