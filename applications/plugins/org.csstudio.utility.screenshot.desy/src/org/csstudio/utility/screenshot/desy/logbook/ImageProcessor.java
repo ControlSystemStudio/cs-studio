@@ -70,10 +70,11 @@ public class ImageProcessor implements IImageWorker
 
     public void processImage(Shell parentShell, Image image)
     {
-        InternetAddress     addressFrom     = null;
-        InternetAddress[]   addressTo       = null;
-        BufferedImage       bufferedImage   = null;
-        String              imageFilename   = "capture.jpg";
+        InternetAddress addressFrom     = null;
+        InternetAddress[] addressTo       = null;
+        BufferedImage bufferedImage   = null;
+        String imageFilename   = "capture.jpg";
+        String path = ScreenshotPlugin.getInstalledFilePath("/");
         
         if(image == null)
         {
@@ -92,8 +93,10 @@ public class ImageProcessor implements IImageWorker
         {
             try
             {
-                ImageIO.write(bufferedImage, "jpg", new File(ScreenshotPlugin.getInstalledFilePath("/") + imageFilename));
-
+                ImageIO.write(bufferedImage, "jpg", new File(path + imageFilename));
+                
+                System.out.println(path);
+                
                 Properties props = new Properties();
                 
                 props.put("mail.smtp.host", ScreenshotPlugin.getDefault().getPluginPreferences().getString(ScreenshotPreferenceConstants.MAIL_SERVER));
