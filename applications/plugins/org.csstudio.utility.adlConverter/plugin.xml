@@ -51,5 +51,20 @@
             class="org.csstudio.utility.adlconverter.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.utilities"
+            class="org.csstudio.utility.adlconverter.ui.preferences.ADLPreferencePage"
+            id="org.csstudio.utility.adlconverter.ui.preferences.ADLPreferencePage"
+            name="ADL Converter">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.utility.adlconverter.ui.preferences.ADLPreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
