@@ -8,7 +8,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.utility.screenshot,
- org.csstudio.platform.ui
+ org.csstudio.platform.ui,
+ org.eclipse.core.resources
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/activation.jar,
  lib/dsn.jar,

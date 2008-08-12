@@ -50,6 +50,8 @@ import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.csstudio.utility.screenshot.desy.dialog.LogbookSenderDialog;
 import org.csstudio.utility.screenshot.desy.internal.localization.LogbookSenderMessages;
 import org.csstudio.utility.screenshot.preference.ScreenshotPreferenceConstants;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
@@ -74,7 +76,8 @@ public class ImageProcessor implements IImageWorker
         InternetAddress[] addressTo       = null;
         BufferedImage bufferedImage   = null;
         String imageFilename   = "capture.jpg";
-        String path = ScreenshotPlugin.getInstalledFilePath("/");
+        IPath p = ResourcesPlugin.getWorkspace().getRoot().getProjectRelativePath();
+        String path = p.toOSString();
         
         if(image == null)
         {
@@ -93,9 +96,9 @@ public class ImageProcessor implements IImageWorker
         {
             try
             {
+                System.out.println("Temp path for image: " + path + imageFilename);
+
                 ImageIO.write(bufferedImage, "jpg", new File(path + imageFilename));
-                
-                System.out.println(path);
                 
                 Properties props = new Properties();
                 
