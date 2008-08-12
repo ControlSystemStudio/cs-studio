@@ -1,23 +1,29 @@
 package org.csstudio.utility.recordproperty.rdb.data;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
+import org.csstudio.config.savevalue.service.ChangelogEntry;
+import org.csstudio.config.savevalue.service.ChangelogService;
+import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.utility.ldap.reader.IocFinder;
 import org.csstudio.utility.recordproperty.Activator;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * RecordPropertyGetRDB gets data (record fields) from RDB, DAL and RMI.
@@ -43,11 +49,22 @@ public class RecordPropertyGetRDB {
 	 * Record name, that you have to get data of
 	 */
 	private String record;
+	
+	private String nameIOC;
+	private ChangelogEntry[] entryRMI;
+	private String valueRMI = "No value found";
+	
+	/**
+	 * The logger.
+	 */
+	private final CentralLogger _log = CentralLogger.getInstance();
 		
 	public RecordPropertyEntry[] getData(String _record) {
 		record = _record;
 		
 		getDataFromRDB();
+		
+		getDataFromRMI();
         
         try {
 			while(resultSet.next()) {
@@ -56,8 +73,19 @@ public class RecordPropertyGetRDB {
 								
 				getDataFromDAL();
 				
-				RecordPropertyEntry entry = new RecordPropertyEntry(fieldName, valueRdb, value, "test");
+				for (int i = 0; i < entryRMI.length; i++) {
+					if((record+"."+fieldName).equals(entryRMI[i].getPvName())) {
+						valueRMI = entryRMI[i].getValue();
+						break;
+					} else {
+						valueRMI = "Field value not found";
+					}
+				}
+				
+				RecordPropertyEntry entry = new RecordPropertyEntry(fieldName, valueRdb, value, valueRMI);
 				data.add(entry);
+				
+				value = "Field value not found";
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -159,17 +187,54 @@ public class RecordPropertyGetRDB {
 	private void getDataFromRMI() {
 		Registry reg;
 		
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String registryHost = prefs.getString(
-				Activator.PLUGIN_ID,
-				"RmiRegistryServer",
-				null, null);
-		CentralLogger.getInstance().getLogger(this).info("Connecting to RMI registry."); //$NON-NLS-1$
-		try {
+		try{
+			nameIOC = IocFinder.getIoc(record);
+			
+			IPreferencesService prefs = Platform.getPreferencesService();
+			String registryHost = prefs.getString(
+					"org.csstudio.config.savevalue.ui",
+					"RmiRegistryServer",
+					null, null);
+			CentralLogger.getInstance().getLogger(this).info("Connecting to RMI registry."); //$NON-NLS-1$
 			reg = LocateRegistry.getRegistry(registryHost);
+			
+			ChangelogService cs = (ChangelogService) reg
+			.lookup("SaveValue.changelog"); //$NON-NLS-1$
+			entryRMI = cs.readChangelog(nameIOC);
+			
+						
+			
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
+
+		} catch (NotBoundException e) {
+			_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
+
+		} catch (SaveValueServiceException e) {
+			_log.error(this, "Server reported an error reading the changelog", e); //$NON-NLS-1$
+
 		}
+		
+		/*
+		Registry reg;
+		
+		try {
+			IPreferencesService prefs = Platform.getPreferencesService();
+			String registryHost = prefs.getString(
+					Activator.PLUGIN_ID,
+					"RmiRegistryServer",
+					null, null);
+			CentralLogger.getInstance().getLogger(this).info("Connecting to RMI registry."); //$NON-NLS-1$
+			
+			
+				reg = LocateRegistry.getRegistry(registryHost);
+			
+			RecordPropertyService rps = (RecordPropertyService) reg
+			.lookup("SaveValue.changelog"); //$NON-NLS-1$
+			entryRMI = rps.readRecordProperty(record);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		*/
 	}
 }

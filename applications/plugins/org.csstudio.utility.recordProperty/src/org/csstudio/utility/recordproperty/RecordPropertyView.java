@@ -1,5 +1,8 @@
 package org.csstudio.utility.recordproperty;
 
+//import java.text.Collator;
+//import java.util.Locale;
+
 import org.csstudio.utility.recordproperty.rdb.data.RecordPropertyGetRDB;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -15,9 +18,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+//import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+//import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
@@ -51,6 +58,10 @@ public class RecordPropertyView extends ViewPart {
 	private Text record;
 	
 	public String recordName;
+	
+	public String ltext;
+	public boolean isRunning = false;
+	private Label label;
 	
 	public RecordPropertyView() {
 	}
@@ -87,6 +98,8 @@ public class RecordPropertyView extends ViewPart {
 				// Deletes all spaces before and after real text.
 				recordName = recordName.trim();
 				
+				label.setText("Please wait");
+				
 				/**
 				 * New thread (Job) is created, so GUI does not freeze
 				 * when it is collecting data.
@@ -101,7 +114,7 @@ public class RecordPropertyView extends ViewPart {
 						 */
 						RecordPropertyGetRDB rdb = new RecordPropertyGetRDB();
 						entries = rdb.getData(recordName);
-						
+												
 						/**
 						 * asyncExec makes possible that GUI-changing can be done
 						 * in separate thread that GUI.
@@ -112,10 +125,11 @@ public class RecordPropertyView extends ViewPart {
 								 * Here data is printed in GUI.
 								 */
 								tableViewer.setInput(entries);
+								label.setText("Done");
 								
 							}		
 						});
-						
+												
 						return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
 					}
 				};
@@ -125,13 +139,15 @@ public class RecordPropertyView extends ViewPart {
 			}
 			
 		});
-		
+				
 		createTableViewer(parent);
 		tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		tableViewer.setContentProvider(new RecordPropertyContentProvider());
 		tableViewer.setLabelProvider(new RecordPropertyLabelProvider());
 				
 		getSite().setSelectionProvider(tableViewer);
+		
+		label = new Label(g, SWT.CENTER);
 	}
 		
 	/**
@@ -173,9 +189,36 @@ public class RecordPropertyView extends ViewPart {
 	 * @param width width of column
 	 */
 	private void addColumn(final Table table, final int index, final String text, final int width) {
-		TableColumn column = new TableColumn(table, SWT.LEFT, index);
+		final TableColumn column = new TableColumn(table, SWT.LEFT, index);
 		column.setText(text);
 		column.setWidth(width);
+		
+		/*
+	    column.addListener(SWT.Selection, new Listener() {
+	        public void handleEvent(Event e) {
+	            TableItem[] items = table.getItems();
+	            Collator collator = Collator.getInstance(Locale.getDefault());
+	            TableColumn col = (TableColumn)e.widget;
+	            int index = col == column ? 0 : 1;
+	            for (int i = 1; i < items.length; i++) {
+	                String value1 = items[i].getText(index);
+	                for (int j = 0; j < i; j++){
+	                    String value2 = items[j].getText(index);
+	                    if (collator.compare(value1, value2) < 0) {
+	                        String[] values = {items[i].getText(0), items[i].getText(1)};
+	                        items[i].dispose();
+	                        TableItem item = new TableItem(table, SWT.NONE, j);
+	                        item.setText(values);
+	                        items = table.getItems();
+	                        break;
+	                    }
+	                }
+	            }
+	            table.setSortColumn(col);
+	        }
+	      });
+	    */
+		
 	}
 		
 	public void setFocus() {
