@@ -4,6 +4,7 @@ import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoPlantEntry;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoProcessEntry;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,15 +14,15 @@ public class KryoNameResolved {
 
     private String label;
 
-    private List<KryoPlantEntry> plants = new LinkedList<KryoPlantEntry>();
+    private List<KryoPlantEntry> plants = new ArrayList<KryoPlantEntry>();
 
-    private List<KryoObjectEntry> objects = new LinkedList<KryoObjectEntry>();
+    private List<KryoObjectEntry> objects = new ArrayList<KryoObjectEntry>();
 
     private KryoProcessEntry process;
 
-    private int id;
+    private int id = -1;
 
-    private int seqKryoNumber;
+    private int seqKryoNumber = -1;
 
     public KryoNameResolved(String name, String label, int id, int seqKryoNumber, KryoProcessEntry process) {
         this.name = name;
@@ -31,7 +32,11 @@ public class KryoNameResolved {
         this.process = process;
     }
 
-    public String getName() {
+    public KryoNameResolved() {
+	
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -58,4 +63,34 @@ public class KryoNameResolved {
     public int getSeqKryoNumber() {
         return seqKryoNumber;
     }
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public void setPlants(List<KryoPlantEntry> plants) {
+		this.plants = plants;
+	}
+
+	public void setObjects(List<KryoObjectEntry> objects) {
+		this.objects = objects;
+	}
+
+	public void setProcess(KryoProcessEntry process) {
+		this.process = process;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setSeqKryoNumber(int seqKryoNumber) {
+		this.seqKryoNumber = seqKryoNumber;
+	}
+    
+    
 }

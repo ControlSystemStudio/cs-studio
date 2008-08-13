@@ -30,7 +30,16 @@ public class KryoObjectEntry {
         this.id = id;
     }
 
-    public String getName() {
+    public KryoObjectEntry(KryoObjectEntry kryoObjectEntry) {
+    	  this.name = kryoObjectEntry.name;
+          this.explanation = kryoObjectEntry.explanation;
+          this.id = kryoObjectEntry.id;
+          this.parent = kryoObjectEntry.parent;
+          this.label = kryoObjectEntry.label;
+          this.level = kryoObjectEntry.level;
+	}
+
+	public String getName() {
         return name;
     }
 

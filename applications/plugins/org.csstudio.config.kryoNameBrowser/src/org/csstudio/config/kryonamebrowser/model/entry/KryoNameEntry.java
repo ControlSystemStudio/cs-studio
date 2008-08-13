@@ -8,7 +8,7 @@ package org.csstudio.config.kryonamebrowser.model.entry;
 public class KryoNameEntry {
 
     private int id = -1;
-    private String name;
+    private String name = "";
     private int plantId = -1;
     private int objectId = -1;
     private String processId;

@@ -12,7 +12,13 @@ public class KryoProcessEntry {
         this.explanation = explanation;
     }
 
-    public String getName() {
+    public KryoProcessEntry(KryoProcessEntry kryoProcessEntry) {
+    	  this.name = kryoProcessEntry.name;
+          this.id = kryoProcessEntry.id;
+          this.explanation = kryoProcessEntry.explanation;
+	}
+
+	public String getName() {
         return name;
     }
 
