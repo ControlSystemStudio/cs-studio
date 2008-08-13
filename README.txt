@@ -12,9 +12,9 @@ jca-2.3.1.jar was built from the jca-2.3.1 sources with the following changes:
   Now it wakes immediately when new requests arrive.
   
 caj-1.1.3 sources were changed to turn debug="on".
+A caj-1.1.3 jar file is included, but currently not used.
 
-
-A caj-1.1.5.jar is included, but without sources because
+A caj-1.1.5.jar is included and used, but without sources because
 the CAS support in there is currently not fully funded.
 
 
