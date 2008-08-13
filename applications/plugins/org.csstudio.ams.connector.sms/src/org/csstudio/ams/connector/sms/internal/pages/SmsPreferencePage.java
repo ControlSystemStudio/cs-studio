@@ -61,18 +61,43 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected final void createFieldEditors() {
 
-		addField(new StringFieldEditor(SampleService.P_MODEM_COMPORT,
-				Messages.P_MODEM_COMPORT, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MODEM_COMBAUDRATE,
-				Messages.P_MODEM_COMBAUDRATE, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MODEM_MANUFACTURE,
-				Messages.P_MODEM_MANUFACTURE, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MODEM_MODEL,
-				Messages.P_MODEM_MODEL, getFieldEditorParent()));
-		addField(new PasswordEditor(SampleService.P_MODEM_SIMPIM,
-				Messages.P_MODEM_SIMPIM, getFieldEditorParent()));
+	    addField(new StringFieldEditor(SampleService.P_MODEM_COUNT,
+	            Messages.P_MODEM_COUNT, getFieldEditorParent()));
 
-		adjustGridLayout();
+		addField(new StringFieldEditor(SampleService.P_MODEM1_COMPORT,
+				Messages.P_MODEM1_COMPORT, getFieldEditorParent()));
+		addField(new StringFieldEditor(SampleService.P_MODEM1_COMBAUDRATE,
+				Messages.P_MODEM1_COMBAUDRATE, getFieldEditorParent()));
+		addField(new StringFieldEditor(SampleService.P_MODEM1_MANUFACTURE,
+				Messages.P_MODEM1_MANUFACTURE, getFieldEditorParent()));
+		addField(new StringFieldEditor(SampleService.P_MODEM1_MODEL,
+				Messages.P_MODEM1_MODEL, getFieldEditorParent()));
+		addField(new PasswordEditor(SampleService.P_MODEM1_SIMPIM,
+				Messages.P_MODEM1_SIMPIM, getFieldEditorParent()));
+
+        addField(new StringFieldEditor(SampleService.P_MODEM2_COMPORT,
+                Messages.P_MODEM2_COMPORT, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM2_COMBAUDRATE,
+                Messages.P_MODEM2_COMBAUDRATE, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM2_MANUFACTURE,
+                Messages.P_MODEM2_MANUFACTURE, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM2_MODEL,
+                Messages.P_MODEM2_MODEL, getFieldEditorParent()));
+        addField(new PasswordEditor(SampleService.P_MODEM2_SIMPIM,
+                Messages.P_MODEM2_SIMPIM, getFieldEditorParent()));
+
+        addField(new StringFieldEditor(SampleService.P_MODEM3_COMPORT,
+                Messages.P_MODEM3_COMPORT, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM3_COMBAUDRATE,
+                Messages.P_MODEM3_COMBAUDRATE, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM3_MANUFACTURE,
+                Messages.P_MODEM3_MANUFACTURE, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM3_MODEL,
+                Messages.P_MODEM3_MODEL, getFieldEditorParent()));
+        addField(new PasswordEditor(SampleService.P_MODEM3_SIMPIM,
+                Messages.P_MODEM3_SIMPIM, getFieldEditorParent()));
+
+        adjustGridLayout();
 	}
 
 	/**

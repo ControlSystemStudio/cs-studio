@@ -268,6 +268,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
      */
     private boolean initModem()
     {
+        String[] strComPort = null;
+        String[] strManufac = null;
+        String[] strModel = null;
+        String[] strSimPin = null;
+        int[] iBaudRate = null;
+        int modemCount = 1;
+        
         boolean result = false;
         
         try
@@ -286,65 +293,82 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             // strSimPin        - SimCard Pin-Number: "1234", ...
             ////////////////////////////////////////////////////////////////////////
             IPreferenceStore store = SmsConnectorPlugin.getDefault().getPreferenceStore();
-            String strComPort = store.getString(SampleService.P_MODEM_COMPORT);
-            
-            int iBaudRate = 9600;
             
             try
             {
-                iBaudRate = Integer.parseInt(store.getString(SampleService.P_MODEM_COMBAUDRATE));
+                modemCount = Integer.parseInt(store.getString(SampleService.P_MODEM_COUNT));
+                
+                modemCount = (modemCount < 1) ? 1 : modemCount;
+                modemCount = (modemCount > 3) ? 3 : modemCount;
+                
+                Log.log(this, Log.INFO, "Number of modems: " + modemCount);
             }
             catch (NumberFormatException e)
             {
-                Log.log(this, Log.WARN, "Value for Baudrate is not a number, take min 9600.");
+                modemCount = 1;
+                Log.log(this, Log.WARN, "Number of modems not defined. Using default: " + modemCount);
             }
+
+            strComPort = new String[modemCount];
+            strManufac = new String[modemCount];
+            strModel = new String[modemCount];
+            strSimPin = new String[modemCount];
+            iBaudRate = new int[modemCount];
             
-            String strManufac = store.getString(SampleService.P_MODEM_MANUFACTURE);
-            String strModel = store.getString(SampleService.P_MODEM_MODEL);
-            String strSimPin = store.getString(SampleService.P_MODEM_SIMPIM);
-            
-            modemService = new Service();
-            
-            for (int i = 1 ; i <= 3 ; i++)
+            // TODO: Better error handling and value checks
+            for(int i = 0;i < modemCount;i++)
             {
+                strComPort[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "ComPort");
+                strComPort[i] = (strComPort[i] == null) ? "" : strComPort[i];
+                
                 try
                 {
-                    Log.log(this, Log.INFO, "start initModem("+strComPort+","
-                            +iBaudRate+","
-                            +strManufac+","
-                            +strModel+") try=" + i);
-                    // modemService = new CService(strComPort, iBaudRate, strManufac, strModel);
+                    iBaudRate[i] = Integer.parseInt(store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "ComBaudrate"));
+                }
+                catch (NumberFormatException e)
+                {
+                    iBaudRate[i] = 9600;
+                    Log.log(this, Log.WARN, "Value for Baudrate is not a number, take default: " + iBaudRate[i]);
+                }
+                
+                strManufac[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "Manufacture");
+                strManufac[i] = (strManufac[i] == null) ? "" : strManufac[i];
+                
+                strModel[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "Model");
+                strModel[i] = (strModel[i] == null) ? "" : strModel[i];
+
+                strSimPin[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "SimPin");
+                strSimPin[i] = (strSimPin[i] == null) ? "" : strSimPin[i];
+            }
+                        
+            modemService = new Service();
+            
+            for(int i = 0;i < modemCount;i++)
+            {
+                if(strComPort[i].length() > 0)
+                {
+                    Log.log(this, Log.INFO, "start initModem(" + strComPort[i] + ","
+                            + iBaudRate[i] + ","
+                            + strManufac[i] + ","
+                            + strModel[i] + ")");
                     // modemService = new CSoftwareService(strComPort, iBaudRate, strManufac, strModel);
     
-                    SerialModemGateway modem = new SerialModemGateway("modem." + strComPort.toLowerCase(), strComPort, iBaudRate, strManufac, strModel);
+                    SerialModemGateway modem = new SerialModemGateway("modem." + strComPort[i].toLowerCase(), strComPort[i], iBaudRate[i], strManufac[i], strModel[i]);
                     modem.setInbound(true);
                     modem.setOutbound(true);
-                    modem.setSimPin(strSimPin);
+                    modem.setSimPin(strSimPin[i]);
                     // modem.setOutboundNotification(outboundNotification);
                     modemService.addGateway(modem);
-
-                    // JUST A TEST
-                    /*
-                    Log.log(this, Log.INFO, "start initModem(COM1,9600,SonyEricsson,[]) try=" + i); 
-                    SerialModemGateway modem2 = new SerialModemGateway("modem.com1", "COM1", iBaudRate, "SonyEricsson", "");
-                    modem2.setInbound(true);
-                    modem2.setOutbound(true);
-                    modem2.setSimPin("13046");
-                    // modem.setOutboundNotification(outboundNotification);
-                    modemService.addGateway(modem2);                    
-                    */
-                    
-                    result = true;
-                    
-                    break;
+    
+                    sleep(2000);
                 }
-                catch (Exception e)
+                else
                 {
-                    Log.log(this, Log.WARN, "Modem initialization failed. try=" + i);
+                    Log.log(this, Log.WARN, "No COM port defined for modem " + (i + 1) + ".");
                 }
-
-                sleep(5000);
             }
+            
+            result = true;
             
             Log.log(this, Log.INFO, "Modem(s) are initialized");
 
@@ -358,6 +382,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         catch (Exception e)
         {
             Log.log(this, Log.FATAL, "could not init modem", e);
+            
+            result = false;
         }
         
         return result;

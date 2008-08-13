@@ -26,16 +26,31 @@ import java.util.ResourceBundle;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS {
+public class Messages extends NLS
+{
 	private static final String BUNDLE_NAME = "org.csstudio.ams.connector.sms.messages";
 
-	public static String P_MODEM_COMPORT;
-	public static String P_MODEM_COMBAUDRATE;
-	public static String P_MODEM_MANUFACTURE;
-	public static String P_MODEM_MODEL;
-	public static String P_MODEM_SIMPIM;
+	public static String P_MODEM_COUNT;
 	
-	static {
+	public static String P_MODEM1_COMPORT;
+	public static String P_MODEM1_COMBAUDRATE;
+	public static String P_MODEM1_MANUFACTURE;
+	public static String P_MODEM1_MODEL;
+	public static String P_MODEM1_SIMPIM;
+	
+    public static String P_MODEM2_COMPORT;
+    public static String P_MODEM2_COMBAUDRATE;
+    public static String P_MODEM2_MANUFACTURE;
+    public static String P_MODEM2_MODEL;
+    public static String P_MODEM2_SIMPIM;
+
+    public static String P_MODEM3_COMPORT;
+    public static String P_MODEM3_COMBAUDRATE;
+    public static String P_MODEM3_MANUFACTURE;
+    public static String P_MODEM3_MODEL;
+    public static String P_MODEM3_SIMPIM;
+
+    static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 

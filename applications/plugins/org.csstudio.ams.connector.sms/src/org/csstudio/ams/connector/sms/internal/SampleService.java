@@ -36,15 +36,31 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @author Alexander Will
  * 
  */
-public class SampleService {
+public class SampleService
+{
+    public static final String P_PREFERENCE_STRING = "org.csstudio.ams.connector.sms.preferences.modem";
 
-	public static final String P_MODEM_COMPORT = "org.csstudio.ams.connector.sms.preferences.modemComPort";
-	public static final String P_MODEM_COMBAUDRATE = "org.csstudio.ams.connector.sms.preferences.modemComBaudrate";
-	public static final String P_MODEM_MANUFACTURE = "org.csstudio.ams.connector.sms.preferences.modemManufacture";
-	public static final String P_MODEM_MODEL = "org.csstudio.ams.connector.sms.preferences.modemModel";
-	public static final String P_MODEM_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modemSimPin";
+    public static final String P_MODEM_COUNT = "org.csstudio.ams.connector.sms.preferences.modemCount";
 
-	/**
+	public static final String P_MODEM1_COMPORT = "org.csstudio.ams.connector.sms.preferences.modem1ComPort";
+	public static final String P_MODEM1_COMBAUDRATE = "org.csstudio.ams.connector.sms.preferences.modem1ComBaudrate";
+	public static final String P_MODEM1_MANUFACTURE = "org.csstudio.ams.connector.sms.preferences.modem1Manufacture";
+	public static final String P_MODEM1_MODEL = "org.csstudio.ams.connector.sms.preferences.modem1Model";
+	public static final String P_MODEM1_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modem1SimPin";
+
+    public static final String P_MODEM2_COMPORT = "org.csstudio.ams.connector.sms.preferences.modem2ComPort";
+    public static final String P_MODEM2_COMBAUDRATE = "org.csstudio.ams.connector.sms.preferences.modem2ComBaudrate";
+    public static final String P_MODEM2_MANUFACTURE = "org.csstudio.ams.connector.sms.preferences.modem2Manufacture";
+    public static final String P_MODEM2_MODEL = "org.csstudio.ams.connector.sms.preferences.modem2Model";
+    public static final String P_MODEM2_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modem2SimPin";
+
+    public static final String P_MODEM3_COMPORT = "org.csstudio.ams.connector.sms.preferences.modem3ComPort";
+    public static final String P_MODEM3_COMBAUDRATE = "org.csstudio.ams.connector.sms.preferences.modem3ComBaudrate";
+    public static final String P_MODEM3_MANUFACTURE = "org.csstudio.ams.connector.sms.preferences.modem3Manufacture";
+    public static final String P_MODEM3_MODEL = "org.csstudio.ams.connector.sms.preferences.modem3Model";
+    public static final String P_MODEM3_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modem3SimPin";
+
+    /**
 	 * The only one instance of this service.
 	 */
 	private static SampleService _instance;
@@ -74,13 +90,20 @@ public class SampleService {
 	 * them on the console.
 	 * 
 	 */
-	public final void showPreferences() {
+	public final void showPreferences()
+	{
 		IPreferenceStore store = SmsConnectorPlugin.getDefault().getPreferenceStore();
 
-		System.out.println(P_MODEM_COMPORT + ": " + store.getString(P_MODEM_COMPORT));
-		System.out.println(P_MODEM_COMBAUDRATE + ": " + store.getString(P_MODEM_COMBAUDRATE));
-		System.out.println(P_MODEM_MANUFACTURE + ": " + store.getString(P_MODEM_MANUFACTURE));
-		System.out.println(P_MODEM_MODEL + ": " + store.getString(P_MODEM_MODEL));
-		System.out.println(P_MODEM_SIMPIM + ": " + store.getString(P_MODEM_SIMPIM));
+		System.out.println(P_MODEM1_COMPORT + ": " + store.getString(P_MODEM1_COMPORT));
+		System.out.println(P_MODEM1_COMBAUDRATE + ": " + store.getString(P_MODEM1_COMBAUDRATE));
+		System.out.println(P_MODEM1_MANUFACTURE + ": " + store.getString(P_MODEM1_MANUFACTURE));
+		System.out.println(P_MODEM1_MODEL + ": " + store.getString(P_MODEM1_MODEL));
+		System.out.println(P_MODEM1_SIMPIM + ": " + store.getString(P_MODEM1_SIMPIM));
+		
+	    System.out.println(P_MODEM2_COMPORT + ": " + store.getString(P_MODEM2_COMPORT));
+	    System.out.println(P_MODEM2_COMBAUDRATE + ": " + store.getString(P_MODEM2_COMBAUDRATE));
+        System.out.println(P_MODEM2_MANUFACTURE + ": " + store.getString(P_MODEM2_MANUFACTURE));
+        System.out.println(P_MODEM2_MODEL + ": " + store.getString(P_MODEM2_MODEL));
+        System.out.println(P_MODEM2_SIMPIM + ": " + store.getString(P_MODEM2_SIMPIM));
 	}
 }

@@ -43,10 +43,24 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 		IEclipsePreferences node = new DefaultScope()
 				.getNode(SmsConnectorPlugin.PLUGIN_ID);
 
-		node.put(SampleService.P_MODEM_COMPORT, "COM1");
-		node.put(SampleService.P_MODEM_COMBAUDRATE, "9600");
-		node.put(SampleService.P_MODEM_MANUFACTURE, "Siemens");
-		node.put(SampleService.P_MODEM_MODEL, "MC35i");
-		node.put(SampleService.P_MODEM_SIMPIM, "0010");
+		node.put(SampleService.P_MODEM_COUNT, "1");
+
+		node.put(SampleService.P_MODEM1_COMPORT, "COM1");
+		node.put(SampleService.P_MODEM1_COMBAUDRATE, "9600");
+		node.put(SampleService.P_MODEM1_MANUFACTURE, "Siemens");
+		node.put(SampleService.P_MODEM1_MODEL, "MC35i");
+		node.put(SampleService.P_MODEM1_SIMPIM, "0010");
+		
+	    node.put(SampleService.P_MODEM2_COMPORT, "");
+	    node.put(SampleService.P_MODEM2_COMBAUDRATE, "");
+	    node.put(SampleService.P_MODEM2_MANUFACTURE, "");
+	    node.put(SampleService.P_MODEM2_MODEL, "");
+	    node.put(SampleService.P_MODEM2_SIMPIM, "");
+	    
+	    node.put(SampleService.P_MODEM3_COMPORT, "");
+	    node.put(SampleService.P_MODEM3_COMBAUDRATE, "");
+	    node.put(SampleService.P_MODEM3_MANUFACTURE, "");
+	    node.put(SampleService.P_MODEM3_MODEL, "");
+	    node.put(SampleService.P_MODEM3_SIMPIM, "");
 	}
 }
