@@ -10,12 +10,20 @@ jca-2.3.1.jar was built from the jca-2.3.1 sources with the following changes:
   queue. The original implementation would be quite slow on fast CPUs(!)
   because the code would sit in pause() instead of handling requests.
   Now it wakes immediately when new requests arrive.
+- JNITargetArch.java checks for Mac OS X handled osarch="ppc" and "x86",
+  but latest Intel Macs seem to report "i386", which is now handled as well.
   
-caj-1.1.3 sources were changed to turn debug="on".
-A caj-1.1.3 jar file is included, but currently not used.
-
 A caj-1.1.5.jar is included and used, but without sources because
 the CAS support in there is currently not fully funded.
+
+caj-1.1.3 jar is included with sources, but not actually used.
+Sources were changed to turn debug="on".
+
+Both CAJ and JCA seem to work on:
+Mac OS X 10.5 PPC
+Mac OS X 10.5 Intel
+RedHat Enterprise Linux client 5.2 (32-bit x86)
+Microsoft Windows XP Professional SP 2
 
 
 * Basic Build Instructions
