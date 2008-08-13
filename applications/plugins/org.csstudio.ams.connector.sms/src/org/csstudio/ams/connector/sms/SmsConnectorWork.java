@@ -73,7 +73,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     private Connection[]        amsReceiverConnection = new Connection[CONSUMER_CONNECTIONS];
     private Session[]           amsReceiverSession    = new Session[CONSUMER_CONNECTIONS];
 
-    // CHANGED BY: Markus Möller, 28.06.2007
+    // CHANGED BY: Markus MÃ¶ller, 28.06.2007
     // private TopicSubscriber     amsSubscriberSms    = null;
     private MessageConsumer[]     amsSubscriberSms    = new MessageConsumer[CONSUMER_CONNECTIONS];
     */
@@ -415,7 +415,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Mï¿½ller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
@@ -640,7 +640,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             Log.log(this, Log.INFO, "call modem.sendMessage");
             int totalOutBefore = modemService.getOutboundMessageCount();// total number of outbound messages since restart
             
-            // TODO: Eventuell die Liste aller Modems und ihre Zustände ausgeben
+            // TODO: Eventuell die Liste aller Modems und ihre Zustï¿½nde ausgeben
             // Log.log(this, Log.INFO, "Modem connected: " + modemService.getConnected());
             try
             {

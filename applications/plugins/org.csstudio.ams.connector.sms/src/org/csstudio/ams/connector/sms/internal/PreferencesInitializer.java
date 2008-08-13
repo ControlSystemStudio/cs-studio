@@ -44,9 +44,9 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 				.getNode(SmsConnectorPlugin.PLUGIN_ID);
 
 		node.put(SampleService.P_MODEM_COMPORT, "COM1");
-		node.put(SampleService.P_MODEM_COMBAUDRATE, "57600");
-		node.put(SampleService.P_MODEM_MANUFACTURE, "");
-		node.put(SampleService.P_MODEM_MODEL, "");
+		node.put(SampleService.P_MODEM_COMBAUDRATE, "9600");
+		node.put(SampleService.P_MODEM_MANUFACTURE, "Siemens");
+		node.put(SampleService.P_MODEM_MODEL, "MC35i");
 		node.put(SampleService.P_MODEM_SIMPIM, "0010");
 	}
 }
