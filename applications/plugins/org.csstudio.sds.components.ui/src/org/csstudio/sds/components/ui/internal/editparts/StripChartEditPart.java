@@ -25,6 +25,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import java.util.Arrays;
 
 import org.csstudio.sds.components.model.StripChartModel;
+import org.csstudio.sds.components.ui.internal.figures.StripChartFigure;
 import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
@@ -41,32 +42,40 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		// The strip chart currently uses a waveform figure as its figure
-		// because a strip chart figure has not yet been written.
 		StripChartModel model = (StripChartModel) getWidgetModel();
-		WaveformFigure figure = new WaveformFigure(model.numberOfDataSeries());
+		int valuesPerDataSeries = numberOfValuesPerSeries(model);
+		StripChartFigure figure = new StripChartFigure(
+				model.numberOfDataSeries(), valuesPerDataSeries);
 		initializeCommonFigureProperties(figure, model);
-		initializeDataProperties(figure, model);
+		initializeXAxisFigureProperties(figure, model);
+		// Note: the value properties are not initialized. This would cause
+		// the initial value that is drawn for each data series to be the static
+		// value of the property, which is probably not what the user wants.
+		
 		return figure;
+	}
+	
+	/**
+	 * Returns the number of data values that are recorded for each data series.
+	 * 
+	 * @param model
+	 *            the model.
+	 * @return the number of data values that are recorded.
+	 */
+	public int numberOfValuesPerSeries(final StripChartModel model) {
+		// TODO: constrain to a sensible maximum
+		return (int) Math.floor(model.getXAxisTimespan() / model.getUpdateInterval());
 	}
 
 	/**
-	 * Initializes the data properties of the figure.
+	 * Initializes the x-axis properties of the figure.
 	 * 
-	 * @param figure
-	 *            the figure.
-	 * @param model
-	 *            the model.
+	 * @param figure the figure.
+	 * @param model the model.
 	 */
-	private void initializeDataProperties(final WaveformFigure figure,
+	private void initializeXAxisFigureProperties(final StripChartFigure figure,
 			final StripChartModel model) {
-		for (int i = 0; i < model.numberOfDataSeries(); i++) {
-			if (model.isPlotEnabled(i)) {
-				double[] data = new double[10];
-				Arrays.fill(data, model.getCurrentValue(i));
-				figure.setData(i, data);
-			}
-		}
+		
 	}
 
 	/**
@@ -102,15 +111,9 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 			 */
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				StripChartFigure figure = (StripChartFigure) refreshableFigure;
 				double value = (Double) newValue;
-				double[] data = new double[10];
-				Arrays.fill(data, value);
-				if (((StripChartModel) getWidgetModel()).isPlotEnabled(_index)) {
-					figure.setData(_index, data);
-				} else {
-					figure.setData(_index, new double[0]);
-				}
+				figure.setCurrentValue(_index, value);
 				return true;
 			}
 		}
@@ -135,16 +138,9 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 			 */
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				StripChartFigure figure = (StripChartFigure) refreshableFigure;
 				boolean enabled = (Boolean) newValue;
-				if (enabled) {
-					 double value = ((StripChartModel) getWidgetModel()).getCurrentValue(_index);
-					 double[] data = new double[10];
-					 Arrays.fill(data, value);
-					 figure.setData(_index, data);
-				} else {
-					figure.setData(_index, new double[0]);
-				}
+				// TODO
 				return true;
 			}
 		}

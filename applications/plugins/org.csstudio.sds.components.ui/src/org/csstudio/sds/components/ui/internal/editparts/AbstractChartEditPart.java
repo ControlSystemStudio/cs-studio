@@ -25,7 +25,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.WaveformModel;
-import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
+import org.csstudio.sds.components.ui.internal.figures.AbstractChartFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -52,7 +52,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 	 *            the model.
 	 */
 	protected final void initializeCommonFigureProperties(
-			final WaveformFigure figure, final AbstractChartModel model) {
+			final AbstractChartFigure figure, final AbstractChartModel model) {
 		figure.setAliases(model.getAliases());
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
 			figure.setPlotColor(i, model.getPlotColor(i));
@@ -64,7 +64,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		figure.setShowValues(model.isLabeledTicksEnabled());
 		figure.setShowGridLines(model.getShowGridLines());
 		figure.setGridLinesColor(model.getGridLineColor());
-		figure.setShowConnectionLines(model.isLineChart());
+		figure.setLineChart(model.isLineChart());
 		figure.setGraphLineWidth(model.getPlotLineWidth());
 		figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
 		figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
@@ -96,7 +96,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setLabel((String) newValue);
 				return true;
 			}
@@ -113,7 +113,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setMax((Double)newValue);
 				return true;
 			}
@@ -125,7 +125,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setMin((Double)newValue);
 				return true;
 			}
@@ -137,7 +137,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setAutoScale((Boolean)newValue);
 				return true;
 			}
@@ -149,7 +149,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setShowValues((Boolean) newValue);
 				return true;
 			}
@@ -161,7 +161,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setShowGridLines((Integer) newValue);
 				return true;
 			}
@@ -173,7 +173,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setShowScale((Integer) newValue);
 				return true;
 			}
@@ -184,7 +184,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler yAxisScalingHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setYAxisScaling((Integer) newValue);
 				return true;
 			}
@@ -195,7 +195,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler xAxisLabelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setXAxisLabel((String) newValue);
 				return true;
 			}
@@ -206,7 +206,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler yAxisLabelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setYAxisLabel((String) newValue);
 				return true;
 			}
@@ -223,8 +223,8 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
-				figure.setShowConnectionLines((Boolean) newValue);
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setLineChart((Boolean) newValue);
 				return true;
 			}
 		};
@@ -235,7 +235,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setGraphLineWidth((Integer) newValue);
 				return true;
 			}
@@ -247,7 +247,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setTransparent((Boolean) newValue);
 				return true;
 			}
@@ -259,7 +259,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.refreshConstraints();
 				return true;
 			}
@@ -271,7 +271,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler drawingStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setDataPointDrawingStyle((Integer) newValue);
 				return true;
 			}
@@ -283,7 +283,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setGridLinesColor((RGB) newValue);
 				return true;
 			}
@@ -315,7 +315,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			 */
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
 				figure.setPlotColor(_index, (RGB) newValue);
 				return true;
 			}

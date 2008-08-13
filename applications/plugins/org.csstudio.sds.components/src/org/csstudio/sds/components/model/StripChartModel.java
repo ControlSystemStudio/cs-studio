@@ -137,8 +137,26 @@ public final class StripChartModel extends AbstractChartModel {
 	 * @throws IndexOutOfBoundsException
 	 *             if the index is invalid.
 	 */
-	public boolean isPlotEnabled(int index) {
+	public boolean isPlotEnabled(final int index) {
 		return getProperty(enablePlotPropertyId(index)).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the timespan displayed on the x-axis in seconds.
+	 * 
+	 * @return x-axis timespan in seconds.
+	 */
+	public double getXAxisTimespan() {
+		return getProperty(PROP_X_AXIS_TIMESPAN).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the update interval in seconds.
+	 * 
+	 * @return the update interval in seconds.
+	 */
+	public double getUpdateInterval() {
+		return getProperty(PROP_UPDATE_INTERVAL).getPropertyValue();
 	}
 
 	/**
