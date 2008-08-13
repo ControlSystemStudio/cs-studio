@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPICS Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.epics;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Bundle-Activator: org.csstudio.platform.libs.epics.EpicsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/caj-1.1.5.jar,
- lib/jca-2.3.2.jar
+ lib/jca-2.3.1.jar
 Export-Package: 
  com.cosylab.epics.caj,
  com.cosylab.epics.caj.cas,
@@ -37,5 +37,6 @@ Bundle-NativeCode:
  lib/linux/x86_64/libjca.so; osname=linux; processor=x86_64,
  lib/win32/x86/ca.dll; lib/win32/x86/Com.dll; lib/win32/x86/jca.dll;
  osname=win32; processor=x86,
- lib/macosx/ppc/libjca.jnilib; osname="mac os x"; processor=ppc; processor=x86
+ lib/macosx/ppc/libjca.jnilib; osname="mac os x"; processor=ppc,
+ lib/macosx/x86/libjca.jnilib; osname="mac os x"; processor=x86
 Bundle-Vendor: DESY/ORNL/SLAC

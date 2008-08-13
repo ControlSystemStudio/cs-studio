@@ -47,7 +47,6 @@ public class EpicsPlugin extends Plugin
     {
         super();
 		plugin = this;
-        
 	}
     
     /** @return <code>true</code> if preferences suggest the use
