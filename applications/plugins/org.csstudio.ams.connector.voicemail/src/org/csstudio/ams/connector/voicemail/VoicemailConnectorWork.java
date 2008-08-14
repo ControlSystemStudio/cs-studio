@@ -56,7 +56,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
 
     private MessageProducer     amsPublisherReply   = null;
 
-    // CHANGED BY: Markus Möller, 06.11.2007
+    // CHANGED BY: Markus Mï¿½ller, 06.11.2007
     // private TopicSubscriber     amsSubscriberVm     = null;
     // private MessageConsumer     amsSubscriberVm     = null;
     private JmsRedundantReceiver amsReceiver = null; 
@@ -333,12 +333,12 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
             amsSenderConnection = amsSenderFactory.createConnection();
             
-            // ADDED BY: Markus Möller, 25.05.2007
+            // ADDED BY: Markus Mï¿½ller, 25.05.2007
             amsSenderConnection.setClientID("VoicemailConnectorWorkSenderInternal");
             
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Mï¿½ller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
@@ -354,14 +354,14 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
 
             amsSenderConnection.start();
 
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Mï¿½ller, 25.05.2007
             /*
             amsSubscriberVm = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR));
             */
             
-            // CHANGED BY: Markus Möller, 28.06.2007
+            // CHANGED BY: Markus Mï¿½ller, 28.06.2007
             /*
             amsSubscriberVm = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
@@ -378,7 +378,11 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             }
             */
             amsReceiver = new JmsRedundantReceiver("VoicemailConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2));
-            result = amsReceiver.createRedundantSubscriber("amsSubscriberVm", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR));
+            result = amsReceiver.createRedundantSubscriber(
+                    "amsSubscriberVm",
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR),
+                    VoicemailConnectorStart.CREATE_DURABLE);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsSubscriberVm");

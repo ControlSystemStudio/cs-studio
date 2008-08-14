@@ -75,7 +75,7 @@ import org.csstudio.ams.internal.SampleService;
 import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-/*- FIXME Frage klären, warum das T_AMS_JMS immer in user feld steht, auch dieser Connector nicht angesteuert wird??? */
+/*- FIXME Frage klï¿½ren, warum das T_AMS_JMS immer in user feld steht, auch dieser Connector nicht angesteuert wird??? */
 public class DistributorWork extends Thread implements AmsConstants {
 	private static final String HISTORY_DEST_TYPE_SMS = "SMS";
 	private static final String HISTORY_DEST_TYPE_VMAIL = "VMail";
@@ -132,7 +132,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	 * ConnectionFactory[CONSUMER_CONNECTIONS]; private Connection[]
 	 * amsReceiverConnection = new Connection[CONSUMER_CONNECTIONS]; private
 	 * Session[] amsReceiverSession = new Session[CONSUMER_CONNECTIONS]; //
-	 * CHANGED BY: Markus Möller, 28.06.2007 // private TopicSubscriber
+	 * CHANGED BY: Markus Mï¿½ller, 28.06.2007 // private TopicSubscriber
 	 * amsSubscriberDist = null; private MessageConsumer[] amsSubscriberDist =
 	 * new MessageConsumer[CONSUMER_CONNECTIONS]; // private TopicSubscriber
 	 * amsSubscriberReply = null; private MessageConsumer[] amsSubscriberReply =
@@ -396,13 +396,13 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
 			amsSenderConnection = amsSenderFactory.createConnection();
 
-			// ADDED BY: Markus Möller, 25.05.2007
+			// ADDED BY: Markus Mï¿½ller, 25.05.2007
 			amsSenderConnection.setClientID("DistributorWorkSenderInternal");
 
 			amsSenderSession = amsSenderConnection.createSession(false,
 					Session.CLIENT_ACKNOWLEDGE);
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus Mï¿½ller, 25.05.2007
 			/*
 			 * amsPublisherCommand =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -420,7 +420,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				return false;
 			}
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus MÃ¶ller, 25.05.2007
 			/*
 			 * amsPublisherSms =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -449,7 +449,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				return false;
 			}
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus Mï¿½ller, 25.05.2007
 			/*
 			 * amsPublisherMail =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -465,7 +465,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				return false;
 			}
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus Mï¿½ller, 25.05.2007
 			/*
 			 * amsPublisherVoiceMail =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -491,12 +491,14 @@ public class DistributorWork extends Thread implements AmsConstants {
 					storeAct
 							.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2));
 
-            // CHANGED BY Markus Möller, 2007-10-30
+            // CHANGED BY Markus MÃ¶ller, 2007-10-30
             // Changed to the topic for the message minder
 			result = amsReceiver.
-			         createRedundantSubscriber("amsSubscriberDist",
-			                 storeAct.
-			                 getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR));            
+			         createRedundantSubscriber(
+			                 "amsSubscriberDist",
+			                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR),
+			                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_DISTRIBUTOR),
+			                 DistributorStart.CREATE_DURABLE);            
 			
 			if (result == false)
 			{
@@ -507,8 +509,10 @@ public class DistributorWork extends Thread implements AmsConstants {
 			result = amsReceiver
 					.createRedundantSubscriber(
 							"amsSubscriberReply",
-							storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY));
+							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY),
+							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_REPLY),
+							DistributorStart.CREATE_DURABLE);
+			
 			if (result == false) {
 				Log.log(this, Log.FATAL, "could not create amsSubscriberReply");
 				return false;
@@ -637,13 +641,13 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY));
 			extConnection = extFactory.createConnection();
 
-			// ADDED BY: Markus Möller, 25.05.2007
+			// ADDED BY: Markus Mï¿½ller, 25.05.2007
 			extConnection.setClientID("DistributorWorkSenderExternal");
 
 			extSession = extConnection.createSession(false,
 					Session.CLIENT_ACKNOWLEDGE);
 
-			// CHANGED BY: Markus Möller, 25.05.2007
+			// CHANGED BY: Markus Mï¿½ller, 25.05.2007
 			/*
 			 * extPublisherAlarm =
 			 * extSession.createProducer((Topic)extContext.lookup(
@@ -1355,7 +1359,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 					.log(Log.INFO,
 							"DistributorWork.logHistorySend() topicObj!=null");
 			history.setUserRef(topicObj.getID());
-			history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld für Topic vorhanden, klären ob DB erweitert werden soll!? */
+			history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld fï¿½r Topic vorhanden, klï¿½ren ob DB erweitert werden soll!? */
 			history.setDestType("jms topic");
 			history.setDestAdress(topicObj.getTopicName());
 		}
@@ -1420,7 +1424,7 @@ public class DistributorWork extends Thread implements AmsConstants {
                     .log(Log.INFO,
                             "DistributorWork.logHistorySend() topicObj!=null");
             history.setUserRef(topicObj.getID());
-            history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld für Topic vorhanden, klären ob DB erweitert werden soll!? */
+            history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld fï¿½r Topic vorhanden, klï¿½ren ob DB erweitert werden soll!? */
             history.setDestType("jms topic");
             history.setDestAdress(topicObj.getTopicName());
         }
@@ -1643,7 +1647,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY));
 			freeTopicConn = freeTopicFactory.createConnection();
 
-			// ADDED BY: Markus Möller, 25.05.2007
+			// ADDED BY: Markus Mï¿½ller, 25.05.2007
 			freeTopicConn.setClientID("DistributorWorkFree");
 
 			freeTopicConn.start();

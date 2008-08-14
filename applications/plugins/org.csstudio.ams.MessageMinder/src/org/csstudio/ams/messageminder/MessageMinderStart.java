@@ -45,6 +45,7 @@ public final class MessageMinderStart implements IApplication {
     private boolean _run = true;
     private MessageGuardCommander _commander;
     private static MessageMinderStart _instance;
+    public final static boolean CREATE_DURABLE = true;
 
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)

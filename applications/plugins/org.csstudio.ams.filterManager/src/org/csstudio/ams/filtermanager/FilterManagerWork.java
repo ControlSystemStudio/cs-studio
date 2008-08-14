@@ -89,7 +89,7 @@ public class FilterManagerWork extends Thread implements AmsConstants
     private Connection[]        amsReceiverConnection   = new Connection[CONSUMER_CONNECTIONS];
     private Session[]           amsReceiverSession      = new Session[CONSUMER_CONNECTIONS];
         
-    // CHANGED BY: Markus Möller, 28.06.2007
+    // CHANGED BY: Markus Mï¿½ller, 28.06.2007
     // private TopicSubscriber     amsSubscriberCommand    = null;
     private MessageConsumer[]   amsSubscriberCommand    = new MessageConsumer[CONSUMER_CONNECTIONS];
     */
@@ -100,7 +100,7 @@ public class FilterManagerWork extends Thread implements AmsConstants
     private Connection[]         extConnection           = new Connection[CONSUMER_CONNECTIONS];
     private Session[]            extSession              = new Session[CONSUMER_CONNECTIONS];
     
-    // CHANGED BY: Markus Möller, 28.06.2007
+    // CHANGED BY: Markus Mï¿½ller, 28.06.2007
     // private TopicSubscriber     extSubscriberAlarmFmr   = null;
     private MessageConsumer[]    extSubscriberAlarmFmr   = new MessageConsumer[CONSUMER_CONNECTIONS];
     // private TopicSubscriber     extSubscriberCommand    = null;
@@ -365,18 +365,18 @@ public class FilterManagerWork extends Thread implements AmsConstants
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
             amsSenderConnection = amsSenderFactory.createConnection();
             
-            // ADDED BY Markus Möller, 2007-05-24
+            // ADDED BY Markus Mï¿½ller, 2007-05-24
             amsSenderConnection.setClientID("AmsFilterManagerWorkSenderInternal");
             
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            /* CHANGED BY Markus Möller, 2007-05-24
+            /* CHANGED BY Markus Mï¿½ller, 2007-05-24
             
             amsPublisherDist = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR)));
             */
             
-            // CHANGED BY Markus Möller, 2007-10-30
+            // CHANGED BY Markus Mï¿½ller, 2007-10-30
             //   Changed to the topic for the message minder
             // amsPublisherDist = amsSenderSession.createProducer(amsSenderSession.createTopic(
             //        storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR)));
@@ -391,14 +391,14 @@ public class FilterManagerWork extends Thread implements AmsConstants
             
             amsSenderConnection.start();
 
-            // CHANGED BY Markus Möller, 2007-05-24
+            // CHANGED BY Markus Mï¿½ller, 2007-05-24
             /*
             amsSubscriberCommand = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END));
             */
             
-            // CHANGED BY: Markus Möller, 28.06.2007
+            // CHANGED BY: Markus Mï¿½ller, 28.06.2007
             /*
             amsSubscriberCommand = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND)),
@@ -415,7 +415,11 @@ public class FilterManagerWork extends Thread implements AmsConstants
                 return false;
             }
             
-            result = amsReceiver.createRedundantSubscriber("amsSubscriberCommand", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND));
+            result = amsReceiver.createRedundantSubscriber(
+                    "amsSubscriberCommand",
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND),
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END),
+                    FilterManagerStart.CREATE_DURABLE);
 
             if(result == false)
             {
@@ -464,7 +468,11 @@ public class FilterManagerWork extends Thread implements AmsConstants
         
         extReceiver = new JmsRedundantReceiver("AmsFilterManagerWorkReceiverExternal", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_PROVIDER_URL_2));
         
-        result = extReceiver.createRedundantSubscriber("extSubscriberAlarmFmr", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_ALARM));        
+        result = extReceiver.createRedundantSubscriber(
+                "extSubscriberAlarmFmr",
+                storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_ALARM),
+                storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TSUB_ALARM_FMR),
+                FilterManagerStart.CREATE_DURABLE);        
         
         if (result == false)
         {
@@ -472,7 +480,11 @@ public class FilterManagerWork extends Thread implements AmsConstants
             return false;
         }
 
-        result = extReceiver.createRedundantSubscriber("extSubscriberCommand", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_COMMAND));        
+        result = extReceiver.createRedundantSubscriber(
+                "extSubscriberCommand",
+                storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_COMMAND),
+                storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD),
+                FilterManagerStart.CREATE_DURABLE);        
         
         if (result == false)
         {

@@ -53,7 +53,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
     // private Connection                  amsConnection       = null;
     // private javax.jms.Session           amsSession          = null;
     
-    // CHANGED BY: Markus Möller, 28.06.2007
+    // CHANGED BY: Markus Mï¿½ller, 28.06.2007
     // private TopicSubscriber             amsSubscriberEmail  = null;
     // private MessageConsumer             amsSubscriberEmail  = null;
     
@@ -262,7 +262,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
             amsConnection = amsFactory.createConnection();
 
-            // ADDED BY: Markus Möller, 25.05.2007
+            // ADDED BY: Markus Mï¿½ller, 25.05.2007
             amsConnection.setClientID("EMailConnectorWorkInternal");
             
             amsSession = amsConnection.createSession(false, javax.jms.Session.CLIENT_ACKNOWLEDGE);
@@ -270,14 +270,14 @@ public class EMailConnectorWork extends Thread implements AmsConstants
             amsConnection.start();
             */
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Mï¿½ller, 25.05.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR));
             */
             
-            // CHANGED BY: Markus Möller, 28.06.2007
+            // CHANGED BY: Markus Mï¿½ller, 28.06.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
@@ -301,7 +301,11 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                 return false;
             }
 
-            result = amsReceiver.createRedundantSubscriber("amsSubscriberEmail", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR));
+            result = amsReceiver.createRedundantSubscriber(
+                    "amsSubscriberEmail",
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR),
+                    EMailConnectorStart.CREATE_DURABLE);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsSubscriberEmail");

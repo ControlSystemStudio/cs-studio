@@ -63,7 +63,9 @@ public class DistributorStart implements IApplication
     public final static int STAT_FALSE = 999;                                   // replaces boolean false in methods
 
     public final static long WAITFORTHREAD = 10000;
-
+    
+    public final static boolean CREATE_DURABLE = true;
+    
     private static DistributorStart _instance = null;
 
     private Context             extContext                  = null;

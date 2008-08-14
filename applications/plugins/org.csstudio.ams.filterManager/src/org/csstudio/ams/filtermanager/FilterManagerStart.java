@@ -58,6 +58,7 @@ public class FilterManagerStart implements IApplication
     public final static int STAT_ERR_UNKNOWN = 8;
 
     public final static long WAITFORTHREAD = 10000;
+    public final static boolean CREATE_DURABLE = true;
 
     private static FilterManagerStart _instance = null;
     
@@ -249,7 +250,7 @@ public class FilterManagerStart implements IApplication
             properties.put(Context.INITIAL_CONTEXT_FACTORY, 
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
             
-            //CHANGED BY: Markus Möller, 13.08.2007
+            //CHANGED BY: Markus Mï¿½ller, 13.08.2007
             //properties.put(Context.PROVIDER_URL, 
             //        storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_PROVIDER_URL_1));
             
@@ -265,7 +266,7 @@ public class FilterManagerStart implements IApplication
             
             extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY Markus Möller, 2007-05-24
+            // CHANGED BY Markus Mï¿½ller, 2007-05-24
             /*extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
             */

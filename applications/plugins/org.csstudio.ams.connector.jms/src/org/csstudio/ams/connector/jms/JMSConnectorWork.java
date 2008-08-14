@@ -119,8 +119,9 @@ public class JMSConnectorWork extends Thread implements AmsConstants {
 			result = messageReceiver
 					.createRedundantSubscriber(
 							AMS_SUBSCRIBER_JMS_ID,
-							storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR));
+							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR),
+							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_JMS_CONNECTOR),
+							JMSConnectorStart.CREATE_DURABLE);
 			if (result == false) {
 				Log.log(this, Log.FATAL, "could not create "
 						+ AMS_SUBSCRIBER_JMS_ID);

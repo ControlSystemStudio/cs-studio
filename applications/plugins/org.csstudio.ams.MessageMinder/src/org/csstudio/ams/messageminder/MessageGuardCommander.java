@@ -131,8 +131,8 @@ public class MessageGuardCommander extends Job {
         IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
 
         /**
-         * Nur für debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geändert.
-         * Der Code kann später wieder entfernt werden.
+         * Nur fï¿½r debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geï¿½ndert.
+         * Der Code kann spï¿½ter wieder entfernt werden.
          * TODO: delete debug code.
 
         storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://kryksrvjmsa.desy.de:50000)");
@@ -157,7 +157,11 @@ public class MessageGuardCommander extends Job {
             Log.log(this, Log.FATAL, "could not create amsReceiver");
         }
         
-        boolean result = _amsReceiver.createRedundantSubscriber("amsSubscriberMessageMinder", storeAct.getString(SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER));
+        boolean result = _amsReceiver.createRedundantSubscriber(
+                "amsSubscriberMessageMinder",
+                storeAct.getString(SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER),
+                storeAct.getString(SampleService.P_JMS_AMS_TSUB_MESSAGEMINDER),
+                MessageMinderStart.CREATE_DURABLE);
 
         if(!result){
             Log.log(this, Log.FATAL, "could not create amsSubscriberMessageMinder");
@@ -289,7 +293,7 @@ public class MessageGuardCommander extends Job {
     private void sendCleanUpMessage(final MessageKey key, final ITimestamp lastDate, final int number) {
         System.out.println(key.toString()+"\tlast unsend msg: "+lastDate.toString()+"\t and "+number+" unsent msg.");
         // TODO write the sendCleanUpMessage.
-        // Soll eine Nachricht versenden die enthält welche und wieviele nachrchten zurück gehalten wurden.
+        // Soll eine Nachricht versenden die enthï¿½lt welche und wieviele nachrchten zurï¿½ck gehalten wurden.
     }
 
     /**

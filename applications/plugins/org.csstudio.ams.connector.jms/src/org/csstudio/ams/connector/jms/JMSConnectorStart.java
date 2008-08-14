@@ -53,6 +53,7 @@ public class JMSConnectorStart implements IApplication
     public final static int STAT_ERR_UNKNOWN = 5;
 
     public final static long WAITFORTHREAD = 10000;
+    public final static boolean CREATE_DURABLE = true;
 
     private static JMSConnectorStart _instance = null;
 
@@ -236,12 +237,12 @@ public class JMSConnectorStart implements IApplication
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY));
             extConnection = extFactory.createConnection();
             
-            // ADDED BY: Markus Möller, 25.05.2007
+            // ADDED BY: Markus Mï¿½ller, 25.05.2007
             extConnection.setClientID("JMSConnectorStartSenderExternal");
             
             extSession = extConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Mï¿½ller, 25.05.2007
             /*
             extPublisherStatusChange = extSession.createProducer((Topic)extContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));

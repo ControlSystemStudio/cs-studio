@@ -86,9 +86,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     
     /** Name of the management topic for sending commands */
     public static final String MANAGE_COMMAND_TOPIC = "T_AMS_CON_MANAGE";
+    public static final String MANAGE_COMMAND_TOPIC_SUB = "T_AMS_TSUB_CON_MANAGE";
 
     /** Name of the management topic for receiving answers */
     public static final String MANAGE_REPLY_TOPIC = "T_AMS_CON_MANAGE_REPLY";
+    public static final String MANAGE_REPLY_TOPIC_SUB = "T_AMS_TSUB_CON_MANAGE_REPLY";
     
     public SmsConnectorWork(SmsConnectorStart scs)
     {
@@ -461,7 +463,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             amsReceiver = new JmsRedundantReceiver("SmsConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2));
            
             // Create first subscriber (default topic for the connector) 
-            result = amsReceiver.createRedundantSubscriber("amsSubscriberSms", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR));
+            result = amsReceiver.createRedundantSubscriber(
+                    "amsSubscriberSms",
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR),
+                    SmsConnectorStart.CREATE_DURABLE);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsSubscriberSms");
@@ -470,7 +476,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             
             // Create second subscriber (topic for message management)
             // TODO: Replace constant with preference entry 
-            result = amsReceiver.createRedundantSubscriber("amsConnectorManager", MANAGE_COMMAND_TOPIC);
+            result = amsReceiver.createRedundantSubscriber(
+                    "amsConnectorManager",
+                    MANAGE_COMMAND_TOPIC,
+                    MANAGE_COMMAND_TOPIC_SUB,
+                    SmsConnectorStart.CREATE_DURABLE);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsConnectorManager");
