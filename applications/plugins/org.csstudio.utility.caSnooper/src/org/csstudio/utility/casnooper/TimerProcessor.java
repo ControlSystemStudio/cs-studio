@@ -30,6 +30,7 @@ public class TimerProcessor {
             broadcastDoubleValuePerSecond = (double)broadcastIntValue * 1000.0 / (double)getInterval();
             server.getNumberOfBroadcastsPerSecondChannel().setDoubleValue(broadcastDoubleValuePerSecond);
             System.out.println( "broadcasts/sec: " + broadcastDoubleValuePerSecond);
+            server.getCaBroadcastCollector().setValue(broadcastDoubleValuePerSecond);
         }
     }
 

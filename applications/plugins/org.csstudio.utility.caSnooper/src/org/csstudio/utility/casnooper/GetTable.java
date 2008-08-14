@@ -34,3 +34,111 @@ public class GetTable implements IAction {
 	}
 
 }
+
+//public String getCollectionAsXMLString () {
+//    final String[] _COLUMN_NAMES = "Application,Descriptor,Counter,Actual value,Date,Count,Highest Value,Date,Count,Lowest Value,Date,Count,Mean Value abs,Mean Value rel.,Alarm Limit (abs),Alarm Limit (rel),Hard Limit".split(",");
+////    File xmlFile = new File("c:\\tmp\\XMLStatisticFile.xml");
+//    System.out.println("Make new Doc");
+//    try{
+//        DocType dt = new DocType("CSS-StatisticProtocol");
+//        Element root = new Element("StatisticProtocol");
+//        Attribute version = new Attribute("Version","0.1");
+//        version.setAttributeType(Attribute.ID_TYPE);
+//        root.setAttribute(version);
+//        Document d = new Document(root,dt);
+//        Element collectionSupervisor = new Element("CollectionSupervisor");
+//        collectionSupervisor.setAttribute("size",collectorVector.size()+"");
+//        root.addContent(collectionSupervisor);
+//        for (Collector collector : collectorVector) {
+//            int i=0;
+//            Element collectorElement = new Element("Collector");
+//            collectionSupervisor.addContent(collectorElement);
+//            Element column = new Element("COLUMN");
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(collector.getApplication());
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(collector.getDescriptor());
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(collector.getCount().toString());
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(collector.getActualValue().getValue().toString());
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(Collector.dateToString(collector.getActualValue().getTime()));
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(collector.getActualValue().getCount().toString());
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(collector.getHighestValue().getValue().toString());
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(Collector.dateToString(collector.getHighestValue().getTime()));
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            column.setText(collector.getHighestValue().getCount().toString());
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); 
+//            column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getLowestValue().getValue()!=null){
+//                column.setText(collector.getLowestValue().getValue().toString());
+//            }
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getLowestValue().getTime()!=null){
+//                column.setText(Collector.dateToString(collector.getLowestValue().getTime()));
+//            }
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getLowestValue().getCount()!=null){
+//                column.setText(collector.getLowestValue().getCount().toString());
+//            }
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getMeanValueAbsolute()!=null){
+//                column.setText(collector.getMeanValueAbsolute().toString());
+//            }
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getMeanValuerelative()!=null){
+//                column.setText(collector.getMeanValuerelative().toString());
+//            }
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getAlarmHandler().getHighAbsoluteLimit()!=null){
+//                column.setText(collector.getAlarmHandler().getHighAbsoluteLimit().toString());
+//            }
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getAlarmHandler().getHighRelativeLimit()!=null){
+//                column.setText(collector.getAlarmHandler().getHighRelativeLimit().toString());
+//            }
+//            collectorElement.addContent(column);
+//            column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
+//            if(collector.getHardLimit()!=null){
+//                column.setText(collector.getHardLimit().toString());
+//            }
+//            collectorElement.addContent(column);
+//        }
+//        StringWriter sw = new StringWriter();
+//        XMLOutputter xmlOutputter = new XMLOutputter();
+//        xmlOutputter.output(d, sw);
+//        System.out.println(sw.toString());
+//        return sw.toString();
+//        
+//    }catch(Exception e){
+//        e.printStackTrace();
+//    }
+//    return "";
+//}

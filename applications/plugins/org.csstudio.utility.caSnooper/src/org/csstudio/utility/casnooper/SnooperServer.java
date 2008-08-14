@@ -110,6 +110,9 @@ public class SnooperServer {
      */
     private void initialize() throws CAException {
     	
+        //get local host name
+        createLocalHostName();
+        
     	// initialize statistic collector
     	initializeStatisticCollectors();
         
@@ -125,9 +128,6 @@ public class SnooperServer {
 		// Display basic information about the context.
         System.out.println(context.getVersion().getVersionString());
         context.printInfo(); System.out.println();
-        
-        //get local host name
-        createLocalHostName();
         
         // register process variables
 		registerProcessVariables(this.server); 
@@ -314,6 +314,14 @@ public class SnooperServer {
 
 	public static void setLocalHostName(String localHostName) {
 		SnooperServer.localHostName = localHostName;
+	}
+
+	public static Collector getCaBroadcastCollector() {
+		return caBroadcastCollector;
+	}
+
+	public static void setCaBroadcastCollector(Collector caBroadcastCollector) {
+		SnooperServer.caBroadcastCollector = caBroadcastCollector;
 	}
 	
 }
