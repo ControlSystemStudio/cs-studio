@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="id1"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.utility.casnooper.CaSnooperTask">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.products">
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.utility.casnooper.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.utility.casnooper.LoginCallbackHandler1"
+            id="org.csstudio.utility.caSnooper.loginHandler"
+            name="LoginCallbackHandler1">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <simpleAction
+            class="org.csstudio.utility.casnooper.GetBroadcastPerSecond"
+            id="org.csstudio.utility.casnooper.GetBroadcastPerSecond"
+            name="GetBroadcastPerSecond">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.utility.casnooper.GetTable"
+            id="org.csstudio.utility.casnooper.GetTable"
+            name="GetTable">
+      </simpleAction>
+   </extension>
+
+</plugin>

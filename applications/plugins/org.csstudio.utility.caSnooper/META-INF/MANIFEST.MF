@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CaSnooper Plug-in
+Bundle-SymbolicName: org.csstudio.utility.caSnooper;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.utility.casnooper.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform.libs.epics,
+ org.csstudio.platform,
+ org.csstudio.platform.libs.dcf,
+ org.csstudio.platform.libs.xmpp
+Eclipse-LazyStart: true
