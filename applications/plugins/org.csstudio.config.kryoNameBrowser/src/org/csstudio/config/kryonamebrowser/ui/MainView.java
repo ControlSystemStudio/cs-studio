@@ -4,28 +4,19 @@ import java.sql.SQLException;
 
 import org.csstudio.config.kryonamebrowser.config.OracleSettings;
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
-import org.csstudio.config.kryonamebrowser.ui.dialog.NewKryoNameComposite;
 import org.csstudio.config.kryonamebrowser.ui.filter.FilterComposite;
-import org.csstudio.config.kryonamebrowser.ui.handler.AddNewNameHandler;
 import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameContentProvider;
 import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameLabelProvider;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.NotEnabledException;
-import org.eclipse.core.commands.NotHandledException;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -41,6 +32,10 @@ public class MainView extends ViewPart {
 	private KryoNameBrowserLogic logic;
 
 	private TableViewer viewer;
+
+	public TableViewer getViewer() {
+		return viewer;
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -59,7 +54,9 @@ public class MainView extends ViewPart {
 		parent.setLayout(gridLayout);
 
 		// add filter on top
-		FilterComposite filter = createFilter(parent);
+		FilterComposite filter = new FilterComposite(parent, SWT.NONE);
+		filter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
 		// add table at the bottom
 		createTable(parent);
 
@@ -69,10 +66,6 @@ public class MainView extends ViewPart {
 		filter.setLogic(logic);
 		initializeToolBar();
 
-	}
-
-	private FilterComposite createFilter(Composite parent) {
-		return new FilterComposite(parent, SWT.NONE);
 	}
 
 	@Override
@@ -93,7 +86,8 @@ public class MainView extends ViewPart {
 		Table table = new Table(parent, style);
 
 		table.setHeaderVisible(true);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
+		table.setLayoutData(gd_table);
 
 		final TableColumn newColumnTableColumn = new TableColumn(table,
 				SWT.CENTER, 0);
@@ -165,6 +159,11 @@ public class MainView extends ViewPart {
 		newColumnTableColumn_10.setWidth(100);
 		newColumnTableColumn_10.setText("Seq No");
 
+		final TableColumn newColumnTableColumn_11 = new TableColumn(table,
+				SWT.NONE);
+		newColumnTableColumn_11.setWidth(100);
+		newColumnTableColumn_11.setText("Description");
+
 		viewer = new TableViewer(table);
 
 		viewer.setContentProvider(new KryoNameContentProvider(logic));
@@ -172,41 +171,12 @@ public class MainView extends ViewPart {
 
 		viewer.setInput(null);
 
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				// get selected object
-
-				ISelection selection = viewer.getSelection();
-				if (selection instanceof IStructuredSelection) {
-					Object obj = ((IStructuredSelection) selection)
-							.getFirstElement();
-					// If we had a selection lets open the editor
-					if (obj != null) {
-						// Person person = (Person) obj;
-						// MyNameEditorInput input = new
-						// MyNameEditorInput(person
-						// .getLastName());
-						// try {
-						// page.openEditor(input, MyNameEditor.ID);
-						// viewer.setSelection(viewer.getSelection());
-						// } catch (PartInitException e) {
-						// }
-					}
-				}
-
-				IHandlerService handlerService = (IHandlerService) getSite()
-						.getService(IHandlerService.class);
-				try {
-					handlerService
-							.executeCommand(AddNewNameHandler.ID, null);
-				} catch (Exception e) {
-					throw new RuntimeException("Should never happen", e);
-				}
-
-			}
-		});
+	
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(viewer.getTable());
+	
+		viewer.getTable().setMenu(menu);
+		getSite().registerContextMenu(menuManager, viewer);
 
 		getSite().setSelectionProvider(viewer);
 
@@ -226,7 +196,5 @@ public class MainView extends ViewPart {
 	public KryoNameBrowserLogic getLogic() {
 		return logic;
 	}
-	
-	
 
 }

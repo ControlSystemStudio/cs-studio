@@ -31,4 +31,68 @@
                style="push"/>
       </actionSet>
    </extension>
+     <extension
+           point="org.eclipse.ui.commands">
+        <command
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.AddNewNameHandler"
+              id="addNewName.command"
+              name="addNew">
+        </command>
+        <command
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.ExcelExportHandler"
+              id="excelExport.command"
+              name="excelExport">
+        </command>
+        <command
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.AddByExample"
+              id="addByExample.command"
+              name="addByExample">
+        </command>
+        <command
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.EditHandler"
+              id="editEntry.command"
+              name="edit">
+        </command>
+        <command
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.DeleteCommand"
+              id="deleteEntry.command"
+              name="delete">
+        </command>
+     </extension>
+     <extension
+           point="org.eclipse.ui.menus">
+        <menuContribution
+              locationURI="toolbar:org.csstudio.config.kryonamebrowser.ui.MainView">
+           <command
+                 commandId="addNewName.command"
+                 label="Add"
+                 style="push"
+                 tooltip="Add new entry">
+           </command>
+           <command
+                 commandId="excelExport.command"
+                 label="Export"
+                 style="push"
+                 tooltip="Export to excel">
+           </command>
+        </menuContribution>
+        <menuContribution
+              locationURI="popup:org.csstudio.config.kryonamebrowser.ui.MainView">
+           <command
+                 commandId="editEntry.command"
+                 label="Edit"
+                 style="push">
+           </command>
+           <command
+                 commandId="addByExample.command"
+                 label="Add By Example"
+                 style="push">
+           </command>
+           <command
+                 commandId="deleteEntry.command"
+                 label="Delete Entry"
+                 style="push">
+           </command>
+        </menuContribution>
+     </extension>
 </plugin>

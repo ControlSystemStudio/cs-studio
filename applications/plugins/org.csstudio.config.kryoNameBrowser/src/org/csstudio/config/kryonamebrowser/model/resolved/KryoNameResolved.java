@@ -14,7 +14,7 @@ public class KryoNameResolved {
 
     private String label;
 
-    private List<KryoPlantEntry> plants = new ArrayList<KryoPlantEntry>();
+    private List<KryoPlantResolved> plants = new ArrayList<KryoPlantResolved>();
 
     private List<KryoObjectEntry> objects = new ArrayList<KryoObjectEntry>();
 
@@ -44,7 +44,7 @@ public class KryoNameResolved {
         return label;
     }
 
-    public List<KryoPlantEntry> getPlants() {
+    public List<KryoPlantResolved> getPlants() {
         return plants;
     }
 
@@ -72,7 +72,7 @@ public class KryoNameResolved {
 		this.label = label;
 	}
 
-	public void setPlants(List<KryoPlantEntry> plants) {
+	public void setPlants(List<KryoPlantResolved> plants) {
 		this.plants = plants;
 	}
 

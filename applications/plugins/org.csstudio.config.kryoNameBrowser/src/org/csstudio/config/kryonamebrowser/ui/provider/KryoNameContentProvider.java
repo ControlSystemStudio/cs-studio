@@ -3,6 +3,8 @@ package org.csstudio.config.kryonamebrowser.ui.provider;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoNameEntry;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
@@ -20,8 +22,8 @@ public class KryoNameContentProvider implements IStructuredContentProvider {
 	@Override
 	public Object[] getElements(Object inputElement) {
 
-		if (inputElement instanceof KryoNameEntry) {
-			KryoNameEntry example = (KryoNameEntry) inputElement;
+		if (inputElement instanceof KryoNameResolved) {
+			KryoNameResolved example = (KryoNameResolved) inputElement;
 
 			try {
 				List<KryoNameResolved> search = logic.search(example);

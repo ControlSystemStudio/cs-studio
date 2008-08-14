@@ -1,16 +1,23 @@
 package org.csstudio.config.kryonamebrowser.logic;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.csstudio.config.kryonamebrowser.config.OracleSettings;
 import org.csstudio.config.kryonamebrowser.config.Settings;
 import org.csstudio.config.kryonamebrowser.database.DBConnect;
@@ -20,6 +27,7 @@ import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoPlantEntry;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoProcessEntry;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
+import org.csstudio.config.kryonamebrowser.model.resolved.KryoPlantResolved;
 
 /**
  * Main logic for the name browser.
@@ -28,10 +36,15 @@ import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
  */
 public class KryoNameBrowserLogic {
 
+	private static final int DESCRIPTION_LENGTH = 200;
 	private DBConnect database;
 	public static final int NO_PARENT_PLANT_ID = 1;
+	public static final int NO_PARENT_SUPER_PLANT_ID = 0;
 	public static final int NO_PARENT_OBJECT_ID = 0;
 	public static final int ROW_FETCH_SIZE = 50;
+	private static short NAME_CELL_WIDTH = 4000;
+
+	private static short NOM_CELL_WIDTH = 1000;
 
 	public static void main(String[] args) throws InterruptedException {
 		for (int i = 0; i < 30; i++) {
@@ -48,7 +61,7 @@ public class KryoNameBrowserLogic {
 							long l = System.currentTimeMillis();
 
 							KryoNameResolved resolved = new KryoNameResolved();
-							resolved.getPlants().add(new KryoPlantEntry(4));
+							resolved.getPlants().add(new KryoPlantResolved(4));
 							logic.search(resolved);
 
 							System.out.println(""
@@ -102,6 +115,64 @@ public class KryoNameBrowserLogic {
 		database.openConnection();
 	}
 
+	private String getQueryForExample(KryoNameResolved example) {
+		StringBuilder nameQuery = new StringBuilder();
+
+		// handle plants filtering
+		List<KryoPlantResolved> plantsExample = example.getPlants();
+		boolean isUsed = false;
+		if (plantsExample.size() > 0) {
+			isUsed = true;
+			// TODO: Handle better? HARD-CODED VALUE
+			nameQuery.append("X");
+			for (KryoPlantEntry kryoPlantEntry : plantsExample) {
+				nameQuery.append(kryoPlantEntry.getLabel());
+
+				if (kryoPlantEntry.getNumberOfPlants() > 0) {
+					nameQuery.append(kryoPlantEntry.getNumberOfPlants());
+				} else {
+					nameQuery.append("%");
+				}
+			}
+
+		}
+
+		nameQuery.append("%:%");
+
+		// handle objects entry
+		List<KryoObjectEntry> objectsExample = example.getObjects();
+		if (objectsExample.size() > 0) {
+			isUsed = true;
+			// remove the last one which is '%'
+			nameQuery.deleteCharAt(nameQuery.length() - 1);
+
+			for (KryoObjectEntry kryoObjectEntry : objectsExample) {
+				nameQuery.append(kryoObjectEntry.getLabel());
+			}
+			nameQuery.append("%");
+
+		}
+
+		// handle process and seq kryo number
+
+		if (example.getProcess() != null) {
+			isUsed = true;
+			nameQuery.append(example.getProcess().getId());
+		}
+
+		if (example.getSeqKryoNumber() >= 0) {
+			isUsed = true;
+			int number = example.getSeqKryoNumber();
+			nameQuery.append(number < 10 ? "0" + number : number);
+		} else {
+			nameQuery.append("__");
+		}
+
+		JOptionPane.showMessageDialog(null, nameQuery.toString());
+
+		return isUsed ? nameQuery.toString() : "";
+	}
+
 	/**
 	 * List of all {@link KryoNameResolved} which are subsets of the example.
 	 * 
@@ -114,108 +185,16 @@ public class KryoNameBrowserLogic {
 	public synchronized List<KryoNameResolved> search(KryoNameResolved example)
 			throws SQLException {
 
-		ArrayList<KryoNameResolved> results = retriveAll();
-
-		List<KryoNameResolved> filter = filter(example, results);
-
-		return filter;
-
-	}
-
-	private List<KryoNameResolved> filter(KryoNameResolved example,
-			ArrayList<KryoNameResolved> results) {
-		// filter
-		// by name
-		String name = example.getName();
-		// by plant
-		List<KryoPlantEntry> plants = example.getPlants();
-		// by object
-		List<KryoObjectEntry> objects = example.getObjects();
-		// by process
-		KryoProcessEntry processId = example.getProcess();
-		// by cryo number
-		int seqKryoNumber = example.getSeqKryoNumber();
-
-		outer: for (Iterator<KryoNameResolved> iterator = results.iterator(); iterator
-				.hasNext();) {
-			KryoNameResolved kryoNameResolved = iterator.next();
-
-			if (!isEmpty(name) && !name.equals(kryoNameResolved.getName())) {
-				iterator.remove();
-
-				continue;
-			}
-
-			if (plants.size() > 0) {
-				List<KryoPlantEntry> plantsResolved = kryoNameResolved
-						.getPlants();
-
-				if (plants.size() > plantsResolved.size()) {
-					iterator.remove();
-					continue outer;
-				}
-
-				for (int i = 0; i < plants.size(); i++) {
-					KryoPlantEntry exampleE = plants.get(i);
-					KryoPlantEntry resolvedE = plantsResolved.get(i);
-					if (exampleE.getId() == resolvedE.getId()) {
-						if (exampleE.getNumberOfPlants() >= 0
-								&& resolvedE.getNumberOfPlants() != exampleE
-										.getNumberOfPlants()) {
-							iterator.remove();
-							continue outer;
-						}
-					} else {
-						iterator.remove();
-						continue outer;
-					}
-				}
-
-			}
-
-			if (objects.size() > 0) {
-				List<KryoObjectEntry> objectsResolved = kryoNameResolved
-						.getObjects();
-
-				if (objects.size() > objectsResolved.size()) {
-					iterator.remove();
-					continue outer;
-				}
-
-				for (int i = 0; i < objects.size(); i++) {
-					if (objects.get(i).getId() != objectsResolved.get(i)
-							.getId()) {
-						iterator.remove();
-						continue outer;
-					}
-
-				}
-
-			}
-
-			if (processId != null
-					&& !processId.getId().equals(
-							kryoNameResolved.getProcess().getId())) {
-				iterator.remove();
-				continue outer;
-			}
-
-			if (seqKryoNumber >= 0) {
-				if (!(seqKryoNumber == kryoNameResolved.getSeqKryoNumber())) {
-
-					iterator.remove();
-				}
-			}
-
-		}
-
-		return results;
-	}
-
-	private ArrayList<KryoNameResolved> retriveAll() throws SQLException {
-		StringBuffer buffer = new StringBuffer(
+		StringBuffer selectQuery = new StringBuffer(
 				"SELECT IO_NAME_ID , IO_NAME , PLANT_ID , OBJECT_ID , CRYO_PROCESS_ID , SEQ_KRYO_NUMBER , KRYO_NAME_LABEL FROM ")
 				.append(TableNames.NAMES_TABLE);
+
+		String nameQuery = getQueryForExample(example);
+
+		if (nameQuery.length() > 0) {
+			selectQuery.append("  WHERE  io_name like '").append(
+					nameQuery.toString()).append("'");
+		}
 
 		ArrayList<KryoNameResolved> results = new ArrayList<KryoNameResolved>();
 		Statement statement = null;
@@ -224,7 +203,7 @@ public class KryoNameBrowserLogic {
 			statement = database.getConnection().createStatement();
 			statement.setFetchSize(ROW_FETCH_SIZE);
 
-			resultSet = statement.executeQuery(buffer.toString());
+			resultSet = statement.executeQuery(selectQuery.toString());
 
 			HashMap<Integer, KryoObjectEntry> objectCache = new HashMap<Integer, KryoObjectEntry>();
 			HashMap<Integer, KryoPlantEntry> plantCache = new HashMap<Integer, KryoPlantEntry>();
@@ -252,7 +231,7 @@ public class KryoNameBrowserLogic {
 
 				Collections.reverse(objects);
 
-				List<KryoPlantEntry> plants = kryoNameResolved.getPlants();
+				List<KryoPlantResolved> plants = kryoNameResolved.getPlants();
 
 				KryoPlantEntry kryoPlantEntry = getPlantEntry(resultSet
 						.getInt(3), plantCache);
@@ -267,11 +246,15 @@ public class KryoNameBrowserLogic {
 				int plantHalveIndex = plantHalve.length - 1;
 
 				while (kryoPlantEntry != null) {
+					int nrOfPlants = -1;
+
+					// do we allow plants, if so parse the int.
 					if (kryoPlantEntry.getNumberOfPlants() > 0) {
 
 						try {
-							kryoPlantEntry.setNumberOfPlants(Integer
-									.parseInt(plantHalve[plantHalveIndex]));
+							nrOfPlants = Integer
+									.parseInt(plantHalve[plantHalveIndex]);
+
 						} catch (Exception e) {
 							JOptionPane.showMessageDialog(null,
 									"Invalid name entry found "
@@ -280,10 +263,13 @@ public class KryoNameBrowserLogic {
 						}
 
 						plantHalveIndex--;
-					} else {
-						kryoPlantEntry.setNumberOfPlants(-1);
 					}
-					plants.add(kryoPlantEntry);
+
+					KryoPlantResolved plantResolved = new KryoPlantResolved(
+							kryoPlantEntry);
+					plantResolved.setNumberOfPlants(nrOfPlants);
+
+					plants.add(plantResolved);
 					kryoPlantEntry = getPlantEntry(kryoPlantEntry.getParent(),
 							plantCache);
 				}
@@ -301,6 +287,7 @@ public class KryoNameBrowserLogic {
 
 		}
 		return results;
+
 	}
 
 	private KryoProcessEntry getProcessEntry(String id) throws SQLException {
@@ -361,7 +348,7 @@ public class KryoNameBrowserLogic {
 		}
 
 		if (plantCache.containsKey(id)) {
-			return new KryoPlantEntry(plantCache.get(id));
+			return plantCache.get(id);
 		}
 
 		Statement statement = database.getConnection().createStatement();
@@ -398,7 +385,7 @@ public class KryoNameBrowserLogic {
 			statement.close();
 		}
 
-		return next;
+		return !next;
 
 	}
 
@@ -414,13 +401,13 @@ public class KryoNameBrowserLogic {
 			statement.close();
 		}
 
-		return next;
+		return !next;
 
 	}
 
 	public synchronized void add(KryoNameEntry newEntry) throws SQLException {
 
-		if (newEntry.getName() != null || newEntry.getName().isEmpty()
+		if (newEntry.getName() == null || newEntry.getName().isEmpty()
 				|| newEntry.getProcessId() == null
 				|| newEntry.getProcessId().isEmpty()) {
 			throw new IllegalStateException("Missing name or process");
@@ -446,7 +433,7 @@ public class KryoNameBrowserLogic {
 			}
 
 			// TODO: validation of numbers set is quite difficult, if time will
-			// add later
+			// add later also can validate last two entries in name (process and sequence).
 
 			statement
 					.executeUpdate("insert into NSB_IO_NAME (IO_NAME, PLANT_ID, OBJECT_ID, CRYO_PROCESS_ID, "
@@ -468,12 +455,12 @@ public class KryoNameBrowserLogic {
 		}
 	}
 
-	public synchronized void delete(KryoObjectEntry kryoNameEntry)
+	public synchronized void delete(KryoNameEntry kryoNameEntry)
 			throws SQLException {
 		Statement statement = database.getConnection().createStatement();
 		try {
-			statement.executeUpdate("delete from NSB_IO_NAME where IO_NAME = '"
-					+ kryoNameEntry.getName() + "'");
+			statement.executeUpdate("delete from NSB_IO_NAME where IO_NAME_ID = '"
+					+ kryoNameEntry.getId() + "'");
 		} finally {
 			statement.close();
 		}
@@ -485,7 +472,7 @@ public class KryoNameBrowserLogic {
 	 * @param kryoNameEntry
 	 *            entry from which to use the name and new label
 	 */
-	public synchronized void updateLabel(KryoObjectEntry kryoNameEntry)
+	public synchronized void updateLabel(KryoNameEntry kryoNameEntry)
 			throws SQLException {
 
 		Statement statement = database.getConnection().createStatement();
@@ -493,8 +480,8 @@ public class KryoNameBrowserLogic {
 		try {
 			statement
 					.executeUpdate("update NSB_IO_NAME set KRYO_NAME_LABEL = '"
-							+ kryoNameEntry.getLabel() + "' where IO_NAME = '"
-							+ kryoNameEntry.getName() + "'");
+							+ kryoNameEntry.getLabel() + "' where IO_NAME_ID = '"
+							+ kryoNameEntry.getId() + "'");
 
 		} finally {
 			statement.close();
@@ -615,6 +602,37 @@ public class KryoNameBrowserLogic {
 	}
 
 	/**
+	 * Returns the top level {@link KryoPlantEntry} that should be the XFEL.
+	 * 
+	 * @param parent
+	 *            entry
+	 * @return entry
+	 * @throws java.sql.SQLException
+	 */
+	public synchronized KryoPlantEntry getSuperPlant() throws SQLException {
+
+		List<KryoPlantEntry> results = new ArrayList<KryoPlantEntry>();
+		Statement statement = database.getConnection().createStatement();
+		statement.setFetchSize(ROW_FETCH_SIZE);
+
+		try {
+			ResultSet rs = statement
+					.executeQuery("select PLANT_NAME, PLANT_LABEL, PLANT_EXPLANATION, PLANT_ID,"
+							+ " PLANT_PARENT, PLANT_NO from NSB_PLANT where NSB_PLANT.PLANT_PARENT = "
+							+ NO_PARENT_SUPER_PLANT_ID);
+			if (rs.next()) {
+				return new KryoPlantEntry(rs.getString(1), rs.getString(2), rs
+						.getString(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
+			} else {
+				return null;
+			}
+		} finally {
+			statement.close();
+		}
+
+	}
+
+	/**
 	 * Returns a list of {@link KryoProcessEntry}.
 	 * 
 	 * @return list of all process entries.
@@ -646,6 +664,206 @@ public class KryoNameBrowserLogic {
 
 	private boolean isEmpty(String string) {
 		return string == null || "".equals(string);
+	}
+
+	/**
+	 * Exports the given list to Excel. Make sure you properly close the stream. This method does not close the stream.
+	 * 
+	 * @param list
+	 * @param fileInputStream
+	 * @throws IOException
+	 */
+	public void excelExport(ArrayList<KryoNameResolved> list,
+			OutputStream outputStream) throws IOException {
+
+		short rownum = 0;
+
+		// create a new file
+		// create a new workbook
+		HSSFWorkbook wb = new HSSFWorkbook();
+		// create a new sheet
+		HSSFSheet s = wb.createSheet();
+		// declare a row object reference
+		HSSFRow r = null;
+		// declare a cell object reference
+		HSSFCell c = null;
+		// create a cell style
+		HSSFCellStyle csCapital = wb.createCellStyle();
+
+		HSSFCellStyle csNormal = wb.createCellStyle();
+		// create a font object
+		HSSFFont fontCapital = wb.createFont();
+		HSSFFont fontNormal = wb.createFont();
+
+		// set font 1 to 12 point type
+		fontCapital.setFontHeightInPoints((short) 10);
+		fontCapital.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		// make it blue
+		// f.setColor( (short)0xc );
+		// make it bold
+		// arial is the default font
+		// f.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		csCapital.setFont(fontCapital);
+
+		// set the sheet name
+		wb.setSheetName(0, "KryoNames",
+				HSSFWorkbook.ENCODING_COMPRESSED_UNICODE);
+
+		// setCaption(s, r, c);
+		// create a row
+		r = s.createRow(rownum);
+
+		// create cells
+		c = r.createCell((short) 0);
+		// set this cell to the first cell style we defined
+		c.setCellStyle(csCapital);
+		// set the cell's string value to "Test"
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Kryo Name");
+		s.setColumnWidth((short) 0, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 1);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Plant");
+		s.setColumnWidth((short) 1, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 2);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("No");
+		s.setColumnWidth((short) 2, NOM_CELL_WIDTH);
+
+		c = r.createCell((short) 3);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Sub Plant 1");
+		s.setColumnWidth((short) 3, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 4);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("No");
+		s.setColumnWidth((short) 4, NOM_CELL_WIDTH);
+
+		c = r.createCell((short) 5);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Sub Plant 2");
+		s.setColumnWidth((short) 5, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 6);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("No");
+		s.setColumnWidth((short) 6, NOM_CELL_WIDTH);
+
+		c = r.createCell((short) 7);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Sub Plant 3");
+		s.setColumnWidth((short) 7, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 8);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("No");
+		s.setColumnWidth((short) 8, NOM_CELL_WIDTH);
+
+		c = r.createCell((short) 9);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Object");
+		s.setColumnWidth((short) 9, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 10);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Object Function");
+		s.setColumnWidth((short) 10, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 11);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Object Subfunction");
+		s.setColumnWidth((short) 11, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 12);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Process Part");
+		s.setColumnWidth((short) 12, NAME_CELL_WIDTH);
+
+		c = r.createCell((short) 13);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Seq No");
+		s.setColumnWidth((short) 13, (short) 1700);
+
+		c = r.createCell((short) 14);
+		c.setCellStyle(csCapital);
+		c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+		c.setCellValue("Description");
+		s.setColumnWidth((short) 14, (short) 3000);
+
+		fontNormal.setFontHeightInPoints((short) 10);
+
+		csNormal.setFont(fontNormal);
+
+		// create a sheet with rows
+		// for (rownum = (short) 1; rownum < sd.getKryoNameList().size(); rownum++)
+		for (KryoNameResolved resolved : list) {
+
+			rownum++;
+			// create a row
+			r = s.createRow(rownum);
+			// create cells
+			c = r.createCell((short) 0);
+			c.setCellValue(resolved.getName());
+
+			// c.setEncoding(HSSFCell.ENCODING_COMPRESSED_UNICODE);
+
+			List<KryoPlantResolved> plants = resolved.getPlants();
+
+			int i = 1;
+			for (KryoPlantEntry kryoPlantEntry : plants) {
+				c = r.createCell((short) i++);
+				c.setCellValue(kryoPlantEntry.getName());
+				c = r.createCell((short) i++);
+				int numberOfPlants = kryoPlantEntry.getNumberOfPlants();
+
+				c.setCellValue(numberOfPlants < 0 ? "" : "" + numberOfPlants);
+
+			}
+
+			i = 9;
+
+			List<KryoObjectEntry> objects = resolved.getObjects();
+
+			for (KryoObjectEntry kryoObjectEntry : objects) {
+				c = r.createCell((short) i++);
+				c.setCellValue(kryoObjectEntry.getName());
+
+			}
+
+			c = r.createCell((short) 12);
+			c.setCellValue(resolved.getProcess().getName());
+
+			c = r.createCell((short) 13);
+			c.setCellValue(resolved.getSeqKryoNumber());
+
+			c = r.createCell((short) 14);
+			String label = resolved.getLabel();
+			c.setCellValue(label != null ? label.substring(0, Math.min(
+					DESCRIPTION_LENGTH, label.length())) : "");
+		}
+
+		// write the workbook to the output stream
+		// close our file (don't blow out our file handles
+		wb.write(outputStream);
+
 	}
 
 }
