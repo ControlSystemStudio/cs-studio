@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="JMSConnector"
+         id="AmsJMSConnectorId"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -11,14 +11,14 @@
       </application>
    </extension>
    <extension
-         id="AmsJmsConnector"
+         id="AmsJmsConnectorProduct"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.ams.connector.jms.JMSConnector"
-            name="Ams JmsConnector">
+            application="org.csstudio.ams.connector.jms.AmsJMSConnectorId"
+            name="AmsJmsConnector">
          <property
                name="appName"
-               value="Ams JmsConnector">
+               value="AmsJmsConnector">
          </property>
       </product>
    </extension>

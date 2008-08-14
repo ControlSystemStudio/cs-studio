@@ -24,6 +24,8 @@ package org.csstudio.ams.connector.sms.internal.pages;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -64,7 +66,9 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 	    addField(new StringFieldEditor(SampleService.P_MODEM_COUNT,
 	            Messages.P_MODEM_COUNT, getFieldEditorParent()));
 
-		addField(new StringFieldEditor(SampleService.P_MODEM1_COMPORT,
+        new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
+
+        addField(new StringFieldEditor(SampleService.P_MODEM1_COMPORT,
 				Messages.P_MODEM1_COMPORT, getFieldEditorParent()));
 		addField(new StringFieldEditor(SampleService.P_MODEM1_COMBAUDRATE,
 				Messages.P_MODEM1_COMBAUDRATE, getFieldEditorParent()));
@@ -75,6 +79,8 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 		addField(new PasswordEditor(SampleService.P_MODEM1_SIMPIM,
 				Messages.P_MODEM1_SIMPIM, getFieldEditorParent()));
 
+		new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
+		
         addField(new StringFieldEditor(SampleService.P_MODEM2_COMPORT,
                 Messages.P_MODEM2_COMPORT, getFieldEditorParent()));
         addField(new StringFieldEditor(SampleService.P_MODEM2_COMBAUDRATE,
@@ -85,6 +91,8 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
                 Messages.P_MODEM2_MODEL, getFieldEditorParent()));
         addField(new PasswordEditor(SampleService.P_MODEM2_SIMPIM,
                 Messages.P_MODEM2_SIMPIM, getFieldEditorParent()));
+
+        new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
 
         addField(new StringFieldEditor(SampleService.P_MODEM3_COMPORT,
                 Messages.P_MODEM3_COMPORT, getFieldEditorParent()));
