@@ -202,6 +202,8 @@ public class MessageGuardCommander extends Job {
             now = TimestampFactory.now();
             
             while(null != (message = _amsReceiver.receive("amsSubscriberMessageMinder"))){// receiveNoWait has a bug with acknowledging in openjms 3
+                // ADDED BY Markus Möller, 2008-08-14
+                this.acknowledge(message);
                 ITimestamp before = TimestampFactory.now();  
                 checkMsg(message,now);
                 ITimestamp after = TimestampFactory.now();
@@ -303,6 +305,28 @@ public class MessageGuardCommander extends Job {
         if(!_amsProducer.isClosed()){
             _amsProducer.send(_producerID, sendMessage);
         }
+    }
+    
+    /**
+     * Acknowledges the current message.
+     * 
+     *  @param msg Message object that should be acknowledged
+     *  
+     *  @return
+     */
+    private boolean acknowledge(Message msg)
+    {
+        try
+        {
+            msg.acknowledge();
+            return true;
+        }
+        catch(Exception e)
+        {
+            Log.log(this, Log.FATAL, "could not acknowledge", e);
+        }
+        
+        return false;
     }
 
     public synchronized void setRun(boolean run) {
