@@ -2,7 +2,10 @@ package org.csstudio.utility.recordproperty;
 
 import java.io.Serializable;
 
-public class RecordPropertyEntry implements Serializable{
+import org.csstudio.platform.model.IProcessVariable;
+import org.eclipse.core.runtime.PlatformObject;
+
+public class RecordPropertyEntry extends PlatformObject implements IProcessVariable, Serializable{
 
 	/**
 	 * The serial version UID.
@@ -52,4 +55,21 @@ public class RecordPropertyEntry implements Serializable{
 	public String getRmi() {
 		return _rmi;
 	}
+
+	/**
+	 * When some other plugin is opened via Record Property, it sends
+	 * record name and field name ("recordname.fieldname").
+	 */
+	@Override
+	public String getName() {
+		
+		return RecordPropertyView.getRecordName()+"."+getPvName();
+	}
+
+	@Override
+	public String getTypeId() {
+
+		return IProcessVariable.TYPE_ID;
+	}
+
 }

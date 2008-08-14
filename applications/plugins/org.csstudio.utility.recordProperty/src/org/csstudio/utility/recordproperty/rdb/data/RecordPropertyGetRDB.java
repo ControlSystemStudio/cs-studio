@@ -6,7 +6,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
@@ -17,13 +20,10 @@ import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.utility.ldap.reader.IocFinder;
-import org.csstudio.utility.recordproperty.Activator;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * RecordPropertyGetRDB gets data (record fields) from RDB, DAL and RMI.
@@ -31,19 +31,23 @@ import org.eclipse.swt.widgets.Display;
  * @author Rok Povsic
  */
 public class RecordPropertyGetRDB {
-
+	
 	ResultSet resultSet;
+	ResultSet resultSetFieldNames;
 	
 	ArrayList<RecordPropertyEntry> data = new ArrayList<RecordPropertyEntry>();
 	
 	private String fieldName;
 	private String valueRdb;
 	private DBConnect connect;
+	private DBConnect connectForFieldNames;
+	
+	private String fieldType;
 	
 	/**
 	 * If DAL does not have any data, it prints this.
 	 */
-	private String value = "Field value not found";
+	private String value = "N/A";
 	
 	/**
 	 * Record name, that you have to get data of
@@ -52,57 +56,142 @@ public class RecordPropertyGetRDB {
 	
 	private String nameIOC;
 	private ChangelogEntry[] entryRMI;
-	private String valueRMI = "No value found";
+	private String valueRMI;
+	
+	/**
+	 * A string that is displayed when no access.
+	 */
+	private String na = "N/A";
+	
+	/**
+	 * Get if RDB is offline.
+	 */
+	private String rtype;
+	
+	RecordPropertyEntry[] stringArray;
 	
 	/**
 	 * The logger.
 	 */
 	private final CentralLogger _log = CentralLogger.getInstance();
-		
+
+	/**
+	 * Gets all possible data that can be collected.
+	 * @param _record name of the record
+	 * @return stringArray
+	 */
 	public RecordPropertyEntry[] getData(String _record) {
 		record = _record;
 		
-		getDataFromRDB();
-		
-		getDataFromRMI();
-        
-        try {
-			while(resultSet.next()) {
-			 fieldName = resultSet.getString("FIELD_NAME");
-			 valueRdb = resultSet.getString("VALUE");
-								
-				getDataFromDAL();
-				
-				for (int i = 0; i < entryRMI.length; i++) {
-					if((record+"."+fieldName).equals(entryRMI[i].getPvName())) {
-						valueRMI = entryRMI[i].getValue();
-						break;
-					} else {
-						valueRMI = "Field value not found";
-					}
-				}
-				
-				RecordPropertyEntry entry = new RecordPropertyEntry(fieldName, valueRdb, value, valueRMI);
-				data.add(entry);
-				
-				value = "Field value not found";
+		record = validateRecord(record);
+
+		if(getRtypeFromDAL()) {
+			// nothing is to be done here
+		} else {
+			if(!getRtypeFromRecordName(record).equals("not-valid")) {
+				// nothing is to be done here
+			} else {
+				// nothing is printed, everything is empty
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-        
-        RecordPropertyEntry[] stringArray = (RecordPropertyEntry[])data.toArray(new RecordPropertyEntry[data.size()]);
+
+		if (getDataFromRDB()) {			
+			getDataIfRDB();
+		} else {
+			if(getFieldNamesFromRDBsql()) {
+				getFieldNamesFromRDB();
+			} else {
+				// nothing is printed, everything is grayed out
+			}
+		}
 		
-        connect.closeConnection();
-        
 		return stringArray;
 				
 	}
 	
 	/**
+	 * Gets data if RDB is online.
+	 * @return
+	 */
+	private void getDataIfRDB() {
+		
+		getDataFromRMI();
+        
+        try {
+        	// Goes through every row and gets data.
+			while(resultSet.next()) {
+				fieldName = resultSet.getString("FIELD_NAME");
+				valueRdb = resultSet.getString("VALUE");
+				
+				while(resultSetFieldNames.next()) {	
+					if(fieldName.equals(resultSetFieldNames.getString("FIELD_NAME"))) {
+						fieldType = resultSetFieldNames.getString("FIELD_TYPE");
+						
+						String badType = "15";
+						
+						if(!fieldType.equals(badType)) {
+							getDataFromDAL();
+						} else {
+							value = na;
+						}
+						break;
+					}
+				}
+				
+				// If IOC(RMI)(4th column) does not have any data, it prints this.
+				valueRMI = na;
+				
+				// Search if record.fieldName matches one in IOC(RMI) and sets it.
+				for (int i = 0; i < entryRMI.length; i++) {
+					if((record+"."+fieldName).equals(entryRMI[i].getPvName())) {
+						valueRMI = entryRMI[i].getValue();
+						break;
+					}
+				}
+				
+				// Adds new line to table
+				RecordPropertyEntry entry = new RecordPropertyEntry(fieldName, valueRdb, value, valueRMI);
+				data.add(entry);
+				
+				// Set value back to 'not found', to overwrite last value.
+				value = na;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        
+        stringArray = (RecordPropertyEntry[])data.toArray(new RecordPropertyEntry[data.size()]);
+		
+        connect.closeConnection();
+	}
+	
+	/**
+	 * Gets data if RDB is not online.
+	 */
+	private boolean getRtypeFromDAL() {
+		ProcessVariableAdressFactory _addressFactory;
+		
+		IProcessVariableConnectionService _connectionService;
+		
+		ProcessVariableConnectionServiceFactory _connectionFactory = ProcessVariableConnectionServiceFactory.getDefault();
+		
+		_addressFactory = ProcessVariableAdressFactory.getInstance();
+		
+		_connectionService = _connectionFactory.createProcessVariableConnectionService();
+		
+		try {
+			rtype = _connectionService.getValueAsString(_addressFactory
+					.createProcessVariableAdress("dal-epics://"+record+".RTYP"));
+			return true;
+		} catch (ConnectionException e) {
+			return false;
+		}
+	}
+		
+	/**
 	 * Gets data from RDB.
 	 */
-	private void getDataFromRDB() {
+	private boolean getDataFromRDB() {
 		connect = new DBConnect(new OracleSettings());
 		
 		connect.openConnection();
@@ -152,9 +241,19 @@ public class RecordPropertyGetRDB {
 		        "(tv.field_name||tv.prompt in (select checkValue from LVL2)) " +
 		"order by field_index "
             );
+            
+            resultSetFieldNames = connect.executeQuery(
+            		"select tv.field_name, tv.field_type from epics_version ev, " +
+            		"rec_type rt, type_val tv where ev.epics_id = '4061' and " +
+            		"ev.epics_id = rt.epics_id and rt.record_type = '" + rtype + "' and " +
+            		"rt.type_id = tv.type_id"
+            );
 
+            return true;
+            
         } catch (SQLException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
+            return false;
         }
 	}
 	
@@ -177,12 +276,12 @@ public class RecordPropertyGetRDB {
 					.createProcessVariableAdress("dal-epics://"+record+"."+fieldName));
 		} catch (ConnectionException e) {
 			CentralLogger.getInstance().getLogger(this).info("Field value not found: " + record + "." + fieldName);
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Gets data from RMI.
+	 * Gets data from RMI (IOC).
 	 */
 	private void getDataFromRMI() {
 		Registry reg;
@@ -195,14 +294,12 @@ public class RecordPropertyGetRDB {
 					"org.csstudio.config.savevalue.ui",
 					"RmiRegistryServer",
 					null, null);
-			CentralLogger.getInstance().getLogger(this).info("Connecting to RMI registry."); //$NON-NLS-1$
+			_log.info(this, "Connecting to RMI registry."); //$NON-NLS-1$
 			reg = LocateRegistry.getRegistry(registryHost);
 			
 			ChangelogService cs = (ChangelogService) reg
 			.lookup("SaveValue.changelog"); //$NON-NLS-1$
 			entryRMI = cs.readChangelog(nameIOC);
-			
-						
 			
 		} catch (RemoteException e) {
 			_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
@@ -214,27 +311,129 @@ public class RecordPropertyGetRDB {
 			_log.error(this, "Server reported an error reading the changelog", e); //$NON-NLS-1$
 
 		}
+	}
+	
+	/**
+	 * Gets field names from RDB (SQL).
+	 */
+	private boolean getFieldNamesFromRDBsql() {
+		connectForFieldNames = new DBConnect(new OracleSettings());
 		
-		/*
-		Registry reg;
+		connectForFieldNames.openConnection();
 		
 		try {
-			IPreferencesService prefs = Platform.getPreferencesService();
-			String registryHost = prefs.getString(
-					Activator.PLUGIN_ID,
-					"RmiRegistryServer",
-					null, null);
-			CentralLogger.getInstance().getLogger(this).info("Connecting to RMI registry."); //$NON-NLS-1$
+            resultSetFieldNames = connectForFieldNames.executeQuery(
+            		"select tv.field_name, tv.field_type from epics_version ev, " +
+            		"rec_type rt, type_val tv where ev.epics_id = '4061' and " +
+            		"ev.epics_id = rt.epics_id and rt.record_type = '" + rtype + "' and " +
+            		"rt.type_id = tv.type_id;"
+            );
+
+            return true;
+            
+        } catch (SQLException e) {
+        	
+            return false;
+        }
+	}
+	
+	/**
+	 * Gets field names from RDB. It is used only when normal RDB connect fails.
+	 */
+	private void getFieldNamesFromRDB() {
+		
+		getDataFromRMI();
+		
+	       try {
+	    	   // Goes through every row and gets data.
+				while(resultSetFieldNames.next()) {
+					fieldName = resultSetFieldNames.getString("FIELD_NAME");
+					fieldType = resultSetFieldNames.getString("FIELD_TYPE");
+					
+					String badType = "15";
+					
+					if(!fieldType.equals(badType)) {
+						getDataFromDAL();
+					} else {
+						value = na;
+					}
+					 
+					// If IOC(RMI)(4th column) does not have any data, it prints this.
+					valueRMI = na;
+					
+					// Search if record.fieldName matches one in IOC(RMI) and sets it.
+					for (int i = 0; i < entryRMI.length; i++) {
+						if((record+"."+fieldName).equals(entryRMI[i].getPvName())) {
+							valueRMI = entryRMI[i].getValue();
+							break;
+						}
+					}
+					
+					// Adds new line to table
+					RecordPropertyEntry entry = new RecordPropertyEntry(fieldName, "", value, valueRMI);
+					data.add(entry);
+					
+					// Set value back to 'not found', to overwrite last value.
+					value = na;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+	        
+	        stringArray = (RecordPropertyEntry[])data.toArray(new RecordPropertyEntry[data.size()]);
 			
+	        connect.closeConnection();
+	}
+	
+	/**
+	 * Deletes last part of record name, if it is less than 6 char and a dot,
+	 * using Regular Expressions.
+	 * 
+	 * Sample:
+	 * 		record name: "recordname_type.xxxx"
+	 * then
+	 * 		returns "recordname_type"
+	 * 
+	 * @param _record record name
+	 * @return fixed record name
+	 */
+	private String validateRecord(String _record) {
+		
+		String REGEX = "(\\.[a-zA-Z1-9]{0,6})$";
+		
+		Pattern p = Pattern.compile(REGEX);
+		Matcher m = p.matcher(_record);
+		
+		_record = m.replaceAll("");
+		
+		return _record;
+	}
+	
+	/**
+	 * Extracts record type out of a record name by deleting
+	 * everything but record type, using Regular Expressions.
+	 * 
+	 * Sample:
+	 * 		record name: "record:.name_type"
+	 * then
+	 * 		returns: "type"
+	 * 
+	 * @param _record record name
+	 * @return type of a record
+	 */
+	private String getRtypeFromRecordName(String _record) {
+		
+		if(_record.indexOf("_") > -1) {
+			String REGEX = "^([a-zA-Z1-9\\.:]+_){1,6}";
 			
-				reg = LocateRegistry.getRegistry(registryHost);
+			Pattern p = Pattern.compile(REGEX);
+			Matcher m = p.matcher(_record);
 			
-			RecordPropertyService rps = (RecordPropertyService) reg
-			.lookup("SaveValue.changelog"); //$NON-NLS-1$
-			entryRMI = rps.readRecordProperty(record);
-		} catch (Exception e) {
-			// TODO: handle exception
+			_record = m.replaceAll("");
+		} else {
+			_record = "not-valid";
 		}
-		*/
+		
+		return _record;
 	}
 }

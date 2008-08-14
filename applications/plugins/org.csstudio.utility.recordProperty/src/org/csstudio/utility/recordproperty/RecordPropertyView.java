@@ -1,14 +1,19 @@
 package org.csstudio.utility.recordproperty;
 
-//import java.text.Collator;
-//import java.util.Locale;
-
 import org.csstudio.utility.recordproperty.rdb.data.RecordPropertyGetRDB;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -18,15 +23,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-//import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-//import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-//import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.IViewDescriptor;
+import org.eclipse.ui.views.IViewRegistry;
 
 /**
  * RecordPropertyView creates view for the plugin.
@@ -57,11 +64,21 @@ public class RecordPropertyView extends ViewPart {
 	
 	private Text record;
 	
-	public String recordName;
+	public static String recordName;
 	
 	public String ltext;
 	public boolean isRunning = false;
 	private Label label;
+	
+	/**
+	 * The Show Property View action.
+	 */
+	private Action _showPropertyViewAction;
+	
+	/**
+	 * The ID of the property view.
+	 */
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
 	
 	public RecordPropertyView() {
 	}
@@ -91,41 +108,35 @@ public class RecordPropertyView extends ViewPart {
 			}
 			
 			public void widgetSelected(final SelectionEvent e) {
-				
 				// Gets text (a record name) from Text Field.
 				recordName = record.getText();
 				
 				// Deletes all spaces before and after real text.
 				recordName = recordName.trim();
 				
-				label.setText("Please wait");
+				label.setText("Please wait, collecting data");
+				label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 				
-				/**
-				 * New thread (Job) is created, so GUI does not freeze
-				 * when it is collecting data.
-				 */
+				// New thread (Job) is created, so GUI does not freeze
+				// when it is collecting data.
 				Job j = new Job("") {
 					
 					protected IStatus run(IProgressMonitor monitor) {
-						
-						/**
-						 * Variable entries gets data, but does not print it in
-						 * GUI yet, there would be Invalid thread access.
-						 */
+
+						// Variable entries gets data, but does not print it in
+						// GUI yet, there would be Invalid thread access.
 						RecordPropertyGetRDB rdb = new RecordPropertyGetRDB();
 						entries = rdb.getData(recordName);
-												
-						/**
-						 * asyncExec makes possible that GUI-changing can be done
-						 * in separate thread that GUI.
-						 */
+
+						// asyncExec makes possible that GUI-changing can be done
+						// in separate thread than GUI.
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
-								/**
-								 * Here data is printed in GUI.
-								 */
+								// Here data is printed in GUI.
 								tableViewer.setInput(entries);
+								
 								label.setText("Done");
+								label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
 								
 							}		
 						});
@@ -144,23 +155,15 @@ public class RecordPropertyView extends ViewPart {
 		tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		tableViewer.setContentProvider(new RecordPropertyContentProvider());
 		tableViewer.setLabelProvider(new RecordPropertyLabelProvider());
-				
+		
+		// Creates a context menu
+		initializeContextMenu();
+		makeActions();
+		
 		getSite().setSelectionProvider(tableViewer);
 		
 		label = new Label(g, SWT.CENTER);
 	}
-		
-	/**
-	 * Inserts data to table columns.
-	 * @deprecated Adding just one function to another is not needed. 
-	 */
-	/*
-	private void startRecordPropertyRequest() {
-		
-		tableViewer.setInput(entries);
-		
-	}
-	*/
 	
 	/**
 	 * Creates a table.
@@ -179,6 +182,9 @@ public class RecordPropertyView extends ViewPart {
 		addColumn(table, COL_VAL, Messages.RecordPropertyView_VAL_COLUMN, 150);
 		addColumn(table, COL_RMI, Messages.RecordPropertyView_RMI_COLUMN, 150);
 		
+		CellEditor[] editors = new CellEditor[4];
+		editors[1] = new TextCellEditor(table);
+		tableViewer.setCellEditors(editors);
 	}
 	
 	/**
@@ -192,36 +198,61 @@ public class RecordPropertyView extends ViewPart {
 		final TableColumn column = new TableColumn(table, SWT.LEFT, index);
 		column.setText(text);
 		column.setWidth(width);
-		
-		/*
-	    column.addListener(SWT.Selection, new Listener() {
-	        public void handleEvent(Event e) {
-	            TableItem[] items = table.getItems();
-	            Collator collator = Collator.getInstance(Locale.getDefault());
-	            TableColumn col = (TableColumn)e.widget;
-	            int index = col == column ? 0 : 1;
-	            for (int i = 1; i < items.length; i++) {
-	                String value1 = items[i].getText(index);
-	                for (int j = 0; j < i; j++){
-	                    String value2 = items[j].getText(index);
-	                    if (collator.compare(value1, value2) < 0) {
-	                        String[] values = {items[i].getText(0), items[i].getText(1)};
-	                        items[i].dispose();
-	                        TableItem item = new TableItem(table, SWT.NONE, j);
-	                        item.setText(values);
-	                        items = table.getItems();
-	                        break;
-	                    }
-	                }
-	            }
-	            table.setSortColumn(col);
-	        }
-	      });
-	    */
-		
 	}
 		
 	public void setFocus() {
 		tableViewer.getControl().setFocus();
+	}
+		
+	private void fillContextMenu(final IMenuManager menu) {
+		// adds a separator after which contributed actions from other plug-ins
+		// will be displayed
+		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+	}
+	
+	/**
+	 * Adds a context menu to the tree view.
+	 */
+	private void initializeContextMenu() {
+		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		menuMgr.setRemoveAllWhenShown(true);
+		
+		// add menu items to the context menu when it is about to show
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(final IMenuManager manager) {
+				RecordPropertyView.this.fillContextMenu(manager);
+			}
+		});
+		
+		// add the context menu to the table viewer
+		Menu contextMenu = menuMgr.createContextMenu(tableViewer.getTable());
+		tableViewer.getTable().setMenu(contextMenu);
+		
+		// register the context menu for extension by other plug-ins
+		getSite().registerContextMenu(menuMgr, tableViewer);
+	}
+
+	private void makeActions() {
+		_showPropertyViewAction = new Action() {
+			@Override
+			public void run() {
+				try {
+					getSite().getPage().showView(PROPERTY_VIEW_ID);
+				} catch (PartInitException e) {
+					MessageDialog.openError(getSite().getShell(), "Record Property View",
+							e.getMessage());
+				}
+			}
+		};
+		_showPropertyViewAction.setText("Properties");
+		_showPropertyViewAction.setToolTipText("Show property view");
+		
+		IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench().getViewRegistry();
+		IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
+		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
+	}
+	
+	public static String getRecordName() {
+		return recordName;
 	}
 }
