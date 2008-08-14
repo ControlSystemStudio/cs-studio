@@ -48,21 +48,21 @@ public class RecordPropertyLabelProvider extends LabelProvider implements ITable
 			case RecordPropertyView.COL_PV:
 				return null;
 			case RecordPropertyView.COL_RDB:
-				if(entry.getRdb() == "N/A") {
+				if(entry.getRdb() == Messages.RecordPropertyView_NA) {
 					return Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 				} else {
 					return null;
 				}
 			case RecordPropertyView.COL_VAL:
 				
-				if(entry.getVal() == "N/A") {
+				if(entry.getVal() == Messages.RecordPropertyView_NA) {
 					return Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 				} else {
 					return null;
 				}
 			case RecordPropertyView.COL_RMI:
 				
-				if(entry.getRmi() == "N/A") {
+				if(entry.getRmi() == Messages.RecordPropertyView_NA) {
 					return Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 				} else {
 					return null;
@@ -72,7 +72,6 @@ public class RecordPropertyLabelProvider extends LabelProvider implements ITable
 			}
 		}
 		return null;
-		//return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
 	}
 
 	@Override

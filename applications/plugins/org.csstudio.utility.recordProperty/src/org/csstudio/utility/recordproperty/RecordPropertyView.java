@@ -93,15 +93,15 @@ public class RecordPropertyView extends ViewPart {
 		 * Temporary text and button - will be automatic later
 		 */
 		Group g = new Group(parent, SWT.NONE);
-		g.setText("Record");
+		g.setText(Messages.RecordPropertyView_RECORD);
 		
 		g.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		record = new Text(g, SWT.WRAP | SWT.BORDER);
-		record.setText("---- type or copy record name here ----");
+		record.setText(Messages.RecordPropertyView_TYPE_HERE);
 		
 		Button button = new Button(g, SWT.PUSH);
-		button.setText("Get data");
+		button.setText(Messages.RecordPropertyView_GET_DATA);
 		button.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				// ignore (not called by buttons)
@@ -114,7 +114,7 @@ public class RecordPropertyView extends ViewPart {
 				// Deletes all spaces before and after real text.
 				recordName = recordName.trim();
 				
-				label.setText("Please wait, collecting data");
+				label.setText(Messages.RecordPropertyView_PLEASE_WAIT);
 				label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 				
 				// New thread (Job) is created, so GUI does not freeze
@@ -135,7 +135,7 @@ public class RecordPropertyView extends ViewPart {
 								// Here data is printed in GUI.
 								tableViewer.setInput(entries);
 								
-								label.setText("Done");
+								label.setText(Messages.RecordPropertyView_DONE);
 								label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
 								
 							}		

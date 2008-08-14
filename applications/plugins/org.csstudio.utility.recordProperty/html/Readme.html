@@ -1,0 +1,48 @@
+<h1>Record Property</h1>
+
+Record Property is a plugin for CSS, which gets a record name from a text field or context
+menu of another CSS plugin and displays all possible informations, that can be gathered
+for that record.
+
+<br>
+<h3>Basic logic</h3>
+<ul>
+	<li>connect to RDB (Oracle)</li>
+		<ul>
+			<li>if works</li>
+				<ul>
+					<li>get record type from DAL (or from record name, if first one fails)</li>
+					<li>get data from RDB, fill first and second column</li>
+					<li>get data from DAL, fill third column</li>
+					<li>get data from RMI (IOC), fill fourth column (note this one is usually empty),
+						fill fourth column</li>
+				</ul>
+			<li>if doesn't work</li>
+				<ul>
+					<li>get record type from DAL (or from record name, if first one fails)</li>
+					<li>get field names from RDB for that type, fill first column, second stays empty</li>
+					<li>get data from DAL, fill third column</li>
+					<li>get data from RMI (IOC), fill fourth column (note this one is usually empty),
+						fill fourth column</li>
+				</ul>
+		</ul>
+</ul>
+RMI(IOC) is accessed through SaveButton plugin.
+<br>
+
+<h3>If record name is not valid?</h3>
+Plugin deletes last part of name, if it has dot and less than 6 characters (for example: ".abcd).
+<br><br>
+If record is not found at all, plugin will just print empty table.
+<br>
+
+<h3>If no data?</h3>
+If data is not available or accessible for a single cell, it displays a gray-yellow background and "N/A" message.
+<br><br>
+If data for cell, that was gotten, is empty, it does not display "N/A" message, but just empty string.
+<br>
+
+<h3>Tips and tricks</h3>
+To find a field name quickly, just type it and it will automatically go to a row with that field name. 
+<br><br>
+Column names can be changed easily in a file "messages.properties".

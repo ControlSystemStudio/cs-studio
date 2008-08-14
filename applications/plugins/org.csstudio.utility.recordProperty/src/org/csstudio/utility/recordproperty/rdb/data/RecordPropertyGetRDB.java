@@ -20,6 +20,7 @@ import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.utility.ldap.reader.IocFinder;
+import org.csstudio.utility.recordproperty.Messages;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
 import org.eclipse.core.runtime.Platform;
@@ -47,7 +48,7 @@ public class RecordPropertyGetRDB {
 	/**
 	 * If DAL does not have any data, it prints this.
 	 */
-	private String value = "N/A";
+	private String value = Messages.RecordPropertyView_NA;
 	
 	/**
 	 * Record name, that you have to get data of
@@ -61,7 +62,7 @@ public class RecordPropertyGetRDB {
 	/**
 	 * A string that is displayed when no access.
 	 */
-	private String na = "N/A";
+	private String na = Messages.RecordPropertyView_NA;
 	
 	/**
 	 * Get if RDB is offline.
