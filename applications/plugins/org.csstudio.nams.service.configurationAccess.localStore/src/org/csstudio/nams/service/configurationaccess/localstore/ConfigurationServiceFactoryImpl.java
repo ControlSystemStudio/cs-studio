@@ -337,29 +337,13 @@ public class ConfigurationServiceFactoryImpl implements
 			try {
 				Class.forName(DatabaseType.HSQL_1_8_0_FOR_TEST.getDriverName())
 						.newInstance();
-				// configuration.setProperty("hibernate.hbm2ddl.auto",
-				// "create-drop");
 				final SchemaUpdate schemaUpdate = new SchemaUpdate(
 						configuration);
 				schemaUpdate.execute(false, true);
 			} catch (final Throwable t) {
-				// TODO logging....
-				System.out
-						.println("ConfigurationServiceFactoryImpl.getConfigurationService() "
-								+ t);
+				logger.logErrorMessage(this, "Failed to load HSQL-Driver for testing purposes", t);
 			}
 		}
-
-		/*
-		 * Can I supply my own connections? Implement the org.hibernate.connec-
-		 * tion.ConnectionProvider interface, and name your implementation with
-		 * the hibernate.connection.provider_class configuration option.
-		 * Hibernate will now rely on your custom provider if it needs a
-		 * database connection.
-		 * 
-		 * copied from: http://www.manning.com/bauer2/chapter2.pdf
-		 * 
-		 */
 
 		// TODO in die config auslagern
 		Logger.getLogger("org.hibernate").setLevel(Level.WARN);

@@ -43,7 +43,8 @@ public enum DatabaseType {
 			DerbyDialect.class),
 
 	/**
-	 * Treiber und Dialect für HSQL. jdbc:hsqldb:file:namsconfigurator.db / sa /
+	 * Treiber und Dialect für HSQL. "jdbc:hsqldb:file:namsconfigurator.db"
+	 * oder "jdbc:hsqldb:mem:namsconfigurator". User "sa", password "".
 	 */
 	HSQL_1_8_0_FOR_TEST(
 			"HSQL database engine 1.8.0 or higher for test purposes",
