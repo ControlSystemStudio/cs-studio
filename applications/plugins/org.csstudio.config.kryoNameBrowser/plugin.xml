@@ -82,11 +82,23 @@
                  commandId="editEntry.command"
                  label="Edit"
                  style="push">
+              <visibleWhen
+                    checkEnabled="false">
+                 <reference
+                       definitionId="oneElementSelected">
+                 </reference>
+              </visibleWhen>
            </command>
            <command
                  commandId="addByExample.command"
                  label="Add By Example"
                  style="push">
+              <visibleWhen
+                    checkEnabled="false">
+                 <reference
+                       definitionId="oneElementSelected">
+                 </reference>
+              </visibleWhen>
            </command>
            <command
                  commandId="deleteEntry.command"
@@ -94,5 +106,17 @@
                  style="push">
            </command>
         </menuContribution>
+     </extension>
+     <extension
+           point="org.eclipse.core.expressions.definitions">
+        <definition
+              id="oneElementSelected">
+           <with
+                 variable="activeMenuSelection">
+              <count
+                    value="1">
+              </count>
+           </with>
+        </definition>
      </extension>
 </plugin>
