@@ -72,7 +72,7 @@ public class ProcessVariableRegel implements VersandRegel {
 		}
 
 		public void errorOccured(final String error) {
-
+			ProcessVariableRegel.logger.logWarningMessage(this, "Error reported by simple DAL : " + error);
 		}
 
 		/**
