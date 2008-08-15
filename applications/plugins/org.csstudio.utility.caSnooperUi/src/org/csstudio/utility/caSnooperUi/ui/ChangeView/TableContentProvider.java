@@ -1,8 +1,8 @@
-package org.csstudio.utility.caSnooper.ui.ChangeView;
+package org.csstudio.utility.caSnooperUi.ui.ChangeView;
 
 import java.util.ArrayList;
 
-import org.csstudio.utility.caSnooper.parser.ChannelStructure;
+import org.csstudio.utility.caSnooperUi.parser.ChannelStructure;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

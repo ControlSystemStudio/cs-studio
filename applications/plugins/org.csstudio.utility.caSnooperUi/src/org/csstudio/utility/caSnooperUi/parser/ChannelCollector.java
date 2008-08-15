@@ -1,4 +1,4 @@
-package org.csstudio.utility.caSnooper.parser;
+package org.csstudio.utility.caSnooperUi.parser;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -64,7 +64,6 @@ public class ChannelCollector implements Runnable{
 			return firstList.getData();
 	}
 
-
 	public boolean isReady() {
 		return dataReady ;
 	}
@@ -112,9 +111,10 @@ public class ChannelCollector implements Runnable{
 			avarageFrequency = avarageFrequency + tmp.getFrequency();
 			listOfAllChannels.add(tmp.getAliasName());
 		}
+		
+		avarageFrequency = avarageFrequency/entries.size();
 		avarageFrequency = ((int)(avarageFrequency*1000))/1000.0;
 		
-		avarageFrequency = avarageFrequency/numberOfRequests;
 		statistics = "There were "+numberOfRequests+" requests for "+listOfAllChannels.size()+" different PVs.\n";
 		statistics = statistics+"Max frequency: "+maximumFrequency+"Hz\n";
 		statistics = statistics+"Avarage frequency: "+avarageFrequency+"Hz\n";

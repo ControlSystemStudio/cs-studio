@@ -1,4 +1,4 @@
-package org.csstudio.utility.caSnooper.parser;
+package org.csstudio.utility.caSnooperUi.parser;
 /*
  * Copyright (c) 2004 by Cosylab
  *

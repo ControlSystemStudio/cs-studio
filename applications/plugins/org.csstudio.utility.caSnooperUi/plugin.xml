@@ -6,7 +6,7 @@
       <view
             allowMultiple="false"
             category="org.csstudio"
-            class="org.csstudio.utility.caSnooper.ui.ChangeView.SnooperView"
+            class="org.csstudio.utility.caSnooperUi.ui.ChangeView.SnooperView"
             icon="icon/snooper.jpg"
             id="org.csstudio.utility.caSnooper.ui.ChangeView.SnooperView"
             name="caSnooper viewer">
@@ -20,7 +20,7 @@
             label="CSS Action Set"
             visible="true">
          <action
-               class="org.csstudio.utility.caSnooper.ui.ChangeView.ShowSnooperAction"
+               class="org.csstudio.utility.caSnooperUi.ui.ChangeView.ShowSnooperAction"
                icon="icon/snooper.jpg"
                id="org.csstudio.utility.caSnooper.ui.ChangeView.ShowSnooperAction"
                label="caSnooper"

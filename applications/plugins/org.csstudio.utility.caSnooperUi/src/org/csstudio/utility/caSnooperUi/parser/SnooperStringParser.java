@@ -1,24 +1,23 @@
-package org.csstudio.utility.caSnooper.ui.ChangeView;
+package org.csstudio.utility.caSnooperUi.parser;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.csstudio.utility.caSnooper.parser.ChannelStructure;
+
 /**
- * Packs/unpacks ArrayList<DataStructure> to string
- * Following format is used for each DataStructure:
- *  repeats\n
- * 	clientAddres\n";
- *  channelName\n";
- * 	interval\n";
- *  tableIt\n
- * 	<endClass>ChannelStructure</endClass>
+ * Packs/unpacks ArrayList<DataStructure> to string<br>
+ * Following format is used for each DataStructure:<BR>
+ *  repeats\n<BR>
+ * 	clientAddres\n<BR>
+ *  channelName\n<BR>
+ * 	interval\n<BR>
+ *  tableIt\n<BR>
+ * 	<endClass>ChannelStructure</endClass><BR>
  *  
  * @author rkosir
  *
  */
-public class SnooperXmlParser {
+public class SnooperStringParser {
 
 	private ArrayList<ChannelStructure> parsedList = new ArrayList<ChannelStructure>();
 	private ChannelStructure tmpStruct;
@@ -29,9 +28,10 @@ public class SnooperXmlParser {
 	private int tableId;
 	
 	/**
-	 * unparse the string to ArrayList<ChannelStructure>
-	 * @param s
-	 * @return
+	 * Converts the string to ArrayList<ChannelStructure>
+	 * 
+	 * @param String
+	 * @return ArrayList<ChannelStructure>
 	 */
 	public ArrayList<ChannelStructure> unparse(String s){
 		parsedList = new ArrayList<ChannelStructure>();
@@ -48,20 +48,30 @@ public class SnooperXmlParser {
 				parsedList.add(tmpStruct);
 			}
 		}
-
 		return parsedList;
 	}
 	
+	/**
+	 * Converts the ArrayList to String
+	 * 
+	 * @param ArrayList<ChannelStructure>
+	 * @return String
+	 */
 	public String parse(ArrayList<ChannelStructure> list){
-		String tmpString = "";
+		StringBuilder sb = new StringBuilder();
 		if(list!=null){
-			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			for (Iterator<ChannelStructure> iterator = list.iterator(); iterator.hasNext();) {
 				ChannelStructure channelStructure = (ChannelStructure) iterator
 						.next();
-				tmpString = tmpString+channelStructure.getRepeats()+"\n";
+				sb.append(channelStructure.getRepeats()+"\n");
+				sb.append(channelStructure.getClientAddress()+"\n");
+				sb.append(channelStructure.getAliasName()+"\n");
+				sb.append(channelStructure.getInterval()+"\n");
+				sb.append(channelStructure.getTableId()+"\n");
+				sb.append("<endClass>ChannelStructure</endClass>");
 			}
+			return sb.toString();
 		}
-		
 		return "";
 	}
 }

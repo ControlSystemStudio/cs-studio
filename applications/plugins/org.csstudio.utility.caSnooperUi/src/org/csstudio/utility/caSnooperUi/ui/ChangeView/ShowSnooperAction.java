@@ -1,4 +1,4 @@
-package org.csstudio.utility.caSnooper.ui.ChangeView;
+package org.csstudio.utility.caSnooperUi.ui.ChangeView;
 
 import org.csstudio.platform.ui.workbench.OpenViewAction;
 

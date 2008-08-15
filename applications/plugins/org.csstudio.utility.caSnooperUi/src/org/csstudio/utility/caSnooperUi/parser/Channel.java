@@ -1,4 +1,4 @@
-package org.csstudio.utility.caSnooper.parser;
+package org.csstudio.utility.caSnooperUi.parser;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;

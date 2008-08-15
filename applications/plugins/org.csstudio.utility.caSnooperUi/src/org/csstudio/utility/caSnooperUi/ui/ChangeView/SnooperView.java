@@ -1,11 +1,12 @@
-package org.csstudio.utility.caSnooper.ui.ChangeView;
+package org.csstudio.utility.caSnooperUi.ui.ChangeView;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
-import org.csstudio.utility.caSnooper.parser.ChannelCollector;
-import org.csstudio.utility.caSnooper.parser.ChannelStructure;
+import org.csstudio.utility.caSnooperUi.parser.ChannelCollector;
+import org.csstudio.utility.caSnooperUi.parser.ChannelStructure;
+import org.csstudio.utility.caSnooperUi.parser.SnooperStringParser;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -240,8 +241,8 @@ public class SnooperView extends ViewPart{
 			public void widgetSelected(SelectionEvent e) {
 				if(snooperActive)
 					text.setText("Snooper must be in inactive state to load external data!");
-				else
-					processDataFromExternalSource();
+				
+//					processDataFromExternalSource();
 			}
 		});
 		// create the table viewer
@@ -353,23 +354,11 @@ public class SnooperView extends ViewPart{
 		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
 	}
 	
-	public void processDataFromExternalSource(){
+	public void processDataFromExternalSource(final Object param){
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				String s = "10\n";
-				s = s+"10\n";
-				s = s+"test chan\n";
-				s = s+"5\n";
-				s = s+"1\n";
-				s = s+"<endClass>ChannelStructure</endClass>";
-				s = s+"5\n";
-				s = s+"10\n";
-				s = s+"test chan2\n";
-				s = s+"4\n";
-				s = s+"2\n";
-				s = s+"<endClass>ChannelStructure</endClass>";
-				SnooperXmlParser p = new SnooperXmlParser();
-				tableViewer.setInput(p.unparse(s));
+				SnooperStringParser p = new SnooperStringParser();
+				
 			}
 		});
 	}
@@ -406,14 +395,24 @@ public class SnooperView extends ViewPart{
 		public void run() {
 			while(!msg.isReady() && snooperActive){
 				try {
-					msg.addBMessage(""+Math.random()*500, new InetSocketAddress("131.169.115.196",(int)(Math.random()*5000)));
-					Thread.sleep(100);
+					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
+					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
+					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
+					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
+					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
+					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
+					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
+					
+					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			if(snooperActive)
+			if(snooperActive){
+				System.out.println(Runtime.getRuntime().totalMemory());
 				processData();
+				System.out.println(Runtime.getRuntime().totalMemory());
+			}
 		}
 	}
 }

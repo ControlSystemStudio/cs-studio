@@ -1,6 +1,6 @@
-package org.csstudio.utility.caSnooper.ui.ChangeView;
+package org.csstudio.utility.caSnooperUi.ui.ChangeView;
 
-import org.csstudio.utility.caSnooper.parser.ChannelStructure;
+import org.csstudio.utility.caSnooperUi.parser.ChannelStructure;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
