@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.csstudio"
+            class="org.csstudio.utility.caSnooper.ui.ChangeView.SnooperView"
+            icon="icon/snooper.jpg"
+            id="org.csstudio.utility.caSnooper.ui.ChangeView.SnooperView"
+            name="caSnooper viewer">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.utility.caSnooper.cssmenu"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.utility.caSnooper.ui.ChangeView.ShowSnooperAction"
+               icon="icon/snooper.jpg"
+               id="org.csstudio.utility.caSnooper.ui.ChangeView.ShowSnooperAction"
+               label="caSnooper"
+               menubarPath="css/utility/"
+               style="push"
+               tooltip="ShowCaSnooper">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>
