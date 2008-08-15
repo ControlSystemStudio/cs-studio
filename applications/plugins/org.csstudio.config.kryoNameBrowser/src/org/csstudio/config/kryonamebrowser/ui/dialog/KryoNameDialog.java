@@ -1,11 +1,8 @@
 package org.csstudio.config.kryonamebrowser.ui.dialog;
 
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
-import org.csstudio.config.kryonamebrowser.model.entry.KryoNameEntry;
-import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
 import org.csstudio.config.kryonamebrowser.ui.UIModelBridge;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -23,38 +20,37 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class KryoNameDialog extends TitleAreaDialog {
+/**
+ * Base for dialogs that deal with name entry.
+ * 
+ * 
+ * @author Alen Vrecko
+ * 
+ */
+public abstract class KryoNameDialog extends TitleAreaDialog {
 
-	private Text desc;
-	private Combo process;
-	private Combo subfunction;
-	private Combo function;
-	private Combo object;
-	private Combo subplant3;
-	private Combo subplant2;
-	private Combo subplant1;
-	private Combo plant;
-	private Text kryoNum;
-	private Text subplant3No;
-	private Text subplant2No;
-	private Text plantNo;
-	private Text subplant1No;
-	private KryoNameBrowserLogic logic;
-	private Label nameLabel;
-	private UIModelBridge bridge;
-	private KryoNameResolved resolved;
-	private boolean shouldEnable = true;
+	// package private
+	Text desc;
+	Combo process;
+	Combo subfunction;
+	Combo function;
+	Combo object;
+	Combo subplant3;
+	Combo subplant2;
+	Combo subplant1;
+	Combo plant;
+	Text kryoNum;
+	Text subplant3No;
+	Text subplant2No;
+	Text plantNo;
+	Text subplant1No;
+	KryoNameBrowserLogic logic;
+	Label nameLabel;
+	UIModelBridge bridge;
 
 	public KryoNameDialog(Shell parentShell) {
 		super(parentShell);
 
-	}
-
-	public KryoNameDialog(Shell parentShell, KryoNameResolved resolved,
-			boolean shouldEnable) {
-		super(parentShell);
-		this.resolved = resolved;
-		this.shouldEnable = shouldEnable;
 	}
 
 	public void setLogic(KryoNameBrowserLogic logic) {
@@ -259,62 +255,12 @@ public class KryoNameDialog extends TitleAreaDialog {
 			}
 		});
 
-		if (resolved != null) {
-			try {
-				bridge.load(resolved, shouldEnable);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			nameLabel.setText(resolved.getName());
-		}
-
 		return parent;
 	}
 
 	protected void createButtonsForButtonBar(Composite parent) {
 		((GridLayout) parent.getLayout()).numColumns += 2;
-		Button addButton = new Button(parent, SWT.PUSH);
-
-		if (!shouldEnable) {
-			addButton.setText("Update");
-			addButton.setFont(JFaceResources.getDialogFont());
-			addButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-
-					try {
-						KryoNameEntry update = new KryoNameEntry();
-						update.setId(resolved.getId());
-						update.setLabel(desc.getText());
-						logic.updateLabel(update);
-					} catch (Exception e1) {
-						MessageDialog.openError(getShell(), "Error", e1
-								.getMessage());
-					}
-
-				}
-			});
-		} else {
-			addButton.setText("Add");
-			addButton.setFont(JFaceResources.getDialogFont());
-			addButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-
-					if (!bridge.validate()) {
-						setErrorMessage("Please fill in correctly all the required fields");
-					} else {
-						setErrorMessage(null);
-						try {
-							logic.add(bridge.getNewEntrty());
-						} catch (Exception e1) {
-							MessageDialog.openError(getShell(), "Error", e1
-									.getMessage());
-						}
-					}
-
-				}
-			});
-		}
+		getButton(parent);
 
 		Button closeButton = new Button(parent, SWT.PUSH);
 		closeButton.setText("Close");
@@ -327,5 +273,7 @@ public class KryoNameDialog extends TitleAreaDialog {
 			}
 		});
 	}
+
+	protected abstract void getButton(Composite parent);
 
 }

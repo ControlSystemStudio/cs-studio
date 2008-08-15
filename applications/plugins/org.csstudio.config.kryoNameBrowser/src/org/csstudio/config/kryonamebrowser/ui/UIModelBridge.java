@@ -291,8 +291,6 @@ public class UIModelBridge {
 				text.setText("");
 				text.setEnabled(false);
 			}
-			
-			
 
 			if (primary.getSelectionIndex() > 0) {
 
@@ -318,7 +316,7 @@ public class UIModelBridge {
 
 				populatePlant(dependant, selection);
 
-			}else{
+			} else {
 				no.setText("");
 				no.setEnabled(false);
 			}
@@ -534,8 +532,8 @@ public class UIModelBridge {
 		KryoNameResolved example = calculateExampleEntry();
 
 		StringBuilder builder = new StringBuilder();
-		
-		//TODO: Hardcoded value
+
+		// TODO: Hardcoded value
 		builder.append("X");
 
 		List<KryoPlantResolved> plants = example.getPlants();
@@ -569,24 +567,28 @@ public class UIModelBridge {
 	public boolean validate() {
 		// validate plants and objects and process
 
-		Combo[] plants = new Combo[] { plant, subplant1, subplant2, subplant3,
-				object, function, subfunction, process };
+		Combo[] plants = new Combo[] { plant, subplant1, subplant2, subplant3 };
 
-		for (Combo combo : plants) {
-			if (combo.isEnabled() && getEntry(combo) == null) {
-				return false;
-			}
+		if (plant.isEnabled() && getEntry(plant) == null) {
+			return false;
 		}
 
-		// validate all numbers
-
 		Text[] text = new Text[] { plantNo, subplant1No, subplant2No,
-				subplant3No, number };
+				subplant3No };
 
-		for (Text text2 : text) {
-			if (text2.isEnabled() && getNo(text2) < 0) {
+		if (number.isEnabled() && getNo(number) < 0) {
+			return false;
+		}
+
+		int i = 0;
+		for (Combo combo : plants) {
+
+			KryoPlantEntry entry = (KryoPlantEntry) getEntry(combo);
+			if (combo.isEnabled() && entry != null
+					&& entry.getNumberOfPlants() > 0 && getNo(text[i]) < 0) {
 				return false;
 			}
+			i++;
 		}
 
 		return true;
@@ -686,29 +688,26 @@ public class UIModelBridge {
 			}
 
 		}
-		
-		
+
 		populateProcess(process);
-		
+
 		String[] items = process.getItems();
-		
+
 		for (int i = 0; i < items.length; i++) {
-			if(items[i].equals(resolved.getProcess().getName() + " (" + resolved.getProcess().getId() + ")")){
+			if (items[i].equals(resolved.getProcess().getName() + " ("
+					+ resolved.getProcess().getId() + ")")) {
 				process.select(i);
 			}
 		}
-		
-		
-		
-		
+
 		number.setText("" + resolved.getSeqKryoNumber());
-		
+
 		description.setText(resolved.getLabel());
-		
-		if(shouldEnable){
+
+		if (shouldEnable) {
 			process.setEnabled(true);
 			number.setEnabled(true);
-		}else{
+		} else {
 			process.setEnabled(false);
 			number.setEnabled(false);
 		}

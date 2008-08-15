@@ -33,6 +33,8 @@ public class MainView extends ViewPart {
 
 	private TableViewer viewer;
 
+	private FilterComposite filter;
+
 	public TableViewer getViewer() {
 		return viewer;
 	}
@@ -53,17 +55,17 @@ public class MainView extends ViewPart {
 		gridLayout.verticalSpacing = 0;
 		parent.setLayout(gridLayout);
 
-		// add filter on top
-		FilterComposite filter = new FilterComposite(parent, SWT.NONE);
-		filter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		filter = new FilterComposite(parent, SWT.NONE);
+		getFilter().setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// add table at the bottom
 		createTable(parent);
 
 		// bind table viewer to filter
-		filter.setViewer(viewer);
+		getFilter().setViewer(viewer);
 		// bind logic and dropdowns
-		filter.setLogic(logic);
+		getFilter().setLogic(logic);
 		initializeToolBar();
 
 	}
@@ -83,7 +85,7 @@ public class MainView extends ViewPart {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 
-		Table table = new Table(parent, style);
+		Table table = new Table(parent, SWT.HIDE_SELECTION | SWT.FULL_SELECTION | SWT.MULTI | SWT.BORDER);
 
 		table.setHeaderVisible(true);
 		final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -171,10 +173,9 @@ public class MainView extends ViewPart {
 
 		viewer.setInput(null);
 
-	
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTable());
-	
+
 		viewer.getTable().setMenu(menu);
 		getSite().registerContextMenu(menuManager, viewer);
 
@@ -195,6 +196,10 @@ public class MainView extends ViewPart {
 
 	public KryoNameBrowserLogic getLogic() {
 		return logic;
+	}
+
+	public FilterComposite getFilter() {
+		return filter;
 	}
 
 }

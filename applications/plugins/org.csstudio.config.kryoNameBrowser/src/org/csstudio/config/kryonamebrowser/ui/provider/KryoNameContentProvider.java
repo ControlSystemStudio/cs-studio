@@ -3,10 +3,7 @@ package org.csstudio.config.kryonamebrowser.ui.provider;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
-import org.csstudio.config.kryonamebrowser.model.entry.KryoNameEntry;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;

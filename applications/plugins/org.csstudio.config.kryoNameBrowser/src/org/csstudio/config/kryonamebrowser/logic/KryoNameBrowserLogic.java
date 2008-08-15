@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.xml.stream.events.Characters;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -130,6 +131,7 @@ public class KryoNameBrowserLogic {
 
 				if (kryoPlantEntry.getNumberOfPlants() > 0) {
 					nameQuery.append(kryoPlantEntry.getNumberOfPlants());
+					nameQuery.append("%");
 				} else {
 					nameQuery.append("%");
 				}
@@ -167,8 +169,6 @@ public class KryoNameBrowserLogic {
 		} else {
 			nameQuery.append("__");
 		}
-
-		JOptionPane.showMessageDialog(null, nameQuery.toString());
 
 		return isUsed ? nameQuery.toString() : "";
 	}
@@ -410,30 +410,36 @@ public class KryoNameBrowserLogic {
 		if (newEntry.getName() == null || newEntry.getName().isEmpty()
 				|| newEntry.getProcessId() == null
 				|| newEntry.getProcessId().isEmpty()) {
-			throw new IllegalStateException("Missing name or process");
+			throw new IllegalArgumentException("Missing name or process");
 		}
 
 		if (doesExist(newEntry.getName())) {
-			throw new IllegalStateException("Cannot add already existing name");
+			throw new IllegalArgumentException(
+					"Cannot add already existing name");
 		}
 
 		Statement statement = database.getConnection().createStatement();
 
 		try {
 
-			// make sure that numbers are not set where there are not allowed
-			// and the only the lowest level is added.
-
-			if (!isLowestLevelPlant(newEntry.getPlantId())) {
-				throw new RuntimeException("Validation failed");
-			}
-
-			if (!isLowestLevelObject(newEntry.getObjectId())) {
-				throw new RuntimeException("Validation failed");
-			}
-
 			// TODO: validation of numbers set is quite difficult, if time will
 			// add later also can validate last two entries in name (process and sequence).
+
+			// validate last 4 digits in the name
+			String name = newEntry.getName();
+			String processId = name.substring(name.length() - 4,
+					name.length() - 2);
+			String seqNum = name.substring(name.length() - 2, name.length());
+
+			if (!newEntry.getProcessId().equals(processId)
+					|| processId.length() != 2) {
+				throw new IllegalArgumentException("Wrong process id");
+			}
+
+			if (seqNum.length() != 2 || !Character.isDigit(seqNum.charAt(0))
+					|| !Character.isDigit(seqNum.charAt(1))) {
+				throw new IllegalArgumentException("Wrong process id");
+			}
 
 			statement
 					.executeUpdate("insert into NSB_IO_NAME (IO_NAME, PLANT_ID, OBJECT_ID, CRYO_PROCESS_ID, "
@@ -457,10 +463,12 @@ public class KryoNameBrowserLogic {
 
 	public synchronized void delete(KryoNameEntry kryoNameEntry)
 			throws SQLException {
+
 		Statement statement = database.getConnection().createStatement();
 		try {
-			statement.executeUpdate("delete from NSB_IO_NAME where IO_NAME_ID = '"
-					+ kryoNameEntry.getId() + "'");
+			statement
+					.executeUpdate("delete from NSB_IO_NAME where IO_NAME_ID = '"
+							+ kryoNameEntry.getId() + "'");
 		} finally {
 			statement.close();
 		}
@@ -480,8 +488,9 @@ public class KryoNameBrowserLogic {
 		try {
 			statement
 					.executeUpdate("update NSB_IO_NAME set KRYO_NAME_LABEL = '"
-							+ kryoNameEntry.getLabel() + "' where IO_NAME_ID = '"
-							+ kryoNameEntry.getId() + "'");
+							+ kryoNameEntry.getLabel()
+							+ "' where IO_NAME_ID = '" + kryoNameEntry.getId()
+							+ "'");
 
 		} finally {
 			statement.close();

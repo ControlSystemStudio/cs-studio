@@ -1,31 +1,17 @@
 package org.csstudio.config.kryonamebrowser.ui.handler;
 
-import org.csstudio.config.kryonamebrowser.ui.MainView;
+import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
+import org.csstudio.config.kryonamebrowser.ui.dialog.AddNewNameDialog;
 import org.csstudio.config.kryonamebrowser.ui.dialog.KryoNameDialog;
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.swt.widgets.Shell;
 
-public class AddNewNameHandler extends AbstractHandler implements IHandler {
-
-	public static final String ID = "addNewName.command";
+public class AddNewNameHandler extends AbstractNameHandler {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		KryoNameDialog dialog = new KryoNameDialog(HandlerUtil.getActiveShell(event));
+	public KryoNameDialog getDialog(Shell shell, KryoNameResolved element) {
 
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-		IWorkbenchPage page = window.getActivePage();
-		MainView view = (MainView) page.findView(MainView.ID);
+		return new AddNewNameDialog(shell);
 
-		dialog.setLogic(view.getLogic());
-		dialog.open();
-
-		return null;
 	}
 
 }
