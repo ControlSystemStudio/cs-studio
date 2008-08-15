@@ -1,11 +1,12 @@
 package org.csstudio.config.kryonamebrowser.ui.filter;
 
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
+import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
 import org.csstudio.config.kryonamebrowser.ui.UIModelBridge;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -14,7 +15,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class FilterComposite extends Composite {
@@ -33,8 +34,8 @@ public class FilterComposite extends Composite {
 	private Combo object;
 	private Combo function;
 	private TableViewer viewer;
-	private KryoNameBrowserLogic logic;
 	private UIModelBridge bridge;
+	private Button searchButton;
 
 	public void setViewer(TableViewer viewer) {
 		this.viewer = viewer;
@@ -45,7 +46,6 @@ public class FilterComposite extends Composite {
 	}
 
 	public void setLogic(KryoNameBrowserLogic logic) {
-		this.logic = logic;
 
 		bridge = new UIModelBridge();
 		bridge.registerPlant(plant, plantNo);
@@ -69,14 +69,12 @@ public class FilterComposite extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public FilterComposite(Composite parent, int style) {
+	public FilterComposite(final Composite parent, int style) {
 		super(parent, style);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.horizontalSpacing = 0;
 		gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
-
-		final Button searchButton;
 
 		Composite composite;
 
@@ -136,27 +134,14 @@ public class FilterComposite extends Composite {
 		processNo = new Text(composite_1, SWT.BORDER);
 		processNo.setTextLimit(2);
 		searchButton = new Button(composite_1, SWT.NONE);
-		searchButton.addSelectionListener(new SelectionListener() {
+		searchButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				searchButton.setEnabled(false);
-				
-				try {
-					viewer.setInput(bridge.calculateExampleEntry());
-				} catch (Exception e1) {
-					
-					e1.printStackTrace();
-				}
-				searchButton.setEnabled(true);
+				updateTable(parent.getShell());
 
 			}
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
 		});
 
 		searchButton.setText("search");
@@ -166,6 +151,29 @@ public class FilterComposite extends Composite {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
+	}
+
+	public KryoNameResolved getSearchExample() {
+		return bridge.calculateExampleEntry();
+
+	}
+
+	public void updateTable(final Shell shell) {
+
+		searchButton.setEnabled(false);
+		searchButton.setText("Loading...");
+
+		shell.getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				viewer.setInput(bridge.calculateExampleEntry());
+
+			}
+		});
+
+		searchButton.setText("Search");
+		searchButton.setEnabled(true);
 	}
 
 }
