@@ -3,32 +3,34 @@
 
 <product name="Decision Department" id="org.csstudio.nams.application.department.decision.decisionDepartment" application="org.csstudio.nams.application.department.decision.application" useFeatures="false">
 
-
    <configIni use="default"/>
 
    <launcherArgs>
+      <programArgs>-plugincustomization plugin_customization.ini</programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
 
-
-   <launcher name="DecisionDepartment">
+   <launcher name="AmsDecisionDepartment">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
    <plugins>
-      <plugin id="com.atlassw.tools.eclipse.checkstyle"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.ibm.icu36.data.update" fragment="true"/>
-      <plugin id="net.sf.eclipsecs.stats"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.csstudio.nams.application.department.decision"/>
       <plugin id="org.csstudio.nams.common"/>
       <plugin id="org.csstudio.nams.common.activatorUtils"/>
@@ -43,7 +45,11 @@
       <plugin id="org.csstudio.nams.service.regelwerkbuilder.impl.confstore"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
+      <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.dcf"/>
+      <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.prefs.DESY" fragment="true"/>
+      <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
@@ -56,11 +62,6 @@
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.filesystem"/>
-      <plugin id="org.eclipse.core.filesystem.linux.ppc"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
-      <plugin id="org.eclipse.core.filesystem.macosx"/>
-      <plugin id="org.eclipse.core.filesystem.solaris.sparc"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.net"/>
@@ -74,9 +75,18 @@
       <plugin id="org.eclipse.debug.ui"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.http.jetty"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.appserver"/>
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.help.webapp"/>
       <plugin id="org.eclipse.jdt.compiler.apt" fragment="true"/>
       <plugin id="org.eclipse.jdt.compiler.tool" fragment="true"/>
       <plugin id="org.eclipse.jdt.core"/>
@@ -90,21 +100,14 @@
       <plugin id="org.eclipse.ltk.core.refactoring"/>
       <plugin id="org.eclipse.ltk.ui.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.search"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.carbon.macosx"/>
-      <plugin id="org.eclipse.swt.gtk.linux.ppc"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
-      <plugin id="org.eclipse.swt.gtk.solaris.sparc"/>
-      <plugin id="org.eclipse.swt.motif.aix.ppc"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.wpf.win32.x86"/>
       <plugin id="org.eclipse.team.core"/>
       <plugin id="org.eclipse.team.ui"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
-      <plugin id="org.eclipse.ui.carbon"/>
       <plugin id="org.eclipse.ui.console"/>
       <plugin id="org.eclipse.ui.editors"/>
       <plugin id="org.eclipse.ui.forms"/>
@@ -118,11 +121,11 @@
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
       <plugin id="org.eclipse.update.configurator"/>
       <plugin id="org.eclipse.update.core"/>
-      <plugin id="org.eclipse.update.core.linux"/>
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
+      <plugin id="org.mortbay.jetty"/>
    </plugins>
 
 </product>
