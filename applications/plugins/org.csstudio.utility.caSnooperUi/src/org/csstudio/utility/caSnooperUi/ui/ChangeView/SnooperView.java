@@ -1,9 +1,9 @@
 package org.csstudio.utility.caSnooperUi.ui.ChangeView;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.caSnooperUi.parser.ChannelCollector;
 import org.csstudio.utility.caSnooperUi.parser.ChannelStructure;
 import org.csstudio.utility.caSnooperUi.parser.SnooperStringParser;
@@ -39,11 +39,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
-
-import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
-
-import com.sun.org.apache.xerces.internal.parsers.XMLDocumentParser;
 
 /**
  * view part of the caSnooper
@@ -354,11 +349,17 @@ public class SnooperView extends ViewPart{
 		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
 	}
 	
-	public void processDataFromExternalSource(final Object param){
+	public void setMessage(final Object param){
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				SnooperStringParser p = new SnooperStringParser();
-				
+				if(param instanceof String){
+					System.out.println("got data!");
+					tableViewer.setInput(p.unparse((String)param));
+				}
+				else
+					CentralLogger.getInstance().error(this,
+							"Incorrect data format received!"); 
 			}
 		});
 	}

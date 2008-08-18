@@ -1,4 +1,4 @@
-package org.csstudio.utility.caSnooperUi.parser;
+package org.csstudio.utility.casnooper.channel;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -21,22 +21,21 @@
  */
  package org.csstudio.utility.casnooper;
 
-import java.util.ArrayList;
-
 import org.csstudio.platform.libs.dcf.actions.IAction;
-import org.csstudio.platform.statistic.CollectorSupervisor;
-import org.csstudio.utility.caSnooperUi.parser.*;
+import org.csstudio.utility.casnooper.channel.SnooperStringParser;
+import org.csstudio.utility.casnooper.channel.ChannelCollector;
 
 public class GetTable implements IAction {
 
-	private SnooperStringParser p;
+	private SnooperStringParser parser = new SnooperStringParser();
+	private ChannelCollector channel;
 	
 	public Object run(Object param) {
 		
-//		String result = "";
-		String result = CollectorSupervisor.getInstance().getCollectionAsString();
-		
-		return null;//p.parse((ArrayList<ChannelStructure>));
+		channel = ChannelCollector.getInstance();
+		if(channel.getSnoops() == null){
+			return "empty mon!";
+		}
+		return parser.parse(channel.getSnoops());
 	}
-
 }

@@ -3,12 +3,9 @@ package org.csstudio.utility.caSnooperUi.parser;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.csstudio.platform.logging.CentralLogger;
 
 
 /**

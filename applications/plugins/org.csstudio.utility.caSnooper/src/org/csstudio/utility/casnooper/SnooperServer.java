@@ -24,6 +24,7 @@ import gov.aps.jca.cas.ServerContext;
 import java.net.InetSocketAddress;
 
 import org.csstudio.platform.statistic.Collector;
+import org.csstudio.utility.casnooper.channel.ChannelCollector;
 import org.csstudio.utility.casnooper.channel.NumberOfBroadcasts;
 import org.csstudio.utility.casnooper.channel.NumberOfBroadcastsPerSecond;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
@@ -75,6 +76,8 @@ public class SnooperServer {
 		 */
 //		protected Map pvs = new HashMap();
 		
+
+		
 		/**
 		 * @see gov.aps.jca.cas.Server#processVariableExistanceTest(java.lang.String, java.net.InetSocketAddress, gov.aps.jca.cas.ProcessVariableExistanceCallback)
 		 */
@@ -88,6 +91,8 @@ public class SnooperServer {
 			
 			System.out.println("Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
 			incrementBroadcastCounter();
+			
+			collector.addBMessage(aliasName, clientAddress);
 			
 			synchronized (pvs)
 			{
@@ -103,6 +108,11 @@ public class SnooperServer {
      * JCA server context.
      */
     private ServerContext context = null;
+    
+    /**
+     * caSnooper message collector
+     */
+    private static ChannelCollector collector;
     
     /**
      * Initialize JCA context.
@@ -247,10 +257,10 @@ public class SnooperServer {
 	}
 	
 	
-	/**
-	 * Program entry point. 
-	 * @param args	command-line arguments
-	 */
+//	/**
+//	 * Program entry point. 
+//	 * @param args	command-line arguments
+//	 */
 //	public static void main(String[] args) {
 //		// execute
 //		new SnooperServer().execute();
@@ -322,6 +332,10 @@ public class SnooperServer {
 
 	public static void setCaBroadcastCollector(Collector caBroadcastCollector) {
 		SnooperServer.caBroadcastCollector = caBroadcastCollector;
+	}
+	
+	public void setListnere(ChannelCollector instance){
+		collector = instance;
 	}
 	
 }
