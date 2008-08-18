@@ -33,6 +33,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class DeleteCommand extends AbstractHandler implements IHandler {
 
+	public static final String ID = "deleteEntry.command";
+	
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 

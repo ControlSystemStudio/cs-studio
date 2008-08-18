@@ -34,7 +34,7 @@
      <extension
            point="org.eclipse.ui.commands">
         <command
-              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.AddNewNameHandler"
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.AddNewNameCommand"
               id="addNewName.command"
               name="addNew">
         </command>
@@ -44,12 +44,12 @@
               name="excelExport">
         </command>
         <command
-              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.AddByExample"
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.AddByExampleCommand"
               id="addByExample.command"
               name="addByExample">
         </command>
         <command
-              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.EditHandler"
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.EditCommand"
               id="editEntry.command"
               name="edit">
         </command>
