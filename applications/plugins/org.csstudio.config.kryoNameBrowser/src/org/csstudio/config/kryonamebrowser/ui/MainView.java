@@ -89,12 +89,12 @@ public class MainView extends ViewPart {
 				| SWT.MULTI | SWT.BORDER);
 
 		table.setHeaderVisible(true);
-		final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
+		final GridData gd_table = new GridData(SWT.LEFT, SWT.FILL, true, true);
 		table.setLayoutData(gd_table);
 
 		final TableColumn newColumnTableColumn = new TableColumn(table,
 				SWT.CENTER, 0);
-		newColumnTableColumn.setWidth(100);
+		newColumnTableColumn.setWidth(250);
 		newColumnTableColumn.setText("Kryo name");
 
 		final TableColumn newColumnTableColumn_1 = new TableColumn(table,
@@ -104,7 +104,7 @@ public class MainView extends ViewPart {
 
 		final TableColumn newColumnTableColumn_2 = new TableColumn(table,
 				SWT.CENTER, 2);
-		newColumnTableColumn_2.setWidth(100);
+		newColumnTableColumn_2.setWidth(60);
 		newColumnTableColumn_2.setText("No");
 
 		final TableColumn subPlant1TableColumn = new TableColumn(table,
@@ -114,8 +114,8 @@ public class MainView extends ViewPart {
 
 		final TableColumn newColumnTableColumn_3 = new TableColumn(table,
 				SWT.CENTER, 4);
-		newColumnTableColumn_3.setWidth(30);
-		newColumnTableColumn_3.setText("no");
+		newColumnTableColumn_3.setWidth(60);
+		newColumnTableColumn_3.setText("No");
 
 		final TableColumn subPlant2TableColumn = new TableColumn(table,
 				SWT.CENTER, 5);
@@ -124,7 +124,7 @@ public class MainView extends ViewPart {
 
 		final TableColumn newColumnTableColumn_4 = new TableColumn(table,
 				SWT.CENTER, 6);
-		newColumnTableColumn_4.setWidth(30);
+		newColumnTableColumn_4.setWidth(60);
 		newColumnTableColumn_4.setText("No");
 
 		final TableColumn subPlant3TableColumn = new TableColumn(table,
@@ -134,7 +134,7 @@ public class MainView extends ViewPart {
 
 		final TableColumn newColumnTableColumn_5 = new TableColumn(table,
 				SWT.CENTER, 8);
-		newColumnTableColumn_5.setWidth(30);
+		newColumnTableColumn_5.setWidth(60);
 		newColumnTableColumn_5.setText("No");
 
 		final TableColumn newColumnTableColumn_6 = new TableColumn(table,
@@ -159,7 +159,7 @@ public class MainView extends ViewPart {
 
 		final TableColumn newColumnTableColumn_10 = new TableColumn(table,
 				SWT.CENTER, 13);
-		newColumnTableColumn_10.setWidth(100);
+		newColumnTableColumn_10.setWidth(30);
 		newColumnTableColumn_10.setText("Seq No");
 
 		final TableColumn newColumnTableColumn_11 = new TableColumn(table,
