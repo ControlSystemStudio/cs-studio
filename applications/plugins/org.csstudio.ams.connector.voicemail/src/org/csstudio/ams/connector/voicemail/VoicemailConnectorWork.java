@@ -236,7 +236,6 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
     
             telegramCnt = 0;
 
-            
             IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
             String strAdress = store.getString(SampleService.P_VM_SERVICE);
             String strPort = store.getString(SampleService.P_VM_PORT);
@@ -265,6 +264,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         {
             Log.log(this, Log.FATAL, "could not init VmService", e);
         }
+
         return false;
     }
     

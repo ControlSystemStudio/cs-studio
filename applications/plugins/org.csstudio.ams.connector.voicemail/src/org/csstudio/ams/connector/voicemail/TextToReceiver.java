@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.connector.voicemail;
+
+package org.csstudio.ams.connector.voicemail;
 
 import java.nio.ByteBuffer;
 
@@ -30,11 +32,7 @@ public class TextToReceiver extends Telegram
 	private int chainIdAndPos;		//4
 	private int textType;			//4
 	
-	public TextToReceiver(	int telegramCnt, 
-							String text,
-							String receiver,
-							int chainIdAndPos,
-							int textType)
+	public TextToReceiver(	int telegramCnt, String text, String receiver, int chainIdAndPos, int textType)
 	{
 		super(Telegram.TELID_TEXTTORECEIVER, telegramCnt);
 		telegramLen = 12 + 296;
