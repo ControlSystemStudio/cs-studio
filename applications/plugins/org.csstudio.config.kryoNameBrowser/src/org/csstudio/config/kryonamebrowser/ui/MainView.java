@@ -5,18 +5,25 @@ import java.sql.SQLException;
 import org.csstudio.config.kryonamebrowser.config.OracleSettings;
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
 import org.csstudio.config.kryonamebrowser.ui.filter.FilterComposite;
+import org.csstudio.config.kryonamebrowser.ui.handler.DeleteCommand;
+import org.csstudio.config.kryonamebrowser.ui.handler.EditCommand;
 import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameContentProvider;
 import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameLabelProvider;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -85,8 +92,8 @@ public class MainView extends ViewPart {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 
-		Table table = new Table(parent, SWT.HIDE_SELECTION | SWT.FULL_SELECTION
-				| SWT.MULTI | SWT.BORDER);
+		final Table table = new Table(parent, SWT.HIDE_SELECTION
+				| SWT.FULL_SELECTION | SWT.MULTI | SWT.BORDER);
 
 		table.setHeaderVisible(true);
 		final GridData gd_table = new GridData(SWT.LEFT, SWT.FILL, true, true);
@@ -181,6 +188,47 @@ public class MainView extends ViewPart {
 		getSite().registerContextMenu(menuManager, viewer);
 
 		getSite().setSelectionProvider(viewer);
+
+		final IHandlerService handlerService = (IHandlerService) getSite()
+				.getService(IHandlerService.class);
+
+		table.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.character == SWT.DEL) {
+
+					try {
+						handlerService.executeCommand(DeleteCommand.ID, null);
+					} catch (Exception ex) {
+						throw new RuntimeException("Delete command not found");
+					}
+				}
+				if (table.getSelectionCount() == 1 && e.character == SWT.CR) {
+
+					try {
+						handlerService.executeCommand(EditCommand.ID, null);
+					} catch (Exception ex) {
+						throw new RuntimeException("Edit command not found");
+					}
+				}
+
+			}
+		});
+
+		table.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				try {
+					handlerService.executeCommand(EditCommand.ID, null);
+				} catch (Exception ex) {
+					throw new RuntimeException("Edit command not found");
+				}
+
+			}
+
+		});
 
 	}
 
