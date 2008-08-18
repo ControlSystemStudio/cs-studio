@@ -386,23 +386,13 @@ public class SnooperView extends ViewPart{
 		public void run() {
 			while(!msg.isReady() && snooperActive){
 				try {
-					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
-					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
-					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
-					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
-					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
-					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
-					msg.addBMessage(""+(int)(Math.random()*50), new InetSocketAddress("131.169.115.196",(int)(Math.random()*50)));
-					
-					Thread.sleep(1);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 			if(snooperActive){
-				System.out.println(Runtime.getRuntime().totalMemory());
 				processData();
-				System.out.println(Runtime.getRuntime().totalMemory());
 			}
 		}
 	}
