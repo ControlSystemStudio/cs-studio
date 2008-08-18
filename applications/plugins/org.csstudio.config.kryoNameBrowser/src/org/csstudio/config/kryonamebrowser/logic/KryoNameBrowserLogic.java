@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.xml.stream.events.Characters;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -209,74 +208,7 @@ public class KryoNameBrowserLogic {
 			HashMap<Integer, KryoPlantEntry> plantCache = new HashMap<Integer, KryoPlantEntry>();
 
 			while (resultSet.next()) {
-
-				// resolve all but the types that have subtypes
-				KryoNameResolved kryoNameResolved = new KryoNameResolved(
-						resultSet.getString(2), resultSet.getString(7),
-						resultSet.getInt(1), resultSet.getInt(6),
-						getProcessEntry(resultSet.getString(5)));
-
-				// resolve the subtypes into a list
-				List<KryoObjectEntry> objects = kryoNameResolved.getObjects();
-
-				KryoObjectEntry kryoObjectEntry = getObjectEntry(resultSet
-						.getInt(4), objectCache);
-
-				while (kryoObjectEntry != null) {
-
-					objects.add(kryoObjectEntry);
-					kryoObjectEntry = getObjectEntry(kryoObjectEntry
-							.getParent(), objectCache);
-				}
-
-				Collections.reverse(objects);
-
-				List<KryoPlantResolved> plants = kryoNameResolved.getPlants();
-
-				KryoPlantEntry kryoPlantEntry = getPlantEntry(resultSet
-						.getInt(3), plantCache);
-
-				// split by ':' in two halves, use the left halve to check
-				// numbers
-
-				String[] split = kryoNameResolved.getName().split(":");
-
-				String[] plantHalve = split[0].split("[A-Z]+");
-
-				int plantHalveIndex = plantHalve.length - 1;
-
-				while (kryoPlantEntry != null) {
-					int nrOfPlants = -1;
-
-					// do we allow plants, if so parse the int.
-					if (kryoPlantEntry.getNumberOfPlants() > 0) {
-
-						try {
-							nrOfPlants = Integer
-									.parseInt(plantHalve[plantHalveIndex]);
-
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(null,
-									"Invalid name entry found "
-											+ kryoNameResolved.getName()
-											+ " please notify supervisor!");
-						}
-
-						plantHalveIndex--;
-					}
-
-					KryoPlantResolved plantResolved = new KryoPlantResolved(
-							kryoPlantEntry);
-					plantResolved.setNumberOfPlants(nrOfPlants);
-
-					plants.add(plantResolved);
-					kryoPlantEntry = getPlantEntry(kryoPlantEntry.getParent(),
-							plantCache);
-				}
-
-				Collections.reverse(plants);
-
-				results.add(kryoNameResolved);
+				results.add(convert(resultSet, objectCache, plantCache));
 			}
 
 		} finally {
@@ -287,6 +219,96 @@ public class KryoNameBrowserLogic {
 
 		}
 		return results;
+
+	}
+
+	private KryoNameResolved convert(ResultSet resultSet,
+			HashMap<Integer, KryoObjectEntry> objectCache,
+			HashMap<Integer, KryoPlantEntry> plantCache) throws SQLException {
+		// resolve all but the types that have subtypes
+		KryoNameResolved kryoNameResolved = new KryoNameResolved(resultSet
+				.getString(2), resultSet.getString(7), resultSet.getInt(1),
+				resultSet.getInt(6), getProcessEntry(resultSet.getString(5)));
+
+		// resolve the subtypes into a list
+		List<KryoObjectEntry> objects = kryoNameResolved.getObjects();
+
+		KryoObjectEntry kryoObjectEntry = getObjectEntry(resultSet.getInt(4),
+				objectCache);
+
+		while (kryoObjectEntry != null) {
+
+			objects.add(kryoObjectEntry);
+			kryoObjectEntry = getObjectEntry(kryoObjectEntry.getParent(),
+					objectCache);
+		}
+
+		Collections.reverse(objects);
+
+		List<KryoPlantResolved> plants = kryoNameResolved.getPlants();
+
+		KryoPlantEntry kryoPlantEntry = getPlantEntry(resultSet.getInt(3),
+				plantCache);
+
+		// split by ':' in two halves, use the left halve to check
+		// numbers
+
+		String[] split = kryoNameResolved.getName().split(":");
+
+		String[] plantHalve = split[0].split("[A-Z]+");
+
+		int plantHalveIndex = plantHalve.length - 1;
+
+		while (kryoPlantEntry != null) {
+			int nrOfPlants = -1;
+
+			// do we allow plants, if so parse the int.
+			if (kryoPlantEntry.getNumberOfPlants() > 0) {
+
+				try {
+					nrOfPlants = Integer.parseInt(plantHalve[plantHalveIndex]);
+
+				} catch (Exception e) {
+					// TODO: invalid entry, not valid LOG LOG LOG !!!
+				}
+
+				plantHalveIndex--;
+			}
+
+			KryoPlantResolved plantResolved = new KryoPlantResolved(
+					kryoPlantEntry);
+			plantResolved.setNumberOfPlants(nrOfPlants);
+
+			plants.add(plantResolved);
+			kryoPlantEntry = getPlantEntry(kryoPlantEntry.getParent(),
+					plantCache);
+		}
+
+		Collections.reverse(plants);
+		return kryoNameResolved;
+
+	}
+
+	public synchronized KryoNameResolved getName(int id) throws SQLException {
+
+		Statement statement = database.getConnection().createStatement();
+		try {
+			ResultSet rs = statement
+					.executeQuery("SELECT IO_NAME_ID , IO_NAME , PLANT_ID , OBJECT_ID , CRYO_PROCESS_ID , SEQ_KRYO_NUMBER , KRYO_NAME_LABEL FROM "
+							+ TableNames.NAMES_TABLE
+							+ " WHERE IO_NAME_ID = "
+							+ id);
+
+			if (rs.next()) {
+				return convert(rs, new HashMap<Integer, KryoObjectEntry>(),
+						new HashMap<Integer, KryoPlantEntry>());
+			} else {
+				return null;
+			}
+
+		} finally {
+			statement.close();
+		}
 
 	}
 
@@ -373,38 +395,6 @@ public class KryoNameBrowserLogic {
 		}
 	}
 
-	private boolean isLowestLevelPlant(int id) throws SQLException {
-		Statement statement = database.getConnection().createStatement();
-		boolean next = false;
-		try {
-			next = statement.executeQuery(
-					"select PLANT_NAME from NSB_PLANT where PLANT_PARENT='"
-							+ id + "'").next();
-
-		} finally {
-			statement.close();
-		}
-
-		return !next;
-
-	}
-
-	private boolean isLowestLevelObject(int id) throws SQLException {
-		Statement statement = database.getConnection().createStatement();
-		boolean next = false;
-		try {
-			next = statement.executeQuery(
-					"select OBJECT_NAME from NSB_OBJECT where OBJECT_PARENT='"
-							+ id + "'").next();
-
-		} finally {
-			statement.close();
-		}
-
-		return !next;
-
-	}
-
 	public synchronized void add(KryoNameEntry newEntry) throws SQLException {
 
 		if (newEntry.getName() == null || newEntry.getName().isEmpty()
@@ -434,12 +424,15 @@ public class KryoNameBrowserLogic {
 			if (!newEntry.getProcessId().equals(processId)
 					|| processId.length() != 2) {
 				throw new IllegalArgumentException("Wrong process id");
-			}
+			}			
 
 			if (seqNum.length() != 2 || !Character.isDigit(seqNum.charAt(0))
 					|| !Character.isDigit(seqNum.charAt(1))) {
 				throw new IllegalArgumentException("Wrong process id");
 			}
+			
+			// by this point the process and seq number are valid			
+			
 
 			statement
 					.executeUpdate("insert into NSB_IO_NAME (IO_NAME, PLANT_ID, OBJECT_ID, CRYO_PROCESS_ID, "
@@ -611,37 +604,6 @@ public class KryoNameBrowserLogic {
 	}
 
 	/**
-	 * Returns the top level {@link KryoPlantEntry} that should be the XFEL.
-	 * 
-	 * @param parent
-	 *            entry
-	 * @return entry
-	 * @throws java.sql.SQLException
-	 */
-	public synchronized KryoPlantEntry getSuperPlant() throws SQLException {
-
-		List<KryoPlantEntry> results = new ArrayList<KryoPlantEntry>();
-		Statement statement = database.getConnection().createStatement();
-		statement.setFetchSize(ROW_FETCH_SIZE);
-
-		try {
-			ResultSet rs = statement
-					.executeQuery("select PLANT_NAME, PLANT_LABEL, PLANT_EXPLANATION, PLANT_ID,"
-							+ " PLANT_PARENT, PLANT_NO from NSB_PLANT where NSB_PLANT.PLANT_PARENT = "
-							+ NO_PARENT_SUPER_PLANT_ID);
-			if (rs.next()) {
-				return new KryoPlantEntry(rs.getString(1), rs.getString(2), rs
-						.getString(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
-			} else {
-				return null;
-			}
-		} finally {
-			statement.close();
-		}
-
-	}
-
-	/**
 	 * Returns a list of {@link KryoProcessEntry}.
 	 * 
 	 * @return list of all process entries.
@@ -669,10 +631,6 @@ public class KryoNameBrowserLogic {
 		}
 
 		return results;
-	}
-
-	private boolean isEmpty(String string) {
-		return string == null || "".equals(string);
 	}
 
 	/**

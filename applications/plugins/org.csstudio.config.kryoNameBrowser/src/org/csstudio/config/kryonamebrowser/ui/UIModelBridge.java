@@ -467,57 +467,31 @@ public class UIModelBridge {
 	 * 
 	 * @return
 	 */
-	public KryoNameEntry getNewEntrty() {
+	public KryoNameEntry calculateNewEntrty() {
 
 		KryoNameResolved example = calculateExampleEntry();
 
 		KryoNameEntry newEntry = new KryoNameEntry();
-
-		StringBuilder builder = new StringBuilder();
-
-		KryoPlantEntry superPlant;
-		try {
-			superPlant = logic.getSuperPlant();
-		} catch (SQLException e) {
-			throw new RuntimeException("Failed to get XFEL entry!");
-		}
-
-		builder.append(superPlant.getLabel());
-
-		List<KryoPlantResolved> plants = example.getPlants();
-
-		for (KryoPlantEntry kryoPlantEntry : plants) {
-			builder.append(kryoPlantEntry.getLabel());
-			if (kryoPlantEntry.getNumberOfPlants() >= 0) {
-				builder.append(kryoPlantEntry.getNumberOfPlants());
-			}
-		}
-
-		builder.append(":");
-
-		for (KryoObjectEntry kOEntry : example.getObjects()) {
-			builder.append(kOEntry.getLabel());
-		}
-
-		KryoProcessEntry process = example.getProcess();
-		builder.append(process != null ? process.getId() : "");
-		newEntry.setProcessId(process != null ? process.getId() : null);
-
-		if (example.getObjects().size() > 0) {
-			newEntry.setObjectId(example.getObjects().get(
-					example.getObjects().size() - 1).getId());
-		}
+		newEntry.setName(calculateName());
 
 		if (example.getPlants().size() > 0) {
 			newEntry.setPlantId(example.getPlants().get(
 					example.getPlants().size() - 1).getId());
 		}
 
+		if (example.getObjects().size() > 0) {
+			newEntry.setObjectId(example.getObjects().get(
+					example.getObjects().size() - 1).getId());
+		}
+
+		KryoProcessEntry process = example.getProcess();
+
+		newEntry.setProcessId(process != null ? process.getId() : null);
+
 		newEntry.setSeqKryoNumber(example.getSeqKryoNumber());
-		builder.append(example.getSeqKryoNumber());
+
 		newEntry.setLabel(description.getText());
 
-		newEntry.setName(builder.toString());
 		return newEntry;
 
 	}
@@ -553,7 +527,8 @@ public class UIModelBridge {
 
 		KryoProcessEntry process = example.getProcess();
 		builder.append(process != null ? process.getId() : "");
-		builder.append(example.getSeqKryoNumber());
+		builder.append(example.getSeqKryoNumber() < 10 ? "0"
+				+ example.getSeqKryoNumber() : example.getSeqKryoNumber());
 
 		return builder.toString();
 

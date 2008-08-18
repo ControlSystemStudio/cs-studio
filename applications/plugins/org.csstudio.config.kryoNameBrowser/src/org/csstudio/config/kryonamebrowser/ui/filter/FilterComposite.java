@@ -1,8 +1,23 @@
 package org.csstudio.config.kryonamebrowser.ui.filter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.swing.JOptionPane;
+
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
 import org.csstudio.config.kryonamebrowser.ui.UIModelBridge;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,11 +30,13 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class FilterComposite extends Composite {
 
+	private static final int WAIT_TILL_SHOW_LOADING_DIALOG = 250;
 	private Text subplant3No;
 	private Text subplant2No;
 	private Text plant1No;
@@ -36,6 +53,7 @@ public class FilterComposite extends Composite {
 	private TableViewer viewer;
 	private UIModelBridge bridge;
 	private Button searchButton;
+	private KryoNameBrowserLogic logic;
 
 	public void setViewer(TableViewer viewer) {
 		this.viewer = viewer;
@@ -47,6 +65,7 @@ public class FilterComposite extends Composite {
 
 	public void setLogic(KryoNameBrowserLogic logic) {
 
+		this.logic = logic;
 		bridge = new UIModelBridge();
 		bridge.registerPlant(plant, plantNo);
 		bridge.registerSubPlant1(subplant1, plant1No);
@@ -144,7 +163,7 @@ public class FilterComposite extends Composite {
 
 		});
 
-		searchButton.setText("search");
+		searchButton.setText("Search");
 
 	}
 
@@ -158,22 +177,55 @@ public class FilterComposite extends Composite {
 
 	}
 
-	public void updateTable(final Shell shell) {
+	private KryoNameResolved exampleEntry;
 
-		searchButton.setEnabled(false);
-		searchButton.setText("Loading...");
+	/**
+	 * Updates the table using the values from the filter. This method is safe to call from non-UI thread.
+	 * 
+	 * @param shell
+	 */
+	public synchronized void updateTable(final Shell shell) {
 
+		// must access UI stuff via UI thread
 		shell.getDisplay().syncExec(new Runnable() {
 
 			@Override
 			public void run() {
-				viewer.setInput(bridge.calculateExampleEntry());
-
+				searchButton.setEnabled(false);
+				searchButton.setText("Loading...");
+				viewer.getTable().setEnabled(false);
+				exampleEntry = bridge.calculateExampleEntry();
 			}
 		});
 
-		searchButton.setText("Search");
-		searchButton.setEnabled(true);
+		// do the update without blocking the UI
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					final List<KryoNameResolved> search = logic
+							.search(exampleEntry);
+					shell.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							viewer.setInput(search);
+							searchButton.setText("Search");
+							searchButton.setEnabled(true);
+							viewer.getTable().setEnabled(true);
+						}
+					});
+				} catch (SQLException e) {
+					MessageDialog.openError(shell, "Error", e.getMessage());
+					shell.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							searchButton.setText("Search");
+							searchButton.setEnabled(true);
+							viewer.getTable().setEnabled(true);
+						}
+					});
+				}
+
+			}
+		}).start();
+
 	}
 
 }

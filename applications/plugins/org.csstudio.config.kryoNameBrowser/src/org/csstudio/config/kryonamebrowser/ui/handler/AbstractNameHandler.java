@@ -44,10 +44,9 @@ public abstract class AbstractNameHandler extends AbstractHandler {
 				dialog.setLogic(view.getLogic());
 				dialog.open();
 
-				MessageDialog.openInformation(shell, "Info",
-						"Operation was successful");
+				
 
-				view.getFilter().updateTable(HandlerUtil.getActiveShell(event));
+//				view.getFilter().updateTable(HandlerUtil.getActiveShell(event));
 				return null;
 			}
 		}

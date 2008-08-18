@@ -10,8 +10,11 @@ import org.eclipse.swt.widgets.Shell;
 
 public class AddNewNameDialog extends KryoNameDialog {
 
+	private final Shell shell;
+
 	public AddNewNameDialog(Shell parentShell) {
 		super(parentShell);
+		shell = parentShell;
 
 	}
 
@@ -19,7 +22,7 @@ public class AddNewNameDialog extends KryoNameDialog {
 	protected void getButton(Composite parent) {
 
 		Button button = new Button(parent, SWT.PUSH);
-
+		button.setText("Add");
 		button.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -29,8 +32,9 @@ public class AddNewNameDialog extends KryoNameDialog {
 				} else {
 					setErrorMessage(null);
 					try {
-						logic.add(bridge.getNewEntrty());
-						close();
+						logic.add(bridge.calculateNewEntrty());
+						MessageDialog.openInformation(shell, "Info",
+						"Operation was successful");
 					} catch (Exception e1) {
 						MessageDialog.openError(getShell(), "Error", e1
 								.getMessage());

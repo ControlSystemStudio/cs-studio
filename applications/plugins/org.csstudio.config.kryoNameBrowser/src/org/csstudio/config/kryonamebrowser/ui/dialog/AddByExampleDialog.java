@@ -13,9 +13,11 @@ import org.eclipse.swt.widgets.Shell;
 public class AddByExampleDialog extends KryoNameDialog {
 
 	private final KryoNameResolved resolved;
+	private final Shell shell;
 
 	public AddByExampleDialog(Shell parentShell, KryoNameResolved resolved) {
 		super(parentShell);
+		shell = parentShell;
 		this.resolved = resolved;
 
 	}
@@ -44,8 +46,9 @@ public class AddByExampleDialog extends KryoNameDialog {
 				} else {
 					setErrorMessage(null);
 					try {
-						logic.add(bridge.getNewEntrty());
-						close();
+						logic.add(bridge.calculateNewEntrty());
+						MessageDialog.openInformation(shell, "Info",
+						"Operation was successful");
 					} catch (Exception e1) {
 						MessageDialog.openError(getShell(), "Error", e1
 								.getMessage());

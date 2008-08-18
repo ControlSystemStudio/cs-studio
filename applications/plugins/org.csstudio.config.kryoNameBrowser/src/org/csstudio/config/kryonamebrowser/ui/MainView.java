@@ -85,7 +85,8 @@ public class MainView extends ViewPart {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 
-		Table table = new Table(parent, SWT.HIDE_SELECTION | SWT.FULL_SELECTION | SWT.MULTI | SWT.BORDER);
+		Table table = new Table(parent, SWT.HIDE_SELECTION | SWT.FULL_SELECTION
+				| SWT.MULTI | SWT.BORDER);
 
 		table.setHeaderVisible(true);
 		final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -168,7 +169,7 @@ public class MainView extends ViewPart {
 
 		viewer = new TableViewer(table);
 
-		viewer.setContentProvider(new KryoNameContentProvider(logic));
+		viewer.setContentProvider(new KryoNameContentProvider());
 		viewer.setLabelProvider(new KryoNameLabelProvider());
 
 		viewer.setInput(null);
