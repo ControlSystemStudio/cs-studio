@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -395,12 +393,114 @@ public class KryoNameBrowserLogic {
 		}
 	}
 
-	public synchronized void add(KryoNameEntry newEntry) throws SQLException {
-
+	public boolean isValid(KryoNameEntry newEntry) throws SQLException {
+		// validation is not very nice looking but hey it is the best I can do
+		// Rudimentary check
 		if (newEntry.getName() == null || newEntry.getName().isEmpty()
 				|| newEntry.getProcessId() == null
-				|| newEntry.getProcessId().isEmpty()) {
-			throw new IllegalArgumentException("Missing name or process");
+				|| newEntry.getProcessId().isEmpty()
+				|| newEntry.getObjectId() == 0 || newEntry.getPlantId() == 0
+				|| !newEntry.getName().startsWith("X")) {
+
+			return false;
+		}
+
+		// validate last 4 digits in the name
+		String name = newEntry.getName();
+		String processId = name.substring(name.length() - 4, name.length() - 2);
+		String seqNum = name.substring(name.length() - 2, name.length());
+
+		if (!newEntry.getProcessId().equals(processId)
+				|| processId.length() != 2) {
+			return false;
+		}
+
+		if (seqNum.length() != 2) {
+			return false;
+		}
+
+		try {
+			int parseInt = Integer.parseInt(seqNum);
+			if (parseInt != newEntry.getSeqKryoNumber()) {
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			return false;
+		}
+
+		// by this point the process and seq number are valid
+
+		// validate objects
+		int colon = name.indexOf(":");
+
+		if (colon < 0) {
+			throw new IllegalArgumentException("Invalid name, missing colon");
+		}
+
+		String objectPart = name.substring(name.indexOf(":") + 1,
+				name.length() - 4);
+
+		HashMap<Integer, KryoObjectEntry> objectCache = new HashMap<Integer, KryoObjectEntry>();
+		KryoObjectEntry entry = getObjectEntry(newEntry.getObjectId(),
+				objectCache);
+
+		if (entry == null) {
+			return false;
+		}
+
+		while (entry != null) {
+			if (!objectPart.endsWith(entry.getLabel())) {
+				return false;
+			}
+			objectPart = objectPart.substring(0, objectPart.length()
+					- entry.getLabel().length());
+			entry = getObjectEntry(entry.getParent(), objectCache);
+
+		}
+
+		// validate plants
+		String plantPart = name.substring(0, name.indexOf(":"));
+
+		HashMap<Integer, KryoPlantEntry> plantCache = new HashMap<Integer, KryoPlantEntry>();
+		KryoPlantEntry plantEntry = getPlantEntry(newEntry.getPlantId(),
+				plantCache);
+
+		if (plantEntry == null) {
+			return false;
+		}
+
+		String plantStringPart = plantPart.replaceAll("\\d", "");
+
+		while (plantEntry != null) {
+			if (!plantStringPart.endsWith(plantEntry.getLabel())) {
+				return false;
+			}
+
+			if (plantEntry.getNumberOfPlants() > 0) {
+				int index = plantPart.lastIndexOf(plantEntry.getLabel())
+						+ plantEntry.getLabel().length();
+				if (index >= plantPart.length()
+						|| !Character.isDigit(plantPart.charAt(index))) {
+					return false;
+				}
+
+			}
+
+			plantStringPart = plantStringPart.substring(0, plantStringPart
+					.length()
+					- plantEntry.getLabel().length());
+			plantEntry = getPlantEntry(plantEntry.getParent(), plantCache);
+
+		}
+
+		// should be valid
+		return true;
+	}
+
+	public synchronized void add(KryoNameEntry newEntry) throws SQLException {
+
+		if (!isValid(newEntry)) {
+			throw new RuntimeException("Validation failed.");
 		}
 
 		if (doesExist(newEntry.getName())) {
@@ -411,28 +511,6 @@ public class KryoNameBrowserLogic {
 		Statement statement = database.getConnection().createStatement();
 
 		try {
-
-			// TODO: validation of numbers set is quite difficult, if time will
-			// add later also can validate last two entries in name (process and sequence).
-
-			// validate last 4 digits in the name
-			String name = newEntry.getName();
-			String processId = name.substring(name.length() - 4,
-					name.length() - 2);
-			String seqNum = name.substring(name.length() - 2, name.length());
-
-			if (!newEntry.getProcessId().equals(processId)
-					|| processId.length() != 2) {
-				throw new IllegalArgumentException("Wrong process id");
-			}			
-
-			if (seqNum.length() != 2 || !Character.isDigit(seqNum.charAt(0))
-					|| !Character.isDigit(seqNum.charAt(1))) {
-				throw new IllegalArgumentException("Wrong process id");
-			}
-			
-			// by this point the process and seq number are valid			
-			
 
 			statement
 					.executeUpdate("insert into NSB_IO_NAME (IO_NAME, PLANT_ID, OBJECT_ID, CRYO_PROCESS_ID, "
