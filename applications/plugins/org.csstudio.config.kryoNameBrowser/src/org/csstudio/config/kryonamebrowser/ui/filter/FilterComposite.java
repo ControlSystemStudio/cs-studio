@@ -27,10 +27,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.grouplayout.GroupLayout;
+import org.eclipse.swt.layout.grouplayout.LayoutStyle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -91,68 +94,186 @@ public class FilterComposite extends Composite {
 	public FilterComposite(final Composite parent, int style) {
 		super(parent, style);
 		final GridLayout gridLayout = new GridLayout();
+		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
-		gridLayout.marginWidth = 0;
+		gridLayout.marginHeight = 0;
+		gridLayout.numColumns = 2;
 		setLayout(gridLayout);
 
 		Composite composite;
 
 		Composite composite_1;
-		composite = new Composite(this, SWT.NONE);
-		composite.setLayout(new RowLayout());
-		composite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true));
 
-		plant = new Combo(composite, SWT.NONE);
+		Composite composite_15;
+
+		Composite composite_16;
+		composite_15 = new Composite(this, SWT.NONE);
+		final GridLayout gridLayout_1 = new GridLayout();
+		gridLayout_1.verticalSpacing = 0;
+		gridLayout_1.horizontalSpacing = 0;
+		gridLayout_1.marginHeight = 0;
+		gridLayout_1.marginWidth = 0;
+		composite_15.setLayout(gridLayout_1);
+		final GridData gd_composite_15 = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd_composite_15.minimumHeight = 100;
+		composite_15.setLayoutData(gd_composite_15);
+		composite = new Composite(composite_15, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+		final RowLayout rowLayout = new RowLayout();
+		rowLayout.spacing = 0;
+		rowLayout.marginTop = 0;
+		rowLayout.marginRight = 0;
+		rowLayout.marginLeft = 0;
+		rowLayout.marginBottom = 0;
+		rowLayout.fill = true;
+		composite.setLayout(rowLayout);
+
+		final Composite composite_2 = new Composite(composite, SWT.NONE);
+		composite_2.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label plantLabel = new Label(composite_2, SWT.NONE);
+		plantLabel.setText("Plant");
+
+		plant = new Combo(composite_2, SWT.NONE);
 		plant.setToolTipText("Plant");
 
-		plantNo = new Text(composite, SWT.BORDER);
+		final Composite composite_3 = new Composite(composite, SWT.NONE);
+		composite_3.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label noLabel = new Label(composite_3, SWT.NONE);
+		noLabel.setText("No");
+
+		plantNo = new Text(composite_3, SWT.BORDER);
 		final RowData rd_plantNo = new RowData();
-		rd_plantNo.width = 30;
+		rd_plantNo.width = 50;
 		plantNo.setLayoutData(rd_plantNo);
 		plantNo.setTextLimit(10);
 
-		subplant1 = new Combo(composite, SWT.NONE);
+		final Composite composite_4 = new Composite(composite, SWT.NONE);
+		composite_4.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label subPlant1Label = new Label(composite_4, SWT.NONE);
+		subPlant1Label.setText("Sub plant 1");
+
+		subplant1 = new Combo(composite_4, SWT.NONE);
 		subplant1.setEnabled(false);
 
-		plant1No = new Text(composite, SWT.BORDER);
+		final Composite composite_5 = new Composite(composite, SWT.NONE);
+		composite_5.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label noLabel_1 = new Label(composite_5, SWT.NONE);
+		noLabel_1.setText("No");
+
+		plant1No = new Text(composite_5, SWT.BORDER);
 		final RowData rd_plant1No = new RowData();
-		rd_plant1No.width = 30;
+		rd_plant1No.width = 50;
 		plant1No.setLayoutData(rd_plant1No);
 		plant1No.setTextLimit(10);
 
-		subplant2 = new Combo(composite, SWT.NONE);
+		final Composite composite_6 = new Composite(composite, SWT.NONE);
+		composite_6.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label subPlant2Label = new Label(composite_6, SWT.NONE);
+		subPlant2Label.setText("Sub plant 2");
+
+		subplant2 = new Combo(composite_6, SWT.NONE);
 		subplant2.setEnabled(false);
 
-		subplant2No = new Text(composite, SWT.BORDER);
+		final Composite composite_7 = new Composite(composite, SWT.NONE);
+		composite_7.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label noLabel_2 = new Label(composite_7, SWT.NONE);
+		noLabel_2.setText("No");
+
+		subplant2No = new Text(composite_7, SWT.BORDER);
 		final RowData rd_subplant2No = new RowData();
-		rd_subplant2No.width = 30;
+		rd_subplant2No.width = 50;
 		subplant2No.setLayoutData(rd_subplant2No);
 		subplant2No.setTextLimit(10);
 
-		subplant3 = new Combo(composite, SWT.NONE);
+		final Composite composite_8 = new Composite(composite, SWT.NONE);
+		composite_8.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label subPlant3Label = new Label(composite_8, SWT.NONE);
+		subPlant3Label.setText("Sub plant 3");
+
+		subplant3 = new Combo(composite_8, SWT.NONE);
 		subplant3.setEnabled(false);
 
-		subplant3No = new Text(composite, SWT.BORDER);
+		final Composite composite_9 = new Composite(composite, SWT.NONE);
+		composite_9.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label noLabel_3 = new Label(composite_9, SWT.NONE);
+		noLabel_3.setText("No");
+
+		subplant3No = new Text(composite_9, SWT.BORDER);
 		final RowData rd_subplant3No = new RowData();
-		rd_subplant3No.width = 30;
+		rd_subplant3No.width = 50;
 		subplant3No.setLayoutData(rd_subplant3No);
 		subplant3No.setTextLimit(10);
-		composite_1 = new Composite(this, SWT.NONE);
-		composite_1.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true));
-		composite_1.setLayout(new FillLayout());
+		composite_1 = new Composite(composite_15, SWT.NONE);
+		composite_1.setLayout(new RowLayout());
+		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		object = new Combo(composite_1, SWT.NONE);
+		final Composite composite_10 = new Composite(composite_1, SWT.NONE);
+		composite_10.setLayout(new RowLayout(SWT.VERTICAL));
 
-		function = new Combo(composite_1, SWT.NONE);
+		final Label objectLabel = new Label(composite_10, SWT.NONE);
+		objectLabel.setText("Object");
+
+		object = new Combo(composite_10, SWT.NONE);
+
+		final Composite composite_11 = new Composite(composite_1, SWT.NONE);
+		composite_11.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label functionLabel = new Label(composite_11, SWT.NONE);
+		functionLabel.setText("Function");
+
+		function = new Combo(composite_11, SWT.NONE);
 		function.setVisibleItemCount(15);
 
-		subfunction = new Combo(composite_1, SWT.NONE);
+		final Composite composite_12 = new Composite(composite_1, SWT.NONE);
+		composite_12.setLayout(new RowLayout(SWT.VERTICAL));
 
-		process = new Combo(composite_1, SWT.NONE);
+		final Label subfunctionLabel = new Label(composite_12, SWT.NONE);
+		subfunctionLabel.setText("Subfunction");
 
-		processNo = new Text(composite_1, SWT.BORDER);
+		subfunction = new Combo(composite_12, SWT.NONE);
+
+		final Composite composite_13 = new Composite(composite_1, SWT.NONE);
+		composite_13.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label processLabel = new Label(composite_13, SWT.NONE);
+		processLabel.setText("Process");
+
+		process = new Combo(composite_13, SWT.NONE);
+
+		final Composite composite_14 = new Composite(composite_1, SWT.NONE);
+		composite_14.setLayout(new RowLayout(SWT.VERTICAL));
+
+		final Label sequenceNoLabel = new Label(composite_14, SWT.NONE);
+		sequenceNoLabel.setText("Sequence No");
+
+		processNo = new Text(composite_14, SWT.BORDER);
+		final RowData rd_processNo = new RowData();
+		rd_processNo.width = 80;
+		processNo.setLayoutData(rd_processNo);
 		processNo.setTextLimit(2);
-		searchButton = new Button(composite_1, SWT.NONE);
+		composite_16 = new Composite(this, SWT.NONE);
+		final GridData gd_composite_16 = new GridData(SWT.CENTER, SWT.CENTER, true, true);
+		gd_composite_16.minimumWidth = 90;
+		composite_16.setLayoutData(gd_composite_16);
+		final RowLayout rowLayout_2 = new RowLayout();
+		rowLayout_2.spacing = 0;
+		rowLayout_2.marginTop = 0;
+		rowLayout_2.marginRight = 0;
+		rowLayout_2.marginLeft = 0;
+		rowLayout_2.marginBottom = 0;
+		composite_16.setLayout(rowLayout_2);
+		searchButton = new Button(composite_16, SWT.NONE);
+		final RowData rd_searchButton = new RowData();
+		rd_searchButton.width = 80;
+		searchButton.setLayoutData(rd_searchButton);
 		searchButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
