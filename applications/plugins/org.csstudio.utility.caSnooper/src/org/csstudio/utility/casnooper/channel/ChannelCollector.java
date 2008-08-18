@@ -7,15 +7,36 @@ import java.util.Set;
 
 
 /**
+ * Implementation of channel collection with 2 distinct Channel structures for holding 
+ * informations about broadcasts 
+ * 
  * @author rkosir
- *
  */
 public class ChannelCollector {
 	
+	/**
+	 * Variable to indicate which list should be used, if true,it will fill firstList
+	 */
 	private boolean first;
+	
+	/**
+	 * Structures for meessage colelctions
+	 */
 	private Channel firstList,secondList;
-	private int delay;
+	
+	/**
+	 * Timer delay for caluclation of frequency
+	 * 
+	 * TODO if headless will use dynamic delay,need to implement this
+	 */
+	private int delay = 30;
+	
+	/**
+	 * instance of this class for server and timerTask
+	 */
 	private static ChannelCollector instance;
+	
+	
 	private ChannelCollector(){
 	}
 
@@ -23,9 +44,9 @@ public class ChannelCollector {
 		if(instance == null){
 			instance = new ChannelCollector();
 		}
-		System.out.println("Somebody stole instance!");
 		return instance;
 	}
+	
 	/**
 	 * Adds new message to the map
 	 *  
@@ -55,7 +76,6 @@ public class ChannelCollector {
 			if(firstList !=null)
 				return firstList.getData();
 		}
-		System.out.println("no data? wtf");
 		return null;
 	}
 
@@ -89,9 +109,13 @@ public class ChannelCollector {
 		return statistics;
 	}
 
-	public void setMapToUse(boolean firstMap) {
-		first = firstMap;
-		if(firstMap)
+	/**
+	 * Change the list to which broadcasts will be stored
+	 * @param boolean list
+	 */
+	public void setMapToUse(boolean list) {
+		first = list;
+		if(list)
 			firstList = new Channel();
 		else
 			secondList = new Channel();

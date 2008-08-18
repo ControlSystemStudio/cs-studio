@@ -22,6 +22,7 @@
  package org.csstudio.utility.casnooper;
 
 import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.casnooper.channel.SnooperStringParser;
 import org.csstudio.utility.casnooper.channel.ChannelCollector;
 
@@ -34,8 +35,10 @@ public class GetTable implements IAction {
 		
 		channel = ChannelCollector.getInstance();
 		if(channel.getSnoops() == null){
-			return "empty mon!";
+			CentralLogger.getInstance().info(this,
+				"No data was captured"); 
+			return "";
 		}
-		return parser.parse(channel.getSnoops());
+		return parser.parse(channel.getStatistics(channel.getSnoops()),channel.getSnoops());
 	}
 }

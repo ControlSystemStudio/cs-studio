@@ -3,10 +3,10 @@ package org.csstudio.utility.caSnooperUi.parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 /**
  * Packs/unpacks ArrayList<DataStructure> to string<br>
  * Following format is used for each DataStructure:<BR>
+ *  <statistics>statistic data</statistics>\n<br>
  *  repeats\n<BR>
  * 	clientAddres\n<BR>
  *  channelName\n<BR>
@@ -28,37 +28,43 @@ public class SnooperStringParser {
 	private int tableId;
 	
 	/**
-	 * Converts the string to ArrayList<ChannelStructure>
+	 * Converts the string to Object[2]={String,ArrayList<ChannelStructure>}
 	 * 
 	 * @param String
-	 * @return ArrayList<ChannelStructure>
+	 * @return Object[]
 	 */
-	public ArrayList<ChannelStructure> unparse(String s){
+	public Object[] unparse(String s){
 		parsedList = new ArrayList<ChannelStructure>();
-		String[] unpacked = s.split("<endClass>ChannelStructure</endClass>\n");
-		for(int i=0;i<unpacked.length;i++){
-			String[] object = unpacked[i].split("\n");
-			if(object.length == 5){
-				repeats = Integer.parseInt(object[0]);
-				clientAddress = object[1];
-				channelName = object[2];
-				interval = Integer.parseInt(object[3]);
-				tableId = Integer.parseInt(object[4]);
-				tmpStruct = new ChannelStructure(repeats,clientAddress,channelName,interval,tableId);
-				parsedList.add(tmpStruct);
+		String[] statistics = s.split("</statistics>\n");
+		if(statistics.length == 2){
+			String[] unpacked = statistics[1].split("<endClass>ChannelStructure</endClass>\n");
+			for(int i=0;i<unpacked.length;i++){
+				String[] object = unpacked[i].split("\n");
+				if(object.length == 5){
+					repeats = Integer.parseInt(object[0]);
+					clientAddress = object[1];
+					channelName = object[2];
+					interval = Integer.parseInt(object[3]);
+					tableId = Integer.parseInt(object[4]);
+					tmpStruct = new ChannelStructure(repeats,clientAddress,channelName,interval,tableId);
+					parsedList.add(tmpStruct);
+				}
 			}
 		}
-		return parsedList;
+		return new Object[]{statistics[0].replace("<statistics>","Remote snooping results:\n"),parsedList};
 	}
 	
 	/**
 	 * Converts the ArrayList to String
+	 * @param string 
 	 * 
 	 * @param ArrayList<ChannelStructure>
 	 * @return String
 	 */
-	public String parse(ArrayList<ChannelStructure> list){
+	public String parse(String string, ArrayList<ChannelStructure> list){
 		StringBuilder sb = new StringBuilder();
+		if(string.length()>0)
+			sb.append("<statistics>"+string+"</statistics>\n");
 		if(list!=null){
 			for (Iterator<ChannelStructure> iterator = list.iterator(); iterator.hasNext();) {
 				ChannelStructure channelStructure = (ChannelStructure) iterator

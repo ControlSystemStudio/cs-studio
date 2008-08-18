@@ -165,9 +165,6 @@ public class SnooperView extends ViewPart{
 		Button stopSnooping = new Button(iocBar, SWT.PUSH);
 		stopSnooping.setText("Stop snooping");
 	    
-		Button loadExternalData = new Button(iocBar, SWT.PUSH);
-		loadExternalData.setText("Load external data");
-		
 		text = new Text(iocBar, SWT.MULTI | SWT.BORDER | SWT.WRAP |SWT.READ_ONLY );
 		
 		GridData gridData2 = new GridData(GridData.FILL_BOTH);
@@ -227,19 +224,6 @@ public class SnooperView extends ViewPart{
 			}
 		});
 		
-		loadExternalData.addSelectionListener(new SelectionListener(){
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				//not needed
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				if(snooperActive)
-					text.setText("Snooper must be in inactive state to load external data!");
-				
-//					processDataFromExternalSource();
-			}
-		});
 		// create the table viewer
 		createTableViewer(parent);
 		tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -352,14 +336,20 @@ public class SnooperView extends ViewPart{
 	public void setMessage(final Object param){
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
+				if(!snooperActive){
+				Object[] tmp;
 				SnooperStringParser p = new SnooperStringParser();
 				if(param instanceof String){
-					System.out.println("got data!");
-					tableViewer.setInput(p.unparse((String)param));
+					tmp = p.unparse((String)param);
+					tableViewer.setInput((ArrayList<ChannelStructure>)tmp[1]);
+					text.setText((String)tmp[0]);
 				}
 				else
 					CentralLogger.getInstance().error(this,
 							"Incorrect data format received!"); 
+				}
+				else
+					text.setText("Snooper must be stopped in order to load external data!");					
 			}
 		});
 	}
