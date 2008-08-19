@@ -22,13 +22,16 @@
 
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.StripChartModel;
 import org.csstudio.sds.components.ui.internal.figures.StripChartFigure;
-import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
+import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Edit part for the strip chart widget.
@@ -38,23 +41,46 @@ import org.eclipse.draw2d.IFigure;
 public final class StripChartEditPart extends AbstractChartEditPart {
 
 	/**
+	 * The maximum number of values that are recorded for a channel.
+	 */
+	private static final int MAX_NUMBER_OF_VALUES =  16000;
+
+	/**
+	 * The delay before the first value is sent to the figure, in milliseconds.
+	 */
+	private static final long FIRST_UPDATE_DELAY = 10000;
+	
+	/**
+	 * The current value of each channel.
+	 */
+	private double[] _currentValue;
+	
+	/**
+	 * The figure that is managed by this edit part.
+	 */
+	private StripChartFigure _figure;
+	
+	/**
+	 * The timer which runs the update at the specified interval.
+	 */
+	private Timer _updateTimer;
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
 		StripChartModel model = (StripChartModel) getWidgetModel();
 		int valuesPerDataSeries = numberOfValuesPerSeries(model);
-		StripChartFigure figure = new StripChartFigure(
-				model.numberOfDataSeries(), valuesPerDataSeries);
-		initializeCommonFigureProperties(figure, model);
-		initializeXAxisFigureProperties(figure, model);
-		// Note: the value properties are not initialized. This would cause
-		// the initial value that is drawn for each data series to be the static
-		// value of the property, which is probably not what the user wants.
-		
-		return figure;
+		_figure = new StripChartFigure(model.numberOfDataSeries(),
+				valuesPerDataSeries);
+		initializeCommonFigureProperties(_figure, model);
+		initializeXAxisFigureProperties(model);
+		initializeValueProperties(model);
+		initializeUpdateTask(model);
+		return _figure;
 	}
-	
+
 	/**
 	 * Returns the number of data values that are recorded for each data series.
 	 * 
@@ -63,19 +89,50 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 * @return the number of data values that are recorded.
 	 */
 	public int numberOfValuesPerSeries(final StripChartModel model) {
-		// TODO: constrain to a sensible maximum
-		return (int) Math.floor(model.getXAxisTimespan() / model.getUpdateInterval());
+		return Math.min(
+				(int) Math.floor(model.getXAxisTimespan() / model.getUpdateInterval()),
+				MAX_NUMBER_OF_VALUES);
 	}
 
 	/**
 	 * Initializes the x-axis properties of the figure.
 	 * 
-	 * @param figure the figure.
-	 * @param model the model.
+	 * @param model
+	 *            the model.
 	 */
-	private void initializeXAxisFigureProperties(final StripChartFigure figure,
-			final StripChartModel model) {
-		
+	private void initializeXAxisFigureProperties(final StripChartModel model) {
+		_figure.setXAxisRange(model.getXAxisTimespan(), 0);
+	}
+
+	/**
+	 * Initializes the current values.
+	 * 
+	 * @param model
+	 *            the model.
+	 */
+	private void initializeValueProperties(final StripChartModel model) {
+		_currentValue = new double[model.numberOfDataSeries()];
+		for (int i = 0; i < model.numberOfDataSeries(); i++) {
+			_currentValue[i] = model.getCurrentValue(i);
+		}
+		// Note: we don't forward the current value to the figure here. This
+		// would cause the initial (default) value to be plotted as a data
+		// point, which is not what we want.
+	}
+	
+	/**
+	 * Creates the update task if the display is in run mode.
+	 * 
+	 * @param model
+	 *            the model.
+	 */
+	private void initializeUpdateTask(final StripChartModel model) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			_updateTimer = new Timer(this + "-UpdateTimer", true);
+			long updateInterval = Math.round(model.getUpdateInterval() * 1000);
+			_updateTimer.scheduleAtFixedRate(new UpdateTask(),
+					FIRST_UPDATE_DELAY, updateInterval);
+		}
 	}
 
 	/**
@@ -85,6 +142,19 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	protected void registerPropertyChangeHandlers() {
 		registerCommonPropertyChangeHandlers();
 		registerDataPropertyChangeHandlers();
+	}
+	
+	/**
+	 * Sets the current value of the specified data series.
+	 * 
+	 * @param index
+	 *            the index of the data series.
+	 * @param value
+	 *            the current value.
+	 */
+	private synchronized void setCurrentValue(final int index,
+			final double value) {
+		_currentValue[index] = value;
 	}
 
 	/**
@@ -100,7 +170,9 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 
 			/**
 			 * Constructor.
-			 * @param index the index of the data array.
+			 * 
+			 * @param index
+			 *            the index of the data array.
 			 */
 			DataChangeHandler(final int index) {
 				_index = index;
@@ -111,10 +183,10 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 			 */
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				StripChartFigure figure = (StripChartFigure) refreshableFigure;
 				double value = (Double) newValue;
-				figure.setCurrentValue(_index, value);
-				return true;
+				StripChartEditPart.this.setCurrentValue(_index, value);
+				CentralLogger.getInstance().debug(this, "Received new value #" + _index + ": " + value);
+				return false;
 			}
 		}
 		
@@ -127,7 +199,9 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 
 			/**
 			 * Constructor.
-			 * @param index the index of the data array.
+			 * 
+			 * @param index
+			 *            the index of the data array.
 			 */
 			EnablePlotChangeHandler(final int index) {
 				_index = index;
@@ -151,6 +225,47 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 					new DataChangeHandler(i));
 			setPropertyChangeHandler(StripChartModel.valuePropertyId(i),
 					new EnablePlotChangeHandler(i));
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deactivate() {
+		if (_updateTimer != null) {
+			_updateTimer.cancel();
+		}
+		super.deactivate();
+	}
+	
+	/**
+	 * Task that forwards the current values of all channels to the figure.
+	 */
+	private class UpdateTask extends TimerTask {
+		
+		/**
+		 * Forwards the current values of all channels to the figure.
+		 */
+		@Override
+		public void run() {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					// Note: this is safe from deadlocks only under the
+					// assumption that no other thread ever holds the monitor
+					// lock of the enclosing StripChartEditorPart instance
+					// while waiting for the main thread (display thread). The
+					// display thread can wait for the StripChartEditorPart
+					// monitor lock both here as well is when calling the
+					// setCurrentValue method via the property change handler.
+					synchronized (StripChartEditPart.this) {
+						for (int i = 0; i < _currentValue.length; i++) {
+							_figure.setCurrentValue(i, _currentValue[i]);
+						}
+					}
+					_figure.repaint();
+				}
+			});
 		}
 	}
 

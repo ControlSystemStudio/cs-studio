@@ -29,9 +29,26 @@ package org.csstudio.sds.components.ui.internal.figures;
  */
 public final class StripChartFigure extends AbstractChartFigure {
 
+	/**
+	 * Array containing one buffer of values per channel.
+	 */
 	private RingBuffer[] _values;
 	
+	/**
+	 * The number of values to be recorded per channel. This is also the size
+	 * of each ring buffer.
+	 */
 	private int _valuesPerChannel;
+	
+	/**
+	 * The lower bound of the x-axis.
+	 */
+	private double _xAxisMinimum;
+	
+	/**
+	 * The upper bound of the x-axis.
+	 */
+	private double _xAxisMaximum;
 	
 	/**
 	 * Creates a new strip chart figure.
@@ -51,10 +68,25 @@ public final class StripChartFigure extends AbstractChartFigure {
 		}
 	}
 	
+	/**
+	 * Sets the x-axis range of this figure. Note that for a strip chart figure,
+	 * the minimum will usually be greater than the maximum because the axis
+	 * runs from right to left.
+	 * 
+	 * @param minimum
+	 *            the minimum value.
+	 * @param maximum
+	 *            the maximum value.
+	 */
+	public void setXAxisRange(final double minimum, final double maximum) {
+		_xAxisMinimum = minimum;
+		_xAxisMaximum = maximum;
+		xAxisRangeChanged();
+	}
+	
 	public void setCurrentValue(final int index, final double value) {
 		_values[index].addValue(value);
 		dataRangeChanged();
-		xAxisRangeChanged();
 	}
 	
 	/**
@@ -87,7 +119,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 */
 	@Override
 	protected double xAxisMaximum() {
-		return 0;
+		return _xAxisMaximum;
 	}
 
 	/**
@@ -95,7 +127,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 */
 	@Override
 	protected double xAxisMinimum() {
-		return _valuesPerChannel;
+		return _xAxisMinimum;
 	}
 	
 	/**
@@ -103,7 +135,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 * 
 	 * @author Joerg Rathlev
 	 */
-	private static final class RingBuffer {
+	private final class RingBuffer {
 		/**
 		 * The values stored in the buffer.
 		 */
@@ -149,13 +181,22 @@ public final class StripChartFigure extends AbstractChartFigure {
 		
 		/**
 		 * Processes the values in this buffer with the specified processor.
+		 * Values are processed in reverse, i.e., the latest value is processed
+		 * first and the oldest value is processed last.
 		 * 
 		 * @param processor
 		 *            the processor.
 		 */
 		private void processValues(final IDataPointProcessor processor) {
-			for (int i = 0; i < _size; i++) {
-				processor.processDataPoint(i, _values[i]);
+			int counter = 0;
+			int i = _nextWriteIndex - 1;
+			while (counter < _size) {
+				double xValue = Math.abs(_xAxisMaximum - _xAxisMinimum) * (((double) counter) / ((double) _valuesPerChannel));
+				processor.processDataPoint(xValue, _values[i]);
+				counter++;
+				if (--i < 0) {
+					i = _values.length - 1;
+				}
 			}
 		}
 	}
