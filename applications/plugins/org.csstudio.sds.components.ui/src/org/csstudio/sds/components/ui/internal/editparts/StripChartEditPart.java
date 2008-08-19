@@ -40,14 +40,9 @@ import org.eclipse.swt.widgets.Display;
 public final class StripChartEditPart extends AbstractChartEditPart {
 
 	/**
-	 * The maximum number of values that are recorded for a channel.
-	 */
-	private static final int MAX_NUMBER_OF_VALUES =  16000;
-
-	/**
 	 * The delay before the first value is sent to the figure, in milliseconds.
 	 */
-	private static final long FIRST_UPDATE_DELAY = 10000;
+	private static final long FIRST_UPDATE_DELAY = 2000;
 	
 	/**
 	 * The current value of each channel.
@@ -88,9 +83,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 * @return the number of data values that are recorded.
 	 */
 	public int numberOfValuesPerSeries(final StripChartModel model) {
-		return Math.min(
-				(int) Math.floor(model.getXAxisTimespan() / model.getUpdateInterval()),
-				MAX_NUMBER_OF_VALUES);
+		return (int) Math.floor(model.getXAxisTimespan() / model.getUpdateInterval());
 	}
 
 	/**
@@ -259,7 +252,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 					// setCurrentValue method via the property change handler.
 					synchronized (StripChartEditPart.this) {
 						for (int i = 0; i < _currentValue.length; i++) {
-							_figure.setCurrentValue(i, _currentValue[i]);
+							_figure.addValue(i, _currentValue[i]);
 						}
 					}
 					_figure.repaint();

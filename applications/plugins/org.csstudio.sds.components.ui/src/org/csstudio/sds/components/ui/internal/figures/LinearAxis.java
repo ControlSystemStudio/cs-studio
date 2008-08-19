@@ -105,8 +105,13 @@ final class LinearAxis implements IAxis {
 		// major tickmarks.
 		
 		TickCalculator calc = new TickCalculator();
-		calc.setMinimumValue(_dataLower);
-		calc.setMaximumValue(_dataUpper);
+		if (_dataLower < _dataUpper) {
+			calc.setMinimumValue(_dataLower);
+			calc.setMaximumValue(_dataUpper);
+		} else {
+			calc.setMinimumValue(_dataUpper);
+			calc.setMaximumValue(_dataLower);
+		}
 		calc.setMaximumTickCount(_displaySize / minMajorDistance);
 		return calc.calculateTicks();
 	}
@@ -121,8 +126,13 @@ final class LinearAxis implements IAxis {
 		// major tickmarks.
 		
 		TickCalculator calc = new TickCalculator();
-		calc.setMinimumValue(_dataLower);
-		calc.setMaximumValue(_dataUpper);
+		if (_dataLower < _dataUpper) {
+			calc.setMinimumValue(_dataLower);
+			calc.setMaximumValue(_dataUpper);
+		} else {
+			calc.setMinimumValue(_dataUpper);
+			calc.setMaximumValue(_dataLower);
+		}
 		calc.setMaximumTickCount(_displaySize / minMajorDistance);
 		calc.setIntegerOnly(true);
 		return calc.calculateTicks();

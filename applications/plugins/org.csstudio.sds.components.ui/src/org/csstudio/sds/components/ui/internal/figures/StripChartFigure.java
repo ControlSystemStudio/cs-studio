@@ -30,13 +30,19 @@ package org.csstudio.sds.components.ui.internal.figures;
 public final class StripChartFigure extends AbstractChartFigure {
 
 	/**
+	 * The maximum number of values that are recorded for a channel.
+	 */
+	private static final int MAX_BUFFER_SIZE =  16000;
+
+	/**
 	 * Array containing one buffer of values per channel.
 	 */
 	private RingBuffer[] _values;
 	
 	/**
-	 * The number of values to be recorded per channel. This is also the size
-	 * of each ring buffer.
+	 * The number of values to be recorded per channel. Note that this will be
+	 * larger than the capacity of each ring buffer if this value exceeds
+	 * {@link #MAX_BUFFER_SIZE}.
 	 */
 	private int _valuesPerChannel;
 	
@@ -49,6 +55,16 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 * The upper bound of the x-axis.
 	 */
 	private double _xAxisMaximum;
+	
+	/**
+	 * The greatest data value.
+	 */
+	private double _greatestDataValue;
+	
+	/**
+	 * The lowest data value.
+	 */
+	private double _lowestDataValue;
 	
 	/**
 	 * Creates a new strip chart figure.
@@ -64,7 +80,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 		_valuesPerChannel = valuesPerChannel;
 		_values = new RingBuffer[numberOfChannels];
 		for (int i = 0; i < _values.length; i++) {
-			_values[i] = new RingBuffer(valuesPerChannel);
+			_values[i] = new RingBuffer(Math.min(valuesPerChannel, MAX_BUFFER_SIZE));
 		}
 	}
 	
@@ -84,11 +100,26 @@ public final class StripChartFigure extends AbstractChartFigure {
 		xAxisRangeChanged();
 	}
 	
-	public void setCurrentValue(final int index, final double value) {
-		// FIXME: this is not thread-safe
+	/**
+	 * Adds the next value for the data series with the specified index to the
+	 * plot. This figure does not itself keep track of the exact times at which
+	 * this method is called. It is assumed that this method is called by the
+	 * edit part at a regular interval.
+	 * 
+	 * @param index
+	 *            the data index.
+	 * @param value
+	 *            the current value.
+	 */
+	public synchronized void addValue(final int index, final double value) {
 		_values[index].addValue(value);
-		// FIXME: call only when range has actually changed
-		dataRangeChanged();
+		if (value > _greatestDataValue) {
+			_greatestDataValue = value;
+			dataRangeChanged();
+		} else if (value < _lowestDataValue) {
+			_lowestDataValue = value;
+			dataRangeChanged();
+		}
 	}
 	
 	/**
@@ -105,7 +136,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 */
 	@Override
 	protected double greatestDataValue() {
-		return 100;
+		return _greatestDataValue;
 	}
 
 	/**
@@ -113,7 +144,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 */
 	@Override
 	protected double lowestDataValue() {
-		return 0;
+		return _lowestDataValue;
 	}
 
 	/**
@@ -171,7 +202,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 		 * @param value
 		 *            the value.
 		 */
-		private void addValue(final double value) {
+		private synchronized void addValue(final double value) {
 			_values[_nextWriteIndex++] = value;
 			if (_size < _values.length) {
 				_size++;
@@ -189,7 +220,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 		 * @param processor
 		 *            the processor.
 		 */
-		private void processValues(final IDataPointProcessor processor) {
+		private synchronized void processValues(final IDataPointProcessor processor) {
 			int counter = 0;
 			int i = _nextWriteIndex - 1;
 			while (counter < _size) {

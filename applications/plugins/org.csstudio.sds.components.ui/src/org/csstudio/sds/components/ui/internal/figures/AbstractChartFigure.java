@@ -392,6 +392,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * changed.
 	 */
 	protected final void xAxisRangeChanged() {
+		_logger.debug("xAgisRangeChanged(): " + xAxisMinimum() + ", " + xAxisMaximum());
 		_xAxis.setDataRange(xAxisMinimum(), xAxisMaximum());
 		refreshConstraints();
 	}
