@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.csstudio.utility.casnooper.Activator;
+import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 
 /**
  * Implementation of channel collection with 2 distinct Channel structures for holding 
@@ -38,6 +43,9 @@ public class ChannelCollector {
 	
 	
 	private ChannelCollector(){
+		IPreferencesService prefs = Platform.getPreferencesService();
+		Integer.parseInt(prefs.getString(Activator.getDefault().getPluginId(),
+	    		PreferenceConstants.UPDATE_TIME, "", null));
 	}
 
 	public static synchronized ChannelCollector getInstance(){

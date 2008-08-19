@@ -236,8 +236,9 @@ public class SnooperServer {
 			System.out.println("Running server...");
 			
 			// start time based processor
-			
-			timerProcessor = new TimerProcessor( this, 2000, 30000);
+			IPreferencesService prefs = Platform.getPreferencesService();
+			timerProcessor = new TimerProcessor( this, 2000, Integer.parseInt(prefs.getString(Activator.getDefault().getPluginId(),
+		    		PreferenceConstants.UPDATE_TIME, "", null)));
 			
 			System.out.println("Starting TimerProcessor...");
 
