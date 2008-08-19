@@ -7,7 +7,8 @@ Bundle-Activator: org.csstudio.utility.caSnooperUi.ui.ChangeView.Plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.ui,
- org.csstudio.platform.libs.epics
+ org.csstudio.platform.libs.epics,
+ org.eclipse.help
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Export-Package: org.csstudio.utility.caSnooperUi.parser,

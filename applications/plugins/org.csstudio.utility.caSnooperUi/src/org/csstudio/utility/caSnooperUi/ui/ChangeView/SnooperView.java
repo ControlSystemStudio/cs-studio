@@ -337,16 +337,21 @@ public class SnooperView extends ViewPart{
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if(!snooperActive){
-				Object[] tmp;
-				SnooperStringParser p = new SnooperStringParser();
-				if(param instanceof String){
-					tmp = p.unparse((String)param);
-					tableViewer.setInput((ArrayList<ChannelStructure>)tmp[1]);
-					text.setText((String)tmp[0]);
-				}
-				else
-					CentralLogger.getInstance().error(this,
-							"Incorrect data format received!"); 
+					if(param.equals("")){
+						text.setText("No snoops received");
+					}
+					else{
+						Object[] tmp;
+						SnooperStringParser p = new SnooperStringParser();
+						if(param instanceof String){
+							tmp = p.unparse((String)param);
+							tableViewer.setInput((ArrayList<ChannelStructure>)tmp[1]);
+							text.setText((String)tmp[0]);
+						}
+						else
+							CentralLogger.getInstance().error(this,
+									"Incorrect data format received!"); 
+					}
 				}
 				else
 					text.setText("Snooper must be stopped in order to load external data!");					
