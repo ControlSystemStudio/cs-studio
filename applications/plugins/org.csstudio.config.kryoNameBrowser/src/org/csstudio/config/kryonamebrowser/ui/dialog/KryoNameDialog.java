@@ -29,6 +29,10 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class KryoNameDialog extends TitleAreaDialog {
 
+	public boolean isCallUpdate() {
+		return callUpdate;
+	}
+
 	// package private
 	Text desc;
 	Combo process;
@@ -47,6 +51,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 	KryoNameBrowserLogic logic;
 	Label nameLabel;
 	UIModelBridge bridge;
+	boolean callUpdate;
 
 	public KryoNameDialog(Shell parentShell) {
 		super(parentShell);
@@ -79,7 +84,6 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		final GridData gd_nameLabel = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		nameLabel.setLayoutData(gd_nameLabel);
-		nameLabel.setText("123");
 		// nameLabel.setFont(SWTResourceManager.getFont("", 20, SWT.NONE));
 
 		final Group plants = new Group(parent, SWT.NONE);
@@ -105,7 +109,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		label1.setLayoutData(new GridData());
 		label1.setText("Plant");
 
-		plant = new Combo(plants, SWT.NONE);
+		plant = new Combo(plants, SWT.READ_ONLY);
 		final GridData gd_plant = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		gd_plant.widthHint = 200;
@@ -116,7 +120,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		label2.setLayoutData(new GridData());
 		label2.setText("Sub plant 1");
 
-		subplant1 = new Combo(plants, SWT.NONE);
+		subplant1 = new Combo(plants, SWT.READ_ONLY);
 		final GridData gd_subplant1 = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		subplant1.setLayoutData(gd_subplant1);
@@ -129,7 +133,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		subPlant2Label.setLayoutData(new GridData());
 		subPlant2Label.setText("Sub plant 2");
 
-		subplant2 = new Combo(plants, SWT.NONE);
+		subplant2 = new Combo(plants, SWT.READ_ONLY);
 		final GridData gd_subplant2 = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		subplant2.setLayoutData(gd_subplant2);
@@ -143,7 +147,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		subPlant3Label.setLayoutData(new GridData());
 		subPlant3Label.setText("Sub plant 3");
 
-		subplant3 = new Combo(plants, SWT.NONE);
+		subplant3 = new Combo(plants, SWT.READ_ONLY);
 		final GridData gd_subplant3 = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		subplant3.setLayoutData(gd_subplant3);
@@ -163,7 +167,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		final Label objectLabel = new Label(objects, SWT.NONE);
 		objectLabel.setText("Object");
 
-		object = new Combo(objects, SWT.NONE);
+		object = new Combo(objects, SWT.READ_ONLY);
 		final GridData gd_object = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		object.setLayoutData(gd_object);
@@ -171,7 +175,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		final Label functionLabel = new Label(objects, SWT.NONE);
 		functionLabel.setText("Function");
 
-		function = new Combo(objects, SWT.NONE);
+		function = new Combo(objects, SWT.READ_ONLY);
 		final GridData gd_function = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		function.setLayoutData(gd_function);
@@ -179,7 +183,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		final Label subFunctionLabel = new Label(objects, SWT.NONE);
 		subFunctionLabel.setText("Sub function");
 
-		subfunction = new Combo(objects, SWT.NONE);
+		subfunction = new Combo(objects, SWT.READ_ONLY);
 		final GridData gd_subfunction = new GridData(SWT.FILL, SWT.CENTER,
 				true, false);
 		subfunction.setLayoutData(gd_subfunction);
@@ -199,7 +203,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		final Label processLabel = new Label(proc, SWT.NONE);
 		processLabel.setText("Process");
 
-		process = new Combo(proc, SWT.NONE);
+		process = new Combo(proc, SWT.READ_ONLY);
 		final GridData gd_process = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		process.setLayoutData(gd_process);
@@ -267,9 +271,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		closeButton.setFont(JFaceResources.getDialogFont());
 		closeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-
 				close();
-
 			}
 		});
 	}

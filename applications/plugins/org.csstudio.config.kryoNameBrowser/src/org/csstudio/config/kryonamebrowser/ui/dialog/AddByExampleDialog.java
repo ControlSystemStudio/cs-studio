@@ -44,11 +44,12 @@ public class AddByExampleDialog extends KryoNameDialog {
 				if (!bridge.validate()) {
 					setErrorMessage("Please fill in correctly all the required fields");
 				} else {
+					callUpdate = true;
 					setErrorMessage(null);
 					try {
 						logic.add(bridge.calculateNewEntrty());
 						MessageDialog.openInformation(shell, "Info",
-						"Operation was successful");
+								"Operation was successful");
 					} catch (Exception e1) {
 						MessageDialog.openError(getShell(), "Error", e1
 								.getMessage());

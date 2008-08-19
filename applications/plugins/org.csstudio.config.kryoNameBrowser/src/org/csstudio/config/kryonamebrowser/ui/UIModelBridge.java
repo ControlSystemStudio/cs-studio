@@ -542,10 +542,18 @@ public class UIModelBridge {
 	public boolean validate() {
 		// validate plants and objects and process
 
-		Combo[] plants = new Combo[] { plant, subplant1, subplant2, subplant3 };
-
+		// only top level plant has to be selected
 		if (plant.isEnabled() && getEntry(plant) == null) {
 			return false;
+		}
+
+		// objects must all be provided
+		Combo[] objects = new Combo[] { object, function, subfunction };
+
+		for (Combo combo : objects) {
+			if (combo.isEnabled() && getEntry(combo) == null) {
+				return false;
+			}
 		}
 
 		Text[] text = new Text[] { plantNo, subplant1No, subplant2No,
@@ -556,6 +564,7 @@ public class UIModelBridge {
 		}
 
 		int i = 0;
+		Combo[] plants = new Combo[] { plant, subplant1, subplant2, subplant3 };
 		for (Combo combo : plants) {
 
 			KryoPlantEntry entry = (KryoPlantEntry) getEntry(combo);

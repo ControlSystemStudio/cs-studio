@@ -17,6 +17,7 @@ public class EditNameDialog extends KryoNameDialog {
 
 	private final KryoNameResolved resolved;
 	private final Shell shell;
+	
 
 	public EditNameDialog(Shell parentShell, KryoNameResolved resolved) {
 		super(parentShell);
@@ -58,11 +59,13 @@ public class EditNameDialog extends KryoNameDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+			
 				try {
 					KryoNameEntry update = new KryoNameEntry();
 					update.setId(resolved.getId());
 					update.setLabel(desc.getText());
 					logic.updateLabel(update);
+					callUpdate = true;
 					MessageDialog.openInformation(shell, "Info",
 							"Operation was successful");
 				} catch (Exception e1) {

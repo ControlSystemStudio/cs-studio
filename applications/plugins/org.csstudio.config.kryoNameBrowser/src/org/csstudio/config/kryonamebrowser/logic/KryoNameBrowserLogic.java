@@ -170,6 +170,19 @@ public class KryoNameBrowserLogic {
 		return isUsed ? nameQuery.toString() : "";
 	}
 
+	public List<KryoNameResolved> search(String searchExpression)
+			throws SQLException {
+
+		StringBuffer selectQuery = new StringBuffer(
+				"SELECT IO_NAME_ID , IO_NAME , PLANT_ID , OBJECT_ID , CRYO_PROCESS_ID , SEQ_KRYO_NUMBER , KRYO_NAME_LABEL FROM ")
+				.append(TableNames.NAMES_TABLE);
+
+		selectQuery.append("  WHERE  io_name like '").append(searchExpression)
+				.append("'");
+
+		return searchSQL(selectQuery.toString());
+	}
+
 	/**
 	 * List of all {@link KryoNameResolved} which are subsets of the example.
 	 * 
@@ -193,6 +206,13 @@ public class KryoNameBrowserLogic {
 					nameQuery.toString()).append("'");
 		}
 
+		return searchSQL(selectQuery.toString());
+
+	}
+
+	public synchronized List<KryoNameResolved> searchSQL(String sql)
+			throws SQLException {
+
 		ArrayList<KryoNameResolved> results = new ArrayList<KryoNameResolved>();
 		Statement statement = null;
 		ResultSet resultSet = null;
@@ -200,7 +220,7 @@ public class KryoNameBrowserLogic {
 			statement = database.getConnection().createStatement();
 			statement.setFetchSize(ROW_FETCH_SIZE);
 
-			resultSet = statement.executeQuery(selectQuery.toString());
+			resultSet = statement.executeQuery(sql);
 
 			HashMap<Integer, KryoObjectEntry> objectCache = new HashMap<Integer, KryoObjectEntry>();
 			HashMap<Integer, KryoPlantEntry> plantCache = new HashMap<Integer, KryoPlantEntry>();
@@ -431,10 +451,17 @@ public class KryoNameBrowserLogic {
 		// by this point the process and seq number are valid
 
 		// validate objects
+
 		int colon = name.indexOf(":");
 
 		if (colon < 0) {
-			throw new IllegalArgumentException("Invalid name, missing colon");
+			return false;
+		}
+
+		// must be lowest level object
+
+		if (!isLowestLevelObject(newEntry.getObjectId())) {
+			return false;
 		}
 
 		String objectPart = name.substring(name.indexOf(":") + 1,
@@ -566,6 +593,22 @@ public class KryoNameBrowserLogic {
 		} finally {
 			statement.close();
 		}
+
+	}
+
+	private boolean isLowestLevelObject(int id) throws SQLException {
+		Statement statement = database.getConnection().createStatement();
+		boolean next = false;
+		try {
+			next = statement.executeQuery(
+					"select OBJECT_NAME from NSB_OBJECT where OBJECT_PARENT='"
+							+ id + "'").next();
+
+		} finally {
+			statement.close();
+		}
+
+		return !next;
 
 	}
 

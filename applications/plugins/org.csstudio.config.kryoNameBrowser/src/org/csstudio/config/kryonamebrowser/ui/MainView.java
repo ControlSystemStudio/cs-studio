@@ -1,9 +1,16 @@
 package org.csstudio.config.kryonamebrowser.ui;
 
 import java.sql.SQLException;
+import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import org.apache.poi.util.StringUtil;
 import org.csstudio.config.kryonamebrowser.config.OracleSettings;
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
+import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
+import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
+import org.csstudio.config.kryonamebrowser.model.resolved.KryoPlantResolved;
 import org.csstudio.config.kryonamebrowser.ui.filter.FilterComposite;
 import org.csstudio.config.kryonamebrowser.ui.handler.DeleteCommand;
 import org.csstudio.config.kryonamebrowser.ui.handler.EditCommand;
@@ -12,11 +19,17 @@ import org.csstudio.config.kryonamebrowser.ui.provider.KryoNameLabelProvider;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -25,6 +38,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+
+import com.sun.org.apache.bcel.internal.generic.CPInstruction;
 
 /**
  * View for the filter and table of names.
@@ -204,7 +219,8 @@ public class MainView extends ViewPart {
 						throw new RuntimeException("Delete command not found");
 					}
 				}
-				if (table.getSelectionCount() == 1 && e.character == SWT.CR) {
+				if (table.getSelectionCount() == 1
+						&& (e.character == SWT.CR || e.character == SWT.KEYPAD_CR)) {
 
 					try {
 						handlerService.executeCommand(EditCommand.ID, null);
@@ -230,6 +246,145 @@ public class MainView extends ViewPart {
 
 		});
 
+		TableColumn[] columns = table.getColumns();
+		for (int i = 0; i < columns.length; i++) {
+			TableColumn column = columns[i];
+			final int colIndex = i;
+
+			column.addSelectionListener(new SelectionAdapter() {
+
+				boolean asc = true;
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					viewer.setComparator(new MyViewComparator(colIndex, asc));
+					asc = !asc;
+				}
+			});
+		}
+
+	}
+
+	private static class MyViewComparator extends ViewerComparator {
+
+		private final int column;
+		private final int sortOrderMultiplyer;
+
+		public MyViewComparator(int column, boolean asc) {
+			super();
+			this.column = column;
+			if (asc) {
+				sortOrderMultiplyer = 1;
+			} else {
+				sortOrderMultiplyer = -1;
+			}
+		}
+
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+
+			KryoNameResolved first = (KryoNameResolved) e1;
+			KryoNameResolved second = (KryoNameResolved) e2;
+
+			switch (column) {
+			case 0:
+				return sortOrderMultiplyer
+						* first.getName().compareTo(second.getName());
+			case 1:
+				return sortOrderMultiplyer * comparePlants(first, second, 0);
+			case 2:
+				return sortOrderMultiplyer * comparePlantsNo(first, second, 0);
+			case 3:
+				return sortOrderMultiplyer * comparePlants(first, second, 1);
+			case 4:
+				return sortOrderMultiplyer * comparePlantsNo(first, second, 1);
+			case 5:
+				return sortOrderMultiplyer * comparePlants(first, second, 2);
+			case 6:
+				return sortOrderMultiplyer * comparePlantsNo(first, second, 2);
+			case 7:
+				return sortOrderMultiplyer * comparePlants(first, second, 3);
+			case 8:
+				return sortOrderMultiplyer * comparePlantsNo(first, second, 3);
+			case 9:
+				return sortOrderMultiplyer * compareObjects(first, second, 0);
+			case 10:
+				return sortOrderMultiplyer * compareObjects(first, second, 1);
+			case 11:
+				return sortOrderMultiplyer * compareObjects(first, second, 2);
+			case 12:
+				return sortOrderMultiplyer
+						* first.getProcess().getName().compareTo(
+								second.getProcess().getName());
+			case 13:
+				return sortOrderMultiplyer
+						* Double.compare(first.getSeqKryoNumber(), second
+								.getSeqKryoNumber());
+			case 14:
+				return sortOrderMultiplyer
+						* String.CASE_INSENSITIVE_ORDER.compare(first
+								.getLabel(), second.getLabel());
+			default:
+				break;
+			}
+
+			return 0;
+
+		}
+
+		private int compareObjects(KryoNameResolved first,
+				KryoNameResolved second, int depth) {
+
+			List<KryoObjectEntry> firstObjects = first.getObjects();
+			List<KryoObjectEntry> secondObjects = second.getObjects();
+
+			if (depth >= firstObjects.size()) {
+				return -1;
+			}
+			if (depth >= secondObjects.size()) {
+				return 1;
+			}
+
+			return firstObjects.get(depth).getName().compareTo(
+					secondObjects.get(depth).getName());
+
+		}
+
+		private int comparePlants(KryoNameResolved first,
+				KryoNameResolved second, int depth) {
+
+			List<KryoPlantResolved> firstPlants = first.getPlants();
+			List<KryoPlantResolved> secondPlants = second.getPlants();
+
+			if (depth >= firstPlants.size()) {
+				return -1;
+			}
+			if (depth >= secondPlants.size()) {
+				return 1;
+			}
+
+			return firstPlants.get(depth).getName().compareTo(
+					secondPlants.get(depth).getName());
+
+		}
+
+		private int comparePlantsNo(KryoNameResolved first,
+				KryoNameResolved second, int depth) {
+
+			List<KryoPlantResolved> firstPlants = first.getPlants();
+			List<KryoPlantResolved> secondPlants = second.getPlants();
+
+			if (depth >= firstPlants.size()) {
+				return -1;
+			}
+			if (depth >= secondPlants.size()) {
+				return 1;
+			}
+
+			return Double.compare(firstPlants.get(depth).getNumberOfPlants(),
+					secondPlants.get(depth).getNumberOfPlants());
+
+		}
 	}
 
 	@Override

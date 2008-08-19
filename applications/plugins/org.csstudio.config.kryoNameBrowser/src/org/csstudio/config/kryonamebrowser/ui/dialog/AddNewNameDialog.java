@@ -31,10 +31,11 @@ public class AddNewNameDialog extends KryoNameDialog {
 					setErrorMessage("Please fill in correctly all the required fields");
 				} else {
 					setErrorMessage(null);
+					callUpdate = true;
 					try {
 						logic.add(bridge.calculateNewEntrty());
 						MessageDialog.openInformation(shell, "Info",
-						"Operation was successful");
+								"Operation was successful");
 					} catch (Exception e1) {
 						MessageDialog.openError(getShell(), "Error", e1
 								.getMessage());
