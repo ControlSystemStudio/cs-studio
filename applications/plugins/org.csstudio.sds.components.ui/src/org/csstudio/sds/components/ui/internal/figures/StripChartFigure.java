@@ -85,7 +85,9 @@ public final class StripChartFigure extends AbstractChartFigure {
 	}
 	
 	public void setCurrentValue(final int index, final double value) {
+		// FIXME: this is not thread-safe
 		_values[index].addValue(value);
+		// FIXME: call only when range has actually changed
 		dataRangeChanged();
 	}
 	

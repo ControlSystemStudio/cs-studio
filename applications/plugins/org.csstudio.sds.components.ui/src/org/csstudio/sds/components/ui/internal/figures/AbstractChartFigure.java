@@ -166,6 +166,11 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * The plot colors for the data arrays.
 	 */
 	private Color[] _plotColor;
+	
+	/**
+	 * Whether the plot is enabled.
+	 */
+	private boolean[] _plotEnabled;
 
 	/**
 	 * Whether this figure is drawn as a line chart.
@@ -265,6 +270,8 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 
 		_plotColor = new Color[_numberOfDataSeries];
 		Arrays.fill(_plotColor, ColorConstants.black);
+		_plotEnabled = new boolean[_numberOfDataSeries];
+		Arrays.fill(_plotEnabled, true);
 		
 		setLayoutManager(new XYLayout());
 		createSubfigures();
@@ -385,7 +392,6 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * changed.
 	 */
 	protected final void xAxisRangeChanged() {
-		_logger.debug("xAxisRangeChanged() called. Setting range to [" + xAxisMinimum() + "," + xAxisMaximum() + "]");
 		_xAxis.setDataRange(xAxisMinimum(), xAxisMaximum());
 		refreshConstraints();
 	}
@@ -396,10 +402,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * changed.
 	 */
 	protected final void dataRangeChanged() {
-		_logger.debug("dataRangeChanged() called.");
 		if (_autoscale) {
-			_logger.debug("dataRangeChanged(): Autoscale is active, setting range to "
-					+ "[" + lowestDataValue() + "," + greatestDataValue() + "]");
 			_yAxis.setDataRange(lowestDataValue(), greatestDataValue());
 			refreshConstraints();
 		}
@@ -557,7 +560,6 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 *            the new scaling. 0 = linear, 1 = logarithmic.
 	 */
 	public final void setYAxisScaling(final int scaling) {
-		_logger.debug("setYAxisScaling called with scaling=" + scaling);
 		switch (scaling) {
 		case 0:
 		default:
@@ -639,11 +641,8 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * 				The max value
 	 */
 	public final void setMax(final double max) {
-		_logger.debug("setMax called with max=" + max);
 		_propertyMax = max;
 		if (!_autoscale) {
-			_logger.debug("setMax: Autoscale is disabled, setting y-axis range to "
-					+ "[" + _propertyMin + "," + _propertyMax + "]");
 			_yAxis.setDataRange(_propertyMin, _propertyMax);
 			this.refreshConstraints();
 		}
@@ -655,11 +654,8 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * 				The min value
 	 */
 	public final void setMin(final double min) {
-		_logger.debug("setMin called with min=" + min);
 		_propertyMin = min;
 		if (!_autoscale) {
-			_logger.debug("setMin: Autoscale is disabled, setting y-axis range to "
-					+ "[" + _propertyMin + "," + _propertyMax + "]");
 			_yAxis.setDataRange(_propertyMin, _propertyMax);
 			this.refreshConstraints();
 		}
@@ -671,15 +667,10 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * 				True if it should be automatically scaled, false otherwise
 	 */
 	public final void setAutoScale(final boolean autoscale) {
-		_logger.debug("setAutoscale called with autoscale=" + autoscale);
 		_autoscale = autoscale;
 		if (!_autoscale) {
-			_logger.debug("setAutoscale: setting y-axis range to "
-					+ "[" + _propertyMin + "," + _propertyMax + "]");
 			_yAxis.setDataRange(_propertyMin, _propertyMax);
 		} else {
-			_logger.debug("setAutoscale: setting y-axis range to "
-					+ "[" + lowestDataValue() + "," + greatestDataValue() + "]");
 			_yAxis.setDataRange(lowestDataValue(), greatestDataValue());
 		}
 		this.refreshConstraints();
@@ -723,6 +714,24 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 					"invalid index: " + index);
 		}
 		_plotColor[index] = CustomMediaFactory.getInstance().getColor(color);
+	}
+	
+	/**
+	 * Enables or disables the plot with the specified index.
+	 * 
+	 * @param index
+	 *            the data index. This must be a positive integer or zero, and
+	 *            smaller than the number of data arrays specified in the
+	 *            constructor of this figure.
+	 * @param enabled
+	 *            whether the plot should be enabled.
+	 */
+	public final void setPlotEnabled(final int index, final boolean enabled) {
+		if (index < 0 || index >= _numberOfDataSeries) {
+			throw new IndexOutOfBoundsException(
+					"invalid index: " + index);
+		}
+		_plotEnabled[index] = enabled;
 	}
 
 	/**
@@ -1190,6 +1199,10 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 					figureBounds.x + figureBounds.width, figureBounds.bottom() - 1);
 			
 			for (int i = 0; i < _numberOfDataSeries; i++) {
+				if (!_plotEnabled[i]) {
+					continue;
+				}
+				
 				// TODO: the points don't actually have to be recalculated everytime the plot
 				// is redrawn -- only if the data points have changed or if the size of the
 				// plot has changed.

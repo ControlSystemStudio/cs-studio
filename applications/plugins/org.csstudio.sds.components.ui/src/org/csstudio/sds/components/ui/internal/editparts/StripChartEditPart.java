@@ -25,7 +25,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.StripChartModel;
 import org.csstudio.sds.components.ui.internal.figures.StripChartFigure;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
@@ -113,11 +112,12 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	private void initializeValueProperties(final StripChartModel model) {
 		_currentValue = new double[model.numberOfDataSeries()];
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
+			// Note: we don't forward the current value to the figure here. This
+			// would cause the initial (default) value to be plotted as a data
+			// point, which is not what we want.
 			_currentValue[i] = model.getCurrentValue(i);
+			_figure.setPlotEnabled(i, model.isPlotEnabled(i));
 		}
-		// Note: we don't forward the current value to the figure here. This
-		// would cause the initial (default) value to be plotted as a data
-		// point, which is not what we want.
 	}
 	
 	/**
@@ -185,7 +185,6 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 					final Object newValue, final IFigure refreshableFigure) {
 				double value = (Double) newValue;
 				StripChartEditPart.this.setCurrentValue(_index, value);
-				CentralLogger.getInstance().debug(this, "Received new value #" + _index + ": " + value);
 				return false;
 			}
 		}
@@ -214,7 +213,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 					final Object newValue, final IFigure refreshableFigure) {
 				StripChartFigure figure = (StripChartFigure) refreshableFigure;
 				boolean enabled = (Boolean) newValue;
-				// TODO
+				figure.setPlotEnabled(_index, enabled);
 				return true;
 			}
 		}
