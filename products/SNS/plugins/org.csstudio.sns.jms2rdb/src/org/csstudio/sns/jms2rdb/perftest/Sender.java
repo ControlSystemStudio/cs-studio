@@ -97,7 +97,7 @@ public class Sender implements ExceptionListener, Runnable
         ex.printStackTrace();
     }
 
-    /*TODO: descr */
+    /** @return Number of messages sent */
     public int getMessageCount()
     {
         return count;

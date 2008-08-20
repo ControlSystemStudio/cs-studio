@@ -43,5 +43,8 @@ abstract public class AbstractServlet extends HttpServlet
         }
     }
 
+    /** Needs to be implemented by derived class to add HTML content
+     *  @param html HTMLWriter to which to add HTML content
+     */
     abstract protected void fillBody(HTMLWriter html);
 }

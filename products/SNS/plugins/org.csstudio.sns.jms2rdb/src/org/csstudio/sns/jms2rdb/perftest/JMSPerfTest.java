@@ -17,6 +17,7 @@ import org.junit.Test;
  *  the receiver will miss some initial or final messages.
  *  <p>
  *  Test with laptop to srv02 and back: about 1000 msg/sec.
+ *  Test with new imac to srv02 and back: about 4000 msg/sec.
  *  
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
@@ -34,7 +35,7 @@ public class JMSPerfTest
     /** Test runtime */
     final private static int SECONDS = 30;
 
-    /** TODO doesn't work */
+    /** Simple read/write performance test that counts log message throughput */
     @Test
     public void perfTest() throws Exception
     {
@@ -44,9 +45,10 @@ public class JMSPerfTest
         
         // Create Receiver, then Sender
         final Connection connection = JMSConnectionFactory.connect(URL);
-        
-        final Sender sender = new Sender(connection, TOPIC);
         final Receiver receiver = new Receiver(connection, TOPIC);
+        // Wait a little to allow receiver to set up
+        Thread.sleep(5 * 1000);
+        final Sender sender = new Sender(connection, TOPIC);
 
         // Run for some time
         System.out.println("Runtime: " + SECONDS + " seconds");

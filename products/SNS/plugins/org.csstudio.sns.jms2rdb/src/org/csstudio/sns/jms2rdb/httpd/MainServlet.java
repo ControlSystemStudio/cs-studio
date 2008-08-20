@@ -15,18 +15,17 @@ import org.csstudio.sns.jms2rdb.LogClientThread;
 @SuppressWarnings("nls")
 public class MainServlet extends AbstractServlet
 {
-   
+    /** Required by Serialize interface */
     private static final long serialVersionUID = 1L;
     
-    final LogClientThread log_client_thread;
+    final private LogClientThread log_client_thread;
 
     public MainServlet(final LogClientThread log_client_thread)
     {
         this.log_client_thread = log_client_thread;
     }
-
     
-    /** TODO: descr */
+    /** Create status page */
     @SuppressWarnings("unchecked")
 	@Override
     protected void fillBody(final HTMLWriter html)

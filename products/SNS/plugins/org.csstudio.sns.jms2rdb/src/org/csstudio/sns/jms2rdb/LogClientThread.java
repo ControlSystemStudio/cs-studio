@@ -77,7 +77,7 @@ public class LogClientThread extends Thread
      *  @param jms_url JMS server URL
      *  @param jms_topic JMS topic
      *  @param rdb_url RDB server URL
-     *  TODO:  rdb_schema param
+     *  @param rdb_schema RDB schema or ""
      */
     public LogClientThread(final String jms_url, final String jms_topic,
             final String rdb_url, final String rdb_schema)

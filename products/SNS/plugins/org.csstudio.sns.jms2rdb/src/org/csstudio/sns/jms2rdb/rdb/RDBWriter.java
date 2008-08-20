@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -32,6 +33,10 @@ public class RDBWriter
     
     /** SQL statements */
     final private SQL sql;
+    
+    /** Date format to use for log message time stamps */
+    final private SimpleDateFormat date_format =
+        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
     
     /** Map of Property IDs, mapping property name to numeric ID */
     final private HashMap<String, Integer> property_id = 
@@ -210,7 +215,7 @@ public class RDBWriter
             ++content_id;
         if (batchProperty(message_id, content_id, 
         		getPropertyType(JMSLogMessage.CREATETIME),
-            JMSLogMessage.date_format.format(message.getCreateTime().getTime())))
+            date_format.format(message.getCreateTime().getTime())))
             ++content_id;
         if (batchProperty(message_id, content_id, 
         		getPropertyType(JMSLogMessage.CLASS), message.getClassName()))
@@ -280,9 +285,10 @@ public class RDBWriter
     /** Insert a new message
      *  @param message_id ID for the new message
      *  @param type  Message type
+     *  @param name Primary name (PV name, ...) to which the msg refers
+     *  @param severity Message severity
      *  @throws Exception on error
      */
-    /** TODO: add name, severity params to descr */
     private void insertMessage(final int message_id,
     		final String type, final String name,
     		final String severity) throws Exception

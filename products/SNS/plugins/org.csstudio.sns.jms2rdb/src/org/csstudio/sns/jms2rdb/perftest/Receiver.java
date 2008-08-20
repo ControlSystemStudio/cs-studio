@@ -47,8 +47,9 @@ public class Receiver implements ExceptionListener, MessageListener
         next_num = -1;
     }
 
-    /** {@inhericDoc} */
-    /*TODO: descr */
+    /** Invoked by JMS for each received message.
+     *  Counts JMSLogMessage instances
+     */
     public void onMessage(final Message msg)
     {
         if (! (msg instanceof MapMessage))
@@ -89,7 +90,7 @@ public class Receiver implements ExceptionListener, MessageListener
         ex.printStackTrace();
     }
 
-    /** TODO: descr */
+    /** @return Number of received MapMessage messages */
     public int getMessageCount()
     {
         return count;
