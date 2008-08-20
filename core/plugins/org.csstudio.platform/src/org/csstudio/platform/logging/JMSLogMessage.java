@@ -13,9 +13,21 @@ import javax.jms.MapMessage;
 @SuppressWarnings("nls")
 public class JMSLogMessage
 {
-    /** Date format for CREATETIME and EVENTTIME */
-    final public static SimpleDateFormat date_format =
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    /** Date format for CREATETIME and EVENTTIME. */
+    final public static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+
+    /** Date format for CREATETIME and EVENTTIME.
+     *  <p>
+     *  <b>NOTE:</b> The SimpleDateFormat is not thread safe.
+     *  Since there is a chance for a 'sender' thread to
+     *  call toMapMessage while a 'receiver' thread calls
+     *  fromMapMessage or toString, we need to synchronize
+     *  on date_format, and cannot provide access to this
+     *  instance of the date format.
+     *  (before 2008/08/20, this was public)
+     */
+    final private static SimpleDateFormat date_format =
+        new SimpleDateFormat(DATE_FORMAT);
 
     /** Default name of the JMS Queue used for log messages.
      *  @see #TYPE_LOG
@@ -112,29 +124,35 @@ public class JMSLogMessage
     public static JMSLogMessage fromMapMessage(final MapMessage map)
         throws Exception
     {
-        final String type = map.getString(JMSLogMessage.TYPE);
-        if (!JMSLogMessage.TYPE_LOG.equals(type))
+        final String type = map.getString(TYPE);
+        if (!TYPE_LOG.equals(type))
             throw new Exception("Got " + type
-                    + " instead of " + JMSLogMessage.TYPE_LOG);
+                    + " instead of " + TYPE_LOG);
         
-        String time_text = map.getString(JMSLogMessage.CREATETIME);
+        String time_text = map.getString(CREATETIME);
         final Calendar create_time = Calendar.getInstance();
         create_time.clear();
-        create_time.setTime(JMSLogMessage.date_format.parse(time_text));
-
-        time_text = map.getString(JMSLogMessage.EVENTTIME);
+        synchronized (date_format)
+        {
+            create_time.setTime(date_format.parse(time_text));
+        }
+        
+        time_text = map.getString(EVENTTIME);
         final Calendar event_time = Calendar.getInstance();
         event_time.clear();
-        event_time.setTime(JMSLogMessage.date_format.parse(time_text));
+        synchronized (date_format)
+        {
+            event_time.setTime(date_format.parse(time_text));
+        }
 
-        final String text = map.getString(JMSLogMessage.TEXT);
-        final String severity = map.getString(JMSLogMessage.SEVERITY);
-        final String class_name = map.getString(JMSLogMessage.CLASS);
-        final String method_name = map.getString(JMSLogMessage.NAME);
-        final String file_name = map.getString(JMSLogMessage.FILENAME);
-        final String application_id = map.getString(JMSLogMessage.APPLICATION_ID);
-        final String host = map.getString(JMSLogMessage.HOST);
-        final String user = map.getString(JMSLogMessage.USER);
+        final String text = map.getString(TEXT);
+        final String severity = map.getString(SEVERITY);
+        final String class_name = map.getString(CLASS);
+        final String method_name = map.getString(NAME);
+        final String file_name = map.getString(FILENAME);
+        final String application_id = map.getString(APPLICATION_ID);
+        final String host = map.getString(HOST);
+        final String user = map.getString(USER);
         return new JMSLogMessage(text, severity, create_time, event_time,
                 class_name, method_name, file_name, application_id, host, user);
     }
@@ -146,19 +164,26 @@ public class JMSLogMessage
      */
     public MapMessage toMapMessage(final MapMessage map) throws JMSException
     {
-        map.setString(JMSLogMessage.TYPE, JMSLogMessage.TYPE_LOG);
-        map.setString(JMSLogMessage.TEXT, text);
-        map.setString(JMSLogMessage.SEVERITY, severity);
-        String time_text = JMSLogMessage.date_format.format(create_time.getTime());
-        map.setString(JMSLogMessage.CREATETIME, time_text);
-        time_text = JMSLogMessage.date_format.format(event_time.getTime());
-        map.setString(JMSLogMessage.EVENTTIME, time_text);
-        setMapValue(map, JMSLogMessage.CLASS, class_name);
-        setMapValue(map, JMSLogMessage.NAME, method_name);
-        setMapValue(map, JMSLogMessage.FILENAME, file_name);
-        setMapValue(map, JMSLogMessage.APPLICATION_ID, application_id);
-        setMapValue(map, JMSLogMessage.HOST, host);
-        setMapValue(map, JMSLogMessage.USER, user);
+        map.setString(TYPE, TYPE_LOG);
+        map.setString(TEXT, text);
+        map.setString(SEVERITY, severity);
+        String time_text;
+        synchronized (date_format)
+        {
+            time_text = date_format.format(create_time.getTime());
+        }
+        map.setString(CREATETIME, time_text);
+        synchronized (date_format)
+        {
+            time_text = date_format.format(event_time.getTime());
+        }
+        map.setString(EVENTTIME, time_text);
+        setMapValue(map, CLASS, class_name);
+        setMapValue(map, NAME, method_name);
+        setMapValue(map, FILENAME, file_name);
+        setMapValue(map, APPLICATION_ID, application_id);
+        setMapValue(map, HOST, host);
+        setMapValue(map, USER, user);
         return map;
     }
 
@@ -243,11 +268,17 @@ public class JMSLogMessage
     {
         final StringBuffer buf = new StringBuffer();
         buf.append("LOG ");
-        buf.append(date_format.format(create_time.getTime()));
+        synchronized (date_format)
+        {
+            buf.append(date_format.format(create_time.getTime()));
+        }
         if (! event_time.equals(create_time))
         {
             buf.append(" [");
-            buf.append(date_format.format(event_time.getTime()));
+            synchronized (date_format)
+            {
+                buf.append(date_format.format(event_time.getTime()));
+            }
             buf.append("]");
         }
         buf.append(": '");
