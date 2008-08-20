@@ -15,7 +15,7 @@ import org.csstudio.platform.logging.CentralLogger;
 @SuppressWarnings("nls")
 abstract public class AbstractServlet extends HttpServlet
 {
-    /**  */
+    /** Added default serial to avoid warning from java.io.Serializable */
     private static final long serialVersionUID = 1L;
 
     /** {@inheritDoc} */
