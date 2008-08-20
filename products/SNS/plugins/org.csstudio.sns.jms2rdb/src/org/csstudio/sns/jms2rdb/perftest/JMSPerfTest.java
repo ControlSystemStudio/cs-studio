@@ -19,6 +19,7 @@ import org.junit.Test;
  *  Test with laptop to srv02 and back: about 1000 msg/sec.
  *  
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class JMSPerfTest
@@ -33,6 +34,7 @@ public class JMSPerfTest
     /** Test runtime */
     final private static int SECONDS = 30;
 
+    /** TODO doesn't work */
     @Test
     public void perfTest() throws Exception
     {

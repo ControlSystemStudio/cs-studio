@@ -5,6 +5,7 @@ import org.osgi.framework.BundleContext;
 
 /** Plugin activator
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class Activator extends Plugin

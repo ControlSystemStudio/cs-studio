@@ -20,6 +20,7 @@ import org.csstudio.platform.logging.JMSLogMessage;
  *  Uses CSS 'log' message format.
  *  
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class Sender implements ExceptionListener, Runnable
@@ -96,6 +97,7 @@ public class Sender implements ExceptionListener, Runnable
         ex.printStackTrace();
     }
 
+    /*TODO: descr */
     public int getMessageCount()
     {
         return count;

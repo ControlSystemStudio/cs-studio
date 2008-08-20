@@ -11,6 +11,7 @@ import org.csstudio.platform.logging.CentralLogger;
 
 /** Base class for servlets.
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 abstract public class AbstractServlet extends HttpServlet

@@ -10,11 +10,12 @@ import org.csstudio.sns.jms2rdb.LogClientThread;
 
 /** Servlet to display overall status of JMS Log Tool.
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class MainServlet extends AbstractServlet
 {
-    /**  */
+   
     private static final long serialVersionUID = 1L;
     
     final LogClientThread log_client_thread;
@@ -24,6 +25,8 @@ public class MainServlet extends AbstractServlet
         this.log_client_thread = log_client_thread;
     }
 
+    
+    /** TODO: descr */
     @SuppressWarnings("unchecked")
 	@Override
     protected void fillBody(final HTMLWriter html)

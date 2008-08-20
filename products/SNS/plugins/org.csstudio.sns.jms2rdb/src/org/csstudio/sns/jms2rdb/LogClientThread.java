@@ -32,6 +32,7 @@ import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
  *        Queue in here?
  *
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class LogClientThread extends Thread
@@ -76,6 +77,7 @@ public class LogClientThread extends Thread
      *  @param jms_url JMS server URL
      *  @param jms_topic JMS topic
      *  @param rdb_url RDB server URL
+     *  TODO:  rdb_schema param
      */
     public LogClientThread(final String jms_url, final String jms_topic,
             final String rdb_url, final String rdb_schema)

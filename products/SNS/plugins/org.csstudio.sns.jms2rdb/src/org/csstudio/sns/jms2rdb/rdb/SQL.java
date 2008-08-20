@@ -4,6 +4,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** SQL Statements
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class SQL

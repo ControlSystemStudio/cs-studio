@@ -17,6 +17,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Class that writes JMSLogMessages to the RDB
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class RDBWriter
@@ -281,6 +282,7 @@ public class RDBWriter
      *  @param type  Message type
      *  @throws Exception on error
      */
+    /** TODO: add name, severity params to descr */
     private void insertMessage(final int message_id,
     		final String type, final String name,
     		final String severity) throws Exception

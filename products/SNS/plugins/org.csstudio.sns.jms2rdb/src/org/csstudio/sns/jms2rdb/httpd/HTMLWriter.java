@@ -9,6 +9,7 @@ import org.csstudio.platform.data.TimestampFactory;
 
 /** Helper for creating uniform HTML pages for a servlet response.
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class HTMLWriter
@@ -77,7 +78,7 @@ public class HTMLWriter
 
     /** Start a table.
      *  <p>
-     *  The intial column header might span more than one column.
+     *  The initial column header might span more than one column.
      *  In fact, it might be the only columns header.
      *  Otherwise, the remaining column headers each span one column.
      *  

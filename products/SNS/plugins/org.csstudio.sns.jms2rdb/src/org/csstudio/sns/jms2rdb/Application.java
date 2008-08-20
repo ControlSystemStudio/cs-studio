@@ -15,6 +15,7 @@ import org.osgi.service.http.HttpService;
 
 /** Application's 'Main' class.
  *  @author Kay Kasemir
+ *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
 public class Application implements IApplication

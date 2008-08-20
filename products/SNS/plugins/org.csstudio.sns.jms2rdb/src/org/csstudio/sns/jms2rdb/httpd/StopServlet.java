@@ -8,16 +8,19 @@ import org.csstudio.sns.jms2rdb.Application;
 @SuppressWarnings("nls")
 public class StopServlet extends AbstractServlet
 {
-    /**  */
+	
     private static final long serialVersionUID = 1L;
 
     private Application application;
-
+    
+   
+    /** TODO: descr */
     public StopServlet(final Application application)
     {
         this.application = application;
     }
 
+    /**TODO: descr */
     @Override
     protected void fillBody(final HTMLWriter html)
     {
