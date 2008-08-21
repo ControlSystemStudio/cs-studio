@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
  org.csstudio.platform.libs.xmpp,
  org.csstudio.platform.libs.dcf
 Eclipse-LazyStart: true
-Bundle-ClassPath: libs/comm.jar,
+Bundle-ClassPath: libs/RXTXcomm.jar,
  libs/smslib-3.3.0-B3.jar,
  libs/log4j.jar,
  .
