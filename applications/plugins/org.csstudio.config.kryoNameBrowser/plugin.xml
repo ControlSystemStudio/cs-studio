@@ -75,16 +75,16 @@
                  tooltip="Add new entry">
            </command>
            <command
-                 commandId="excelExport.command"
-                 label="Export"
-                 style="push"
-                 tooltip="Export to excel">
-           </command>
-           <command
                  commandId="searchMode.command"
                  label="Advanced Search"
                  style="toggle"
                  tooltip="Enables advanced search mode">
+           </command>
+           <command
+                 commandId="excelExport.command"
+                 label="Export"
+                 style="push"
+                 tooltip="Export to excel">
            </command>
         </menuContribution>
         <menuContribution
