@@ -44,7 +44,21 @@ public class Application implements IApplication
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
     {
-        // Read settings from preferences
+        // Read settings from preferences.
+        // Order of preference lookup:
+        // - GUI applications can provide a preferences GUI to allow
+        //   users to change settings
+        // - Command-line argument
+        //      -pluginCustomization my_customization.ini
+        //   used when running the application.
+        //   File has lines of format:
+        //      plugin-id/pref_key=value
+        // - File plugin_customization.ini in the application plugin root dir.
+        //      plugin-id/pref_key=value
+        // - File preferences.ini in this plugin's root directory:
+        //      pref_key=value
+        // - If all fails, the 'default' argument to
+        //   service.getXXX(.., .., default, ..) is used
         final IPreferencesService service = Platform.getPreferencesService();
         httpd_port =
             service.getInt(Activator.ID, "httpd_port", httpd_port, null);

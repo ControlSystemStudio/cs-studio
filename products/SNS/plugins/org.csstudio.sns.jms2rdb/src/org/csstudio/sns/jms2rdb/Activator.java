@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("nls")
 public class Activator extends Plugin
 {
-    /** Plugin ID */
+    /** The plug-in ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.sns.jms2rdb";
     
     /** Singleton instance */
