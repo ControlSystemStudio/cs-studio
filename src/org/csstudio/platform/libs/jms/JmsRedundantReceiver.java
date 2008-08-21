@@ -135,12 +135,8 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             }
         }
     }
-    
-    /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
-	 */
-    
-    public boolean createRedundantSubscriber(String name, String destination)
+            
+    public boolean createRedundantSubscriber(String name, String destination, String durableName, boolean durable)
     {
         MessageConsumer[] sub = null;
         Topic topic = null;
@@ -163,7 +159,15 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             for(int i = 0;i < CONNECTION_COUNT;i++)
             {
                 topic = session[i].createTopic(destination);
-                sub[i] = session[i].createConsumer(topic);
+                
+                if((durable == true) && (durableName != null))
+                {
+                    sub[i] = session[i].createDurableSubscriber(topic, durableName);
+                }
+                else
+                {
+                    sub[i] = session[i].createConsumer(topic);
+                }
                 
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, name + " -> Topic: " + destination + " " + urls[i]);
             }
@@ -190,6 +194,16 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         
         return result;
     }
+    
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
+     */
+    
+    public boolean createRedundantSubscriber(String name, String destination)
+    {
+        return createRedundantSubscriber(name, destination, null, false);
+    }
+
     
     /* (non-Javadoc)
 	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String)
