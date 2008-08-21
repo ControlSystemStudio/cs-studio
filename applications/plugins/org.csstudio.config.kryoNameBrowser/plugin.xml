@@ -58,6 +58,11 @@
               id="deleteEntry.command"
               name="delete">
         </command>
+        <command
+              defaultHandler="org.csstudio.config.kryonamebrowser.ui.handler.SearchModeCommand"
+              id="searchMode.command"
+              name="name">
+        </command>
      </extension>
      <extension
            point="org.eclipse.ui.menus">
@@ -74,6 +79,12 @@
                  label="Export"
                  style="push"
                  tooltip="Export to excel">
+           </command>
+           <command
+                 commandId="searchMode.command"
+                 label="Advanced Search"
+                 style="toggle"
+                 tooltip="Enables advanced search mode">
            </command>
         </menuContribution>
         <menuContribution
