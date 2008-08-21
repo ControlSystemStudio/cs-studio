@@ -157,7 +157,7 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.resources.win32"
+         id="org.eclipse.core.resources.win32.x86"
          os="win32"
          download-size="0"
          install-size="0"
