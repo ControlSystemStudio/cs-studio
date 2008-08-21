@@ -7,7 +7,6 @@ import org.eclipse.jface.viewers.Viewer;
 
 public class KryoNameContentProvider implements IStructuredContentProvider {
 
-	@Override
 	public Object[] getElements(Object inputElement) {
 
 		if (inputElement instanceof List) {
@@ -17,13 +16,11 @@ public class KryoNameContentProvider implements IStructuredContentProvider {
 		return new Object[] {};
 	}
 
-	@Override
 	public void dispose() {
 		// we can ignore this
 
 	}
 
-	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// we can ignore this
 

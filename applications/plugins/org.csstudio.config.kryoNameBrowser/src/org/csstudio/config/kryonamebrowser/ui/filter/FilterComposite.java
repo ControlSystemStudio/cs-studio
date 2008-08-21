@@ -343,7 +343,6 @@ public class FilterComposite extends Composite {
 		// must access UI stuff via UI thread
 		shell.getDisplay().syncExec(new Runnable() {
 
-			@Override
 			public void run() {
 				searchButton.setEnabled(false);
 				searchButton.setText("Loading...");

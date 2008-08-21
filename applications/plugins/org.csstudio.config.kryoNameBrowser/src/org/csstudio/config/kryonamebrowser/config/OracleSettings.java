@@ -4,7 +4,6 @@ import java.sql.Driver;
 
 public class OracleSettings implements Settings {
 
-    @Override
     public String getConnection() {
         return "jdbc:oracle:thin:@(DESCRIPTION = "
                 + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521)) "
@@ -16,17 +15,14 @@ public class OracleSettings implements Settings {
                 + "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")";
     }
 
-    @Override
     public String getPassword() {
         return "KRYKLOGT";
     }
 
-    @Override
     public Driver getDriver() {
         return new oracle.jdbc.driver.OracleDriver();
     }
 
-    @Override
     public String getUsername() {
         return "KRYKLOGT";
     }

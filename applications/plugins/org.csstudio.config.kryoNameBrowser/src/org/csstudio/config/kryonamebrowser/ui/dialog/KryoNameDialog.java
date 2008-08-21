@@ -247,13 +247,11 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 
 		bridge.addListener(new SelectionListener() {
 
-			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 
-			@Override
 			public void widgetSelected(SelectionEvent e) {
 				nameLabel.setText(bridge.calculateName());
 			}

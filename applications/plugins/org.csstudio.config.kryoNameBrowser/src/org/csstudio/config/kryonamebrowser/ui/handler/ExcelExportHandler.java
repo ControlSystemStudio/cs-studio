@@ -55,7 +55,7 @@ public class ExcelExportHandler extends AbstractHandler implements IHandler {
 			// Open Dialog and save result of selection
 			String selected = fileDialog.open();
 
-			if (!selected.isEmpty()) {
+			if (!(selected.length() == 0)) {
 				File file = new File(selected);
 
 				if (file.exists()) {

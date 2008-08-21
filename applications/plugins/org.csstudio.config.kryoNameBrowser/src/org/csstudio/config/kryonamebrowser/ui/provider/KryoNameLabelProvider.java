@@ -12,13 +12,11 @@ import org.eclipse.swt.graphics.Image;
 
 public class KryoNameLabelProvider implements ITableLabelProvider {
 
-	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		KryoNameResolved resolved = (KryoNameResolved) element;
 
@@ -53,7 +51,7 @@ public class KryoNameLabelProvider implements ITableLabelProvider {
 			return "" + resolved.getSeqKryoNumber();
 		case 14:
 			String label = resolved.getLabel();
-			if (label == null || label.isEmpty()) {
+			if (label == null || (label.length() == 0)) {
 				return "";
 			}
 			return label.substring(0, Math.min(30, label.length()));
@@ -93,24 +91,20 @@ public class KryoNameLabelProvider implements ITableLabelProvider {
 
 	}
 
-	@Override
 	public void addListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public void dispose() {
 
 	}
 
-	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public void removeListener(ILabelProviderListener listener) {
 
 	}

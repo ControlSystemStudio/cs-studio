@@ -142,13 +142,11 @@ public class UIModelBridge {
 		populateProcess(process);
 		process.addSelectionListener(new SelectionListener() {
 
-			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 
-			@Override
 			public void widgetSelected(SelectionEvent e) {
 				fireListeners();
 
@@ -162,7 +160,6 @@ public class UIModelBridge {
 			if (text2 != null) {
 				text2.addModifyListener(new ModifyListener() {
 
-					@Override
 					public void modifyText(ModifyEvent e) {
 						fireListeners();
 
@@ -272,11 +269,9 @@ public class UIModelBridge {
 
 		}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 		}
 
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			if (!primary.isEnabled()) {
 				return;
@@ -371,11 +366,9 @@ public class UIModelBridge {
 
 		}
 
-		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 		}
 
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			if (!primary.isEnabled()) {
 				return;
@@ -582,7 +575,7 @@ public class UIModelBridge {
 	// TODO: Add column
 
 	private int getNo(Text text) {
-		if (text == null || !text.isEnabled() || text.getText().isEmpty()) {
+		if (text == null || !text.isEnabled() || (text.getText().length() == 0)) {
 			return -1;
 		}
 

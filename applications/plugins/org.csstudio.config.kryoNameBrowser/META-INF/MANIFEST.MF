@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.config.kryonamebrowser.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.ui,
+ org.csstudio.platform.libs.jdbc,
  org.csstudio.platform.utility.rdb
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/poi-2.5.1-final-20040804.jar,

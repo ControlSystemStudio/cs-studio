@@ -61,7 +61,6 @@ public class DeleteCommand extends AbstractHandler implements IHandler {
 
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 
-				@Override
 				public void run(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException {
 					List<KryoNameResolved> list = strucSelection.toList();
@@ -74,7 +73,6 @@ public class DeleteCommand extends AbstractHandler implements IHandler {
 
 							shell.getDisplay().syncExec(new Runnable() {
 
-								@Override
 								public void run() {
 									MessageDialog.openWarning(shell, "Warning",
 											"Delete operation aborted by user");
@@ -93,7 +91,6 @@ public class DeleteCommand extends AbstractHandler implements IHandler {
 						} catch (final Exception e) {
 							shell.getDisplay().syncExec(new Runnable() {
 
-								@Override
 								public void run() {
 									MessageDialog.openError(shell, "Error", e
 											.getMessage());
@@ -111,7 +108,6 @@ public class DeleteCommand extends AbstractHandler implements IHandler {
 
 					shell.getDisplay().syncExec(new Runnable() {
 
-						@Override
 						public void run() {
 							MessageDialog.openInformation(shell, "Info",
 									"Successfully Deleted");

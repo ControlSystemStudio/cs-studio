@@ -416,9 +416,9 @@ public class KryoNameBrowserLogic {
 	public boolean isValid(KryoNameEntry newEntry) throws SQLException {
 		// validation is not very nice looking but hey it is the best I can do
 		// Rudimentary check
-		if (newEntry.getName() == null || newEntry.getName().isEmpty()
+		if (newEntry.getName() == null || (newEntry.getName().length() == 0)
 				|| newEntry.getProcessId() == null
-				|| newEntry.getProcessId().isEmpty()
+				|| (newEntry.getProcessId().length() == 0)
 				|| newEntry.getObjectId() == 0 || newEntry.getPlantId() == 0
 				|| !newEntry.getName().startsWith("X")) {
 
