@@ -9,6 +9,7 @@ import org.csstudio.config.kryonamebrowser.ui.UIModelBridge;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class FilterComposite extends Composite {
 
+	private Text text;
 	private Text searchExpression;
 	private Text subplant3No;
 	private Text subplant2No;
@@ -89,47 +91,51 @@ public class FilterComposite extends Composite {
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
 
-		Composite composite_15;
+		KeyAdapter adapter = new KeyAdapter() {
+			public void keyReleased(final KeyEvent e) {
+				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+					updateTable(parent.getShell());
+				}
+			}
+		};
 
 		Composite composite_16;
-		composite_15 = new Composite(this, SWT.NONE);
-		final GridLayout gridLayout_1 = new GridLayout();
-		gridLayout_1.verticalSpacing = 0;
-		gridLayout_1.horizontalSpacing = 0;
-		gridLayout_1.marginHeight = 0;
-		gridLayout_1.marginWidth = 0;
-		composite_15.setLayout(gridLayout_1);
-		final GridData gd_composite_15 = new GridData(SWT.FILL, SWT.FILL, true,
-				true);
-		gd_composite_15.minimumHeight = 100;
-		composite_15.setLayoutData(gd_composite_15);
-
-		advancedPanel = new Composite(composite_15, SWT.NONE);
-		advancedPanel.setLayout(new FillLayout());
-		final GridData gd_advancedPanel = new GridData(SWT.FILL, SWT.CENTER,
+		leftComponent = new Composite(this, SWT.NONE);
+		final StackLayout stackLayout = new StackLayout();
+		leftComponent.setLayout(stackLayout);
+		final GridData gd_leftComponent = new GridData(SWT.FILL, SWT.FILL,
 				true, true);
-		advancedPanel.setLayoutData(gd_advancedPanel);
+		gd_leftComponent.minimumHeight = 100;
+		leftComponent.setLayoutData(gd_leftComponent);
 
-		Label searchStringLabel;
+		advancedPanel = new Composite(leftComponent, SWT.NONE);
+		final GridLayout gridLayout_1 = new GridLayout();
+		gridLayout_1.numColumns = 2;
+		advancedPanel.setLayout(gridLayout_1);
 
 		final Composite composite_1 = new Composite(advancedPanel, SWT.NONE);
+		composite_1.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true));
 		composite_1.setLayout(new FillLayout(SWT.VERTICAL));
 
-		final Label label_1 = new Label(composite_1, SWT.NONE);
-		searchStringLabel = new Label(composite_1, SWT.NONE);
-		searchStringLabel.setText("Search expression");
+		text = new Text(composite_1, SWT.WRAP | SWT.READ_ONLY | SWT.MULTI);
+		text
+				.setText("Type the search expression in the text box. Samples:\n% - match any name\n%12 - match any name ending with 12\n%2_ - match before last character is 2 and the last char can be anything\nXI%:%22% - anything in the injector having 22 somewhere in the last part of the name");
 
 		final Composite composite = new Composite(advancedPanel, SWT.NONE);
-		composite.setLayout(new FillLayout(SWT.VERTICAL));
-
-		final Label eg12Label = new Label(composite, SWT.NONE);
-		eg12Label.setText("e.g. %:%12 or XI%:T%");
+		composite.setLayout(new GridLayout());
 
 		searchExpression = new Text(composite, SWT.BORDER);
-		basicTop = new Composite(composite_15, SWT.NONE);
-		final GridData gd_basicTop = new GridData(SWT.LEFT, SWT.CENTER, true,
-				false);
-		basicTop.setLayoutData(gd_basicTop);
+		searchExpression.addKeyListener(adapter);
+		final GridData gd_searchExpression = new GridData(SWT.RIGHT,
+				SWT.CENTER, true, true);
+		gd_searchExpression.widthHint = 200;
+		gd_searchExpression.minimumWidth = 200;
+		searchExpression.setLayoutData(gd_searchExpression);
+
+		basicPanel = new Composite(leftComponent, SWT.NONE);
+		basicPanel.setLayout(new GridLayout());
+		basicTop = new Composite(basicPanel, SWT.NONE);
+		basicTop.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true));
 		final RowLayout rowLayout = new RowLayout();
 		rowLayout.spacing = 0;
 		rowLayout.marginTop = 0;
@@ -138,14 +144,6 @@ public class FilterComposite extends Composite {
 		rowLayout.marginBottom = 0;
 		rowLayout.fill = true;
 		basicTop.setLayout(rowLayout);
-
-		KeyAdapter adapter = new KeyAdapter() {
-			public void keyReleased(final KeyEvent e) {
-				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-					updateTable(parent.getShell());
-				}
-			}
-		};
 
 		final Composite composite_2 = new Composite(basicTop, SWT.NONE);
 		composite_2.setLayout(new RowLayout(SWT.VERTICAL));
@@ -234,11 +232,9 @@ public class FilterComposite extends Composite {
 		rd_subplant3No.width = 50;
 		subplant3No.setLayoutData(rd_subplant3No);
 		subplant3No.setTextLimit(10);
-		basicBottom = new Composite(composite_15, SWT.NONE);
+		basicBottom = new Composite(basicPanel, SWT.NONE);
+		basicBottom.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true));
 		basicBottom.setLayout(new RowLayout());
-		final GridData gd_basicBottom = new GridData(SWT.FILL, SWT.FILL, true,
-				true);
-		basicBottom.setLayoutData(gd_basicBottom);
 
 		final Composite composite_10 = new Composite(basicBottom, SWT.NONE);
 		composite_10.setLayout(new RowLayout(SWT.VERTICAL));
@@ -287,9 +283,11 @@ public class FilterComposite extends Composite {
 		rd_processNo.width = 80;
 		processNo.setLayoutData(rd_processNo);
 		processNo.setTextLimit(2);
+		stackLayout.topControl = basicPanel;
+
 		composite_16 = new Composite(this, SWT.NONE);
-		final GridData gd_composite_16 = new GridData(SWT.CENTER, SWT.CENTER,
-				true, true);
+		final GridData gd_composite_16 = new GridData(SWT.RIGHT, SWT.CENTER,
+				false, true);
 		gd_composite_16.minimumWidth = 90;
 		composite_16.setLayoutData(gd_composite_16);
 		final RowLayout rowLayout_2 = new RowLayout();
@@ -314,7 +312,7 @@ public class FilterComposite extends Composite {
 		});
 
 		searchButton.setText("Search");
-
+		basicMode();
 	}
 
 	@Override
@@ -332,6 +330,8 @@ public class FilterComposite extends Composite {
 	private Composite basicBottom;
 	private Composite advancedPanel;
 	private String searchText;
+	private Composite leftComponent;
+	private Composite basicPanel;
 
 	/**
 	 * Updates the table using the values from the filter. This method is safe to call from non-UI thread.
@@ -399,22 +399,21 @@ public class FilterComposite extends Composite {
 	}
 
 	public void advancedMode() {
-		GridData data = (GridData) advancedPanel.getLayoutData();
 
 		advancedMode = true;
-		basicTop.setVisible(false);
-		basicBottom.setVisible(false);
-		advancedPanel.setVisible(true);
+		StackLayout layout2 = (StackLayout) leftComponent.getLayout();
+		layout2.topControl = advancedPanel;
+		leftComponent.layout();
 
 	}
 
 	public void basicMode() {
-		GridData data = (GridData) advancedPanel.getLayoutData();
-		data.exclude = false;
+
 		advancedMode = false;
-		basicTop.setVisible(true);
-		basicBottom.setVisible(true);
-		advancedPanel.setVisible(false);
+		StackLayout layout2 = (StackLayout) leftComponent.getLayout();
+		layout2.topControl = basicPanel;
+		leftComponent.layout();
+
 	}
 
 }
