@@ -3,8 +3,6 @@ package org.csstudio.config.kryonamebrowser.ui;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.csstudio.config.kryonamebrowser.config.OracleSettings;
 import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
@@ -20,7 +18,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -28,7 +25,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -37,8 +33,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
-
-import com.sun.org.apache.bcel.internal.generic.CPInstruction;
 
 /**
  * View for the filter and table of names.
