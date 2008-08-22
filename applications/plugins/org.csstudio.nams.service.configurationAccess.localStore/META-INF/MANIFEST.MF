@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LocalStore Plug-in
 Bundle-SymbolicName: org.csstudio.nams.service.configurationAccess.localStore;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.nams.service.configurationaccess.localstore.LocalConfigurationStoreServiceActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common,

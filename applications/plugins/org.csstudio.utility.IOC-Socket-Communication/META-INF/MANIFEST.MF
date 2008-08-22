@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: IOC_Socket_Communication Plug-in
 Bundle-SymbolicName: org.csstudio.utility.IOC_Socket_Communication;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.8
 Bundle-Activator: org.csstudio.utility.ioc_socket_communication.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,

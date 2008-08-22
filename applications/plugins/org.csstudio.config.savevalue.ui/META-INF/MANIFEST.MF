@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Save Value UI
 Bundle-SymbolicName: org.csstudio.config.savevalue.ui;singleton:=true
-Bundle-Version: 0.9.0
+Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.config.savevalue.ui.Activator
 Bundle-Vendor: DESY
 Require-Bundle: org.eclipse.ui,

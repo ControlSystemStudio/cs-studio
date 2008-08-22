@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Monitor Plug-in
 Bundle-SymbolicName: org.csstudio.ams.monitor;singleton:=true
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.4
 Bundle-Activator: org.csstudio.ams.monitor.MonitorPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

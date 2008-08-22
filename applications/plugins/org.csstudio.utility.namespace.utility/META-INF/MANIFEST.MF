@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Namespace Utility Plug-in
 Bundle-SymbolicName: org.csstudio.utility.namespace.utility
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.11
 Bundle-Activator: org.csstudio.utility.namespace.utility.Activator
 Require-Bundle: org.csstudio.platform
 Eclipse-LazyStart: true
