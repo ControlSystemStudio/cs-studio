@@ -1,0 +1,1245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display modelVersion="1.0">
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="405" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="" />
+  <property type="sds.boolean" id="display_border_visibility" value="true" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.integer" id="height" value="709" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="0" />
+  </property>
+  <property type="sds.integer" id="position.y" value="10" />
+  <property type="sds.color" id="color.background">
+    <color red="187" green="187" blue="187" />
+  </property>
+  <property type="sds.string" id="name" value="PolygonModel" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <layer layer_name="DEFAULT" layer_index="0" layer_visibility="true" />
+  <layer layer_name="Bargraph" layer_index="1" layer_visibility="true" />
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="179" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="24" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="99" />
+  <property type="sds.integer" id="height" value="39" />
+  <property type="sds.string" id="value.text" value="Set Alarms" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="19" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_DESC" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="254" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="14" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="61" />
+  <property type="sds.integer" id="height" value="22" />
+  <property type="sds.string" id="value.text" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="$channel$, string" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="88" green="52" blue="15" />
+    <dynamicsDescriptor ruleId="org.css.sds.color.default_epics_alarm_foreground">
+      <inputChannel name="$channel$.SEVR" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="100" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="187" green="187" blue="187" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_DESC" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="155" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="18" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.string" id="value.text" value="HIHI Limit" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="234" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Textinput">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_HIHI" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="117" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Text:&#x9;${inputText}$" />
+  <property type="sds.boolean" id="transparent" value="false" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="260" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.color" id="color.foreground">
+    <color red="222" green="19" blue="9" />
+  </property>
+  <property type="sds.string" id="inputText" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="$channel$" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="TextInputModel" />
+  <property type="sds.option" id="border.style">
+    <option id="5" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="235" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="255" green="255" blue="255" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_HIHI" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="124" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="18" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.string" id="value.text" value="HI Limit" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="272" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Textinput">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_HIGH" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="117" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Text:&#x9;${inputText}$" />
+  <property type="sds.boolean" id="transparent" value="false" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="260" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.color" id="color.foreground">
+    <color red="222" green="19" blue="9" />
+  </property>
+  <property type="sds.string" id="inputText" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="$channel$" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="TextInputModel" />
+  <property type="sds.option" id="border.style">
+    <option id="5" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="273" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="255" green="255" blue="255" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_HIGH" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="168" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="17" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.string" id="value.text" value="LOLO Limit" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="309" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Textinput">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_LOLO" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="117" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Text:&#x9;${inputText}$" />
+  <property type="sds.boolean" id="transparent" value="false" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="260" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.color" id="color.foreground">
+    <color red="222" green="19" blue="9" />
+  </property>
+  <property type="sds.string" id="inputText" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="$channel$" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="TextInputModel" />
+  <property type="sds.option" id="border.style">
+    <option id="5" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="310" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="255" green="255" blue="255" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_LOLO" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="160" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="17" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.string" id="value.text" value="LOW Limit" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="345" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Textinput">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_LOW" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="117" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Text:&#x9;${inputText}$" />
+  <property type="sds.boolean" id="transparent" value="false" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="260" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.color" id="color.foreground">
+    <color red="222" green="19" blue="9" />
+  </property>
+  <property type="sds.string" id="inputText" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="$channel$" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="TextInputModel" />
+  <property type="sds.option" id="border.style">
+    <option id="5" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="346" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="255" green="255" blue="255" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_LOW" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="110" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="20" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="18" />
+  <property type="sds.integer" id="height" value="32" />
+  <property type="sds.string" id="value.text" value="Value :" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="156" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$channel$" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="208" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="22" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="171" />
+  <property type="sds.integer" id="height" value="36" />
+  <property type="sds.string" id="value.text" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="$channel$, string" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="115" green="255" blue="107" />
+    <dynamicsDescriptor ruleId="org.css.sds.color.default_epics_alarm_foreground">
+      <inputChannel name="$channel$.SEVR" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="$(chan)" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="153" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="0" green="0" blue="0" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$channel$" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="184" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="17" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.string" id="value.text" value="HIHI Severity" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="428" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="184" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="17" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.string" id="value.text" value="HI Severity" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="466" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="184" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="17" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.string" id="value.text" value="LOLO Severity" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="503" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="184" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="17" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.string" id="value.text" value="LOW Severity" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="539" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="350" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="18" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="19" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.string" id="value.text" value="Possible Severity Level:" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="599" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="350" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="12" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="23" />
+  <property type="sds.integer" id="height" value="20" />
+  <property type="sds.string" id="value.text" value="NO_ALARM / MINOR / MAJOR / INVALID" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="641" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="3" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="3" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="25" />
+  <property type="sds.integer" id="height" value="4" />
+  <property type="sds.string" id="value.text" value="" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="78" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_NAME" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.integer" id="width" value="193" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${value.text}$" />
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="16" style="0" />
+  </property>
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.integer" id="position.x" value="90" />
+  <property type="sds.integer" id="height" value="26" />
+  <property type="sds.string" id="value.text" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="$channel$, string" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="10" green="0" blue="184" />
+    <dynamicsDescriptor ruleId="org.css.sds.color.default_epics_alarm_foreground">
+      <inputChannel name="$channel$.SEVR" type="java.lang.Double" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.integer" id="position.y" value="65" />
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.color" id="color.background">
+    <color red="187" green="187" blue="187" />
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_NAME" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.MenuButton">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_HHSV" />
+  </aliasDescriptors>
+  <property type="sds.option" id="border.style">
+    <option id="3" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="99" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Actions:&#x9;${actionData}$" />
+  <property type="sds.integer" id="border.width" value="1" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+    <dynamicsDescriptor ruleId="rule.actionData">
+      <inputChannel name="$channel$[enumDescriptions], enum" type="java.lang.Object" />
+      <outputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="15" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="262" />
+  <property type="sds.integer" id="height" value="24" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.string" id="label" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="253" green="0" blue="0" />
+  </property>
+  <property type="sds.integer" id="position.y" value="428" />
+  <property type="sds.color" id="color.background">
+    <color red="251" green="243" blue="74" />
+  </property>
+  <property type="sds.string" id="name" value="MenuButtonModel" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_HHSV" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.MenuButton">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_HSV" />
+  </aliasDescriptors>
+  <property type="sds.option" id="border.style">
+    <option id="3" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="99" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Actions:&#x9;${actionData}$" />
+  <property type="sds.integer" id="border.width" value="1" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+    <dynamicsDescriptor ruleId="rule.actionData">
+      <inputChannel name="$channel$[enumDescriptions], enum" type="java.lang.Object" />
+      <outputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="15" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="262" />
+  <property type="sds.integer" id="height" value="24" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.string" id="label" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="253" green="0" blue="0" />
+  </property>
+  <property type="sds.integer" id="position.y" value="466" />
+  <property type="sds.color" id="color.background">
+    <color red="251" green="243" blue="74" />
+  </property>
+  <property type="sds.string" id="name" value="MenuButtonModel" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_HSV" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.MenuButton">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_LLSV" />
+  </aliasDescriptors>
+  <property type="sds.option" id="border.style">
+    <option id="3" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="99" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Actions:&#x9;${actionData}$" />
+  <property type="sds.integer" id="border.width" value="1" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+    <dynamicsDescriptor ruleId="rule.actionData">
+      <inputChannel name="$channel$[enumDescriptions], enum" type="java.lang.Object" />
+      <outputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="15" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="262" />
+  <property type="sds.integer" id="height" value="24" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.string" id="label" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="253" green="0" blue="0" />
+  </property>
+  <property type="sds.integer" id="position.y" value="503" />
+  <property type="sds.color" id="color.background">
+    <color red="251" green="243" blue="74" />
+  </property>
+  <property type="sds.string" id="name" value="MenuButtonModel" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_LLSV" />
+    </map>
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.MenuButton">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="$param$_LSV" />
+  </aliasDescriptors>
+  <property type="sds.option" id="border.style">
+    <option id="3" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$param$" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="99" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Actions:&#x9;${actionData}$" />
+  <property type="sds.integer" id="border.width" value="1" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+    <dynamicsDescriptor ruleId="rule.actionData">
+      <inputChannel name="$channel$[enumDescriptions], enum" type="java.lang.Object" />
+      <outputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.font" id="font">
+    <font fontName="Times New Roman" height="15" style="0" />
+  </property>
+  <property type="sds.integer" id="position.x" value="262" />
+  <property type="sds.integer" id="height" value="24" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.string" id="label" value="">
+    <dynamicsDescriptor ruleId="directConnection">
+      <inputChannel name="local://out" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="253" green="0" blue="0" />
+  </property>
+  <property type="sds.integer" id="position.y" value="539" />
+  <property type="sds.color" id="color.background">
+    <color red="251" green="243" blue="74" />
+  </property>
+  <property type="sds.string" id="name" value="MenuButtonModel" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="$param$_LSV" />
+    </map>
+  </property>
+</widget>
+
+</display>

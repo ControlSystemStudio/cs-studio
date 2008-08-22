@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Samples Plug-in
+Bundle-SymbolicName: org.csstudio.sds.samples;singleton:=true
+Bundle-Version: 1.0.7
+Bundle-Activator: org.csstudio.sds.samples.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.cheatsheets,
+ org.csstudio.sds.ui,
+ org.csstudio.platform.ui,
+ org.eclipse.core.resources
+Eclipse-LazyStart: true

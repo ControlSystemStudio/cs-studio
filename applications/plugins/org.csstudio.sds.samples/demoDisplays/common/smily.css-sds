@@ -1,0 +1,1532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display modelVersion="1.0">
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="319" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="" />
+  <property type="sds.boolean" id="display_border_visibility" value="true" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.integer" id="height" value="159" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="0" />
+  </property>
+  <property type="sds.integer" id="position.y" value="10" />
+  <property type="sds.color" id="color.background">
+    <color red="187" green="187" blue="187" />
+  </property>
+  <property type="sds.string" id="name" value="PolygonModel" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <layer layer_name="DEFAULT" layer_index="0" layer_visibility="true" />
+  <layer layer_name="Bargraph" layer_index="1" layer_visibility="true" />
+<widget type="org.csstudio.sds.components.GroupingContainer">
+  <layer layer_name="DEFAULT" layer_index="0" layer_visibility="true" />
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="30" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="2" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="6" />
+    <property type="sds.integer" id="height" value="30" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.integer" id="position.y" value="9" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="4" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="false" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="14" />
+    <property type="sds.integer" id="height" value="6" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.integer" id="position.y" value="19" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="4" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="false" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="24" />
+    <property type="sds.integer" id="height" value="6" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.integer" id="position.y" value="19" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Arc">
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="25" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Start Angle:&#x9;${start_angle}$&#xA;Angle:&#x9;${angle}$" />
+    <property type="sds.integer" id="border.width" value="0" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.integer" id="position.x" value="8" />
+    <property type="sds.integer" id="height" value="17" />
+    <property type="sds.color" id="color.fill">
+      <color red="255" green="0" blue="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="33" green="108" blue="0" />
+    </property>
+    <property type="sds.string" id="name" value="ArcModel" />
+    <property type="sds.integer" id="linewidth" value="2" />
+    <property type="sds.option" id="border.style">
+      <option id="1" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="filled" value="false" />
+    <property type="sds.integer" id="start_angle" value="225" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.boolean" id="transparent_background" value="true" />
+    <property type="sds.integer" id="angle" value="90" />
+    <property type="sds.integer" id="position.y" value="16" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="47" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.boolean" id="transparency" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${name}$" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.integer" id="position.x" value="45" />
+  <property type="sds.integer" id="height" value="55" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.integer" id="position.y" value="38" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.string" id="name" value="GroupingContainerModel" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.GroupingContainer">
+  <layer layer_name="DEFAULT" layer_index="0" layer_visibility="true" />
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="30" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="2" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="6" />
+    <property type="sds.integer" id="height" value="30" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.integer" id="position.y" value="9" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Arc">
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="24" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Start Angle:&#x9;${start_angle}$&#xA;Angle:&#x9;${angle}$" />
+    <property type="sds.integer" id="border.width" value="0" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.integer" id="position.x" value="9" />
+    <property type="sds.integer" id="height" value="23" />
+    <property type="sds.color" id="color.fill">
+      <color red="255" green="0" blue="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.string" id="name" value="ArcModel" />
+    <property type="sds.integer" id="linewidth" value="1" />
+    <property type="sds.option" id="border.style">
+      <option id="1" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="filled" value="false" />
+    <property type="sds.integer" id="start_angle" value="45" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.boolean" id="transparent_background" value="true" />
+    <property type="sds.integer" id="angle" value="90" />
+    <property type="sds.integer" id="position.y" value="13" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="8" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="11" />
+    <property type="sds.integer" id="height" value="8" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.integer" id="position.y" value="18" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="2" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="70" green="70" blue="70" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="false" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="14" />
+    <property type="sds.integer" id="height" value="2" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="70" green="70" blue="70" />
+    </property>
+    <property type="sds.integer" id="position.y" value="22" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="8" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="22" />
+    <property type="sds.integer" id="height" value="8" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.integer" id="position.y" value="18" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="2" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="70" green="70" blue="70" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="false" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="25" />
+    <property type="sds.integer" id="height" value="2" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="70" green="70" blue="70" />
+    </property>
+    <property type="sds.integer" id="position.y" value="22" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Arc">
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="20" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Start Angle:&#x9;${start_angle}$&#xA;Angle:&#x9;${angle}$" />
+    <property type="sds.integer" id="border.width" value="0" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.integer" id="position.x" value="11" />
+    <property type="sds.integer" id="height" value="19" />
+    <property type="sds.color" id="color.fill">
+      <color red="255" green="0" blue="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="205" green="97" blue="0" />
+    </property>
+    <property type="sds.string" id="name" value="ArcModel" />
+    <property type="sds.integer" id="linewidth" value="2" />
+    <property type="sds.option" id="border.style">
+      <option id="1" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="filled" value="false" />
+    <property type="sds.integer" id="start_angle" value="45" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.boolean" id="transparent_background" value="true" />
+    <property type="sds.integer" id="angle" value="90" />
+    <property type="sds.integer" id="position.y" value="27" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="47" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.boolean" id="transparency" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${name}$" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.integer" id="position.x" value="104" />
+  <property type="sds.integer" id="height" value="55" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.integer" id="position.y" value="38" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.string" id="name" value="GroupingContainerModel" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.GroupingContainer">
+  <layer layer_name="DEFAULT" layer_index="0" layer_visibility="true" />
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="30" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="2" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="6" />
+    <property type="sds.integer" id="height" value="30" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="9" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Rectangle">
+    <property type="sds.option" id="border.style">
+      <option id="1" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="20" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="160" green="18" blue="7" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="2" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="11" />
+    <property type="sds.integer" id="height" value="10" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="160" green="18" blue="7" />
+    </property>
+    <property type="sds.integer" id="position.y" value="25" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="RectangleModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="1" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="15" y="25" />
+        <point x="15" y="32" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="15" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="8" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.integer" id="position.y" value="25" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="1" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="19" y="26" />
+        <point x="19" y="33" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="19" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="8" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.integer" id="position.y" value="26" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="1" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="23" y="26" />
+        <point x="23" y="33" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="23" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="8" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.integer" id="position.y" value="26" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="1" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="27" y="26" />
+        <point x="27" y="33" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="27" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="8" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.integer" id="position.y" value="26" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="17" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="13" y="30" />
+        <point x="29" y="30" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="13" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="1" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="97" green="10" blue="117" />
+    </property>
+    <property type="sds.integer" id="position.y" value="30" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="11" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="11" />
+    <property type="sds.integer" id="height" value="12" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="13" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="3" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="15" />
+    <property type="sds.integer" id="height" value="3" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="17" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="11" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="20" />
+    <property type="sds.integer" id="height" value="12" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="13" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="3" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="24" />
+    <property type="sds.integer" id="height" value="3" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="17" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="1" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="20" y="9" />
+        <point x="20" y="0" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="20" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="10" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="0" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="8" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="34" y="16" />
+        <point x="41" y="13" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="34" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="4" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="13" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="8" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="7" y="16" />
+        <point x="0" y="13" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="0" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="4" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="13" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="8" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="31" y="13" />
+        <point x="38" y="5" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="31" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="9" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="5" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="8" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="11" y="13" />
+        <point x="4" y="5" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="4" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="9" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="5" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="4" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="26" y="10" />
+        <point x="29" y="1" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="26" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="10" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="1" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="4" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="15" y="11" />
+        <point x="12" y="2" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="12" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="10" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="190" green="25" blue="11" />
+    </property>
+    <property type="sds.integer" id="position.y" value="2" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="1" />
+  </widget>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="47" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.boolean" id="transparency" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${name}$" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.integer" id="position.x" value="171" />
+  <property type="sds.integer" id="height" value="55" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.integer" id="position.y" value="38" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.string" id="name" value="GroupingContainerModel" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+<widget type="org.csstudio.sds.components.GroupingContainer">
+  <layer layer_name="DEFAULT" layer_index="0" layer_visibility="true" />
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="30" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="2" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="6" />
+    <property type="sds.integer" id="height" value="30" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.integer" id="position.y" value="9" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="11" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="11" />
+    <property type="sds.integer" id="height" value="12" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.integer" id="position.y" value="14" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="3" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="45" green="45" blue="45" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="13" />
+    <property type="sds.integer" id="height" value="3" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="45" green="45" blue="45" />
+    </property>
+    <property type="sds.integer" id="position.y" value="16" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="11" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="20" />
+    <property type="sds.integer" id="height" value="12" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.integer" id="position.y" value="14" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Ellipse">
+    <property type="sds.option" id="border.style">
+      <option id="6" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="3" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="45" green="45" blue="45" />
+    </property>
+    <property type="sds.boolean" id="transparency" value="true" />
+    <property type="sds.paramstring" id="tooltip" value="${name}$&#xA;Value:&#x9;${fill}$" />
+    <property type="sds.boolean" id="orientation" value="true" />
+    <property type="sds.double" id="fill" value="0.0" />
+    <property type="sds.integer" id="border.width" value="1" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="22" />
+    <property type="sds.integer" id="height" value="3" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.color" id="color.foreground">
+      <color red="45" green="45" blue="45" />
+    </property>
+    <property type="sds.integer" id="position.y" value="21" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="EllipseModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+  </widget>
+  <widget type="org.csstudio.sds.components.Polyline">
+    <property type="sds.option" id="border.style">
+      <option id="0" />
+    </property>
+    <property type="sds.string" id="primary_pv" value="" />
+    <property type="sds.boolean" id="visibility" value="true" />
+    <property type="sds.integer" id="width" value="10" />
+    <property type="sds.string" id="permission_id" value="" />
+    <property type="sds.color" id="border.color">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.paramstring" id="tooltip" value="${name}$" />
+    <property type="sds.double" id="fill" value="100.0" />
+    <property type="sds.pointlist" id="points">
+      <pointList>
+        <point x="16" y="30" />
+        <point x="19" y="28" />
+        <point x="20" y="30" />
+        <point x="25" y="31" />
+      </pointList>
+    </property>
+    <property type="sds.integer" id="border.width" value="2" />
+    <property type="sds.string" id="layer" value="" />
+    <property type="sds.action" id="actionData">
+      <actionData />
+    </property>
+    <property type="sds.integer" id="position.x" value="16" />
+    <property type="sds.double" id="rotation" value="0.0" />
+    <property type="sds.integer" id="height" value="4" />
+    <property type="sds.boolean" id="enabled" value="true" />
+    <property type="sds.option" id="linestyle">
+      <option id="0" />
+    </property>
+    <property type="sds.color" id="color.foreground">
+      <color red="255" green="255" blue="255" />
+    </property>
+    <property type="sds.integer" id="position.y" value="28" />
+    <property type="sds.color" id="color.background">
+      <color red="240" green="240" blue="240" />
+    </property>
+    <property type="sds.string" id="name" value="PolylineModel" />
+    <property type="sds.map" id="aliases">
+      <map />
+    </property>
+    <property type="sds.integer" id="linewidth" value="2" />
+  </widget>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.integer" id="width" value="47" />
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.boolean" id="transparency" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${name}$" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.integer" id="position.x" value="234" />
+  <property type="sds.integer" id="height" value="55" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.integer" id="position.y" value="38" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.string" id="name" value="GroupingContainerModel" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+</widget>
+
+</display>
