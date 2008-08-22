@@ -27,10 +27,10 @@ class ConnectJob extends Job
     /** Display an error message via dialog box in the UI thread. */
     class AsyncErrorDialog implements Runnable
     {
-        private Shell shell;
-        private String error;
+        final private Shell shell;
+        final private String error;
         
-        public AsyncErrorDialog(Shell shell, String error)
+        public AsyncErrorDialog(final Shell shell, final String error)
         {
             this.shell = shell;
             this.error = error;
@@ -81,14 +81,14 @@ class ConnectJob extends Job
                 }
             });
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             // Show this in a message dialog.
             // Usually, this happens because somebody entered
             // a bad server URL, so the user should learn about the error...
-            new AsyncErrorDialog(shell, e.getMessage());
+            new AsyncErrorDialog(shell, ex.getMessage());
             // Also log it.
-            Plugin.getLogger().error("Archive connection error", e); //$NON-NLS-1$
+            Plugin.getLogger().error(ex);
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }
