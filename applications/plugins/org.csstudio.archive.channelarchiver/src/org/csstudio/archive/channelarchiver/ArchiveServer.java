@@ -1,5 +1,7 @@
 package org.csstudio.archive.channelarchiver;
 
+import java.net.UnknownHostException;
+
 import org.apache.xmlrpc.XmlRpcClient;
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveValues;
@@ -26,22 +28,29 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
     @SuppressWarnings("nls")
     public ArchiveServer(String url_text) throws Exception
     {
-        url = url_text;
-        
-        // Patch 'xdns' into http, but keep the 'official' URL
-        // as received.
-        if (url_text.startsWith("xnds://"))
-            url_text = "http://" + url_text.substring(7);
-        // Create client
-        xmlrpc = new XmlRpcClient(url_text);
-        
-        // Get server info
-        server_info_request = new ServerInfoRequest();
-        server_info_request.read(xmlrpc);
-        
-        // .. and archive keys
-        archives_request = new ArchivesRequest();
-        archives_request.read(xmlrpc);
+        try
+        {
+            url = url_text;
+            
+            // Patch 'xdns' into http, but keep the 'official' URL
+            // as received.
+            if (url_text.startsWith("xnds://"))
+                url_text = "http://" + url_text.substring(7);
+            // Create client
+            xmlrpc = new XmlRpcClient(url_text);
+            
+            // Get server info
+            server_info_request = new ServerInfoRequest();
+            server_info_request.read(xmlrpc);
+            
+            // .. and archive keys
+            archives_request = new ArchivesRequest();
+            archives_request.read(xmlrpc);
+        }
+        catch (UnknownHostException ex)
+        {
+            throw new Exception("Unknown host in URL " + url_text);
+        }
     }
     
     /** {@inheritDoc} */
