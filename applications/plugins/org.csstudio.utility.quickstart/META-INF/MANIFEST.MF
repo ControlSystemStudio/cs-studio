@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Quickstart Plug-in
 Bundle-SymbolicName: org.csstudio.utility.quickstart;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.utility.quickstart.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Desy Plug-in
 Bundle-SymbolicName: org.csstudio.sds.settings.desy;singleton:=true
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.8
 Bundle-Activator: org.csstudio.sds.settings.desy.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds,
