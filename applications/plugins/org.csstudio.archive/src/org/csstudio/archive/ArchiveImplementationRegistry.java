@@ -103,10 +103,11 @@ public class ArchiveImplementationRegistry
      *  extension point for the URL prefix, and obtains
      *  an ArchiveServer instance from one that matches the prefix.
      *  @param url The URL to resolve.
-     *  @return The ArchiveServer for the URL or <code>null</code>.
+     *  @return The ArchiveServer for the URL
+     *  @throws Exception on error (bad URL, cannot connect, ...)
      */
     @SuppressWarnings("nls")
-    public ArchiveServer getServer(String url)
+    public ArchiveServer getServer(final String url) throws Exception
     {
         String prefix;
         int i = url.indexOf(':');
@@ -116,20 +117,7 @@ public class ArchiveImplementationRegistry
             prefix = url.substring(0, i);
         final ArchiveImplementationDescriptor aid = _AALImpl.get(prefix);
         if (aid == null)
-        {
-            Activator.getLogger().error(
-                            "Unknown prefix in URL '" + url + "'");
-            return null;
-        }
-        try
-        {
-            return aid.getArchiveImplementation().getServerInstance(url);
-        }
-        catch (Exception e)
-        {
-            Activator.getLogger().error(
-                            "Cannot resolve URL '" + url + "'", e);
-            return null;
-        }
+            throw new Exception("Unknown prefix in URL '" + url + "'");
+        return aid.getArchiveImplementation().getServerInstance(url);
     }
 }
