@@ -40,6 +40,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Conf
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
@@ -1096,12 +1097,31 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		dto.setFilterConditions(list);
 
-		List<FilterActionDTO> actionDTOs = new ArrayList<FilterActionDTO>(bean
-				.getActions().size());
+		List<FilterActionDTO> filterActionDTOs = dto.getFilterActions();
+
+		List<FilterActionDTO> newActionDTOs = new ArrayList<FilterActionDTO>(
+				bean.getActions().size());
 		List<FilterAction> actions = bean.getActions();
 		for (FilterAction filterAction : actions) {
 			FilterActionType filterActionType = filterAction
 					.getFilterActionType();
+
+			boolean useOld = false;
+			for (FilterActionDTO actionDTO : filterActionDTOs) {
+				if (filterAction.getReceiver().getID() == actionDTO
+						.getIReceiverRef()) {
+					actionDTO.setMessage(filterAction.getMessage());
+					actionDTO.setReceiver(findDTO4Bean(filterAction
+							.getReceiver()));
+					newActionDTOs.add(actionDTO);
+					useOld = true;
+				}
+			}
+
+			if (useOld) {
+				continue;
+			}
+
 			if (filterActionType instanceof AlarmbearbeiterFilterActionType) {
 				AlarmbearbeiterFilterActionType type = (AlarmbearbeiterFilterActionType) filterActionType;
 				AbstractAlarmbearbeiterFilterActionDTO actiondto = null;
@@ -1120,7 +1140,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 						.setReceiver(findDTO4Bean((AlarmbearbeiterBean) filterAction
 								.getReceiver()));
 				actiondto.setMessage(filterAction.getMessage());
-				actionDTOs.add(actiondto);
+				newActionDTOs.add(actiondto);
 			} else if (filterActionType instanceof AlarmbearbeitergruppenFilterActionType) {
 				AlarmbearbeitergruppenFilterActionType type = (AlarmbearbeitergruppenFilterActionType) filterActionType;
 				AbstractAlarmbearbeiterGruppenFilterActionDTO actiondto = null;
@@ -1148,18 +1168,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 						.setReceiver(findDTO4Bean((AlarmbearbeiterGruppenBean) filterAction
 								.getReceiver()));
 				actiondto.setMessage(filterAction.getMessage());
-				actionDTOs.add(actiondto);
+				newActionDTOs.add(actiondto);
 			} else if (filterActionType instanceof AlarmTopicFilterActionType) {
 				TopicFilterActionDTO actiondto = new TopicFilterActionDTO();
 				actiondto
 						.setReceiver(findDTO4Bean((AlarmtopicBean) filterAction
 								.getReceiver()));
 				actiondto.setMessage(filterAction.getMessage());
-				actionDTOs.add(actiondto);
+				newActionDTOs.add(actiondto);
 			}
 		}
 
-		dto.setFilterActions(actionDTOs);
+		dto.setFilterActions(newActionDTOs);
 		dto.setName(bean.getName());
 		dto.setIGroupRef(this.getRubrikIDForName(bean.getRubrikName(),
 				RubrikTypeEnum.FILTER));
@@ -1171,6 +1191,17 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		this.insertOrUpdateNotification(resultBean, inserted);
 		return resultBean;
+	}
+
+	private NewAMSConfigurationElementDTO findDTO4Bean(IReceiverBean receiver) {
+		if (receiver instanceof AlarmbearbeiterBean) {
+			return findDTO4Bean((AlarmbearbeiterBean) receiver);
+		} else if (receiver instanceof AlarmbearbeiterGruppenBean) {
+			return findDTO4Bean((AlarmbearbeiterGruppenBean) receiver);
+		} else if (receiver instanceof AlarmtopicBean) {
+			return findDTO4Bean((AlarmtopicBean) receiver);
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")

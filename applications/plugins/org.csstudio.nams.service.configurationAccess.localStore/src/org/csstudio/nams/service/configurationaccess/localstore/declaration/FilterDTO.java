@@ -3,8 +3,10 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -300,26 +302,30 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		}
 
 		// Actionen speichern
-		List<FilterActionDTO> noNeedToSave = new LinkedList<FilterActionDTO>();
+		Map<FilterActionDTO, FilterAction2FilterDTO> noNeedToSave = new HashMap<FilterActionDTO, FilterAction2FilterDTO>();
 		List<FilterAction2FilterDTO> allActionJoins = mapper.loadAll(FilterAction2FilterDTO.class, false);
 		for (FilterAction2FilterDTO filterAction2FilterDTO : allActionJoins) {
 			if (filterAction2FilterDTO.getId().getIFilterRef() == this.getIFilterID()) {
-				FilterActionDTO filterActionDTO = mapper.findForId(FilterActionDTO.class, filterAction2FilterDTO.getId().getIFilterActionRef(), false);
-				mapper.delete(filterAction2FilterDTO);
+				FilterActionDTO filterActionDTO = mapper.findForId(FilterActionDTO.class, filterAction2FilterDTO.getId().getIFilterActionRef(), true);
 				if (!getFilterActions().contains(filterActionDTO)) {
+					mapper.delete(filterAction2FilterDTO);
 					mapper.delete(filterActionDTO);
 				} else {
-					noNeedToSave.add(filterActionDTO);
+					noNeedToSave.put(filterActionDTO, filterAction2FilterDTO);
 				}
 			}
 		}
 		
 		int iPos = 0;
 		for (FilterActionDTO actionDTO : getFilterActions()) {
-			if (!noNeedToSave.contains(actionDTO)) {
+			FilterAction2FilterDTO filterAction2FilterDTO = noNeedToSave.get(actionDTO);
+			if (filterAction2FilterDTO == null) {
 				mapper.save(actionDTO);
+				mapper.save(new FilterAction2FilterDTO(actionDTO, this, iPos));
+			} else {
+				filterAction2FilterDTO.setIPos(iPos);
+				mapper.save(filterAction2FilterDTO);
 			}
-			mapper.save(new FilterAction2FilterDTO(actionDTO, this, iPos));
 			iPos++;
 		}
 	}
@@ -341,7 +347,7 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 	private FilterConditionsToFilterDTO findForId(final int id,
 			final Collection<FilterConditionsToFilterDTO> fcs) {
 		for (final FilterConditionsToFilterDTO t : fcs) {
-			if (t.getIFilterConditionRef() == id) {
+			if (t.getIFilterRef() == this.iFilterID && t.getIFilterConditionRef() == id) {
 				return t;
 			}
 		}

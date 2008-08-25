@@ -118,14 +118,18 @@ public abstract class FilterActionDTO implements NewAMSConfigurationElementDTO,
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName()
-				+ ": Nachricht an Topic mit id: " + this.receiver;
+				+ ": FilterAction mit id: " + this.iFilterActionID + "  ReceiverRef: " + iReceiverRef;
 	}
 
-	protected int getIReceiverRef() {
+	public int getIReceiverRef() {
 		return this.iReceiverRef;
 	}
 
 	protected void setIReceiverRef(final int receiverRef) {
 		this.iReceiverRef = receiverRef;
+	}
+
+	public void setIFilterActionID(int filterActionID) {
+		iFilterActionID = filterActionID;
 	}
 }
