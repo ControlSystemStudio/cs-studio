@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="libs/RXTXcomm.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/comm.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/smslib-3.3.0-B3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/log4j.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
