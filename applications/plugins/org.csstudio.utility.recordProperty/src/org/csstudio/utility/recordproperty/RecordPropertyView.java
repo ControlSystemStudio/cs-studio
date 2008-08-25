@@ -1,5 +1,8 @@
 package org.csstudio.utility.recordproperty;
 
+import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.utility.recordproperty.rdb.data.RecordPropertyGetRDB;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -12,9 +15,11 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -23,14 +28,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
@@ -62,7 +71,7 @@ public class RecordPropertyView extends ViewPart {
 	 */
 	public RecordPropertyEntry[] entries;
 	
-	private Text record;
+	private ComboViewer cv;
 	
 	public static String recordName;
 	
@@ -80,6 +89,11 @@ public class RecordPropertyView extends ViewPart {
 	 */
 	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
 	
+	/** Instance number, used to create a unique ID
+     *  @see #createNewInstance()
+     */
+    private static int instance = 0;
+	
 	public RecordPropertyView() {
 	}
 	
@@ -90,16 +104,17 @@ public class RecordPropertyView extends ViewPart {
 		parent.setLayout(new GridLayout(1, false));
 
 		/**
-		 * Temporary text and button - will be automatic later
+		 * Text, button, label are in this group
 		 */
 		Group g = new Group(parent, SWT.NONE);
 		g.setText(Messages.RecordPropertyView_RECORD);
 		
 		g.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		record = new Text(g, SWT.WRAP | SWT.BORDER);
-		record.setText(Messages.RecordPropertyView_TYPE_HERE);
-		
+        cv = new ComboViewer(g, SWT.BORDER);
+        cv.getCombo().setToolTipText("test");
+        cv.getCombo().setText(Messages.RecordPropertyView_TYPE_HERE);
+        
 		Button button = new Button(g, SWT.PUSH);
 		button.setText(Messages.RecordPropertyView_GET_DATA);
 		button.addSelectionListener(new SelectionListener() {
@@ -108,45 +123,10 @@ public class RecordPropertyView extends ViewPart {
 			}
 			
 			public void widgetSelected(final SelectionEvent e) {
-				// Gets text (a record name) from Text Field.
-				recordName = record.getText();
-				
-				// Deletes all spaces before and after real text.
-				recordName = recordName.trim();
-				
-				label.setText(Messages.RecordPropertyView_PLEASE_WAIT);
-				label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-				
-				// New thread (Job) is created, so GUI does not freeze
-				// when it is collecting data.
-				Job j = new Job("") {
-					
-					protected IStatus run(IProgressMonitor monitor) {
-
-						// Variable entries gets data, but does not print it in
-						// GUI yet, there would be Invalid thread access.
-						RecordPropertyGetRDB rdb = new RecordPropertyGetRDB();
-						entries = rdb.getData(recordName);
-
-						// asyncExec makes possible that GUI-changing can be done
-						// in separate thread than GUI.
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								// Here data is printed in GUI.
-								tableViewer.setInput(entries);
-								
-								label.setText(Messages.RecordPropertyView_DONE);
-								label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
-								
-							}		
-						});
-												
-						return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
-					}
-				};
-				
-				j.setPriority(Job.SHORT);
-				j.schedule();
+				// Gets text (a record name) from Combo Viewer.
+				recordName = cv.getCombo().getText();
+				cv.add(cv.getCombo().getText());
+				fillTableWithData(recordName);
 			}
 			
 		});
@@ -163,6 +143,26 @@ public class RecordPropertyView extends ViewPart {
 		getSite().setSelectionProvider(tableViewer);
 		
 		label = new Label(g, SWT.CENTER);
+		
+        // Enable 'Drop'
+        new ProcessVariableDropTarget(cv.getControl())
+        {
+            @Override
+            public void handleDrop(IProcessVariable name,
+                                   DropTargetEvent event)
+            {
+                fillTableWithData(name.getName());
+            }
+        };
+		
+		///////////////////// - copied from Probe
+        // In principle, this could allow 'dragging' of PV names.
+        // In practice, however, any mouse click & drag only selects
+        // portions of the text and moves the cursor. It won't
+        // initiate a 'drag'.
+        // Maybe it works on some OS? Maybe there's another magic
+        // modifier key to force a 'drag'?
+        new ProcessVariableDragSource(cv.getControl(), cv);
 	}
 	
 	/**
@@ -252,7 +252,93 @@ public class RecordPropertyView extends ViewPart {
 		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
 	}
 	
+	/**
+	 * Getter for a record name.
+	 * @return the record name
+	 */
 	public static String getRecordName() {
 		return recordName;
 	}
+	
+	/**
+	 * Fills table with data, when user types record name into Combo Viewer
+	 * OR when user opens it from another plugin.
+	 * @param pv_name the name of pv (record)
+	 */
+	private void fillTableWithData(String pv_name) {
+		recordName = pv_name;
+		
+		// Deletes all spaces before and after real text.
+		recordName = recordName.trim();
+		
+		label.setText(Messages.RecordPropertyView_PLEASE_WAIT);
+		label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+		
+		// New thread (Job) is created, so GUI does not freeze
+		// when it is collecting data.
+		Job j = new Job("") {
+			
+			protected IStatus run(IProgressMonitor monitor) {
+
+				// Variable entries gets data, but does not print it in
+				// GUI yet, there would be Invalid thread access.
+				RecordPropertyGetRDB rdb = new RecordPropertyGetRDB();
+				entries = rdb.getData(recordName);
+
+				// asyncExec makes possible that GUI-changing can be done
+				// in separate thread than GUI.
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						// Here data is printed in GUI.
+						tableViewer.setInput(entries);
+						
+						label.setText(Messages.RecordPropertyView_DONE);
+						label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
+						
+					}		
+				});
+										
+				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
+			}
+		};
+		
+		j.setPriority(Job.SHORT);
+		j.schedule();
+		
+		// sets ComboViewer text to record name
+		cv.getCombo().setText(recordName);
+	}
+	
+	/**
+	 * Used when user opens a Record Property in context menu of some other plugin.
+	 * @param pv_name the name of pv (record)
+	 * @return
+	 */
+	public static boolean activateWithPV(IProcessVariable pv_name) {
+		try
+        {
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            IWorkbenchPage page = window.getActivePage();
+            
+            RecordPropertyView rpv = (RecordPropertyView) page.showView(ID, createNewInstance(),
+                                              IWorkbenchPage.VIEW_ACTIVATE);
+            
+            rpv.fillTableWithData(pv_name.getName());
+            
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+	}
+	
+    /** @return a new view instance */
+    public static String createNewInstance()
+    {
+        ++instance;
+        return Integer.toString(instance);
+    }
 }

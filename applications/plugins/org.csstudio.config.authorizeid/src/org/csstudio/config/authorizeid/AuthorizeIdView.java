@@ -46,6 +46,8 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class AuthorizeIdView extends ViewPart {
 
+	public static final String ID = "org.csstudio.config.authorizeid";
+	
 	private Label label;
 	private Combo combo;
 	private TableViewer tableViewer1;

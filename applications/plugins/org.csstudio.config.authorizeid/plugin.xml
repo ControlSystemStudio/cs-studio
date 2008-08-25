@@ -8,6 +8,15 @@
             id="org.csstudio.config.authorizeid"
             label="CSS Action Set"
             visible="true">
+         <action
+               class="org.csstudio.config.authorizeid.AuthorizeIdAction"
+               icon="icons/ai1.gif"
+               id="org.csstudio.config.authorizeid"
+               label="AuthorizeId"
+               menubarPath="css/configuration/"
+               style="push"
+               tooltip="AuthorizeId">
+         </action>
       </actionSet>
    </extension>
    <extension

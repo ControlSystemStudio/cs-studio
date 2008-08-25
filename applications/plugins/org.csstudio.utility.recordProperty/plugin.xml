@@ -10,6 +10,7 @@
             visible="true">
          <action
                class="org.csstudio.utility.recordproperty.RecordPropertyAction"
+               icon="icons/icon3.gif"
                id="org.csstudio.utility.recordProperty"
                label="RecordProperty"
                menubarPath="css/utility/"
@@ -21,7 +22,9 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            allowMultiple="true"
             class="org.csstudio.utility.recordproperty.RecordPropertyView"
+            icon="icons/icon3.gif"
             id="org.csstudio.utility.recordproperty"
             name="Record Property">
       </view>
@@ -32,6 +35,34 @@
             file="toc.xml"
             primary="true">
       </toc>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.utility.recordProperty.popupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.utility.recordproperty.PVpopupAction"
+               enablesFor="1"
+               icon="icons/icon3.gif"
+               id="org.csstudio.utility.recordProperty.PVpopupAction"
+               label="RecordProperty"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="%PopupMenuTooltip">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>

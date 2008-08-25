@@ -1,9 +1,15 @@
 package org.csstudio.utility.recordproperty;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 public class RecordPropertyEntry extends PlatformObject implements IProcessVariable, Serializable{
 
@@ -62,14 +68,36 @@ public class RecordPropertyEntry extends PlatformObject implements IProcessVaria
 	 */
 	@Override
 	public String getName() {
+		/*
+		IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        IWorkbenchPage page = window.getActivePage();
+        
+        RecordPropertyView rpv = (RecordPropertyView) page.showView(ID, createNewInstance(),
+                                          IWorkbenchPage.VIEW_ACTIVATE);
+        */
+		String recordName = RecordPropertyView.getRecordName();
 		
-		return RecordPropertyView.getRecordName()+"."+getPvName();
+		
+		return validateRecord(recordName)+"."+getPvName();
 	}
 
 	@Override
 	public String getTypeId() {
 
 		return IProcessVariable.TYPE_ID;
+	}
+	
+	private String validateRecord(String _record) {
+		
+		String REGEX = "(\\.[a-zA-Z1-9]{0,6})$";
+		
+		Pattern p = Pattern.compile(REGEX);
+		Matcher m = p.matcher(_record);
+		
+		_record = m.replaceAll("");
+		
+		return _record;
 	}
 
 }
