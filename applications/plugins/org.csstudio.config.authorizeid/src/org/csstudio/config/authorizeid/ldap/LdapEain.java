@@ -64,7 +64,6 @@ public class LdapEain implements Observer {
 	/**
 	 * Update() is executed when notifyView() is called.
 	 */
-	@Override
 	public void update(Observable arg0, Object arg1) {
 		er = _ergebnisListe.getAnswer();
 

@@ -66,7 +66,6 @@ public class RecordPropertyEntry extends PlatformObject implements IProcessVaria
 	 * When some other plugin is opened via Record Property, it sends
 	 * record name and field name ("recordname.fieldname").
 	 */
-	@Override
 	public String getName() {
 		/*
 		IWorkbench workbench = PlatformUI.getWorkbench();
@@ -82,7 +81,6 @@ public class RecordPropertyEntry extends PlatformObject implements IProcessVaria
 		return validateRecord(recordName)+"."+getPvName();
 	}
 
-	@Override
 	public String getTypeId() {
 
 		return IProcessVariable.TYPE_ID;

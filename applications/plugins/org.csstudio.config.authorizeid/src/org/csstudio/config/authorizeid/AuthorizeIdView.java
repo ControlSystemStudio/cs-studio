@@ -90,11 +90,9 @@ public class AuthorizeIdView extends ViewPart {
 
 		combo.addSelectionListener(new SelectionListener() {
 
-			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 
-			@Override
 			public void widgetSelected(SelectionEvent e) {
 				refreshTable1();
 
@@ -115,11 +113,9 @@ public class AuthorizeIdView extends ViewPart {
 
 		table1.addSelectionListener(new SelectionListener() {
 
-			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 
-			@Override
 			public void widgetSelected(SelectionEvent e) {
 				refreshTable2();
 			}
@@ -361,7 +357,6 @@ public class AuthorizeIdView extends ViewPart {
 			this.i = i;
 		}
 
-		@Override
 		public void handleEvent(Event event) {
 			sortColumn(i);
 		}

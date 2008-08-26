@@ -39,7 +39,6 @@ public class RecordPropertyLabelProvider extends LabelProvider implements ITable
 		return null;
 	}
 
-	@Override
 	public Color getBackground(Object element, int columnIndex) {
 
 		if (element instanceof RecordPropertyEntry) {
@@ -74,7 +73,6 @@ public class RecordPropertyLabelProvider extends LabelProvider implements ITable
 		return null;
 	}
 
-	@Override
 	public Color getForeground(Object element, int columnIndex) {
 		// TODO Auto-generated method stub
 		return null;
