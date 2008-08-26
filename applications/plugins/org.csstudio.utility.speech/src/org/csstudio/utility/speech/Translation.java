@@ -13,7 +13,7 @@ public class Translation
 	 *  @param pattern <i>Regular Expression</i> pattern to be translated
 	 *  @param replacement Replacement text
 	 */
-	Translation(final String pattern, final String replacement)
+	public Translation(final String pattern, final String replacement)
 	{
 		this.pattern = pattern;
 		this.replacement = replacement;
