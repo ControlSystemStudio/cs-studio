@@ -45,4 +45,16 @@ public class AddNewNameDialog extends KryoNameDialog {
 		});
 	}
 
+	@Override
+	protected String getDescription() {
+		return "Please fill in correctly all the required fields";
+
+	}
+
+	@Override
+	protected String getTitle() {
+		return "Add New Kryo Name";
+
+	}
+
 }

@@ -66,10 +66,9 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 	protected Control createContents(Composite parent) {
 		Control contents = super.createContents(parent);
 		// Set the title
-		setTitle("Add New Kryo Name");
+		setTitle(getTitle());
 		// Set the message
-		setMessage("Please fill in correctly all the required fields",
-				IMessageProvider.INFORMATION);
+		setMessage(getDescription(), IMessageProvider.INFORMATION);
 		return contents;
 	}
 
@@ -275,5 +274,9 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 	}
 
 	protected abstract void getButton(Composite parent);
+
+	protected abstract String getTitle();
+
+	protected abstract String getDescription();
 
 }

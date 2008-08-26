@@ -17,7 +17,6 @@ public class EditNameDialog extends KryoNameDialog {
 
 	private final KryoNameResolved resolved;
 	private final Shell shell;
-	
 
 	public EditNameDialog(Shell parentShell, KryoNameResolved resolved) {
 		super(parentShell);
@@ -59,7 +58,7 @@ public class EditNameDialog extends KryoNameDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-			
+
 				try {
 					KryoNameEntry update = new KryoNameEntry();
 					update.setId(resolved.getId());
@@ -74,6 +73,18 @@ public class EditNameDialog extends KryoNameDialog {
 				}
 			}
 		});
+	}
+
+	@Override
+	protected String getDescription() {
+		return "Description is available for editing.";
+
+	}
+
+	@Override
+	protected String getTitle() {
+		return "Edit Kryo Name";
+
 	}
 
 }
