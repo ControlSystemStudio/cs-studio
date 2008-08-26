@@ -4,7 +4,7 @@ package org.csstudio.utility.speech;
  *  @author Katia Danilova
  *  @author Kay Kasemir
  */
-class Translation
+public class Translation
 {
 	private final String pattern;
 	private final String replacement;
