@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common Plug-in
 Bundle-SymbolicName: org.csstudio.nams.common
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.3
 Bundle-Activator: org.csstudio.nams.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
