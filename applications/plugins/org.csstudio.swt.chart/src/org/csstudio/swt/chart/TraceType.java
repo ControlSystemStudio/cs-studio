@@ -12,6 +12,11 @@ public enum TraceType
      */
     Lines(Messages.TraceType_Lines),
     
+    /** Connect samples with area, using line for the average of samples
+     *  that carry min/max info.
+     */
+    Area(Messages.TraceType_Area),
+    
     /** Place a marker at each sample.
      *  <p>
      *  Uses candlesticks for samples that carry min/max info.

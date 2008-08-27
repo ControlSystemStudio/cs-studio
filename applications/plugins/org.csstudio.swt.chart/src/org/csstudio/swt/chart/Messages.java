@@ -54,6 +54,7 @@ public class Messages extends NLS
     public static String SaveImage_ActionTitle;
     public static String SaveImage_ErrorMessage;
     public static String SaveImage_ErrorTitle;
+    public static String TraceType_Area;
     public static String TraceType_Bars;
     public static String TraceType_Lines;
     public static String TraceType_Markers;
