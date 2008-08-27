@@ -425,7 +425,8 @@ public class Model
             auto_scale = false;
         }
         boolean log_scale = false;
-        TraceType trace_type = TraceType.Lines;
+        // Default trace type for new items
+        TraceType trace_type = TraceType.Area;
         // Use settings of existing item for that axis - if there is one
         for (IModelItem item : items)
             if (item.getAxisIndex() == axis_index)

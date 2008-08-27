@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -41,9 +42,7 @@ class ConnectJob extends Job
         {
             MessageDialog.openError(shell,
                     Messages.ConnectErrorTitle,
-                    Messages.ConnectErrorMessage 
-                    + "\n" //$NON-NLS-1$
-                    + error);
+                    NLS.bind(Messages.ConnectErrorMessage, url, error));
         }
     }
     
@@ -88,7 +87,7 @@ class ConnectJob extends Job
             // a bad server URL, so the user should learn about the error...
             new AsyncErrorDialog(shell, ex.getMessage());
             // Also log it.
-            Plugin.getLogger().error(ex);
+            Plugin.getLogger().error(url + ": " + ex.getMessage()); //$NON-NLS-1$
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }
