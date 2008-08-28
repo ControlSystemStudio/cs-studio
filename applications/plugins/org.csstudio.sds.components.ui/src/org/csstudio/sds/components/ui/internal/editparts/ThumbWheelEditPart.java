@@ -31,28 +31,24 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		fig.setDecimalDigitsPart(model.getDecimalPartDigits());
 		fig.addWheelListener(new WheelListener() {
 
-			@Override
 			public void decrementDecimalPart(int index) {
 				wheelLogic.decrementDecimalDigitAt(index);
 				updateWheelValues(wheelLogic, fig, model);
 				model.setValue(wheelLogic.getValue());
 			}
 
-			@Override
 			public void incrementDecimalPart(int index) {
 				wheelLogic.incrementDecimalDigitAt(index);
 				updateWheelValues(wheelLogic, fig, model);
 				model.setValue(wheelLogic.getValue());
 			}
 
-			@Override
 			public void decrementIntegerPart(int index) {
 				wheelLogic.decrementIntigerDigitAt(index);
 				updateWheelValues(wheelLogic, fig, model);
 				model.setValue(wheelLogic.getValue());
 			}
 
-			@Override
 			public void incrementIntegerPart(int index) {
 				wheelLogic.incrementIntigerDigitAt(index);
 				updateWheelValues(wheelLogic, fig, model);

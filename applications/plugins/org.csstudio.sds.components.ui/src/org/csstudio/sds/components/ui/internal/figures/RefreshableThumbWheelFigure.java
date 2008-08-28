@@ -170,7 +170,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 			ArrowButton up = new ArrowButton(ArrowButton.NORTH);
 			up.setPreferredSize(20, 20);
 			up.addActionListener(new ActionListener() {
-				@Override
 				public void actionPerformed(ActionEvent event) {
 					fireIncrementIntegerListeners(wholePartDigits - i - 1);
 				}
@@ -183,7 +182,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 			ArrowButton down = new ArrowButton(ArrowButton.SOUTH);
 			down.setPreferredSize(20, 20);
 			down.addActionListener(new ActionListener() {
-				@Override
 				public void actionPerformed(ActionEvent event) {
 					fireDecrementIntegerListeners(wholePartDigits - i - 1);
 				}

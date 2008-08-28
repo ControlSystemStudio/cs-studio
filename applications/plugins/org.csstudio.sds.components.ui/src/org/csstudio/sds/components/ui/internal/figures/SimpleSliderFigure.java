@@ -275,7 +275,7 @@ public final class SimpleSliderFigure extends Panel implements
 		} else if (_currentValue > _max) {
 			settedValue = _max;
 		}
-		_scrollBar.setEnabled(true);
+//		_scrollBar.setEnabled(true);
 		_scrollBar.setValue(settedValue);
 		_scrollBar.invalidate();
 
