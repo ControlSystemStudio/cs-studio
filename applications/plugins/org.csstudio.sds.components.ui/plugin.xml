@@ -41,6 +41,14 @@
            class="org.csstudio.sds.components.ui.internal.editparts.StripChartEditPart"
            typeId="org.csstudio.sds.components.StripChart">
      </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.SixteenBinaryBarEditPart"
+           typeId="org.csstudio.sds.components.SixteenBinaryBar">
+     </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.ThumbWheelEditPart"
+           typeId="org.csstudio.sds.components.ThumbWheel">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
