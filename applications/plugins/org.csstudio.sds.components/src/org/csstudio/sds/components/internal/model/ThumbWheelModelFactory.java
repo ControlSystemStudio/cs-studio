@@ -16,7 +16,7 @@ public class ThumbWheelModelFactory implements IWidgetModelFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getWidgetModelType() {
+	public Class<?> getWidgetModelType() {
 		return ThumbWheelModel.class;
 	}
 
