@@ -13,11 +13,14 @@ import org.eclipse.swt.graphics.RGB;
 
 public class ThumbWheelModel extends AbstractWidgetModel {
 
-	public static final String PROP_FONT_COLOR = "fontColor"; //$NON-NLS-1$
-
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
+	public static final String PROP_MIN = "min"; //$NON-NLS-1$
+
+	public static final String PROP_MAX = "max"; //$NON-NLS-1$
+
 	public static final String PROP_INTERNAL_FRAME_THICKNESS = "internalFrameSize"; //$NON-NLS-1$
+
 	public static final String PROP_INTERNAL_FRAME_COLOR = "internalFrameColor"; //$NON-NLS-1$
 
 	public static final String PROP_WHOLE_DIGITS_PART = "wholeDigits"; //$NON-NLS-1$
@@ -59,14 +62,18 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, 0));
 		addProperty(PROP_WHOLE_DIGITS_PART, new IntegerProperty("Whole digits",
 				WidgetPropertyCategory.Display, 5));
+		addProperty(PROP_MIN, new DoubleProperty("Min",
+				WidgetPropertyCategory.Behaviour, Double.NaN));
+		addProperty(PROP_MAX, new DoubleProperty("Max",
+				WidgetPropertyCategory.Behaviour, Double.NaN));
+		addProperty(PROP_WHOLE_DIGITS_PART, new IntegerProperty(
+				"Integer digits", WidgetPropertyCategory.Behaviour, 5));
 		addProperty(PROP_DECIMAL_DIGITS_PART, new IntegerProperty(
-				"Decimal digits", WidgetPropertyCategory.Display, 5));
+				"Decimal digits", WidgetPropertyCategory.Behaviour, 5));
 
 		addProperty(PROP_FONT, new FontProperty("Wheel Fonts",
 				WidgetPropertyCategory.Display, new FontData("Arial", 9,
 						SWT.NORMAL)));
-		addProperty(PROP_FONT_COLOR, new ColorProperty("Wheeled font color",
-				WidgetPropertyCategory.Display, ColorConstants.black.getRGB()));
 
 		addProperty(PROP_INTERNAL_FRAME_COLOR, new ColorProperty(
 				"Internal frame color", WidgetPropertyCategory.Display,
@@ -93,16 +100,20 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getProperty(PROP_FONT).getPropertyValue();
 	}
 
-	public RGB getFontColor() {
-		return getProperty(PROP_FONT_COLOR).getPropertyValue();
-	}
-
 	public int getWholePartDigits() {
 		return getProperty(PROP_WHOLE_DIGITS_PART).getPropertyValue();
 	}
 
+	public void setWholePartDigits(int val) {
+		setPropertyValue(PROP_WHOLE_DIGITS_PART, val);
+	}
+
 	public int getDecimalPartDigits() {
 		return getProperty(PROP_DECIMAL_DIGITS_PART).getPropertyValue();
+	}
+
+	public void setDecimalPartDigits(int val) {
+		setPropertyValue(PROP_DECIMAL_DIGITS_PART, val);
 	}
 
 	public double getValue() {
@@ -117,7 +128,24 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getProperty(PROP_INTERNAL_FRAME_COLOR).getPropertyValue();
 	}
 
+	public double getMin() {
+		return getProperty(PROP_MIN).getPropertyValue();
+	}
+
+	public double getMax() {
+		return getProperty(PROP_MAX).getPropertyValue();
+	}
+
 	public void setValue(double val) {
 		setPropertyValue(PROP_VALUE, val);
+
+	}
+
+	public RGB getInternalBorderColor() {
+		return getProperty(PROP_INTERNAL_FRAME_COLOR).getPropertyValue();
+	}
+
+	public int getInternalBorderWidth() {
+		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 }
