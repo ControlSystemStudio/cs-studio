@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Figure;
@@ -136,25 +137,25 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 	public void setLabelFont(FontData newValue) {
 		this.labelFont = newValue;
-		Font font = ColorFontUtil.get(newValue);
+		Font font = CustomMediaFactory.getInstance().getFont(newValue);
 		for (OnOffBox box : boxes) {
 			box.setLabelFont(font);
 		}
 	}
 
 	public void setOnColor(RGB newValue) {
-		this.onColor = ColorFontUtil.get(newValue);
+		this.onColor = CustomMediaFactory.getInstance().getColor(newValue);
 		updateBoxes();
 	}
 
 	public void setOffColor(RGB newValue) {
-		this.offColor = ColorFontUtil.get(newValue);
+		this.offColor = CustomMediaFactory.getInstance().getColor(newValue);
 		updateBoxes();
 	}
 
 	public void setInternalBorderThickness(int internalFrameThickness) {
 		this.internalFrameThickness = internalFrameThickness;
-		Color color = ColorFontUtil.get(internalFrameColor);
+		Color color = CustomMediaFactory.getInstance().getColor(internalFrameColor);
 		for (OnOffBox box : boxes) {
 			box.setInternalFrame(internalFrameThickness, color);
 		}
@@ -163,7 +164,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 	public void setInternalBorderColor(RGB internalFrameColor) {
 		this.internalFrameColor = internalFrameColor;
-		Color color = ColorFontUtil.get(internalFrameColor);
+		Color color = CustomMediaFactory.getInstance().getColor(internalFrameColor);
 		for (OnOffBox box : boxes) {
 			box.setInternalFrame(internalFrameThickness, color);
 		}
@@ -173,7 +174,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	public void setLabelColor(RGB labelColor) {
 		this.labelColor = labelColor;
 
-		Color color = ColorFontUtil.get(labelColor);
+		Color color = CustomMediaFactory.getInstance().getColor(labelColor);
 
 		for (OnOffBox box : boxes) {
 			box.setLabelColor(color);
