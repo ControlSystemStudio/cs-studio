@@ -8,6 +8,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Slider;
 
 /** main() routine for testing the clock as an SWT app.
  *  @author Kay Kasemir
@@ -16,22 +17,8 @@ public class MeterWidgetTest
 {
     private static boolean run = true;
     
-    private static void updateMeter(final MeterWidget meter)
-    {
-        if (meter.isDisposed())
-            return;
-        meter.setValue(-10.0 + 20.0 * Math.random());
-        meter.getDisplay().timerExec(200, new Runnable()
-        {
-            public void run()
-            {
-                updateMeter(meter);
-            }
-        });
-    }
-
     @SuppressWarnings("nls")
-    public static void main(String[] args)
+    public static void main(final String[] args)
     {
         Display display = new Display();
         Shell shell = new Shell(display);
@@ -41,13 +28,32 @@ public class MeterWidgetTest
         shell.setLayout(gl);
         GridData gd;
 
-        MeterWidget meter = new MeterWidget(shell, 0);
+        final MeterWidget meter = new MeterWidget(shell, 0);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.grabExcessVerticalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         meter.setLayoutData(gd);
+        
+        meter.configure(0, 0.0, 2.0, 8.0, 9.0, 10.0, 2);
+        
+        final Slider slider = new Slider(shell, SWT.HORIZONTAL);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        slider.setLayoutData(gd);
+        slider.setValues(10, 0, 21, 1, 1, 1);
+        slider.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final double value = slider.getSelection()-10.0;
+                System.out.println("Value: " + value);
+                meter.setValue(value);
+            }
+        });
         
         Button ok = new Button(shell, SWT.PUSH);
         gd = new GridData();
@@ -64,7 +70,6 @@ public class MeterWidgetTest
             }
         });        
 
-        updateMeter(meter);
         
         shell.open();
         // Message loop left to the application
