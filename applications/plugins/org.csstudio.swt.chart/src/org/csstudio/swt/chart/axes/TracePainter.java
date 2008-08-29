@@ -133,15 +133,19 @@ public class TracePainter
                 }
                 // Draw what might have accumulated, then reset
                 y0 = xaxis.getRegion().y;
-                gc.setBackground(lighter);
                 if (area)
+                {
+                    gc.setBackground(lighter);
                     fillArea(gc, pos, min, max);
+                    gc.setBackground(old_back);
+                }
                 else
                 {
+                    gc.setForeground(lighter);
                     drawLine(gc, pos, min);
                     drawLine(gc, pos, max);                    
+                    gc.setForeground(old_back);
                 }
-                gc.setBackground(old_back);
                 drawStaircaseLine(gc, pos, avg);
                 pos.clear();
                 min.clear();
@@ -152,15 +156,19 @@ public class TracePainter
                 markPoint(gc, x0, y0);
         }
         // Draw what might have accumulated when reaching last sample
-        gc.setBackground(lighter);
         if (area)
+        {
+            gc.setBackground(lighter);
             fillArea(gc, pos, min, max);
+            gc.setBackground(old_back);
+        }
         else
         {
+            gc.setForeground(lighter);
             drawLine(gc, pos, min);
             drawLine(gc, pos, max);                    
+            gc.setForeground(old_back);
         }
-        gc.setBackground(old_back);
         drawStaircaseLine(gc, pos, avg);
         
         lighter.dispose();

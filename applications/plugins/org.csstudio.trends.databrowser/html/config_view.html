@@ -26,23 +26,36 @@ To place them on two axes, enter "0" or "1" for the respective PV.
 <p>
 The "Min" and "Max" settings determine the Y-Axis range. The "Type" selects
 a linear or log. axis. Since these settings modify the Y-Axis, they percolate
-to all PVs on that axis.
+to all PVs which are on the same axis.
+<p>
+For more detail see also
+<a href=display_types.html>Display Types</a>
+and
+<a href=request_types.html>Request Types</a>.
 
 <h4>Archive Table, Formula</h4>
 The lower half of the PV tab changes depending on the PV type.
 For PVs, it displays a table for archive data sources which are used to
-read samples for the selected PV
+read samples for the selected PV.
 <p>
-To add archive data sources, Drag-and-Drop from the
+For formulas, the formula is shown.
+<p>
+<u>Change archive data sources</u><br>
+To add archive data sources, Drag-and-Drop an archive from the
 <a href=archive_view.html>Archive View</a>
 onto a PV. You can drop them onto the Plot Window,
 which adds the source to all PVs in the plot,
 or onto a selected PV in the config view.
+<br>
 Then, you can rearrange the order of 
 archives for a PV via the context menu
 of the "Archives used for ..." table.
-<p>
-For formulas, the formula is shown.
+<br>
+To delete an archive data source from a PV,
+select the PV in the config view. Then, in the
+"Archives used for ..." table, select the archive
+data source to remove it via the context menu. 
+
 
 <h3>"Live Data Config" Tab</h3>
 This subsection configures how often 'live'

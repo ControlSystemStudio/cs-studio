@@ -7,6 +7,8 @@
 	  <topic label="Adding PVs" href="html/add_pvs.html"/>
 	  <topic label="Plot Window" href="html/plot_window.html"/>
 	  <topic label="Config View" href="html/config_view.html"/>
+      <topic label="Display Types" href="html/display_types.html"/>
+      <topic label="Request Types" href="html/request_types.html"/>
 	  <topic label="Archive View" href="html/archive_view.html"/>
 	  <topic label="Adding/using a Formula" href="html/formula.html"/>
 	  <topic label="Sample View" href="html/sample_view.html"/>
