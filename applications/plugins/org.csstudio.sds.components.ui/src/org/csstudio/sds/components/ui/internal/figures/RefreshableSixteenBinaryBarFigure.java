@@ -144,29 +144,49 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	}
 
 	public void setOnColor(RGB newValue) {
+		if (newValue == null) {
+			return;
+		}
 		this.onColor = CustomMediaFactory.getInstance().getColor(newValue);
 		updateBoxes();
 	}
 
 	public void setOffColor(RGB newValue) {
+		if (newValue == null) {
+			return;
+		}
 		this.offColor = CustomMediaFactory.getInstance().getColor(newValue);
 		updateBoxes();
 	}
 
 	public void setInternalBorderThickness(int internalFrameThickness) {
 		this.internalFrameThickness = internalFrameThickness;
-		Color color = CustomMediaFactory.getInstance().getColor(internalFrameColor);
+
 		for (OnOffBox box : boxes) {
-			box.setInternalFrame(internalFrameThickness, color);
+			if (internalFrameColor != null) {
+				Color color = CustomMediaFactory.getInstance().getColor(
+						internalFrameColor);
+				box.setInternalFrame(internalFrameThickness, color);
+			} else {
+				box.setInternalFrame(internalFrameThickness, null);
+			}
+
 		}
 
 	}
 
 	public void setInternalBorderColor(RGB internalFrameColor) {
 		this.internalFrameColor = internalFrameColor;
-		Color color = CustomMediaFactory.getInstance().getColor(internalFrameColor);
+
 		for (OnOffBox box : boxes) {
-			box.setInternalFrame(internalFrameThickness, color);
+			if (internalFrameColor != null) {
+				Color color = CustomMediaFactory.getInstance().getColor(
+						internalFrameColor);
+				box.setInternalFrame(internalFrameThickness, color);
+			} else {
+				box.setInternalFrame(internalFrameThickness, null);
+			}
+
 		}
 
 	}
@@ -174,6 +194,9 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	public void setLabelColor(RGB labelColor) {
 		this.labelColor = labelColor;
 
+		if (labelColor == null) {
+			return;
+		}
 		Color color = CustomMediaFactory.getInstance().getColor(labelColor);
 
 		for (OnOffBox box : boxes) {
@@ -237,7 +260,12 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		public void setInternalFrame(int thickness, Color color) {
 			if (color != null) {
 				if (thickness > 0) {
-					setBorder(new LineBorder(color, thickness));
+
+					if (color != null) {
+						setBorder(new LineBorder(color, thickness));
+					} else {
+						setBorder(new LineBorder(thickness));
+					}
 				} else {
 					setBorder(null);
 				}

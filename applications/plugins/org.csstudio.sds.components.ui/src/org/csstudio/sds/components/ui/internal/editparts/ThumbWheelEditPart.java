@@ -31,16 +31,19 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		model = (ThumbWheelModel) getWidgetModel();
 
-		figure = new RefreshableThumbWheelFigure(model.getWholePartDigits(),
-				model.getDecimalPartDigits());
-		figure.setWheelFonts(model.getFont());
-		figure.setInternalBorderColor(model.getInternalBorderColor());
-		figure.setInternalBorderThickness(model.getInternalBorderWidth());
 		logic = new ThumbWheelLogic(model.getValue(), model
 				.getWholePartDigits(), model.getDecimalPartDigits());
 
 		logic.setMax(model.getMax());
 		logic.setMin(model.getMin());
+
+		figure = new RefreshableThumbWheelFigure(logic.getIntegerWheels(),
+				logic.getDecimalWheels());
+		model.setWholePartDigits(logic.getIntegerWheels());
+		model.setDecimalPartDigits(logic.getDecimalWheels());
+		figure.setWheelFonts(model.getFont());
+		figure.setInternalBorderColor(model.getInternalBorderColor());
+		figure.setInternalBorderThickness(model.getInternalBorderWidth());
 
 		figure.addWheelListener(new WheelListener() {
 
@@ -108,9 +111,11 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure rectangle = (RefreshableThumbWheelFigure) refreshableFigure;
-				rectangle.setDecimalDigitsPart((Integer) newValue);
+				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+
 				logic.setDecimalWheels((Integer) newValue);
+				figure.setDecimalDigitsPart(logic.getDecimalWheels());
+				model.setDecimalPartDigits(logic.getDecimalWheels());
 				updateWheelValues();
 				return true;
 			}
@@ -122,9 +127,11 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure rectangle = (RefreshableThumbWheelFigure) refreshableFigure;
-				rectangle.setWholeDigitsPart((Integer) newValue);
+				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+
 				logic.setIntegerWheels((Integer) newValue);
+				figure.setWholeDigitsPart(logic.getIntegerWheels());
+				model.setWholePartDigits(logic.getIntegerWheels());
 				updateWheelValues();
 				return true;
 			}
@@ -161,8 +168,8 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure rectangle = (RefreshableThumbWheelFigure) refreshableFigure;
-				logic.setValue(Double.toString((Double) newValue));
+				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+				logic.setValue((Double) newValue);
 				updateWheelValues();
 				return true;
 			}
@@ -173,8 +180,8 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure rectangle = (RefreshableThumbWheelFigure) refreshableFigure;
-				rectangle.setWheelFonts((FontData) newValue);
+				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+				figure.setWheelFonts((FontData) newValue);
 				return true;
 			}
 		};
@@ -184,8 +191,8 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure rectangle = (RefreshableThumbWheelFigure) refreshableFigure;
-				rectangle.setInternalBorderColor((RGB) newValue);
+				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+				figure.setInternalBorderColor((RGB) newValue);
 				return true;
 			}
 		};
@@ -196,8 +203,8 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure rectangle = (RefreshableThumbWheelFigure) refreshableFigure;
-				rectangle.setInternalBorderThickness((Integer) newValue);
+				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
+				figure.setInternalBorderThickness((Integer) newValue);
 				return true;
 			}
 		};
@@ -209,9 +216,12 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 	/**
 	 * Represents the "brain" behind the ThumbWheel. It represents the wheel and
 	 * its values. Integer wheels are indexed from right to left. Decimal wheels
-	 * are indexed left to right from the decimal point. The implementation uses
-	 * BigDecimal extensively it is not the most efficient way but the
-	 * performance should still be sufficient.
+	 * are indexed left to right from the decimal point.
+	 * 
+	 * <p>
+	 * Note the inherent precision of value double is 15 decimal places
+	 * therefore you cannot have more than 15 wheels.
+	 * <p>
 	 * 
 	 * @author Alen Vrecko
 	 * 
@@ -224,13 +234,12 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 
 		private int integerWheels;
 		private int decimalWheels;
-		private double max = Double.NaN;
-		private double min = Double.NaN;
-		private double wheelMax;
-		private double wheelMin;
+		private BigDecimal max = null;
+		private BigDecimal min = null;
+		private BigDecimal wheelMax;
+		private BigDecimal wheelMin;
 
-		public static final int WHEEL_INTEGER_LIMIT = 10;
-		public static final int WHEEL_DECIMAL_LIMIT = 10;
+		public static final int WHEEL_LIMIT = 15;
 
 		public ThumbWheelLogic(double value, int integerWheels,
 				int decimalWheels) {
@@ -263,6 +272,28 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 			increment(index, "0.1E-");
 		}
 
+		private boolean isZero(BigDecimal num) {
+			return num.signum() == 0;
+		}
+
+		private boolean equalSign(BigDecimal a, BigDecimal b) {
+			return a.signum() == b.signum();
+		}
+
+		private boolean greater(BigDecimal a, BigDecimal b) {
+			if (b == null) {
+				return false;
+			}
+			return a.compareTo(b) > 0;
+		}
+
+		private boolean less(BigDecimal a, BigDecimal b) {
+			if (b == null) {
+				return false;
+			}
+			return a.compareTo(b) < 0;
+		}
+
 		private void increment(int index, String numberGenerator) {
 			// generate new number using the string ("1E" or "1E-" or similar)
 			BigDecimal decrementor = new BigDecimal(numberGenerator + index,
@@ -270,36 +301,33 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 			BigDecimal newValue = value.add(decrementor);
 
 			// handle over the zero handling
-			if (newValue.signum() != 0 && (value.signum() != newValue.signum())) {
+			if (!isZero(newValue) && !equalSign(value, newValue)) {
 				newValue = value.negate().add(decrementor);
 			}
 
 			// if value is already beyond the upper limit or upper wheel limit
 			// just ignore the request
-			if ((!Double.isNaN(max) && value.doubleValue() > max)
-					|| value.doubleValue() > wheelMax) {
+			if ((max != null && greater(value, max))
+					|| greater(value, wheelMax)) {
 				return;
 			}
 
 			// if we are below lower limit just drop to lower limit
-			if (newValue.doubleValue() < min) {
-				value = new BigDecimal(Double.toString(min),
-						MathContext.UNLIMITED);
-			} else if (newValue.doubleValue() < wheelMin) {
-				value = new BigDecimal(Double.toString(wheelMin),
-						MathContext.UNLIMITED);
+			if (less(value, min)) {
+				value = min;
+			} else if (less(value, wheelMin)) {
+				value = wheelMin;
 			}
-			// if we are incrementing below the wheel upper limit just set to
+
+			// if we are incrementing above the wheel upper limit just set to
 			// wheel upper limit
-			else if (newValue.doubleValue() > wheelMax) {
-				value = new BigDecimal(Double.toString(wheelMax),
-						MathContext.UNLIMITED);
+			else if (greater(newValue, wheelMax)) {
+				value = wheelMax;
 			}
 			// if we are incrementing beyond the upper limit just set to upper
 			// limit
-			else if (!Double.isNaN(max) && newValue.doubleValue() > max) {
-				value = new BigDecimal(Double.toString(max),
-						MathContext.UNLIMITED);
+			else if (max != null && greater(newValue, max)) {
+				value = max;
 			} else {
 				value = newValue;
 			}
@@ -336,37 +364,32 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 			BigDecimal newValue = value.add(decrementor);
 
 			// handle over the zero handling
-			if (newValue.signum() != 0 && (value.signum() != newValue.signum())) {
+			if (!isZero(newValue) && !equalSign(value, newValue)) {
 				newValue = value.negate().add(decrementor);
 			}
 
 			// if value is already beyond the lower limit or lower wheel limit
 			// just ignore the request
-			if ((!Double.isNaN(min) && value.doubleValue() < min)
-					|| value.doubleValue() < wheelMin) {
+			if ((min != null && less(value, min)) || less(value, wheelMin)) {
 				return;
 			}
 
 			// if we are beyond upper limit just drop to upper limit
-			if (newValue.doubleValue() > max) {
-				value = new BigDecimal(Double.toString(max),
-						MathContext.UNLIMITED);
+			if (greater(value, max)) {
+				value = max;
 
-			} else if (newValue.doubleValue() > wheelMax) {
-				value = new BigDecimal(Double.toString(wheelMax),
-						MathContext.UNLIMITED);
+			} else if (greater(value, wheelMax)) {
+				value = wheelMax;
 			}
 			// if we are decrementing below the wheel lower limit just set to
 			// wheel lower limit
-			else if (newValue.doubleValue() < wheelMin) {
-				value = new BigDecimal(Double.toString(wheelMin),
-						MathContext.UNLIMITED);
+			else if (less(newValue, wheelMin)) {
+				value = wheelMin;
 			}
 			// if we are decrementing below the lower limit just set to lower
 			// limit
-			else if (!Double.isNaN(min) && newValue.doubleValue() < min) {
-				value = new BigDecimal(Double.toString(min),
-						MathContext.UNLIMITED);
+			else if (min != null && less(newValue, min)) {
+				value = min;
 			} else {
 				value = newValue;
 			}
@@ -418,8 +441,9 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 			}
 
 			String plainString = value.toPlainString();
+			// should never happen if we are not beyond 15 digits
 			if (plainString.indexOf('.') < 0) {
-				throw new IllegalStateException("Missing decimal part!");
+				return 'E';
 			}
 
 			plainString = plainString.substring(plainString.indexOf('.') + 1);
@@ -436,25 +460,26 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		 * @return
 		 */
 		public boolean beyondDisplayLimit() {
-			return value.doubleValue() > wheelMax
-					|| value.doubleValue() < wheelMin;
+			return greater(value, wheelMax) || less(value, wheelMin);
 
 		}
 
 		public Double getMax() {
-			return max;
+			return max.doubleValue();
 		}
 
 		public void setMax(Double max) {
-			this.max = max;
+			this.max = Double.isNaN(max) ? null : new BigDecimal(Double
+					.toString(max), MathContext.UNLIMITED);
 		}
 
 		public Double getMin() {
-			return min;
+			return min.doubleValue();
 		}
 
 		public void setMin(Double min) {
-			this.min = min;
+			this.min = Double.isNaN(min) ? null : new BigDecimal(Double
+					.toString(min), MathContext.UNLIMITED);
 		}
 
 		public int getIntegerWheels() {
@@ -462,6 +487,11 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		}
 
 		public void setIntegerWheels(int integerWheels) {
+			if (integerWheels + decimalWheels > WHEEL_LIMIT) {
+				this.integerWheels = WHEEL_LIMIT - decimalWheels;
+				return;
+			}
+
 			this.integerWheels = integerWheels;
 
 			String nines = "";
@@ -476,8 +506,8 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 				}
 			}
 
-			wheelMax = Double.parseDouble(nines);
-			wheelMin = Double.parseDouble("-" + nines);
+			wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
+			wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
 		}
 
 		public int getDecimalWheels() {
@@ -486,6 +516,10 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		}
 
 		public void setDecimalWheels(int decimalWheels) {
+			if (integerWheels + decimalWheels > WHEEL_LIMIT) {
+				this.decimalWheels = WHEEL_LIMIT - integerWheels;
+				return;
+			}
 			this.decimalWheels = decimalWheels;
 			String nines = "";
 			if (integerWheels > 0) {
@@ -501,8 +535,8 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 				nines += "9";
 			}
 
-			wheelMax = Double.parseDouble(nines);
-			wheelMin = Double.parseDouble("-" + nines);
+			wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
+			wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
 		}
 
 		public double getValue() {

@@ -52,6 +52,14 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 
 	private boolean test;
 
+	private RGB internalBorderColor;
+
+	private int internalBorderWidth;
+	
+	private ArrayList<WheelListener> listeners = new ArrayList<WheelListener>();
+
+	private FontData wheelFont;
+
 	public boolean isTest() {
 		return test;
 	}
@@ -98,6 +106,11 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 
 			setConstraint(box, createGridData());
 		}
+
+		setInternalBorderColor(internalBorderColor);
+		setInternalBorderThickness(internalBorderWidth);
+		setWheelFonts(wheelFont);
+
 		revalidate();
 	}
 
@@ -134,7 +147,7 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 	}
 
 	public void setInternalBorderThickness(int thickness) {
-
+		this.internalBorderWidth = thickness;
 		for (DigitBox box : wholePart) {
 			box.setBorderThickness(thickness);
 		}
@@ -148,6 +161,10 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 	}
 
 	public void setInternalBorderColor(RGB color) {
+		this.internalBorderColor = color;
+		if(color == null){
+			return;
+		}
 		Color col = CustomMediaFactory.getInstance().getColor(color);
 
 		for (DigitBox box : wholePart) {
@@ -399,7 +416,7 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 		}
 	}
 
-	private ArrayList<WheelListener> listeners = new ArrayList<WheelListener>();
+	
 
 	public static interface WheelListener {
 		/**
@@ -433,6 +450,10 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 	}
 
 	public void setWheelFonts(FontData fontData) {
+		this.wheelFont = fontData;
+		if(fontData == null){
+			return;
+		}
 		Font font = CustomMediaFactory.getInstance().getFont(fontData);
 
 		for (DigitBox box : wholePart) {
