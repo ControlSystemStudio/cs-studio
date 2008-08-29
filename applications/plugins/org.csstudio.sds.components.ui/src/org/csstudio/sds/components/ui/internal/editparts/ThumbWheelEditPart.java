@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.DecimalFormat;
 
 import org.csstudio.sds.components.model.ThumbWheelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableThumbWheelFigure;
@@ -445,9 +446,9 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 			}
 
 			String plainString = value.toPlainString();
-			// should never happen if we are not beyond 15 digits
+
 			if (plainString.indexOf('.') < 0) {
-				return 'E';
+				return '0';
 			}
 
 			plainString = plainString.substring(plainString.indexOf('.') + 1);
