@@ -57,6 +57,7 @@ public class Messages extends NLS
     public static String TraceType_Area;
     public static String TraceType_Bars;
     public static String TraceType_Lines;
+    public static String TraceType_SingleLine;
     public static String TraceType_Markers;
     
     static

@@ -44,10 +44,13 @@ public class TracePainter
             switch (trace.getType())
             {
             case Area:
-                drawArea(gc, xaxis, yaxis, samples, i0, i1);
+                drawArea(gc, xaxis, yaxis, samples, i0, i1, true);
                 break;
             case Lines:
-                drawLines(gc, xaxis, yaxis, samples, i0, i1);
+                drawArea(gc, xaxis, yaxis, samples, i0, i1, false);
+                break;
+            case SingleLine:
+                drawLine(gc, xaxis, yaxis, samples, i0, i1);
                 break;
             case Markers:
                 int point_size = trace.getLineWidth();
@@ -64,135 +67,24 @@ public class TracePainter
             System.out.println("Tracepainter done."); //$NON-NLS-1$
     }
     
-    /** Draw given sample range with lines.
-     *  <p>
+    /** Show the average data with staircase lines.
      *  For samples with min/max info,
-     *  draw separate min, average and max lines.
-     *  <br>
-     *  For 'original' samples without min/max info,
-     *  a staircase is drawn since we assume each
-     *  sample remains 'valid' until the next sample.
-     *  <br>
-     *  Mixed cases like min/max sample to/from original sample,
-     *  we still use 3 lines.
-     *  From min/max sample to a gap, we continue the last
-     *  min/max to the gap.
-     *  <p>
-     *  (Basically, this automatically switched between the old 'Lines'
-     *   and Blaz's 'MinMaxAverage' methods)
+     *  show min/max outline as area or lines.
+     *  @param gc GC
+     *  @param xaxis XAxis
+     *  @param yaxis YAxis
+     *  @param samples Samples
+     *  @param i0 First sample to use
+     *  @param i1 Last sample to use
+     *  @param area Use area of lines for min/max envelope?
      */
-    private static void drawLines(final GC gc,
-                                  final XAxis xaxis,
-                                  final YAxis yaxis,
-                                  final ChartSampleSequence samples,
-                                  final int i0,
-                                  final int i1)
-    {
-        int x0=0, y0=0, y0_min=0, y0_max=0; // x/y of the previous point if !new_line
-        boolean new_line = true;            // Start of new line, or is x0/y0 set?
-        boolean have_pre_min_max = false;   // Are y0_min/max set?
-        for (int i = i0; i <= i1; ++i)
-        {
-            final ChartSample sample = samples.get(i);
-            final double y = sample.getY();
-            final boolean plottable = !Double.isInfinite(y)  &&  !Double.isNaN(y);
-            final boolean have_min_max = sample.haveMinMax();
-            // No previous sample from which to draw a connection?
-            if (new_line)
-            {
-                if (have_pre_min_max) throw new Error("Invalid state"); //$NON-NLS-1$
-                // Immediately set x/y of the 'previous' point.
-                x0 = xaxis.getScreenCoord(sample.getX());
-                y0 = yaxis.getScreenCoord(y);
-                if (plottable)
-                {
-                    new_line = false;
-                    if (have_min_max)
-                    {   // Show and remember min/max of this sample
-                        y0_min = yaxis.getScreenCoord(sample.getMinY());
-                        y0_max = yaxis.getScreenCoord(sample.getMaxY());
-                        gc.drawLine(x0, y0_min, x0, y0_max);
-                        have_pre_min_max = true;
-                    }
-                    else // Draw point. have_pre_min_max stays false
-                        gc.drawPoint(x0, y0);
-                }
-                // else new_line stays true
-                // No 'continue', since we might still draw a Point decorator
-            }
-            else
-            {   // new_line=false; x0/y0 are set.
-                final int x1 = xaxis.getScreenCoord(sample.getX());
-                if (plottable)
-                {
-                    final int y1 = yaxis.getScreenCoord(y);
-                    if (have_min_max)
-                    {
-                        final int y1_min = yaxis.getScreenCoord(sample.getMinY());
-                        final int y1_max = yaxis.getScreenCoord(sample.getMaxY());
-                        if (have_pre_min_max)
-                        {   // Connect old and new min/max/average
-                            gc.drawLine(x0, y0_min, x1, y1_min);
-                            gc.drawLine(x0, y0_max, x1, y1_max);
-                            gc.drawLine(x0, y0,     x1, y1);
-                        }
-                        else
-                        {   // Connect old sample to new min/max/average
-                            gc.drawLine(x0, y0, x1, y1_min);
-                            gc.drawLine(x0, y0, x1, y1_max);
-                            gc.drawLine(x0, y0, x1, y1);
-                        }
-                        y0_min = y1_min;
-                        y0_max = y1_max;
-                        have_pre_min_max = true;
-                    }
-                    else
-                    {
-                        if (have_pre_min_max)
-                        {   // Connect old min/max/avg to new sample
-                            gc.drawLine(x0, y0_min, x1, y1);
-                            gc.drawLine(x0, y0_max, x1, y1);
-                            gc.drawLine(x0, y0,     x1, y1);
-                            have_pre_min_max = false;
-                        }
-                        else
-                        {   // Connect old and new sample with staircase(!)
-                            gc.drawLine(x0, y0, x1, y0);
-                            gc.drawLine(x1, y0, x1, y1);
-                        }
-                    }
-                    // Remember y value
-                    y0 = y1;
-                }
-                else
-                {   // Current sample not plotable.
-                    // Extend last sample's value...
-                    gc.drawLine(x0, y0, x1, y0);
-                    if (have_pre_min_max)
-                    {   // ... and min/max
-                        gc.drawLine(x0, y0_min, x1, y0_min);
-                        gc.drawLine(x0, y0_max, x1, y0_max);
-                        have_pre_min_max = false;
-                    }
-                    new_line = true;
-                    y0 = xaxis.getRegion().y;
-                }
-                // Remember x value
-                x0 = x1;
-            }
-            if (sample.getType() == ChartSample.Type.Point)
-                markPoint(gc, x0, y0);
-        }
-    }
-
-
-    /** Draw area for sample range, using lines for the averages. */
     private static void drawArea(final GC gc,
-                                  final XAxis xaxis,
-                                  final YAxis yaxis,
-                                  final ChartSampleSequence samples,
-                                  final int i0,
-                                  final int i1)
+                                 final XAxis xaxis,
+                                 final YAxis yaxis,
+                                 final ChartSampleSequence samples,
+                                 final int i0,
+                                 final int i1,
+                                 final boolean area)
     {
         // Change to lighter version of background:
         // Reduce saturation, use brightness of 1
@@ -200,7 +92,7 @@ public class TracePainter
         final float[] hsb = old_back.getRGB().getHSB();
         final Color lighter = new Color(gc.getDevice(),
                 new RGB(hsb[0], hsb[1]*0.2f, 1.0f));
-        // Accumulate into for horizontal position, min/max/average values
+        // Accumulate info about horizontal position, min/max/average values
         final ArrayList<Integer> pos = new ArrayList<Integer>();
         final ArrayList<Integer> avg = new ArrayList<Integer>();
         final ArrayList<Integer> min = new ArrayList<Integer>();
@@ -228,10 +120,29 @@ public class TracePainter
                 }
             }
             else
-            {   // Draw what might have accumulated, then reset
+            {
+                // Not a plottable y value.
+                final int n = pos.size();
+                if (n > 0)
+                {
+                    // Extend previous value to here
+                    pos.add(x0);
+                    avg.add(avg.get(n-1));
+                    min.add(min.get(n-1));
+                    max.add(max.get(n-1));
+                }
+                // Draw what might have accumulated, then reset
                 y0 = xaxis.getRegion().y;
-                fillArea(gc, pos, min, max, lighter);
-                drawLine(gc, pos, avg);
+                gc.setBackground(lighter);
+                if (area)
+                    fillArea(gc, pos, min, max);
+                else
+                {
+                    drawLine(gc, pos, min);
+                    drawLine(gc, pos, max);                    
+                }
+                gc.setBackground(old_back);
+                drawStaircaseLine(gc, pos, avg);
                 pos.clear();
                 min.clear();
                 max.clear();
@@ -241,10 +152,72 @@ public class TracePainter
                 markPoint(gc, x0, y0);
         }
         // Draw what might have accumulated when reaching last sample
-        fillArea(gc, pos, min, max, lighter);
-        drawLine(gc, pos, avg);
+        gc.setBackground(lighter);
+        if (area)
+            fillArea(gc, pos, min, max);
+        else
+        {
+            drawLine(gc, pos, min);
+            drawLine(gc, pos, max);                    
+        }
+        gc.setBackground(old_back);
+        drawStaircaseLine(gc, pos, avg);
         
         lighter.dispose();
+    }
+
+    /** Show the average data with staircase lines. No min/max display
+     *  @param gc GC
+     *  @param xaxis XAxis
+     *  @param yaxis YAxis
+     *  @param samples Samples
+     *  @param i0 First sample to use
+     *  @param i1 Last sample to use
+     *  @param area Use area of lines for min/max envelope?
+     */
+    private static void drawLine(final GC gc,
+                                 final XAxis xaxis,
+                                 final YAxis yaxis,
+                                 final ChartSampleSequence samples,
+                                 final int i0,
+                                 final int i1)
+    {
+        // Accumulate horizontal position and value
+        final ArrayList<Integer> pos = new ArrayList<Integer>();
+        final ArrayList<Integer> avg = new ArrayList<Integer>();
+        for (int i = i0; i <= i1; ++i)
+        {
+            final ChartSample sample = samples.get(i);
+            final int x0 = xaxis.getScreenCoord(sample.getX());
+            final double y = sample.getY();
+            int y0;
+            if (!Double.isInfinite(y)  &&  !Double.isNaN(y))
+            {   // Add x0/y0, maybe min/max to sequence of plotable points
+                y0 = yaxis.getScreenCoord(y);
+                pos.add(x0);
+                avg.add(y0);
+            }
+            else
+            {
+                // Not a plottable y value.
+                final int n = pos.size();
+                if (n > 0)
+                {
+                    // Extend previous value to here
+                    pos.add(x0);
+                    avg.add(avg.get(n-1));
+                }
+                // Draw what might have accumulated, then reset
+                y0 = xaxis.getRegion().y;
+                drawStaircaseLine(gc, pos, avg);
+                pos.clear();
+                avg.clear();
+            }
+            if (sample.getType() == ChartSample.Type.Point)
+                markPoint(gc, x0, y0);
+        }
+        // Draw what might have accumulated when reaching last sample
+        drawStaircaseLine(gc, pos, avg);
     }
 
     /** Fill area
@@ -252,17 +225,13 @@ public class TracePainter
      *  @param pos Horizontal screen positions
      *  @param min Minimum 'y' values in screen coords
      *  @param max .. maximum
-     *  @param color Color to use
      */
     private static void fillArea(final GC gc, final ArrayList<Integer> pos,
-            final ArrayList<Integer> min, final ArrayList<Integer> max,
-            final Color color)
+            final ArrayList<Integer> min, final ArrayList<Integer> max)
     {
         final int N = pos.size();
         if (N <= 0)
             return;
-        final Color old_back = gc.getBackground();
-        gc.setBackground(color);
         // Turn pos/min/max into array required by fillPolygon
         final int points[] = new int[N * 4];
         for (int i=0; i<N; ++i)
@@ -274,24 +243,56 @@ public class TracePainter
             points[4*N-1-i_x] = max.get(i);
         }
         gc.fillPolygon(points);
-        gc.setBackground(old_back);
     }
 
-    /** Draw polyline
+    /** Draw point-to-point line
      *  @param gc GC
      *  @param pos Horizontal screen positions
-     *  @param val Values in screen coords
+     *  @param val Values in screen coordinates
      */
     private static void drawLine(final GC gc, final ArrayList<Integer> pos,
             final ArrayList<Integer> val)
     {
         if (pos.size() <= 0)
             return;
-        // Show at least the intial point
-        gc.drawPoint(pos.get(0), val.get(0));
+        // Show at least the initial point
+        int x0 = pos.get(0);
+        int y0 = val.get(0);
+        gc.drawPoint(x0, y0);
         // If there's more, draw as lines
         for (int i=1; i<pos.size(); ++i)
-            gc.drawLine(pos.get(i-1), val.get(i-1), pos.get(i), val.get(i));
+        {
+            final int x1 = pos.get(i);
+            final int y1 = val.get(i);
+            gc.drawLine(x0, y0, x1, y1);
+            x0 = x1;
+            y0 = y1;
+        }
+    }
+    /** Draw staircase line
+     *  @param gc GC
+     *  @param pos Horizontal screen positions
+     *  @param val Values in screen coordinates
+     */
+    private static void drawStaircaseLine(final GC gc, final ArrayList<Integer> pos,
+            final ArrayList<Integer> val)
+    {
+        if (pos.size() <= 0)
+            return;
+        // Show at least the initial point
+        int x0 = pos.get(0);
+        int y0 = val.get(0);
+        gc.drawPoint(x0, y0);
+        // If there's more, draw as lines
+        for (int i=1; i<pos.size(); ++i)
+        {
+            final int x1 = pos.get(i);
+            final int y1 = val.get(i);
+            gc.drawLine(x0, y0, x1, y0);
+            gc.drawLine(x1, y0, x1, y1);
+            x0 = x1;
+            y0 = y1;
+        }
     }
 
     /** Draw given sample range with markers. */

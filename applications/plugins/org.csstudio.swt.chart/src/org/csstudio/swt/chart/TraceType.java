@@ -6,17 +6,23 @@ package org.csstudio.swt.chart;
  */
 public enum TraceType
 {
+    /** Using line for the average and area for
+     *  the min/max envelope.
+     */
+    Area(Messages.TraceType_Area),
+    
     /** Connect samples with lines.
      *  Uses additional min/max lines for samples
      *  that carry min/max info.
      */
     Lines(Messages.TraceType_Lines),
     
-    /** Connect samples with area, using line for the average of samples
+    /** Connect samples with lines.
+     *  Uses additional min/max lines for samples
      *  that carry min/max info.
      */
-    Area(Messages.TraceType_Area),
-    
+    SingleLine(Messages.TraceType_SingleLine),
+
     /** Place a marker at each sample.
      *  <p>
      *  Uses candlesticks for samples that carry min/max info.
