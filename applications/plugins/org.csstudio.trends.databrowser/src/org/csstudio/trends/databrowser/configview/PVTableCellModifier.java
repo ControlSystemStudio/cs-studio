@@ -4,7 +4,9 @@ import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
+import org.csstudio.trends.databrowser.model.PVModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem.RequestType;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -15,9 +17,16 @@ import org.eclipse.swt.widgets.Item;
  */
 public class PVTableCellModifier implements ICellModifier
 {
+    /** View that we're editing */
     private final ConfigView view;
     
-    PVTableCellModifier(ConfigView view)
+    /** One-shot flag to display warning about request types */
+    private boolean first_request_type_change = true;
+    
+    /** Initialize
+     *  @param view ConfigView that's edited
+     */
+    PVTableCellModifier(final ConfigView view)
     {
         this.view = view;
     }
@@ -69,7 +78,11 @@ public class PVTableCellModifier implements ICellModifier
             case LOG_SCALE:
                 return new Boolean(entry.getLogScale());
             case REQUEST_TYPE:
-                
+            {
+                if (entry instanceof PVModelItem)
+                    return ((PVModelItem)entry).getRequestType().ordinal();
+                return null;
+            }
             case TRACE_TYPE:
                 return entry.getTraceType().ordinal();
             }
@@ -147,7 +160,16 @@ public class PVTableCellModifier implements ICellModifier
                     final IPVModelItem pv = (IPVModelItem) entry;
                     final int ordinal = ((Integer) value).intValue();
                     final RequestType request_type = IPVModelItem.RequestType.fromOrdinal(ordinal);
-                     pv.setRequestType(request_type);
+                    if (first_request_type_change &&
+                        request_type == RequestType.RAW)
+                    {
+                        if (!MessageDialog.openConfirm(view.getSite().getShell(),
+                                Messages.RawRequestTitle,
+                                Messages.RawRequestMessage))
+                            return;
+                        first_request_type_change = true;
+                    }
+                    pv.setRequestType(request_type);
                 }
                 return;
             case TRACE_TYPE:

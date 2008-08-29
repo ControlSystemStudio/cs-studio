@@ -42,6 +42,9 @@ public class Messages extends NLS
     public static String PVs;
     public static String PV;
 
+    public static String RawRequestTitle;
+    public static String RawRequestMessage;
+
     public static String ReadGraphTimes;
     public static String RemoveTitle;
     public static String RemoveFormulaInputError;
@@ -66,6 +69,7 @@ public class Messages extends NLS
     public static String ValueRangeMax;
     public static String ValueRangeMin;
     public static String Visible;
+    
 
     static
     {
