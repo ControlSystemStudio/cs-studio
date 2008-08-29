@@ -381,16 +381,20 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 			} else if (greater(value, wheelMax)) {
 				value = wheelMax;
 			}
+
+			// if we are decrementing below the lower limit just set to lower
+			// limit
+			else if (min != null && less(newValue, min)) {
+				value = min;
+			}
+
 			// if we are decrementing below the wheel lower limit just set to
 			// wheel lower limit
 			else if (less(newValue, wheelMin)) {
 				value = wheelMin;
 			}
-			// if we are decrementing below the lower limit just set to lower
-			// limit
-			else if (min != null && less(newValue, min)) {
-				value = min;
-			} else {
+
+			else {
 				value = newValue;
 			}
 		}
