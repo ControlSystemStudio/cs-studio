@@ -120,6 +120,20 @@
             name="Strip Chart"
             typeId="org.csstudio.sds.components.StripChart">
       </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.SixteenBinaryBarModelFactory"
+            description="Displays lower 16 bits of an integer"
+            icon="icons/sixteenbar.gif"
+            name="Sixteen Binary Bar"
+            typeId="org.csstudio.sds.components.SixteenBinaryBar">
+      </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.ThumbWheelModelFactory"
+            description="The thumb wheel"
+            icon="icons/thumbwheel.gif"
+            name="Thumb Wheel"
+            typeId="org.csstudio.sds.components.ThumbWheel">
+      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">
