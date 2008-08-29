@@ -61,7 +61,7 @@ public class CustomInputDialog extends Dialog {
     /**
      * The input validator, or <code>null</code> if none.
      */
-    private IInputValidator validator;
+    private ICustomInputValidator validator;
 
     /**
      * Ok button widget.
@@ -110,7 +110,7 @@ public class CustomInputDialog extends Dialog {
      */
     public CustomInputDialog(Shell parentShell, String dialogTitle,
             String dialogMessage1, String dialogMessage2, String initialValue, 
-            String initialValue2, IInputValidator validator) {
+            String initialValue2, ICustomInputValidator validator) {
         super(parentShell);
         this.title = dialogTitle;
         message1 = dialogMessage1;
@@ -264,13 +264,22 @@ public class CustomInputDialog extends Dialog {
     protected Text getText() {
         return text;
     }
+    
+    /**
+     * Returns the text area 2.
+     * 
+     * @return the text area 2
+     */
+    protected Text getText2() {
+        return text2;
+    }
 
     /**
      * Returns the validator.
      * 
      * @return the validator
      */
-    protected IInputValidator getValidator() {
+    protected ICustomInputValidator getValidator() {
         return validator;
     }
 
@@ -304,7 +313,7 @@ public class CustomInputDialog extends Dialog {
     protected void validateInput() {
         String errorMessage = null;
         if (validator != null) {
-            errorMessage = validator.isValid(text.getText());
+            errorMessage = validator.isValid(text.getText(), text2.getText());
         }
         // Bug 16256: important not to treat "" (blank error) the same as null
         // (no error)

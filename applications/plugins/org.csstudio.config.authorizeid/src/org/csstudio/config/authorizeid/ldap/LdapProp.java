@@ -12,6 +12,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 public class LdapProp implements Observer {
 
+	private int time_for_timeout = 10; // multiply this by 10 (if you set 10, it will be 100 miliseconds)
+	
 	private LDAPReader _ldapr;
 	
 	private ErgebnisListe _ergebnisListe = new ErgebnisListe();
@@ -50,13 +52,29 @@ public class LdapProp implements Observer {
 			}
 		});
 		_ldapr.schedule();
-
       
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+        int times = 0;
+        
+        // makes sure there is enough time for LDAP to provide data
+        while(true) {
+        	// if al is not empty, it goes through
+        	if(!al.isEmpty()) {
+        		break;
+        	}
+        	
+        	// after two seconds, it breaks the loop
+        	if(times > time_for_timeout) {
+        		break;
+        	}
+        	
+	        try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			times++;
+        }
 
 		// change ArrayList to Array
 		AuthorizeIdEntry[] returnArray = (AuthorizeIdEntry[])al.toArray(new AuthorizeIdEntry[al.size()]);

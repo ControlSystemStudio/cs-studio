@@ -78,15 +78,15 @@ public class AuthorizeIdView extends ViewPart {
 
 		String[] groups = new String[] { "Something is wrong." };
 
-		try {
-			groups = ld.getGroups();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		for (int i = 0; i < groups.length; i++) {
-			combo.add(groups[i]);
-		}
+			try {
+				groups = ld.getGroups();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	
+			for (int i = 0; i < groups.length; i++) {
+				combo.add(groups[i]);
+			}
 
 		combo.addSelectionListener(new SelectionListener() {
 
@@ -406,7 +406,7 @@ public class AuthorizeIdView extends ViewPart {
 						.getCurrent().getActiveShell(), "New",
 						"Please enter group (eaig):",
 						"Please enter role (eair):", "", "",
-						new NewDataValidator());
+						new CustomNewDataValidator());
 				
 				if (dialog.open() == Window.OK) {
 					String _group = combo.getText();
@@ -438,7 +438,7 @@ public class AuthorizeIdView extends ViewPart {
 				CustomInputDialog dialog = new CustomInputDialog(Display
 						.getCurrent().getActiveShell(), "Edit",
 						"Group (eaig) edit:", "Role(eair) edit:", eaig, eair,
-						new NewDataValidator());
+						new CustomNewDataValidator());
 				if (dialog.open() == Window.OK) {
 					String _group = combo.getText();
 					String _eaig = dialog.getValue();
