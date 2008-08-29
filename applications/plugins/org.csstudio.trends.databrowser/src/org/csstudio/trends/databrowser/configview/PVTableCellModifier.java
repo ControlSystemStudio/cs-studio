@@ -167,7 +167,7 @@ public class PVTableCellModifier implements ICellModifier
                                 Messages.RawRequestTitle,
                                 Messages.RawRequestMessage))
                             return;
-                        first_request_type_change = true;
+                        first_request_type_change = false;
                     }
                     pv.setRequestType(request_type);
                 }
