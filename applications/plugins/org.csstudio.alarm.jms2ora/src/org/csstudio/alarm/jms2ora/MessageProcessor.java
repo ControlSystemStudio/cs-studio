@@ -24,8 +24,6 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -33,14 +31,11 @@ import javax.jms.MessageListener;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
-import org.csstudio.alarm.jms2ora.database.OracleService;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import de.desy.epics.singleton.EpicsSingleton;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
@@ -101,9 +96,6 @@ public class MessageProcessor extends Thread implements MessageListener
     /** Array with topic names */
     private String[] topicList = null;
     
-    /** Date object that indicates the last update of the quota record */
-    private Date lastQuotaUpdate = null;
-    
     /** Indicates if the application was initialized or not */
     private boolean initialized = false;
     
@@ -116,7 +108,7 @@ public class MessageProcessor extends Thread implements MessageListener
     private Jms2OraStart parent = null;
     
     private final String version = " 2.0.0";
-    private final String build = " - BUILD 2008-07-31 16:00";
+    private final String build = " - BUILD 2008-09-01 16:00";
     private final String application = "Jms2Ora";
 
     /** Time to sleep in ms */
@@ -154,8 +146,6 @@ public class MessageProcessor extends Thread implements MessageListener
         dbLayer = new DatabaseLayer(config.getString("database.url"), config.getString("database.user"), config.getString("database.password"));
         
         contentCreator = new MessageContentCreator(dbLayer);
-        
-        lastQuotaUpdate = Calendar.getInstance().getTime();
         
         if(config.containsKey("provider.url") && config.containsKey("topic.names"))
         {
@@ -344,9 +334,6 @@ public class MessageProcessor extends Thread implements MessageListener
 
     public int processMessage(MessageContent content)
     {
-        Date currentDate = null;
-        String[] recordNames = null;
-        String temp = null;
         long typeId = 0;
         long msgId = 0;
         int result = PM_RETURN_OK;
@@ -381,115 +368,12 @@ public class MessageProcessor extends Thread implements MessageListener
         }
         else
         {
-            // Refresh the used table quota
-            // ONLY if we use ORACLE!!!!!
-            if(dbLayer.getDialect() == Dialect.Oracle)
-            {
-                currentDate = Calendar.getInstance().getTime();
-                
-                // Wait min. 5 minutes for updating the EPICS record
-                if((currentDate.getTime() - lastQuotaUpdate.getTime()) >= 300000)
-                {
-                    if(config.containsKey("record.tablequota"))
-                    {
-                        recordNames = config.getStringArray("record.tablequota");
-                        for(int i = 0;i < recordNames.length;i++)
-                        {
-                            temp = createDatabaseNameFromRecord(recordNames[i]);
-                            
-                            if(temp.compareToIgnoreCase(config.getString("database.user")) != 0)
-                            {
-                                updateDBRecord(recordNames[i], temp, temp.toLowerCase());
-                            }
-                            else
-                            {
-                                updateDBRecord(recordNames[i]);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        logger.warn("No EPICS record name for the database quota is defined.");
-                    }
-                    
-                    // Always get the quota for user KRYKLOG
-                    // NOT USED: The MAX_BYTES value seemed always to be -1 (unlimited)
-                    // updateDBRecord("krykLog:UsedQuota_ai", "KRYKLOG", "kryklog");
-                    
-                    lastQuotaUpdate = currentDate;
-                    currentDate = null;
-                }
-            }
-            
             result = PM_RETURN_OK;
         }
         
         return result;
     }
     
-    /**
-     * Writes the new ORACLE table space quota to the record.
-     *  
-     *  @param name Record name
-     */
-    public void updateDBRecord(String name)
-    {
-        String result = null;
-        String record = null;
-        int quota = dbLayer.getUsedQuota();
-      
-        if(quota != -1)
-        {
-            result = EpicsSingleton.getInstance().setValue(name, String.valueOf(quota));
-            if(result.compareToIgnoreCase("ok") == 0)
-            {
-                record = EpicsSingleton.getInstance().get(name);
-                logger.info(name + " quota: " + record);
-            }
-            else
-            {
-                logger.error("EPICS record '" + name + "' could not be set.");
-            }
-        }
-        else
-        {
-            logger.error("Table quota cannot be queried");
-        }
-    }
-    
-    /**
-     * Writes the new ORACLE table space quota to the record.
-     * 
-     * Remark: In fact, it is not the best place to update this record in Jms2Ora.
-     * 
-     *  @param recordName Record name
-     *  @param dbUser Oracle user name
-     *  @param dbPassword Oracle password name
-     */
-    public void updateDBRecord(String recordName, String dbUser, String dbPassword)
-    {
-        String result = null;
-        String record = null;
-        int quota = OracleService.getUsedQuota(logger, dbUser, dbPassword);
-        
-        if(quota != -1)
-        {
-            result = EpicsSingleton.getInstance().setValue(recordName, String.valueOf(quota));
-            if(result.compareToIgnoreCase("ok") == 0)
-            {
-                record = EpicsSingleton.getInstance().get(recordName);
-                logger.info(recordName + " quota: " + record);
-            }
-            else
-            {
-                logger.error("EPICS record '" + recordName + "' could not be set.");
-            }
-        }
-        else
-        {
-            logger.error("Table quota cannot be queried");
-        }
-    }
 
     public String createDatabaseNameFromRecord(String record)
     {
