@@ -91,7 +91,6 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 
 		Display.getDefault().syncExec(new Runnable() {
 
-			@Override
 			public void run() {
 				addProperty(PROP_ON_COLOR, new ColorProperty("On color",
 						WidgetPropertyCategory.Display, Display.getDefault()

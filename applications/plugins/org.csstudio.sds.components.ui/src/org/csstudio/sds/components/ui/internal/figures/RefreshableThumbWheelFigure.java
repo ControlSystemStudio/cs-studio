@@ -264,7 +264,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 			up.setPreferredSize(20, 20);
 			if (isDecimal) {
 				up.addActionListener(new ActionListener() {
-					@Override
 					public void actionPerformed(ActionEvent event) {
 						fireIncrementDecimalListeners(positionIndex);
 					}
@@ -272,7 +271,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 				});
 			} else {
 				up.addActionListener(new ActionListener() {
-					@Override
 					public void actionPerformed(ActionEvent event) {
 						fireIncrementIntegerListeners(wholePartDigits
 								- positionIndex - 1);
@@ -289,14 +287,12 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 			down.setPreferredSize(20, 20);
 			if (isDecimal) {
 				down.addActionListener(new ActionListener() {
-					@Override
 					public void actionPerformed(ActionEvent event) {
 						fireDecrementDecimalListeners(positionIndex);
 					}
 				});
 			} else {
 				down.addActionListener(new ActionListener() {
-					@Override
 					public void actionPerformed(ActionEvent event) {
 						fireDecrementIntegerListeners(wholePartDigits
 								- positionIndex - 1);
