@@ -234,9 +234,6 @@ public class MessageProcessor extends Thread implements MessageListener
                 }
                 else
                 {
-                    logger.info(infoText[result]);
-                    
-                    /*
                     if(result != PM_RETURN_OK)
                     {
                         logger.info(infoText[result]);
@@ -245,7 +242,6 @@ public class MessageProcessor extends Thread implements MessageListener
                     {
                         logger.debug(infoText[result]);
                     }
-                    */
                 }
             }
 
