@@ -19,13 +19,13 @@ public class Preferences
    public static String getURL()
    {
        final IPreferencesService service = Platform.getPreferencesService();
-       return service.getString(Activator.ID, "LOG_RDB_URL", null, null);
+       return service.getString(Activator.ID, "log_rdb_url", null, null);
    }
    
    /** @return Name of SNS logbook */
    public static String getLogBookName()
    {        
        final IPreferencesService service = Platform.getPreferencesService();
-       return service.getString(Activator.ID, "LOGBOOK_NAME", null, null);
+       return service.getString(Activator.ID, "logbook_name", null, null);
    }
 }

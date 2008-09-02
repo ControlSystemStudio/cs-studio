@@ -19,7 +19,7 @@ import org.junit.Test;
 public class SNSLogbookTest
 {
     private static final String URL =
-        "log_rdb_url=jdbc:oracle:thin:@//snsdb1.sns.ornl.gov:1521/prod";
+        "jdbc:oracle:thin:@//snsdb1.sns.ornl.gov:1521/prod";
     private static final String LOGBOOK = "Scratch Pad";
 
     @Test

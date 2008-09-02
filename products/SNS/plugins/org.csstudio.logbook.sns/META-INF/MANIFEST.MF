@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SNS Elog
 Bundle-SymbolicName: org.csstudio.logbook.sns;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.logbook.sns.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform.libs.jdbc,
  org.csstudio.logbook;visibility:=reexport,
- org.junit4
+ org.junit4,
+ org.csstudio.platform.utility.rdb;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Export-Package: org.csstudio.logbook.sns
