@@ -67,6 +67,6 @@ public class StopJms2OraAction implements IAction
             catch(InterruptedException ie) { }
         }
         
-        return null;
+        return "Stopping application...";
     }
 }

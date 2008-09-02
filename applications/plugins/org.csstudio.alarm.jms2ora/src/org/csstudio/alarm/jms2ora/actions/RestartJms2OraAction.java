@@ -68,6 +68,6 @@ public class RestartJms2OraAction implements IAction
             catch(InterruptedException ie) { }
         }
         
-        return null;
+        return "Restarting application...";
     }
 }

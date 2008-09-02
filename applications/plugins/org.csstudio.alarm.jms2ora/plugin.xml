@@ -30,25 +30,25 @@
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetNumberOfMessageFilesAction"
-            id="org.csstudio.alarm.jms2ora.getNumberOfWaifFilesAction"
+            id="org.csstudio.alarm.jms2ora.getNumberOfMessageFilesAction"
             name="Get Number Of Message Files"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetMessageFileContentAction"
-            id="org.csstudio.alarm.jms2ora.getWaifFileContentAction"
+            id="org.csstudio.alarm.jms2ora.getMessageFileContentAction"
             name="Get Message File Content"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.DeleteAllMessageFilesAction"
-            id="org.csstudio.alarm.jms2ora.deleteAllWaifFilesAction"
+            id="org.csstudio.alarm.jms2ora.deleteAllMessageFilesAction"
             name="Delete All Message Files"
             visible="true">
       </simpleAction>
       <simpleAction
             class="org.csstudio.alarm.jms2ora.actions.GetNameOfMessageFilesAction"
-            id="org.csstudio.alarm.jms2ora.getNameOfWaifFilesAction"
+            id="org.csstudio.alarm.jms2ora.getNameOfMessageFilesAction"
             name="Get Name Of Message File"
             visible="true">
       </simpleAction>
