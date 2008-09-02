@@ -55,7 +55,7 @@
       <parametrizedAction
             class="org.csstudio.alarm.jms2ora.actions.StopJms2OraAction"
             id="org.csstudio.alarm.jms2ora.stopJms2OraAction"
-            name="Shutdown"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
       <parametrizedAction
