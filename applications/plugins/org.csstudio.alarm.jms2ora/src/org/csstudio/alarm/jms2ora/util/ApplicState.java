@@ -11,6 +11,7 @@ public class ApplicState
     public static final int STOPPED = 32;
     public static final int ERROR = 1;
     public static final int FATAL = 3;
+    public static final int TIMEOUT = 5;
     
     public static final int ERROR_MASK = 0x00000001;
 }

@@ -58,7 +58,7 @@ public class Jms2OraStart implements IApplication
     private boolean running = true;
     
     /** Flag that indicates whether or not the application should stop. */
-    public boolean shutdown = true;
+    public boolean shutdown = false;
     
     /** Time to sleep in ms */
     private static long SLEEPING_TIME = 60000 ;
@@ -116,7 +116,7 @@ public class Jms2OraStart implements IApplication
             }
             
             SynchObject actSynch = new SynchObject(ApplicState.INIT, 0);
-            if(!sync.hasStatusSet(actSynch, 300, ApplicState.ERROR))    
+            if(!sync.hasStatusSet(actSynch, 300, ApplicState.TIMEOUT))    
             {
                 logger.fatal("TIMEOUT: State has not changed the last 5 minute(s).");
             }
@@ -153,6 +153,11 @@ public class Jms2OraStart implements IApplication
                         
                     case ApplicState.FATAL:
                         stateText = "fatal";
+                        running = false;                        
+                        break;
+                    
+                    case ApplicState.TIMEOUT:
+                        stateText = "timeout";
                         running = false;                        
                         break;
                 }
@@ -198,6 +203,8 @@ public class Jms2OraStart implements IApplication
         }
         else
         {
+            logger.info("Restarting application...");
+            
             return IApplication.EXIT_RESTART;
         }
     }

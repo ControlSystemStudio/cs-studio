@@ -108,11 +108,11 @@ public class MessageProcessor extends Thread implements MessageListener
     private Jms2OraStart parent = null;
     
     private final String version = " 2.0.0";
-    private final String build = " - BUILD 2008-09-01 16:00";
+    private final String build = " - BUILD 2008-09-02 08:55";
     private final String application = "Jms2Ora";
 
     /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 30000 ;
+    private static long SLEEPING_TIME = 15000 ;
 
     public final long RET_ERROR = -1;
     public static final int CONSOLE = 1;
