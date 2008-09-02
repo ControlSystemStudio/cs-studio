@@ -1,5 +1,5 @@
 NACH MEETING AM 15.08.2008
-
+˝
 - Keine gleichen Namen zulassen (Filter etc.)
 	# DB Constraint
 	# Duplizieren: " -- Copy" anhägen
@@ -20,7 +20,7 @@ LDAP Baum...)
 - LocalStoreConfigurationService:
   - Vereinheitlichen: Auch bei RPL-State und History mit UnitOfWork 
     arbeiten und aufräumen (2)
-  - prepareSyncronisation() : SYN Tabellen füllen (fehlende Tabellen hinzufügen) (5)
+  - (X) prepareSyncronisation() : SYN Tabellen füllen (fehlende Tabellen hinzufügen) (5)
 - (X) FilterActions im BeanService auf die DTOs mappen und andersherum (5) (gs: erledigt)
 - Messaging JMS Impl: Exception-Handling (Listener für Connection, Exceptions durchreichen) (1)
 
@@ -49,7 +49,7 @@ insert into AMS_TOPIC_SYN ({topic.*}) VALUES select {topic.*} from AMS_TOPIC {to
 	- (X) DoubleClick auf Filetrbedingung öffnet einen FilterbedingungEditor für beanCLone und nicht für die Bean. 
 	
 - Filterbedingung Editor
-	- speicher NUR bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
+	- (?) speicher NUR bei der StringBedingung und PV getestet!! (gui: 1, beanservice: 3)
 	- TimeBased: UI Design nicht ganz korrekt; Bei "Alarm bei Timeout" ist es eine Stop-Bedingung, sonst eine Sofort-Auslösungs-Bedingung!
 	
 - Alarmtopic Editor
@@ -66,7 +66,7 @@ insert into AMS_TOPIC_SYN ({topic.*}) VALUES select {topic.*} from AMS_TOPIC {to
 ----------------------------------------------------------------------------------------------------------
 
 - Syncronisations-View
-    - Syncronisationsprozess fertigstellen
+    - (X) Syncronisationsprozess fertigstellen
 
 - Alarmbearbeiter View
 	- ok
