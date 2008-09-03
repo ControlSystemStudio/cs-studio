@@ -37,7 +37,7 @@ CREATE TABLE message
     msg_type_id INT NOT NULL,
     datum TIMESTAMP,
     name VARCHAR(300),
-    status VARCHAR(300)
+    severity VARCHAR(300)
 );
 
 CREATE USER krykams IDENTIFIED BY 'krykams';

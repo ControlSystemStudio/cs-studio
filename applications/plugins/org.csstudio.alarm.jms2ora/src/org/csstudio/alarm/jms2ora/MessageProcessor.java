@@ -346,7 +346,7 @@ public class MessageProcessor extends Thread implements MessageListener
                 
         // Create an entry in the table MESSAGE
         // TODO: typeId is always 0!!! We don not use it anymore. Delete the column in a future version.
-        msgId = dbLayer.createMessageEntry(typeId, content.getPropertyValue("EVENTTIME"), content.getPropertyValue("NAME"), content.getPropertyValue("STATUS"));
+        msgId = dbLayer.createMessageEntry(typeId, content.getPropertyValue("EVENTTIME"), content.getPropertyValue("NAME"), content.getPropertyValue("SEVERITY"));
         if(msgId == RET_ERROR)
         {
             logger.error("createMessageEntry(): No message entry created in database.");

@@ -196,7 +196,7 @@ public class DatabaseLayer
      * @return The ID of the new entry or -1 if it fails.
      */
     
-    public long createMessageEntry(long typeId, String datum, String name, String status)
+    public long createMessageEntry(long typeId, String datum, String name, String severity)
     {
         ResultSet rsMsg = null;
         String query = null;
@@ -207,9 +207,9 @@ public class DatabaseLayer
             name = "n/a";
         }
         
-        if(status == null)
+        if(severity == null)
         {
-            status = "n/a";
+            severity = "n/a";
         }
 
         // Connect the database
@@ -246,7 +246,7 @@ public class DatabaseLayer
         if(msgId > 0)
         {
             // Insert a new entry           
-            query = "INSERT INTO message (id,msg_type_id,datum,name,status) VALUES(" + msgId + "," + typeId + ",TIMESTAMP '" + datum + "','" + name + "','" + status + "')";            
+            query = "INSERT INTO message (id,msg_type_id,datum,name,severity) VALUES(" + msgId + "," + typeId + ",TIMESTAMP '" + datum + "','" + name + "','" + severity + "')";            
             
             // System.out.println(query + "\n");
             
@@ -319,8 +319,8 @@ public class DatabaseLayer
             
             while(lst.hasMoreElements())
             {
-                query = "INSERT INTO message_content VALUES(";
-            
+                query = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES(";
+
                 key = (Long)lst.nextElement();
                 value = msgContent.getPropertyValue(key);
 
@@ -348,11 +348,16 @@ public class DatabaseLayer
             {
                 for(int i = 0;i < msgContent.countUnknownProperties();i++)
                 {
-                    query = "INSERT INTO message_content VALUES("
+                    value = msgContent.getUnknownProperty(i);
+
+                    // Replace a single ' with '' (then the entry could be stored into the database)
+                    value = value.replace("'", "''");
+                    
+                    query = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES("
                         + contentId + ","
                         + msgId + ","
                         + msgContent.getUnknownTableId() + ","
-                        + "'" + msgContent.getUnknownProperty(i) + "')";
+                        + "'" + value + "')";
                     
                     if(executeSQLUpdateQuery(query) == -1)
                     {
