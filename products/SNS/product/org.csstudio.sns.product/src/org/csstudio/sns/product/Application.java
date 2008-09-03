@@ -277,7 +277,7 @@ public class Application implements IApplication
                 // the operation will fail if the url is not a valid
                 // instance data area, so other checking is unneeded
                 URL workspaceUrl = new URL("file:" + workspace_info.getSelectedWorkspace()); //$NON-NLS-1$
-                if (instanceLoc.setURL(workspaceUrl, true)) // set & lock
+                if (instanceLoc.set(workspaceUrl, true)) // set & lock
                 {
                     workspace_info.writePersistedData();
                     return true;
@@ -431,7 +431,7 @@ public class Application implements IApplication
         return EXIT_RESTART;
     }
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
     @SuppressWarnings("nls")
     public void stop()
     {   // From IDEApplication.stop

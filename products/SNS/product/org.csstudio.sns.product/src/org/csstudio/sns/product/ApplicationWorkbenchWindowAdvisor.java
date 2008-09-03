@@ -1,5 +1,7 @@
 package org.csstudio.sns.product;
 
+//import org.csstudio.utility.speech.Annunciator;
+//import org.csstudio.utility.speech.FreeTTSAnnunciator;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -33,7 +35,25 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
         configurer.setTitle(Messages.Window_Title);
     }
 
-    @Override
+    // TODO What to do about this gimmick?
+//    @Override
+//	public void postWindowOpen()
+//    {
+//    	Annunciator talk;
+//		try
+//		{
+//			talk = new FreeTTSAnnunciator();
+//	    	talk.say("Welcome to SNS Control System Studio");
+//	    	talk.close();
+//		}
+//		catch (Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//		super.postWindowOpen();
+//	}
+
+	@Override
     public ActionBarAdvisor createActionBarAdvisor(
                     IActionBarConfigurer configurer)
     {
