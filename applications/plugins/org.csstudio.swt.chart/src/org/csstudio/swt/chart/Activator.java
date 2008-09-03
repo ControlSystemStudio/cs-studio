@@ -13,7 +13,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class Activator extends Plugin
 {
+    /** Plugin ID, defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.swt.chart"; //$NON-NLS-1$
+    
     private static Activator plugin;
     
     /** Lazily initialized Log4j Logger */

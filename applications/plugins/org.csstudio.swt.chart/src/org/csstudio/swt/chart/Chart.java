@@ -67,9 +67,12 @@ public class Chart extends Canvas
      *  Note: InteractiveChart defines more style bits!
      */
     public static final int STYLE_MASK = ~(USE_TRACE_NAMES | TIME_CHART);
+
+    /** Used to actually paint the traces */
+    final private TracePainter painter = new TracePainter();
         
     /** The traces to plot. */
-    private ArrayList<Trace> traces = new ArrayList<Trace>();
+    final private ArrayList<Trace> traces = new ArrayList<Trace>();
     
     /** Do we need to (re-)evaluate the overall layout of things? */
     private boolean dirty_layout = true;
@@ -757,7 +760,7 @@ public class Chart extends Canvas
             // Grid, Traces, Markers
             paintGrid(gc);
             for (Trace t : traces)
-                TracePainter.paint(gc, t, xaxis);
+                painter.paint(gc, t, xaxis);
             // Restore what the TracePainter might have changed
             gc.setLineWidth(0);
             gc.setForeground(foreground);

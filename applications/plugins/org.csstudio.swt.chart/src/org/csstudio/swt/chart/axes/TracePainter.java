@@ -2,10 +2,13 @@ package org.csstudio.swt.chart.axes;
 
 import java.util.ArrayList;
 
+import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Trace;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
@@ -20,10 +23,29 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class TracePainter
 {
-    private static final int marker_size = 10;
+    private int marker_type=0;
 
+    private int marker_size=10;
+    
+    private float saturation=0.4f;
+
+    /** Initialize from preferences */
+    @SuppressWarnings("nls")
+    public TracePainter()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return;
+        marker_type =
+            service.getInt(Activator.ID, "marker_type", marker_type, null);
+        marker_size =
+            service.getInt(Activator.ID, "marker_size", marker_size, null);
+        saturation =
+            service.getFloat(Activator.ID, "area_color_saturation", saturation, null);
+    }
+    
     /** Paint a trace over given X axis. */
-    static public void paint(GC gc, Trace trace, XAxis xaxis)
+    public void paint(GC gc, Trace trace, XAxis xaxis)
     {
         final AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         gc.setForeground(trace.getColor());
@@ -78,7 +100,7 @@ public class TracePainter
      *  @param i1 Last sample to use
      *  @param area Use area of lines for min/max envelope?
      */
-    private static void drawArea(final GC gc,
+    private void drawArea(final GC gc,
                                  final XAxis xaxis,
                                  final YAxis yaxis,
                                  final ChartSampleSequence samples,
@@ -91,7 +113,7 @@ public class TracePainter
         final Color old_back = gc.getBackground();
         final float[] hsb = old_back.getRGB().getHSB();
         final Color lighter = new Color(gc.getDevice(),
-                new RGB(hsb[0], hsb[1]*0.2f, 1.0f));
+                new RGB(hsb[0], hsb[1]*saturation, 1.0f));
         // Accumulate info about horizontal position, min/max/average values
         final ArrayList<Integer> pos = new ArrayList<Integer>();
         final ArrayList<Integer> avg = new ArrayList<Integer>();
@@ -142,8 +164,8 @@ public class TracePainter
                 else
                 {
                     gc.setForeground(lighter);
-                    drawLine(gc, pos, min);
-                    drawLine(gc, pos, max);                    
+                    drawStaircaseLine(gc, pos, min);
+                    drawStaircaseLine(gc, pos, max);                    
                     gc.setForeground(old_back);
                 }
                 drawStaircaseLine(gc, pos, avg);
@@ -165,8 +187,8 @@ public class TracePainter
         else
         {
             gc.setForeground(lighter);
-            drawLine(gc, pos, min);
-            drawLine(gc, pos, max);                    
+            drawStaircaseLine(gc, pos, min);
+            drawStaircaseLine(gc, pos, max);                    
             gc.setForeground(old_back);
         }
         drawStaircaseLine(gc, pos, avg);
@@ -183,7 +205,7 @@ public class TracePainter
      *  @param i1 Last sample to use
      *  @param area Use area of lines for min/max envelope?
      */
-    private static void drawLine(final GC gc,
+    private void drawLine(final GC gc,
                                  final XAxis xaxis,
                                  final YAxis yaxis,
                                  final ChartSampleSequence samples,
@@ -234,7 +256,7 @@ public class TracePainter
      *  @param min Minimum 'y' values in screen coords
      *  @param max .. maximum
      */
-    private static void fillArea(final GC gc, final ArrayList<Integer> pos,
+    private void fillArea(final GC gc, final ArrayList<Integer> pos,
             final ArrayList<Integer> min, final ArrayList<Integer> max)
     {
         final int N = pos.size();
@@ -253,36 +275,12 @@ public class TracePainter
         gc.fillPolygon(points);
     }
 
-    /** Draw point-to-point line
-     *  @param gc GC
-     *  @param pos Horizontal screen positions
-     *  @param val Values in screen coordinates
-     */
-    private static void drawLine(final GC gc, final ArrayList<Integer> pos,
-            final ArrayList<Integer> val)
-    {
-        if (pos.size() <= 0)
-            return;
-        // Show at least the initial point
-        int x0 = pos.get(0);
-        int y0 = val.get(0);
-        gc.drawPoint(x0, y0);
-        // If there's more, draw as lines
-        for (int i=1; i<pos.size(); ++i)
-        {
-            final int x1 = pos.get(i);
-            final int y1 = val.get(i);
-            gc.drawLine(x0, y0, x1, y1);
-            x0 = x1;
-            y0 = y1;
-        }
-    }
     /** Draw staircase line
      *  @param gc GC
      *  @param pos Horizontal screen positions
      *  @param val Values in screen coordinates
      */
-    private static void drawStaircaseLine(final GC gc, final ArrayList<Integer> pos,
+    private void drawStaircaseLine(final GC gc, final ArrayList<Integer> pos,
             final ArrayList<Integer> val)
     {
         if (pos.size() <= 0)
@@ -304,7 +302,7 @@ public class TracePainter
     }
 
     /** Draw given sample range with markers. */
-    private static void drawMarkers(final GC gc,
+    private void drawMarkers(final GC gc,
                                     final XAxis xaxis,
                                     final YAxis yaxis,
                                     final ChartSampleSequence samples,
@@ -341,7 +339,7 @@ public class TracePainter
     }
     
     /** Draw given sample range with bars. */
-    private static void drawBars(final GC gc,
+    private void drawBars(final GC gc,
                                  final XAxis xaxis,
                                  final YAxis yaxis,
                                  final ChartSampleSequence samples,
@@ -370,15 +368,16 @@ public class TracePainter
     }
     
     /** Mark given point. */
-    private static void markPoint(final GC gc, final int x0, final int y0)
+    private void markPoint(final GC gc, final int x0, final int y0)
     {
         final int half = marker_size / 2;
-        if (true)
-        {   // Square
+        switch (marker_type)
+        {
+        case 0:// Square
             gc.fillRectangle(x0 - half, y0 - half, marker_size, marker_size);
-        }
-        if (false)
-        { // A ']' shape
+            break;
+        default:
+            // A ']' shape
             gc.drawLine(x0, y0 - half, x0 + half, y0 - half);
             gc.drawLine(x0 + half, y0 - half, x0 + half, y0 + half);
             gc.drawLine(x0 + half, y0 + half, x0, y0 + half);
