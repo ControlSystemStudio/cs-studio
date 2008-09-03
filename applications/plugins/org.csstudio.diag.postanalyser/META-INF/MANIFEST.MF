@@ -2,11 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Postanalyser
 Bundle-SymbolicName: org.csstudio.diag.postanalyser;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Bundle-Activator: org.csstudio.diag.postanalyser.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.ui,
- org.csstudio.swt.chart
+ org.csstudio.swt.chart,
+ org.junit4;bundle-version="4.3.1"
 Eclipse-LazyStart: true
