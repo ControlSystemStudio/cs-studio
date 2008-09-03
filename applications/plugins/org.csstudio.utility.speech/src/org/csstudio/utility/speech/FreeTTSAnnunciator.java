@@ -11,7 +11,8 @@ public class FreeTTSAnnunciator implements Annunciator
 {
 	final public static String DEFAULT_VOICE = "kevin16";
 
-	private Translation translations[] = null;
+	private Translation translations[] = null; 
+
 
 	final private Voice voice;
 
