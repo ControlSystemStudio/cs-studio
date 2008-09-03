@@ -15,7 +15,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.ams.internal.pages.Page1"
+            category="org.csstudio.ams.internal.pages.AmsPreferencePage"
             class="org.csstudio.ams.connector.sms.internal.pages.SmsPreferencePage"
             id="org.csstudio.ams.connector.sms.page1"
             name="Connector SMS"/>

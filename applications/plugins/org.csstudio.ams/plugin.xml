@@ -7,7 +7,7 @@
       <page
             category="org.csstudio.platform.ui.css.applications.configuration"
             class="org.csstudio.ams.internal.pages.AmsPreferencePage"
-            id="org.csstudio.ams.internal.pages.Page1"
+            id="org.csstudio.ams.internal.pages.AmsPreferencePage"
             name="Alarm Message System">
       </page>
    </extension>
