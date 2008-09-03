@@ -63,6 +63,7 @@ public class ContainerFieldEditor extends StringButtonFieldEditor {
      */
     public ContainerFieldEditor(final String name, final String labelText, final Composite parent) {
         init(name, labelText);
+        setEmptyStringAllowed(true);
         setErrorMessage(JFaceResources
                 .getString("DirectoryFieldEditor.errorMessage"));//$NON-NLS-1$
         setChangeButtonText(JFaceResources.getString("openBrowse"));//$NON-NLS-1$
@@ -110,11 +111,13 @@ public class ContainerFieldEditor extends StringButtonFieldEditor {
     private Path getDirectory(final Path startingDirectory) {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         //TODO: gibt nicht den gewünschten Container.
-        IContainer container = root.getContainerForLocation(startingDirectory);
-        ContainerSelectionDialog csd = new ContainerSelectionDialog(getShell(),container,false,null);
-//        if (startingDirectory != null) {
-//            fileDialog.setFilterPath(startingDirectory.getPath());
-//        }
+        IContainer container;
+        if(startingDirectory==null){
+            container = root.getContainerForLocation(new Path(""));
+        }else{
+            container = root.getContainerForLocation(startingDirectory);
+        }
+        ContainerSelectionDialog csd = new ContainerSelectionDialog(getShell(),container,true,null);
         int buttonId = csd.open();
         if(buttonId==0){
             Object[] result1 = csd.getResult();

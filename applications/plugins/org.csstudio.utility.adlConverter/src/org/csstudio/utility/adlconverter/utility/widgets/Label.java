@@ -57,22 +57,24 @@ public class Label extends Widget {
             getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
 
-        for (String obj : label.getBody()) {
-            String[] row = obj.trim().split("="); //$NON-NLS-1$
+        for (String bodyPart : label.getBody()) {
+            String[] row = bodyPart.trim().split("="); //$NON-NLS-1$
             if(row.length<2){
-                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+obj+Messages.Label_WrongADLFormatException_Parameter_End);
+                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+bodyPart+Messages.Label_WrongADLFormatException_Parameter_End);
             }
+            //
             if(row[0].equals("textix")){ //$NON-NLS-1$
 //              <property type="sds.string" id="value.text" value="CMTB" />
                 String[] textit = ADLHelper.cleanString(row[1]);
                 _widget.setPropertyValue(LabelModel.PROP_TEXTVALUE, textit[1]);
                 labelText = textit[1];
                 _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);
-                if(textit[1].startsWith("$")&&textit.length>2){ //$NON-NLS-1$
-                    _widget.setAliasValue("channel", textit[2]); //$NON-NLS-1$
-                    _widget.setPrimarPv(textit[2]);
+                if(textit[1].startsWith("$")&&textit.length>1){ //$NON-NLS-1$
+                    _widget.setPrimarPv(textit[1]);
                     _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_ALIAS);
                 }
+                
+            // The Text alignment.
             }else if(row[0].equals("alignment")||row[0].equals("align")){ //$NON-NLS-1$ //$NON-NLS-2$
 //              <property type="sds.option" id="textAlignment">
 //                  <option id="0" />
@@ -90,8 +92,10 @@ public class Label extends Widget {
                     id = 4;
                 }
                 _widget.setPropertyValue(LabelModel.PROP_TEXT_ALIGN, id);
+            // 
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 //TODO: Label-->clrmod (CSS-SDS unterstüzung fehlt!)
+            // The Text Format
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 String test = row[1];
                 if(test.equals("\"exponential\"")){ //$NON-NLS-1$
@@ -112,7 +116,7 @@ public class Label extends Widget {
                     _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);
                 }
             }else{                
-                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);
+                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ bodyPart+Messages.Label_WrongADLFormatException_Parameter_End);
             } //Label have no Parameter
         }
         if(getMonitor()!=null){

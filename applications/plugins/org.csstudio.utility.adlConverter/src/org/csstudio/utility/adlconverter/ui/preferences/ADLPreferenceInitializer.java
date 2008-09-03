@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.ui.preferences;
 
 import org.csstudio.utility.adlconverter.Activator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 

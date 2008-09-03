@@ -50,6 +50,7 @@ import org.csstudio.utility.adlconverter.utility.widgets.Polygon;
 import org.csstudio.utility.adlconverter.utility.widgets.Polyline;
 import org.csstudio.utility.adlconverter.utility.widgets.Rectangle;
 import org.csstudio.utility.adlconverter.utility.widgets.RelatedDisplay;
+import org.csstudio.utility.adlconverter.utility.widgets.StripChart;
 import org.csstudio.utility.adlconverter.utility.widgets.Symbol;
 import org.csstudio.utility.adlconverter.utility.widgets.Textinput;
 import org.csstudio.utility.adlconverter.utility.widgets.Valuator;
@@ -158,7 +159,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 } else if (strings.getType().equals("\"related display\"")) { //$NON-NLS-1$
                     displayModel.addWidget(new RelatedDisplay(strings).getElement());
                 } else if (strings.getType().equals("\"strip chart\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Waveform(strings).getElement());
+                    displayModel.addWidget(new StripChart(strings).getElement());
                 } else if (strings.getType().equals("text")) { //$NON-NLS-1$
                     displayModel.addWidget(new Label(strings).getElement());
                 } else if (strings.getType().equals("\"text update\"")) { //$NON-NLS-1$
