@@ -77,7 +77,6 @@ public class InteractiveChart extends Composite
      *  @param parent Parent widget.
      *  @param style SWT style.
      */
-    @SuppressWarnings("nls")
     public InteractiveChart(Composite parent, int style)
     {
         super(parent, style & Chart.STYLE_MASK);

@@ -58,7 +58,6 @@ public class TraceNameYAxis extends YAxis
         super.setRegion(x, y, width, height);
     }
 
-    @SuppressWarnings("nls")
     private void determineLayout(GC gc)
     {
         if (!traces_changed)
