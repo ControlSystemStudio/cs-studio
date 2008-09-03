@@ -191,15 +191,27 @@ public class DatabaseLayer
      * 
      * @param typeId - The ID of the message type which is defined in the table <i>MSG_TYPE</i>.
      * @param datum  - The date of the event(contained in the map message) or the current date
+     * @param name - The value of property NAME(contained in the map message)
+     * @param status - The value of property STATUS(contained in the map message)
      * @return The ID of the new entry or -1 if it fails.
      */
     
-    public long createMessageEntry(long typeId, String datum)
+    public long createMessageEntry(long typeId, String datum, String name, String status)
     {
-        ResultSet rsMsg   = null;
-        String query   = null;
+        ResultSet rsMsg = null;
+        String query = null;
         long msgId = -1;
         
+        if(name == null)
+        {
+            name = "n/a";
+        }
+        
+        if(status == null)
+        {
+            status = "n/a";
+        }
+
         // Connect the database
         if(connect() == false)
         {
@@ -229,12 +241,12 @@ public class DatabaseLayer
             }
             catch (SQLException sqle) { sqle.printStackTrace(); }
         }
-        
+
         // Do we have a valid ID?
         if(msgId > 0)
         {
-            // Insert a new entry
-            query = "INSERT INTO message VALUES(" + msgId + "," + typeId + ",TIMESTAMP '" + datum + "')";            
+            // Insert a new entry           
+            query = "INSERT INTO message (id,msg_type_id,datum,name,status) VALUES(" + msgId + "," + typeId + ",TIMESTAMP '" + datum + "','" + name + "','" + status + "')";            
             
             // System.out.println(query + "\n");
             

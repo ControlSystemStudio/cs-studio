@@ -35,7 +35,9 @@ CREATE TABLE message
 (
     id INT PRIMARY KEY NOT NULL,
     msg_type_id INT NOT NULL,
-    datum TIMESTAMP
+    datum TIMESTAMP,
+    name VARCHAR(300),
+    status VARCHAR(300)
 );
 
 CREATE USER krykams IDENTIFIED BY 'krykams';
