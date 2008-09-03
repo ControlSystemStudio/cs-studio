@@ -92,7 +92,6 @@ public class ImportFileAction extends Action {
                     result = (SampleFileImportSettings) reader.getSettings();
                     SampleFileDialog dialog = new SampleFileDialog(shell, _config.getModel(), result);
                     dialog.open();
-                    System.out.println(Messages.ImportFileAction_13);
                     if (result.getSelectedSize() != 0) {
                     	reader.schedule();
                     }else{
@@ -152,7 +151,6 @@ public class ImportFileAction extends Action {
                     result = (SampleFileImportSettings) reader.getSettings();
                     SampleFileDialog dialog = new SampleFileDialog(shell, _config.getModel(), result);
                     dialog.open();
-                    System.out.println(Messages.ImportFileAction_20);
                     if (result.getSelectedSize() != 0) {
                         reader.schedule();
                     }else{

@@ -79,9 +79,6 @@ public class Messages extends NLS {
     public static String SampleFileDialog_VariableX;
     public static String SampleFileReader_WarningInvalidValueFound;
     
-    public static String ImportFileAction_13;
-
-    public static String ImportFileAction_20;
 
     public static String ImportFileAction_DebugConstructorImportFileAction;
 
