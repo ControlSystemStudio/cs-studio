@@ -58,7 +58,9 @@ public class JMSLogMessage
     /** Optional MapMessage element: Java class that generated the event */
     final public static String CLASS = "CLASS";
 
-    /** Optional MapMessage element: Java method that generated the event */
+    /** Optional MapMessage element: Java method that generated the event.
+     *  Also used for alarm messages, where it's the PV name
+     */
     final public static String NAME = "NAME";
     
     /** Optional MapMessage element: Java source file that generated the event */
