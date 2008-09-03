@@ -8,7 +8,6 @@ import org.eclipse.swt.graphics.Image;
 /** The JFace label provider for a table with FormulaInput entries. 
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class InputTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider
 {

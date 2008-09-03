@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Control;
 /** The JFace label provider for the Model data. 
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class PVTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider, ITableColorProvider
 {

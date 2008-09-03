@@ -194,7 +194,6 @@ public class FormulaModelItem extends AbstractModelItem
     /** Decode XML DOM element for "formula ...".
      *  @see #getXMLContent()
      */
-    @SuppressWarnings("nls")
     public static FormulaModelItem loadFromDOM(final Model model,
                     final Element pv) throws Exception
     {

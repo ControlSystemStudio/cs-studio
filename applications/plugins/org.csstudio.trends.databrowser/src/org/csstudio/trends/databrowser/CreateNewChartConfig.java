@@ -11,7 +11,6 @@ import util.eclipse.menu.NewFileWizardMenuAction;
  *  
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class CreateNewChartConfig extends NewFileWizardMenuAction
 {
     public CreateNewChartConfig()

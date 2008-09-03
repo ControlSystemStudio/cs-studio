@@ -53,7 +53,6 @@ public class VariableNode implements Node
         return false;
     }
     
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {

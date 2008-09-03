@@ -193,7 +193,6 @@ public class Controller
             gui.addCurrentZoomToUndoStack(description);
         }
 
-        @SuppressWarnings("nls")
         public void changedXAxis(XAxis xaxis)
         {
             // Did the controller cause this?

@@ -67,7 +67,6 @@ public abstract class PlotAwareView extends ViewPart
         part_listener = new IPartListener2()
         {
             // Remember the editor when activated...
-            @SuppressWarnings("nls")
             public void partActivated(IWorkbenchPartReference ref)
             {
                 if (ref.getId().equals(PlotEditor.ID))

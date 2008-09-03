@@ -20,7 +20,6 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  *  
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class NewFileWizardMenuAction extends Action
     implements IObjectActionDelegate, // for context menu
                IWorkbenchWindowActionDelegate // for main menu
