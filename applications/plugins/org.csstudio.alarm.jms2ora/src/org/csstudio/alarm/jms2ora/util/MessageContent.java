@@ -81,7 +81,12 @@ public class MessageContent implements Serializable
     {
         return msgIdContent.keys();
     }
-        
+    
+    public boolean containsPropertyName(String name)
+    {
+        return msgNameContent.containsKey(name);
+    }
+    
     public boolean hasContent()
     {
         return(!msgIdContent.isEmpty());

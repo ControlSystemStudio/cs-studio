@@ -54,7 +54,7 @@ public class MessageFileHandler implements FilenameFilter
     private boolean existsObjectFolder = false;
  
     /** Name of the folder that holds the stored message content */
-    private final String objectDir = ".\\nirvana\\";
+    private final String objectDir = ".\\var\\nirvana\\";
 
     /** Prefix for the file names */
     private final String prefix = "message_";

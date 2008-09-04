@@ -24,10 +24,19 @@
 
 package org.csstudio.alarm.jms2ora.database;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.platform.utility.rdb.RDBUtil;
@@ -51,6 +60,18 @@ public class DatabaseLayer
     /** Database password */
     private String password = null;
     
+    /** True if the folder 'var\columns' exists. This folder holds the stored message object content. */
+    private boolean existsObjectFolder = false;
+
+    /** Name of the folder that holds the stored message content */
+    private final String objectDir = ".\\var\\columns\\";
+
+    /**
+     *  Contains the names of the columns of the table MESSAGE. The key is the name of column and the value
+     *  is the precision.
+     */
+    private Hashtable<String, Integer> messageCol = null;
+    
     /** Logger */
     private Logger logger = null;
 
@@ -60,7 +81,152 @@ public class DatabaseLayer
         
         this.url = url;
         this.password = password;
-        this.user = user;  
+        this.user = user;
+        
+        createObjectFolder();
+        readTableColumns();
+    }
+    
+    /**
+     * 
+     */
+    private void readTableColumns()
+    {
+        ResultSetMetaData meta = null;
+        ResultSet rs = null;
+        Statement st = null;
+        String name = null;
+        int prec = 0;
+        int count = 0;
+        
+        messageCol = new Hashtable<String, Integer>();
+        
+        if(!connect())
+        {
+            logger.error("Cannot read the table column names.");
+            
+            return;
+        }
+        
+        try
+        {
+            st = dbService.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery("SELECT * FROM message WHERE id = 1");
+            
+            meta = rs.getMetaData();
+            count = meta.getColumnCount();
+            
+            for(int i = 1;i <= count;i++)
+            {
+                name = meta.getColumnName(i);
+                prec = meta.getPrecision(i);
+                
+                if((name.compareToIgnoreCase("id") != 0) && (name.compareToIgnoreCase("datum") != 0) && (name.compareToIgnoreCase("msg_type_id") != 0))
+                {
+                    messageCol.put(name, new Integer(prec));
+                }
+            }
+            
+            saveColumnNames();
+        }
+        catch(SQLException sqle)
+        {
+            logger.error("*** SQLException *** : Cannot read the table column names: " + sqle.getMessage());
+            logger.error("Using stored column names.");
+            
+            readColumnNames();
+        }
+        finally
+        {
+            close();
+        }
+    }
+    
+    private void saveColumnNames()
+    {
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+
+        if(messageCol.isEmpty())
+        {
+            logger.info("Column list is empty.");
+            
+            return;
+        }
+
+        if(existsObjectFolder == false)
+        {
+            logger.warn("Object folder '" + objectDir + "' does not exist. Columns cannot be stored.");
+            
+            return;
+        }
+        
+        try
+        {
+            fos = new FileOutputStream(objectDir + "ColumnNames.ser");
+            oos = new ObjectOutputStream(fos);
+            
+            // Write the MessageContent object to disk
+            oos.writeObject(messageCol);            
+        }
+        catch(FileNotFoundException fnfe)
+        {
+            logger.error("FileNotFoundException : " + fnfe.getMessage());
+        }
+        catch(IOException ioe)
+        {
+            logger.error("IOException : " + ioe.getMessage());
+        }
+        finally
+        {
+            if(oos != null){try{oos.close();}catch(IOException ioe){}}
+            if(fos != null){try{fos.close();}catch(IOException ioe){}}
+            
+            oos = null;
+            fos = null;            
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private Hashtable<String, Integer> readColumnNames()
+    {
+        Hashtable<String, Integer> content = null;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+
+        try
+        {
+            fis = new FileInputStream(objectDir + "ColumnNames.ser");
+            ois = new ObjectInputStream(fis);
+            
+            // Write the MessageContent object to disk
+            content = (Hashtable<String, Integer>)ois.readObject();            
+        }
+        catch(FileNotFoundException fnfe)
+        {
+            logger.error("FileNotFoundException : " + fnfe.getMessage());
+            content = null;
+        }
+        catch(IOException ioe)
+        {
+            logger.error("IOException : " + ioe.getMessage());
+            content = null;
+        }
+        catch (ClassNotFoundException e)
+        {
+            logger.error("ClassNotFoundException : " + e.getMessage());
+            content = null;
+        }
+        finally
+        {
+            if(ois != null){try{ois.close();}catch(IOException ioe){}}
+            if(fis != null){try{fis.close();}catch(IOException ioe){}}
+            
+            ois = null;
+            fis = null;            
+        }
+        
+        return content;
     }
     
     /**
@@ -196,22 +362,14 @@ public class DatabaseLayer
      * @return The ID of the new entry or -1 if it fails.
      */
     
-    public long createMessageEntry(long typeId, String datum, String name, String severity)
+    public long createMessageEntry(long typeId, MessageContent content)
     {
         ResultSet rsMsg = null;
         String query = null;
+        String values = null;
+        String name = null;
         long msgId = -1;
         
-        if(name == null)
-        {
-            name = "n/a";
-        }
-        
-        if(severity == null)
-        {
-            severity = "n/a";
-        }
-
         // Connect the database
         if(connect() == false)
         {
@@ -246,9 +404,29 @@ public class DatabaseLayer
         if(msgId > 0)
         {
             // Insert a new entry           
-            query = "INSERT INTO message (id,msg_type_id,datum,name,severity) VALUES(" + msgId + "," + typeId + ",TIMESTAMP '" + datum + "','" + name + "','" + severity + "')";            
+            query = "INSERT INTO message (id,msg_type_id,datum";            
+            values = ") VALUES (" + msgId + "," + typeId + ",TIMESTAMP '" + content.getPropertyValue("EVENTTIME") + "'";
             
-            // System.out.println(query + "\n");
+            // Get names of columns of table MESSAGE
+            Enumeration<String> keys = messageCol.keys();
+            while(keys.hasMoreElements())
+            {
+                name = keys.nextElement();
+                if(content.containsPropertyName(name.toUpperCase()))
+                {
+                    query = query + "," + name;
+                    values = values + ",'" + content.getPropertyValue(name.toUpperCase()) + "'";
+                }
+                else
+                {
+                    query = query + "," + name;
+                    values = values + ",'n/a'";
+                }
+            }
+            
+            query = query + values + ")";
+            
+            System.out.println(query + "\n");
             
             if(executeSQLUpdateQuery(query) == -1)
             {
@@ -380,6 +558,33 @@ public class DatabaseLayer
         return result;
     }
     
+    /**
+     * 
+     */
+    private void createObjectFolder()
+    {
+        File folder = new File(objectDir);
+                
+        existsObjectFolder = true;
+
+        if(!folder.exists())
+        {
+            boolean result = folder.mkdir();
+            if(result)
+            {
+                logger.info("Folder " + objectDir + " was created.");
+                
+                existsObjectFolder = true;
+            }
+            else
+            {
+                logger.warn("Folder " + objectDir + " was NOT created.");
+                
+                existsObjectFolder = false;
+            }
+        }
+    }
+
     /**
      * The method deletes the message with the given id from the table.
      * 

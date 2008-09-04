@@ -107,8 +107,8 @@ public class MessageProcessor extends Thread implements MessageListener
     
     private Jms2OraStart parent = null;
     
-    private final String version = " 2.1.0";
-    private final String build = " - BUILD 2008-09-03 15:00";
+    private final String version = " 2.1.1";
+    private final String build = " - BUILD 2008-09-04 13:45";
     private final String application = "Jms2Ora";
 
     /** Time to sleep in ms */
@@ -346,7 +346,7 @@ public class MessageProcessor extends Thread implements MessageListener
                 
         // Create an entry in the table MESSAGE
         // TODO: typeId is always 0!!! We don not use it anymore. Delete the column in a future version.
-        msgId = dbLayer.createMessageEntry(typeId, content.getPropertyValue("EVENTTIME"), content.getPropertyValue("NAME"), content.getPropertyValue("SEVERITY"));
+        msgId = dbLayer.createMessageEntry(typeId, content);
         if(msgId == RET_ERROR)
         {
             logger.error("createMessageEntry(): No message entry created in database.");

@@ -24,6 +24,8 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
@@ -51,6 +53,9 @@ public class Jms2OraStart implements IApplication
     /**  */
     private SynchObject sync = null;
     
+    /** Name of the folder that holds the stored message content */
+    private final String objectDir = ".\\var\\";
+
     /** Last state */
     private int lastState = 0;
     
@@ -70,8 +75,9 @@ public class Jms2OraStart implements IApplication
     {
         instance = this;
         
-        createLogger();
-        
+        createLogger();    
+        createObjectFolder();
+    
         sync = new SynchObject(ApplicState.INIT, System.currentTimeMillis());
     }
     
@@ -248,5 +254,23 @@ public class Jms2OraStart implements IApplication
     public void stop()
     {
         return;
+    }
+    
+    private void createObjectFolder()
+    {
+        File folder = new File(objectDir);
+                
+        if(!folder.exists())
+        {
+            boolean result = folder.mkdir();
+            if(result)
+            {
+                logger.info("Folder " + objectDir + " was created.");                
+            }
+            else
+            {
+                logger.warn("Folder " + objectDir + " was NOT created.");
+            }
+        }
     }
 }
