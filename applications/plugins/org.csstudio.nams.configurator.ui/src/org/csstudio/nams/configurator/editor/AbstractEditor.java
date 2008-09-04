@@ -98,7 +98,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 			comboWidget = EditorUIUtils.createComboViewerForEnumValues(parent,
 					contents, bean, targetProperty);
 		} catch (final IntrospectionException e) {
-			throw new RuntimeException("failed to create combo viewer", e);
+			throw new RuntimeException("failed to create combo viewer", e); //$NON-NLS-1$
 		}
 
 		final GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false,
@@ -116,7 +116,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		super.dispose();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void doSave(final IProgressMonitor monitor) {
 		// speicher Änderungen mit dem Service
@@ -151,7 +151,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 			messageBox.setText(e.getClass().toString());
 			messageBox.setMessage(e.getMessage());
 		}
-		this.setPartName(this.originalEditorInput.getDisplayName() + " - "
+		this.setPartName(this.originalEditorInput.getDisplayName() + " - " //$NON-NLS-1$
 				+ this.superTitle);
 
 		this.firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -167,7 +167,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		return super.getTitle();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void init(final IEditorSite site, final IEditorInput input)
 			throws PartInitException {
@@ -181,7 +181,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		this.workingCopyOfEditorInput.addPropertyChangeListener(this);
 
 		this.superTitle = super.getTitle();
-		this.setPartName(this.originalEditorInput.getDisplayName() + " - "
+		this.setPartName(this.originalEditorInput.getDisplayName() + " - " //$NON-NLS-1$
 				+ this.superTitle);
 
 		this.doInit(site, input);
@@ -342,7 +342,7 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		gridData.minimumWidth = this.MIN_WIDTH;
 		gridData.widthHint = this.MIN_WIDTH;
 		textWidget.setLayoutData(gridData);
-		textWidget.setText("");
+		textWidget.setText(""); //$NON-NLS-1$
 		return textWidget;
 	}
 

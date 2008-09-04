@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 
 public class AlarmbearbeiterBean extends
@@ -10,12 +11,12 @@ public class AlarmbearbeiterBean extends
 	}
 
 	private int userID;// PRIMARY KEY
-	private String name = "";
-	private String email = "";
-	private String mobilePhone = "";
-	private String phone = "";
-	private String statusCode = "";
-	private String confirmCode = "";
+	private String name = ""; //$NON-NLS-1$
+	private String email = ""; //$NON-NLS-1$
+	private String mobilePhone = ""; //$NON-NLS-1$
+	private String phone = ""; //$NON-NLS-1$
+	private String statusCode = ""; //$NON-NLS-1$
+	private String confirmCode = ""; //$NON-NLS-1$
 	private boolean isActive = false;
 	private PreferedAlarmType preferedAlarmType = PreferedAlarmType.NONE;
 
@@ -98,7 +99,7 @@ public class AlarmbearbeiterBean extends
 	}
 
 	public String getDisplayName() {
-		return this.getName() != null ? this.getName() : "(ohne Name)";
+		return this.getName() != null ? this.getName() : Messages.AlarmbearbeiterBean_without_name;
 	}
 
 	public String getEmail() {
@@ -173,14 +174,14 @@ public class AlarmbearbeiterBean extends
 
 	public void setConfirmCode(final String confirmCode) {
 		final String oldValue = this.getConfirmCode();
-		this.confirmCode = (confirmCode != null) ? confirmCode : "";
+		this.confirmCode = (confirmCode != null) ? confirmCode : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.confirmCode.name(), oldValue,
 				this.getConfirmCode());
 	}
 
 	public void setEmail(final String email) {
 		final String oldValue = this.getEmail();
-		this.email = (email != null) ? email : "";
+		this.email = (email != null) ? email : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.email.name(), oldValue, this
 				.getEmail());
 	}
@@ -191,21 +192,21 @@ public class AlarmbearbeiterBean extends
 
 	public void setMobilePhone(final String mobilePhone) {
 		final String oldValue = this.getMobilePhone();
-		this.mobilePhone = (mobilePhone != null) ? mobilePhone : "";
+		this.mobilePhone = (mobilePhone != null) ? mobilePhone : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.mobilePhone.name(), oldValue,
 				this.getMobilePhone());
 	}
 
 	public void setName(final String name) {
 		final String oldValue = this.getName();
-		this.name = (name != null) ? name : "";
+		this.name = (name != null) ? name : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.name.name(), oldValue, this
 				.getName());
 	}
 
 	public void setPhone(final String phone) {
 		final String oldValue = this.getPhone();
-		this.phone = (phone != null) ? phone : "";
+		this.phone = (phone != null) ? phone : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.phone.name(), oldValue, this
 				.getPhone());
 	}
@@ -219,7 +220,7 @@ public class AlarmbearbeiterBean extends
 
 	public void setStatusCode(final String statusCode) {
 		final String oldValue = this.getStatusCode();
-		this.statusCode = (statusCode != null) ? statusCode : "";
+		this.statusCode = (statusCode != null) ? statusCode : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.statusCode.name(), oldValue,
 				this.getStatusCode());
 	}

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.actions.OpenConfigurationEditorAction;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -45,12 +46,12 @@ public abstract class FilterableBeanList {
 									.toLowerCase()))) {
 				return false;
 			}
-			if (FilterableBeanList.this.selectedgruppenname.equals("ALLE")) {
+			if (FilterableBeanList.this.selectedgruppenname.equals(Messages.FilterableBeanList_all)) {
 				return true;
 			}
 
 			if (FilterableBeanList.this.selectedgruppenname
-					.equals("Ohne Rubrik")) {
+					.equals(Messages.FilterableBeanList_without_category)) {
 				return ((bean.getRubrikName() == null) || (bean.getRubrikName()
 						.length() == 0));
 			}
@@ -69,8 +70,8 @@ public abstract class FilterableBeanList {
 		FilterableBeanList.logger = logger;
 	}
 
-	private String filterkriterium = "";
-	private String selectedgruppenname = "ALLE";
+	private String filterkriterium = ""; //$NON-NLS-1$
+	private String selectedgruppenname = Messages.FilterableBeanList_all;
 
 	private final Set<String> gruppenNamen = new TreeSet<String>();
 	private TableViewer table;
@@ -88,31 +89,31 @@ public abstract class FilterableBeanList {
 	public void updateView() {
 		final IConfigurationBean[] tableInput = this.getTableInput();
 
-		FilterableBeanList.logger.logDebugMessage(this, "new tableInput: "
+		FilterableBeanList.logger.logDebugMessage(this, "new tableInput: " //$NON-NLS-1$
 				+ Arrays.toString(tableInput));
 
 		this.gruppenNamen.clear();
 		for (final IConfigurationBean bean : tableInput) {
 			final String groupName = bean.getRubrikName();
-			if ((groupName != null) && !groupName.equals("")) {
+			if ((groupName != null) && !groupName.equals("")) { //$NON-NLS-1$
 				this.gruppenNamen.add(groupName);
 			}
 		}
 
 		final Object[] newItems = new String[this.gruppenNamen.size() + 3];
-		newItems[0] = "ALLE";
-		newItems[1] = "Ohne Rubrik";
-		newItems[2] = "-------------";
+		newItems[0] = Messages.FilterableBeanList_all;
+		newItems[1] = Messages.FilterableBeanList_without_category;
+		newItems[2] = Messages.FilterableBeanList_separator;
 		System.arraycopy(this.gruppenNamen.toArray(new Object[this.gruppenNamen
 				.size()]), 0, newItems, 3, this.gruppenNamen.size());
 		this.gruppenCombo.setInput(newItems);
 
 		if (this.gruppenNamen.contains(this.selectedgruppenname)
-				|| this.selectedgruppenname.equals("Ohne Rubrik")) {
+				|| this.selectedgruppenname.equals(Messages.FilterableBeanList_without_category)) {
 			this.gruppenCombo.setSelection(new StructuredSelection(
 					this.selectedgruppenname), true);
 		} else {
-			this.gruppenCombo.setSelection(new StructuredSelection("ALLE"),
+			this.gruppenCombo.setSelection(new StructuredSelection(Messages.FilterableBeanList_all),
 					true);
 		}
 		Arrays.sort(tableInput);
@@ -143,7 +144,7 @@ public abstract class FilterableBeanList {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(compDown);
 
 			{
-				new Label(compDown, SWT.READ_ONLY).setText("Rubrik");
+				new Label(compDown, SWT.READ_ONLY).setText(Messages.FilterableBeanList_category);
 
 				this.gruppenCombo = new ComboViewer(compDown, SWT.BORDER
 						| SWT.READ_ONLY);
@@ -166,7 +167,7 @@ public abstract class FilterableBeanList {
 			}
 
 			{
-				new Label(compDown, SWT.READ_ONLY).setText("Suche");
+				new Label(compDown, SWT.READ_ONLY).setText(Messages.FilterableBeanList_search);
 
 				final Text filter = new Text(compDown, SWT.BORDER);
 				GridDataFactory.fillDefaults().grab(true, false)

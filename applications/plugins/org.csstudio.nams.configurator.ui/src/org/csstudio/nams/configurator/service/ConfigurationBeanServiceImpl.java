@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmTopicFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
@@ -104,7 +105,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	public ConfigurationBeanServiceImpl() {
 		if (ConfigurationBeanServiceImpl.previosInstance != null) {
 			throw new RuntimeException(
-					"Could not use more than one bean service at this step of developement.");
+					"Could not use more than one bean service at this step of developement."); //$NON-NLS-1$
 		}
 		ConfigurationBeanServiceImpl.previosInstance = this;
 	}
@@ -137,7 +138,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			this.notifyDeleteListeners(bean);
 		} catch (final InconsistentConfigurationException e) {
 			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
-					"Could not Delete Entry. Entry-Type not recognized: "
+					"Could not Delete Entry. Entry-Type not recognized: " //$NON-NLS-1$
 							+ e.getMessage());
 			e.printStackTrace();
 		}
@@ -245,7 +246,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		this.listeners.remove(listener);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public <T extends IConfigurationBean> T save(final T bean)
 			throws InconsistentConfigurationException, StorageError,
 			StorageException {
@@ -265,7 +266,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		if (bean instanceof FilterbedingungBean) {
 			return (T) this.saveFilterbedingungBean((FilterbedingungBean) bean);
 		}
-		throw new RuntimeException("Failed saving unsupported bean "
+		throw new RuntimeException("Failed saving unsupported bean " //$NON-NLS-1$
 				+ bean.getClass());
 	}
 
@@ -366,12 +367,12 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				filterAction = alarmTopicFilterAction;
 			} else {
 				throw new InconsistentConfigurationException(
-						"Falscher ActionType für Filter in db.");
+						"Falscher ActionType für Filter in db."); //$NON-NLS-1$
 			}
 			filterAction.setType(filterActionDTO.getFilterActionType());
 			filterAction.setMessage(filterActionDTO.getMessage());
 			ConfigurationBeanServiceImpl.logger.logDebugMessage(this,
-					"found action: " + filterAction.toString());
+					"found action: " + filterAction.toString()); //$NON-NLS-1$
 
 			bean.addFilterAction(filterAction);
 		}
@@ -411,7 +412,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				final JunctorConditionForFilterTreeDTO newDTO = new JunctorConditionForFilterTreeDTO();
 				newDTO.setCName(junctorBean.getJunctorConditionType()
 						.toString());
-				newDTO.setCDesc("");
+				newDTO.setCDesc(""); //$NON-NLS-1$
 				newDTO.setIGroupRef(this.getRubrikIDForName(junctorBean
 						.getRubrikName(), RubrikTypeEnum.FILTER_COND));
 				newDTO.setOperator(junctorBean.getJunctorConditionType());
@@ -430,8 +431,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 				final NegationConditionForFilterTreeDTO newDTO = new NegationConditionForFilterTreeDTO();
 
-				newDTO.setCName("NOT");
-				newDTO.setCDesc("");
+				newDTO.setCName("NOT"); //$NON-NLS-1$
+				newDTO.setCDesc(""); //$NON-NLS-1$
 				newDTO.setIGroupRef(this.getRubrikIDForName(notBean
 						.getRubrikName(), RubrikTypeEnum.FILTER_COND));
 				newDTO.setNegatedFilterCondition(listForFilter.get(0));
@@ -441,7 +442,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 			if (conditionDTO == null) {
 				throw new InconsistentConfigurationException(
-						"No DTO found for " + filterbedingungBean.toString());
+						"No DTO found for " + filterbedingungBean.toString()); //$NON-NLS-1$
 			}
 
 			result.add(conditionDTO);
@@ -467,8 +468,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			this.configurationService.deleteDTO(dto);
 			this.alarmbearbeiterBeans.remove(dto.getUserId());
 			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
-					"ConfigurationBeanServiceImpl.delete() " + dto.getUserId()
-							+ " " + dto.getUserName());
+					"ConfigurationBeanServiceImpl.delete() " + dto.getUserId() //$NON-NLS-1$
+							+ " " + dto.getUserName()); //$NON-NLS-1$
 		}
 	}
 
@@ -489,8 +490,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			this.configurationService.deleteDTO(dto);
 			this.alarmbearbeitergruppenBeans.remove(dto.getUserGroupId());
 			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
-					"ConfigurationBeanServiceImpl.delete() "
-							+ dto.getUserGroupId() + " "
+					"ConfigurationBeanServiceImpl.delete() " //$NON-NLS-1$
+							+ dto.getUserGroupId() + " " //$NON-NLS-1$
 							+ dto.getUserGroupName());
 		}
 	}
@@ -510,8 +511,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			this.configurationService.deleteDTO(dto);
 			this.alarmtopicBeans.remove(dto.getId());
 			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
-					"ConfigurationBeanServiceImpl.delete() " + dto.getId()
-							+ " " + dto.getTopicName());
+					"ConfigurationBeanServiceImpl.delete() " + dto.getId() //$NON-NLS-1$
+							+ " " + dto.getTopicName()); //$NON-NLS-1$
 		}
 
 	}
@@ -531,15 +532,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				this.configurationService.deleteDTO(dto);
 			} catch (final StorageError e) {
 				throw new InconsistentConfigurationException(
-						"failed to deleteFilter()", e);
+						"failed to deleteFilter()", e); //$NON-NLS-1$
 			} catch (final StorageException e) {
 				throw new InconsistentConfigurationException(
-						"failed to deleteFilter()", e);
+						"failed to deleteFilter()", e); //$NON-NLS-1$
 			}
 			this.filterBeans.remove(dto.getIFilterID());
 			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
-					"ConfigurationBeanServiceImpl.delete() "
-							+ dto.getIFilterID() + " " + dto.getName());
+					"ConfigurationBeanServiceImpl.delete() " //$NON-NLS-1$
+							+ dto.getIFilterID() + " " + dto.getName()); //$NON-NLS-1$
 		}
 	}
 
@@ -558,8 +559,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			this.configurationService.deleteDTO(dto);
 			this.filterbedingungBeans.remove(dto.getIFilterConditionID());
 			ConfigurationBeanServiceImpl.logger.logInfoMessage(this,
-					"ConfigurationBeanServiceImpl.delete() "
-							+ dto.getIFilterConditionID() + " "
+					"ConfigurationBeanServiceImpl.delete() " //$NON-NLS-1$
+							+ dto.getIFilterConditionID() + " " //$NON-NLS-1$
 							+ dto.getCName());
 		}
 	}
@@ -577,7 +578,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			junctorConditionBean
 					.setJunctor(((JunctorConditionDTO) filterCondtionDTO)
 							.getJunctor());
-			junctorConditionBean.setRubrikName(""); // RubrikName is set by the
+			junctorConditionBean.setRubrikName(""); // RubrikName is set by the //$NON-NLS-1$
 			// main Bean.
 			junctorConditionBean.setSecondCondition(this
 					.DTO2Bean(((JunctorConditionDTO) filterCondtionDTO)
@@ -585,7 +586,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterSpecificBean = junctorConditionBean;
 		} else if (filterCondtionDTO instanceof ProcessVariableFilterConditionDTO) {
 			final PVFilterConditionBean filterbedingungBean = new PVFilterConditionBean();
-			filterbedingungBean.setRubrikName("");
+			filterbedingungBean.setRubrikName(""); //$NON-NLS-1$
 			filterbedingungBean
 					.setChannelName(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
 							.getCPvChannelName());
@@ -601,7 +602,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterSpecificBean = filterbedingungBean;
 		} else if (filterCondtionDTO instanceof StringArrayFilterConditionDTO) {
 			final StringArrayFilterConditionBean stringArrayFilterConditionBean = new StringArrayFilterConditionBean();
-			stringArrayFilterConditionBean.setRubrikName("");
+			stringArrayFilterConditionBean.setRubrikName(""); //$NON-NLS-1$
 
 			stringArrayFilterConditionBean
 					.setCompareValues(((StringArrayFilterConditionDTO) filterCondtionDTO)
@@ -615,7 +616,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterSpecificBean = stringArrayFilterConditionBean;
 		} else if (filterCondtionDTO instanceof StringFilterConditionDTO) {
 			final StringFilterConditionBean stringFilterConditionBean = new StringFilterConditionBean();
-			stringFilterConditionBean.setRubrikName("");
+			stringFilterConditionBean.setRubrikName(""); //$NON-NLS-1$
 			stringFilterConditionBean
 					.setCompValue(((StringFilterConditionDTO) filterCondtionDTO)
 							.getCompValue());
@@ -628,7 +629,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			filterSpecificBean = stringFilterConditionBean;
 		} else if (filterCondtionDTO instanceof TimeBasedFilterConditionDTO) {
 			final TimeBasedFilterConditionBean timeBasedConditionBean = new TimeBasedFilterConditionBean();
-			timeBasedConditionBean.setRubrikName("");
+			timeBasedConditionBean.setRubrikName(""); //$NON-NLS-1$
 			timeBasedConditionBean
 					.setConfirmCompValue(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getCConfirmCompValue());
@@ -692,7 +693,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			if (!(filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO)
 					&& !(filterCondtionDTO instanceof NegationConditionForFilterTreeDTO)) {
 				throw new IllegalArgumentException(
-						"Unrecognized FilterConditionDTO: " + filterCondtionDTO);
+						"Unrecognized FilterConditionDTO: " + filterCondtionDTO); //$NON-NLS-1$
 			}
 		}
 		return bean;
@@ -706,7 +707,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		result.setActive(map.isActive());
 		result.setLastChange(new Date(map.getLastchange()));
-		result.setRubrikName("");
+		result.setRubrikName(""); //$NON-NLS-1$
 		result.setActiveReason(map.getActiveReason());
 
 		return result;
@@ -813,7 +814,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				break;
 			}
 		}
-		if ((result == 0) && !("".equals(rubrikName))) {
+		if ((result == 0) && !("".equals(rubrikName))) { //$NON-NLS-1$
 			final RubrikDTO newRubrikDTO = new RubrikDTO();
 			newRubrikDTO.setCGroupName(rubrikName);
 			newRubrikDTO.setType(type);
@@ -824,7 +825,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	}
 
 	private String getRubrikNameForId(final int groupRef) {
-		String result = "";
+		String result = ""; //$NON-NLS-1$
 		for (final RubrikDTO rubrikDTO : this.rubrikDTOs) {
 			if (rubrikDTO.getIGroupId() == groupRef) {
 				result = rubrikDTO.getCGroupName();
@@ -855,7 +856,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.getEntireConfiguration();
 			// TODO Folgendes Exception-Handling überdenken....
 			if (this.entireConfiguration == null) {
-				throw new RuntimeException("Couldn't load the Configuration");
+				throw new RuntimeException("Couldn't load the Configuration"); //$NON-NLS-1$
 			}
 			this.rubrikDTOs = this.entireConfiguration.gibAlleRubriken();
 
@@ -941,13 +942,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 
 		} catch (final StorageError e) { // TODO mz: Exceptions durchwerfen!
 			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
-					"Could not load Configuration", e);
+					"Could not load Configuration", e); //$NON-NLS-1$
 		} catch (final StorageException e) {
 			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
-					"Could not load Configuration", e);
+					"Could not load Configuration", e); //$NON-NLS-1$
 		} catch (final InconsistentConfigurationException e) {
 			ConfigurationBeanServiceImpl.logger.logErrorMessage(this,
-					"Could not load Configuration", e);
+					"Could not load Configuration", e); //$NON-NLS-1$
 		}
 	}
 
@@ -1043,8 +1044,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			this.configurationService.saveDTO(dto);
 		} catch (final Throwable e) {
 			ConfigurationBeanServiceImpl.logger.logFatalMessage(this,
-					"failed to save group", e);
-			throw new StorageException("failed to save alarmbearbeitergruppe.",
+					"failed to save group", e); //$NON-NLS-1$
+			throw new StorageException("failed to save alarmbearbeitergruppe.", //$NON-NLS-1$
 					e);
 		}
 		this.loadConfiguration();
@@ -1204,7 +1205,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private FilterbedingungBean saveFilterbedingungBean(
 			final FilterbedingungBean bean) throws StorageError,
 			StorageException, InconsistentConfigurationException {
@@ -1384,7 +1385,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		} catch (final Throwable t) {
 			// FIXME mz20080710 Handle throwable!
 			ConfigurationBeanServiceImpl.logger.logFatalMessage(this,
-					"failed to save filter condition", t);
+					"failed to save filter condition", t); //$NON-NLS-1$
 		}
 		this.loadConfiguration();
 

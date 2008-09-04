@@ -2,6 +2,7 @@ package org.csstudio.nams.configurator.beans.filters;
 
 import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class PVFilterConditionBean extends
@@ -13,10 +14,10 @@ public class PVFilterConditionBean extends
 	}
 
 	private SuggestedProcessVariableType suggestedType = SuggestedProcessVariableType.STRING;
-	private String channelName = "";
+	private String channelName = ""; //$NON-NLS-1$
 	private Operator operator = Operator.EQUALS;
 
-	private String compareValue = "";
+	private String compareValue = ""; //$NON-NLS-1$
 
 	@Override
 	public boolean equals(final Object obj) {
@@ -70,8 +71,8 @@ public class PVFilterConditionBean extends
 	}
 
 	public String getDisplayName() {
-		return this.channelName + " " + this.operator.toString() + " "
-				+ this.compareValue + " " + this.suggestedType;
+		return this.channelName + " " + this.operator.toString() + " " //$NON-NLS-1$ //$NON-NLS-2$
+				+ this.compareValue + " " + this.suggestedType; //$NON-NLS-1$
 	}
 
 	public int getID() {
@@ -108,14 +109,14 @@ public class PVFilterConditionBean extends
 
 	public void setChannelName(final String channelName) {
 		final String oldValue = this.channelName;
-		this.channelName = (channelName != null) ? channelName : "";
+		this.channelName = (channelName != null) ? channelName : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.channelName.name(), oldValue,
 				channelName);
 	}
 
 	public void setCompareValue(final String compareValue) {
 		final String oldValue = this.compareValue;
-		this.compareValue = (compareValue != null) ? compareValue : "";
+		this.compareValue = (compareValue != null) ? compareValue : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.compareValue.name(),
 				oldValue, compareValue);
 	}

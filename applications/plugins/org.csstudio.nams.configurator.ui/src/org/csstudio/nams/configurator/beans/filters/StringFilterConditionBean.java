@@ -2,6 +2,7 @@ package org.csstudio.nams.configurator.beans.filters;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class StringFilterConditionBean extends
@@ -15,7 +16,7 @@ public class StringFilterConditionBean extends
 	private MessageKeyEnum keyValue = MessageKeyEnum.NAME;
 	private StringRegelOperator operator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
 
-	private String compValue = "";
+	private String compValue = ""; //$NON-NLS-1$
 
 	public StringFilterConditionBean() {
 	}
@@ -69,7 +70,7 @@ public class StringFilterConditionBean extends
 	}
 
 	public String getDisplayName() {
-		return this.keyValue + " " + this.operator.toString() + " "
+		return this.keyValue + " " + this.operator.toString() + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.compValue;
 	}
 
@@ -100,7 +101,7 @@ public class StringFilterConditionBean extends
 
 	public void setCompValue(final String compValue) {
 		final String oldValue = this.compValue;
-		this.compValue = (compValue != null) ? compValue : "";
+		this.compValue = (compValue != null) ? compValue : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.compValue.name(), oldValue,
 				this.compValue);
 	}

@@ -68,7 +68,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 				localStoreConfigurationService.prepareSynchonization();
 			} catch (final Throwable t) {
 				this.logger.logErrorMessage(this,
-						"Error on preparation of synchronisation", t);
+						"Error on preparation of synchronisation", t); //$NON-NLS-1$
 				callback.fehlerBeimVorbereitenDerSynchronisation(t);
 				callback.synchronisationAbgebrochen();
 				return;
@@ -80,6 +80,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			try {
 				MessagingSession messagingSession = this.messagingService
 						.createNewMessagingSession(
+								// TODO aus dem prefservice
 								"syncServiceProducer",
 								new String[] { preferenceService
 										.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_SENDER_PROVIDER_URL) });
@@ -95,7 +96,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 				messagingSession.close();
 			} catch (Throwable t) {
 				this.logger.logErrorMessage(this,
-						"Error on sending synchronization message", t);
+						"Error on sending synchronization message", t); //$NON-NLS-1$
 				callback
 						.synchronisationsDurchHintergrundsystemsFehlgeschalgen(t
 								.getMessage());
@@ -110,6 +111,7 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 			try {
 				messagingSession = this.messagingService
 						.createNewMessagingSession(
+								// TODO aus dem prefservice
 								"syncServiceConsumer",
 								new String[] {
 										preferenceService
@@ -133,11 +135,11 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 					message.acknowledge();
 				}
 				if (message == null) {
-					throw new Throwable("Error on receiving synchronization message");
+					throw new Throwable("Error on receiving synchronization message"); //$NON-NLS-1$
 				}
 			} catch (Throwable t) {
 				this.logger.logErrorMessage(this,
-						"Error on receiving synchronization message", t);
+						"Error on receiving synchronization message", t); //$NON-NLS-1$
 				callback
 						.synchronisationsDurchHintergrundsystemsFehlgeschalgen(t
 								.getMessage());

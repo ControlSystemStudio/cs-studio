@@ -3,6 +3,8 @@ package org.csstudio.nams.configurator.beans;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.csstudio.nams.configurator.Messages;
+
 /**
  * Da einige Beans mehr als den PropertyChangeSupport benötigen, wird die
  * abstrakte Klasse {@link AbstractConfigurationBean} eingeführt.
@@ -29,7 +31,7 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-	private String rubrikName = "";
+	private String rubrikName = ""; //$NON-NLS-1$
 
 	public void addPropertyChangeListener(final PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
@@ -73,7 +75,7 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public T getClone() {
 		T cloneBean = null;
 		try {
@@ -117,7 +119,7 @@ public abstract class AbstractConfigurationBean<T extends AbstractConfigurationB
 	public void setRubrikName(final String groupName) {
 		final String oldValue = this.rubrikName;
 		this.rubrikName = groupName;
-		this.pcs.firePropertyChange("rubrikName", oldValue, groupName);
+		this.pcs.firePropertyChange("rubrikName", oldValue, groupName); //$NON-NLS-1$
 	}
 
 	public void updateState(final T bean) {

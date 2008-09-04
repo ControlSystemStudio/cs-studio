@@ -1,11 +1,12 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 
 public abstract class AbstractFilterAction<Type extends FilterActionType>
 		implements FilterAction {
 
-	protected String message = "";
+	protected String message = ""; //$NON-NLS-1$
 	protected Type type;
 	protected IReceiverBean receiver;
 	protected final Class<Type> clazz;
@@ -17,7 +18,7 @@ public abstract class AbstractFilterAction<Type extends FilterActionType>
 	@Override
 	public abstract Object clone() throws CloneNotSupportedException;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
@@ -100,13 +101,13 @@ public abstract class AbstractFilterAction<Type extends FilterActionType>
 		this.receiver = receiver;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public void setType(final FilterActionType type) {
 		if (this.clazz.isInstance(type)) {
 			this.type = (Type) type;
 		} else {
 			throw new IllegalArgumentException(
-					"FilterAction does not support FilterActionType "
+					"FilterAction does not support FilterActionType " //$NON-NLS-1$
 							+ type.getClass().getSimpleName());
 		}
 	}

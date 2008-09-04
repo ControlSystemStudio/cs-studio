@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.views;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.composite.FilterableBeanList;
@@ -10,7 +11,7 @@ import org.eclipse.swt.dnd.Transfer;
 
 public class AlarmtopicView extends AbstractNamsView {
 
-	public static final String ID = "org.csstudio.nams.configurator.alarmtopic";
+	public static final String ID = "org.csstudio.nams.configurator.alarmtopic"; //$NON-NLS-1$
 
 	@Override
 	protected Class<? extends IConfigurationBean> getBeanClass() {

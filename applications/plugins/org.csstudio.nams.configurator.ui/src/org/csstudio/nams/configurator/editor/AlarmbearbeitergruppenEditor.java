@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.NewConfiguratorActivator;
 import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
@@ -73,7 +74,7 @@ public class AlarmbearbeitergruppenEditor extends
 		}
 
 		public String getDisplayName() {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 
 		public Object[] getElements(final Object inputElement) {
@@ -109,7 +110,7 @@ public class AlarmbearbeitergruppenEditor extends
 		public void setEntries(final List<User2GroupBean> entries) {
 			final List<User2GroupBean> oldValue = this.entries;
 			this.entries = entries;
-			this.pcs.firePropertyChange("entries", oldValue, entries);
+			this.pcs.firePropertyChange("entries", oldValue, entries); //$NON-NLS-1$
 		}
 
 		public void setID(final int id) {
@@ -141,13 +142,13 @@ public class AlarmbearbeitergruppenEditor extends
 
 	private static final Image checkedImage = AbstractUIPlugin
 			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
-					"icons/checked.gif").createImage();
+					"icons/checked.gif").createImage(); //$NON-NLS-1$
 
 	private static final Image uncheckedImage = AbstractUIPlugin
 			.imageDescriptorFromPlugin(NewConfiguratorActivator.PLUGIN_ID,
-					"icons/unchecked.gif").createImage();
+					"icons/unchecked.gif").createImage(); //$NON-NLS-1$
 
-	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor";
+	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeitergruppenEditor"; //$NON-NLS-1$
 
 	public static String getId() {
 		return AlarmbearbeitergruppenEditor.EDITOR_ID;
@@ -181,21 +182,21 @@ public class AlarmbearbeitergruppenEditor extends
 					textFieldComp);
 
 			{
-				this.name = this.createTextEntry(textFieldComp, "Name", true);
+				this.name = this.createTextEntry(textFieldComp, Messages.AlarmbearbeitergruppenEditor_name, true);
 
 				this._rubrikComboEntryViewer = this.createComboEntry(
-						textFieldComp, "Rubrik:", true, AbstractEditor
+						textFieldComp, Messages.AlarmbearbeitergruppenEditor_category, true, AbstractEditor
 								.getConfigurationBeanService()
 								.getRubrikNamesForType(
 										RubrikTypeEnum.USER_GROUP));
 				this._rubrikComboEntry = this._rubrikComboEntryViewer
 						.getCombo();
 				this.aktiveMitglieder = this.createTextEntry(textFieldComp,
-						"Minimale Anzahl aktiver Mitglieder", true);
+						Messages.AlarmbearbeitergruppenEditor_min_members, true);
 				this.wartezeit = this.createTextEntry(textFieldComp,
-						"Wartezeit bis Rückmeldung (Sek)", true);
+						Messages.AlarmbearbeitergruppenEditor_timeout, true);
 				this.activeButton = this.createCheckBoxEntry(textFieldComp,
-						"Alarmgruppe aktiv", true);
+						Messages.AlarmbearbeitergruppenEditor_group_active, true);
 			}
 
 			{
@@ -219,12 +220,12 @@ public class AlarmbearbeitergruppenEditor extends
 					final TableViewerColumn nameColumn = new TableViewerColumn(
 							this.tableViewer, SWT.NONE);
 					TableColumn column = nameColumn.getColumn();
-					column.setText("Alarmbearbeiter");
+					column.setText(Messages.AlarmbearbeitergruppenEditor_alarm_issuer);
 					column.setWidth(200);
 					final TableViewerColumn tableViewerColumn = new TableViewerColumn(
 							this.tableViewer, SWT.None);
 					column = tableViewerColumn.getColumn();
-					column.setText("Aktiv");
+					column.setText(Messages.AlarmbearbeitergruppenEditor_issuer_active);
 					column.setWidth(100);
 
 					final TableViewerColumn hinweisColumn = new TableViewerColumn(
@@ -265,7 +266,7 @@ public class AlarmbearbeitergruppenEditor extends
 						}
 					});
 					column = hinweisColumn.getColumn();
-					column.setText("Hinweise vom Alarmbearbeiter");
+					column.setText(Messages.AlarmbearbeitergruppenEditor_issuer_notice);
 					column.setWidth(300);
 					final EditingSupport editingSupport = new EditingSupport(
 							this.tableViewer) {
@@ -425,7 +426,7 @@ public class AlarmbearbeitergruppenEditor extends
 					{
 
 						final Button upup = this.createButtonEntry(buttonsComp,
-								"to top", true, 1);
+								Messages.AlarmbearbeitergruppenEditor_move_to_top, true, 1);
 						upup.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(final MouseEvent e) {
@@ -452,7 +453,7 @@ public class AlarmbearbeitergruppenEditor extends
 							}
 						});
 						final Button up = this.createButtonEntry(buttonsComp,
-								"up", true, 1);
+								Messages.AlarmbearbeitergruppenEditor_move_up, true, 1);
 						up.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(final MouseEvent e) {
@@ -485,7 +486,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 						});
 						final Button down = this.createButtonEntry(buttonsComp,
-								"down", true, 1);
+								Messages.AlarmbearbeitergruppenEditor_move_down, true, 1);
 						down.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(final MouseEvent e) {
@@ -519,7 +520,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 						});
 						final Button downdown = this.createButtonEntry(
-								buttonsComp, "to bottom", true, 1);
+								buttonsComp, Messages.AlarmbearbeitergruppenEditor_move_to_bottom, true, 1);
 						downdown.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(final MouseEvent e) {
@@ -549,7 +550,7 @@ public class AlarmbearbeitergruppenEditor extends
 						});
 						this.addSeparator(buttonsComp);
 						final Button deleteButton = this.createButtonEntry(
-								buttonsComp, "löschen", true, 1);
+								buttonsComp, Messages.AlarmbearbeitergruppenEditor_delete, true, 1);
 						deleteButton.addMouseListener(new MouseListener() {
 
 							public void mouseDoubleClick(final MouseEvent e) {
@@ -651,7 +652,7 @@ public class AlarmbearbeitergruppenEditor extends
 
 		final IObservableList usersListInTableObservable = BeansObservables
 				.observeList(context.getValidationRealm(),
-						this.userContentProvider, "entries");
+						this.userContentProvider, "entries"); //$NON-NLS-1$
 
 		// bind observables
 		context.bindList(usersListInTableObservable, usersListObservable, null,
@@ -702,7 +703,7 @@ public class AlarmbearbeitergruppenEditor extends
 					public IStatus validateAfterGet(final Object value) {
 						if (!EditorUIUtils.isValidDigit((String) value)) {
 							AlarmbearbeitergruppenEditor.this.aktiveMitglieder
-									.setText("0");
+									.setText("0"); //$NON-NLS-1$
 							return Status.CANCEL_STATUS;
 						} else {
 							final Short convertedValue = Short
@@ -711,7 +712,7 @@ public class AlarmbearbeitergruppenEditor extends
 									.getWorkingCopyOfEditorInput().getUsers()
 									.size()) {
 								AlarmbearbeitergruppenEditor.this.aktiveMitglieder
-										.setText(""
+										.setText("" //$NON-NLS-1$
 												+ AlarmbearbeitergruppenEditor.this
 														.getWorkingCopyOfEditorInput()
 														.getUsers().size());
@@ -730,7 +731,7 @@ public class AlarmbearbeitergruppenEditor extends
 					public IStatus validateAfterGet(final Object value) {
 						if (!EditorUIUtils.isValidDigit((String) value)) {
 							AlarmbearbeitergruppenEditor.this.wartezeit
-									.setText("0");
+									.setText("0"); //$NON-NLS-1$
 							return Status.CANCEL_STATUS;
 						}
 						return super.validateAfterGet(value);

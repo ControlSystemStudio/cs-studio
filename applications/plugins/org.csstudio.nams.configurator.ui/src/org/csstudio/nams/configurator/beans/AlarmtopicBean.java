@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.configurator.Messages;
+
 public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 		implements IReceiverBean {
 
@@ -9,9 +11,9 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 	}
 
 	private int topicID;
-	private String topicName = "";
-	private String humanReadableName = "";
-	private String description = "";
+	private String topicName = ""; //$NON-NLS-1$
+	private String humanReadableName = ""; //$NON-NLS-1$
+	private String description = ""; //$NON-NLS-1$
 
 	public AlarmtopicBean() {
 		this.topicID = -1;
@@ -62,7 +64,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 
 	public String getDisplayName() {
 		return this.getHumanReadableName() != null ? this
-				.getHumanReadableName() : "(ohne Namen)";
+				.getHumanReadableName() : Messages.AlarmtopicBean_without_name;
 	}
 
 	public String getHumanReadableName() {
@@ -100,7 +102,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 
 	public void setDescription(final String description) {
 		final String oldValue = this.getDescription();
-		this.description = (description != null) ? description : "";
+		this.description = (description != null) ? description : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.description.name(), oldValue,
 				this.getDescription());
 	}
@@ -108,7 +110,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 	public void setHumanReadableName(final String humanReadableName) {
 		final String oldValue = this.getHumanReadableName();
 		this.humanReadableName = (humanReadableName != null) ? humanReadableName
-				: "";
+				: ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.humanReadableName.name(),
 				oldValue, this.getHumanReadableName());
 	}
@@ -126,7 +128,7 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 
 	public void setTopicName(final String topicName) {
 		final String oldValue = this.getTopicName();
-		this.topicName = (topicName != null) ? topicName : "";
+		this.topicName = (topicName != null) ? topicName : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.topicName.name(), oldValue,
 				this.getTopicName());
 	}

@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.Comparator;
 
 import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -81,7 +82,7 @@ public final class EditorUIUtils {
 			try {
 				result = readMethod.invoke(this.bean);
 			} catch (final Throwable t) {
-				throw new RuntimeException("failed to write property", t);
+				throw new RuntimeException("failed to write property", t); //$NON-NLS-1$
 			}
 			return result;
 		}
@@ -91,7 +92,7 @@ public final class EditorUIUtils {
 			try {
 				writeMethod.invoke(this.bean, value);
 			} catch (final Throwable t) {
-				throw new RuntimeException("failed to write property", t);
+				throw new RuntimeException("failed to write property", t); //$NON-NLS-1$
 			}
 		}
 	}
@@ -126,13 +127,13 @@ public final class EditorUIUtils {
 			final IConfigurationBean boundBean, final String propertyName)
 			throws IntrospectionException {
 
-		Contract.requireNotNull("parent", parent);
-		Contract.requireNotNull("enumValues", enumValues);
-		Contract.require(enumValues.length > 0, "enumValues.length > 0");
-		Contract.requireNotNull("boundBean", boundBean);
-		Contract.requireNotNull("propertyName", propertyName);
+		Contract.requireNotNull("parent", parent); //$NON-NLS-1$
+		Contract.requireNotNull("enumValues", enumValues); //$NON-NLS-1$
+		Contract.require(enumValues.length > 0, "enumValues.length > 0"); //$NON-NLS-1$
+		Contract.requireNotNull("boundBean", boundBean); //$NON-NLS-1$
+		Contract.requireNotNull("propertyName", propertyName); //$NON-NLS-1$
 		Contract
-				.require(propertyName.length() > 0, "propertyName.length() > 0");
+				.require(propertyName.length() > 0, "propertyName.length() > 0"); //$NON-NLS-1$
 
 		final PropertyDescriptor propertyDescriptor = new PropertyDescriptor(
 				propertyName, boundBean.getClass());
@@ -140,7 +141,7 @@ public final class EditorUIUtils {
 		Contract
 				.require(propertyDescriptor.getPropertyType().equals(
 						enumValues[0].getClass()),
-						"propertyDescriptor.getPropertyType().equals(enumValues.getClass())");
+						"propertyDescriptor.getPropertyType().equals(enumValues.getClass())"); //$NON-NLS-1$
 
 		final PropertyEditorUtil propertyEditor = new PropertyEditorUtil(
 				propertyDescriptor, boundBean);
@@ -168,8 +169,8 @@ public final class EditorUIUtils {
 				if (propertyEditor.getValue() != selectedElement) {
 					propertyEditor.setValue(selectedElement);
 					EditorUIUtils.logger.logDebugMessage(this,
-							"#selectionListener.selectionChanged(SelectionChangedEvent): Set Property "
-									+ propertyName + " to " + selectedElement);
+							"#selectionListener.selectionChanged(SelectionChangedEvent): Set Property " //$NON-NLS-1$
+									+ propertyName + " to " + selectedElement); //$NON-NLS-1$
 				}
 			}
 		});
@@ -212,7 +213,7 @@ public final class EditorUIUtils {
 	 * @return A string containing all specified data, not null, may empty.
 	 */
 	static public String throwableAsMessageString(final Throwable t) {
-		Contract.requireNotNull("t", t);
+		Contract.requireNotNull("t", t); //$NON-NLS-1$
 
 		String result = null;
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.editor.AbstractEditor;
 import org.csstudio.nams.configurator.service.synchronize.SynchronizeService;
 import org.eclipse.swt.SWT;
@@ -45,7 +46,7 @@ public class SyncronizeView extends ViewPart {
 	public SyncronizeView() {
 		if (SyncronizeView.synchronizeService == null) {
 			throw new RuntimeException(
-					"View class is not probably initialised, missing: SynchronizeService!");
+					"View class is not probably initialised, missing: SynchronizeService!"); //$NON-NLS-1$
 		}
 	}
 
@@ -84,7 +85,7 @@ public class SyncronizeView extends ViewPart {
 		this.syncButton = new Button(innerComposite, SWT.TOGGLE);
 		this.syncButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false));
-		this.syncButton.setText("Perform synchronization of background-system");
+		this.syncButton.setText(Messages.SyncronizeView_sync_button_text);
 		this.syncButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				// will never be called by a button.
@@ -93,7 +94,7 @@ public class SyncronizeView extends ViewPart {
 			public void widgetSelected(final SelectionEvent e) {
 				final Button source = (Button) e.getSource();
 				if (source.getSelection()) {
-					SyncronizeView.this.statusText.setText("");
+					SyncronizeView.this.statusText.setText(""); //$NON-NLS-1$
 					SyncronizeView.this.doSynchronize();
 				} else {
 					// deselect nur aus dem code erlaubt!
@@ -109,11 +110,11 @@ public class SyncronizeView extends ViewPart {
 				true));
 		this.statusText.setEditable(false);
 		this.statusText
-				.setText("Push \"Perform synchronization of background-system\" to begin syncronization.");
+				.setText(Messages.SyncronizeView_initial_status_text);
 	}
 
 	protected synchronized void doSynchronize() {
-		this.appendStatusText("Beginning synchronization...\n");
+		this.appendStatusText(Messages.SyncronizeView_beginn_sync);
 
 		try {
 			SyncronizeView.synchronizeService
@@ -122,7 +123,7 @@ public class SyncronizeView extends ViewPart {
 
 						public void bereiteSynchronisationVor() {
 							SyncronizeView.this
-									.appendStatusText("Preparing synchronization...\n");
+									.appendStatusText(Messages.SyncronizeView_prepare_sync);
 						}
 
 						private void buttonFreigben() {
@@ -138,14 +139,14 @@ public class SyncronizeView extends ViewPart {
 								final Throwable t) {
 							SyncronizeView.this
 									.appendStatusText(
-											"Failed to prepare synchronization.\nReason:",
+											Messages.SyncronizeView_failed_prepare_sync,
 											t);
 							this.buttonFreigben();
 						}
 
 						public boolean pruefeObSynchronisationAusgefuehrtWerdenDarf() {
 							SyncronizeView.this
-									.appendStatusText("Looking for unsaved changes...");
+									.appendStatusText(Messages.SyncronizeView_look_for_unsaved_changes);
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
 									result = SyncronizeView.this
@@ -155,52 +156,52 @@ public class SyncronizeView extends ViewPart {
 							while (this.result == null) {
 								Thread.yield();
 							}
-							SyncronizeView.this.appendStatusText("Done.\n");
+							SyncronizeView.this.appendStatusText(Messages.SyncronizeView_done);
 							return this.result.booleanValue();
 						}
 
 						public void sendeNachrichtAnHintergrundSystem() {
 							SyncronizeView.this
-									.appendStatusText("Sending sychronization request to back-end-system...\n");
+									.appendStatusText(Messages.SyncronizeView_send_sync_request);
 						}
 
 						public void sendenDerNachrichtAnHintergrundSystemFehlgeschalgen(
 								final Throwable t) {
 							SyncronizeView.this
 									.appendStatusText(
-											"Failed to send sychronization request to back-end-system.\nReason:",
+											Messages.SyncronizeView_failed_send_sync_request,
 											t);
 							this.buttonFreigben();
 						}
 
 						public void synchronisationAbgebrochen() {
 							SyncronizeView.this
-									.appendStatusText("Sychronization has been canceled.\n");
+									.appendStatusText(Messages.SyncronizeView_sync_canceled);
 							this.buttonFreigben();
 						}
 
 						public void synchronisationsDurchHintergrundsystemsErfolgreich() {
 							SyncronizeView.this
-									.appendStatusText("\n\nSynchronization successfully finished!");
+									.appendStatusText(Messages.SyncronizeView_sync_successfull);
 							this.buttonFreigben();
 						}
 
 						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
 								final String fehlertext) {
 							SyncronizeView.this
-									.appendStatusText("Back-end-system reporting failure of sychronization.\nReported reason: "
+									.appendStatusText(Messages.SyncronizeView_backend_failure
 											+ fehlertext);
 							this.buttonFreigben();
 						}
 
 						public void wartetAufAntowrtDesHintergrundSystems() {
 							SyncronizeView.this
-									.appendStatusText("Waiting for sychronization commitment to back-end-system...\n");
+									.appendStatusText(Messages.SyncronizeView_waiting_for_backend);
 						}
 
 					});
 		} catch (final Throwable t) {
-			this.appendStatusText("\n\nSynchronization failed!\nReason: ", t);
+			this.appendStatusText(Messages.SyncronizeView_sync_failed, t);
 		}
 	}
 
@@ -224,11 +225,11 @@ public class SyncronizeView extends ViewPart {
 			// fortfahren".
 			final MessageBox messageBox = new MessageBox(this.getSite()
 					.getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-			messageBox.setText("Unsaved NAMS-Editors!");
+			messageBox.setText(Messages.SyncronizeView_unsaved_changes_title);
 			messageBox
-					.setMessage("You still have unsaved changes in NAMS-Editors."
-							+ " This changes will be ignored by synchronization process.\n"
-							+ "Do you want to review your changes before continuing?");
+					.setMessage(Messages.SyncronizeView_unsaved_changes_message1
+							+ Messages.SyncronizeView_unsaved_changes_message2
+							+ Messages.SyncronizeView_unsaved_changes_message3);
 			if (messageBox.open() == SWT.YES) {
 				// The User likes to check his changes.
 				return false;

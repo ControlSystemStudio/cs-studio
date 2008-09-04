@@ -15,7 +15,7 @@ import org.eclipse.swt.dnd.Transfer;
 
 public class FilterbedingungView extends AbstractNamsView {
 
-	public static final String ID = "org.csstudio.nams.configurator.filterbedingung";
+	public static final String ID = "org.csstudio.nams.configurator.filterbedingung"; //$NON-NLS-1$
 
 	@Override
 	protected Class<? extends IConfigurationBean> getBeanClass() {

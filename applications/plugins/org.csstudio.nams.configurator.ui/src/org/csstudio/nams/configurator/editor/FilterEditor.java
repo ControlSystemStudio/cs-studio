@@ -3,6 +3,7 @@ package org.csstudio.nams.configurator.editor;
 import java.util.Iterator;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.beans.AlarmTopicFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
@@ -86,7 +87,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		@Override
 		public String getText() {
-			return "add " + this.type.name();
+			return Messages.FilterEditor_add + this.type.name();
 		}
 
 		@Override
@@ -180,17 +181,17 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			if (element instanceof FilterbedingungBean) {
 				this.selectedBean = (FilterbedingungBean) element;
 				if (!(element instanceof NotConditionForFilterTreeBean)) {
-					this.setText("NOT hinzufügen");
+					this.setText(Messages.FilterEditor_add_not);
 					this.not = true;
 				} else {
-					this.setText("NOT entfernen");
+					this.setText(Messages.FilterEditor_remove_not);
 					this.not = false;
 				}
 			}
 		}
 	}
 
-	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor";
+	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterEditor"; //$NON-NLS-1$
 
 	public static String getId() {
 		return FilterEditor.EDITOR_ID;
@@ -225,8 +226,8 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		final Composite main = new Composite(outerFormMain, SWT.NONE);
 		main.setLayout(new GridLayout(this.NUM_COLUMNS, false));
 		this.addSeparator(main);
-		this._nameTextEntry = this.createTextEntry(main, "Name:", true);
-		this._rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:",
+		this._nameTextEntry = this.createTextEntry(main, Messages.FilterEditor_name, true);
+		this._rubrikComboEntryViewer = this.createComboEntry(main, Messages.FilterEditor_category,
 				true, AbstractEditor.getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER));
 		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
@@ -241,9 +242,9 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			templateContent[i] = messageTemplates[i].getMessage();
 		}
 		final ComboViewer templateComboViewer = this.createComboEntry(main,
-				"Templates", false, templateNames);
+				Messages.FilterEditor_templates, false, templateNames);
 		final Button addTemplateButton = this.createButtonEntry(main,
-				"Template anhängen", true, 2);
+				Messages.FilterEditor_add_template, true, 2);
 		addTemplateButton.addMouseListener(new MouseListener() {
 
 			public void mouseDoubleClick(final MouseEvent e) {
@@ -260,7 +261,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 
 		});
 		this._defaultMessageTextEntry = this.createDescriptionTextEntry(main,
-				"Default Message:");
+				Messages.FilterEditor_default_message);
 
 		{
 			final Composite treeAndButtonsComp = new Composite(outerFormMain,
@@ -268,7 +269,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 			treeAndButtonsComp.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					treeAndButtonsComp);
-			new Label(treeAndButtonsComp, SWT.None).setText("Filterconditions");
+			new Label(treeAndButtonsComp, SWT.None).setText(Messages.FilterEditor_filterconditions);
 			{
 				this.filterConditionsTreeViewer = new TreeViewer(
 						treeAndButtonsComp, SWT.MULTI | SWT.V_SCROLL
@@ -353,13 +354,13 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				this.initDND();
 			}
 			final Button button = new Button(treeAndButtonsComp, SWT.PUSH);
-			button.setText("Remove Filterconditions");
+			button.setText(Messages.FilterEditor_remove_filtercondition);
 			button.addMouseListener(new MouseListener() {
 
 				public void mouseDoubleClick(final MouseEvent e) {
 				}
 
-				@SuppressWarnings("unchecked")
+				@SuppressWarnings("unchecked") //$NON-NLS-1$
 				public void mouseDown(final MouseEvent e) {
 					final TreeSelection selection = (TreeSelection) FilterEditor.this.filterConditionsTreeViewer
 							.getSelection();
@@ -509,7 +510,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		this.actionTableViewer.getTable().setLinesVisible(true);
 		this.actionTableViewer.setContentProvider(new ArrayContentProvider());
 
-		final String[] titles = { "Empfänger", "Alarmaktion", "Nachricht" };
+		final String[] titles = { Messages.FilterEditor_receiver, Messages.FilterEditor_alarm_action, Messages.FilterEditor_message };
 		final int[] bounds = { 150, 150, 200 };
 
 		final TableViewerColumn[] tableViewerColumns = new TableViewerColumn[3];
@@ -541,7 +542,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 				if (type != null) {
 					return type.getDescription();
 				}
-				return "<Bitte wählen>";
+				return Messages.FilterEditor_please_select;
 			}
 		});
 		tableViewerColumns[1].setEditingSupport(new EditingSupport(
@@ -651,7 +652,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		buttonComposite.setLayout(new RowLayout());
 		// delete
 		Button deleteButton = new Button(buttonComposite, SWT.PUSH);
-		deleteButton.setText("remove");
+		deleteButton.setText(Messages.FilterEditor_remove_action);
 		deleteButton.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}
@@ -672,7 +673,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		});
 		// up
 		Button upButton = new Button(buttonComposite, SWT.PUSH);
-		upButton.setText("up");
+		upButton.setText(Messages.FilterEditor_move_action_up);
 		upButton.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}
@@ -693,7 +694,7 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 		});
 		// down
 		Button downButton = new Button(buttonComposite, SWT.PUSH);
-		downButton.setText("down");
+		downButton.setText(Messages.FilterEditor_move_action_down);
 		downButton.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(MouseEvent e) {
 			}

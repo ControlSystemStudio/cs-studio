@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.csstudio.nams.configurator.Messages;
+
 public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	public static enum PropertyNames {
@@ -101,7 +103,7 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 	}
 
 	public String getDisplayName() {
-		return this.getName() != null ? this.getName() : "(ohne Namen)";
+		return this.getName() != null ? this.getName() : Messages.FilterBean_without_name;
 	}
 
 	public int getFilterID() {

@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.beans.filters;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
@@ -61,7 +62,7 @@ public class JunctorConditionBean extends
 	}
 
 	public String getDisplayName() {
-		return this.firstCondition + " " + this.junctor + " "
+		return this.firstCondition + " " + this.junctor + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.secondCondition;
 	}
 

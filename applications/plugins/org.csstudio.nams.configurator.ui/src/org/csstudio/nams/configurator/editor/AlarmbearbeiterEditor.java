@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -22,7 +23,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 
-	private final static String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor";
+	private final static String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmbearbeiterEditor"; //$NON-NLS-1$
 
 	public static String getId() {
 		return AlarmbearbeiterEditor.EDITOR_ID;
@@ -54,32 +55,32 @@ public class AlarmbearbeiterEditor extends AbstractEditor<AlarmbearbeiterBean> {
 		main.setBackground(parent.getBackground());
 		main.setLayout(new GridLayout(this.NUM_COLUMNS, false));
 		this.addSeparator(main);
-		this._nameTextEntry = this.createTextEntry(main, "Name:", true);
-		this._rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:",
+		this._nameTextEntry = this.createTextEntry(main, Messages.AlarmbearbeiterEditor_name, true);
+		this._rubrikComboEntryViewer = this.createComboEntry(main, Messages.AlarmbearbeiterEditor_category,
 				true, AbstractEditor.getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.USER));
 		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
-		this._emailTextEntry = this.createTextEntry(main, "Email:", true);
-		this._smsTextEntry = this.createTextEntry(main, "SMS number:", true);
+		this._emailTextEntry = this.createTextEntry(main, Messages.AlarmbearbeiterEditor_email, true);
+		this._smsTextEntry = this.createTextEntry(main, Messages.AlarmbearbeiterEditor_sms, true);
 		this._voiceMailTextEntry = this.createTextEntry(main,
-				"VoiceMail number:", true);
+				Messages.AlarmbearbeiterEditor_voicemail, true);
 		this._prefAlarmingTypeComboEntryViewer = this
 				.createTitledComboForEnumValues(main,
-						"Prefered alarming type:", PreferedAlarmType.values(),
+						Messages.AlarmbearbeiterEditor_prefered_alarm_type, PreferedAlarmType.values(),
 						this.getWorkingCopyOfEditorInput(),
 						AlarmbearbeiterBean.PropertyNames.preferedAlarmType
 								.name());
 		this._prefAlarmingTypeComboEntry = this._prefAlarmingTypeComboEntryViewer
 				.getCombo();
 		this.addSeparator(main);
-		this._statusCodeTextEntry = this.createTextEntry(main, "Status code:",
+		this._statusCodeTextEntry = this.createTextEntry(main, Messages.AlarmbearbeiterEditor_status_code,
 				true);
 		this._confirmCodeTextEntry = this.createTextEntry(main,
-				"Confirm code:", true);
+				Messages.AlarmbearbeiterEditor_confirm_code, true);
 		this.addSeparator(main);
 		this._activeCheckBoxEntry = this.createCheckBoxEntry(main,
-				"User is active:", true);
+				Messages.AlarmbearbeiterEditor_user_is_active, true);
 		this.initDataBinding();
 	}
 

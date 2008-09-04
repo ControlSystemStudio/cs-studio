@@ -3,6 +3,7 @@ package org.csstudio.nams.configurator.beans.filters;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
 
@@ -17,11 +18,11 @@ public class TimeBasedFilterConditionBean extends
 	private MessageKeyEnum startKeyValue = MessageKeyEnum.NAME;
 	private StringRegelOperator sStartOperator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
 
-	private String startCompValue = "";
+	private String startCompValue = ""; //$NON-NLS-1$
 	private MessageKeyEnum confirmKeyValue = MessageKeyEnum.NAME;
 	private StringRegelOperator confirmOperator = StringRegelOperator.OPERATOR_TEXT_EQUAL;
 
-	private String confirmCompValue = "";
+	private String confirmCompValue = ""; //$NON-NLS-1$
 	private Millisekunden timePeriodDomainValue = Millisekunden.valueOf(0);
 
 	private TimeBasedType timeBehavior = TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM;
@@ -111,10 +112,10 @@ public class TimeBasedFilterConditionBean extends
 	}
 
 	public String getDisplayName() {
-		return this.startCompValue + " " + this.sStartOperator + " "
-				+ this.startCompValue + " " + this.confirmKeyValue + " "
-				+ this.confirmOperator + " " + this.confirmCompValue + " "
-				+ this.timePeriodDomainValue + " " + this.timeBehavior;
+		return this.startCompValue + " " + this.sStartOperator + " " //$NON-NLS-1$ //$NON-NLS-2$
+				+ this.startCompValue + " " + this.confirmKeyValue + " " //$NON-NLS-1$ //$NON-NLS-2$
+				+ this.confirmOperator + " " + this.confirmCompValue + " " //$NON-NLS-1$ //$NON-NLS-2$
+				+ this.timePeriodDomainValue + " " + this.timeBehavior; //$NON-NLS-1$
 	}
 
 	public int getID() {
@@ -183,7 +184,7 @@ public class TimeBasedFilterConditionBean extends
 	public void setConfirmCompValue(final String confirmCompValue) {
 		final String oldValue = this.confirmCompValue;
 		this.confirmCompValue = (confirmCompValue != null) ? confirmCompValue
-				: "";
+				: ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.confirmCompValue.name(),
 				oldValue, confirmCompValue);
 	}
@@ -207,7 +208,7 @@ public class TimeBasedFilterConditionBean extends
 
 	public void setStartCompValue(final String startCompValue) {
 		final String oldValue = this.startCompValue;
-		this.startCompValue = (startCompValue != null) ? startCompValue : "";
+		this.startCompValue = (startCompValue != null) ? startCompValue : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.startCompValue.name(),
 				oldValue, startCompValue);
 	}

@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.actions;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
@@ -45,15 +46,15 @@ public class DeleteConfugurationBeanAction extends Action implements
 					MessageDialog
 							.openWarning(
 									Display.getDefault().getActiveShell(),
-									"Element is still in use",
-									"The element youlike to delete is still referenzed by another configuration element.\n The element will not be deleted.");
+									Messages.DeleteConfugurationBeanAction_title,
+									Messages.DeleteConfugurationBeanAction_text);
 				}
 			} catch (final StorageError e) {
-				throw new RuntimeException("failed to delete", e);
+				throw new RuntimeException("failed to delete", e); //$NON-NLS-1$
 			} catch (final StorageException e) {
-				throw new RuntimeException("failed to delete", e);
+				throw new RuntimeException("failed to delete", e); //$NON-NLS-1$
 			} catch (final InconsistentConfigurationException e) {
-				throw new RuntimeException("failed to delete", e);
+				throw new RuntimeException("failed to delete", e); //$NON-NLS-1$
 			}
 		}
 	}

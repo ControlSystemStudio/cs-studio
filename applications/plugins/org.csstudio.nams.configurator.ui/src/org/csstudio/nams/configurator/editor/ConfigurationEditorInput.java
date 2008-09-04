@@ -31,7 +31,7 @@ public class ConfigurationEditorInput implements IEditorInput {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Object getAdapter(final Class adapter) {
 		return null;
 	}
@@ -45,7 +45,7 @@ public class ConfigurationEditorInput implements IEditorInput {
 	}
 
 	public String getName() {
-		return "ConfigurationEditorInput";
+		return "ConfigurationEditorInput"; //$NON-NLS-1$
 	}
 
 	public IPersistableElement getPersistable() {
@@ -53,7 +53,7 @@ public class ConfigurationEditorInput implements IEditorInput {
 	}
 
 	public String getToolTipText() {
-		return "Configuration Editor";
+		return "Configuration Editor"; //$NON-NLS-1$
 	}
 
 	public void setBean(final IConfigurationBean bean) {

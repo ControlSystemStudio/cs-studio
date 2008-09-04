@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 
 public class StringArrayFilterConditionBean extends
@@ -61,7 +62,7 @@ public class StringArrayFilterConditionBean extends
 	}
 
 	public String getDisplayName() {
-		return this.compareValues.toString() + " " + this.keyValue + " "
+		return this.compareValues.toString() + " " + this.keyValue + " " //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.operator;
 	}
 

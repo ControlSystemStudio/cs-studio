@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.filters.FilterConditionAddOnBean;
 import org.csstudio.nams.configurator.beans.filters.StringFilterConditionBean;
 
@@ -11,9 +12,9 @@ public class FilterbedingungBean extends
 	}
 
 	private int filterbedinungID;
-	private String description = "";
+	private String description = ""; //$NON-NLS-1$
 
-	private String name = "";
+	private String name = ""; //$NON-NLS-1$
 
 	private FilterConditionAddOnBean filterSpecificBean;
 
@@ -65,7 +66,7 @@ public class FilterbedingungBean extends
 	}
 
 	public String getDisplayName() {
-		return this.name == null ? "(ohne Namen)" : this.name;
+		return this.name == null ? Messages.FilterbedingungBean_without_name : this.name;
 	}
 
 	public int getFilterbedinungID() {
@@ -103,7 +104,7 @@ public class FilterbedingungBean extends
 
 	public void setDescription(final String description) {
 		final String oldValue = this.description;
-		this.description = (description != null) ? description : "";
+		this.description = (description != null) ? description : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.description.name(), oldValue,
 				description);
 	}
@@ -129,7 +130,7 @@ public class FilterbedingungBean extends
 
 	public void setName(final String name) {
 		final String oldValue = this.name;
-		this.name = (name != null) ? name : "";
+		this.name = (name != null) ? name : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.name.name(), oldValue, name);
 	}
 

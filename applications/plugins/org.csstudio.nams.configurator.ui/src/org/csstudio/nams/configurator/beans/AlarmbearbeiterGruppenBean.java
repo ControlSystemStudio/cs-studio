@@ -3,6 +3,8 @@ package org.csstudio.nams.configurator.beans;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.csstudio.nams.configurator.Messages;
+
 public class AlarmbearbeiterGruppenBean extends
 		AbstractConfigurationBean<AlarmbearbeiterGruppenBean> implements
 		IReceiverBean {
@@ -64,7 +66,7 @@ public class AlarmbearbeiterGruppenBean extends
 	}
 
 	public String getDisplayName() {
-		return this.getName() == null ? "(ohne Name)" : this.getName();
+		return this.getName() == null ? Messages.AlarmbearbeiterGruppenBean_without_name : this.getName();
 	}
 
 	public int getGroupID() {

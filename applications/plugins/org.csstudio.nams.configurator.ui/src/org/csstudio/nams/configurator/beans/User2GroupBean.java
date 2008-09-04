@@ -2,6 +2,8 @@ package org.csstudio.nams.configurator.beans;
 
 import java.util.Date;
 
+import org.csstudio.nams.configurator.Messages;
+
 public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 
 	/**
@@ -18,7 +20,7 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 	}
 
 	boolean active;
-	String activeReason = "";
+	String activeReason = ""; //$NON-NLS-1$
 	// FIXME we shall not use Date
 	Date lastChange = new Date();
 	private AlarmbearbeiterBean userBean;
@@ -126,7 +128,7 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 
 	public void setActiveReason(final String activeReason) {
 		final String oldValue = this.activeReason;
-		this.activeReason = (activeReason != null) ? activeReason : "";
+		this.activeReason = (activeReason != null) ? activeReason : ""; //$NON-NLS-1$
 		this.pcs.firePropertyChange(PropertyNames.activeReason.name(),
 				oldValue, activeReason);
 	}

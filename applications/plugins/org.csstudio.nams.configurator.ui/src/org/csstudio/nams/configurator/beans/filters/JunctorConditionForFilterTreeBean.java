@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
@@ -21,7 +22,7 @@ public class JunctorConditionForFilterTreeBean extends FilterbedingungBean {
 	}
 
 	public boolean addOperand(final FilterbedingungBean bean) {
-		Contract.require(this != bean, "this != bean");
+		Contract.require(this != bean, "this != bean"); //$NON-NLS-1$
 		return this.filterbedingungBeans.add(bean);
 	}
 

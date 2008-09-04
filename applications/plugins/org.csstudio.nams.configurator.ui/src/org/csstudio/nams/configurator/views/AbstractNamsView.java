@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.actions.BeanToEditorId;
 import org.csstudio.nams.configurator.actions.DeleteConfugurationBeanAction;
 import org.csstudio.nams.configurator.actions.DuplicateConfigurationBeanAction;
@@ -105,7 +106,7 @@ public abstract class AbstractNamsView extends ViewPart {
 		error.setLayout(new GridLayout(1, true));
 		final Label errorLabel = new Label(error, SWT.WRAP);
 		errorLabel
-				.setText("Konnte keine Verbindung zur Datenbank herstellen.\nBitte überprüfen Sie die Einstellungen unter:\nCSS-Application/Configuration/New AMS.");
+				.setText(Messages.AbstractNamsView_db_error);
 
 		this.viewStackContents.put(ViewModes.NORMAL, normalViewElements);
 		this.viewStackContents.put(ViewModes.NOT_INITIALIZED, error);
@@ -133,7 +134,7 @@ public abstract class AbstractNamsView extends ViewPart {
 		menuManager.add(new Action() {
 			@Override
 			public String getText() {
-				return "Neu";
+				return Messages.AbstractNamsView_new;
 			}
 
 			@Override
@@ -189,27 +190,27 @@ public abstract class AbstractNamsView extends ViewPart {
 
 			@Override
 			public String getText() {
-				return "Reload";
+				return Messages.AbstractNamsView_reload;
 			}
 
 			@Override
 			public String getToolTipText() {
-				return "Reloads the entire configuration - unsaved changes may be discarded!";
+				return Messages.AbstractNamsView_reload_toolTipText;
 			}
 
 			@Override
 			public void run() {
 				if (MessageDialog.openQuestion(AbstractNamsView.this
 						.getViewSite().getShell(),
-						"Reload entire configuration?",
-						"Do you realy like to reload the entire configuration?"
-								+ "\n\nUnsaved changes may get lost.")) {
+						Messages.AbstractNamsView_reload_question_title,
+						Messages.AbstractNamsView_reload_question_text1
+								+ Messages.AbstractNamsView_reload_question_text2)) {
 					AbstractNamsView.logger
 							.logDebugMessage(this,
-									"Reload of entire configuration requested by user...");
+									"Reload of entire configuration requested by user..."); //$NON-NLS-1$
 					AbstractNamsView.configurationBeanService.refreshData();
 					AbstractNamsView.logger.logInfoMessage(this,
-							"Reload of entire configuration done.");
+							"Reload of entire configuration done."); //$NON-NLS-1$
 				}
 			}
 
@@ -249,7 +250,7 @@ public abstract class AbstractNamsView extends ViewPart {
 						|| ((P_CONFIG_DATABASE_USER == null) || (P_CONFIG_DATABASE_USER
 								.length() == 0))
 						|| (P_CONFIG_DATABASE_PASSWORD == null)) {
-					throw new RuntimeException("Missing database setting!");
+					throw new RuntimeException("Missing database setting!"); //$NON-NLS-1$
 				}
 
 				final DatabaseType P_CONFIG_DATABASE_TYPE = DatabaseType
@@ -261,22 +262,22 @@ public abstract class AbstractNamsView extends ViewPart {
 								P_CONFIG_DATABASE_PASSWORD);
 
 				AbstractNamsView.logger.logDebugMessage(this,
-						"DB connected with P_CONFIG_DATABASE_CONNECTION: "
+						"DB connected with P_CONFIG_DATABASE_CONNECTION: " //$NON-NLS-1$
 								+ P_CONFIG_DATABASE_CONNECTION);
 				AbstractNamsView.logger.logDebugMessage(this,
-						"DB connected with P_CONFIG_DATABASE_TYPE: "
+						"DB connected with P_CONFIG_DATABASE_TYPE: " //$NON-NLS-1$
 								+ P_CONFIG_DATABASE_TYPE);
 				AbstractNamsView.logger.logDebugMessage(this,
-						"DB connected with P_CONFIG_DATABASE_USER: "
+						"DB connected with P_CONFIG_DATABASE_USER: " //$NON-NLS-1$
 								+ P_CONFIG_DATABASE_USER);
 				AbstractNamsView.logger
 						.logDebugMessage(
 								this,
-								"DB P_CONFIG_DATABASE_PASSWORD is: "
+								"DB P_CONFIG_DATABASE_PASSWORD is: " //$NON-NLS-1$
 										+ ((P_CONFIG_DATABASE_PASSWORD != null)
 												&& (P_CONFIG_DATABASE_PASSWORD
-														.length() > 0) ? "available"
-												: "missing"));
+														.length() > 0) ? "available" //$NON-NLS-1$
+												: "missing")); //$NON-NLS-1$
 
 				if (AbstractNamsView.configurationBeanService == null) {
 					AbstractNamsView.configurationBeanService = new ConfigurationBeanServiceImpl();
@@ -328,11 +329,11 @@ public abstract class AbstractNamsView extends ViewPart {
 						public void onConfigurationReload() {
 							if (AbstractNamsView.this.filterableBeanList != null) {
 								AbstractNamsView.logger.logDebugMessage(this,
-										"Refreshing list for "
+										"Refreshing list for " //$NON-NLS-1$
 												+ AbstractNamsView.this
 														.getClass()
 														.getSimpleName()
-												+ "...");
+												+ "..."); //$NON-NLS-1$
 								AbstractNamsView.this.filterableBeanList
 										.updateView();
 							}
@@ -351,19 +352,19 @@ public abstract class AbstractNamsView extends ViewPart {
 
 	private void performInitializeAndSetCorrespondingViewMode() {
 		AbstractNamsView.logger.logInfoMessage(this,
-				"perfoming initialization...");
+				"perfoming initialization..."); //$NON-NLS-1$
 		try {
 			this.initialize();
 			AbstractNamsView.logger.logDebugMessage(this,
-					"init done, update ui...");
+					"init done, update ui..."); //$NON-NLS-1$
 		} catch (final Throwable e) {
 			AbstractNamsView.logger.logFatalMessage(this,
-					"Failed to initialize bean service!", e);
+					"Failed to initialize bean service!", e); //$NON-NLS-1$
 			assert AbstractNamsView.isInitialized == false;
 		}
 		if (AbstractNamsView.isInitialized()) {
 			AbstractNamsView.logger.logDebugMessage(this,
-					"ui goes to normal view...");
+					"ui goes to normal view..."); //$NON-NLS-1$
 			final Composite composite = this.viewStackContents
 					.get(ViewModes.NORMAL);
 			assert composite != null;
@@ -373,7 +374,7 @@ public abstract class AbstractNamsView extends ViewPart {
 			}
 		} else {
 			AbstractNamsView.logger.logDebugMessage(this,
-					"ui goes to error view...");
+					"ui goes to error view..."); //$NON-NLS-1$
 			final Composite composite = this.viewStackContents
 					.get(ViewModes.NOT_INITIALIZED);
 			assert composite != null;

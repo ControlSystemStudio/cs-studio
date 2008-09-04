@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.filters.JunctorConditionForFilterTreeBean;
 import org.csstudio.nams.configurator.beans.filters.NotConditionForFilterTreeBean;
@@ -52,7 +53,7 @@ public class FilterTreeContentProvider implements ITreeContentProvider {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Object[] getElements(final Object inputElement) {
 		if (this.results == null) {
 			final List<FilterbedingungBean> inputList = (List<FilterbedingungBean>) inputElement;

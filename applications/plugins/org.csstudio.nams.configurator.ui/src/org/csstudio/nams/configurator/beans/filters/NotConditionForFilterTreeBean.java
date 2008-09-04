@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.beans.filters;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 
 public class NotConditionForFilterTreeBean extends FilterbedingungBean {
@@ -31,10 +32,10 @@ public class NotConditionForFilterTreeBean extends FilterbedingungBean {
 
 	@Override
 	public String getDisplayName() {
-		String result = "NOT ";
+		String result = Messages.NotConditionForFilterTreeBean_not_prefix;
 		if (this.bean != null) {
 			if (this.bean instanceof JunctorConditionForFilterTreeBean) {
-				result = "N";
+				result = Messages.NotConditionForFilterTreeBean_jcfftb_not_prefix;
 			}
 			result = result + this.bean.getDisplayName();
 		}

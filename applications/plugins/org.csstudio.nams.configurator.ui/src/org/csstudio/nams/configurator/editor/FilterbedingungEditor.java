@@ -12,6 +12,7 @@ import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
 import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
@@ -60,7 +61,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		private SupportedFilterTypes type;
 
 		public String getDisplayName() {
-			return "(internal bean for storing selcted filter type in filter condition editor)";
+			return "(internal bean for storing selcted filter type in filter condition editor)"; //$NON-NLS-1$
 		}
 
 		public int getID() {
@@ -78,7 +79,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		public void setType(final SupportedFilterTypes type) {
 			final SupportedFilterTypes oldValue = this.type;
 			this.type = type;
-			this.pcs.firePropertyChange("type", oldValue, type);
+			this.pcs.firePropertyChange("type", oldValue, type); //$NON-NLS-1$
 		}
 
 		@Override
@@ -88,11 +89,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 	}
 
 	public enum SupportedFilterTypes {
-		JUNCTOR_CONDITION("Or Condition", JunctorConditionBean.class), STRING_CONDITION(
-				"String Condition", StringFilterConditionBean.class), STRING_ARRAY_CONDITION(
-				"StringArray Condition", StringArrayFilterConditionBean.class), PV_CONDITION(
-				"PV Condition", PVFilterConditionBean.class), TIMEBASED_CONDITION(
-				"TimeBased Condition", TimeBasedFilterConditionBean.class);
+		JUNCTOR_CONDITION(Messages.FilterbedingungEditor_supported_filter_types_or_condition, JunctorConditionBean.class), STRING_CONDITION(
+				Messages.FilterbedingungEditor_supported_filter_types_string_condition, StringFilterConditionBean.class), STRING_ARRAY_CONDITION(
+				Messages.FilterbedingungEditor_supported_filter_types_string_array_condition, StringArrayFilterConditionBean.class), PV_CONDITION(
+				Messages.FilterbedingungEditor_supported_filter_types_pv_condition, PVFilterConditionBean.class), TIMEBASED_CONDITION(
+				Messages.FilterbedingungEditor_supported_filter_types_time_based_condition, TimeBasedFilterConditionBean.class);
 
 		public static SupportedFilterTypes fromClass(final Class<?> cls) {
 			for (final SupportedFilterTypes pValue : SupportedFilterTypes
@@ -101,7 +102,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 					return pValue;
 				}
 			}
-			throw new RuntimeException("Unsupported Filtertype : " + cls);
+			throw new RuntimeException("Unsupported Filtertype : " + cls); //$NON-NLS-1$
 		}
 
 		public static SupportedFilterTypes fromString(final String value) {
@@ -111,7 +112,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 					return pValue;
 				}
 			}
-			throw new RuntimeException("Unsupported Filtertype : " + value);
+			throw new RuntimeException("Unsupported Filtertype : " + value); //$NON-NLS-1$
 		}
 
 		private final String filterName;
@@ -137,7 +138,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		}
 	}
 
-	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterbedingungEditor";
+	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.FilterbedingungEditor"; //$NON-NLS-1$
 
 	private static IProcessVariableConnectionService pvConnectionService;
 
@@ -187,17 +188,17 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		final Composite upperComposite = new Composite(outermain, SWT.NONE);
 		upperComposite.setLayout(new GridLayout(this.NUM_COLUMNS, false));
-		this._nameTextEntry = this.createTextEntry(upperComposite, "Name:",
+		this._nameTextEntry = this.createTextEntry(upperComposite, Messages.FilterbedingungEditor_name,
 				true);
 		this._rubrikComboEntryViewer = this.createComboEntry(upperComposite,
-				"Rubrik:", true, AbstractEditor.getConfigurationBeanService()
+				Messages.FilterbedingungEditor_category, true, AbstractEditor.getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.FILTER_COND));
 		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
 		this.addSeparator(upperComposite);
 		this._defaultMessageTextEntry = this.createDescriptionTextEntry(
-				upperComposite, "Description:");
-		this.createTitledComboForEnumValues(upperComposite, "Filtertype: ",
-				SupportedFilterTypes.values(), this.selectedFilterType, "type");
+				upperComposite, Messages.FilterbedingungEditor_description);
+		this.createTitledComboForEnumValues(upperComposite, Messages.FilterbedingungEditor_filtertype,
+				SupportedFilterTypes.values(), this.selectedFilterType, "type"); //$NON-NLS-1$
 
 		this.initializeAddOnBeans();
 
@@ -232,12 +233,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		new Label(this.stackComposites[0], SWT.NONE);
 		final Label label = new Label(this.stackComposites[0], SWT.LEFT
 				| SWT.WRAP);
-		label.setText("Dieses Filterbedingung  existiert nur aus Gründen der\n"
-				+ "Abwärtskompatibilität, bitte realisieren Sie das\n"
-				+ "gewünschte Verhalten über die neuen Funktionen des Filters");
+		label.setText(Messages.FilterbedingungEditor_or_condition_warning1
+				+ Messages.FilterbedingungEditor_or_condition_warning2
+				+ Messages.FilterbedingungEditor_or_condition_warning3);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		this.createTextEntry(this.stackComposites[0], "Filtercondition", false);
-		this.createTextEntry(this.stackComposites[0], "Filtercondition", false);
+		this.createTextEntry(this.stackComposites[0], Messages.FilterbedingungEditor_filtercondition, false);
+		this.createTextEntry(this.stackComposites[0], Messages.FilterbedingungEditor_filtercondition, false);
 
 		// StringFilterComposite
 		this.stackComposites[1] = new Composite(this.filterSpecificComposite,
@@ -248,11 +249,11 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				.get(SupportedFilterTypes.STRING_CONDITION);
 
 		this.createTitledComboForEnumValues(this.stackComposites[1],
-				"CompareKey", MessageKeyEnum.values(), stringConfigurationBean,
+				Messages.FilterbedingungEditor_compare_key, MessageKeyEnum.values(), stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.keyValue.name());
 
 		this.createTitledComboForEnumValues(this.stackComposites[1],
-				"Operator", StringRegelOperator.values(),
+				Messages.FilterbedingungEditor_operator, StringRegelOperator.values(),
 				stringConfigurationBean,
 				StringFilterConditionBean.PropertyNames.operator.name());
 
@@ -262,7 +263,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		// .values()));
 
 		this.stringCompareValueText = this.createTextEntry(
-				this.stackComposites[1], "CompareValue", true);
+				this.stackComposites[1], Messages.FilterbedingungEditor_compare_value, true);
 		// StringArrayFilterComposite
 		this.stackComposites[2] = new Composite(this.filterSpecificComposite,
 				SWT.TOP);
@@ -272,20 +273,20 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		final IConfigurationBean stringArrayConfigurationBean = this.specificBeans
 				.get(SupportedFilterTypes.STRING_ARRAY_CONDITION);
 		this.createTitledComboForEnumValues(this.stackComposites[2],
-				"MessageKey", MessageKeyEnum.values(),
+				Messages.FilterbedingungEditor_message_key, MessageKeyEnum.values(),
 				stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.keyValue.name());
 
 		this.createTitledComboForEnumValues(this.stackComposites[2],
-				"Operator", StringRegelOperator.values(),
+				Messages.FilterbedingungEditor_operator, StringRegelOperator.values(),
 				stringArrayConfigurationBean,
 				StringArrayFilterConditionBean.PropertyNames.operator.name());
 
 		this.arrayCompareValueListViewer = this.createListEntry(
-				this.stackComposites[2], "CompareValues", true);
+				this.stackComposites[2], Messages.FilterbedingungEditor_compare_values, true);
 		this.arrayCompareValueList = this.arrayCompareValueListViewer.getList();
 		final Text arrayNewCompareValueText = this.createTextEntry(
-				this.stackComposites[2], "Neues CompareValue", true);
+				this.stackComposites[2], Messages.FilterbedingungEditor_new_compare_value, true);
 		arrayNewCompareValueText.addKeyListener(new KeyListener() {
 
 			public void keyPressed(final KeyEvent e) {
@@ -299,7 +300,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 		});
 		final Button buttonAdd = this.createButtonEntry(
-				this.stackComposites[2], "Eingabe hinzufügen", true, 2);
+				this.stackComposites[2], Messages.FilterbedingungEditor_add_compare_value_button, true, 2);
 		buttonAdd.addMouseListener(new MouseListener() {
 
 			public void mouseDoubleClick(final MouseEvent e) {
@@ -314,7 +315,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			}
 		});
 		final Button button = this.createButtonEntry(this.stackComposites[2],
-				"Vergleichswert löschen", true, 2);
+				Messages.FilterbedingungEditor_remove_compare_value_button, true, 2);
 		button.addMouseListener(new MouseListener() {
 
 			public void mouseDoubleClick(final MouseEvent e) {
@@ -350,23 +351,23 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		this.stackComposites[3].setLayout(new GridLayout(this.NUM_COLUMNS,
 				false));
 		this.pvChannelName = this.createTextEntry(this.stackComposites[3],
-				"channelName", true);
+				Messages.FilterbedingungEditor_channel_name, true);
 
 		final PVFilterConditionBean pvConfigurationBean = (PVFilterConditionBean) this.specificBeans
 				.get(SupportedFilterTypes.PV_CONDITION);
 		this.createTitledComboForEnumValues(this.stackComposites[3],
-				"SuggestedType", SuggestedProcessVariableType.values(),
+				Messages.FilterbedingungEditor_suggested_type, SuggestedProcessVariableType.values(),
 				pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.suggestedType.name());
 
 		this.createTitledComboForEnumValues(this.stackComposites[3],
-				"Operator", Operator.values(), pvConfigurationBean,
+				Messages.FilterbedingungEditor_operator, Operator.values(), pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.operator.name());
 
 		this.pvCompareValue = this.createTextEntry(this.stackComposites[3],
-				"Compare value", true);
+				Messages.FilterbedingungEditor_compare_value, true);
 		final Button checkPVChannel = this.createButtonEntry(
-				this.stackComposites[3], "PV Verbindung überprüfen", true, 2);
+				this.stackComposites[3], Messages.FilterbedingungEditor_pv_connection_test, true, 2);
 		checkPVChannel.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(final MouseEvent e) {
 			}
@@ -404,10 +405,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						MessageDialog
 								.openError(
 										e.widget.getDisplay().getActiveShell(),
-										"PV channel state for channel: "
+										Messages.FilterbedingungEditor_pv_connection_test_title
 												+ channelName,
-										"Connection to PV channel failed.\n\n"
-												+ "Reason:\n"
+										Messages.FilterbedingungEditor_pv_connection_test_text
+												+ Messages.FilterbedingungEditor_pv_connection_test_text2
 												+ EditorUIUtils
 														.throwableAsMessageString(connectionException));
 						connectionException.printStackTrace();
@@ -416,12 +417,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 					MessageDialog
 							.openInformation(
 									e.widget.getDisplay().getActiveShell(),
-									"PV channel state for channel: "
+									Messages.FilterbedingungEditor_pv_connection_test_title
 											+ channelName,
-									"Connection to PV channel successfully established.\n\n"
-											+ "(This only indicates that your adress is correct and the PV is currently accessible\n"
-											+ "It is no quaranty for successfully access all over the time.\n"
-											+ "If the connection fails during message processing, this condition will match constantly)");
+									Messages.FilterbedingungEditor_pv_connection_test_success1
+											+ Messages.FilterbedingungEditor_pv_connection_test_success2
+											+ Messages.FilterbedingungEditor_pv_connection_test_success3
+											+ Messages.FilterbedingungEditor_pv_connection_test_success4);
 				}
 			}
 
@@ -438,14 +439,14 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				.get(SupportedFilterTypes.TIMEBASED_CONDITION);
 
 		this.timeDelayText = this.createTextEntry(this.stackComposites[4],
-				"Wartezeit", true);
+				Messages.FilterbedingungEditor_delay_time, true);
 		this.timeBehaviorCheck = this.createCheckBoxEntry(
-				this.stackComposites[4], "Alarm bei Timeout", true);
+				this.stackComposites[4], Messages.FilterbedingungEditor_alarm_on_timeout, true);
 		this.addSeparator(this.stackComposites[4]);
 		this
 				.createTitledComboForEnumValues(
 						this.stackComposites[4],
-						"Start KeyValue",
+						Messages.FilterbedingungEditor_start_key_value,
 						MessageKeyEnum.values(),
 						timeBasedConfigurationBean,
 						TimeBasedFilterConditionBean.PropertyNames.startKeyValue
@@ -454,29 +455,29 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		this
 				.createTitledComboForEnumValues(
 						this.stackComposites[4],
-						"Start Operator",
+						Messages.FilterbedingungEditor_start_operator,
 						StringRegelOperator.values(),
 						timeBasedConfigurationBean,
 						TimeBasedFilterConditionBean.PropertyNames.startOperator
 								.name());
 
 		this.timeStartCompareText = this.createTextEntry(
-				this.stackComposites[4], "Start CompareValue", true);
+				this.stackComposites[4], Messages.FilterbedingungEditor_start_compare_value, true);
 		this.addSeparator(this.stackComposites[4]);
 		this.createTitledComboForEnumValues(this.stackComposites[4],
-				"Stop KeyValue", MessageKeyEnum.values(),
+				Messages.FilterbedingungEditor_stop_key_value, MessageKeyEnum.values(),
 				timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.confirmKeyValue
 						.name());
 
 		this.createTitledComboForEnumValues(this.stackComposites[4],
-				"Stop Operator", StringRegelOperator.values(),
+				Messages.FilterbedingungEditor_stop_operator, StringRegelOperator.values(),
 				timeBasedConfigurationBean,
 				TimeBasedFilterConditionBean.PropertyNames.confirmOperator
 						.name());
 
 		this.timeStopCompareText = this.createTextEntry(
-				this.stackComposites[4], "Stop CompareValue", true);
+				this.stackComposites[4], Messages.FilterbedingungEditor_stop_compare_value, true);
 
 		// LinkedList<String> types = new LinkedList<String>();
 		// for (JunctorConditionType type : JunctorConditionType.values()) {
@@ -501,7 +502,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			this.selectedFilterType
 					.setType(SupportedFilterTypes.TIMEBASED_CONDITION);
 		} else {
-			throw new RuntimeException("Unsupported AddOnBean "
+			throw new RuntimeException("Unsupported AddOnBean " //$NON-NLS-1$
 					+ filterSpecificBean.getClass());
 		}
 		this.initDataBinding();
@@ -627,7 +628,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		if (!list.contains(newCompareValue.getText())) {
 			list.add(newCompareValue.getText());
 			specificBean.setCompareValues(list);
-			newCompareValue.setText("");
+			newCompareValue.setText(""); //$NON-NLS-1$
 		}
 	}
 
@@ -865,7 +866,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 					result = Millisekunden.valueOf(Long
 							.parseLong((String) value)*1000);
 				} catch (final Throwable e) {
-					FilterbedingungEditor.this.timeDelayText.setText("0");
+					FilterbedingungEditor.this.timeDelayText.setText("0"); //$NON-NLS-1$
 				}
 
 				return result;

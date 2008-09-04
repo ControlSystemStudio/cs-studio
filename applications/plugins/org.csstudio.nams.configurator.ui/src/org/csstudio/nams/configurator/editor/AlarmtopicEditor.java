@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AlarmtopicBean;
 import org.csstudio.nams.configurator.beans.FilterBean;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -20,7 +21,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 
-	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmtopicEditor";
+	private static final String EDITOR_ID = "org.csstudio.nams.configurator.editor.AlarmtopicEditor"; //$NON-NLS-1$
 
 	public static String getId() {
 		return AlarmtopicEditor.EDITOR_ID;
@@ -44,16 +45,16 @@ public class AlarmtopicEditor extends AbstractEditor<FilterBean> {
 		main.setBackground(parent.getBackground());
 		main.setLayout(new GridLayout(this.NUM_COLUMNS, false));
 		this.addSeparator(main);
-		this._topicIdTextEntry = this.createTextEntry(main, "Name:", true);
-		this._rubrikComboEntryViewer = this.createComboEntry(main, "Rubrik:",
+		this._topicIdTextEntry = this.createTextEntry(main, Messages.AlarmtopicEditor_name, true);
+		this._rubrikComboEntryViewer = this.createComboEntry(main, Messages.AlarmtopicEditor_category,
 				true, AbstractEditor.getConfigurationBeanService()
 						.getRubrikNamesForType(RubrikTypeEnum.TOPIC));
 		this._rubrikComboEntry = this._rubrikComboEntryViewer.getCombo();
 		this.addSeparator(main);
-		this._topicNameTextEntry = this.createTextEntry(main, "Topic name:",
+		this._topicNameTextEntry = this.createTextEntry(main, Messages.AlarmtopicEditor_topic_name,
 				true);
 		this._descriptionTextEntry = this.createDescriptionTextEntry(main,
-				"Description:");
+				Messages.AlarmtopicEditor_description);
 		this.initDataBinding();
 	}
 
