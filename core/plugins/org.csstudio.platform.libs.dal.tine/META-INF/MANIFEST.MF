@@ -12,4 +12,4 @@ Eclipse-LazyStart: true
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ClassPath: .,
  lib/tine.jar,
- lib/css-dal-tine-0.6.0.jar
+ lib/css-dal-tine-0.6.1.jar
