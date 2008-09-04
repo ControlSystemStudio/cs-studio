@@ -40,6 +40,7 @@ import org.csstudio.utility.adlconverter.utility.widgets.Polygon;
 import org.csstudio.utility.adlconverter.utility.widgets.Polyline;
 import org.csstudio.utility.adlconverter.utility.widgets.Rectangle;
 import org.csstudio.utility.adlconverter.utility.widgets.RelatedDisplay;
+import org.csstudio.utility.adlconverter.utility.widgets.SixteenBinaryBar;
 import org.csstudio.utility.adlconverter.utility.widgets.Textinput;
 import org.csstudio.utility.adlconverter.utility.widgets.Valuator;
 import org.csstudio.utility.adlconverter.utility.widgets.Waveform;
@@ -97,6 +98,8 @@ public class ADLChildren {
                     _childrens.add(new Arc(strings,abstractWidgetModel));
                 }else if(strings.getType().equals("bar")){ //$NON-NLS-1$
                     _childrens.add(new Bargraph(strings));
+                }else if(strings.getType().equals("byte")){ //$NON-NLS-1$
+                    _childrens.add(new SixteenBinaryBar(strings));
                 }else if(strings.getType().equals("composite")){ //$NON-NLS-1$
                     _childrens.add(new GroupingContainer(strings));
                 }else if(strings.getType().equals("image")){ //$NON-NLS-1$

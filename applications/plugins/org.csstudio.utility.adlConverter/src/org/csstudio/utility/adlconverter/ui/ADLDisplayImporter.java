@@ -50,6 +50,7 @@ import org.csstudio.utility.adlconverter.utility.widgets.Polygon;
 import org.csstudio.utility.adlconverter.utility.widgets.Polyline;
 import org.csstudio.utility.adlconverter.utility.widgets.Rectangle;
 import org.csstudio.utility.adlconverter.utility.widgets.RelatedDisplay;
+import org.csstudio.utility.adlconverter.utility.widgets.SixteenBinaryBar;
 import org.csstudio.utility.adlconverter.utility.widgets.StripChart;
 import org.csstudio.utility.adlconverter.utility.widgets.Symbol;
 import org.csstudio.utility.adlconverter.utility.widgets.Textinput;
@@ -125,6 +126,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                     displayModel.addWidget(new Arc(strings, displayModel).getElement());
                 } else if (strings.getType().equals("bar")) { //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(strings).getElement());
+                } else if(strings.getType().equals("byte")){ //$NON-NLS-1$
+                    displayModel.addWidget(new SixteenBinaryBar(strings).getElement());
                 } else if (strings.getType().equals("\"cartesian plot\"")) { //$NON-NLS-1$
                     displayModel.addWidget(new Waveform(strings).getElement());
                 } else if (strings.getType().equals("\"color map\"")) { //$NON-NLS-1$
@@ -182,7 +185,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
 
         // create the target file in the workspace
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-        IPath filePath = targetProject.append(targetFileName);
+        IPath filePath = targetProject.append(targetFileName.trim());
         if (!workspaceRoot.exists(targetProject)) {
             String[] dialogButtonsText = new String[] {
                     Messages.ADLDisplayImporter_Dialog_Yes_Button,
