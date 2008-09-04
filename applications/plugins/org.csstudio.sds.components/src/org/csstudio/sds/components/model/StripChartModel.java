@@ -41,7 +41,7 @@ public final class StripChartModel extends AbstractChartModel {
 	/**
 	 * The number of data channels that this model supports.
 	 */
-	public static final int NUMBER_OF_CHANNELS = 4;
+	public static final int NUMBER_OF_CHANNELS = 8;
 
 	/**
 	 * The ID of the x-axis timespan property.

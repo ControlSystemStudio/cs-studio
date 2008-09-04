@@ -83,7 +83,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 * @return the number of data values that are recorded.
 	 */
 	public int numberOfValuesPerSeries(final StripChartModel model) {
-		return (int) Math.floor(model.getXAxisTimespan() / model.getUpdateInterval());
+		return ((int) Math.ceil(model.getXAxisTimespan() / model.getUpdateInterval())) + 1;
 	}
 
 	/**

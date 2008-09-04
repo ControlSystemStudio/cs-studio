@@ -222,14 +222,14 @@ public final class StripChartFigure extends AbstractChartFigure {
 		 */
 		private synchronized void processValues(final IDataPointProcessor processor) {
 			int counter = 0;
-			int i = _nextWriteIndex - 1;
+			int i = _nextWriteIndex;
 			while (counter < _size) {
-				double xValue = Math.abs(_xAxisMaximum - _xAxisMinimum) * (((double) counter) / ((double) _valuesPerChannel));
-				processor.processDataPoint(xValue, _values[i]);
-				counter++;
 				if (--i < 0) {
 					i = _values.length - 1;
 				}
+				double xValue = Math.abs(_xAxisMaximum - _xAxisMinimum) * (((double) counter) / (((double) _valuesPerChannel) - 1));
+				processor.processDataPoint(xValue, _values[i]);
+				counter++;
 			}
 		}
 	}
