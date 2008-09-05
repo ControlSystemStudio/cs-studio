@@ -51,7 +51,7 @@ public class SnooperStringParser {
 				}
 			}
 		}
-		return new Object[]{statistics[0].replace("<statistics>","Remote snooping results:\n"),parsedList};
+		return new Object[]{statistics[0].replace("<statistics>","Remote snooping results"),parsedList};
 	}
 	
 	/**

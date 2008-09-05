@@ -9,7 +9,6 @@ public class ExtViewer implements IOpenViewer {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public ViewCreator getCreator() {
 		ViewCreator creator = new SnooperViewCreator();
 		return creator;
