@@ -147,11 +147,11 @@ public abstract class AbstractModelItem
         }
         if (start_index < end_index)
         {
-            Plugin.getLogger().info(getName() + ".size(): " +
+            Plugin.getLogger().debug(getName() + ".size(): " +
                     start_index + " ... " + end_index);
             return end_index - start_index + 1;
         }
-        Plugin.getLogger().info(getName() + ".size(): 0");
+        Plugin.getLogger().debug(getName() + ".size(): 0");
         return 0;
     }
     
