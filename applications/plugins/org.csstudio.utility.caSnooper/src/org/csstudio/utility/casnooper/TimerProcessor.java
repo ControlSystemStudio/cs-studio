@@ -27,14 +27,14 @@ public class TimerProcessor {
             int broadcastIntValue = 0;
             broadcastDoubleValuePerSecond = 0.0;
             
-        	System.out.println("MyTimerTask was called.");
+//        	System.out.println("MyTimerTask was called.");
         	channel.setMapToUse(firstMap);
         	firstMap = !firstMap;
         	broadcastIntValue = server.getBroadcastCounterAndZero();
             server.getNumberOfBroadcastsChannel().setIntValue(broadcastIntValue);
             broadcastDoubleValuePerSecond = (double)broadcastIntValue * 1000.0 / (double)getInterval();
             server.getNumberOfBroadcastsPerSecondChannel().setDoubleValue(broadcastDoubleValuePerSecond);
-            System.out.println( "broadcasts/sec: " + broadcastDoubleValuePerSecond);
+//            System.out.println( "broadcasts/sec: " + broadcastDoubleValuePerSecond);
             SnooperServer.getCaBroadcastCollector().setValue(broadcastDoubleValuePerSecond);
         }
     }

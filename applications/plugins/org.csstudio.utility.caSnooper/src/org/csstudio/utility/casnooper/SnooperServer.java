@@ -23,6 +23,7 @@ import gov.aps.jca.cas.ServerContext;
 
 import java.net.InetSocketAddress;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.utility.casnooper.channel.ChannelCollector;
 import org.csstudio.utility.casnooper.channel.NumberOfBroadcasts;
@@ -89,7 +90,8 @@ public class SnooperServer {
 			 * do the snooper stuff
 			 */
 			
-			System.out.println("Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
+			CentralLogger.getInstance().debug(this, "Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
+//			System.out.println("Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
 			incrementBroadcastCounter();
 			
 			collector.addBMessage(aliasName, clientAddress);
@@ -194,17 +196,20 @@ public class SnooperServer {
 		System.out.println("localHostName: " + localHostName);
 
 		// broadcast PV (int)
-		numberOfBroadcastsChannel = new NumberOfBroadcasts(localHostName + ":broadcastsTotal", null, 0, 10000, 1, 100000, -1, 1000, -1, 5000, this);
+		numberOfBroadcastsChannel = new NumberOfBroadcasts(localHostName + ":broadcPerPeriod", null, 0, 10000, 1, 100000, -1, 1000, -1, 5000, this);
 		this.server.registerProcessVaribale(numberOfBroadcastsChannel);
+		System.out.println("Created channel: " + localHostName + ":broadcPerPeriod");
 		
 		// broadcast per second PV (double)
 		short precision = 3;
-		numberOfBroadcastsPerSecondChannel = new NumberOfBroadcastsPerSecond(localHostName + ":broadcastsPerSecond", null, 0, 1000, precision, -1, 250, -1, 500, this);
+		numberOfBroadcastsPerSecondChannel = new NumberOfBroadcastsPerSecond(localHostName + ":broadcPerSec", null, 0, 1000, precision, -1, 250, -1, 500, this);
 		this.server.registerProcessVaribale(numberOfBroadcastsPerSecondChannel);
+		System.out.println("Created channel: " + localHostName + ":broadcPerSec");
 		
 		// counter PV
-		CounterProcessVariable counter = new CounterProcessVariable("COUNTER", null, -10, 10, 1, 100, -7, 7, -9, 9);
+		CounterProcessVariable counter = new CounterProcessVariable(localHostName + ":countsPerPeriod", null, -10, 10, 1, 100, -7, 7, -9, 9);
 		server.registerProcessVaribale(counter);
+		System.out.println("Created channel: " + localHostName + ":countsPerPeriod");
 	}
  
     /**
@@ -234,6 +239,7 @@ public class SnooperServer {
 			initialize();
 		    
 			System.out.println("Running server...");
+			CentralLogger.getInstance().info(this, "Start caSnooper on: " + localHostName);
 			
 			// start time based processor
 			IPreferencesService prefs = Platform.getPreferencesService();
@@ -246,6 +252,7 @@ public class SnooperServer {
 			context.run(0);
 			
 			System.out.println("Done.");
+			CentralLogger.getInstance().info(this, "Stop caSnooper on: " + localHostName);
 
 		} catch (Throwable th) {
 			th.printStackTrace();

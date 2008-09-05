@@ -39,6 +39,11 @@
             id="org.csstudio.utility.casnooper.GetTable"
             name="GetTable">
       </simpleAction>
+      <simpleAction
+            class="org.csstudio.utility.casnooper.StopCaSnooper"
+            id="org.csstudio.utility.casnooper.stopcasnooper"
+            name="StopCaSnooper">
+      </simpleAction>
    </extension>
 
 </plugin>

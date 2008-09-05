@@ -47,12 +47,7 @@ public class Activator extends AbstractCssPlugin {
 	@Override
 	protected void doStop(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		CentralLogger.getInstance().info(this, "InterConnectionServer stopped"); 
-		/*
-		 * calling the IC_Server's stop method does not really work
-		 * The process will never stop this way!
-		 */
-//		InterconnectionServer.getInstance().stopIcServer();
+		CentralLogger.getInstance().info(this, "CaSnooper stopped"); 
 		
 	}
 

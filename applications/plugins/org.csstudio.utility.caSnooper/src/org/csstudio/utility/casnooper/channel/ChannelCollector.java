@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.csstudio.utility.casnooper.Activator;
+import org.csstudio.utility.casnooper.SnooperServer;
 import org.csstudio.utility.casnooper.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -111,7 +112,8 @@ public class ChannelCollector {
 		avarageFrequency = avarageFrequency/entries.size();
 		avarageFrequency = ((int)(avarageFrequency*1000))/1000.0;
 		
-		statistics = "There were "+numberOfRequests+" requests for "+listOfAllChannels.size()+" different PVs.\n";
+		statistics = " from: " + SnooperServer.getLocalHostName() + "\n";
+		statistics = statistics + "There were "+numberOfRequests+" requests for "+listOfAllChannels.size()+" different PVs.\n";
 		statistics = statistics+"Max frequency: "+maximumFrequency+"Hz\n";
 		statistics = statistics+"Avarage frequency: "+avarageFrequency+"Hz\n";
 		return statistics;
