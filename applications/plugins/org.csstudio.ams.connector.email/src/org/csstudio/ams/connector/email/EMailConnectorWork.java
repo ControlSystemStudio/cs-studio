@@ -249,6 +249,9 @@ public class EMailConnectorWork extends Thread implements AmsConstants
         try
         {
             IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+            
+            boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+
             /*
             Hashtable<String, String> properties = new Hashtable<String, String>();
             
@@ -270,14 +273,14 @@ public class EMailConnectorWork extends Thread implements AmsConstants
             amsConnection.start();
             */
             
-            // CHANGED BY: Markus M�ller, 25.05.2007
+            // CHANGED BY: Markus Möller, 25.05.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR));
             */
             
-            // CHANGED BY: Markus M�ller, 28.06.2007
+            // CHANGED BY: Markus Möller, 28.06.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
@@ -305,7 +308,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                     "amsSubscriberEmail",
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR),
-                    EMailConnectorStart.CREATE_DURABLE);
+                    durable);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsSubscriberEmail");

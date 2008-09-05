@@ -115,6 +115,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         // ADDED BY: Markus Moeller, 13.08.2007
         node.put(SampleService.P_JMS_EXTERN_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
         node.put(SampleService.P_JMS_EXTERN_CONNECTION_FACTORY, "ConnectionFactory");
+        node.put(SampleService.P_JMS_EXTERN_CREATE_DURABLE, "false");
         
         // jms communication - ams internal
         node.put(SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
@@ -124,6 +125,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         // ADDED BY: Markus Moeller, 13.08.2007
         node.put(SampleService.P_JMS_AMS_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
         node.put(SampleService.P_JMS_AMS_CONNECTION_FACTORY, "ConnectionFactory");
+        node.put(SampleService.P_JMS_AMS_CREATE_DURABLE, "false");
         
         // jms communication - free topics
         node.put(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");

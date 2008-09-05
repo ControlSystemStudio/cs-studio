@@ -56,12 +56,16 @@ public class SampleService
     public static final String P_JMS_EXTERN_PROVIDER_URL_2 = "org.csstudio.ams.preferences.jmsExternProviderUrl2";
     public static final String P_JMS_EXTERN_SENDER_PROVIDER_URL = "org.csstudio.ams.preferences.jmsExternSenderProviderUrl";
 	public static final String P_JMS_EXTERN_CONNECTION_FACTORY = "org.csstudio.ams.preferences.jmsExternConnectionFactory";
+	public static final String P_JMS_EXTERN_CREATE_DURABLE = "org.csstudio.ams.preferences.jmsExternCreateDurable";
+	
 	// jms communication - ams internal
 	public static final String P_JMS_AMS_CONNECTION_FACTORY_CLASS = "org.csstudio.ams.preferences.jmsAmsConnectionFactoryClass";
 	public static final String P_JMS_AMS_PROVIDER_URL_1 = "org.csstudio.ams.preferences.jmsAmsProviderUrl1";
     public static final String P_JMS_AMS_PROVIDER_URL_2 = "org.csstudio.ams.preferences.jmsAmsProviderUrl2";
     public static final String P_JMS_AMS_SENDER_PROVIDER_URL = "org.csstudio.ams.preferences.jmsAmsSenderProviderUrl";
 	public static final String P_JMS_AMS_CONNECTION_FACTORY = "org.csstudio.ams.preferences.jmsAmsConnectionFactory";
+    public static final String P_JMS_AMS_CREATE_DURABLE = "org.csstudio.ams.preferences.jmsAmsCreateDurable";
+	
 	// jms communication - free topics
 	public static final String P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS = "org.csstudio.ams.preferences.jmsFreeTopicConnectionFactoryClass";
 	public static final String P_JMS_FREE_TOPIC_CONNECTION_FACTORY = "org.csstudio.ams.preferences.jmsFreeTopicConnectionFactory";
@@ -144,11 +148,15 @@ public class SampleService
 		Log.log(Log.INFO, P_JMS_EXTERN_PROVIDER_URL_1 + ": " + store.getString(P_JMS_EXTERN_PROVIDER_URL_1));
         Log.log(Log.INFO, P_JMS_EXTERN_PROVIDER_URL_2 + ": " + store.getString(P_JMS_EXTERN_PROVIDER_URL_2));
 		Log.log(Log.INFO, P_JMS_EXTERN_CONNECTION_FACTORY + ": " + store.getString(P_JMS_EXTERN_CONNECTION_FACTORY));
+        Log.log(Log.INFO, P_JMS_EXTERN_CREATE_DURABLE + ": " + store.getString(P_JMS_EXTERN_CREATE_DURABLE));
+		
 		// jms communication - ams internal
 		Log.log(Log.INFO, P_JMS_AMS_CONNECTION_FACTORY_CLASS + ": " + store.getString(P_JMS_AMS_CONNECTION_FACTORY_CLASS));
 		Log.log(Log.INFO, P_JMS_AMS_PROVIDER_URL_1 + ": " + store.getString(P_JMS_AMS_PROVIDER_URL_1));
         Log.log(Log.INFO, P_JMS_AMS_PROVIDER_URL_2 + ": " + store.getString(P_JMS_AMS_PROVIDER_URL_2));
 		Log.log(Log.INFO, P_JMS_AMS_CONNECTION_FACTORY + ": " + store.getString(P_JMS_AMS_CONNECTION_FACTORY));
+        Log.log(Log.INFO, P_JMS_AMS_CREATE_DURABLE + ": " + store.getString(P_JMS_AMS_CREATE_DURABLE));
+		
 		// jms communication - free topics
 		Log.log(Log.INFO, P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS + ": " + store.getString(P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS));
 		Log.log(Log.INFO, P_JMS_FREE_TOPIC_CONNECTION_FACTORY + ": " + store.getString(P_JMS_FREE_TOPIC_CONNECTION_FACTORY));

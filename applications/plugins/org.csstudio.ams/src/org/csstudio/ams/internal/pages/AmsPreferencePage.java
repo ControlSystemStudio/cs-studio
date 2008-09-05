@@ -23,6 +23,7 @@
 package org.csstudio.ams.internal.pages;
 
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.ListEditor;
@@ -159,6 +160,9 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
                 Messages.P_JMS_EXTERN_SENDER_PROVIDER_URL, c0));
 		addField(new StringFieldEditor(SampleService.P_JMS_EXTERN_CONNECTION_FACTORY,
 				Messages.P_JMS_EXTERN_CONNECTION_FACTORY, c0));
+		new Label(c0, SWT.NONE);
+		addField(new BooleanFieldEditor(SampleService.P_JMS_EXTERN_CREATE_DURABLE,
+                Messages.P_JMS_EXTERN_CREATE_DURABLE, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS,
@@ -179,6 +183,9 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
         
         addField(new StringFieldEditor(SampleService.P_JMS_AMS_CONNECTION_FACTORY,
 				Messages.P_JMS_AMS_CONNECTION_FACTORY, c0));
+        new Label(c0, SWT.NONE);
+        addField(new BooleanFieldEditor(SampleService.P_JMS_AMS_CREATE_DURABLE,
+                Messages.P_JMS_AMS_CREATE_DURABLE, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 

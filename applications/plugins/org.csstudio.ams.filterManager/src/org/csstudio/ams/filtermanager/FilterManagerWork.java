@@ -352,6 +352,8 @@ public class FilterManagerWork extends Thread implements AmsConstants
         Hashtable<String, String> properties = null;
         boolean result = false;
         
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+
         try
         {
             properties = new Hashtable<String, String>();
@@ -391,14 +393,14 @@ public class FilterManagerWork extends Thread implements AmsConstants
             
             amsSenderConnection.start();
 
-            // CHANGED BY Markus M�ller, 2007-05-24
+            // CHANGED BY Markus Möller, 2007-05-24
             /*
             amsSubscriberCommand = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END));
             */
             
-            // CHANGED BY: Markus M�ller, 28.06.2007
+            // CHANGED BY: Markus Möller, 28.06.2007
             /*
             amsSubscriberCommand = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND)),
@@ -419,7 +421,7 @@ public class FilterManagerWork extends Thread implements AmsConstants
                     "amsSubscriberCommand",
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END),
-                    FilterManagerStart.CREATE_DURABLE);
+                    durable);
 
             if(result == false)
             {
@@ -466,13 +468,15 @@ public class FilterManagerWork extends Thread implements AmsConstants
         IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
         boolean result = false;
         
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CREATE_DURABLE));
+
         extReceiver = new JmsRedundantReceiver("AmsFilterManagerWorkReceiverExternal", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_PROVIDER_URL_2));
         
         result = extReceiver.createRedundantSubscriber(
                 "extSubscriberAlarmFmr",
                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_ALARM),
                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TSUB_ALARM_FMR),
-                FilterManagerStart.CREATE_DURABLE);        
+                durable);        
         
         if (result == false)
         {
@@ -484,7 +488,7 @@ public class FilterManagerWork extends Thread implements AmsConstants
                 "extSubscriberCommand",
                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_COMMAND),
                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD),
-                FilterManagerStart.CREATE_DURABLE);        
+                durable);        
         
         if (result == false)
         {

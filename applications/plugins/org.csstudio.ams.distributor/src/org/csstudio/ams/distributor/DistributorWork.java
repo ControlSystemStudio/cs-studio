@@ -375,8 +375,11 @@ public class DistributorWork extends Thread implements AmsConstants {
 	private boolean initJmsInternal() {
 		IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
 		Hashtable<String, String> properties = null;
+		boolean durable = false;
 		boolean result = false;
-
+		
+		durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+		
 		try {
 			properties = new Hashtable<String, String>();
 			properties
@@ -396,7 +399,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
 			amsSenderConnection = amsSenderFactory.createConnection();
 
-			// ADDED BY: Markus M�ller, 25.05.2007
+			// ADDED BY: Markus Möller, 25.05.2007
 			amsSenderConnection.setClientID("DistributorWorkSenderInternal");
 
 			amsSenderSession = amsSenderConnection.createSession(false,
@@ -498,7 +501,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			                 "amsSubscriberDist",
 			                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR),
 			                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_DISTRIBUTOR),
-			                 DistributorStart.CREATE_DURABLE);            
+			                 durable);            
 			
 			if (result == false)
 			{
@@ -511,7 +514,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							"amsSubscriberReply",
 							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY),
 							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_REPLY),
-							DistributorStart.CREATE_DURABLE);
+							durable);
 			
 			if (result == false) {
 				Log.log(this, Log.FATAL, "could not create amsSubscriberReply");
@@ -619,10 +622,13 @@ public class DistributorWork extends Thread implements AmsConstants {
 		Log.log(this, Log.INFO, "jms internal communication closed");
 	}
 
-	private boolean initJmsExternal() {
-		try {
+	private boolean initJmsExternal()
+	{
+		try
+		{
 			IPreferenceStore storeAct = Activator.getDefault()
 					.getPreferenceStore();
+						
 			Hashtable<String, String> properties = new Hashtable<String, String>();
 			properties
 					.put(
@@ -641,13 +647,13 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY));
 			extConnection = extFactory.createConnection();
 
-			// ADDED BY: Markus M�ller, 25.05.2007
+			// ADDED BY: Markus Möller, 25.05.2007
 			extConnection.setClientID("DistributorWorkSenderExternal");
 
 			extSession = extConnection.createSession(false,
 					Session.CLIENT_ACKNOWLEDGE);
 
-			// CHANGED BY: Markus M�ller, 25.05.2007
+			// CHANGED BY: Markus Möller, 25.05.2007
 			/*
 			 * extPublisherAlarm =
 			 * extSession.createProducer((Topic)extContext.lookup(

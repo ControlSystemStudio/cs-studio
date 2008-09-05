@@ -426,6 +426,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         Hashtable<String, String> properties = null;
         boolean result = false;
         
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+       
         try
         {
             properties = new Hashtable<String, String>();
@@ -467,7 +469,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     "amsSubscriberSms",
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR),
-                    SmsConnectorStart.CREATE_DURABLE);
+                    durable);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsSubscriberSms");
@@ -480,7 +482,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     "amsConnectorManager",
                     MANAGE_COMMAND_TOPIC,
                     MANAGE_COMMAND_TOPIC_SUB,
-                    SmsConnectorStart.CREATE_DURABLE);
+                    durable);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsConnectorManager");

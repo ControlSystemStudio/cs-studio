@@ -48,18 +48,23 @@ public class Messages extends NLS
 	
 	// jms communication
 	public static String P_JMS_SOURCES;
+
 	// external
 	public static String P_JMS_EXTERN_CONNECTION_FACTORY_CLASS;
 	public static String P_JMS_EXTERN_PROVIDER_URL_1;
     public static String P_JMS_EXTERN_PROVIDER_URL_2;
     public static String P_JMS_EXTERN_SENDER_PROVIDER_URL;
 	public static String P_JMS_EXTERN_CONNECTION_FACTORY;
+	public static String P_JMS_EXTERN_CREATE_DURABLE;
+	
 	// ams internal
 	public static String P_JMS_AMS_CONNECTION_FACTORY_CLASS;
 	public static String P_JMS_AMS_PROVIDER_URL_1;
     public static String P_JMS_AMS_PROVIDER_URL_2;
     public static String P_JMS_AMS_SENDER_PROVIDER_URL;
 	public static String P_JMS_AMS_CONNECTION_FACTORY;
+	public static String P_JMS_AMS_CREATE_DURABLE;
+	
 	// free topics
 	public static String P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS;
 	public static String P_JMS_FREE_TOPIC_CONNECTION_FACTORY;

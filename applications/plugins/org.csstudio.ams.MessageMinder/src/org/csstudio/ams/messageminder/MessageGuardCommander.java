@@ -130,8 +130,11 @@ public class MessageGuardCommander extends Job {
         // IEclipsePreferences storeAct = new DefaultScope().getNode(Activator.PLUGIN_ID);
         IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
 
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+
+        
         /**
-         * Nur f�r debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 ge�ndert.
+         * Nur für debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 ge�ndert.
          * Der Code kann sp�ter wieder entfernt werden.
          * TODO: delete debug code.
 
@@ -161,7 +164,7 @@ public class MessageGuardCommander extends Job {
                 "amsSubscriberMessageMinder",
                 storeAct.getString(SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER),
                 storeAct.getString(SampleService.P_JMS_AMS_TSUB_MESSAGEMINDER),
-                MessageMinderStart.CREATE_DURABLE);
+                durable);
 
         if(!result){
             Log.log(this, Log.FATAL, "could not create amsSubscriberMessageMinder");
