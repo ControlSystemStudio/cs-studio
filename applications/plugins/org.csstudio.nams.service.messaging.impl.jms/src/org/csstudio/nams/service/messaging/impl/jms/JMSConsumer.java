@@ -58,12 +58,10 @@ class JMSConsumer implements Consumer {
 
 				// xxx Consumer duerfen keine ID haben!!! Nur die
 				// DurableSubscriber brauchen eine ID!
-				this.consumer = session.createConsumer(topic);
-				// , clientId
-				// + topic.getTopicName()
+				// this.consumer = session.createConsumer(topic);
 
-				// consumer = session.createDurableSubscriber(topic, clientId
-				// + "-" + topic.getTopicName());
+				consumer = session.createDurableSubscriber(topic, clientId
+						+ "-" + topic.getTopicName());
 				// FIXME end
 				break;
 			default:
@@ -197,7 +195,7 @@ class JMSConsumer implements Consumer {
 						MessageKeyEnum messageKeyEnum = null;
 						try {
 							messageKeyEnum = MessageKeyEnum
-								.getEnumFor(currentElement);
+									.getEnumFor(currentElement);
 						} catch (RuntimeException e) {
 							logger.logWarningMessage(this, "unknown field", e);
 						}
@@ -208,7 +206,9 @@ class JMSConsumer implements Consumer {
 							}
 							map.put(messageKeyEnum, value);
 						}
-						//TODO gegebenen falls in der NAMSMessage eine "dirty" Map hinzufügen, die alle unbekonnten Felder damit diese weiter geschickt werden können.
+						// TODO gegebenen falls in der NAMSMessage eine "dirty"
+						// Map hinzufügen, die alle unbekonnten Felder damit
+						// diese weiter geschickt werden können.
 					}
 
 					final AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
