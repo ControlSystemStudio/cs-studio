@@ -112,6 +112,8 @@ public class JMSProducer implements Producer {
 				.gibAusloesendeAlarmNachrichtDiesesVorganges();
 		final Map<MessageKeyEnum, String> contentMap = alarmNachricht
 				.getContentMap();
+		final Map<String, String> unknownContentMap = alarmNachricht
+				.getUnknownContentMap();
 
 		try {
 			for (int i = 0; i < this.sessions.length; i++) {
@@ -122,6 +124,12 @@ public class JMSProducer implements Producer {
 						.entrySet();
 				for (final Entry<MessageKeyEnum, String> entry : entrySet) {
 					mapMessage.setString(entry.getKey().getStringValue(), entry
+							.getValue());
+				}
+
+				final Set<Entry<String, String>> unknownEntrySet = unknownContentMap.entrySet();
+				for (final Entry<String, String> entry : unknownEntrySet) {
+					mapMessage.setString(entry.getKey(), entry
 							.getValue());
 				}
 

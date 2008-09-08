@@ -41,8 +41,17 @@ public class AlarmNachricht implements Cloneable {
 	private String nachricht;
 	private final Date zeitFuerToString;
 	private final Map<MessageKeyEnum, String> content;
+	private final Map<String, String> unknownContent;
+	private final static Map<String, String> emptyContent = Collections.emptyMap();
 
+	
 	public AlarmNachricht(final Map<MessageKeyEnum, String> map) {
+		this(map, emptyContent);
+	}
+
+	public AlarmNachricht(Map<MessageKeyEnum, String> map,
+			Map<String, String> unknownMap) {
+		this.unknownContent = unknownMap;
 		this.content = map;
 		this.zeitFuerToString = new Date();
 	}
@@ -51,23 +60,25 @@ public class AlarmNachricht implements Cloneable {
 	public AlarmNachricht(final String nachricht) {
 		Contract.requireNotNull("nachricht", nachricht);
 		this.nachricht = nachricht;
-		this.zeitFuerToString = new Date(); // TODO Entfernen!
+		this.zeitFuerToString = new Date();
 
 		this.content = new HashMap<MessageKeyEnum, String>();
+		this.unknownContent = emptyContent;
 	}
 
 	private AlarmNachricht(final String nachricht, final Date zeitFuerToString,
-			final Map<MessageKeyEnum, String> content) {
+			final Map<MessageKeyEnum, String> content, Map<String, String> map) {
 		this.nachricht = nachricht;
 		this.zeitFuerToString = zeitFuerToString;
 		this.content = content;
-
+		this.unknownContent = emptyContent;
 	}
+
 
 	@Override
 	public AlarmNachricht clone() {
 		return new AlarmNachricht(this.nachricht, this.zeitFuerToString,
-				this.content);
+				this.content, this.unknownContent);
 	}
 
 	@Override
@@ -89,6 +100,13 @@ public class AlarmNachricht implements Cloneable {
 		} else if (!this.content.equals(other.content)) {
 			return false;
 		}
+		if (this.unknownContent == null) {
+			if (other.unknownContent != null) {
+				return false;
+			}
+		} else if (!this.unknownContent.equals(other.unknownContent)) {
+			return false;
+		}
 		if (this.nachricht == null) {
 			if (other.nachricht != null) {
 				return false;
@@ -108,6 +126,10 @@ public class AlarmNachricht implements Cloneable {
 
 	public Map<MessageKeyEnum, String> getContentMap() {
 		return Collections.unmodifiableMap(this.content);
+	}
+	
+	public Map<String, String> getUnknownContentMap() {
+		return Collections.unmodifiableMap(this.unknownContent);
 	}
 
 	public String getValueFor(final MessageKeyEnum key) {

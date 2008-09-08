@@ -12,7 +12,10 @@ public enum MessageKeyEnum {
 			HOST_PHYS("HOST-PHYS"),
 			SEVERITY_OLD("SEVERITY-OLD"),
 			APPLICATION("APPLICATION"),
-			CREATETIME("CREATETIME");
+			CREATETIME("CREATETIME"),
+			
+			OVERWRITES("OVERWRITES"),
+			SEVERITY_MAX("SEVERITY-MAX");
 
 	public static MessageKeyEnum getEnumFor(final String value) {
 		for (final MessageKeyEnum mke : MessageKeyEnum.values()) {

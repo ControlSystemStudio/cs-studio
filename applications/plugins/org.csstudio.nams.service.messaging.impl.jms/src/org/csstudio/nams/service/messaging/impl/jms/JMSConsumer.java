@@ -182,6 +182,7 @@ class JMSConsumer implements Consumer {
 			if (message instanceof MapMessage) {
 				final MapMessage mapMessage = (MapMessage) message;
 				final Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
+				final Map<String, String> unknownMap = new HashMap<String, String>();
 				final Enumeration<?> mapNames = mapMessage.getMapNames();
 				if (!mapNames.hasMoreElements()) {
 					this.logger.logWarningMessage(this,
@@ -205,10 +206,9 @@ class JMSConsumer implements Consumer {
 								value = "";
 							}
 							map.put(messageKeyEnum, value);
+						} else {
+							unknownMap.put(currentElement, mapMessage.getString(currentElement));
 						}
-						// TODO gegebenen falls in der NAMSMessage eine "dirty"
-						// Map hinzufügen, die alle unbekonnten Felder damit
-						// diese weiter geschickt werden können.
 					}
 
 					final AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
@@ -244,7 +244,7 @@ class JMSConsumer implements Consumer {
 					} else {
 						// Alarmnachricht
 						result = new DefaultNAMSMessage(
-								new AlarmNachricht(map), ackHandler) {
+								new AlarmNachricht(map, unknownMap), ackHandler) {
 							@Override
 							public String toString() {
 								return "Alarmnachricht: JMS-Message: "
