@@ -9,6 +9,8 @@ public interface IConfigurationBean {
 	public IConfigurationBean getClone();
 
 	public String getDisplayName();
+	
+	public void setDisplayName(String name);
 
 	public int getID();
 

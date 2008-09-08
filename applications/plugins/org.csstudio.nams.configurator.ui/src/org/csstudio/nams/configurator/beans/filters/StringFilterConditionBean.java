@@ -130,4 +130,8 @@ public class StringFilterConditionBean extends
 		this.setOperator(bean.getOperator());
 	}
 
+	public void setDisplayName(String name) {
+		// nothing to do here		
+	}
+
 }

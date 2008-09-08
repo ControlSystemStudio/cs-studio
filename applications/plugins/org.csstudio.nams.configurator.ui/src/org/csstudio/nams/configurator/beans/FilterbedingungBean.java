@@ -159,4 +159,8 @@ public class FilterbedingungBean extends
 //			bean.setFilterSpecificBean(junctorConditionBean);
 		}
 	}
+
+	public void setDisplayName(String name) {
+		this.setName(name);
+	}
 }

@@ -180,4 +180,8 @@ public class AlarmbearbeiterGruppenBean extends
 		this.setUsers(newList);
 	}
 
+	public void setDisplayName(String name) {
+		this.setName(name);
+	}
+
 }

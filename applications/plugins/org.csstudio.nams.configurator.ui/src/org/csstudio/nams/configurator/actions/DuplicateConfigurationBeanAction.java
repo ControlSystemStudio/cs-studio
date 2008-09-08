@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.actions;
 
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
@@ -35,6 +36,8 @@ public class DuplicateConfigurationBeanAction extends Action implements
 		try {
 			IConfigurationBean duplicateBean = this.bean.getClone();
 			duplicateBean.setID(-1);
+			duplicateBean.setDisplayName(duplicateBean.getDisplayName()
+					+ "-" + Messages.DuplicateConfigurationBeanAction_copy); //$NON-NLS-1$
 			final IWorkbenchPage activePage = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage();
 			try {

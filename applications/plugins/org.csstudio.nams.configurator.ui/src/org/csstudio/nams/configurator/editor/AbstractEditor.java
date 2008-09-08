@@ -5,6 +5,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.service.ConfigurationBeanService;
@@ -148,8 +149,15 @@ public abstract class AbstractEditor<ConfigurationType extends AbstractConfigura
 		} catch (final Throwable e) {
 			final MessageBox messageBox = new MessageBox(PlatformUI
 					.getWorkbench().getActiveWorkbenchWindow().getShell());
-			messageBox.setText(e.getClass().toString());
-			messageBox.setMessage(e.getMessage());
+			messageBox.setText(Messages.AbstractEditor_saveFailed);
+			Throwable cause = e.getCause();
+			String message = e.getMessage();
+			while (cause != null) {
+				message += "\n" + cause.getMessage(); //$NON-NLS-1$
+				cause = cause.getCause();
+			}
+			messageBox.setMessage(message);
+			messageBox.open();
 		}
 		this.setPartName(this.originalEditorInput.getDisplayName() + " - " //$NON-NLS-1$
 				+ this.superTitle);

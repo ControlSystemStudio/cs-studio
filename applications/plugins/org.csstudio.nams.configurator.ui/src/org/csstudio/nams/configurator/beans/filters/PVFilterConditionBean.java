@@ -147,4 +147,8 @@ public class PVFilterConditionBean extends
 		this.setSuggestedType(bean.getSuggestedType());
 	}
 
+	public void setDisplayName(String name) {
+		// nothing to do here
+	}
+
 }

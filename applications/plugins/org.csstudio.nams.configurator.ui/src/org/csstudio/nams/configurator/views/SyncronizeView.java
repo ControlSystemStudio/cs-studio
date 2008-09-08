@@ -5,11 +5,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.csstudio.nams.configurator.Messages;
+import org.csstudio.nams.configurator.beans.IConfigurationBean;
 import org.csstudio.nams.configurator.editor.AbstractEditor;
+import org.csstudio.nams.configurator.service.ConfigurationBeanService;
+import org.csstudio.nams.configurator.service.ConfigurationBeanServiceListener;
 import org.csstudio.nams.configurator.service.synchronize.SynchronizeService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,7 +30,7 @@ import org.eclipse.ui.part.ViewPart;
  * View um die Synchronisation mit dem Hintergrundsystem auszuführen.
  * Verwenendet den {@link SynchronizeService}.
  */
-public class SyncronizeView extends ViewPart {
+public class SyncronizeView extends ViewPart implements ConfigurationBeanServiceListener {
 
 	private static SynchronizeService synchronizeService = null;
 
@@ -39,15 +43,28 @@ public class SyncronizeView extends ViewPart {
 		SyncronizeView.synchronizeService = synchronizeService;
 	}
 
+	/**
+	 * Injiziert den {@link ConfigurationBeanService} für diese View. Must be called
+	 * before View is used.
+	 */
+	public static void staticInject(
+			final ConfigurationBeanService beanService) {
+		beanService.addConfigurationBeanServiceListener(instance);
+	}
+	
+	private static SyncronizeView instance; 
+	
 	private Text statusText;
 
 	private Button syncButton;
+	private Color buttonColor;
 
 	public SyncronizeView() {
 		if (SyncronizeView.synchronizeService == null) {
 			throw new RuntimeException(
 					"View class is not probably initialised, missing: SynchronizeService!"); //$NON-NLS-1$
 		}
+		instance = this;
 	}
 
 	private void appendStatusText(final String text) {
@@ -86,6 +103,7 @@ public class SyncronizeView extends ViewPart {
 		this.syncButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false));
 		this.syncButton.setText(Messages.SyncronizeView_sync_button_text);
+		buttonColor = this.syncButton.getBackground();
 		this.syncButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				// will never be called by a button.
@@ -184,6 +202,7 @@ public class SyncronizeView extends ViewPart {
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_sync_successfull);
 							this.buttonFreigben();
+							SyncronizeView.this.setChanged(false);
 						}
 
 						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
@@ -238,10 +257,33 @@ public class SyncronizeView extends ViewPart {
 		return true;
 	}
 
+	private void setChanged(boolean b) {
+		if (b) {
+			syncButton.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+		} else {
+			syncButton.setBackground(buttonColor);
+		}
+	}
+	
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
+		
+	}
 
+	public void onBeanDeleted(IConfigurationBean bean) {
+		this.setChanged(true);
+	}
+
+	public void onBeanInsert(IConfigurationBean bean) {
+		this.setChanged(true);
+	}
+
+	public void onBeanUpdate(IConfigurationBean bean) {
+		this.setChanged(true);
+	}
+
+	public void onConfigurationReload() {
+		
 	}
 
 }

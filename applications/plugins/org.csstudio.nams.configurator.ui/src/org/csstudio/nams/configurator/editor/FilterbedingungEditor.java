@@ -86,6 +86,10 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 		protected void doUpdateState(final FilterTypeBean bean) {
 			// Kommt nicht vor...
 		}
+
+		public void setDisplayName(String name) {
+			// nothing to do here
+		}
 	}
 
 	public enum SupportedFilterTypes {

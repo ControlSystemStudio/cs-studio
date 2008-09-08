@@ -3,8 +3,6 @@ package org.csstudio.nams.configurator.beans;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.Messages;
-
 /**
  * Da einige Beans mehr als den PropertyChangeSupport benötigen, wird die
  * abstrakte Klasse {@link AbstractConfigurationBean} eingeführt.

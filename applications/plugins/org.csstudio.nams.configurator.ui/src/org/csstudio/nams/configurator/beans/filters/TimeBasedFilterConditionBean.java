@@ -259,4 +259,8 @@ public class TimeBasedFilterConditionBean extends
 		this.setTimeBehavior(bean.getTimeBehavior());
 	}
 
+	public void setDisplayName(String name) {
+		// nothing to do here		
+	}
+
 }

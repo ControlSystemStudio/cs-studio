@@ -2,8 +2,6 @@ package org.csstudio.nams.configurator.beans;
 
 import java.util.Date;
 
-import org.csstudio.nams.configurator.Messages;
-
 public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 
 	/**
@@ -149,5 +147,9 @@ public class User2GroupBean extends AbstractConfigurationBean<User2GroupBean> {
 		this.setActive(bean.isActive());
 		this.setActiveReason(bean.getActiveReason());
 		this.setLastChange(bean.getLastChange());
+	}
+
+	public void setDisplayName(String name) {
+		// nothing to do here
 	}
 }

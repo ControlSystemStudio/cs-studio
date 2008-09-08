@@ -4,6 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.nams.configurator.messages"; //$NON-NLS-1$
+	public static String AbstractEditor_saveFailed;
 	public static String AbstractNamsView_db_error;
 	public static String AbstractNamsView_new;
 	public static String AbstractNamsView_reload;
@@ -42,6 +43,7 @@ public class Messages extends NLS {
 	public static String AlarmtopicEditor_topic_name;
 	public static String DeleteConfugurationBeanAction_text;
 	public static String DeleteConfugurationBeanAction_title;
+	public static String DuplicateConfigurationBeanAction_copy;
 	public static String FilterableBeanList_all;
 	public static String FilterableBeanList_category;
 	public static String FilterableBeanList_search;

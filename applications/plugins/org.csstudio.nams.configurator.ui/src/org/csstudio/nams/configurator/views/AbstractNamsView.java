@@ -285,6 +285,9 @@ public abstract class AbstractNamsView extends ViewPart {
 				((ConfigurationBeanServiceImpl) AbstractNamsView.configurationBeanService)
 						.setNewConfigurationStore(localStoreConfigurationService);
 
+				// prepare views
+				SyncronizeView.staticInject(AbstractNamsView.configurationBeanService);
+				
 				// prepare editors
 				AbstractEditor
 						.staticInject(AbstractNamsView.configurationBeanService);

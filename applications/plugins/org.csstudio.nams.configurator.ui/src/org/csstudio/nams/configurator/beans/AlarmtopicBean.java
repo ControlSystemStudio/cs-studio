@@ -145,4 +145,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 		this.setTopicID(bean.getTopicID());
 		this.setTopicName(bean.getTopicName());
 	}
+
+	public void setDisplayName(String name) {
+		this.setHumanReadableName(name);
+	}
 }

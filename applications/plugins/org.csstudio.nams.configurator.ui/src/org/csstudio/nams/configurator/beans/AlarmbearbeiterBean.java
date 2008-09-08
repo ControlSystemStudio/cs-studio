@@ -253,4 +253,8 @@ public class AlarmbearbeiterBean extends
 		this.setPreferedAlarmType(bean.getPreferedAlarmType());
 		this.setStatusCode(bean.getStatusCode());
 	}
+
+	public void setDisplayName(String name) {
+		this.setName(name);
+	}
 }

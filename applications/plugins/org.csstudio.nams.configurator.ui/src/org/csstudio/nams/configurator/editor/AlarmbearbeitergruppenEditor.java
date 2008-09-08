@@ -138,6 +138,10 @@ public class AlarmbearbeitergruppenEditor extends
 					AlarmbearbeitergruppenEditor.this);
 
 		}
+
+		public void setDisplayName(String name) {
+			// nothing to do here			
+		}
 	}
 
 	private static final Image checkedImage = AbstractUIPlugin

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.nams.common.fachwert.RubrikTypeEnum;
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.AlarmTopicFilterAction;
 import org.csstudio.nams.configurator.beans.AlarmbearbeiterBean;
@@ -1379,14 +1378,9 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				.getRubrikName(), RubrikTypeEnum.FILTER_COND));
 		filterConditionDTO.setCName(bean.getName());
 		filterConditionDTO.setCDesc(bean.getDescription());
-		try {
-			this.configurationService.saveDTO(filterConditionDTO);
+			
+		this.configurationService.saveDTO(filterConditionDTO);
 
-		} catch (final Throwable t) {
-			// FIXME mz20080710 Handle throwable!
-			ConfigurationBeanServiceImpl.logger.logFatalMessage(this,
-					"failed to save filter condition", t); //$NON-NLS-1$
-		}
 		this.loadConfiguration();
 
 		final FilterbedingungBean resultBean = this.filterbedingungBeans

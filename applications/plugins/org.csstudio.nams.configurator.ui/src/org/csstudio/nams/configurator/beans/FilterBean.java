@@ -220,4 +220,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 			Collections.swap(this.filterActions, indexOf, indexOf+1);
 		}
 	}
+
+	public void setDisplayName(String name) {
+		this.setName(name);
+	}
 }

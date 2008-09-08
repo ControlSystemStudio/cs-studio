@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.beans.filters;
 
-import org.csstudio.nams.configurator.Messages;
 import org.csstudio.nams.configurator.beans.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.beans.FilterbedingungBean;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionType;
@@ -122,6 +121,10 @@ public class JunctorConditionBean extends
 		this.secondCondition = secondCondition;
 		this.pcs.firePropertyChange(PropertyNames.secondCondition.name(),
 				oldValue, this.secondCondition);
+	}
+
+	public void setDisplayName(String name) {
+		// nothing to do here
 	}
 
 }
