@@ -337,7 +337,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 			// FIXME clientid!! gegebenenfalls aus preferencestore holen
 			this.amsMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession("amsConsumer", new String[] {
+					.createNewMessagingSession("DecisionDepartmentInternalReceiver", new String[] {
 							amsProvider1, amsProvider2 });
 			final String extProvider1 = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1);
@@ -350,7 +350,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2 = "
 							+ extProvider2);
 			this.extMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession("extConsumer", new String[] {
+					.createNewMessagingSession("DecisionDepartmentExternalReceiver", new String[] {
 							extProvider1, extProvider2 });
 
 			final String extAlarmTopic = DecisionDepartmentActivator.preferenceService
@@ -389,7 +389,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL = "
 							+ amsSenderProviderUrl);
 			this.amsMessagingSessionForProducer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession("amsProducer",
+					.createNewMessagingSession("DecisionDepartmentInternalProducer",
 							new String[] { amsSenderProviderUrl });
 
 			final String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
