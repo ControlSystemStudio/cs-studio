@@ -6,7 +6,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Implementation of the ILogbookFactory.
  *  Plugin.xml declares this class as the logbook factory extension point.
- *  @author nypaver
+ *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
 public class SNSLogbookFactory implements ILogbookFactory

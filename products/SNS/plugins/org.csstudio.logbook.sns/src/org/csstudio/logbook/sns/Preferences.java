@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Preferences. Defaults are provided in preferences.ini
- *  @author nypaver
+ *  @author Delphy Nypaver Armstrong
  */
 @SuppressWarnings("nls")
 public class Preferences

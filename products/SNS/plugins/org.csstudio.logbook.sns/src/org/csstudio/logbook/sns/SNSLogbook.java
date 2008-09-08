@@ -12,7 +12,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 /**
  * SNS logbook
  * 
- * @author nypaver
+ * @author Delphy Nypaver Armstrong
  * @author Kay Kasemir
  */
 public class SNSLogbook implements ILogbook
