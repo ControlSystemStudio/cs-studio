@@ -151,7 +151,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     
     /** Restore values from snapshot.
      *  @return Returns <code>false</code> if the entry is not selected. */
-    public boolean restore()
+    public boolean restore() throws Exception
     {
         if (!selected)
             return false;

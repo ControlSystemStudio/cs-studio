@@ -30,7 +30,7 @@ public class PVTableEditorActionBarContributor extends
         config = new ConfigAction(null);
         start_stop = new StartStopAction(null);
         snap = new SnapshotAction(null);
-        restore = new RestoreAction(null);
+        restore = new RestoreAction(getPage().getActivePart().getSite().getShell(), null);
         mgr.add(config);
         mgr.add(start_stop);
         mgr.add(snap);

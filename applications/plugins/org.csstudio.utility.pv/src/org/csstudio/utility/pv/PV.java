@@ -99,6 +99,8 @@ public interface PV extends IProcessVariable
      *  Should accept <code>Double</code>, <code>Double[]</code>,
      *  <code>Integer</code>,
      *  <code>String</code>, maybe more.
+     *  @param new_value Value to write to PV
+     *  @throws Exception on error
      */
-    public void setValue(Object new_value);
+    public void setValue(Object new_value) throws Exception;
 }

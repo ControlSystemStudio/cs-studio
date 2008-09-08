@@ -59,10 +59,11 @@ public class SavedValue
     }
     
     /** Restore this SavedValue to the given PV. */
-    public void restoreToPV(PV pv)
+    public void restoreToPV(PV pv) throws Exception
     {
-        if (pv != null && saved != null  &&  pv.isConnected())
-            pv.setValue(saved);
+        if (pv == null || saved == null  ||  !pv.isConnected())
+            return;
+        pv.setValue(saved);
     }
     
     /** @return Current value, never <code>null</code>. */

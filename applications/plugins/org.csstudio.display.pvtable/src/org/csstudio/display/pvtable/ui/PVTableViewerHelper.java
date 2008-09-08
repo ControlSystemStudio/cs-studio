@@ -132,7 +132,7 @@ public class PVTableViewerHelper
         delete_action = new DeleteAction(this);
         start_stop_action = new StartStopAction(pv_list);
         snapshot_action = new SnapshotAction(pv_list);
-        restore_action = new RestoreAction(pv_list);
+        restore_action = new RestoreAction(site.getShell(), pv_list);
         cut_action = new CutAction(this);
         copy_action = new CopyAction(this);
         paste_action = new PasteAction(this);

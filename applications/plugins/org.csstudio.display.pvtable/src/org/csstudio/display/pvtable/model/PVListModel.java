@@ -8,6 +8,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.display.pvtable.Plugin;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -375,7 +377,7 @@ public class PVListModel
     }
     
     /** Restore values from snapshot. */
-    public void restore()
+    public void restore() throws Exception
     {
         for (PVListModelEntry entry : entries)
             entry.restore();

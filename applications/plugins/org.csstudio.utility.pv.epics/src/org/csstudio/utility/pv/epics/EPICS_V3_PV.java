@@ -408,43 +408,36 @@ public class EPICS_V3_PV
         disconnect();
     }
 
-    /** Set PV to given value. */
-    public void setValue(final Object new_value)
+    /** {@inheritDoc} */
+    public void setValue(final Object new_value) throws Exception
     {
         if (!isConnected())
-            return;
-        try
-        {
-            // Send strings as strings..
-            if (new_value instanceof String)
-                channel_ref.getChannel().put((String)new_value);
-            else
-            {   // other types as double.
-                if (new_value instanceof Double)
-                {
-                    final double val = ((Double)new_value).doubleValue();
-                    channel_ref.getChannel().put(val);
-                }
-                else if (new_value instanceof Double [])
-                {
-                    final Double dbl[] = (Double [])new_value;
-                    final double val[] = new double[dbl.length];
-                    for (int i=0; i<val.length; ++i)
-                        val[i] = dbl[i].doubleValue();
-                    channel_ref.getChannel().put(val);
-                }
-                else if (new_value instanceof Integer)
-                {
-                    final double val = ((Integer)new_value).intValue();
-                    channel_ref.getChannel().put(val);
-                }
-                else throw new Exception("Cannot handle type "
-                                + new_value.getClass().getName());
+            throw new Exception(name + " is not connected");
+        // Send strings as strings..
+        if (new_value instanceof String)
+            channel_ref.getChannel().put((String)new_value);
+        else
+        {   // other types as double.
+            if (new_value instanceof Double)
+            {
+                final double val = ((Double)new_value).doubleValue();
+                channel_ref.getChannel().put(val);
             }
-        }
-        catch (Exception ex)
-        {
-            Activator.getLogger().error(name + " set error for new value " + new_value, ex);
+            else if (new_value instanceof Double [])
+            {
+                final Double dbl[] = (Double [])new_value;
+                final double val[] = new double[dbl.length];
+                for (int i=0; i<val.length; ++i)
+                    val[i] = dbl[i].doubleValue();
+                channel_ref.getChannel().put(val);
+            }
+            else if (new_value instanceof Integer)
+            {
+                final double val = ((Integer)new_value).intValue();
+                channel_ref.getChannel().put(val);
+            }
+            else throw new Exception("Cannot handle type "
+                            + new_value.getClass().getName());
         }
     }
 
