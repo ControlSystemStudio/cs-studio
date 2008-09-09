@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import org.csstudio.archive.rdb.RDBPlugin;
 import org.csstudio.archive.rdb.SampleIterator;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IMetaData;
@@ -15,6 +14,7 @@ import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Iterator over raw archive samples.
@@ -102,7 +102,7 @@ public class RawSampleIterator implements SampleIterator
         }
         catch (Exception ex)
         {
-            RDBPlugin.getLogger().error("Channel " + channel.getName()
+            CentralLogger.getInstance().getLogger(this).error("Channel " + channel.getName()
                     + " meta data read error", ex);
             // Continue
         }
@@ -189,7 +189,7 @@ public class RawSampleIterator implements SampleIterator
             }
             catch (Exception ex)
             {
-                RDBPlugin.getLogger().warn(ex);
+                CentralLogger.getInstance().getLogger(this).warn(ex);
             }
             result_set = null;
         }
@@ -201,7 +201,7 @@ public class RawSampleIterator implements SampleIterator
             }
             catch (Exception ex)
             {
-                RDBPlugin.getLogger().warn(ex);
+                CentralLogger.getInstance().getLogger(this).warn(ex);
             }
             sel_samples = null;
         }
@@ -219,7 +219,7 @@ public class RawSampleIterator implements SampleIterator
             }
             catch (Exception ex)
             {
-                RDBPlugin.getLogger().warn(ex);
+                CentralLogger.getInstance().getLogger(this).warn(ex);
             }
             sel_array_samples = null;
         }

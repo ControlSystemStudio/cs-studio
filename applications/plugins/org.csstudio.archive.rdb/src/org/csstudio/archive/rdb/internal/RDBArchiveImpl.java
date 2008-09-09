@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import org.csstudio.archive.rdb.RDBPlugin;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.Retention;
@@ -26,6 +25,7 @@ import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
@@ -94,7 +94,7 @@ public class RDBArchiveImpl extends RDBArchive
 	@SuppressWarnings("nls")
     public RDBArchiveImpl(final String url) throws Exception
 	{
-	    RDBPlugin.getLogger().debug("Connecting to '" + url + "'");
+	    CentralLogger.getInstance().getLogger(this).debug("Connecting to '" + url + "'");
 	    this.url = url;
 		rdb = RDBUtil.connect(url);
 		sql = new SQL(rdb.getDialect());
@@ -110,7 +110,7 @@ public class RDBArchiveImpl extends RDBArchive
 	{
 	    close();
 	    // Create new connection
-        RDBPlugin.getLogger().debug("Reconnecting to '" + url + "'");
+        CentralLogger.getInstance().getLogger(this).debug("Reconnecting to '" + url + "'");
         rdb = RDBUtil.connect(url);
         channels = new ChannelCache(this);
         severities = new SeverityCache(rdb, sql);
@@ -158,7 +158,7 @@ public class RDBArchiveImpl extends RDBArchive
     @SuppressWarnings("nls")
     public void close()
 	{
-        RDBPlugin.getLogger().debug("Disconnecting from '" + url + "'");
+        CentralLogger.getInstance().getLogger(this).debug("Disconnecting from '" + url + "'");
         if (sample_modes != null)
             sample_modes = null;
         if (retentions != null)
@@ -191,7 +191,7 @@ public class RDBArchiveImpl extends RDBArchive
             }
             catch (Exception ex)
             {
-                RDBPlugin.getLogger().warn(ex);
+                CentralLogger.getInstance().getLogger(this).warn(ex);
             }
             insert_double_sample = null;
         }
@@ -203,7 +203,7 @@ public class RDBArchiveImpl extends RDBArchive
             }
             catch (Exception ex)
             {
-                RDBPlugin.getLogger().warn(ex);
+                CentralLogger.getInstance().getLogger(this).warn(ex);
             }
             insert_double_array_sample = null;
         }
@@ -215,7 +215,7 @@ public class RDBArchiveImpl extends RDBArchive
             }
             catch (Exception ex)
             {
-                RDBPlugin.getLogger().warn(ex);
+                CentralLogger.getInstance().getLogger(this).warn(ex);
             }
             insert_long_sample = null;
         }
@@ -227,7 +227,7 @@ public class RDBArchiveImpl extends RDBArchive
             }
             catch (Exception ex)
             {
-                RDBPlugin.getLogger().warn(ex);
+                CentralLogger.getInstance().getLogger(this).warn(ex);
             }
             insert_txt_sample = null;
         }

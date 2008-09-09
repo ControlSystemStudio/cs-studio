@@ -35,7 +35,6 @@ public class SQL
     final public String channel_sel_next_id;
     final public String channel_sel_by_name;
 	final public String channel_sel_by_pattern;
-	final public String channel_sel_timerange_by_id;
 	final public String channel_sel_last_time_by_id;
     final public String channel_sel_by_group_id;
     final public String channel_set_grp_by_id;
@@ -122,7 +121,6 @@ public class SQL
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE REGEXP_LIKE(name, ?, 'i')";
 		else
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE name REGEXP ?";
-		channel_sel_timerange_by_id = "SELECT MIN(smpl_time), MAX(smpl_time) FROM " + schema + "sample WHERE channel_id=?";
 		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + schema + "sample WHERE channel_id=?";
 		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE grp_id=?";
 		channel_set_grp_by_id = "UPDATE channel SET grp_id=? WHERE channel_id=?";        

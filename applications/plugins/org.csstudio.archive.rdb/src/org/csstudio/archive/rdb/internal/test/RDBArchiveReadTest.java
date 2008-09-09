@@ -62,9 +62,9 @@ public class RDBArchiveReadTest
 			final ChannelConfig same_channel = archive.getChannel(channel.getName());
 			assertSame(channel, same_channel);
 			
-			final ITimestamp[] range = channel.getTimerange();
-			if (range != null)
-				System.out.println(channel.getName() + ": " + range[0] + " ... " + range[1]);
+			final ITimestamp last = channel.getLastTimestamp();
+			if (last != null)
+				System.out.println(channel.getName() + ": ... " + last);
 			else
 				System.out.println(channel.getName() + ": no samples");
 		}

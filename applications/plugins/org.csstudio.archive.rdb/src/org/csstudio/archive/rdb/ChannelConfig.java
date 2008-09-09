@@ -61,14 +61,7 @@ abstract public class ChannelConfig extends StringID
      *  @throws Exception on error
      */
     abstract public ITimestamp getLastTimestamp() throws Exception;
-    
-    /** Get time range information.
-     *  @return First and last time stamp found for this channel,
-     *          or <code>null</code>
-     *  @throws Exception on error
-     */
-    abstract public ITimestamp[] getTimerange() throws Exception;
-    
+        
     /** Read (raw) samples from start to end time.
      *  @param start Retrieval starts at-or-before this time
      *  @param end Read up to and including this time

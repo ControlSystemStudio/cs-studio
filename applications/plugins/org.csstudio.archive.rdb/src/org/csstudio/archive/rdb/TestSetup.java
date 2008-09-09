@@ -8,12 +8,8 @@ public class TestSetup
 {
     /** Default database URL */
     final public static String URL =
-    // SNS Test w/ write access
-    //"jdbc:oracle:thin:chan_arch/sns@//snsrac1.sns.ornl.gov:1521/prod";
-     "jdbc:oracle:thin:chan_arch/sns@//snsdb1.sns.ornl.gov:1521/prod";
-        
     // SNS Test, read-only
-    // "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov:1521/prod";
+    "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov:1521/prod";
 
     // MySQL Test
     // "jdbc:mysql://titan-terrier.sns.ornl.gov/archive?user=fred&password=$fred";

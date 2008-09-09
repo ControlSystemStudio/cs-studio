@@ -52,8 +52,6 @@ public class RDBArchiveTest
         final ChannelConfig channel = archive.getChannel(TestType.DOUBLE.getPvName());
         final ITimestamp last = channel.getLastTimestamp();
         System.out.println("Last:  " + last);
-        final ITimestamp[] range = channel.getTimerange();
-        System.out.println("Range: " + range[0] + " ... " + range[1]);
         
         archive.close();
     }

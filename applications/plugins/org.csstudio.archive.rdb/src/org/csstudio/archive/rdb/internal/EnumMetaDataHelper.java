@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.csstudio.archive.rdb.ChannelConfig;
-import org.csstudio.archive.rdb.RDBPlugin;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.logging.CentralLogger;
 
 /** Enumeration Strings for a channel.
  *  <p>
@@ -96,7 +96,8 @@ public class EnumMetaDataHelper
                 if (state == null  ||  state.length() < 1)
                 {   // Patch as "<#>"
                     state = "<" + i + ">";
-                    RDBPlugin.getLogger().warn("Channel '" + channel.getName() +
+                    CentralLogger.getInstance().getLogger(EnumMetaDataHelper.class)
+                        .warn("Channel '" + channel.getName() +
                         "' has undefined state " + state);
                 }
                 insert.setString(3, state);

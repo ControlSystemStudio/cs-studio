@@ -9,6 +9,7 @@ import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.logging.CentralLogger;
 
 /** Averaging sample iterator.
  *  
@@ -51,7 +52,7 @@ public class AveragingSampleIterator implements SampleIterator
             this.seconds = 1;
         else
             this.seconds = (long) seconds;
-        this.logger = RDBPlugin.getLogger();
+        this.logger = CentralLogger.getInstance().getLogger(this);
         // Get initial 'base' sample
         if (base.hasNext())
             base_value = base.next();

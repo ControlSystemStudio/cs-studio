@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
@@ -12,6 +13,7 @@ import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
 import org.csstudio.archive.rdb.engineconfig.XMLImport;
 import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -51,6 +53,12 @@ public class EngineConfigImportApp implements IApplication
         final BooleanOption delete_config = new BooleanOption(parser,
                 "-delete_config", "Delete existing engine config");
         
+        // NOTE:
+        // On OS X, the application will have a file
+        // EngineConfigImport.app/Contents/Info.plist 
+        // that includes a default option "-showlocation",
+        // which the parser will see but not understand.
+        // Solution for now: Remove that from Info.plist
         try
         {
             parser.parse(args);
@@ -72,6 +80,7 @@ public class EngineConfigImportApp implements IApplication
             return IApplication.EXIT_OK;
         }
         
+        final Logger logger = CentralLogger.getInstance().getLogger(this);
         try
         {
             // Delete existing config?
@@ -85,12 +94,12 @@ public class EngineConfigImportApp implements IApplication
                 new URL("http://" + engine_host.get() + ":" + engine_port.get());
 
             // Dump options
-            RDBPlugin.getLogger().info("Importing     : " + filename.get());
-            RDBPlugin.getLogger().info("Engine        : " + engine_name.get());
-            RDBPlugin.getLogger().info("Description   : " + engine_description.get());
-            RDBPlugin.getLogger().info("URL           : " + engine_url);
-            RDBPlugin.getLogger().info("Replace engine: " + replace_engine.get());
-            RDBPlugin.getLogger().info("Steal channels: " + steal_channels.get());
+            logger.info("Importing     : " + filename.get());
+            logger.info("Engine        : " + engine_name.get());
+            logger.info("Description   : " + engine_description.get());
+            logger.info("URL           : " + engine_url);
+            logger.info("Replace engine: " + replace_engine.get());
+            logger.info("Steal channels: " + steal_channels.get());
             
             // Perform XML Import
             if (filename.get().length() <= 0)
@@ -117,9 +126,9 @@ public class EngineConfigImportApp implements IApplication
         {
             final String error = ex.getMessage();
             if (error != null  &&  error.length() > 0)
-                RDBPlugin.getLogger().fatal(error, ex);
+                logger.fatal(error, ex);
             else
-                RDBPlugin.getLogger().fatal(ex);
+                logger.fatal(ex);
         }
         return IApplication.EXIT_OK;
     }
@@ -136,10 +145,10 @@ public class EngineConfigImportApp implements IApplication
                 new SampleEngineHelper(archive);
             final SampleEngineConfig engine = engines.find(engine_name);
             if (engine == null)
-                RDBPlugin.getLogger().warn(engine_name + " not found");
+                CentralLogger.getInstance().getLogger(this).warn(engine_name + " not found");
             else
             {
-                RDBPlugin.getLogger().info("Deleting " + engine);
+                CentralLogger.getInstance().getLogger(this).info("Deleting " + engine);
                 engines.deleteEngineInfo(engine);
             }
         }

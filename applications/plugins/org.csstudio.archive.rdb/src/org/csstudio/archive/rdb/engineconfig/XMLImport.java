@@ -7,11 +7,11 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.apputil.time.PeriodFormat;
-import org.csstudio.archive.rdb.RDBPlugin;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.Retention;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
+import org.csstudio.platform.logging.CentralLogger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -119,7 +119,7 @@ public class XMLImport extends DefaultHandler
         if (found != null)
         {
             if (replace_existing_engineconfig)
-                RDBPlugin.getLogger().warn("Replacing existing engine config "
+                CentralLogger.getInstance().getLogger(this).warn("Replacing existing engine config "
                         + found.toString());
             else
                 throw new Exception("Engine config '" + engine_name +
@@ -209,7 +209,7 @@ public class XMLImport extends DefaultHandler
                 try
                 {
                     group = engine.addGroup(name, retention);
-                    RDBPlugin.getLogger().info("Import '" + engine.getName()
+                    CentralLogger.getInstance().getLogger(this).info("Import '" + engine.getName()
                             + "', Group '" + name + "'");
                 }
                 catch (Exception e)
@@ -270,14 +270,14 @@ public class XMLImport extends DefaultHandler
                         engine.getName(), group.getName(), name,
                         other_engine.getName(), other_group.getName());
                     if (steal_channels)
-                        RDBPlugin.getLogger().warn(warning);
+                        CentralLogger.getInstance().getLogger(this).warn(warning);
                     else
                     {
                         // Print error, don't proceed with this channel,
                         // but run on with the next channel so that we
                         // get all the errors once instead of having
                         // to run the tool error by error
-                        RDBPlugin.getLogger().error(warning);
+                        CentralLogger.getInstance().getLogger(this).error(warning);
                         return;
                     }
                 }
@@ -323,7 +323,7 @@ public class XMLImport extends DefaultHandler
     @Override
     public void warning(final SAXParseException e)
     {
-        RDBPlugin.getLogger().warn("Warning: line " + e.getLineNumber() + " : "
+        CentralLogger.getInstance().getLogger(this).warn("Warning: line " + e.getLineNumber() + " : "
                         + e.getMessage());
     }
 
@@ -331,7 +331,7 @@ public class XMLImport extends DefaultHandler
     @Override
     public void error(final SAXParseException e)
     {
-        RDBPlugin.getLogger().error("Error: line " + e.getLineNumber() + " : "
+        CentralLogger.getInstance().getLogger(this).error("Error: line " + e.getLineNumber() + " : "
                         + e.getMessage());
     }
 }

@@ -72,36 +72,6 @@ public class ChannelConfigImpl extends ChannelConfig
     
     /** {@inheritDoc} */
     @Override
-    public ITimestamp[] getTimerange() throws Exception
-    {
-        final PreparedStatement sel_channel_timerange =
-            archive.getRDB().getConnection().prepareStatement(
-                    archive.getSQL().channel_sel_timerange_by_id);
-        sel_channel_timerange.setInt(1, getId());
-        try
-        {
-            final ResultSet rs = sel_channel_timerange.executeQuery();
-            if (!rs.next())
-                return null;
-            final Timestamp start = rs.getTimestamp(1);
-            final Timestamp end = rs.getTimestamp(2);
-            // Channel without any samples?
-            if (start == null  ||  end == null)
-                return null;
-            return new ITimestamp[]
-            {
-                TimeWarp.getCSSTimestamp(start),
-                TimeWarp.getCSSTimestamp(end)
-            };
-        }
-        finally
-        {
-            sel_channel_timerange.close();
-        }
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public SampleIterator getSamples(final ITimestamp start,
             final ITimestamp end) throws Exception
     {
