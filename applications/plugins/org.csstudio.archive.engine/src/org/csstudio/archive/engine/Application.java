@@ -12,14 +12,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
-/** Demo of a non-UI archive engine CSS application.
- *  
+/** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
  */
 public class Application implements IApplication
 {
     /** Database URL */
-    private String url;
+    private String rdb_url;
     
     /** HTTP Server port */
     private int port;
@@ -39,18 +38,18 @@ public class Application implements IApplication
     {
         // Read database URL from preferences
         final IPreferencesService prefs = Platform.getPreferencesService();
-        url = prefs.getString(Activator.ID, "url", null, null);
+        rdb_url = prefs.getString(Activator.ID, "rdb_url", null, null);
         
         // Create the parser and run it.
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help",
-                        "Display Help");
+                    "Display Help");
         final IntegerOption port_opt = new IntegerOption(parser, "-port",
-                        "HTTP server port", 4812);
-        final StringOption url_opt = new StringOption(parser, "-url",
-                        "Database URL, overrides preference setting", this.url);
+                    "HTTP server port", 4812);
+        final StringOption url_opt = new StringOption(parser, "-rdb_url",
+                    "Database URL, overrides preference setting", this.rdb_url);
         final StringOption engine_name_opt = new StringOption(parser,
-                        "-engine_name", "Engine config name", null);
+                    "-engine_name", "Engine config name", null);
         // Options handled by Eclipse,
         // but this way they show up in the help message
         new StringOption(parser, "-pluginCustomization",
@@ -81,7 +80,7 @@ public class Application implements IApplication
         }
 
         // Copy stuff from options into member vars.
-        url = url_opt.get();
+        rdb_url = url_opt.get();
         port = port_opt.get();
         engine_name = engine_name_opt.get();
         return true;
@@ -96,9 +95,10 @@ public class Application implements IApplication
         if (!getSettings(args))
             return EXIT_OK;
         
-        if (url == null)
+        if (rdb_url == null)
         {
-            System.out.print("No Database URL. Set via preferences or command-line");
+            System.out.print(
+                    "No Database URL. Set via preferences or command-line");
             return EXIT_OK;
         }
 
@@ -110,11 +110,11 @@ public class Application implements IApplication
             RDBArchive archive;
             try
             {
-                archive = RDBArchive.connect(url);
+                archive = RDBArchive.connect(rdb_url);
             }
             catch (final Exception ex)
             {
-                Activator.getLogger().fatal("Cannot connect to " + url, ex);
+                Activator.getLogger().fatal("Cannot connect to " + rdb_url, ex);
                 return EXIT_OK;
             }
             model = new EngineModel(archive);
@@ -126,7 +126,7 @@ public class Application implements IApplication
             }
             catch (final Exception ex)
             {
-                Activator.getLogger().fatal("Cannot start server on port port"
+                Activator.getLogger().fatal("Cannot start server on port "
                                 + port + ": " + ex.getMessage(), ex);
                 return EXIT_OK;
             }
@@ -144,7 +144,7 @@ public class Application implements IApplication
                     return EXIT_OK;
                 }
         
-                // Run until model gets stopped (HTTPD or #stop)
+                // Run until model gets stopped via HTTPD or #stop()
                 Activator.getLogger().info("Running, CA addr list: "
                     + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
                 model.start();
@@ -165,6 +165,7 @@ public class Application implements IApplication
                 model.clearConfig();
             }
             
+            archive.close();
             Activator.getLogger().info("ArchiveEngine stopped");
             server.stop();
         }
