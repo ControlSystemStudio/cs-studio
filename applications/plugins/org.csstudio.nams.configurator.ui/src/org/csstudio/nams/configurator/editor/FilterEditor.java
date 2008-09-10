@@ -320,9 +320,15 @@ public class FilterEditor extends AbstractEditor<FilterBean> {
 							ConfigurationEditorInput editorInput;
 							final IStructuredSelection selection = (IStructuredSelection) FilterEditor.this.filterConditionsTreeViewer
 									.getSelection();
-							final IConfigurationBean filterBedingung = (IConfigurationBean) selection
+							IConfigurationBean filterBedingung = (IConfigurationBean) selection
 									.getFirstElement();
-							if (!((filterBedingung instanceof JunctorConditionForFilterTreeBean) || (filterBedingung instanceof NotConditionForFilterTreeBean))) {
+							
+							if (filterBedingung instanceof NotConditionForFilterTreeBean) {
+								NotConditionForFilterTreeBean not = (NotConditionForFilterTreeBean) filterBedingung;
+								filterBedingung = not.getFilterbedingungBean();
+							}
+							
+							if (!(filterBedingung instanceof JunctorConditionForFilterTreeBean)) {
 								editorInput = new ConfigurationEditorInput(
 										filterBedingung);
 

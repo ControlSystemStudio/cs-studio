@@ -34,6 +34,8 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 
 	private static SynchronizeService synchronizeService = null;
 
+	private static ConfigurationBeanService beanService;
+
 	/**
 	 * Injiziert den {@link SynchronizeService} für diese View. Must be called
 	 * before View is used.
@@ -49,7 +51,10 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 	 */
 	public static void staticInject(
 			final ConfigurationBeanService beanService) {
-		beanService.addConfigurationBeanServiceListener(instance);
+		SyncronizeView.beanService = beanService;
+		if (instance != null) { 
+			beanService.addConfigurationBeanServiceListener(instance);
+		}
 	}
 	
 	private static SyncronizeView instance; 
@@ -65,6 +70,9 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 					"View class is not probably initialised, missing: SynchronizeService!"); //$NON-NLS-1$
 		}
 		instance = this;
+		if (beanService != null) {
+			beanService.addConfigurationBeanServiceListener(this);
+		}
 	}
 
 	private void appendStatusText(final String text) {

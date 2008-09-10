@@ -245,7 +245,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		this.listeners.remove(listener);
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked")//$NON-NLS-1$
 	public <T extends IConfigurationBean> T save(final T bean)
 			throws InconsistentConfigurationException, StorageError,
 			StorageException {
@@ -577,7 +577,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			junctorConditionBean
 					.setJunctor(((JunctorConditionDTO) filterCondtionDTO)
 							.getJunctor());
-			junctorConditionBean.setRubrikName(""); // RubrikName is set by the //$NON-NLS-1$
+			junctorConditionBean.setRubrikName(""); // RubrikName is set by the
+													// //$NON-NLS-1$
 			// main Bean.
 			junctorConditionBean.setSecondCondition(this
 					.DTO2Bean(((JunctorConditionDTO) filterCondtionDTO)
@@ -1204,7 +1205,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked")//$NON-NLS-1$
 	private FilterbedingungBean saveFilterbedingungBean(
 			final FilterbedingungBean bean) throws StorageError,
 			StorageException, InconsistentConfigurationException {
@@ -1378,7 +1379,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				.getRubrikName(), RubrikTypeEnum.FILTER_COND));
 		filterConditionDTO.setCName(bean.getName());
 		filterConditionDTO.setCDesc(bean.getDescription());
-			
+
 		this.configurationService.saveDTO(filterConditionDTO);
 
 		this.loadConfiguration();
