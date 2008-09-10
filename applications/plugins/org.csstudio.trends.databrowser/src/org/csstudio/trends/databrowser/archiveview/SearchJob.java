@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.csstudio.trends.databrowser.archiveview;
 
 import org.csstudio.archive.ArchiveServer;
@@ -10,6 +7,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 
 /** Eclipse background job for searching names on a data server.
@@ -57,7 +55,7 @@ class SearchJob extends Job
 
     /* @see org.eclipse.core.runtime.jobs.Job#run() */
     @Override
-    protected IStatus run(IProgressMonitor monitor)
+    protected IStatus run(final IProgressMonitor monitor)
     {
         monitor.beginTask(Messages.SeachJobTaskName, keys.length);
         try
@@ -65,10 +63,11 @@ class SearchJob extends Job
             for (int i=0; i<keys.length; ++i)
             {
                 // Display "N/total", using '1' for the first sub-archive.
-                monitor.subTask(Messages.SeachJobSubTask
-                                + (i+1) + "/" + keys.length); //$NON-NLS-1$
+                final String arch_name = server.getArchiveName(keys[i]);
+                monitor.subTask(NLS.bind(Messages.SeachJobSubTask,
+                                new Object[] { arch_name, (i+1), keys.length}));
                 // Invoke the possibly lengthy search.
-                NameInfo infos[] = server.getNames(keys[i], pattern);
+                final NameInfo infos[] = server.getNames(keys[i], pattern);
                 // Stop and ignore further results when canceled.
                 if (monitor.isCanceled())
                     return Status.CANCEL_STATUS;
