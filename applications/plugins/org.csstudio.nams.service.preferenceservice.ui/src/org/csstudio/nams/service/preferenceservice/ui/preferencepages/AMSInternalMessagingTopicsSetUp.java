@@ -27,7 +27,7 @@ public class AMSInternalMessagingTopicsSetUp extends AbstractNewAMSFieldEditorPr
 
 		// - command dd
 		this
-				.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID);
+				.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_COMMAND_DECISSION_DEPARTMENT);
 
 		// - dd outbox
 		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX);
