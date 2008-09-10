@@ -335,10 +335,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2 = "
 							+ amsProvider2);
 
-			// FIXME clientid!! gegebenenfalls aus preferencestore holen
+			// FIXM E(done) clientid!! gegebenenfalls aus preferencestore holen
 			this.amsMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession("DecisionDepartmentInternalReceiver", new String[] {
-							amsProvider1, amsProvider2 });
+					.createNewMessagingSession(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_COMMAND_DECISSION_DEPARTMENT),
+							new String[] { amsProvider1, amsProvider2 });
 			final String extProvider1 = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1);
 			final String extProvider2 = DecisionDepartmentActivator.preferenceService
@@ -350,8 +352,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2 = "
 							+ extProvider2);
 			this.extMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession("DecisionDepartmentExternalReceiver", new String[] {
-							extProvider1, extProvider2 });
+					.createNewMessagingSession(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TSUB_ALARM),
+							new String[] { extProvider1, extProvider2 });
 
 			final String extAlarmTopic = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM);
@@ -359,7 +363,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM = "
 							+ extAlarmTopic);
 			this.extAlarmConsumer = this.extMessagingSessionForConsumer
-					.createConsumer(extAlarmTopic, PostfachArt.TOPIC);
+					.createConsumer(extAlarmTopic, PostfachArt.TOPIC_DURABLE);
 
 			// FIXME gs,mz 2008-07-02: Wieder einkommentieren - Für Testbetrieb
 			// beim Desy heruasgenommen, damit Comands nur lokal gelesen werden,
@@ -378,18 +382,20 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND = "
 							+ amsCommandTopic);
 			this.amsCommandConsumer = this.amsMessagingSessionForConsumer
-					.createConsumer(amsCommandTopic, PostfachArt.TOPIC);
+					.createConsumer(amsCommandTopic, PostfachArt.TOPIC_DURABLE);
 			DecisionDepartmentActivator.logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
 
-			// FIXME clientid!!
+			// FIXM E(done) clientid!!
 			final String amsSenderProviderUrl = DecisionDepartmentActivator.preferenceService
 					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL);
 			DecisionDepartmentActivator.logger.logDebugMessage(this,
 					"PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL = "
 							+ amsSenderProviderUrl);
 			this.amsMessagingSessionForProducer = DecisionDepartmentActivator.messagingService
-					.createNewMessagingSession("DecisionDepartmentInternalProducer",
+					.createNewMessagingSession(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_DD_OUTBOX),
 							new String[] { amsSenderProviderUrl });
 
 			final String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
@@ -574,9 +580,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.getConfigurationService(
 						DecisionDepartmentActivator.preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-						DatabaseType.Oracle10g, // TODO mz2008-07-17: AUs
-												// PrefStore holen (PrefStore
-												// anpassen)
+						DatabaseType
+								.valueOf(preferenceService
+										.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_TYPE)),
 						DecisionDepartmentActivator.preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
 						DecisionDepartmentActivator.preferenceService

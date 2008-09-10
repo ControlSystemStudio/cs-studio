@@ -109,7 +109,7 @@ public class SyncronisationsAutomat {
 						historyService.logReceivedReplicationDoneMessage();
 					}
 				}
-				// TODO Klären: Alle Arten von Nachrichten acknowledgen?
+				// Alle Arten von Nachrichten acknowledgen
 				receiveMessage.acknowledge();
 			} catch (final MessagingException e) {
 				// TODO Prüfen ob nötig.

@@ -51,6 +51,7 @@ public class JMSProducer implements Producer {
 							.createQueue(messageDestinationName);
 					break;
 				case TOPIC:
+				case TOPIC_DURABLE:
 					destination = sessions[i]
 							.createTopic(messageDestinationName);
 					break;

@@ -74,7 +74,6 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 				return;
 			}
 
-			// TODO Real fortfahren...
 			callback.sendeNachrichtAnHintergrundSystem();
 
 			try {

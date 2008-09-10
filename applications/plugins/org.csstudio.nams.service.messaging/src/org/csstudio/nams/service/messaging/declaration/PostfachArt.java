@@ -7,6 +7,11 @@ public enum PostfachArt {
 	TOPIC,
 
 	/**
+	 * Liefert allen Klienten alle Nachrichten.
+	 */
+	TOPIC_DURABLE,
+	
+	/**
 	 * Liefert jede Nachricht nur an den jeweils zuerst fragenden Klienten aus.
 	 */
 	QUEUE;
