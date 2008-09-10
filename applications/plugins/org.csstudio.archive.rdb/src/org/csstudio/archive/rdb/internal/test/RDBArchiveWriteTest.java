@@ -15,7 +15,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/** Writing archive tests
+/** JUnit tests for writing to archive
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

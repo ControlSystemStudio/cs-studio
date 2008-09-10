@@ -4,6 +4,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -47,7 +48,7 @@ public class RDBArchiveImpl extends RDBArchive
 	private RDBUtil rdb;
 	
 	/** SQL statements */
-	final private SQL sql;
+	private SQL sql;
 	
 	/** Channel (ID, name) cache */
 	private ChannelCache channels;
@@ -94,29 +95,42 @@ public class RDBArchiveImpl extends RDBArchive
 	@SuppressWarnings("nls")
     public RDBArchiveImpl(final String url) throws Exception
 	{
-	    CentralLogger.getInstance().getLogger(this).debug("Connecting to '" + url + "'");
 	    this.url = url;
-		rdb = RDBUtil.connect(url);
-		sql = new SQL(rdb.getDialect());
-		channels = new ChannelCache(this);
-		severities = new SeverityCache(rdb, sql);
-		stati = new StatusCache(rdb, sql);
+	    connect();
 	}
 	
+	/** Connect to RDB */
+    @SuppressWarnings("nls")
+    private void connect() throws Exception
+    {
+        // Create new connection
+        CentralLogger.getInstance().getLogger(this).debug("Connecting to '" + url + "'");
+        rdb = RDBUtil.connect(url);
+        sql = new SQL(rdb.getDialect());
+        channels = new ChannelCache(this);
+        severities = new SeverityCache(rdb, sql);
+        stati = new StatusCache(rdb, sql);
+        
+        // TODO Remove Oracle test code
+        if (false)
+        {
+            System.out.println("Enabling Oracle trace");
+            final Statement stmt = rdb.getConnection().createStatement();
+            stmt.execute("alter session set tracefile_identifier='KayTest_max'"); 
+            stmt.execute("ALTER SESSION SET events " +
+                         "'10046 trace name context forever, level 12'");
+        }
+    }
+
     /** {@inheritDoc} */
 	@Override
     @SuppressWarnings("nls")
     public void reconnect() throws Exception
 	{
 	    close();
-	    // Create new connection
-        CentralLogger.getInstance().getLogger(this).debug("Reconnecting to '" + url + "'");
-        rdb = RDBUtil.connect(url);
-        channels = new ChannelCache(this);
-        severities = new SeverityCache(rdb, sql);
-        stati = new StatusCache(rdb, sql);
+	    connect();
 	}
-	
+
     /** @return RDBUtil */
 	public RDBUtil getRDB()
     {

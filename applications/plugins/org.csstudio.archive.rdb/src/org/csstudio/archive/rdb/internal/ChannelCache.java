@@ -9,7 +9,6 @@ import org.csstudio.archive.rdb.SampleMode;
 /** Caching RDB interface to channel info.
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class ChannelCache
 {
     private RDBArchiveImpl archive;

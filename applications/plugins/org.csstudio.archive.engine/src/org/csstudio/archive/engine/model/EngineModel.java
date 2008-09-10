@@ -240,7 +240,8 @@ public class EngineModel
         }
         else
         {   // Create new channel
-            // See if there's already a sample in the archive
+            // See if there's already a sample in the archive,
+            // because we won't be able to go back-in-time before that sample.
         	IValue last_sample = null;
         	final ChannelConfig channel_id = archive.getChannel(name);
         	if (channel_id != null)

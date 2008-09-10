@@ -68,7 +68,6 @@ public class Severity extends StringID implements ISeverity
 	}
 
 	@Override
-    @SuppressWarnings("nls")
     final public String toString()
     {
         return getName();

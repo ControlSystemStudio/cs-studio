@@ -15,7 +15,6 @@ public class SampleModeHelper
     /** Locate Sample Modes
      *  @throws Exception on error
      */
-    @SuppressWarnings("nls")
     static SampleMode [] getSampleModes(final RDBUtil rdb, final SQL sql)
         throws Exception
     {
