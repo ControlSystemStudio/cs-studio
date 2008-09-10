@@ -2,12 +2,11 @@ package org.csstudio.nams.service.preferenceservice.declaration;
 
 public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	/**
-	 * @deprecated deprecated preference - backward compatibility (P_JMS_EXTERN_CONNECTION_FACTORY)
+	 * External connection factory (JNDI id)
 	 */
-	@Deprecated
 	P_JMS_EXTERN_CONNECTION_FACTORY(
 			"org.csstudio.ams.preferences.jmsExternConnectionFactory",
-			"External connection factory (JNDI id) (deprecated preference)"),
+			"External connection factory (JNDI id)"),
 
 	/**
 	 * External connection factory class.
