@@ -2,51 +2,68 @@ package org.csstudio.nams.service.preferenceservice.declaration;
 
 public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	/**
-	 * XXX ?
+	 * @deprecated deprecated preference - backward compatibility (P_JMS_EXTERN_CONNECTION_FACTORY)
 	 */
+	@Deprecated
 	P_JMS_EXTERN_CONNECTION_FACTORY(
 			"org.csstudio.ams.preferences.jmsExternConnectionFactory",
 			"deprecated preference - backward compatibility (P_JMS_EXTERN_CONNECTION_FACTORY)"),
 
 	/**
-	 * XXX ?
+	 * External connection factory class.
 	 */
 	P_JMS_EXTERN_CONNECTION_FACTORY_CLASS(
 			"org.csstudio.ams.preferences.jmsExternConnectionFactoryClass",
-			"Internal connection factory class"),
+			"External connection factory class"),
 	/**
-	 * XXX ?
+	 * .
 	 */
 	P_JMS_EXTERN_SENDER_PROVIDER_URL(
-			"org.csstudio.ams.preferences.jmsExternSenderProviderUrl"),
+			"org.csstudio.ams.preferences.jmsExternSenderProviderUrl", "External sender URL"),
 	/**
-	 * XXX ?
+	 * External consumer URL #1.
 	 */
 	P_JMS_EXTERN_PROVIDER_URL_1(
-			"org.csstudio.ams.preferences.jmsExternProviderUrl1"),
+			"org.csstudio.ams.preferences.jmsExternProviderUrl1", "External consumer URL #1"),
 
 	/**
-	 * XXX ?
+	 * External consumer URL #2
 	 */
 	P_JMS_EXTERN_PROVIDER_URL_2(
-			"org.csstudio.ams.preferences.jmsExternProviderUrl2"),
+			"org.csstudio.ams.preferences.jmsExternProviderUrl2", "External consumer URL #2"),
 
 	/**
-	 * XXX ?
+	 * XXX What is it? Who use it? What the hell it does here? ;)
 	 */
 	P_JMS_EXT_TOPIC_STATUSCHANGE(
-			"org.csstudio.ams.preferences.jmsExternTopicStatusChange"),
+			"org.csstudio.ams.preferences.jmsExternTopicStatusChange",
+			"Status change topic (?)"),
 
 	/**
-	 * XXX ?
+	 * Alarm source topic.
 	 */
-	P_JMS_EXT_TOPIC_ALARM("org.csstudio.ams.preferences.jmsExternTopicAlarm"),
+	P_JMS_EXT_TOPIC_ALARM("org.csstudio.ams.preferences.jmsExternTopicAlarm",
+			"Alarm source topic"),
 
 	/**
-	 * XXX ?
+	 * Alarm source topic subsciber.
+	 */
+	P_JMS_EXT_TSUB_ALARM("org.csstudio.ams.preferences.jmsExternTSubAlarm",
+			"Alarm source topics subscriber"),
+
+	/**
+	 * External command topic.
 	 */
 	P_JMS_EXT_TOPIC_COMMAND(
-			"org.csstudio.ams.preferences.jmsExternTopicCommand"),
+			"org.csstudio.ams.preferences.jmsExternTopicCommand",
+			"External command topic"),
+
+	/**
+	 * External command topics subscriber.
+	 */
+	P_JMS_EXT_TSUB_COMMAND(
+			"org.csstudio.ams.preferences.jmsExternTopicCommand",
+			"External command topics subscriber"),
 
 	/**
 	 * SMS connectors inbox topic
@@ -63,22 +80,46 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 			"SMS connectors inbox topics subscriber"),
 
 	/**
-	 * XXX ?
+	 * JMS connectors inbox topic.
 	 */
 	P_JMS_AMS_TOPIC_JMS_CONNECTOR(
-			"org.csstudio.ams.preferences.jmsAmsTopicJMSConnector"),
+			"org.csstudio.ams.preferences.jmsAmsTopicJMSConnector",
+			"JMS connectors inbox topic"),
 
 	/**
-	 * XXX ?
+	 * JMS connectors inbox topic subscriber.
+	 */
+	P_JMS_AMS_TSUB_JMS_CONNECTOR(
+			"org.csstudio.ams.preferences.jmsAmsTSubJMSConnector",
+			"JMS connectors inbox topic subscriber"),
+
+	/**
+	 * Email connectors inbox topic
 	 */
 	P_JMS_AMS_TOPIC_EMAIL_CONNECTOR(
-			"org.csstudio.ams.preferences.jmsAmsTopicEMailConnector"),
+			"org.csstudio.ams.preferences.jmsAmsTopicEMailConnector",
+			"Email connectors inbox topic"),
 
 	/**
-	 * XXX ?
+	 * Email connectors inbox topic sub
+	 */
+	P_JMS_AMS_TSUB_EMAIL_CONNECTOR(
+			"org.csstudio.ams.preferences.jmsAmsTSubEMailConnector",
+			"Email connectors inbox topic subscriber"),
+
+	/**
+	 * Voice-mail connectors inbox topic.
 	 */
 	P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR(
-			"org.csstudio.ams.preferences.jmsAmsTopicVoiceMailConnector"),
+			"org.csstudio.ams.preferences.jmsAmsTopicVoiceMailConnector",
+			"Voice-mail connectors inbox topic"),
+
+	/**
+	 * Voice-mail connectors inbox topic subscriber.
+	 */
+	P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR(
+			"org.csstudio.ams.preferences.jmsAmsTSubVoiceMailConnector",
+			"Voice-mail connectors inbox topic subscriber"),
 
 	/**
 	 * Inbox of distributor.

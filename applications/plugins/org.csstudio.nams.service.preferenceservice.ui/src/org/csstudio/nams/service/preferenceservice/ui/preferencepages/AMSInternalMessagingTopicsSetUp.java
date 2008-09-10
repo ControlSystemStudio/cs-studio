@@ -4,7 +4,7 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
- * This preference page is used to set up the configuration database settings.
+ * This preference page is used to set up the internal topic settings.
  */
 
 public class AMSInternalMessagingTopicsSetUp extends AbstractNewAMSFieldEditorPreferencePage
@@ -58,11 +58,22 @@ public class AMSInternalMessagingTopicsSetUp extends AbstractNewAMSFieldEditorPr
 		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_SMS_CONNECTOR);
 		
 		// EMAIL
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
+
+		// - EMAIL sub
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_EMAIL_CONNECTOR);
 		
 		// VOICE MAIL
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
+
+		// - EMAIL sub
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR);
 		
 		// JMS TOPIC
-		
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
+
+		// - EMAIL sub
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_JMS_CONNECTOR);
 		
 		// TODO mz 2008-07-17 More internal fields??...
 	}

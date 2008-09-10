@@ -2,7 +2,6 @@ package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.preferenceservice.declaration.HoldsAPreferenceId;
-import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
