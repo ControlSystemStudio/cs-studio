@@ -22,6 +22,11 @@ public class AMSExternalMessagingTopicsSetUp extends
 		
 		// - ext command
 		this.addField(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_STATUSCHANGE);
+		
+		this.addSeparator();
+		
+		this.addField(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_CONSUMER_ID);
+		this.addField(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_PRODUCER_ID);
 	}
 
 }

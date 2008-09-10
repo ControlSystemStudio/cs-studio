@@ -2,6 +2,7 @@ package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -42,6 +43,13 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceInitializer.preferenceStore.setDefault(
 				PreferenceServiceDatabaseKeys.P_CONFIG_DATABASE_PASSWORD
 						.getPreferenceStoreId(), "DESY");
+		
+		PreferenceInitializer.preferenceStore.setDefault(
+				PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_CONSUMER_ID
+						.getPreferenceStoreId(), "syncServiceConsumer");
+		PreferenceInitializer.preferenceStore.setDefault(
+				PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_PRODUCER_ID
+						.getPreferenceStoreId(), "syncServiceProducer");
 		// TODO Initialize other things here...
 	}
 

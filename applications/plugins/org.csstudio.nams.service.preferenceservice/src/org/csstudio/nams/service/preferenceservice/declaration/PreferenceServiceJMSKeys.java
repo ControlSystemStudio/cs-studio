@@ -218,7 +218,21 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	 */
 	P_JMS_AMS_TSUB_COMMAND_DECISSION_DEPARTMENT(
 			"org.csstudio.ams.preferences.jmsAmsTSubCmdFmrReloadEnd", //$NON-NLS-1$
-			Messages.PreferenceServiceJMSKeys_P_JMS_AMS_TSUB_COMMAND_DECISSION_DEPARTMENT_label);
+			Messages.PreferenceServiceJMSKeys_P_JMS_AMS_TSUB_COMMAND_DECISSION_DEPARTMENT_label),
+
+	/**
+	 * 
+	 */
+	P_JMS_EXT_SYNCHRONIZE_PRODUCER_ID(
+			"org.csstudio.ams.preferences.jmsExtSynchronizeProducerId", //$NON-NLS-1$
+			"Configurator Synchronize producer Id"),
+			
+	/**
+	 * 
+	 */
+	P_JMS_EXT_SYNCHRONIZE_CONSUMER_ID(
+			"org.csstudio.ams.preferences.jmsExtSynchronizeConsumerId", //$NON-NLS-1$
+			"Configurator Synchronize consumer Id");
 
 	private String _key;
 	private String _description;

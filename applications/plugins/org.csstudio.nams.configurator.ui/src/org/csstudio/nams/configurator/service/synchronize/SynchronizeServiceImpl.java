@@ -80,7 +80,8 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 				MessagingSession messagingSession = this.messagingService
 						.createNewMessagingSession(
 								// TODO aus dem prefservice
-								"syncServiceProducer",
+								preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_PRODUCER_ID),
+//								"syncServiceProducer",
 								new String[] { preferenceService
 										.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_SENDER_PROVIDER_URL) });
 				Producer producer = messagingSession
@@ -111,7 +112,8 @@ public class SynchronizeServiceImpl implements SynchronizeService {
 				messagingSession = this.messagingService
 						.createNewMessagingSession(
 								// TODO aus dem prefservice
-								"syncServiceConsumer",
+								preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_EXT_SYNCHRONIZE_CONSUMER_ID),
+//								"syncServiceConsumer",
 								new String[] {
 										preferenceService
 												.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
