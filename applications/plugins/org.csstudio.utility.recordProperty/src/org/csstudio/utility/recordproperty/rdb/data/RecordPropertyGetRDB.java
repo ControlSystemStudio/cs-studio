@@ -250,6 +250,10 @@ public class RecordPropertyGetRDB {
             		"rt.type_id = tv.type_id"
             );
 
+            //Check weather the result set is empty 
+            if(!resultSet.isBeforeFirst()) {
+            	return false;
+            }
             return true;
             
         } catch (SQLException e) {
@@ -327,7 +331,7 @@ public class RecordPropertyGetRDB {
             		"select tv.field_name, tv.field_type from epics_version ev, " +
             		"rec_type rt, type_val tv where ev.epics_id = '4061' and " +
             		"ev.epics_id = rt.epics_id and rt.record_type = '" + rtype + "' and " +
-            		"rt.type_id = tv.type_id;"
+            		"rt.type_id = tv.type_id"
             );
 
             return true;
