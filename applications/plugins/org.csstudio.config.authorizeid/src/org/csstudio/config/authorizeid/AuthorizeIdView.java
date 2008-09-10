@@ -46,7 +46,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class AuthorizeIdView extends ViewPart {
 
-	public static final String ID = "org.csstudio.config.authorizeid";
+	public static final String ID = "org.csstudio.config.authorizeid";//$NON-NLS-1$
 	
 	private Label label;
 	private Combo combo;
@@ -57,7 +57,6 @@ public class AuthorizeIdView extends ViewPart {
 
 	static final int COL_EAIG = 0;
 	static final int COL_EAIR = 1;
-
 	/**
 	 * Creates a view for the plugin.
 	 */
@@ -76,7 +75,7 @@ public class AuthorizeIdView extends ViewPart {
 
 		LdapGroups ld = new LdapGroups();
 
-		String[] groups = new String[] { "Something is wrong." };
+		String[] groups = new String[] { Messages.AuthorizeIdView_MessageWrong1 };
 
 			try {
 				groups = ld.getGroups();
@@ -129,7 +128,7 @@ public class AuthorizeIdView extends ViewPart {
 
 		// is used to create empty space between first set of buttons and
 		// second table
-		@SuppressWarnings("unused")
+		@SuppressWarnings("unused") //$NON-NLS-1$
 		Composite emptySpace = new Composite(composite, SWT.NONE);
 
 		Composite c3 = new Composite(composite, SWT.NONE);
@@ -156,7 +155,7 @@ public class AuthorizeIdView extends ViewPart {
 	private void createTableViewer1(Composite parent) {
 		tableViewer1 = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		tableViewer1.setColumnProperties(new String[] { "eain" });
+		tableViewer1.setColumnProperties(new String[] { Messages.AuthorizeIdView_EAIN});
 
 		table1 = tableViewer1.getTable();
 
@@ -206,18 +205,18 @@ public class AuthorizeIdView extends ViewPart {
 		_new.setText(Messages.AuthorizeIdView_NEW);
 		_new.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if (combo.getText().equals("")) {
-					Status status = new Status(IStatus.ERROR, "My Plug-in ID",
-							0, "Invalid group", null);
+				if (combo.getText().equals("")) { //$NON-NLS-1$
+					Status status = new Status(IStatus.ERROR, Messages.AuthorizeIdView_Error,
+							0, Messages.AuthorizeIdView_InvalidGroup, null);
 
 					ErrorDialog.openError(
 							Display.getCurrent().getActiveShell(),
-							"Group Error", "You have to select a group.",
+							Messages.AuthorizeIdView_GroupError, Messages.AuthorizeIdView_GroupErrorDesc,
 							status);
 				} else {
 					InputDialog dialog = new InputDialog(Display.getCurrent()
-							.getActiveShell(), "New",
-							"Please enter name (eain):", "",
+							.getActiveShell(), Messages.AuthorizeIdView_NEW,
+							Messages.AuthorizeIdView_Name, "", //$NON-NLS-1$
 							new NewDataValidator());
 					if (dialog.open() == Window.OK) {
 
@@ -246,7 +245,7 @@ public class AuthorizeIdView extends ViewPart {
 				String _group = combo.getText();
 
 				InputDialog dialog = new InputDialog(Display.getCurrent()
-						.getActiveShell(), "Edit", "Name (eain) edit:", name,
+						.getActiveShell(), Messages.AuthorizeIdView_EDIT, Messages.AuthorizeIdView_NameEdit, name,
 						new NewDataValidator());
 				if (dialog.open() == Window.OK) {
 
@@ -297,9 +296,9 @@ public class AuthorizeIdView extends ViewPart {
 				MessageBox messageBox = new MessageBox(Display.getCurrent()
 						.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 				messageBox
-						.setMessage("Do you really want to delete this entry? Note this will delete all "
-								+ "everything inside of this entry.");
-				messageBox.setText("Deleting entry");
+						.setMessage(Messages.AuthorizeIdView_DelWarn
+								+ Messages.AuthorizeIdView_DelWarn2);
+				messageBox.setText(Messages.AuthorizeIdView_DelEntry);
 				int response = messageBox.open();
 				if (response == SWT.YES) {
 
@@ -310,7 +309,7 @@ public class AuthorizeIdView extends ViewPart {
 
 					refreshTable1();
 					refreshTable2();
-					System.out.println("Deleted.");
+					System.out.println("Deleted."); //$NON-NLS-1$
 
 				}
 			}
@@ -324,7 +323,7 @@ public class AuthorizeIdView extends ViewPart {
 	private void createTableViewer2(Composite parent) {
 		tableViewer2 = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		tableViewer2.setColumnProperties(new String[] { "2", "3" });
+		tableViewer2.setColumnProperties(new String[] { "2", "3" }); //$NON-NLS-1$ //$NON-NLS-2$
 
 		table2 = tableViewer2.getTable();
 		table2.setSize(184 * 2, 500);
@@ -401,12 +400,10 @@ public class AuthorizeIdView extends ViewPart {
 		_new.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String _name = table1.getSelection()[0].getText();
-
 				CustomInputDialog dialog = new CustomInputDialog(Display
-						.getCurrent().getActiveShell(), "New",
-						"Please enter group (eaig):",
-						"Please enter role (eair):", "", "",
-						new CustomNewDataValidator());
+						.getCurrent().getActiveShell(), Messages.AuthorizeIdView_NEW,
+						Messages.AuthorizeIdView_SelGroup,
+						Messages.AuthorizeIdView_SelRole, null,null);
 				
 				if (dialog.open() == Window.OK) {
 					String _group = combo.getText();
@@ -432,13 +429,11 @@ public class AuthorizeIdView extends ViewPart {
 		_edit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String _name = table1.getSelection()[0].getText();
-				String eaig = table2.getSelection()[0].getText();
-				String eair = table2.getSelection()[0].getText(1);
-
+				String eaigSel = table2.getSelection()[0].getText(0); 
+				String eairSel = table2.getSelection()[0].getText(1); 
 				CustomInputDialog dialog = new CustomInputDialog(Display
-						.getCurrent().getActiveShell(), "Edit",
-						"Group (eaig) edit:", "Role(eair) edit:", eaig, eair,
-						new CustomNewDataValidator());
+						.getCurrent().getActiveShell(), Messages.AuthorizeIdView_EDIT,
+						Messages.AuthorizeIdView_GroupEdit, Messages.AuthorizeIdView_RoleEdit, eaigSel,eairSel );
 				if (dialog.open() == Window.OK) {
 					String _group = combo.getText();
 					String _eaig = dialog.getValue();
@@ -447,7 +442,7 @@ public class AuthorizeIdView extends ViewPart {
 					ObjectClass2 oclass2 = ObjectClass2.AUTHORIZEID;
 
 					AuthorizationIdGRManagement nd = new AuthorizationIdGRManagement();
-					nd.deleteData(_name, eair, eaig, _group);
+					nd.deleteData(_name, eairSel, eaigSel, _group);
 					nd.insertNewData(_name, _group, oclass2, _eair, _eaig);
 
 					refreshTable2();
@@ -471,8 +466,8 @@ public class AuthorizeIdView extends ViewPart {
 				MessageBox messageBox = new MessageBox(Display.getCurrent()
 						.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 				messageBox
-						.setMessage("Do you really want to delete this entry?");
-				messageBox.setText("Deleting entry");
+						.setMessage(Messages.AuthorizeIdView_DelWarn);
+				messageBox.setText(Messages.AuthorizeIdView_DelEntry);
 				int response = messageBox.open();
 				if (response == SWT.YES) {
 					AuthorizationIdGRManagement aim = new AuthorizationIdGRManagement();
@@ -526,7 +521,7 @@ public class AuthorizeIdView extends ViewPart {
 		AuthorizationIdGRManagement aim2 = new AuthorizationIdGRManagement();
 
 		for (int i = 0; i < table2.getItemCount(); i++) {
-			if (table2.getItem(i).getText(0).equals("")) {
+			if (table2.getItem(i).getText(0).equals("")) { //$NON-NLS-1$
 				break;
 			}
 

@@ -17,12 +17,12 @@ public class NewDataValidator implements IInputValidator {
 		int len = newText.length();
 		
 		if(len < 1) {
-			return "Please insert at least one character.";
+			return Messages.NewDataValidator_ValidatorDesc;
 		}
 		
 		// LDAP non-supported characters: +, \ and /
-		if((newText.indexOf("+") > -1) || (newText.indexOf("\\") > -1) || (newText.indexOf("/")) > -1) {
-			return "You have entered a LDAP non-supported character (+, \\, /).";
+		if((newText.indexOf("+") > -1) || (newText.indexOf("\\") > -1) || (newText.indexOf("/")) > -1) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			return Messages.NewDataValidator_ValidatorWarn;
 		}
 		
 		return null;

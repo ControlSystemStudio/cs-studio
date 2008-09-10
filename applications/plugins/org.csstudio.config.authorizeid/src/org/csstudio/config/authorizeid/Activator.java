@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractCssUiPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.config.authorizeid";
+	public static final String PLUGIN_ID = "org.csstudio.config.authorizeid"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;

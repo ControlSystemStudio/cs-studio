@@ -10,15 +10,23 @@
  *******************************************************************************/
 package org.csstudio.config.authorizeid;
 
+import java.util.ArrayList;
+
+import org.csstudio.utility.ldap.reader.LDAPSyncReader;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -36,32 +44,22 @@ public class CustomInputDialog extends Dialog {
     /**
      * The title of the dialog.
      */
-    private String title;
+    private String _title;
 
     /**
      * The message to display, or <code>null</code> if none.
      */
-    private String message1;
+    private String _message1;
     
     /**
      * The message to display, or <code>null</code> if none.
      */
-    private String message2;
+    private String _message2;
 
     /**
      * The input value; the empty string by default.
      */
-    private String value = "";//$NON-NLS-1$
-    
-    /**
-     * The input value; the empty string by default.
-     */
-    private String value2 = "";//$NON-NLS-1$
-
-    /**
-     * The input validator, or <code>null</code> if none.
-     */
-    private ICustomInputValidator validator;
+    private String _valueEair = "";//$NON-NLS-1$
 
     /**
      * Ok button widget.
@@ -71,12 +69,12 @@ public class CustomInputDialog extends Dialog {
     /**
      * Input text widget.
      */
-    private Text text;
+    private ComboViewer _eaigCombo;
     
     /**
      * Input text widget 2.
      */
-    private Text text2;
+    private Combo _eairCombo;
 
     /**
      * Error message label widget.
@@ -87,6 +85,27 @@ public class CustomInputDialog extends Dialog {
      * Error message string.
      */
     private String errorMessage;
+    
+    //TODO: Define at the Preference Page
+    private String string_search_root = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
+    /**
+     * Search for this.
+     */
+    //TODO: Define at the Preference Page
+    String eagnFilter = "eagn=*"; //$NON-NLS-1$
+    /**
+     * Search for this.
+     */
+    //TODO: Define at the Preference Page
+    String eaigFilter = "ou=*"; //$NON-NLS-1$
+
+    private String _valueEaig;
+
+    private String _eaigSel;
+
+    private String _eairSel;
+    
+    private static final String SPLIT_FILTER = "[=,]"; //$NON-NLS-1$
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog
@@ -105,27 +124,17 @@ public class CustomInputDialog extends Dialog {
      * @param initialValue
      *            the initial input value, or <code>null</code> if none
      *            (equivalent to the empty string)
-     * @param validator
-     *            an input validator, or <code>null</code> if none
+     * @param eairSel The Selection for the eair Combo 
+     * @param eaigSel The Selection for the eaig Combo
      */
     public CustomInputDialog(Shell parentShell, String dialogTitle,
-            String dialogMessage1, String dialogMessage2, String initialValue, 
-            String initialValue2, ICustomInputValidator validator) {
+            String dialogMessage1, String dialogMessage2, String eaigSel, String eairSel) {
         super(parentShell);
-        this.title = dialogTitle;
-        message1 = dialogMessage1;
-        message2 = dialogMessage2;
-        if (initialValue == null) {
-			value = "";//$NON-NLS-1$
-		} else {
-			value = initialValue;
-		}
-        if (initialValue2 == null) {
-			value2 = "";//$NON-NLS-1$
-		} else {
-			value2 = initialValue2;
-		}
-        this.validator = validator;
+        _title = dialogTitle;
+        _message1 = dialogMessage1;
+        _message2 = dialogMessage2;
+        _eaigSel = eaigSel;
+        _eairSel = eairSel;
     }
 
     /*
@@ -133,11 +142,12 @@ public class CustomInputDialog extends Dialog {
      */
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-            value = text.getText();
-            value2 = text2.getText();
+            String tmp = (String)((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
+            _valueEaig = tmp.split(SPLIT_FILTER)[1];
+            _valueEair = _eairCombo.getItem(_eairCombo.getSelectionIndex());
         } else {
-            value = null;
-            value2 = text2.getText();
+            _valueEaig = null;
+            _valueEair = null;
         }
         super.buttonPressed(buttonId);
     }
@@ -149,8 +159,8 @@ public class CustomInputDialog extends Dialog {
      */
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
-        if (title != null) {
-			shell.setText(title);
+        if (_title != null) {
+			shell.setText(_title);
 		}
     }
 
@@ -167,14 +177,21 @@ public class CustomInputDialog extends Dialog {
                 IDialogConstants.CANCEL_LABEL, false);
         //do this here because setting the text will set enablement on the ok
         // button
-        text.setFocus();
-        if (value != null) {
-            text.setText(value);
-            text.selectAll();
-        }
-        if (value2 != null) {
-            text2.setText(value2);
-            text2.selectAll();
+        _eaigCombo.getCombo().setFocus();
+        LDAPSyncReader lSR = new LDAPSyncReader(string_search_root,eaigFilter);
+        ArrayList<String> answerString = lSR.getAnswerString();
+
+        if (answerString != null) {
+            _eaigCombo.setInput(answerString);
+            if(_eaigSel!=null){
+                for (String string : answerString) {
+                    if(string.split(SPLIT_FILTER)[1].equals(_eaigSel)){
+                        _eaigCombo.setSelection(new StructuredSelection(string));
+                    }
+                }
+            }else{
+                _eaigCombo.setSelection(new StructuredSelection(_eaigCombo.getElementAt(0)));
+            }
         }
     }
 
@@ -185,9 +202,9 @@ public class CustomInputDialog extends Dialog {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
         // create message
-        if (message1 != null) {
+        if (_message1 != null) {
             Label label = new Label(composite, SWT.WRAP);
-            label.setText(message1);
+            label.setText(_message1);
             GridData data = new GridData(GridData.GRAB_HORIZONTAL
                     | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_CENTER);
@@ -195,18 +212,54 @@ public class CustomInputDialog extends Dialog {
             label.setLayoutData(data);
             label.setFont(parent.getFont());
         }
-        text = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        text.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validateInput();
+
+        _eaigCombo = new ComboViewer(composite, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
+        _eaigCombo.setLabelProvider(new LabelProvider(){
+            @Override
+            public String getText(Object element) {
+                if (element instanceof String) {
+                    String ldapPath = (String) element;
+                    if(ldapPath.indexOf('=')>0){
+                        return ldapPath.split(SPLIT_FILTER)[1];
+                    }
+                    return ldapPath;
+                }
+                return super.getText(element);
             }
+            
+        });
+        _eaigCombo.setContentProvider(new ArrayContentProvider());
+        _eaigCombo.getCombo().setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
+        _eaigCombo.addSelectionChangedListener(new ISelectionChangedListener(){
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                String firstElement = (String) ((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
+                System.out.println(firstElement);
+                LDAPSyncReader lSR = new LDAPSyncReader(firstElement, eagnFilter);
+                ArrayList<String> answerString = lSR.getAnswerString();
+                ArrayList<String> cleanString = new ArrayList<String>();
+                int selIndex =0;
+                for(int i=0;i<answerString.size();i++){
+                    String string = answerString.get(i); 
+                    String[] split = string.split(SPLIT_FILTER);
+                    if(split.length>3){
+                        String tmp = split[1];
+                        cleanString.add(tmp);
+                        if(tmp.equals(_eairSel)){
+                            selIndex= i;
+                        }
+                    }
+                }
+                _eairCombo.setItems(cleanString.toArray(new String[0]));
+                _eairCombo.select(selIndex);
+            }
+            
         });
         
-        if (message2 != null) {
+        if (_message2 != null) {
             Label label = new Label(composite, SWT.WRAP);
-            label.setText(message2);
+            label.setText(_message2);
             GridData data = new GridData(GridData.GRAB_HORIZONTAL
                     | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_CENTER);
@@ -214,15 +267,9 @@ public class CustomInputDialog extends Dialog {
             label.setLayoutData(data);
             label.setFont(parent.getFont());
         }
-        text2 = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        text2.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+        _eairCombo = new Combo(composite, SWT.SINGLE | SWT.BORDER |SWT.READ_ONLY);
+        _eairCombo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        text2.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validateInput();
-            }
-        });
-        
         
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
@@ -261,8 +308,8 @@ public class CustomInputDialog extends Dialog {
      * 
      * @return the text area
      */
-    protected Text getText() {
-        return text;
+    protected ComboViewer getText() {
+        return _eaigCombo;
     }
     
     /**
@@ -270,17 +317,8 @@ public class CustomInputDialog extends Dialog {
      * 
      * @return the text area 2
      */
-    protected Text getText2() {
-        return text2;
-    }
-
-    /**
-     * Returns the validator.
-     * 
-     * @return the validator
-     */
-    protected ICustomInputValidator getValidator() {
-        return validator;
+    protected Combo getText2() {
+        return _eairCombo;
     }
 
     /**
@@ -289,7 +327,7 @@ public class CustomInputDialog extends Dialog {
      * @return the input string
      */
     public String getValue() {
-        return value;
+        return _valueEaig;
     }
     
     /**
@@ -298,26 +336,7 @@ public class CustomInputDialog extends Dialog {
      * @return the input string
      */
     public String getValue2() {
-        return value2;
-    }
-
-    /**
-     * Validates the input.
-     * <p>
-     * The default implementation of this framework method delegates the request
-     * to the supplied input validator object; if it finds the input invalid,
-     * the error message is displayed in the dialog's message line. This hook
-     * method is called whenever the text changes in the input field.
-     * </p>
-     */
-    protected void validateInput() {
-        String errorMessage = null;
-        if (validator != null) {
-            errorMessage = validator.isValid(text.getText(), text2.getText());
-        }
-        // Bug 16256: important not to treat "" (blank error) the same as null
-        // (no error)
-        setErrorMessage(errorMessage);
+        return _valueEair;
     }
 
     /**
