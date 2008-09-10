@@ -13,7 +13,6 @@ import org.csstudio.nams.configurator.service.synchronize.SynchronizeService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,12 +24,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 /**
  * View um die Synchronisation mit dem Hintergrundsystem auszuführen.
  * Verwenendet den {@link SynchronizeService}.
  */
-public class SyncronizeView extends ViewPart implements ConfigurationBeanServiceListener {
+public class SyncronizeView extends ViewPart implements
+		ConfigurationBeanServiceListener {
 
 	private static SynchronizeService synchronizeService = null;
 
@@ -46,23 +47,21 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 	}
 
 	/**
-	 * Injiziert den {@link ConfigurationBeanService} für diese View. Must be called
-	 * before View is used.
+	 * Injiziert den {@link ConfigurationBeanService} für diese View. Must be
+	 * called before View is used.
 	 */
-	public static void staticInject(
-			final ConfigurationBeanService beanService) {
+	public static void staticInject(final ConfigurationBeanService beanService) {
 		SyncronizeView.beanService = beanService;
-		if (instance != null) { 
+		if (instance != null) {
 			beanService.addConfigurationBeanServiceListener(instance);
 		}
 	}
-	
-	private static SyncronizeView instance; 
-	
+
+	private static SyncronizeView instance;
+
 	private Text statusText;
 
 	private Button syncButton;
-	private Color buttonColor;
 
 	public SyncronizeView() {
 		if (SyncronizeView.synchronizeService == null) {
@@ -111,7 +110,6 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 		this.syncButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false));
 		this.syncButton.setText(Messages.SyncronizeView_sync_button_text);
-		buttonColor = this.syncButton.getBackground();
 		this.syncButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				// will never be called by a button.
@@ -135,8 +133,7 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 		this.statusText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 		this.statusText.setEditable(false);
-		this.statusText
-				.setText(Messages.SyncronizeView_initial_status_text);
+		this.statusText.setText(Messages.SyncronizeView_initial_status_text);
 	}
 
 	protected synchronized void doSynchronize() {
@@ -182,7 +179,8 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 							while (this.result == null) {
 								Thread.yield();
 							}
-							SyncronizeView.this.appendStatusText(Messages.SyncronizeView_done);
+							SyncronizeView.this
+									.appendStatusText(Messages.SyncronizeView_done);
 							return this.result.booleanValue();
 						}
 
@@ -267,15 +265,31 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 
 	private void setChanged(boolean b) {
 		if (b) {
-			syncButton.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+			syncButton.setText(">>> "
+					+ Messages.SyncronizeView_sync_button_text + " <<<");
+			this.showBusy(true);
 		} else {
-			syncButton.setBackground(buttonColor);
+			syncButton.setText(Messages.SyncronizeView_sync_button_text);
+			this.showBusy(false);
 		}
 	}
-	
+
+	@Override
+	public void showBusy(boolean busy) {
+		super.showBusy(busy);
+
+		IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) getSite()
+				.getAdapter(IWorkbenchSiteProgressService.class);
+		if (busy) {
+			service.incrementBusy();
+		} else {
+			service.decrementBusy();
+		}
+	}
+
 	@Override
 	public void setFocus() {
-		
+
 	}
 
 	public void onBeanDeleted(IConfigurationBean bean) {
@@ -291,7 +305,7 @@ public class SyncronizeView extends ViewPart implements ConfigurationBeanService
 	}
 
 	public void onConfigurationReload() {
-		
+
 	}
 
 }
