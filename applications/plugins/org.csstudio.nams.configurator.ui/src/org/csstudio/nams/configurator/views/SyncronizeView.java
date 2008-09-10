@@ -13,6 +13,7 @@ import org.csstudio.nams.configurator.service.synchronize.SynchronizeService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -63,6 +64,8 @@ public class SyncronizeView extends ViewPart implements
 
 	private Button syncButton;
 
+	private Color buttonColor;
+
 	public SyncronizeView() {
 		if (SyncronizeView.synchronizeService == null) {
 			throw new RuntimeException(
@@ -107,6 +110,7 @@ public class SyncronizeView extends ViewPart implements
 		innerComposite.setLayout(new GridLayout(1, false));
 
 		this.syncButton = new Button(innerComposite, SWT.TOGGLE);
+		this.buttonColor = syncButton.getBackground();
 		this.syncButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false));
 		this.syncButton.setText(Messages.SyncronizeView_sync_button_text);
@@ -208,7 +212,7 @@ public class SyncronizeView extends ViewPart implements
 							SyncronizeView.this
 									.appendStatusText(Messages.SyncronizeView_sync_successfull);
 							this.buttonFreigben();
-							SyncronizeView.this.setChanged(false);
+							SyncronizeView.this.showBusy(false);
 						}
 
 						public void synchronisationsDurchHintergrundsystemsFehlgeschalgen(
@@ -263,17 +267,6 @@ public class SyncronizeView extends ViewPart implements
 		return true;
 	}
 
-	private void setChanged(boolean b) {
-		if (b) {
-			syncButton.setText(">>> "
-					+ Messages.SyncronizeView_sync_button_text + " <<<");
-			this.showBusy(true);
-		} else {
-			syncButton.setText(Messages.SyncronizeView_sync_button_text);
-			this.showBusy(false);
-		}
-	}
-
 	@Override
 	public void showBusy(boolean busy) {
 		super.showBusy(busy);
@@ -282,8 +275,13 @@ public class SyncronizeView extends ViewPart implements
 				.getAdapter(IWorkbenchSiteProgressService.class);
 		if (busy) {
 			service.incrementBusy();
+			syncButton.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+			syncButton.setText(">>> "
+					+ Messages.SyncronizeView_sync_button_text + " <<<");
 		} else {
 			service.decrementBusy();
+			syncButton.setBackground(buttonColor);
+			syncButton.setText(Messages.SyncronizeView_sync_button_text);
 		}
 	}
 
@@ -293,15 +291,15 @@ public class SyncronizeView extends ViewPart implements
 	}
 
 	public void onBeanDeleted(IConfigurationBean bean) {
-		this.setChanged(true);
+		this.showBusy(true);
 	}
 
 	public void onBeanInsert(IConfigurationBean bean) {
-		this.setChanged(true);
+		this.showBusy(true);
 	}
 
 	public void onBeanUpdate(IConfigurationBean bean) {
-		this.setChanged(true);
+		this.showBusy(true);
 	}
 
 	public void onConfigurationReload() {
