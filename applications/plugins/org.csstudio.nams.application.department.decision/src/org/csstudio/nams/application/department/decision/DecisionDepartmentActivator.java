@@ -393,9 +393,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							new String[] { amsSenderProviderUrl });
 
 			final String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
-					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER);
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX);
 			DecisionDepartmentActivator.logger.logDebugMessage(this,
-					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER(AusgangsTopic) = "
+					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX(AusgangsTopic) = "
 							+ amsAusgangsTopic);
 			this.amsAusgangsProducer = this.amsMessagingSessionForProducer
 					.createProducer(amsAusgangsTopic, PostfachArt.TOPIC);

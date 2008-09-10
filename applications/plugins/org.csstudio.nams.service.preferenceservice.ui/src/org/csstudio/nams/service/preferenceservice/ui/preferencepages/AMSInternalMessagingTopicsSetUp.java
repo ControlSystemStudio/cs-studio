@@ -1,36 +1,16 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This preference page is used to set up the configuration database settings.
  */
 
-public class AMSInternalMessagingTopicsSetUp extends FieldEditorPreferencePage
+public class AMSInternalMessagingTopicsSetUp extends AbstractNewAMSFieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 
-	private static final int TEXTCOLUMS = 64;
-
-	private static IPreferenceStore preferenceStore;
-
-	public static void staticInject(final IPreferenceStore preferenceStore) {
-		AMSInternalMessagingTopicsSetUp.preferenceStore = preferenceStore;
-	}
-
 	public AMSInternalMessagingTopicsSetUp() {
-		super(FieldEditorPreferencePage.GRID);
-
-		if (AMSInternalMessagingTopicsSetUp.preferenceStore == null) {
-			throw new RuntimeException(
-					"class has not been equiped, missing: preference store");
-		}
-		this
-				.setPreferenceStore(AMSInternalMessagingTopicsSetUp.preferenceStore);
 		this.setDescription("Set up of nams internal messaging topics");
 	}
 
@@ -40,32 +20,50 @@ public class AMSInternalMessagingTopicsSetUp extends FieldEditorPreferencePage
 	 * editor knows how to save and restore itself.
 	 */
 	@Override
-	public void createFieldEditors() {
+	protected void createFieldEditors() {
 		// JMS
 		// - command
-		this.addField(new StringFieldEditor(
-				PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND
-						.getPreferenceStoreId(),
-				PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND
-						.getDescription()
-						+ ":", AMSInternalMessagingTopicsSetUp.TEXTCOLUMS, this
-						.getFieldEditorParent()));
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND);
+
+		// - command dd
 		this
-				.addField(new StringFieldEditor(
-						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID
-								.getPreferenceStoreId(),
-						PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID
-								.getDescription()
-								+ ":",
-						AMSInternalMessagingTopicsSetUp.TEXTCOLUMS, this
-								.getFieldEditorParent()));
+				.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID);
 
-		// -
+		// - dd outbox
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX);
 
+		// - dd outbox sub
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_DD_OUTBOX);
+
+		addSeparator();
+		
+		// - distributors inbox
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DISTRIBUTOR);
+
+		// - distributors inbox sub
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_DISTRIBUTOR);
+
+		// - reply topic
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_REPLY);
+
+		// - reply topic sub
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_REPLY);
+
+		addSeparator();
+		
+		// - SMS
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
+
+		// - SMS sub
+		this.addField(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_SMS_CONNECTOR);
+		
+		// EMAIL
+		
+		// VOICE MAIL
+		
+		// JMS TOPIC
+		
+		
 		// TODO mz 2008-07-17 More internal fields??...
 	}
-
-	public void init(final IWorkbench workbench) {
-	}
-
 }

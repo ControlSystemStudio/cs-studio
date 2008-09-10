@@ -1,36 +1,19 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This preference page is used to set up the configuration database settings.
  */
 
-public class AMSInternalMessagingServerSetUp extends FieldEditorPreferencePage
+public class AMSInternalMessagingServerSetUp extends AbstractNewAMSFieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 
 	private static final int TEXTCOLUMS = 64;
 
-	private static IPreferenceStore preferenceStore;
-
-	public static void staticInject(final IPreferenceStore preferenceStore) {
-		AMSInternalMessagingServerSetUp.preferenceStore = preferenceStore;
-	}
-
 	public AMSInternalMessagingServerSetUp() {
-		super(FieldEditorPreferencePage.GRID);
-
-		if (AMSInternalMessagingServerSetUp.preferenceStore == null) {
-			throw new RuntimeException(
-					"class has not been equiped, missing: preference store");
-		}
-		this
-				.setPreferenceStore(AMSInternalMessagingServerSetUp.preferenceStore);
 		this.setDescription("Set up of nams internal messaging server");
 	}
 
@@ -107,9 +90,6 @@ public class AMSInternalMessagingServerSetUp extends FieldEditorPreferencePage
 		// -
 
 		// TODO mz 2008-07-17 More internal fields??...
-	}
-
-	public void init(final IWorkbench workbench) {
 	}
 
 }

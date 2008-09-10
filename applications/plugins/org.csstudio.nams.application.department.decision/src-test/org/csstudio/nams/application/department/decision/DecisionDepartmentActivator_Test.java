@@ -225,7 +225,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		final Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
 
 		expectedPostfachArtenForDestination.put(
-				"P_JMS_AMS_TOPIC_MESSAGEMINDER", PostfachArt.TOPIC);
+				"P_JMS_AMS_TOPIC_DD_OUTBOX", PostfachArt.TOPIC);
 
 		this.amsToDistributorProducerMock = new ProducerMock() {
 			@Override
@@ -238,7 +238,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 			public void tryToClose() {
 			}
 		};
-		producerForDestination.put("P_JMS_AMS_TOPIC_MESSAGEMINDER",
+		producerForDestination.put("P_JMS_AMS_TOPIC_DD_OUTBOX",
 				this.amsToDistributorProducerMock);
 
 		final MessagingSessionMock amsProducerSession = new MessagingSessionMock(
@@ -384,8 +384,8 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		EasyMock
 				.expect(
 						result
-								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER))
-				.andReturn("P_JMS_AMS_TOPIC_MESSAGEMINDER").anyTimes();
+								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX))
+				.andReturn("P_JMS_AMS_TOPIC_DD_OUTBOX").anyTimes();
 
 		return result;
 	}

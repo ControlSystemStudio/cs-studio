@@ -49,10 +49,18 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 			"org.csstudio.ams.preferences.jmsExternTopicCommand"),
 
 	/**
-	 * XXX ?
+	 * SMS connectors inbox topic
 	 */
 	P_JMS_AMS_TOPIC_SMS_CONNECTOR(
-			"org.csstudio.ams.preferences.jmsAmsTopicSmsConnector"),
+			"org.csstudio.ams.preferences.jmsAmsTopicSmsConnector",
+			"SMS connectors inbox topic"),
+
+	/**
+	 * SMS connectors inbox topics sub
+	 */
+	P_JMS_AMS_TSUB_SMS_CONNECTOR(
+			"org.csstudio.ams.preferences.jmsAmsTSubSmsConnector",
+			"SMS connectors inbox topics subscriber"),
 
 	/**
 	 * XXX ?
@@ -73,21 +81,44 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 			"org.csstudio.ams.preferences.jmsAmsTopicVoiceMailConnector"),
 
 	/**
-	 * XXX ?
+	 * Inbox of distributor.
 	 */
 	P_JMS_AMS_TOPIC_DISTRIBUTOR(
-			"org.csstudio.ams.preferences.jmsAmsTopicDistributor"),
+			"org.csstudio.ams.preferences.jmsAmsTopicDistributor",
+			"Distributors inbox-topic"),
 
 	/**
-	 * XXX ?
+	 * Inbox of distributor.
 	 */
-	P_JMS_AMS_TOPIC_REPLY("org.csstudio.ams.preferences.jmsAmsTopicReply"),
+	P_JMS_AMS_TSUB_DISTRIBUTOR(
+			"org.csstudio.ams.preferences.jmsAmsTSubDistributor",
+			"Distributors inbox-topic subscriber"),
 
 	/**
-	 * XXX ?
+	 * Reply topic XXX What is it?
 	 */
-	P_JMS_AMS_TOPIC_MESSAGEMINDER(
-			"org.csstudio.ams.preferences.jmsAmsTopicMessageMinder"),
+	P_JMS_AMS_TOPIC_REPLY("org.csstudio.ams.preferences.jmsAmsTopicReply",
+			"reply topic"),
+
+	/**
+	 * Reply topics sub.
+	 */
+	P_JMS_AMS_TSUB_REPLY("org.csstudio.ams.preferences.jmsAmsTSubReply",
+			"reply topics subscriber"),
+
+	/**
+	 * Outbox des decission department (normally message minders inbox).
+	 */
+	P_JMS_AMS_TOPIC_DD_OUTBOX(
+			"org.csstudio.ams.preferences.jmsAmsTopicMessageMinder",
+			"Outbox-Topic of DD (normally message minders inbox)"),
+
+	/**
+	 * Subscriber of DDs outbox topic.
+	 */
+	P_JMS_AMS_TSUB_DD_OUTBOX(
+			"org.csstudio.ams.preferences.jmsAmsTSubMessageMinder",
+			"Subscriber of DDs outbox topic"),
 
 	/**
 	 * XXX ?
@@ -111,25 +142,27 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	 * XXX ?
 	 */
 	P_JMS_AMS_CONNECTION_FACTORY(
-			"org.csstudio.ams.preferences.jmsAmsConnectionFactory"),
+			"org.csstudio.ams.preferences.jmsAmsConnectionFactory",
+			"Interne connection factory (JNDI id)"),
 
 	/**
 	 * XXX ?
 	 */
 	P_JMS_AMS_CONNECTION_FACTORY_CLASS(
-			"org.csstudio.ams.preferences.jmsExternConnectionFactoryClass"),
+			"org.csstudio.ams.preferences.jmsExternConnectionFactoryClass",
+			"Interne connection factory class"),
 
 	/**
 	 * XXX ?
 	 */
 	P_JMS_AMS_PROVIDER_URL_1("org.csstudio.ams.preferences.jmsAmsProviderUrl1",
-			"First provider URL"),
+			"Interner consumer provider URL #1"),
 
 	/**
 	 * XXX ?
 	 */
 	P_JMS_AMS_PROVIDER_URL_2("org.csstudio.ams.preferences.jmsAmsProviderUrl2",
-			"Second provider URL"),
+			"Interner consumer provider URL #2"),
 
 	/**
 	 * XXX ?
@@ -143,7 +176,7 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	 */
 	P_JMS_AMS_TOPIC_COMMAND_DECISSION_DEPARTMENT_SUBSCRIBER_ID(
 			"org.csstudio.ams.preferences.jmsAmsTSubCmdFmrReloadEnd",
-			"Subscriber ID of decission department to recieve commands");
+			"Command exchange topic subscriber ID of decission department (DD)");
 
 	private String _key;
 	private String _description;
