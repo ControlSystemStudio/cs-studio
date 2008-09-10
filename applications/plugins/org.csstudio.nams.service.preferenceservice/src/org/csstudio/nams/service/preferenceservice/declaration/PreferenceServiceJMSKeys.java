@@ -7,7 +7,7 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	@Deprecated
 	P_JMS_EXTERN_CONNECTION_FACTORY(
 			"org.csstudio.ams.preferences.jmsExternConnectionFactory",
-			"deprecated preference - backward compatibility (P_JMS_EXTERN_CONNECTION_FACTORY)"),
+			"External connection factory (JNDI id) (deprecated preference)"),
 
 	/**
 	 * External connection factory class.
@@ -46,9 +46,9 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 			"Alarm source topic"),
 
 	/**
-	 * Alarm source topic subsciber.
+	 * Alarm source topic subscriber.
 	 */
-	P_JMS_EXT_TSUB_ALARM("org.csstudio.ams.preferences.jmsExternTSubAlarm",
+	P_JMS_EXT_TSUB_ALARM("org.csstudio.ams.preferences.jmsExternTSubAlarmFmr",
 			"Alarm source topics subscriber"),
 
 	/**
@@ -62,7 +62,7 @@ public enum PreferenceServiceJMSKeys implements HoldsAPreferenceId {
 	 * External command topics subscriber.
 	 */
 	P_JMS_EXT_TSUB_COMMAND(
-			"org.csstudio.ams.preferences.jmsExternTopicCommand",
+			"org.csstudio.ams.preferences.jmsExternTSubCmdFmrStartReload",
 			"External command topics subscriber"),
 
 	/**
