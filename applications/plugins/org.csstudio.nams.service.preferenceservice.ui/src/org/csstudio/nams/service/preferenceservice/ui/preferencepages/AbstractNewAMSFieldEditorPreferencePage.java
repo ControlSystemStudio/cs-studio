@@ -2,6 +2,7 @@ package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.preferenceservice.declaration.HoldsAPreferenceId;
+import org.csstudio.nams.service.preferenceservice.ui.Messages;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -27,7 +28,7 @@ public abstract class AbstractNewAMSFieldEditorPreferencePage extends
 
 		if (AbstractNewAMSFieldEditorPreferencePage.preferenceStore == null) {
 			throw new RuntimeException(
-					"class has not been equiped, missing: preference store");
+					"class has not been equiped, missing: preference store"); //$NON-NLS-1$
 		}
 		this
 				.setPreferenceStore(AbstractNewAMSFieldEditorPreferencePage.preferenceStore);
@@ -39,14 +40,14 @@ public abstract class AbstractNewAMSFieldEditorPreferencePage extends
 
 	protected void addField(HoldsAPreferenceId idAndName) {
 		this.addField(new StringFieldEditor(idAndName.getPreferenceStoreId(),
-				idAndName.getDescription() + ":",
+				idAndName.getDescription() + Messages.AbstractNewAMSFieldEditorPreferencePage_separator_between_label_and_field,
 				AbstractNewAMSFieldEditorPreferencePage.TEXTCOLUMS, this
 						.getFieldEditorParent()));
 	}
 
 	protected void addDatabaseTypeField(HoldsAPreferenceId idAndName) {
 		this.addField(new ComboFieldEditor(idAndName.getPreferenceStoreId(),
-				idAndName.getDescription() + ":", this
+				idAndName.getDescription() + Messages.AbstractNewAMSFieldEditorPreferencePage_separator_between_label_and_field, this
 						.getDatabaseTypesValuesForDropDown(), this
 						.getFieldEditorParent()));
 	}

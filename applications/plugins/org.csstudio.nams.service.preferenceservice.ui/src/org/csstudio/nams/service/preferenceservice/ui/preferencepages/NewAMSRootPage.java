@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
+import org.csstudio.nams.service.preferenceservice.ui.Messages;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -19,7 +20,7 @@ public class NewAMSRootPage extends PreferencePage implements
 	protected Control createContents(final Composite parent) {
 		final Label label = new Label(parent, SWT.WRAP);
 		label
-				.setText("On the sub-pages of this node you may configure the settings of\nthe new alarm-management-system.");
+				.setText(Messages.NewAMSRootPage_title);
 		return label;
 	}
 

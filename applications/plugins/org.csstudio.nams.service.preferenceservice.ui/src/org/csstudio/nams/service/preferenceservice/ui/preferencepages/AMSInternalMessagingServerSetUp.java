@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
+import org.csstudio.nams.service.preferenceservice.ui.Messages;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
@@ -12,7 +13,7 @@ public class AMSInternalMessagingServerSetUp extends
 		IWorkbenchPreferencePage {
 
 	public AMSInternalMessagingServerSetUp() {
-		this.setDescription("Set up of nams internal messaging server");
+		this.setDescription(Messages.AMSInternalMessagingServerSetUp_title);
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
+import org.csstudio.nams.service.preferenceservice.ui.Messages;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
@@ -12,7 +13,7 @@ public class ConfigurationDatabaseSetUp extends
 		IWorkbenchPreferencePage {
 
 	public ConfigurationDatabaseSetUp() {
-		this.setDescription("Set up of global configuration database");
+		this.setDescription(Messages.ConfigurationDatabaseSetUp_title);
 	}
 
 	/**

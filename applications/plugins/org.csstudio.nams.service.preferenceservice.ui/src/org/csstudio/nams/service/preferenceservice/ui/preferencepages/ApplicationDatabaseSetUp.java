@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
+import org.csstudio.nams.service.preferenceservice.ui.Messages;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
@@ -12,7 +13,7 @@ public class ApplicationDatabaseSetUp extends
 		IWorkbenchPreferencePage {
 
 	public ApplicationDatabaseSetUp() {
-		this.setDescription("Set up of local application database");
+		this.setDescription(Messages.ApplicationDatabaseSetUp_title);
 	}
 
 	/**

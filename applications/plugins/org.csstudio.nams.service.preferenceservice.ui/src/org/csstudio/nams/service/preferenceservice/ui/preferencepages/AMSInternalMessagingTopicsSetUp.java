@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
+import org.csstudio.nams.service.preferenceservice.ui.Messages;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
@@ -11,7 +12,7 @@ public class AMSInternalMessagingTopicsSetUp extends AbstractNewAMSFieldEditorPr
 		implements IWorkbenchPreferencePage {
 
 	public AMSInternalMessagingTopicsSetUp() {
-		this.setDescription("Set up of nams internal messaging topics");
+		this.setDescription(Messages.AMSInternalMessagingTopicsSetUp_title);
 	}
 
 	/**
