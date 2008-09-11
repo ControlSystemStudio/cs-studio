@@ -10,6 +10,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
@@ -74,6 +75,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 	}
 
 	public void close() {
+		Contract.require(!this.isClosed(), "!this.isClosed()");
 		for (final Session session : this.sessions) {
 			if (session != null) {
 				try {
