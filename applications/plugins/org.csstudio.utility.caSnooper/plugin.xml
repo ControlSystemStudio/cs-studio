@@ -2,7 +2,8 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="id1"
+         id="caSnooperServer"
+         name="CA Snooper Server"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -11,7 +12,16 @@
       </application>
    </extension>
    <extension
+         id="caSnooperServer"
          point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.utility.caSnooper.caSnooperServer"
+            name="caSnooper">
+         <property
+               name="appName"
+               value="caSnooper">
+         </property>
+      </product>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
