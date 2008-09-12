@@ -3,6 +3,7 @@ package org.csstudio.swt.chart.actions;
 import java.io.File;
 
 import org.csstudio.logbook.ILogbook;
+import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
 import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
@@ -24,6 +25,8 @@ public class ExportToElogAction extends Action
     final private Chart chart;
     final private String application;
     private static ExportToElogInfo info;
+    private ILogbookFactory logbook_factory;
+    private String[] logbooks;
     
     /** Construct action that exports chart to elog.
      *  @param chart Chart to act on
@@ -58,6 +61,20 @@ public class ExportToElogAction extends Action
     private void perform_background_task(final IProgressMonitor monitor)
     {
         monitor.beginTask(Messages.ELog_ActionName, 3);
+        
+        try
+        {
+            logbook_factory = LogbookFactory.getInstance();
+            logbooks = logbook_factory.getLoogbooks();
+        }
+        catch (Exception ex)
+        {
+            MessageDialog.openError(chart.getShell(),
+                    "Error", "Cannot obtain logbook support:\n" + ex.getMessage());  //$NON-NLS-1$//$NON-NLS-2$
+            monitor.done();
+            return;
+        }
+        
         // Get info
         if (!promptForInfo())
             return;
@@ -118,8 +135,8 @@ public class ExportToElogAction extends Action
         {
             try
             {
-                logbook =
-                    LogbookFactory.connect(info.getUser(), info.getPassword());
+                logbook = logbook_factory.connect(info.getLogbook(),
+                        info.getUser(), info.getPassword());
                 // If we get here, connection was successful
                 break;
             }
@@ -163,7 +180,7 @@ public class ExportToElogAction extends Action
     {
         // Keep previously entered user/password/... while instance is running
         if (info == null)
-            info = new ExportToElogInfo("", "",
+            info = new ExportToElogInfo("", "", logbook_factory.getDefaultLogbook(),
                     NLS.bind(Messages.ELog_TitleFormat, application),
                     NLS.bind(Messages.ELog_BodyFormat, application));
         chart.getDisplay().syncExec(new Runnable()
@@ -171,7 +188,8 @@ public class ExportToElogAction extends Action
             public void run()
             {
                 final Shell shell = chart.getShell();
-                final ExportToElogDialog dialog = new ExportToElogDialog(shell, info);
+                final ExportToElogDialog dialog =
+                    new ExportToElogDialog(shell, logbooks, info);
                 if (dialog.open() == ExportToElogDialog.OK)
                     info = dialog.getInfo();
                 else

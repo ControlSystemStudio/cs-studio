@@ -5,14 +5,16 @@ package org.csstudio.swt.chart.actions;
  */
 public class ExportToElogInfo
 {
-    final private String user, password, title, body;
+    final private String user, password, logbook, title, body;
 
     /** Constructor */
     public ExportToElogInfo(final String user, final String password,
+            final String logbook,
             final String title, final String body)
     {
         this.user = user.trim();
         this.password = password.trim();
+        this.logbook = logbook != null ? logbook.trim() : null;
         this.title = title.trim();
         this.body = body.trim();
     }
@@ -27,6 +29,12 @@ public class ExportToElogInfo
     public String getPassword()
     {
         return password;
+    }
+    
+    /** @return logbook */
+    public String getLogbook()
+    {
+        return logbook;
     }
 
     /** @return Title of entry */

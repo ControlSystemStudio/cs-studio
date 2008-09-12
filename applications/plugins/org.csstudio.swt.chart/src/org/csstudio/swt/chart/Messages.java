@@ -33,6 +33,8 @@ public class Messages extends NLS
     public static String ELog_Dialog_Body;
     public static String ELog_Dialog_Body_TT;
     public static String ELog_Dialog_DialogTitle;
+    public static String ELog_Dialog_Logbook;
+    public static String ELog_Dialog_Logbook_TT;
     public static String ELog_Dialog_Password;
     public static String ELog_Dialog_Password_TT;
     public static String ELog_Dialog_Title;
@@ -59,6 +61,7 @@ public class Messages extends NLS
     public static String TraceType_Lines;
     public static String TraceType_SingleLine;
     public static String TraceType_Markers;
+
     
     static
     {

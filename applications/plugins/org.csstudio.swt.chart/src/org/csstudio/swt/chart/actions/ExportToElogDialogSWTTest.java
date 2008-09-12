@@ -18,14 +18,16 @@ public class ExportToElogDialogSWTTest
         // Without setting a layout, you see nothing at all!
         shell.setLayout(new FillLayout());
 
+        final String logbooks[] = new String[]
+        { "Main", "Some Logbook", "other" };
         ExportToElogInfo info = new ExportToElogInfo(
-                "user", "$user", "title", "For what it's worth...");
-        ExportToElogDialog dialog = new ExportToElogDialog(shell, info);
+                "user", "$user", "Some Logbook", "title", "For what it's worth...");
+        ExportToElogDialog dialog = new ExportToElogDialog(shell, logbooks, info);
         if (dialog.open() == ExportToElogDialog.OK)
         {
             info = dialog.getInfo();
             // Run another one with entered info
-            dialog = new ExportToElogDialog(shell, info);
+            dialog = new ExportToElogDialog(shell, logbooks, info);
             dialog.open();
             info = dialog.getInfo();
             System.out.println(info);
