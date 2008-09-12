@@ -97,7 +97,7 @@ public class ExportToElogDialog extends TitleAreaDialog
         password.setLayoutData(gd);
         
         // New Row
-        if (logbooks != null)
+        if (logbooks.length > 0)
         {
             l = new Label(box, 0);
             l.setText(Messages.ELog_Dialog_Logbook);
@@ -161,7 +161,7 @@ public class ExportToElogDialog extends TitleAreaDialog
     @Override
     protected void okPressed()
     {
-        final String log_name = logbook != null ? logbook.getText() : null;
+        final String log_name = logbook != null ? logbook.getText() : ""; //$NON-NLS-1$
         info = new ExportToElogInfo(user.getText(),
                 password.getText(), log_name, title.getText(),
                 body.getText());
