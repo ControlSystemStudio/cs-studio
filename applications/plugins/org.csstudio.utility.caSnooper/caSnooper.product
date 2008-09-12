@@ -6,6 +6,7 @@
    <configIni use="default"/>
 
    <launcherArgs>
+      <programArgs>-plugincustomization plugin_customization.ini</programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
