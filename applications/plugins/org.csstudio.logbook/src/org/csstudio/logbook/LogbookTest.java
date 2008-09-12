@@ -7,12 +7,13 @@ import java.io.InputStreamReader;
 
 import org.junit.Test;
 
-/** JUnit Plugin test, requires exactly one plugin that provides the
+/** JUnit Plug-in test, requires exactly one plugin that provides the
  *  ILogbookFactory extension point to be loaded.
  *  
- *  Can run with the application set to "Headless Mode".
+ *  Should run via "Run As/JUnit Plug-in Test",
+ *  with the application set to "Headless Mode".
  *  
- *  Pretty much everything in there depends on the particular setup:
+ *  Pretty much everything in here depends on the particular setup:
  *  User, password, test image, so it'll prompt for them.
  *  Not a true unit test that runs on its own.
  *  
@@ -25,21 +26,39 @@ public class LogbookTest
     @Test
     public void testLoogbook() throws Exception
     {
+        // Obtain a logbook factory.
+        // This requires the presence of a plugin that actually
+        // implements the logbook extension point.
+        final ILogbookFactory logbook_factory = LogbookFactory.getInstance();
+        assertNotNull(logbook_factory);
+        
+        // Show available logbooks.
+        final String[] logbooks = logbook_factory.getLoogbooks();
+        if (logbooks == null)
+            System.out.println("System doesn't support several, named logbooks");
+        else
+        {
+            System.out.println("Available logbooks:");
+            for (String log_name : logbooks)
+                System.out.println(log_name);
+        }
+        System.out.println("Default logbook: " +
+                logbook_factory.getDefaultLogbook());
+        
+        // Get user/pw/... for creating entries
         final BufferedReader command_line
             = new BufferedReader(new InputStreamReader(System.in));
-
         System.out.print("User      : ");
         final String user = command_line.readLine();
-        
         System.out.print("Password  : ");
         final String password = command_line.readLine();
-
         System.out.print("Image File: ");
         final String image = command_line.readLine();
-
-        final ILogbook logbook = LogbookFactory.connect(user, password);
-        assertNotNull(logbook);
-
+        final String logbook_name = "Scratch Pad";
+        
+        // Create entries
+        final ILogbook logbook =
+            logbook_factory.connect(logbook_name, user, password);
         try
         {
             String title = "Test Entry";

@@ -9,12 +9,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-   /** Name of the preference for the RDB URL */
-   final public static String LOG_RDB_URL="log_rdb_url";
-
-   /** Name of the preference for the SNS logbook to use */
-   final public static String LOGBOOK_NAME="logbook_name";
-
    /** @return RDB URL */
    public static String getURL()
    {
@@ -22,8 +16,22 @@ public class Preferences
        return service.getString(Activator.ID, "log_rdb_url", null, null);
    }
    
-   /** @return Name of SNS logbook */
-   public static String getLogBookName()
+   /** @return User name for listing logbooks */
+   public static String getLogListUser()
+   {        
+       final IPreferencesService service = Platform.getPreferencesService();
+       return service.getString(Activator.ID, "logbook_list_user", null, null);
+   }
+
+   /** @return Password for listing logbooks */
+   public static String getLogListPassword()
+   {        
+       final IPreferencesService service = Platform.getPreferencesService();
+       return service.getString(Activator.ID, "logbook_list_pass", null, null);
+   }
+
+   /** @return Default logbook name */
+   public static String getDefaultLogbook()
    {        
        final IPreferencesService service = Platform.getPreferencesService();
        return service.getString(Activator.ID, "logbook_name", null, null);

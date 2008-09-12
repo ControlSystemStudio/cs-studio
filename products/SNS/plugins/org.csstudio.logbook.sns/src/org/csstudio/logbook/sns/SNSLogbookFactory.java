@@ -1,5 +1,9 @@
 package org.csstudio.logbook.sns;
 
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
@@ -11,12 +15,46 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
  */
 public class SNSLogbookFactory implements ILogbookFactory
 {
-    /** ILogbookFactory interface */
-    public ILogbook connect(final String user, final String password)
+    /** {@inheritDoc} */
+    @SuppressWarnings("nls")
+    public String[] getLoogbooks() throws Exception
+    {
+        final ArrayList<String> names = new ArrayList<String>();
+        final RDBUtil rdb = RDBUtil.connect(Preferences.getURL(),
+                Preferences.getLogListUser(), Preferences.getLogListPassword());
+        final Statement statement = rdb.getConnection().createStatement();
+        try
+        {
+            final ResultSet result = statement.executeQuery(
+                    "SELECT oper_grp_nm FROM oper.oper_grp " +
+	                "WHERE elog_ind='Y' ORDER BY oper_grp_nm");
+            while (result.next())
+                names.add(result.getString(1));
+        }
+        finally
+        {
+            statement.close();
+            rdb.close();
+        }
+        if (names.size() > 0)
+        {   // Convert into plain array
+            final String ret_val[] = new String[names.size()];
+            return names.toArray(ret_val);
+        }
+        return null;
+    }
+    
+    /** {@inheritDoc} */
+    public String getDefaultLogbook()
+    {
+        return Preferences.getDefaultLogbook();
+    }
+
+    /** {@inheritDoc} */
+    public ILogbook connect(final String logbook, final String user, final String password)
             throws Exception
     {
-        return connect(Preferences.getURL(), Preferences.getLogBookName(),
-                user, password);
+        return connect(Preferences.getURL(), logbook, user, password);
     }
 
     /** Connect to logbook.
@@ -26,11 +64,11 @@ public class SNSLogbookFactory implements ILogbookFactory
      *   <code>org.csstudio.logbook.sns.LogbookFactory</code>
      *  and not directly call the <code>SNSLogbookFactory</code>.
      *  
-     *  @param url
-     *  @param logbook
-     *  @param user
-     *  @param password
-     *  @return
+     *  @param url RDB URL
+     *  @param logbook Logbook name
+     *  @param user   RDB user
+     *  @param password RDB password
+     *  @return ILogbook
      *  @throws Exception
      */
     @SuppressWarnings("nls")
