@@ -34,16 +34,13 @@ public class LogbookTest
         
         // Show available logbooks.
         final String[] logbooks = logbook_factory.getLoogbooks();
-        if (logbooks == null)
-            System.out.println("System doesn't support several, named logbooks");
-        else
-        {
-            System.out.println("Available logbooks:");
-            for (String log_name : logbooks)
-                System.out.println(log_name);
-        }
-        System.out.println("Default logbook: " +
-                logbook_factory.getDefaultLogbook());
+        assertNotNull(logbooks);
+        System.out.println("Available logbooks:");
+        for (String log_name : logbooks)
+            System.out.println(log_name);
+        final String default_logbook = logbook_factory.getDefaultLogbook();
+        assertNotNull(default_logbook);
+        System.out.println("Default logbook: " + default_logbook);
         
         // Get user/pw/... for creating entries
         final BufferedReader command_line

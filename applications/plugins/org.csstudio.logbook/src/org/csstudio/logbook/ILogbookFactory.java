@@ -12,14 +12,14 @@ public interface ILogbookFactory
 
     /** Some logbook systems may support more than one logbook.
      *  In that case, this method lists them.
-     *  @return List of logbook names or <code>null</code>
+     *  @return List of logbook names. Maybe empty, but not <code>null</code>.
      *  @throws Exception on error
      */
     public String[] getLoogbooks() throws Exception;
     
     /** In case there are multiple logbooks, this would
      *  provide the suggested default.
-     *  @return Name of default logbook or <code>null</code>
+     *  @return Name of default logbook. Maybe "", but not <code>null</code>.
      */
     public String getDefaultLogbook();
     

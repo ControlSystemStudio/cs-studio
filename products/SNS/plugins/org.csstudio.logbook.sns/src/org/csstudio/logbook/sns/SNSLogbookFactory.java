@@ -36,12 +36,9 @@ public class SNSLogbookFactory implements ILogbookFactory
             statement.close();
             rdb.close();
         }
-        if (names.size() > 0)
-        {   // Convert into plain array
-            final String ret_val[] = new String[names.size()];
-            return names.toArray(ret_val);
-        }
-        return null;
+        // Convert into plain array
+        final String ret_val[] = new String[names.size()];
+        return names.toArray(ret_val);
     }
     
     /** {@inheritDoc} */
