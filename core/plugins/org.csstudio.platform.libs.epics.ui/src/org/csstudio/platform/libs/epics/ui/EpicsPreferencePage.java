@@ -23,6 +23,7 @@ package org.csstudio.platform.libs.epics.ui;
 
 import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.csstudio.platform.libs.epics.PreferenceConstants;
+import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -67,29 +68,37 @@ public class EpicsPreferencePage
 		setPreferenceStore(pref_store);
 	}
 	
-	/**
-	 * Creates the field editors. Field editors are abstractions of
-	 * the common GUI blocks needed to manipulate various types
-	 * of preferences. Each field editor knows how to save and
-	 * restore itself.
+	/** Creates the field editors. 
+	 *  Each field editor knows how to save and restore itself.
 	 */
 	@Override
-    @SuppressWarnings("nls")
     public void createFieldEditors()
     {
-        final String sep = ":"; 
-        final String labels_and_values[][] = 
+        final String sep = ":";  //$NON-NLS-1$
+        final String context_types[][] = 
         {
-            { Messages.EpicsPreferencePage_CONTEXT_CAJ, "true" },
-            { Messages.EpicsPreferencePage_CONTEXT_JNI, "false" }
+            { Messages.EpicsPreferencePage_CONTEXT_CAJ, Boolean.TRUE.toString() },
+            { Messages.EpicsPreferencePage_CONTEXT_JNI, Boolean.FALSE.toString() }
         };
         final Composite parent = getFieldEditorParent();
         addField(new RadioGroupFieldEditor(PreferenceConstants.PURE_JAVA,
-                        Messages.EpicsPreferencePage_CONTEXT + sep,
-                        labels_and_values.length,
-                        labels_and_values,
+                        Messages.EpicsPreferencePage_CONTEXT,
+                        context_types.length,
+                        context_types,
                         parent));
-       
+
+        final String subscription_types[][] = 
+        {
+            { Messages.EpicsPreferencePage_MONITOR_VALUE, MonitorMask.VALUE.name()  },
+            { Messages.EpicsPreferencePage_MONITOR_ARCHIVE, MonitorMask.ARCHIVE.name()  },
+            { Messages.EpicsPreferencePage_MONITOR_ALARM, MonitorMask.ALARM.name()  }
+        };
+        addField(new RadioGroupFieldEditor(PreferenceConstants.MONITOR,
+                Messages.EpicsPreferencePage_MONITOR,
+                subscription_types.length,
+                subscription_types,
+                parent));
+        
         addField(new StringFieldEditor(PreferenceConstants.ADDR_LIST,
                         PreferenceConstants.ADDR_LIST + sep, parent));
         addField(new BooleanFieldEditor(PreferenceConstants.AUTO_ADDR_LIST,

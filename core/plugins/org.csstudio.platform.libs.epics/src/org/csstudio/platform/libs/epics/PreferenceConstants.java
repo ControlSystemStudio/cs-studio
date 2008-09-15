@@ -32,12 +32,22 @@ package org.csstudio.platform.libs.epics;
 @SuppressWarnings("nls")
 public class PreferenceConstants
 {
-    public static String PURE_JAVA = "use_pure_java"; 
-    public static String ADDR_LIST = "addr_list"; 
-    public static String AUTO_ADDR_LIST = "auto_addr_list";
-    public static String TIMEOUT = "conn_tmo";
-    public static String BEACON_PERIOD = "beacon_period";
-    public static String REPEATER_PORT = "repeater_port";
-    public static String SERVER_PORT = "server_port";
-    public static String MAX_ARRAY_BYTES = "max_array_bytes";
+    /** Use pure java or not? Values "true", "false" */
+    final public static String PURE_JAVA = "use_pure_java";
+    
+    /** How to monitor (subscribe): Values "VALUE", "ARCHIVE", "ALARM" */
+    final public static String MONITOR = "monitor";
+    
+    /** List of IP addresses, separated by space */
+    final public static String ADDR_LIST = "addr_list"; 
+    
+    /** Add automatic IP entries? Values "true", "false" */
+    final public static String AUTO_ADDR_LIST = "auto_addr_list";
+    
+    // See Channel Access docu for rest
+    final public static String TIMEOUT = "conn_tmo";
+    final public static String BEACON_PERIOD = "beacon_period";
+    final public static String REPEATER_PORT = "repeater_port";
+    final public static String SERVER_PORT = "server_port";
+    final public static String MAX_ARRAY_BYTES = "max_array_bytes";
 }

@@ -38,6 +38,10 @@ public class Messages extends NLS {
     public static String EpicsPreferencePage_CONTEXT;
     public static String EpicsPreferencePage_CONTEXT_CAJ;
     public static String EpicsPreferencePage_CONTEXT_JNI;
+    public static String EpicsPreferencePage_MONITOR;
+    public static String EpicsPreferencePage_MONITOR_VALUE;
+    public static String EpicsPreferencePage_MONITOR_ARCHIVE;
+    public static String EpicsPreferencePage_MONITOR_ALARM;
 
 	static {
 		// initialize resource bundle
