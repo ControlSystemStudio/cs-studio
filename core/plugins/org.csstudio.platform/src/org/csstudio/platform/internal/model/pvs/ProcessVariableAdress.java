@@ -244,4 +244,9 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 		sb.append("\n");
 		return sb.toString();
 	}
+	
+	public IProcessVariableAddress deriveNoCharacteristicPart() {
+		// TODO: is it OK to keep raw name?
+		return new ProcessVariableAdress(_rawName,_controlSystem,_device,_property,null);
+	}
 }

@@ -21,6 +21,8 @@
  */
  package org.csstudio.platform.internal.simpledal;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,11 +34,17 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ValueType;
+import org.epics.css.dal.CharacteristicInfo;
+import org.epics.css.dal.DataExchangeException;
+import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
+import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.LinkListener;
 
@@ -44,12 +52,12 @@ import org.epics.css.dal.context.LinkListener;
  * DAL Connectors are connected to the control system via the DAL API.
  * 
  * All events received from DAL are forwarded to
- * {@link IProcessVariableValueListener}´s which abstract from DAL.
+ * {@link IProcessVariableValueListener}ï¿½s which abstract from DAL.
  * 
- * For convinience the {@link IProcessVariableValueListener}´s are only weakly
- * referenced. The connector tracks for {@link IProcessVariableValueListener}´s
+ * For convinience the {@link IProcessVariableValueListener}ï¿½s are only weakly
+ * referenced. The connector tracks for {@link IProcessVariableValueListener}ï¿½s
  * that have been garbage collected and removes those references from its
- * internal list. This way {@link IProcessVariableValueListener}´s must not be
+ * internal list. This way {@link IProcessVariableValueListener}ï¿½s must not be
  * disposed explicitly.
  * 
  * @author Sven Wende
@@ -57,7 +65,34 @@ import org.epics.css.dal.context.LinkListener;
  */
 @SuppressWarnings("unchecked")
 class DalConnector extends AbstractConnector implements DynamicValueListener,
-		LinkListener, ResponseListener {
+		LinkListener, ResponseListener, PropertyChangeListener {
+	
+	public static final CharacteristicInfo C_TIMESTAMP_INFO= new CharacteristicInfo("timestamp",Timestamp.class,new Class[]{DynamicValueProperty.class},"Meta timestamp characteristic.",null,true);
+	public static final CharacteristicInfo C_SEVERITY_INFO= new CharacteristicInfo("severity",String.class,new Class[]{DynamicValueProperty.class},"Meta timestamp characteristic.",null,true);
+	public static final CharacteristicInfo C_STATUS_INFO= new CharacteristicInfo("status",String.class,new Class[]{DynamicValueProperty.class},"Meta timestamp characteristic.",null,true);
+	
+	{
+		CharacteristicInfo.registerCharacteristicInfo(C_SEVERITY_INFO);
+		CharacteristicInfo.registerCharacteristicInfo(C_TIMESTAMP_INFO);
+		CharacteristicInfo.registerCharacteristicInfo(C_STATUS_INFO);
+	}
+	
+	public static final String toEPICSFlavorSeverity(DynamicValueCondition condition) {
+		if (condition.isNormal()) {
+			return DynamicValueState.NORMAL.toString();
+		}
+		if (condition.isWarning()) {
+			return DynamicValueState.WARNING.toString();
+		}
+		if (condition.isAlarm()) {
+			return DynamicValueState.ALARM.toString();
+		}
+		if (condition.isError()) {
+			return DynamicValueState.ERROR.toString();
+		}
+		return "UNKNOWN";
+	}
+
 	/**
 	 * The DAL property, this connector is connected to.
 	 */
@@ -78,6 +113,18 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 */
 	public void setDalProperty(DynamicValueProperty dalProperty) {
 		_dalProperty = dalProperty;
+		
+		_dalProperty.addDynamicValueListener(this);
+		
+		_dalProperty.addPropertyChangeListener(this);
+
+		// we add a LinkListener to get informed of connection state changes
+		_dalProperty.addLinkListener(this);
+
+		// send initial connection state
+		forwardConnectionState(ConnectionState
+				.translate(_dalProperty.getConnectionState()));
+
 	}
 
 	/**
@@ -88,14 +135,23 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	public DynamicValueProperty getDalProperty() {
 		return _dalProperty;
 	}
+	
+	public void propertyChange(PropertyChangeEvent evt) {
+		doForwardValue(evt.getNewValue(), new Timestamp(), evt.getPropertyName());
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void conditionChange(DynamicValueEvent event) {
-		//FIXME: forward condition changes
+		
+		DynamicValueCondition condition= event.getCondition();
+		
+		doForwardValue(condition.getTimestamp(), condition.getTimestamp(), C_TIMESTAMP_INFO.getName());
+		doForwardValue(condition.getDescription(), condition.getTimestamp(), C_STATUS_INFO.getName());
+		doForwardValue(toEPICSFlavorSeverity(condition), condition.getTimestamp(), C_SEVERITY_INFO.getName());
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -149,6 +205,14 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void connected(final ConnectionEvent e) {
+		if (getLatestValue()==null) {
+			try {
+				_dalProperty.getAsynchronous(this);
+			} catch (DataExchangeException ex) {
+				forwardError(ex.getMessage());
+				CentralLogger.getInstance().warn(null, ex);
+			}
+		}
 		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
 	}
 
@@ -206,7 +270,14 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void responseReceived(ResponseEvent event) {
-		IProcessVariableAddress pv = getProcessVariableAddress();
+		// Igor: if necessary update last value. We expect one event only originating 
+		//       from  initial asynchronous get
+
+		doForwardValue(event.getResponse().getValue(), event.getResponse().getTimestamp());
+		
+		// Igor: this below not necessary any more
+		//             
+		/*IProcessVariableAddress pv = getProcessVariableAddress();
 		String idTag = event.getResponse().getIdTag().toString();
 		
 		// Important: We need to check, that we forward only the right events because all Characteristics  are queried using the same DAL Property instance
@@ -221,10 +292,11 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		if (forward) {
 			//jhatje 18.0.7.2008, add timestamp of the event
 			doForwardValue(event.getResponse().getValue(), event.getResponse().getTimestamp());
-		}
+		}*/
 	}
 
 	private void forwardConnectionEvent(ConnectionEvent e) {
 		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
 	}
+	
 }

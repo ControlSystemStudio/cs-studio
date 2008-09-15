@@ -11,7 +11,7 @@ public class ConnectorIdentification {
 
 	public ConnectorIdentification(IProcessVariableAddress processVariableAddress,
 			ValueType valueType) {
-		_processVariableAddress = processVariableAddress;
+		_processVariableAddress = processVariableAddress.deriveNoCharacteristicPart();
 		_valueType = valueType;
 	}
 

@@ -71,7 +71,7 @@ public class ProcessVariableAdressFactory {
 		_parserMapping.put(ControlSystemEnum.SDS_SIMULATOR,
 				new SimpleNameParser(ControlSystemEnum.SDS_SIMULATOR));
 		_parserMapping.put(ControlSystemEnum.DAL_SIMULATOR,
-				new SimpleNameParser(ControlSystemEnum.DAL_SIMULATOR));
+				new DalNameParser(ControlSystemEnum.DAL_SIMULATOR));
 
 		// check, that there is a parser for each control system
 		for (ControlSystemEnum controlSystem : ControlSystemEnum.values()) {

@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.activemq.broker.region.ConnectorStatistics;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.internal.simpledal.local.LocalChannelPool;
 import org.csstudio.platform.logging.CentralLogger;
@@ -63,7 +62,7 @@ import org.epics.css.dal.spi.PropertyFactory;
  * 
  * @author Sven Wende
  * 
- * TODO: Schreiben von Werten ermöglichen!
+ * TODO: Schreiben von Werten ermï¿½glichen!
  * 
  * TODO: Sync/Async Lesen von Werten (x)
  * 
@@ -515,7 +514,7 @@ public class ProcessVariableConnectionService implements
 							// }
 						}
 
-						// FIXME: eigene Subklasse für diesen ResponseListener
+						// FIXME: eigene Subklasse fï¿½r diesen ResponseListener
 						ResponseListener responseListener = new ResponseListener() {
 							public void responseError(ResponseEvent event) {
 								// forward the error
@@ -546,8 +545,9 @@ public class ProcessVariableConnectionService implements
 								property.removeResponseListener(this);
 
 								// try to dispose the DAL property
-								disposeDalProperty(property, pv
-										.getControlSystem());
+								// FIXME: Igor: this should be solved differently, creating ad disposing like this is not efficient
+								/*disposeDalProperty(property, pv
+										.getControlSystem());*/
 							}
 						};
 
@@ -614,10 +614,19 @@ public class ProcessVariableConnectionService implements
 					}
 
 					if (pv.isCharacteristic()) {
-						result = (E) property.getCharacteristic(pv
-								.getCharacteristic());
+						if (pv.getCharacteristic().equals(DalConnector.C_SEVERITY_INFO.getName())) {
+							result = (E) DalConnector.toEPICSFlavorSeverity(property.getCondition());
+						} else if (pv.getCharacteristic().equals(DalConnector.C_STATUS_INFO.getName())) {
+							result = (E) property.getCondition().getDescription();
+						} else if (pv.getCharacteristic().equals(DalConnector.C_TIMESTAMP_INFO)) {
+							result = (E) property.getCondition().getTimestamp();
+						} else {
+							Object value= property.getCharacteristic(pv.getCharacteristic());
+							result = (E) ConverterUtil.convert(value, valueType);
+						}
 					} else {
-						result = (E) property.getValue();
+						Object value= property.getValue();
+						result = (E) ConverterUtil.convert(value, valueType);
 					}
 
 				} catch (DataExchangeException e) {
@@ -625,7 +634,8 @@ public class ProcessVariableConnectionService implements
 				}
 
 				// try to dispose the DAL property
-				disposeDalProperty(property, pv.getControlSystem());
+				// FIXME: Igor: this should be solved differently, creating ad disposing like this is not efficient
+				/*disposeDalProperty(property, pv.getControlSystem());*/
 			}
 		}
 
@@ -682,11 +692,19 @@ public class ProcessVariableConnectionService implements
 
 				// Important: Connector needs to be added here, to prevent
 				// the cleanup thread from disposing the connector too early
-				connector.addProcessVariableValueListener(listener);
+				if (pv.isCharacteristic()) {
+					connector.addProcessVariableValueListener(pv.getCharacteristic(),listener);
+				} else {
+					connector.addProcessVariableValueListener(null,listener);
+				}
 				_connectors.put(key, connector);
 
 			} else {
-				connector.addProcessVariableValueListener(listener);
+				if (pv.isCharacteristic()) {
+					connector.addProcessVariableValueListener(pv.getCharacteristic(),listener);
+				} else {
+					connector.addProcessVariableValueListener(null,listener);
+				}
 			}
 		}
 	}
@@ -729,14 +747,7 @@ public class ProcessVariableConnectionService implements
 		}
 
 		if (dynamicValueProperty != null) {
-			// keep the DAL property in mind
 			connector.setDalProperty(dynamicValueProperty);
-
-			// add the connector as dynamic value listener on the DAL
-			// property
-			// (requires workaround)
-			new ConnectionWorkarroundLinkListener(dynamicValueProperty,
-					connector);
 		}
 
 		return connector;
@@ -765,8 +776,12 @@ public class ProcessVariableConnectionService implements
 		PropertyFactory factory = DALPropertyFactoriesProvider.getInstance()
 				.getPropertyFactory(pv.getControlSystem());
 
-		boolean exists = factory.getPropertyFamily().contains(ri);
+		
+		// Igor: this does nto work anyhow, always is true, RDFM.
+		//boolean exists = factory.getPropertyFamily().contains(ri);
 
+		/*
+		igor: because xsista is allways FALSE, it always makes new property for same type.
 		if (exists) {
 			// get the existing property
 			result = factory.getProperty(ri);
@@ -779,6 +794,20 @@ public class ProcessVariableConnectionService implements
 				throw new Exception(
 						"Cache bug in DAL prevents property from beeing created.");
 			}
+		}*/
+		
+		// TODO: test this, it should work, for characteristic property type has no effect 
+
+		if (pv.isCharacteristic()) {
+			// first we try to get from DAL cache property of any type
+			result= factory.getPropertyFamily().getProperty(ri.getName());
+			
+			if (result==null) {
+				// second we try to create any property with requested remote name
+				result = factory.getProperty(ri);
+			}
+		} else {
+			result = factory.getProperty(ri, propertyType, null);
 		}
 
 		return result;
@@ -816,7 +845,7 @@ public class ProcessVariableConnectionService implements
 			// if the property is not used anymore by other connectors,
 			// destroy it
 			// FIXME: Dies ist nur ein Workarround. Igor bitten, das
-			// Zerstören von Properties tranparent zu gestalten.
+			// Zerstï¿½ren von Properties tranparent zu gestalten.
 			if (property.getDynamicValueListeners().length <= 1
 					&& property.getResponseListeners().length <= 0) {
 				factory.getPropertyFamily().destroy(property);
@@ -826,7 +855,7 @@ public class ProcessVariableConnectionService implements
 				// via its latestResponse and latestRequest fields on
 				// DynamicValuePropertyImpl.class
 				// ********************************************************
-				try {
+				/*try {
 					Object e = property.getLatestResponse();
 
 					property.getAsynchronous(null);
@@ -839,7 +868,7 @@ public class ProcessVariableConnectionService implements
 					e.printStackTrace();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}
+				}*/
 				// **** Workarround (Remove, when DAL is fixed)************>
 
 				assert !factory.getPropertyFamily().contains(property) : "!getPropertyFactory().getPropertyFamily().contains(property)";
@@ -928,140 +957,9 @@ public class ProcessVariableConnectionService implements
 			}
 
 			// try to dispose the DAL property
-			disposeDalProperty(_dynamicValueProperty, _processVariableAddress
-					.getControlSystem());
-		}
-	}
-
-	/**
-	 * LinkListener implementation, which adds a DynamicValueListener lazily to
-	 * a DynamicValueProperty when the DynamicValueProperty is connected.
-	 * 
-	 * This is a just a workaround, which is necessary because
-	 * DynamicValueListener´s cannot be attached to DynamicValueProperty before
-	 * they are connected to a channel. (//TODO: Cosylab! Please fix this!)
-	 * 
-	 * @author Sven Wende
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	class ConnectionWorkarroundLinkListener extends LinkAdapter {
-		@Override
-		public void connectionLost(ConnectionEvent e) {
-			_connector.forwardConnectionState(ConnectionState.translate(e
-					.getState()));
-		}
-
-		@Override
-		public void disconnected(ConnectionEvent e) {
-			_connector.forwardConnectionState(ConnectionState.translate(e
-					.getState()));
-		}
-
-		@Override
-		public void resumed(ConnectionEvent e) {
-			_connector.forwardConnectionState(ConnectionState.translate(e
-					.getState()));
-		}
-
-		@Override
-		public void suspended(ConnectionEvent e) {
-			_connector.forwardConnectionState(ConnectionState.translate(e
-					.getState()));
-		}
-
-		@Override
-		public void connectionFailed(ConnectionEvent e) {
-			_connector.forwardConnectionState(ConnectionState.translate(e
-					.getState()));
-		}
-
-		@Override
-		public void destroyed(ConnectionEvent e) {
-			_connector.forwardConnectionState(ConnectionState.translate(e
-					.getState()));
-		}
-
-		private DynamicValueProperty _dynamicValueProperty;
-		private DalConnector _connector;
-
-		private ConnectionWorkarroundLinkListener(
-				DynamicValueProperty dynamicValueProperty,
-				DalConnector connector) {
-			assert dynamicValueProperty != null;
-			assert connector != null;
-			_dynamicValueProperty = dynamicValueProperty;
-			_connector = connector;
-
-			if (_dynamicValueProperty.isConnected()) {
-				init();
-			} else {
-				// the property is not connected -> we listen and wait for
-				// connection events
-				_dynamicValueProperty.addLinkListener(this);
-			}
-		}
-
-		public void connected(ConnectionEvent e) {
-			// disconnect this listener
-			_dynamicValueProperty.removeLinkListener(this);
-
-			init();
-		}
-
-		private void init() {
-			initializeValueListeners();
-			requestInitialValue();
-		}
-
-		private void initializeValueListeners() {
-			IProcessVariableAddress pv = _connector.getProcessVariableAddress();
-
-			// we add a ResponseListener in any case, which receives initial
-			// dynamic values, which are requested via
-			// property.getAsynchronous() as well
-			// as values for characteristics, which are requested via
-			// property.getCharacteristicAsynchronous()
-			_dynamicValueProperty.addResponseListener(_connector);
-
-			// we add a dynamic value listener in case we are listening for
-			// dynamic updates of a
-			// non-characteristic
-			if (!pv.isCharacteristic()) {
-				_dynamicValueProperty.addDynamicValueListener(_connector);
-			}
-
-			// we add a LinkListener to get informed of connection state changes
-			_dynamicValueProperty.addLinkListener(_connector);
-		}
-
-		private void requestInitialValue() {
-			if (_dynamicValueProperty.isConnectionAlive()) {
-
-				String characteristic = _connector.getProcessVariableAddress()
-						.getCharacteristic();
-
-				if (characteristic != null) {
-					try {
-						_dynamicValueProperty
-								.getCharacteristicAsynchronously(characteristic);
-					} catch (DataExchangeException e) {
-						_connector.forwardError(e.getMessage());
-						CentralLogger.getInstance().warn(null, e);
-					}
-				} else {
-					try {
-						_dynamicValueProperty.getAsynchronous(_connector);
-					} catch (DataExchangeException e) {
-						_connector.forwardError(e.getMessage());
-						CentralLogger.getInstance().warn(null, e);
-					}
-				}
-			}
-
-			// send initial connection state
-			_connector.forwardConnectionState(ConnectionState
-					.translate(_dynamicValueProperty.getConnectionState()));
+			// FIXME: Igor: this should be solved differently, creating ad disposing like this is not efficient
+			/*disposeDalProperty(_dynamicValueProperty, _processVariableAddress
+					.getControlSystem());*/
 		}
 	}
 

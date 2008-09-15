@@ -88,4 +88,10 @@ public interface IProcessVariableAddress {
 	 * @return a DAL RemoteInfo or null
 	 */
 	RemoteInfo toDalRemoteInfo();
+	
+	/**
+	 * Returns new address instance without characteristic part.
+	 * @return new address instance without characteristic part
+	 */
+	IProcessVariableAddress deriveNoCharacteristicPart();
 }

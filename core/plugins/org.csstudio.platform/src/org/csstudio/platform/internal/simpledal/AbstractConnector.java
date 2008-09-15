@@ -43,10 +43,10 @@ import org.epics.css.dal.Timestamp;
 /**
  * Base class for connectors.
  * 
- * For convinience the {@link IProcessVariableValueListener}´s are only weakly
- * referenced. The connector tracks for {@link IProcessVariableValueListener}´s
+ * For convinience the {@link IProcessVariableValueListener}ï¿½s are only weakly
+ * referenced. The connector tracks for {@link IProcessVariableValueListener}ï¿½s
  * that have been garbage collected and removes those references from its
- * internal list. This way {@link IProcessVariableValueListener}´s must not be
+ * internal list. This way {@link IProcessVariableValueListener}ï¿½s must not be
  * disposed explicitly.
  * 
  * @author Sven Wende
@@ -55,6 +55,23 @@ import org.epics.css.dal.Timestamp;
 @SuppressWarnings("unchecked")
 abstract class AbstractConnector implements IConnectorStatistic,
 		IProcessVariableAdressProvider, IProcessVariable {
+	
+	class ListenerReference {
+		
+		public IProcessVariableValueListener listener;
+		public String characteristic=null;
+		
+		public ListenerReference(String characteristic, IProcessVariableValueListener<?> listener) {
+			this.characteristic=characteristic;
+			this.listener=listener;
+		}
+		
+		public boolean ischaracteristic() {
+			return characteristic!=null;
+		}
+	}
+	
+	
 	private Object _latestValue;
 
 	private ConnectionState _latestConnectionState = ConnectionState.INITIAL;
@@ -68,7 +85,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	/**
 	 * A list of value listeners to which control system events are forwarded.
 	 */
-	private List<WeakReference<IProcessVariableValueListener>> _weakListenerReferences;
+	private List<WeakReference<ListenerReference>> _weakListenerReferences;
 
 	private String _latestError;
 
@@ -83,7 +100,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 		assert valueType != null;
 		_processVariableAddress = pvAddress;
 		_valueType = valueType;
-		_weakListenerReferences = new ArrayList<WeakReference<IProcessVariableValueListener>>();
+		_weakListenerReferences = new ArrayList<WeakReference<ListenerReference>>();
 		PerformanceUtil.getInstance().constructorCalled(this);
 	}
 
@@ -152,13 +169,13 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	 * @param listener
 	 *            a value listener
 	 */
-	public void addProcessVariableValueListener(
+	public void addProcessVariableValueListener(String charateristic, 
 			IProcessVariableValueListener listener) {
 
 		synchronized (_weakListenerReferences) {
 			_weakListenerReferences
-					.add(new WeakReference<IProcessVariableValueListener>(
-							listener));
+					.add(new WeakReference<ListenerReference>(
+							new ListenerReference(charateristic,listener)));
 		}
 
 		// send initial connection state,
@@ -167,7 +184,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 		}
 
 		// send initial value
-		if (_latestValue != null) {
+		if (_latestValue != null && charateristic==null) {
 			listener.valueChanged(_latestValue, null);
 		}
 
@@ -187,9 +204,9 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	public void removeProcessVariableValueListener(
 			IProcessVariableValueListener listener) {
 		synchronized (_weakListenerReferences) {
-			WeakReference<IProcessVariableValueListener> toRemove = null;
-			for (WeakReference<IProcessVariableValueListener> ref : _weakListenerReferences) {
-				if (ref.get() == listener) {
+			WeakReference<ListenerReference> toRemove = null;
+			for (WeakReference<ListenerReference> ref : _weakListenerReferences) {
+				if (ref.get().listener == listener) {
 					toRemove = ref;
 				}
 			}
@@ -241,8 +258,8 @@ abstract class AbstractConnector implements IConnectorStatistic,
 			_latestConnectionState = connectionState;
 
 			execute(new IInternalRunnable() {
-				public void doRun(IProcessVariableValueListener listener) {
-					listener.connectionStateChanged(connectionState);
+				public void doRun(ListenerReference listener) {
+					listener.listener.connectionStateChanged(connectionState);
 				}
 			});
 		}
@@ -272,9 +289,26 @@ abstract class AbstractConnector implements IConnectorStatistic,
 			_latestValue = value;
 
 			execute(new IInternalRunnable() {
-				public void doRun(IProcessVariableValueListener listener) {
-					listener.valueChanged(ConverterUtil.convert(value,
+				public void doRun(ListenerReference listener) {
+					listener.listener.valueChanged(ConverterUtil.convert(value,
 							_valueType), timestamp);
+				}
+			});
+		}
+	}
+
+	/**
+	 * Forward the current characteristic value with its timestamp.
+	 * 
+	 */
+	protected void doForwardValue(final Object value, final Timestamp timestamp, final String characteristic) {
+		if (value != null && characteristic!=null) {
+			execute(new IInternalRunnable() {
+				public void doRun(ListenerReference listener) {
+					if (characteristic.equals(listener.characteristic)) {
+						listener.listener.valueChanged(ConverterUtil.convert(value,
+								_valueType), timestamp);
+					}
 				}
 			});
 		}
@@ -288,8 +322,8 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	 */
 	protected void doForwardError(final String error) {
 		execute(new IInternalRunnable() {
-			public void doRun(IProcessVariableValueListener listener) {
-				listener.errorOccured(error);
+			public void doRun(ListenerReference listener) {
+				listener.listener.errorOccured(error);
 			}
 		});
 	}
@@ -305,13 +339,13 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	 */
 	private void execute(IInternalRunnable runnable) {
 		synchronized (_weakListenerReferences) {
-			Iterator<WeakReference<IProcessVariableValueListener>> it = _weakListenerReferences
+			Iterator<WeakReference<ListenerReference>> it = _weakListenerReferences
 					.iterator();
 
 			while (it.hasNext()) {
-				WeakReference<IProcessVariableValueListener> wr = it.next();
+				WeakReference<ListenerReference> wr = it.next();
 
-				IProcessVariableValueListener listener = wr.get();
+				ListenerReference listener = wr.get();
 
 				if (listener != null) {
 					runnable.doRun(listener);
@@ -327,7 +361,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	private void cleanupWeakReferences() {
 		synchronized (_weakListenerReferences) {
 			List<WeakReference> deletionCandidates = new ArrayList<WeakReference>();
-			Iterator<WeakReference<IProcessVariableValueListener>> it = _weakListenerReferences
+			Iterator<WeakReference<ListenerReference>> it = _weakListenerReferences
 					.iterator();
 
 			while (it.hasNext()) {
@@ -360,7 +394,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 		 *            a value listener instance (we ensure, that this is not
 		 *            null)
 		 */
-		void doRun(IProcessVariableValueListener valueListeners);
+		void doRun(ListenerReference valueListeners);
 	}
 
 	
