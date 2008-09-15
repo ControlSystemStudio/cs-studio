@@ -10,14 +10,9 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
- lib/concurrent-1.3.1.jar,
  lib/java-common-4.0-SNAPSHOT.jar,
- lib/java-common-src-4.0-SNAPSHOT.jar,
  lib/css-dal-0.8.2.jar
-Export-Package: EDU.oswego.cs.dl.util.concurrent,
- EDU.oswego.cs.dl.util.concurrent.misc,
- EDU.oswego.cs.dl.util.concurrent.taskDemo,
- com.cosylab.application.state,
+Export-Package: com.cosylab.application.state,
  com.cosylab.application.state.impl,
  com.cosylab.events,
  com.cosylab.introspection,
