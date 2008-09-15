@@ -75,6 +75,9 @@ public class Preferences
     
     /** Preference Identifier: Show 'ExportToElogAction' in Config View? */
     public static final String SHOW_ELOG_EXPORT_ACTION = "show_elog_export_action";
+
+    /** Preference Identifier: Show "Start Time" in archives view? */
+    private static final String SHOW_ARCHIVE_START_TIMES = "show_archive_start_times";
     
     /** @return Default start time specification. */
     static public String getStartSpecification()
@@ -118,19 +121,27 @@ public class Preferences
         return store.getBoolean(AUTOSCALE);
     }
 
+    /** @return Number of plot bins */
     static public int getPlotBins()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
         return store.getInt(PLOT_BINS);
     }
     
-    /** @return Default auto-scale setting */
+    /** @return <code>true</code> when "Request Types" should show in GUI */
     static public boolean getShowRequestTypes()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
         return store.getBoolean(SHOW_REQUEST_TYPES);
     }
 
+    /** @return <code>true</code> when "Start Time" should show in archives view */
+    static public boolean getShowArchiveStartTimes()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getBoolean(SHOW_ARCHIVE_START_TIMES);
+    }
+    
     /** @return Default setting for 'show sample file import action'. */
     static public boolean getShowSampleFileImportAction()
     {

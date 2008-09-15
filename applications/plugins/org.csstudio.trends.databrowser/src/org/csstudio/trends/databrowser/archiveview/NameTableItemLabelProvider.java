@@ -11,10 +11,19 @@ import org.eclipse.swt.graphics.Image;
 public class NameTableItemLabelProvider extends LabelProvider
                                         implements ITableLabelProvider
 {
-    public static final int NAME = 0;
-    public static final int ARCHIVE = 1;
-    public static final int START = 2;
-    public static final int END = 3;
+    final public static int NAME = 0;
+    final public static int ARCHIVE = 1;
+    final public static int START_OR_END = 2;
+    final public static int END = 3;
+    final private boolean show_start_times;
+
+    /** Initialize
+     *  @param show_start_times <code>true</code> for table with 'start' column
+     */
+    public NameTableItemLabelProvider(final boolean show_start_times)
+    {
+        this.show_start_times = show_start_times;
+    }
 
     /** No column images ... */
     public Image getColumnImage(Object element, int column)
@@ -32,8 +41,9 @@ public class NameTableItemLabelProvider extends LabelProvider
             return item.getName();
         case ARCHIVE:
             return item.getArchiveName();
-        case START:
-            return getTimeInfo(item.getStart());
+        case START_OR_END:
+            return show_start_times
+                ? getTimeInfo(item.getStart()) : getTimeInfo(item.getEnd());
         case END:
             return getTimeInfo(item.getEnd());
         }

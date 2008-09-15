@@ -52,9 +52,10 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ArchiveView extends ViewPart
 {
-
+    /** ID of this view, defined in plugin.xml */
     public static final String ID = ArchiveView.class.getName();
 
+    // History combo tags
     private static final String URL_LIST_TAG = "url_list"; //$NON-NLS-1$
     private static final String PATTERN_LIST_TAG = "pattern_list"; //$NON-NLS-1$
 
@@ -68,6 +69,7 @@ public class ArchiveView extends ViewPart
     
     /** Memento tag for form weights */
     private static final String FORM_WEIGHT_TAG = "form_weights"; //$NON-NLS-1$
+    
     /** Memento tag for regex checkbox */
     private static final String REGEX_TAG = "regex"; //$NON-NLS-1$
 
@@ -354,13 +356,15 @@ public class ArchiveView extends ViewPart
         table.setLinesVisible(true);
         AutoSizeColumn.make(table, Messages.NameCol, 200, 100);
         AutoSizeColumn.make(table, Messages.ArchiveCol, 50, 40);
-        AutoSizeColumn.make(table, Messages.StartCol, 85, 20);
+        final boolean show_start_times = Preferences.getShowArchiveStartTimes();
+        if (show_start_times)
+            AutoSizeColumn.make(table, Messages.StartCol, 85, 20);
         AutoSizeColumn.make(table, Messages.EndCol, 85, 20);
         // Configure table to auto-size the columns
         new AutoSizeControlListener(box, table);
         name_table_viewer = new TableViewer(table);
         name_table_viewer.setUseHashlookup(true);
-        name_table_viewer.setLabelProvider(new NameTableItemLabelProvider());
+        name_table_viewer.setLabelProvider(new NameTableItemLabelProvider(show_start_times));
         name_table_viewer.setContentProvider(
             new LazyNameTableContentProvider(name_table_viewer,
                                              name_table_items));
@@ -383,7 +387,7 @@ public class ArchiveView extends ViewPart
         site.registerContextMenu(manager, name_table_viewer);
         
         // Get the URLs from preferences.
-        String urls[] = Preferences.getArchiveServerURLs();
+        final String urls[] = Preferences.getArchiveServerURLs();
         for (int i=0; i<urls.length; ++i)
         {
             if (urls[i].length() > 0)
