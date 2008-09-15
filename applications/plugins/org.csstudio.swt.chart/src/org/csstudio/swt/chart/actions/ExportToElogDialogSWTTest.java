@@ -4,7 +4,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-/** SWT app for testing the Formula dialog.
+/** SWT app for testing the elog dialog.
  *  @author Kay Kasemir
  */
 public class ExportToElogDialogSWTTest
@@ -20,18 +20,17 @@ public class ExportToElogDialogSWTTest
 
         final String logbooks[] = new String[]
         { "Main", "Some Logbook", "other" };
-        ExportToElogInfo info = new ExportToElogInfo(
-                "user", "$user", "Some Logbook", "title", "For what it's worth...");
-        ExportToElogDialog dialog = new ExportToElogDialog(shell, logbooks, info);
-        if (dialog.open() == ExportToElogDialog.OK)
+        ExportToElogDialog dialog = new ExportToElogDialog(shell, "Test", logbooks, "Main")
         {
-            info = dialog.getInfo();
-            // Run another one with entered info
-            dialog = new ExportToElogDialog(shell, logbooks, info);
-            dialog.open();
-            info = dialog.getInfo();
-            System.out.println(info);
-        }
+            @Override
+            void makeElogEntry(String logbook_name, String user, String password,
+                    String title, String body) throws Exception
+            {
+                if ("fred".equals(user))
+                    throw new Exception ("Try again");
+            }
+        };
+        dialog.open();
 
         // Shut down
         display.dispose(); // !

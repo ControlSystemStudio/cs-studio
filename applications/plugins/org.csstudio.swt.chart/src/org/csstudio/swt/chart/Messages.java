@@ -35,6 +35,7 @@ public class Messages extends NLS
     public static String ELog_Dialog_DialogTitle;
     public static String ELog_Dialog_Logbook;
     public static String ELog_Dialog_Logbook_TT;
+    public static String ELog_Dialog_Message;
     public static String ELog_Dialog_Password;
     public static String ELog_Dialog_Password_TT;
     public static String ELog_Dialog_Title;

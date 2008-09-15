@@ -1,6 +1,7 @@
 package org.csstudio.swt.chart.actions;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -15,24 +16,30 @@ import org.csstudio.swt.chart.Messages;
 /** Dialog for creating elog entry.
  *  @author Kay Kasemir
  */
-public class ExportToElogDialog extends TitleAreaDialog
+abstract public class ExportToElogDialog extends TitleAreaDialog
 {
+    final private String application;
+    final private String[] logbooks;
+    final private String default_logbook;
+
     private Text user, password, title, body;
-    private ExportToElogInfo info;
     private Combo logbook;
-    private String[] logbooks;
 
     /** Construct a dialog
      *  @param shell The parent shell
+     *  @param application Application name
      *  @param logbooks List of available logbooks or <code>null</code>
-     *  @param Info entered so far
+     *  @param default logbook or <code>null</code>
      */
-    public ExportToElogDialog(final Shell shell, final String[] logbooks,
-            final ExportToElogInfo info)
+    public ExportToElogDialog(final Shell shell,
+            final String application,
+            final String[] logbooks,
+            final String default_logbook)
     {
         super(shell);
+        this.application = application;
         this.logbooks = logbooks;
-        this.info  = info;
+        this.default_logbook = default_logbook;
         // Try to allow resize, because the 'text' section could
         // use more or less space depending on use.
         setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -51,6 +58,7 @@ public class ExportToElogDialog extends TitleAreaDialog
     protected Control createDialogArea(final Composite parent)
     {
         setTitle(Messages.ELog_Dialog_DialogTitle);
+        setMessage(Messages.ELog_Dialog_Message);
 
         // From peeking at super.createDialogArea we happen to expect a Compos.
         final Composite area = (Composite) super.createDialogArea(parent);
@@ -144,33 +152,43 @@ public class ExportToElogDialog extends TitleAreaDialog
         body.setLayoutData(gd);
         
         // Initialize GUI with data from info
-        user.setText(info.getUser());
-        password.setText(info.getPassword());
+        title.setText(NLS.bind(Messages.ELog_TitleFormat, application));
+        body.setText(NLS.bind(Messages.ELog_BodyFormat, application));
         if (logbook != null)
         {
             logbook.setItems(logbooks);
-            logbook.setText(info.getLogbook());
+            logbook.setText(default_logbook);
         }
-        title.setText(info.getTitle());
-        body.setText(info.getBody());
         
         return area;
     }
     
-    /** Update the formula item. */
+    /** Make the elog entry, display errors. */
     @Override
     protected void okPressed()
     {
         final String log_name = logbook != null ? logbook.getText() : ""; //$NON-NLS-1$
-        info = new ExportToElogInfo(user.getText(),
-                password.getText(), log_name, title.getText(),
-                body.getText());
+        try
+        {
+            makeElogEntry(log_name, user.getText().trim(),
+                    password.getText().trim(), title.getText().trim(),
+                    body.getText().trim());
+        }
+        catch (Exception ex)
+        {
+            setErrorMessage(ex.getMessage());
+            return;
+        }
         super.okPressed();
     }
 
-    /** @return Export info (only valid after OK was pressed) */
-    public ExportToElogInfo getInfo()
-    {
-        return info;
-    }
+    /** To be implemented by derived class.
+     *  Has to make the actual elog entry.
+     *  @param logbook_name 
+     *  @param user 
+     *  @param password 
+     *  @param title 
+     *  @param body 
+     */
+    abstract void makeElogEntry(String logbook_name, String user, String password, String title, String body) throws Exception;
 }
