@@ -23,10 +23,10 @@ package org.csstudio.platform.libs.epics;
 
 import gov.aps.jca.jni.JNITargetArch;
 
-import org.eclipse.core.runtime.IStatus;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.osgi.framework.BundleContext;
 
 /** The main plugin class to be used in the desktop.
@@ -36,13 +36,41 @@ import org.osgi.framework.BundleContext;
   */
 public class EpicsPlugin extends Plugin
 {
-	public static final String ID = "org.csstudio.platform.libs.epics"; //$NON-NLS-1$
+    public static final String ID = "org.csstudio.platform.libs.epics"; //$NON-NLS-1$
+
     //The shared instance.
 	private static EpicsPlugin plugin;
     private boolean use_pure_java;
+
+    /** How should subscriptions be established? */
+    public enum MonitorMask
+    {
+        /** Listen to changes in value */
+        VALUE(1),
+        
+        /** Listen to changes in value beyond archive limit */
+        ARCHIVE(2),
+        
+        /** Listen to changes in alarm state */
+        ALARM(4);
+        
+        final private int mask;
+        
+        private MonitorMask(final int mask)
+        {
+            this.mask = mask;
+        }
+        
+        /** @return Mask bits used in underlying CA call */
+        public int getMask()
+        {
+            return mask;
+        }
+    };
+
+    private MonitorMask monitor_mask = MonitorMask.VALUE;
 	
 	/** The constructor. */
-	@SuppressWarnings("nls")
     public EpicsPlugin()
     {
         super();
@@ -54,6 +82,10 @@ public class EpicsPlugin extends Plugin
      */
     public boolean usePureJava()
     {   return use_pure_java; }
+
+    /** @return Mask used to create CA monitors (subscriptions) */
+    public MonitorMask getMonitorMask()
+    {   return monitor_mask; }
 
     /** @return Returns the shared instance. */
     public static EpicsPlugin getDefault()
@@ -105,12 +137,13 @@ public class EpicsPlugin extends Plugin
 			catch (Throwable ex)
 			{
 			    if (com_ca_exception != null)
-			        log(Status.INFO,
+			        CentralLogger.getInstance().getLogger(this).info(
 		                "Cannot load Com and ca libraries. "
 		                + "Could be a problem if JCA binary depends on them",
 		                com_ca_exception);
 			    // This is an error for sure:
-			    log(Status.ERROR, "Cannot load JCA binary",	ex);
+			    CentralLogger.getInstance().getLogger(this)
+			        .error("Cannot load JCA binary", ex);
 			}
 		}
 	}
@@ -135,47 +168,59 @@ public class EpicsPlugin extends Plugin
 	{
 	    try
 	    {
-		    // TODO Avoid getPluginPreferences(), directly use IPreferencesService?
-	        // final IPreferencesService prefs = Platform.getPreferencesService();
-	        // ...
-	        final Preferences prefs = getDefault().getPluginPreferences();
-	        use_pure_java = prefs.getBoolean(PreferenceConstants.PURE_JAVA);
-	        // Set the 'CAJ' copy of the settings
-	        String addr_list = PreferenceConstants.ADDR_LIST;
+	        final IPreferencesService prefs = Platform.getPreferencesService();
+	        use_pure_java =
+	            prefs.getBoolean(ID, PreferenceConstants.PURE_JAVA, true, null);
+	        monitor_mask = MonitorMask.valueOf(
+                prefs.getString(ID, PreferenceConstants.MONITOR, "VALUE", null));
+	        
+	        // Set the 'CAJ' and 'JNI' copies of the settings
+	        final String addr_list =
+	            prefs.getString(ID, PreferenceConstants.ADDR_LIST, null, null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
-	                        addr_list);
-	        final boolean auto_addr = prefs.getBoolean(PreferenceConstants.AUTO_ADDR_LIST);
+	                          addr_list);
+            setSystemProperty("gov.aps.jca.jni.JNIContext.addr_list", 
+                              addr_list);
+
+			final String auto_addr = Boolean.toString(
+			    prefs.getBoolean(ID, PreferenceConstants.AUTO_ADDR_LIST, true, null));
 	        setSystemProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
-                            Boolean.toString(auto_addr)); 
-	        String timeout = PreferenceConstants.TIMEOUT;
+                              auto_addr); 
+            setSystemProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
+                              auto_addr); 
+	        
+	        final String timeout =
+	            prefs.getString(ID, PreferenceConstants.TIMEOUT, "30.0", null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
 	                        timeout);
-	        String beacon_period = PreferenceConstants.BEACON_PERIOD;
+            setSystemProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
+                    timeout);
+			
+			final String beacon_period =
+			    prefs.getString(ID, PreferenceConstants.BEACON_PERIOD, "15.0", null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
 	                        beacon_period); 
-	        String repeater_port = PreferenceConstants.REPEATER_PORT;
+            setSystemProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
+                    beacon_period); 
+
+            final String repeater_port =
+                prefs.getString(ID, PreferenceConstants.REPEATER_PORT, "5065", null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
 	                        repeater_port);
-	        String server_port = PreferenceConstants.SERVER_PORT;
+            setSystemProperty("gov.aps.jca.jni.JNIContext.repeater_port",
+                    repeater_port);
+
+            final String server_port =
+                prefs.getString(ID, PreferenceConstants.SERVER_PORT, "5064", null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.server_port", 
 	                        server_port);
-	        String max_array_bytes = PreferenceConstants.MAX_ARRAY_BYTES;
+            setSystemProperty("gov.aps.jca.jni.JNIContext.server_port", 
+                    server_port);
+	        
+			final String max_array_bytes =
+			    prefs.getString(ID, PreferenceConstants.MAX_ARRAY_BYTES, "16384", null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
 	                        max_array_bytes);
-	
-	        // Set the 'JNI' copy of the settings
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.addr_list", 
-	                        addr_list);
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
-	                        Boolean.toString(auto_addr)); 
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
-	                        timeout);
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
-	                        beacon_period); 
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.repeater_port",
-	                        repeater_port);
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.server_port", 
-	                        server_port);
 	        setSystemProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
 	                        max_array_bytes);
 
@@ -189,41 +234,24 @@ public class EpicsPlugin extends Plugin
 	        setSystemProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
 	        		"gov.aps.jca.event.DirectEventDispatcher");
 	    }
-	    catch (Exception e)
+	    catch (Exception ex)
 	    {
-	        log(IStatus.ERROR, "Cannot set preferences", e);
+	        CentralLogger.getInstance().getLogger(this)
+	            .error("Preferences Error", ex);
 	    }
 	    
 	}
   
-	/*
-	 * Sets property from preferences to System properties only if property value is not null or empty string.
-	 * @param prop System property name
-	 * @param pref CSS preference name
+	/** Sets property from preferences to System properties only if property
+	 *  value is not null or empty string.
+	 *  @param prop System property name
+	 *  @param value CSS preference name
 	 */
-    private void setSystemProperty(String prop, String pref) {
-        final Preferences prefs = getDefault().getPluginPreferences();
-    	String val = prefs.getString(pref);
-    	if (val!=null && val.length()>0) {
-    		System.setProperty(prop, val);
-    	}
-		
-	}
-
-	/** Add a message to the log.
-     *  @param type
-     *  @param message
-     *  @param e Exception or <code>null</code>
-     */
-    private static void log(int type, String message, Throwable ex)
+    private void setSystemProperty(final String prop, final String value)
     {
-      if (plugin == null)
-      {
-            System.out.println(message);
-            if (ex != null)
-                ex.printStackTrace();
-      }
-      else
-          plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
+    	if (value == null  ||  value.length()<=0)
+    	    return;
+    	CentralLogger.getInstance().getLogger(this).debug(prop + "=" + value); //$NON-NLS-1$
+		System.setProperty(prop, value);
     }
 }
