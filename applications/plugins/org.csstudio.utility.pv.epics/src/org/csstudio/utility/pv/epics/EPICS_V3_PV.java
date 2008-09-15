@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -337,18 +338,23 @@ public class EPICS_V3_PV
             if (ch_ref == null)
             	return;
     		final Channel channel = ch_ref.getChannel();
+            final Logger logger = Activator.getLogger();
             try
             {
                 final DBRType type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
-                Activator.getLogger().debug(name + " subscribed as " + type.getName());
+                final MonitorMask mask = PVContext.monitor_mask;
+                if (logger.isDebugEnabled())
+                    logger.debug(name + " subscribed as " + type.getName()
+                            + " (" + mask + ")");
                 state = State.Subscribing;
                 subscription = channel.addMonitor(type,
-                           channel.getElementCount(), 1, this);
+                       channel.getElementCount(),
+                       mask.getMask(), this);
             }
             catch (Exception ex)
             {
-                Activator.getLogger().error(name + " subscribe error", ex);
+                logger.error(name + " subscribe error", ex);
             }
 		}
     }

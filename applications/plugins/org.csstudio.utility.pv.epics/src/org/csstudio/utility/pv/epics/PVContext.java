@@ -9,6 +9,8 @@ import gov.aps.jca.event.ContextMessageListener;
 
 import java.util.HashMap;
 
+import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
+
 /** Handle PV context, pool PVs by name.
  * 
  *  When using the pure java CA client implementation, it returns the
@@ -37,6 +39,9 @@ public class PVContext
      *  Changes only have an effect before the very first channel is created.
      */
     public static boolean use_pure_java = true;
+
+    /** Mask used for CA monitors */
+    public static MonitorMask monitor_mask = MonitorMask.VALUE;
 
     /** The Java CA Library instance. */
     static private JCALibrary jca = null;

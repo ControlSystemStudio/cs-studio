@@ -36,6 +36,7 @@ public class Activator extends AbstractCssPlugin
         try
         {
             PVContext.use_pure_java = EpicsPlugin.getDefault().usePureJava();
+            PVContext.monitor_mask = EpicsPlugin.getDefault().getMonitorMask();
             final String message = PVContext.use_pure_java ?
                                 "Using pure java CAJ" : "Using JCA with JNI";
             getLogger().debug(message);
