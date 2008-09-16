@@ -54,6 +54,7 @@ public class AlarmNachricht implements Cloneable {
 		this.unknownContent = unknownMap;
 		this.content = map;
 		this.zeitFuerToString = new Date();
+		this.nachricht = map.toString() + " " + unknownMap.toString();
 	}
 
 	@Deprecated
@@ -67,11 +68,11 @@ public class AlarmNachricht implements Cloneable {
 	}
 
 	private AlarmNachricht(final String nachricht, final Date zeitFuerToString,
-			final Map<MessageKeyEnum, String> content, Map<String, String> map) {
+			final Map<MessageKeyEnum, String> content, Map<String, String> unknownContent) {
 		this.nachricht = nachricht;
 		this.zeitFuerToString = zeitFuerToString;
 		this.content = content;
-		this.unknownContent = emptyContent;
+		this.unknownContent = unknownContent;
 	}
 
 

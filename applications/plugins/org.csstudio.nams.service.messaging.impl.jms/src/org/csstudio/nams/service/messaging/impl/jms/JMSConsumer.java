@@ -66,12 +66,13 @@ class JMSConsumer implements Consumer {
 
 		public void close() {
 			this.arbeitFortsetzen = false;
+			this.interrupt(); // Keine Sorge, unbehandelte Nachricht wird
+			// nicht acknowledged und kommt daher wieder.
+			Thread.yield();
 			try {
 				this.consumer.close();
 			} catch (final JMSException e) {
 			}
-			this.interrupt(); // Keine Sorge, unbehandelte Nachricht wird
-			// nicht acknowledged und kommt daher wieder.
 			this.logger.logDebugMessage(this, "Consumer WorkThread stoped");
 		}
 

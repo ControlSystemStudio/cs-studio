@@ -126,6 +126,16 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					// Nachricht nicht anreichern. Wird im JMSProducer
 					// gemacht
 					// Versenden
+					DecisionDepartmentActivator.logger
+							.logInfoMessage(
+									this,
+									"decission office ordered message to be send: \""
+											+ vorgangsmappe
+													.gibAusloesendeAlarmNachrichtDiesesVorganges()
+													.toString()
+											+ "\" [internal process id: "
+											+ vorgangsmappe.gibMappenkennung()
+													.toString() + "]");
 					DecisionDepartmentActivator.this.amsAusgangsProducer
 							.sendeVorgangsmappe(vorgangsmappe);
 				}
@@ -203,14 +213,14 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				// Abbruch bei Syncrinisation
 				result = true;
 			}
-		} catch (final MessagingException messagingException) {
+		} catch (final Throwable messagingException) {
 			if (SyncronisationsAutomat.hasBeenCanceled()) {
 				// Abbruch bei Syncrinisation
 				logger
 						.logInfoMessage(
 								instance,
 								"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
-
+				result = false;
 			} else {
 
 				logger.logFatalMessage(instance,
@@ -219,22 +229,23 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				result = false;
 
 			}
-		} catch (final StorageException storageException) {
-			logger.logFatalMessage(instance,
-					"Exception while synchronizing configuration.",
-					storageException);
-			result = false;
-		} catch (final UnknownConfigurationElementError unknownConfigurationElementError) {
-			logger.logFatalMessage(instance,
-					"Exception while synchronizing configuration.",
-					unknownConfigurationElementError);
-			result = false;
-		} catch (final InconsistentConfigurationException inconsistentConfiguration) {
-			logger.logFatalMessage(instance,
-					"Exception while synchronizing configuration.",
-					inconsistentConfiguration);
-			result = false;
 		}
+//		} catch (final StorageException storageException) {
+//			logger.logFatalMessage(instance,
+//					"Exception while synchronizing configuration.",
+//					storageException);
+//			result = false;
+//		} catch (final UnknownConfigurationElementError unknownConfigurationElementError) {
+//			logger.logFatalMessage(instance,
+//					"Exception while synchronizing configuration.",
+//					unknownConfigurationElementError);
+//			result = false;
+//		} catch (final InconsistentConfigurationException inconsistentConfiguration) {
+//			logger.logFatalMessage(instance,
+//					"Exception while synchronizing configuration.",
+//					inconsistentConfiguration);
+//			result = false;
+//		}
 		return result;
 	}
 
@@ -242,8 +253,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * Indicates if the application instance should continue working. Unused in
 	 * the activator instance.
 	 * 
-	 * This field may be set by another thread to indicate that application should
-	 * shut down.
+	 * This field may be set by another thread to indicate that application
+	 * should shut down.
 	 */
 	private volatile boolean _continueWorking;
 
@@ -294,8 +305,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 	private StepByStepProcessor _ausgangskorbBearbeiter;
 
-	private Integer _applicationExitStatus = IApplication.EXIT_OK;
-
 	private Eingangskorb<Vorgangsmappe> eingangskorbDesDecisionOffice;
 
 	private StandardAblagekorb<Vorgangsmappe> ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice;
@@ -315,10 +324,15 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	public Object start(final IApplicationContext context) {
 
+		// Initialize state for normal run
+
+		// just to make it possible to stop while start up (will be reset
+		// later):
 		this._receiverThread = Thread.currentThread();
 		this._alarmEntscheidungsBuero = null;
 		this._ausgangskorbBearbeiter = null;
 		this._continueWorking = true;
+		DecisionDepartmentActivator._hasReceivedSynchronizationRequest = false;
 
 		DecisionDepartmentActivator.logger
 				.logInfoMessage(this,
@@ -333,8 +347,17 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		}
 
 		do {
-			this._applicationExitStatus = IApplication.EXIT_OK;
-
+			if (DecisionDepartmentActivator._hasReceivedSynchronizationRequest) {
+				/*-
+				 * If a syncronization-message has been received the flag this._continueWorking has been set to false.
+				 * This is required to stop the receving of other messages. To reinitialiye and start working with a
+				 * new configuration the flag has to be reset to true.
+				 */
+				this._continueWorking = true;
+				DecisionDepartmentActivator.logger
+						.logInfoMessage(this,
+								"Decision department application is going to be re-initialized...");
+			}
 			if (this._continueWorking) {
 				/*-
 				 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
@@ -359,7 +382,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				try {
 					this.extCommandProducer
 							.sendeSystemnachricht(new SyncronisationsBestaetigungSystemNachricht());
-					DecisionDepartmentActivator._hasReceivedSynchronizationRequest = false;
 					DecisionDepartmentActivator.logger.logInfoMessage(this,
 							"Commiting synchronization after restart done.");
 				} catch (MessagingException e) {
@@ -371,6 +393,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					this._continueWorking = false;
 				}
 			}
+			
+			/*-
+			 * if a synchronize request has been received here it is handled.
+			 */
+			DecisionDepartmentActivator._hasReceivedSynchronizationRequest = false;
+			
 			if (this._continueWorking) {
 				createDecissionOffice();
 			}
@@ -379,7 +407,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				performNormalWork();
 			}
 
-		} while (this._applicationExitStatus == IApplication.EXIT_RESTART);
+		} while (DecisionDepartmentActivator._hasReceivedSynchronizationRequest);
 
 		DecisionDepartmentActivator.logger
 				.logInfoMessage(
@@ -393,7 +421,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		DecisionDepartmentActivator.logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
 
-		return this._applicationExitStatus;
+		return IApplication.EXIT_OK;
 	}
 
 	private void closeMessagingConnections() {
@@ -792,6 +820,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				DecisionDepartmentActivator.logger, consumerArray,
 				DecisionDepartmentActivator.executionService);
 
+		this._receiverThread = Thread.currentThread();
 		while (this._continueWorking) {
 			try {
 				final NAMSMessage message = consumersConsumer.receiveMessage();
@@ -827,22 +856,28 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					} else if (message.enthaeltSystemnachricht()) {
 						if (message.alsSystemachricht()
 								.istSyncronisationsAufforderung()) {
-							DecisionDepartmentActivator.historyService
-									.logReceivedStartReplicationMessage();
-							DecisionDepartmentActivator._hasReceivedSynchronizationRequest = true;
-							this._applicationExitStatus = IApplication.EXIT_RESTART;
-							DecisionDepartmentActivator.logger
-									.logInfoMessage(
-											this,
-											"Decission department received re-synchronization request, going to be re-initialized...");
+							if (!DecisionDepartmentActivator._hasReceivedSynchronizationRequest) {
+								DecisionDepartmentActivator.historyService
+										.logReceivedStartReplicationMessage();
+								DecisionDepartmentActivator._hasReceivedSynchronizationRequest = true;
+								DecisionDepartmentActivator.logger
+										.logInfoMessage(
+												this,
+												"Decission department received re-synchronization request, going to be re-initialized...");
+
+								message.acknowledge();
+								
+								// Office stoppen...
+								closeDecissionOffice();
+								
+								// cancel receive wihout stopping application!
+								return ;
+							}
 						}
 					}
 				} finally {
 					try {
 						message.acknowledge();
-						if (this._applicationExitStatus == IApplication.EXIT_RESTART) {
-							this.stop();
-						}
 					} catch (final MessagingException e) {
 						DecisionDepartmentActivator.logger.logWarningMessage(
 								this, "unable to ackknowlwedge message: "

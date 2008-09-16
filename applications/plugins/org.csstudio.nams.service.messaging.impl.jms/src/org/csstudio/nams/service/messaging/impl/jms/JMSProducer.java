@@ -97,11 +97,11 @@ public class JMSProducer implements Producer {
 				this.logger
 						.logErrorMessage(this, "unbekannte Systemnachricht.");
 			}
-		} catch (final JMSException e) {
+		} catch (final Throwable e) {
 			this.logger.logWarningMessage(this,
-					"JMSException during send of system message", e);
+					"Throwable recieved during send of system message", e);
 			throw new MessagingException(
-					"JMSException during send of system message", e);
+					"Throwable recieved during send of system message", e);
 		}
 	}
 
