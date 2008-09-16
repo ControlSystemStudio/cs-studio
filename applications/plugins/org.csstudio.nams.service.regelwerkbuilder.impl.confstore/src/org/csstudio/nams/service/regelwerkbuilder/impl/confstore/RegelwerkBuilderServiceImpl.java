@@ -81,9 +81,11 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 						versandRegels.add(this
 								.createVersandRegel(filterConditionDTO));
 					} catch (Throwable t) {
-						RegelwerkBuilderServiceImpl.logger.logErrorMessage(this,
+						RegelwerkBuilderServiceImpl.logger.logErrorMessage(
+								this,
 								"Failed to create Versand-Regel from DTO: "
-										+ filterConditionDTO + " for Filter: " + filterDTO, t);
+										+ filterConditionDTO + " for Filter: "
+										+ filterDTO, t);
 					}
 				}
 				final VersandRegel hauptRegel = new UndVersandRegel(
@@ -102,7 +104,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		return results;
 	}
 
-	private VersandRegel createVersandRegel(
+	protected VersandRegel createVersandRegel(
 			final FilterConditionDTO filterConditionDTO) {
 		// mapping the type information in the aggrFilterConditionTObject to a
 		// VersandRegel

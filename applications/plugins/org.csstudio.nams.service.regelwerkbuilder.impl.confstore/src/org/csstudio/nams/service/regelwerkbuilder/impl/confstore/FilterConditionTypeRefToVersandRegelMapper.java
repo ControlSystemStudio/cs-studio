@@ -37,7 +37,6 @@ public enum FilterConditionTypeRefToVersandRegelMapper {
 		return null;
 	}
 
-	// private final int id;
 	private final Class<? extends FilterConditionDTO> clazz;
 
 	private FilterConditionTypeRefToVersandRegelMapper(

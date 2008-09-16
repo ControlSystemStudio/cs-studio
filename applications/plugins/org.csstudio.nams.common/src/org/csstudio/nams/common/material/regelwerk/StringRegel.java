@@ -182,4 +182,44 @@ public class StringRegel implements VersandRegel {
 			return true;
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((compareString == null) ? 0 : compareString.hashCode());
+		result = prime * result
+				+ ((messageKey == null) ? 0 : messageKey.hashCode());
+		result = prime * result
+				+ ((operator == null) ? 0 : operator.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final StringRegel other = (StringRegel) obj;
+		if (compareString == null) {
+			if (other.compareString != null)
+				return false;
+		} else if (!compareString.equals(other.compareString))
+			return false;
+		if (messageKey == null) {
+			if (other.messageKey != null)
+				return false;
+		} else if (!messageKey.equals(other.messageKey))
+			return false;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		return true;
+	}
 }
