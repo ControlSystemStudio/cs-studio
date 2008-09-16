@@ -857,6 +857,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						if (message.alsSystemachricht()
 								.istSyncronisationsAufforderung()) {
 							if (!DecisionDepartmentActivator._hasReceivedSynchronizationRequest) {
+								consumersConsumer.close();
 								DecisionDepartmentActivator.historyService
 										.logReceivedStartReplicationMessage();
 								DecisionDepartmentActivator._hasReceivedSynchronizationRequest = true;

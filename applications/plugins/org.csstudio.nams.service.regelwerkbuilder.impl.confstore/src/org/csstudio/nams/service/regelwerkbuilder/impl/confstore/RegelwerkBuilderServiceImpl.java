@@ -64,7 +64,8 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			final LocalStoreConfigurationService confStoreService = RegelwerkBuilderServiceImpl.configurationStoreService;
 			// get all filters
 			Collection<FilterDTO> listOfFilters = null;
-			listOfFilters = confStoreService.getEntireFilterConfiguration().gibAlleFilter();
+			listOfFilters = confStoreService.getEntireFilterConfiguration()
+					.gibAlleFilter();
 			// TODO Auto-generated catch blocks
 
 			// we do assume, that the first level filtercondition are conjugated
@@ -76,8 +77,14 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 				// create a list of first level filterconditions
 				final List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
 				for (final FilterConditionDTO filterConditionDTO : filterConditions) {
-					versandRegels.add(this
-							.createVersandRegel(filterConditionDTO));
+					try {
+						versandRegels.add(this
+								.createVersandRegel(filterConditionDTO));
+					} catch (Throwable t) {
+						RegelwerkBuilderServiceImpl.logger.logErrorMessage(this,
+								"Failed to create Versand-Regel from DTO: "
+										+ filterConditionDTO + " for Filter: " + filterDTO, t);
+					}
 				}
 				final VersandRegel hauptRegel = new UndVersandRegel(
 						versandRegels.toArray(new VersandRegel[0]));
@@ -99,9 +106,9 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			final FilterConditionDTO filterConditionDTO) {
 		// mapping the type information in the aggrFilterConditionTObject to a
 		// VersandRegel
-		
-		//FIXME (gs) hier knallt es bei JCFF oder NCFF Bedingungen
-		
+
+		// FIXME (gs) hier knallt es bei JCFF oder NCFF Bedingungen
+
 		final FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
 				.valueOf(filterConditionDTO.getClass());
 		switch (fctr) {
@@ -200,8 +207,8 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 					.getOperands();
 			final VersandRegel[] versandRegels = new VersandRegel[operands
 					.size()];
-			final FilterConditionDTO[] conditions = operands.toArray(new FilterConditionDTO[operands
-					.size()]);
+			final FilterConditionDTO[] conditions = operands
+					.toArray(new FilterConditionDTO[operands.size()]);
 
 			for (int i = 0; i < versandRegels.length; i++) {
 				versandRegels[i] = this.createVersandRegel(conditions[i]);

@@ -280,6 +280,7 @@ public class SyncronizeView extends ViewPart implements
 					+ Messages.SyncronizeView_sync_button_text + " <<<");
 		} else {
 			service.decrementBusy();
+			//FIXME gs,mz 20080916 check swt thread access
 			syncButton.setBackground(buttonColor);
 			syncButton.setText(Messages.SyncronizeView_sync_button_text);
 		}

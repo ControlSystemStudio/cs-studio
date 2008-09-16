@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
@@ -123,15 +124,7 @@ class LocalStoreConfigurationServiceImpl implements
 
 				Collection<RubrikDTO> alleRubriken = mapper.loadAll(
 						RubrikDTO.class, true); 
-				// FIXME (gs) was ist hier gemeint??
-				// Bei
-				// Joined
-				// hinzufuegen
-				// fuer
-				// entsprechende
-				// Elemente
-				// zuordnen!!!!
-
+				
 				Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = mapper
 						.loadAll(AlarmbearbeiterDTO.class, true);
 				Collection<TopicDTO> alleAlarmtopics = mapper.loadAll(
@@ -171,8 +164,46 @@ class LocalStoreConfigurationServiceImpl implements
 			throws StorageError, StorageException,
 			InconsistentConfigurationException {
 		
-		FilterConfiguration result = null;
+//		FilterConfiguration conf = null;
+//
+//		final UnitOfWork<FilterConfiguration> loadEntireConfigurationWork = new UnitOfWork<FilterConfiguration>() {
+//			public FilterConfiguration doWork(Mapper mapper) throws Throwable {
+//				FilterConfiguration resultOfUnit = null;
+//
+////				Collection<RubrikDTO> alleRubriken = Collections.emptySet();
+////				
+////				Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter = mapper
+////						.loadAll(AlarmbearbeiterDTO.class, true);
+////				Collection<TopicDTO> alleAlarmtopics = mapper.loadAll(
+////						TopicDTO.class, true);
+////				Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen = mapper
+////						.loadAll(AlarmbearbeiterGruppenDTO.class, true);
+////				Collection<FilterConditionDTO> allFilterConditions = mapper
+////						.loadAll(FilterConditionDTO.class, true);
+//				Collection<FilterDTO> allFilters = mapper.loadAll(
+//						FilterDTO.class, true);
+////				Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO = Collections.emptySet();
+//
+//				resultOfUnit = new FilterConfiguration(allFilters);
+//
+//				return resultOfUnit;
+//			}
+//		};
+//
+//		try {
+//			conf = this.transactionProcessor
+//					.doInTransaction(loadEntireConfigurationWork);
+//		} catch (final InterruptedException e) {
+//			this.logger.logWarningMessage(this,
+//					"Load of entire configuration interrupted", e);
+//			throw new StorageException(
+//					"Load of entire configuration interrupted", e);
+//		}
+//		
+//		FilterConfiguration result = conf;
 
+		
+		FilterConfiguration result = null;
 		final UnitOfWork<FilterConfiguration> loadEntireFilterConfigurationWork = new UnitOfWork<FilterConfiguration>() {
 			public FilterConfiguration doWork(Mapper mapper) throws Throwable {
 				FilterConfiguration resultOfUnit = null;
