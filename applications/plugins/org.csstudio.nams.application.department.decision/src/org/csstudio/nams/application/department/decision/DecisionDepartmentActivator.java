@@ -314,140 +314,27 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * @see IApplication#start(IApplicationContext)
 	 */
 	public Object start(final IApplicationContext context) {
+
+		this._receiverThread = Thread.currentThread();
+		this._alarmEntscheidungsBuero = null;
+		this._ausgangskorbBearbeiter = null;
+		this._continueWorking = true;
+
+		DecisionDepartmentActivator.logger
+				.logInfoMessage(this,
+						"Decision department application is going to be initialized...");
+
+		configureExecutionService();
+
+		createMessagingConsumer();
+
+		if (this._continueWorking) {
+			createMessagingProducer();
+		}
+
 		do {
 			this._applicationExitStatus = IApplication.EXIT_OK;
-			this._receiverThread = Thread.currentThread();
-			this._alarmEntscheidungsBuero = null;
-			this._ausgangskorbBearbeiter = null;
-			this._continueWorking = true;
 
-			DecisionDepartmentActivator.logger
-					.logInfoMessage(this,
-							"Decision department application is going to be initialized...");
-
-			DecisionDepartmentActivator.logger
-					.logInfoMessage(this,
-							"Decision department application is configuring execution service...");
-			this
-					.initialisiereThredGroupTypes(DecisionDepartmentActivator.executionService);
-
-			try {
-				DecisionDepartmentActivator.logger
-						.logInfoMessage(this,
-								"Decision department application is creating consumers...");
-
-				final String amsProvider1 = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1);
-				final String amsProvider2 = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2);
-
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1 = "
-								+ amsProvider1);
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2 = "
-								+ amsProvider2);
-
-				// FIXM E(done) clientid!! gegebenenfalls aus preferencestore
-				// holen
-				this.amsMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
-						.createNewMessagingSession(
-								preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_COMMAND_DECISSION_DEPARTMENT),
-								new String[] { amsProvider1, amsProvider2 });
-				final String extProvider1 = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1);
-				final String extProvider2 = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2);
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1 = "
-								+ extProvider1);
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2 = "
-								+ extProvider2);
-				this.extMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
-						.createNewMessagingSession(
-								preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TSUB_ALARM),
-								new String[] { extProvider1, extProvider2 });
-
-				final String extAlarmTopic = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM);
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM = "
-								+ extAlarmTopic);
-
-				// FIXME gs,mz 2008-09-11 make durable when global alarm server
-				// suports durable
-				this.extAlarmConsumer = this.extMessagingSessionForConsumer
-						.createConsumer(extAlarmTopic, PostfachArt.TOPIC);
-
-				// FIXME gs,mz 2008-09-11: Wieder einkommentieren - Für
-				// Testbetrieb
-				// beim Desy heruasgenommen, damit Comands nur lokal gelesen
-				// werden,
-				// BEGIN
-				// this.extCommandConsumer = this.extMessagingSessionForConsumer
-				// .createConsumer(
-				// DecisionDepartmentActivator.preferenceService
-				// .getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
-				// PostfachArt.TOPIC);
-
-				// ext wird durch ams Server ersetzt
-				this.extCommandConsumer = this.amsMessagingSessionForConsumer
-						.createConsumer(
-								DecisionDepartmentActivator.preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
-								PostfachArt.TOPIC_DURABLE);
-
-				this.extCommandProducer = this.amsMessagingSessionForConsumer
-						.createProducer(
-								DecisionDepartmentActivator.preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
-								PostfachArt.TOPIC);
-
-				// END
-
-				final String amsCommandTopic = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND);
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND = "
-								+ amsCommandTopic);
-				this.amsCommandConsumer = this.amsMessagingSessionForConsumer
-						.createConsumer(amsCommandTopic,
-								PostfachArt.TOPIC_DURABLE);
-				DecisionDepartmentActivator.logger
-						.logInfoMessage(this,
-								"Decision department application is creating producers...");
-
-				// FIXM E(done) clientid!!
-				final String amsSenderProviderUrl = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL);
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL = "
-								+ amsSenderProviderUrl);
-				this.amsMessagingSessionForProducer = DecisionDepartmentActivator.messagingService
-						.createNewMessagingSession(
-								preferenceService
-										.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_DD_OUTBOX),
-								new String[] { amsSenderProviderUrl });
-
-				final String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
-						.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX);
-				DecisionDepartmentActivator.logger.logDebugMessage(this,
-						"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX(AusgangsTopic) = "
-								+ amsAusgangsTopic);
-				this.amsAusgangsProducer = this.amsMessagingSessionForProducer
-						.createProducer(amsAusgangsTopic, PostfachArt.TOPIC);
-
-			} catch (final Throwable e) {
-				DecisionDepartmentActivator.logger
-						.logFatalMessage(
-								this,
-								"Exception while initializing the alarm decision department.",
-								e);
-				this._continueWorking = false;
-			}
 			if (this._continueWorking) {
 				/*-
 				 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
@@ -464,6 +351,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 								this.amsCommandConsumer,
 								DecisionDepartmentActivator.localStoreConfigurationService);
 			}
+
 			if (this._continueWorking
 					&& DecisionDepartmentActivator._hasReceivedSynchronizationRequest) {
 				DecisionDepartmentActivator.logger.logInfoMessage(this,
@@ -484,108 +372,269 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				}
 			}
 			if (this._continueWorking) {
-				try {
-					DecisionDepartmentActivator.logger
-							.logInfoMessage(this,
-									"Decision department application is creating decision office...");
-
-					final List<Regelwerk> alleRegelwerke = DecisionDepartmentActivator.regelwerkBuilderService
-							.gibAlleRegelwerke();
-
-					DecisionDepartmentActivator.logger.logDebugMessage(this,
-							"alleRegelwerke size: " + alleRegelwerke.size());
-					for (final Regelwerk regelwerk : alleRegelwerke) {
-						DecisionDepartmentActivator.logger.logDebugMessage(
-								this, regelwerk.toString());
-					}
-
-					this.eingangskorbDesDecisionOffice = new StandardAblagekorb<Vorgangsmappe>();
-					this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice = new StandardAblagekorb<Vorgangsmappe>();
-
-					this._alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
-							DecisionDepartmentActivator.executionService,
-							alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
-									.size()]),
-							this.eingangskorbDesDecisionOffice,
-							this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice);
-				} catch (final Throwable e) {
-					DecisionDepartmentActivator.logger
-							.logFatalMessage(
-									this,
-									"Exception while initializing the alarm decision department.",
-									e);
-					this._continueWorking = false;
-				}
+				createDecissionOffice();
 			}
 
 			if (this._continueWorking) {
-				DecisionDepartmentActivator.logger
-						.logInfoMessage(
-								this,
-								"******* Decision department application successfully initialized, beginning work... *******");
-
-				// Ausgangskoerbe nebenläufig abfragen
-				this._ausgangskorbBearbeiter = new AusgangsKorbBearbeiter(
-						this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice);
-
-				DecisionDepartmentActivator.executionService
-						.executeAsynchronsly(
-								ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER,
-								this._ausgangskorbBearbeiter);
-
-				// start receiving Messages, runs while _continueWorking is
-				// true.
-				this
-						.receiveMessagesUntilApplicationQuits(this.eingangskorbDesDecisionOffice);
-			}
-			DecisionDepartmentActivator.logger
-					.logInfoMessage(
-							this,
-							"Decision department has stopped message processing and continue shutting down...");
-
-			if (this._alarmEntscheidungsBuero != null) {
-				this._alarmEntscheidungsBuero
-						.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
+				performNormalWork();
 			}
 
-			// Warte auf Thread für Ausgangskorb-Bearbeitung
-			if ((this._ausgangskorbBearbeiter != null)
-					&& this._ausgangskorbBearbeiter.isCurrentlyRunning()) {
-				// FIXME Warte bis korb leer ist.
-				this._ausgangskorbBearbeiter.stopWorking();
-			}
-
-			// Alle Verbindungen schließen
-			DecisionDepartmentActivator.logger
-					.logInfoMessage(this,
-							"Decision department application is closing opened connections...");
-			if (this.amsAusgangsProducer != null && !this.amsAusgangsProducer.isClosed()) {
-				this.amsAusgangsProducer.tryToClose();
-			}
-			if (this.amsCommandConsumer != null && !this.amsCommandConsumer.isClosed()) {
-				this.amsCommandConsumer.close();
-			}
-			if (this.amsMessagingSessionForConsumer != null && !this.amsMessagingSessionForConsumer.isClosed()) {
-				this.amsMessagingSessionForConsumer.close();
-			}
-			if (this.amsMessagingSessionForProducer != null &&  !this.amsMessagingSessionForProducer.isClosed()) {
-				this.amsMessagingSessionForProducer.close();
-			}
-			if (this.extAlarmConsumer != null && !this.extAlarmConsumer.isClosed()) {
-				this.extAlarmConsumer.close();
-			}
-			if (this.extCommandConsumer != null && !this.extCommandConsumer.isClosed()) {
-				this.extCommandConsumer.close();
-			}
-			if (this.extMessagingSessionForConsumer != null && !this.extMessagingSessionForConsumer.isClosed()) {
-				this.extMessagingSessionForConsumer.close();
-			}
-
-			DecisionDepartmentActivator.logger
-					.logInfoMessage(this,
-							"Decision department application successfully shuted down.");
 		} while (this._applicationExitStatus == IApplication.EXIT_RESTART);
+
+		DecisionDepartmentActivator.logger
+				.logInfoMessage(
+						this,
+						"Decision department has stopped message processing and continue shutting down...");
+
+		closeDecissionOffice();
+
+		closeMessagingConnections();
+
+		DecisionDepartmentActivator.logger.logInfoMessage(this,
+				"Decision department application successfully shuted down.");
+
 		return this._applicationExitStatus;
+	}
+
+	private void closeMessagingConnections() {
+		// Alle Verbindungen schließen
+		DecisionDepartmentActivator.logger
+				.logInfoMessage(this,
+						"Decision department application is closing opened connections...");
+		if (this.amsAusgangsProducer != null
+				&& !this.amsAusgangsProducer.isClosed()) {
+			this.amsAusgangsProducer.tryToClose();
+		}
+		if (this.amsCommandConsumer != null
+				&& !this.amsCommandConsumer.isClosed()) {
+			this.amsCommandConsumer.close();
+		}
+		if (this.amsMessagingSessionForConsumer != null
+				&& !this.amsMessagingSessionForConsumer.isClosed()) {
+			this.amsMessagingSessionForConsumer.close();
+		}
+		if (this.amsMessagingSessionForProducer != null
+				&& !this.amsMessagingSessionForProducer.isClosed()) {
+			this.amsMessagingSessionForProducer.close();
+		}
+		if (this.extAlarmConsumer != null && !this.extAlarmConsumer.isClosed()) {
+			this.extAlarmConsumer.close();
+		}
+		if (this.extCommandConsumer != null
+				&& !this.extCommandConsumer.isClosed()) {
+			this.extCommandConsumer.close();
+		}
+		if (this.extMessagingSessionForConsumer != null
+				&& !this.extMessagingSessionForConsumer.isClosed()) {
+			this.extMessagingSessionForConsumer.close();
+		}
+	}
+
+	private void closeDecissionOffice() {
+		if (this._alarmEntscheidungsBuero != null) {
+			this._alarmEntscheidungsBuero
+					.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
+		}
+
+		// Warte auf Thread für Ausgangskorb-Bearbeitung
+		if ((this._ausgangskorbBearbeiter != null)
+				&& this._ausgangskorbBearbeiter.isCurrentlyRunning()) {
+			// FIXME Warte bis korb leer ist.
+			this._ausgangskorbBearbeiter.stopWorking();
+		}
+	}
+
+	private void performNormalWork() {
+		DecisionDepartmentActivator.logger
+				.logInfoMessage(
+						this,
+						"******* Decision department application successfully initialized, beginning work... *******");
+
+		// Ausgangskoerbe nebenläufig abfragen
+		this._ausgangskorbBearbeiter = new AusgangsKorbBearbeiter(
+				this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice);
+
+		DecisionDepartmentActivator.executionService.executeAsynchronsly(
+				ThreadTypesOfDecisionDepartment.AUSGANGSKORBBEARBEITER,
+				this._ausgangskorbBearbeiter);
+
+		// start receiving Messages, runs while _continueWorking is
+		// true.
+		this
+				.receiveMessagesUntilApplicationQuits(this.eingangskorbDesDecisionOffice);
+	}
+
+	private void createDecissionOffice() {
+		try {
+			DecisionDepartmentActivator.logger
+					.logInfoMessage(this,
+							"Decision department application is creating decision office...");
+
+			final List<Regelwerk> alleRegelwerke = DecisionDepartmentActivator.regelwerkBuilderService
+					.gibAlleRegelwerke();
+
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"alleRegelwerke size: " + alleRegelwerke.size());
+			for (final Regelwerk regelwerk : alleRegelwerke) {
+				DecisionDepartmentActivator.logger.logDebugMessage(this,
+						regelwerk.toString());
+			}
+
+			this.eingangskorbDesDecisionOffice = new StandardAblagekorb<Vorgangsmappe>();
+			this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice = new StandardAblagekorb<Vorgangsmappe>();
+
+			this._alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
+					DecisionDepartmentActivator.executionService,
+					alleRegelwerke
+							.toArray(new Regelwerk[alleRegelwerke.size()]),
+					this.eingangskorbDesDecisionOffice,
+					this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice);
+		} catch (final Throwable e) {
+			DecisionDepartmentActivator.logger
+					.logFatalMessage(
+							this,
+							"Exception while initializing the alarm decision department.",
+							e);
+			this._continueWorking = false;
+		}
+	}
+
+	private void createMessagingProducer() {
+		try {
+
+			DecisionDepartmentActivator.logger.logInfoMessage(this,
+					"Decision department application is creating producers...");
+
+			// FIXM E(done) clientid!!
+			final String amsSenderProviderUrl = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL = "
+							+ amsSenderProviderUrl);
+			this.amsMessagingSessionForProducer = DecisionDepartmentActivator.messagingService
+					.createNewMessagingSession(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_DD_OUTBOX),
+							new String[] { amsSenderProviderUrl });
+
+			final String amsAusgangsTopic = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DD_OUTBOX(AusgangsTopic) = "
+							+ amsAusgangsTopic);
+			this.amsAusgangsProducer = this.amsMessagingSessionForProducer
+					.createProducer(amsAusgangsTopic, PostfachArt.TOPIC);
+
+		} catch (final Throwable e) {
+			DecisionDepartmentActivator.logger
+					.logFatalMessage(
+							this,
+							"Exception while initializing the alarm decision department.",
+							e);
+			this._continueWorking = false;
+		}
+	}
+
+	private void createMessagingConsumer() {
+		try {
+			DecisionDepartmentActivator.logger.logInfoMessage(this,
+					"Decision department application is creating consumers...");
+
+			final String amsProvider1 = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1);
+			final String amsProvider2 = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2);
+
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1 = "
+							+ amsProvider1);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2 = "
+							+ amsProvider2);
+
+			// FIXM E(done) clientid!! gegebenenfalls aus preferencestore
+			// holen
+			this.amsMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
+					.createNewMessagingSession(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TSUB_COMMAND_DECISSION_DEPARTMENT),
+							new String[] { amsProvider1, amsProvider2 });
+			final String extProvider1 = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1);
+			final String extProvider2 = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1 = "
+							+ extProvider1);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2 = "
+							+ extProvider2);
+			this.extMessagingSessionForConsumer = DecisionDepartmentActivator.messagingService
+					.createNewMessagingSession(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TSUB_ALARM),
+							new String[] { extProvider1, extProvider2 });
+
+			final String extAlarmTopic = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM = "
+							+ extAlarmTopic);
+
+			// FIXME gs,mz 2008-09-11 make durable when global alarm server
+			// suports durable
+			this.extAlarmConsumer = this.extMessagingSessionForConsumer
+					.createConsumer(extAlarmTopic, PostfachArt.TOPIC);
+
+			// FIXME gs,mz 2008-09-11: Wieder einkommentieren - Für
+			// Testbetrieb
+			// beim Desy heruasgenommen, damit Comands nur lokal gelesen
+			// werden,
+			// BEGIN
+			// this.extCommandConsumer = this.extMessagingSessionForConsumer
+			// .createConsumer(
+			// DecisionDepartmentActivator.preferenceService
+			// .getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+			// PostfachArt.TOPIC);
+
+			// ext wird durch ams Server ersetzt
+			this.extCommandConsumer = this.amsMessagingSessionForConsumer
+					.createConsumer(
+							DecisionDepartmentActivator.preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+							PostfachArt.TOPIC_DURABLE);
+
+			this.extCommandProducer = this.amsMessagingSessionForConsumer
+					.createProducer(
+							DecisionDepartmentActivator.preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+							PostfachArt.TOPIC);
+
+			// END
+
+			final String amsCommandTopic = DecisionDepartmentActivator.preferenceService
+					.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND);
+			DecisionDepartmentActivator.logger.logDebugMessage(this,
+					"PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND = "
+							+ amsCommandTopic);
+			this.amsCommandConsumer = this.amsMessagingSessionForConsumer
+					.createConsumer(amsCommandTopic, PostfachArt.TOPIC_DURABLE);
+		} catch (final Throwable e) {
+			DecisionDepartmentActivator.logger
+					.logFatalMessage(
+							this,
+							"Exception while initializing the alarm decision department.",
+							e);
+			this._continueWorking = false;
+		}
+	}
+
+	private void configureExecutionService() {
+		DecisionDepartmentActivator.logger
+				.logInfoMessage(this,
+						"Decision department application is configuring execution service...");
+		this
+				.initialisiereThredGroupTypes(DecisionDepartmentActivator.executionService);
 	}
 
 	/**
@@ -714,9 +763,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				new ThreadGroup(ThreadTypesOfDecisionDepartment.TERMINASSISTENZ
 						.name()));
 
-		// TODO Folgende Registrierung sollte im passendem PlugIn erledigt
-		// werden, registrierung
-		// verschieben nach messaging.
 		executionServiceToBeInitialize
 				.registerGroup(
 						MultiConsumersConsumer.MultiConsumerConsumerThreads.CONSUMER_THREAD,
@@ -785,12 +831,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 									.logReceivedStartReplicationMessage();
 							DecisionDepartmentActivator._hasReceivedSynchronizationRequest = true;
 							this._applicationExitStatus = IApplication.EXIT_RESTART;
-							/*-
-							 * Vollständiges runterfahren zur Aktualisierung
-							 * vermeidet das Vergessen von Teilsystemen. Während
-							 * einer Aktualisierung können ohnehin keine
-							 * Alarmnachrichten nebenläufig verarbeitet werden.
-							 */
+							DecisionDepartmentActivator.logger
+									.logInfoMessage(
+											this,
+											"Decission department received re-synchronization request, going to be re-initialized...");
 						}
 					}
 				} finally {
