@@ -242,7 +242,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * Indicates if the application instance should continue working. Unused in
 	 * the activator instance.
 	 * 
-	 * This field is set by another thread to indicate that application should
+	 * This field may be set by another thread to indicate that application should
 	 * shut down.
 	 */
 	private volatile boolean _continueWorking;
