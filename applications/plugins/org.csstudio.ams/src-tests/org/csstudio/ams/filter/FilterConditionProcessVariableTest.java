@@ -111,6 +111,11 @@ public class FilterConditionProcessVariableTest {
 				fail();
 				return null;
 			}
+
+			public IProcessVariableAddress deriveNoCharacteristicPart() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
 

@@ -752,6 +752,11 @@ public class ProcessVariableRegel_Test extends
 				Assert.fail();
 				return null;
 			}
+
+			public IProcessVariableAddress deriveNoCharacteristicPart() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
 
