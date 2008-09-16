@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SNS Elog
 Bundle-SymbolicName: org.csstudio.logbook.sns;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Bundle-Activator: org.csstudio.logbook.sns.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.logbook;visibility:=reexport,
