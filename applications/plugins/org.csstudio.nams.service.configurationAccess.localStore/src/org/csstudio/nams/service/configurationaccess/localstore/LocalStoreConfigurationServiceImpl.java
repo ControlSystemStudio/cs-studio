@@ -271,7 +271,8 @@ class LocalStoreConfigurationServiceImpl implements
 			}
 			throw new StorageException("unable to save replication state", t);
 		} finally {
-			this.closeSession(session);
+			session.flush();
+			session.close();
 		}
 	}
 
