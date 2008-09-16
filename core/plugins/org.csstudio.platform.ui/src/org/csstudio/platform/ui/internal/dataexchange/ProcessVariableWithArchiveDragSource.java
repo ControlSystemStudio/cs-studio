@@ -24,6 +24,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.eclipse.core.runtime.IAdaptable;
@@ -45,18 +46,18 @@ import org.eclipse.swt.widgets.Control;
  *  @see ArchiveDataSourceDragSource
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ProcessVariableWithArchiveDragSource implements DragSourceListener
 {
-    private static final boolean debug = true;
-    private ISelectionProvider selection_provider;
-	private DragSource source;
-    private ArrayList<IProcessVariableWithArchive> data
+    final private ISelectionProvider selection_provider;
+	final private DragSource source;
+    final private ArrayList<IProcessVariableWithArchive> data
         = new ArrayList<IProcessVariableWithArchive>();
 	
     /** Create a drag source for the given GUI item.
      *  <p>
      *  @param control The GUI element from which "drag" should be supported.
-     *  @param selection_provider Interface to whatver provides the current selection
+     *  @param selection_provider Interface to whatever provides the current selection
      *  in your application.
      */
 	public ProcessVariableWithArchiveDragSource(Control control,
@@ -81,10 +82,11 @@ public class ProcessVariableWithArchiveDragSource implements DragSourceListener
      *  Check if there are any archive items in the current selection.
      *  Remember them, or cancel the drag request.
      */
-	public void dragStart(DragSourceEvent event)
+    @SuppressWarnings("unchecked")
+    public void dragStart(DragSourceEvent event)
 	{
-        if (debug)
-            System.out.println("DragStart for PV with Archive");
+	    CentralLogger.getInstance().getLogger(this)
+	        .debug("DragStart for PV with Archive");
         data.clear();
         // Get all archives from the current selection.
         ISelection sel = selection_provider.getSelection();
@@ -94,8 +96,8 @@ public class ProcessVariableWithArchiveDragSource implements DragSourceListener
             while (items.hasNext())
             {
                 Object item = items.next();
-                if (debug)
-                    System.out.println("Data: " + item.getClass().getName());
+                CentralLogger.getInstance().getLogger(this)
+                    .debug("Data: " + item.getClass().getName());
                 // Get archive ...
                 if (item instanceof IProcessVariableWithArchive)
                     data.add((IProcessVariableWithArchive) item);
