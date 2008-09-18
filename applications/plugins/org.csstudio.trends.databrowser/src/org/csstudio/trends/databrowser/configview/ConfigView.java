@@ -15,6 +15,7 @@ import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.configview.PVTableHelper.Column;
 import org.csstudio.trends.databrowser.fileimport.ImportFileAction;
+import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
@@ -53,6 +54,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -170,6 +172,9 @@ public class ConfigView extends PlotAwareView
     private Composite formula_box;
     /** Formula display in <code>formula_box</code> */
     private Text formula_txt;
+    private Button rescale_none;
+    private Button rescale_zoom;
+    private Button rescale_stagger;
     
     /** Try to restore some things from memento */
     @Override
@@ -235,10 +240,8 @@ public class ConfigView extends PlotAwareView
     @Override
     protected void doCreatePartControl(Composite parent)
     {
-        if (debug)
-            System.out.println("ConfigView doCreatePartControl"); //$NON-NLS-1$
         // Create the GUI Elements
-        Composite scroll = ScrolledContainerHelper.create(parent, 200, 200);
+        final Composite scroll = ScrolledContainerHelper.create(parent, 200, 300);
         scroll.setLayout(new FillLayout());
         // Quirk: Don't set a layout on the TabFolder nor the TabItem.
         // Do set a layout on the Composite that's inside the TabItem,
@@ -257,7 +260,7 @@ public class ConfigView extends PlotAwareView
             {   updateLowerSash();  }
         });
              
-        // Create actions, hook them to menues
+        // Create actions, hook them to menus
         add_pv_action = new AddPVAction(parent.getShell(), getModel());
         add_formula_action = new AddFormulaAction(parent.getShell(), getModel());
         delete_pv_action = new DeletePVAction(this);
@@ -457,8 +460,55 @@ public class ConfigView extends PlotAwareView
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         archive_box.setLayout(layout);
+
+        // ArchiveRescale: (*) NONE ( ) ...
+        final Composite rescale_box = new Composite(archive_box, 0);
+        rescale_box.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        rescale_box.setLayout(new RowLayout());
+        Label l = new Label(rescale_box, 0);
+        l.setText(Messages.Rescale_Label);
+        rescale_none = new Button(rescale_box, SWT.RADIO);
+        rescale_none.setText(Messages.Rescale_None);
+        rescale_zoom = new Button(rescale_box, SWT.RADIO);
+        rescale_zoom.setText(Messages.Rescale_Autozoom);
+        rescale_stagger = new Button(rescale_box, SWT.RADIO);
+        rescale_stagger.setText(Messages.Rescale_Stagger);
+        rescale_none.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final Model model = getModel();
+                if (model == null)
+                    return;
+                model.setArchiveRescale(ArchiveRescale.NONE);
+            }
+        });
+        rescale_zoom.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final Model model = getModel();
+                if (model == null)
+                    return;
+                model.setArchiveRescale(ArchiveRescale.AUTOZOOM);
+            }
+        });
+        rescale_stagger.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final Model model = getModel();
+                if (model == null)
+                    return;
+                model.setArchiveRescale(ArchiveRescale.STAGGER);
+            }
+        });
+
         
-        Label l = new Label(archive_box, 0);
+        l = new Label(archive_box, 0);
         l.setText(Messages.ArchsForPVs + colon);
         GridData gd = new GridData();
         l.setLayoutData(gd);
@@ -728,7 +778,7 @@ public class ConfigView extends PlotAwareView
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                Model model = getModel();
+                final Model model = getModel();
                 if (model == null)
                     return;
                 try
@@ -749,7 +799,7 @@ public class ConfigView extends PlotAwareView
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                Model model = getModel();
+                final Model model = getModel();
                 if (model == null)
                     return;
                 start_specification.setText(model.getStartTime().toString());
@@ -960,6 +1010,10 @@ public class ConfigView extends PlotAwareView
             pv_table_viewer.setItemCount(model.getNumItems() + 1);
             start_specification.setText(model.getStartSpecification());
             end_specification.setText(model.getEndSpecification());
+            final ArchiveRescale rescale = model.getArchiveRescale();
+            rescale_none.setSelection(rescale == ArchiveRescale.NONE); 
+            rescale_zoom.setSelection(rescale == ArchiveRescale.AUTOZOOM); 
+            rescale_stagger.setSelection(rescale == ArchiveRescale.STAGGER); 
         }
         pv_table_viewer.refresh();
         updateLowerSash();

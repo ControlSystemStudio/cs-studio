@@ -3,9 +3,11 @@ package org.csstudio.trends.databrowser.preferences;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -58,6 +60,9 @@ public class Preferences
     
     /** Identifier for the auto-scale preference. */
     public static final String AUTOSCALE = "autoscale";
+    
+    /** Identifier for the auto-scale preference. */
+    public static final String ARCHIVE_RESCALE = "archive_rescale";    
 
     /** Identifier for the plot bin preference. */
     public static final String PLOT_BINS = "plot_bins";
@@ -116,6 +121,24 @@ public class Preferences
         return prefs.getBoolean(Plugin.ID, AUTOSCALE, false, null);
     }
 
+    /** @return Archive rescale setting */
+    static public ArchiveRescale getArchiveRescale()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        try
+        {
+            return ArchiveRescale.valueOf(
+                    prefs.getString(Plugin.ID, ARCHIVE_RESCALE,
+                                    ArchiveRescale.NONE.name(), null));
+        }
+        catch (Throwable ex)
+        {
+            CentralLogger.getInstance().getLogger(Preferences.class)
+                .error(ex.getMessage());
+        }
+        return ArchiveRescale.NONE;
+    }
+    
     /** @return Number of plot bins */
     static public int getPlotBins()
     {

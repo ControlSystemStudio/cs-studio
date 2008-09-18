@@ -105,7 +105,7 @@ public abstract class PlotAwareView extends ViewPart
         // we will never get the 'activate' signal because
         // it already happened.
         // So check once, then use the PartListener
-        IEditorPart current = getSite().getPage().getActiveEditor();
+        final IEditorPart current = getSite().getPage().getActiveEditor();
         if (current instanceof PlotEditor)
             updateEditor((PlotEditor) current);
         else
@@ -144,9 +144,9 @@ public abstract class PlotAwareView extends ViewPart
     @SuppressWarnings("nls")
     private void updateEditor(PlotEditor new_editor)
     {
-        Model old_model = (editor == null) ? null : editor.getModel();
+        final Model old_model = (editor == null) ? null : editor.getModel();
         editor = new_editor;
-        Model new_model = (editor == null) ? null : editor.getModel();
+        final Model new_model = (editor == null) ? null : editor.getModel();
         if (debug)
             System.out.println("PlotAwareView: switching " + old_model + " to " + new_model);
         updateModel(old_model, new_model);

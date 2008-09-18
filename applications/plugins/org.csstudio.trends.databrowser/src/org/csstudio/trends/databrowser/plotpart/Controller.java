@@ -535,7 +535,16 @@ public class Controller implements ArchiveFetchJobListener
         {
             public void run()
             {
-                chart.stagger();
+                switch(model.getArchiveRescale())
+                {
+                case AUTOZOOM:
+                    chart.autozoom();
+                    break;
+                case STAGGER:
+                    chart.stagger();
+                    break;
+                default:
+                }
             }
         });
     }

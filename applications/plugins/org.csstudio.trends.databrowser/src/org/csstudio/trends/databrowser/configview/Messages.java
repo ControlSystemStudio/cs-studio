@@ -7,6 +7,7 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.configview.messages"; //$NON-NLS-1$
 
+
     public static String Archive;
     public static String ArchsForPVs;
     public static String AxisIndex;
@@ -50,6 +51,10 @@ public class Messages extends NLS
     public static String RemoveFormulaInputError;
 
     public static String Request;
+    public static String Rescale_Label;
+    public static String Rescale_None;
+    public static String Rescale_Autozoom;
+    public static String Rescale_Stagger;
     public static String RingBufferInfoFmt;
     public static String RingBufferMinSize;
     public static String ScanPeriodMustBeGt;

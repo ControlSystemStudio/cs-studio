@@ -62,6 +62,8 @@ public class Model
      */
     private boolean scroll;
     
+    private ArchiveRescale archive_rescale;
+
     /** Scan period for 'live' data in seconds. */
     private double scan_period = 0.5;
     
@@ -78,7 +80,7 @@ public class Model
 
     private ArrayList<ModelListener> listeners = 
         new ArrayList<ModelListener>();
-    
+
     /** Construct a new model. */
     @SuppressWarnings("nls")
     public Model()
@@ -91,6 +93,7 @@ public class Model
             setPeriods(Preferences.getScanPeriod(),
                     Preferences.getUpdatePeriod());
             setLiveBufferSize(Preferences.getLiveBufferSize());
+            archive_rescale = Preferences.getArchiveRescale();
         }
         catch (Exception ex)
         {   // No prefs because running as unit test?
@@ -254,6 +257,22 @@ public class Model
             listener.timeSpecificationsChanged();
     }
     
+    /** Configure archive rescale behavior
+     *  @param rescale New setting
+     */
+    public void setArchiveRescale(final ArchiveRescale rescale)
+    {
+        archive_rescale = rescale;
+        // Not the ideal event, but it suffices to mark the model 'dirty'
+        fireSamplingChanged();
+    }
+    
+    /** @return Archive data rescale behavior */
+    public ArchiveRescale getArchiveRescale()
+    {
+        return archive_rescale;
+    }
+
     /** @return Returns the scan period in seconds. */
     public double getScanPeriod()
     {   return scan_period; }
@@ -641,6 +660,7 @@ public class Model
         XMLHelper.XML(b, 1, "start", start_end_times.getStartSpecification());
         XMLHelper.XML(b, 1, "end", start_end_times.getEndSpecification());
         XMLHelper.XML(b, 1, "scroll", Boolean.toString(scroll));
+        XMLHelper.XML(b, 1, "archive_rescale", archive_rescale.name());        
         XMLHelper.XML(b, 1, "scan_period", Double.toString(scan_period));
         XMLHelper.XML(b, 1, "update_period", Double.toString(update_period));
         XMLHelper.XML(b, 1, "ring_size", Integer.toString(live_buffer_size));
@@ -691,6 +711,14 @@ public class Model
                                                  end_specification);
         scroll = DOMHelper.getSubelementBoolean(root_node, "scroll",
                                                 start_end_times.isEndNow());
+        try
+        {
+            archive_rescale = ArchiveRescale.valueOf(DOMHelper.getSubelementString(root_node, "archive_rescale"));
+        }
+        catch (Throwable ex)
+        {
+            archive_rescale = ArchiveRescale.STAGGER;
+        }
         final double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
         final double update = DOMHelper.getSubelementDouble(root_node, "update_period");
         live_buffer_size = DOMHelper.getSubelementInt(root_node, "ring_size");
