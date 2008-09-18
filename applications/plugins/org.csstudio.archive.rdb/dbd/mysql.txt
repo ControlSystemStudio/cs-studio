@@ -1,4 +1,5 @@
-MySQL Demo Setup
+General MySQL Setup Notes
+=========================
 
 Download the free, "community" edition of MySQL.  
 You need the "server" for your OS/version.
