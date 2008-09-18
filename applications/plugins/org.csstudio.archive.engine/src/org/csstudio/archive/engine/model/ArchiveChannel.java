@@ -20,7 +20,8 @@ import org.csstudio.utility.pv.PVListener;
 abstract public class ArchiveChannel
 {
     /** Throttled log for NaN samples */
-    private static ThrottledLogger NaN_log = null;
+    private static ThrottledLogger NaN_log = 
+                    new ThrottledLogger(Level.INFO, "log_nan"); //$NON-NLS-1$
     
     /** Group to which this channel belongs.
      *  <p>
@@ -256,12 +257,8 @@ abstract public class ArchiveChannel
         {
             final IDoubleValue dbl = (IDoubleValue) value;
             if (Double.isNaN(dbl.getValue()))
-            {
-                if (NaN_log == null)
-                    NaN_log = new ThrottledLogger(Level.INFO, 60.0);
                 NaN_log.log("NaN for '" + getName() + "': "
                         + value.format());
-            }
             
         }
         if (!enabled)

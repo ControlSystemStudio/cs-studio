@@ -95,7 +95,14 @@ public class WriteThread implements Runnable
         thread = new Thread(this, "WriteThread");
         thread.start();
     }
-    
+
+    /** Reset statistics */
+    public void reset()
+    {
+        write_count.reset();
+        write_time.reset();
+    }
+
     /** Ask the write thread to stop ASAP. */
     private void stop()
     {

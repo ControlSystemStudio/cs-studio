@@ -2,6 +2,8 @@ package org.csstudio.archive.engine.model;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.apache.log4j.Level;
+import org.csstudio.archive.engine.ThrottledLogger;
 import org.csstudio.platform.data.IValue;
 
 /** Buffer for the samples of one channel.
@@ -28,6 +30,13 @@ public class SampleBuffer
     
     /** Statistics */
     final private BufferStats stats = new BufferStats();
+
+    /** Number of overruns when new string of overruns started, or <code>null</code> */
+    private Integer start_of_overruns;
+    
+    /** Logger for overrun messages */
+    final private static ThrottledLogger overrun_msg =
+        new ThrottledLogger(Level.ERROR, "log_overrun"); //$NON-NLS-1$
     
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
@@ -60,7 +69,7 @@ public class SampleBuffer
         return samples.size();
     }
 
-    /** @return <code>true</code> if current;y experiencing write errors */
+    /** @return <code>true</code> if currently experiencing write errors */
     public static boolean isInErrorState()
     {
         return error;
@@ -73,13 +82,22 @@ public class SampleBuffer
     }
 
     /** Add a sample to the queue, maybe dropping older samples */
+    @SuppressWarnings("nls")
     void add(final IValue value)
     {
         final int size = samples.size();
         if (size >= capacity)
-        {
+        {   // Note start of overruns, then drop older sample
+            if (start_of_overruns == null)
+                start_of_overruns = new Integer(stats.getOverruns());
             samples.poll();
             stats.addOverrun();
+        }
+        else if (start_of_overruns != null)
+        {   // Ending a string of overruns. Maybe log it.
+            final int overruns = stats.getOverruns() - start_of_overruns;
+            overrun_msg.log(channel_name + ": " + overruns + " overruns");
+            start_of_overruns = null;
         }
         samples.add(value);
     }
@@ -100,6 +118,13 @@ public class SampleBuffer
     public BufferStats getBufferStats()
     {
         return stats;
+    }
+
+    /** Reset statistics */
+    public void reset()
+    {
+        start_of_overruns = null;
+        stats.reset();
     }
 
     @SuppressWarnings("nls")

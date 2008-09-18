@@ -38,6 +38,7 @@ public class BufferStats
     {
         max_size = 0;
         average_size.reset();
+        overruns = 0;
     }
     
     /** Update the buffer stats.

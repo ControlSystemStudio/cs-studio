@@ -39,6 +39,7 @@ public class EngineServer
         http.registerServlet("/channel", new ChannelResponse(model), null, http_context);
         http.registerServlet("/environment", new EnvironmentResponse(model), null, http_context);
         http.registerServlet("/restart", new RestartResponse(model), null, http_context);
+        http.registerServlet("/reset", new ResetResponse(model), null, http_context);
         http.registerServlet("/stop", new StopResponse(model), null, http_context);
         
         Activator.getLogger().info("Engine HTTP Server port " + port);

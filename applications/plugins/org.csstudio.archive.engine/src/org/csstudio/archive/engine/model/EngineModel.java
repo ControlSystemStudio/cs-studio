@@ -335,6 +335,15 @@ public class EngineModel
         state = State.RESTART_REQUESTED;
     }
     
+    /** Reset engine statistics */
+    public void reset()
+    {
+        writer.reset();
+        scanner.reset();
+        for (ArchiveChannel channel : channels)
+            channel.getSampleBuffer().reset();
+    }
+
     /** Stop monitoring the channels, flush the write buffers. */
     @SuppressWarnings("nls")
     final public void stop() throws Exception

@@ -157,6 +157,12 @@ public class Scanner implements Runnable, Scheduleable
         return idle_percentage.get();
     }
 
+    /** Reset statistics */
+    public void reset()
+    {
+        idle_percentage.reset();
+    }
+
     /** Perform one scan: Wait for the next scan, perform it.
      */
     public void run()
