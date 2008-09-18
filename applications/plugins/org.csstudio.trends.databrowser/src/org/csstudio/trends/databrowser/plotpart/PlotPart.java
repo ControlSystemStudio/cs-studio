@@ -11,7 +11,6 @@ import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
 import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
 import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -131,7 +130,7 @@ public class PlotPart
         context_menu.add(new Separator());
         context_menu.add(new SaveCurrentImageAction(chart));
         context_menu.add(new PrintCurrentImageAction(chart));
-        if (Preferences.getShowElogExportAction())
+        if (ExportToElogAction.isElogAvailable())
             context_menu.add(new ExportToElogAction(chart,
                     org.csstudio.trends.databrowser.Messages.DataBrowser));
     }

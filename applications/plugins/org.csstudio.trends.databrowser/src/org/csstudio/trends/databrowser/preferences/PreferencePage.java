@@ -77,8 +77,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 
         addField(new BooleanFieldEditor(Preferences.AUTOSCALE,
                 Messages.Label_Autoscale, parent));
-        addField(new BooleanFieldEditor(Preferences.SHOW_REQUEST_TYPES,
-                        Messages.Label_Show_Request_Types, parent));
         
         addField(new URLListEditor(Preferences.URLS, parent));
         addField(new ArchiveListEditor(Preferences.ARCHIVES, parent));

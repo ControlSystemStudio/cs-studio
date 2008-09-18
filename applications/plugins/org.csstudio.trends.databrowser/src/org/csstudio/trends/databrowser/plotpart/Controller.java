@@ -1,5 +1,7 @@
 package org.csstudio.trends.databrowser.plotpart;
 
+import java.util.ArrayList;
+
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
@@ -22,7 +24,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 /** Data Browser Controller: Creates model, UI and handles everything between them.
  *  @author Kay Kasemir
  */ 
-public class Controller
+public class Controller implements ArchiveFetchJobListener
 {
     final private static boolean debug_scroll = false;
     /** The model */
@@ -268,7 +270,13 @@ public class Controller
         public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
         { /* NOP */ }
     };
-
+    
+    /** List of currently active background jobs.
+     *  When the last one finishes, we might adjust the chart
+     *  to show all newly received samples.
+     */
+    private ArrayList<ArchiveFetchJob> jobs = new ArrayList<ArchiveFetchJob>();
+    
     /** Construct controller.
      *  @param parent Parent widget (shell) under which the UI is created.
      */
@@ -506,7 +514,29 @@ public class Controller
             return;
         // TODO Analyze this. Zoom/pan results in too many calls.
         // Cache saves us, but the code should still be smarter.
-    	final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
+    	final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end, this);
+    	synchronized (jobs)
+        {
+            jobs.add(job);
+        }
         job.schedule();
+    }
+    
+    /** @see ArchiveFetchJobListener */
+    public void fetchCompleted(final ArchiveFetchJob job)
+    {
+        synchronized (jobs)
+        {
+            jobs.remove(job);
+            if (!jobs.isEmpty())
+                return;
+        }
+        chart.getDisplay().asyncExec(new Runnable()
+        {
+            public void run()
+            {
+                chart.stagger();
+            }
+        });
     }
 }

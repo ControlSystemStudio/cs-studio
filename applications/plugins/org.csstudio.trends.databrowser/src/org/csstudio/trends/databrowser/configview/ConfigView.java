@@ -383,17 +383,11 @@ public class ConfigView extends PlotAwareView
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
         
-        final boolean show_request_types = Preferences.getShowRequestTypes();
         final Column[] all_columns = PVTableHelper.Column.values();
-        final Column[] columns = new Column[show_request_types
-                                            ? all_columns.length
-                                            : all_columns.length - 1];
+        final Column[] columns = new Column[all_columns.length];
         int i = 0;
         for (PVTableHelper.Column col : all_columns)
         {
-            if (col == PVTableHelper.Column.REQUEST_TYPE
-                &&   show_request_types == false)
-                continue;
             columns[i++] = col;
             AutoSizeColumn.make(table, col.getTitle(), col.getMinSize(),
                                 col.getWeight(), col.isCentered());
@@ -430,11 +424,8 @@ public class ConfigView extends PlotAwareView
         editors[PVTableHelper.Column.TRACE_TYPE.ordinal()] =
             new ComboBoxCellEditor(table, TraceType.getLocalizedNames(), SWT.READ_ONLY);
         editors[PVTableHelper.Column.AUTO_SCALE.ordinal()] = new CheckboxCellEditor(table);
-        if (show_request_types)
-        {
-            editors[PVTableHelper.Column.REQUEST_TYPE.ordinal()] =
-                new ComboBoxCellEditor(table, IPVModelItem.RequestType.getTypeStrings(), SWT.READ_ONLY);
-        }
+        editors[PVTableHelper.Column.REQUEST_TYPE.ordinal()] =
+            new ComboBoxCellEditor(table, IPVModelItem.RequestType.getTypeStrings(), SWT.READ_ONLY);
         String titles[] = new String[columns.length];
         for (i=0; i<columns.length; ++i)
             titles[i] = columns[i].getTitle();

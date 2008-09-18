@@ -6,7 +6,8 @@ import java.util.StringTokenizer;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Data Browser preferences.
  *  <p>
@@ -61,9 +62,6 @@ public class Preferences
     /** Identifier for the plot bin preference. */
     public static final String PLOT_BINS = "plot_bins";
     
-    /** Identifier for the show-request-types preference. */
-    public static final String SHOW_REQUEST_TYPES = "show_request_types";
-
     /** Identifier for the Archive Server URLs preference. */
     public static final String URLS = "urls";
 
@@ -73,102 +71,85 @@ public class Preferences
     /** Preference Identifier: Show 'SampleFileImportAction' in Config View? */
     public static final String SHOW_SAMPLE_FILE_IMPORT_ACTION = "show_sample_file_import_action";
     
-    /** Preference Identifier: Show 'ExportToElogAction' in Config View? */
-    public static final String SHOW_ELOG_EXPORT_ACTION = "show_elog_export_action";
-
     /** Preference Identifier: Show "Start Time" in archives view? */
     private static final String SHOW_ARCHIVE_START_TIMES = "show_archive_start_times";
     
     /** @return Default start time specification. */
     static public String getStartSpecification()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getString(START_TIME_SPEC);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getString(Plugin.ID, START_TIME_SPEC, "-1 hour", null);
     }
 
     /** @return Default end time specification. */
     static public String getEndSpecification()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getString(END_TIME_SPEC);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getString(Plugin.ID, END_TIME_SPEC, "now", null);
     }
     
     /** @return Default scan period [seconds]. */
     static public double getScanPeriod()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getDouble(SCAN_PERIOD);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getDouble(Plugin.ID, SCAN_PERIOD, 1.0, null);
     }
 
     /** @return Default update period [seconds]. */
     static public double getUpdatePeriod()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getDouble(UPDATE_PERIOD);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getDouble(Plugin.ID, UPDATE_PERIOD, 5.0, null);
     }
 
     /** @return Default update period [seconds]. */
     static public int getLiveBufferSize()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getInt(LIVE_BUFFER_SIZE);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getInt(Plugin.ID, LIVE_BUFFER_SIZE, 5000, null);
     }
     
     /** @return Default auto-scale setting */
     static public boolean getAutoScale()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getBoolean(AUTOSCALE);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getBoolean(Plugin.ID, AUTOSCALE, false, null);
     }
 
     /** @return Number of plot bins */
     static public int getPlotBins()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getInt(PLOT_BINS);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getInt(Plugin.ID, PLOT_BINS, 500, null);
     }
     
-    /** @return <code>true</code> when "Request Types" should show in GUI */
-    static public boolean getShowRequestTypes()
-    {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getBoolean(SHOW_REQUEST_TYPES);
-    }
-
     /** @return <code>true</code> when "Start Time" should show in archives view */
     static public boolean getShowArchiveStartTimes()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getBoolean(SHOW_ARCHIVE_START_TIMES);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getBoolean(Plugin.ID, SHOW_ARCHIVE_START_TIMES, false, null);
     }
     
     /** @return Default setting for 'show sample file import action'. */
     static public boolean getShowSampleFileImportAction()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getBoolean(SHOW_SAMPLE_FILE_IMPORT_ACTION);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getBoolean(Plugin.ID, SHOW_SAMPLE_FILE_IMPORT_ACTION, false, null);
     }
 
-    /** @return Default setting for 'export to elog action'. */
-    static public boolean getShowElogExportAction()
-    {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getBoolean(SHOW_ELOG_EXPORT_ACTION);
-    }
-    
     /** @return Default archive server URLs. */
     static public String[] getArchiveServerURLs()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        String concat = store.getString(URLS);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        String concat = prefs.getString(Plugin.ID, URLS, "", null);
         return splitListItems(concat);
     }
 
     /** @return Default archive data sources. */
     static public IArchiveDataSource[] getArchiveDataSources()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        String concat = store.getString(ARCHIVES);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        String concat = prefs.getString(Plugin.ID, ARCHIVES, "", null);
         String encoded_sources[] = splitListItems(concat);
         IArchiveDataSource sources[] = new IArchiveDataSource[encoded_sources.length];
         for (int i = 0; i < sources.length; ++i)

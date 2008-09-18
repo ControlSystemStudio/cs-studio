@@ -22,6 +22,21 @@ public class ExportToElogAction extends Action
     final private String application;
     private ILogbookFactory logbook_factory;
     
+    /** @return <code>true</code> if elog support is available */
+    public static boolean isElogAvailable()
+    {
+        try
+        {
+            if (LogbookFactory.getInstance() != null)
+                return true;
+        }
+        catch (Exception ex)
+        {
+            // Ignore
+        }
+        return false;
+    }
+
     /** Construct action that exports chart to elog.
      *  @param chart Chart to act on
      *  @param application Application name used to initialize elog text.

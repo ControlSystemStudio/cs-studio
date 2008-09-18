@@ -76,7 +76,7 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
     void addArchiveSamples(final String source, final IValue samples[])
     {
         // Prevent archived samples from overlapping 'live' data;
-        // only archived samples only until reaching the 'border'.
+        // only archived samples until reaching the 'border'.
         ITimestamp border;
         synchronized (this)
         {

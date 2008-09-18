@@ -19,21 +19,24 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 class ArchiveFetchJob extends Job
 {
-    private final IPVModelItem item;
-    private final ITimestamp start, end;
+    final private IPVModelItem item;
+    final private ITimestamp start, end;
+    final private ArchiveFetchJobListener listener;
     
     /** Construct job that fetches data.
      *  @param item Item for which to fetch samples
      *  @param start Start time
      *  @param end End time
      */
-    public ArchiveFetchJob(IPVModelItem item, ITimestamp start, ITimestamp end)
+    public ArchiveFetchJob(final IPVModelItem item, final ITimestamp start,
+            final ITimestamp end, final ArchiveFetchJobListener listener)
     {
         super(Messages.FetchDataForPV
                 + "'" + item.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         this.item = item;
         this.start = start;
         this.end = end;
+        this.listener = listener;
         // Do we need to assert that only one data fetch runs at a time?
         // setRule()...?
     }
@@ -73,7 +76,7 @@ class ArchiveFetchJob extends Job
                     request_parms = new Object[] { new Double(interval) };
                 }
                 
-                BatchIterator batch = new BatchIterator(server,
+                final BatchIterator batch = new BatchIterator(server,
                                 archives[i].getKey(), item.getName(),
                                 start, end, request_type, request_parms);
                 IValue result[] = batch.getBatch();
@@ -100,6 +103,7 @@ class ArchiveFetchJob extends Job
             monitor.worked(1);
         }
         monitor.done();
+        listener.fetchCompleted(this);
         return Status.OK_STATUS;
     }
 }
