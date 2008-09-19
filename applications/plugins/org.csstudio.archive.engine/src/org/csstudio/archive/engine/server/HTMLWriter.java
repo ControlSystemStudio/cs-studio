@@ -145,7 +145,6 @@ public class HTMLWriter
      *  @param text Text to display
      *  @return HTML for the link
      */
-    @SuppressWarnings("nls")
     public static String makeLink(final String url, final String text)
     {
         return "<a href=\"" + url + "\">" + text + "</a>";

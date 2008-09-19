@@ -3,7 +3,6 @@ package org.csstudio.archive.engine.model;
 import java.util.ArrayList;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.platform.data.ITimestamp;
