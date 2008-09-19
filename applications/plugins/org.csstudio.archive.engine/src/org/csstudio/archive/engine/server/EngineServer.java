@@ -3,6 +3,7 @@ package org.csstudio.archive.engine.server;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.platform.httpd.HttpServiceHelper;
+import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -21,7 +22,6 @@ public class EngineServer
      *  @param port TCP port
      *  @throws Exception on error
      */
-    @SuppressWarnings("nls")
     public EngineServer(final EngineModel model,
                         final int port) throws Exception
     {
@@ -42,7 +42,7 @@ public class EngineServer
         http.registerServlet("/reset", new ResetResponse(model), null, http_context);
         http.registerServlet("/stop", new StopResponse(model), null, http_context);
         
-        Activator.getLogger().info("Engine HTTP Server port " + port);
+        CentralLogger.getInstance().getLogger(this).info("Engine HTTP Server port " + port);
     }
 
     /** Stop the server */
@@ -54,7 +54,7 @@ public class EngineServer
         }
         catch (Exception ex)
         {
-            Activator.getLogger().warn(ex);
+            CentralLogger.getInstance().getLogger(this).warn(ex);
         }
     }
 }

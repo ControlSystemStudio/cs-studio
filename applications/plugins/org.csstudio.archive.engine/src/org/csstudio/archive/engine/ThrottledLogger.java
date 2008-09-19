@@ -2,6 +2,7 @@ package org.csstudio.archive.engine;
 
 import org.apache.log4j.Level;
 import org.csstudio.apputil.time.PeriodFormat;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.util.time.Throttle;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -52,7 +53,7 @@ public class ThrottledLogger
     {
         if (throttle.isPermitted())
         {   // OK, show
-            Activator.getLogger().log(level, message);
+            CentralLogger.getInstance().getLogger(this).log(level, message);
             throttled = false;
             return true;
         }
@@ -60,7 +61,7 @@ public class ThrottledLogger
         if (throttled)
             return false;
         // Last message to be shown for a while
-        Activator.getLogger().log(level, message
+        CentralLogger.getInstance().getLogger(this).log(level, message
                 + "\n... More messsages suppressed for "
                 + PeriodFormat.formatSeconds(throttle.getPeriod())
                 + " ....");

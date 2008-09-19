@@ -83,7 +83,7 @@ abstract public class ArchiveChannel
      *  <p>
      *  SYNC: Lock on <code>this</code> for access.
      */
-    private IValue last_archived_value = null;
+    protected IValue last_archived_value = null;
     
     /** Buffer of received samples, periodically written */
     private final SampleBuffer buffer;
@@ -276,7 +276,7 @@ abstract public class ArchiveChannel
         if (need_first_sample)
         {
             need_first_sample = false;
-            addInfoToBuffer(ValueButcher.transformTimestamp(value));
+            addInfoToBuffer(ValueButcher.transformTimestampToNow(value));
         }
     }
     
@@ -397,7 +397,7 @@ abstract public class ArchiveChannel
             if (value != null)
             {   // Add to the buffer with timestamp 'now' to show
                 // the re-enablement
-                value = ValueButcher.transformTimestamp(value);
+                value = ValueButcher.transformTimestampToNow(value);
                 addValueToBuffer(value);
             }
         }

@@ -2,7 +2,7 @@ package org.csstudio.archive.engine.scanner;
 
 import java.util.ArrayList;
 
-import org.csstudio.archive.engine.Activator;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.util.stats.Average;
 
 /** Helper for scanning something.
@@ -13,7 +13,7 @@ import org.csstudio.util.stats.Average;
  *  TODO Check for year 2038 time stamp rollover problems.
  *  @author Kay Kasemir
  */
-public class Scanner implements Runnable, Scheduleable
+public class Scanner implements Scheduleable
 {
     /** Granularity in seconds for the supported lists. */
     final private static double GRANULARITY = 0.1;
@@ -163,9 +163,8 @@ public class Scanner implements Runnable, Scheduleable
         idle_percentage.reset();
     }
 
-    /** Perform one scan: Wait for the next scan, perform it.
-     */
-    public void run()
+    /** Perform one scan: Wait for the next scan, perform it. */
+    public void scanOnce()
     {
         try
         {
@@ -196,7 +195,7 @@ public class Scanner implements Runnable, Scheduleable
         }
         catch (InterruptedException ex)
         {
-            Activator.getLogger().error("Scanner interrupted", ex); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this).error("Scanner interrupted", ex); //$NON-NLS-1$
         }
     }
 }

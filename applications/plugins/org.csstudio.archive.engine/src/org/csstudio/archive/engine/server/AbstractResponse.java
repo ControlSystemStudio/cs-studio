@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.platform.logging.CentralLogger;
 
 /** Helper for creating web pages with consistent look (header, footer, ...)
  *  @author Kay Kasemir
@@ -16,6 +16,8 @@ import org.csstudio.archive.engine.model.EngineModel;
 @SuppressWarnings("nls")
 abstract class AbstractResponse extends HttpServlet
 {
+    /** Required by Serializable */
+    private static final long serialVersionUID = 1L;
     /** Model from which to serve info */
     final protected EngineModel model;
     
@@ -41,7 +43,7 @@ abstract class AbstractResponse extends HttpServlet
         {
             if (resp.isCommitted())
             {
-                Activator.getLogger().warn("HTTP Server exception", ex);
+                CentralLogger.getInstance().getLogger(this).warn("HTTP Server exception", ex);
                 return;
             }
             resp.sendError(400, "HTTP Server exception" + ex.getMessage());

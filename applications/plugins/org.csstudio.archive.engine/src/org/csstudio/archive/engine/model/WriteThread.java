@@ -9,6 +9,7 @@ import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.util.stats.Average;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
@@ -91,7 +92,7 @@ public class WriteThread implements Runnable
     {
         if (write_period < MIN_WRITE_PERIOD)
         {
-            Activator.getLogger().warn("Adjusting write period from "
+            CentralLogger.getInstance().getLogger(this).warn("Adjusting write period from "
                     + write_period + " to " + MIN_WRITE_PERIOD);
             write_period = MIN_WRITE_PERIOD;
         }
@@ -152,7 +153,7 @@ public class WriteThread implements Runnable
     @SuppressWarnings("nls")
     public void run()
     {
-        Activator.getLogger().info("WriteThread starts");
+        CentralLogger.getInstance().getLogger(this).info("WriteThread starts");
         final BenchmarkTimer timer = new BenchmarkTimer();
         boolean write_error = false;
         do_run = true;
@@ -182,7 +183,7 @@ public class WriteThread implements Runnable
             }
             catch (Exception ex)
             {   // Error in write() or the preceding reconnect()...
-                Activator.getLogger().error("Error, will try to reconnect", ex);
+                CentralLogger.getInstance().getLogger(this).error("Error, will try to reconnect", ex);
                 // Use max. delay
                 delay = millisec_delay;
                 write_error = true;
@@ -200,12 +201,12 @@ public class WriteThread implements Runnable
                     }
                     catch (InterruptedException ex)
                     {
-                        Activator.getLogger().error("Interrupted wait", ex);
+                        CentralLogger.getInstance().getLogger(this).error("Interrupted wait", ex);
                     }
                 }
             }
         }
-        Activator.getLogger().info("WriteThread exists");
+        CentralLogger.getInstance().getLogger(this).info("WriteThread exists");
     }
 
     /** Stop the write thread, performing a final write. */

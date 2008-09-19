@@ -3,6 +3,7 @@ package org.csstudio.archive.engine.scanner;
 import java.util.ArrayList;
 
 import org.csstudio.archive.engine.Activator;
+import org.csstudio.platform.logging.CentralLogger;
 
 /** A Scan list scans a list of channels at a given rate.
  *  <p>
@@ -92,7 +93,7 @@ public class ScanList implements Scheduleable
             }
             catch (Throwable ex)
             {
-                Activator.getLogger().error(toString() + " scan error", ex); //$NON-NLS-1$
+                CentralLogger.getInstance().getLogger(this).error(toString() + " scan error", ex); //$NON-NLS-1$
             }
         }
         // Determine next due time relative to start,

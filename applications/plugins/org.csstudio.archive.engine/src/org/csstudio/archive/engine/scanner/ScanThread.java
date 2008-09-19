@@ -1,6 +1,7 @@
 package org.csstudio.archive.engine.scanner;
 
 import org.csstudio.archive.engine.Activator;
+import org.csstudio.platform.logging.CentralLogger;
 
 /** Thread that runs a Scanner.
  *  @author Kay Kasemir
@@ -40,13 +41,13 @@ public class ScanThread implements Runnable
     @SuppressWarnings("nls")
     public void run()
     {
-        Activator.getLogger().info("Scan Thread runs");
+        CentralLogger.getInstance().getLogger(this).info("Scan Thread runs");
         do_run = true;
         while (do_run)
         {
-            scanner.run();
+            scanner.scanOnce();
         }
-        Activator.getLogger().info("Scan Thread ends");
+        CentralLogger.getInstance().getLogger(this).info("Scan Thread ends");
     }
 
     /** Wait for thread to exit */
@@ -60,7 +61,7 @@ public class ScanThread implements Runnable
         }
         catch (InterruptedException ex)
         {
-            Activator.getLogger().error("Scan Thread join attempt", ex); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this).error("Scan Thread join attempt", ex); //$NON-NLS-1$
         }
     }
 }

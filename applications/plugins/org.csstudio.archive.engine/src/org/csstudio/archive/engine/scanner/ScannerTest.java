@@ -16,7 +16,7 @@ public class ScannerTest
     final double period = 3.0;
     final double fast_period = 1.0;
 
-    /** Scannable item that counts invokations */
+    /** Scannable item that counts invocations */
     class ScanItem implements Runnable
     {
         final String name;
@@ -153,7 +153,7 @@ public class ScannerTest
         {
             ++check;
             System.out.println("scan...");
-            scanner.run();
+            scanner.scanOnce();
         }
         assertTrue(item.scans >= 3);
         

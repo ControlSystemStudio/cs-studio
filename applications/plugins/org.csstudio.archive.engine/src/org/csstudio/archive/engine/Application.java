@@ -1,5 +1,6 @@
 package org.csstudio.archive.engine;
 
+import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
@@ -7,6 +8,7 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.EngineServer;
 import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -104,7 +106,8 @@ public class Application implements IApplication
 
         // Setup groups, channels, writer
         // This is all single-threaded!
-        Activator.getLogger().info("Archive Engine " + EngineModel.VERSION);
+        final Logger logger = CentralLogger.getInstance().getLogger(this);
+        logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
             RDBArchive archive;
@@ -114,7 +117,7 @@ public class Application implements IApplication
             }
             catch (final Exception ex)
             {
-                Activator.getLogger().fatal("Cannot connect to " + rdb_url, ex);
+                logger.fatal("Cannot connect to " + rdb_url, ex);
                 return EXIT_OK;
             }
             model = new EngineModel(archive);
@@ -126,7 +129,7 @@ public class Application implements IApplication
             }
             catch (final Exception ex)
             {
-                Activator.getLogger().fatal("Cannot start server on port "
+                logger.fatal("Cannot start server on port "
                                 + port + ": " + ex.getMessage(), ex);
                 return EXIT_OK;
             }
@@ -140,12 +143,12 @@ public class Application implements IApplication
                 }
                 catch (final Exception ex)
                 {
-                    Activator.getLogger().fatal(ex.getMessage());
+                    logger.fatal(ex.getMessage());
                     return EXIT_OK;
                 }
         
                 // Run until model gets stopped via HTTPD or #stop()
-                Activator.getLogger().info("Running, CA addr list: "
+                logger.info("Running, CA addr list: "
                     + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
                 model.start();
                 while (true)
@@ -160,18 +163,18 @@ public class Application implements IApplication
                         break;
                 }
                 // Stop sampling
-                Activator.getLogger().info("ArchiveEngine ending");
+                logger.info("ArchiveEngine ending");
                 model.stop();
                 model.clearConfig();
             }
             
             archive.close();
-            Activator.getLogger().info("ArchiveEngine stopped");
+            logger.info("ArchiveEngine stopped");
             server.stop();
         }
         catch (Exception ex)
         {
-            Activator.getLogger().fatal(ex);
+            logger.fatal(ex);
         }
         
         return EXIT_OK;

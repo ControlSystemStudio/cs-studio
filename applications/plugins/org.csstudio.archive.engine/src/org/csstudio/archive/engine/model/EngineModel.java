@@ -13,17 +13,18 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Data model of the archive engine.
  *  @author Kay Kasemir
  */
 public class EngineModel
 {
-    private static final double DEFAULT_WRITE_PERIOD = 30.0;
-
     /** Version code */
     final public static String VERSION = "0.1.1"; //$NON-NLS-1$
-    
+
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$
     
@@ -55,7 +56,7 @@ public class EngineModel
     final CopyOnWriteArrayList<ArchiveGroup> groups =
         new CopyOnWriteArrayList<ArchiveGroup>();
     
-    /** Scanner for scanned channes */
+    /** Scanner for scanned channels */
     final Scanner scanner = new Scanner();
 
     /** Thread that runs the scanner */
@@ -83,19 +84,36 @@ public class EngineModel
     private ITimestamp start_time = null;
 
     /** Write period in seconds */
-    private double write_period = DEFAULT_WRITE_PERIOD;
-    
+    private int write_period = 30;
+
+    /** Maximum number of repeat counts for scanned channels */
+    private int max_repeats = 60;
+
     /** Write batch size */
     private int batch_size = 500;
 
     /** Buffer reserve (N times what's ideally needed) */
     private double buffer_reserve = 2.0;
-    
+
     /** Construct model that writes to archive */
     public EngineModel(final RDBArchive archive)
     {
         this.archive = archive;
+        applyPreferences();
         writer = new WriteThread(archive);
+    }
+
+    /** Read preference settings */
+    @SuppressWarnings("nls")
+    private void applyPreferences()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return;
+        write_period = prefs.getInt(Activator.ID, "write_period", write_period, null);
+        max_repeats = prefs.getInt(Activator.ID, "max_repeats", max_repeats, null);
+        batch_size = prefs.getInt(Activator.ID, "batch_size", batch_size, null);
+        buffer_reserve = prefs.getDouble(Activator.ID, "buffer_reserve", buffer_reserve, null);
     }
 
     /** @return Name (description) */
@@ -105,21 +123,9 @@ public class EngineModel
     }
     
     /** @return Write period in seconds */
-    final public double getWritePeriod()
+    final public int getWritePeriod()
     {
         return write_period;
-    }
-
-    /** Set period between writes [seconds] */
-    final void setWritePeriod(final double write_period)
-    {
-        this.write_period = write_period;
-    }
-    
-    /** Set multiplicator for ideally needed buffer space */
-    final public void setBufferReserve(final double buffer_reserve)
-    {
-        this.buffer_reserve = buffer_reserve;
     }
 
     /** @return Write batch size */
@@ -128,12 +134,6 @@ public class EngineModel
         return batch_size;
     }
 
-    /** Write batch size */
-    final void setBatchSize(int values)
-    {
-        batch_size = values;
-    }
-    
     /** @return Current model state */
     final public State getState()
     {
@@ -268,7 +268,8 @@ public class EngineModel
             else
             {
                 channel = new ScannedArchiveChannel(name, enablement,
-                                        buffer_capacity, last_sample, period);
+                                        buffer_capacity, last_sample, period,
+                                        max_repeats);
                 scanner.add((ScannedArchiveChannel)channel, period);
             }
             channels.add(channel);
@@ -358,13 +359,13 @@ public class EngineModel
         // Stop scanning
         scan_thread.stop();
         // Disconnect from network
-        Activator.getLogger().info("Stopping archive groups");
+        CentralLogger.getInstance().getLogger(this).info("Stopping archive groups");
         for (ArchiveGroup group : groups)
             group.stop();
         // Assert that scanning has stopped
         scan_thread.join();
         // Flush all values out
-        Activator.getLogger().info("Stopping writer");
+        CentralLogger.getInstance().getLogger(this).info("Stopping writer");
         writer.shutdown();
         // Update state
         state = State.IDLE;

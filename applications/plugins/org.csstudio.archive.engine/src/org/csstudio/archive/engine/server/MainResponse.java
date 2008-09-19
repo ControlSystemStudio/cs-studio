@@ -92,20 +92,20 @@ class MainResponse extends AbstractResponse
         html.tableLine(new String[]
         {
             Messages.HTTP_BatchSize,
-            String.format("%d samples", model.getBatchSize())
+            model.getBatchSize() + " samples"
         });
         html.tableLine(new String[]
         {
             Messages.HTTP_WritePeriod,
-            String.format("%.1f sec", model.getWritePeriod())
+            model.getWritePeriod() + " sec"
         });
         final ITimestamp last_write_time = model.getLastWriteTime();
         html.tableLine(new String[]
         {
           Messages.HTTP_LastWriteTime,
-          last_write_time == null
+          (last_write_time == null
           ? Messages.HTTP_Never
-          : last_write_time.format(ITimestamp.Format.DateTimeSeconds)
+          : last_write_time.format(ITimestamp.Format.DateTimeSeconds))
         });
         html.tableLine(new String[]
         {

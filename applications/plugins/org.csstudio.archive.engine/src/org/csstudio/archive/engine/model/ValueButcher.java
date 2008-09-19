@@ -38,10 +38,9 @@ public class ValueButcher
     /** @return Copy of given value with timestamp set to 'now',
      *          or <code>null</code> if value is not handled
      */
-    public static IValue transformTimestamp(final IValue value)
+    public static IValue transformTimestampToNow(final IValue value)
     {
-        final ITimestamp time = TimestampFactory.now();
-        return transformTimestamp(value, time);
+        return transformTimestamp(value, TimestampFactory.now());
     }
 
     /** @return Copy of given value with updated timestamp,
