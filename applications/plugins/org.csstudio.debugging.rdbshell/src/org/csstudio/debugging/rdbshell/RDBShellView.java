@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /** View for RDB shell.
@@ -28,7 +31,13 @@ public class RDBShellView extends ViewPart
 {
     /** View ID registered in plugin.xml */
     public static final String ID = "org.csstudio.debugging.rdbshell.view";
-    
+
+    // Memento tags
+    final private static String MEMENTO_QUERY = "QUERY";
+    final private static String MEMENTO_USER = "USER";
+    final private static String MEMENTO_URL = "URL";
+    private IMemento memento;
+
     // GUI elements
     private Text url;
     private Text user;
@@ -36,6 +45,25 @@ public class RDBShellView extends ViewPart
     private Text query;
     private Button run;
     private Table result;
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException
+    {
+        super.init(site, memento);
+        this.memento = memento;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void saveState(IMemento memento)
+    {
+        super.saveState(memento);
+        memento.putString(MEMENTO_URL, url.getText().trim());
+        memento.putString(MEMENTO_USER, user.getText().trim());
+        memento.putString(MEMENTO_QUERY, query.getText().trim());
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -46,6 +74,18 @@ public class RDBShellView extends ViewPart
         url.setText("jdbc:oracle:thin:@//172.31.73.122:1521/prod");
         user.setText("chan_arch");
         query.setText("select * from chan_arch.smpl_eng");
+        if (memento != null)
+        {
+            String saved = memento.getString(MEMENTO_URL);
+            if (saved != null)
+                url.setText(saved);
+            saved = memento.getString(MEMENTO_USER);
+            if (saved != null)
+                user.setText(saved);
+            saved = memento.getString(MEMENTO_QUERY);
+            if (saved != null)
+                query.setText(saved);
+        }
         
         run.addSelectionListener(new SelectionAdapter()
         {
