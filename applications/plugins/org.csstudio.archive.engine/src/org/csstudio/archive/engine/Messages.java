@@ -25,8 +25,10 @@ public class Messages
     final public static String HTTP_Idletime = "Idle Time";
     final public static String HTTP_InternalState = "Internal State";
     final public static String HTTP_LastArchivedValue = "Last Archived Value";
+    final public static String HTTP_LastWriteTime = "Last Written";
     final public static String HTTP_MainTitle = "Archive Engine";
     final public static String HTTP_Mechanism = "Mechanism";
+    final public static String HTTP_Never = "never";
     final public static String HTTP_QueueAvg = "Queue Avg.";
     final public static String HTTP_QueueLen = "Queue Len.";
     final public static String HTTP_QueueMax = "Queue Max.";

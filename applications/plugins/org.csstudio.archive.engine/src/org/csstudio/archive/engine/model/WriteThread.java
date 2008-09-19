@@ -6,7 +6,9 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.util.stats.Average;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
@@ -47,7 +49,10 @@ public class WriteThread implements Runnable
     
     /** Number of values to place into one batch */
     private int batch_size = 500;
-    
+
+    /** Time of end of last write run */
+    private ITimestamp last_write_stamp = null;
+
     /** Average number of values per write run */
     private Average write_count = new Average();
     
@@ -56,7 +61,7 @@ public class WriteThread implements Runnable
 
     /** Thread the executes this.run() */
     private Thread thread;
-    
+
     /** Construct thread for writing to server
      *  @param archive RDB to write to
      */
@@ -113,6 +118,12 @@ public class WriteThread implements Runnable
         }
     }
     
+    /** @return Timestamp of end of last write run */
+    public ITimestamp getLastWriteTime()
+    {
+        return last_write_stamp;
+    }
+
     /** @return Average number of values per write run */
     public double getWriteCount()
     {
@@ -163,6 +174,7 @@ public class WriteThread implements Runnable
                 // for a long time...
                 final long written = write();
                 timer.stop();
+                last_write_stamp = TimestampFactory.now();
                 write_count.update(written);
                 write_time.update(timer.getSeconds());
                 // How much of the scheduled delay is left after write()?

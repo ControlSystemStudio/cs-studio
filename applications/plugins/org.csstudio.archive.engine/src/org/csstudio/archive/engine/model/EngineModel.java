@@ -299,6 +299,12 @@ public class EngineModel
         scan_thread.start();
     }
 
+    /** @return Timestamp of end of last write run */
+    public ITimestamp getLastWriteTime()
+    {
+        return writer.getLastWriteTime();
+    }
+
     /** @return Average number of values per write run */
     public double getWriteCount()
     {
