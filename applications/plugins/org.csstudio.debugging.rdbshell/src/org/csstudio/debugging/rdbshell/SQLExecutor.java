@@ -67,6 +67,8 @@ public class SQLExecutor
                 {
                     // Check type? final int type = meta.getColumnType(c);
                     row[c-1] = result.getString(c);
+                    if (row[c-1] == null)
+                        row[c-1] = "";
                 }     
                 rows.add(row);
             }
@@ -79,7 +81,7 @@ public class SQLExecutor
     }
 
     /** Execute update
-     *  @param sql SQL that's supposed to be a 'insert' or 'update'
+     *  @param sql SQL that's supposed to be an 'insert' or 'update' command
      *  @see #execute(String)
      */
     private ArrayList<String[]> executeUpdate(final String sql)
