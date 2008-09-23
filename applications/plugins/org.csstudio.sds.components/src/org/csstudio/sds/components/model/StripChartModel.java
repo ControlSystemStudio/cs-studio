@@ -105,11 +105,12 @@ public final class StripChartModel extends AbstractChartModel {
 				"X-axis timespan (seconds)", WidgetPropertyCategory.Behaviour,
 				300.0, 1.0, Double.MAX_VALUE));
 		
-		// The minimum update interval is 10 milliseconds. This minimum was
-		// picked for no specific reason and may need to be adjusted.
+		// The minimum update interval is 100 milliseconds. Shorter update
+		// intervals may cause problems because the widget redraws after every
+		// update. The maximum interval is 60 seconds.
 		addProperty(PROP_UPDATE_INTERVAL, new DoubleProperty(
 				"Update interval (seconds)", WidgetPropertyCategory.Behaviour,
-				1.0, 0.01, Double.MAX_VALUE));
+				1.0, 0.1, 60.0));
 	}
 
 	/**
