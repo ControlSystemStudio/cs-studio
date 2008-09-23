@@ -236,16 +236,17 @@ public class WaveformView extends PlotAwareView
     protected void updateModel(final Model old_model, final Model new_model)
     {
         if (new_model == null)
-        {   // Clear everyting
+        {   // Clear everything
             model = null;
             pv_name.setText(Messages.WaveformView_NoPlot);
             pv_name.setEnabled(false);
             selectPV(null);
             return;
         }
-        if (new_model == model)
-            return; // No change
-        // Display PV names of new model
+        if (new_model == model  &&
+            model.getNumItems() == pv_name.getItemCount())
+            return; // Assume no change
+        // Display PV names of model
         model = new_model;
         final String pvs[] = new String[model.getNumItems()];
         for (int i=0; i<pvs.length; ++i)

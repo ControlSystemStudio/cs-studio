@@ -535,6 +535,8 @@ public class Controller implements ArchiveFetchJobListener
         {
             public void run()
             {
+                if (chart.isDisposed())
+                    return;
                 switch(model.getArchiveRescale())
                 {
                 case AUTOZOOM:
