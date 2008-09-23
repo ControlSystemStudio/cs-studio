@@ -53,7 +53,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 	 */
 	protected final void initializeCommonFigureProperties(
 			final AbstractChartFigure figure, final AbstractChartModel model) {
-		figure.setAliases(model.getAliases());
+		figure.setAliases(model.getAllInheritedAliases());
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
 			figure.setPlotColor(i, model.getPlotColor(i));
 		}
