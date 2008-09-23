@@ -47,14 +47,9 @@ public final class StripChartFigure extends AbstractChartFigure {
 	private int _valuesPerChannel;
 	
 	/**
-	 * The lower bound of the x-axis.
+	 * The timespan covered by the x-axis.
 	 */
-	private double _xAxisMinimum;
-	
-	/**
-	 * The upper bound of the x-axis.
-	 */
-	private double _xAxisMaximum;
+	private double _xAxisTimespan;
 	
 	/**
 	 * The greatest data value.
@@ -65,6 +60,13 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 * The lowest data value.
 	 */
 	private double _lowestDataValue;
+
+	/**
+	 * The timespan between the first and the last data value for a series. This
+	 * value may be slightly different from the x-axis timespan due to rounding
+	 * differences.
+	 */
+	private double _dataSeriesTimespan;
 	
 	/**
 	 * Creates a new strip chart figure.
@@ -73,30 +75,33 @@ public final class StripChartFigure extends AbstractChartFigure {
 	 *            the number of channels to be supported by this figure.
 	 * @param valuesPerChannel
 	 *            the number of values to be displayed per channel.
+	 * @param dataSeriesTimespan
+	 *            the time at which the last value in a series is recorded, in
+	 *            seconds. This value can be slightly greater than the length of
+	 *            the x-axis because the last value may be to the left of the
+	 *            x-axis. For example, if the x-axis length is 10 seconds and
+	 *            the update interval is 4 seconds, the
+	 *            <code>dataSeriesTimespan</code> will be 12 seconds.
 	 */
 	public StripChartFigure(final int numberOfChannels,
-			final int valuesPerChannel) {
+			final int valuesPerChannel, final double dataSeriesTimespan) {
 		super(numberOfChannels);
 		_valuesPerChannel = valuesPerChannel;
 		_values = new RingBuffer[numberOfChannels];
+		_dataSeriesTimespan = dataSeriesTimespan;
 		for (int i = 0; i < _values.length; i++) {
 			_values[i] = new RingBuffer(Math.min(valuesPerChannel, MAX_BUFFER_SIZE));
 		}
 	}
 	
 	/**
-	 * Sets the x-axis range of this figure. Note that for a strip chart figure,
-	 * the minimum will usually be greater than the maximum because the axis
-	 * runs from right to left.
+	 * Sets the x-axis timespan of this figure.
 	 * 
-	 * @param minimum
-	 *            the minimum value.
-	 * @param maximum
-	 *            the maximum value.
+	 * @param timespan
+	 *            the timespan in seconds.
 	 */
-	public void setXAxisRange(final double minimum, final double maximum) {
-		_xAxisMinimum = minimum;
-		_xAxisMaximum = maximum;
+	public void setXAxisTimespan(final double timespan) {
+		_xAxisTimespan = timespan;
 		xAxisRangeChanged();
 	}
 	
@@ -148,19 +153,28 @@ public final class StripChartFigure extends AbstractChartFigure {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the greatest x-axis value. For a strip chart, this is always zero
+	 * (the time of the latest recorded value). Note that for a strip chart, the
+	 * x-axis maximum is lower than the x-axis minimum. 
+	 * 
+	 * @return zero.
 	 */
 	@Override
 	protected double xAxisMaximum() {
-		return _xAxisMaximum;
+		return 0.0;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the lowest x-axis value. For a strip chart, this is the x-axis
+	 * timespan value, which is the age of the oldest recorded value in seconds.
+	 * Note that for a strip chart, the x-axis maximum is lower than the x-axis
+	 * minimum.
+	 * 
+	 * @return the lowest x-axis value.
 	 */
 	@Override
 	protected double xAxisMinimum() {
-		return _xAxisMinimum;
+		return _xAxisTimespan;
 	}
 	
 	/**
@@ -227,7 +241,7 @@ public final class StripChartFigure extends AbstractChartFigure {
 				if (--i < 0) {
 					i = _values.length - 1;
 				}
-				double xValue = Math.abs(_xAxisMaximum - _xAxisMinimum) * (((double) counter) / (((double) _valuesPerChannel) - 1));
+				double xValue = _dataSeriesTimespan * (((double) counter) / (((double) _valuesPerChannel) - 1));
 				processor.processDataPoint(xValue, _values[i]);
 				counter++;
 			}

@@ -66,8 +66,9 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	protected IFigure doCreateFigure() {
 		StripChartModel model = (StripChartModel) getWidgetModel();
 		int valuesPerDataSeries = numberOfValuesPerSeries(model);
+		double lastValueTime = model.getUpdateInterval() * (valuesPerDataSeries - 1);
 		_figure = new StripChartFigure(model.numberOfDataSeries(),
-				valuesPerDataSeries);
+				valuesPerDataSeries, lastValueTime);
 		initializeCommonFigureProperties(_figure, model);
 		initializeXAxisFigureProperties(model);
 		initializeValueProperties(model);
@@ -93,7 +94,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 *            the model.
 	 */
 	private void initializeXAxisFigureProperties(final StripChartModel model) {
-		_figure.setXAxisRange(model.getXAxisTimespan(), 0);
+		_figure.setXAxisTimespan(model.getXAxisTimespan());
 	}
 
 	/**
