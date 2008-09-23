@@ -17,6 +17,18 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 /**
  * 
  * Automat zum syncronisieren der globalen und lokalen Konfiguration.
+ * 
+ * Normaler Ablauf einer Synchronization:
+ * <ol>
+ * <li>empfangen einer SyncAufforderung auf externem Command Topic</li>
+ * <li>schreiben des ReplicationStates</li>
+ * <li>senden der Aufforderung an den Distributor ueber das "normale" Ausgangskorb Topic</li>
+ * <li>warten auf SyncBestaetigung auf internem Command Topic</li>
+ * <li>schreiben eines History Eintrages</li>
+ * </ol>
+ * 
+ * Wichtig:
+ * internes und externen Command Topic muessen unterschiedlich sein.
  */
 public class SyncronisationsAutomat {
 
@@ -90,9 +102,11 @@ public class SyncronisationsAutomat {
 					.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
 			localStoreConfigurationService
 					.saveCurrentReplicationState(stateDTO);
-			producer
-					.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 		}
+		
+		// Muss immer gesendet werden da kurz aufeinander folgende Synchronizationsaufforderungen
+		// dazu fuehren koennen, dass der ReplicationState vom Distributor noch nicht geaendert wurde.
+		producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 
 		SyncronisationsAutomat.macheweiter = true;
 		SyncronisationsAutomat.workingThread = Thread.currentThread();

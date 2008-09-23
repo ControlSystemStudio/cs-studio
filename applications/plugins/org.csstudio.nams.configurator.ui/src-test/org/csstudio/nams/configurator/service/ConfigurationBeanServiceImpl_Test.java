@@ -3,7 +3,6 @@ package org.csstudio.nams.configurator.service;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
@@ -40,9 +39,6 @@ public class ConfigurationBeanServiceImpl_Test extends TestCase {
 
 	@Test
 	public void testConfigurationBeanServiceImpl() throws Throwable {
-		Assert
-				.fail("Diesen Test implementieren, wenn der Conf-Service aufgeräumt ist, also das Configuration ein reines Material!");
-
 		final Configuration startConfiguration = this.createTestData();
 
 		EasyMock.expect(this.confService.getEntireConfiguration()).andReturn(
@@ -55,7 +51,9 @@ public class ConfigurationBeanServiceImpl_Test extends TestCase {
 
 		service.refreshData();
 
-		// TODO check here...
+		// TODO Hier auf korrektes Ergebniss pruefen...
+		
+		EasyMock.verify(this.confService);
 	}
 
 	private Configuration createTestData() {

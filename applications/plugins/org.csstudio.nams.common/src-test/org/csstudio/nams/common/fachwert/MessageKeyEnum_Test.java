@@ -9,11 +9,11 @@ public class MessageKeyEnum_Test extends
 	@Test
 	public void testGetEnumForKey() {
 
-		// 18 ELEMENTS ARE BEING MAPPED
+		// 27 ELEMENTS ARE BEING MAPPED
 		Assert
 				.assertEquals(
-						"19 Elements are being mapped(IF AMOUNT OF ELEMENTS CHANGES MessageKeyConverter must be updated)",
-						19, MessageKeyEnum.values().length);
+						"27 Elements are being mapped(IF AMOUNT OF ELEMENTS CHANGES MessageKeyConverter must be updated)",
+						27, MessageKeyEnum.values().length);
 
 		// AMS-REINSERTED
 		Assert.assertEquals(MessageKeyEnum.AMS_REINSERTED, MessageKeyEnum
@@ -28,6 +28,12 @@ public class MessageKeyEnum_Test extends
 				.getEnumFor("ams-filterid"));
 
 		// APPLICATION_ID
+		Assert.assertEquals(MessageKeyEnum.APPLICATION, MessageKeyEnum
+				.getEnumFor("application"));
+		Assert.assertEquals(MessageKeyEnum.APPLICATION, MessageKeyEnum
+				.getEnumFor("APPLICATION"));
+		
+		// APPLICATION_ID
 		Assert.assertEquals(MessageKeyEnum.APPLICATION_ID, MessageKeyEnum
 				.getEnumFor("application-id"));
 		Assert.assertEquals(MessageKeyEnum.APPLICATION_ID, MessageKeyEnum
@@ -39,6 +45,12 @@ public class MessageKeyEnum_Test extends
 		Assert.assertEquals(MessageKeyEnum.CLASS, MessageKeyEnum
 				.getEnumFor("CLASS"));
 
+		// CREATETIME
+		Assert.assertEquals(MessageKeyEnum.CREATETIME, MessageKeyEnum
+				.getEnumFor("createtime"));
+		Assert.assertEquals(MessageKeyEnum.CREATETIME, MessageKeyEnum
+				.getEnumFor("CREATETIME"));
+		
 		// DESTINATION
 		Assert.assertEquals(MessageKeyEnum.DESTINATION, MessageKeyEnum
 				.getEnumFor("destination"));
@@ -55,7 +67,7 @@ public class MessageKeyEnum_Test extends
 		Assert.assertEquals(MessageKeyEnum.EVENTTIME, MessageKeyEnum
 				.getEnumFor("eventtime"));
 		Assert.assertEquals(MessageKeyEnum.EVENTTIME, MessageKeyEnum
-				.getEnumFor("eventtime"));
+				.getEnumFor("EVENTTIME"));
 
 		// FACILITY
 		Assert.assertEquals(MessageKeyEnum.FACILITY, MessageKeyEnum
@@ -67,7 +79,19 @@ public class MessageKeyEnum_Test extends
 		Assert.assertEquals(MessageKeyEnum.HOST, MessageKeyEnum
 				.getEnumFor("host"));
 		Assert.assertEquals(MessageKeyEnum.HOST, MessageKeyEnum
-				.getEnumFor("host"));
+				.getEnumFor("HOST"));
+		
+		// HOST-PHYS
+		Assert.assertEquals(MessageKeyEnum.HOST_PHYS, MessageKeyEnum
+				.getEnumFor("host-phys"));
+		Assert.assertEquals(MessageKeyEnum.HOST_PHYS, MessageKeyEnum
+				.getEnumFor("HOST-PHYS"));
+		
+		// HOWTO
+		Assert.assertEquals(MessageKeyEnum.HOWTO, MessageKeyEnum
+				.getEnumFor("howto"));
+		Assert.assertEquals(MessageKeyEnum.HOWTO, MessageKeyEnum
+				.getEnumFor("HOWTO"));
 
 		// LOCATION
 		Assert.assertEquals(MessageKeyEnum.LOCATION, MessageKeyEnum
@@ -87,6 +111,12 @@ public class MessageKeyEnum_Test extends
 		Assert.assertEquals(MessageKeyEnum.NAME, MessageKeyEnum
 				.getEnumFor("NAME"));
 
+		// OVERWRITES
+		Assert.assertEquals(MessageKeyEnum.OVERWRITES, MessageKeyEnum
+				.getEnumFor("OVERWRITES"));
+		Assert.assertEquals(MessageKeyEnum.OVERWRITES, MessageKeyEnum
+				.getEnumFor("overwrites"));
+		
 		// PROCESS-ID
 		Assert.assertEquals(MessageKeyEnum.PROCESS_ID, MessageKeyEnum
 				.getEnumFor("process-id"));
@@ -99,11 +129,29 @@ public class MessageKeyEnum_Test extends
 		Assert.assertEquals(MessageKeyEnum.SEVERITY, MessageKeyEnum
 				.getEnumFor("SEVERITY"));
 
+		// SEVERITY-MAX
+		Assert.assertEquals(MessageKeyEnum.SEVERITY_MAX, MessageKeyEnum
+				.getEnumFor("severity-max"));
+		Assert.assertEquals(MessageKeyEnum.SEVERITY_MAX, MessageKeyEnum
+				.getEnumFor("SEVERITY-MAX"));
+		
+		// SEVERITY-OLD
+		Assert.assertEquals(MessageKeyEnum.SEVERITY_OLD, MessageKeyEnum
+				.getEnumFor("severity-old"));
+		Assert.assertEquals(MessageKeyEnum.SEVERITY_OLD, MessageKeyEnum
+				.getEnumFor("SEVERITY-OLD"));
+
 		// STATUS
 		Assert.assertEquals(MessageKeyEnum.STATUS, MessageKeyEnum
 				.getEnumFor("status"));
 		Assert.assertEquals(MessageKeyEnum.STATUS, MessageKeyEnum
 				.getEnumFor("STATUS"));
+		
+		// STATUS-OLD
+		Assert.assertEquals(MessageKeyEnum.STATUS_OLD, MessageKeyEnum
+				.getEnumFor("status-old"));
+		Assert.assertEquals(MessageKeyEnum.STATUS_OLD, MessageKeyEnum
+				.getEnumFor("STATUS-OLD"));
 
 		// TEXT
 		Assert.assertEquals(MessageKeyEnum.TEXT, MessageKeyEnum
