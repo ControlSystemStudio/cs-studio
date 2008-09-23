@@ -28,9 +28,11 @@ package org.csstudio.ams.messageminder;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
+
 import org.csstudio.ams.Activator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.SampleService;
@@ -57,6 +59,18 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @since 30.10.2007
  */
 public class MessageGuardCommander extends Job {
+
+    /**
+     * 
+     */
+    private static final String AMS_COMMAND_KEY_NAME = "COMMAND";
+
+    private final static String MSGVALUE_TCMD_RELOAD = "AMS_RELOAD_CFG";
+
+    private final static String MSGVALUE_TCMD_RELOAD_CFG_START = MessageGuardCommander.MSGVALUE_TCMD_RELOAD
+            + "_START";
+    private final static String MSGVALUE_TCMD_RELOAD_CFG_END = MessageGuardCommander.MSGVALUE_TCMD_RELOAD
+            + "_END";
 
     /**
      * The (AMS) JMS Redundant Receiver.
@@ -134,8 +148,8 @@ public class MessageGuardCommander extends Job {
 
         
         /**
-         * Nur für debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 ge�ndert.
-         * Der Code kann sp�ter wieder entfernt werden.
+         * Nur fÃ¼r debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geï¿½ndert.
+         * Der Code kann spï¿½ter wieder entfernt werden.
          * TODO: delete debug code.
 
         storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://kryksrvjmsa.desy.de:50000)");
@@ -205,7 +219,7 @@ public class MessageGuardCommander extends Job {
             now = TimestampFactory.now();
             
             while(null != (message = _amsReceiver.receive("amsSubscriberMessageMinder"))){// receiveNoWait has a bug with acknowledging in openjms 3
-                // ADDED BY Markus Möller, 2008-08-14
+                // ADDED BY Markus MÃ¶ller, 2008-08-14
                 this.acknowledge(message);
                 ITimestamp before = TimestampFactory.now();  
                 checkMsg(message,now);
@@ -240,7 +254,8 @@ public class MessageGuardCommander extends Job {
         if (message instanceof MapMessage) {
             MapMessage mapMessage = (MapMessage) message;
             try {
-                if(mapMessage.getString("AMS_RELOAD_CFG_START")!=null||mapMessage.getString("AMS_RELOAD_CFG_END")!=null){
+                String command = mapMessage.getString(AMS_COMMAND_KEY_NAME);
+                if(command != null && (command.equals(MSGVALUE_TCMD_RELOAD_CFG_START)||command.equals(MSGVALUE_TCMD_RELOAD_CFG_END))){
                     send(message);
                     return;
                 }
@@ -302,7 +317,7 @@ public class MessageGuardCommander extends Job {
     private void sendCleanUpMessage(final MessageKey key, final ITimestamp lastDate, final int number) {
         System.out.println(key.toString()+"\tlast unsend msg: "+lastDate.toString()+"\t and "+number+" unsent msg.");
         // TODO write the sendCleanUpMessage.
-        // Soll eine Nachricht versenden die enth�lt welche und wieviele nachrchten zur�ck gehalten wurden.
+        // Soll eine Nachricht versenden die enthï¿½lt welche und wieviele nachrchten zurï¿½ck gehalten wurden.
     }
 
     /**
