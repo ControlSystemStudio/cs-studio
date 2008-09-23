@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class GUI implements ModelListener
 {
+    final private String url;
+
     private Model model = null;
 
     private TableViewer table_viewer;
@@ -41,6 +43,7 @@ public class GUI implements ModelListener
      */
     public GUI(final String url, final Composite parent)
     {
+        this.url = url;
         createGUI(parent);
         
         topic.addSelectionListener(new SelectionAdapter()
@@ -48,18 +51,7 @@ public class GUI implements ModelListener
             @Override
             public void widgetDefaultSelected(SelectionEvent e)
             {
-                try
-                {
-                    if (model != null)
-                        model.removeListener(GUI.this);
-                    clear();
-                    model = new Model(url, topic.getText().trim());
-                    model.addListener(GUI.this);
-                }
-                catch (Exception ex)
-                {
-                    showError(ex.getMessage());
-                }
+                setTopic(getTopic());
             }
         });
         
@@ -124,7 +116,9 @@ public class GUI implements ModelListener
 
         table_viewer.setContentProvider(new ReceivedMessageProvider());
         TableViewerColumn view_col =
-            AutoSizeColumn.make(table_viewer, Messages.TypeColumn, 50, 5);
+            AutoSizeColumn.make(table_viewer, Messages.DateColumn, 150, 5);
+        view_col.setLabelProvider(new DateLabelProvider());
+        view_col = AutoSizeColumn.make(table_viewer, Messages.TypeColumn, 50, 5);
         view_col.setLabelProvider(new TypeLabelProvider());
         view_col = AutoSizeColumn.make(table_viewer, Messages.ContentColumn, 400, 100);
         view_col.setLabelProvider(new ContentLabelProvider());
@@ -138,6 +132,35 @@ public class GUI implements ModelListener
     public void setFocus()
     {
         topic.setFocus();
+    }
+
+    /** @return Currently selected topic */
+    public String getTopic()
+    {
+        return topic.getText().trim();
+    }
+
+    /** Select topic: Connect to JMS, subscribe to topic, ...
+     *  @param topic_name Name of topic
+     */
+    public void setTopic(final String topic_name)
+    {
+        try
+        {
+            if (! topic.getText().equals(topic_name))
+                topic.setText(topic_name);
+            if (model != null)
+                model.removeListener(GUI.this);
+            clear();
+            if (topic_name.length() <= 0)
+                return;
+            model = new Model(url, topic_name);
+            model.addListener(GUI.this);
+        }
+        catch (Exception ex)
+        {
+            showError(ex.getMessage());
+        }
     }
 
     /** Set messages to something that indicates "no messages" */

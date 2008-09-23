@@ -1,6 +1,7 @@
 package org.csstudio.debugging.jmsmonitor;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /** A message received from JMS: Type and content.
  *  @author Kay Kasemir
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 @SuppressWarnings("nls")
 public class ReceivedMessage
 {
+    final private Date date;
     final private String type;
     final private ArrayList<MessageProperty> content;
 
@@ -18,8 +20,15 @@ public class ReceivedMessage
     public ReceivedMessage(final String type,
             final ArrayList<MessageProperty> content)
     {
+        date = new Date();
         this.type = type;
         this.content = content;
+    }
+
+    /** @return Time when message was received */
+    public Date getDate()
+    {
+        return date;
     }
 
     /** @return Message type */

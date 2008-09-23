@@ -8,6 +8,7 @@ public class Messages extends NLS
     public static String Clear;
     public static String ClearTT;
     public static String ContentColumn;
+    public static String DateColumn;
     public static String DetailDialogTitle;
     public static String ErrorMessage;
     public static String ErrorNoTopic;
