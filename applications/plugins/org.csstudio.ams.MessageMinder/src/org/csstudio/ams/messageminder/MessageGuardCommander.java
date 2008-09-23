@@ -240,6 +240,10 @@ public class MessageGuardCommander extends Job {
         if (message instanceof MapMessage) {
             MapMessage mapMessage = (MapMessage) message;
             try {
+                if(mapMessage.getString("AMS_RELOAD_CFG_START")!=null||mapMessage.getString("AMS_RELOAD_CFG_END")!=null){
+                    send(message);
+                    return;
+                }
                 String[] keys = new String[_keyWords.length];
                 for (int i = 0; i < keys.length; i++) {
                     keys[i] = mapMessage.getString(_keyWords[i]);
