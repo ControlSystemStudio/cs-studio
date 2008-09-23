@@ -92,7 +92,6 @@ public class RDBArchiveImpl extends RDBArchive
 	 *  @throws Exception on error
 	 *  @see {@link RDBUtil} for syntax of URL
 	 */
-	@SuppressWarnings("nls")
     public RDBArchiveImpl(final String url) throws Exception
 	{
 	    this.url = url;
@@ -124,7 +123,6 @@ public class RDBArchiveImpl extends RDBArchive
 
     /** {@inheritDoc} */
 	@Override
-    @SuppressWarnings("nls")
     public void reconnect() throws Exception
 	{
 	    close();
@@ -458,7 +456,7 @@ public class RDBArchiveImpl extends RDBArchive
 	}
 	
     /** Helper for batchSample: Add long sample to batch.
-     *  TODO support arrays for long?
+     *  TODO support arrays of long?
      */
 	private void batchLongSamples(final ChannelConfigImpl channel,
             final Timestamp stamp, final Severity severity,

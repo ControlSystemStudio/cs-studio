@@ -118,9 +118,9 @@ public class SQL
             "SELECT channel_id, grp_id, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE name=?";
 		
 		if (dialect == RDBUtil.Dialect.Oracle)
-			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE REGEXP_LIKE(name, ?, 'i')";
+			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE REGEXP_LIKE(name, ?, 'i') ORDER BY name";
 		else
-			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE name REGEXP ?";
+			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE name REGEXP ? ORDER BY name";
 		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + schema + "sample WHERE channel_id=?";
 		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_per FROM " + schema + "channel WHERE grp_id=?";
 		channel_set_grp_by_id = "UPDATE channel SET grp_id=? WHERE channel_id=?";        
