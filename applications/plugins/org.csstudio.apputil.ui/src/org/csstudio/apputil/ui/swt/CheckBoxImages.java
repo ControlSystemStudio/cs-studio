@@ -1,5 +1,6 @@
 package org.csstudio.apputil.ui.swt;
 
+import org.csstudio.apputil.ui.Activator;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -16,18 +17,28 @@ import org.eclipse.swt.widgets.Shell;
  *  While SWING makes it easy to include checkboxes or any
  *  other controls in a table, SWT isn't there (yet?).
  *  So one has to display the image of a checkbox.
- *  This hack from
+ *  <p>
+ *  There are two ways to get checkbox images:
+ *  Use fixed images, which will always work,
+ *  or use a hack from
  *  <code>
  *  feed://tom-eclipse-dev.blogspot.com/feeds/46160309661596839/comments/default
  *  </code>
- *  takes a snapshot of the 'real' button from a browfly displayed shell.
- *
+ *  to take a snapshot of the 'real' button from a briefly displayed shell.
+ *  That looks more like the native check boxes of the OS,
+ *  but sometimes fails, maybe related to the briefly displayed shell
+ *  being covered by another window by accident.
+ *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class CheckBoxImages
 {
-    private static final String CHECKED_KEY = "CHECKED"; //$NON-NLS-1$
-    private static final String UNCHECK_KEY = "UNCHECKED"; //$NON-NLS-1$
+    /** Set <code>true</code> to use fixed images, otherwise use the hack */
+    final private static boolean use_fixed_images = true;
+
+    private static final String CHECKED_KEY = "CHECKED";
+    private static final String UNCHECK_KEY = "UNCHECKED";
     private static CheckBoxImages instance = null;
     
     /** Singleton */
@@ -36,8 +47,16 @@ public class CheckBoxImages
         final ImageRegistry registry = JFaceResources.getImageRegistry();
         if (registry.getDescriptor(CHECKED_KEY) != null)
             return;
-        registry.put(UNCHECK_KEY, makeShot(control, false));
-        registry.put(CHECKED_KEY, makeShot(control, true));
+        if (use_fixed_images)
+        {
+            registry.put(CHECKED_KEY, Activator.getImageDescriptor("icons/checked.gif"));
+            registry.put(UNCHECK_KEY, Activator.getImageDescriptor("icons/unchecked.gif"));
+        }
+        else
+        {
+            registry.put(UNCHECK_KEY, makeShot(control, false));
+            registry.put(CHECKED_KEY, makeShot(control, true));
+        }
     }
     
     /** Create or obtain existing instance of CheckBoxImages
@@ -72,7 +91,7 @@ public class CheckBoxImages
         button.setBackground(backgroundColor);
         button.setSelection(selected);
     
-        // Some tweaking that's a compromize between Win32, OSX, ...
+        // Some tweaking that's a compromise between Win32, OSX, ...
         // versions of the actual control.
         final Point bsize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // otherwise an image is stretched by width
