@@ -1,28 +1,22 @@
 package org.csstudio.trends.databrowser.preferences;
 
 import org.csstudio.trends.databrowser.Plugin;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-/** Preference page for <code>Prederences</code>.
+/** Preference GUI for data browser settings.
  *  <p>
- *  Mostly created by the Eclipse wizard:
- *  <p> 
- *  "This class represents a preference page that is contributed to the
- *   Preferences dialog. By subclassing <samp>FieldEditorPreferencePage</samp>,
- *   we can use the field support built into JFace that allows us to create a page
- *   that is small and knows how to save, restore and apply itself.
- *   <p>
- *   This page is used to modify preferences only. They are stored in the
- *   preference store that belongs to the main plug-in class. That way,
- *   preferences can be accessed directly via the preference store."
- *   @author Kay Kasemir
+ *  plugin.xml registers this with the Eclipse preference GUI
+ *  @author Kay Kasemir
  */
 public class PreferencePage extends FieldEditorPreferencePage implements
                 IWorkbenchPreferencePage
@@ -30,16 +24,19 @@ public class PreferencePage extends FieldEditorPreferencePage implements
     private static final int MAX_BINS = 10000;
     private static final int MIN_BINS = 100;
 
+    /** Constructor */
     public PreferencePage()
     {
-        super(GRID);
-        setPreferenceStore(Plugin.getDefault().getPreferenceStore());
-        setDescription(Messages.PageTitle);
+        // This way, preference changes in the GUI end up in a file under
+        // {workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings/,
+        // i.e. they are specific to the workspace instance.
+        final IPreferenceStore store =
+            new ScopedPreferenceStore(new InstanceScope(), Plugin.ID);
+        setPreferenceStore(store);
+        setMessage(Messages.PageTitle);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
+    /** {@inheritDoc */
     public void init(IWorkbench workbench)
     { /* NOP */ }
 
