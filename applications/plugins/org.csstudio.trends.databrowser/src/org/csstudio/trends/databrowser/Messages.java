@@ -10,6 +10,12 @@ public class Messages extends NLS
     public static String ErrorMessageTitle;
     public static String ErrorMessage;
 
+    public static String SendToElogAction_InitialBody;
+
+    public static String SendToElogAction_InitialTitle;
+
+    public static String SendToElogAction_message;
+
     static
     {
         // initialize resource bundle

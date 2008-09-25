@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
-import org.csstudio.swt.chart.actions.ExportToElogAction;
 import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
 import org.csstudio.swt.chart.actions.RemoveMarkersAction;
 import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
@@ -130,9 +129,8 @@ public class PlotPart
         context_menu.add(new Separator());
         context_menu.add(new SaveCurrentImageAction(chart));
         context_menu.add(new PrintCurrentImageAction(chart));
-        if (ExportToElogAction.isElogAvailable())
-            context_menu.add(new ExportToElogAction(chart,
-                    org.csstudio.trends.databrowser.Messages.DataBrowser));
+        if (SendToElogAction.isElogAvailable())
+            context_menu.add(new SendToElogAction(chart));
     }
 
     /** @see IWorkbenchPart#setFocus */

@@ -5,18 +5,19 @@ Bundle-SymbolicName: org.csstudio.trends.databrowser; singleton:=true
 Bundle-Version: 1.0.14
 Bundle-Activator: org.csstudio.trends.databrowser.Plugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.junit4,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.views,
  org.eclipse.core.resources,
+ org.csstudio.platform,
  org.csstudio.platform.ui,
  org.csstudio.utility.pv,
  org.csstudio.archive,
- org.csstudio.platform,
  org.csstudio.swt.chart,
  org.csstudio.apputil,
  org.csstudio.apputil.ui,
- org.junit4
+ org.csstudio.logbook
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir
 Export-Package: org.csstudio.trends.databrowser
