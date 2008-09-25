@@ -34,7 +34,7 @@ public class PrintCurrentImageAction extends Action
     public PrintCurrentImageAction(Chart chart)
     {
         super(Messages.PrintImage_ActionName,
-              Activator.getImageDescriptor("icons/snapshot.gif")); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/print.gif")); //$NON-NLS-1$
         this.chart = chart;
         setToolTipText(Messages.PrintImage_ActionName_TT);
     }
