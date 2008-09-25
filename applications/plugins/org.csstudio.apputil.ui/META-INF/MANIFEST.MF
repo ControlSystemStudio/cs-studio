@@ -2,14 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apputil UI
 Bundle-SymbolicName: org.csstudio.apputil.ui;singleton:=true
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Bundle-Vendor: Kay Kasemir
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.swt,
+Require-Bundle: org.junit4,
+ org.eclipse.swt,
  org.eclipse.jface,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- org.csstudio.apputil;visibility:=reexport
-Export-Package: org.csstudio.apputil.ui.swt,
+ org.csstudio.apputil;visibility:=reexport,
+ org.csstudio.logbook
+Export-Package: org.csstudio.apputil.ui.elog,
+ org.csstudio.apputil.ui.swt,
  org.csstudio.apputil.ui.time
 Bundle-ActivationPolicy: lazy
