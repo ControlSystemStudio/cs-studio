@@ -27,9 +27,8 @@ public class PreferencePage extends FieldEditorPreferencePage
 
     public PreferencePage()
     {
-        super(GRID);
         setPreferenceStore(Plugin.getDefault().getPreferenceStore());
-        setDescription(Messages.PreferencePage_Title);
+        setMessage(Messages.PreferencePage_Title);
     }
 
     /* (non-Javadoc)
