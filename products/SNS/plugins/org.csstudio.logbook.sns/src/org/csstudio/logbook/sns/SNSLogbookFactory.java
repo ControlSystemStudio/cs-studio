@@ -73,6 +73,10 @@ public class SNSLogbookFactory implements ILogbookFactory
             final String user, final String password) throws Exception
     {
         // Connect to the SNS RDB
+        if (user.length() <= 0)
+            throw new Exception("Empty user name");
+        if (password.length() <= 0)
+            throw new Exception("Empty password");
         if (url == null)
             throw new Exception("Missing logbook URL");
         if (logbook == null)
