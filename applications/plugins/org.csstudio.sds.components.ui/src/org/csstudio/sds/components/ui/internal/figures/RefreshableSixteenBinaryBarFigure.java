@@ -17,6 +17,11 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * Sixteen Bit Binary Bar widget figure.
+ * 
+ * @author Alen Vrecko, Joerg Rathlev
+ */
 public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		implements IAdaptable {
 
@@ -30,11 +35,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	 */
 	private IBorderEquippedWidget _borderAdapter;
 
-	private Boolean showLabels;
-
 	private int value;
-
-	private FontData labelFont;
 
 	private Color onColor;
 
@@ -44,14 +45,25 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 	private RGB internalFrameColor;
 
-	private RGB labelColor;
-
 	private OnOffBox[] boxes;
 
 	private GridLayout layout;
+	
+	private int bitRangeFrom = 0;
+	
+	private int bitRangeTo = 15;
+
+	private boolean _showLabels;
 
 	public RefreshableSixteenBinaryBarFigure() {
-		layout = new GridLayout(16, false);
+		createLayoutAndBoxes();
+	}
+
+	/**
+	 * Creates the layout and the boxes for this figure.
+	 */
+	private void createLayoutAndBoxes() {
+		layout = new GridLayout(numberOfBits(), false);
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		layout.marginHeight = 0;
@@ -59,9 +71,10 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 		setLayoutManager(layout);
 
-		boxes = new OnOffBox[16];
-		for (int i = 0; i < 16; i++) {
-			OnOffBox box = new OnOffBox(i);
+		boxes = new OnOffBox[numberOfBits()];
+		for (int i = 0; i < numberOfBits(); i++) {
+			OnOffBox box = new OnOffBox(i + bitRangeFrom);
+			box.setShowLabel(_showLabels);
 			add(box);
 
 			GridData gridData = new GridData();
@@ -74,18 +87,32 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 			boxes[i] = box;
 
 		}
-
+	}
+	
+	/**
+	 * Removes the boxes from this figure, then recreates them and refreshes the
+	 * layout.
+	 */
+	private void recreateLayoutAndBoxes() {
+		removeBoxes();
+		createLayoutAndBoxes();
+		updateBoxes();
+	}
+	
+	/**
+	 * Removes the boxes from this figure.
+	 */
+	private void removeBoxes() {
+		removeAll();
 	}
 
+	/**
+	 * Updates the on/off state of the boxes based on the current value.
+	 */
 	private void updateBoxes() {
-		for (int i = 0; i < 16; i++) {
-			if (((1 << i) & value) == 0) {
-				boxes[i].setOn(false);
-			} else {
-				boxes[i].setOn(true);
-			}
+		for (int i = 0; i < numberOfBits(); i++) {
+			boxes[i].setOn(((1 << (i + bitRangeFrom)) & value) != 0);
 		}
-
 	}
 
 	/**
@@ -98,7 +125,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		_orientationHorizontal = horizontal;
 
 		if (_orientationHorizontal) {
-			layout.numColumns = 16;
+			layout.numColumns = numberOfBits();
 		} else {
 			layout.numColumns = 1;
 		}
@@ -122,12 +149,10 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	}
 
 	public void setShowLabels(Boolean newValue) {
-		this.showLabels = newValue;
-
+		_showLabels = newValue;
 		for (OnOffBox box : boxes) {
 			box.setShowLabel(newValue);
 		}
-
 	}
 
 	public void setValue(Integer newValue) {
@@ -136,7 +161,6 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	}
 
 	public void setLabelFont(FontData newValue) {
-		this.labelFont = newValue;
 		Font font = CustomMediaFactory.getInstance().getFont(newValue);
 		for (OnOffBox box : boxes) {
 			box.setLabelFont(font);
@@ -192,8 +216,6 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	}
 
 	public void setLabelColor(RGB labelColor) {
-		this.labelColor = labelColor;
-
 		if (labelColor == null) {
 			return;
 		}
@@ -202,6 +224,39 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		for (OnOffBox box : boxes) {
 			box.setLabelColor(color);
 		}
+	}
+	
+	/**
+	 * Sets the range of bits that are displayed by this figure.
+	 * 
+	 * @param from
+	 *            the index of the lowest bit to display.
+	 * @see #setBitRangeTo(int)
+	 */
+	public void setBitRangeFrom(final int from) {
+		this.bitRangeFrom = from;
+		recreateLayoutAndBoxes();
+	}
+	
+	/**
+	 * Sets the range of bits that are displayed by this figure.
+	 * 
+	 * @param to
+	 *            the index of the highest bit to display.
+	 * @see #setBitRangeFrom(int)
+	 */
+	public void setBitRangeTo(final int to) {
+		this.bitRangeTo = to;
+		recreateLayoutAndBoxes();
+	}
+	
+	/**
+	 * Returns the number of bits displayed in this figure.
+	 * 
+	 * @return the number of bits displayed in this figure.
+	 */
+	private int numberOfBits() {
+		return bitRangeTo - bitRangeFrom + 1;
 	}
 
 	private class OnOffBox extends Figure {

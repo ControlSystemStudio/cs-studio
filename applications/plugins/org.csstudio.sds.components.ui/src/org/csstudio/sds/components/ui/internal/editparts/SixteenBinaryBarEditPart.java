@@ -33,6 +33,8 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		bar.setInternalBorderThickness(model.getInternalFrameThickness());
 		bar.setInternalBorderColor(model.getInternalFrameColor());
 		bar.setLabelColor(model.getLabelColor());
+		bar.setBitRangeFrom(model.getBitRangeFrom());
+		bar.setBitRangeTo(model.getBitRangeTo());
 		return bar;
 
 	}
@@ -144,6 +146,28 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(
 				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, handler);
-	}
+		
+		// bit range from
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure refreshableFigure) {
+				RefreshableSixteenBinaryBarFigure figure = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
+				figure.setBitRangeFrom((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_BITS_FROM, handler);
+
+		// bit range to
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure refreshableFigure) {
+				RefreshableSixteenBinaryBarFigure figure = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
+				figure.setBitRangeTo((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_BITS_TO, handler);
+}
 
 }

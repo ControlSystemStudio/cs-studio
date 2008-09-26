@@ -38,6 +38,10 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 	public static final String ID = "org.csstudio.sds.components.SixteenBinaryBar"; //$NON-NLS-1$
 
 	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
+	
+	public static final String PROP_BITS_FROM = "bitRangeFrom"; //$NON-NLS-1$
+	
+	public static final String PROP_BITS_TO = "bitRangeTo"; //$NON-NLS-1$ 
 
 	private static final int DEFAULT_HEIGHT = 50;
 
@@ -73,24 +77,29 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_VALUE, new IntegerProperty("Value",
 				WidgetPropertyCategory.Behaviour, 0));
-
 		addProperty(PROP_HORIZONTAL, new BooleanProperty(
 				"Horizontal Orientation", WidgetPropertyCategory.Display,
 				DEFAULT_ORIENTATION_HORIZONTAL));
 		addProperty(PROP_SHOW_LABELS, new BooleanProperty("Show labels",
 				WidgetPropertyCategory.Display, false));
-
 		addProperty(PROP_LABEL_FONT, new FontProperty("Label fonts",
 				WidgetPropertyCategory.Display, new FontData("Arial", 9,
 						SWT.NORMAL)));
 		addProperty(PROP_INTERNAL_FRAME_THICKNESS, new IntegerProperty(
 				"Internal frame thickness", WidgetPropertyCategory.Display, 1));
+		
+		// The maximum bit range that can be handled by this widget is 0..31.
+		// More than 32 bits are not possible because the value property is an
+		// integer property.
+		addProperty(PROP_BITS_FROM, new IntegerProperty(
+				"Bit range (from)", WidgetPropertyCategory.Behaviour, 0, 0,
+				31));
+		addProperty(PROP_BITS_TO, new IntegerProperty(
+				"Bit range (to)", WidgetPropertyCategory.Behaviour, 15, 0, 31));
 
 		// Nasty way of getting the colors better say SWT way of getting the
 		// colors.
-
 		Display.getDefault().syncExec(new Runnable() {
-
 			public void run() {
 				addProperty(PROP_ON_COLOR, new ColorProperty("On color",
 						WidgetPropertyCategory.Display, Display.getDefault()
@@ -106,10 +115,8 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 						"Internal Frame Color", WidgetPropertyCategory.Display,
 						Display.getDefault().getSystemColor(SWT.COLOR_BLACK)
 								.getRGB()));
-
 			}
 		});
-
 	}
 
 	/**
@@ -158,6 +165,14 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 
 	public RGB getLabelColor() {
 		return getProperty(PROP_LABEL_COLOR).getPropertyValue();
+	}
+	
+	public int getBitRangeFrom() {
+		return getProperty(PROP_BITS_FROM).getPropertyValue();
+	}
+	
+	public int getBitRangeTo() {
+		return getProperty(PROP_BITS_TO).getPropertyValue();
 	}
 
 }
