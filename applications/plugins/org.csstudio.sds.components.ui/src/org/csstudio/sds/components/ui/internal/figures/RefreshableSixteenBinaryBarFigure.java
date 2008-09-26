@@ -259,14 +259,20 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		return bitRangeTo - bitRangeFrom + 1;
 	}
 
+	/**
+	 * A box used to display the state of a single bit. A box is in either on
+	 * or off state, and displays in a different color depending on that state.
+	 * It can also optionally display a label with the index of the bit it
+	 * displays.
+	 */
 	private class OnOffBox extends Figure {
 
-		private Label label;
-		private final int i;
-		private boolean isOn;
+		private Label _label;
+		private final int _bitIndex;
+		private boolean _isOn;
 
-		public OnOffBox(int i) {
-			this.i = i;
+		public OnOffBox(int bitIndex) {
+			this._bitIndex = bitIndex;
 
 			BorderLayout layout = new BorderLayout();
 			layout.setVerticalSpacing(0);
@@ -274,48 +280,32 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 			setBorder(new LineBorder(0));
 			setLayoutManager(layout);
 
-			label = new Label("");
+			_label = new Label("");
 
-			add(label);
-			setConstraint(label, BorderLayout.CENTER);
-
+			add(_label);
+			setConstraint(_label, BorderLayout.CENTER);
 		}
 
 		public void setLabelFont(Font font) {
-
-			label.setFont(font);
-
+			_label.setFont(font);
 		}
 
 		@Override
 		protected void paintFigure(Graphics graphics) {
 			super.paintFigure(graphics);
-
-			if (isOn) {
-
-				setBackgroundColor(onColor);
-
-			} else {
-				setBackgroundColor(offColor);
-
-			}
-
+			
+			setBackgroundColor(_isOn ? onColor : offColor);
 			graphics.fillRectangle(getClientArea());
 		}
 
-		public boolean isOn() {
-			return isOn;
-		}
-
 		public void setLabelColor(Color color) {
-			label.setBackgroundColor(color);
-			label.setForegroundColor(color);
+			_label.setBackgroundColor(color);
+			_label.setForegroundColor(color);
 		}
 
 		public void setInternalFrame(int thickness, Color color) {
 			if (color != null) {
 				if (thickness > 0) {
-
 					if (color != null) {
 						setBorder(new LineBorder(color, thickness));
 					} else {
@@ -324,33 +314,30 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 				} else {
 					setBorder(null);
 				}
-
 				revalidate();
-
 			}
-
 		}
 
+		/**
+		 * Sets whether this box is on.
+		 * 
+		 * @param isOn whether this box is on.
+		 */
 		public void setOn(boolean isOn) {
-			this.isOn = isOn;
-
-			// needed only to prevent null pointer while initializing the widget
-			// with initial values
-			if (offColor == null || onColor == null) {
-				return;
-			}
-
+			this._isOn = isOn;
 		}
 
+		/**
+		 * Sets whether this box displays a label.
+		 * 
+		 * @param show
+		 *            whether this box displays a label.
+		 */
 		public void setShowLabel(boolean show) {
 			if (show) {
-				if (i < 10) {
-					label.setText("0" + i);
-				} else {
-					label.setText("" + i);
-				}
+				_label.setText(String.format("%02d", _bitIndex));
 			} else {
-				label.setText("");
+				_label.setText("");
 			}
 		}
 
