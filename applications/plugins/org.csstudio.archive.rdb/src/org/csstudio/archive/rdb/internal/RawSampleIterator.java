@@ -15,6 +15,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Iterator over raw archive samples.

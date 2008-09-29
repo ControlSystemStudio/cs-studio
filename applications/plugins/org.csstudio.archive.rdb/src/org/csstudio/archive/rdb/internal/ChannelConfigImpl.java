@@ -12,6 +12,7 @@ import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /** Channel: ID and possibly meta data.
  *  @author Kay Kasemir
