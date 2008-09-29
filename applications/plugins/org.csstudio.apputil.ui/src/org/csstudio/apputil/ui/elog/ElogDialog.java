@@ -5,9 +5,11 @@ import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -25,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 abstract public class ElogDialog extends TitleAreaDialog
 {
     final private ILogbookFactory logbook_factory;
-    final private String message, initial_title, initial_body;
+    final private String message, initial_title, initial_body, image_filename;
     final private String[] logbooks;
 
     private Text user, password, title, body;
@@ -36,12 +38,14 @@ abstract public class ElogDialog extends TitleAreaDialog
      *  @param message Message, explanation of entry
      *  @param initial_title Initial title for new entry
      *  @param initial_body Initial body text for new entry
+     *  @param image_filename Name of image file or <code>null</code> 
      *  @throws Exception on error
      */
     public ElogDialog(final Shell shell,
             final String message,
             final String initial_title,
-            final String initial_body) throws Exception
+            final String initial_body,
+            final String image_filename) throws Exception
     {
         super(shell);
         this.logbook_factory = LogbookFactory.getInstance();
@@ -49,6 +53,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         this.initial_title = initial_title;
         this.initial_body = initial_body;
         this.logbooks = logbook_factory.getLoogbooks();
+        this.image_filename = image_filename;
 
         // Try to allow resize, because the 'text' section could
         // use more or less space depending on use.
@@ -73,7 +78,7 @@ abstract public class ElogDialog extends TitleAreaDialog
     @Override
     protected Control createDialogArea(final Composite parent)
     {
-        // Title, image, handle image disposal
+        // Title, title image, handle image disposal
         final Image title_image =
             Activator.getImageDescriptor("icons/elog_image.png").createImage(); //$NON-NLS-1$
         setTitle(Messages.ELog_Dialog_DialogTitle);
@@ -89,15 +94,13 @@ abstract public class ElogDialog extends TitleAreaDialog
 
         // From peeking at super.createDialogArea we happen to expect a Compos.
         final Composite area = (Composite) super.createDialogArea(parent);
+        
+        final SashForm sash = new SashForm(area, SWT.VERTICAL);
+        sash.setLayout(new FillLayout());
+        sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
         // Put our widgets in another box to have own layout in there 
-        final Composite box = new Composite(area, 0);
-        GridData gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        box.setLayoutData(gd);
-      
+        final Composite box = new Composite(sash, 0);
         final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         box.setLayout(layout);
@@ -114,7 +117,7 @@ abstract public class ElogDialog extends TitleAreaDialog
 
         user = new Text(box, SWT.BORDER);
         user.setToolTipText(Messages.ELog_Dialog_User_TT);
-        gd = new GridData();
+        GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         user.setLayoutData(gd);
@@ -181,8 +184,14 @@ abstract public class ElogDialog extends TitleAreaDialog
         gd.grabExcessVerticalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
-        body.setLayoutData(gd);        
+        body.setLayoutData(gd);
         
+        // Maybe add image
+        if (image_filename != null)
+        {
+            new ImagePreview(sash, Messages.Elog_Dialog_ImageComment, image_filename);
+            sash.setWeights(new int[] { 80, 20 });
+        }
         return area;
     }
     

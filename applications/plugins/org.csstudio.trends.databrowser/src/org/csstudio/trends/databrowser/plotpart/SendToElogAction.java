@@ -68,7 +68,9 @@ public class SendToElogAction extends SendToElogActionHelper
         {
             final ElogDialog dialog =
                 new ElogDialog(shell, Messages.SendToElogAction_message,
-                        Messages.SendToElogAction_InitialTitle, Messages.SendToElogAction_InitialBody)
+                        Messages.SendToElogAction_InitialTitle,
+                        Messages.SendToElogAction_InitialBody,
+                        filename)
             {
                 @Override
                 public void makeElogEntry(final String logbook_name, final String user,

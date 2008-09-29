@@ -25,7 +25,7 @@ public class ElogDialogSWTTest
 
         ElogDialog dialog =
             new ElogDialog(shell,
-                    "Create a test entry", "Test Entry", "This is a test")
+                    "Create a test entry", "Test Entry", "This is a test", null)
         {
             @Override
             public void makeElogEntry(String logbook_name, String user, String password,
