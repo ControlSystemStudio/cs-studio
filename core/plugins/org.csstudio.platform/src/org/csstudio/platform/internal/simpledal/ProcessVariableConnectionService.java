@@ -526,7 +526,7 @@ public class ProcessVariableConnectionService implements
 
 								listener.errorOccured(errorMsg);
 
-								cleanup();
+								//cleanup();
 							}
 
 							//jhatje 18.07.2008, add timestamp
@@ -537,28 +537,33 @@ public class ProcessVariableConnectionService implements
 								listener.valueChanged(ConverterUtil.convert(
 										value, valueType), timestamp);
 
-								cleanup();
+								System.out.println("AGET-RETURN "+pv.toString()+" "+valueType+" "+value);
+
+								//cleanup();
 							}
 
-							private void cleanup() {
+							//private void cleanup() {
 								// remove the responselistener
-								property.removeResponseListener(this);
+								//property.removeResponseListener(this);
 
 								// try to dispose the DAL property
 								// FIXME: Igor: this should be solved differently, creating ad disposing like this is not efficient
 								/*disposeDalProperty(property, pv
 										.getControlSystem());*/
-							}
+							//}
 						};
 
-						property.addResponseListener(responseListener);
+						//property.addResponseListener(responseListener);
 
 						if (pv.isCharacteristic()) {
 							property.getCharacteristicAsynchronously(pv
-									.getCharacteristic());
+									.getCharacteristic(),responseListener);
 						} else {
-							property.getAsynchronous();
+							property.getAsynchronous(responseListener);
 						}
+						
+						System.out.println("AGET "+pv.toString()+" "+valueType);
+
 					} catch (DataExchangeException e) {
 						listener.errorOccured(e.getMessage());
 					}
@@ -639,6 +644,8 @@ public class ProcessVariableConnectionService implements
 			}
 		}
 
+		System.out.println("GET "+pv.toString()+" "+valueType+" "+result);
+
 		return result;
 	}
 
@@ -656,6 +663,7 @@ public class ProcessVariableConnectionService implements
 			WriteValueLinkListener listener = new WriteValueLinkListener(pv,
 					valueType, value);
 		}
+		System.out.println("SET "+pv.toString()+" "+valueType+" "+value);
 		return result;
 
 	}
@@ -706,6 +714,7 @@ public class ProcessVariableConnectionService implements
 					connector.addProcessVariableValueListener(null,listener);
 				}
 			}
+			System.out.println("REGISTER "+pv.toString()+" "+valueType+" "+connector.getLatestConnectionState());
 		}
 	}
 
@@ -809,6 +818,8 @@ public class ProcessVariableConnectionService implements
 		} else {
 			result = factory.getProperty(ri, propertyType, null);
 		}
+
+		System.out.println("CONNECT "+pv.toString()+" "+propertyType+" "+result.getUniqueName()+" "+result.getClass().getName());
 
 		return result;
 

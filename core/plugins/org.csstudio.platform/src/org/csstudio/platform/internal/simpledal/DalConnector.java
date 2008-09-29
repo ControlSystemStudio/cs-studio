@@ -112,18 +112,27 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 *            the DAL property
 	 */
 	public void setDalProperty(DynamicValueProperty dalProperty) {
+		if (_dalProperty!=null) {
+			_dalProperty.removeDynamicValueListener(this);
+			_dalProperty.removePropertyChangeListener(this);
+			_dalProperty.removeLinkListener(this);
+		}
+		
 		_dalProperty = dalProperty;
 		
-		_dalProperty.addDynamicValueListener(this);
+		if (_dalProperty!=null) {
+			_dalProperty.addDynamicValueListener(this);
+			
+			_dalProperty.addPropertyChangeListener(this);
+
+			// we add a LinkListener to get informed of connection state changes
+			_dalProperty.addLinkListener(this);
+
+			// send initial connection state
+			forwardConnectionState(ConnectionState
+					.translate(_dalProperty.getConnectionState()));
+		}
 		
-		_dalProperty.addPropertyChangeListener(this);
-
-		// we add a LinkListener to get informed of connection state changes
-		_dalProperty.addLinkListener(this);
-
-		// send initial connection state
-		forwardConnectionState(ConnectionState
-				.translate(_dalProperty.getConnectionState()));
 
 	}
 

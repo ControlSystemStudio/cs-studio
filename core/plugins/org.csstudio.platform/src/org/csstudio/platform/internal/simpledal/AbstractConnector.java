@@ -206,8 +206,10 @@ abstract class AbstractConnector implements IConnectorStatistic,
 		synchronized (_weakListenerReferences) {
 			WeakReference<ListenerReference> toRemove = null;
 			for (WeakReference<ListenerReference> ref : _weakListenerReferences) {
-				if (ref.get().listener == listener) {
+				ListenerReference lr= ref.get(); 
+				if (lr!=null && lr.listener == listener) {
 					toRemove = ref;
+					break;
 				}
 			}
 
