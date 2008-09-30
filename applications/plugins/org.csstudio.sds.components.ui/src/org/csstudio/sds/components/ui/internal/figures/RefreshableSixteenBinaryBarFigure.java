@@ -37,13 +37,13 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 	private int value;
 
-	private Color onColor;
+	private Color _onColor;
 
-	private Color offColor;
+	private Color _offColor;
 
-	private int internalFrameThickness;
+	private int _internalFrameThickness;
 
-	private RGB internalFrameColor;
+	private RGB _internalFrameColor;
 
 	private OnOffBox[] boxes;
 
@@ -54,6 +54,10 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	private int bitRangeTo = 15;
 
 	private boolean _showLabels;
+
+	private Font _labelFont;
+
+	private Color _labelColor;
 
 	public RefreshableSixteenBinaryBarFigure() {
 		createLayoutAndBoxes();
@@ -75,6 +79,9 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		for (int i = 0; i < numberOfBits(); i++) {
 			OnOffBox box = new OnOffBox(i + bitRangeFrom);
 			box.setShowLabel(_showLabels);
+			box.setLabelFont(_labelFont);
+			box.setLabelColor(_labelColor);
+			applyInternalBorderSettings(box);
 			add(box);
 
 			GridData gridData = new GridData();
@@ -162,6 +169,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 	public void setLabelFont(FontData newValue) {
 		Font font = CustomMediaFactory.getInstance().getFont(newValue);
+		_labelFont = font;
 		for (OnOffBox box : boxes) {
 			box.setLabelFont(font);
 		}
@@ -171,58 +179,55 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		if (newValue == null) {
 			return;
 		}
-		this.onColor = CustomMediaFactory.getInstance().getColor(newValue);
-		updateBoxes();
+		_onColor = CustomMediaFactory.getInstance().getColor(newValue);
 	}
 
 	public void setOffColor(RGB newValue) {
 		if (newValue == null) {
 			return;
 		}
-		this.offColor = CustomMediaFactory.getInstance().getColor(newValue);
-		updateBoxes();
+		_offColor = CustomMediaFactory.getInstance().getColor(newValue);
 	}
 
 	public void setInternalBorderThickness(int internalFrameThickness) {
-		this.internalFrameThickness = internalFrameThickness;
-
+		_internalFrameThickness = internalFrameThickness;
 		for (OnOffBox box : boxes) {
-			if (internalFrameColor != null) {
-				Color color = CustomMediaFactory.getInstance().getColor(
-						internalFrameColor);
-				box.setInternalFrame(internalFrameThickness, color);
-			} else {
-				box.setInternalFrame(internalFrameThickness, null);
-			}
-
+			applyInternalBorderSettings(box);
 		}
-
 	}
 
 	public void setInternalBorderColor(RGB internalFrameColor) {
-		this.internalFrameColor = internalFrameColor;
-
+		_internalFrameColor = internalFrameColor;
 		for (OnOffBox box : boxes) {
-			if (internalFrameColor != null) {
-				Color color = CustomMediaFactory.getInstance().getColor(
-						internalFrameColor);
-				box.setInternalFrame(internalFrameThickness, color);
-			} else {
-				box.setInternalFrame(internalFrameThickness, null);
-			}
-
+			applyInternalBorderSettings(box);
 		}
+	}
 
+	/**
+	 * Applies the current settings for the internal frame thickness and color
+	 * to the given box.
+	 * 
+	 * @param box
+	 *            the box.
+	 */
+	private void applyInternalBorderSettings(OnOffBox box) {
+		if (_internalFrameColor != null) {
+			Color color = CustomMediaFactory.getInstance().getColor(
+					_internalFrameColor);
+			box.setInternalFrame(_internalFrameThickness, color);
+		} else {
+			box.setInternalFrame(_internalFrameThickness, null);
+		}
 	}
 
 	public void setLabelColor(RGB labelColor) {
 		if (labelColor == null) {
 			return;
 		}
-		Color color = CustomMediaFactory.getInstance().getColor(labelColor);
+		_labelColor = CustomMediaFactory.getInstance().getColor(labelColor);
 
 		for (OnOffBox box : boxes) {
-			box.setLabelColor(color);
+			box.setLabelColor(_labelColor);
 		}
 	}
 	
@@ -294,7 +299,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		protected void paintFigure(Graphics graphics) {
 			super.paintFigure(graphics);
 			
-			setBackgroundColor(_isOn ? onColor : offColor);
+			setBackgroundColor(_isOn ? _onColor : _offColor);
 			graphics.fillRectangle(getClientArea());
 		}
 
