@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apputil Plug-in
 Bundle-SymbolicName: org.csstudio.apputil
-Bundle-Version: 1.0.5
+Bundle-Version: 1.0.6
 Bundle-Vendor: Kay Kasemir
 Export-Package: org.csstudio.apputil.args,
+ org.csstudio.apputil.ringbuffer,
  org.csstudio.apputil.time,
  org.csstudio.apputil.xml
 Require-Bundle: org.junit4
