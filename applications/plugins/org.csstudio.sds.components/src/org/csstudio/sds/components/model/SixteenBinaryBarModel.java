@@ -31,9 +31,9 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 
 	public static final String PROP_INTERNAL_FRAME_THICKNESS = "internalFrameSize"; //$NON-NLS-1$
 
-	public static final String PROP_LABEL_COLOR = "labelColor";
+	public static final String PROP_LABEL_COLOR = "labelColor"; //$NON-NLS-1$
 
-	public static final String PROP_INTERNAL_FRAME_COLOR = "internalFrameColor";
+	public static final String PROP_INTERNAL_FRAME_COLOR = "internalFrameColor"; //$NON-NLS-1$
 
 	public static final String ID = "org.csstudio.sds.components.SixteenBinaryBar"; //$NON-NLS-1$
 
