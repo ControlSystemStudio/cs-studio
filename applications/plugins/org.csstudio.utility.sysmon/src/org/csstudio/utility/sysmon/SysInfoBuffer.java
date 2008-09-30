@@ -1,5 +1,6 @@
 package org.csstudio.utility.sysmon;
 
+import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.utility.plotwidget.PlotSamples;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -17,7 +18,7 @@ public class SysInfoBuffer implements PlotSamples
         buffer = new RingBuffer<SysInfo>(size);
     }
     
-    public void add(SysInfo info)
+    public void add(final SysInfo info)
     {
         buffer.add(info);
     }
@@ -37,7 +38,7 @@ public class SysInfoBuffer implements PlotSamples
         return Display.getCurrent().getSystemColor(SWT.COLOR_GREEN);
     }
 
-    public Color getColor(int trace)
+    public Color getColor(final int trace)
     {
         switch (trace)
         {
@@ -53,7 +54,7 @@ public class SysInfoBuffer implements PlotSamples
         return buffer.size();
     }
 
-    public double[] getValues(int i)
+    public double[] getValues(final int i)
     {
         final SysInfo info = buffer.get(i);
         return new double[] { info.getTotalMB(), info.getFreeMB() };

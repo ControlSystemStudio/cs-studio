@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
@@ -38,7 +39,7 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
      *  <p>
      *  Never null.
      */
-    private ModelSampleRing live_samples;
+    private RingBuffer<ModelSample> live_samples;
 
     private static final INumericMetaData dummy_numeric_meta =
         ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, 0, ""); //$NON-NLS-1$
@@ -47,29 +48,23 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
     ModelSamples(int ring_size)
     {
         archive_samples = new ModelSampleArray();
-        live_samples = new ModelSampleRing(ring_size);
+        live_samples = new RingBuffer<ModelSample>(ring_size);
     }
     
     /** Change the number of 'live' samples.
      *  @param size Requested sample count size
      *  @throws Exception on error
      */
-    void setLiveCapacity(int size) throws Exception
+    synchronized void setLiveCapacity(int size) throws Exception
     {
-        synchronized (this)
-        {
-            live_samples.setCapacity(size);
-        }
+        live_samples.setCapacity(size);
     }
     
     /** Remove all samples */
-    void clear()
+    synchronized void clear()
     {
-        synchronized (this)
-        {
-            live_samples.clear();
-            archive_samples.clear();
-        }
+        live_samples.clear();
+        archive_samples.clear();
     }
     
     /** Add samples from an archive. */
@@ -136,7 +131,7 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
                 if (last_arch.getTime().isGreaterThan(value.getTime()))
                         return;
             }
-            live_samples.add(value, Messages.LiveSample);
+            live_samples.add(new ModelSample(value, Messages.LiveSample));
         }
     }
     

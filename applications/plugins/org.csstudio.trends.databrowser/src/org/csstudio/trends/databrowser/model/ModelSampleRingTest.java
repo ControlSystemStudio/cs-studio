@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
@@ -26,13 +27,13 @@ public class ModelSampleRingTest extends TestCase
     @Test
     public void testContainer() throws Exception
     {
-        ModelSampleRing c = new ModelSampleRing(5);
+        RingBuffer<ModelSample> c = new RingBuffer<ModelSample>(5);
         Assert.assertEquals(5, c.getCapacity());
         Assert.assertEquals(0, c.size());
         
         double value = 0;
 
-        c.add(create(++value), SOURCE);
+        c.add(new ModelSample(create(++value), SOURCE));
         System.out.println("Initial element");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -42,7 +43,7 @@ public class ModelSampleRingTest extends TestCase
         
         // These should all fit
         for (int i=0; i<4; ++i)
-            c.add(create(++value), SOURCE);
+            c.add(new ModelSample(create(++value), SOURCE));
         System.out.println("5 elements");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -52,7 +53,7 @@ public class ModelSampleRingTest extends TestCase
         assertEquals(5.0, c.get(4).getX(), 0.1);
 
         // One more
-        c.add(create(++value), SOURCE);
+        c.add(new ModelSample(create(++value), SOURCE));
         System.out.println("sixt elements");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -63,7 +64,7 @@ public class ModelSampleRingTest extends TestCase
 
         // Up to 100
         for (int i=0; i<100-6; ++i)
-            c.add(create(++value), SOURCE);
+            c.add(new ModelSample(create(++value), SOURCE));
         System.out.println("Total of 100 added");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -83,7 +84,7 @@ public class ModelSampleRingTest extends TestCase
         
         // Grow
         c.setCapacity(10);
-        c.add(create(++value), SOURCE);
+        c.add(new ModelSample(create(++value), SOURCE));
         System.out.println("Extended to 10");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -92,7 +93,7 @@ public class ModelSampleRingTest extends TestCase
 
         // Shrink
         c.setCapacity(3);
-        c.add(create(++value), SOURCE);
+        c.add(new ModelSample(create(++value), SOURCE));
         System.out.println("Shrink to 3");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
