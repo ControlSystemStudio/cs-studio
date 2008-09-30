@@ -32,11 +32,6 @@ public enum Severity {
 	 * Severity representing no alarm.
 	 */
 	NO_ALARM,
-
-	/**
-	 * Severity representing an invalid alarm state.
-	 */
-	INVALID,
 	
 	/**
 	 * Severity value for a minor alarm.
@@ -46,7 +41,12 @@ public enum Severity {
 	/**
 	 * Severity value for a major alarm.
 	 */
-	MAJOR;
+	MAJOR,
+
+	/**
+	 * Severity representing an invalid alarm state.
+	 */
+	INVALID;
 	
 	
 	/**

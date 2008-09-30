@@ -43,26 +43,26 @@ public class SeverityTest {
 	@Test
 	public void testOrder() throws Exception {
 		// The order should be:
-		// MAJOR > MINOR > INVALID > NO_ALARM
+		// INVALID >  MAJOR > MINOR > NO_ALARM
 		
-		assertTrue(Severity.MAJOR.compareTo(Severity.MAJOR) == 0);
-		assertTrue(Severity.MAJOR.compareTo(Severity.MINOR) > 0);
-		assertTrue(Severity.MAJOR.compareTo(Severity.INVALID) > 0);
-		assertTrue(Severity.MAJOR.compareTo(Severity.NO_ALARM) > 0);
-
-		assertTrue(Severity.MINOR.compareTo(Severity.MAJOR) < 0);
-		assertTrue(Severity.MINOR.compareTo(Severity.MINOR) == 0);
-		assertTrue(Severity.MINOR.compareTo(Severity.INVALID) > 0);
-		assertTrue(Severity.MINOR.compareTo(Severity.NO_ALARM) > 0);
-		
-		assertTrue(Severity.INVALID.compareTo(Severity.MAJOR) < 0);
-		assertTrue(Severity.INVALID.compareTo(Severity.MINOR) < 0);
 		assertTrue(Severity.INVALID.compareTo(Severity.INVALID) == 0);
+		assertTrue(Severity.INVALID.compareTo(Severity.MAJOR) > 0);
+		assertTrue(Severity.INVALID.compareTo(Severity.MINOR) > 0);
 		assertTrue(Severity.INVALID.compareTo(Severity.NO_ALARM) > 0);
 
+		assertTrue(Severity.MAJOR.compareTo(Severity.INVALID) < 0);
+		assertTrue(Severity.MAJOR.compareTo(Severity.MAJOR) == 0);
+		assertTrue(Severity.MAJOR.compareTo(Severity.MINOR) > 0);
+		assertTrue(Severity.MAJOR.compareTo(Severity.NO_ALARM) > 0);
+
+		assertTrue(Severity.MINOR.compareTo(Severity.INVALID) < 0);
+		assertTrue(Severity.MINOR.compareTo(Severity.MAJOR) < 0);
+		assertTrue(Severity.MINOR.compareTo(Severity.MINOR) == 0);
+		assertTrue(Severity.MINOR.compareTo(Severity.NO_ALARM) > 0);
+
+		assertTrue(Severity.NO_ALARM.compareTo(Severity.INVALID) < 0);
 		assertTrue(Severity.NO_ALARM.compareTo(Severity.MAJOR) < 0);
 		assertTrue(Severity.NO_ALARM.compareTo(Severity.MINOR) < 0);
-		assertTrue(Severity.NO_ALARM.compareTo(Severity.INVALID) < 0);
 		assertTrue(Severity.NO_ALARM.compareTo(Severity.NO_ALARM) == 0);
 	}
 	
