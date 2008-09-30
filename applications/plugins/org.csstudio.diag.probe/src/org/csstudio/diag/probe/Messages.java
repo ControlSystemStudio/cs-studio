@@ -26,6 +26,10 @@ public class Messages extends NLS
     public static String S_Meter;
     public static String S_Meter_TT;
     public static String S_ModValue;
+    public static String S_NewValueLabel;
+
+    public static String S_NewValueTT;
+
     public static String S_NoChannel;
     public static String S_NoInfo;
     public static String S_NotConnected;

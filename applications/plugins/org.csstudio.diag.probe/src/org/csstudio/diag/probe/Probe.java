@@ -28,11 +28,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -51,6 +49,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
@@ -288,9 +287,9 @@ public class Probe extends ViewPart implements PVListener
         // +---------------------------------------------------+
         // |                    Meter                          |
         // +---------------------------------------------------+
-        // Value     : ____ value ________________ [Adjust]
+        // Value     : ____ value ________________ [x] meter
         // Timestamp : ____ time _________________ [Save to IOC]
-        //                                         [x] meter
+        //                                         [x] Adjust
         // ---------------
         // Status: ...
         //
@@ -320,7 +319,7 @@ public class Probe extends ViewPart implements PVListener
         meter = new MeterWidget(parent, 0);
         meter.setEnabled(false);
 
-        // Botton Box
+        // Button Box
         bottom_box = new Composite(parent, 0);
         grid = new GridLayout();
         grid.numColumns = 3;
@@ -336,12 +335,11 @@ public class Probe extends ViewPart implements PVListener
         gd.horizontalAlignment = SWT.FILL;
         lbl_value.setLayoutData(gd);
         
-        final Button btn_adjust = new Button(bottom_box, SWT.PUSH);
-        btn_adjust.setText(Messages.S_Adjust);
-        btn_adjust.setToolTipText(Messages.S_ModValue);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.FILL;
-        btn_adjust.setLayoutData(gd);
+        show_meter = new Button(bottom_box, SWT.CHECK);
+        show_meter.setText(Messages.S_Meter);
+        show_meter.setToolTipText(Messages.S_Meter_TT);
+        show_meter.setSelection(true);
+        show_meter.setLayoutData(new GridData());
 
         // New Row
         label = new Label(bottom_box, 0);
@@ -362,14 +360,20 @@ public class Probe extends ViewPart implements PVListener
         btn_save_to_ioc.setLayoutData(gd);
 
         // New Row
-        show_meter = new Button(bottom_box, SWT.CHECK);
-        show_meter.setText(Messages.S_Meter);
-        show_meter.setToolTipText(Messages.S_Meter_TT);
-        show_meter.setSelection(true);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.END;
-        gd.horizontalSpan = grid.numColumns;
-        show_meter.setLayoutData(gd);
+        final Label new_value_label = new Label(bottom_box, 0);
+        new_value_label.setText(Messages.S_NewValueLabel);
+        new_value_label.setLayoutData(new GridData());
+        new_value_label.setVisible(false);
+        
+        final Text new_value = new Text(bottom_box, SWT.BORDER);
+        new_value.setToolTipText(Messages.S_NewValueTT);
+        new_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        new_value.setVisible(false);
+        
+        final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
+        btn_adjust.setText(Messages.S_Adjust);
+        btn_adjust.setToolTipText(Messages.S_ModValue);
+        btn_adjust.setLayoutData(new GridData());
         
         // Status bar
         label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -445,7 +449,20 @@ public class Probe extends ViewPart implements PVListener
         {
             @Override
             public void widgetSelected(SelectionEvent ev)
-            {   adjustValue();   }
+            {
+                final boolean enable = btn_adjust.getSelection();
+                new_value_label.setVisible(enable);
+                new_value.setVisible(enable);
+            }
+        });
+        
+        new_value.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                adjustValue(new_value.getText().trim());
+            }
         });
         
         btn_save_to_ioc.addSelectionListener(new SelectionAdapter()
@@ -789,7 +806,7 @@ public class Probe extends ViewPart implements PVListener
     }
 
     /** Interactively adjust the PV's value. */
-    private void adjustValue()
+    private void adjustValue(final String new_value)
     {
         try
         {
@@ -803,14 +820,9 @@ public class Probe extends ViewPart implements PVListener
                 updateStatus(Messages.S_NotConnected);
                 return;
             }
-            InputDialog inputDialog =
-                    new InputDialog(lbl_value.getShell(),
-                        Messages.S_AdjustValue, Messages.S_Value,
-                        value.getValueString(), null);
-                if (inputDialog.open() == Window.OK)
-                    pv.setValue(inputDialog.getValue());
+            pv.setValue(new_value);
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             Plugin.getLogger().error(Messages.S_AdjustFailed, ex);
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
