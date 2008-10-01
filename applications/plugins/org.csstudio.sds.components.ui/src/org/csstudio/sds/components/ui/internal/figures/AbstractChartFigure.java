@@ -918,6 +918,9 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 		// height, adjusted for extra space at top and bottom for y-axis labels
 		int height = bounds.height
 				- (showYAxis() ? (showXAxis() ? TEXTHEIGHT / 2 : TEXTHEIGHT) : 0);
+		if (height < 0) {
+			height = 0;
+		}
 		Rectangle result = new Rectangle(bounds.x, y, bounds.width,
 				height);
 		return result;
