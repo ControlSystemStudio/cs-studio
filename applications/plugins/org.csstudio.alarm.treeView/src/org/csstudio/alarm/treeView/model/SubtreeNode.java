@@ -315,17 +315,13 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * @return the direct child with the specified name.
 	 */
 	public final IAlarmTreeNode getChild(final String name) {
-		return searchNode(name, false);
-	}
-	
-	/**
-	 * Searches the subtree rooted at this node for a node with the specified
-	 * name. If the node is not found, returns {@code null}.
-	 * @param name the name of the node.
-	 * @return the node.
-	 */
-	public final ProcessVariableNode findProcessVariableNode(final String name) {
-		return (ProcessVariableNode) searchNode(name, true);
+		for (IAlarmTreeNode child : _children) {
+			if (child.getName().equals(name)) {
+				return child;
+			}
+		}
+		// not found
+		return null;
 	}
 	
 	/**
@@ -359,35 +355,6 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 		}
 	}
 
-	/**
-	 * Searches the children of this node for a node with the specified name.
-	 * If {@code recursive} is set to {@code true}, recursively searches the
-	 * full subtree rooted at this node.
-	 * 
-	 * @param name the name of the node to search for.
-	 * @param recursive set to {@code true} to perform a recursive search. If
-	 *        set to {@code false}, only the direct children of this node will
-	 *        be searched.
-	 * @return the node with the specified name, or {@code null} if no such
-	 *        node was found.
-	 */
-	private IAlarmTreeNode searchNode(final String name, final boolean recursive) {
-		for (IAlarmTreeNode child : _children) {
-			if (child.getName().equals(name)) {
-				return child;
-			}
-			if (recursive && child instanceof SubtreeNode) {
-				IAlarmTreeNode recursionResult =
-					((SubtreeNode) child).searchNode(name, true);
-				if (recursionResult != null) {
-					return recursionResult;
-				}
-			}
-		}
-		// not found
-		return null;
-	}
-	
 	/**
 	 * Returns a collection of the PV nodes (leaf nodes) below this subtree
 	 * node that have unacknowledged alarms.
