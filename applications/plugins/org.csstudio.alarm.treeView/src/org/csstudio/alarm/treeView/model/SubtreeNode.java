@@ -327,6 +327,37 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	public final ProcessVariableNode findProcessVariableNode(final String name) {
 		return (ProcessVariableNode) searchNode(name, true);
 	}
+	
+	/**
+	 * Finds all process variable nodes with the given name below this node. If
+	 * no nodes are found, returns an empty list.
+	 * @param name the name of the nodes.
+	 * @return a list of the nodes.
+	 */
+	public final List<ProcessVariableNode> findProcessVariableNodes(
+			final String name) {
+		List<ProcessVariableNode> result = new ArrayList<ProcessVariableNode>();
+		collectProcessVariableNodes(name, result);
+		return result;
+	}
+	
+	/**
+	 * Recursively searches this subtree for process variable nodes with the
+	 * given name and adds them to the given list.
+	 * @param name the name of the nodes.
+	 * @param nodes the list to which the nodes will be added.
+	 */
+	private void collectProcessVariableNodes(final String name,
+			final List<ProcessVariableNode> nodes) {
+		for (IAlarmTreeNode child : _children) {
+			if (child instanceof ProcessVariableNode
+					&& child.getName().equals(name)) {
+				nodes.add((ProcessVariableNode) child);
+			} else if (child instanceof SubtreeNode) {
+				((SubtreeNode) child).collectProcessVariableNodes(name, nodes);
+			}
+		}
+	}
 
 	/**
 	 * Searches the children of this node for a node with the specified name.

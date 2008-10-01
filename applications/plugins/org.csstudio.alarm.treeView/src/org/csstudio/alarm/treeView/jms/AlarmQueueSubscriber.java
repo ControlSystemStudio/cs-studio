@@ -21,6 +21,8 @@
  */
  package org.csstudio.alarm.treeView.jms;
 
+import java.util.List;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -159,17 +161,15 @@ public class AlarmQueueSubscriber implements MessageListener {
 	 */
 	private synchronized void processMessage(final MapMessage message) {
 		try {
+			String name = message.getString("NAME");
+			List<ProcessVariableNode> nodes = _tree.findProcessVariableNodes(name);
 			if (isAlarmAcknowledgement(message)) {
-				String name = message.getString("NAME");
-				ProcessVariableNode node = _tree.findProcessVariableNode(name);
-				if (node != null) {
+				for (ProcessVariableNode node : nodes) {
 					node.removeHighestUnacknowledgedAlarm();
 				}
 			} else if (isAlarmMessage(message)) {
-				String name = message.getString("NAME");
 				Severity severity = Severity.parseSeverity(message.getString("SEVERITY"));
-				ProcessVariableNode node = _tree.findProcessVariableNode(name);
-				if (node != null) {
+				for (ProcessVariableNode node : nodes) {
 					if (severity.isAlarm()) {
 						Alarm alarm = new Alarm(name, severity);
 						node.setActiveAlarm(alarm);
