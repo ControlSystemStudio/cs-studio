@@ -94,7 +94,7 @@ public final class DALPropertyFactoriesProvider {
 				result = DefaultPropertyFactoryService
 						.getPropertyFactoryService().getPropertyFactory(
 								_applicationContext,
-								LinkPolicy.ASYNC_LINK_POLICY,
+								LinkPolicy.SYNC_LINK_POLICY,
 								controlSystem.getResponsibleDalPlugId());
 
 				_propertyFactories.put(controlSystem, result);

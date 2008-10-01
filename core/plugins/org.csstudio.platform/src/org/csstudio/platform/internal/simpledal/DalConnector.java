@@ -92,6 +92,31 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		}
 		return "UNKNOWN";
 	}
+	
+	public static final Object getCharacteristic(String charName, DynamicValueProperty property, ValueType valueType) throws DataExchangeException {
+		if (charName.equals(DalConnector.C_SEVERITY_INFO.getName())) {
+			return DalConnector.toEPICSFlavorSeverity(property.getCondition());
+		} 
+		if (charName.equals(DalConnector.C_STATUS_INFO.getName())) {
+			return extratStatus(property.getCondition());
+		} 
+		if (charName.equals(DalConnector.C_TIMESTAMP_INFO.getName())) {
+			return property.getCondition().getTimestamp();
+		} 
+		Object value= property.getCharacteristic(charName);
+		if (value!=null && valueType!=null) {
+			return ConverterUtil.convert(value, valueType);
+		}
+		return value;
+
+	}
+	
+	public static final String extratStatus(DynamicValueCondition cond) {
+		if (cond==null || cond.getDescription()==null) {
+			return "N/A";
+		}
+		return cond.getDescription();
+	}
 
 	/**
 	 * The DAL property, this connector is connected to.
@@ -146,6 +171,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	}
 	
 	public void propertyChange(PropertyChangeEvent evt) {
+		System.out.println("PROP "+evt.getPropertyName()+" "+evt.getNewValue());
 		doForwardValue(evt.getNewValue(), new Timestamp(), evt.getPropertyName());
 	}
 
@@ -156,9 +182,9 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		
 		DynamicValueCondition condition= event.getCondition();
 		
-		doForwardValue(condition.getTimestamp(), condition.getTimestamp(), C_TIMESTAMP_INFO.getName());
-		doForwardValue(condition.getDescription(), condition.getTimestamp(), C_STATUS_INFO.getName());
-		doForwardValue(toEPICSFlavorSeverity(condition), condition.getTimestamp(), C_SEVERITY_INFO.getName());
+		doForwardValue(condition.getTimestamp(), event.getTimestamp(), C_TIMESTAMP_INFO.getName());
+		doForwardValue(extratStatus(condition), event.getTimestamp(), C_STATUS_INFO.getName());
+		doForwardValue(toEPICSFlavorSeverity(condition), event.getTimestamp(), C_SEVERITY_INFO.getName());
 	}
 	
 	/**
@@ -201,6 +227,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 */
 	public void valueChanged(final DynamicValueEvent event) {
 		doForwardValue(event.getValue(), event.getTimestamp());
+		doForwardValue(event.getTimestamp(), event.getTimestamp(), C_TIMESTAMP_INFO.getName());
 	}
 
 	/**
@@ -208,6 +235,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 */
 	public void valueUpdated(final DynamicValueEvent event) {
 		doForwardValue(event.getValue(), event.getTimestamp());
+		doForwardValue(event.getTimestamp(), event.getTimestamp(), C_TIMESTAMP_INFO.getName());
 	}
 
 	/**
@@ -306,6 +334,21 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 
 	private void forwardConnectionEvent(ConnectionEvent e) {
 		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
+	}
+	
+	@Override
+	public void addProcessVariableValueListener(String charateristic,
+			IProcessVariableValueListener listener) {
+		super.addProcessVariableValueListener(charateristic, listener);
+		
+		if (charateristic!=null) {
+			try {
+				Object initial= getCharacteristic(charateristic, _dalProperty, null);
+				listener.valueChanged(initial, new Timestamp());
+			} catch (DataExchangeException e) {
+				e.printStackTrace();
+			} 
+		}
 	}
 	
 }

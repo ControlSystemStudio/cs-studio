@@ -22,12 +22,10 @@
 package org.csstudio.platform.internal.simpledal;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.internal.simpledal.local.LocalChannelPool;
@@ -49,8 +47,6 @@ import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.context.ConnectionEvent;
-import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.spi.PropertyFactory;
 
@@ -562,7 +558,7 @@ public class ProcessVariableConnectionService implements
 							property.getAsynchronous(responseListener);
 						}
 						
-						System.out.println("AGET "+pv.toString()+" "+valueType);
+						System.out.println("AGET '"+pv.toString()+"' "+valueType);
 
 					} catch (DataExchangeException e) {
 						listener.errorOccured(e.getMessage());
@@ -619,16 +615,7 @@ public class ProcessVariableConnectionService implements
 					}
 
 					if (pv.isCharacteristic()) {
-						if (pv.getCharacteristic().equals(DalConnector.C_SEVERITY_INFO.getName())) {
-							result = (E) DalConnector.toEPICSFlavorSeverity(property.getCondition());
-						} else if (pv.getCharacteristic().equals(DalConnector.C_STATUS_INFO.getName())) {
-							result = (E) property.getCondition().getDescription();
-						} else if (pv.getCharacteristic().equals(DalConnector.C_TIMESTAMP_INFO)) {
-							result = (E) property.getCondition().getTimestamp();
-						} else {
-							Object value= property.getCharacteristic(pv.getCharacteristic());
-							result = (E) ConverterUtil.convert(value, valueType);
-						}
+						result = (E) DalConnector.getCharacteristic(pv.getCharacteristic(), property, valueType);
 					} else {
 						Object value= property.getValue();
 						result = (E) ConverterUtil.convert(value, valueType);
@@ -644,7 +631,7 @@ public class ProcessVariableConnectionService implements
 			}
 		}
 
-		System.out.println("GET "+pv.toString()+" "+valueType+" "+result);
+		System.out.println("GET '"+pv.toString()+"' "+valueType+" "+result);
 
 		return result;
 	}
@@ -663,7 +650,7 @@ public class ProcessVariableConnectionService implements
 			WriteValueLinkListener listener = new WriteValueLinkListener(pv,
 					valueType, value);
 		}
-		System.out.println("SET "+pv.toString()+" "+valueType+" "+value);
+		System.out.println("SET '"+pv.toString()+"' "+valueType+" "+value);
 		return result;
 
 	}
@@ -714,7 +701,7 @@ public class ProcessVariableConnectionService implements
 					connector.addProcessVariableValueListener(null,listener);
 				}
 			}
-			System.out.println("REGISTER "+pv.toString()+" "+valueType+" "+connector.getLatestConnectionState());
+			System.out.println("REGISTER '"+pv.getFullName()+"' '"+pv.getCharacteristic()+"' "+valueType+" "+connector.getLatestConnectionState());
 		}
 	}
 
@@ -819,7 +806,7 @@ public class ProcessVariableConnectionService implements
 			result = factory.getProperty(ri, propertyType, null);
 		}
 
-		System.out.println("CONNECT "+pv.toString()+" "+propertyType+" "+result.getUniqueName()+" "+result.getClass().getName());
+		System.out.println("CONNECT '"+pv.toString()+"' "+propertyType.getSimpleName()+" "+result.getUniqueName()+" "+result.getClass().getName());
 
 		return result;
 
@@ -888,7 +875,7 @@ public class ProcessVariableConnectionService implements
 
 	}
 
-	class WriteValueLinkListener extends LinkAdapter {
+	class WriteValueLinkListener /*extends LinkAdapter*/ {
 		private IProcessVariableAddress _processVariableAddress;
 		private ValueType _valueType;
 		private DynamicValueProperty _dynamicValueProperty;
@@ -913,19 +900,23 @@ public class ProcessVariableConnectionService implements
 				CentralLogger.getInstance().error(null, e);
 			}
 
-			if (_dynamicValueProperty != null
-					&& _dynamicValueProperty.isConnectionAlive()) {
-				doSetValue();
-			} else {
+			//if (_dynamicValueProperty != null
+			//		&& _dynamicValueProperty.isConnectionAlive()) {
+				
+			
+			doSetValue();
+			
+			
+			//} else {
 				// the property is not connected -> we listen and wait for
 				// connection events
-				_dynamicValueProperty.addLinkListener(this);
-			}
+				//_dynamicValueProperty.addLinkListener(this);
+			//}
 
 			// TODO: Timeout???
 		}
 
-		@Override
+		/*@Override
 		public void connectionFailed(ConnectionEvent e) {
 			_dynamicValueProperty.removeLinkListener(this);
 		}
@@ -954,17 +945,29 @@ public class ProcessVariableConnectionService implements
 			// disconnect this listener
 			_dynamicValueProperty.removeLinkListener(this);
 			doSetValue();
-		}
+		}*/
 
 		private void doSetValue() {
 			assert _dynamicValueProperty.isConnected() : "_dynamicValueProperty.isConnected()";
 
 			if (_dynamicValueProperty.isSettable()) {
 				try {
-					_dynamicValueProperty.setAsynchronous(_valueToSet);
+					_dynamicValueProperty.setAsynchronous(ConverterUtil.convert(_valueToSet, _valueType), new ResponseListener() {
+					
+						public void responseReceived(ResponseEvent event) {
+							CentralLogger.getInstance().debug(null, event.getResponse().toString());
+						}
+					
+						public void responseError(ResponseEvent event) {
+							CentralLogger.getInstance().error(null, event.getResponse().getError());
+						}
+					
+					});
 				} catch (DataExchangeException e) {
 					e.printStackTrace();
 				}
+			} else {
+				CentralLogger.getInstance().debug(null, "Property "+_dynamicValueProperty.getUniqueName()+" is not settable");
 			}
 
 			// try to dispose the DAL property

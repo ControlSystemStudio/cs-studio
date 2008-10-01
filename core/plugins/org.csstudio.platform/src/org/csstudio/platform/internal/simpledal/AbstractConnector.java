@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
@@ -66,7 +65,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 			this.listener=listener;
 		}
 		
-		public boolean ischaracteristic() {
+		public boolean isCharacteristic() {
 			return characteristic!=null;
 		}
 	}
@@ -273,7 +272,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	 *            the DAL connection event
 	 */
 	protected void doForwardValue(final Object value) {
-		doForwardValue(value, null);
+		doForwardValue(value, new Timestamp());
 	}
 
 	/**
@@ -290,10 +289,13 @@ abstract class AbstractConnector implements IConnectorStatistic,
 			// memorize the latest value
 			_latestValue = value;
 
+			//System.out.println("UPDATE "+getName()+" "+value);
 			execute(new IInternalRunnable() {
 				public void doRun(ListenerReference listener) {
-					listener.listener.valueChanged(ConverterUtil.convert(value,
-							_valueType), timestamp);
+					if (!listener.isCharacteristic()) {
+						listener.listener.valueChanged(ConverterUtil.convert(value,
+								_valueType), timestamp);
+					}
 				}
 			});
 		}
@@ -308,8 +310,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 			execute(new IInternalRunnable() {
 				public void doRun(ListenerReference listener) {
 					if (characteristic.equals(listener.characteristic)) {
-						listener.listener.valueChanged(ConverterUtil.convert(value,
-								_valueType), timestamp);
+						listener.listener.valueChanged(value, timestamp);
 					}
 				}
 			});

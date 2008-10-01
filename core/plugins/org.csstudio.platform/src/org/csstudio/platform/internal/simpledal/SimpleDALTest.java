@@ -17,7 +17,9 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.CharacteristicInfo;
+import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.Timestamp;
@@ -172,6 +174,44 @@ public class SimpleDALTest extends TestCase {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+	
+	public void testCharacteristics() {
+		
+		try {
+			
+			CharacteristicInfo[] ci= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class,null);
+			
+			for (int i = 0; i < ci.length; i++) {
+
+				if ("displayName".equals(ci[i].getName()) || "warningMax".equals(ci[i].getName()) || "warningMin".equals(ci[i].getName()) || "alarmMax".equals(ci[i].getName()) || "alarmMin".equals(ci[i].getName())) {
+					// FIXME: fix this in DAL simulator
+					continue;
+				}
+				
+				String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D2:P2["+ci[i].getName()+"]";
+				IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
+				
+				assertEquals(rawName, ia.getRawName());
+				assertTrue(ia.isCharacteristic());
+				
+				Object o= connectionService.getValue(ia, ValueType.OBJECT);
+				
+				System.out.println("RI: "+ia.toDalRemoteInfo().toString()+" "+o);
+				
+				assertNotNull(o);
+				assertTrue(ci[i].getType().isAssignableFrom(o.getClass()));
+				
+			}
+			
+
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
 	}
 	
 
