@@ -93,22 +93,34 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	}
 	
 	/**
+	 * Returns the names of the two icons that should be displayed for the given
+	 * severities.
 	 * 
-     * @param activeAlarmSeverity
-     * @param unacknowledgedAlarmSeverity
-     * @return
-     */
-    private String[] getIconNames(Severity activeAlarmSeverity, Severity unacknowledgedAlarmSeverity) {
-        if(activeAlarmSeverity.equals(unacknowledgedAlarmSeverity)){
-            return new String[]{getIconName(unacknowledgedAlarmSeverity)};
-        }else if(activeAlarmSeverity.equals(Severity.NO_ALARM)){
-            return new String[]{getIconName(unacknowledgedAlarmSeverity),"checked"};
-        }else if(unacknowledgedAlarmSeverity.equals(Severity.NO_ALARM)){
-            return new String[]{getIconName(activeAlarmSeverity)};
-        }else{
-            return new String[]{getIconName(unacknowledgedAlarmSeverity),getIconName(activeAlarmSeverity)};
+	 * @param activeAlarmSeverity
+	 *            the severity of the currently active alarm.
+	 * @param unacknowledgedAlarmSeverity
+	 *            the severity of the highest unacknowledged alarm.
+	 * @return the names of the icons.
+	 */
+    private String[] getIconNames(final Severity activeAlarmSeverity,
+    		final Severity unacknowledgedAlarmSeverity) {
+        if (activeAlarmSeverity == unacknowledgedAlarmSeverity) {
+        	// If the active and unack severity are the same, only the active
+        	// alarm is displayed.
+            return new String[] { getIconName(activeAlarmSeverity) };
+        } else if (activeAlarmSeverity != Severity.NO_ALARM
+        		&& unacknowledgedAlarmSeverity == Severity.NO_ALARM) {
+        	// There is an active alarm which is acknowledged.
+            return new String[] {
+            		getIconName(activeAlarmSeverity),
+            		"checked" };
+        } else {
+            return new String[] {
+            		getIconName(unacknowledgedAlarmSeverity),
+            		getIconName(activeAlarmSeverity) };
         }
     }
+    
 	/**
 	 * Returns the icon for the given element.
 	 * @param element the element.
