@@ -206,10 +206,12 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	public boolean removeProcessVariableValueListener(
 			IProcessVariableValueListener listener) {
 		synchronized (_weakListenerReferences) {
+			
 			ListenerReference toRemove = null;
+			
 			for (ListenerReference ref : _weakListenerReferences) {
 				IProcessVariableValueListener lr= ref.getListener(); 
-				if (lr!=null) {
+				if (lr!=null && listener==lr) {
 					toRemove = ref;
 					break;
 				}

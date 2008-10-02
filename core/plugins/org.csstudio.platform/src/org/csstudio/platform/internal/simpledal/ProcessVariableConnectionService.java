@@ -492,54 +492,62 @@ public class ProcessVariableConnectionService implements
 			listener.valueChanged(ConverterUtil.convert(value, valueType), new Timestamp());
 		} else {
 
+			// there is one connector for each pv-type-combination
+			ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
+			final DalConnector connector;
+			final IProcessVariableValueListener llistener= new IProcessVariableValueListener () {
+				public void connectionStateChanged(
+						ConnectionState connectionState) {
+					//
+				}
+				public void errorOccured(String error) {
+					//
+				}
+				public void valueChanged(Object value, Timestamp timestamp) {
+					//
+				}
+			};
+			
+			synchronized (_connectors) {
+				if (_connectors.containsKey(key)) {
+					connector = (DalConnector) _connectors.get(key);					
+				} else {
+					connector = createConnectorForDal(pv, valueType);
+					_connectors.put(key, connector);
+				}
+				connector.addProcessVariableValueListener(null,llistener);
+			}
+			
+			connector.watiTillConnected(3000);
+
+			final DynamicValueProperty property = connector.getDalProperty();
+
 			try {
-				final DynamicValueProperty property = createOrGetDalProperty(
-						pv, valueType.getDalType());
 
 				if (property != null) {
 					try {
-						DalConnector.waitTillConnected(property, 3000);
 
-						// FIXME: eigene Subklasse f�r diesen ResponseListener
 						ResponseListener responseListener = new ResponseListener() {
 							public void responseError(ResponseEvent event) {
 								// forward the error
-								Exception error = event.getResponse()
-										.getError();
-
+								Exception error = event.getResponse().getError();
 								String errorMsg = error != null ? error
 										.getMessage() : "Unknown Error!";
-
 								listener.errorOccured(errorMsg);
-
-								//cleanup();
+								connector.removeProcessVariableValueListener(llistener);
 							}
 
 							//jhatje 18.07.2008, add timestamp
 							public void responseReceived(ResponseEvent event) {
 								Object value = event.getResponse().getValue();
 								Timestamp timestamp = event.getResponse().getTimestamp();
-								// forward the value (with the requested type)
 								listener.valueChanged(ConverterUtil.convert(
 										value, valueType), timestamp);
-
+								connector.removeProcessVariableValueListener(llistener);
 								System.out.println("AGET-RETURN "+pv.toString()+" "+valueType+" "+value);
-
-								//cleanup();
 							}
 
-							//private void cleanup() {
-								// remove the responselistener
-								//property.removeResponseListener(this);
-
-								// try to dispose the DAL property
-								// FIXME: Igor: this should be solved differently, creating ad disposing like this is not efficient
-								/*disposeDalProperty(property, pv
-										.getControlSystem());*/
-							//}
 						};
-
-						//property.addResponseListener(responseListener);
 
 						if (pv.isCharacteristic()) {
 							property.getCharacteristicAsynchronously(pv
@@ -552,10 +560,14 @@ public class ProcessVariableConnectionService implements
 
 					} catch (DataExchangeException e) {
 						listener.errorOccured(e.getMessage());
+						connector.removeProcessVariableValueListener(llistener);
 					}
+				} else {
+					connector.removeProcessVariableValueListener(llistener);
 				}
 			} catch (Exception e) {
 				listener.errorOccured(e.getLocalizedMessage());
+				connector.removeProcessVariableValueListener(llistener);
 			}
 		}
 	}
@@ -585,17 +597,37 @@ public class ProcessVariableConnectionService implements
 					valueType).getValue();
 			result = (E) value;
 		} else {
-			DynamicValueProperty property = null;
-			try {
-				property = createOrGetDalProperty(pv, valueType.getDalType());
-			} catch (Exception e) {
-				throw new ConnectionException(e);
+			// there is one connector for each pv-type-combination
+			ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
+			DalConnector connector=null;
+			IProcessVariableValueListener listener= new IProcessVariableValueListener () {
+				public void connectionStateChanged(
+						ConnectionState connectionState) {
+					//
+				}
+				public void errorOccured(String error) {
+					//
+				}
+				public void valueChanged(Object value, Timestamp timestamp) {
+					//
+				}
+			};
+			
+			synchronized (_connectors) {
+				connector = (DalConnector) _connectors
+						.get(key);
+				if (connector == null) {
+					connector = createConnectorForDal(pv, valueType);
+					_connectors.put(key, connector);
+				}
+				connector.addProcessVariableValueListener(null,listener);
 			}
+			
+			connector.watiTillConnected(3000);
 
+			DynamicValueProperty property = connector.getDalProperty();
+			
 			if (property != null) {
-				
-				DalConnector.waitTillConnected(property, 3000);
-				
 				try {
 
 					if (pv.isCharacteristic()) {
@@ -607,11 +639,12 @@ public class ProcessVariableConnectionService implements
 
 				} catch (DataExchangeException e) {
 					throw new ConnectionException(e);
+				} finally {
+					connector.removeProcessVariableValueListener(listener);
 				}
 
-				// try to dispose the DAL property
-				// FIXME: Igor: this should be solved differently, creating ad disposing like this is not efficient
-				/*disposeDalProperty(property, pv.getControlSystem());*/
+			} else {
+				connector.removeProcessVariableValueListener(listener);
 			}
 		}
 
@@ -631,8 +664,64 @@ public class ProcessVariableConnectionService implements
 					value);
 			result = true;
 		} else {
-			WriteValueLinkListener listener = new WriteValueLinkListener(pv,
+			
+			// there is one connector for each pv-type-combination
+			ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
+			final DalConnector connector;
+			final IProcessVariableValueListener listener= new IProcessVariableValueListener () {
+				public void connectionStateChanged(
+						ConnectionState connectionState) {
+					//
+				}
+				public void errorOccured(String error) {
+					//
+				}
+				public void valueChanged(Object value, Timestamp timestamp) {
+					//
+				}
+			};
+			
+			synchronized (_connectors) {
+				if (_connectors.containsKey(key)) {
+					connector = (DalConnector) _connectors.get(key);					
+				} else {
+					connector = createConnectorForDal(pv, valueType);
+					_connectors.put(key, connector);
+				}
+				connector.addProcessVariableValueListener(null,listener);
+			}
+			
+			connector.watiTillConnected(3000);
+
+			DynamicValueProperty property = connector.getDalProperty();
+
+			if (property!=null && property.isSettable()) {
+				try {
+					property.setAsynchronous(ConverterUtil.convert(value, valueType), new ResponseListener() {
+					
+						public void responseReceived(ResponseEvent event) {
+							CentralLogger.getInstance().debug(null, event.getResponse().toString());
+							connector.removeProcessVariableValueListener(listener);
+						}
+					
+						public void responseError(ResponseEvent event) {
+							CentralLogger.getInstance().error(null, event.getResponse().getError());
+							connector.removeProcessVariableValueListener(listener);
+						}
+					
+					});
+				} catch (DataExchangeException e) {
+					e.printStackTrace();
+					connector.removeProcessVariableValueListener(listener);
+				}
+			} else {
+				connector.removeProcessVariableValueListener(listener);
+				CentralLogger.getInstance().debug(null, "Property "+property.getUniqueName()+" is not settable");
+			}	
+			
+/*			WriteValueLinkListener listener = new WriteValueLinkListener(pv,
 					valueType, value);
+*/		
 		}
 		System.out.println("SET '"+pv.toString()+"' "+valueType+" "+value);
 		return result;

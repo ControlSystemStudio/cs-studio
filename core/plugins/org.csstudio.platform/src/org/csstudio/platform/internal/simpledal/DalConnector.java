@@ -147,7 +147,9 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * @return <code>true</code> if property was connected
 	 */
 	public static boolean waitTillConnected(DynamicValueProperty property, long timeout) {
-		
+		if (property==null) {
+			return false;
+		}
 		if (property.isConnected()) {
 			return true;
 		}
@@ -446,7 +448,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 			IProcessVariableValueListener listener) {
 		super.addProcessVariableValueListener(charateristic, listener);
 		
-		if (charateristic!=null && _dalProperty.isConnected()) {
+		if (_dalProperty!=null && charateristic!=null && _dalProperty.isConnected()) {
 			try {
 				Object initial= getCharacteristic(charateristic, _dalProperty, null);
 				listener.valueChanged(initial, new Timestamp());
