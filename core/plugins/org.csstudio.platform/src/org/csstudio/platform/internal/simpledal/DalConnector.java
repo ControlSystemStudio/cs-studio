@@ -326,16 +326,16 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		}
 		List<String> names= new ArrayList<String>(_weakListenerReferences.size());
 		synchronized (_weakListenerReferences) {
-			Iterator<WeakReference<ListenerReference>> it = _weakListenerReferences
+			Iterator<ListenerReference> it = _weakListenerReferences
 					.iterator();
 
 			while (it.hasNext()) {
-				WeakReference<ListenerReference> wr = it.next();
+				ListenerReference wr = it.next();
 
-				ListenerReference listener = wr.get();
+				IProcessVariableValueListener listener = wr.getListener();
 
-				if (listener != null && listener.characteristic!=null) {
-					names.add(listener.characteristic);
+				if (listener != null && wr.characteristic!=null) {
+					names.add(wr.characteristic);
 				}
 			}
 		}

@@ -309,11 +309,12 @@ public class SimpleDAL_EPICSTest extends TestCase {
 			.getPropertyFactory(ia.getControlSystem());
 			DynamicValueProperty pp= factory.getPropertyFamily().getFirst("PV_AO_11");
 			assertNotNull(pp);
-			assertEquals(org.epics.css.dal.context.ConnectionState.INITIAL, pp.getConnectionState());
+			//assertEquals(org.epics.css.dal.context.ConnectionState.INITIAL, pp.getConnectionState());
 			
 			connectionService.setValue(ia, 10.0);
 			double d= connectionService.getValueAsDouble(ia);
 			assertEquals(10.0, d, 0.0001);
+			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 
 			assertNotNull(l.value);
 			assertNotNull(l.state);
