@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: LdapUpdater Plug-in
+Bundle-SymbolicName: org.csstudio.utility.ldapUpdater;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.utility.ldapUpdater.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.utility.ldap,
+ org.csstudio.utility.namespace.utility,
+ org.csstudio.platform.libs.dcf,
+ org.csstudio.platform.libs.xmpp
+Eclipse-LazyStart: true
+Bundle-ClassPath: .

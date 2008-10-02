@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.1"?>
+
+<product name="ldapUpdater" id="org.csstudio.utility.ldapUpdater.product" application="org.csstudio.utility.ldapUpdater.LdapUpdaterApplication" useFeatures="false">
+
+   <configIni use="default" path="d:\temp"/>
+
+   <launcherArgs>
+      <programArgs>-plugincustomization plugin_customization.ini</programArgs>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="ldapUpdater">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.libs.dal"/>
+      <plugin id="org.csstudio.platform.libs.dcf"/>
+      <plugin id="org.csstudio.platform.libs.jmock"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.libs.xmpp"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.utility.ldap"/>
+      <plugin id="org.csstudio.utility.ldapUpdater"/>
+      <plugin id="org.csstudio.utility.namespace.utility"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
+      <plugin id="org.eclipse.core.resources.win32" fragment="true"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
+   </plugins>
+
+</product>

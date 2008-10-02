@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="LdapUpdaterApplication"
+         name="LDAP Updater"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="1"
+            thread="any"
+            visible="false">
+         <run
+               class="org.csstudio.utility.ldapUpdater.LdapUpdaterServer">
+         </run></application>
+   </extension>
+      <extension
+            id="id2"
+            point="org.eclipse.core.runtime.applications">
+         <application
+               cardinality="1"
+               thread="any"
+               visible="false">
+            <run
+                  class="org.csstudio.utility.ldapUpdater.LdapUpdater">
+            </run>
+         </application>
+      </extension>
+      <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.utility.ldapUpdater.XmppLoginCallbackHandler"
+            id="org.csstudio.utility.ldapUpdater.xmppLoginHandler"
+            name="Ldap Updater Server XMPP Login Handler">
+      </loginHandler>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.utility.ldapUpdater.LdapUpdaterApplication"
+            name="ldapUpdater">
+         <property
+               name="appName"
+               value="ldapUpdater">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceInitializer">
+      </initializer>
+   </extension>
+      <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <simpleAction
+            class="org.csstudio.utility.ldapUpdater.ShutdownLdapUpdaterAction"
+            id="org.csstudio.utility.ldapUpdater.stopserver"
+            name="Stop ldap Updater">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.utility.ldapUpdater.UpdateLdapAction"
+            id="org.csstudio.utility.ldapUpdater.updateLdap"
+            name="updateLdap">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.utility.ldapUpdater.Action1"
+            id="org.csstudio.utility.ldapUpdater.simpleAction1"
+            name="name">
+      </simpleAction>
+   </extension>
+
+</plugin>
