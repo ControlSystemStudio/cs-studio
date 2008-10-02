@@ -24,7 +24,9 @@
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -298,7 +300,13 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void valueChanged(final DynamicValueEvent event) {
-		System.out.println("CHANGE "+getName()+" "+event.getValue());
+		if (event.getValue() instanceof double[]) {
+			System.out.println("CHANGE "+getName()+" "+((double[])event.getValue()).length+" "+Arrays.toString((double[])event.getValue()));
+		} else if (event.getValue() instanceof long[]) {
+			System.out.println("CHANGE "+getName()+" "+((long[])event.getValue()).length+" "+Arrays.toString((long[])event.getValue()));
+		} else {
+			System.out.println("CHANGE "+getName()+" "+event.getValue());
+		}
 		doForwardValue(event.getValue(), event.getTimestamp());
 		doForwardValue(event.getTimestamp(), event.getTimestamp(), C_TIMESTAMP_INFO.getName());
 	}
