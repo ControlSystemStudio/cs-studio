@@ -121,7 +121,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 			return property.getCondition().getTimestamp();
 		} 
 		Object value= property.getCharacteristic(charName);
-		if (value!=null && valueType!=null) {
+		if (valueType!=null) {
 			return ConverterUtil.convert(value, valueType);
 		}
 		return value;
