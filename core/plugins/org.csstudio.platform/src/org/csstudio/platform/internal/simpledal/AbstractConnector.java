@@ -84,7 +84,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	/**
 	 * A list of value listeners to which control system events are forwarded.
 	 */
-	private List<WeakReference<ListenerReference>> _weakListenerReferences;
+	protected List<WeakReference<ListenerReference>> _weakListenerReferences;
 
 	private String _latestError;
 
@@ -200,7 +200,7 @@ abstract class AbstractConnector implements IConnectorStatistic,
 	 * @param listener
 	 *            the value listener
 	 */
-	public void removeProcessVariableValueListener(
+	public boolean removeProcessVariableValueListener(
 			IProcessVariableValueListener listener) {
 		synchronized (_weakListenerReferences) {
 			WeakReference<ListenerReference> toRemove = null;
@@ -214,8 +214,10 @@ abstract class AbstractConnector implements IConnectorStatistic,
 
 			if (toRemove != null) {
 				_weakListenerReferences.remove(toRemove);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	/**

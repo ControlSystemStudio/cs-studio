@@ -498,17 +498,7 @@ public class ProcessVariableConnectionService implements
 
 				if (property != null) {
 					try {
-						long timeout = System.currentTimeMillis() + 3000;
-
-						while (!property.isConnected()
-								&& System.currentTimeMillis() < timeout) {
-							// FIXME: Kommt es zu Deadlocks, weil der Thread
-							// schlafen geht?
-							// try {
-							// Thread.sleep(1);
-							// } catch (InterruptedException e) {
-							// }
-						}
+						DalConnector.waitTillConnected(property, 3000);
 
 						// FIXME: eigene Subklasse f�r diesen ResponseListener
 						ResponseListener responseListener = new ResponseListener() {
@@ -603,16 +593,10 @@ public class ProcessVariableConnectionService implements
 			}
 
 			if (property != null) {
+				
+				DalConnector.waitTillConnected(property, 3000);
+				
 				try {
-					long timeout = System.currentTimeMillis() + 3000;
-
-					while (!property.isConnected()
-							&& System.currentTimeMillis() < timeout) {
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-						}
-					}
 
 					if (pv.isCharacteristic()) {
 						result = (E) DalConnector.getCharacteristic(pv.getCharacteristic(), property, valueType);
@@ -709,7 +693,9 @@ public class ProcessVariableConnectionService implements
 		// we remove the listener from all connectors
 		synchronized (_connectors) {
 			for (AbstractConnector c : _connectors.values()) {
-				c.removeProcessVariableValueListener(listener);
+				if (c.removeProcessVariableValueListener(listener)) {
+					System.out.println("UNREGISTER '"+c.getName());
+				}
 			}
 		}
 	}
@@ -729,7 +715,7 @@ public class ProcessVariableConnectionService implements
 
 	}
 
-	private AbstractConnector createConnectorForDal(IProcessVariableAddress pv,
+	private DalConnector createConnectorForDal(IProcessVariableAddress pv,
 			ValueType valueType) {
 		final DalConnector connector = new DalConnector(pv, valueType);
 
@@ -806,14 +792,15 @@ public class ProcessVariableConnectionService implements
 			result = factory.getProperty(ri, propertyType, null);
 		}
 
-		System.out.println("CONNECT '"+pv.toString()+"' "+propertyType.getSimpleName()+" "+result.getUniqueName()+" "+result.getClass().getName());
-
 		return result;
 
 	}
 
 	@SuppressWarnings("unchecked")
 	private void disposeConnector(DalConnector connector) {
+		
+		System.out.println("DISPOSE "+connector.getPVAdress().toString());
+
 		DynamicValueProperty property = connector.getDalProperty();
 
 		connector.setDalProperty(null);
@@ -832,6 +819,7 @@ public class ProcessVariableConnectionService implements
 			disposeDalProperty(property, connector.getProcessVariableAddress()
 					.getControlSystem());
 		}
+		
 	}
 
 	private void disposeDalProperty(DynamicValueProperty property,
@@ -846,7 +834,11 @@ public class ProcessVariableConnectionService implements
 			// Zerst�ren von Properties tranparent zu gestalten.
 			if (property.getDynamicValueListeners().length <= 1
 					&& property.getResponseListeners().length <= 0) {
+				
+				System.out.println("DESTROY "+property.getUniqueName());
+
 				factory.getPropertyFamily().destroy(property);
+				
 
 				// <**** Workarround (FIXME: Remove, when DAL is fixed) ***
 				// DAL caches a reference to a former ResponseListener
@@ -899,6 +891,8 @@ public class ProcessVariableConnectionService implements
 			} catch (Exception e) {
 				CentralLogger.getInstance().error(null, e);
 			}
+			
+			DalConnector.waitTillConnected(_dynamicValueProperty, 3000);
 
 			//if (_dynamicValueProperty != null
 			//		&& _dynamicValueProperty.isConnectionAlive()) {

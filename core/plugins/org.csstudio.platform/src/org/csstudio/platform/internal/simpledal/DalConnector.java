@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.csstudio.platform.internal.simpledal.AbstractConnector.ListenerReference;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
@@ -46,6 +47,7 @@ import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionEvent;
+import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.LinkListener;
 
 /**
@@ -77,6 +79,11 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		CharacteristicInfo.registerCharacteristicInfo(C_STATUS_INFO);
 	}
 	
+	/**
+	 * Converts DAL condition to EPICS favored severity string.
+	 * @param condition DAL condition
+	 * @return EPICS favored severity string
+	 */
 	public static final String toEPICSFlavorSeverity(DynamicValueCondition condition) {
 		if (condition.isNormal()) {
 			return DynamicValueState.NORMAL.toString();
@@ -93,6 +100,14 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		return "UNKNOWN";
 	}
 	
+	/**
+	 * Returns characteristic while properly converting values and characteristic names
+	 * @param charName characteristic name
+	 * @param property DAL property
+	 * @param valueType SDS value type
+	 * @return characteristic while properly converting values and characteristic names
+	 * @throws DataExchangeException
+	 */
 	public static final Object getCharacteristic(String charName, DynamicValueProperty property, ValueType valueType) throws DataExchangeException {
 		if (charName.equals(DalConnector.C_SEVERITY_INFO.getName())) {
 			return DalConnector.toEPICSFlavorSeverity(property.getCondition());
@@ -111,11 +126,68 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 
 	}
 	
+	/**
+	 * Returns EPICS favored status string for DAL condition. 
+	 * @param cond DAL condition
+	 * @return EPICS favored status string for DAL condition
+	 */
 	public static final String extratStatus(DynamicValueCondition cond) {
 		if (cond==null || cond.getDescription()==null) {
 			return "N/A";
 		}
 		return cond.getDescription();
+	}
+	
+	/**
+	 * Waits until DAL property is connected or timeout has elapsed
+	 * @param property the DAL property
+	 * @param timeout the timeout to wait
+	 * @return <code>true</code> if property was connected
+	 */
+	public static boolean waitTillConnected(DynamicValueProperty property, long timeout) {
+		
+		if (property.isConnected()) {
+			return true;
+		}
+		if (property.isConnectionFailed()) {
+			return false;
+		}
+		
+		LinkAdapter link= new LinkAdapter() {
+			@Override
+			public synchronized void connected(ConnectionEvent e) {
+				notifyAll();
+			}
+			@Override
+			public synchronized void connectionFailed(ConnectionEvent e) {
+				notifyAll();
+			}
+		};
+		
+		synchronized (link) {
+			property.addLinkListener(link);
+
+			if (property.isConnected()) {
+				property.removeLinkListener(link);
+				return true;
+			}
+			if (property.isConnectionFailed()) {
+				property.removeLinkListener(link);
+				return false;
+			}
+			
+			
+			try {
+				link.wait(timeout);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			property.removeLinkListener(link);
+		}
+		
+		return property.isConnected();
+		
 	}
 
 	/**
@@ -226,6 +298,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void valueChanged(final DynamicValueEvent event) {
+		System.out.println("CHANGE "+getName()+" "+event.getValue());
 		doForwardValue(event.getValue(), event.getTimestamp());
 		doForwardValue(event.getTimestamp(), event.getTimestamp(), C_TIMESTAMP_INFO.getName());
 	}
@@ -242,6 +315,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void connected(final ConnectionEvent e) {
+		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
 		if (getLatestValue()==null) {
 			try {
 				_dalProperty.getAsynchronous(this);
@@ -250,7 +324,30 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 				CentralLogger.getInstance().warn(null, ex);
 			}
 		}
-		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
+		List<String> names= new ArrayList<String>(_weakListenerReferences.size());
+		synchronized (_weakListenerReferences) {
+			Iterator<WeakReference<ListenerReference>> it = _weakListenerReferences
+					.iterator();
+
+			while (it.hasNext()) {
+				WeakReference<ListenerReference> wr = it.next();
+
+				ListenerReference listener = wr.get();
+
+				if (listener != null && listener.characteristic!=null) {
+					names.add(listener.characteristic);
+				}
+			}
+		}
+		
+		for (String name : names) {
+			try {
+				doForwardValue(getCharacteristic(name, _dalProperty, null), new Timestamp(), name);
+			} catch (DataExchangeException e1) {
+				CentralLogger.getInstance().warn(null, e1);
+			}
+		}
+
 	}
 
 	/**
@@ -341,7 +438,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 			IProcessVariableValueListener listener) {
 		super.addProcessVariableValueListener(charateristic, listener);
 		
-		if (charateristic!=null) {
+		if (charateristic!=null && _dalProperty.isConnected()) {
 			try {
 				Object initial= getCharacteristic(charateristic, _dalProperty, null);
 				listener.valueChanged(initial, new Timestamp());
@@ -350,5 +447,15 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 			} 
 		}
 	}
+	
+	/**
+	 * Waits until DAL property is connected or timeout has elapsed
+	 * @param timeout the timeout to wait
+	 * @return <code>true</code> if property was connected
+	 */
+	public boolean watiTillConnected(long timeout) {
+		return waitTillConnected(_dalProperty,timeout);
+	}
+
 	
 }

@@ -30,7 +30,7 @@ import org.epics.css.dal.simulation.SimulatorPlug;
 import org.epics.css.dal.simulation.SimulatorUtilities;
 import org.epics.css.dal.spi.PropertyFactory;
 
-public class SimpleDALTest extends TestCase {
+public class SimpleDAL_EPICSTest extends TestCase {
 	
 	class IPVVListener implements IProcessVariableValueListener {
 		Object value;
@@ -65,7 +65,7 @@ public class SimpleDALTest extends TestCase {
 		assertNotNull(connectionService);
 	}
 	
-	public void testGetValue() {
+/*	public void testGetValue() {
 		
 		try {
 
@@ -254,9 +254,9 @@ public class SimpleDALTest extends TestCase {
 			SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(0));			
 		}
 		
-	}
+	}*/
 	
-	public void testDestroy() {
+/*	public void testDestroy() {
 		
 		try {
 			
@@ -265,9 +265,7 @@ public class SimpleDALTest extends TestCase {
 			IPVVListener l= new IPVVListener();
 			connectionService.registerForDoubleValues(l, ia);
 
-			PropertyFactory factory = DALPropertyFactoriesProvider.getInstance()
-			.getPropertyFactory(ia.getControlSystem());
-			DynamicValueProperty pp= factory.getPropertyFamily().getFirst("D2:P1");
+			PropertyProxyImpl pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
 			assertNotNull(pp);
 			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
@@ -283,6 +281,45 @@ public class SimpleDALTest extends TestCase {
 			l.value=null;
 			Thread.sleep(1100);
 			assertNotNull(l.value);
+			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
+			
+			connectionService.unregister(l);
+			
+			l.value=null;
+			Thread.sleep(1100);
+			assertNull(l.value);
+			assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}*/
+
+	public void testDestroyEPICS() {
+		
+		try {
+			
+			String rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_11";
+			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
+			IPVVListener l= new IPVVListener();
+			connectionService.registerForDoubleValues(l, ia);
+
+			PropertyFactory factory = DALPropertyFactoriesProvider.getInstance()
+			.getPropertyFactory(ia.getControlSystem());
+			DynamicValueProperty pp= factory.getPropertyFamily().getFirst("PV_AO_11");
+			assertNotNull(pp);
+			assertEquals(org.epics.css.dal.context.ConnectionState.INITIAL, pp.getConnectionState());
+			
+			connectionService.setValue(ia, 10.0);
+			double d= connectionService.getValueAsDouble(ia);
+			assertEquals(10.0, d, 0.0001);
+
+			assertNotNull(l.value);
+			assertNotNull(l.state);
+			assertNull(l.error);
+			
+			Thread.sleep(3100);
 			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
 			connectionService.unregister(l);
