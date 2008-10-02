@@ -72,7 +72,7 @@ public class LdapUpdater {
     private boolean _ready = false;
     private boolean _ldapReadDone = false;
 	private ArrayList<ControlSystemItem> _al;
-	
+	public boolean busy=false;
 	public static LdapUpdater getInstance() {
 		
 		if (_instance == null) {
@@ -88,7 +88,10 @@ public class LdapUpdater {
 	
 	
 	public final void start() throws Exception {
-
+		if ( busy ) {
+			return;
+		}
+		busy=true;
         CentralLogger.getInstance().info(this, "start" );
    	
     	_model=new DataModel();
@@ -130,7 +133,7 @@ public class LdapUpdater {
         CentralLogger.getInstance().info(this, "end" + " at " + endTime) ;
         CentralLogger.getInstance().info(this, "time used : " + deltaTime/1000.  + " s" );
         CentralLogger.getInstance().info(this, "Ende." );
-        
+        busy=false;
     }
 
 }

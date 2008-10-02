@@ -25,7 +25,9 @@ public class TimerProcessor {
         	
         	LdapUpdater ldapUpdater=LdapUpdater.getInstance();
         	try {
-				ldapUpdater.start();
+        		if (!ldapUpdater.busy){
+ 				ldapUpdater.start();
+ 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
