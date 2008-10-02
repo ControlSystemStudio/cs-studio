@@ -49,7 +49,7 @@ public class LdapUpdaterServer implements IApplication {
         s.run();
  		IPreferencesService prefs = Platform.getPreferencesService();
 		String interval = prefs.getString(Activator.PLUGIN_ID,
-				LdapUpdaterPreferenceConstants.XMPP_USER, "", null);
+				LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
 
 		new TimerProcessor ( 5000, Integer.parseInt(interval)); // every 12 hours
 
