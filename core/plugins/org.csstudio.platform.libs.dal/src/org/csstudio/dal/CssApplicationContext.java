@@ -22,6 +22,7 @@
 package org.csstudio.dal;
 
 import org.epics.css.dal.impl.DefaultApplicationContext;
+import org.epics.css.dal.spi.Plugs;
 
 /**
  * Default application context for the CSS environment. This particular context
@@ -42,6 +43,7 @@ public class CssApplicationContext extends DefaultApplicationContext {
 	public CssApplicationContext(final String name) {
 		super(name);
 		PlugRegistry.getInstance().configurePlugs(getConfiguration());
+		getConfiguration().setProperty(Plugs.CONNECTION_TIMEOUT, "60000");
 	}
 
 	/**
