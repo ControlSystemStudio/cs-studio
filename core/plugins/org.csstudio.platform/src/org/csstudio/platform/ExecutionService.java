@@ -72,7 +72,11 @@ public class ExecutionService {
 		
 		_executorService.execute(new Runnable(){
 			public void run() {
-				runnable.run();
+				try {
+					runnable.run();
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
 				_tasksInProgress.decrement();
 				_averageTime.track(System.currentTimeMillis()-start);
 			}
