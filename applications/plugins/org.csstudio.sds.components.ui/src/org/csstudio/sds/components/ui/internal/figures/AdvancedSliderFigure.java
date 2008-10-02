@@ -40,7 +40,6 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.Panel;
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.ScrollBar;
@@ -53,11 +52,11 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 
 /**
- * A slider figure.
+ * A slider figure. Note that the slider internally maps the values it displays
+ * to integer values, so the slider will not work correctly for very large
+ * ranges of values.
  * 
- * @author Sven Wende
- * @version $Revision$
- * 
+ * @author Sven Wende, Joerg Rathlev
  */
 public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	/**
@@ -105,22 +104,33 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	/**
 	 * Lower border of the displayed value.
 	 */
-	private int _min = 0;
+	private double _min = 0;
 
 	/**
 	 * Upper border of the displayed value.
 	 */
-	private int _max = 100;
+	private double _max = 100;
+	
+	/**
+	 * The multiplier for converting the channel values (double) into scrollbar
+	 * values (integer).
+	 */
+	private double _scrollbarMultiplier = 1.0;
+	
+	/**
+	 * The increment when changing the value step by step.
+	 */
+	private double _increment = 1.0;
 
 	/**
 	 * The current value.
 	 */
-	private int _currentValue = 30;
+	private double _currentValue = 30;
 
 	/**
 	 * The current manual value.
 	 */
-	private int _manualValue = 30;
+	private double _manualValue = 30;
 
 	/**
 	 * Flag which is used to disable slider events. When the current value is
@@ -365,10 +375,11 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	private ScrollBar createScrollbarFigure() {
 		ScrollBar bar = new ScrollBar();
 		bar.setExtent(0);
-		bar.setMaximum(1000);
-		bar.setMinimum(1);
-		bar.setValue(400);
-		bar.setStepIncrement(1);
+		bar.setMaximum((int) (_max * _scrollbarMultiplier));
+		bar.setMinimum((int) (_min * _scrollbarMultiplier));
+		bar.setValue((int) (_currentValue * _scrollbarMultiplier));
+		bar.setStepIncrement((int) (_increment * _scrollbarMultiplier));
+		bar.setPageIncrement((int) (_increment * _scrollbarMultiplier));
 		bar.setOrientation(ScrollBar.VERTICAL);
 		bar.setBackgroundColor(ColorConstants.blue);
 		Ellipse thumb = new Ellipse();
@@ -383,7 +394,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		bar.addPropertyChangeListener(RangeModel.PROPERTY_VALUE,
 				new PropertyChangeListener() {
 					public void propertyChange(final PropertyChangeEvent event) {
-						fireManualValueChange((Integer) event.getNewValue());
+						scrollbarValueChanged((Integer) event.getNewValue());
 					}
 				});
 
@@ -391,23 +402,32 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Inform all slider listeners, that the manual value has changed.
+	 * Called when the value on the scrollbar was changed.
 	 * 
-	 * @param newManualValue the new manual value
+	 * @param newScrollbarValue the new manual value
 	 */
-	private void fireManualValueChange(final int newManualValue) {
-		int tmp = newManualValue;
+	private void scrollbarValueChanged(final int newScrollbarValue) {
+		double tmp = newScrollbarValue / _scrollbarMultiplier;
 
 		if (tmp < _min) {
 			tmp = _min;
-		}
-		if (tmp > _max) {
+		} else if (tmp > _max) {
 			tmp = _max;
 		}
 
+		onManualValueSet(tmp);
+	}
+
+	/**
+	 * Called when a new manual value has been set by the user. This informs
+	 * all listeners about the new value.
+	 * 
+	 * @param newValue the new manual value.
+	 */
+	private void onManualValueSet(double newValue) {
 		if (_populateEvents) {
 			for (ISliderListener l : _sliderListeners) {
-				l.sliderValueChanged(tmp);
+				l.sliderValueChanged(newValue);
 			}
 		}
 	}
@@ -427,12 +447,11 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 * @param min
 	 *            The minimum value.
 	 */
-	public void setMin(final int min) {
-		_scrollBar.setMinimum(min);
+	public void setMin(final double min) {
 		_min = min;
+		_scrollBar.setMinimum((int) (_min * _scrollbarMultiplier));
 
 		_scalePanel.repaint();
-
 	}
 
 	/**
@@ -441,9 +460,10 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 * @param max
 	 *            The maximum value.
 	 */
-	public void setMax(final int max) {
-		_scrollBar.setMaximum(max);
+	public void setMax(final double max) {
 		_max = max;
+		_scrollBar.setMaximum((int) (_max * _scrollbarMultiplier));
+		
 		_scalePanel.repaint();
 	}
 
@@ -453,8 +473,33 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 * @param increment
 	 *            The increment value.
 	 */
-	public void setIncrement(final int increment) {
-		_scrollBar.setStepIncrement(increment);
+	public void setIncrement(final double increment) {
+		_increment = increment;
+		adjustScrollbarMultiplier();
+	}
+
+	/**
+	 * Adjusts the multiplier for the scrollbar after the increment has been
+	 * changed.
+	 */
+	private void adjustScrollbarMultiplier() {
+		if (_increment == ((int) _increment)) {
+			// The increment is an integer value, so we can simply work with
+			// integer values on the scroll bar.
+			_scrollbarMultiplier = 1.0;
+		} else {
+			// The increment is non-integral. Set the multiplier to
+			// 1/increment, rounded up.
+			_scrollbarMultiplier = Math.ceil(1 / _increment);
+		}
+		
+		_populateEvents = false;
+		_scrollBar.setMinimum((int) (_min * _scrollbarMultiplier));
+		_scrollBar.setMaximum((int) (_max * _scrollbarMultiplier));
+		_scrollBar.setStepIncrement((int) (_increment * _scrollbarMultiplier));
+		_scrollBar.setPageIncrement((int) (_increment * _scrollbarMultiplier));
+		_scrollBar.setValue((int) (_currentValue * _scrollbarMultiplier));
+		_populateEvents = true;
 	}
 
 	/**
@@ -478,26 +523,24 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 * @param value
 	 *            the current slider value
 	 */
-	public void setValue(final int value) {
-		assert value >= _min && value <= _max;
+	public void setValue(final double value) {
+		_currentValue = value;
 
 		// disable eventing
 		_populateEvents = false;
 
-		// store current value
-		_currentValue = value;
-
 		// update scrollbar
-		_scrollBar.setValue(value);
+		_scrollBar.setValue((int) (value * _scrollbarMultiplier));
+		_scrollBar.invalidate();
+
+		// enable eventing
+		_populateEvents = true;
 
 		// update textual value representation
 		_valueLabelPanel.setLastDalValue(value);
 
 		// move the value marker
 		setConstraint(_valueMarkerFigure, calculateValueMarkerConstraints());
-
-		// enable eventing
-		_populateEvents = true;
 	}
 
 	/**
@@ -509,7 +552,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 * @param value
 	 *            the current slider value
 	 */
-	public void setManualValue(final int value) {
+	public void setManualValue(final double value) {
 		assert value >= _min && value <= _max;
 
 		_manualValue = value;
@@ -554,7 +597,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getAdapter(final Class adapter) {
+	public Object getAdapter(@SuppressWarnings("unchecked") final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if (_borderAdapter == null) {
 				_borderAdapter = new BorderAdapter(this);
@@ -693,7 +736,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		 * @param value
 		 *            the current value
 		 */
-		public void setLastDalValue(final int value) {
+		public void setLastDalValue(final double value) {
 			_lastDalValueLabel.setText("IOC: " + value);
 		}
 
@@ -703,7 +746,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		 * @param manualValue
 		 *            the current manual value
 		 */
-		public void setLastManualValue(final int manualValue) {
+		public void setLastManualValue(final double manualValue) {
 			_lastManualValueLabel.setText("MAN: " + manualValue);
 		}
 	}
@@ -796,12 +839,12 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		/**
 		 * The drag range.
 		 */
-		private int _dragRange;
+		private int _scaleWidth;
 
 		/**
-		 * The value, which is manipulated by the drag operation.
+		 * The value at the start of the drag operation.
 		 */
-		private int _revertValue;
+		private double _startValue;
 
 		/**
 		 * Flag, which indicates whether a drag operation is in process.
@@ -814,8 +857,8 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		public void mousePressed(final MouseEvent event) {
 			_armed = true;
 			_dragStartPosition = event.getLocation();
-			_dragRange = calculateScaleWidth();
-			_revertValue = _manualValue;
+			_scaleWidth = calculateScaleWidth();
+			_startValue = _manualValue;
 			event.consume();
 		}
 
@@ -830,9 +873,10 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 			Dimension difference = event.getLocation().getDifference(
 					_dragStartPosition);
 
-			int change = (_max - _min) * difference.width / _dragRange;
+			double change = (_max - _min) * (((double) difference.width) / _scaleWidth);
+			double newValue = _startValue + change;
 
-			fireManualValueChange(_revertValue + change);
+			onManualValueSet(newValue);
 
 			event.consume();
 		}
@@ -869,7 +913,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		 * @param newValue
 		 *            The new slider value.
 		 */
-		void sliderValueChanged(int newValue);
+		void sliderValueChanged(double newValue);
 	}
 
 }

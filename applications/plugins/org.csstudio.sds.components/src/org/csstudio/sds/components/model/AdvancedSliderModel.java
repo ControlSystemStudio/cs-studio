@@ -23,8 +23,8 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.ArrayOptionProperty;
+import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * An ellipse widget model.
@@ -96,14 +96,15 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_VALUE, new IntegerProperty("Slider Value",
-				WidgetPropertyCategory.Behaviour, 50, 0, Integer.MAX_VALUE));
-		addProperty(PROP_MIN, new IntegerProperty("Min",
-				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
-		addProperty(PROP_MAX, new IntegerProperty("Max",
-				WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
-		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
-				WidgetPropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
+		// XXX: is it correct that a slider cannot be set to negative values?
+		addProperty(PROP_VALUE, new DoubleProperty("Slider Value",
+				WidgetPropertyCategory.Behaviour, 50, 0, Double.MAX_VALUE));
+		addProperty(PROP_MIN, new DoubleProperty("Min",
+				WidgetPropertyCategory.Behaviour, 0, 0, Double.MAX_VALUE));
+		addProperty(PROP_MAX, new DoubleProperty("Max",
+				WidgetPropertyCategory.Behaviour, 100, 0, Double.MAX_VALUE));
+		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
+				WidgetPropertyCategory.Behaviour, 1, 0, Double.MAX_VALUE));
 		addProperty(PROP_ORIENTATION, new ArrayOptionProperty("Orientation",
 				WidgetPropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
 	}
@@ -137,8 +138,8 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The min value.
 	 */
-	public int getMin() {
-		return (Integer) getProperty(PROP_MIN).getPropertyValue();
+	public double getMin() {
+		return (Double) getProperty(PROP_MIN).getPropertyValue();
 	}
 
 	/**
@@ -146,8 +147,8 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The max value.
 	 */
-	public int getMax() {
-		return (Integer) getProperty(PROP_MAX).getPropertyValue();
+	public double getMax() {
+		return (Double) getProperty(PROP_MAX).getPropertyValue();
 	}
 
 	/**
@@ -155,8 +156,8 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The increment value.
 	 */
-	public int getIncrement() {
-		return (Integer) getProperty(PROP_INCREMENT).getPropertyValue();
+	public double getIncrement() {
+		return (Double) getProperty(PROP_INCREMENT).getPropertyValue();
 	}
 
 	/**
@@ -164,8 +165,8 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The current slider value.
 	 */
-	public int getValue() {
-		return (Integer) getProperty(PROP_VALUE).getPropertyValue();
+	public double getValue() {
+		return (Double) getProperty(PROP_VALUE).getPropertyValue();
 	}
 
 	/**

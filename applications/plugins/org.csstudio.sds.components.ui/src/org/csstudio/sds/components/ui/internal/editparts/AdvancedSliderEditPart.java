@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.data.ILongValue;
+import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -66,12 +66,12 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 
 		final AdvancedSliderFigure slider = new AdvancedSliderFigure();
 		slider.addSliderListener(new AdvancedSliderFigure.ISliderListener() {
-			public void sliderValueChanged(final int newValue) {
+			public void sliderValueChanged(final double newValue) {
 				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 					model.getProperty(AdvancedSliderModel.PROP_VALUE).setManualValue(
 							newValue);
 
-					slider.setManualValue((Integer) newValue);
+					slider.setManualValue(newValue);
 
 					if (_resetManualValueDisplayJob == null) {
 						_resetManualValueDisplayJob = new UIJob("reset") {
@@ -112,7 +112,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setValue((Integer) newValue);
+				slider.setValue((Double) newValue);
 				return true;
 			}
 		};
@@ -124,7 +124,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setMin((Integer) newValue);
+				slider.setMin((Double) newValue);
 				return true;
 			}
 		};
@@ -136,7 +136,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setMax((Integer) newValue);
+				slider.setMax((Double) newValue);
 				return true;
 			}
 		};
@@ -148,7 +148,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
-				slider.setIncrement((Integer) newValue);
+				slider.setIncrement((Double) newValue);
 				return true;
 			}
 		};
@@ -186,7 +186,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 		}
 		
 		AdvancedSliderModel model = (AdvancedSliderModel) getWidgetModel();
-		int value = model.getValue();
+		double value = model.getValue();
 		ITimestamp timestamp = TimestampFactory.now();
 		
 		// Note: the IValue implementations require a Severity, otherwise the
@@ -199,9 +199,9 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 		INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
 				0, 0, "");
 		
-		ILongValue result = ValueFactory.createLongValue(timestamp,
-				severity, null, md, Quality.Original, new long[] { value });
-
+		IDoubleValue result = ValueFactory.createDoubleValue(timestamp,
+				severity, null, md, Quality.Original, new double[] { value });
+		
 		return result;
 	}
 
