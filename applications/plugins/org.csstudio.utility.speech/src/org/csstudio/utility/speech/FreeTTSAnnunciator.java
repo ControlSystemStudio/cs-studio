@@ -41,6 +41,7 @@ public class FreeTTSAnnunciator implements Annunciator
         voice = voiceManager.getVoice(voice_name);
         if (voice == null)
         	throw new Exception("Cannot find a voice named " + voice_name);
+        // voice.setVerbose(true);
 
         // Allocate resources for the voice.
         voice.allocate();
