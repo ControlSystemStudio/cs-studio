@@ -19,7 +19,7 @@ public class ChannelCacheTest
     @Test
     public void testChannelCache() throws Exception
     {
-        final RDBArchiveImpl archive = new RDBArchiveImpl(TestSetup.URL);
+        final RDBArchiveImpl archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
         final ChannelCache channels = new ChannelCache(archive);
         
         final String name = "does_not_exist";

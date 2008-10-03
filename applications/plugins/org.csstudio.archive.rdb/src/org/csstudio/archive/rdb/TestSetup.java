@@ -15,6 +15,10 @@ public class TestSetup
 
     // MySQL Test
     // "jdbc:mysql://titan-terrier.sns.ornl.gov/archive?user=fred&password=$fred";
+
+    /** Database user/password (null if already in URL) */
+    public static final String USER = null;
+    public static final String PASSWORD = null;
     
     /** Data types to test and the PVs to use for them */
     public enum TestType

@@ -113,7 +113,7 @@ public class XMLImport extends DefaultHandler
         throws Exception
     {
         this.steal_channels = steal_channels;
-        archive = new RDBArchiveImpl(RDB_URL);
+        archive = new RDBArchiveImpl(RDB_URL, null, null);
         
         final SampleEngineConfig found = archive.findEngine(engine_name);
         if (found != null)

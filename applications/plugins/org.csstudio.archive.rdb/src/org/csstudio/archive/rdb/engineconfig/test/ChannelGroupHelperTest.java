@@ -21,7 +21,7 @@ public class ChannelGroupHelperTest
     @Test
     public void test() throws Exception
     {
-        final RDBArchiveImpl archive = new RDBArchiveImpl(TestSetup.URL);
+        final RDBArchiveImpl archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
         
         final ChannelGroupHelper groups = new ChannelGroupHelper(archive);
         ChannelGroupConfig group = groups.find("Test", 1);

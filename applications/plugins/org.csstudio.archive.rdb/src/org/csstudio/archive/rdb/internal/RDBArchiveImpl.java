@@ -42,8 +42,8 @@ public class RDBArchiveImpl extends RDBArchive
     /** Severity string for <code>Double.NaN</code> samples */
     private static final String NOT_A_NUMBER_SEVERITY = "INVALID"; //$NON-NLS-1$
 
-    /** Database URL */
-    final private String url;
+    /** Database URL/user/password */
+    final private String url, user, password;
     
     /** RDB connection */
 	private RDBUtil rdb;
@@ -90,12 +90,17 @@ public class RDBArchiveImpl extends RDBArchive
 	
 	/** Connect to RDB.
 	 *  @param url URL
+     *  @param user RDB user (null if already in URL)
+     *  @param password RDB password (null if already in URL)
 	 *  @throws Exception on error
 	 *  @see {@link RDBUtil} for syntax of URL
 	 */
-    public RDBArchiveImpl(final String url) throws Exception
+    public RDBArchiveImpl(final String url, final String user,
+            final String password) throws Exception
 	{
 	    this.url = url;
+	    this.user = user;
+	    this.password = password;
 	    connect();
 	}
 	
@@ -105,7 +110,7 @@ public class RDBArchiveImpl extends RDBArchive
     {
         // Create new connection
         CentralLogger.getInstance().getLogger(this).debug("Connecting to '" + url + "'");
-        rdb = RDBUtil.connect(url);
+        rdb = RDBUtil.connect(url, user, password);
         sql = new SQL(rdb.getDialect());
         channels = new ChannelCache(this);
         severities = new SeverityCache(rdb, sql);

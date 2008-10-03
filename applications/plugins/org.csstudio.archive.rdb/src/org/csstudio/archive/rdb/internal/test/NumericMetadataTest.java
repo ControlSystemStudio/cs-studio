@@ -20,7 +20,7 @@ public class NumericMetadataTest
     @BeforeClass
     public static void connect() throws Exception
     {
-        archive = new RDBArchiveImpl(TestSetup.URL);
+        archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
     }
     
     @AfterClass

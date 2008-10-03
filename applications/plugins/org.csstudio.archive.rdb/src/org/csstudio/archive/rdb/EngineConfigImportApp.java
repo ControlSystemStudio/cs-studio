@@ -138,7 +138,7 @@ public class EngineConfigImportApp implements IApplication
     private void deleteEngine(final String rdb_url,
             final String engine_name) throws Exception
     {
-        final RDBArchiveImpl archive = new RDBArchiveImpl(rdb_url);
+        final RDBArchiveImpl archive = new RDBArchiveImpl(rdb_url, null, null);
         try
         {
             final SampleEngineHelper engines =

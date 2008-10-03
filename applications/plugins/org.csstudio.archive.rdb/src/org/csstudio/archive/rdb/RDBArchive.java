@@ -15,9 +15,22 @@ abstract public class RDBArchive
      */
     public static RDBArchive connect(final String url) throws Exception
     {
-        return new RDBArchiveImpl(url);
+        return connect(url, null, null);
     }
     
+    /** Connect to RDB.
+     *  @param url URL
+     *  @param user RDB user (null if already in URL)
+     *  @param password RDB password (null if already in URL)
+     *  @throws Exception on error
+     *  @see {@link RDBUtil} for syntax of URL
+     */
+    public static RDBArchive connect(final String url, final String user,
+            final String password) throws Exception
+    {
+        return new RDBArchiveImpl(url, user, password);
+    }
+
     /** Close and re-open the RDB connection.
      *  <p>
      *  Can be used in an attempt to recover from for example network errors.
