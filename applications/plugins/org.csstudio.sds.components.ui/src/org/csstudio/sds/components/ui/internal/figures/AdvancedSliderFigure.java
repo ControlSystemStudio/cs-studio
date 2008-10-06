@@ -26,6 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -133,10 +134,12 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	private double _manualValue = 30;
 
 	/**
-	 * Flag which is used to disable slider events. When the current value is
-	 * set on the scrollbar, eventing must be turned off.
+	 * Whether to notify slider listeners when the value is changed. This must
+	 * be set to <code>false</code> while the value is changed programmatically,
+	 * because only changes initiated by the user are forwarded to the
+	 * listeners.
 	 */
-	private boolean _populateEvents = true;
+	private boolean _notifySliderListeners = true;
 
 	/**
 	 * The LowLow border.
@@ -425,7 +428,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 * @param newValue the new manual value.
 	 */
 	private void onManualValueSet(double newValue) {
-		if (_populateEvents) {
+		if (_notifySliderListeners) {
 			for (ISliderListener l : _sliderListeners) {
 				l.sliderValueChanged(newValue);
 			}
@@ -449,7 +452,9 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 */
 	public void setMin(final double min) {
 		_min = min;
+		_notifySliderListeners = false;
 		_scrollBar.setMinimum((int) (_min * _scrollbarMultiplier));
+		_notifySliderListeners = true;
 
 		_scalePanel.repaint();
 	}
@@ -462,7 +467,9 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 */
 	public void setMax(final double max) {
 		_max = max;
+		_notifySliderListeners = false;
 		_scrollBar.setMaximum((int) (_max * _scrollbarMultiplier));
+		_notifySliderListeners = true;
 		
 		_scalePanel.repaint();
 	}
@@ -493,13 +500,13 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 			_scrollbarMultiplier = Math.ceil(1 / _increment);
 		}
 		
-		_populateEvents = false;
+		_notifySliderListeners = false;
 		_scrollBar.setMinimum((int) (_min * _scrollbarMultiplier));
 		_scrollBar.setMaximum((int) (_max * _scrollbarMultiplier));
 		_scrollBar.setStepIncrement((int) (_increment * _scrollbarMultiplier));
 		_scrollBar.setPageIncrement((int) (_increment * _scrollbarMultiplier));
 		_scrollBar.setValue((int) (_currentValue * _scrollbarMultiplier));
-		_populateEvents = true;
+		_notifySliderListeners = true;
 	}
 
 	/**
@@ -527,14 +534,14 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		_currentValue = value;
 
 		// disable eventing
-		_populateEvents = false;
+		_notifySliderListeners = false;
 
 		// update scrollbar
 		_scrollBar.setValue((int) (value * _scrollbarMultiplier));
 		_scrollBar.invalidate();
 
 		// enable eventing
-		_populateEvents = true;
+		_notifySliderListeners = true;
 
 		// update textual value representation
 		_valueLabelPanel.setLastDalValue(value);
