@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 
@@ -78,10 +79,22 @@ class SearchJob extends Job
                 monitor.worked(1);
             }
         }
-        catch (Exception e)
+        catch (final Exception ex)
         {
-            Plugin.getLogger().error("Archive search error", e); //$NON-NLS-1$
+            Plugin.getLogger().error(Messages.SeachJobTaskName, ex);
             monitor.setCanceled(true);
+            
+            Display.getDefault().asyncExec(new Runnable()
+            {
+                public void run()
+                {
+                    final String error =
+                        NLS.bind(Messages.ErrorFmt, ex.getMessage());
+                    MessageDialog.openError(archives_view.getSite().getShell(),
+                            Messages.SeachJobTaskName, error);
+                }
+            });
+            
             return Status.CANCEL_STATUS;
         }
         monitor.done();

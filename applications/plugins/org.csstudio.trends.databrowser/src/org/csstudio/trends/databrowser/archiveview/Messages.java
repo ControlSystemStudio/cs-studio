@@ -19,6 +19,7 @@ public class Messages extends NLS
     public static String ConnectJobServer;
     public static String DescriptionCol;
     public static String EndCol;
+    public static String ErrorFmt;
     public static String Info;
     public static String Info_Description;
     public static String Info_Requests;
