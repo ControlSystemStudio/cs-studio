@@ -26,7 +26,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -41,6 +40,7 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.Panel;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.ScrollBar;
@@ -294,13 +294,8 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		int pos = 0;
 
 		if (scaleWidth > 0) {
-			// rescale
-			assert _currentValue >= _min && _currentValue <= _max
-					&& _min < _max;
-
 			double quota = (double) (_currentValue - _min) / (_max - _min);
-
-			pos = (int) Math.abs(scaleWidth * quota);
+			pos = (int) (scaleWidth * quota);
 		}
 
 		return new Rectangle(pos + INSETS - VALUE_MARKER_HEIGHT + 1, 0,
@@ -318,12 +313,8 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		int pos = 0;
 
 		if (scaleWidth > 0) {
-			// rescale
-			assert _manualValue >= _min && _manualValue <= _max && _min < _max;
-
 			double quota = (double) (_manualValue - _min) / (_max - _min);
-
-			pos = (int) Math.abs(scaleWidth * quota);
+			pos = (int) (scaleWidth * quota);
 		}
 
 		return new Rectangle(pos + INSETS - VALUE_MARKER_HEIGHT + 1, 0,
@@ -343,12 +334,8 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		int pos = 0;
 
 		if (scaleWidth > 0) {
-			// rescale
-			assert value >= _min && value <= _max && _min < _max;
-
 			double quota = (double) (value - _min) / (_max - _min);
-
-			pos = (int) Math.abs(scaleWidth * quota);
+			pos = (int) (scaleWidth * quota);
 		}
 
 		return pos;
