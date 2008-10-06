@@ -869,6 +869,11 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 
 			double change = (_max - _min) * (((double) difference.width) / _scaleWidth);
 			double newValue = _startValue + change;
+			if (newValue < _min) {
+				newValue = _min;
+			} else if (newValue > _max) {
+				newValue = _max;
+			}
 
 			onManualValueSet(newValue);
 
