@@ -91,7 +91,7 @@ class SearchJob extends Job
                     final String error =
                         NLS.bind(Messages.ErrorFmt, ex.getMessage());
                     MessageDialog.openError(archives_view.getSite().getShell(),
-                            Messages.SeachJobTaskName, error);
+                        Messages.SeachJobTaskName, error);
                 }
             });
             

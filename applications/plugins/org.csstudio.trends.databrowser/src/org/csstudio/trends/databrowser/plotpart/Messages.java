@@ -27,6 +27,9 @@ public class Messages extends NLS
     public static String UnitMarkerEnd;
     public static String UnitMarkerStart;
 
+    public static String Error;
+    public static String ErrorFmt;
+
     static
     {   // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

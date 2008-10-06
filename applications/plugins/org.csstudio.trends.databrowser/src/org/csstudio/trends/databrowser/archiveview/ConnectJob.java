@@ -25,27 +25,6 @@ class ConnectJob extends Job
     private ArchiveServer server;
     private ArchiveInfo infos[];
     
-    /** Display an error message via dialog box in the UI thread. */
-    class AsyncErrorDialog implements Runnable
-    {
-        final private Shell shell;
-        final private String error;
-        
-        public AsyncErrorDialog(final Shell shell, final String error)
-        {
-            this.shell = shell;
-            this.error = error;
-            Display.getDefault().asyncExec(this);
-        }
-        
-        public void run()
-        {
-            MessageDialog.openError(shell,
-                    Messages.ConnectErrorTitle,
-                    NLS.bind(Messages.ConnectErrorMessage, url, error));
-        }
-    }
-    
     /** Create job that connects to given URL, then notifies view when done. */
     public ConnectJob(ArchiveView archives_view, String url)
     {
@@ -80,15 +59,24 @@ class ConnectJob extends Job
                 }
             });
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             // Show this in a message dialog.
             // Usually, this happens because somebody entered
             // a bad server URL, so the user should learn about the error...
-            new AsyncErrorDialog(shell, ex.getMessage());
             // Also log it.
             Plugin.getLogger().error(url + ": " + ex.getMessage()); //$NON-NLS-1$
             monitor.setCanceled(true);
+            
+            shell.getDisplay().asyncExec(new Runnable()
+            {
+                public void run()
+                {
+                    MessageDialog.openError(shell, Messages.ConnectErrorTitle,
+                        NLS.bind(Messages.ConnectErrorMessage, url, ex.getMessage()));
+                }
+            });
+            
             return Status.CANCEL_STATUS;
         }
         monitor.done();

@@ -13,26 +13,33 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Shell;
 
 /** Eclipse background job for fetching samples from the data server.
  *  @author Kay Kasemir
  */
 class ArchiveFetchJob extends Job
 {
+    final private Shell shell;
     final private IPVModelItem item;
     final private ITimestamp start, end;
     final private ArchiveFetchJobListener listener;
     
     /** Construct job that fetches data.
+     *  @param shell Shell (for error messages)
      *  @param item Item for which to fetch samples
      *  @param start Start time
      *  @param end End time
      */
-    public ArchiveFetchJob(final IPVModelItem item, final ITimestamp start,
+    public ArchiveFetchJob(final Shell shell,
+            final IPVModelItem item, final ITimestamp start,
             final ITimestamp end, final ArchiveFetchJobListener listener)
     {
         super(Messages.FetchDataForPV
                 + "'" + item.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        this.shell = shell;
         this.item = item;
         this.start = start;
         this.end = end;
@@ -92,9 +99,17 @@ class ArchiveFetchJob extends Job
                     result = batch.next();
                 }
             }
-            catch (Exception ex)
+            catch (final Exception ex)
             {
                 Plugin.getLogger().error("ArchiveFetchJob", ex);
+                shell.getDisplay().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        MessageDialog.openError(shell, Messages.Error,
+                                NLS.bind(Messages.ErrorFmt, ex.getMessage()));
+                    }
+                });
             }
             // Stop and ignore further results when canceled.
             if (monitor.isCanceled())

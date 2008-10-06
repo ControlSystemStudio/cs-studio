@@ -514,7 +514,8 @@ public class Controller implements ArchiveFetchJobListener
             return;
         // TODO Analyze this. Zoom/pan results in too many calls.
         // Cache saves us, but the code should still be smarter.
-    	final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end, this);
+    	final ArchiveFetchJob job =
+    	    new ArchiveFetchJob(chart.getShell(), item, start, end, this);
     	synchronized (jobs)
         {
             jobs.add(job);
