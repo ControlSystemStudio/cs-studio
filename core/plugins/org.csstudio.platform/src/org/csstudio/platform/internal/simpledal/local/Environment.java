@@ -59,10 +59,6 @@ public class Environment {
 		return Runtime.getRuntime().totalMemory();
 	}
 	
-	public static long getThreadCount() {
-		return ExecutionService.getInstance().getThreadCounter().getCount();
-	}
-	
 	public static long getSystemTime() {
 		return System.currentTimeMillis();
 	}
