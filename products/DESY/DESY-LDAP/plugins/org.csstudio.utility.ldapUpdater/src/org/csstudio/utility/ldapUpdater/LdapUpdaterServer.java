@@ -35,6 +35,31 @@ public class LdapUpdaterServer implements IApplication {
 		return _instance;
 	}
 
+/** Gets the System.currentTimeMillis 
+ * splits to hh, mm,ss
+ * includes leading zeroes if required
+ * generates string with format hh:mm:ss
+ * @return this string
+* used also in ldapUpdater.java, copied !!!
+ */
+	public final String millis2TimeString ( ) {
+		long one_minute=60; 			// s
+		long one_hour=60*one_minute; 	// s
+		long one_day=one_hour*24; 		// s 
+		long nowMillis = System.currentTimeMillis();
+		long now=nowMillis/1000L; // s
+
+		long ss=now % one_day; 			// s since midnight
+        long hh=ss % one_hour;			// h ; 
+        ss=ss-(hh*one_hour);
+		long mm=ss % one_minute;		// m
+
+	    String hhs=String.valueOf(hh); if ( hhs.length()==1 ) { hhs="0"+hhs; }
+	    String mms=String.valueOf(mm); if ( mms.length()==1 ) { mms="0"+mms; }
+	    String sss=String.valueOf(ss); if ( sss.length()==1 ) { sss="0"+sss; }
+	    String hmsString=hhs+":"+mms+":"+sss ;		
+		return hmsString;
+	}
 
 	public final String makeTimestring ( String leading, long hh ,long mm ,long ss, String trailing) {
 	    String hhs=String.valueOf(hh); if ( hhs.length()==1 ) { hhs="0"+hhs; }
@@ -55,11 +80,11 @@ public class LdapUpdaterServer implements IApplication {
 
 //	CALCULATE THE DELAY FOR THE AUTOMATIC LDAP PROCESSING
 	long startTime = System.currentTimeMillis();
-long startTime_s=startTime/1000L; // s
+	long startTime_s=startTime/1000L; // s
 	long one_hour=3600; // s
     long delay=0;
     
-long one_day=one_hour*24; // s 
+    long one_day=one_hour*24; // s 
     long time_since_midnight=startTime_s % (one_day); // s
     if (time_since_midnight < ( one_hour ) ) {
     	delay=time_since_midnight; // start at 1 o'clock am

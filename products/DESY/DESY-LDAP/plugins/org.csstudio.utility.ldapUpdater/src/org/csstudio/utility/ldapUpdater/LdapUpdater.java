@@ -85,6 +85,32 @@ public class LdapUpdater {
 		return _instance;
 	}
 	
+	/** Gets the System.currentTimeMillis 
+	 * splits to hh, mm,ss
+	 * includes leading zeroes if required
+	 * generates string with format hh:mm:ss
+	 * @return this string
+	* used also in ldapUpdater.java, copied !!!
+	 */
+		public final String millis2TimeString ( ) {
+			long one_minute=60; 			// s
+			long one_hour=60*one_minute; 	// s
+			long one_day=one_hour*24; 		// s 
+			long nowMillis = System.currentTimeMillis();
+			long now=nowMillis/1000L; // s
+
+			long ss=now % one_day; 			// s since midnight
+	        long hh=ss % one_hour;			// h ; 
+	        ss=ss-(hh*one_hour);
+			long mm=ss % one_minute;		// m
+
+		    String hhs=String.valueOf(hh); if ( hhs.length()==1 ) { hhs="0"+hhs; }
+		    String mms=String.valueOf(mm); if ( mms.length()==1 ) { mms="0"+mms; }
+		    String sss=String.valueOf(ss); if ( sss.length()==1 ) { sss="0"+sss; }
+		    String hmsString=hhs+":"+mms+":"+sss ;		
+			return hmsString;
+		}
+
 	
 	public final void start() throws Exception {
 		if ( busy ) {
@@ -105,7 +131,8 @@ public class LdapUpdater {
         long endTime=0L;
         long deltaTime;
         
-        CentralLogger.getInstance().info(this, "start" + " at " + startTime );
+        String now=millis2TimeString ();
+        CentralLogger.getInstance().info(this, "start" + " at " + now + "  ( " + startTime +" )" );
 //		System.out.println();
 //		CentralLogger.getInstance().debug(this, "hallo debug");
 //		CentralLogger.getInstance().info(this, "hallo info");
@@ -129,7 +156,7 @@ public class LdapUpdater {
          
         endTime = System.currentTimeMillis();
         deltaTime = endTime - startTime;
-        CentralLogger.getInstance().info(this, "end" + " at " + endTime) ;
+        CentralLogger.getInstance().info(this, "end" + " at " + now + "  ( " + endTime +" )" );
         CentralLogger.getInstance().info(this, "time used : " + deltaTime/1000.  + " s" );
         CentralLogger.getInstance().info(this, "Ende." );
         busy=false;
