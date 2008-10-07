@@ -42,8 +42,15 @@ public enum Keywords implements ILanguageElements {
 	IF("if"), //$NON-NLS-1$
 	MONITOR("monitor"), //$NON-NLS-1$
 	OPTION("option"), //$NON-NLS-1$
-	PROGRAM("program"), STATE("state"), STATE_SET("ss"), //$NON-NLS-1$
-	SYNC("sync"), TO("to"), UNSIGNED("unsigned"), WHEN("when"), WHILE("while"); //$NON-NLS-1$
+	PROGRAM("program"), 
+	STATE("state"), 
+	STATE_SET("ss"), //$NON-NLS-1$
+	SYNC("sync"), 
+	TO("to"), 
+	UNSIGNED("unsigned"), 
+	WHEN("when"), 
+	WHILE("while"),
+	DEFINE("define"); //$NON-NLS-1$
 
 	/**
 	 * The name in the source.
