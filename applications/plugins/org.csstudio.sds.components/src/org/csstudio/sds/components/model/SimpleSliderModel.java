@@ -121,8 +121,12 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, 0.0));
 		addProperty(PROP_MAX, new DoubleProperty("Max",
 				WidgetPropertyCategory.Behaviour, 100.0));
+		// The increment is limited to the range 0.001..1000 because the
+		// scrollbar control used internally by the widget causes problems
+		// if the value range of the scrollbar gets too large, probably because
+		// it uses integer numbers internally.
 		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
-				WidgetPropertyCategory.Behaviour, 1.0));
+				WidgetPropertyCategory.Behaviour, 1.0, 0.001, 1000.0));
 		addProperty(PROP_ORIENTATION, new BooleanProperty(
 				"Horizontal orientation", WidgetPropertyCategory.Display, true));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
