@@ -7,7 +7,7 @@
             class="de.desy.language.snl.ui.editor.SNLEditor"
             default="true"
             icon="icons/nodes/program.gif"
-            id="de.desy.snl.editor.draft.ui.editor.SNLEditor"
+            id="de.desy.language.snl.ui.SNLEditor"
             name="SNL source editor">
          <contentTypeBinding
                contentTypeId="de.desy.language.snl.source">
@@ -135,6 +135,21 @@
                menubarPath="additions">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="de.desy.language.snl.ui.SNLEditorContribution"
+            targetID="de.desy.language.snl.ui.SNLEditor">
+         <action
+               class="de.desy.language.snl.ui.editor.RefreshAction"
+               icon="icons/nav_refresh.gif"
+               id="de.desy.language.snl.ui.RefreshAction"
+               label="Refresh Highlighting"
+               menubarPath="edit/additions"
+               toolbarPath="edit/additions">
+         </action>
+      </editorContribution>
    </extension>
 
 </plugin>

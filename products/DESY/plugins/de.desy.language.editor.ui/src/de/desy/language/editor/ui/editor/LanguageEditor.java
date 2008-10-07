@@ -50,7 +50,9 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.part.FileEditorInput;
@@ -164,6 +166,12 @@ public abstract class LanguageEditor extends TextEditor {
 	 * configurations changes.
 	 */
 	private UIEventListener _uiListener;
+	/**
+	 * The {@link UIEventListener} used by this editor to react on
+	 * refresh requests.
+	 */
+	private UIEventListener _refreshListener;
+	
 	private DefaultCharacterPairMatcher _pairMatcher;
 
 	/**
@@ -247,6 +255,7 @@ public abstract class LanguageEditor extends TextEditor {
 
 		UIEvent.HIGHLIGTHING_RULE_CHANGED.removeListener(this._uiListener);
 		UIEvent.TEXT_ATTRIBUTE_CHANGED.removeListener(this._uiListener);
+		UIEvent.HIGHLIGHTING_REFRESH_REQUEST.removeListener(this._refreshListener);
 
 		this.doAdditionalDispose();
 	}
@@ -529,9 +538,16 @@ public abstract class LanguageEditor extends TextEditor {
 				LanguageEditor.this.refresh();
 			}
 		};
+		
+		this._refreshListener = new UIEventListener() {
+			public void eventOccourred() {
+				LanguageEditor.this.refreshHighlighting();
+			}
+		};
 
 		UIEvent.HIGHLIGTHING_RULE_CHANGED.addListener(this._uiListener);
 		UIEvent.TEXT_ATTRIBUTE_CHANGED.addListener(this._uiListener);
+		UIEvent.HIGHLIGHTING_REFRESH_REQUEST.addListener(this._refreshListener);
 
 		this.doAdditionalInitializing();
 	}
@@ -544,6 +560,22 @@ public abstract class LanguageEditor extends TextEditor {
 		this._codeScanner.refreshRules();
 		super.getSourceViewer().invalidateTextPresentation();
 		this.refreshParsedTree(progressMonitor);
+	}
+	
+	protected void refreshHighlighting() {
+		if (!this.isDirty()) {
+			IEditorInput editorInput = this.getEditorInput();
+			IEditorSite editorSite = this.getEditorSite();
+			int topIndex = this.getSourceViewer().getTextWidget().getTopIndex();
+			int caretOffset = this.getSourceViewer().getTextWidget().getCaretOffset();
+			try {
+				this.internalInit(editorSite.getWorkbenchWindow(), editorSite, editorInput);
+				this.getSourceViewer().getTextWidget().setCaretOffset(caretOffset);
+				this.getSourceViewer().getTextWidget().setTopIndex(topIndex);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

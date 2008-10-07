@@ -135,9 +135,13 @@ public class SNLPresentationDamager implements IPresentationDamager {
 			region = this.getSurroundingChar(event.getOffset());
 		}
 		if (region == null) {
-			final int start = this.findPositionOfOpeningMarker(event
+			int start = this.findPositionOfOpeningMarker(event
 					.getOffset());
-			final int end = this.findPositionOfClosingMarker(event.getOffset());
+			int end = this.findPositionOfClosingMarker(event.getOffset());
+
+			start = Math.min(start, event.getOffset());
+			end = Math.max(end, event.getText().length()+event.getOffset());
+			
 			region = new Region(start, end - start);
 		}
 		return region;

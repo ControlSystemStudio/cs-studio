@@ -50,7 +50,12 @@ public enum UIEvent {
 	 * ore more rules to be used in the {@link CodeScanner} for highlighting
 	 * source elements.
 	 */
-	TEXT_ATTRIBUTE_CHANGED;
+	TEXT_ATTRIBUTE_CHANGED,
+	
+	/**
+	 * This Events indicates that a request to refresh the highlighting occurred.
+	 */
+	HIGHLIGHTING_REFRESH_REQUEST;
 
 	/**
 	 * A thread-safe set of all registered listeners.
