@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.desy.language.snl.ui.editor.SNLEditor"
+            default="true"
+            icon="icons/nodes/program.gif"
+            id="de.desy.snl.editor.draft.ui.editor.SNLEditor"
+            name="SNL source editor">
+         <contentTypeBinding
+               contentTypeId="de.desy.language.snl.source">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/snl_pni.gif"
+            id="de.desy.language.snl.nature.SNLNature.projectNatureImage"
+            natureId="de.desy.language.snl.nature.SNLNature">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <file-association
+            content-type="de.desy.language.snl.source"
+            file-extensions="st, stt">
+      </file-association>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.desy.language.snl.ui.newProjectWizards"
+            name="%newProjectCategory_name">
+      </category>
+      <wizard
+            category="de.desy.language.snl.ui.newProjectWizards"
+            class="de.desy.language.snl.ui.wizards.NewSNLProjectWizard"
+            icon="icons/new_snl_project_wizard.gif"
+            id="de.desy.language.snl.ui.wizards.NewSNLProjectWizard"
+            name="%newSNLProjectCategory_name"
+            project="true">
+      </wizard>
+      <category
+            id="de.desy.language.snl.ui.newSNLWizards"
+            name="%newFileCategory_name">
+      </category>
+      <wizard
+            category="de.desy.language.snl.ui.newSNLWizards"
+            class="de.desy.language.snl.ui.wizards.SNLFileWizard"
+            icon="icons/new_snl_file_wizard.gif"
+            id="de.desy.language.snl.ui.wizards.SNLFileWizard"
+            name="%newSNLFileCategory_name">
+      </wizard>
+      <primaryWizard
+            id="de.desy.language.snl.ui.wizards.NewSNLProjectWizard">
+      </primaryWizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="de.desy.language.snl.ui.SNLPage"
+            class="de.desy.language.snl.ui.preferences.SNLHighlightingPreferencePage"
+            id="de.desy.language.snl.ui.SNLColorPreferencePage"
+            name="Highlighting colors and fonts">
+      </page>
+      <page
+            class="de.desy.language.snl.ui.preferences.SNLPreferencePage"
+            id="de.desy.language.snl.ui.SNLPage"
+            name="State notation language development">
+      </page>
+      <page
+            category="de.desy.language.snl.ui.SNLPage"
+            class="de.desy.language.snl.ui.preferences.SNLCompilerPreferencePage"
+            id="de.desy.language.snl.ui.SNLPage.compilerOptions"
+            name="Compiler options">
+      </page>
+      <page
+            category="de.desy.language.snl.ui.SNLPage"
+            class="de.desy.language.snl.ui.preferences.SNLEPICSPreferencePage"
+            id="de.desy.language.snl.ui.SNLPage.epicsOptions"
+            name="EPICS options">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.desy.language.snl.ui.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="de.desy.language.editor.core.parser.Node"
+            class="de.desy.language.snl.ui.adapter.SNLNodeAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         id="sampleBuilder"
+         name="Sample Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="de.desy.language.snl.ui.test.builder.SampleBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="snlNature"
+         name="SNL Project Nature 2"
+         point="org.eclipse.core.resources.natures">
+      <builder
+            id="sampleBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="de.desy.language.snl.ui.contribution1"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="de.desy.language.snl.ui.test.builder.ToggleNatureAction"
+               enablesFor="+"
+               id="de.desy.language.snl.ui.addRemoveNatureAction"
+               label="Add/Remove Sample Nature"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

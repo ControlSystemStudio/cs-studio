@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Snl Plug-in
+Bundle-SymbolicName: de.desy.language.snl;singleton:=true
+Bundle-Version: 1.0.2
+Bundle-Activator: de.desy.language.snl.SNLCoreActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ de.desy.language.libraries,
+ de.desy.language.editor.core,
+ org.junit4
+Eclipse-LazyStart: true
+Export-Package: de.desy.language.snl,
+ de.desy.language.snl.codeElements,
+ de.desy.language.snl.nature,
+ de.desy.language.snl.parser,
+ de.desy.language.snl.parser.nodes,
+ de.desy.language.snl.parser.parser;x-friends:="de.desy.language.snl.ui"

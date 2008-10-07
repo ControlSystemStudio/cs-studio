@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui Plug-in of editor core
+Bundle-SymbolicName: de.desy.language.editor.ui;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: de.desy.language.editor.ui.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.views,
+ org.eclipse.ui.ide,
+ de.desy.language.libraries,
+ org.eclipse.jface;visibility:=reexport,
+ org.eclipse.jface.text;visibility:=reexport,
+ de.desy.language.editor.core;visibility:=reexport
+Eclipse-LazyStart: true
+Export-Package: de.desy.language.editor.ui.editor,
+ de.desy.language.editor.ui.editor.highlighting,
+ de.desy.language.editor.ui.editor.highlighting.predefinedRules,
+ de.desy.language.editor.ui.eventing

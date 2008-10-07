@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Libraries Plug-in for DESY language support Plug-ins
+Bundle-SymbolicName: de.desy.language.libraries
+Bundle-Version: 1.0.0
+Bundle-Vendor: C1 WPS mbH / DESY Stiftung
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit4
+Eclipse-LazyStart: true
+Export-Package: de.desy.language.libraries.utils.contract,
+ org.easymock
