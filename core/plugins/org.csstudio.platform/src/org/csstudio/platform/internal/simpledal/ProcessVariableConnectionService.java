@@ -595,7 +595,8 @@ public class ProcessVariableConnectionService implements
 		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
 			Object value = LocalChannelPool.getInstance().getChannel(pv,
 					valueType).getValue();
-			result = (E) value;
+			//result = (E) value;
+			result = (E) ConverterUtil.convert(value, valueType);
 		} else {
 			// there is one connector for each pv-type-combination
 			ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
