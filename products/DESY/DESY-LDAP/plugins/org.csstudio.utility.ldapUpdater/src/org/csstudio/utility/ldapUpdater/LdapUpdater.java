@@ -96,13 +96,15 @@ public class LdapUpdater {
 			long one_minute=60; 			// s
 			long one_hour=60*one_minute; 	// s
 			long one_day=one_hour*24; 		// s 
+
 			long nowMillis = System.currentTimeMillis();
 			long now=nowMillis/1000L; // s
 
-			long ss=now % one_day; 			// s since midnight
-	        long hh=ss % one_hour;			// h ; 
-	        ss=ss-(hh*one_hour);
-			long mm=ss % one_minute;		// m
+			long ss=now % one_day; 			// seconds since midnight, Greenwich Winter Time 
+			long hh=ss / one_hour;			// h ; 
+			ss=ss % one_hour;				// s ; 
+			long mm=ss / one_minute;		// m
+			ss=ss % one_minute;				// 
 
 		    String hhs=String.valueOf(hh); if ( hhs.length()==1 ) { hhs="0"+hhs; }
 		    String mms=String.valueOf(mm); if ( mms.length()==1 ) { mms="0"+mms; }
@@ -132,7 +134,7 @@ public class LdapUpdater {
         long deltaTime;
         
         String now=millis2TimeString ();
-        CentralLogger.getInstance().info(this, "start" + " at " + now + "  ( " + startTime +" )" );
+        CentralLogger.getInstance().info(this, "start" + " at " + now + "(UTC)" + "  ( " + startTime +" )" );
 //		System.out.println();
 //		CentralLogger.getInstance().debug(this, "hallo debug");
 //		CentralLogger.getInstance().info(this, "hallo info");
@@ -156,7 +158,8 @@ public class LdapUpdater {
          
         endTime = System.currentTimeMillis();
         deltaTime = endTime - startTime;
-        CentralLogger.getInstance().info(this, "end" + " at " + now + "  ( " + endTime +" )" );
+        now=millis2TimeString ();
+        CentralLogger.getInstance().info(this, "end" + " at " + now + "(UTC)" + "  ( " + endTime +" )" );
         CentralLogger.getInstance().info(this, "time used : " + deltaTime/1000.  + " s" );
         CentralLogger.getInstance().info(this, "Ende." );
         busy=false;
