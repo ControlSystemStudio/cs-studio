@@ -31,7 +31,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewerExtension5;
@@ -49,7 +48,6 @@ import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -61,11 +59,12 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
-import de.desy.language.editor.ui.Activator;
+import de.desy.language.editor.ui.EditorUIActivator;
 import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
 import de.desy.language.editor.ui.eventing.UIEvent;
 import de.desy.language.editor.ui.eventing.UIEventListener;
 import de.desy.language.editor.ui.outline.LanguageOutlinePage;
+import de.desy.language.editor.ui.preferences.PreferenceConstants;
 import de.desy.language.libraries.utils.contract.Contract;
 
 /**
@@ -144,9 +143,6 @@ public abstract class LanguageEditor extends TextEditor {
 
 	}
 
-	private static final String PREFERENCE_ENABLE_KEY = "PREFERENCE_ENABLE_KEY";
-	private static final String PREFERENCE_COLOR_KEY = "PREFERENCE_COLOR_KEY";
-
 	/**
 	 * The concrete token scanner to be used for highlighting.
 	 */
@@ -189,19 +185,31 @@ public abstract class LanguageEditor extends TextEditor {
 		}
 		this.getSourceViewer().setSelectedRange(offset, length);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
-		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		if (preferenceStore!=null) {
-			SourceViewerDecorationSupport support = this.getSourceViewerDecorationSupport(this.getSourceViewer());
-			_pairMatcher = new DefaultCharacterPairMatcher(new char[] {'{', '}', '(', ')', '[', ']'});
+		// The configuration has to happen after the PartControl is created,
+		// because during the creation the SourceViewerDecorationSupport is
+		// initialized.
+		IPreferenceStore preferenceStore = EditorUIActivator.getDefault()
+				.getPreferenceStore();
+		if (preferenceStore != null) {
+			SourceViewerDecorationSupport support = this
+					.getSourceViewerDecorationSupport(this.getSourceViewer());
+			_pairMatcher = new DefaultCharacterPairMatcher(new char[] { '{',
+					'}', '(', ')', '[', ']' });
 			support.setCharacterPairMatcher(_pairMatcher);
-			
-			preferenceStore.setValue(PREFERENCE_ENABLE_KEY, true);
-			PreferenceConverter.setValue(preferenceStore, PREFERENCE_COLOR_KEY, new RGB(200,200,200));
-			support.setMatchingCharacterPainterPreferenceKeys(PREFERENCE_ENABLE_KEY, PREFERENCE_COLOR_KEY);
+
+			support.setMatchingCharacterPainterPreferenceKeys(
+					PreferenceConstants.MATCHING_CHARACTER_ENABLE.getPreferenceStoreId(),
+					PreferenceConstants.MATCHING_CHARACTER_COLOR.getPreferenceStoreId());
+			support.setCursorLinePainterPreferenceKeys(
+					PreferenceConstants.CURSOR_LINE_ENABLE.getPreferenceStoreId(),
+					PreferenceConstants.CURSOR_LINE_COLOR.getPreferenceStoreId());
 			support.install(preferenceStore);
 		} else {
 			System.out
@@ -440,7 +448,8 @@ public abstract class LanguageEditor extends TextEditor {
 	@Override
 	public Object getAdapter(final Class adapter) {
 		if (IContentOutlinePage.class.equals(adapter)) {
-			System.out.println("LanguageEditor.getAdapter(): get content outline page");
+			System.out
+					.println("LanguageEditor.getAdapter(): get content outline page");
 			if (this._outlinePage == null) {
 				this._outlinePage = new LanguageOutlinePage(
 						new HighlightingListener() {
@@ -512,8 +521,8 @@ public abstract class LanguageEditor extends TextEditor {
 	@Override
 	protected final void initializeEditor() {
 		System.out.println("LanguageEditor.initializeEditor()");
-//		this.setDocumentProvider(Activator.getDefault()
-//				.getDocumentProvider());
+		// this.setDocumentProvider(Activator.getDefault()
+		// .getDocumentProvider());
 
 		this._uiListener = new UIEventListener() {
 			public void eventOccourred() {
@@ -551,92 +560,78 @@ public abstract class LanguageEditor extends TextEditor {
 						.getDocument(input);
 				if (document != null) {
 					IFile sourceRessource = null;
-					if( input instanceof FileEditorInput)
-					{
+					if (input instanceof FileEditorInput) {
 						sourceRessource = ((FileEditorInput) getEditorInput())
-						.getFile();
+								.getFile();
 					}
-//					final Runnable parserJob = new Runnable() {
-//						public void run() {
-							LanguageEditor.this._rootNode = languageParser
-									.parse(document.get(), sourceRessource, progressMonitor);
+					// final Runnable parserJob = new Runnable() {
+					// public void run() {
+					LanguageEditor.this._rootNode = languageParser.parse(
+							document.get(), sourceRessource, progressMonitor);
 
-							if (LanguageEditor.this._outlinePage != null) {
-								System.out
-										.println("LanguageEditor.refreshParsedTree(): current root node: "+this._rootNode);
-								LanguageEditor.this._outlinePage
-										.setEditorInput(LanguageEditor.this._rootNode);
-							}
-							if (input instanceof IFileEditorInput) {
-								// search for "marker extension" in the eclipse
-								// local
-								final IFileEditorInput fileInput = (IFileEditorInput) input;
-								IMarker marker;
-								try {
-									fileInput.getFile().deleteMarkers(
-											IMarker.PROBLEM, true,
-											IResource.DEPTH_INFINITE);
-									for (final Node node : LanguageEditor.this._rootNode
-											.getAllWarningNodes()) {
-										for (final String warning : node
-												.getWarningMessages()) {
-											marker = fileInput.getFile()
-													.createMarker(
-															IMarker.PROBLEM);
-											marker.setAttribute(
-													IMarker.SEVERITY,
-													IMarker.SEVERITY_WARNING);
-											marker.setAttribute(
-													IMarker.MESSAGE, warning);
-											final int lineNumber = document
-													.getLineOfOffset(node
-															.getStatementStartOffset()) + 1;
-											marker.setAttribute(
-													IMarker.LINE_NUMBER,
-													lineNumber);
-											marker
-													.setAttribute(
-															IMarker.CHAR_START,
-															node
-																	.getStatementStartOffset());
-											marker
-													.setAttribute(
-															IMarker.CHAR_END,
-															node
-																	.getStatementEndOffset());
-										}
-									}
-									for (final Node node : LanguageEditor.this._rootNode
-											.getAllErrorNodes()) {
-										for (final String error : node
-												.getErrorMessages()) {
-											marker = fileInput.getFile()
-													.createMarker(
-															IMarker.PROBLEM);
-											marker.setAttribute(
-													IMarker.SEVERITY,
-													IMarker.SEVERITY_ERROR);
-											marker.setAttribute(
-													IMarker.MESSAGE, error);
-											final int lineNumber = document
-													.getLineOfOffset(node
-															.getStatementStartOffset()) + 1;
-											marker.setAttribute(
-													IMarker.LINE_NUMBER,
-													lineNumber);
-										}
-									}
-								} catch (final CoreException e) {
-									// do nothing
-								} catch (final BadLocationException e) {
-									// do nothing
+					if (LanguageEditor.this._outlinePage != null) {
+						System.out
+								.println("LanguageEditor.refreshParsedTree(): current root node: "
+										+ this._rootNode);
+						LanguageEditor.this._outlinePage
+								.setEditorInput(LanguageEditor.this._rootNode);
+					}
+					if (input instanceof IFileEditorInput) {
+						// search for "marker extension" in the eclipse
+						// local
+						final IFileEditorInput fileInput = (IFileEditorInput) input;
+						IMarker marker;
+						try {
+							fileInput.getFile().deleteMarkers(IMarker.PROBLEM,
+									true, IResource.DEPTH_INFINITE);
+							for (final Node node : LanguageEditor.this._rootNode
+									.getAllWarningNodes()) {
+								for (final String warning : node
+										.getWarningMessages()) {
+									marker = fileInput.getFile().createMarker(
+											IMarker.PROBLEM);
+									marker.setAttribute(IMarker.SEVERITY,
+											IMarker.SEVERITY_WARNING);
+									marker.setAttribute(IMarker.MESSAGE,
+											warning);
+									final int lineNumber = document
+											.getLineOfOffset(node
+													.getStatementStartOffset()) + 1;
+									marker.setAttribute(IMarker.LINE_NUMBER,
+											lineNumber);
+									marker.setAttribute(IMarker.CHAR_START,
+											node.getStatementStartOffset());
+									marker.setAttribute(IMarker.CHAR_END, node
+											.getStatementEndOffset());
 								}
-
 							}
-//						}
-//					};
-//					// Display.getCurrent().asyncExec(parserJob);
-//					parserJob.run();
+							for (final Node node : LanguageEditor.this._rootNode
+									.getAllErrorNodes()) {
+								for (final String error : node
+										.getErrorMessages()) {
+									marker = fileInput.getFile().createMarker(
+											IMarker.PROBLEM);
+									marker.setAttribute(IMarker.SEVERITY,
+											IMarker.SEVERITY_ERROR);
+									marker.setAttribute(IMarker.MESSAGE, error);
+									final int lineNumber = document
+											.getLineOfOffset(node
+													.getStatementStartOffset()) + 1;
+									marker.setAttribute(IMarker.LINE_NUMBER,
+											lineNumber);
+								}
+							}
+						} catch (final CoreException e) {
+							// do nothing
+						} catch (final BadLocationException e) {
+							// do nothing
+						}
+
+					}
+					// }
+					// };
+					// // Display.getCurrent().asyncExec(parserJob);
+					// parserJob.run();
 				}
 			}
 		}

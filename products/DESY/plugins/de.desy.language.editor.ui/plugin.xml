@@ -11,5 +11,19 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="de.desy.language.editor.ui.preferences.GlobalSettingsPreferencePage"
+            id="de.desy.language.editor.ui.GlobalSettings"
+            name="Language Editor Settings">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.desy.language.editor.ui.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

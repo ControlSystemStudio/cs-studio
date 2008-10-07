@@ -67,9 +67,10 @@
             name="Highlighting colors and fonts">
       </page>
       <page
+            category="de.desy.language.editor.ui.GlobalSettings"
             class="de.desy.language.snl.ui.preferences.SNLPreferencePage"
             id="de.desy.language.snl.ui.SNLPage"
-            name="State notation language development">
+            name="SNL development">
       </page>
       <page
             category="de.desy.language.snl.ui.SNLPage"
