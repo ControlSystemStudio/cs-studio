@@ -89,13 +89,13 @@ public class SNLParser extends AbstractLanguageParser {
 	@Override
 	protected Node doParse(final CharSequence input, IResource sourceResource,
 			final IProgressMonitor progressMonitor) {
-		progressMonitor.beginTask("Parsing outline...",
-				IProgressMonitor.UNKNOWN);
 		if (input.length() == 0) {
 			final PlaceholderNode placeholder = new PlaceholderNode(
 					"No content to outline avail.");
 			return placeholder;
 		}
+		progressMonitor.beginTask("Parsing outline...",
+				IProgressMonitor.UNKNOWN);
 		progressMonitor.worked(1);
 		this._input = this.removeAllComments(input);
 		progressMonitor.worked(2);
