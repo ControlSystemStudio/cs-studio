@@ -43,7 +43,7 @@ public class CssApplicationContext extends DefaultApplicationContext {
 	public CssApplicationContext(final String name) {
 		super(name);
 		PlugRegistry.getInstance().configurePlugs(getConfiguration());
-		getConfiguration().setProperty(Plugs.CONNECTION_TIMEOUT, "60000");
+		getConfiguration().setProperty(Plugs.CONNECTION_TIMEOUT, "5000");
 	}
 
 	/**
