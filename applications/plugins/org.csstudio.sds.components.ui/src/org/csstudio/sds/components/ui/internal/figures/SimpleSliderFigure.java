@@ -23,10 +23,12 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -260,7 +262,9 @@ public final class SimpleSliderFigure extends Panel implements
 		_min = (int) (_originalMin * _scrollbarPrecision);
 		_max = (int) (_originalMax * _scrollbarPrecision);
 		_scrollBar.setMinimum(_min);
+		CentralLogger.getInstance().debug(this, "Scrollbar minimum set to: " + _min);
 		_scrollBar.setMaximum(_max + _sliderWide);
+		CentralLogger.getInstance().debug(this, "Scrollbar maximum set to: " + _max);
 
 		_currentValue = (int) (_originalVal * _scrollbarPrecision);
 
@@ -277,6 +281,7 @@ public final class SimpleSliderFigure extends Panel implements
 		}
 //		_scrollBar.setEnabled(true);
 		_scrollBar.setValue(settedValue);
+		CentralLogger.getInstance().debug(this, "Scrollbar value set to: " + settedValue);
 		_scrollBar.invalidate();
 
 		//_scrollBar.setValue(_currentValue);
@@ -322,6 +327,8 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	private void setScrollbarPrecision(final int precision) {
 
+		CentralLogger.getInstance().debug(this, "precision set to " + precision);
+		
 		// double min = this.getDoubleFor(_min);
 		// double max = this.getDoubleFor(_max);
 		int minWide = _sliderWide / _scrollbarPrecision;
@@ -388,17 +395,21 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @return int The count of numbers after the comma
 	 */
 	private int getCountOfDecimals(final double value) {
-		NumberFormat format = NumberFormat.getInstance();
-		format.setMaximumFractionDigits(30);
-		String text = format.format(value);
-		if (text.indexOf(",") >= 0) {
-			String aftercomma = text.substring(text.indexOf(","));
-			if (aftercomma.equals(",0")) {
-				return 0;
-			}
-			return Math.min(5, aftercomma.length() - 1);
-		}
-		return 0;
+		// This is a bit of a hack: because the double value may not precisely
+		// represent the value that was entered by the user (for example, 0.1
+		// cannot be represented exactly by any finite binary fraction), the
+		// scale may be much bigger than expected if the BigDecimal is created
+		// directly from the double value (for example, with 0.1, the scale
+		// would is 55). So we convert the double value to a string first, in
+		// the hope that it will be reasonably rounded, and then convert that
+		// string to a BigDecimal in order to get its scale.
+		BigDecimal bd = new BigDecimal(Double.toString(value));
+		int scale = bd.scale();
+		
+		// The value is constrained to 0..3 to prevent precisions that get too
+		// large.
+		CentralLogger.getInstance().debug(this, "scale=" + scale);
+		return Math.max(0, Math.min(scale, 3));
 	}
 
 	/**
