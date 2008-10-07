@@ -96,7 +96,6 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		// XXX: is it correct that a slider cannot be set to negative values?
 		addProperty(PROP_VALUE, new DoubleProperty("Slider Value",
 				WidgetPropertyCategory.Behaviour, 50.0));
 		addProperty(PROP_MIN, new DoubleProperty("Min",
