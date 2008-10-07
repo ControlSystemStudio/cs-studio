@@ -64,8 +64,6 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class LdapUpdater {
 
 	private static LdapUpdater _instance; 
-		
-	
 	
 	private DataModel _model;
     private ErgebnisListe _ergebnis;
@@ -73,6 +71,7 @@ public class LdapUpdater {
     private boolean _ldapReadDone = false;
 	private ArrayList<ControlSystemItem> _al;
 	public boolean busy=false;
+	
 	public static LdapUpdater getInstance() {
 		
 		if (_instance == null) {
@@ -105,7 +104,7 @@ public class LdapUpdater {
     	long startTime = System.currentTimeMillis();
         long endTime=0L;
         long deltaTime;
- 
+        
         CentralLogger.getInstance().info(this, "start" + " at " + startTime );
 //		System.out.println();
 //		CentralLogger.getInstance().debug(this, "hallo debug");
