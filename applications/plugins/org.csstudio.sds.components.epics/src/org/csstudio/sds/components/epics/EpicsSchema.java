@@ -52,7 +52,8 @@ public final class EpicsSchema extends AbstractControlSystemSchema {
 		Set<ConnectionState> result = new HashSet<ConnectionState>();
 		result.add(ConnectionState.CONNECTED);
 		result.add(ConnectionState.CONNECTION_LOST);
-		
+		result.add(ConnectionState.INITIAL);
+		result.add(ConnectionState.UNKNOWN);
 		return result;
 	}
 
