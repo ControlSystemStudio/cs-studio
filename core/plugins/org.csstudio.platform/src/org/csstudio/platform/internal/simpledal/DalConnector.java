@@ -21,6 +21,7 @@
  */
  package org.csstudio.platform.internal.simpledal;
 
+import java.beans.Introspector;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
@@ -51,6 +52,8 @@ import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.LinkListener;
+
+import sun.reflect.Reflection;
 
 /**
  * DAL Connectors are connected to the control system via the DAL API.
@@ -247,7 +250,11 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	}
 	
 	public void propertyChange(PropertyChangeEvent evt) {
-		System.out.println("PROP "+evt.getPropertyName()+" "+evt.getNewValue());
+		if (evt.getNewValue() instanceof String[]) {
+			System.out.println("PROP "+_dalProperty.getUniqueName()+" "+evt.getPropertyName()+" "+Arrays.toString((String[])evt.getNewValue()));
+		} else {
+			System.out.println("PROP "+_dalProperty.getUniqueName()+" "+evt.getPropertyName()+" "+evt.getNewValue());
+		}
 		doForwardValue(evt.getNewValue(), new Timestamp(), evt.getPropertyName());
 	}
 

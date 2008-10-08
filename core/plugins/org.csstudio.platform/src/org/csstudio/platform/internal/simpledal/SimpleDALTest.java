@@ -65,6 +65,40 @@ public class SimpleDALTest extends TestCase {
 		assertNotNull(connectionService);
 	}
 	
+	public void testMandatoryCharacteristics() {
+		
+		try {
+			
+			CharacteristicInfo[] infos= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class, null);
+			
+			assertNotNull(infos);
+			
+			for (int i = 0; i < infos.length; i++) {
+				CharacteristicInfo info= infos[i];
+				assertNotNull(info);
+
+				String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D3:P1["+info.getName()+"]";
+				
+				IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
+
+				Object value= connectionService.getValue(ia,ValueType.OBJECT);
+				
+				System.out.println(info.getName()+" "+value);
+				
+				assertNotNull("'"+info.getName()+"' is null",value);
+				assertTrue("'"+info.getName()+"' is "+value.getClass().getName(), info.getType().isAssignableFrom(value.getClass()));
+				
+				
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+	}
+	
 	public void testGetValue() {
 		
 		try {
@@ -297,5 +331,6 @@ public class SimpleDALTest extends TestCase {
 			fail(e.getMessage());
 		}
 	}
+	
 
 }

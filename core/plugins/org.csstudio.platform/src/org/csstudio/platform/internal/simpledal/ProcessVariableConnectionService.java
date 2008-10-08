@@ -598,6 +598,13 @@ public class ProcessVariableConnectionService implements
 			//result = (E) value;
 			result = (E) ConverterUtil.convert(value, valueType);
 		} else {
+			ValueType propertyType=null;
+			if (pv.isCharacteristic()) {
+				propertyType= ValueType.OBJECT;
+			} else {
+				propertyType= valueType;
+			}
+			
 			// there is one connector for each pv-type-combination
 			ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
 			DalConnector connector=null;
@@ -618,7 +625,7 @@ public class ProcessVariableConnectionService implements
 				connector = (DalConnector) _connectors
 						.get(key);
 				if (connector == null) {
-					connector = createConnectorForDal(pv, valueType);
+					connector = createConnectorForDal(pv, propertyType);
 					_connectors.put(key, connector);
 				}
 				connector.addProcessVariableValueListener(null,listener);
@@ -749,15 +756,25 @@ public class ProcessVariableConnectionService implements
 	private void doRegister(IProcessVariableAddress pv, ValueType valueType,
 			IProcessVariableValueListener listener) {
 
+		ValueType propertyType= null; 
+		
+		if (pv.isCharacteristic()) {
+			propertyType= ValueType.OBJECT;
+		} else {
+			propertyType= valueType;
+		}
+		
 		// there is one connector for each pv-type-combination
-		ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
+		ConnectorIdentification key = new ConnectorIdentification(pv, propertyType);
+
+		System.out.println("REGISTER '"+pv.getFullName()+"' '"+pv.getCharacteristic()+"' "+valueType);
 
 		synchronized (_connectors) {
 			AbstractConnector connector = (AbstractConnector) _connectors
 					.get(key);
 
 			if (connector == null) {
-				connector = createConnector(pv, valueType);
+				connector = createConnector(pv, propertyType);
 
 				// Important: Connector needs to be added here, to prevent
 				// the cleanup thread from disposing the connector too early
@@ -775,7 +792,6 @@ public class ProcessVariableConnectionService implements
 					connector.addProcessVariableValueListener(null,listener);
 				}
 			}
-			System.out.println("REGISTER '"+pv.getFullName()+"' '"+pv.getCharacteristic()+"' "+valueType+" "+connector.getLatestConnectionState());
 		}
 	}
 
@@ -812,9 +828,13 @@ public class ProcessVariableConnectionService implements
 		// get or create a real DAL property
 		DynamicValueProperty dynamicValueProperty = null;
 		try {
-			dynamicValueProperty = createOrGetDalProperty(pv, valueType
-					.getDalType());
+			if (valueType==ValueType.OBJECT) {
+				dynamicValueProperty = createOrGetDalProperty(pv, null);
+			} else {
+				dynamicValueProperty = createOrGetDalProperty(pv, valueType.getDalType());
+			}
 		} catch (Throwable e) {
+			e.printStackTrace();
 			connector.forwardError(e.getLocalizedMessage());
 		}
 
@@ -870,17 +890,26 @@ public class ProcessVariableConnectionService implements
 		
 		// TODO: test this, it should work, for characteristic property type has no effect 
 
-		if (pv.isCharacteristic()) {
+		/* Igor: also for characteristic type infomration mus tbe obayed. 
+		 if (pv.isCharacteristic()) {
 			// first we try to get from DAL cache property of any type
 			result= factory.getPropertyFamily().getProperty(ri.getName());
 			
 			if (result==null) {
 				// second we try to create any property with requested remote name
+				System.out.println("CONNECT '"+pv.getFullName()+"' '"+pv.getCharacteristic()+"' "+propertyType);
 				result = factory.getProperty(ri);
 			}
+		} else {*/
+		
+		System.out.println("CONNECT '"+ri.toString()+"' '"+pv.getCharacteristic()+"' "+propertyType);
+		if (propertyType==null) {
+			result = factory.getProperty(ri);
 		} else {
 			result = factory.getProperty(ri, propertyType, null);
 		}
+		
+		//}
 
 		return result;
 

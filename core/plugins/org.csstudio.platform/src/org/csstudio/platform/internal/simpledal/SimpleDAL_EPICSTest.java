@@ -67,150 +67,31 @@ public class SimpleDAL_EPICSTest extends TestCase {
 		assertNotNull(connectionService);
 	}
 	
-/*	public void testGetValue() {
-		
-		try {
-
-			//IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(ControlSystemEnum.DAL_SIMULATOR, "D1", "P1", null);
-
-			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:P1";
-			
-			System.out.println(rawName);
-			
-			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
-			
-			System.out.println(ia.toString());
-			System.out.println(ia.toDalRemoteInfo().toString());
-		
-			double d= connectionService.getValueAsDouble(ia);
-		
-			System.out.println(d);
-			
-			d= d+1.0;
-			
-			connectionService.setValue(ia, d);
-			
-			double d1= connectionService.getValueAsDouble(ia);
-			
-			System.out.println(d);
-			
-			assertEquals(d, d1, 0.0001);
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		
-	
-	}
-	
-	public void testSeverityCharacteristic() {
-		
-		try {
-
-			//IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(ControlSystemEnum.DAL_SIMULATOR, "D1", "P1", null);
-
-			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:P1";
-			
-			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
-			
-			System.out.println("RI: "+ia.toDalRemoteInfo().toString());
-		
-			double d= connectionService.getValueAsDouble(ia);
-		
-			rawName= rawName+"[severity]";
-			
-			ia= addressFactory.createProcessVariableAdress(rawName);
-			
-			System.out.println("RI: "+ia.toDalRemoteInfo().toString());
-			
-			assertTrue("isCharacteristic()==false",ia.isCharacteristic());
-			assertEquals("severity", ia.getCharacteristic());
-
-			PropertyProxyImpl pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
-			System.out.println("PP: "+pp.getUniqueName());
-			pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), new Timestamp(),"STATUS1"));
-			
-			String s= connectionService.getValueAsString(ia);
-			System.out.println("severity: "+s);
-			assertNotNull(s);
-			assertEquals(DynamicValueState.ALARM.toString(), s);
-			
-			IPVVListener l = new IPVVListener();
-			connectionService.registerForStringValues(l, ia);
-			
-			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:P1[test]";
-			IProcessVariableAddress ia1= addressFactory.createProcessVariableAdress(rawName);
-			connectionService.registerForStringValues(l, ia1);
-			
-			pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
-			System.out.println("PP: "+pp.getUniqueName());
-			pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR), new Timestamp(),"STATUS2"));
-			assertNotNull(l.value);
-			assertEquals(DynamicValueState.ERROR.toString(), l.value);
-			
-
-			pp.simulateCharacteristicChange("test", "T");
-			assertNotNull(l.value);
-			assertEquals("T", l.value);
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		
-	
-	}
-	
-	public void testCharacteristicInfo() {
-		try {
-			
-			CharacteristicInfo[] ci= CharacteristicInfo.getDefaultCharacteristics(null);
-			
-			Set<CharacteristicInfo> set= new HashSet<CharacteristicInfo>(Arrays.asList(ci));
-			
-			assertTrue(set.contains(DalConnector.C_SEVERITY_INFO));
-			assertTrue(set.contains(DalConnector.C_STATUS_INFO));
-			assertTrue(set.contains(DalConnector.C_TIMESTAMP_INFO));
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
-	
-	public void testCharacteristics() {
+	public void testMandatoryCharacteristics() {
 		
 		try {
 			
-			CharacteristicInfo[] ci= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class,null);
+			CharacteristicInfo[] infos= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class, null);
 			
-			for (int i = 0; i < ci.length; i++) {
+			assertNotNull(infos);
+			
+			for (int i = 0; i < infos.length; i++) {
+				CharacteristicInfo info= infos[i];
+				assertNotNull(info);
 
-				if ("displayName".equals(ci[i].getName()) || "warningMax".equals(ci[i].getName()) || "warningMin".equals(ci[i].getName()) || "alarmMax".equals(ci[i].getName()) || "alarmMin".equals(ci[i].getName())) {
-					// FIXME: fix this in DAL simulator
-					continue;
-				}
+				String rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03["+info.getName()+"]";
 				
-				String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D2:P2["+ci[i].getName()+"]";
 				IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
+
+				Object value= connectionService.getValue(ia,ValueType.OBJECT);
 				
-				assertEquals(rawName, ia.getRawName());
-				assertTrue(ia.isCharacteristic());
+				System.out.println(info.getName()+" "+value);
 				
-				Object o= connectionService.getValue(ia, ValueType.OBJECT);
-				
-				System.out.println("RI: "+ia.toDalRemoteInfo().toString()+" "+o);
-				
-				assertNotNull(o);
-				assertTrue(ci[i].getType().isAssignableFrom(o.getClass()));
+				assertNotNull("'"+info.getName()+"' is null",value);
+				assertTrue("'"+info.getName()+"' is "+value.getClass().getName(), info.getType().isAssignableFrom(value.getClass()));
 				
 			}
 			
-
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -219,84 +100,89 @@ public class SimpleDAL_EPICSTest extends TestCase {
 		
 	}
 	
-	public void testSlowChannels() {
+	public void testOverloadType() {
 		
 		try {
 			
-			SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(1000));
-			
-			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S1";
+			String rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_01";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
-			double d= connectionService.getValueAsDouble(ia);
-			assertEquals(0.0, d, 0.0001);
+			IPVVListener l1= new IPVVListener();
+			connectionService.register(l1, ia, ValueType.STRING);
 			
-			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S2";
-			ia= addressFactory.createProcessVariableAdress(rawName);
-			connectionService.setValue(ia, 10.0);
-			d= connectionService.getValueAsDouble(ia);
-			assertEquals(10.0, d, 0.0001);
-		
-			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S3";
-			ia= addressFactory.createProcessVariableAdress(rawName);
-			IPVVListener l= new IPVVListener();
-			connectionService.registerForDoubleValues(l, ia);
-			connectionService.setValue(ia, 10.0);
-			d= connectionService.getValueAsDouble(ia);
-			assertEquals(10.0, d, 0.0001);
-			assertNotNull(l.value);
-			assertNotNull(l.state);
-			assertNull(l.error);
+			Thread.sleep(1000);
 			
+			assertNotNull(l1.value);
+			assertEquals(String.class, l1.value.getClass());
+			
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_01[graphMax]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			IPVVListener l2= new IPVVListener();
+			connectionService.register(l2, ia, ValueType.DOUBLE);
+			
+			Thread.sleep(1000);
+			
+			assertNotNull(l2.value);
+			assertEquals(Double.class, l2.value.getClass());
 
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
-		} finally {
-			SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(0));			
 		}
 		
-	}*/
+	}
 	
-/*	public void testDestroy() {
+	public void testCharacteristicsFromFields() {
 		
 		try {
 			
-			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D2:P1";
+			String rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[minimum]";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
-			IPVVListener l= new IPVVListener();
-			connectionService.registerForDoubleValues(l, ia);
+			double min= connectionService.getValueAsDouble(ia); 
 
-			PropertyProxyImpl pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
-			assertNotNull(pp);
-			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AI_03[maximum]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			double max= connectionService.getValueAsDouble(ia); 
+
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AI_03[graphMin]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			double graphMin= connectionService.getValueAsDouble(ia); 
+
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AI_03[graphMax]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			double graphMax= connectionService.getValueAsDouble(ia);
 			
-			connectionService.setValue(ia, 10.0);
-			double d= connectionService.getValueAsDouble(ia);
-			assertEquals(10.0, d, 0.0001);
-			assertNotNull(l.value);
-			assertNotNull(l.state);
-			assertNull(l.error);
+			assertEquals(min, graphMin, 0.0001);
+			assertEquals(max, graphMax, 0.0001);
+
 			
-			Thread.sleep(11000);
 			
-			l.value=null;
-			Thread.sleep(1100);
-			assertNotNull(l.value);
-			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[minimum]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			min= connectionService.getValueAsDouble(ia); 
+
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[maximum]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			max= connectionService.getValueAsDouble(ia); 
+
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[graphMin]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			graphMin= connectionService.getValueAsDouble(ia); 
+
+			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[graphMax]";
+			ia= addressFactory.createProcessVariableAdress(rawName);
+			graphMax= connectionService.getValueAsDouble(ia);
 			
-			connectionService.unregister(l);
-			
-			l.value=null;
-			Thread.sleep(1100);
-			assertNull(l.value);
-			assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
+			assertTrue(Math.abs(min-graphMin) > 0.0001);
+			assertTrue(Math.abs(max-graphMax) > 0.0001);
+
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
-	}*/
+		
+	}
 
 	public void testDestroyEPICS() {
 		
