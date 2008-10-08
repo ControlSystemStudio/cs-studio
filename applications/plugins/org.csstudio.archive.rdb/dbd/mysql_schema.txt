@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS chan_grp
    enabling_chan_id INT UNSIGNED NULL,
    retent_id INT UNSIGNED NOT NULL
 );
-INSERT INTO chan_grp VALUES (1, 'Demo', 1, NULL, 9999);
+INSERT INTO chan_grp VALUES (1, 'Demo', 1, NULL, NULL, 9999);
 SELECT * FROM chan_grp;
 
 # ----------------------
