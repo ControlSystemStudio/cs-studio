@@ -109,6 +109,7 @@ public class LdapUpdaterServer implements IApplication {
     for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
         _log.debug(this, "Running startup service: " + s.toString());
         s.run();
+    }
  		IPreferencesService prefs = Platform.getPreferencesService();
 		String interval = prefs.getString(Activator.PLUGIN_ID,
 				LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
@@ -119,7 +120,7 @@ public class LdapUpdaterServer implements IApplication {
 
 //        new TimerProcessor ( 5000, 1000*180 );        
 
-    }
+    
 
 
 	synchronized (this) {
