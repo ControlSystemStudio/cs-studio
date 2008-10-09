@@ -4,7 +4,7 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -38,7 +38,7 @@ public class GlobalSettingsPreferencePage extends FieldEditorPreferencePage
 		this.addField(editor);
 		editor = new ColorFieldEditor(PreferenceConstants.MARGIN_PAINTER_COLOR.getPreferenceStoreId(), "Color for marging line", getFieldEditorParent());
 		this.addField(editor);
-		editor = new StringFieldEditor(PreferenceConstants.MARGIN_COLUMNS.getPreferenceStoreId(), "Columns for margins", getFieldEditorParent());
+		editor = new IntegerFieldEditor(PreferenceConstants.MARGIN_COLUMNS.getPreferenceStoreId(), "Columns for margins", getFieldEditorParent());
 		this.addField(editor);
 	}
 
