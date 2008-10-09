@@ -99,6 +99,8 @@ public class XMLImport extends DefaultHandler
 
     /** Construct handler for given model
      *  @param RDB_URL URL of RDB
+     *  @param user User name
+     *  @param password password
      *  @param engine_name 
      *  @param engine_description 
      *  @param engine_url 
@@ -106,14 +108,16 @@ public class XMLImport extends DefaultHandler
      *  @param steal_channels
       * @throws Exception on error
       */
-    public XMLImport(final String RDB_URL, final String engine_name,
+    public XMLImport(final String RDB_URL,
+            final String user, final String password,
+            final String engine_name,
             final String engine_description, final URL engine_url,
             final boolean replace_existing_engineconfig,
             final boolean steal_channels)
         throws Exception
     {
         this.steal_channels = steal_channels;
-        archive = new RDBArchiveImpl(RDB_URL, null, null);
+        archive = new RDBArchiveImpl(RDB_URL, user, password);
         
         final SampleEngineConfig found = archive.findEngine(engine_name);
         if (found != null)

@@ -13,3 +13,4 @@ Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Export-Package: org.csstudio.archive.rdb,
  org.csstudio.archive.rdb.engineconfig
+Bundle-Activator: org.csstudio.archive.rdb.Activator

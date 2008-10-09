@@ -37,7 +37,11 @@ public class EngineConfigImportApp implements IApplication
         final StringOption filename = new StringOption(parser,
                 "-config", "XML Engine config file", "");
         final StringOption  rdb_url = new StringOption(parser,
-                "-rdb", "RDB URL", "");
+                "-rdb", "RDB URL", RDBArchivePreferences.getURL());
+        final StringOption  user = new StringOption(parser,
+                "-user", "RDB User", RDBArchivePreferences.getUser());
+        final StringOption  password = new StringOption(parser,
+                "-password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  engine_name = new StringOption(parser,
                 "-engine", "Engine Name", "");
         final StringOption  engine_description = new StringOption(parser,
@@ -97,7 +101,7 @@ public class EngineConfigImportApp implements IApplication
             }
 
             final URL engine_url =
-                new URL("http://" + engine_host.get() + ":" + engine_port.get());
+                new URL("http://" + engine_host.get() + ":" + engine_port.get() + "/main");
 
             // Dump options
             logger.info("Importing     : " + filename.get());
@@ -115,8 +119,9 @@ public class EngineConfigImportApp implements IApplication
                 return IApplication.EXIT_OK;
             }
             final InputStream stream = new FileInputStream(filename.get());
-            final XMLImport importer = new XMLImport(rdb_url.get(), engine_name
-                    .get(), engine_description.get(), engine_url,
+            final XMLImport importer = new XMLImport(rdb_url.get(),
+                    user.get(), password.get(),
+                    engine_name.get(), engine_description.get(), engine_url,
                     replace_engine.get(),
                     steal_channels.get());
             try
