@@ -77,7 +77,7 @@ public class EngineConfigImportApp implements IApplication
             System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        if (rdb_url.get().length() <= 0)
+        if (rdb_url.get() == null  ||  rdb_url.get().length() <= 0)
         {
             System.err.println("Missing option " + rdb_url.getOption());
             System.err.println(parser.getHelp());
