@@ -532,6 +532,10 @@ public class Controller implements ArchiveFetchJobListener
             if (!jobs.isEmpty())
                 return;
         }
+        // This call could already happen after the chart was disposed...
+        if (chart.isDisposed())
+            return;
+        // Then we switch to the UI thread, which could again run to the issue
         chart.getDisplay().asyncExec(new Runnable()
         {
             public void run()
