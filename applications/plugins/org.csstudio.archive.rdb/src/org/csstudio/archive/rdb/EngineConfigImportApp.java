@@ -37,7 +37,7 @@ public class EngineConfigImportApp implements IApplication
         final StringOption filename = new StringOption(parser,
                 "-config", "XML Engine config file", "");
         final StringOption  rdb_url = new StringOption(parser,
-                "-rdb", "RDB URL", TestSetup.URL);
+                "-rdb", "RDB URL", "");
         final StringOption  engine_name = new StringOption(parser,
                 "-engine", "Engine Name", "");
         final StringOption  engine_description = new StringOption(parser,
@@ -71,6 +71,12 @@ public class EngineConfigImportApp implements IApplication
         if (help.get())
         {
             System.out.println(parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (rdb_url.get().length() <= 0)
+        {
+            System.err.println("Missing option " + rdb_url.getOption());
+            System.err.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
         if (engine_name.get().length() <= 0)
