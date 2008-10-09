@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.eclipse.draw2d.ButtonModel;
+import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
@@ -31,11 +31,9 @@ import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.internal.runmode.AbstractRunModeBox;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.draw2d.ActionEvent;
-import org.eclipse.draw2d.ActionListener;
+import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.IFigure;
@@ -66,7 +64,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		buttonFigure.setEnabled(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE)
 				&& model.isEnabled());
-		buttonFigure.setStyle(model.getButtonStyle());
+		buttonFigure.setStyle(model.isToggleButton());
 		return buttonFigure;
 	}
 
@@ -88,56 +86,68 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 */
 	private void configureButtonListener(
 			final RefreshableActionButtonFigure figure) {
-		// FIXME: diesen Listener im Runmode gar nicht erst anmelden
-		// FIXME: Action synchron ausführen
-
-		// FIXME: Warum wird hier kein normaler ActionListener verwendet? Siehe
-		// nächste Zeilen
-		figure.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				// FIXME: Einkommentieren, um Parent-Fenster zu schließen
-				// AbstractRunModeBox box = (AbstractRunModeBox)
-				// getRuntimeContext().getWindowHandle();
-				// box.dispose();
-			}
-		});
-
 		figure.addChangeListener(new ChangeListener() {
 			public void handleStateChanged(final ChangeEvent event) {
+				// If the display is not in run mode or the button is not armed,
+				// don't do anything.
+				if (getExecutionMode() != ExecutionMode.RUN_MODE
+						|| !figure.getModel().isArmed()) {
+					return;
+				}
+				
 				final String propertyName = event.getPropertyName();
-				if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)
-						&& getExecutionMode() == ExecutionMode.RUN_MODE
-						&& figure.getModel().isArmed()) {
+				CentralLogger.getInstance().debug(this, "ChangeEvent received, event.property=" + propertyName);
+				
+				// If the button is a toggle button, the property that changes
+				// when the toggle state changes is SELECTED_PROPERTY. For a
+				// standard button, the PRESSED_PROPERTY is used, which reflects
+				// mouse down/up events. The action index is then selected based
+				// on whether the button is selected/deselected, or
+				// pressed/released, respectively.
+				// 
+				// Note: we must use the same change listener because whether a
+				// button is a toggle button can change dynamically. 
+				int actionIndex = -1;
+				final ActionButtonModel widget = (ActionButtonModel) getWidgetModel();
+				if (widget.isToggleButton()) {
+					if (ButtonModel.SELECTED_PROPERTY.equals(propertyName)) {
+						if (figure.getModel().isSelected()) {
+							actionIndex = widget.getChoosenPressedActionIndex();
+							CentralLogger.getInstance().debug(this, "toggle=true, selected=true => using pressed action index: " + actionIndex);
+						} else {
+							actionIndex = widget.getChoosenReleasedActionIndex();
+							CentralLogger.getInstance().debug(this, "toggle=true, selected=false => using released action index: " + actionIndex);
+						}
+					}
+				} else {
+					if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)) {
+						if (figure.getModel().isPressed()) {
+							actionIndex = widget.getChoosenPressedActionIndex();
+							CentralLogger.getInstance().debug(this, "toggle=false, pressed=true => using pressed action index: " + actionIndex);
+						} else {
+							actionIndex = widget.getChoosenReleasedActionIndex();
+							CentralLogger.getInstance().debug(this, "toggle=false, pressed=false => using released action index: " + actionIndex);
+						}
+					}
+				}
+				
+				List<AbstractWidgetActionModel> actions = widget.getActionData().getWidgetActions();
 
-					// FIXME: 2008-10-07: swende: Bug. Alles ab hier passiert
-					// pro Klick 2x!!
-
+				// If an action should be used and there is only a single
+				// action, use that action.
+				if (actionIndex >= 0 && actions.size() == 1) {
+					actionIndex = 0;
+				}
+				
+				if (actionIndex >= 0 && actionIndex < actions.size()) {
+					final AbstractWidgetActionModel action = actions.get(actionIndex);
+					
+					// The actual action can now be run asynchronously, because
+					// all required data has been retrieved from the model.
 					Display.getCurrent().asyncExec(new Runnable() {
 						public void run() {
-							ActionButtonModel model = (ActionButtonModel) getWidgetModel();
-
-							// FIXME: Was ist der Usecase für Aktionen bei Press
-							// vs. Release Mousebutton?
-							int index;
-							if (figure.getModel().isPressed()) {
-								index = model.getChoosenPressedActionIndex();
-							} else {
-								index = model.getChoosenReleasedActionIndex();
-							}
-							int size = model.getActionData().getWidgetActions()
-									.size();
-							if (index >= 0 && size == 1) {
-								index = 0;
-							}
-							if (index >= 0 && index < size) {
-								AbstractWidgetActionModel type = model.getActionData()
-										.getWidgetActions().get(index);
-
-								WidgetActionHandlerService.getInstance()
-										.performAction(model, type);
-							}
-							figure.getModel().setArmed(
-									figure.getModel().isPressed());
+							CentralLogger.getInstance().debug(this, "Performing widget action: " + action);
+							WidgetActionHandlerService.getInstance().performAction(widget, action);
 						}
 					});
 				}

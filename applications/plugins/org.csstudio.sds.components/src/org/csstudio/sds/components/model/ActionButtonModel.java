@@ -207,10 +207,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * Return the button style.
+	 * Returns whether the button is a toggle button.
 	 *  @return false = Push, true=Toggle
 	 */
-	public boolean getButtonStyle(){
+	public boolean isToggleButton(){
 	    return (Boolean)getProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
 	}
 }
