@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SNLDiagram Plug-in
+Bundle-SymbolicName: de.desy.language.snl.diagram
+Bundle-Version: 1.0.0
+Bundle-Activator: de.desy.language.snl.diagram.DiagramActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.draw2d
+Eclipse-LazyStart: true
+Export-Package: de.desy.language.snl.diagram.model

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension point="org.eclipse.ui.editors">
+      <editor name="SNL Diagram Editor"
+              extensions="std"
+              icon="shapes.gif"
+              default="true"
+              class="de.desy.language.snl.diagram.ui.DiagramEditor"
+              contributorClass="de.desy.language.snl.diagram.ui.ShapesEditorActionBarContributor"
+              id="GEF Shapes Editor">
+      </editor>
+   </extension>
+   <extension point="org.eclipse.ui.newWizards">
+      <category name="Examples"
+                parentCategory="org.eclipse.ui.Examples"
+                id="org.eclipse.gef.examples"/>
+      <wizard name="Shapes Diagram"
+              icon="shapes.gif"
+              category="org.eclipse.ui.Examples/org.eclipse.gef.examples"
+              class="de.desy.language.snl.diagram.ui.ShapesCreationWizard"
+              id="org.eclipse.gef.examples.shapes.ShapesCreationWizard">
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+</plugin>
