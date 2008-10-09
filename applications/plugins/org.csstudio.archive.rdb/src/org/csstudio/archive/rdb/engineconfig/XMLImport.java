@@ -243,7 +243,7 @@ public class XMLImport extends DefaultHandler
         {
             checkStateForTag(State.CHANNEL, element);
             if (group.getEnablingChannelId() > 0)
-                throw new SAXException("More then one 'enable' channel");                
+                throw new SAXException("More than one 'enable' channel");                
             is_enabling = true;
         }
         else if (element.equals(TAG_DISABLE))
