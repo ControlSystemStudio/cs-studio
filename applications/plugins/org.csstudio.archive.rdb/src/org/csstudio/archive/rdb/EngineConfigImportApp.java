@@ -37,11 +37,11 @@ public class EngineConfigImportApp implements IApplication
         final StringOption filename = new StringOption(parser,
                 "-config", "XML Engine config file", "");
         final StringOption  rdb_url = new StringOption(parser,
-                "-rdb", "RDB URL", RDBArchivePreferences.getURL());
+                "-rdb_url", "RDB URL", RDBArchivePreferences.getURL());
         final StringOption  user = new StringOption(parser,
-                "-user", "RDB User", RDBArchivePreferences.getUser());
+                "-rdb_user", "RDB User", RDBArchivePreferences.getUser());
         final StringOption  password = new StringOption(parser,
-                "-password", "RDB Password", RDBArchivePreferences.getPassword());
+                "-rdb_password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  engine_name = new StringOption(parser,
                 "-engine", "Engine Name", "");
         final StringOption  engine_description = new StringOption(parser,
