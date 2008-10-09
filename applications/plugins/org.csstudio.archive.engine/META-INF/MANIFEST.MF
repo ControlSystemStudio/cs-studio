@@ -6,13 +6,13 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.archive.engine.Activator
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.utility.pv,
  org.junit4,
+ javax.servlet,
+ org.csstudio.platform,
+ org.csstudio.platform.utility.rdb,
  org.csstudio.apputil,
  org.csstudio.archive.rdb,
- org.csstudio.platform,
- javax.servlet,
- org.csstudio.platform.utility.rdb,
+ org.csstudio.utility.pv,
  org.csstudio.utility.httpd
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
