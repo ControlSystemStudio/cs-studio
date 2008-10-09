@@ -99,7 +99,7 @@ public class Application implements IApplication
         
         if (rdb_url == null)
         {
-            System.out.print(
+            System.out.println(
                     "No Database URL. Set via preferences or command-line");
             return EXIT_OK;
         }
