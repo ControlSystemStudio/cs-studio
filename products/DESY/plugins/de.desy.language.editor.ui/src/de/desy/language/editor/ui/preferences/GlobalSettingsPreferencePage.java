@@ -4,6 +4,7 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -31,6 +32,13 @@ public class GlobalSettingsPreferencePage extends FieldEditorPreferencePage
 		editor = new BooleanFieldEditor(PreferenceConstants.MATCHING_CHARACTER_ENABLE.getPreferenceStoreId(), "Enables matching character highlighting", getFieldEditorParent());
 		this.addField(editor);
 		editor = new ColorFieldEditor(PreferenceConstants.MATCHING_CHARACTER_COLOR.getPreferenceStoreId(), "Color matching character highlighting", getFieldEditorParent());
+		this.addField(editor);
+
+		editor = new BooleanFieldEditor(PreferenceConstants.MARGIN_PAINTER_ENABLE.getPreferenceStoreId(), "Enables margin highlighting", getFieldEditorParent());
+		this.addField(editor);
+		editor = new ColorFieldEditor(PreferenceConstants.MARGIN_PAINTER_COLOR.getPreferenceStoreId(), "Color for marging line", getFieldEditorParent());
+		this.addField(editor);
+		editor = new StringFieldEditor(PreferenceConstants.MARGIN_COLUMNS.getPreferenceStoreId(), "Columns for margins", getFieldEditorParent());
 		this.addField(editor);
 	}
 

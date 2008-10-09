@@ -167,11 +167,11 @@ public abstract class LanguageEditor extends TextEditor {
 	 */
 	private UIEventListener _uiListener;
 	/**
-	 * The {@link UIEventListener} used by this editor to react on
-	 * refresh requests.
+	 * The {@link UIEventListener} used by this editor to react on refresh
+	 * requests.
 	 */
 	private UIEventListener _refreshListener;
-	
+
 	private DefaultCharacterPairMatcher _pairMatcher;
 
 	/**
@@ -213,11 +213,21 @@ public abstract class LanguageEditor extends TextEditor {
 			support.setCharacterPairMatcher(_pairMatcher);
 
 			support.setMatchingCharacterPainterPreferenceKeys(
-					PreferenceConstants.MATCHING_CHARACTER_ENABLE.getPreferenceStoreId(),
-					PreferenceConstants.MATCHING_CHARACTER_COLOR.getPreferenceStoreId());
+					PreferenceConstants.MATCHING_CHARACTER_ENABLE
+							.getPreferenceStoreId(),
+					PreferenceConstants.MATCHING_CHARACTER_COLOR
+							.getPreferenceStoreId());
 			support.setCursorLinePainterPreferenceKeys(
-					PreferenceConstants.CURSOR_LINE_ENABLE.getPreferenceStoreId(),
-					PreferenceConstants.CURSOR_LINE_COLOR.getPreferenceStoreId());
+					PreferenceConstants.CURSOR_LINE_ENABLE
+							.getPreferenceStoreId(),
+					PreferenceConstants.CURSOR_LINE_COLOR
+							.getPreferenceStoreId());
+			support.setMarginPainterPreferenceKeys(
+					PreferenceConstants.MARGIN_PAINTER_ENABLE
+							.getPreferenceStoreId(),
+					PreferenceConstants.MARGIN_PAINTER_COLOR
+							.getPreferenceStoreId(),
+					PreferenceConstants.MARGIN_COLUMNS.getPreferenceStoreId());
 			support.install(preferenceStore);
 		} else {
 			System.out
@@ -255,7 +265,8 @@ public abstract class LanguageEditor extends TextEditor {
 
 		UIEvent.HIGHLIGTHING_RULE_CHANGED.removeListener(this._uiListener);
 		UIEvent.TEXT_ATTRIBUTE_CHANGED.removeListener(this._uiListener);
-		UIEvent.HIGHLIGHTING_REFRESH_REQUEST.removeListener(this._refreshListener);
+		UIEvent.HIGHLIGHTING_REFRESH_REQUEST
+				.removeListener(this._refreshListener);
 
 		this.doAdditionalDispose();
 	}
@@ -538,7 +549,7 @@ public abstract class LanguageEditor extends TextEditor {
 				LanguageEditor.this.refresh();
 			}
 		};
-		
+
 		this._refreshListener = new UIEventListener() {
 			public void eventOccourred() {
 				LanguageEditor.this.refreshHighlighting();
@@ -561,16 +572,19 @@ public abstract class LanguageEditor extends TextEditor {
 		super.getSourceViewer().invalidateTextPresentation();
 		this.refreshParsedTree(progressMonitor);
 	}
-	
+
 	protected void refreshHighlighting() {
 		if (!this.isDirty()) {
 			IEditorInput editorInput = this.getEditorInput();
 			IEditorSite editorSite = this.getEditorSite();
 			int topIndex = this.getSourceViewer().getTextWidget().getTopIndex();
-			int caretOffset = this.getSourceViewer().getTextWidget().getCaretOffset();
+			int caretOffset = this.getSourceViewer().getTextWidget()
+					.getCaretOffset();
 			try {
-				this.internalInit(editorSite.getWorkbenchWindow(), editorSite, editorInput);
-				this.getSourceViewer().getTextWidget().setCaretOffset(caretOffset);
+				this.internalInit(editorSite.getWorkbenchWindow(), editorSite,
+						editorInput);
+				this.getSourceViewer().getTextWidget().setCaretOffset(
+						caretOffset);
 				this.getSourceViewer().getTextWidget().setTopIndex(topIndex);
 			} catch (PartInitException e) {
 				e.printStackTrace();
