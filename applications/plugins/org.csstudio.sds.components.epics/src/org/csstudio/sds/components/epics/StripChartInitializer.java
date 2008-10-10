@@ -39,8 +39,8 @@ public final class StripChartInitializer extends AbstractWidgetModelInitializer 
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeDynamicProperty(StripChartModel.valuePropertyId(0), "$channel$");
-		initializeDynamicProperty(StripChartModel.PROP_MIN, "$channel$.LOPR");
-		initializeDynamicProperty(StripChartModel.PROP_MAX, "$channel$.HOPR");
+		initializeDynamicProperty(StripChartModel.PROP_MIN, "$channel$.[graphMin], double");
+		initializeDynamicProperty(StripChartModel.PROP_MAX, "$channel$.[graphMax], double");
 	}
 
 }

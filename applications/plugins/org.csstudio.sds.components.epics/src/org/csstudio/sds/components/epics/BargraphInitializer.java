@@ -38,14 +38,14 @@ public final class BargraphInitializer extends AbstractWidgetModelInitializer {
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(BargraphModel.PROP_MIN, "$channel$.LOPR");
-		initializeDynamicProperty(BargraphModel.PROP_MAX, "$channel$.HOPR");
+		initializeDynamicProperty(BargraphModel.PROP_MIN, "$channel$.[graphMin], double");
+		initializeDynamicProperty(BargraphModel.PROP_MAX, "$channel$.[graphMax], double");
 		initializeDynamicProperty(BargraphModel.PROP_HIHI_LEVEL,
-				"$channel$.HIHI");
-		initializeDynamicProperty(BargraphModel.PROP_HI_LEVEL, "$channel$.HIGH");
+				"$channel$.[alarmMax], double");
+		initializeDynamicProperty(BargraphModel.PROP_HI_LEVEL, "$channel$.[warningMax], double");
 		initializeDynamicProperty(BargraphModel.PROP_LOLO_LEVEL,
-				"$channel$.LOLO");
-		initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$channel$.LOW");
+				"$channel$.[alarmMin], double");
+		initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$channel$.[warningMin], double");
 		initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$");
 		// initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$.VAL");
 	}
