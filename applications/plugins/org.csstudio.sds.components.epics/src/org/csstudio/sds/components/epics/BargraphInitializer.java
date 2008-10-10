@@ -21,9 +21,15 @@
  */
  package org.csstudio.sds.components.epics;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.BargraphModel;
+import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Initializes a bargraph with EPICS specific property values.
@@ -47,6 +53,13 @@ public final class BargraphInitializer extends AbstractWidgetModelInitializer {
 				"$channel$.[alarmMin], double");
 		initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$channel$.[warningMin], double");
 		initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$");
+		
+		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,255,255));
+		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(245,181,237));
+		
+		initializeDynamicPropertyForConnectionState(RectangleModel.PROP_COLOR_BACKGROUND, "$channel$", colorsByConnectionState);
+
 		// initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$.VAL");
 	}
 }
