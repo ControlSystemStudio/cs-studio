@@ -54,6 +54,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.DocumentProviderRegistry;
@@ -310,8 +311,12 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		super.setInput(input);
 		// try {
 		IFile file = ((IFileEditorInput) input).getFile();
-		fImplicitDocumentProvider = DocumentProviderRegistry.getDefault()
-				.getDocumentProvider(input);
+		fImplicitDocumentProvider = new TextFileDocumentProvider();
+		try {
+			fImplicitDocumentProvider.connect(input);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 		final IDocument document = fImplicitDocumentProvider.getDocument(input);
 		if (document != null) {
 			IFile sourceRessource = null;
