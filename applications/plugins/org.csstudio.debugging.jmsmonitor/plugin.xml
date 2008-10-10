@@ -38,5 +38,15 @@
                style="push"/>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.debugging"
+            class="org.csstudio.debugging.jmsmonitor.PreferencePage"
+            id="org.csstudio.debugging.jmsmonitor.preferences"
+            name="%JMSMonitor">
+      </page>
+   </extension>
+   
 
 </plugin>

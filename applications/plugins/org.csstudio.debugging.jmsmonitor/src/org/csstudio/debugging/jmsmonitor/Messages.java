@@ -14,6 +14,8 @@ public class Messages extends NLS
     public static String ErrorNoTopic;
     public static String ErrorNoURL;
     public static String ErrorType;
+    public static String JMSMonitorPrefs;
+    public static String Preferences_JMS_URL;
     public static String Property;
     public static String SeparatorValue;
     public static String SeperatorType;
@@ -30,5 +32,6 @@ public class Messages extends NLS
 
     private Messages()
     {
+        // Prevent instantiation
     }
 }

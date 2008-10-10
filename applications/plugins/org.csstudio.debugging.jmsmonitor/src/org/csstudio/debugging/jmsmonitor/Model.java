@@ -17,7 +17,6 @@ import javax.jms.Topic;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
-import org.eclipse.swt.widgets.Display;
 
 /** Data model for the JMS Monitor
  *  @author Kay Kasemir
