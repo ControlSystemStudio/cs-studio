@@ -24,6 +24,18 @@ public class ReceivedMessage
         this.type = type;
         this.content = content;
     }
+    
+    /** Create pseudo-message to indicate error condition
+     *  @param error Error description
+     *  @return ReceivedMessage
+     */
+    public static ReceivedMessage createErrorMessage(final String error)
+    {
+        final ArrayList<MessageProperty> content =
+            new ArrayList<MessageProperty>();
+        content.add(new MessageProperty(Messages.ErrorMessage, error));
+        return new ReceivedMessage(Messages.ErrorType, content);
+    }
 
     /** @return Time when message was received */
     public Date getDate()

@@ -1,7 +1,5 @@
 package org.csstudio.debugging.jmsmonitor;
 
-import java.util.ArrayList;
-
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -97,7 +95,7 @@ public class GUI implements ModelListener
         clear.setToolTipText(Messages.ClearTT);
         clear.setLayoutData(new GridData());
         
-        // messages table
+        // Message table
         table_viewer = new TableViewer(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         // Some tweaks to the underlying table widget
@@ -150,11 +148,12 @@ public class GUI implements ModelListener
             if (! topic.getText().equals(topic_name))
                 topic.setText(topic_name);
             if (model != null)
-                model.removeListener(GUI.this);
+                model.close();
             clear();
             if (topic_name.length() <= 0)
                 return;
             model = new Model(url, topic_name);
+            modelChanged(model);
             model.addListener(GUI.this);
         }
         catch (Exception ex)
@@ -174,12 +173,9 @@ public class GUI implements ModelListener
      */
     private void showError(final String message)
     {
-        final ArrayList<MessageProperty> content =
-            new ArrayList<MessageProperty>();
-        content.add(new MessageProperty(Messages.ErrorMessage, message));
         table_viewer.setInput(new ReceivedMessage[]
         {
-            new ReceivedMessage(Messages.ErrorType, content)
+            ReceivedMessage.createErrorMessage(message)
         });
     }
 

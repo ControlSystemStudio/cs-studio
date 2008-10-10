@@ -17,15 +17,16 @@ import javax.jms.Topic;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
+import org.eclipse.swt.widgets.Display;
 
 /** Data model for the JMS Monitor
  *  @author Kay Kasemir
  */
 public class Model implements ExceptionListener, MessageListener
 {
-    final private Connection connection;
-    final private Session session;
-    final private MessageConsumer consumer;
+    private volatile Connection connection;
+    private volatile Session session;
+    private volatile MessageConsumer consumer;
     
     final private ArrayList<ReceivedMessage> messages =
         new ArrayList<ReceivedMessage>();
@@ -38,21 +39,49 @@ public class Model implements ExceptionListener, MessageListener
      *  @param topic_name JMS topic
      *  @throws Exception on error
      */
+    @SuppressWarnings("nls")
     public Model(final String url, final String topic_name) throws Exception
     {
         if (url == null  ||  url.length() <= 0)
             throw new Exception(Messages.ErrorNoURL);
         if (topic_name.length() <= 0)
             throw new Exception(Messages.ErrorNoTopic);
-        connection = JMSConnectionFactory.connect(url);
-        connection.setExceptionListener(this);
-        connection.start();
-        session = connection.createSession(/* transacted */ false,
-                                           Session.AUTO_ACKNOWLEDGE);
-        final Topic topic = session.createTopic(topic_name);
-        consumer = session.createConsumer(topic);
-        consumer.setMessageListener(this);
-        
+        final Runnable connector = new Runnable()
+        {
+            public void run()
+            {
+                connect(url, topic_name);
+            }
+        };
+        messages.add(ReceivedMessage.createErrorMessage("not connected"));
+        final Thread thread = new Thread(connector, "JMSMonitorConnector");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    /** Connect to JMS; run in background thread */
+    private void connect(final String url, final String topic_name)
+    {
+        try
+        {
+            connection = JMSConnectionFactory.connect(url);
+            connection.setExceptionListener(this);
+            connection.start();
+            session = connection.createSession(/* transacted */ false,
+                                               Session.AUTO_ACKNOWLEDGE);
+            final Topic topic = session.createTopic(topic_name);
+            consumer = session.createConsumer(topic);
+            consumer.setMessageListener(this);
+            synchronized (messages)
+            {
+                messages.clear();
+            }
+            fireModelChanged();
+        }
+        catch (Exception ex)
+        {
+            CentralLogger.getInstance().getLogger(this).error(ex);
+        }
     }
     
     /** Add listener
@@ -63,14 +92,6 @@ public class Model implements ExceptionListener, MessageListener
         listeners.add(listener);
     }
 
-    /** Remove listener
-     *  @param listener Listener to remove
-     */
-    public void removeListener(final ModelListener listener)
-    {
-        listeners.remove(listener);
-    }
-    
     /** @return Array of received messages */
     public ReceivedMessage[] getMessages()
     {
@@ -92,11 +113,16 @@ public class Model implements ExceptionListener, MessageListener
     /** Must be called to release resources when no longer used */
     public void close()
     {
+        listeners.clear();
+        messages.clear();
         try
         {
-            consumer.close();
-            session.close();
-            connection.close();
+            if (consumer != null)
+                consumer.close();
+            if (session != null)
+                session.close();
+            if (connection != null)
+                connection.close();
         }
         catch (Exception ex)
         {
