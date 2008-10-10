@@ -13,34 +13,17 @@ package de.desy.language.snl.diagram.ui;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.EventObject;
-
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.dialogs.SaveAsDialog;
-import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
@@ -58,11 +41,31 @@ import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.IPageSite;
+import org.eclipse.ui.texteditor.DocumentProviderRegistry;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-
+import de.desy.language.editor.core.parser.AbstractLanguageParser;
+import de.desy.language.editor.core.parser.Node;
 import de.desy.language.snl.diagram.model.SNLDiagram;
 import de.desy.language.snl.diagram.ui.parts.ShapesEditPartFactory;
 import de.desy.language.snl.diagram.ui.parts.ShapesTreeEditPartFactory;
+import de.desy.language.snl.parser.SNLParser;
 
 /**
  * A graphical editor with flyout palette that can edit .shapes files. The
@@ -75,6 +78,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
 	/** This is the root of the editor's model. */
 	private SNLDiagram diagram;
+	private IDocumentProvider fImplicitDocumentProvider;
 	/** Palette component, holding the tools and shapes. */
 	private static PaletteRoot PALETTE_MODEL;
 
@@ -175,17 +179,17 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			createOutputStream(out);
 			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, // keep
-																				// saving,
-																				// even
-																				// if
-																				// IFile
-																				// is
-																				// out
-																				// of
-																				// sync
-																				// with
-																				// the
-																				// Workspace
+					// saving,
+					// even
+					// if
+					// IFile
+					// is
+					// out
+					// of
+					// sync
+					// with
+					// the
+					// Workspace
 					false, // dont keep history
 					monitor); // progress monitor
 			getCommandStack().markSaveLocation();
@@ -217,7 +221,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 				new ProgressMonitorDialog(shell).run(false, // don't fork
 						false, // not cancelable
 						new WorkspaceModifyOperation() { // run this
-															// operation
+							// operation
 							public void execute(final IProgressMonitor monitor) {
 								try {
 									ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -225,8 +229,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 									file.create(new ByteArrayInputStream(out
 											.toByteArray()), // contents
 											true, // keep saving, even if
-													// IFile is out of sync with
-													// the Workspace
+											// IFile is out of sync with
+											// the Workspace
 											monitor); // progress monitor
 								} catch (CoreException ce) {
 									ce.printStackTrace();
@@ -304,20 +308,27 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
-		try {
-			IFile file = ((IFileEditorInput) input).getFile();
-			ObjectInputStream in = new ObjectInputStream(file.getContents());
-//			diagram = (SNLDiagram) in.readObject();
-			diagram = DefaultDiagramCreator.createDefaultDiagram();
-			in.close();
-			setPartName(file.getName());
-		} catch (IOException e) {
-			handleLoadException(e);
-		} catch (CoreException e) {
-			handleLoadException(e);
-		} /*catch (ClassNotFoundException e) {
-			handleLoadException(e);
-		}*/
+		// try {
+		IFile file = ((IFileEditorInput) input).getFile();
+		fImplicitDocumentProvider = DocumentProviderRegistry.getDefault()
+				.getDocumentProvider(input);
+		final IDocument document = fImplicitDocumentProvider.getDocument(input);
+		if (document != null) {
+			IFile sourceRessource = null;
+			if (input instanceof FileEditorInput) {
+				sourceRessource = ((FileEditorInput) getEditorInput())
+						.getFile();
+			}
+			Node rootNode = this.getLanguageParser().parse(document.get(), sourceRessource, new NullProgressMonitor());
+			diagram = DiagramCreator.createDiagram(rootNode);
+		} else {
+			diagram = DiagramCreator.createDefaultDiagram();
+		}
+		setPartName(file.getName());
+	}
+	
+	private AbstractLanguageParser getLanguageParser() {
+		return new SNLParser();
 	}
 
 	/**

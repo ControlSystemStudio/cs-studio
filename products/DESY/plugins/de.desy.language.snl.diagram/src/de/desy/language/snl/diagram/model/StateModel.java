@@ -10,6 +10,8 @@
  *******************************************************************************/
 package de.desy.language.snl.diagram.model;
 
+import de.desy.language.snl.parser.nodes.StateNode;
+
 /**
  * An elliptical shape.
  * 
@@ -23,8 +25,7 @@ public class StateModel extends SNLModel {
 
 	public static final String WHENS_PROP = "StateModel.Whens";
 	
-	private String _whens;
-	private String _name = "State";
+	private StateNode _stateNode;
 	
 	public String getIconName() {
 		return "ellipse16.gif";
@@ -33,22 +34,13 @@ public class StateModel extends SNLModel {
 	public String toString() {
 		return "State " + hashCode();
 	}
-	
-	public String getWhens() {
-		return _whens;
+
+	public StateNode getStateNode() {
+		return _stateNode;
 	}
 
-	public String getName() {
-		return _name;
-	}
-
-	public void setName(String name) {
-		_name = name;
-	}
-
-	public void setWhens(String whens) {
-		_whens = whens;
-	}
-	
+	public void setStateNode(StateNode stateNode) {
+		_stateNode = stateNode;
+	}	
 	
 }

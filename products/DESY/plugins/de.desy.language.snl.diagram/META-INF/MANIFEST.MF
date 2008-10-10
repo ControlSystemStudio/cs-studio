@@ -5,6 +5,7 @@ Bundle-SymbolicName: de.desy.language.snl.diagram
 Bundle-Version: 1.0.0
 Bundle-Activator: de.desy.language.snl.diagram.DiagramActivator
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.draw2d
+ org.eclipse.draw2d,
+ de.desy.language.snl
 Eclipse-LazyStart: true
 Export-Package: de.desy.language.snl.diagram.model

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package de.desy.language.snl.diagram.model;
 
+import de.desy.language.snl.parser.nodes.WhenNode;
+
 
 /**
  * A connection between two distinct shapes.
@@ -35,6 +37,9 @@ public class WhenConnection extends ModelElement {
 	private SNLModel source;
 	/** Connection's target endpoint. */
 	private SNLModel target;
+	
+	private WhenNode _whenNode;
+
 
 	/**
 	 * Create a (solid) connection between two distinct shapes.
@@ -49,6 +54,14 @@ public class WhenConnection extends ModelElement {
 	 */
 	public WhenConnection(SNLModel source, SNLModel target) {
 		reconnect(source, target);
+	}
+
+	public WhenNode getWhenNode() {
+		return _whenNode;
+	}
+	
+	public void setWhenNode(WhenNode whenNode) {
+		_whenNode = whenNode;
 	}
 
 	/**

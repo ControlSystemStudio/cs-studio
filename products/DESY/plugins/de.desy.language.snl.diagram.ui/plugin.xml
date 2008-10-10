@@ -4,9 +4,9 @@
 
      <extension point="org.eclipse.ui.editors">
       <editor name="SNL Diagram Editor"
-              extensions="std"
+              extensions="st"
               icon="shapes.gif"
-              default="true"
+              default="false"
               class="de.desy.language.snl.diagram.ui.DiagramEditor"
               contributorClass="de.desy.language.snl.diagram.ui.ShapesEditorActionBarContributor"
               id="GEF Shapes Editor">

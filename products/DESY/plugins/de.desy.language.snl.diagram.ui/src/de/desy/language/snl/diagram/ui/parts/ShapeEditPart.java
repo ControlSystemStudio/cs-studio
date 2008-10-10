@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
-import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.EllipseAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RectangleFigure;
@@ -33,11 +32,11 @@ import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 
-import de.desy.language.snl.diagram.model.WhenConnection;
-import de.desy.language.snl.diagram.model.StateModel;
 import de.desy.language.snl.diagram.model.ModelElement;
 import de.desy.language.snl.diagram.model.SNLModel;
+import de.desy.language.snl.diagram.model.StateModel;
 import de.desy.language.snl.diagram.model.StateSetModel;
+import de.desy.language.snl.diagram.model.WhenConnection;
 import de.desy.language.snl.diagram.ui.commands.ConnectionCreateCommand;
 import de.desy.language.snl.diagram.ui.commands.ConnectionReconnectCommand;
 import de.desy.language.snl.diagram.ui.figures.StateFigure;
@@ -150,7 +149,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	protected IFigure createFigure() {
 		IFigure f = createFigureForModel();
 		f.setOpaque(true); // non-transparent figure
-//		f.setBackgroundColor(ColorConstants.green);
+		// f.setBackgroundColor(ColorConstants.green);
 		return f;
 	}
 
@@ -161,7 +160,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	private IFigure createFigureForModel() {
 		if (getModel() instanceof StateModel) {
 			StateModel sm = (StateModel) getModel();
-			return new StateFigure(sm.getName());
+			return new StateFigure(sm.getStateNode());
 		} else if (getModel() instanceof StateSetModel) {
 			RectangleFigure rectangleFigure = new RectangleFigure();
 			rectangleFigure.setBackgroundColor(ColorConstants.green);
