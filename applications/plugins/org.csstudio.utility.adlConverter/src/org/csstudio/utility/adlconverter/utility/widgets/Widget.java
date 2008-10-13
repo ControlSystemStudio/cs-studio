@@ -142,10 +142,7 @@ public abstract class Widget extends AbstractDisplayImporter {
                 _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
                         _dynamicAttribute.getColorAdlDynamicAttributes());
                 if (getControl() == null && getMonitor() == null) {
-                    // ADLHelper.setChan(_widget, chan);
-                    // _widget.setAliasValue("channel", "$param$");
-                    // //$NON-NLS-1$ //$NON-NLS-2$//TODO: param
-                    // _widget.setPrimarPv("$param$"); //$NON-NLS-1$
+                    // ???
                 }
             }
         }
