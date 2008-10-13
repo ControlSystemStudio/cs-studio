@@ -281,10 +281,10 @@ public final class ADLHelper {
             return ""; //$NON-NLS-1$
         } else if (chan.length > 2 && chan[1].startsWith("$")) { //$NON-NLS-1$
             widgetModel.setAliasValue("channel", chan[1]); //$NON-NLS-1$
-            widgetModel.setPrimarPv(chan[1]);
+            widgetModel.setPrimarPv("$channel$");
         } else {
             widgetModel.setAliasValue("channel", chan[1]); //$NON-NLS-1$
-            widgetModel.setPrimarPv(chan[0]);
+            widgetModel.setPrimarPv("$channel$");
         }
         // if(chan.length>2&&chan[chan.length-1].startsWith(".")){ //$NON-NLS-1$
         // postfix = chan[chan.length-1];
