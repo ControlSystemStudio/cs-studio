@@ -52,7 +52,7 @@ public class SampleView extends PlotAwareView
     /** Listen to model changes: Whenever the PVs change, update pv_name */
     private ModelListener model_listener = new ModelListener()
     {
-        public void entriesChanged()
+		public void entriesChanged()
         {
             refreshPVs();
         }
@@ -68,6 +68,7 @@ public class SampleView extends PlotAwareView
         }
 
         // Ignore the rest
+        public void plotColorsChangedChanged()            { /* NOP */ }
         public void entryArchivesChanged(IModelItem item) { /* NOP */ }
         public void entryConfigChanged(IModelItem item)   { /* NOP */ }
         public void entryMetaDataChanged(IModelItem item) { /* NOP */ }

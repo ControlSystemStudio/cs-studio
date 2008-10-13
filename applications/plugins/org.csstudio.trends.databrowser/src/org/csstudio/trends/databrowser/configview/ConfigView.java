@@ -44,10 +44,13 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -56,6 +59,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -130,8 +134,11 @@ public class ConfigView extends PlotAwareView
     private ModelListener model_listener = new ModelListener()
     {
         // Almost all the same:
-        // Whatever changed, we need to display the current model info.
-        public void timeSpecificationsChanged()
+     	// Whatever changed, we need to display the current model info.
+        public void plotColorsChangedChanged()
+        {   entriesChanged(); }
+
+		public void timeSpecificationsChanged()
         {   entriesChanged(); }
         
         public void timeRangeChanged()
@@ -250,6 +257,7 @@ public class ConfigView extends PlotAwareView
         tab_bg = Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
         createPVTab(tabs);
         createLiveTab(tabs);
+        createPlotTab(tabs);
         createTimeTab(tabs);
         
         // Update the archive table for the selected PVs
@@ -663,6 +671,62 @@ public class ConfigView extends PlotAwareView
     }
     
     /** Create one tab of the TabFolder GUI. */
+	private void createPlotTab(final TabFolder tabs)
+	{
+	    final TabItem tab = new TabItem(tabs, 0);
+	    tab.setText("Plot");
+	    tab.setToolTipText("Configure Plot");
+	    Composite parent = new Composite(tabs, SWT.SHADOW_ETCHED_IN);
+		parent.setBackground(tab_bg);
+	    
+		final GridLayout layout = new GridLayout();
+	    layout.numColumns = 2;
+	    parent.setLayout(layout);
+	    GridData gd;
+	    
+	    // Background: [...]
+	  
+	    // Row 1
+	    Label l = new Label(parent, 0);
+	    l.setText("Background:");
+	    l.setLayoutData(new GridData());
+	
+	    final Button back = new Button(parent, SWT.PUSH);
+	    back.setText("...");
+	    back.setBackground(new Color(back.getDisplay(), 255, 100, 100));
+	    back.setForeground(new Color(back.getDisplay(), 255, 100, 100));
+	    back.setToolTipText("Configure Background Color");
+	    back.setLayoutData(new GridData());
+	    // Cleanup of color
+	    back.addDisposeListener(new DisposeListener()
+	    {
+			public void widgetDisposed(DisposeEvent e)
+			{
+				back.getBackground().dispose();
+			}
+	    });
+	    // Update the model in response to newly entered start/end times
+	    back.addSelectionListener(new SelectionAdapter()
+	    {
+	        @Override
+	        public void widgetSelected(SelectionEvent e)
+	        {
+	            final Model model = getModel();
+	            if (model == null)
+	                return;
+	            final ColorDialog dialog = new ColorDialog(back.getShell());
+	            RGB value = model.getPlotBackground();
+                dialog.setRGB(value);
+	            value = dialog.open();
+	            if (value != null)
+	            	model.setPlotBackground(value);
+	        }
+	    });
+	    
+	    tab.setControl(parent);
+	}
+
+	/** Create one tab of the TabFolder GUI. */
     private void createTimeTab(final TabFolder tabs)
     {
         final TabItem tab = new TabItem(tabs, 0);

@@ -6,6 +6,9 @@ package org.csstudio.trends.databrowser.model;
  */
 public interface ModelListener
 {
+    /** Invoked when the plot's background color changed. */
+    public void plotColorsChangedChanged();
+
     /** Invoked when the start or end specifications changed.
      *  @see Model#getStartSpecification()
      */

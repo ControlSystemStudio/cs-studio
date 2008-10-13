@@ -17,6 +17,7 @@ import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.preferences.Preferences;
+import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,7 +52,10 @@ public class Model
     /** If the defaults from prefs aren't usable, this is the start spec. */
     private static final String FALLBACK_START_TIME = "-10 min"; //$NON-NLS-1$
 
-    /** Start- and end time specifications. */
+    /** Background color */
+    private RGB background = new RGB(255, 255, 255);
+
+	/** Start- and end time specifications. */
     private StartEndTimeParser start_end_times;
     
     /** Should we scroll or not?
@@ -81,7 +85,7 @@ public class Model
     private ArrayList<ModelListener> listeners = 
         new ArrayList<ModelListener>();
 
-    /** Construct a new model. */
+	/** Construct a new model. */
     @SuppressWarnings("nls")
     public Model()
     {
@@ -142,7 +146,21 @@ public class Model
         listeners.remove(listener);
     }
 
-    /** Set a new start and end time specification.
+    /** @param Background color */
+    public void setPlotBackground(final RGB color)
+    {
+    	background  = color;
+        for (ModelListener l : listeners)
+        	l.plotColorsChangedChanged();
+    }
+    
+    /** @return Background color */
+    public RGB getPlotBackground()
+	{
+		return background;
+	}
+
+	/** Set a new start and end time specification.
      *  <p>
      *  Also updates the current start and end time with
      *  values computed from the specs "right now".
@@ -657,6 +675,11 @@ public class Model
     {
         StringBuffer b = new StringBuffer(1024);
         b.append("<databrowser>\n");
+        b.append("    <background>\n");
+        XMLHelper.XML(b, 2, AbstractModelItem.TAG_RED, Integer.toString(background.red));
+        XMLHelper.XML(b, 2, AbstractModelItem.TAG_GREEN, Integer.toString(background.green));
+        XMLHelper.XML(b, 2, AbstractModelItem.TAG_BLUE, Integer.toString(background.blue));
+        b.append("    </background>\n");
         XMLHelper.XML(b, 1, "start", start_end_times.getStartSpecification());
         XMLHelper.XML(b, 1, "end", start_end_times.getEndSpecification());
         XMLHelper.XML(b, 1, "scroll", Boolean.toString(scroll));
@@ -698,6 +721,13 @@ public class Model
         if (!root_name.equals("databrowser")) 
             throw new Exception("Expected <databrowser>, found <" + root_name
                     + ">");
+        
+        // Get background.
+    	final int[] rgb = AbstractModelItem.loadColorFromDOM(root_node,
+    			"background", null);
+    	if (rgb != null)
+        	background = new RGB(rgb[0], rgb[1], rgb[2]);
+
         // Get the period entries
         String start_specification = DOMHelper.getSubelementString(root_node, "start");
         String end_specification = DOMHelper.getSubelementString(root_node, "end");

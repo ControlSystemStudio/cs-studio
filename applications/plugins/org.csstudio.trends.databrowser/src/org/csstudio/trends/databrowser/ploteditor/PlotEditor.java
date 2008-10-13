@@ -60,7 +60,10 @@ public class PlotEditor extends EditorPart
     // Update 'dirty' state whenever anything changes
     private final ModelListener model_listener = new ModelListener()
     {
-        public void timeSpecificationsChanged()
+        public void plotColorsChangedChanged()
+        {   entriesChanged();  }
+
+		public void timeSpecificationsChanged()
         {   entriesChanged();  }
         
         // "current" start/end time changes are ignored

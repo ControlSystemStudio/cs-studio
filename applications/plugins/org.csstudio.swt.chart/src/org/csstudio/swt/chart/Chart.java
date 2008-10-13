@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -93,7 +94,7 @@ public class Chart extends Canvas
     final private YAxisListener yaxis_listener;
 
     /** Background color. */
-    final private Color background;
+    private Color background;
     
     /** Grid line color. */
     final private Color grid_color;
@@ -338,6 +339,26 @@ public class Chart extends Canvas
     public void removeListener(final ChartListener listener)
     {
         listeners.remove(listener);
+    }
+    
+    /** Set background color of plot.
+     *  Note that there's already a setBackground(Color)
+     *  of the underlying control, but we don't want to
+     *  conflict with its color handling/disposal,
+     *  so the setPlot* color routines only pass RGB, not Color.
+     *  @param color New background color.
+     */
+    public void setPlotBackground(final RGB color)
+    {
+    	background.dispose();
+    	background = new Color(getDisplay(), color);
+    	setBackground(background);
+    }
+ 
+    /** @return Background color */
+    public RGB getPlotBackground()
+    {
+    	return background.getRGB();
     }
    
     /** Modify the type of X Axis.

@@ -387,25 +387,34 @@ public abstract class AbstractModelItem
     }
     
     /** Helper for loading RGB colors from DOM. */
-    protected static int [] loadColorFromDOM(Element pv)
+    public static int [] loadColorFromDOM(final Element pv)
+    {
+    	return loadColorFromDOM(pv, TAG_COLOR, new int[] { 0, 0, 255 });
+    }
+
+    /** Helper for loading RGB colors from DOM.
+     *  @param pv Parent element in XML DOM
+     *  @param tag Tag name that holds colors
+     *  @param default_rgb Default to use when nothing found
+     *  @return RGB values 0..255
+     */
+    public static int [] loadColorFromDOM(final Element pv,
+    		final String tag, final int default_rgb[])
     {
         final int rgb[] = new int[3];
         final Element color =
-            DOMHelper.findFirstElementNode(pv.getFirstChild(), TAG_COLOR);
+            DOMHelper.findFirstElementNode(pv.getFirstChild(), tag);
         if (color != null)
         {
             rgb[0] = DOMHelper.getSubelementInt(color, TAG_RED, 0);
             rgb[1] = DOMHelper.getSubelementInt(color, TAG_GREEN, 0);
             rgb[2] = DOMHelper.getSubelementInt(color, TAG_BLUE, 255);
+            return rgb;
         }
-        else
-        {
-            rgb[0] = 0;
-            rgb[1] = 0;
-            rgb[2] = 255;
-        }
-        return rgb;
+        return default_rgb;
     }
+
+    
     
     /** Helper for loading trace type from DOM. */
     protected static TraceType loadTraceTypeFromDOM(Element pv)

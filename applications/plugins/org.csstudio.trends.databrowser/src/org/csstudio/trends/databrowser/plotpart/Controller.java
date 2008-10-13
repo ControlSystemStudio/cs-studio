@@ -120,7 +120,13 @@ public class Controller implements ArchiveFetchJobListener
      */
     final private ModelListener model_listener = new ModelListener()
     {
-        public void timeSpecificationsChanged()
+        public void plotColorsChangedChanged()
+        {
+        	chart.setPlotBackground(model.getPlotBackground());
+        	gui.redraw();
+		}
+
+		public void timeSpecificationsChanged()
         {
         	if (controller_changes_model_times)
         		return;
@@ -161,7 +167,7 @@ public class Controller implements ArchiveFetchJobListener
             getArchivedData(new_item);
         }
 
-        public void entryConfigChanged(IModelItem item)
+        public void entryConfigChanged(final IModelItem item)
         {   // Avoid infinite loops if we are changing the model ourselves
             if (controller_changes_model)
                 return;
@@ -284,7 +290,8 @@ public class Controller implements ArchiveFetchJobListener
     {
         this.model = model;
         this.gui = gui;
-        chart = gui.getInteractiveChart().getChart();        
+        chart = gui.getInteractiveChart().getChart();    
+    	chart.setPlotBackground(model.getPlotBackground());
         chart.addListener(chart_listener);
         model.addListener(model_listener);
         
