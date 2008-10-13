@@ -10,18 +10,13 @@
  *******************************************************************************/
 package de.desy.language.snl.diagram.ui;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.EventObject;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.ContextMenuProvider;
@@ -41,23 +36,18 @@ import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.texteditor.DocumentProviderRegistry;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -175,30 +165,30 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void doSave(IProgressMonitor monitor) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			createOutputStream(out);
-			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, // keep
-					// saving,
-					// even
-					// if
-					// IFile
-					// is
-					// out
-					// of
-					// sync
-					// with
-					// the
-					// Workspace
-					false, // dont keep history
-					monitor); // progress monitor
-			getCommandStack().markSaveLocation();
-		} catch (CoreException ce) {
-			ce.printStackTrace();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		try {
+//			createOutputStream(out);
+//			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+//			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, // keep
+//					// saving,
+//					// even
+//					// if
+//					// IFile
+//					// is
+//					// out
+//					// of
+//					// sync
+//					// with
+//					// the
+//					// Workspace
+//					false, // dont keep history
+//					monitor); // progress monitor
+//			getCommandStack().markSaveLocation();
+//		} catch (CoreException ce) {
+//			ce.printStackTrace();
+//		} catch (IOException ioe) {
+//			ioe.printStackTrace();
+//		}
 	}
 
 	/*
@@ -207,49 +197,54 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
 	public void doSaveAs() {
-		// Show a SaveAs dialog
-		Shell shell = getSite().getWorkbenchWindow().getShell();
-		SaveAsDialog dialog = new SaveAsDialog(shell);
-		dialog.setOriginalFile(((IFileEditorInput) getEditorInput()).getFile());
-		dialog.open();
-
-		IPath path = dialog.getResult();
-		if (path != null) {
-			// try to save the editor's contents under a different file name
-			final IFile file = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(path);
-			try {
-				new ProgressMonitorDialog(shell).run(false, // don't fork
-						false, // not cancelable
-						new WorkspaceModifyOperation() { // run this
-							// operation
-							public void execute(final IProgressMonitor monitor) {
-								try {
-									ByteArrayOutputStream out = new ByteArrayOutputStream();
-									createOutputStream(out);
-									file.create(new ByteArrayInputStream(out
-											.toByteArray()), // contents
-											true, // keep saving, even if
-											// IFile is out of sync with
-											// the Workspace
-											monitor); // progress monitor
-								} catch (CoreException ce) {
-									ce.printStackTrace();
-								} catch (IOException ioe) {
-									ioe.printStackTrace();
-								}
-							}
-						});
-				// set input to the new file
-				setInput(new FileEditorInput(file));
-				getCommandStack().markSaveLocation();
-			} catch (InterruptedException ie) {
-				// should not happen, since the monitor dialog is not cancelable
-				ie.printStackTrace();
-			} catch (InvocationTargetException ite) {
-				ite.printStackTrace();
-			}
-		}
+//		// Show a SaveAs dialog
+//		Shell shell = getSite().getWorkbenchWindow().getShell();
+//		SaveAsDialog dialog = new SaveAsDialog(shell);
+//		dialog.setOriginalFile(((IFileEditorInput) getEditorInput()).getFile());
+//		dialog.open();
+//
+//		IPath path = dialog.getResult();
+//		if (path != null) {
+//			// try to save the editor's contents under a different file name
+//			final IFile file = ResourcesPlugin.getWorkspace().getRoot()
+//					.getFile(path);
+//			try {
+//				new ProgressMonitorDialog(shell).run(false, // don't fork
+//						false, // not cancelable
+//						new WorkspaceModifyOperation() { // run this
+//							// operation
+//							public void execute(final IProgressMonitor monitor) {
+//								try {
+//									ByteArrayOutputStream out = new ByteArrayOutputStream();
+//									createOutputStream(out);
+//									file.create(new ByteArrayInputStream(out
+//											.toByteArray()), // contents
+//											true, // keep saving, even if
+//											// IFile is out of sync with
+//											// the Workspace
+//											monitor); // progress monitor
+//								} catch (CoreException ce) {
+//									ce.printStackTrace();
+//								} catch (IOException ioe) {
+//									ioe.printStackTrace();
+//								}
+//							}
+//						});
+//				// set input to the new file
+//				setInput(new FileEditorInput(file));
+//				getCommandStack().markSaveLocation();
+//			} catch (InterruptedException ie) {
+//				// should not happen, since the monitor dialog is not cancelable
+//				ie.printStackTrace();
+//			} catch (InvocationTargetException ite) {
+//				ite.printStackTrace();
+//			}
+//		}
+	}
+	
+	@Override
+	public boolean isDirty() {
+		return false;
 	}
 
 	public Object getAdapter(Class type) {
