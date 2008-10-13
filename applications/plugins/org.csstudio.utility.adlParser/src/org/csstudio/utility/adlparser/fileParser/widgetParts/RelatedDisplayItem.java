@@ -98,7 +98,12 @@ public class RelatedDisplayItem extends WidgetPart{
               continue;
           }
           String head = parameter.split("=")[0]; //$NON-NLS-1$
-          String tmp = parameter.substring(head.length()+1);
+          String tmp="";
+          try{
+               tmp= parameter.substring(head.length()+1);
+          }catch(StringIndexOutOfBoundsException exp){
+              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter+"("+display.getObjectNr()+":"+display.getType()+")");
+          }
           String[] row=ADLHelper.cleanString(tmp);
           head = head.trim().toLowerCase();
           if(head.equals("label")){ //$NON-NLS-1$
