@@ -59,6 +59,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -182,6 +183,7 @@ public class ConfigView extends PlotAwareView
     private Button rescale_none;
     private Button rescale_zoom;
     private Button rescale_stagger;
+	private ColorBlob background, foreground, grid_color;
     
     /** Try to restore some things from memento */
     @Override
@@ -676,33 +678,16 @@ public class ConfigView extends PlotAwareView
 	    final TabItem tab = new TabItem(tabs, 0);
 	    tab.setText("Plot");
 	    tab.setToolTipText("Configure Plot");
-	    Composite parent = new Composite(tabs, SWT.SHADOW_ETCHED_IN);
+	    final Composite parent = new Composite(tabs, SWT.SHADOW_ETCHED_IN);
 		parent.setBackground(tab_bg);
 	    
 		final GridLayout layout = new GridLayout();
 	    layout.numColumns = 2;
 	    parent.setLayout(layout);
-	    GridData gd;
 	    
-	    // Background: [...]
-	  
-	    // Row 1
-	    Label l = new Label(parent, 0);
-	    l.setText("Background:");
-	    l.setLayoutData(new GridData());
-	
-	    final Button back = new Button(parent, SWT.PUSH);
-	    back.setText("...");
-	    back.setToolTipText("Configure Background Color");
-	    back.setLayoutData(new GridData());
-	    back.addDisposeListener(new DisposeListener()
-	    {	// Cleanup of color
-			public void widgetDisposed(DisposeEvent e)
-			{
-				back.getBackground().dispose();
-			}
-	    });
-	    back.addSelectionListener(new SelectionAdapter()
+	    background = addColorConfigurator(parent,
+	    		"Background:", "Configure Background Color",
+	    		new SelectionAdapter()
 	    {
 	        @Override
 	        public void widgetSelected(SelectionEvent e)
@@ -710,30 +695,17 @@ public class ConfigView extends PlotAwareView
 	            final Model model = getModel();
 	            if (model == null)
 	                return;
-	            final ColorDialog dialog = new ColorDialog(back.getShell());
+	            final ColorDialog dialog = new ColorDialog(parent.getShell());
                 dialog.setRGB(model.getPlotBackground());
                 final RGB value = dialog.open();
 	            if (value != null)
 	            	model.setPlotBackground(value);
 	        }
 	    });
-	    // Row 2
-	    l = new Label(parent, 0);
-	    l.setText("Foreground:");
-	    l.setLayoutData(new GridData());
-	
-	    final Button fore = new Button(parent, SWT.PUSH);
-	    fore.setText("...");
-	    fore.setToolTipText("Configure Foreground Color");
-	    fore.setLayoutData(new GridData());
-	    fore.addDisposeListener(new DisposeListener()
-	    {	// Cleanup of color
-			public void widgetDisposed(DisposeEvent e)
-			{
-				fore.getBackground().dispose();
-			}
-	    });
-	    fore.addSelectionListener(new SelectionAdapter()
+	    
+	    foreground = addColorConfigurator(parent,
+	    		"Foreground:", "Configure Foreground Color",
+	    		new SelectionAdapter()
 	    {
 	        @Override
 	        public void widgetSelected(SelectionEvent e)
@@ -741,30 +713,17 @@ public class ConfigView extends PlotAwareView
 	            final Model model = getModel();
 	            if (model == null)
 	                return;
-	            final ColorDialog dialog = new ColorDialog(back.getShell());
+	            final ColorDialog dialog = new ColorDialog(parent.getShell());
                 dialog.setRGB(model.getPlotForeground());
                 final RGB value = dialog.open();
 	            if (value != null)
 	            	model.setPlotForeground(value);
 	        }
 	    });
-	    // Row 3
-	    l = new Label(parent, 0);
-	    l.setText("Grid Color:");
-	    l.setLayoutData(new GridData());
-	
-	    final Button grid = new Button(parent, SWT.PUSH);
-	    grid.setText("...");
-	    grid.setToolTipText("Configure Grid Color");
-	    grid.setLayoutData(new GridData());
-	    grid.addDisposeListener(new DisposeListener()
-	    {	// Cleanup of color
-			public void widgetDisposed(DisposeEvent e)
-			{
-				grid.getBackground().dispose();
-			}
-	    });
-	    grid.addSelectionListener(new SelectionAdapter()
+	    
+	    grid_color = addColorConfigurator(parent,
+	    		"Grid Color:", "Configure Grid Color", 
+	    		new SelectionAdapter()
 	    {
 	        @Override
 	        public void widgetSelected(SelectionEvent e)
@@ -772,7 +731,7 @@ public class ConfigView extends PlotAwareView
 	            final Model model = getModel();
 	            if (model == null)
 	                return;
-	            final ColorDialog dialog = new ColorDialog(back.getShell());
+	            final ColorDialog dialog = new ColorDialog(parent.getShell());
                 dialog.setRGB(model.getPlotGrid());
                 final RGB value = dialog.open();
 	            if (value != null)
@@ -781,6 +740,32 @@ public class ConfigView extends PlotAwareView
 	    });
 	    
 	    tab.setControl(parent);
+	}
+
+	/** Add GUI elements for configuring a color
+	 *  @param parent Parent widget
+	 *  @param label Label
+	 *  @param tooltip Tooltip
+	 *  @param configure Button SelectionAdapter invoked to configure color
+	 *  @return Label that's supposed to show the color
+	 */
+	private ColorBlob addColorConfigurator(final Composite parent, final String label,
+			final String tooltip, final SelectionAdapter configure)
+	{
+	    final Label l = new Label(parent, 0);
+	    l.setText(label);
+	    l.setLayoutData(new GridData());
+	
+	    final ColorBlob color_blob = new ColorBlob(parent);
+	    color_blob.setToolTipText(tooltip);
+	    color_blob.addSelectionListener(configure);
+	    final GridData gd = new GridData();
+	    gd.minimumWidth = 80;
+	    gd.widthHint = 80;
+	    gd.heightHint = 15;
+	    color_blob.setLayoutData(gd);
+	    
+	    return color_blob;
 	}
 
 	/** Create one tab of the TabFolder GUI. */
@@ -1113,6 +1098,7 @@ public class ConfigView extends PlotAwareView
             table_content.inputChanged(pv_table_viewer, old_model, model);
         }
         // Update all GUI elements with info from current editor
+        final Display display = background.getDisplay();
         if (model == null)
         {
             scan_period_text.setText(""); //$NON-NLS-1$
@@ -1121,6 +1107,9 @@ public class ConfigView extends PlotAwareView
             pv_table_viewer.setItemCount(0);
             start_specification.setText(""); //$NON-NLS-1$
             end_specification.setText(""); //$NON-NLS-1$
+        	background.setColor(new RGB(100, 100, 100));
+        	foreground.setColor(new RGB(100, 100, 100));
+        	grid_color.setColor(new RGB(100, 100, 100));
         }
         else
         {
@@ -1135,6 +1124,9 @@ public class ConfigView extends PlotAwareView
             rescale_none.setSelection(rescale == ArchiveRescale.NONE); 
             rescale_zoom.setSelection(rescale == ArchiveRescale.AUTOZOOM); 
             rescale_stagger.setSelection(rescale == ArchiveRescale.STAGGER); 
+        	background.setColor(model.getPlotBackground());
+        	foreground.setColor(model.getPlotForeground());
+        	grid_color.setColor(model.getPlotGrid());
         }
         pv_table_viewer.refresh();
         updateLowerSash();

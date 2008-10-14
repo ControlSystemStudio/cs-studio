@@ -729,7 +729,8 @@ public class Model
      *  @param tag Tag name to use for color
      *  @param color Color
      */
-    private void appendColorXML(final StringBuilder buf, final String tag, final RGB color)
+    @SuppressWarnings("nls")
+	private void appendColorXML(final StringBuilder buf, final String tag, final RGB color)
     {
         buf.append("    <" + tag + ">\n");
         XMLHelper.XML(buf, 2, AbstractModelItem.TAG_RED, Integer.toString(color.red));
