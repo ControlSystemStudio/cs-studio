@@ -107,7 +107,7 @@ public final class TimerModel extends AbstractWidgetModel {
 		this.markPropertyAsInvisible(PROP_HEIGHT);
 		this.markPropertyAsInvisible(PROP_POS_X);
 		this.markPropertyAsInvisible(PROP_POS_Y);
-		this.markPropertyAsInvisible(PROP_VISIBILITY);
+//		this.markPropertyAsInvisible(PROP_VISIBILITY);
 		this.markPropertyAsInvisible(PROP_WIDTH);
 		this.markPropertyAsInvisible(PROP_CURSOR);
 	}

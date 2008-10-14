@@ -21,123 +21,158 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
+import org.csstudio.platform.ExecutionService;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TimerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTimerFigure;
-import org.csstudio.sds.internal.model.logic.RunnableScript;
 import org.csstudio.sds.internal.model.logic.ScriptEngine;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.logic.IScript;
-import org.csstudio.sds.model.logic.LogicException;
+import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.scripting.RunnableScript;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Point;
 
 /**
  * EditPart controller for the Rectangle widget. The controller mediates between
  * {@link TimerModel} and {@link RefreshableTimerFigure}.
  * 
- * @author Kai Meyer
+ * @author Kai Meyer & Sven Wende
  * 
  */
 public final class TimerEditPart extends AbstractWidgetEditPart {
 
-	/**
-	 * The internal {@link TimerTask}, which runs the configured script.
-	 */
-	private TimerTask _task;
-	/**
-	 * The internal {@link Timer}.
-	 */
-	private Timer _timer;
+	private long _lastExecution;
+
+	private ScheduledFuture _scheduledFuture1;
+	private ScheduledFuture _scheduledFuture2;
+
 	/**
 	 * The used {@link ScriptEngine}.
 	 */
 	private ScriptEngine _scriptEngine;
-	
-	private int _realX = 0;
-	private int _realY = 0;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void activate() {
+		super.activate();
+		startScriptExecution();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deactivate() {
+		cancelScriptExecution();
+		super.deactivate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	protected IFigure doCreateFigure() {
+		TimerModel timerModel = getTimerModel();
+
 		RefreshableTimerFigure timerFigure = new RefreshableTimerFigure();
-		timerFigure.setVisible(getExecutionMode().equals(ExecutionMode.EDIT_MODE));
-		this.configureTimer();
-		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			_realX = this.getTimerModel().getX();
-			_realY = this.getTimerModel().getY();
-			this.getTimerModel().setX(1);
-			this.getTimerModel().setY(1);
-			timerFigure.setLocation(new Point(1,1));
-			this.createScriptEngine();
-		}
+		timerFigure.setVisible(timerModel.isVisible());
+
 		return timerFigure;
 	}
 
 	/**
-	 * Creates the used {@link ScriptEngine}.
-	 */
-	private void createScriptEngine() {
-		IPath path = getTimerModel().getScriptPath();
-		if (!path.isEmpty()) {
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path); 
-			try {
-				IScript script = new RunnableScript(file.getName(), file.getContents());
-				_scriptEngine = new ScriptEngine(script);
-			} catch (LogicException e) {
-				e.printStackTrace();
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}	
-		}
-	}
-	
-	/**
 	 * Return the associated {@link TimerModel}.
+	 * 
 	 * @return The TimerModel
 	 */
 	private TimerModel getTimerModel() {
-		return (TimerModel)this.getCastedModel();
+		return (TimerModel) this.getCastedModel();
 	}
 
 	/**
 	 * Configures the internal timer.
 	 */
-	private void configureTimer() {
-		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			TimerModel model = this.getTimerModel();
-			if (model.isEnabled()) {
-				_timer = new Timer();
-				_task = createTimerTask();
-				_timer.schedule(_task, model.getDelay(), model.getDelay());	
-			}
-		}		
-	}
-	
-	/**
-	 * Creates a {@link TimerTask}. 
-	 * @return The created {@link TimerTask}
-	 */
-	private TimerTask createTimerTask() {
-		return new TimerTask() {
-			@Override
-			public void run() {
-				if (_scriptEngine!=null) {
-					_scriptEngine.processScript();
+	private void startScriptExecution() {
+		final TimerModel model = this.getTimerModel();
+
+		if (model.isEnabled() && model.getDelay() > 0
+				&& model.getScriptPath() != null
+				&& getExecutionMode().equals(ExecutionMode.RUN_MODE)
+				&& _scheduledFuture1 == null && _scheduledFuture2 == null) {
+
+			IPath path = model.getScriptPath();
+			if (!path.isEmpty()) {
+				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
+						path);
+				try {
+					// load the script
+					IScript script = new RunnableScript(file.getName(), file
+							.getContents());
+					_scriptEngine = new ScriptEngine(script);
+
+					// runnable for the script execution
+					Runnable r = new Runnable() {
+
+						public void run() {
+							if (_scriptEngine != null) {
+								Thread t = new Thread(new Runnable() {
+									public void run() {
+										_scriptEngine.processScript();
+									}
+								});
+								t.start();
+
+								_lastExecution = System.currentTimeMillis();
+							}
+						}
+					};
+
+					// runnable for updating the figure to see the progress
+					Runnable r2 = new Runnable() {
+						public void run() {
+							new CheckedUiRunnable() {
+								@Override
+								protected void doRunInUi() {
+									long t = System.currentTimeMillis()
+											- _lastExecution;
+									double p = Math.min(1.0, (double) t
+											/ model.getDelay());
+									RefreshableTimerFigure figure = (RefreshableTimerFigure) getFigure();
+									figure.setPercentage(p);
+								}
+							};
+						}
+					};
+
+					_lastExecution = System.currentTimeMillis();
+
+					// schedule the runnables
+					_scheduledFuture1 = ExecutionService.getInstance()
+							.getScheduledExecutorService().scheduleAtFixedRate(
+									r, model.getDelay(), model.getDelay(),
+									TimeUnit.MILLISECONDS);
+
+					_scheduledFuture2 = ExecutionService.getInstance()
+							.getScheduledExecutorService().scheduleAtFixedRate(
+									r2, 100, 100, TimeUnit.MILLISECONDS);
+
+				} catch (Exception e) {
+					CentralLogger.getInstance().error(e,
+							"Could not start timer.");
 				}
 			}
-		};
+		}
 	}
 
 	/**
@@ -145,42 +180,35 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler layerHandler = new IWidgetPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if (getExecutionMode().equals(ExecutionMode.RUN_MODE) && _timer!=null) {
-					boolean execute = (Boolean) newValue;
-					if (execute && _task==null) {
-						_task = createTimerTask();
-						TimerModel model = getTimerModel();
-						_timer.schedule(_task, model.getDelay(), model.getDelay());
-					} else if (!execute && _task!=null) {
-						_task.cancel();
-						_task = null;
-					}	
-				}
+
+				cancelScriptExecution();
+				startScriptExecution();
+				
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, layerHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, handler);
+		setPropertyChangeHandler(TimerModel.PROP_DELAY, handler);
+		setPropertyChangeHandler(TimerModel.PROP_SCRIPT, handler);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void deactivate() {
-		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			this.getTimerModel().setX(_realX);
-			this.getTimerModel().setY(_realY);
+
+
+
+	private void cancelScriptExecution() {
+		_scriptEngine = null;
+
+		if (_scheduledFuture1 != null) {
+			_scheduledFuture1.cancel(true);
+			_scheduledFuture1 = null;
 		}
-		if (_task!=null) {
-			_task.cancel();
+		if (_scheduledFuture2 != null) {
+			_scheduledFuture2.cancel(true);
+			_scheduledFuture2 = null;
 		}
-		if (_timer!=null) {
-			_timer.cancel();
-		}
-		super.deactivate();
+
 	}
 
 }
