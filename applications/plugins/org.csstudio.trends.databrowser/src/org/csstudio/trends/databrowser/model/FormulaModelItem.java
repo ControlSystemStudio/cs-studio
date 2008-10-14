@@ -171,7 +171,7 @@ public class FormulaModelItem extends AbstractModelItem
     @Override
     public String getXMLContent()
     {
-        StringBuffer b = new StringBuffer();
+        final StringBuilder b = new StringBuilder();
         b.append("        <" + TAG_FORMULA + ">\n");
         addCommonXMLConfig(b);
         

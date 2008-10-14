@@ -97,10 +97,10 @@ public class Chart extends Canvas
     private Color background;
     
     /** Grid line color. */
-    final private Color grid_color;
+    private Color grid_color;
     
     /** Foreground color. */
-    final private Color foreground;
+    private Color foreground;
 
 	/** MouseEvent button code for the 'left' button */
     final private static int LEFT_MOUSE_BUTTON = 1;
@@ -352,7 +352,6 @@ public class Chart extends Canvas
     {
     	background.dispose();
     	background = new Color(getDisplay(), color);
-    	setBackground(background);
     }
  
     /** @return Background color */
@@ -361,6 +360,36 @@ public class Chart extends Canvas
     	return background.getRGB();
     }
    
+    /** Set foreground color of plot.
+     *  @param color New foreground color.
+     */
+    public void setPlotForeground(final RGB color)
+    {
+    	foreground.dispose();
+    	foreground = new Color(getDisplay(), color);
+    }
+ 
+    /** @return Foreground color */
+    public RGB getPlotForeground()
+    {
+    	return foreground.getRGB();
+    }
+
+    /** Set grid color of plot.
+     *  @param color New grid color.
+     */
+    public void setPlotGrid(final RGB color)
+    {
+    	grid_color.dispose();
+    	grid_color = new Color(getDisplay(), color);
+    }
+ 
+    /** @return Grid color */
+    public RGB getPlotGrid()
+    {
+    	return grid_color.getRGB();
+    }
+    
     /** Modify the type of X Axis.
      *  <p>
      *  This restores the axis range and label to some default settings.

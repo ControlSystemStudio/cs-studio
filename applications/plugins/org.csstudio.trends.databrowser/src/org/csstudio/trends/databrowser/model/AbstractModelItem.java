@@ -368,7 +368,7 @@ public abstract class AbstractModelItem
      *  @see #getXMLContent()
      */
     @SuppressWarnings("nls")
-    protected void addCommonXMLConfig(final StringBuffer b)
+    protected void addCommonXMLConfig(final StringBuilder b)
     {
         XMLHelper.XML(b, 3, TAG_NAME, name);
         XMLHelper.XML(b, 3, TAG_AXIS, Integer.toString(axis_index));

@@ -197,7 +197,7 @@ public class PVModelItem
     @Override
     public String getXMLContent()
     {
-        StringBuffer b = new StringBuffer();
+        final StringBuilder b = new StringBuilder();
         b.append("        <" + TAG_PV + ">\n");
         addCommonXMLConfig(b);
         XMLHelper.XML(b, 3, TAG_REQUEST, Integer.toString(getRequestType().ordinal()));

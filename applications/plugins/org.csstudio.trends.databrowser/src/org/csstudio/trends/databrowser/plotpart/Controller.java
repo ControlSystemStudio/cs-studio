@@ -123,6 +123,8 @@ public class Controller implements ArchiveFetchJobListener
         public void plotColorsChangedChanged()
         {
         	chart.setPlotBackground(model.getPlotBackground());
+        	chart.setPlotForeground(model.getPlotForeground());
+        	chart.setPlotGrid(model.getPlotGrid());
         	gui.redraw();
 		}
 

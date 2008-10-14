@@ -693,19 +693,15 @@ public class ConfigView extends PlotAwareView
 	
 	    final Button back = new Button(parent, SWT.PUSH);
 	    back.setText("...");
-	    back.setBackground(new Color(back.getDisplay(), 255, 100, 100));
-	    back.setForeground(new Color(back.getDisplay(), 255, 100, 100));
 	    back.setToolTipText("Configure Background Color");
 	    back.setLayoutData(new GridData());
-	    // Cleanup of color
 	    back.addDisposeListener(new DisposeListener()
-	    {
+	    {	// Cleanup of color
 			public void widgetDisposed(DisposeEvent e)
 			{
 				back.getBackground().dispose();
 			}
 	    });
-	    // Update the model in response to newly entered start/end times
 	    back.addSelectionListener(new SelectionAdapter()
 	    {
 	        @Override
@@ -715,11 +711,72 @@ public class ConfigView extends PlotAwareView
 	            if (model == null)
 	                return;
 	            final ColorDialog dialog = new ColorDialog(back.getShell());
-	            RGB value = model.getPlotBackground();
-                dialog.setRGB(value);
-	            value = dialog.open();
+                dialog.setRGB(model.getPlotBackground());
+                final RGB value = dialog.open();
 	            if (value != null)
 	            	model.setPlotBackground(value);
+	        }
+	    });
+	    // Row 2
+	    l = new Label(parent, 0);
+	    l.setText("Foreground:");
+	    l.setLayoutData(new GridData());
+	
+	    final Button fore = new Button(parent, SWT.PUSH);
+	    fore.setText("...");
+	    fore.setToolTipText("Configure Foreground Color");
+	    fore.setLayoutData(new GridData());
+	    fore.addDisposeListener(new DisposeListener()
+	    {	// Cleanup of color
+			public void widgetDisposed(DisposeEvent e)
+			{
+				fore.getBackground().dispose();
+			}
+	    });
+	    fore.addSelectionListener(new SelectionAdapter()
+	    {
+	        @Override
+	        public void widgetSelected(SelectionEvent e)
+	        {
+	            final Model model = getModel();
+	            if (model == null)
+	                return;
+	            final ColorDialog dialog = new ColorDialog(back.getShell());
+                dialog.setRGB(model.getPlotForeground());
+                final RGB value = dialog.open();
+	            if (value != null)
+	            	model.setPlotForeground(value);
+	        }
+	    });
+	    // Row 3
+	    l = new Label(parent, 0);
+	    l.setText("Grid Color:");
+	    l.setLayoutData(new GridData());
+	
+	    final Button grid = new Button(parent, SWT.PUSH);
+	    grid.setText("...");
+	    grid.setToolTipText("Configure Grid Color");
+	    grid.setLayoutData(new GridData());
+	    grid.addDisposeListener(new DisposeListener()
+	    {	// Cleanup of color
+			public void widgetDisposed(DisposeEvent e)
+			{
+				grid.getBackground().dispose();
+			}
+	    });
+	    grid.addSelectionListener(new SelectionAdapter()
+	    {
+	        @Override
+	        public void widgetSelected(SelectionEvent e)
+	        {
+	            final Model model = getModel();
+	            if (model == null)
+	                return;
+	            final ColorDialog dialog = new ColorDialog(back.getShell());
+                dialog.setRGB(model.getPlotGrid());
+                final RGB value = dialog.open();
+	            if (value != null)
+	            	model.setPlotGrid(value);
 	        }
 	    });
 	    

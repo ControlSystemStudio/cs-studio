@@ -52,8 +52,10 @@ public class Model
     /** If the defaults from prefs aren't usable, this is the start spec. */
     private static final String FALLBACK_START_TIME = "-10 min"; //$NON-NLS-1$
 
-    /** Background color */
-    private RGB background = new RGB(255, 255, 255);
+    /** Background, foreground, grid colors */
+    private RGB background = new RGB(255, 255, 255),
+    		    foreground = new RGB(0, 0, 0),
+    		    grid_color = new RGB(0, 0, 0);
 
 	/** Start- and end time specifications. */
     private StartEndTimeParser start_end_times;
@@ -160,7 +162,35 @@ public class Model
 		return background;
 	}
 
-	/** Set a new start and end time specification.
+    /** @param Foreground color */
+    public void setPlotForeground(final RGB color)
+    {
+    	foreground  = color;
+        for (ModelListener l : listeners)
+        	l.plotColorsChangedChanged();
+    }
+    
+    /** @return Foreground color */
+    public RGB getPlotForeground()
+	{
+		return foreground;
+	}
+
+    /** @param Grid color */
+    public void setPlotGrid(final RGB color)
+    {
+    	grid_color  = color;
+        for (ModelListener l : listeners)
+        	l.plotColorsChangedChanged();
+    }
+    
+    /** @return Grid color */
+    public RGB getPlotGrid()
+	{
+		return grid_color;
+	}
+
+    /** Set a new start and end time specification.
      *  <p>
      *  Also updates the current start and end time with
      *  values computed from the specs "right now".
@@ -673,13 +703,11 @@ public class Model
     @SuppressWarnings("nls")
     public String getXMLContent()
     {
-        StringBuffer b = new StringBuffer(1024);
+        final StringBuilder b = new StringBuilder(1024);
         b.append("<databrowser>\n");
-        b.append("    <background>\n");
-        XMLHelper.XML(b, 2, AbstractModelItem.TAG_RED, Integer.toString(background.red));
-        XMLHelper.XML(b, 2, AbstractModelItem.TAG_GREEN, Integer.toString(background.green));
-        XMLHelper.XML(b, 2, AbstractModelItem.TAG_BLUE, Integer.toString(background.blue));
-        b.append("    </background>\n");
+        appendColorXML(b, "background", background);
+        appendColorXML(b, "foreground", foreground);
+        appendColorXML(b, "grid_color", grid_color);
         XMLHelper.XML(b, 1, "start", start_end_times.getStartSpecification());
         XMLHelper.XML(b, 1, "end", start_end_times.getEndSpecification());
         XMLHelper.XML(b, 1, "scroll", Boolean.toString(scroll));
@@ -696,7 +724,21 @@ public class Model
         return s;
     }
     
-    /** Load model from XML file stream. */
+    /** Add XML for color to buffer
+     *  @param buf Buffer
+     *  @param tag Tag name to use for color
+     *  @param color Color
+     */
+    private void appendColorXML(final StringBuilder buf, final String tag, final RGB color)
+    {
+        buf.append("    <" + tag + ">\n");
+        XMLHelper.XML(buf, 2, AbstractModelItem.TAG_RED, Integer.toString(color.red));
+        XMLHelper.XML(buf, 2, AbstractModelItem.TAG_GREEN, Integer.toString(color.green));
+        XMLHelper.XML(buf, 2, AbstractModelItem.TAG_BLUE, Integer.toString(color.blue));
+        buf.append("    </" + tag + ">\n");
+	}
+
+	/** Load model from XML file stream. */
     public void load(InputStream stream) throws Exception
     {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
@@ -722,11 +764,19 @@ public class Model
             throw new Exception("Expected <databrowser>, found <" + root_name
                     + ">");
         
-        // Get background.
-    	final int[] rgb = AbstractModelItem.loadColorFromDOM(root_node,
+        // Get back/fore/grid colors
+    	int[] rgb = AbstractModelItem.loadColorFromDOM(root_node,
     			"background", null);
     	if (rgb != null)
         	background = new RGB(rgb[0], rgb[1], rgb[2]);
+    	rgb = AbstractModelItem.loadColorFromDOM(root_node,
+    			"foreground", null);
+    	if (rgb != null)
+        	foreground = new RGB(rgb[0], rgb[1], rgb[2]);
+    	rgb = AbstractModelItem.loadColorFromDOM(root_node,
+    			"grid_color", null);
+    	if (rgb != null)
+        	grid_color = new RGB(rgb[0], rgb[1], rgb[2]);
 
         // Get the period entries
         String start_specification = DOMHelper.getSubelementString(root_node, "start");
