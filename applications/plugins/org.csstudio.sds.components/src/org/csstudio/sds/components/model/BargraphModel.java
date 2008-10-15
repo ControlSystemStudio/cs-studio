@@ -194,7 +194,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_VALUES, new BooleanProperty("Show Values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES));
 		addProperty(PROP_SHOW_MARKS, new ArrayOptionProperty("Tickmarks",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_MARKS));
 		addProperty(PROP_SHOW_SCALE, new ArrayOptionProperty("Scale",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_SCALE));
-		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("SectionCcount", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
+		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("SectionCount", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
 		addProperty(PROP_SHOW_ONLY_VALUE, new BooleanProperty("Show only value", WidgetPropertyCategory.Display, false));
 	}
