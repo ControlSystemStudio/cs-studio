@@ -24,9 +24,6 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -73,7 +70,7 @@ public class MessageContentCreator
         
         readMessageProperties();
         
-        valueLength = getMaxNumberofValueBytes();
+        valueLength = dbLayer.getMaxNumberofValueBytes();
         if(valueLength == 0)
         {
             valueLength = Jms2OraPlugin.getDefault().getConfiguration().getInt("default.value.precision", 300);
@@ -399,14 +396,8 @@ public class MessageContentCreator
     
     private boolean readMessageProperties()
     {
-        ResultSet rsProperty = null;
         boolean result = false;
                 
-        // Connect the database
-        if(dbLayer.connect() == false)
-        {
-            return result;
-        }
         
         // Delete old hash table, if there are any
         if(msgProperty != null)
@@ -417,87 +408,16 @@ public class MessageContentCreator
 
         msgProperty = new Hashtable<String, Long>();
 
-        try
+        msgProperty = dbLayer.getMessageProperties();
+        if(msgProperty.isEmpty())
         {
-            // Execute the query to get all properties
-            rsProperty = dbLayer.executeSQLQuery("SELECT * from MSG_PROPERTY_TYPE");
-        
-            // Check the result sets 
-            if(rsProperty != null)
-            {
-                // Fill the hash table with the received data of the property table
-                while(rsProperty.next())
-                {
-                    msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));                 
-                }
-
-                rsProperty.close();
-                rsProperty = null;
-            }
-        }
-        catch(SQLException sqle)
-        {
-            logger.error("*** SQLException *** : " + sqle.getMessage());
-            
             result = false;
         }
-        finally
+        else
         {
-            if(rsProperty!=null){try{rsProperty.close();}catch(Exception e){}rsProperty=null;}
-            
-            // Close the database
-            if(dbLayer.isConnected() == true){dbLayer.close();}                
-        }
-        
-        return true;
-    }
-    
-    public int getMaxNumberofValueBytes()
-    {
-        ResultSetMetaData rsMetaData = null;
-        ResultSet rs = null;
-        int result = 0;
-        
-        // Connect the database
-        if(dbLayer.connect() == false)
-        {
-            return result;
-        }
-
-        try
-        {
-            rs = dbLayer.executeSQLQuery("SELECT * from message_content WHERE id = 1");
-            rsMetaData = rs.getMetaData();
-            
-            // Check the result sets 
-            if(rsMetaData != null)
-            {
-                int count = rsMetaData.getColumnCount();
-
-                for(int i = 1;i <= count;i++)
-                {
-                    if(rsMetaData.getColumnName(i).compareToIgnoreCase("value") == 0)
-                    {
-                        result = rsMetaData.getPrecision(i);
-                    }
-                }
-            }
-        }
-        catch(SQLException sqle)
-        {
-            logger.error("*** SQLException *** : " + sqle.getMessage());
-            
-            result = 0;
-        }
-        finally
-        {
-            rsMetaData = null;
-            if(rs!=null){try{rs.close();}catch(Exception e){}rs=null;}
-            
-            // Close the database
-            if(dbLayer.isConnected() == true){dbLayer.close();}                
+            result = true;
         }
         
         return result;
-    }
+    }    
 }

@@ -345,7 +345,7 @@ public class MessageProcessor extends Thread implements MessageListener
         }
                 
         // Create an entry in the table MESSAGE
-        // TODO: typeId is always 0!!! We don not use it anymore. Delete the column in a future version.
+        // TODO: typeId is always 0!!! We do not use it anymore. Delete the column in a future version.
         msgId = dbLayer.createMessageEntry(typeId, content);
         if(msgId == RET_ERROR)
         {
