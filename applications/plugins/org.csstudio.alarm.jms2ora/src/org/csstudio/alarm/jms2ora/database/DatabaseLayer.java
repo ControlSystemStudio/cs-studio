@@ -509,7 +509,7 @@ public class DatabaseLayer
                 
         close();
         
-        return false;
+        return result;
     }
     
     /**
