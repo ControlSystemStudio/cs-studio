@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -365,9 +366,11 @@ public class DatabaseLayer
     public long createMessageEntry(long typeId, MessageContent content)
     {
         ResultSet rsMsg = null;
-        String query = null;
+        PreparedStatement pst = null;
+        String sql = null;
         String values = null;
         String name = null;
+        String[] preparedValues = null;
         long msgId = -1;
         
         // Connect the database
@@ -404,36 +407,67 @@ public class DatabaseLayer
         if(msgId > 0)
         {
             // Insert a new entry           
-            query = "INSERT INTO message (id,msg_type_id,datum";            
-            values = ") VALUES (" + msgId + "," + typeId + ",TIMESTAMP '" + content.getPropertyValue("EVENTTIME") + "'";
+            sql = "INSERT INTO message (id,msg_type_id,datum";
+            
+            // ORACLE
+            values = ") VALUES (?,?,TO_TIMESTAMP(?,'YYYY-MM-DD HH24:MI:SS.FF3')";
+            
+            // MySQL
+            // values = ") VALUES (?,?,TIMESTAMP(?)";
             
             // Get names of columns of table MESSAGE
             Enumeration<String> keys = messageCol.keys();
+            preparedValues = new String[messageCol.size()];
+            int n = 0;
             while(keys.hasMoreElements())
             {
                 name = keys.nextElement();
                 if(content.containsPropertyName(name.toUpperCase()))
                 {
-                    query = query + "," + name;
-                    values = values + ",'" + content.getPropertyValue(name.toUpperCase()) + "'";
+                    sql = sql + "," + name;
+                    values = values + ",?";
+                    preparedValues[n++] = content.getPropertyValue(name.toUpperCase());
                 }
                 else
                 {
-                    query = query + "," + name;
-                    values = values + ",'n/a'";
+                    sql = sql + "," + name;
+                    values = values + ",?";
+                    preparedValues[n++] = "n/a";
                 }
             }
             
-            query = query + values + ")";
+            sql = sql + values + ")";
             
-            System.out.println(query + "\n");
+            logger.debug(sql + "\n");
             
-            if(executeSQLUpdateQuery(query) == -1)
+            try
+            {
+                pst = dbService.getConnection().prepareStatement(sql);
+                
+                pst.setLong(1, msgId);
+                pst.setLong(2, typeId);
+                pst.setString(3, content.getPropertyValue("EVENTTIME"));
+                System.out.println(content.getPropertyValue("EVENTTIME"));
+                for(int i = 0;i < n;i++)
+                {
+                    pst.setString((i + 4), preparedValues[i]);
+                }
+                
+                if(pst.executeUpdate() < 0)
+                {
+                    msgId = -1;
+                }
+
+            }
+            catch(SQLException sqle)
             {
                 msgId = -1;
-            }
+                if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+            }  
+            
+            if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
         }
-        
+
         close();
         
         return msgId;
@@ -451,9 +485,10 @@ public class DatabaseLayer
     public boolean createMessageContentEntries(long msgId, MessageContent msgContent)
     {
         Enumeration<?> lst = null;
+        PreparedStatement pst = null;
         ResultSet rsMsg = null;
         String  value = null;
-        String query = null;
+        String sql = null;
         boolean result = false;
         long contentId = -1;
         long key;
@@ -492,34 +527,47 @@ public class DatabaseLayer
         // Did we get an valid ID?
         if(contentId > 0)
         {
-            // First write the known message content
-            lst = msgContent.keys();
+            sql = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES(?,?,?,?)";
             
-            while(lst.hasMoreElements())
+            try
             {
-                query = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES(";
-
-                key = (Long)lst.nextElement();
-                value = msgContent.getPropertyValue(key);
-
-                // Replace a single ' with '' (then the entry could be stored into the database)
-                value = value.replace("'", "''");
+                pst = dbService.getConnection().prepareStatement(sql);
                 
-                query = query + contentId + "," + msgId + "," + key + ",'" + value + "')";
+                // First write the known message content
+                lst = msgContent.keys();
                 
-                if(executeSQLUpdateQuery(query) == -1)
+                while(lst.hasMoreElements())
                 {
-                    result = false;
+                    key = (Long)lst.nextElement();
+                    value = msgContent.getPropertyValue(key);
+    
+                    // Replace a single ' with '' (then the entry could be stored into the database)
+                    value = value.replace("'", "''");
                     
-                    break;
+                    pst.setLong(1, contentId);
+                    pst.setLong(2, msgId);
+                    pst.setLong(3, key);
+                    pst.setString(4, value);
+                    
+                    if(pst.executeUpdate() < 0)
+                    {
+                        result = false;
+                        
+                        break;
+                    }
+                    else
+                    {
+                        result = true;
+                    }
+                    
+                    contentId++;
                 }
-                else
-                {
-                    result = true;
-                }
-                
-                contentId++;
             }
+            catch(SQLException sqle)
+            {
+                result = false;
+                if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+            }            
             
             // Write the unknown properties, if we have some
             if((result == true) && (msgContent.unknownPropertiesAvailable()))
@@ -531,28 +579,37 @@ public class DatabaseLayer
                     // Replace a single ' with '' (then the entry could be stored into the database)
                     value = value.replace("'", "''");
                     
-                    query = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES("
-                        + contentId + ","
-                        + msgId + ","
-                        + msgContent.getUnknownTableId() + ","
-                        + "'" + value + "')";
-                    
-                    if(executeSQLUpdateQuery(query) == -1)
+                    try
+                    {
+                        pst.setLong(1, contentId);
+                        pst.setLong(2, msgId);
+                        pst.setLong(3, msgContent.getUnknownTableId());
+                        pst.setString(4, value);
+                        
+                        if(pst.executeUpdate() < 0)
+                        {
+                            result = false;
+                            
+                            break;
+                        }
+                        else
+                        {
+                            result = true;
+                        }
+                        
+                        contentId++;
+                    }
+                    catch(SQLException sqle)
                     {
                         result = false;
-                        
-                        break;
-                    }
-                    else
-                    {
-                        result = true;
-                    }
-                    
-                    contentId++;  
+                        if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+                    }            
                 }
             }
-        }
         
+            if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+        }
+                
         close();
         
         return result;
