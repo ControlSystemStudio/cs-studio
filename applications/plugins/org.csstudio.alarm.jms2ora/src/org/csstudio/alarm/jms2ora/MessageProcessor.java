@@ -243,6 +243,8 @@ public class MessageProcessor extends Thread implements MessageListener
                         logger.debug(infoText[result]);
                     }
                 }
+                
+                parent.setStatus(ApplicState.WORKING);
             }
 
             if(running)
