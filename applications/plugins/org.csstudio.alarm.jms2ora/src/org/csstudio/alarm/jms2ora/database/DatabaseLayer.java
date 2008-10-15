@@ -419,7 +419,7 @@ public class DatabaseLayer
         }
         
         // Get the highest ID in the table
-        contentId = this.getNextId("message_content");
+        contentId = getNextId("message_content");
         
         // Did we get an valid ID?
         if(contentId > 0)
@@ -629,10 +629,10 @@ public class DatabaseLayer
         {
             rsMetaData = null;
             if(rs!=null){try{rs.close();}catch(Exception e){}rs=null;}
+            
+            close();
         }
-        
-        close();
-        
+                
         return result;
     }
 
@@ -642,11 +642,6 @@ public class DatabaseLayer
         ResultSet rsMsg = null;
         long result = -1;
         
-        if(connect() == false)
-        {
-            return result;
-        }
-        
         try
         {
             pst = dbService.getConnection().prepareStatement("SELECT MAX(ID) from " + tableName);
@@ -654,24 +649,9 @@ public class DatabaseLayer
 
             if(rsMsg != null)
             {
-                try
-                {
-                    rsMsg.next();
-                    result = rsMsg.getLong(1);                
-                    result += 1;
-                }
-                catch(SQLException sqle)
-                {
-                    logger.error("*** EXCEPTION *** : getNextId() : " + sqle.getMessage());
-                    result = -1;
-                }
-                
-                try
-                {
-                    rsMsg.getStatement().close();
-                    rsMsg.close();
-                }
-                catch (SQLException sqle) { sqle.printStackTrace(); }
+                rsMsg.next();
+                result = rsMsg.getLong(1);                
+                result += 1;
             }
         }
         catch (SQLException e)
