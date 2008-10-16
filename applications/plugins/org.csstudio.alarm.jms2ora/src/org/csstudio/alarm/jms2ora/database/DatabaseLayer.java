@@ -168,7 +168,8 @@ public class DatabaseLayer
             oos = new ObjectOutputStream(fos);
             
             // Write the MessageContent object to disk
-            oos.writeObject(messageCol);            
+            oos.writeObject(messageCol);
+            oos.flush();
         }
         catch(FileNotFoundException fnfe)
         {
@@ -357,9 +358,7 @@ public class DatabaseLayer
             }
             
             sql = sql + values + ")";
-            
-            logger.debug(sql + "\n");
-            
+                        
             try
             {
                 pst = dbService.getConnection().prepareStatement(sql);
