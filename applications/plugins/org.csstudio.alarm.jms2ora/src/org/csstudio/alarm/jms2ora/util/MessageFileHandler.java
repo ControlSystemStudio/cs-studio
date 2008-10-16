@@ -61,6 +61,8 @@ public class MessageFileHandler implements FilenameFilter
     
     private MessageFileHandler()
     {
+        logger = Logger.getLogger(MessageFileHandler.class);
+        
         createObjectFolder();
     }
 
