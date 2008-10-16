@@ -152,4 +152,10 @@ public class StringTableEditor extends Composite
 			}
 		});
 	}
+
+	/** Refresh the editor after the list of items was changed */
+	public void refresh()
+	{
+		list.refresh();
+	}
 }
