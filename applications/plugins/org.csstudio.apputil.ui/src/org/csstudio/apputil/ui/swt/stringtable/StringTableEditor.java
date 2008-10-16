@@ -2,8 +2,10 @@ package org.csstudio.apputil.ui.swt.stringtable;
 
 import java.util.List;
 
+import org.csstudio.apputil.ui.Activator;
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -24,6 +26,9 @@ import org.eclipse.swt.widgets.Table;
  */
 public class StringTableEditor extends Composite
 {
+	private static final String DELETE = "delete";
+	private static final String DOWN = "down";
+	private static final String UP = "up";
 	private final TableViewer list;
 
 	/** Initialize
@@ -50,20 +55,22 @@ public class StringTableEditor extends Composite
 		table.setLayoutData(gd);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(false);
-		
+		// Create edit-able column
 		final TableViewerColumn col = 
 			AutoSizeColumn.make(list, "Value", 200, 100, false);
 		col.setLabelProvider(new StringColumnLabelProvider(list));
 		col.setEditingSupport(new StringColumnEditor(list, items));
 		list.setContentProvider(new StringTableContentProvider());
-		
 		list.setInput(items);
-		
 		new AutoSizeControlListener(this, table);
 		
-		// Buttons up/down/delete
+		// Buttons: up/down/delete
+		final ImageRegistry images = new ImageRegistry();
+		images.put(UP, Activator.getImageDescriptor("icons/up.gif"));
+		images.put(DOWN, Activator.getImageDescriptor("icons/down.gif"));
+		images.put(DELETE, Activator.getImageDescriptor("icons/delete.gif"));
 		final Button up = new Button(this, SWT.PUSH);
-		up.setText("Up");
+		up.setImage(images.get(UP));
 		up.setToolTipText("Move selected items up");
 		up.setLayoutData(new GridData());
 		up.setEnabled(false);
@@ -85,7 +92,7 @@ public class StringTableEditor extends Composite
 		});
 
 		final Button down = new Button(this, SWT.PUSH);
-		down.setText("Down");
+		down.setImage(images.get(DOWN));
 		down.setToolTipText("Move selected items down");
 		down.setLayoutData(new GridData());
 		down.setEnabled(false);
@@ -107,7 +114,7 @@ public class StringTableEditor extends Composite
 		});
 
 		final Button delete = new Button(this, SWT.PUSH);
-		delete.setText("Del");
+		delete.setImage(images.get(DELETE));
 		delete.setToolTipText("Delete selected items");
 		delete.setLayoutData(new GridData());
 		delete.setEnabled(false);
