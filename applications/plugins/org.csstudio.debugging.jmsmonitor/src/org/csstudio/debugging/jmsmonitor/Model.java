@@ -49,7 +49,19 @@ public class Model implements ExceptionListener, MessageListener
         {
             public void run()
             {
-                connect(url, topic_name);
+                try
+                {
+	                connect(url, topic_name);
+	                synchronized (Model.this)
+	                {
+	                	Model.this.wait();
+	                }
+	                disconnect();
+                }
+                catch (Exception ex)
+                {
+                    CentralLogger.getInstance().getLogger(this).error(ex);
+                }
             }
         };
         messages.add(ReceivedMessage.createErrorMessage("not connected"));
@@ -58,32 +70,58 @@ public class Model implements ExceptionListener, MessageListener
         thread.start();
     }
 
-    /** Connect to JMS; run in background thread */
-    private void connect(final String url, final String topic_name)
+    /** Connect to JMS; run in background thread 
+     *  @throws Exception on error
+     */
+    private void connect(final String url, final String topic_name) 
+    	throws Exception
     {
-        try
+        connection = JMSConnectionFactory.connect(url);
+        connection.setExceptionListener(this);
+        connection.start();
+        session = connection.createSession(/* transacted */ false,
+                                           Session.AUTO_ACKNOWLEDGE);
+        final Topic topic = session.createTopic(topic_name);
+        consumer = session.createConsumer(topic);
+        consumer.setMessageListener(this);
+        synchronized (messages)
         {
-            connection = JMSConnectionFactory.connect(url);
-            connection.setExceptionListener(this);
-            connection.start();
-            session = connection.createSession(/* transacted */ false,
-                                               Session.AUTO_ACKNOWLEDGE);
-            final Topic topic = session.createTopic(topic_name);
-            consumer = session.createConsumer(topic);
-            consumer.setMessageListener(this);
-            synchronized (messages)
-            {
-                messages.clear();
-            }
-            fireModelChanged();
+            messages.clear();
         }
-        catch (Exception ex)
-        {
-            CentralLogger.getInstance().getLogger(this).error(ex);
-        }
+        fireModelChanged();
     }
     
-    /** Add listener
+    /** Disconnect JMS. Called in background thread */
+	private void disconnect()
+	{
+	    listeners.clear();
+	    messages.clear();
+	    try
+	    {
+	        if (consumer != null)
+	            consumer.close();
+	        if (session != null)
+	            session.close();
+	        if (connection != null)
+	            connection.close();
+	    }
+	    catch (Exception ex)
+	    {
+	        CentralLogger.getInstance().getLogger(this).warn(
+	                "JMS shutdown error " + ex.getMessage(), ex); //$NON-NLS-1$
+	    }
+	}
+
+    /** Must be called to release resources when no longer used */
+	public void close()
+	{
+		synchronized (this)
+		{
+			this.notifyAll();
+		}
+	}
+
+	/** Add listener
      *  @param listener Listener to add
      */
     public void addListener(final ModelListener listener)
@@ -107,27 +145,6 @@ public class Model implements ExceptionListener, MessageListener
     {
         messages.clear();
         fireModelChanged();
-    }
-
-    /** Must be called to release resources when no longer used */
-    public void close()
-    {
-        listeners.clear();
-        messages.clear();
-        try
-        {
-            if (consumer != null)
-                consumer.close();
-            if (session != null)
-                session.close();
-            if (connection != null)
-                connection.close();
-        }
-        catch (Exception ex)
-        {
-            CentralLogger.getInstance().getLogger(this).warn(
-                    "JMS shutdown error " + ex.getMessage(), ex); //$NON-NLS-1$
-        }
     }
 
     /** @see MessageListener */

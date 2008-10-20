@@ -3,11 +3,19 @@ package org.csstudio.debugging.jmsmonitor;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+
 /** A message received from JMS: Type and content.
+ *  <p>
+ *  Also provides data for Eclipse Property View
+ *  (ID "org.eclipse.ui.views.PropertySheet")
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ReceivedMessage
+public class ReceivedMessage implements IPropertySource
 {
     final private Date date;
     final private String type;
@@ -82,7 +90,55 @@ public class ReceivedMessage
         return buf.toString();
     }
 
-    /** {@inheritDoc} */
+    /** IPropertySource */
+    public Object getEditableValue()
+    {
+		return this;
+	}
+
+    /** IPropertySource */
+	public IPropertyDescriptor[] getPropertyDescriptors()
+	{
+		// Create read-only properties in the property view.
+		// (Would use TextPropertyDescriptor for edit-able)
+		final IPropertyDescriptor props[] =
+			new IPropertyDescriptor[content.size()];
+		for (int i=0; i<props.length; ++i)
+		{
+			final String name = content.get(i).getName();
+			props[i] = new PropertyDescriptor(name, name);
+		}
+		return props;
+	}
+
+    /** IPropertySource */
+	public Object getPropertyValue(final Object id)
+	{
+		for (MessageProperty prop : content)
+			if (prop.getName().equals(id))
+				return prop.getValue();
+		return null;
+	}
+
+    /** IPropertySource */
+	public boolean isPropertySet(final Object id)
+	{
+		return getPropertyValue(id) != null;
+	}
+
+    /** IPropertySource */
+	public void resetPropertyValue(final Object id)
+	{
+		// NOP; read-only
+	}
+
+    /** IPropertySource */
+	public void setPropertyValue(final Object id, final Object value)
+	{
+		// NOP; read-only
+	}
+
+	/** {@inheritDoc} */
     @Override
     public String toString()
     {

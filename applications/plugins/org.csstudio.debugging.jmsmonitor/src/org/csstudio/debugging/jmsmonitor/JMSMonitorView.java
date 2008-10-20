@@ -46,6 +46,7 @@ public class JMSMonitorView extends ViewPart
         if (memento == null)
             return;
         gui.setTopic(memento.getString(TAG_TOPIC));
+        getSite().setSelectionProvider(gui.getSelectionProvider());
     }
 
     /** {@inheritDoc} */

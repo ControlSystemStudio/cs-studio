@@ -3,13 +3,13 @@ package org.csstudio.debugging.jmsmonitor;
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -63,12 +63,13 @@ public class GUI implements ModelListener
             }
         });
         
-        table_viewer.addDoubleClickListener(new IDoubleClickListener()
+        parent.addDisposeListener(new DisposeListener()
         {
-            public void doubleClick(DoubleClickEvent event)
-            {
-                showSelecteMessageDetail();
-            }
+			public void widgetDisposed(DisposeEvent e)
+			{
+				if (model != null)
+					model.close();
+			}
         });
     }
 
@@ -132,7 +133,13 @@ public class GUI implements ModelListener
         topic.setFocus();
     }
 
-    /** @return Currently selected topic */
+    /** @return SelectionProvider (TableViewer) for selected messages */
+	public ISelectionProvider getSelectionProvider()
+	{
+		return table_viewer;
+	}
+
+	/** @return Currently selected topic */
     public String getTopic()
     {
         return topic.getText().trim();
@@ -177,21 +184,6 @@ public class GUI implements ModelListener
         {
             ReceivedMessage.createErrorMessage(message)
         });
-    }
-
-    /** Show detail of selected messages */
-    private void showSelecteMessageDetail()
-    {
-        IStructuredSelection sel =
-            (IStructuredSelection) table_viewer.getSelection();
-        if (sel.isEmpty())
-            return;
-        final Object[] items = sel.toArray();
-        final ReceivedMessage messages[] = new ReceivedMessage[items.length];
-        for (int i = 0; i < items.length; ++i)
-            messages[i] = (ReceivedMessage) items[i];
-        new MessageDetailDialog(table_viewer.getTable().getShell(), messages)
-            .open();
     }
 
     /** @see ModelListener */
