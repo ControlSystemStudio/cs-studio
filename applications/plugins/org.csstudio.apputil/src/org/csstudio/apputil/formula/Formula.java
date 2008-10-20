@@ -1,8 +1,8 @@
 package org.csstudio.apputil.formula;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.formula.node.AddNode;
 import org.csstudio.apputil.formula.node.AndNode;
 import org.csstudio.apputil.formula.node.ConstantNode;
@@ -96,7 +96,12 @@ public class Formula implements Node
         "hypot",
         "pow"
     };
-    private VariableNode variables[];
+    
+    /** Determine variables from formula? */
+    final private boolean determine_variables;
+    
+    /** Variables that can be used in the formula */
+    final private ArrayList<VariableNode> variables;
     
     /** Create formula from string.
      *  @param formula The formula to parse
@@ -109,24 +114,51 @@ public class Formula implements Node
 
     /** Create formula from string with variables.
      *  @param formula The formula to parse
-     *  @param variables Array of variables
+     *  @param variables Array of variables. Formula can only use these variables.
      *  @throws Exception on parse error
      */
     public Formula(final String formula,
             final VariableNode[] variables)  throws Exception
     {
         this.formula = formula;
-        this.variables = variables;
+        if (variables == null)
+        	this.variables = null;
+        else
+        {
+	        this.variables = new ArrayList<VariableNode>();
+	        for (VariableNode var : variables)
+	        	this.variables.add(var);
+        }
+    	this.determine_variables = false;
         tree = parse();
     }
     
-    /** @return Original formula that got parsed. */
+    /** Create formula from string.
+     *  @param formula The formula to parse
+     *  @param determine_variables Determine variables from formula?
+     *  @throws Exception on parse error
+     */
+    public Formula(final String formula, final boolean determine_variables)
+    	throws Exception
+    {
+    	this.formula = formula;
+    	this.variables = new ArrayList<VariableNode>();
+    	this.determine_variables = determine_variables;
+    	tree = parse();
+	}
+
+	/** @return Original formula that got parsed. */
     public String getFormula()
     {   return formula;    }
 
     /** @return Array of variables or <code>null</code> if none are used. */
     public VariableNode[] getVariables()
-    {   return variables;    }
+    {
+    	if (variables == null)
+    		return null;
+    	final VariableNode result[] = new VariableNode[variables.size()];
+    	return variables.toArray(result); 
+    }
     
     /** {@inheritDoc} */
     public double eval()
@@ -305,9 +337,14 @@ public class Formula implements Node
         for (VariableNode var : constants)
             if (var.getName().equals(name))
                 return var;
-
-        throw new Exception("Unknown variable '" + name + "'");
-    }
+        
+        if (!determine_variables)
+           throw new Exception("Unknown variable '" + name + "'");
+        // else: Automatically generate the unknown variable
+        final VariableNode var = new VariableNode(name);
+        variables.add(var);
+        return var;
+	}
 
     /** @return node for sub-expression in ( .. ) braces.
      *  @throws Exception when no closing ')' is found.
@@ -472,7 +509,8 @@ public class Formula implements Node
         return n;
     }
 
-    /** Parse formula. */
+    /** Parse formula. 
+     */
     private Node parse() throws Exception
     {
         final Scanner scanner = new Scanner(formula);

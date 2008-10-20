@@ -15,6 +15,7 @@ public class VariableNode implements Node
     public VariableNode(final String name)
     {
         this.name = name;
+        this.value = Double.NaN;
     }
 
     /** Create Variable with given name and value. */

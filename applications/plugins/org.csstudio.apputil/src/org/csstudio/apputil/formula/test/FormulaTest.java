@@ -219,8 +219,13 @@ public class FormulaTest extends TestCase
     @Test
     public void testVariableDetermination() throws Exception
     {
-    	// TODO Locate variable names automatically; not known before user
-    	// enters them
-//        Formula f = new Formula("RFQ_Vac:Pump2:Pressure < 10");
-    }
+    	Formula f = new Formula("RFQ_Vac:Pump2:Pressure < 10", true);
+    	VariableNode vars[] = f.getVariables();
+    	assertEquals(1, vars.length);
+    	assertEquals("RFQ_Vac:Pump2:Pressure", vars[0].getName());
+    	vars[0].setValue(5);
+    	assertEquals(1.0, f.eval(), epsilon);
+    	vars[0].setValue(10);
+    	assertEquals(0.0, f.eval(), epsilon);
+	}
 }
