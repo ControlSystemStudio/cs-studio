@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.apputil.formula.VariableNode;
 import org.csstudio.archive.crawl.SpreadsheetIterator;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
@@ -7,7 +8,6 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.util.formula.VariableNode;
 
 /** Handler for formula inputs.
  * 

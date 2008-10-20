@@ -2,6 +2,8 @@ package org.csstudio.trends.databrowser.model.formula_gui;
 
 import java.util.ArrayList;
 
+import org.csstudio.apputil.formula.Formula;
+import org.csstudio.apputil.formula.VariableNode;
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.csstudio.trends.databrowser.Plugin;
@@ -10,8 +12,6 @@ import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.formula_gui.InputTableHelper.Column;
-import org.csstudio.util.formula.Formula;
-import org.csstudio.util.formula.VariableNode;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;

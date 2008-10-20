@@ -1,8 +1,8 @@
-package org.csstudio.util.formula.node;
+package org.csstudio.apputil.formula.node;
 
 import java.lang.reflect.Method;
 
-import org.csstudio.util.formula.Node;
+import org.csstudio.apputil.formula.Node;
 
 /** Node for evaluating any of the java.lang.Math.* functions
  *  @author Xiaosong Geng

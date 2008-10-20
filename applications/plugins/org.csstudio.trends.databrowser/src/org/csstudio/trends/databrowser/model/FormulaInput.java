@@ -1,6 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.util.formula.VariableNode;
+import org.csstudio.apputil.formula.VariableNode;
 
 /** One input to the formula
  *  @author Kay Kasemir

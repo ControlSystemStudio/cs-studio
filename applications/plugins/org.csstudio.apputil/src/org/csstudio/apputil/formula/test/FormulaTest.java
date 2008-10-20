@@ -1,11 +1,11 @@
-package org.csstudio.util.formula.test;
+package org.csstudio.apputil.formula.test;
 
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
+import org.csstudio.apputil.formula.Formula;
+import org.csstudio.apputil.formula.VariableNode;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.util.formula.Formula;
-import org.csstudio.util.formula.VariableNode;
 import org.junit.Test;
 
 /** Formula tests.

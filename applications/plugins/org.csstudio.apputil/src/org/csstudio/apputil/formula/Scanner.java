@@ -1,4 +1,4 @@
-package org.csstudio.util.formula;
+package org.csstudio.apputil.formula;
 
 import java.io.StringReader;
 

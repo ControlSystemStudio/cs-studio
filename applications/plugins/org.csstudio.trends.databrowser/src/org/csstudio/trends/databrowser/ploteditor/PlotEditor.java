@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.ploteditor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.archiveview.ArchiveView;
@@ -25,6 +26,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -292,14 +294,20 @@ public class PlotEditor extends EditorPart
         context_menu.add(new AddFormulaAction(ctl.getShell(), plot_part.getModel()));
         
         context_menu.add(new Separator());
-        context_menu.add(new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID));
-        context_menu.add(new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID));
-        context_menu.add(new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID));
-        context_menu.add(new OpenViewAction(this, Messages.OpenExportView,
-                "icons/export.gif", ExportView.ID)); //$NON-NLS-1$
-        context_menu.add(new OpenViewAction(this, Messages.OpenWaveformView,
-                "icons/wavesample.gif", //$NON-NLS-1$
-                WaveformView.ID));
+        final ImageDescriptor icon =
+        	Plugin.getImageDescriptor("icons/chart.gif"); //$NON-NLS-1$
+        context_menu.add(new OpenViewAction(ConfigView.ID,
+        		Messages.OpenConfigView, icon));
+        context_menu.add(new OpenViewAction(ArchiveView.ID,
+        		Messages.OpenArchiveView, icon));
+        context_menu.add(new OpenViewAction(SampleView.ID,
+        		Messages.OpenSampleView, icon));
+        context_menu.add(new OpenViewAction(ExportView.ID,
+        		Messages.OpenExportView,
+                Plugin.getImageDescriptor("icons/export.gif"))); //$NON-NLS-1$
+        context_menu.add(new OpenViewAction(WaveformView.ID,
+        		Messages.OpenWaveformView,
+        		Plugin.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
         plot_part.addContextMenuExportActions(context_menu);
         
         context_menu.add(new Separator());

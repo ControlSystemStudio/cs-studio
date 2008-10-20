@@ -1,4 +1,4 @@
-package org.csstudio.util.formula;
+package org.csstudio.apputil.formula;
 
 /** Named Variable.
  *  @author Kay Kasemir

@@ -1,15 +1,15 @@
-package org.csstudio.util.formula.node;
+package org.csstudio.apputil.formula.node;
 
-import org.csstudio.util.formula.Node;
+import org.csstudio.apputil.formula.Node;
 
 /** One computational node.
  *  @author Kay Kasemir
  */
-public class MaxNode implements Node
+public class MinNode implements Node
 {
     private final Node args[];
     
-    public MaxNode(Node args[])
+    public MinNode(Node args[])
     {
         this.args = args;
     }
@@ -20,7 +20,7 @@ public class MaxNode implements Node
         for (int i = 0; i < args.length; i++)
         {
             final double v = args[i].eval();
-            if (i==0  ||  v > result)
+            if (i==0  ||  v < result)
                 result = v;
         }
         return result;
@@ -30,7 +30,7 @@ public class MaxNode implements Node
     public boolean hasSubnode(Node node)
     {
         for (Node arg : args)
-            if (arg == node || arg.hasSubnode(node))
+            if (arg == node  ||  arg.hasSubnode(node))
                 return true;
         return false;
     }
@@ -39,7 +39,7 @@ public class MaxNode implements Node
     @Override
     public String toString()
     {
-        final StringBuffer b = new StringBuffer("max(");
+        final StringBuffer b = new StringBuffer("min(");
         for (int i = 0; i < args.length; i++)
         {
             if (i>0)

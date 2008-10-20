@@ -1,6 +1,6 @@
-package org.csstudio.util.formula.node;
+package org.csstudio.apputil.formula.node;
 
-import org.csstudio.util.formula.Node;
+import org.csstudio.apputil.formula.Node;
 
 /** One computational node.
  *  @author Kay Kasemir

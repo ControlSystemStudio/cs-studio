@@ -1,13 +1,13 @@
-package org.csstudio.util.formula.node;
+package org.csstudio.apputil.formula.node;
 
-import org.csstudio.util.formula.Node;
+import org.csstudio.apputil.formula.Node;
 
 /** One computational node.
  *  @author Kay Kasemir
  */
-public class PwrNode extends AbstractBinaryNode
+public class MulNode extends AbstractBinaryNode
 {
-    public PwrNode(Node left, Node right)
+    public MulNode(Node left, Node right)
     {
         super(left, right);
     }
@@ -16,13 +16,14 @@ public class PwrNode extends AbstractBinaryNode
     {
         final double a = left.eval();
         final double b = right.eval();
-        return Math.pow(a, b);
+        return a * b;
     }
     
     @SuppressWarnings("nls")
     @Override
     public String toString()
     {
-        return "(" + left + " ) ^ (" + right + ")";
+        return "(" + left + " * " + right + ")";
     }
+
 }

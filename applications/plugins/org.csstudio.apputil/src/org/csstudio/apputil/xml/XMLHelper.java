@@ -7,8 +7,8 @@ package org.csstudio.apputil.xml;
 @SuppressWarnings("nls")
 public class XMLHelper
 {
-    /** @return Returns string for intentation to given level. */
-    public static final void indent(StringBuffer buf, int level)
+    /** @return Returns string for indentation to given level. */
+    public static final void indent(final StringBuilder buf, int level)
     {
         while (level > 0)
         {
@@ -20,9 +20,9 @@ public class XMLHelper
     /** @return Returns text with less-than and ampersands replaced by XML escapes.
      *  @param text
      */
-    public static final String escapeXMLstring(String text)
+    public static final String escapeXMLstring(final String text)
     {
-        StringBuffer b = new StringBuffer(text.length()+3);
+    	StringBuilder b = new StringBuilder(text.length()+3);
         int i;
         for (i=0; i<text.length(); ++i)
         {
@@ -46,7 +46,8 @@ public class XMLHelper
     }
 
     /** Add tag and value to buffer with given indentation level. */
-    public static final void XML(StringBuffer buffer, int level, String tag, String value)
+    public static final void XML(final StringBuilder buffer, final int level,
+    		final String tag, final String value)
     {
         indent(buffer, level);
         buffer.append("<").append(tag).append(">");

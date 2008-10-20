@@ -1,13 +1,13 @@
-package org.csstudio.util.formula.node;
+package org.csstudio.apputil.formula.node;
 
-import org.csstudio.util.formula.Node;
+import org.csstudio.apputil.formula.Node;
 
 /** One computational node.
  *  @author Kay Kasemir
  */
-public class AddNode extends AbstractBinaryNode
+public class GreaterEqualNode extends AbstractBinaryNode
 {
-    public AddNode(Node left, Node right)
+    public GreaterEqualNode(Node left, Node right)
     {
         super(left, right);
     }
@@ -16,13 +16,13 @@ public class AddNode extends AbstractBinaryNode
     {
         final double a = left.eval();
         final double b = right.eval();
-        return a + b;
+        return (a >= b) ? 1.0 : 0.0;
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()
     {
-        return "(" + left + " + " + right + ")";
+        return "(" + left + " >= " + right + ")";
     }
 }

@@ -1,4 +1,4 @@
-package org.csstudio.util.formula;
+package org.csstudio.apputil.formula;
 
 /** A node used to build a formula.
  *  @author Kay Kasemir

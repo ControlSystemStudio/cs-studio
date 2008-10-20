@@ -1,28 +1,28 @@
-package org.csstudio.util.formula;
+package org.csstudio.apputil.formula;
 
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.csstudio.util.formula.node.AddNode;
-import org.csstudio.util.formula.node.AndNode;
-import org.csstudio.util.formula.node.ConstantNode;
-import org.csstudio.util.formula.node.DivNode;
-import org.csstudio.util.formula.node.EqualNode;
-import org.csstudio.util.formula.node.GreaterEqualNode;
-import org.csstudio.util.formula.node.GreaterThanNode;
-import org.csstudio.util.formula.node.IfNode;
-import org.csstudio.util.formula.node.LessEqualNode;
-import org.csstudio.util.formula.node.LessThanNode;
-import org.csstudio.util.formula.node.MathFuncNode;
-import org.csstudio.util.formula.node.MaxNode;
-import org.csstudio.util.formula.node.MinNode;
-import org.csstudio.util.formula.node.MulNode;
-import org.csstudio.util.formula.node.NotEqualNode;
-import org.csstudio.util.formula.node.NotNode;
-import org.csstudio.util.formula.node.OrNode;
-import org.csstudio.util.formula.node.PwrNode;
-import org.csstudio.util.formula.node.RndNode;
-import org.csstudio.util.formula.node.SubNode;
+import org.csstudio.apputil.formula.node.AddNode;
+import org.csstudio.apputil.formula.node.AndNode;
+import org.csstudio.apputil.formula.node.ConstantNode;
+import org.csstudio.apputil.formula.node.DivNode;
+import org.csstudio.apputil.formula.node.EqualNode;
+import org.csstudio.apputil.formula.node.GreaterEqualNode;
+import org.csstudio.apputil.formula.node.GreaterThanNode;
+import org.csstudio.apputil.formula.node.IfNode;
+import org.csstudio.apputil.formula.node.LessEqualNode;
+import org.csstudio.apputil.formula.node.LessThanNode;
+import org.csstudio.apputil.formula.node.MathFuncNode;
+import org.csstudio.apputil.formula.node.MaxNode;
+import org.csstudio.apputil.formula.node.MinNode;
+import org.csstudio.apputil.formula.node.MulNode;
+import org.csstudio.apputil.formula.node.NotEqualNode;
+import org.csstudio.apputil.formula.node.NotNode;
+import org.csstudio.apputil.formula.node.OrNode;
+import org.csstudio.apputil.formula.node.PwrNode;
+import org.csstudio.apputil.formula.node.RndNode;
+import org.csstudio.apputil.formula.node.SubNode;
 
 /** A formula interpreter.
  *  <p>
