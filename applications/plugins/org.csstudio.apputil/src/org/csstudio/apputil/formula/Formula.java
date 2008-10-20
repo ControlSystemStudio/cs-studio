@@ -23,10 +23,11 @@ import org.csstudio.apputil.formula.node.OrNode;
 import org.csstudio.apputil.formula.node.PwrNode;
 import org.csstudio.apputil.formula.node.RndNode;
 import org.csstudio.apputil.formula.node.SubNode;
+import org.csstudio.platform.logging.CentralLogger;
 
 /** A formula interpreter.
  *  <p>
- *  While I found some on the internet,
+ *  While I found some on the Internet,
  *  I didn't see an open one that included the if-then-else
  *  operation nor one that I understood within 15 minutes
  *  so that I could add that operation.
@@ -52,9 +53,6 @@ import org.csstudio.apputil.formula.node.SubNode;
 @SuppressWarnings("nls")
 public class Formula implements Node
 {
-    /** Log4j logger */
-    final private Logger log;
-    
     /** The original formula that we parsed */
     final private String formula;
     
@@ -104,9 +102,9 @@ public class Formula implements Node
      *  @param formula The formula to parse
      *  @throws Exception on parse error
      */
-    public Formula(final Logger log, final String formula)  throws Exception
+    public Formula(final String formula)  throws Exception
     {
-        this(log, formula, null);
+        this(formula, null);
     }
 
     /** Create formula from string with variables.
@@ -114,10 +112,9 @@ public class Formula implements Node
      *  @param variables Array of variables
      *  @throws Exception on parse error
      */
-    public Formula(final Logger log, final String formula,
+    public Formula(final String formula,
             final VariableNode[] variables)  throws Exception
     {
-        this.log = log;
         this.formula = formula;
         this.variables = variables;
         tree = parse();
@@ -137,7 +134,8 @@ public class Formula implements Node
         final double result = tree.eval();
         if (Double.isInfinite(result) ||
             Double.isNaN(result))
-            log.debug("Formula '" + formula + "' resulted in " + result);
+            CentralLogger.getInstance().getLogger(this)
+            	.debug("Formula '" + formula + "' resulted in " + result);
         return result;
     }    
     
