@@ -15,6 +15,7 @@ layout of the Archive View, Data Browser Configuration panel etc.
 <br/>
 Select Window-&gt;Open Perspective-&gt;Data Browser in the menu bar at the
 top of the workbench to access it.
+<br/>
 If there is no Data Browser entry, use &quot;Other..&quot;
 and select it from there.
 		</description>
@@ -26,12 +27,8 @@ You should now see a &quot;Data Browser Archives&quot; View to the left.
 <br/>
 If not, reset the prespective to its original state
 by right-clicking on the &quot;Data Browser&quot; perspective tab
-and selecting &quot;Reset&quot;,
-<br/>
-Or use the &quot;Click to Perform&quot; button below as a shortcut.
+and selecting &quot;Reset&quot;.
 </description>
-<command required="false"
-         serialization="org.eclipse.ui.window.resetPerspective"/>
 </item>
 
 
@@ -57,7 +54,7 @@ the (?) button above.
 </item>
 
 <item
-      href="/org.csstudio.trends.databrowser/html/archive_view.html"
+      href="/org.csstudio.trends.databrowser/html/plot_window.html"
       title="Send PVs to new Data Browser">
 <description>
 Select one or more PVs, right-click, select CSS-&gt;Data Browser to start
@@ -66,7 +63,7 @@ a new Data Browser instance for these PVs.
 </item>
 
 <item
-      href="/org.csstudio.trends.databrowser/html/archive_view.html"
+      href="/org.csstudio.trends.databrowser/html/plot_window.html"
       title="Add PVs to existing Data Browser plot">
 <description>
 Select one or more PVs, drag them into an existing Data Browser plot.
