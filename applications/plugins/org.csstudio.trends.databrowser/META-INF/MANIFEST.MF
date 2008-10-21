@@ -8,15 +8,16 @@ Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.ui.views,
  org.eclipse.core.resources,
+ org.eclipse.ui.views,
+ org.eclipse.ui.cheatsheets,
  org.csstudio.platform,
  org.csstudio.platform.ui,
  org.csstudio.utility.pv,
- org.csstudio.archive,
- org.csstudio.swt.chart,
  org.csstudio.apputil,
  org.csstudio.apputil.ui,
+ org.csstudio.archive,
+ org.csstudio.swt.chart,
  org.csstudio.logbook
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir

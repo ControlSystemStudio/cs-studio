@@ -3,6 +3,7 @@ package org.csstudio.sns.product;
 import java.util.ArrayList;
 
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
+import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
@@ -43,12 +44,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IContributionItem open_windows;
     private IAction intro;
     private IAction help;
+	private IAction cheat;
     private IAction about;
     private IContributionItem menu_perspectives;
     private IContributionItem menu_views;
 
     // SNS Actions
     private ArrayList<IAction> web_actions = new ArrayList<IAction>();
+
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer)
     {
@@ -94,6 +97,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         help = ActionFactory.HELP_CONTENTS.create(window);
         register(help);
+
+        cheat = new OpenViewAction(
+        		"org.eclipse.ui.cheatsheets.views.CheatSheetView",
+        		Messages.Menu_Help_CheatSheet);
         
         about = ActionFactory.ABOUT.create(window);
         register(about);
@@ -249,6 +256,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_help.add(intro);
         menu_help.add(new Separator());
         menu_help.add(help);
+        menu_help.add(cheat);
         menu_help.add(new Separator());
         menu_help.add(new GroupMarker(IWorkbenchActionConstants.HELP_START));
         // CSS platform.ui plugin hooks software update into help/group.updates

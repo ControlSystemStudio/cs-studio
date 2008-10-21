@@ -196,4 +196,18 @@
                id="org.csstudio.trends.databrowser.Perspective"
                name="%Databrowser"/>
       </extension>
+      <extension
+            point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+         <category
+               id="org.csstudio.trends"
+               name="CSS">
+         </category>
+         <cheatsheet
+               category="org.csstudio.trends"
+               composite="false"
+               contentFile="cheatsheets/archive.xml"
+               id="org.csstudio.trends.databrowser.archive"
+               name="Plot Archived Data">
+         </cheatsheet>
+      </extension>
 </plugin>
