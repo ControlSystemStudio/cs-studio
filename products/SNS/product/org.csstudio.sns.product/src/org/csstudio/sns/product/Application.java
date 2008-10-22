@@ -49,6 +49,17 @@ import org.eclipse.ui.PlatformUI;
  *        Plugin.stop().
  *        On Linux, it looks OK.
  *        
+ *  TODO Unify product _code_.
+ *       Products will have to differ for DESY, SNS, SLAC, ...
+ *       Some want all relevant plugins included,
+ *       others want end user to install pieces into bare-bone core app.
+ *       Some want user/password login for LDAP/XMPP/...,
+ *       others want workspace selector, others nothing.
+ *       Each site wants site=specific icons and info on "welcome" screen.
+ *       
+ *       I think that means: Different product. True?
+ *       Can it still mean: Same code for Application, *Advisor, ...?
+ *        
  *  @author Kay Kasemir
  */
 public class Application implements IApplication
