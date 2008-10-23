@@ -118,7 +118,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 		//FIXME: 2008-07-11: swende: Use an OptionProperty instead!
 		addProperty(PROP_VALUE_TYPE, new ArrayOptionProperty("Value Type",WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex()));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
-				WidgetPropertyCategory.Behaviour, 2, 0, 6));
+				WidgetPropertyCategory.Behaviour, 2, 0, 10));
 	}
 	
 	/**
