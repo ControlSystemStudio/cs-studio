@@ -2,12 +2,12 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DecimalFormat;
 
 import org.csstudio.sds.components.model.ThumbWheelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableThumbWheelFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableThumbWheelFigure.WheelListener;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
+import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
@@ -49,28 +49,35 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		figure.addWheelListener(new WheelListener() {
 
 			public void decrementDecimalPart(int index) {
-				logic.decrementDecimalDigitAt(index);
-				updateWheelValues();
-				model.setValue(logic.getValue());
+				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+					logic.decrementDecimalDigitAt(index);
+					updateWheelValues();
+					model.setManualValue(logic.getValue());
+				}
 			}
 
 			public void incrementDecimalPart(int index) {
-				logic.incrementDecimalDigitAt(index);
-				updateWheelValues();
-				model.setValue(logic.getValue());
+				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+					logic.incrementDecimalDigitAt(index);
+					updateWheelValues();
+					model.setManualValue(logic.getValue());
+				}
 			}
 
 			public void decrementIntegerPart(int index) {
-				logic.decrementIntigerDigitAt(index);
-				updateWheelValues();
-				model.setValue(logic.getValue());
+				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+					logic.decrementIntigerDigitAt(index);
+					updateWheelValues();
+					model.setManualValue(logic.getValue());
+				}
 			}
 
 			public void incrementIntegerPart(int index) {
-				logic.incrementIntigerWheel(index);
-				updateWheelValues();
-				model.setValue(logic.getValue());
-
+				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+					logic.incrementIntigerWheel(index);
+					updateWheelValues();
+					model.setManualValue(logic.getValue());
+				}
 			}
 		});
 
@@ -169,7 +176,6 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
 				logic.setValue((Double) newValue);
 				updateWheelValues();
 				return true;
@@ -177,7 +183,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(ThumbWheelModel.PROP_VALUE, handler);
 
-		// value
+		// font
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
@@ -212,6 +218,14 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
 				handler);
 
+	}
+	
+	/**
+	 * Thumb wheel widgets are always disabled in edit mode.
+	 */
+	@Override
+	protected boolean forceDisabledInEditMode() {
+		return true;
 	}
 
 	/**

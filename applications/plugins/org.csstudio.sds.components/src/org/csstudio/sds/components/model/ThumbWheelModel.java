@@ -136,9 +136,8 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getProperty(PROP_MAX).getPropertyValue();
 	}
 
-	public void setValue(double val) {
-		setPropertyValue(PROP_VALUE, val);
-
+	public void setManualValue(double val) {
+		getProperty(PROP_VALUE).setManualValue(val);
 	}
 
 	public RGB getInternalBorderColor() {
