@@ -35,7 +35,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionException;
-import org.csstudio.platform.simpledal.IConnectorStatistic;
+import org.csstudio.platform.simpledal.IConnector;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.SettableState;
@@ -57,237 +57,43 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 		RegelwerkBuilderServiceImpl
 				.staticInject(new IProcessVariableConnectionService() {
 
-					public int getConnectorCount() {
-						return 0;
-					}
-
-					public List<IConnectorStatistic> getConnectorStatistic() {
+					public List<IConnector> getConnectors() {
 						return null;
 					}
 
-					public Object getValue(
-							IProcessVariableAddress processVariableAddress,
-							ValueType valueType) throws ConnectionException {
+					public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
 						return null;
 					}
 
-					public double getValueAsDouble(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return 0;
-					}
-
-					public double[] getValueAsDoubleSequence(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return null;
-					}
-
-					public Enum getValueAsEnum(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return null;
-					}
-
-					public long getValueAsLong(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return 0;
-					}
-
-					public long[] getValueAsLongSequence(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return null;
-					}
-
-					public Object getValueAsObject(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return null;
-					}
-
-					public Object[] getValueAsObjectSequence(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return null;
-					}
-
-					public String getValueAsString(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return null;
-					}
-
-					public String[] getValueAsStringSequence(
-							IProcessVariableAddress processVariableAddress)
-							throws ConnectionException {
-						return null;
-					}
-
-					public void getValueAsync(
-							IProcessVariableAddress processVariableAddress,
-							ValueType valueType,
-							IProcessVariableValueListener<Double> listener) {
-					}
-
-					public void getValueAsyncAsDouble(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<Double> listener) {
-					}
-
-					public void getValueAsyncAsDoubleSequence(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<double[]> listener) {
-					}
-
-					public void getValueAsyncAsEnum(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<Enum> listener) {
-					}
-
-					public void getValueAsyncAsLong(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<Long> listener) {
-					}
-
-					public void getValueAsyncAsLongSequence(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<long[]> listener) {
-					}
-
-					public void getValueAsyncAsObject(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<Object> listener) {
-					}
-
-					public void getValueAsyncAsObjectSequence(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<Object[]> listener) {
-					}
-
-					public void getValueAsyncAsString(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<String> listener) {
-					}
-
-					public void getValueAsyncAsStringSequence(
-							IProcessVariableAddress processVariableAddress,
-							IProcessVariableValueListener<String[]> listener) {
-					}
-
-					public SettableState isSettable(IProcessVariableAddress pv) {
-						return null;
-					}
-
-					public void register(
-							IProcessVariableValueListener listener,
-							IProcessVariableAddress pv, ValueType valueType) {
-					}
-
-					public void registerForDoubleSequenceValues(
-							IProcessVariableValueListener<double[]> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForDoubleValues(
-							IProcessVariableValueListener<Double> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForEnumValues(
-							IProcessVariableValueListener<Enum> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForLongSequenceValues(
-							IProcessVariableValueListener<long[]> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForLongValues(
-							IProcessVariableValueListener<Long> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForObjectSequenceValues(
-							IProcessVariableValueListener<Object[]> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForObjectValues(
-							IProcessVariableValueListener<Object> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForStringSequenceValues(
-							IProcessVariableValueListener<String[]> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public void registerForStringValues(
-							IProcessVariableValueListener<String> listener,
-							IProcessVariableAddress pv) {
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							long value) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							long[] value) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							double value) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							double[] value) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							String value) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							String[] value) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							Object value, ValueType expectedValueType) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							Object[] value) {
-						return false;
-					}
-
-					public boolean setValue(
-							IProcessVariableAddress processVariableAddress,
-							Enum value) {
-						return false;
-					}
-
-					public void unregister(
+					public void readValueAsynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType,
 							IProcessVariableValueListener listener) {
-
+						
 					}
+
+					public <E> E readValueSynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType)
+							throws ConnectionException {
+						return null;
+					}
+
+					public void register(IProcessVariableValueListener listener, IProcessVariableAddress pv, ValueType valueType) {
+						
+					}
+
+					public void unregister(IProcessVariableValueListener listener) {
+						
+					}
+
+					public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value,
+							ValueType expectedValueType) {
+						
+					}
+
+					public void writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
+						// TODO Auto-generated method stub
+						
+					}
+
+				
 				});
 		RegelwerkBuilderServiceImpl
 				.staticInject(new LocalStoreConfigurationService() {

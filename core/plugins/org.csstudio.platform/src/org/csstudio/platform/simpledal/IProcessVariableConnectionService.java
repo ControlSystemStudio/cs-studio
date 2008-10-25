@@ -24,9 +24,22 @@ package org.csstudio.platform.simpledal;
 import java.util.List;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 
 /**
- * A service to connect to a process variable.
+ * A service which can be used for easy access to control system channels.
+ * 
+ * A control system channel is addressed via a {@link IProcessVariableAddress}.
+ * Please use {@link ProcessVariableAdressFactory} to create these addresses.
+ * 
+ * The service is designed to save system resources and share physical channels
+ * whenever possible.
+ * 
+ * The same physical connection (in case of EPICs, TINE, TANGO) is reused in the
+ * following cases:
+ * <li>for all connections to the same process variable with the same value
+ * type</li>
+ * <li>for all connections to characteristics of the same process variable</li>
  * 
  * You may use the {@link ProcessVariableConnectionServiceFactory} to create
  * instances of this service.
@@ -36,543 +49,113 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 public interface IProcessVariableConnectionService {
 
 	/**
+	 * Asynchronously writes the specified value to the channel addressed by the
+	 * the given process variable address.
 	 * 
-	 * @return
+	 * @param processVariableAddress
+	 *            the address
+	 * 
+	 * @param value
+	 *            the value
+	 * 
+	 * @return true, if the value was set successful, false otherwise
 	 */
-	List<IConnectorStatistic> getConnectorStatistic();
+	void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value,
+			ValueType expectedValueType);
+
+	/**
+	 * Synchronously writes the specified value to the channel addressed by the
+	 * the given process variable address.
+	 * 
+	 * @param processVariableAddress
+	 *            the address
+	 * 
+	 * @param value
+	 *            the value
+	 * 
+	 * @return true, if the value was set successful, false otherwise
+	 */
+	void writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value,
+			ValueType expectedValueType);
 	
 	/**
-	 * Returns the number of active connectors.
-	 * 
-	 * @return the number of active connectors
-	 */
-	int getConnectorCount();
-
-	/**
-	 * Sets a value for the specified process variable.
+	 * Asynchronously reads a value from the channel addressed by the the given
+	 * process variable address. When the value was received, the
+	 * {@link IProcessVariableValueListener#valueChanged(Object)} method will be
+	 * called on the given listener.
 	 * 
 	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress, long value);
-
-	/**
-	 * Sets a value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress,
-			long[] value);
-
-	/**
-	 * Sets a value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress,
-			double value);
-
-	/**
-	 * Sets a long value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress,
-			double[] value);
-
-	/**
-	 * Sets a long value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress,
-			String value);
-
-	/**
-	 * Sets a long value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress,
-			String[] value);
-
-	/**
-	 * Sets a long value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @param value
-	 *            the value
-	 * @param expectedValueType
-	 *            the expected value type
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress,
-			Object value, ValueType expectedValueType);
-
-	/**
-	 * Sets a long value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress,
-			Object[] value);
-
-	/**
-	 * Sets a long value for the specified process variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param value
-	 *            the value
-	 * 
-	 * @return true, if the value was set successful, false otherwise
-	 */
-	boolean setValue(IProcessVariableAddress processVariableAddress, Enum value);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @param valueType
-	 *            the expected value type
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsync(IProcessVariableAddress processVariableAddress,
-			ValueType valueType, IProcessVariableValueListener<Double> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsLong(IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Long> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsDouble(IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Double> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsString(IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<String> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsObject(IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Object> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsEnum(IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Enum> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsLongSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<long[]> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsDoubleSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<double[]> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsStringSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<String[]> listener);
-
-	/**
-	 * Gets a value via an asynchronous call. When the value is read, the
-	 * listener will receive a callback on it
-	 * {@link IProcessVariableValueListener#valueChanged(Object)} method.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * 
-	 * @param listener
-	 *            the callback listener
-	 */
-	void getValueAsyncAsObjectSequence(
-			IProcessVariableAddress processVariableAddress,
-			IProcessVariableValueListener<Object[]> listener);
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @param valueType
-	 *            the expected value type
-	 * @return the current value
-	 */
-	Object getValue(IProcessVariableAddress processVariableAddress,
-			ValueType valueType) throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	long getValueAsLong(IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	double getValueAsDouble(IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	String getValueAsString(IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	Object getValueAsObject(IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	Enum getValueAsEnum(IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	long[] getValueAsLongSequence(IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	double[] getValueAsDoubleSequence(
-			IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	Object[] getValueAsObjectSequence(
-			IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Synchronous access to the current value of the specified process
-	 * variable.
-	 * 
-	 * @param processVariableAddress
-	 *            the process variable
-	 * @return the current value
-	 */
-	String[] getValueAsStringSequence(
-			IProcessVariableAddress processVariableAddress)
-			throws ConnectionException;
-
-	/**
-	 * Unregisters the specified listener.
-	 * 
-	 * @param listener
-	 *            the listener
-	 */
-	void unregister(IProcessVariableValueListener listener);
-
-	/**
-	 * Registers a listener for the specified process variable.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
 	 *            the process variable address
 	 * @param valueType
 	 *            the expected value type
+	 * @param listener
+	 *            the call-back listener
 	 */
+	void readValueAsynchronously(IProcessVariableAddress processVariableAddress,
+			ValueType valueType, IProcessVariableValueListener listener);
+
+	/**
+	 * Synchronously reads a value from the channel addressed by the given
+	 * process variable address.
+	 * 
+	 * @param processVariableAddress
+	 *            the process variable address
+	 * 
+	 * @return the current value
+	 */
+	<E> E readValueSynchronously(
+			IProcessVariableAddress processVariableAddress, ValueType valueType)
+			throws ConnectionException;
+
+	/**
+	 * Starts listening permanently on the channel addressed by the specified
+	 * process variable address. The corresponding channel will be open as long
+	 * as any permanent listener is alive. For convenience this service
+	 * references the specified listener only weakly which means that it will be
+	 * garbage collected when its no longer referenced outside this service. If
+	 * you want to stop listening explicitly please use the
+	 * {@link #unregister(IProcessVariableValueListener)} method.
+	 * 
+	 * To stop listening just
+	 * 
+	 * Use the {@link #unregister(IProcessVariableValueListener)}
+	 * 
+	 * @param listener
+	 *            the listener that will receive the value change notifications
+	 * @param pv
+	 *            the process variable address
+	 * 
+	 * @param valueType
+	 *            the expected value type
+	 */
+	@SuppressWarnings("unchecked")
 	void register(IProcessVariableValueListener listener,
 			IProcessVariableAddress pv, ValueType valueType);
 
 	/**
-	 * Registers a listener for the specified process variables.
+	 * Stops the specified permanent listener.
 	 * 
 	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
+	 *            the listener
 	 */
-	void registerForLongValues(IProcessVariableValueListener<Long> listener,
-			IProcessVariableAddress pv);
+	@SuppressWarnings("unchecked")
+	void unregister(IProcessVariableValueListener listener);
 
 	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForStringValues(
-			IProcessVariableValueListener<String> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForObjectValues(
-			IProcessVariableValueListener<Object> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForDoubleValues(
-			IProcessVariableValueListener<Double> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForEnumValues(IProcessVariableValueListener<Enum> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForDoubleSequenceValues(
-			IProcessVariableValueListener<double[]> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForLongSequenceValues(
-			IProcessVariableValueListener<long[]> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForStringSequenceValues(
-			IProcessVariableValueListener<String[]> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Registers a listener for the specified process variables.
-	 * 
-	 * @param listener
-	 *            the listener to be informed about value changes
-	 * @param pv
-	 *            the process variable address
-	 */
-	void registerForObjectSequenceValues(
-			IProcessVariableValueListener<Object[]> listener,
-			IProcessVariableAddress pv);
-
-	/**
-	 * Returns {@link SettableState#SETTABLE} if the specified process variable
-	 * can be manipulated by the current user,
-	 * {@link SettableState#NOT_SETTABLE} if the user is not allowed to set any
-	 * values for that process variable and {@link SettableState#UNKNOWN} if the
-	 * state could not be determined (this also happens when a process variable
-	 * cannot be connected within a certain time period).
+	 * Checks whether the current user is allowed to write values to
+	 * the specified channel.
 	 * 
 	 * @param pv
 	 *            the process variable address
 	 * 
 	 * @return one of {@link SettableState#values()}
 	 */
-	SettableState isSettable(IProcessVariableAddress pv);
+	SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv);
 
+	/**
+	 * Returns all living connector.
+	 * 
+	 * @return all living connectors
+	 */
+	List<IConnector> getConnectors();
 }

@@ -24,7 +24,7 @@
 /**
  * The state of a connection to a PV.
  * 
- * @author C1 WPS / SW
+ * @author Sven Wende
  */
 public enum ConnectionState {
 	/**
@@ -58,6 +58,10 @@ public enum ConnectionState {
 
 	private org.epics.css.dal.context.ConnectionState _dalState;
 
+	/**
+	 * Constructor.
+	 * @param dalState
+	 */
 	private ConnectionState(org.epics.css.dal.context.ConnectionState dalState) {
 		_dalState = dalState;
 	}

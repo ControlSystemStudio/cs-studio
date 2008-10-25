@@ -249,4 +249,9 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 		// TODO: is it OK to keep raw name?
 		return new ProcessVariableAdress(_rawName,_controlSystem,_device,_property,null);
 	}
+	
+	public IProcessVariableAddress deriveCharacteristic(String characteristic) {
+		// TODO: is it OK to keep raw name?
+		return new ProcessVariableAdress(_rawName,_controlSystem,_device,_property,characteristic);
+	}
 }

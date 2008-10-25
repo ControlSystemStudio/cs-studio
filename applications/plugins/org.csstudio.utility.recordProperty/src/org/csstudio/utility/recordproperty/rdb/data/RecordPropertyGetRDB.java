@@ -19,6 +19,7 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.utility.ldap.reader.IocFinder;
 import org.csstudio.utility.recordproperty.Messages;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
@@ -181,8 +182,8 @@ public class RecordPropertyGetRDB {
 		_connectionService = _connectionFactory.createProcessVariableConnectionService();
 		
 		try {
-			rtype = _connectionService.getValueAsString(_addressFactory
-					.createProcessVariableAdress("dal-epics://"+record+".RTYP"));
+			rtype = _connectionService.readValueSynchronously(_addressFactory
+					.createProcessVariableAdress("dal-epics://"+record+".RTYP"), ValueType.STRING);
 			return true;
 		} catch (ConnectionException e) {
 			return false;
@@ -277,8 +278,8 @@ public class RecordPropertyGetRDB {
 		_connectionService = _connectionFactory.createProcessVariableConnectionService();
 		
 		try {
-			value = _connectionService.getValueAsString(_addressFactory
-					.createProcessVariableAdress("dal-epics://"+record+"."+fieldName));
+			value = _connectionService.readValueSynchronously(_addressFactory
+					.createProcessVariableAdress("dal-epics://"+record+"."+fieldName), ValueType.STRING);
 		} catch (ConnectionException e) {
 			CentralLogger.getInstance().getLogger(this).info("Field value not found: " + record + "." + fieldName);
 			e.printStackTrace();

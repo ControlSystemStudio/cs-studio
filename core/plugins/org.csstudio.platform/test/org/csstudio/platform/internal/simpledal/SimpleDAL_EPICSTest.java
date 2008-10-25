@@ -9,6 +9,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.csstudio.platform.internal.simpledal.dal.EpicsUtil;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
@@ -83,7 +84,7 @@ public class SimpleDAL_EPICSTest extends TestCase {
 				
 				IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
 
-				Object value= connectionService.getValue(ia,ValueType.OBJECT);
+				Object value= connectionService.readValueSynchronously(ia,ValueType.OBJECT);
 				
 				System.out.println(info.getName()+" "+value);
 				
@@ -138,19 +139,19 @@ public class SimpleDAL_EPICSTest extends TestCase {
 			
 			String rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[minimum]";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
-			double min= connectionService.getValueAsDouble(ia); 
+			double min= connectionService.readValueSynchronously(ia,ValueType.DOUBLE); 
 
 			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AI_03[maximum]";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			double max= connectionService.getValueAsDouble(ia); 
+			double max= connectionService.readValueSynchronously(ia,ValueType.DOUBLE); 
 
 			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AI_03[graphMin]";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			double graphMin= connectionService.getValueAsDouble(ia); 
+			double graphMin= connectionService.readValueSynchronously(ia,ValueType.DOUBLE); 
 
 			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AI_03[graphMax]";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			double graphMax= connectionService.getValueAsDouble(ia);
+			double graphMax= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			
 			assertEquals(min, graphMin, 0.0001);
 			assertEquals(max, graphMax, 0.0001);
@@ -159,19 +160,19 @@ public class SimpleDAL_EPICSTest extends TestCase {
 			
 			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[minimum]";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			min= connectionService.getValueAsDouble(ia); 
+			min= connectionService.readValueSynchronously(ia,ValueType.DOUBLE); 
 
 			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[maximum]";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			max= connectionService.getValueAsDouble(ia); 
+			max= connectionService.readValueSynchronously(ia,ValueType.DOUBLE); 
 
 			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[graphMin]";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			graphMin= connectionService.getValueAsDouble(ia); 
+			graphMin= connectionService.readValueSynchronously(ia,ValueType.DOUBLE); 
 
 			rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_03[graphMax]";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			graphMax= connectionService.getValueAsDouble(ia);
+			graphMax= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			
 			assertTrue(Math.abs(min-graphMin) > 0.0001);
 			assertTrue(Math.abs(max-graphMax) > 0.0001);
@@ -191,7 +192,7 @@ public class SimpleDAL_EPICSTest extends TestCase {
 			String rawName= ControlSystemEnum.DAL_EPICS.getPrefix()+"://PV_AO_11";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
 			IPVVListener l= new IPVVListener();
-			connectionService.registerForDoubleValues(l, ia);
+			connectionService.register(l, ia, ValueType.DOUBLE);
 
 			PropertyFactory factory = DALPropertyFactoriesProvider.getInstance()
 			.getPropertyFactory(ia.getControlSystem());
@@ -199,8 +200,8 @@ public class SimpleDAL_EPICSTest extends TestCase {
 			assertNotNull(pp);
 			//assertEquals(org.epics.css.dal.context.ConnectionState.INITIAL, pp.getConnectionState());
 			
-			connectionService.setValue(ia, 10.0);
-			double d= connectionService.getValueAsDouble(ia);
+			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE);
+			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 
@@ -238,7 +239,7 @@ public class SimpleDAL_EPICSTest extends TestCase {
 				System.out.println("*** "+names[i]+" ***");
 				DynamicValueProperty<?> p= fac.getProperty(names[i]);
 				
-				DalConnector.waitTillConnected(p, 10000);
+				EpicsUtil.waitTillConnected(p, 10000);
 
 				System.out.println("class: "+p.getClass().getName());
 				System.out.println("RTYP: "+Arrays.toString((String[])p.getCharacteristic("RTYP")));

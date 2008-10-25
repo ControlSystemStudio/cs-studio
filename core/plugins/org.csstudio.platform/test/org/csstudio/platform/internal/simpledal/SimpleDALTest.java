@@ -9,6 +9,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.csstudio.platform.internal.simpledal.dal.EpicsUtil;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
@@ -81,7 +82,7 @@ public class SimpleDALTest extends TestCase {
 				
 				IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
 
-				Object value= connectionService.getValue(ia,ValueType.OBJECT);
+				Object value= connectionService.readValueSynchronously(ia,ValueType.OBJECT);
 				
 				System.out.println(info.getName()+" "+value);
 				
@@ -114,15 +115,15 @@ public class SimpleDALTest extends TestCase {
 			System.out.println(ia.toString());
 			System.out.println(ia.toDalRemoteInfo().toString());
 		
-			double d= connectionService.getValueAsDouble(ia);
+			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 		
 			System.out.println(d);
 			
 			d= d+1.0;
 			
-			connectionService.setValue(ia, d);
+			connectionService.writeValueAsynchronously(ia, d, ValueType.DOUBLE);
 			
-			double d1= connectionService.getValueAsDouble(ia);
+			double d1= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			
 			System.out.println(d);
 			
@@ -149,7 +150,7 @@ public class SimpleDALTest extends TestCase {
 			
 			System.out.println("RI: "+ia.toDalRemoteInfo().toString());
 		
-			double d= connectionService.getValueAsDouble(ia);
+			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 		
 			rawName= rawName+"[severity]";
 			
@@ -164,17 +165,17 @@ public class SimpleDALTest extends TestCase {
 			System.out.println("PP: "+pp.getUniqueName());
 			pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), new Timestamp(),"STATUS1"));
 			
-			String s= connectionService.getValueAsString(ia);
+			String s= connectionService.readValueSynchronously(ia, ValueType.STRING);
 			System.out.println("severity: "+s);
 			assertNotNull(s);
 			assertEquals(DynamicValueState.ALARM.toString(), s);
 			
 			IPVVListener l = new IPVVListener();
-			connectionService.registerForStringValues(l, ia);
+			connectionService.register(l, ia, ValueType.STRING);
 			
 			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:P1[test]";
 			IProcessVariableAddress ia1= addressFactory.createProcessVariableAdress(rawName);
-			connectionService.registerForStringValues(l, ia1);
+			connectionService.register(l, ia1, ValueType.STRING);
 			
 			pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
 			System.out.println("PP: "+pp.getUniqueName());
@@ -202,9 +203,9 @@ public class SimpleDALTest extends TestCase {
 			
 			Set<CharacteristicInfo> set= new HashSet<CharacteristicInfo>(Arrays.asList(ci));
 			
-			assertTrue(set.contains(DalConnector.C_SEVERITY_INFO));
-			assertTrue(set.contains(DalConnector.C_STATUS_INFO));
-			assertTrue(set.contains(DalConnector.C_TIMESTAMP_INFO));
+			assertTrue(set.contains(EpicsUtil.C_SEVERITY_INFO));
+			assertTrue(set.contains(EpicsUtil.C_STATUS_INFO));
+			assertTrue(set.contains(EpicsUtil.C_TIMESTAMP_INFO));
 			
 			
 		} catch (Exception e) {
@@ -232,7 +233,7 @@ public class SimpleDALTest extends TestCase {
 				assertEquals(rawName, ia.getRawName());
 				assertTrue(ia.isCharacteristic());
 				
-				Object o= connectionService.getValue(ia, ValueType.OBJECT);
+				Object o= connectionService.readValueSynchronously(ia, ValueType.OBJECT);
 				
 				System.out.println("RI: "+ia.toDalRemoteInfo().toString()+" "+o);
 				
@@ -259,21 +260,21 @@ public class SimpleDALTest extends TestCase {
 			
 			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S1";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
-			double d= connectionService.getValueAsDouble(ia);
+			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			assertEquals(0.0, d, 0.0001);
 			
 			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S2";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			connectionService.setValue(ia, 10.0);
-			d= connectionService.getValueAsDouble(ia);
+			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE);
+			d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 		
 			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S3";
 			ia= addressFactory.createProcessVariableAdress(rawName);
 			IPVVListener l= new IPVVListener();
-			connectionService.registerForDoubleValues(l, ia);
-			connectionService.setValue(ia, 10.0);
-			d= connectionService.getValueAsDouble(ia);
+			connectionService.register(l, ia, ValueType.DOUBLE);
+			connectionService.writeValueAsynchronously(ia, 10.0,  ValueType.DOUBLE);
+			d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 			assertNotNull(l.value);
 			assertNotNull(l.state);
@@ -297,7 +298,7 @@ public class SimpleDALTest extends TestCase {
 			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D2:P1";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
 			IPVVListener l= new IPVVListener();
-			connectionService.registerForDoubleValues(l, ia);
+			connectionService.register(l, ia, ValueType.DOUBLE);
 
 			PropertyFactory factory = DALPropertyFactoriesProvider.getInstance()
 			.getPropertyFactory(ia.getControlSystem());
@@ -305,8 +306,8 @@ public class SimpleDALTest extends TestCase {
 			assertNotNull(pp);
 			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
-			connectionService.setValue(ia, 10.0);
-			double d= connectionService.getValueAsDouble(ia);
+			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE);
+			double d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 			assertNotNull(l.value);
 			assertNotNull(l.state);

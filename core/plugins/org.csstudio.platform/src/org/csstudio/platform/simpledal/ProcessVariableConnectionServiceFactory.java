@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.simpledal;
 
+import org.csstudio.platform.internal.simpledal.ConnectorFactory;
 import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
 
 /**
@@ -33,28 +34,52 @@ public class ProcessVariableConnectionServiceFactory {
 
 	private static ProcessVariableConnectionServiceFactory sharedInstance;
 
+	private IProcessVariableConnectionService _mainProcessVariableConnectionService;
+
 	/**
-	 * Creates a new, empty {@link IProcessVariableConnectionService}.
+	 * Returns the singleton instance of this factory.
 	 * 
-	 * @deprecated Use {@link #getDefault()}.{@link #createProcessVariableConnectionService()}
-	 *             instead.
+	 * @return the singleton instance of this factory
 	 */
-	@Deprecated
-	public static IProcessVariableConnectionService getProcessVariableConnectionService() {
-		return ProcessVariableConnectionService.getInstance();
-	}
-
-	/**
-	 * Creates a new, empty {@link IProcessVariableConnectionService}.
-	 */
-	public IProcessVariableConnectionService createProcessVariableConnectionService() {
-		return ProcessVariableConnectionService.getInstance();
-	}
-
 	public static ProcessVariableConnectionServiceFactory getDefault() {
 		if (ProcessVariableConnectionServiceFactory.sharedInstance == null) {
 			ProcessVariableConnectionServiceFactory.sharedInstance = new ProcessVariableConnectionServiceFactory();
 		}
 		return ProcessVariableConnectionServiceFactory.sharedInstance;
 	}
+
+	/**
+	 * Returns the main {@link IProcessVariableConnectionService} for the
+	 * control system studio.
+	 * 
+	 * In general, this service should be used by all CSS applications to save
+	 * resources and ensure maximum channel reuse.
+	 * 
+	 * @return the main {@link IProcessVariableConnectionService} for the
+	 *         control system studio
+	 */
+	public IProcessVariableConnectionService getProcessVariableConnectionService() {
+		return getMainProcessVariableConnectionService();
+	}
+
+	/**
+	 * Returns a named {@link IProcessVariableConnectionService}. If no service
+	 * exists for the specified name, a new service is created.
+	 * 
+	 * @return a {@link IProcessVariableConnectionService}
+	 */
+	public IProcessVariableConnectionService createProcessVariableConnectionService() {
+		// TODO: Implement storage for named services and enhance the Connector
+		// Overview View to display channels for different connection services
+		return getMainProcessVariableConnectionService();
+	}
+
+	private IProcessVariableConnectionService getMainProcessVariableConnectionService() {
+		if (_mainProcessVariableConnectionService == null) {
+			_mainProcessVariableConnectionService = new ProcessVariableConnectionService(new ConnectorFactory());
+		}
+
+		return _mainProcessVariableConnectionService;
+	}
+
 }

@@ -19,22 +19,40 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.simpledal;
+package org.csstudio.platform.simpledal;
 
 import org.epics.css.dal.Timestamp;
 
-public class ProcessVariableValueAdapter<E> implements IProcessVariableValueListener<E> {
+/**
+ * Classical adapter for {@link IProcessVariableValueListener} with empty
+ * default implementations.
+ * 
+ * @author Sven Wende
+ * 
+ * @param <E>
+ */
+public class ProcessVariableValueAdapter<E> implements
+		IProcessVariableValueListener<E> {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void connectionStateChanged(ConnectionState connectionState) {
-		
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void errorOccured(String error) {
-		
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void valueChanged(E value, Timestamp timestamp) {
-		
+
 	}
 
 }

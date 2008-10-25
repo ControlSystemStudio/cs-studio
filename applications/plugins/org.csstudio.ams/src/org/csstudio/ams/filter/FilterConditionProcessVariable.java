@@ -35,6 +35,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
 
 /**
@@ -387,15 +388,15 @@ public strictfp class FilterConditionProcessVariable implements
 
 		if (SuggestedProcessVariableType.LONG.equals(suggestedtype)) {
 			ProcessVariableChangeListener<Long> intListener = new ProcessVariableChangeListener<Long>();
-			pvcService.registerForLongValues(intListener, pva);
+			pvcService.register(intListener, pva, ValueType.LONG);
 			_processVariableChangeListener = intListener;
 		} else if (SuggestedProcessVariableType.DOUBLE.equals(suggestedtype)) {
 			ProcessVariableChangeListener<Double> doubleListener = new ProcessVariableChangeListener<Double>();
-			pvcService.registerForDoubleValues(doubleListener, pva);
+			pvcService.register(doubleListener, pva, ValueType.DOUBLE);
 			_processVariableChangeListener = doubleListener;
 		} else if (SuggestedProcessVariableType.STRING.equals(suggestedtype)) {
 			ProcessVariableChangeListener<String> stringListener = new ProcessVariableChangeListener<String>();
-			pvcService.registerForStringValues(stringListener, pva);
+			pvcService.register(stringListener, pva, ValueType.STRING);
 			_processVariableChangeListener = stringListener;
 		} else {
 			throw new RuntimeException("Unknown suggested type: "
@@ -435,7 +436,7 @@ public strictfp class FilterConditionProcessVariable implements
 					.getInstance().createProcessVariableAdress(
 							processVariableChannelName);
 			this.doInit(configuration, filterConditionID, filterID,
-					ProcessVariableConnectionServiceFactory
+					ProcessVariableConnectionServiceFactory.getDefault()
 							.getProcessVariableConnectionService(),
 					variableAdress);
 		} catch (Exception e) {

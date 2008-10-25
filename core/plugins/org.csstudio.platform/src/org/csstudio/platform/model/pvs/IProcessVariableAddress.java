@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.model.pvs;
+package org.csstudio.platform.model.pvs;
 
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.context.RemoteInfo;
@@ -78,7 +78,7 @@ public interface IProcessVariableAddress {
 	String getFullName();
 
 	boolean isCharacteristic();
-	
+
 	ValueType getValueTypeHint();
 
 	/**
@@ -88,10 +88,21 @@ public interface IProcessVariableAddress {
 	 * @return a DAL RemoteInfo or null
 	 */
 	RemoteInfo toDalRemoteInfo();
-	
+
 	/**
-	 * Returns new address instance without characteristic part.
-	 * @return new address instance without characteristic part
+	 * Derives an address that cuts off an existing characteristic.
+	 * 
+	 * @return a "normal" address (without characteristic)
 	 */
 	IProcessVariableAddress deriveNoCharacteristicPart();
+
+	/**
+	 * Derives an address for the specified characteristic.
+	 * 
+	 * @param characteristic
+	 *            the characteristic
+	 * 
+	 * @return an address for a characteristic
+	 */
+	IProcessVariableAddress deriveCharacteristic(String characteristic);
 }

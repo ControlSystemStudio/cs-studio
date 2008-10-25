@@ -34,18 +34,17 @@ import org.epics.css.dal.Timestamp;
  */
 public interface IProcessVariableValueListener<E> {
 	/**
-	 * Announces a value change on the channel.
+	 * Announces a change in the value or a characteristic of a channel.
 	 * 
 	 * @param value
-	 *            the latest value
+	 *            the latest value or characteristic value
 	 * @param timestamp
-	 * 			  the timestamp of the latest value.
-	 * 			(jhatje 18.07.2008) 
+	 * 			  the time of value delivery
 	 */
 	void valueChanged(E value, Timestamp timestamp);
 
 	/**
-	 * Announces a connection state change.
+	 * Announces a change in the connection state.
 	 * 
 	 * @param connectionState
 	 *            the current connection state

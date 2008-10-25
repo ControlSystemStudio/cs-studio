@@ -30,6 +30,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
 import org.junit.After;
 import org.junit.Before;
@@ -50,12 +51,12 @@ public class FilterConditionProcessVariable_IntegrationTestWithDAL {
 		FilterConditionProcessVariableTObject configuration = new FilterConditionProcessVariableTObject(
 				FILTER_CONDITION_ID, TEST_CHANNEL_NAME, Operator.EQUALS,
 				SuggestedProcessVariableType.DOUBLE, new Double(1.0));
-		IProcessVariableConnectionService service = ProcessVariableConnectionServiceFactory
+		IProcessVariableConnectionService service = ProcessVariableConnectionServiceFactory.getDefault()
 				.getProcessVariableConnectionService();
 		IProcessVariableAddress address = ProcessVariableAdressFactory
 				.getInstance().createProcessVariableAdress(TEST_CHANNEL_NAME);
 		_connected = false;
-		service.registerForDoubleValues(new IProcessVariableValueListener<Double>() {
+		service.register(new IProcessVariableValueListener<Double>() {
 			public void connectionStateChanged(ConnectionState connectionState) {
 				if( ConnectionState.CONNECTED.equals(connectionState) )
 				{
@@ -75,7 +76,7 @@ public class FilterConditionProcessVariable_IntegrationTestWithDAL {
                 // TODO Auto-generated method stub
                 
             }
-		}, address);
+		}, address,ValueType.DOUBLE);
 
 		_filterConditionPV.doInit(configuration, FILTER_CONDITION_ID,
 				FILTER_ID, service, address);

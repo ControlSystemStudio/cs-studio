@@ -42,6 +42,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.platform.simpledal.ValueType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -82,13 +83,13 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
 						.getInstance().createProcessVariableAdress(
 								getText(Display.getCurrent(), txtChannelValue));
 				IProcessVariableConnectionService connectionService = ProcessVariableConnectionServiceFactory
-						.getProcessVariableConnectionService();
+						.getDefault().getProcessVariableConnectionService();
 				connected = false;
 				checked = false;
 				valueRecieved = false;
 				switch (getSelectedType()) {
 				case DOUBLE:
-					connectionService.registerForDoubleValues(
+					connectionService.register(
 							new IProcessVariableValueListener<Double>() {
 								public void connectionStateChanged(
 										ConnectionState connectionState) {
@@ -115,10 +116,10 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
                                     // TODO Auto-generated method stub
                                     
                                 }
-							}, pv);
+							}, pv, ValueType.DOUBLE);
 					break;
 				case LONG:
-					connectionService.registerForLongValues(
+					connectionService.register(
 							new IProcessVariableValueListener<Long>() {
 								public void connectionStateChanged(
 										ConnectionState connectionState) {
@@ -144,10 +145,10 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
                                     // TODO Auto-generated method stub
                                     
                                 }
-							}, pv);
+							}, pv, ValueType.LONG);
 					break;
 				case STRING:
-					connectionService.registerForStringValues(
+					connectionService.register(
 							new IProcessVariableValueListener<String>() {
 								public void connectionStateChanged(
 										ConnectionState connectionState) {
@@ -173,7 +174,7 @@ public class FilterConditionProcessVariableUI extends FilterConditionUI {
                                     // TODO Auto-generated method stub
                                     
                                 }
-							}, pv);
+							}, pv, ValueType.STRING);
 					break;
 				default:
 					// should never get here

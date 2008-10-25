@@ -26,6 +26,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
+import org.csstudio.platform.simpledal.ValueType;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -386,24 +387,24 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 						if (SuggestedProcessVariableType.DOUBLE
 								.equals(suggestedType)) {
 							FilterbedingungEditor.pvConnectionService
-									.getValueAsDouble(ProcessVariableAdressFactory
+									.readValueSynchronously(ProcessVariableAdressFactory
 											.getInstance()
 											.createProcessVariableAdress(
-													channelName));
+													channelName), ValueType.DOUBLE);
 						} else if (SuggestedProcessVariableType.LONG
 								.equals(suggestedType)) {
 							FilterbedingungEditor.pvConnectionService
-									.getValueAsLong(ProcessVariableAdressFactory
+									.readValueSynchronously(ProcessVariableAdressFactory
 											.getInstance()
 											.createProcessVariableAdress(
-													channelName));
+													channelName), ValueType.LONG);
 						} else if (SuggestedProcessVariableType.STRING
 								.equals(suggestedType)) {
 							FilterbedingungEditor.pvConnectionService
-									.getValueAsString(ProcessVariableAdressFactory
+									.readValueSynchronously(ProcessVariableAdressFactory
 											.getInstance()
 											.createProcessVariableAdress(
-													channelName));
+													channelName), ValueType.STRING);
 						}
 					} catch (final ConnectionException connectionException) {
 						MessageDialog

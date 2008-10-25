@@ -21,7 +21,6 @@
  */
 package org.csstudio.platform.simpledal;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +50,7 @@ public enum ValueType {
 	 * An object value.
 	 */
 	OBJECT("object", "Object", ObjectProperty.class, Object.class),
-	
+
 	/**
 	 * An array of double values.
 	 */
@@ -60,22 +59,26 @@ public enum ValueType {
 	/**
 	 * An array of double values.
 	 */
-	DOUBLE_SEQUENCE("doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class, double[].class), //$NON-NLS-1$
+	DOUBLE_SEQUENCE(
+			"doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class, double[].class), //$NON-NLS-1$
 
 	/**
 	 * An array of string values.
 	 */
-	STRING_SEQUENCE("stringSeq", "Sequence of Strings", StringSeqProperty.class, String[].class), //$NON-NLS-1$
+	STRING_SEQUENCE(
+			"stringSeq", "Sequence of Strings", StringSeqProperty.class, String[].class), //$NON-NLS-1$
 
 	/**
 	 * An array of long values.
 	 */
-	LONG_SEQUENCE("longSeq", "Sequence of Longs", LongSeqProperty.class, long[].class), //$NON-NLS-1$
+	LONG_SEQUENCE(
+			"longSeq", "Sequence of Longs", LongSeqProperty.class, long[].class), //$NON-NLS-1$
 
 	/**
 	 * An array of object values.
 	 */
-	OBJECT_SEQUENCE("objectSeq", "Sequence of Objects", ObjectSeqProperty.class, Object[].class), //$NON-NLS-1$
+	OBJECT_SEQUENCE(
+			"objectSeq", "Sequence of Objects", ObjectSeqProperty.class, Object[].class), //$NON-NLS-1$
 
 	/**
 	 * A long value.
@@ -99,7 +102,7 @@ public enum ValueType {
 	private String _id;
 
 	private String _description;
-	
+
 	private Class _javaType;
 
 	/**
@@ -158,12 +161,13 @@ public enum ValueType {
 
 	/**
 	 * Returns the expected Java type for values of this type.
+	 * 
 	 * @return the expected Java type for values of this type
 	 */
 	public Class getJavaType() {
 		return _javaType;
 	}
-	
+
 	/**
 	 * A map that contains all instances of this class.
 	 */

@@ -24,6 +24,7 @@
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
+import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.eclipse.core.runtime.Platform;
 
 public class Environment {
@@ -44,7 +45,7 @@ public class Environment {
 	}
 	
 	public static Integer getNumberOfActiveConnectors() {
-		return ProcessVariableConnectionService.getInstance().getConnectorCount();
+		return ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().getConnectors().size();
 	}
 	
 	public static Long getMaxMemory() {

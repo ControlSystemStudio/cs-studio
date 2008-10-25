@@ -12,6 +12,7 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
 
 /**
@@ -124,17 +125,17 @@ public class ProcessVariableRegel implements VersandRegel {
 		if (SuggestedProcessVariableType.LONG
 				.equals(suggestedProcessVariableType)) {
 			final ProcessVariableChangeListener<Long> intListener = new ProcessVariableChangeListener<Long>();
-			pvService.registerForLongValues(intListener, channelName);
+			pvService.register(intListener, channelName, ValueType.LONG);
 			this._processVariableChangeListener = intListener;
 		} else if (SuggestedProcessVariableType.DOUBLE
 				.equals(suggestedProcessVariableType)) {
 			final ProcessVariableChangeListener<Double> doubleListener = new ProcessVariableChangeListener<Double>();
-			pvService.registerForDoubleValues(doubleListener, channelName);
+			pvService.register(doubleListener, channelName, ValueType.DOUBLE);
 			this._processVariableChangeListener = doubleListener;
 		} else if (SuggestedProcessVariableType.STRING
 				.equals(suggestedProcessVariableType)) {
 			final ProcessVariableChangeListener<String> stringListener = new ProcessVariableChangeListener<String>();
-			pvService.registerForStringValues(stringListener, channelName);
+			pvService.register(stringListener, channelName, ValueType.STRING);
 			this._processVariableChangeListener = stringListener;
 		} else {
 			throw new RuntimeException("Unknown suggested type: "
