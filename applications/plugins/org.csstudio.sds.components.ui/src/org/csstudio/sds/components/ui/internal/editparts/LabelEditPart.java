@@ -155,6 +155,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 				try {
 					double d = Double.parseDouble(text);
 					numberFormat.setMaximumFractionDigits(model.getPrecision());
+					numberFormat.setMinimumFractionDigits(model.getPrecision());
 					toprint = numberFormat.format(d);
 				} catch (Exception e) {
 					toprint = text;

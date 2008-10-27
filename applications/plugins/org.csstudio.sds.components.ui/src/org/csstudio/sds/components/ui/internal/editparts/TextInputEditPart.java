@@ -403,7 +403,8 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 
 		TextTypeEnum type = model.getValueType();
 		String text = model.getInputText();
-
+		
+		String help = model.getName();
 		String toprint = "none";
 
 		switch (type) {
@@ -418,9 +419,15 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 					|| updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)
 					|| updatedPropertyId.equals(LabelModel.PROP_PRECISION)) {
 				try {
-					double d = Double.parseDouble(text);
-					numberFormat.setMaximumFractionDigits(model.getPrecision());
-					toprint = numberFormat.format(d);
+					try{
+					    double d = Double.parseDouble(text);
+	                    numberFormat.setMaximumFractionDigits(model.getPrecision());
+	                    numberFormat.setMinimumFractionDigits(model.getPrecision());
+					    toprint = numberFormat.format(d);
+					}catch (NumberFormatException e){
+					    toprint = text;
+					}
+					
 				} catch (Exception e) {
 					toprint = text;
 				}
