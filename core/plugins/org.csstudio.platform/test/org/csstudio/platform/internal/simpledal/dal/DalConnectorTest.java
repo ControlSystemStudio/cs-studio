@@ -33,41 +33,52 @@ import org.junit.Test;
 /**
  * Test class for {@link DalConnector}.
  * 
+ * To run the tests, put the following records on your IOC:
+ * 
+ * <pre>
+ *  record(ai,&quot;unittest:ai&quot;) {
+ *  field(DESC,&quot;read only&quot;)
+ *  field(SCAN,&quot;.1 second&quot;)
+ *  field(INP,&quot;23.45&quot;)
+ *  field(HIHI,&quot;35.00&quot;)
+ *  field(HIGH,&quot;30.00&quot;)
+ *  field(LOW,&quot;10.00&quot;)
+ *  field(LOLO,&quot;5.00&quot;)
+ *  field(HOPR,&quot;40.00&quot;)
+ *  field(LOPR,&quot;2.30&quot;)
+ *  field(HHSV,&quot;NO_ALARM&quot;)
+ *  field(LLSV,&quot;NO_ALARM&quot;)
+ *  field(HSV,&quot;NO_ALARM&quot;)
+ *  field(LSV,&quot;NO_ALARM&quot;)
+ *  }
+ * 
+ *  record(ai,&quot;unittest:ai:write&quot;) {
+ *  field(DESC,&quot;read+write&quot;)
+ *  field(SCAN,&quot;.1 second&quot;)
+ *  field(INP,&quot;23.45&quot;)
+ *  field(HIHI,&quot;35.00&quot;)
+ *  field(HIGH,&quot;30.00&quot;)
+ *  field(LOW,&quot;10.00&quot;)
+ *  field(LOLO,&quot;5.00&quot;)
+ *  field(HOPR,&quot;40.00&quot;)
+ *  field(LOPR,&quot;2.30&quot;)
+ *  field(HHSV,&quot;NO_ALARM&quot;)
+ *  field(LLSV,&quot;NO_ALARM&quot;)
+ *  field(HSV,&quot;NO_ALARM&quot;)
+ *  field(LSV,&quot;NO_ALARM&quot;)
+ *  }
+ * </pre>
+ * 
  * @author Sven Wende
  * 
  */
 public class DalConnectorTest {
-
-	private static final ControlSystemEnum[] BASE_CONTROL_SYSTEMS = { ControlSystemEnum.DAL_EPICS };
-
-	private static final String[] BASE_PV_NAMES = { "Chiller:Pressure:1", "Chiller:Pressure:2" };
-	private static final String[] BASE_CHARACTERISTICS = { "minimum", "maximum", "timestamp" };
-
-	private List<IProcessVariableAddress> _pvs;
-
-	private List<IProcessVariableAddress> _pvsWithCharacteristics;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		_pvs = new ArrayList<IProcessVariableAddress>();
-		_pvsWithCharacteristics = new ArrayList<IProcessVariableAddress>();
-
-		// create the pv addresses that are used for the connection tests
-		for (ControlSystemEnum cs : BASE_CONTROL_SYSTEMS) {
-			for (String name : BASE_PV_NAMES) {
-				IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(name, cs);
-				_pvs.add(pv);
-
-				for (String c : BASE_CHARACTERISTICS) {
-					IProcessVariableAddress cPv = pv.deriveCharacteristic(c);
-					_pvsWithCharacteristics.add(cPv);
-				}
-			}
-		}
-
 	}
 
 	/**
@@ -85,7 +96,7 @@ public class DalConnectorTest {
 		// an unknown pv
 		pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress("dal-epics://unknown");
 		connector = new DalConnector(pv, ValueType.DOUBLE);
-		
+
 		state = connector.isSettable();
 		assertEquals(SettableState.UNKNOWN, state);
 	}
@@ -93,7 +104,8 @@ public class DalConnectorTest {
 	/**
 	 * Test method for
 	 * {@link org.csstudio.platform.internal.simpledal.dal.DalConnector#doDispose()}.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	@Test
 	public final void testDoDispose() throws Exception {
@@ -105,11 +117,11 @@ public class DalConnectorTest {
 		// verify, that we are connected
 		assertNotNull(value);
 		assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, dalProperty.getConnectionState());
-		
+
 		// dispose
 		connector.dispose();
 		Thread.sleep(2000);
-		
+
 		// verify that we are disconnected
 		assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, dalProperty.getConnectionState());
 	}
@@ -126,9 +138,15 @@ public class DalConnectorTest {
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.LONG, 2l);
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.LONG_SEQUENCE, new long[] { 2l });
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.OBJECT, new Double(2.3));
-		//TODO: testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.OBJECT_SEQUENCE, new Object[] { new Double(2.3) });
-		//TODO: testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.STRING, "2");
-		//TODO: testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.STRING_SEQUENCE, new String[] { "2" });
+		// TODO:
+		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]",
+		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(2.3) });
+		// TODO:
+		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]",
+		// ValueType.STRING, "2");
+		// TODO:
+		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]",
+		// ValueType.STRING_SEQUENCE, new String[] { "2" });
 
 		// ... get [maximum] characteristic in all type combinations
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]", ValueType.DOUBLE, 40.0);
@@ -136,9 +154,15 @@ public class DalConnectorTest {
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]", ValueType.LONG, 40l);
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]", ValueType.LONG_SEQUENCE, new long[] { 40l });
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]", ValueType.OBJECT, new Double(40.0));
-		//TODO: testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]", ValueType.OBJECT_SEQUENCE, new Object[] { new Double(40.0) });
-		//TODO: testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]", ValueType.STRING, "40");
-		//TODO: testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]", ValueType.STRING_SEQUENCE, new String[] { "40" });
+		// TODO:
+		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]",
+		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(40.0) });
+		// TODO:
+		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]",
+		// ValueType.STRING, "40");
+		// TODO:
+		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[maximum]",
+		// ValueType.STRING_SEQUENCE, new String[] { "40" });
 
 		// ... get other available characteristics
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[graphMin]", ValueType.DOUBLE, 2.3);
@@ -184,9 +208,15 @@ public class DalConnectorTest {
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]", ValueType.LONG, 2l);
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]", ValueType.LONG_SEQUENCE, new long[] { 2l });
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]", ValueType.OBJECT, new Double(2.3));
-		//TODO: testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]", ValueType.OBJECT_SEQUENCE, new Object[] { new Double(2.3) });
-		//TODO: testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]", ValueType.STRING, "2");
-		//TODO: testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]", ValueType.STRING_SEQUENCE, new String[] { "2" });
+		// TODO:
+		// testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]",
+		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(2.3) });
+		// TODO:
+		// testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]",
+		// ValueType.STRING, "2");
+		// TODO:
+		// testGetCharacteristicSynchronously("dal-epics://unittest:ai[minimum]",
+		// ValueType.STRING_SEQUENCE, new String[] { "2" });
 
 		// ... get [maximum] characteristic in all type combinations
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]", ValueType.DOUBLE, 40.0);
@@ -194,9 +224,15 @@ public class DalConnectorTest {
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]", ValueType.LONG, 40l);
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]", ValueType.LONG_SEQUENCE, new long[] { 40l });
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]", ValueType.OBJECT, new Double(40.0));
-		//TODO: testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]", ValueType.OBJECT_SEQUENCE, new Object[] { new Double(40.0) });
-		//TODO: testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]", ValueType.STRING, "40");
-		//TODO: testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]", ValueType.STRING_SEQUENCE, new String[] { "40" });
+		// TODO:
+		// testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]",
+		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(40.0) });
+		// TODO:
+		// testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]",
+		// ValueType.STRING, "40");
+		// TODO:
+		// testGetCharacteristicSynchronously("dal-epics://unittest:ai[maximum]",
+		// ValueType.STRING_SEQUENCE, new String[] { "40" });
 
 		// ... get other available characteristics
 		testGetCharacteristicSynchronously("dal-epics://unittest:ai[graphMin]", ValueType.DOUBLE, 2.3);
@@ -231,7 +267,8 @@ public class DalConnectorTest {
 		testGetValueAsynchronously("dal-epics://unittest:ai", ValueType.LONG, 23l);
 		testGetValueAsynchronously("dal-epics://unittest:ai", ValueType.LONG_SEQUENCE, new long[] { 23l });
 		testGetValueAsynchronously("dal-epics://unittest:ai", ValueType.OBJECT, new Double(23.45));
-		//TODO: testGetValueAsynchronously("dal-epics://unittest:ai", ValueType.OBJECT_SEQUENCE, new Object[] { new Double(23.45) });
+		// TODO: testGetValueAsynchronously("dal-epics://unittest:ai",
+		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(23.45) });
 		testGetValueAsynchronously("dal-epics://unittest:ai", ValueType.STRING, "23");
 		testGetValueAsynchronously("dal-epics://unittest:ai", ValueType.STRING_SEQUENCE, new String[] { "23" });
 	}
@@ -269,7 +306,8 @@ public class DalConnectorTest {
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.LONG, 23l);
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.LONG_SEQUENCE, new long[] { 23l });
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.OBJECT, new Double(23.45));
-		//TODO: testGetValueSynchronously("dal-epics://unittest:ai", ValueType.OBJECT_SEQUENCE, new Object[] { new Double(23.45) });
+		// TODO: testGetValueSynchronously("dal-epics://unittest:ai",
+		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(23.45) });
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.STRING, "23");
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.STRING_SEQUENCE, new String[] { "23" });
 	}
