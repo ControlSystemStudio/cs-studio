@@ -1,7 +1,9 @@
 package org.csstudio.platform.ui.workbench;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -18,7 +20,8 @@ import org.eclipse.ui.PlatformUI;
  *  
  *  @author Kay Kasemir
  */
-public class OpenViewAction implements IWorkbenchWindowActionDelegate
+public class OpenViewAction extends Action
+   implements IWorkbenchWindowActionDelegate
 {
     /** ID of the view to open */
     final private String id;
@@ -26,6 +29,26 @@ public class OpenViewAction implements IWorkbenchWindowActionDelegate
     /** @param id ID of the view to open */
     public OpenViewAction(final String id)
     {
+        this.id = id;
+    }
+
+    /** @param id ID of the view to open 
+     *  @param label Action label
+     */
+    public OpenViewAction(String id, String label)
+    {
+        super(label);
+        this.id = id;
+    }
+
+    /** @param id ID of the view to open 
+     *  @param label Action label
+     *  @param icon Icon
+     */
+    public OpenViewAction(String id, String label,
+            ImageDescriptor icon)
+    {
+        super(label, icon);
         this.id = id;
     }
 
@@ -40,6 +63,12 @@ public class OpenViewAction implements IWorkbenchWindowActionDelegate
     }
 
     public void run(final IAction action)
+    {
+        run();
+    }
+
+    @Override
+    public void run()
     {
         try
         {
