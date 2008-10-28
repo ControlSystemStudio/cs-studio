@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.csstudio.platform.data.INumericMetaData;
@@ -462,6 +463,25 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 				}
 			}
 			break;
+		case EXP:
+            if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)
+                    || updatedPropertyId.equals(LabelModel.PROP_PRECISION)) {
+                try {
+                    String pattern = "";
+                    for(int i=0;i<model.getPrecision();i++){
+                        pattern = pattern.concat("0");
+                    }
+                    pattern = pattern.concat("E00");
+                    DecimalFormat expFormat = new DecimalFormat(pattern);
+                    double d = Double.parseDouble(text);
+//                    expFormat.setMaximumFractionDigits(model.getPrecision());
+//                    expFormat.setMinimumFractionDigits(model.getPrecision());
+                    toprint = expFormat.format(d);
+                } catch (Exception e) {
+                    toprint = text;
+                }
+            }
+            break;
 		default:
 			toprint = "unknown value type";
 		}
