@@ -307,7 +307,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextValue((String) newValue);
+				label.setTextValue(determineLabel(TextInputModel.PROP_INPUT_TEXT));
 				return true;
 			}
 		};
@@ -411,14 +411,14 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 		switch (type) {
 		case TEXT:
 			if (updatedPropertyId == null
-					|| updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)) {
+					|| updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
 				toprint = text;
 			}
 			break;
 		case DOUBLE:
 			if (updatedPropertyId == null
-					|| updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)
-					|| updatedPropertyId.equals(LabelModel.PROP_PRECISION)) {
+					|| updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
+					|| updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
 				try {
 					try{
 					    double d = Double.parseDouble(text);
@@ -436,8 +436,8 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 			break;
 		case ALIAS:
 			if (updatedPropertyId == null
-					|| updatedPropertyId.equals(LabelModel.PROP_ALIASES)
-					|| updatedPropertyId.equals(LabelModel.PROP_PRIMARY_PV)) {
+					|| updatedPropertyId.equals(TextInputModel.PROP_ALIASES)
+					|| updatedPropertyId.equals(TextInputModel.PROP_PRIMARY_PV)) {
 				try {
 					toprint = ChannelReferenceValidationUtil
 							.createCanonicalName(model.getPrimaryPV(), model
@@ -449,7 +449,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 			break;
 		case HEX:
 			if (updatedPropertyId == null
-					|| updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)) {
+					|| updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
 				try {
 					long l = Long.parseLong(text);
 					toprint = Long.toHexString(l);
@@ -464,8 +464,8 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 			}
 			break;
 		case EXP:
-            if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)
-                    || updatedPropertyId.equals(LabelModel.PROP_PRECISION)) {
+            if (updatedPropertyId==null || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
+                    || updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
                 try {
                     String pattern = "";
                     for(int i=0;i<model.getPrecision();i++){
