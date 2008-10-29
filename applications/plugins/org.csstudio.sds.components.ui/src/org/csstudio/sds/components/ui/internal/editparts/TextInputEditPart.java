@@ -405,7 +405,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 		TextTypeEnum type = model.getValueType();
 		String text = model.getInputText();
 		
-		String help = model.getName();
 		String toprint = "none";
 
 		switch (type) {
@@ -474,8 +473,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
                     pattern = pattern.concat("E00");
                     DecimalFormat expFormat = new DecimalFormat(pattern);
                     double d = Double.parseDouble(text);
-//                    expFormat.setMaximumFractionDigits(model.getPrecision());
-//                    expFormat.setMinimumFractionDigits(model.getPrecision());
                     toprint = expFormat.format(d);
                 } catch (Exception e) {
                     toprint = text;
