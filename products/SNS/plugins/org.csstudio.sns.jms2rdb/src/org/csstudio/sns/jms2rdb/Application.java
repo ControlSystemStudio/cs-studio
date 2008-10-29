@@ -16,6 +16,13 @@ import org.osgi.service.http.HttpService;
 /** Application's 'Main' class.
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
+ *  
+ *  TODO Add filter to suppress e.g. alarm/IDLE messages
+ *  That could be done with configurable filter for
+ *  TOPIC=ALARM
+ *  TEXT=IDLE
+ *  Check what else could be suppressed, then determine which
+ *  properties need to be checked.
  */
 @SuppressWarnings("nls")
 public class Application implements IApplication

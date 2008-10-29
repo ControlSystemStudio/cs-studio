@@ -75,7 +75,7 @@ public class LogClientThread extends Thread
 
     /** Constructor
      *  @param jms_url JMS server URL
-     *  @param jms_topic JMS topic
+     *  @param jms_topic JMS topic (or list of topics, separated by ',')
      *  @param rdb_url RDB server URL
      *  @param rdb_schema RDB schema or ""
      */
@@ -201,12 +201,16 @@ public class LogClientThread extends Thread
         connection.start();
         final Session session = connection.createSession(/* transacted */false,
                                            Session.AUTO_ACKNOWLEDGE);
-        final Topic topic = session.createTopic(jms_topic);
-        final MessageConsumer consumer = session.createConsumer(topic);
-        consumer.setMessageListener(this);
-   
-        logger.info("Accepting messages for '" + jms_topic
-                + "' at " + jms_url);
+        // Subscribe to list of topics
+        final String[] topic_names = jms_topic.split("[, ]+");
+        for (String topic_name : topic_names)
+        {
+            final Topic topic = session.createTopic(topic_name);
+            final MessageConsumer consumer = session.createConsumer(topic);
+            consumer.setMessageListener(this);
+            logger.info("Accepting messages for '" + topic_name
+                    + "' at " + jms_url);
+        }
         return connection;
     }
 
