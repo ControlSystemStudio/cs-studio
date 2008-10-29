@@ -55,6 +55,9 @@ public class LogClientThread extends Thread
     /** RDB Schema */
     final private String rdb_schema;
 
+    /** Message filters */
+    final private Filter filters[];
+    
     /** Log4j Logger */
     final private Logger logger;
 
@@ -80,14 +83,19 @@ public class LogClientThread extends Thread
      *  @param rdb_schema RDB schema or ""
      */
     public LogClientThread(final String jms_url, final String jms_topic,
-            final String rdb_url, final String rdb_schema)
+            final String rdb_url, final String rdb_schema,
+            final Filter filters[])
     {
         super("LogClientThread");
         this.jms_url = jms_url;
         this.jms_topic = jms_topic;
         this.rdb_url = rdb_url;
         this.rdb_schema = rdb_schema;
+        this.filters = filters;
         logger = CentralLogger.getInstance().getLogger(this);
+        
+        for (Filter filter : filters)
+            logger.info(filter);
     }
     
     /** @return Number of messages received */
@@ -202,7 +210,7 @@ public class LogClientThread extends Thread
         final Session session = connection.createSession(/* transacted */false,
                                            Session.AUTO_ACKNOWLEDGE);
         // Subscribe to list of topics
-        final String[] topic_names = jms_topic.split("[, ]+");
+        final String[] topic_names = jms_topic.split(", *");
         for (String topic_name : topic_names)
         {
             final Topic topic = session.createTopic(topic_name);
@@ -238,6 +246,9 @@ public class LogClientThread extends Thread
             if (message instanceof MapMessage)
             {
                 final MapMessage map = (MapMessage) message;
+                for (Filter fil : filters)
+                    if (fil.matches(map))
+                        return;
                 synchronized (this)
                 {
                     ++message_count;

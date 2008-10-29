@@ -16,13 +16,6 @@ import org.osgi.service.http.HttpService;
 /** Application's 'Main' class.
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
- *  
- *  TODO Add filter to suppress e.g. alarm/IDLE messages
- *  That could be done with configurable filter for
- *  TOPIC=ALARM
- *  TEXT=IDLE
- *  Check what else could be suppressed, then determine which
- *  properties need to be checked.
  */
 @SuppressWarnings("nls")
 public class Application implements IApplication
@@ -36,6 +29,11 @@ public class Application implements IApplication
     /** JMS Server topic */
     private String jms_topic = JMSLogMessage.DEFAULT_TOPIC;
 
+    /** Filters for suppressed JMS messages
+     *  @see Filter
+     */
+    private String jms_filters = "ALARM;TEXT=IDLE";
+    
     /** RDB Server URL */
     private String rdb_url = "jdbc:mysql://[host]/[database]?user=[user]&password=[password]";
 
@@ -73,6 +71,8 @@ public class Application implements IApplication
             service.getString(Activator.ID, "jms_url", jms_url, null);
         jms_topic =
             service.getString(Activator.ID, "jms_topic", jms_topic, null);
+        jms_filters =
+            service.getString(Activator.ID, "jms_filters", jms_filters, null);
         rdb_url =
             service.getString(Activator.ID, "rdb_url", rdb_url, null);
         rdb_schema =
@@ -84,7 +84,8 @@ public class Application implements IApplication
 
         // Start log handler and web interface
         log_client_thread =
-            new LogClientThread(jms_url, jms_topic, rdb_url, rdb_schema);
+            new LogClientThread(jms_url, jms_topic, rdb_url, rdb_schema,
+                                Filter.parse(jms_filters));
         startHttpd();
         log_client_thread.start();
         // .. Wait while thread is running ..
