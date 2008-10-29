@@ -44,8 +44,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -59,7 +57,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -180,9 +177,9 @@ public class ConfigView extends PlotAwareView
     private Composite formula_box;
     /** Formula display in <code>formula_box</code> */
     private Text formula_txt;
-    private Button rescale_none;
-    private Button rescale_zoom;
-    private Button rescale_stagger;
+    /** How to handle new data */
+    private Button rescale_none, rescale_zoom, rescale_stagger;
+    /** Overall colors */
 	private ColorBlob background, foreground, grid_color;
     
     /** Try to restore some things from memento */
@@ -471,54 +468,7 @@ public class ConfigView extends PlotAwareView
         layout.numColumns = 1;
         archive_box.setLayout(layout);
 
-        // ArchiveRescale: (*) NONE ( ) ...
-        final Composite rescale_box = new Composite(archive_box, 0);
-        rescale_box.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        rescale_box.setLayout(new RowLayout());
-        Label l = new Label(rescale_box, 0);
-        l.setText(Messages.Rescale_Label);
-        rescale_none = new Button(rescale_box, SWT.RADIO);
-        rescale_none.setText(Messages.Rescale_None);
-        rescale_zoom = new Button(rescale_box, SWT.RADIO);
-        rescale_zoom.setText(Messages.Rescale_Autozoom);
-        rescale_stagger = new Button(rescale_box, SWT.RADIO);
-        rescale_stagger.setText(Messages.Rescale_Stagger);
-        rescale_none.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                final Model model = getModel();
-                if (model == null)
-                    return;
-                model.setArchiveRescale(ArchiveRescale.NONE);
-            }
-        });
-        rescale_zoom.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                final Model model = getModel();
-                if (model == null)
-                    return;
-                model.setArchiveRescale(ArchiveRescale.AUTOZOOM);
-            }
-        });
-        rescale_stagger.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                final Model model = getModel();
-                if (model == null)
-                    return;
-                model.setArchiveRescale(ArchiveRescale.STAGGER);
-            }
-        });
-
-        
-        l = new Label(archive_box, 0);
+        Label l = new Label(archive_box, 0);
         l.setText(Messages.ArchsForPVs + colon);
         GridData gd = new GridData();
         l.setLayoutData(gd);
@@ -676,8 +626,8 @@ public class ConfigView extends PlotAwareView
 	private void createPlotTab(final TabFolder tabs)
 	{
 	    final TabItem tab = new TabItem(tabs, 0);
-	    tab.setText("Plot");
-	    tab.setToolTipText("Configure Plot");
+	    tab.setText(Messages.PlotTab);
+	    tab.setToolTipText(Messages.PlotTab_TT);
 	    final Composite parent = new Composite(tabs, SWT.SHADOW_ETCHED_IN);
 		parent.setBackground(tab_bg);
 	    
@@ -685,8 +635,55 @@ public class ConfigView extends PlotAwareView
 	    layout.numColumns = 2;
 	    parent.setLayout(layout);
 	    
+        // ArchiveRescale: (*) NONE ( ) ...
+        final Composite rescale_box = new Composite(parent, 0);
+        rescale_box.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
+        rescale_box.setLayout(new RowLayout());
+        final Label l = new Label(rescale_box, 0);
+        l.setText(Messages.Rescale_Label);
+        rescale_none = new Button(rescale_box, SWT.RADIO);
+        rescale_none.setText(Messages.Rescale_None);
+        rescale_zoom = new Button(rescale_box, SWT.RADIO);
+        rescale_zoom.setText(Messages.Rescale_Autozoom);
+        rescale_stagger = new Button(rescale_box, SWT.RADIO);
+        rescale_stagger.setText(Messages.Rescale_Stagger);
+        rescale_none.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final Model model = getModel();
+                if (model == null)
+                    return;
+                model.setArchiveRescale(ArchiveRescale.NONE);
+            }
+        });
+        rescale_zoom.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final Model model = getModel();
+                if (model == null)
+                    return;
+                model.setArchiveRescale(ArchiveRescale.AUTOZOOM);
+            }
+        });
+        rescale_stagger.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final Model model = getModel();
+                if (model == null)
+                    return;
+                model.setArchiveRescale(ArchiveRescale.STAGGER);
+            }
+        });
+
+        // Color configurations
 	    background = addColorConfigurator(parent,
-	    		"Background:", "Configure Background Color",
+	    		Messages.BackColor, Messages.BackColor_TT,
 	    		new SelectionAdapter()
 	    {
 	        @Override
@@ -704,7 +701,7 @@ public class ConfigView extends PlotAwareView
 	    });
 	    
 	    foreground = addColorConfigurator(parent,
-	    		"Foreground:", "Configure Foreground Color",
+	    		Messages.ForeColor, Messages.ForeColor_TT,
 	    		new SelectionAdapter()
 	    {
 	        @Override
@@ -722,7 +719,7 @@ public class ConfigView extends PlotAwareView
 	    });
 	    
 	    grid_color = addColorConfigurator(parent,
-	    		"Grid Color:", "Configure Grid Color", 
+	    		Messages.GridColor, Messages.GridColor_TT, 
 	    		new SelectionAdapter()
 	    {
 	        @Override
@@ -1153,7 +1150,7 @@ public class ConfigView extends PlotAwareView
         {
             Plugin.getLogger().error(ex);
             MessageDialog.openError(pv_form.getShell(),
-                    org.csstudio.trends.databrowser.Messages.ErrorMessageTitle,
+                    "",
                     ex.getMessage());
         }
         return null;

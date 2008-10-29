@@ -12,6 +12,12 @@ public class Messages extends NLS
     public static String ArchsForPVs;
     public static String AxisIndex;
     public static String AutoScale;
+    public static String BackColor;
+
+
+    public static String BackColor_TT;
+
+
     public static String BufferSize;
     public static String Color;
     public static String ConfigPV;
@@ -27,6 +33,12 @@ public class Messages extends NLS
     public static String EnterSecs;
     public static String Error;
 
+    public static String ForeColor;
+
+
+    public static String ForeColor_TT;
+
+
     public static String Formula_ConfigButton;
 
     public static String Formula_Label;
@@ -37,8 +49,20 @@ public class Messages extends NLS
     public static String LivePVConfig;
     public static String LogAxisType;    
     public static String AxisType;
+
+
+    public static String GridColor;
+
+
+    public static String GridColor_TT;
     public static String MoveArchsDown;
     public static String MoveArchsUp;
+
+    public static String PlotTab;
+
+
+    public static String PlotTab_TT;
+
 
     public static String PVs;
     public static String PV;
