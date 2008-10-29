@@ -53,13 +53,15 @@ public class Filter
     /** Initialize
      *  @param type Message type (ALARM, LOG, TALK, ...)
      *  @param property Additional property to check (TEXT)
-     *  @param pattern Regular expression pattern for the property's value
+     *  @param pattern Regular expression pattern for the property's value.
+     *                 Will be checked within the value, i.e. the pattern needn't
+     *                 match the whole value, just a substring of the value.
      */
     public Filter(final String type, final String property, final String pattern)
     {
         this.type = type;
         this.property = property;
-        this.pattern = Pattern.compile(pattern);
+        this.pattern = Pattern.compile(pattern, Pattern.MULTILINE);
     }
 
     /** Check if message matches this filter
@@ -73,7 +75,7 @@ public class Filter
             if (!type.equalsIgnoreCase(map.getString(JMSLogMessage.TYPE)))
                 return false;
             final String value = map.getString(property);
-            if (pattern.matcher(value).matches())
+            if (pattern.matcher(value).find())
                 return true;
         }
         catch (Exception ex)
