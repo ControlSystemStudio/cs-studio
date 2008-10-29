@@ -88,15 +88,15 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 			final RefreshableActionButtonFigure figure) {
 		figure.addChangeListener(new ChangeListener() {
 			public void handleStateChanged(final ChangeEvent event) {
+				final String propertyName = event.getPropertyName();
+				CentralLogger.getInstance().debug(this, "ChangeEvent received, event.property=" + propertyName);
+
 				// If the display is not in run mode or the button is not armed,
 				// don't do anything.
 				if (getExecutionMode() != ExecutionMode.RUN_MODE
 						|| !figure.getModel().isArmed()) {
 					return;
 				}
-				
-				final String propertyName = event.getPropertyName();
-				CentralLogger.getInstance().debug(this, "ChangeEvent received, event.property=" + propertyName);
 				
 				// If the button is a toggle button, the property that changes
 				// when the toggle state changes is SELECTED_PROPERTY. For a
