@@ -11,8 +11,8 @@ public class ReadFileSequential {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void ReadFile(){
+// /	public void ReadFile(){
 		
-	}
+// /	}
 }
 

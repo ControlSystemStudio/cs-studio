@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,6 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.utility.ldapUpdater;
 
 import java.util.ArrayList;

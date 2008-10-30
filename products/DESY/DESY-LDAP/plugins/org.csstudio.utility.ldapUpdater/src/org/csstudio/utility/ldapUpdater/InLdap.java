@@ -21,7 +21,7 @@ public class InLdap implements Observer{
 		
 	}
 
-	private void readLdapRecs(IOC ioc) {
+//	private void readLdapRecs(IOC ioc) {
 //        _ergebnis = new ErgebnisListe();
 //        _list = null;
 //        _ergebnis.addObserver(this);
@@ -46,7 +46,7 @@ public class InLdap implements Observer{
 //        reader.schedule();
 ////       _ready=true;
 		
-	}
+//	}
 
 //  @Override
     public void update(Observable o, Object arg) {

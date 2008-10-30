@@ -1,5 +1,6 @@
 package org.csstudio.utility.ldapUpdater;
 
+import java.text.SimpleDateFormat;
 import java.util.Timer;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -34,42 +35,6 @@ public class LdapUpdaterServer implements IApplication {
 	static LdapUpdaterServer getRunningServer() {
 		return _instance;
 	}
-
-/** Gets the System.currentTimeMillis 
- * splits to hh, mm,ss
- * includes leading zeroes if required
- * generates string with format hh:mm:ss
- * @return this string
-* used also in ldapUpdater.java, copied !!!
- */
-	public final String millis2TimeString ( ) {
-		long one_minute=60; 			// s
-		long one_hour=60*one_minute; 	// s
-		long one_day=one_hour*24; 		// s 
-		long nowMillis = System.currentTimeMillis();
-		long now=nowMillis/1000L; // s
-
-		long ss=now % one_day; 			// s since midnight
-        long hh=ss % one_hour;			// h ; 
-        ss=ss-(hh*one_hour);
-		long mm=ss % one_minute;		// m
-
-	    String hhs=String.valueOf(hh); if ( hhs.length()==1 ) { hhs="0"+hhs; }
-	    String mms=String.valueOf(mm); if ( mms.length()==1 ) { mms="0"+mms; }
-	    String sss=String.valueOf(ss); if ( sss.length()==1 ) { sss="0"+sss; }
-	    String hmsString=hhs+":"+mms+":"+sss ;		
-		return hmsString;
-	}
-
-	public final String makeTimestring ( String leading, long hh ,long mm ,long ss, String trailing) {
-	    String hhs=String.valueOf(hh); if ( hhs.length()==1 ) { hhs="0"+hhs; }
-	    String mms=String.valueOf(mm); if ( mms.length()==1 ) { mms="0"+mms; }
-	    String sss=String.valueOf(ss); if ( sss.length()==1 ) { sss="0"+sss; }
-
-	    String timestring=leading + hhs+":"+mms+":"+sss + trailing;		
-		return timestring;
-	}
-		
 	
 	/**
 	 * {@inheritDoc}
@@ -85,43 +50,34 @@ public class LdapUpdaterServer implements IApplication {
     long delay=0;
     
     long one_day=one_hour*24; // s 
-    long time_since_midnight=startTime_s % (one_day); // s
-    if (time_since_midnight < ( one_hour ) ) {
-    	delay=time_since_midnight; // start at 1 o'clock am
-    }else{
-
-    	if (time_since_midnight < ( one_hour*12 ) ) {
-    		   delay=(one_hour*12)-time_since_midnight; // start at 1 o'clock pm
+    long time_since_last_midnight=startTime_s % (one_day); // s
+    if (time_since_last_midnight < ( one_hour ) ) {
+    	delay=time_since_last_midnight; // start at 1 o'clock am
+    } else {
+    	if (time_since_last_midnight < ( one_hour*12 ) ) {
+    		   delay=(one_hour*12)-time_since_last_midnight; // start at 1 o'clock pm
     	   }else{
-    		   delay=(one_hour*24)-time_since_midnight; // start at 1 o'clock am    		   
+    		   delay=(one_hour*24)-time_since_last_midnight; // start at 1 o'clock am    		   
     	   }
     }
-//    long delay_ss=delay / 1000;
-//    long start_hh=delay_ss/3600;
-    long start_hh=delay/3600;
-    long start_mm=(delay-(start_hh*3600))/60;
-    long start_ss=delay-(start_hh*3600)-(start_mm*60);
- 
-    String timestring = makeTimestring ( "time interval until autostart is [", start_hh, start_mm, start_ss, "]") ;
 
-    _log.debug(this, timestring );
-        
+    myDateTimeString dateTimeString = new myDateTimeString();   
+    String autostart = dateTimeString.getDateTimeString( "", "HH:mm:ss", (delay-one_hour)*1000);
+    _log.debug(this, "Time interval until autostart is " + autostart );
+    CentralLogger.getInstance().debug(this, "Time interval until autostart is " + autostart );            
     for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
         _log.debug(this, "Running startup service: " + s.toString());
+        CentralLogger.getInstance().debug(this, "Running startup service: " + s.toString());
         s.run();
     }
- 		IPreferencesService prefs = Platform.getPreferencesService();
-		String interval = prefs.getString(Activator.PLUGIN_ID,
+    IPreferencesService prefs = Platform.getPreferencesService();
+ 		String interval = prefs.getString(Activator.PLUGIN_ID,
 				LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
-
+		delay = delay * 1000;
 		new TimerProcessor ( delay, Integer.parseInt(interval)); // every 12 hours
 
 // 		next call was working - for test only (starts the ldapUpdater every 180 seconds):
-
 //        new TimerProcessor ( 5000, 1000*180 );        
-
-    
-
 
 	synchronized (this) {
 		while (!_stopped) {
@@ -129,14 +85,13 @@ public class LdapUpdaterServer implements IApplication {
 		}
 	}
 	return IApplication.EXIT_OK;
-
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final synchronized void stop() {
-		_log.debug(this, "stop() was called, stopping server");
+		_log.debug(this, "stop() was called, stopping server.");
 		_stopped = true;
 		notifyAll();
 	}

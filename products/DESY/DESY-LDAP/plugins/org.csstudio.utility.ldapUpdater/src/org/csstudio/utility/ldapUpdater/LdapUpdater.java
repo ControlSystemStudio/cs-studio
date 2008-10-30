@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Formatter;
 */
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -50,6 +51,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.csstudio.utility.ldapUpdater.myDateTimeString;
 
 // import Test;
 
@@ -84,36 +86,7 @@ public class LdapUpdater {
 		}
 		return _instance;
 	}
-	
-	/** Gets the System.currentTimeMillis 
-	 * splits to hh, mm,ss
-	 * includes leading zeroes if required
-	 * generates string with format hh:mm:ss
-	 * @return this string
-	* used also in ldapUpdater.java, copied !!!
-	 */
-		public final String millis2TimeString ( ) {
-			long one_minute=60; 			// s
-			long one_hour=60*one_minute; 	// s
-			long one_day=one_hour*24; 		// s 
-
-			long nowMillis = System.currentTimeMillis();
-			long now=nowMillis/1000L; // s
-
-			long ss=now % one_day; 			// seconds since midnight, Greenwich Winter Time 
-			long hh=ss / one_hour;			// h ; 
-			ss=ss % one_hour;				// s ; 
-			long mm=ss / one_minute;		// m
-			ss=ss % one_minute;				// 
-
-		    String hhs=String.valueOf(hh); if ( hhs.length()==1 ) { hhs="0"+hhs; }
-		    String mms=String.valueOf(mm); if ( mms.length()==1 ) { mms="0"+mms; }
-		    String sss=String.valueOf(ss); if ( sss.length()==1 ) { sss="0"+sss; }
-		    String hmsString=hhs+":"+mms+":"+sss ;		
-			return hmsString;
-		}
-
-	
+			
 	public final void start() throws Exception {
 		if ( busy ) {
 			return;
@@ -132,14 +105,13 @@ public class LdapUpdater {
     	long startTime = System.currentTimeMillis();
         long endTime=0L;
         long deltaTime;
-        
-        String now=millis2TimeString ();
-        CentralLogger.getInstance().info(this, "start" + " at " + now + "(UTC)" + "  ( " + startTime +" )" );
-//		System.out.println();
-//		CentralLogger.getInstance().debug(this, "hallo debug");
-//		CentralLogger.getInstance().info(this, "hallo info");
-//		CentralLogger.getInstance().error(this, "hallo error");
-		ldapReader.readLdap();        
+        myDateTimeString dateTimeString = new myDateTimeString();
+        String now= dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", startTime);
+
+        CentralLogger.getInstance().info(this, "-------------------------------------------------------------------" );
+        CentralLogger.getInstance().info(this, "start" + " at " + now + "  ( " + startTime +" )" );
+
+        ldapReader.readLdap();        
         hashReader.readFile();
         iocReader.readIocList();
         iocReader.readIocRecordNames();
@@ -158,10 +130,11 @@ public class LdapUpdater {
          
         endTime = System.currentTimeMillis();
         deltaTime = endTime - startTime;
-        now=millis2TimeString ();
-        CentralLogger.getInstance().info(this, "end" + " at " + now + "(UTC)" + "  ( " + endTime +" )" );
+        now = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", endTime);
+        CentralLogger.getInstance().info(this, "end" + " at " + now + "  ( " + endTime + " )" );
         CentralLogger.getInstance().info(this, "time used : " + deltaTime/1000.  + " s" );
         CentralLogger.getInstance().info(this, "Ende." );
+        CentralLogger.getInstance().info(this, "-------------------------------------------------------------------" );
         busy=false;
     }
 

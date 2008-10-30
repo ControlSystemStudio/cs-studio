@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// import sun.security.krb5.internal.crypto.e;
+
+// junit.samples.VectorTest.java
+
 /**
  *
  * @author valett
@@ -92,13 +96,31 @@ public class accessFile {
      *
      */
     private boolean checkFileAge(final String fileName) {
-        // TODO Auto-generated method stub
-       File file = new File("Y:/directoryServer/"+fileName);
-       Date date = new Date(file.lastModified());
-//     date ist jetzt im millisekunden-format. Bsp.: 1208279315000 ;
-       SimpleDateFormat f = new SimpleDateFormat();
-       System.out.println(file+" "+f.format(date));
-//	   CentralLogger.getInstance().info(this, file+" "+f.format(date));
-       return  file.exists();
+       // TODO Auto-generated method stub
+       
+    	File file = new File("Y:/directoryServer/"+fileName);
+    	Date date = new Date(file.lastModified());
+//      date ist jetzt im millisekunden-format. Bsp.: 1208279315000 ;
+    	SimpleDateFormat f = new SimpleDateFormat();
+    	System.out.println(file+" "+f.format(date));
+//	    CentralLogger.getInstance().info(this, file+" "+f.format(date));
+    	return  file.exists();
     }
+    
+/*
+    private boolean checkFileAge(final String fileName) {
+    	File file = new File ("Y:/directoryServer/"+fileName);
+    	try {
+    		Date date = new Date (file.lastModified());
+			SimpleDateFormat f = new SimpleDateFormat();
+			System.out.println(file+" "+ f.format(date));
+		} catch ( FileNotFoundException e ) {
+			e.printStackTrace();
+		} catch ( IOException  e ) {
+			e.printStackTrace();
+		}
+		return file.exists();
+	}
+*/
+    
 }

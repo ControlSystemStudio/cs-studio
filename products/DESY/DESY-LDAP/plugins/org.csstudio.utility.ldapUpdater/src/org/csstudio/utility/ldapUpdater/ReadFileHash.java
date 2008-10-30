@@ -26,30 +26,33 @@ public class ReadFileHash {
 	}
 	
 	public void readFile() {
+        String histfile="history.dat";
         HashMap<String, Long> _histMap = new HashMap<String, Long>();
         BufferedReader fr;
-		try {
+        
+        try {
 			fr = new BufferedReader(new FileReader(_prefs.getString(Activator.getDefault().getPluginId(),
-    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null)+"history.dat"));
+    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null) + histfile ));
 
         String line;
         while ((line = fr.readLine()) != null) {
             if (line.length() > 0) {
-//            	System.out.println(line);
-            	
-//				Too many lines of output, so next line is disabled: 
-//                CentralLogger.getInstance().info(this,line);
+//              CentralLogger.getInstance().info(this,line);
             	Pattern comment = Pattern.compile("\\s*#.*");
                 Matcher commentMatcher = comment.matcher(line);
                 if (commentMatcher.matches()) {
                 	continue;
                 }
-                Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+)");
+                Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+)"); // old format : 3 parameters on histfile line
                 Matcher m = p.matcher(line);
                 if(!m.matches()) {
-//					System.out.println("Fehler in Datei, Zeile ist: "+line);
-                    CentralLogger.getInstance().error(this, "Fehler in Datei, Zeile ist: "+line);
-                    throw new RuntimeException("Fehler in Datei, Zeile ist: "+line);
+                    p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)"); // new format : 5 parameters on histfile line
+                    m = p.matcher(line);                	
+                    if(!m.matches()) {
+                    	String emsg = "Fehler in Datei " + histfile + ", Zeile ist: " + "\"" + line + "\"" ;
+                    	CentralLogger.getInstance().error(this, emsg);
+                    	throw new RuntimeException(emsg);
+                    }
                 }
                 _histMap.put(m.group(1), Long.parseLong(m.group(3)));
             }

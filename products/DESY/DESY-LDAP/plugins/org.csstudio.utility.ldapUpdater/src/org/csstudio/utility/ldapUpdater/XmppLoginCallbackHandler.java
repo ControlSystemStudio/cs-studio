@@ -32,5 +32,4 @@ public class XmppLoginCallbackHandler implements ILoginCallbackHandler {
 	public final void signalFailedLoginAttempt() {
 		CentralLogger.getInstance().error(this, "XMPP login failed");
 	}
-
 }

@@ -10,7 +10,7 @@ public class UpdateLdapAction implements IAction {
 			if (!ldapUpdater.busy){
 				ldapUpdater.start();
 			}else{
-				return ("busy for max. 2 minutes");
+				return ("ldapUpdater is busy for max. 150 s (was started by timer). Try later!");
 			}
 
 		} catch (Exception e) {
@@ -19,5 +19,4 @@ public class UpdateLdapAction implements IAction {
 		}
 		return ("ok");
 	}
-
 }

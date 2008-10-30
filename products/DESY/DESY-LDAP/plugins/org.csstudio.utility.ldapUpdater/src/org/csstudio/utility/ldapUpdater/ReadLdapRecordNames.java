@@ -43,8 +43,7 @@ public class ReadLdapRecordNames implements Observer{
             }
          });
         reader.schedule();
-//       _ready=true;
-		
+//       _ready=true;	
 	}
 
 //  @Override
@@ -59,7 +58,5 @@ public class ReadLdapRecordNames implements Observer{
         _model.setReady(true);
         CentralLogger.getInstance().info(this, "ready="+_model.isReady());
         CentralLogger.getInstance().error(this, ""+_ergebnis.getResultList().size());
-
     }
-
 }

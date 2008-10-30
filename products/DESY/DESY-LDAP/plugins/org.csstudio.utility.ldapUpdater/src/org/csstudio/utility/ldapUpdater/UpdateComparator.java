@@ -1,25 +1,17 @@
 package org.csstudio.utility.ldapUpdater;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Formatter;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
-import javax.sound.sampled.Line;
 
-// ??? import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldapUpdater.model.DataModel;
@@ -42,28 +34,6 @@ public class UpdateComparator {
 		int ind = 0;
 		Boolean _recordsWritten=false;
 		
-//		List<String> bootedIocNames = new ArrayList<String>();
-//		List<String> obsoleteIocNames = new ArrayList<String>();
-//		List<String> newIocNames = new ArrayList<String>();
-
-		// for (IOC ioc : _model.getIocList()) {
-		// if (_model.getHistoryMap().get(ioc.getName()) != null ) {
-		// _model.getLdapList().add(ioc.getName());
-		// System.out.println(ioc+" added to LdapList");
-		// ReadLdapRecordNames recordReader=new ReadLdapRecordNames(_model);
-		// recordReader.readLdapRecs(ioc);
-		// while(_model.getLdapRecordNames()==null){}
-		// for (String recordName : _model.getLdapRecordNames()) {
-		// CentralLogger.getInstance().info(this, "RecordName: "+recordName);
-		// }
-		// // _model.getLdapRecordNames().add(ioc.getName());
-		// } else {
-		// _model.getNewIocNames().add(ioc.getName());
-		// System.out.println(ioc+" added to NewIocNames, must be written to
-		// ldap completely");
-		// }
-		// }
-
 		for (IOC ioc : _model.getIocList()) {
 			if (_model.getHistoryMap().get(ioc.getName()) != null) {
 				List<String> recordNames = ioc.getIocRecordNames();
@@ -81,7 +51,7 @@ public class UpdateComparator {
 							Attributes afe = attributesForEntry("epicsRecord", "eren", recordName);
 							try {
 								directory.bind(f.toString(), null, afe); // = Record schreiben
-								CentralLogger.getInstance().info( this," Record geschrieben!" + ioc.getName()+ " - " + recordName);
+								CentralLogger.getInstance().info( this," Record geschrieben: \"" + ioc.getName()+ " - " + recordName + "\"");
 							} catch (NamingException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -145,58 +115,6 @@ public class UpdateComparator {
 			}
 			if ( ioc.is_mustWriteIOCToHistory()) { AppendLineToHistfile(ioc.getName()); }
 		}
-
-		// _model.setBootedIocNames(bootedIocNames);
-		// _model.setObsoleteIocNames(obsoleteIocNames);
-		// _model.setNewIocNames(newIocNames);
-
-		// for (IOC ioc : _model.getIocList()) {
-		// for (String ldapIocString : _model.getLdapList()) {
-		// String[] temp = ldapIocString.split("[=,]");
-		// if (temp.length > 1) {
-		// ldapIocString = temp[1];
-		// }
-		//
-		// boolean ldapObsolete = true;
-		// if (_model.getHistoryMap().get(ldapIocString) != null) {
-		// if (((GregorianCalendar) ioc.getDateTime()).getTimeInMillis() >
-		// _model.getHistoryMap().get(ldapIocString)) {
-		// if (ldapIocString.startsWith("econ=")) {
-		// String ldapIocName = ldapIocString.split("[,=]")[1];
-		// if (ioc.getName().equals(ldapIocName)) {
-		// ioc.setMustAdd2Ldap(false);
-		// bootedIocNames.add(ldapIocString);
-		// System.out.println(ioc + " : data already present in LDAP");
-		// } else
-		// if (ldapIocName.equals("") ) {
-		// newIocNames.add(ioc.getName());
-		// System.out.println(ioc + " : NEW - not yet present in LDAP");
-		// }
-		// else
-		// {
-		// System.out.println(ioc + " : LDAP data are actual");
-		// }
-		// ldapObsolete = false;
-		// }
-		// }
-		// }
-		// if (ldapObsolete) {
-		// // todo :
-		// // wenn keine LdapVariable namens xxx mit Wert (Datum) vorhanden,
-		// // dann in ldap variable setzen : xxx="disabled since $today"
-		// // sonst muss der wert von xxx gelesen und ausgegeben werden
-		// // ( die LDAP-Variable xxx will mc in die LDAP configuration data
-		// eintragen )
-		//					
-		// System.out.println(ioc + " : no more active since ...");
-		// obsoleteIocNames.add(ldapIocString);
-		// }
-		// }
-		// }
-		//
-		// _model.setBootedIocNames(bootedIocNames);
-		// _model.setObsoleteIocNames(obsoleteIocNames);
-		// _model.setNewIocNames(newIocNames);
 	}
 
 	/**
@@ -218,27 +136,26 @@ public class UpdateComparator {
 		return result;
 	}
 
+	
 	/**
 	 * append a line to the history file.
 	 * 
 	 * @param iocname
 	 */
 	private void AppendLineToHistfile(final String iocname) {
-//		String _crString;
 		try {
 			FileWriter fw = new FileWriter(
 					_prefs.getString(Activator.getDefault().getPluginId(),
 		    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null) + "history.dat", true);
 			long now = System.currentTimeMillis();
-			
-			now = now / 1000;
+			myDateTimeString dateTimeString = new myDateTimeString();
+			String ymd_hms = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", now);
+			now = now / 1000; // now is now in seconds
 			
 			String _iocname = iocname;
 			do  { _iocname = _iocname.concat ( " " ); } while (_iocname.length() < 16);
             
-//			_crString = System.getProperty("line.separator"); // should be used by the statement below : "fw.append" !! not working !!!
-//			fw.append ( _iocname + "xxx     " + now + _crString ); 
-			fw.append ( _iocname + "xxx     " + now + System.getProperty("line.separator" ) ); 
+			fw.append ( _iocname + "xxx     " + now + "   " + ymd_hms + System.getProperty("line.separator" ) ); 
 			fw.flush();
 			fw.close();
 		} catch (IOException e) {

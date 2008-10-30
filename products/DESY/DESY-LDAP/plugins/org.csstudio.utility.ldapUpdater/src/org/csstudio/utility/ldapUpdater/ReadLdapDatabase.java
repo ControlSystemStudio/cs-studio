@@ -52,8 +52,5 @@ public class ReadLdapDatabase implements Observer{
         
         _model.setReady(true);
         CentralLogger.getInstance().info(this, "ready="+_model.isReady());
- //       System.out.println(_ergebnis.getResultList().get(1).getName());
-
     }
-
 }
