@@ -144,11 +144,6 @@ public class PlotEditor extends EditorPart
         setInput(input);
         final IFile file = getEditorInputFile();
         plot_part.init(file);
-        if (! added_model_listener)
-        {
-            plot_part.getModel().addListener(model_listener);
-            added_model_listener = true;
-        }
     }
     
     /** @return Returns the <code>IFile</code> for the current editor input.
@@ -255,6 +250,12 @@ public class PlotEditor extends EditorPart
     {
         plot_part.createPartControl(parent, true);
         createContextMenu();
+        
+        // The above causes the model to fire entriesChanged.
+        // By only registering the listener at this time,
+        // we avoid getting into the 'dirty' state from that intial event.
+        plot_part.getModel().addListener(model_listener);
+        added_model_listener = true;
         updateTitle();
     }
 
