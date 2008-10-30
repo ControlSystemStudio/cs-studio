@@ -158,9 +158,11 @@ public class ConfigView extends PlotAwareView
         public void entryAdded(IModelItem new_item)
         {   entriesChanged(); }
 
-        public void entryConfigChanged(IModelItem item)
+        public void entryConfigChanged(final IModelItem item)
         {
-            pv_table_viewer.refresh();
+            // Used to call plain refresh(), but this call seems to
+            // avoid "Ignored reentrant call while viewer is busy" under Eclipse 3.4
+            pv_table_viewer.refresh(item);
             updateLowerSash();
         }
 
