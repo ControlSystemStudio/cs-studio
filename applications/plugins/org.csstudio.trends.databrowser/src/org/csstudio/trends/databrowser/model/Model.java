@@ -191,6 +191,23 @@ public class Model
 		return grid_color;
 	}
 
+    /** Set markers
+     *  @param markers 2D array of markers.
+     *                 First array index iterates over Y-Axes,
+     *                 second array index over markers for that Y-Axis.
+     */
+    public void setMarkers(final MarkerInfo markers[][])
+    {
+        this.markers = markers;
+        fireMarkersChanged();
+    }
+    
+    /** @return Markers, indexed by Y-Axis, then marker on that axis. */
+    public MarkerInfo[][] getMarkers()
+    {
+        return markers;
+    }
+
     /** Set a new start and end time specification.
      *  <p>
      *  Also updates the current start and end time with
@@ -591,17 +608,6 @@ public class Model
         }
     }
     
-    /** Set markers
-     *  @param markers 2D array of markers.
-     *                 First array index iterates over Y-Axes,
-     *                 second array index over markers for that Y-Axis.
-     */
-    public void setMarkers(final MarkerInfo markers[][])
-    {
-        this.markers = markers;
-        fireMarkersChanged();
-    }
-
     /** Add an archive data source to all items in the model.
      *  @see IModelItem#addArchiveDataSource(IArchiveDataSource)
      */
@@ -734,7 +740,7 @@ public class Model
         b.append("    <markers>\n");
         for (int y=0; y<markers.length; ++y)
         {
-            b.append("        <axis y=" + y + ">\n");
+            b.append("        <axis y=\"" + y + "\">\n");
             for (MarkerInfo marker : markers[y])
             {
                 b.append("            " + marker.getXML() + "\n");
@@ -763,17 +769,17 @@ public class Model
 	}
 
 	/** Load model from XML file stream. */
-    public void load(InputStream stream) throws Exception
+    public void load(final InputStream stream) throws Exception
     {
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
+        final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
-        Document doc = docBuilder.parse(stream);
+        final Document doc = docBuilder.parse(stream);
         loadFromDocument(doc);
     }
     
     /** Load model from DOM document. */
     @SuppressWarnings("nls")
-    private void loadFromDocument(Document doc) throws Exception
+    private void loadFromDocument(final Document doc) throws Exception
     {
         final boolean was_running = is_running;
         if (was_running)
@@ -826,7 +832,7 @@ public class Model
         final double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
         final double update = DOMHelper.getSubelementDouble(root_node, "update_period");
         live_buffer_size = DOMHelper.getSubelementInt(root_node, "ring_size");
-        Element pvlist = DOMHelper.findFirstElementNode(root_node
+        final Element pvlist = DOMHelper.findFirstElementNode(root_node
                 .getFirstChild(), "pvlist");
         if (pvlist != null)
         {
@@ -847,13 +853,53 @@ public class Model
                 pv = DOMHelper.findNextElementNode(pv, PVModelItem.TAG_FORMULA);
             }
         }
+        final Element markers_node = DOMHelper.findFirstElementNode(root_node
+                .getFirstChild(), "markers");
+        loadMarkersFromNode(markers_node);
+        
         // This also notifies listeners about the new periods:
         setPeriods(scan, update);
         fireEntriesChanged();
         if (was_running)
             start();
     }
-    
+
+    /** Load {@link MarkerInfo} elements from XML
+     *  @param markers_node Node where to start
+     *  @throws Exception on error
+     */
+    @SuppressWarnings("nls")
+    private void loadMarkersFromNode(final Element markers_node) throws Exception
+    {
+        if (markers_node == null)
+            return;
+        // <axis y=1>
+        //  <marker><position>...</position><value>...</value><text>...</text></marker>
+        // </axis>
+        final ArrayList<ArrayList<MarkerInfo>> mark_array =
+            new ArrayList<ArrayList<MarkerInfo>>();
+        Element axis = DOMHelper.findFirstElementNode(markers_node.getFirstChild(), "axis");
+        while (axis != null)
+        {
+            int y = Integer.parseInt(axis.getAttribute("y"));
+            while (mark_array.size() <= y)
+                mark_array.add(new ArrayList<MarkerInfo>());
+            Element marker_node = DOMHelper.findFirstElementNode(axis.getFirstChild(), "marker");
+            while (marker_node != null)
+            {
+                final MarkerInfo marker = MarkerInfo.fromDOM(marker_node);
+                mark_array.get(y).add(marker);
+                marker_node = DOMHelper.findNextElementNode(marker_node, "marker");
+            }
+            axis = DOMHelper.findNextElementNode(axis, "axis");
+        }
+        
+        // Convert to plain array
+        markers = new MarkerInfo[mark_array.size()][];
+        for (int y=0; y<markers.length; ++y)
+            markers[y] = mark_array.get(y).toArray(new MarkerInfo[mark_array.get(y).size()]);
+    }
+
     /** @see ModelListener#plotColorsChangedChanged() */
     private void firePlotColorsChanged()
     {

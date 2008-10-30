@@ -1,6 +1,8 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.swt.chart.axes.Marker;
+import org.w3c.dom.Element;
 
 /** Information about an axis marker
  *  @author Kay Kasemir
@@ -27,6 +29,21 @@ public class MarkerInfo
         this.text = text;
     }
 
+    /** Parse MarkerInfo from XML DOM
+     *  @param marker_node Node that contains the marker
+     *                     as created by <code>getXML</code>
+     *  @return MarkerInfo
+     *  @throws Exception on error
+     */
+    public static MarkerInfo fromDOM(final Element marker_node) throws Exception
+    {
+        final double position =
+            DOMHelper.getSubelementDouble(marker_node, "position");
+        final double value =DOMHelper.getSubelementDouble(marker_node, "value");
+        final String text = DOMHelper.getSubelementString(marker_node, "text");
+        return new MarkerInfo(position, value, text);
+    }
+
     /** @return XML encoded marker info */
     public String getXML()
     {
@@ -36,8 +53,8 @@ public class MarkerInfo
                "</marker>"; 
     }
 
-    
-    public Marker createMarker()
+    /** @return Chart Marker for this MarkerInfo */
+    public Marker toMarker()
     {
         return new Marker(position, value, text);
     }
