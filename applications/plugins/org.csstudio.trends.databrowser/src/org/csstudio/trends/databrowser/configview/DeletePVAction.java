@@ -57,7 +57,7 @@ public class DeletePVAction extends Action
         // a name.
         // The result: It re-enters the PV Name that we just deleted!
         // At least that's what I saw happening when invoking the
-        // context menu with 'delete' on OS X via conrol-click.
+        // context menu with 'delete' on OS X via control-click.
         // With a 3-button mouse, the editor never gets invoked
         // on the 'right' button.
         //
