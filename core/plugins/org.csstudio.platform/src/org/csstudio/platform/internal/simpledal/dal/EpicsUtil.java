@@ -20,19 +20,6 @@ import org.epics.css.dal.context.LinkAdapter;
  */
 public class EpicsUtil {
 
-	public static final CharacteristicInfo C_TIMESTAMP_INFO = new CharacteristicInfo("timestamp", Timestamp.class,
-			new Class[] { DynamicValueProperty.class }, "Meta timestamp characteristic.", null, true);
-	public static final CharacteristicInfo C_SEVERITY_INFO = new CharacteristicInfo("severity", String.class,
-			new Class[] { DynamicValueProperty.class }, "Meta timestamp characteristic.", null, true);
-	public static final CharacteristicInfo C_STATUS_INFO = new CharacteristicInfo("status", String.class,
-			new Class[] { DynamicValueProperty.class }, "Meta timestamp characteristic.", null, true);
-
-	{
-		CharacteristicInfo.registerCharacteristicInfo(EpicsUtil.C_SEVERITY_INFO);
-		CharacteristicInfo.registerCharacteristicInfo(EpicsUtil.C_TIMESTAMP_INFO);
-		CharacteristicInfo.registerCharacteristicInfo(EpicsUtil.C_STATUS_INFO);
-	}
-
 	/**
 	 * Waits until DAL property is connected or timeout has elapsed
 	 * 
@@ -106,13 +93,13 @@ public class EpicsUtil {
 	 */
 	public static final Object getCharacteristic(String charName, DynamicValueProperty property, ValueType valueType)
 			throws DataExchangeException {
-		if (charName.equals(EpicsUtil.C_SEVERITY_INFO.getName())) {
+		if (charName.equals(DalConnector.C_SEVERITY_INFO.getName())) {
 			return EpicsUtil.toEPICSFlavorSeverity(property.getCondition());
 		}
-		if (charName.equals(EpicsUtil.C_STATUS_INFO.getName())) {
+		if (charName.equals(DalConnector.C_STATUS_INFO.getName())) {
 			return EpicsUtil.extratStatus(property.getCondition());
 		}
-		if (charName.equals(EpicsUtil.C_TIMESTAMP_INFO.getName())) {
+		if (charName.equals(DalConnector.C_TIMESTAMP_INFO.getName())) {
 			return property.getCondition().getTimestamp();
 		}
 		Object value = property.getCharacteristic(charName);

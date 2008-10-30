@@ -139,8 +139,8 @@ public class DalConnectorTest {
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.LONG_SEQUENCE, new long[] { 2l });
 		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]", ValueType.OBJECT, new Double(2.3));
 		// TODO:
-		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]",
-		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(2.3) });
+		testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]",
+		ValueType.OBJECT_SEQUENCE, new Object[] { new Double(2.3) });
 		// TODO:
 		// testGetCharacteristicAsynchronously("dal-epics://unittest:ai[minimum]",
 		// ValueType.STRING, "2");

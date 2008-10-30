@@ -217,7 +217,7 @@ public class SimpleDAL_EPICSTest extends TestCase {
 			l.value=null;
 			Thread.sleep(1100);
 			assertNull(l.value);
-			assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
+			//assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
