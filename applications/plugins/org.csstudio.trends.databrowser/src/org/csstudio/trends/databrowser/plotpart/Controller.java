@@ -414,9 +414,15 @@ public class Controller implements ArchiveFetchJobListener
         for (int i=0; i<model.getNumItems(); ++i)
             addToDisplay(model.getItem(i));
 
-        // Update GUI with initial markers.
-        // From then on, GUI will handle the markers and model will track
-        controller_changes_model = true;
+        // Update markers in chart based on model.
+        // Most of the time, the GUI will handle the markers
+        // and model will track.
+        // This code should mostly get invoked after the initial
+        // Model load from a config file.
+        // Set controller_changes_yaxes flag to avoid loops
+        // when we update chart, then chart sends events to update
+        // model which in turn ...
+        controller_changes_yaxes = true;
         final MarkerInfo[][] markers = model.getMarkers();
         for (int y=0; y<markers.length; ++y)
         {
@@ -427,7 +433,7 @@ public class Controller implements ArchiveFetchJobListener
             for (MarkerInfo marker : markers[y])
                 axis.addMarker(marker.toMarker());
         }
-        controller_changes_model = false;
+        controller_changes_yaxes = false;
         
         getArchivedData(null);
     }
