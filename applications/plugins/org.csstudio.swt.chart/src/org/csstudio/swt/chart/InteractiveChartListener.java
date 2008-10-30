@@ -1,5 +1,6 @@
 package org.csstudio.swt.chart;
 
+
 /** Events that the InteractiveChart sends.
  *  @author Kay Kasemir
  */

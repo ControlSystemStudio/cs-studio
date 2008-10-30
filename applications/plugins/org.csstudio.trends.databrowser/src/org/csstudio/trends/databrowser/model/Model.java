@@ -13,6 +13,7 @@ import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
@@ -897,5 +898,25 @@ public class Model
         if (items.size() <= 0)
             return "empty Model";
         return "Model (" + items.get(0).getName() + ", ...";
+    }
+
+    /** Update marker info
+     *  @param markers 2D array of markers.
+     *                 First array index iterates over Y-Axes,
+     *                 second array index over markers for that Y-Axis.
+     */
+    public void updateMarkerInfo(final MarkerInfo markers[][])
+    {
+        // TODO Update model with marker info? Load/Save the markers?
+        // TODO why called 3 times for new marker?
+        System.out.println("Marker change");
+        for (int y=0; y<markers.length; ++y)
+        {
+            System.out.println("  Y Axis " + y + ":");
+            for (MarkerInfo marker : markers[y])
+            {
+                System.out.println("    " + marker.toString().substring(0, 10));
+            }
+        }
     }
 }

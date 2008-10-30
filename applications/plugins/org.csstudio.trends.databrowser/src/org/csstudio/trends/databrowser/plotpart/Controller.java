@@ -11,12 +11,14 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDa
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartListener;
 import org.csstudio.swt.chart.Trace;
+import org.csstudio.swt.chart.axes.Marker;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
+import org.csstudio.trends.databrowser.model.MarkerInfo;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -267,7 +269,23 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 break;
             case MARKER:
-                // TODO: Update model with marker info? Load/Save the markers?
+                // Update model with marker info.
+                {
+                    final int y_count = chart.getNumYAxes();
+                    final MarkerInfo markers[][] = new MarkerInfo[y_count][];
+                    for (int y=0; y<y_count; ++y)
+                    {
+                        final Marker[] ymarks = chart.getYAxis(y).getMarkers();
+                        markers[y] = new MarkerInfo[ymarks.length];
+                        for (int m=0; m<ymarks.length; ++m)
+                        {
+                            final Marker ymark = ymarks[m];
+                            markers[y][m] = new MarkerInfo(ymark.getPosition(),
+                                    ymark.getValue(), ymark.getText());
+                        }
+                    }
+                    model.updateMarkerInfo(markers);
+                }
                 break;
             case LABEL:
             case SELECTION:

@@ -493,13 +493,13 @@ public class InteractiveChart extends Composite
     private void addMarker(XAxis xaxis, YAxis yaxis, double x, double y)
     {
         // Adds a marker for the selected sample
-        TraceSample best = yaxis.getClosestSample(xaxis, x, y);
+        final TraceSample best = yaxis.getClosestSample(xaxis, x, y);
         if (best == null)
             return;
-        ChartSample sample = best.getSample();
+        final ChartSample sample = best.getSample();
         x = sample.getX();
         y = sample.getY();
-        StringBuffer b = new StringBuffer();
+        final StringBuilder b = new StringBuilder();
         b.append(best.getTrace().getName());
         b.append("\n"); //$NON-NLS-1$
         b.append(xaxis.getTicks().format(x, 2));
@@ -515,6 +515,7 @@ public class InteractiveChart extends Composite
             b.append("\n"); //$NON-NLS-1$
             b.append(sample.getInfo());
         }
-        yaxis.addMarker(new Marker(x, y, b.toString()));
+        final Marker marker = new Marker(x, y, b.toString());
+        yaxis.addMarker(marker);
     }
 } 

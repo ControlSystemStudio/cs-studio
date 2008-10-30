@@ -4,6 +4,7 @@ import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.InteractiveChartListener;
 import org.csstudio.swt.chart.Messages;
+import org.csstudio.swt.chart.axes.Marker;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
@@ -36,6 +37,12 @@ public class ShowButtonBarAction extends Action
     {
         setText(visible ?
                 Messages.Chart_HideButtonBar : Messages.Chart_ShowButtonBar);
+    }
+
+    /** @see InteractiveChartListener */
+    public void addedMarker(int y_axis_index, Marker marker)
+    {
+        // Ignore
     }
 
     @Override
