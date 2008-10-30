@@ -26,6 +26,16 @@ public class MarkerInfo
         this.value = value;
         this.text = text;
     }
+
+    /** @return XML encoded marker info */
+    public String getXML()
+    {
+        return "<marker><position>" + position + "</position>" +
+               "<value>" + value + "</value>" +
+               "<text>" + text + "</text>" + 
+               "</marker>"; 
+    }
+
     
     public Marker createMarker()
     {
@@ -36,6 +46,6 @@ public class MarkerInfo
     @Override
     public String toString()
     {
-        return "Marker @ " + position + " / " + value + " : " + text; 
+        return getXML(); 
     }
 }

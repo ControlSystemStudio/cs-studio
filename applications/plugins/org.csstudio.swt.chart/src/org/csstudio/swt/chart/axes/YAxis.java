@@ -186,7 +186,8 @@ public class YAxis extends Axis
                 anything = true;
             }
         }
-        fireEvent(YAxisListener.Aspect.MARKER);
+        if (anything)
+            fireEvent(YAxisListener.Aspect.SELECTION);
         return anything;
     }
     

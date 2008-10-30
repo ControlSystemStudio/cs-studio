@@ -64,8 +64,11 @@ public class PlotEditor extends EditorPart
     {
         public void plotColorsChangedChanged()
         {   entriesChanged();  }
+        
+        public void markersChanged()
+        {   entriesChanged();  }
 
-		public void timeSpecificationsChanged()
+        public void timeSpecificationsChanged()
         {   entriesChanged();  }
         
         // "current" start/end time changes are ignored
@@ -77,11 +80,10 @@ public class PlotEditor extends EditorPart
 
         public void entriesChanged()
         {
-            if (!is_dirty)
-            {
-                is_dirty = true;
-                firePropertyChange(IEditorPart.PROP_DIRTY);
-            }
+            if (is_dirty)
+                return;
+            is_dirty = true;
+            firePropertyChange(IEditorPart.PROP_DIRTY);
             updateTitle();
         }
         
@@ -278,8 +280,8 @@ public class PlotEditor extends EditorPart
     /** Set the editor part's title and tool-tip. */
     private void updateTitle()
     {   // See plugin book p.332.
-        IEditorInput input = getEditorInput();
-        String title = getEditorInput().getName();
+        final IEditorInput input = getEditorInput();
+        final String title = getEditorInput().getName();
         setPartName(title);
         setTitleToolTip(input.getToolTipText());
     }

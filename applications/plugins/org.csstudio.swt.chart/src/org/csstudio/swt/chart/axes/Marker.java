@@ -104,4 +104,12 @@ public class Marker
         else // '___________'
             gc.drawLine(tx, ty, tx+text_size.x, ty);
     }
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        return "Marker @ " + position + " / " + value + " : " + text; 
+    }
 }

@@ -13,7 +13,6 @@ import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
@@ -80,7 +79,11 @@ public class Model
     /** Ring buffer size, number of elements, for 'live' data. */
     private int live_buffer_size = 1024;
 
+    /** Items (PVs, Formulas) in model */
     private ArrayList<AbstractModelItem> items = new ArrayList<AbstractModelItem>();
+    
+    /** Plot Markers, index by YAxis and marker on that axis */
+    private MarkerInfo markers[][] = new MarkerInfo[0][0];
     
     /** <code>true</code> if all model items were 'started'. */
     private boolean is_running = false;
@@ -153,8 +156,7 @@ public class Model
     public void setPlotBackground(final RGB color)
     {
     	background  = color;
-        for (ModelListener l : listeners)
-        	l.plotColorsChangedChanged();
+    	firePlotColorsChanged();
     }
     
     /** @return Background color */
@@ -167,8 +169,7 @@ public class Model
     public void setPlotForeground(final RGB color)
     {
     	foreground  = color;
-        for (ModelListener l : listeners)
-        	l.plotColorsChangedChanged();
+        firePlotColorsChanged();
     }
     
     /** @return Foreground color */
@@ -181,8 +182,7 @@ public class Model
     public void setPlotGrid(final RGB color)
     {
     	grid_color  = color;
-        for (ModelListener l : listeners)
-        	l.plotColorsChangedChanged();
+        firePlotColorsChanged();
     }
     
     /** @return Grid color */
@@ -591,6 +591,17 @@ public class Model
         }
     }
     
+    /** Set markers
+     *  @param markers 2D array of markers.
+     *                 First array index iterates over Y-Axes,
+     *                 second array index over markers for that Y-Axis.
+     */
+    public void setMarkers(final MarkerInfo markers[][])
+    {
+        this.markers = markers;
+        fireMarkersChanged();
+    }
+
     /** Add an archive data source to all items in the model.
      *  @see IModelItem#addArchiveDataSource(IArchiveDataSource)
      */
@@ -719,7 +730,18 @@ public class Model
         b.append("    <pvlist>\n");
         for (AbstractModelItem item : items)
             b.append(item.getXMLContent());
-        b.append("    </pvlist>\n"); 
+        b.append("    </pvlist>\n");
+        b.append("    <markers>\n");
+        for (int y=0; y<markers.length; ++y)
+        {
+            b.append("        <axis y=" + y + ">\n");
+            for (MarkerInfo marker : markers[y])
+            {
+                b.append("            " + marker.getXML() + "\n");
+            }
+            b.append("        </axis>\n");
+        }
+        b.append("    </markers>\n");
         b.append("</databrowser>");
         String s = b.toString();
         return s;
@@ -831,6 +853,20 @@ public class Model
         if (was_running)
             start();
     }
+    
+    /** @see ModelListener#plotColorsChangedChanged() */
+    private void firePlotColorsChanged()
+    {
+        for (ModelListener l : listeners)
+            l.plotColorsChangedChanged();
+    }
+    
+    /** @see ModelListener#markersChanged() */
+    private void fireMarkersChanged()
+    {
+        for (ModelListener l : listeners)
+            l.markersChanged();
+    }
 
     /** @see ModelListener#entryConfigChanged(IModelItem) */
     void fireEntryConfigChanged(IModelItem item)
@@ -898,25 +934,5 @@ public class Model
         if (items.size() <= 0)
             return "empty Model";
         return "Model (" + items.get(0).getName() + ", ...";
-    }
-
-    /** Update marker info
-     *  @param markers 2D array of markers.
-     *                 First array index iterates over Y-Axes,
-     *                 second array index over markers for that Y-Axis.
-     */
-    public void updateMarkerInfo(final MarkerInfo markers[][])
-    {
-        // TODO Update model with marker info? Load/Save the markers?
-        // TODO why called 3 times for new marker?
-        System.out.println("Marker change");
-        for (int y=0; y<markers.length; ++y)
-        {
-            System.out.println("  Y Axis " + y + ":");
-            for (MarkerInfo marker : markers[y])
-            {
-                System.out.println("    " + marker.toString().substring(0, 10));
-            }
-        }
     }
 }

@@ -68,7 +68,9 @@ public class SampleView extends PlotAwareView
         }
 
         // Ignore the rest
+        
         public void plotColorsChangedChanged()            { /* NOP */ }
+        public void markersChanged()                      { /* NOP */ }
         public void entryArchivesChanged(IModelItem item) { /* NOP */ }
         public void entryConfigChanged(IModelItem item)   { /* NOP */ }
         public void entryMetaDataChanged(IModelItem item) { /* NOP */ }

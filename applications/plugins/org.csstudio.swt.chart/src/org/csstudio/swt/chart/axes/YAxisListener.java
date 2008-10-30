@@ -15,7 +15,7 @@ public interface YAxisListener
          */
         LABEL,
         
-        /** The axis was selected or de-selected.
+        /** An axis or marker was selected or de-selected.
          *  Requires redraw of the axis and maybe the grid,
          *  i.e. typically the whole plot.
          */

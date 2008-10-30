@@ -129,8 +129,13 @@ public class Controller implements ArchiveFetchJobListener
         	chart.setPlotGrid(model.getPlotGrid());
         	gui.redraw();
 		}
+        
+        public void markersChanged()
+        {
+            // Ignore
+        }
 
-		public void timeSpecificationsChanged()
+        public void timeSpecificationsChanged()
         {
         	if (controller_changes_model_times)
         		return;
@@ -284,7 +289,7 @@ public class Controller implements ArchiveFetchJobListener
                                     ymark.getValue(), ymark.getText());
                         }
                     }
-                    model.updateMarkerInfo(markers);
+                    model.setMarkers(markers);
                 }
                 break;
             case LABEL:

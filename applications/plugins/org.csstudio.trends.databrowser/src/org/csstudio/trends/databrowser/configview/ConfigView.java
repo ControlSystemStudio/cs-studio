@@ -135,6 +135,9 @@ public class ConfigView extends PlotAwareView
      	// Whatever changed, we need to display the current model info.
         public void plotColorsChangedChanged()
         {   entriesChanged(); }
+        
+        public void markersChanged()
+        { /* Ignore */ }
 
 		public void timeSpecificationsChanged()
         {   entriesChanged(); }
@@ -1095,7 +1098,6 @@ public class ConfigView extends PlotAwareView
             table_content.inputChanged(pv_table_viewer, old_model, model);
         }
         // Update all GUI elements with info from current editor
-        final Display display = background.getDisplay();
         if (model == null)
         {
             scan_period_text.setText(""); //$NON-NLS-1$
@@ -1150,7 +1152,7 @@ public class ConfigView extends PlotAwareView
         {
             Plugin.getLogger().error(ex);
             MessageDialog.openError(pv_form.getShell(),
-                    "",
+                    Messages.Error,
                     ex.getMessage());
         }
         return null;

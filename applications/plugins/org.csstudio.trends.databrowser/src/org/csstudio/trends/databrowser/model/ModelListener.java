@@ -9,6 +9,11 @@ public interface ModelListener
     /** Invoked when the plot's background color changed. */
     public void plotColorsChangedChanged();
 
+    /** Markers were added/removed/modified.
+     *  Model needs to be saved
+     */
+    public void markersChanged();
+
     /** Invoked when the start or end specifications changed.
      *  @see Model#getStartSpecification()
      */
