@@ -13,6 +13,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.logging.CentralLogger;
 
 /** Handles the "archiver.values" request and its results.
  *  @author Kay Kasemir
@@ -127,7 +128,7 @@ public class ValuesRequest
 			IValue samples[];
 			try
 			{
-				meta = decodeMetaData(type, (Hashtable)channel_data.get("meta"));
+				meta = decodeMetaData(name, type, (Hashtable)channel_data.get("meta"));
 				samples = decodeValues(type, count, meta,
 						(Vector)channel_data.get("values"));
 			}
@@ -141,9 +142,10 @@ public class ValuesRequest
 		}
 	}
 
-	/** Parse the MetaData from the received XML-RPC response. */
+	/** Parse the MetaData from the received XML-RPC response. 
+	 * @param name */
 	@SuppressWarnings("unchecked")
-    private IMetaData decodeMetaData(int value_type, Hashtable meta_hash)
+    private IMetaData decodeMetaData(final String name, int value_type, Hashtable meta_hash)
 		throws Exception
 	{
 		// meta := { int32 type;  
@@ -163,11 +165,11 @@ public class ValuesRequest
 		{
             // The 2.8.1 server will give 'ENUM' type values
             // with Numeric meta data, units = "<No data>"
-            // as an error message.
-			if (value_type == TYPE_ENUM)
-				throw new Exception(
-						"Received numeric meta information for value type "
-						+ value_type);
+            // as an error message. Warn, but don't stop.
+		    if (value_type == TYPE_ENUM)
+		        CentralLogger.getInstance().getLogger(this)
+		            .warn("Received numeric meta information for " + name +
+		                  ", value type " + value_type);
 			return ValueFactory.createNumericMetaData(
 	                (Double) meta_hash.get("disp_low"),
                     (Double) meta_hash.get("disp_high"),
@@ -246,11 +248,26 @@ public class ValuesRequest
 			}
 			else if (type == TYPE_ENUM)
 			{
-			    final int values[] = new int[count];
-				for (int vi=0; vi<count; ++vi)
-					values[vi] = (Integer)vv.get(vi);
-                samples[si] = ValueFactory.createEnumeratedValue(time, sevr, stat,
+				// The 2.8.1 server will give 'ENUM' type values
+	            // with Numeric meta data, units = "<No data>".
+	            // as an error message -> Handle it by returning
+			    // the data as long with the numeric meta that we have.
+				if (meta instanceof INumericMetaData)
+				{
+	                final long values[] = new long[count];
+	                for (int vi=0; vi<count; ++vi)
+	                    values[vi] = (long) ((Integer)vv.get(vi));
+	                samples[si] = ValueFactory.createLongValue(time, sevr, stat,
+	                                (INumericMetaData)meta, quality, values);
+				}
+				else
+				{
+	                final int values[] = new int[count];
+	                for (int vi=0; vi<count; ++vi)
+	                    values[vi] = (Integer)vv.get(vi);
+	                samples[si] = ValueFactory.createEnumeratedValue(time, sevr, stat,
                                 (IEnumeratedMetaData)meta, quality, values);
+				}
 			}
 			else if (type == TYPE_STRING)
 			{
