@@ -31,11 +31,11 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;

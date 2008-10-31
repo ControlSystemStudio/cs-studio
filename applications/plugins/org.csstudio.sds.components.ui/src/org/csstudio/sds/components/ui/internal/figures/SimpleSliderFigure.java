@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;

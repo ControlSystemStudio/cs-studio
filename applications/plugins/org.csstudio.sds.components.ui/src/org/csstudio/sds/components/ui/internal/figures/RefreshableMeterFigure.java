@@ -25,6 +25,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.utils.ShadedDrawing;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
@@ -33,7 +34,6 @@ import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.FigureListener;

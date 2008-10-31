@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Font;

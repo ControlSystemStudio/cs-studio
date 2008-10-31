@@ -40,6 +40,7 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class RegelwerkbuilderServiceImpl_Test extends TestCase {
@@ -88,9 +89,9 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 						
 					}
 
-					public void writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
-						// TODO Auto-generated method stub
-						
+					public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
+						Assert.fail("unexpected call of method.");
+						return false;
 					}
 
 				

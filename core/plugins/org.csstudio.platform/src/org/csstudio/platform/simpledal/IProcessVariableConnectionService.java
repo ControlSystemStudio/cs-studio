@@ -75,8 +75,8 @@ public interface IProcessVariableConnectionService {
 	 * 
 	 * @return true, if the value was set successful, false otherwise
 	 */
-	void writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value,
-			ValueType expectedValueType);
+	boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value,
+			ValueType expectedValueType) throws ConnectionException;
 	
 	/**
 	 * Asynchronously reads a value from the channel addressed by the the given

@@ -34,39 +34,47 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public enum ControlSystemEnum implements IAdaptable {
-	SDS_SIMULATOR("local", null, false),
+	SDS_SIMULATOR("local", null, false, "icons/cs-local.png"),
 
-	DAL_SIMULATOR("simulator", "Simulator", true),
+	DAL_SIMULATOR("simulator", "Simulator", true, "icons/controlsystem-local"),
 
-	DAL_EPICS("dal-epics", "EPICS", true),
+	DAL_EPICS("dal-epics", "EPICS", true, "icons/controlsystem-epics"),
 
-	DAL_TINE("dal-tine", "TINE", true),
+	DAL_TINE("dal-tine", "TINE", true, "icons/controlsystem-tine"),
 
-	DAL_TANGO("dal-tango", null, false),
+	DAL_TANGO("dal-tango", null, false, "icons/controlsystem-tango"),
 
-//	TINE("tine", "TINE", true),
+//	TINE("tine", "TINE", true, "icons/controlsystem-epics"),
 //
-//	EPICS("epics", "EPICS", true),
+//	EPICS("epics", "EPICS", true, "icons/controlsystem-epics"),
 //
-//	TANGO("tango", null, false),
+//	TANGO("tango", null, false, "icons/controlsystem-epics"),
 
-	LOCAL("local", null, false),
+	LOCAL("local", null, false, "icons/controlsystem-local"),
 	
-	UNKNOWN("", null, false);
+	UNKNOWN("", null, false, "icons/controlsystem-unknown");
 
 	private String _prefix;
 
 	private String _dalName;
 
 	private boolean _supportedByDAL;
+	
+	private String _icon;
 
-	ControlSystemEnum(String prefix, String dalName, boolean supportedByDAL) {
+	ControlSystemEnum(String prefix, String dalName, boolean supportedByDAL, String icon) {
 		assert prefix != null;
+		assert icon != null;
 		_prefix = prefix;
 		_dalName = dalName;
 		_supportedByDAL = supportedByDAL;
+		_icon = icon;
 	}
 
+	public String getIconPrefix() {
+		return _icon;
+	};
+	
 	public String getPrefix() {
 		return _prefix;
 	}

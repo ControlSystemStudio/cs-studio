@@ -86,10 +86,15 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
 		E value = null;
 
-		if (processVariableAddress.isCharacteristic()) {
-			value = connector.getCharacteristicSynchronously(processVariableAddress.getCharacteristic(), valueType);
-		} else {
-			value = connector.getValueSynchronously();
+		try {
+			if (processVariableAddress.isCharacteristic()) {
+				value = connector.getCharacteristicSynchronously(processVariableAddress.getCharacteristic(), valueType);
+			} else {
+				value = connector.getValueSynchronously();
+			}
+		} catch (Exception e) {
+			CentralLogger.getInstance().debug(null, e);
+			throw new ConnectionException(e);
 		}
 
 		return value;
@@ -109,22 +114,20 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		} else {
 			connector.getValueAsynchronously(listener);
 		}
-
-		// Runnable r = new Runnable() {
-		// public void run() {
-		// doReadValueAsynchronously(processVariableAddress, valueType,
-		// listener);
-		// }
-		// };
-		//
-		// Thread t = new Thread(r);
-		// t.start();
-
 	}
 
-	public void writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType) {
+	public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType) throws ConnectionException {
 		AbstractConnector connector = getConnector(processVariableAddress, valueType);
-		connector.setValueSynchronously(value);
+		boolean result = false;
+		
+		try {
+			result = connector.setValueSynchronously(value);
+		} catch (Exception e) {
+			CentralLogger.getInstance().debug(null, e);
+			throw new ConnectionException(e);
+		}
+		
+		return result;
 	}
 
 	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType) {

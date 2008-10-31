@@ -180,9 +180,9 @@ public class FilterConditionProcessVariableTest {
 			
 		}
 
-		public void writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
+		public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
 			// TODO Auto-generated method stub
-			
+			return false;
 		}
 		
 	}

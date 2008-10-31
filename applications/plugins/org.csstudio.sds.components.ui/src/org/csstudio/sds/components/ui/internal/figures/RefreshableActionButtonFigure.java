@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.sds.util.CustomMediaFactory;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Button;
 import org.eclipse.draw2d.Label;

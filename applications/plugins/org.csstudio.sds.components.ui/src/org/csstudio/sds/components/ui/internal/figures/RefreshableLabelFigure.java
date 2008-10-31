@@ -21,11 +21,11 @@
  */
  package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
@@ -231,9 +231,4 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		return null;
 	}
 	
-	@Override
-	public void setEnabled(boolean value) {
-		// TODO Auto-generated method stub
-		super.setEnabled(value);
-	}
 }

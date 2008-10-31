@@ -22,13 +22,13 @@
 
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.components.ui.internal.figures.AbstractChartFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 

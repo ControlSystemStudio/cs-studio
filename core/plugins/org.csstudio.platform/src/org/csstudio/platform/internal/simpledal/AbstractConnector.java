@@ -326,16 +326,11 @@ public abstract class AbstractConnector implements IConnector,
 	 *            return type
 	 * 
 	 * @return the current value or null
+	 * @throws Exception 
 	 */
-	public final <E> E getValueSynchronously() {
+	public final <E> E getValueSynchronously() throws Exception {
 
-		Object value = null;
-
-		try {
-			value = doGetValueSynchronously();
-		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
-		}
+		Object value = doGetValueSynchronously();
 
 		E result = value != null ? (E) ConverterUtil.convert(value,
 				getValueType()) : null;
@@ -372,18 +367,13 @@ public abstract class AbstractConnector implements IConnector,
 	 *            the type of the expected value
 	 * 
 	 * @return the current value or null
+	 * @throws Exception 
 	 */
 	public final <E> E getCharacteristicSynchronously(String characteristicId,
-			final ValueType valueType) {
+			final ValueType valueType) throws Exception {
 
-		Object value = null;
-
-		try {
-			value = doGetCharacteristicSynchronously(characteristicId,
+		Object value = doGetCharacteristicSynchronously(characteristicId,
 					valueType);
-		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
-		}
 
 		E result = value != null ? (E) ConverterUtil.convert(value, valueType)
 				: null;
@@ -434,14 +424,9 @@ public abstract class AbstractConnector implements IConnector,
 	 * @param value
 	 * @return
 	 */
-	public final boolean setValueSynchronously(Object value) {
+	public final boolean setValueSynchronously(Object value) throws Exception {
 		boolean result = false;
-		try {
-			result = doSetValueSynchronously(value);
-		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
-		}
-
+		result = doSetValueSynchronously(value);
 		return result;
 	}
 

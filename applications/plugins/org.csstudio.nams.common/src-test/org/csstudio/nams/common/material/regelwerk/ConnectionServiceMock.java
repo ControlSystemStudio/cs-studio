@@ -65,8 +65,9 @@ class ConnectionServiceMock implements IProcessVariableConnectionService {
 		Assert.fail("unexpected call of method.");
 	}
 
-	public void writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
+	public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
 		Assert.fail("unexpected call of method.");
+		return false;
 	}
 
 }

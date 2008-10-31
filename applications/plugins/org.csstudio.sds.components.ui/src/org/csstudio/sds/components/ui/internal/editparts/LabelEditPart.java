@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Map;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.optionEnums.TextTypeEnum;
@@ -32,7 +33,6 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 

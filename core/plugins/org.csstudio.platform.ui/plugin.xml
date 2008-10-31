@@ -176,6 +176,13 @@
             icon="icons/pview.gif"
             id="org.csstudio.platform.ui.views.progress"
             name="%progressView"/>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.platform.ui.internal.connectionview.ConnectionStateView"
+            icon="icons/connections.png"
+            id="org.csstudio.platform.ui.ConnectionStateView"
+            name="%connectorView">
+      </view>
    </extension>
    <extension
          id="cssPreferenceCategories"
