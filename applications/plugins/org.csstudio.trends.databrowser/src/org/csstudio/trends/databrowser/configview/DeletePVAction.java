@@ -64,6 +64,17 @@ public class DeletePVAction extends Action
         // Anyway: Close any editor before proceeding,
         // since that seems to help in all cases.
         config.getPVTableViewer().cancelEditing();
+        
+        // Another problem arose in Eclipse 3.4 where the table refresh
+        // that was triggered by the model change ran into
+        // "Ignored reentrant call" errors.
+        // Unclear why exactly that happened, but the JFace code
+        // called the PVTableLazyContentProvider recursively because
+        // the currently selected elements (the one we're deleting!)
+        // had changed in the model.
+        // Clearing the selection (since we're deleting those elements anyway)
+        // seems to fix that issue.
+        config.getPVTableViewer().setSelection(null);
 		for (int i = 0; i < items.length; i++)
 		{
             final String name = items[i].getName();

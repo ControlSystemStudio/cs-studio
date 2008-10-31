@@ -1129,8 +1129,7 @@ public class ConfigView extends PlotAwareView
         	foreground.setColor(model.getPlotForeground());
         	grid_color.setColor(model.getPlotGrid());
         }
-        // This actually causes a recursion error. setItemCount(..) above suffices
-        // pv_table_viewer.refresh();
+        pv_table_viewer.refresh();
         updateLowerSash();
         // Initialize the ring buffer info
         checkLivePVInputs();
