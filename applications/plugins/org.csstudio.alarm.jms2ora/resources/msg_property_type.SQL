@@ -1,3 +1,5 @@
+
+/* Alle Properties */
 INSERT INTO msg_property_type (ID,NAME) VALUES (1,'TYPE');
 INSERT INTO msg_property_type (ID,NAME) VALUES (2,'EVENTTIME');
 INSERT INTO msg_property_type (ID,NAME) VALUES (3,'TEXT');
@@ -31,6 +33,30 @@ INSERT INTO msg_property_type (ID,NAME) VALUES (30,'creator-app');
 INSERT INTO msg_property_type (ID,NAME) VALUES (31,'recipient-app');
 INSERT INTO msg_property_type (ID,NAME) VALUES (32,'destination-queue');
 INSERT INTO msg_property_type (ID,NAME) VALUES (33,'source-queue');
+INSERT INTO msg_property_type (ID,NAME) VALUES (34,'UNKNOWN');
+INSERT INTO msg_property_type (ID,NAME) VALUES (35,'FILENAME');
+INSERT INTO msg_property_type (ID,NAME) VALUES (36,'CREATETIME');
+INSERT INTO msg_property_type (ID,NAME) VALUES (37,'HOWTO');
+INSERT INTO msg_property_type (ID,NAME) VALUES (38,'SEVERITY-OLD');
+INSERT INTO msg_property_type (ID,NAME) VALUES (39,'HOST-PHYS');
+
+/* Nur die wirklich benutzten Properties */
+INSERT INTO msg_property_type (ID,NAME) VALUES (1,'TYPE');
+INSERT INTO msg_property_type (ID,NAME) VALUES (2,'EVENTTIME');
+INSERT INTO msg_property_type (ID,NAME) VALUES (3,'TEXT');
+INSERT INTO msg_property_type (ID,NAME) VALUES (5,'USER');
+INSERT INTO msg_property_type (ID,NAME) VALUES (6,'HOST');
+INSERT INTO msg_property_type (ID,NAME) VALUES (7,'NAME');
+INSERT INTO msg_property_type (ID,NAME) VALUES (8,'APPLICATION-ID');
+INSERT INTO msg_property_type (ID,NAME) VALUES (9,'PROCESS-ID');
+INSERT INTO msg_property_type (ID,NAME) VALUES (10,'CLASS');
+INSERT INTO msg_property_type (ID,NAME) VALUES (11,'DOMAIN');
+INSERT INTO msg_property_type (ID,NAME) VALUES (12,'FACILITY');
+INSERT INTO msg_property_type (ID,NAME) VALUES (13,'LOCATION');
+INSERT INTO msg_property_type (ID,NAME) VALUES (15,'SEVERITY');
+INSERT INTO msg_property_type (ID,NAME) VALUES (16,'STATUS');
+INSERT INTO msg_property_type (ID,NAME) VALUES (17,'VALUE');
+INSERT INTO msg_property_type (ID,NAME) VALUES (26,'DESTINATION');
 INSERT INTO msg_property_type (ID,NAME) VALUES (34,'UNKNOWN');
 INSERT INTO msg_property_type (ID,NAME) VALUES (35,'FILENAME');
 INSERT INTO msg_property_type (ID,NAME) VALUES (36,'CREATETIME');
