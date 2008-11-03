@@ -48,20 +48,27 @@ public class LdapUpdaterServer implements IApplication {
 	long startTime_s=startTime/1000L; // s
 	long one_hour=3600; // s
     long delay=0;
-    
     long one_day=one_hour*24; // s 
     long time_since_last_midnight=startTime_s % (one_day); // s
-    if (time_since_last_midnight < ( one_hour ) ) {
-    	delay=time_since_last_midnight; // start at 1 o'clock am
+
+    IPreferencesService prefs = Platform.getPreferencesService();
+    String startMsString = prefs.getString(Activator.PLUGIN_ID, LdapUpdaterPreferenceConstants.LDAP_AUTO_START, "", null);
+    String interval = prefs.getString(Activator.PLUGIN_ID, LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
+
+    long startMs = Long.parseLong(startMsString);
+    long linterval = Long.parseLong(interval);
+   
+    if (time_since_last_midnight < ( startMs / 1000 ) ) {
+    	delay = (3600*24) - time_since_last_midnight; // start at 1 o'clock am
     } else {
-    	if (time_since_last_midnight < ( one_hour*12 ) ) {
-    		   delay=(one_hour*12)-time_since_last_midnight; // start at 1 o'clock pm
+    	if (time_since_last_midnight < ( linterval ) ) {
+    		   delay=(linterval)-time_since_last_midnight; // start at 1 o'clock pm
     	   }else{
-    		   delay=(one_hour*24)-time_since_last_midnight; // start at 1 o'clock am    		   
+    		   delay=(linterval*2)-time_since_last_midnight; // start at 1 o'clock am    		   
     	   }
     }
-
-    myDateTimeString dateTimeString = new myDateTimeString();   
+    
+   myDateTimeString dateTimeString = new myDateTimeString();   
     String autostart = dateTimeString.getDateTimeString( "", "HH:mm:ss", (delay-one_hour)*1000);
     _log.debug(this, "Time interval until autostart is " + autostart );
     CentralLogger.getInstance().debug(this, "Time interval until autostart is " + autostart );            
@@ -70,11 +77,8 @@ public class LdapUpdaterServer implements IApplication {
         CentralLogger.getInstance().debug(this, "Running startup service: " + s.toString());
         s.run();
     }
-    IPreferencesService prefs = Platform.getPreferencesService();
- 		String interval = prefs.getString(Activator.PLUGIN_ID,
-				LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
-		delay = delay * 1000;
-		new TimerProcessor ( delay, Integer.parseInt(interval)); // every 12 hours
+ 	delay = delay * 1000;
+	new TimerProcessor ( delay, linterval); // every 12 hours
 
 // 		next call was working - for test only (starts the ldapUpdater every 180 seconds):
 //        new TimerProcessor ( 5000, 1000*180 );        

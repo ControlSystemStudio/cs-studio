@@ -39,19 +39,24 @@ import java.util.ArrayList;
 import java.util.Formatter;
 */
 
-import java.text.SimpleDateFormat;
+// import java.awt.FileDialog;
+// import java.awt.peer.FileDialogPeer;
+// import java.text.SimpleDateFormat;
+import java.io.File;
 import java.util.ArrayList;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldapUpdater.model.DataModel;
-import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
+// import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.equinox.app.IApplication;
-import org.eclipse.equinox.app.IApplicationContext;
+//import org.eclipse.core.runtime.Platform;
+// import org.eclipse.core.runtime.preferences.IPreferencesService;
+// import org.eclipse.equinox.app.IApplication;
+// import org.eclipse.equinox.app.IApplicationContext;
 import org.csstudio.utility.ldapUpdater.myDateTimeString;
+
+import com.sun.jndi.toolkit.dir.DirSearch;
 
 // import Test;
 
@@ -86,14 +91,16 @@ public class LdapUpdater {
 		}
 		return _instance;
 	}
-			
+
 	public final void start() throws Exception {
 		if ( busy ) {
 			return;
 		}
 		busy=true;
         CentralLogger.getInstance().info(this, "start" );
-   	
+
+        
+
     	_model=new DataModel();
 
     	IocListReader iocReader=new IocListReader(_model);
