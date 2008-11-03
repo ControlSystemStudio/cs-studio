@@ -35,6 +35,7 @@ import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IConnector;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.eclipse.core.runtime.Platform;
@@ -60,6 +61,8 @@ import org.epics.css.dal.Timestamp;
 @SuppressWarnings("unchecked")
 public abstract class AbstractConnector implements IConnector,
 		IProcessVariableAdressProvider, IProcessVariable {
+
+
 
 	public static final int BLOCKING_TIMEOUT = 3000;
 
@@ -317,6 +320,14 @@ public abstract class AbstractConnector implements IConnector,
 			CentralLogger.getInstance().error(null, e);
 		}
 	}
+	
+	/**
+	 *{@inheritDoc}
+	 */
+	public void forceDispose() {
+		_weakListenerReferences.clear();
+		dispose();
+	}
 
 	/**
 	 * Queries the current value using a synchronous call that will block the
@@ -410,10 +421,11 @@ public abstract class AbstractConnector implements IConnector,
 	 * 
 	 * @param value
 	 *            the value to be set
+	 * @param listener an optional call-back listener
 	 */
-	public final void setValueAsynchronously(Object value) {
+	public final void setValueAsynchronously(Object value, final IProcessVariableWriteListener listener) {
 		try {
-			doSetValueAsynchronously(value);
+			doSetValueAsynchronously(value, listener);
 		} catch (Exception e) {
 			CentralLogger.getInstance().error(null, e);
 		}
@@ -538,11 +550,12 @@ public abstract class AbstractConnector implements IConnector,
 	 * 
 	 * @param value
 	 *            the value to be set
+	 * @param listener an optional call-back listener
 	 * 
 	 * @throws Exception
 	 *             an arbitrary exception
 	 */
-	protected abstract void doSetValueAsynchronously(Object value)
+	protected abstract void doSetValueAsynchronously(Object value, final IProcessVariableWriteListener listener)
 			throws Exception;
 
 	/**

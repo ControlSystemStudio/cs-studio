@@ -122,7 +122,7 @@ public class SimpleDALTest extends TestCase {
 			
 			d= d+1.0;
 			
-			connectionService.writeValueAsynchronously(ia, d, ValueType.DOUBLE);
+			connectionService.writeValueAsynchronously(ia, d, ValueType.DOUBLE, null);
 			
 			double d1= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			
@@ -266,7 +266,7 @@ public class SimpleDALTest extends TestCase {
 			
 			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S2";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE);
+			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE, null);
 			d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 		
@@ -274,7 +274,7 @@ public class SimpleDALTest extends TestCase {
 			ia= addressFactory.createProcessVariableAdress(rawName);
 			IPVVListener l= new IPVVListener();
 			connectionService.register(l, ia, ValueType.DOUBLE);
-			connectionService.writeValueAsynchronously(ia, 10.0,  ValueType.DOUBLE);
+			connectionService.writeValueAsynchronously(ia, 10.0,  ValueType.DOUBLE, null);
 			d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 			assertNotNull(l.value);
@@ -307,7 +307,7 @@ public class SimpleDALTest extends TestCase {
 			assertNotNull(pp);
 			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
-			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE);
+			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE, null);
 			double d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 			assertNotNull(l.value);

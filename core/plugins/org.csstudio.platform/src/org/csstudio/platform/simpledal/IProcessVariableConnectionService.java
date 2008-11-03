@@ -54,14 +54,14 @@ public interface IProcessVariableConnectionService {
 	 * 
 	 * @param processVariableAddress
 	 *            the address
-	 * 
 	 * @param value
 	 *            the value
+	 * @param listener TODO
 	 * 
 	 * @return true, if the value was set successful, false otherwise
 	 */
 	void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value,
-			ValueType expectedValueType);
+			ValueType expectedValueType, IProcessVariableWriteListener listener);
 
 	/**
 	 * Synchronously writes the specified value to the channel addressed by the

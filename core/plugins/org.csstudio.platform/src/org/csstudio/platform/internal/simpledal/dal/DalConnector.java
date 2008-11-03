@@ -32,6 +32,7 @@ import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.CharacteristicInfo;
@@ -57,8 +58,8 @@ import org.epics.css.dal.spi.PropertyFactory;
  * For convenience the {@link IProcessVariableValueListener}s are only weakly
  * referenced. The connector tracks for {@link IProcessVariableValueListener}s
  * that have been garbage collected and removes those references from its
- * internal list. This way {@link IProcessVariableValueListener}s don�t have to
- * be disposed explicitly.
+ * internal list. This way {@link IProcessVariableValueListener}s don�t have
+ * to be disposed explicitly.
  * 
  * @author Sven Wende
  * 
@@ -70,9 +71,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	public static final CharacteristicInfo C_TIMESTAMP_INFO = new CharacteristicInfo("timestamp", Timestamp.class,
 			new Class[] { DynamicValueProperty.class }, "Meta timestamp characteristic.", null, true);
 	public static final CharacteristicInfo C_SEVERITY_INFO = new CharacteristicInfo("severity", String.class,
-			new Class[] { DynamicValueProperty.class }, "Meta timestamp characteristic.", null, true);
+			new Class[] { DynamicValueProperty.class }, "Meta severity characteristic.", null, true);
 	public static final CharacteristicInfo C_STATUS_INFO = new CharacteristicInfo("status", String.class,
-			new Class[] { DynamicValueProperty.class }, "Meta timestamp characteristic.", null, true);
+			new Class[] { DynamicValueProperty.class }, "Meta status characteristic.", null, true);
 
 	{
 		CharacteristicInfo.registerCharacteristicInfo(C_SEVERITY_INFO);
@@ -324,17 +325,23 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doSetValueAsynchronously(Object value) throws Exception {
+	protected void doSetValueAsynchronously(Object value, final IProcessVariableWriteListener listener) throws Exception {
 		waitTillConnected(3000);
 
 		if (_dalProperty != null && _dalProperty.isSettable()) {
 			_dalProperty.setAsynchronous(ConverterUtil.convert(value, getValueType()), new ResponseListener() {
 
 				public void responseReceived(ResponseEvent event) {
+					if (listener != null) {
+						listener.success();
+					}
 					CentralLogger.getInstance().debug(null, event.getResponse().toString());
 				}
 
 				public void responseError(ResponseEvent event) {
+					if (listener != null) {
+						listener.error(event.getResponse().getError());
+					}
 					CentralLogger.getInstance().error(null, event.getResponse().getError());
 				}
 			});
@@ -486,7 +493,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 						Exception error = event.getResponse().getError();
 						String errorMsg = error != null ? error.getMessage() : "Unknown Error!";
 						listener.errorOccured(errorMsg);
-						
+
 						printDebugInfo("AGET-ERROR: " + error);
 					}
 

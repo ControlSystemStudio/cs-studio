@@ -11,6 +11,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IConnector;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
@@ -61,7 +62,7 @@ class ConnectionServiceMock implements IProcessVariableConnectionService {
 		Assert.fail("unexpected call of method.");
 	}
 
-	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType) {
+	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType expectedValueType, IProcessVariableWriteListener listener) {
 		Assert.fail("unexpected call of method.");
 	}
 

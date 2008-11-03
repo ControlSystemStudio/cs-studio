@@ -33,6 +33,7 @@ import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IConnector;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 
@@ -130,9 +131,9 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		return result;
 	}
 
-	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType) {
+	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType, IProcessVariableWriteListener listener) {
 		AbstractConnector connector = getConnector(processVariableAddress, valueType);
-		connector.setValueAsynchronously(value);
+		connector.setValueAsynchronously(value, listener);
 	}
 
 	/**

@@ -3,22 +3,24 @@
  */
 package org.csstudio.platform.internal.simpledal;
 
-import static org.junit.Assert.fail;
-
-import java.rmi.ConnectIOException;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.ProcessVariableValueAdapter;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.easymock.classextension.EasyMock.*;
 
 /**
  * @author Sven Wende
@@ -66,7 +68,7 @@ public class ProcessVariableConnectionServiceTest {
 		}
 
 		@Override
-		protected void doSetValueAsynchronously(Object value) throws Exception {
+		protected void doSetValueAsynchronously(Object value, IProcessVariableWriteListener listener) throws Exception {
 			_value = value;
 		}
 
@@ -221,13 +223,13 @@ public class ProcessVariableConnectionServiceTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#writeValueAsynchronously(org.csstudio.platform.model.pvs.IProcessVariableAddress, java.lang.Object, org.csstudio.platform.simpledal.ValueType)}.
+	 * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#writeValueAsynchronously(org.csstudio.platform.model.pvs.IProcessVariableAddress, java.lang.Object, org.csstudio.platform.simpledal.ValueType, IProcessVariableWriteListener)}.
 	 * @throws ConnectionException 
 	 */
 	@Test
 	public final void testWriteValueAsynchronously() throws ConnectionException {
 		double newValue = 5.0;
-		_service.writeValueAsynchronously(pv, newValue, ValueType.DOUBLE);
+		_service.writeValueAsynchronously(pv, newValue, ValueType.DOUBLE, null);
 		assertEquals(newValue, _service.readValueSynchronously(pv, ValueType.DOUBLE));
 	}
 
@@ -255,7 +257,7 @@ public class ProcessVariableConnectionServiceTest {
 		assertEquals(1, _service.getConnectors().size());
 		assertTrue(_service.getConnectors().contains(connector));
 		_service.unregister(listener);
-		Thread.sleep(AbstractConnector.BLOCKING_TIMEOUT*2);
+		Thread.sleep(AbstractConnector.BLOCKING_TIMEOUT*4);
 		assertEquals(0, _service.getConnectors().size());
 	}
 

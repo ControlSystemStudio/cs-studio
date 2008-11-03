@@ -306,8 +306,7 @@ public class DalConnectorTest {
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.LONG, 23l);
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.LONG_SEQUENCE, new long[] { 23l });
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.OBJECT, new Double(23.45));
-		// TODO: testGetValueSynchronously("dal-epics://unittest:ai",
-		// ValueType.OBJECT_SEQUENCE, new Object[] { new Double(23.45) });
+		// TODO: testGetValueSynchronously("dal-epics://unittest:ai", ValueType.OBJECT_SEQUENCE, new Object[] { new Double(23.45) });
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.STRING, "23");
 		testGetValueSynchronously("dal-epics://unittest:ai", ValueType.STRING_SEQUENCE, new String[] { "23" });
 	}
@@ -336,9 +335,7 @@ public class DalConnectorTest {
 		testSetValueAsynchronously("dal-epics://unittest:ai:write", ValueType.LONG, 2l, 3l);
 		testSetValueAsynchronously("dal-epics://unittest:ai:write", ValueType.LONG_SEQUENCE, new long[] { 1l }, new long[] { 4l });
 		testSetValueAsynchronously("dal-epics://unittest:ai:write", ValueType.STRING, "2", "3");
-
-		// TODO: testSetValueAsynchronously("dal-epics://unittest:ai:write",
-		// ValueType.STRING, new String[] { "1" }, new String[] { "4" });
+		testSetValueAsynchronously("dal-epics://unittest:ai:write", ValueType.STRING_SEQUENCE, new String[] { "1" }, new String[] { "4" });
 	}
 
 	private void testSetValueAsynchronously(String pvName, ValueType vt, Object value1, Object value2) throws Exception {
@@ -348,7 +345,7 @@ public class DalConnectorTest {
 		DalConnector connector = new DalConnector(pv, vt);
 
 		// set new value 1
-		connector.setValueAsynchronously(value1);
+		connector.setValueAsynchronously(value1, null);
 		Thread.sleep(2000);
 
 		// get current value
@@ -377,8 +374,7 @@ public class DalConnectorTest {
 		testSetValueSynchronously("dal-epics://unittest:ai:write", ValueType.LONG, 2l, 3l);
 		testSetValueSynchronously("dal-epics://unittest:ai:write", ValueType.LONG_SEQUENCE, new long[] { 1l }, new long[] { 4l });
 		testSetValueSynchronously("dal-epics://unittest:ai:write", ValueType.STRING, "2", "3");
-		// TODO: testSetValueSynchronously("dal-epics://unittest:ai:write",
-		// ValueType.STRING, new String[] { "1" }, new String[] { "4" });
+		testSetValueSynchronously("dal-epics://unittest:ai:write", ValueType.STRING_SEQUENCE, new String[] { "1" }, new String[] { "4" });
 	}
 
 	private void testSetValueSynchronously(String pvName, ValueType vt, Object value1, Object value2) throws Exception {

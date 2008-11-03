@@ -6,6 +6,7 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ProcessVariableValueAdapter;
 import org.csstudio.platform.simpledal.ValueType;
@@ -40,7 +41,18 @@ public class UseCase {
 		}
 
 		// write value asynchronously
-		service.writeValueAsynchronously(pv, 98.0, ValueType.DOUBLE);
+		IProcessVariableWriteListener writeListener = new IProcessVariableWriteListener() {
+
+			public void error(Exception error) {
+				System.out.println(error.toString());
+			}
+
+			public void success() {
+				System.out.println("ok");
+			}
+		};
+		
+		service.writeValueAsynchronously(pv, 98.0, ValueType.DOUBLE, writeListener);
 		
 		// create a listener
 		IProcessVariableValueListener<Double> listener = new ProcessVariableValueAdapter<Double>() {

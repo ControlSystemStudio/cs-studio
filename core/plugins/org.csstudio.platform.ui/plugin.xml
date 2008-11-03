@@ -260,6 +260,7 @@
            objectClass="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider">
         <action
               class="org.csstudio.platform.ui.internal.developmentsupport.util.PrintPvsAction"
+              icon="icons/listpvs.png"
               id="PrintPvsAction"
               label="Print selected Pvs">
         </action>
@@ -269,8 +270,19 @@
            objectClass="org.csstudio.platform.model.IProcessVariable">
         <action
               class="org.csstudio.platform.ui.internal.developmentsupport.util.CopyPvNameToClipboardAction"
+              icon="icons/editcopy.png"
               id="CopyPvNameToClipboard"
               label="Copy Pv Name to Clipboard">
+        </action>
+     </objectContribution>
+     <objectContribution
+           id="IConnectorContributions"
+           objectClass="org.csstudio.platform.simpledal.IConnector">
+        <action
+              class="org.csstudio.platform.ui.internal.connectionview.DisposeConnectorAction"
+              icon="icons/cancel.png"
+              id="org.csstudio.platform.ui.action1"
+              label="Dispose">
         </action>
      </objectContribution>
   </extension>

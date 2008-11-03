@@ -27,6 +27,7 @@ import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
@@ -61,14 +62,11 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doGetValueAsynchronously(
-			final IProcessVariableValueListener listener) {
+	protected void doGetValueAsynchronously(final IProcessVariableValueListener listener) {
 		Runnable r = new Runnable() {
 			public void run() {
-				Object value = LocalChannelPool.getInstance().getChannel(
-						getProcessVariableAddress(), getValueType()).getValue();
-				listener.valueChanged(ConverterUtil.convert(value,
-						getValueType()), new Timestamp());
+				Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
+				listener.valueChanged(ConverterUtil.convert(value, getValueType()), new Timestamp());
 			}
 		};
 
@@ -80,8 +78,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 */
 	@Override
 	protected Object doGetValueSynchronously() {
-		Object value = LocalChannelPool.getInstance().getChannel(
-				getProcessVariableAddress(), getValueType()).getValue();
+		Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
 		return value;
 	}
 
@@ -89,8 +86,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doGetCharacteristicAsynchronously(String characteristicId,
-			ValueType valueType, IProcessVariableValueListener listener)
+	protected void doGetCharacteristicAsynchronously(String characteristicId, ValueType valueType, IProcessVariableValueListener listener)
 			throws Exception {
 		doGetValueAsynchronously(listener);
 
@@ -100,8 +96,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object doGetCharacteristicSynchronously(String characteristicId,
-			ValueType valueType) throws Exception {
+	protected Object doGetCharacteristicSynchronously(String characteristicId, ValueType valueType) throws Exception {
 		return doGetValueSynchronously();
 	}
 
@@ -109,12 +104,14 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doSetValueAsynchronously(final Object value) {
+	protected void doSetValueAsynchronously(final Object value, final IProcessVariableWriteListener listener) {
 		Runnable r = new Runnable() {
 			public void run() {
-				LocalChannelPool.getInstance().getChannel(
-						getProcessVariableAddress(), getValueType()).setValue(
-						value);
+				LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).setValue(value);
+
+				if (listener != null) {
+					listener.success();
+				}
 			}
 		};
 
@@ -127,8 +124,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 */
 	@Override
 	protected boolean doSetValueSynchronously(Object value) {
-		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(),
-				getValueType()).setValue(value);
+		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).setValue(value);
 		return true;
 	}
 
@@ -137,8 +133,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 */
 	@Override
 	protected void init() {
-		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(),
-				getValueType()).addListener(this);
+		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).addListener(this);
 		forwardConnectionState(ConnectionState.CONNECTED);
 	}
 
@@ -147,8 +142,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 */
 	@Override
 	protected void doDispose() {
-		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(),
-				getValueType()).removeListener(this);
+		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).removeListener(this);
 	}
 
 	/**
