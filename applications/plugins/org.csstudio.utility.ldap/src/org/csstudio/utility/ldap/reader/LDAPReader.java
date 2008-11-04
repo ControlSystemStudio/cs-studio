@@ -24,6 +24,7 @@ package org.csstudio.utility.ldap.reader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
@@ -186,6 +187,8 @@ public class LDAPReader extends Job {
 	        try{
 	        	list = new ArrayList<String>();
 	            NamingEnumeration<SearchResult> answer = ctx.search(_name, _filter, ctrl);
+             //   CentralLogger.getInstance().info(this,"answer = " + answer);
+
 				try {
 					while(answer.hasMore()){
 						String name = answer.next().getName()+","+_name;
@@ -206,13 +209,20 @@ public class LDAPReader extends Job {
 				_ergebnisListe.setResultList(list);
 				monitor.done();
 				return Status.OK_STATUS;
+			} catch (NameNotFoundException nnfe){
+				Engine.getInstance().reconnectDirContext();
+				CentralLogger.getInstance().info(this,"Falscher LDAP Name oder so.");
+				
+                CentralLogger.getInstance().info(this,nnfe);
 			} catch (NamingException e) {
 			    Engine.getInstance().reconnectDirContext();
 				CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
                 CentralLogger.getInstance().info(this,e);
 			}
+			
 		}
 		monitor.setCanceled(true);
+		_ergebnisListe.setResultList(list);
 		return Status.CANCEL_STATUS;
 	}
 }
