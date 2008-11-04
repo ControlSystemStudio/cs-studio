@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.draw2d.geometry.PointList;
 
@@ -70,7 +71,8 @@ public class ADLPoints extends WidgetPart{
         assert !adlPoints.isType("points") : Messages.ADLPoints_AssertError_Begin+adlPoints.getType()+Messages.ADLPoints_AssertError_End; //$NON-NLS-1$
         
         _pointsList = new PointList(adlPoints.getBody().size());
-        for (String  points : adlPoints.getBody()) {
+        for (FileLine  fileLine : adlPoints.getBody()) {
+            String points = fileLine.getLine();
             String[] row = points.replaceAll("[()]", "").trim().split(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLPoints_WrongADLFormatException_Begin+points+Messages.ADLPoints_WrongADLFormatException_End);

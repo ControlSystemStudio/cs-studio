@@ -41,7 +41,7 @@ public class ADLWidget {
     /** The parent Widget.*/
     private ADLWidget _parent;
     /** A list whit all body properties. */
-    private ArrayList<String> _body = new ArrayList<String>();
+    private ArrayList<FileLine> _body = new ArrayList<FileLine>();
     /** A list whit all ADLobjectparts. */
     private ArrayList<ADLWidget> _objects = new ArrayList<ADLWidget>();
     /** The Number of this object in the Display. useful for Debugging and Error handling.*/
@@ -74,13 +74,13 @@ public class ADLWidget {
     /**
      * @return get a list of Parameter
      */
-    public final ArrayList<String> getBody() {
+    public final ArrayList<FileLine> getBody() {
         return _body;
     }
     /**
      * @param parameter the added
      */
-    public final void addBody(final String parameter) {
+    public final void addBody(final FileLine parameter) {
         _body.add(parameter);
     }
     /**

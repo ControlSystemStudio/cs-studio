@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -71,7 +72,8 @@ public class ADLObject extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlObject) throws WrongADLFormatException {
         assert !adlObject.isType("object") : Messages.ADLObject_AssertError_Begin+adlObject.getType()+Messages.ADLObject_AssertError_End; //$NON-NLS-1$
-        for (String parameter : adlObject.getBody()) {
+        for (FileLine fileLine : adlObject.getBody()) {
+            String parameter = fileLine.getLine();
             if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }

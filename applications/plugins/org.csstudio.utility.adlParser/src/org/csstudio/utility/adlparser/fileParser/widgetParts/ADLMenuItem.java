@@ -37,6 +37,7 @@ import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -95,7 +96,8 @@ public class ADLMenuItem extends WidgetPart{
     final void parseWidgetPart(final ADLWidget menuItem) throws WrongADLFormatException {
         assert !menuItem.isType("menuItem") :  Messages.ADLMenuItem_AssertError_Begin+menuItem.getType()+Messages.ADLMenuItem_AssertError_End; //$NON-NLS-1$
 
-        for (String parameter : menuItem.getBody()) {
+        for (FileLine fileLine : menuItem.getBody()) {
+            String parameter = fileLine.getLine();
             if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }

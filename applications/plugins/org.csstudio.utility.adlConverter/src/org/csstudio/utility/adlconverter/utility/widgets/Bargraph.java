@@ -31,6 +31,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -57,7 +58,8 @@ public class Bargraph extends Widget {
             showScale="off"
             showBar="normal"
          */
-        for (String obj : bargraph.getBody()) {
+        for (FileLine fileLine : bargraph.getBody()) {
+            String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
@@ -108,7 +110,7 @@ public class Bargraph extends Widget {
                 //TODO: Bargraph --> clrmod
                 CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+row[0]);
             }else{ //Bargraph have no Parameter                
-                throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+row[0]+Messages.Bargraph_WrongADLFormatException+bargraph);
+                throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+fileLine+Messages.Bargraph_WrongADLFormatException+bargraph);
             } 
         }
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, marksShowStatus); 

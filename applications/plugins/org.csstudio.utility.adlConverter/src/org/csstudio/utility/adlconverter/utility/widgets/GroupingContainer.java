@@ -30,6 +30,7 @@ import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.GroupingContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLChildren;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLMenuItem;
@@ -82,11 +83,12 @@ public class GroupingContainer extends Widget {
     }
     
     /**
-     * @param body the body elements to handle
+     * @param arrayList the body elements to handle
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    private void handleBody(final ArrayList<String> body) throws WrongADLFormatException {
-        for (String obj : body) {
+    private void handleBody(final ArrayList<FileLine> arrayList) throws WrongADLFormatException {
+        for (FileLine fileLine : arrayList) {
+            String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.GroupingContainer_WrongADLFormatException+row[0]); //$NON-NLS-1$

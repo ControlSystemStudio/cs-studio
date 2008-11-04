@@ -30,6 +30,7 @@ import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -46,7 +47,8 @@ public class Arc extends Widget {
      */
     public Arc(final ADLWidget arc, AbstractWidgetModel abstractWidgetModel) throws WrongADLFormatException {
         super(arc);
-        for (String obj : arc.getBody()) {
+        for (FileLine fileLine : arc.getBody()) {
+            String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Arc_WrongADLFormatException);

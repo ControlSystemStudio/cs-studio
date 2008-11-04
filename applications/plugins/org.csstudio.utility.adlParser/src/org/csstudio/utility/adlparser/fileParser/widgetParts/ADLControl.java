@@ -30,6 +30,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -90,11 +91,11 @@ public class ADLControl extends WidgetPart{
 
         assert !adlControl.isType("control") : Messages.ADLControl_AssertError_Begin+adlControl.getType()+Messages.ADLControl_AssertError_End; //$NON-NLS-1$
 
-        for (String parameter : adlControl.getBody()) {
-            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
+        for (FileLine parameter : adlControl.getBody()) {
+            if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("="); //$NON-NLS-1$
+            String[] row = parameter.getLine().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Begin+parameter+Messages.ADLControl_WrongADLFormatException_End);
             }

@@ -22,49 +22,45 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgets;
-
-import org.csstudio.sds.components.model.EllipseModel;
-import org.csstudio.sds.components.model.PolygonModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-
+package org.csstudio.utility.adlconverter.utility;
 
 /**
  * @author hrickens
  * @author $Author$
  * @version $Revision$
- * @since 17.09.2007
+ * @since 04.11.2008
  */
-public class Ellipse extends Widget {
+public class FileLine {
 
-    /**
-     * @param ellipse The ADLWidget that describe the Ellipse.
-     */
-    public Ellipse(final ADLWidget ellipse, AbstractWidgetModel abstractWidgetModel) {
-        super(ellipse);
-        if(getBasicAttribute()!=null){
-            if((getBasicAttribute()!=null&&(getBasicAttribute().getWidth()==null||getBasicAttribute().getWidth().equals("0")))){ //$NON-NLS-1$
-                getBasicAttribute().setStyle("0"); //$NON-NLS-1$
-            }else{
-                getBasicAttribute().setStyle("6"); //$NON-NLS-1$
-            }
-        }
-        if(getBasicAttribute()!=null&&getBasicAttribute().getFill()!=null){
-            _widget.setPropertyValue(EllipseModel.PROP_FILL, getBasicAttribute().getFill());
-        }
-        _widget.setPropertyValue(PolygonModel.PROP_BORDER_STYLE, 6);
-        ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
-    }
-
+    String _line;
+    int _lineNumber;
     
-    /**
-     * {@inheritDoc}
+    public FileLine(String line, int lineNumber){
+        setLine(line);
+        setLineNumber(lineNumber);
+    }
+    
+    public final String getLine() {
+        if(_line==null){
+            _line="";
+        }
+        return _line;
+    }
+    public final void setLine(String line) {
+        _line = line;
+    }
+    public final int getLineNumber() {
+        return _lineNumber;
+    }
+    public final void setLineNumber(int lineNumber) {
+        _lineNumber = lineNumber;
+    }
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
      */
     @Override
-    final void setWidgetType() {
-        _widget = createWidgetModel(EllipseModel.ID);
+    public String toString() {
+        return getLineNumber()+": "+getLine();
     }
-
+    
 }

@@ -30,6 +30,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -103,12 +104,12 @@ public class ADLDynamicAttribute extends WidgetPart{
         _bool=false;
         _color=false;
 
-        for (String parameter : adlDynamicAttribute.getBody()) {
-            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
+        for (FileLine parameter : adlDynamicAttribute.getBody()) {
+            if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String head = parameter.split("=")[0]; //$NON-NLS-1$
-            String[] row=ADLHelper.cleanString(parameter.substring(head.length()+1));
+            String head = parameter.getLine().split("=")[0]; //$NON-NLS-1$
+            String[] row=ADLHelper.cleanString(parameter.getLine().substring(head.length()+1));
             head=head.trim().toLowerCase();
             if(head.equals("clr")){ //$NON-NLS-1$
                 _clr=row[0];

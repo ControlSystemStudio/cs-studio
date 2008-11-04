@@ -36,6 +36,7 @@ import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -67,7 +68,8 @@ public class Waveform extends Widget {
                 yAxis(waveformPart);
             }
         }
-        for (String waveform : widget.getBody()) {
+        for (FileLine fileLine : widget.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
@@ -117,7 +119,8 @@ public class Waveform extends Widget {
         }
 
         
-        for (String waveform : waveformPart.getBody()){
+        for (FileLine fileLine : waveformPart.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
@@ -159,7 +162,8 @@ public class Waveform extends Widget {
      * @throws WrongADLFormatException 
      */
     private void xAxis(ADLWidget waveformPart) throws WrongADLFormatException {
-        for (String waveform : waveformPart.getBody()){
+        for (FileLine fileLine : waveformPart.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
@@ -215,7 +219,8 @@ public class Waveform extends Widget {
                 idInt = Integer.parseInt(waveformPart.getType().substring(start+1,stop));
             }
         }
-        for (String waveform : waveformPart.getBody()){
+        for (FileLine fileLine : waveformPart.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
@@ -257,7 +262,8 @@ public class Waveform extends Widget {
      * @throws WrongADLFormatException 
      */
     private void plotcom(ADLWidget waveformPart) throws WrongADLFormatException {
-        for (String waveform : waveformPart.getBody()){
+        for (FileLine fileLine : waveformPart.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);

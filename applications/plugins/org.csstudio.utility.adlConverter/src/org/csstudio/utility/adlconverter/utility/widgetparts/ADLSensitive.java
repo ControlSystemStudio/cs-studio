@@ -32,6 +32,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgets.Widget;
 
@@ -99,7 +100,8 @@ public class ADLSensitive extends WidgetPart {
     final void parseWidgetPart(final ADLWidget sensitive) throws WrongADLFormatException {
         assert !sensitive.isType("sensitive") :  Messages.ADLSensitive_AssertError_Begin+sensitive.getType()+Messages.ADLSensitive_AssertError_End; //$NON-NLS-1$
 
-        for (String parameter : sensitive.getBody()) {
+        for (FileLine fileLine : sensitive.getBody()) {
+            String parameter = fileLine.getLine();
             if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }

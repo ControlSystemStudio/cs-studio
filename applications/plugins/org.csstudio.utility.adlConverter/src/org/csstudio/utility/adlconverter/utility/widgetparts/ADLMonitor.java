@@ -30,6 +30,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -83,7 +84,8 @@ public class ADLMonitor extends WidgetPart{
     final void parseWidgetPart(final ADLWidget monitor) throws WrongADLFormatException {
         assert !monitor.isType("monitor") : Messages.ADLMonitor_assertError_Begin+monitor.getType()+Messages.ADLMonitor_assertError_End; //$NON-NLS-1$
 
-        for (String parameter : monitor.getBody()) {
+        for (FileLine fileLine : monitor.getBody()) {
+            String parameter = fileLine.getLine();
             if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }

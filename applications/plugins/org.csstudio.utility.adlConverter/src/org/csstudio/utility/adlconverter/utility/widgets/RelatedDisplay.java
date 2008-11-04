@@ -31,6 +31,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.RelatedDisplayItem;
 import org.eclipse.swt.SWT;
@@ -102,7 +103,8 @@ public class RelatedDisplay extends Widget {
 //            _control.setConnectionStateDependentPropertyValues(values);
         }
         
-        for (String obj : relatedDisplay.getBody()) {
+        for (FileLine fileLine : relatedDisplay.getBody()) {
+            String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+row[0]);

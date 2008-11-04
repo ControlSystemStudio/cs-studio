@@ -33,6 +33,7 @@ import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -61,7 +62,8 @@ public class StripChart extends Widget {
                 pen(srtipChartPart);
             }
         }
-        for (String waveform : widget.getBody()) {
+        for (FileLine fileLine : widget.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
@@ -88,7 +90,8 @@ public class StripChart extends Widget {
         int index = Integer.parseInt(id);
 
         
-        for (String waveform : waveformPart.getBody()){
+        for (FileLine fileLine : waveformPart.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
@@ -126,7 +129,8 @@ public class StripChart extends Widget {
      * @throws WrongADLFormatException 
      */
     private void plotcom(ADLWidget waveformPart) throws WrongADLFormatException {
-        for (String waveform : waveformPart.getBody()){
+        for (FileLine fileLine : waveformPart.getBody()) {
+            String waveform = fileLine.getLine();
             String[] row = waveform.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);

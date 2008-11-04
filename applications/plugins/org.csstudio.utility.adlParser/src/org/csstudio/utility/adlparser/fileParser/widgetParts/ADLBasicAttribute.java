@@ -30,6 +30,7 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -76,11 +77,11 @@ public class ADLBasicAttribute extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
         assert !adlBasicAttribute.isType("\"basic attribute\"") : Messages.ADLBasicAttribute_AssertError_Begin+adlBasicAttribute.getType()+Messages.ADLBasicAttribute_AssertError_End; //$NON-NLS-1$
-        for (String parameter : adlBasicAttribute.getBody()) {
-            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
+        for (FileLine parameter : adlBasicAttribute.getBody()) {
+            if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("="); //$NON-NLS-1$
+            String[] row = parameter.getLine().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLBasicAttribute_WrongADLFormatException_Begin+parameter+Messages.ADLBasicAttribute_WrongADLFormatException_End);
             }

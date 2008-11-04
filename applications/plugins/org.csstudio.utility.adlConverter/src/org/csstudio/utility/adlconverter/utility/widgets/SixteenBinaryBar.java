@@ -33,6 +33,7 @@ import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -53,7 +54,8 @@ public class SixteenBinaryBar extends Widget {
         _widget.setDynamicsDescriptor(SixteenBinaryBarModel.PROP_VALUE, dynamicsDescriptor );
         _widget.setPropertyValue(SixteenBinaryBarModel.PROP_ON_COLOR, _widget.getForegroundColor());
         _widget.setPropertyValue(SixteenBinaryBarModel.PROP_OFF_COLOR, _widget.getBackgroundColor());
-        for (String bodyPart : sixteenBinaryBar.getBody()) {
+        for (FileLine fileLine : sixteenBinaryBar.getBody()) {
+            String bodyPart = fileLine.getLine();
             String[] row = bodyPart.trim().split("="); //$NON-NLS-1$
             if(row.length<2){
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+bodyPart+Messages.Label_WrongADLFormatException_Parameter_End);

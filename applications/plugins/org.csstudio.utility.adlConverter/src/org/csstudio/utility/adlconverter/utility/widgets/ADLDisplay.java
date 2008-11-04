@@ -29,6 +29,7 @@ import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
 
@@ -73,10 +74,11 @@ public class ADLDisplay extends Widget{
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+widget.getType()+Messages.Display_WrongADLFormatException_Parameter_End);
             } 
         }
-        for (String parameter : display.getBody()) {
+        for (FileLine fileLine : display.getBody()) {
+            String parameter = fileLine.getLine();
             String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Begin+parameter+Messages.Display_WrongADLFormatException_End);
+                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Begin+fileLine+Messages.Display_WrongADLFormatException_End);
             }
             if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
                 _clr=row[1].trim();
@@ -97,7 +99,7 @@ public class ADLDisplay extends Widget{
                 CentralLogger.getInstance().debug(this, "snaptogrid"+display.toString());
                 // TODO: SDS don't support yet. Display --> snapToGrid
             }else {
-                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+parameter+Messages.Display_WrongADLFormatException_Parameter_End);
+                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+fileLine+Messages.Display_WrongADLFormatException_Parameter_End);
             }
 
         }

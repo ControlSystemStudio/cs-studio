@@ -31,6 +31,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -47,7 +48,8 @@ public class Textinput extends Widget {
      */
     public Textinput(final ADLWidget textInput) throws WrongADLFormatException {
         super(textInput);
-        for (String obj : textInput.getBody()) {
+        for (FileLine fileLine : textInput.getBody()) {
+            String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);

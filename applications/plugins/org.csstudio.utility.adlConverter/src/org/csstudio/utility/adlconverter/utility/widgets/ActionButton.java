@@ -31,6 +31,7 @@ import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
 /**
@@ -55,10 +56,11 @@ public class ActionButton extends Widget {
 //            press_msg="1"
 //            release_msg="0"
 //            clrmod="discrete"
-        for (String obj : actionButton.getBody()) {
+        for (FileLine fileLine : actionButton.getBody()) {
+            String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+row[0]);
+                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+fileLine);
             }
             if(row[0].equals("type")){ //$NON-NLS-1$
                 if(row[1].contains("toggle")){ //$NON-NLS-1$
@@ -91,7 +93,7 @@ public class ActionButton extends Widget {
                 // TODO: ActionButton-->pressed_label (Not Supported from SDS)
             }else{                
 
-                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+row[0]);
+                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+fileLine);
             }
         }
         _widget.setPropertyValue(ActionButtonModel.PROP_ACTION_PRESSED_INDEX, pressIndex);

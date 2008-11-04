@@ -81,7 +81,7 @@ public final class ADLHelper {
 
         assert !colorMap.isType("\"color map\"") : Messages.ADLHelper_AssertError_Begin + colorMap.getType() + Messages.ADLHelper_AssertError_End; //$NON-NLS-1$
 
-        String[] anz = colorMap.getBody().get(0)
+        String[] anz = colorMap.getBody().get(0).getLine()
                 .replaceAll("\\{", "").trim().toLowerCase().split("="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (!anz[0].equals("ncolors") || anz.length != 2) { //$NON-NLS-1$
             throw new WrongADLFormatException(Messages.ADLHelper_WrongADLFormatException_Begin
@@ -98,7 +98,7 @@ public final class ADLHelper {
         } else if (colors.isType("colors")) { //$NON-NLS-1$
             _rgbColor = new RGBColor[Integer.parseInt(anz[1])];
             for (int j = 0; j < colors.getBody().size() && j < _rgbColor.length; j++) {
-                _rgbColor[j] = new RGBColor(colors.getBody().get(j).replaceAll(",", "").trim()); //$NON-NLS-1$ //$NON-NLS-2$
+                _rgbColor[j] = new RGBColor(colors.getBody().get(j).getLine().replaceAll(",", "").trim()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } else {
             throw new WrongADLFormatException(Messages.ADLHelper_WrongADLFormatException_Begin

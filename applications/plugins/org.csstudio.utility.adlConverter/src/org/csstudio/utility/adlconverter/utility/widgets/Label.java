@@ -32,6 +32,7 @@ import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -57,7 +58,8 @@ public class Label extends Widget {
             getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
 
-        for (String bodyPart : label.getBody()) {
+        for (FileLine fileLine : label.getBody()) {
+            String bodyPart = fileLine.getLine();
             String[] row = bodyPart.trim().split("="); //$NON-NLS-1$
             if(row.length<2){
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+bodyPart+Messages.Label_WrongADLFormatException_Parameter_End);

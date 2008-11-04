@@ -32,12 +32,12 @@ import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -93,7 +93,8 @@ public class RelatedDisplayItem extends WidgetPart{
     final void parseWidgetPart(final ADLWidget display) throws WrongADLFormatException {
 //      assert !display.isType("display[n]") : "This "+display.getType()+" is not a ADL displayItem";
       
-      for (String parameter : display.getBody()) {
+      for (FileLine fileLine : display.getBody()) {
+          String parameter = fileLine.getLine();
           if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
               continue;
           }

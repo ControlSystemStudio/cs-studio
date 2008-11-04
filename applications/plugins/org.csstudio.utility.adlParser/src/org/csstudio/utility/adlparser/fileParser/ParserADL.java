@@ -62,8 +62,9 @@ public final class ParserADL {
 
             buffRead = new BufferedReader(new FileReader(file));
             String line;
-
+            int lineNumber=0;
             while((line = buffRead.readLine()) != null){
+                lineNumber++;
                 if(line.trim().length()>0){
                     if(line.contains("{")){ //$NON-NLS-1$
                         children = new ADLWidget(line,children, lineNr++);
@@ -77,7 +78,7 @@ public final class ParserADL {
                                 String regex = "(\\$\\()([.[^\\(]]+)(\\))";
                                 line = line.replaceAll(regex, "\\$$2\\$");
                             }
-                            children.addBody(line);
+                            children.addBody(new FileLine(line,lineNumber));
                         }
                     }
                 }
