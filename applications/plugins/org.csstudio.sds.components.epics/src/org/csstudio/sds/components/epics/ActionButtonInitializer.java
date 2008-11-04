@@ -25,10 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.EllipseModel;
-import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.components.model.ActionButtonModel;
+import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
+import org.csstudio.sds.model.logic.DirectConnectionRule;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -38,7 +41,7 @@ import org.eclipse.swt.graphics.RGB;
  * @version $Revision$
  * 
  */
-public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
+public final class ActionButtonInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -48,14 +51,30 @@ public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
 		initializeCommonAlarmBehaviour();
 		initializeCommonConnectionStates();
 
+		initializeDynamicProperty(ActionButtonModel.PROP_LABEL, "$channel$", null,
+				DirectConnectionRule.TYPE_ID);
+
+		initializeDynamicProperty(ActionButtonModel.PROP_ACTIONDATA,
+				"$channel$", "$channel$", DirectConnectionRule.TYPE_ID);
+		
+		Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
+		stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
+				"Connection lost");
+		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
+		initializeDynamicPropertyForConnectionState(ActionButtonModel.PROP_LABEL,
+				"$channel$", stringsByConnectionState, DirectConnectionRule.TYPE_ID);
+
+
+		
 //		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
 //		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
 //				9, 163));
 //		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
 //				222));
 //		initializeDynamicPropertyForConnectionState(
-//				EllipseModel.PROP_COLOR_FOREGROUND, "$channel$",
+//				ArcModel.PROP_COLOR_FOREGROUND, "$channel$",
 //				colorsByConnectionState);
-		}
+
+	}
 
 }

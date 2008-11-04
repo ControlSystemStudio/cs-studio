@@ -21,9 +21,9 @@
  */
  package org.csstudio.sds.components.epics;
 
+import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 
 /**
  * Initializes the Meter model with EPICS default values.
@@ -34,14 +34,25 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class MeterInitializer extends AbstractWidgetModelInitializer {
+public final class MeterInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
+		initializeCommonAlarmBehaviour();
+		initializeCommonConnectionStates();
+		
+		initializeDynamicProperty(MeterModel.PROP_MINVAL, "$channel$[graphMin], double");
+		initializeDynamicProperty(MeterModel.PROP_MAXVAL, "$channel$[graphMax], double");
+		initializeDynamicProperty(MeterModel.PROP_HIHIBOUND,
+				"$channel$[alarmMax], double");
+		initializeDynamicProperty(MeterModel.PROP_HIBOUND, "$channel$[warningMax], double");
+		initializeDynamicProperty(MeterModel.PROP_LOBOUND,
+				"$channel$[alarmMin], double");
+		initializeDynamicProperty(MeterModel.PROP_LOLOBOUND, "$channel$[warningMin], double");
+
 		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$");
-		// initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$.VAL");
 	}
 }

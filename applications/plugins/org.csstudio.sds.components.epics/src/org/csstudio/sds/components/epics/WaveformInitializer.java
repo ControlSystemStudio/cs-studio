@@ -30,12 +30,15 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * 
  * @author Sven Wende
  */
-public final class WaveformInitializer extends AbstractWidgetModelInitializer {
+public final class WaveformInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void initialize(final AbstractControlSystemSchema schema) {
+		
+		initializeCommonConnectionStates();
+		
 		initializeDynamicProperty(WaveformModel.dataPropertyId(0), "$channel$");
 		// initializeDynamicProperty(WaveformModel.PROP_WAVE_FORM,
 		// "$channel$.VAL");

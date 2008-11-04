@@ -24,11 +24,20 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
+import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
+import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.platform.simpledal.ProcessVariableValueAdapter;
+import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
+import org.epics.css.dal.Timestamp;
 
 /**
  * Initializes a rectangle with EPICS specific property values.
@@ -37,22 +46,61 @@ import org.eclipse.swt.graphics.RGB;
  * @version $Revision$
  * 
  */
-public final class RectangleInitializer extends AbstractWidgetModelInitializer {
+public final class RectangleInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeStaticProperty(RectangleModel.PROP_FILL, 50.0);
-		initializeDynamicProperty(RectangleModel.PROP_FILL, "$channel$");
+
+		// get a service instance (all applications using the same shared instance will share channels, too)
+		IProcessVariableConnectionService service = ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService();
 		
-		initializeStaticProperty(RectangleModel.PROP_BORDER_WIDTH, new Integer(2));
+		// get a factory for process variable addresses 
+		ProcessVariableAdressFactory pvFactory = ProcessVariableAdressFactory.getInstance();
+		
+		// create a process variable address
+		IProcessVariableAddress pv = pvFactory.createProcessVariableAdress("dal-epics://TT:2000_wf");
+
+		
+		try {
+			Double value = service.readValueSynchronously(pv, ValueType.DOUBLE);
+			System.out.println(value);
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		}
+		
+		// create a listener
+		IProcessVariableValueListener<Double> listener = new ProcessVariableValueAdapter<Double>() {
+			@Override
+			public void valueChanged(Double value, Timestamp timestamp) {
+				System.out.println(value);
+			}
+
+			@Override
+			public void errorOccured(String error) {
+				System.out.println(error);
+			}
+		};
+		
+		// use listener for asynchronous calls
+		service.readValueAsynchronously(pv, ValueType.DOUBLE, listener);
+
+
+		
+		initializeCommonAlarmBehaviour();
+		initializeCommonConnectionStates();
+
 		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(255,255,255));
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,0,0));
-		
-		initializeDynamicPropertyForConnectionState(RectangleModel.PROP_BORDER_COLOR, "$channel$", colorsByConnectionState);
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
+				9, 163));
+		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
+				222));
+		initializeDynamicPropertyForConnectionState(
+				RectangleModel.PROP_COLOR_FOREGROUND, "$channel$",
+				colorsByConnectionState);
+
 	}
 
 }

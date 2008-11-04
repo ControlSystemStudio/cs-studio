@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -38,7 +38,7 @@ import org.eclipse.swt.graphics.RGB;
  * @version $Revision$
  * 
  */
-public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
+public final class ThumbWheelInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -48,14 +48,17 @@ public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
 		initializeCommonAlarmBehaviour();
 		initializeCommonConnectionStates();
 
-//		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-//		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
-//				9, 163));
-//		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
-//				222));
-//		initializeDynamicPropertyForConnectionState(
-//				EllipseModel.PROP_COLOR_FOREGROUND, "$channel$",
-//				colorsByConnectionState);
-		}
+		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$", "$channel$", null);
+		
+		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
+				9, 163));
+		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
+				222));
+		initializeDynamicPropertyForConnectionState(
+				RectangleModel.PROP_COLOR_FOREGROUND, "$channel$",
+				colorsByConnectionState);
+
+	}
 
 }

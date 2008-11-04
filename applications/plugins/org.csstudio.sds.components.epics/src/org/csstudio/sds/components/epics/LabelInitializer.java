@@ -19,11 +19,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.epics;
+package org.csstudio.sds.components.epics;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
+import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
  * Initializes a rectangle with EPICS specific property values.
@@ -32,16 +36,40 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class LabelInitializer extends AbstractWidgetModelInitializer {
+public final class LabelInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
-		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$");
-		// initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$.VAL");
-	}
+		initializeCommonConnectionStates();
+		initializeCommonAlarmBehaviour();
 
+		initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
+		initializeStaticProperty(LabelModel.PROP_TRANSPARENT, false);
+
+		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$", null,
+				DirectConnectionRule.TYPE_ID);
+
+		Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
+		stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
+				"Connection lost");
+		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
+		initializeDynamicPropertyForConnectionState(LabelModel.PROP_TEXTVALUE,
+				"$channel$", stringsByConnectionState, DirectConnectionRule.TYPE_ID);
+
+
+//		 Map<DynamicValueState, Object> colorsByConditionState = new
+//		 HashMap<DynamicValueState, Object>();
+//		 colorsByConditionState.put(DynamicValueState.WARNING, new RGB(255,
+//		 35,
+//		 145));
+//		 colorsByConditionState.put(DynamicValueState.ALARM, new RGB(255, 35,
+//		 145));
+//		 initializeDynamicPropertyForConditionState(
+//		 LabelModel.PROP_COLOR_BACKGROUND, "$channel$",
+//		 colorsByConditionState);
+
+	}
 }

@@ -27,6 +27,9 @@ import java.util.Map;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.cosyrules.color.Alarm;
+import org.csstudio.sds.cosyrules.color.AlarmBorder;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
@@ -37,29 +40,48 @@ import org.eclipse.swt.graphics.RGB;
  * @author Kai Meyer
  * 
  */
-public final class BargraphInitializer extends AbstractWidgetModelInitializer {
+public final class BargraphInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(BargraphModel.PROP_MIN, "$channel$.[graphMin], double");
-		initializeDynamicProperty(BargraphModel.PROP_MAX, "$channel$.[graphMax], double");
+		
+		initializeCommonConnectionStates();
+		initializeCommonAlarmBehaviour();
+		
+		initializeDynamicProperty(BargraphModel.PROP_MIN, "$channel$[graphMin], double");
+		initializeDynamicProperty(BargraphModel.PROP_MAX, "$channel$[graphMax], double");
 		initializeDynamicProperty(BargraphModel.PROP_HIHI_LEVEL,
-				"$channel$.[alarmMax], double");
-		initializeDynamicProperty(BargraphModel.PROP_HI_LEVEL, "$channel$.[warningMax], double");
+				"$channel$[alarmMax], double");
+		initializeDynamicProperty(BargraphModel.PROP_HI_LEVEL, "$channel$[warningMax], double");
 		initializeDynamicProperty(BargraphModel.PROP_LOLO_LEVEL,
-				"$channel$.[alarmMin], double");
-		initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$channel$.[warningMin], double");
+				"$channel$[alarmMin], double");
+		initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$channel$[warningMin], double");
 		initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$");
 		
-		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,255,255));
-		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(245,181,237));
-		
-		initializeDynamicPropertyForConnectionState(RectangleModel.PROP_COLOR_BACKGROUND, "$channel$", colorsByConnectionState);
+		initializeDynamicProperty(BargraphModel.PROP_DEFAULT_FILL_COLOR, "$channel$[severity]", null, Alarm.TYPE_ID);
 
+		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
+				9, 163));
+		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
+				222));
+		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(120, 120,
+				120));
+		initializeDynamicPropertyForConnectionState(
+				BargraphModel.PROP_FILLBACKGROUND_COLOR, "$channel$",
+				colorsByConnectionState);
+
+		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(0, 0,
+				0));
+
+		initializeDynamicPropertyForConnectionState(
+				BargraphModel.PROP_COLOR_FOREGROUND, "$channel$",
+				colorsByConnectionState);
+		
+		
 		// initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$.VAL");
 	}
 }

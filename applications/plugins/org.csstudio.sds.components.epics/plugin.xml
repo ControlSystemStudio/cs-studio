@@ -8,6 +8,38 @@
             schemaId="schema.epics"
             widgetTypeId="org.csstudio.sds.components.Meter"/>
       <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.SwitchInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Switch"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.ActionButtonInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.ActionButton"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.SixteenBinaryBarInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.SixteenBinaryBar"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.ThumbWheelInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.ThumbWheel"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.PolylineInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Polyline"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.PolygonInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Polygon"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.AdvancedSliderInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.AdvancedSlider"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.ArcInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Arc"/>
+      <widgetModelInitializer
             class="org.csstudio.sds.components.epics.RectangleInitializer"
             schemaId="schema.epics"
             widgetTypeId="org.csstudio.sds.components.Rectangle"/>

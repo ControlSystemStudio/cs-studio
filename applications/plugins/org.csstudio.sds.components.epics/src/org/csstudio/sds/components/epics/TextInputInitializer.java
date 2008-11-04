@@ -23,28 +23,28 @@
 
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.csstudio.sds.model.optionEnums.CursorStyleEnum;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a TextInput with EPICS specific property values.
  * 
  * @author Stefan Hofer + Sven Wende
  * @version $Revision$
  * 
  */
-public final class TextInputInitializer extends AbstractWidgetModelInitializer {
+public final class TextInputInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
+		initializeCommonAlarmBehaviour();
+		initializeCommonConnectionStates();
+		initializeStaticProperty(TextInputModel.PROP_TRANSPARENT, false);
 		initializeStaticProperty(TextInputModel.PROP_INPUT_TEXT, "Enter Text!");
-		initializeStaticProperty(TextInputModel.PROP_WIDTH, 100);
-		initializeStaticProperty(TextInputModel.PROP_HEIGHT, 50);
 		initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$channel$",
-				"$channel$");
+				"$channel$", null);
 		initializeStaticProperty(TextInputModel.PROP_CURSOR, CursorStyleEnum.IBEAM.getIndex());
 	}
 

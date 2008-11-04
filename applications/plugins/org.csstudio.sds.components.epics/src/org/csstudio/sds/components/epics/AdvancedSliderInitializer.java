@@ -21,41 +21,27 @@
  */
  package org.csstudio.sds.components.epics;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.EllipseModel;
-import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
-import org.eclipse.swt.graphics.RGB;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Widget initializer for a simple slider for EPICs.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author Sven Wende
  * 
  */
-public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
+public final class AdvancedSliderInitializer extends
+		AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected void initialize(final AbstractControlSystemSchema schema) {
+	public void initialize(final AbstractControlSystemSchema schema) {
 		initializeCommonAlarmBehaviour();
 		initializeCommonConnectionStates();
-
-//		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-//		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
-//				9, 163));
-//		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
-//				222));
-//		initializeDynamicPropertyForConnectionState(
-//				EllipseModel.PROP_COLOR_FOREGROUND, "$channel$",
-//				colorsByConnectionState);
-		}
-
+		initializeDynamicProperty(AdvancedSliderModel.PROP_MAX, "$channel$[graphMax]");
+		initializeDynamicProperty(AdvancedSliderModel.PROP_MIN, "$channel$[graphMin]");
+		initializeDynamicProperty(AdvancedSliderModel.PROP_VALUE, "$channel$",
+				"$channel$", null);
+	}
 }

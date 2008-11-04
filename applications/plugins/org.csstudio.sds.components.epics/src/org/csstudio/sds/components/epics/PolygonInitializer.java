@@ -25,10 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.sds.components.model.PolygonModel;
+import org.csstudio.sds.components.model.PolylineModel;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -38,7 +39,7 @@ import org.eclipse.swt.graphics.RGB;
  * @version $Revision$
  * 
  */
-public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
+public final class PolygonInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -54,8 +55,9 @@ public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
 //		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
 //				222));
 //		initializeDynamicPropertyForConnectionState(
-//				EllipseModel.PROP_COLOR_FOREGROUND, "$channel$",
+//				PolygonModel.PROP_COLOR_FOREGROUND, "$channel$",
 //				colorsByConnectionState);
-		}
+
+	}
 
 }

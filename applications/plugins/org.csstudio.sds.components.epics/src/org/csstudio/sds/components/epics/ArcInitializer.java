@@ -21,9 +21,16 @@
  */
  package org.csstudio.sds.components.epics;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Initializes a rectangle with EPICS specific property values.
@@ -32,16 +39,24 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class ArcInitializer extends AbstractWidgetModelInitializer {
+public final class ArcInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-//		initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
-//		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$");
-		// initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$.VAL");
+		initializeCommonAlarmBehaviour();
+		
+//		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+//		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
+//				9, 163));
+//		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
+//				222));
+//		initializeDynamicPropertyForConnectionState(
+//				ArcModel.PROP_COLOR_FOREGROUND, "$channel$",
+//				colorsByConnectionState);
+
 	}
 
 }

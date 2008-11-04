@@ -25,37 +25,44 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.components.model.BargraphModel;
+import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.components.model.SixteenBinaryBarModel;
+import org.csstudio.sds.cosyrules.color.Alarm;
+import org.csstudio.sds.cosyrules.color.AlarmBorder;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a SixteenBinaryBar widget with EPICS specific property values.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author jhatje
  * 
  */
-public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
+public final class SixteenBinaryBarInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
+		
 		initializeCommonAlarmBehaviour();
-		initializeCommonConnectionStates();
+		
+		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$");
+		
+		initializeDynamicProperty(BargraphModel.PROP_DEFAULT_FILL_COLOR, "$channel$[severity]", null, Alarm.TYPE_ID);
 
-//		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-//		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
-//				9, 163));
-//		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
-//				222));
-//		initializeDynamicPropertyForConnectionState(
-//				EllipseModel.PROP_COLOR_FOREGROUND, "$channel$",
-//				colorsByConnectionState);
-		}
-
+		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
+				9, 163));
+		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
+				222));
+		initializeDynamicPropertyForConnectionState(
+				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
+				colorsByConnectionState);
+	}
 }

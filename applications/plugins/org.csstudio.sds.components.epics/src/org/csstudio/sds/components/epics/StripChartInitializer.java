@@ -24,23 +24,27 @@ package org.csstudio.sds.components.epics;
 
 import org.csstudio.sds.components.model.StripChartModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 
 /**
  * Widget initializer for the strip chart widget.
  * 
  * @author Joerg Rathlev
  */
-public final class StripChartInitializer extends AbstractWidgetModelInitializer {
+public final class StripChartInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(StripChartModel.valuePropertyId(0), "$channel$");
-		initializeDynamicProperty(StripChartModel.PROP_MIN, "$channel$.[graphMin], double");
-		initializeDynamicProperty(StripChartModel.PROP_MAX, "$channel$.[graphMax], double");
+		initializeCommonAlarmBehaviour();
+		initializeCommonConnectionStates();
+		initializeDynamicProperty(StripChartModel.valuePropertyId(0),
+				"$channel$");
+		initializeDynamicProperty(StripChartModel.PROP_MIN,
+				"$channel$[graphMin], double");
+		initializeDynamicProperty(StripChartModel.PROP_MAX,
+				"$channel$[graphMax], double");
 	}
 
 }

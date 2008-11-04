@@ -21,10 +21,13 @@
  */
  package org.csstudio.sds.components.epics;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
-import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
+import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
  * Initializes a rectangle with EPICS specific property values.
@@ -33,14 +36,28 @@ import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
  * @version $Revision$
  * 
  */
-public final class MenuButtonInitializer extends AbstractWidgetModelInitializer {
+public final class MenuButtonInitializer extends AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeStaticProperty(MenuButtonModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
+		initializeCommonAlarmBehaviour();
+		initializeCommonConnectionStates();
+		initializeDynamicProperty(MenuButtonModel.PROP_LABEL, "$channel$", null,
+				DirectConnectionRule.TYPE_ID);
+
+		initializeDynamicProperty(MenuButtonModel.PROP_ACTIONDATA,
+				"$channel$[enumDescriptions], enum", "$channel$, string", DirectConnectionRule.TYPE_ID);
+
+		Map<ConnectionState, Object> stringsByConnectionState = new HashMap<ConnectionState, Object>();
+		stringsByConnectionState.put(ConnectionState.CONNECTION_LOST,
+				"Connection lost");
+		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
+		initializeDynamicPropertyForConnectionState(MenuButtonModel.PROP_LABEL,
+				"$channel$", stringsByConnectionState, DirectConnectionRule.TYPE_ID);
+
 	}
 
 }

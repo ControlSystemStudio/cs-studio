@@ -32,17 +32,16 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * 
  */
 public final class SimpleSliderInitializer extends
-		AbstractWidgetModelInitializer {
+		AbstractEpicsWidgetInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(SimpleSliderModel.PROP_MAX, "$channel$.HOPR");
-		initializeDynamicProperty(SimpleSliderModel.PROP_MIN, "$channel$.LOPR");
+		initializeCommonAlarmBehaviour();
+		initializeDynamicProperty(SimpleSliderModel.PROP_MAX, "$channel$[graphMax]");
+		initializeDynamicProperty(SimpleSliderModel.PROP_MIN, "$channel$[graphMin]");
 		initializeDynamicProperty(SimpleSliderModel.PROP_VALUE, "$channel$",
-				"$channel$");
-		// initializeDynamicProperty(SimpleSliderModel.PROP_VALUE,
-		// "$channel$.VAL", "$channel$.VAL");
+				"$channel$", null);
 	}
 }
