@@ -71,12 +71,14 @@ public final class ParserADL {
                         children.getParent().addObject(children);
                         children = children.getParent();
                     }else{
-                        if(line.contains("$(")){
-                            // replace all $(var_name) in a line with $var_name$
-                            String regex = "(\\$\\()([.[^\\(]]+)(\\))";
-                            line = line.replaceAll(regex, "\\$$2\\$");
+                        if(!line.trim().equals("\"")){
+                            if(line.contains("$(")){
+                                // replace all $(var_name) in a line with $var_name$
+                                String regex = "(\\$\\()([.[^\\(]]+)(\\))";
+                                line = line.replaceAll(regex, "\\$$2\\$");
+                            }
+                            children.addBody(line);
                         }
-                        children.addBody(line);
                     }
                 }
             }

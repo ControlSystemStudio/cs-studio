@@ -102,7 +102,7 @@ public class RelatedDisplayItem extends WidgetPart{
           try{
                tmp= parameter.substring(head.length()+1);
           }catch(StringIndexOutOfBoundsException exp){
-              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter+"("+display.getObjectNr()+":"+display.getType()+")");
+              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter+"("+display.getObjectNr()+":"+display.getType()+")["+parameter+"]");
           }
           String[] row=ADLHelper.cleanString(tmp);
           head = head.trim().toLowerCase();
