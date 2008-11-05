@@ -52,7 +52,7 @@ public class Application implements IApplication
         final StringOption pass_opt = new StringOption(parser, "-rdb_password",
                 "Database password, overrides preference setting", this.password);
         final StringOption engine_name_opt = new StringOption(parser,
-                    "-engine_name", "Engine config name", null);
+                    "-engine", "Engine config name", null);
         // Options handled by Eclipse,
         // but this way they show up in the help message
         new StringOption(parser, "-pluginCustomization",
