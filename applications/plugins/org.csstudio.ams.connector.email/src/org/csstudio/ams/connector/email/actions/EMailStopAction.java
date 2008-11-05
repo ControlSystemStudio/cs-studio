@@ -22,20 +22,23 @@
  *
  */
 
-package org.csstudio.ams.connector.sms.actions;
+package org.csstudio.ams.connector.email.actions;
 
 import java.util.Map;
 
 import org.csstudio.ams.Messages;
-import org.csstudio.ams.connector.sms.SmsConnectorStart;
+import org.csstudio.ams.connector.email.EMailConnectorStart;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
 /**
  *  @author Markus Moeller
  *
  */
-public class SmsConnectorShutdownAction implements IAction
+public class EMailStopAction implements IAction
 {
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
+     */
     public Object run(Object param)
     {
         String password = null;
@@ -61,8 +64,8 @@ public class SmsConnectorShutdownAction implements IAction
             return e.getMessage();
         }
         
-        SmsConnectorStart.getInstance().setShutdown();
+        EMailConnectorStart.getInstance().setShutdown();
         
-        return "SmsConnector is shutting down now...";
+        return "EMailConnector is stopping now...";
     }
 }

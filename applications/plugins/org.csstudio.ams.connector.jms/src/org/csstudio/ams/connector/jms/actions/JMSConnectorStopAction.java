@@ -34,7 +34,7 @@ import org.csstudio.platform.libs.dcf.actions.IAction;
  *  @author Markus Moeller
  *
  */
-public class JMSConnectorShutdownAction implements IAction
+public class JMSConnectorStopAction implements IAction
 {
     public Object run(Object param)
     {
@@ -63,6 +63,6 @@ public class JMSConnectorShutdownAction implements IAction
         
         JMSConnectorStart.getInstance().setShutdown();
         
-        return "JMSConnector will shutdown now...";
+        return "JMSConnector is stopping now...";
     }
 }

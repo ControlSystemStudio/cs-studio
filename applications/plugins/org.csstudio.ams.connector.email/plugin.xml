@@ -31,9 +31,9 @@
    <extension
          point="org.csstudio.platform.libs.dcf.action">
       <parametrizedAction
-            class="org.csstudio.ams.connector.email.actions.EMailShutdownAction"
-            id="org.csstudio.ams.connector.email.ShutdownAction"
-            name="Shutdown"
+            class="org.csstudio.ams.connector.email.actions.EMailStopAction"
+            id="org.csstudio.ams.connector.email.StopAction"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
    </extension>

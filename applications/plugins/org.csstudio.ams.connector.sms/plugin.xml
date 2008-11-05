@@ -48,9 +48,9 @@
             name="Get State">
       </simpleAction>
       <parametrizedAction
-            class="org.csstudio.ams.connector.sms.actions.SmsConnectorShutdownAction"
-            id="org.csstudio.ams.connector.sms.ShutdownAction"
-            name="Shutdown"
+            class="org.csstudio.ams.connector.sms.actions.SmsConnectorStopAction"
+            id="org.csstudio.ams.connector.sms.StopAction"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
       <parametrizedAction

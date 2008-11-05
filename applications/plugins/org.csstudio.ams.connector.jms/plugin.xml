@@ -33,9 +33,9 @@
    <extension
          point="org.csstudio.platform.libs.dcf.action">
       <parametrizedAction
-            class="org.csstudio.ams.connector.jms.actions.JMSConnectorShutdownAction"
-            id="org.csstudio.ams.connector.jms.JMSConnectorShutdownAction"
-            name="Shutdown"
+            class="org.csstudio.ams.connector.jms.actions.JMSConnectorStopAction"
+            id="org.csstudio.ams.connector.jms.JMSConnectorStopAction"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
    </extension>
