@@ -32,9 +32,9 @@
    <extension
          point="org.csstudio.platform.libs.dcf.action">
       <parametrizedAction
-            class="org.csstudio.ams.filtermanager.actions.FilterManagerShutdownAction"
-            id="org.csstudio.ams.filterManager.parametrizedAction1"
-            name="Shutdown"
+            class="org.csstudio.ams.filtermanager.actions.FilterManagerStopAction"
+            id="org.csstudio.ams.filterManager.FilterManagerStopAction"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
    </extension>

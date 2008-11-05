@@ -31,9 +31,9 @@
    <extension
          point="org.csstudio.platform.libs.dcf.action">
       <parametrizedAction
-            class="org.csstudio.ams.distributor.actions.DistributorShutdownAction"
-            id="org.csstudio.ams.distributor.DistributorShutdownAction"
-            name="Shutdown"
+            class="org.csstudio.ams.distributor.actions.DistributorStopAction"
+            id="org.csstudio.ams.distributor.DistributorStopAction"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
    </extension>

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,43 +22,43 @@
  *
  */
 
-package org.csstudio.ams.messageminder.actionns;
+package org.csstudio.ams.filtermanager.actions;
 
 import java.util.Map;
 
 import org.csstudio.ams.Messages;
-import org.csstudio.ams.messageminder.MessageMinderStart;
+import org.csstudio.ams.filtermanager.FilterManagerStart;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
-/**
- * 
- * @author hrickens
- * @author $Author$
- * @version $Revision$
- * @since 09.04.2008
- */
-public class MassageMinderShutdownAction implements IAction {
-    public Object run(Object param) {
+public class FilterManagerStopAction implements IAction
+{
+    public Object run(Object param)
+    {
         String password = null;
-
-        if (!(param instanceof Map)) {
+        
+        if(!(param instanceof Map))
+        {
             return "Parameter not available.";
         }
-
-        Map<?, ?> map = (Map<?, ?>) param;
-
-        try {
-            password = (String) map.get("Password");
-
-            if (password.compareTo(Messages.Pref_Password_ShutdownAction) != 0) {
+        
+        Map<?, ?> map = (Map<?, ?>)param;
+        
+        try
+        {
+            password = (String)map.get("Password");
+        
+            if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
+            {
                 return "Invalid password";
             }
-        } catch (Exception e) {
+        }
+        catch(Exception e)
+        {
             return e.getMessage();
         }
-
-        MessageMinderStart.getInstance().setRun(false);
-
-        return "Massage Minder will shutdown now...";
+                
+        FilterManagerStart.getInstance().setShutdown();
+        
+        return "FilterManager is stopping now...";
     }
 }

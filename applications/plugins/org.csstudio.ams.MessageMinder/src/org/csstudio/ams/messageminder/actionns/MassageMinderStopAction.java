@@ -22,47 +22,43 @@
  *
  */
 
-package org.csstudio.ams.distributor.actions;
+package org.csstudio.ams.messageminder.actionns;
 
 import java.util.Map;
 
 import org.csstudio.ams.Messages;
-import org.csstudio.ams.distributor.DistributorStart;
+import org.csstudio.ams.messageminder.MessageMinderStart;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
 /**
- *  @author Markus Moeller
- *
+ * 
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 09.04.2008
  */
-public class DistributorShutdownAction implements IAction
-{
-    public Object run(Object param)
-    {
+public class MassageMinderStopAction implements IAction {
+    public Object run(Object param) {
         String password = null;
-        
-        if(!(param instanceof Map))
-        {
+
+        if (!(param instanceof Map)) {
             return "Parameter not available.";
         }
-        
-        Map<?, ?> map = (Map<?, ?>)param;
-        
-        try
-        {
-            password = (String)map.get("Password");
-        
-            if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
-            {
+
+        Map<?, ?> map = (Map<?, ?>) param;
+
+        try {
+            password = (String) map.get("Password");
+
+            if (password.compareTo(Messages.Pref_Password_ShutdownAction) != 0) {
                 return "Invalid password";
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             return e.getMessage();
         }
 
-        DistributorStart.getInstance().setShutdown();
-        
-        return "Distributor will shutdown now...";
+        MessageMinderStart.getInstance().setRun(false);
+
+        return "Massage Minder is stopping now...";
     }
 }

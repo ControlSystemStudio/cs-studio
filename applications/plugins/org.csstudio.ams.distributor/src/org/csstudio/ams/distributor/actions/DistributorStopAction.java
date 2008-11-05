@@ -22,15 +22,19 @@
  *
  */
 
-package org.csstudio.ams.filtermanager.actions;
+package org.csstudio.ams.distributor.actions;
 
 import java.util.Map;
 
 import org.csstudio.ams.Messages;
-import org.csstudio.ams.filtermanager.FilterManagerStart;
+import org.csstudio.ams.distributor.DistributorStart;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
-public class FilterManagerShutdownAction implements IAction
+/**
+ *  @author Markus Moeller
+ *
+ */
+public class DistributorStopAction implements IAction
 {
     public Object run(Object param)
     {
@@ -56,9 +60,9 @@ public class FilterManagerShutdownAction implements IAction
         {
             return e.getMessage();
         }
-                
-        FilterManagerStart.getInstance().setShutdown();
+
+        DistributorStart.getInstance().setShutdown();
         
-        return "FilterManager is stopping now...";
+        return "Distributor is stopping now...";
     }
 }

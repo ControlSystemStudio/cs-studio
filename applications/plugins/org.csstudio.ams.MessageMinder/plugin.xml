@@ -24,9 +24,9 @@
             name="GetStatisticInformation">
       </simpleAction>
       <parametrizedAction
-            class="org.csstudio.ams.messageminder.actionns.MassageMinderShutdownAction"
-            id="org.csstudio.ams.MessageMinder.MassageMinderShutdownAction"
-            name="Shutdown"
+            class="org.csstudio.ams.messageminder.actionns.MassageMinderStopAction"
+            id="org.csstudio.ams.MessageMinder.MassageMinderStopAction"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
    </extension>
@@ -40,18 +40,6 @@
    </extension>
    <extension
          id="AmsMessageMinder"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.MessageMinder.MessageMinder"
-            name="Ams MessageMinder">
-         <property
-               name="appName"
-               value="Ams MessageMinder">
-         </property>
-      </product>
-   </extension>
-   <extension
-         id="MessageMinder"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.ams.MessageMinder.MessageMinder"
