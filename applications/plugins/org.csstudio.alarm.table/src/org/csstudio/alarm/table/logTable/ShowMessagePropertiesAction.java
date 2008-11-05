@@ -21,22 +21,25 @@
  */
  package org.csstudio.alarm.table.logTable;
 
-import org.csstudio.alarm.table.LogView;
-import org.csstudio.alarm.table.PropertiesView;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 public class ShowMessagePropertiesAction extends Action
 {
     private JMSLogTableViewer table;
 
+	/**
+	 * The ID of the property view.
+	 */
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+
+    
 	public ShowMessagePropertiesAction(final JMSLogTableViewer table)
 	{
         this.table = table;
@@ -69,24 +72,31 @@ public class ShowMessagePropertiesAction extends Action
 
 	@Override
 	public void run() {
-        JMSMessage entries[] = table.getSelectedEntries();
-		if (entries == null)
-			return;
+		try {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(PROPERTY_VIEW_ID);
+		} catch (PartInitException e) {
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Alarm Tree",
+					e.getMessage());
+		}
 
-	    try
-	    {
-	        IWorkbench workbench = PlatformUI.getWorkbench();
-	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	        IWorkbenchPage page = window.getActivePage();
-	        page.showView(PropertiesView.ID);
-	    }
-	    catch (Exception e)
-	    {
-	        e.printStackTrace();
-	    }
-
-		
-		System.out.println("XXXXXXXXXXXXXXXX in show run");
-			
+//        JMSMessage entries[] = table.getSelectedEntries();
+//		if (entries == null)
+//			return;
+//
+//	    try
+//	    {
+//	        IWorkbench workbench = PlatformUI.getWorkbench();
+//	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+//	        IWorkbenchPage page = window.getActivePage();
+//	        page.showView(PropertiesView.ID);
+//	    }
+//	    catch (Exception e)
+//	    {
+//	        e.printStackTrace();
+//	    }
+//
+//		
+//		System.out.println("XXXXXXXXXXXXXXXX in show run");
+//			
 	}
 }
