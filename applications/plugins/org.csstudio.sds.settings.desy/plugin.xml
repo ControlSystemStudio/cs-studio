@@ -81,6 +81,20 @@
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
+            class="org.csstudio.sds.cosyrules.color.AlarmBorder"
+            name="Alarm Border rule"
+            returnType="java.lang.Integer"
+            ruleId="cosyrules.color.alarmBorder">
+         <parameterDescription name="Double Value"/>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.AlarmBorderWidth"
+            name="Alarm Border Width rule"
+            returnType="java.lang.Integer"
+            ruleId="cosyrules.color.alarmBorderWidth">
+         <parameterDescription name="Double Value"/>
+      </rule>
+      <rule
             class="org.csstudio.sds.cosyrules.color.Kryo_TTF"
             name="Kryo-TTF color rule"
             returnType="org.eclipse.swt.graphics.RGB"
