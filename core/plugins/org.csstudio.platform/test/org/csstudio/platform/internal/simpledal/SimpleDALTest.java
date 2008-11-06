@@ -204,9 +204,9 @@ public class SimpleDALTest extends TestCase {
 			
 			Set<CharacteristicInfo> set= new HashSet<CharacteristicInfo>(Arrays.asList(ci));
 			
-			assertTrue(set.contains(DalConnector.C_SEVERITY_INFO));
-			assertTrue(set.contains(DalConnector.C_STATUS_INFO));
-			assertTrue(set.contains(DalConnector.C_TIMESTAMP_INFO));
+			assertTrue(set.contains(CharacteristicInfo.C_SEVERITY_INFO));
+			assertTrue(set.contains(CharacteristicInfo.C_STATUS_INFO));
+			assertTrue(set.contains(CharacteristicInfo.C_TIMESTAMP_INFO));
 			
 			
 		} catch (Exception e) {

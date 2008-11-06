@@ -93,13 +93,13 @@ public class EpicsUtil {
 	 */
 	public static final Object getCharacteristic(String charName, DynamicValueProperty property, ValueType valueType)
 			throws DataExchangeException {
-		if (charName.equals(DalConnector.C_SEVERITY_INFO.getName())) {
+		if (charName.equals(CharacteristicInfo.C_SEVERITY_INFO.getName())) {
 			return EpicsUtil.toEPICSFlavorSeverity(property.getCondition());
 		}
-		if (charName.equals(DalConnector.C_STATUS_INFO.getName())) {
+		if (charName.equals(CharacteristicInfo.C_STATUS_INFO.getName())) {
 			return EpicsUtil.extratStatus(property.getCondition());
 		}
-		if (charName.equals(DalConnector.C_TIMESTAMP_INFO.getName())) {
+		if (charName.equals(CharacteristicInfo.C_TIMESTAMP_INFO.getName())) {
 			return property.getCondition().getTimestamp();
 		}
 		Object value = property.getCharacteristic(charName);

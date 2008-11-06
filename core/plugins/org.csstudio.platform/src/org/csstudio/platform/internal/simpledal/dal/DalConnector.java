@@ -68,19 +68,6 @@ import org.epics.css.dal.spi.PropertyFactory;
 public final class DalConnector extends AbstractConnector implements DynamicValueListener, LinkListener, ResponseListener,
 		PropertyChangeListener {
 
-	public static final CharacteristicInfo C_TIMESTAMP_INFO = new CharacteristicInfo("timestamp", Timestamp.class,
-			new Class[] { DynamicValueProperty.class }, "Meta timestamp characteristic.", null, true);
-	public static final CharacteristicInfo C_SEVERITY_INFO = new CharacteristicInfo("severity", String.class,
-			new Class[] { DynamicValueProperty.class }, "Meta severity characteristic.", null, true);
-	public static final CharacteristicInfo C_STATUS_INFO = new CharacteristicInfo("status", String.class,
-			new Class[] { DynamicValueProperty.class }, "Meta status characteristic.", null, true);
-
-	{
-		CharacteristicInfo.registerCharacteristicInfo(C_SEVERITY_INFO);
-		CharacteristicInfo.registerCharacteristicInfo(C_TIMESTAMP_INFO);
-		CharacteristicInfo.registerCharacteristicInfo(C_STATUS_INFO);
-	}
-
 	/**
 	 * The DAL property, this connector is connected to.
 	 */
@@ -114,13 +101,13 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		DynamicValueCondition condition = event.getCondition();
 
 		// ... characteristic "timestamp"
-		doForwardCharacteristic(condition.getTimestamp(), event.getTimestamp(), C_TIMESTAMP_INFO.getName());
+		doForwardCharacteristic(condition.getTimestamp(), event.getTimestamp(), CharacteristicInfo.C_TIMESTAMP_INFO.getName());
 
 		// ... characteristic "status"
-		doForwardCharacteristic(EpicsUtil.extratStatus(condition), event.getTimestamp(), C_STATUS_INFO.getName());
+		doForwardCharacteristic(EpicsUtil.extratStatus(condition), event.getTimestamp(), CharacteristicInfo.C_STATUS_INFO.getName());
 
 		// ... characteristic "severity"
-		doForwardCharacteristic(EpicsUtil.toEPICSFlavorSeverity(condition), event.getTimestamp(), C_SEVERITY_INFO.getName());
+		doForwardCharacteristic(EpicsUtil.toEPICSFlavorSeverity(condition), event.getTimestamp(), CharacteristicInfo.C_SEVERITY_INFO.getName());
 
 		// ... request initial values, when the condition changes to "normal"
 		if (event.getCondition().isNormal()) {
@@ -583,7 +570,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		doForwardValue(event.getValue(), event.getTimestamp());
 
 		// ... forward an additional "timestamp" characteristic
-		doForwardCharacteristic(event.getTimestamp(), event.getTimestamp(), C_TIMESTAMP_INFO.getName());
+		doForwardCharacteristic(event.getTimestamp(), event.getTimestamp(), CharacteristicInfo.C_TIMESTAMP_INFO.getName());
 	}
 
 }

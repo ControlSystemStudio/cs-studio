@@ -22,11 +22,19 @@
  package org.csstudio.dal;
 
 import org.eclipse.core.runtime.Plugin;
+import org.epics.css.dal.CharacteristicInfo;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class DalPlugin extends Plugin {
+	
+	{
+		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_SEVERITY_INFO);
+		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_TIMESTAMP_INFO);
+		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_STATUS_INFO);
+	}
+
 	/**
 	 * The ID of this plugin.
 	 */
