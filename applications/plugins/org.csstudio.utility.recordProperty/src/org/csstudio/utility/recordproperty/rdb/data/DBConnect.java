@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
 import org.csstudio.utility.recordproperty.rdb.config.IOracleSettings;
 
 /**

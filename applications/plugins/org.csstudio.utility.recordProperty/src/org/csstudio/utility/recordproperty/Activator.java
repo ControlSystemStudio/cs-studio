@@ -1,7 +1,6 @@
 package org.csstudio.utility.recordproperty;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**

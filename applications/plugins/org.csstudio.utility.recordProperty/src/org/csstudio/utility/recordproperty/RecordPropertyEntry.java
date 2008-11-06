@@ -6,10 +6,6 @@ import java.util.regex.Pattern;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 public class RecordPropertyEntry extends PlatformObject implements IProcessVariable, Serializable{
 
