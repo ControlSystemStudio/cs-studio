@@ -30,10 +30,9 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a label with EPICS specific property values.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author jhatje
  * 
  */
 public final class LabelInitializer extends AbstractEpicsWidgetInitializer {
@@ -57,19 +56,7 @@ public final class LabelInitializer extends AbstractEpicsWidgetInitializer {
 				"Connection lost");
 		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
 		initializeDynamicPropertyForConnectionState(LabelModel.PROP_TEXTVALUE,
-				"$channel$", stringsByConnectionState, DirectConnectionRule.TYPE_ID);
-
-
-//		 Map<DynamicValueState, Object> colorsByConditionState = new
-//		 HashMap<DynamicValueState, Object>();
-//		 colorsByConditionState.put(DynamicValueState.WARNING, new RGB(255,
-//		 35,
-//		 145));
-//		 colorsByConditionState.put(DynamicValueState.ALARM, new RGB(255, 35,
-//		 145));
-//		 initializeDynamicPropertyForConditionState(
-//		 LabelModel.PROP_COLOR_BACKGROUND, "$channel$",
-//		 colorsByConditionState);
-
+				"$channel$", stringsByConnectionState,
+				DirectConnectionRule.TYPE_ID);
 	}
 }

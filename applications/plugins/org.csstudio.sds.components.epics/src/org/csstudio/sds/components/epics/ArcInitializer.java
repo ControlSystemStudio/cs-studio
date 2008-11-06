@@ -33,10 +33,9 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a arc with EPICS specific property values.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author jhatje
  * 
  */
 public final class ArcInitializer extends AbstractEpicsWidgetInitializer {
@@ -47,16 +46,5 @@ public final class ArcInitializer extends AbstractEpicsWidgetInitializer {
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeCommonAlarmBehaviour();
-		
-//		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-//		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
-//				9, 163));
-//		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
-//				222));
-//		initializeDynamicPropertyForConnectionState(
-//				ArcModel.PROP_COLOR_FOREGROUND, "$channel$",
-//				colorsByConnectionState);
-
 	}
-
 }

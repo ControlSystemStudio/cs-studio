@@ -26,10 +26,9 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a switch with EPICS specific property values.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author jhatje
  * 
  */
 public final class SwitchInitializer extends AbstractEpicsWidgetInitializer {

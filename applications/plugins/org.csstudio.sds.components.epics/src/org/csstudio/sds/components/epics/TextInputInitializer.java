@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.epics;
+package org.csstudio.sds.components.epics;
 
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
@@ -45,7 +45,8 @@ public final class TextInputInitializer extends AbstractEpicsWidgetInitializer {
 		initializeStaticProperty(TextInputModel.PROP_INPUT_TEXT, "Enter Text!");
 		initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$channel$",
 				"$channel$", null);
-		initializeStaticProperty(TextInputModel.PROP_CURSOR, CursorStyleEnum.IBEAM.getIndex());
+		initializeStaticProperty(TextInputModel.PROP_CURSOR,
+				CursorStyleEnum.IBEAM.getIndex());
 	}
 
 }

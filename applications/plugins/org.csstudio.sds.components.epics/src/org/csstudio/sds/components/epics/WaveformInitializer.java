@@ -19,11 +19,10 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.epics;
+package org.csstudio.sds.components.epics;
 
 import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 
 /**
  * Widget initializer for the waveform widget.
@@ -36,14 +35,15 @@ public final class WaveformInitializer extends AbstractEpicsWidgetInitializer {
 	 * {@inheritDoc}
 	 */
 	public void initialize(final AbstractControlSystemSchema schema) {
-		
+
 		initializeCommonConnectionStates();
-		
+
 		initializeDynamicProperty(WaveformModel.dataPropertyId(0), "$channel$");
-		// initializeDynamicProperty(WaveformModel.PROP_WAVE_FORM,
-		// "$channel$.VAL");
-		initializeDynamicProperty(WaveformModel.PROP_MIN, "$channel$.[graphMin], double");
-		initializeDynamicProperty(WaveformModel.PROP_MAX, "$channel$.[graphMax], double");
+
+		initializeDynamicProperty(WaveformModel.PROP_MIN,
+				"$channel$.[graphMin], double");
+		initializeDynamicProperty(WaveformModel.PROP_MAX,
+				"$channel$.[graphMax], double");
 		initializeStaticProperty(WaveformModel.PROP_AUTOSCALE, false);
 	}
 }

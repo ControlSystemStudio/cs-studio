@@ -26,12 +26,8 @@ import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.BargraphModel;
-import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.cosyrules.color.Alarm;
-import org.csstudio.sds.cosyrules.color.AlarmBorder;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -76,10 +72,10 @@ public final class BargraphInitializer extends AbstractEpicsWidgetInitializer {
 
 		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(0, 0,
 				0));
-
 		initializeDynamicPropertyForConnectionState(
 				BargraphModel.PROP_COLOR_FOREGROUND, "$channel$",
 				colorsByConnectionState);
+
 		
 		
 		// initializeDynamicProperty(BargraphModel.PROP_FILL, "$channel$.VAL");

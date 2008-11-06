@@ -25,17 +25,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a thumb wheel with EPICS specific property values.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author jhatje
  * 
  */
 public final class ThumbWheelInitializer extends AbstractEpicsWidgetInitializer {
@@ -46,7 +44,6 @@ public final class ThumbWheelInitializer extends AbstractEpicsWidgetInitializer 
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeCommonAlarmBehaviour();
-		initializeCommonConnectionStates();
 
 		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$", "$channel$", null);
 		
@@ -55,10 +52,10 @@ public final class ThumbWheelInitializer extends AbstractEpicsWidgetInitializer 
 				9, 163));
 		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
 				222));
+		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(0, 0,
+				0));
 		initializeDynamicPropertyForConnectionState(
 				RectangleModel.PROP_COLOR_FOREGROUND, "$channel$",
 				colorsByConnectionState);
-
 	}
-
 }

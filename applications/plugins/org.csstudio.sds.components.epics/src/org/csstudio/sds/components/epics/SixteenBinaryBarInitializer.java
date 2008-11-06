@@ -52,15 +52,16 @@ public final class SixteenBinaryBarInitializer extends AbstractEpicsWidgetInitia
 		
 		initializeCommonAlarmBehaviour();
 		
-		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$");
+		initializeDynamicProperty(SixteenBinaryBarModel.PROP_VALUE, "$channel$");
 		
-		initializeDynamicProperty(BargraphModel.PROP_DEFAULT_FILL_COLOR, "$channel$[severity]", null, Alarm.TYPE_ID);
-
 		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
 		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
 				9, 163));
 		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
 				222));
+		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(0, 0,
+				0));
+		
 		initializeDynamicPropertyForConnectionState(
 				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
 				colorsByConnectionState);

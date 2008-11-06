@@ -25,9 +25,9 @@ import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 
 /**
- * Widget initializer for a simple slider for EPICs.
+ * Widget initializer for an advanced slider for EPICs.
  * 
- * @author Sven Wende
+ * @author jhatje
  * 
  */
 public final class AdvancedSliderInitializer extends

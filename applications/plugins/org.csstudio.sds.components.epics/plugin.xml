@@ -87,13 +87,19 @@
             widgetTypeId="org.csstudio.sds.components.StripChart">
       </widgetModelInitializer>
    </extension>
-   
       <extension
          point="org.csstudio.sds.widgetModelInitializers">
       <widgetModelInitializer
             class="org.csstudio.sds.cosywidgets.epics.MeterInitializer"
             schemaId="cosyschema.epics"
             widgetTypeId="cosywidgets.meter"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
    </extension>
    
 </plugin>

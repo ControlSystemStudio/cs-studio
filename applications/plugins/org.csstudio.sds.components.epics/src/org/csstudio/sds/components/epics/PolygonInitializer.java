@@ -19,24 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.epics;
+package org.csstudio.sds.components.epics;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.ArcModel;
-import org.csstudio.sds.components.model.PolygonModel;
-import org.csstudio.sds.components.model.PolylineModel;
-import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.eclipse.swt.graphics.RGB;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a polygon with EPICS specific property values.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author jhatje
  * 
  */
 public final class PolygonInitializer extends AbstractEpicsWidgetInitializer {
@@ -48,16 +38,5 @@ public final class PolygonInitializer extends AbstractEpicsWidgetInitializer {
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeCommonAlarmBehaviour();
 		initializeCommonConnectionStates();
-
-//		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-//		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
-//				9, 163));
-//		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
-//				222));
-//		initializeDynamicPropertyForConnectionState(
-//				PolygonModel.PROP_COLOR_FOREGROUND, "$channel$",
-//				colorsByConnectionState);
-
 	}
-
 }

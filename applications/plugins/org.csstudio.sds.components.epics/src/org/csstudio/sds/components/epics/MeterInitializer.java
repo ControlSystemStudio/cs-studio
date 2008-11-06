@@ -21,17 +21,13 @@
  */
  package org.csstudio.sds.components.epics;
 
-import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 
 /**
  * Initializes the Meter model with EPICS default values.
  * 
- * TODO sh: do some real initializations
- * 
- * @author Stefan Hofer
- * @version $Revision$
+ * @author jhatje
  * 
  */
 public final class MeterInitializer extends AbstractEpicsWidgetInitializer {

@@ -23,7 +23,6 @@
 
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 
 /**
  * Widget initializer for a simple slider for EPICs.

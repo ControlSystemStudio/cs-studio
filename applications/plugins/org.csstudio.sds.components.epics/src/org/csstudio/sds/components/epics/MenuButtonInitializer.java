@@ -30,10 +30,9 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
- * Initializes a rectangle with EPICS specific property values.
+ * Initializes a menu button with EPICS specific property values.
  * 
- * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @author jhatje
  * 
  */
 public final class MenuButtonInitializer extends AbstractEpicsWidgetInitializer {
@@ -57,7 +56,5 @@ public final class MenuButtonInitializer extends AbstractEpicsWidgetInitializer 
 		stringsByConnectionState.put(ConnectionState.INITIAL, "Initialisation");
 		initializeDynamicPropertyForConnectionState(MenuButtonModel.PROP_LABEL,
 				"$channel$", stringsByConnectionState, DirectConnectionRule.TYPE_ID);
-
 	}
-
 }
