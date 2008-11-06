@@ -2,7 +2,12 @@ package org.csstudio.nams.common.fachwert;
 
 public enum MessageKeyEnum {
 
-	/**
+	
+    /**
+     * XXX Comment
+     */
+    ACK("ACK"),
+    /**
 	 * XXX Comment
 	 */
 	AMS_FILTERID("AMS-FILTERID"),
