@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 import org.csstudio.ams.dbAccess.PreparedStatementHolder;
@@ -49,13 +49,13 @@ public class TopicDAO extends DAO {
 		final String query = "SELECT iTopicID, iGroupRef, cTopicName, cName, cDescription FROM AMS_Topic"
 				+ strMaster;
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		PreparedStatementHolder psth = null;
 
 		try {
 			psth = new PreparedStatementHolder();
-			st = masterDB.createStatement();
-			rs = st.executeQuery(query);
+			st = masterDB.prepareStatement(query);
+			rs = st.executeQuery();
 
 			while (rs.next()) {
 				TopicTObject tObj = new TopicTObject(rs.getInt("iTopicId"), rs
@@ -204,16 +204,17 @@ public class TopicDAO extends DAO {
 
 	public static TopicTObject select(Connection con, int topicID)
 			throws SQLException {
-		final String query = "SELECT iTopicID, iGroupRef, cTopicName, cName, cDescription FROM AMS_Topic WHERE iTopicID = "
-				+ topicID;
+		final String query = "SELECT iTopicID, iGroupRef, cTopicName, cName, cDescription FROM AMS_Topic"
+		                     + " WHERE iTopicID = ?";
 
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		TopicTObject topicObj = null;
 
 		try {
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, topicID);
+			rs = st.executeQuery();
 
 			if (rs.next())
 				topicObj = new TopicTObject(rs.getInt("iTopicId"), rs
@@ -249,11 +250,11 @@ public class TopicDAO extends DAO {
 		final List<TopicKey> result = new ArrayList<TopicKey>();
 
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 
 		try {
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			rs = st.executeQuery();
 
 			while (rs.next()) {
 				result.add(new TopicKey(rs.getInt("iTopicID"), rs

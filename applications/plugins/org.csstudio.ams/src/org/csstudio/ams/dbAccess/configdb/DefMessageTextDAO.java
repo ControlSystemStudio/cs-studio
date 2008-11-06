@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 
@@ -101,15 +101,16 @@ public abstract class DefMessageTextDAO extends DAO
 
 	public static DefMessageTextTObject select(Connection con, int defMessageTextID) throws SQLException
 	{
-		final String query = "SELECT iDefMessageTextID,cName,sText FROM AMS_DefMessageText WHERE iDefMessageTextID=" + defMessageTextID;
+		final String query = "SELECT iDefMessageTextID,cName,sText FROM AMS_DefMessageText WHERE iDefMessageTextID=?";
 		
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, defMessageTextID);
+			rs = st.executeQuery();
 			
 			if(rs.next())
 				return new DefMessageTextTObject(rs.getInt(1), rs.getString(2), rs.getString(3));
@@ -131,13 +132,13 @@ public abstract class DefMessageTextDAO extends DAO
 		final String query = "SELECT iDefMessageTextID,cName,cText FROM AMS_DefMessageText";
 		
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		ArrayList<DefMessageTextTObject> array = new ArrayList<DefMessageTextTObject>();
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 				array.add(new DefMessageTextTObject(rs.getInt(1), rs.getString(2), rs.getString(3)));

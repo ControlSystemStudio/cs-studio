@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -26,7 +27,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -64,14 +64,14 @@ public abstract class UserGroupUserDAO extends DAO
 		final String query = "SELECT iUserGroupRef,iUserRef,iPos,sActive,cActiveReason,tTimeChange"
 			+ " FROM AMS_UserGroup_User" + strMaster;
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		PreparedStatementHolder psth = null;
 		
 		try
 		{
 			psth = new PreparedStatementHolder();		
-			st = masterDB.createStatement();
-			rs = st.executeQuery(query);
+			st = masterDB.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 			{
@@ -313,16 +313,17 @@ public abstract class UserGroupUserDAO extends DAO
 			int userGroupRef) throws SQLException
 	{
 		final String query = "SELECT iUserGroupRef,iUserRef,iPos,sActive,cActiveReason,tTimeChange"
-			+ " FROM AMS_UserGroup_User WHERE iUserGroupRef = " + userGroupRef + " ORDER BY iPos";
+			+ " FROM AMS_UserGroup_User WHERE iUserGroupRef = ? ORDER BY iPos";
 		
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		ArrayList<AggrUserGroupUserTObject> array = new ArrayList<AggrUserGroupUserTObject>();
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, userGroupRef);
+			rs = st.executeQuery();
 			
 			while(rs.next()) 
 			{
@@ -484,18 +485,20 @@ public abstract class UserGroupUserDAO extends DAO
     public static Vector<UserTObject> selectByGroupAndState(Connection con, int groupRef, int active) throws SQLException
     {
         final String query = "SELECT iUserRef"
-        + " FROM AMS_UserGroup_User WHERE " + "iUserGroupRef = " + groupRef + " AND sActive = " + active;
+        + " FROM AMS_UserGroup_User WHERE iUserGroupRef = ? AND sActive = ?";
 
         Vector<Integer> userRefList = new Vector<Integer>();
         Vector<UserTObject> userList = new Vector<UserTObject>();
         
         ResultSet rs = null;
-        Statement st = null;
+        PreparedStatement st = null;
 
         try
         {
-            st = con.createStatement();
-            rs = st.executeQuery(query);
+            st = con.prepareStatement(query);
+            st.setInt(1, groupRef);
+            st.setShort(2, (short)active);
+            rs = st.executeQuery();
             
             while(rs.next())
             {

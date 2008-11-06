@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 import org.csstudio.ams.dbAccess.PreparedStatementHolder;
@@ -51,14 +51,14 @@ public abstract class UserGroupDAO extends DAO
 		final String query = "SELECT iUserGroupId,iGroupRef,cUserGroupName,sMinGroupMember,iTimeOutSec,sActive "
 			+"FROM AMS_UserGroup" + strMaster;
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		PreparedStatementHolder psth = null;
 		
 		try
 		{
 			psth = new PreparedStatementHolder();			
-			st = masterDB.createStatement();
-			rs = st.executeQuery(query);
+			st = masterDB.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 			{
@@ -248,13 +248,13 @@ public abstract class UserGroupDAO extends DAO
 		final String query = "SELECT iUserGroupId,cUserGroupName,iGroupRef FROM AMS_UserGroup ORDER BY 2";
 
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		ArrayList<UserGroupKey> array = new ArrayList<UserGroupKey>();
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 				array.add(new UserGroupKey(rs.getInt(1), rs.getString(2),rs.getInt(3)));

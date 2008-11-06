@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 
@@ -89,15 +89,16 @@ public abstract class GroupsDAO extends DAO
 
 	public static GroupsTObject select(Connection con, int groupID) throws SQLException
 	{
-		final String query = "SELECT iGroupId,cGroupName,sType FROM AMS_Groups WHERE iGroupId=" + groupID;
+		final String query = "SELECT iGroupId,cGroupName,sType FROM AMS_Groups WHERE iGroupId=?";
 		
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, groupID);
+			rs = st.executeQuery();
 			
 			if(rs.next())
 				return new GroupsTObject(rs.getInt(1), rs.getString(2), rs.getShort(3));

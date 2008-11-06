@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,15 +20,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 import org.csstudio.ams.dbAccess.PreparedStatementHolder;
@@ -49,14 +49,14 @@ public abstract class FilterDAO extends DAO
 	{
 		final String query = "SELECT iFilterID,iGroupRef,cName,cDefaultMessage FROM AMS_Filter" + strMaster;
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		PreparedStatementHolder psth = null;
 		
 		try
 		{
 			psth = new PreparedStatementHolder();			
-			st = masterDB.createStatement();
-			rs = st.executeQuery(query);
+			st = masterDB.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 			{
@@ -135,16 +135,17 @@ public abstract class FilterDAO extends DAO
 
 	public static FilterTObject select(Connection con, int filterID) throws SQLException
 	{
-		final String query = "SELECT iFilterID, iGroupRef, cName, cDefaultMessage FROM AMS_Filter WHERE iFilterID = " + filterID;
+		final String query = "SELECT iFilterID, iGroupRef, cName, cDefaultMessage FROM AMS_Filter WHERE iFilterID = ?";
 	
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		FilterTObject filter = null;
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, filterID);
+			rs = st.executeQuery();
 			
 			if(rs.next())
 				filter = new FilterTObject(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4));
@@ -232,18 +233,18 @@ public abstract class FilterDAO extends DAO
 		}
 	}
 
-	public static ArrayList selectKeyList(Connection con) throws SQLException
+	public static ArrayList<?> selectKeyList(Connection con) throws SQLException
 	{
 		final String query = "SELECT iFilterID,cName,iGroupRef FROM AMS_Filter";
 	
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		ArrayList<FilterKey> array = new ArrayList<FilterKey>();
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 				array.add(new FilterKey(rs.getInt(1),rs.getString(2),rs.getInt(3)));

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 import org.csstudio.ams.dbAccess.PreparedStatementHolder;
@@ -50,14 +50,14 @@ public abstract class FilterFilterConditionDAO extends DAO
 	{
 		final String query = "SELECT iFilterRef,iFilterConditionRef,iPos FROM AMS_Filter_FilterCondition" + strMaster;
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		PreparedStatementHolder psth = null;
 		
 		try
 		{
 			psth = new PreparedStatementHolder();			
-			st = masterDB.createStatement();
-			rs = st.executeQuery(query);
+			st = masterDB.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 			{

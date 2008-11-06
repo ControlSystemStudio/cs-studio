@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess;
+
+package org.csstudio.ams.dbAccess;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +31,6 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
-
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 
@@ -80,7 +81,7 @@ public class DAO implements AmsConstants
 	  pst.setLong(idx, Long.parseLong(sdate));
   }
 
-  public static void close(Statement st, ResultSet rs)
+  public static void close(PreparedStatement st, ResultSet rs)
   {
     try
     {
@@ -103,17 +104,40 @@ public class DAO implements AmsConstants
     }
   }
 
+  public static void close(Statement st, ResultSet rs)
+  {
+    try
+    {
+      if(rs != null)
+        rs.close();
+    }
+    catch(Exception ex)
+    {
+        Log.log(Log.WARN, ex);
+    }
+
+    try
+    {
+      if(st != null)
+        st.close();
+    }
+    catch(Exception ex)
+    {
+        Log.log(Log.WARN, ex);
+    }
+  }
+
   protected static int getNewID(Connection con, String field, String table) throws SQLException
   {
 	  String query = "SELECT MAX(" + field + ") FROM " + table;
 	  
-	  Statement st = null;
+	  PreparedStatement st = null;
 	  ResultSet rs = null;
 	  
 	  try
 	  {
-		  st = con.createStatement();
-		  rs = st.executeQuery(query);
+		  st = con.prepareStatement(query);
+		  rs = st.executeQuery();
 		  
 		  if(rs.next())
 			  return rs.getInt(1) + 1;

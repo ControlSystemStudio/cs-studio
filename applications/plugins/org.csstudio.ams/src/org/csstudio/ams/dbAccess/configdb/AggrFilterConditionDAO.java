@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,17 +20,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 import org.csstudio.ams.dbAccess.PreparedStatementHolder;
@@ -42,17 +43,18 @@ public class AggrFilterConditionDAO extends DAO
 	       "SELECT FC.iFilterConditionID, FC.cName, FC.iGroupRef, FFC.iPos" 
     	+ " FROM AMS_Filter_FilterCondition FFC, AMS_FilterCondition FC"
     	+ " WHERE FFC.iFilterConditionRef = FC.iFilterConditionID"
-    	+ " AND FFC.iFilterRef = " + filterID
+    	+ " AND FFC.iFilterRef = ?" 
     	+ " ORDER BY FFC.iPos ASC";
 
     	ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		ArrayList<FilterConditionKey> fc = new ArrayList<FilterConditionKey>();
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, filterID);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 				fc.add(new FilterConditionKey(rs.getInt(1), rs.getString(2), rs.getInt(3)));
@@ -73,16 +75,17 @@ public class AggrFilterConditionDAO extends DAO
 	public static List<FilterKey> selectFilterForFilterConditions(Connection con, int filterConditionID) throws SQLException
 	{
 		String query = "SELECT DISTINCT F.iFilterID, F.cName, F.iGroupRef FROM AMS_Filter F, AMS_Filter_FilterCondition FFC " +
-        "WHERE F.iFilterID = FFC.iFilterRef AND FFC.iFilterConditionRef = " + filterConditionID;
+        "WHERE F.iFilterID = FFC.iFilterRef AND FFC.iFilterConditionRef = ?";
 
-		Statement st = null;
+		PreparedStatement st = null;
 		ResultSet rs = null;
 		ArrayList<FilterKey> array = new ArrayList<FilterKey>();
 
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, filterConditionID);
+			rs = st.executeQuery();
 
 			while(rs.next())
 				array.add(new FilterKey(rs.getInt(1),rs.getString(2), rs.getInt(3)));
@@ -104,13 +107,13 @@ public class AggrFilterConditionDAO extends DAO
 		final String query = "SELECT iFilterConditionTypeID, cClass FROM AMS_FilterConditionType ORDER BY iFilterConditionTypeID ASC";
 
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		HashMap<Integer, String> hmFCT = new HashMap<Integer, String>();
 		
 		try
 		{
-			st = conDb.createStatement();
-			rs = st.executeQuery(query);
+			st = conDb.prepareStatement(query);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 				hmFCT.put(new Integer(rs.getInt(1)), rs.getString(2));
@@ -133,14 +136,14 @@ public class AggrFilterConditionDAO extends DAO
 		final String query = "SELECT iFilterID FROM AMS_Filter ORDER BY iFilterID ASC";
 
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		PreparedStatementHolder psth = null;
 		ArrayList<AggrFilterTObject> array = new ArrayList<AggrFilterTObject>();
 		
 		try
 		{
-			st = conDb.createStatement();
-			rs = st.executeQuery(query);
+			st = conDb.prepareStatement(query);
+			rs = st.executeQuery();
 			psth = new PreparedStatementHolder();
 			while(rs.next())
 			{

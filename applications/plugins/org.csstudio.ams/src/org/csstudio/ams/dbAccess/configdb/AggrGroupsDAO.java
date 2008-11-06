@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,10 +20,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.Log;
@@ -62,15 +64,17 @@ public abstract class AggrGroupsDAO extends DAO
 				return;
 			}
 			
-			String query = "UPDATE " + table + " SET iGroupRef=-1 WHERE iGroupRef=" + groupID;
+			String query = "UPDATE " + table + " SET iGroupRef=? WHERE iGroupRef=?";
 			
-			Statement st = null;
+			PreparedStatement st = null;
 			
 			try
 			{	
 				con.setAutoCommit(false);
-				st = con.createStatement();
-				st.execute(query);
+				st = con.prepareStatement(query);
+				st.setInt(1, -1);
+				st.setInt(2, groupID);
+				st.executeUpdate();
 			
 				GroupsDAO.remove(con, groupID);
 				con.commit();

@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,15 +20,15 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 
@@ -39,17 +40,18 @@ public class AggrFilterActionDAO extends DAO
 	       "SELECT FA.iFilterActionID, FA.iFilterActionTypeRef, FA.iReceiverRef, FA.cMessage, FFA.iPos" 
     	+ " FROM AMS_Filter_FilterAction FFA, AMS_FilterAction FA"
     	+ " WHERE FFA.iFilterActionRef = FA.iFilterActionID"
-    	+ " AND FFA.iFilterRef = " + filterID
+    	+ " AND FFA.iFilterRef = ?"
     	+ " ORDER BY FFA.iPos ASC";
 
     	ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		ArrayList<FilterActionTObject> fActions = new ArrayList<FilterActionTObject>();
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, filterID);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 				fActions.add(new FilterActionTObject(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
@@ -72,15 +74,16 @@ public class AggrFilterActionDAO extends DAO
 		final String query =
 		      "DELETE FROM  AMS_FilterAction WHERE iFilterActionID IN " 
 	    	+ " (SELECT iFilterActionRef FROM AMS_Filter_FilterAction "
-	    	+ " WHERE iFilterRef = " + filterID
+	    	+ " WHERE iFilterRef = ?"
 	    	+ ") ";
 
-		Statement st = null;
+		PreparedStatement st = null;
 			
 		try
 		{
-			st = con.createStatement();
-			st.execute(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, filterID);
+			st.executeUpdate();
 		}
 		catch(SQLException ex)
 		{

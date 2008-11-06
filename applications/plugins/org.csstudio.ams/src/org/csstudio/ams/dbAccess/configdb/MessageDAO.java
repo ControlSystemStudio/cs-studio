@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess.configdb;
+
+package org.csstudio.ams.dbAccess.configdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +31,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.csstudio.ams.Log;
@@ -46,16 +47,16 @@ public abstract class MessageDAO extends DAO
 		final String query1 = "INSERT INTO AMS_Message (cProperty,cValue) VALUES('%PARAM1%','%PARAM2%')";
 		final String query2 = "INSERT INTO AMS_Message (iMessageID,cProperty,cValue) VALUES (?,?,?)";
 		      
-		PreparedStatement pst 	= null;
-		Statement         st  	= null;
-		ResultSet		  rs    = null;
-		String            query	= null;
+		PreparedStatement pst = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = null;
 		
 		try
 		{
 			int messageID = Integer.MIN_VALUE;
 
-			Enumeration enumProps = map.getMapNames();// not getPropertyNames 
+			Enumeration<?> enumProps = map.getMapNames();// not getPropertyNames 
 			while (enumProps.hasMoreElements())
 			{
 				String propName = (String)enumProps.nextElement();
@@ -114,14 +115,15 @@ public abstract class MessageDAO extends DAO
 	
 	public static void select(Connection con, int iMessageID, MapMessage msg) throws SQLException, JMSException
 	{
-		final String query = "SELECT cProperty,cValue FROM AMS_Message WHERE iMessageID = " + iMessageID;
+		final String query = "SELECT cProperty,cValue FROM AMS_Message WHERE iMessageID = ?";
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, iMessageID);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 			{
@@ -141,15 +143,16 @@ public abstract class MessageDAO extends DAO
 	
 	public static List<MessageTObject> select(Connection con, int iMessageID) throws SQLException
 	{
-		final String query = "SELECT cProperty,cValue FROM AMS_Message WHERE iMessageID = " + iMessageID;
+		final String query = "SELECT cProperty,cValue FROM AMS_Message WHERE iMessageID = ?";
 		ResultSet rs = null;
-		Statement st = null;
+		PreparedStatement st = null;
 		ArrayList<MessageTObject> array = new ArrayList<MessageTObject>();
 		
 		try
 		{
-			st = con.createStatement();
-			rs = st.executeQuery(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, iMessageID);
+			rs = st.executeQuery();
 			
 			while(rs.next())
 				array.add(new MessageTObject(iMessageID, rs.getString(1), rs.getString(2)));
@@ -168,14 +171,15 @@ public abstract class MessageDAO extends DAO
 	
 	public static void remove(Connection con, int iMessageID) throws SQLException
 	{
-		final String query = "DELETE FROM AMS_Message WHERE iMessageID = " + iMessageID;
+		final String query = "DELETE FROM AMS_Message WHERE iMessageID = ?";
 
-		Statement st = null;
+		PreparedStatement st = null;
 		
 		try
 		{
-			st = con.createStatement();
-			st.execute(query);
+			st = con.prepareStatement(query);
+			st.setInt(1, iMessageID);
+			st.executeUpdate();
 		}
 		catch(SQLException ex)
 		{
