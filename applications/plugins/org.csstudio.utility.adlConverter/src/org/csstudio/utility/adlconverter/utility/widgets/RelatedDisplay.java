@@ -33,6 +33,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.csstudio.utility.adlconverter.utility.widgetparts.RelatedDisplayItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -53,10 +55,12 @@ public class RelatedDisplay extends Widget {
 
     /**
      * @param relatedDisplay ADLWidget that describe the RelatedDisplay.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public RelatedDisplay(final ADLWidget relatedDisplay) throws WrongADLFormatException {
-        super(relatedDisplay);
+    public RelatedDisplay(final ADLWidget relatedDisplay, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(relatedDisplay, storedBasicAttribute, storedDynamicAttribute);
         String clr=null;
         String bclr=null;
         String label = null;
@@ -107,7 +111,7 @@ public class RelatedDisplay extends Widget {
             String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+row[0]);
+                throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+fileLine);
             }
 
             if(row[0].equals("clr")){ //$NON-NLS-1$
@@ -121,7 +125,7 @@ public class RelatedDisplay extends Widget {
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
 //                  TODO: RelatedDisplay-->clrmod  
             }else{                
-                throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+row[0]);
+                throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+fileLine);
             }
         }
         if(clr!=null){

@@ -114,7 +114,7 @@ public class ADLMenuItem extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("args")){ //$NON-NLS-1$
                 _args=parameter.substring(parameter.indexOf("=")+1).replaceAll("\"","").trim(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }else {
-                throw new WrongADLFormatException(Messages.ADLMenuItem_WrongADLFormatException_Begin+parameter+Messages.ADLMenuItem_WrongADLFormatException_end);
+                throw new WrongADLFormatException(Messages.ADLMenuItem_WrongADLFormatException_Begin+fileLine+Messages.ADLMenuItem_WrongADLFormatException_end);
             }
         }
     }

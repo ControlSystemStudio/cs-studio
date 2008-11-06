@@ -103,7 +103,7 @@ public class RelatedDisplayItem extends WidgetPart{
           try{
                tmp= parameter.substring(head.length()+1);
           }catch(StringIndexOutOfBoundsException exp){
-              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter+"("+display.getObjectNr()+":"+display.getType()+")["+parameter+"]");
+              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+fileLine+"("+display.getObjectNr()+":"+display.getType()+")["+parameter+"]");
           }
           String[] row=ADLHelper.cleanString(tmp);
           head = head.trim().toLowerCase();
@@ -115,8 +115,20 @@ public class RelatedDisplayItem extends WidgetPart{
               _args=row;
           }else if(head.equals("policy")){ //$NON-NLS-1$
               _policy=row[0];
+          }else if(head.equals("x")){ //$NON-NLS-1$
+              // Do Nothing
+              // SDS not support this Property
+          }else if(head.equals("y")){ //$NON-NLS-1$
+              // Do Nothing
+              // SDS not support this Property
+          }else if(head.equals("width")){ //$NON-NLS-1$
+              // Do Nothing
+              // SDS not support this Property
+          }else if(head.equals("height")){ //$NON-NLS-1$
+              // Do Nothing
+              // SDS not support this Property
           }else {
-              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter+"("+display.getObjectNr()+":"+display.getType()+")");
+              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+fileLine+"("+display.getObjectNr()+":"+display.getType()+")");
           }
       }
     }

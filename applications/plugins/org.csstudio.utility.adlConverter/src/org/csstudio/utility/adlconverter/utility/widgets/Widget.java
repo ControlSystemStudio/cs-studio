@@ -58,10 +58,10 @@ public abstract class Widget extends AbstractDisplayImporter {
     /** The Widget object parameter. */
     private ADLObject _object = null;
     /** The Widget Basic Attribute . */
-    private ADLBasicAttribute _basicAttribute = null;
+    protected ADLBasicAttribute _basicAttribute = null;
     /** The Widget Dynamic Attribute . */
     private ADLDynamicAttribute _dynamicAttribute = null;
-    /** The Widget Pointslist. */
+    /** The Widget points list. */
     private ADLPoints _points = null;
     /** The Widget monitor Attribute. */
     private ADLMonitor _monitor;
@@ -69,21 +69,33 @@ public abstract class Widget extends AbstractDisplayImporter {
     private ADLControl _control;
     /** The Widget sensitive Attribute. */
     private ADLSensitive _sensitive;
-    /**
-     * The Number of this object in the Display. useful for Debugging and Error
-     * handling.
-     */
-    private int _objectNr;
     
-    private ADLWidget _parent;
-
     /**
      * @param widget
      *            ADLWidget that describe the Widget.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public Widget(final ADLWidget widget) {
+    public Widget(final ADLWidget widget, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         setDefaults();
-        _objectNr = widget.getObjectNr();
+        try {
+            if(storedBasicAttribute!=null){
+                _basicAttribute = new ADLBasicAttribute(storedBasicAttribute,_widget);
+            }
+            if(storedDynamicAttribute!=null){
+                _dynamicAttribute = new ADLDynamicAttribute(storedDynamicAttribute,_widget);
+            }
+        } catch (WrongADLFormatException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        if(_basicAttribute!=null){
+            _basicAttribute.setParentWidgetModel(_widget);
+        }
+        if(_dynamicAttribute!=null){
+            _dynamicAttribute.setParentWidgetModel(_widget);
+        }
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
@@ -98,13 +110,17 @@ public abstract class Widget extends AbstractDisplayImporter {
      * @param root
      */
     public Widget(ADLWidget widget, DisplayModel root) {
-        _parent = widget;
         _widget = root;
-        _objectNr = widget.getObjectNr();
+//        if(_basicAttribute!=null){
+//            _basicAttribute.setParentWidgetModel(_widget);    
+//        }
+//        if(_dynamicAttribute!=null){
+//            _dynamicAttribute.setParentWidgetModel(_widget);
+//        }
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
-            CentralLogger.getInstance().error(this, e);
+            CentralLogger.getInstance().info(this, e);
         }
     }
 

@@ -41,7 +41,7 @@ public abstract class WidgetPart {
      */
     protected AbstractWidgetModel _widgetModel;
     
-    protected AbstractWidgetModel _parentWidgetModel;
+//    protected AbstractWidgetModel _parentWidgetModel;
 
     /**
      * The default constructor.
@@ -52,7 +52,6 @@ public abstract class WidgetPart {
      */
     public WidgetPart(final ADLWidget widgetPart, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
         _widgetModel = parentWidgetModel;
-        _parentWidgetModel = parentWidgetModel;
         
         init();
         parseWidgetPart(widgetPart);
@@ -78,6 +77,10 @@ public abstract class WidgetPart {
      * Set all property's to the Parent Widget Model.
      */
     abstract void generateElements();
+
+    public final void setParentWidgetModel(AbstractWidgetModel parentWidgetModel) {
+        _widgetModel = parentWidgetModel;
+    }
 
 
 }

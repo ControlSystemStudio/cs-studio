@@ -35,6 +35,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -45,11 +47,13 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 public class StripChart extends Widget {
 
     /**
-     * @param widget ADLWidget that describe the Waveform.
+     * @param widget ADLWidget that describe the StripChart.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException 
      */
-    public StripChart(final ADLWidget widget) throws WrongADLFormatException {
-        super(widget);
+    public StripChart(final ADLWidget widget, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(widget, storedBasicAttribute, storedDynamicAttribute);
         
         _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
         _widget.setPropertyValue(StripChartModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
@@ -63,8 +67,8 @@ public class StripChart extends Widget {
             }
         }
         for (FileLine fileLine : widget.getBody()) {
-            String waveform = fileLine.getLine();
-            String[] row = waveform.trim().split("="); //$NON-NLS-1$
+            String ctripChart = fileLine.getLine();
+            String[] row = ctripChart.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
             }
@@ -80,19 +84,19 @@ public class StripChart extends Widget {
     }
 
     /**
-     * @param waveformPart
+     * @param stripChartPart
      * @throws WrongADLFormatException 
      */
-    private void pen(ADLWidget waveformPart) throws WrongADLFormatException {
-        int start = waveformPart.getType().indexOf("[");
-        int end = waveformPart.getType().indexOf("]");
-        String id = waveformPart.getType().substring(start+1, end);
+    private void pen(ADLWidget stripChartPart) throws WrongADLFormatException {
+        int start = stripChartPart.getType().indexOf("[");
+        int end = stripChartPart.getType().indexOf("]");
+        String id = stripChartPart.getType().substring(start+1, end);
         int index = Integer.parseInt(id);
 
         
-        for (FileLine fileLine : waveformPart.getBody()) {
-            String waveform = fileLine.getLine();
-            String[] row = waveform.split("=");
+        for (FileLine fileLine : stripChartPart.getBody()) {
+            String stripChart = fileLine.getLine();
+            String[] row = stripChart.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
             }
@@ -118,20 +122,20 @@ public class StripChart extends Widget {
             }else if(parameter.equals("clr")){
                 _widget.setPropertyValue(StripChartModel.plotColorPropertyId(index), ADLHelper.getRGB(row[1]));
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
+                CentralLogger.getInstance().warn(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
 
 
     /**
-     * @param waveformPart
+     * @param stripChartPart
      * @throws WrongADLFormatException 
      */
-    private void plotcom(ADLWidget waveformPart) throws WrongADLFormatException {
-        for (FileLine fileLine : waveformPart.getBody()) {
-            String waveform = fileLine.getLine();
-            String[] row = waveform.split("=");
+    private void plotcom(ADLWidget stripChartPart) throws WrongADLFormatException {
+        for (FileLine fileLine : stripChartPart.getBody()) {
+            String stripChart = fileLine.getLine();
+            String[] row = stripChart.split("=");
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.Bargraph_1);
             }
@@ -154,7 +158,7 @@ public class StripChart extends Widget {
                 String yLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(StripChartModel.PROP_Y_AXIS_LABEL,yLabel);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
+                CentralLogger.getInstance().warn(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
             }
         }
     }

@@ -30,6 +30,8 @@ import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -45,9 +47,11 @@ public class Polygon extends Widget{
 
     /**
      * @param polygon The ADL String for a Polygon
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public Polygon(final ADLWidget polygon, AbstractWidgetModel abstractWidgetModel){
-        super(polygon);
+    public Polygon(final ADLWidget polygon, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute){
+        super(polygon, storedBasicAttribute, storedDynamicAttribute);
         if(getBasicAttribute()!=null){
             getBasicAttribute().setStyle("0"); //$NON-NLS-1$
         }

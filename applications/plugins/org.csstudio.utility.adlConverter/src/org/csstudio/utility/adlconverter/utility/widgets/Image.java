@@ -32,6 +32,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -46,10 +48,12 @@ public class Image extends Widget {
 
     /**
      * @param image ADLWidget that describe the Image.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Image(final ADLWidget image, AbstractWidgetModel abstractWidgetModel) throws WrongADLFormatException {
-        super(image);
+    public Image(final ADLWidget image, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(image, storedBasicAttribute, storedDynamicAttribute);
         for (FileLine fileLine : image.getBody()) {
             String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$

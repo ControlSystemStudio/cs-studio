@@ -28,6 +28,8 @@ import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -39,9 +41,11 @@ public class Meter extends Widget {
 
     /**
      * @param meter ADLWidget that describe the Meter.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public Meter(final ADLWidget meter) {
-        super(meter);
+    public Meter(final ADLWidget meter, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
+        super(meter, storedBasicAttribute, storedDynamicAttribute);
 //      <property type="sds.double" id="bound.hihi" value="10.0">
 //          <dynamicsDescriptor ruleId="directConnection">
 //              <inputChannel name="$channel$.HIHI" type="java.lang.Object" />

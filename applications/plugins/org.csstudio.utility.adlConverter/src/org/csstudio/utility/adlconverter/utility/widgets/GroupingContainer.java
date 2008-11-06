@@ -32,7 +32,9 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLChildren;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLMenuItem;
 
 /**
@@ -51,10 +53,12 @@ public class GroupingContainer extends Widget {
 
     /**
      * @param groupingContainer ADLWidget that describe the groupingContainer.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public GroupingContainer(final ADLWidget groupingContainer) throws WrongADLFormatException {
-        super(groupingContainer);
+    public GroupingContainer(final ADLWidget groupingContainer, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(groupingContainer, storedBasicAttribute, storedDynamicAttribute);
         getObject().setHeight(getObject().getHeight()+5);
         getObject().setWidth(getObject().getWidth()+5);
         handleObject(groupingContainer.getObjects());

@@ -29,6 +29,8 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -40,10 +42,12 @@ public class Rectangle extends Widget{
     
     /**
      * @param rectangle ADLWidget that describe the groupingContainer.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @param displayModel 
      */
-    public Rectangle(final ADLWidget rectangle, AbstractWidgetModel abstractWidgetModel) {
-        super(rectangle);
+    public Rectangle(final ADLWidget rectangle, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
+        super(rectangle, storedBasicAttribute, storedDynamicAttribute);
         if(getBasicAttribute()!=null&&getBasicAttribute().getFill()!=null){
             _widget.setPropertyValue(RectangleModel.PROP_FILL, getBasicAttribute().getFill());
         }

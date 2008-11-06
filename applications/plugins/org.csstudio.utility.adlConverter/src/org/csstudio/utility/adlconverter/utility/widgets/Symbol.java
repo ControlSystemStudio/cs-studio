@@ -26,6 +26,8 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.SwitchModel;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -37,9 +39,11 @@ public class Symbol extends Widget {
 
     /**
      * @param symbol ADLWidget that describe the Symbol.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public Symbol(final ADLWidget symbol) {
-        super(symbol);
+    public Symbol(final ADLWidget symbol, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
+        super(symbol, storedBasicAttribute, storedDynamicAttribute);
     }
 
 

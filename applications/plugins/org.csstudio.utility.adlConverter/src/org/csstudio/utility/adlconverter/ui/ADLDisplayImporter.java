@@ -37,10 +37,13 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.ParserADL;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.csstudio.utility.adlconverter.utility.widgets.ADLDisplay;
 import org.csstudio.utility.adlconverter.utility.widgets.ActionButton;
 import org.csstudio.utility.adlconverter.utility.widgets.Arc;
 import org.csstudio.utility.adlconverter.utility.widgets.Bargraph;
+import org.csstudio.utility.adlconverter.utility.widgets.ChoiceButton;
 import org.csstudio.utility.adlconverter.utility.widgets.Ellipse;
 import org.csstudio.utility.adlconverter.utility.widgets.GroupingContainer;
 import org.csstudio.utility.adlconverter.utility.widgets.Image;
@@ -73,14 +76,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ADLDisplayImporter extends AbstractDisplayImporter {
     /**
-     * Is true when the Color map ready finalize.
-     */
-    private boolean _colormapSet;
-    /**
-     * Is true when the Display ready finalize.
-     */
-    private boolean _displaySave;
-    /**
      * Store the Display to finalize if the colormap not finalize.
      */
     private ADLWidget _storDisplay;
@@ -102,12 +97,12 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
             final String targetFileName) throws CoreException {
 
         _status=0;
+        ADLWidget storedBasicAttribute=null;
+        ADLWidget storedDynamicAttribute=null;
         ADLWidget root = ParserADL.getNextElement(new File(sourceFile));
 
         // this is the target display model
         DisplayModel displayModel = new DisplayModel();
-        _colormapSet = false;
-        _displaySave = false;
         _storDisplay = null;
         displayModel.getLayerSupport().addLayer(
                 new Layer(Messages.ADLDisplayImporter_ADLBackgroundLayerName,
@@ -118,62 +113,122 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         displayModel.getLayerSupport().addLayer(
                 new Layer(Messages.ADLDisplayImporter_ADLActionLayerName,
                         Messages.ADLDisplayImporter_ADLActionLayerDes), 2);
-        for (ADLWidget strings : root.getObjects()) {
+        for (ADLWidget adlWidget : root.getObjects()) {
             try {
-                // Display
-                display(strings, displayModel);
-                if (strings.getType().equals("arc")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Arc(strings, displayModel).getElement());
-                } else if (strings.getType().equals("bar")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Bargraph(strings).getElement());
-                } else if(strings.getType().equals("byte")){ //$NON-NLS-1$
-                    displayModel.addWidget(new SixteenBinaryBar(strings).getElement());
-                } else if (strings.getType().equals("\"cartesian plot\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Waveform(strings).getElement());
-                } else if (strings.getType().equals("\"color map\"")) { //$NON-NLS-1$
-                    ADLHelper.setColorMap(strings);
-                    _colormapSet = true;
-                } else if (strings.getType().equals("composite")) { //$NON-NLS-1$
-                    displayModel.addWidget(new GroupingContainer(strings).getElement());
-                } else if (strings.getType().equals("\"dynamic symbol\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Symbol(strings).getElement());
-                } else if (strings.getType().equals("file")) { //$NON-NLS-1$
+                if (adlWidget.getType().equals("arc")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Arc(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("bar")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Bargraph(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if(adlWidget.getType().equals("byte")){ //$NON-NLS-1$
+                    displayModel.addWidget(new SixteenBinaryBar(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"cartesian plot\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Waveform(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                }else if (adlWidget.getType().equals("\"choice button\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new ChoiceButton(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"color map\"")) { //$NON-NLS-1$
+                    ADLHelper.setColorMap(adlWidget);
+                    display(adlWidget, displayModel);
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("composite")) { //$NON-NLS-1$
+                    displayModel.addWidget(new GroupingContainer(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().startsWith("display")) { //$NON-NLS-1$
+                    display(adlWidget, displayModel);
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"dynamic symbol\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Symbol(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("file")) { //$NON-NLS-1$
                     // TODO: FILE --> Name and Version
-                } else if (strings.getType().equals("image")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Image(strings, displayModel).getElement());
-                } else if (strings.getType().equals("indicator")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Bargraph(strings).getElement());
-                } else if (strings.getType().equals("menu")) { //$NON-NLS-1$
-                    displayModel.addWidget(new RelatedDisplay(strings).getElement());
-                } else if (strings.getType().equals("\"message button\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new ActionButton(strings).getElement());
-                } else if (strings.getType().equals("meter")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Meter(strings).getElement());
-                } else if (strings.getType().equals("oval")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Ellipse(strings, displayModel).getElement());
-                } else if (strings.getType().equals("polygon")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Polygon(strings, displayModel).getElement());
-                } else if (strings.getType().equals("polyline")) { //$NON-NLS-1$
-                    Polyline polyline = new Polyline(strings, displayModel);
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("image")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Image(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("indicator")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Bargraph(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("menu")) { //$NON-NLS-1$
+                    displayModel.addWidget(new RelatedDisplay(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"message button\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new ActionButton(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("meter")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Meter(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("oval")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Ellipse(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("polygon")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Polygon(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("polyline")) { //$NON-NLS-1$
+                    Polyline polyline = new Polyline(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute);
                     displayModel.addWidget(polyline.getElement());
                     polyline = null;
-                } else if (strings.getType().equals("rectangle")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Rectangle(strings, displayModel).getElement());
-                } else if (strings.getType().equals("\"related display\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new RelatedDisplay(strings).getElement());
-                } else if (strings.getType().equals("\"strip chart\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new StripChart(strings).getElement());
-                } else if (strings.getType().equals("text")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Label(strings).getElement());
-                } else if (strings.getType().equals("\"text update\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Label(strings).getElement());
-                } else if (strings.getType().equals("\"text entry\"")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Textinput(strings).getElement());
-                } else if (strings.getType().equals("valuator")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Valuator(strings).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("rectangle")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Rectangle(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"related display\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new RelatedDisplay(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"strip chart\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new StripChart(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("text")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Label(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"text update\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Label(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"text entry\"")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Textinput(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("valuator")) { //$NON-NLS-1$
+                    displayModel.addWidget(new Valuator(adlWidget, storedBasicAttribute, storedDynamicAttribute).getElement());
+                    storedBasicAttribute = null;
+                    storedDynamicAttribute = null;
+                } else if (adlWidget.getType().equals("\"basic attribute\"")) { //$NON-NLS-1$
+                    //TODO: Das geht so nicht. Ich brauche gleich beim erzeugen das AbstractWidgetModel.
+//                    storedBasicAttribute = new ADLBasicAttribute(adlWidget,null);
+                    storedBasicAttribute = adlWidget;
+                } else if (adlWidget.getType().equals("\"dynamic attribute\"")) { //$NON-NLS-1$
+                    //TODO: Das geht so nicht. Ich brauche gleich beim erzeugen das AbstractWidgetModel.
+//                    storedDynamicAttribute = new ADLDynamicAttribute(adlWidget,null);
+                    storedDynamicAttribute = adlWidget;
                 } else {
                     CentralLogger.getInstance().warn(this,
-                            Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE + strings.getType());
+                            Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE + adlWidget.getType()+ "(ObjectNo:"+adlWidget.getObjectNr()+")in File: "+sourceFile);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -250,24 +305,20 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
      *            the root Element of css-sds file.
      */
     private void display(final ADLWidget adlWidget, final DisplayModel root) {
-
-        if (adlWidget.getType().startsWith("display") || _displaySave) { //$NON-NLS-1$
-
-            try {
-                if (adlWidget.getType().startsWith("display") && !_colormapSet && !_displaySave) { //$NON-NLS-1$
+        try {
+            if (adlWidget.getType().startsWith("display")){
+                if( ADLHelper.getRGB("0")==null) { //$NON-NLS-1$
                     _storDisplay = adlWidget;
-                    _displaySave = true;
-                } else if (!adlWidget.getType().startsWith("display") && _colormapSet && _displaySave) { //$NON-NLS-1$
-                    new ADLDisplay(_storDisplay, root);
-                    _displaySave = false;
-                } else if (adlWidget.getType().startsWith("display") && _colormapSet && !_displaySave) { //$NON-NLS-1$
+                } else{
                     new ADLDisplay(adlWidget, root);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else if (adlWidget.getType().equals("\"color map\"") && _storDisplay!=null) { //$NON-NLS-1$
+                new ADLDisplay(_storDisplay, root);
+                _storDisplay=null;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     /**

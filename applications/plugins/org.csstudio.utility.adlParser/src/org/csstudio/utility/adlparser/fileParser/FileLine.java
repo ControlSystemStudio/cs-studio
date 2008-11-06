@@ -32,8 +32,9 @@ package org.csstudio.utility.adlconverter.utility;
  */
 public class FileLine {
 
-    String _line;
-    int _lineNumber;
+    private static String _file;
+    private String _line;
+    private int _lineNumber;
     
     public FileLine(String line, int lineNumber){
         setLine(line);
@@ -55,12 +56,21 @@ public class FileLine {
     public final void setLineNumber(int lineNumber) {
         _lineNumber = lineNumber;
     }
+
+    public static final String getFile() {
+        return _file;
+    }
+
+    public static final void setFile(String file) {
+        _file = file;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return getLineNumber()+": "+getLine();
+        return "\r\nFile: "+getFile()+"\r\n"+getLineNumber()+": "+getLine();
     }
-    
+
 }

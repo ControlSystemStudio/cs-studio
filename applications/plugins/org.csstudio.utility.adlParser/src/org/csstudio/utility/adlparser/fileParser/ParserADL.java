@@ -27,6 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.sound.sampled.Line;
+
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -56,6 +58,7 @@ public final class ParserADL {
     public static ADLWidget getNextElement(final File file) {
         int lineNr=0;
         final ADLWidget root = new ADLWidget(file.getAbsolutePath(),null,lineNr++);
+        FileLine.setFile(file.getAbsolutePath());
         ADLWidget children= root;
         BufferedReader buffRead = null;
         try {        
@@ -63,6 +66,9 @@ public final class ParserADL {
             buffRead = new BufferedReader(new FileReader(file));
             String line;
             int lineNumber=0;
+            String storeDirtyLine=null;
+            boolean incompleteLine = false;
+            int lastDirtyLine=0;
             while((line = buffRead.readLine()) != null){
                 lineNumber++;
                 if(line.trim().length()>0){
@@ -72,14 +78,29 @@ public final class ParserADL {
                         children.getParent().addObject(children);
                         children = children.getParent();
                     }else{
-                        if(!line.trim().equals("\"")){
-                            if(line.contains("$(")){
+                        boolean dirtyLine = (line.length()-line.replaceAll("\"", "").length())%2==1;
+                        if(storeDirtyLine!=null&&dirtyLine && lineNumber==(lastDirtyLine+1)){
+                            line = storeDirtyLine.concat(line);
+                            storeDirtyLine=null;
+                        }else if(dirtyLine){
+                            storeDirtyLine = line;
+                            lastDirtyLine = lineNumber;
+                            continue;
+                        }else if(storeDirtyLine!=null){
+                            if(storeDirtyLine.contains("$(")){
                                 // replace all $(var_name) in a line with $var_name$
                                 String regex = "(\\$\\()([.[^\\(]]+)(\\))";
-                                line = line.replaceAll(regex, "\\$$2\\$");
+                                storeDirtyLine = storeDirtyLine.replaceAll(regex, "\\$$2\\$");
                             }
-                            children.addBody(new FileLine(line,lineNumber));
+                            children.addBody(new FileLine(storeDirtyLine,lastDirtyLine));
+                            storeDirtyLine=null;
                         }
+                        if(line.contains("$(")){
+                            // replace all $(var_name) in a line with $var_name$
+                            String regex = "(\\$\\()([.[^\\(]]+)(\\))";
+                            line = line.replaceAll(regex, "\\$$2\\$");
+                        }
+                        children.addBody(new FileLine(line,lineNumber));
                     }
                 }
             }

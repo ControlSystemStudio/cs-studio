@@ -24,9 +24,11 @@
  */
 package org.csstudio.utility.adlconverter.utility;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -63,7 +65,7 @@ public final class ADLHelper {
      */
     public static RGB getRGB(final String clr) {
         int colorID = Integer.parseInt(clr);
-        if (0 > colorID || colorID >= _rgbColor.length) {
+        if (_rgbColor ==null || 0 > colorID || colorID >= _rgbColor.length) {
             return null;
         }
 
@@ -91,9 +93,32 @@ public final class ADLHelper {
         ADLWidget colors = colorMap.getObjects().get(0);
         if (colors.isType("dl_color")) { //$NON-NLS-1$
             int i = 0;
-            while (colors.isType("dl_color") && i >= colorMap.getObjects().size()) { //$NON-NLS-1$
-                // TODO: ColorMap --> dl_color
-                colors = colorMap.getObjects().get(i++);
+            _rgbColor = new RGBColor[Integer.parseInt(anz[1])];
+            for (ADLWidget dlColorObj : colorMap.getObjects()) {
+                if(dlColorObj.isType("dl_color")&&i<_rgbColor.length){
+                    int r = 0;
+                    int g = 0;
+                    int b = 0;
+                    int inten = 0;
+                    for (FileLine fileLine : dlColorObj.getBody()) {
+                        String line = fileLine.getLine();
+                        String[] row = line.split("=");
+                        String type = row[0].trim();
+                        if(type.equals("r")){
+                            r = Integer.parseInt(row[1]);
+                        }else if(type.equals("g")){
+                            g = Integer.parseInt(row[1]);
+                        }else if(type.equals("b")){
+                            b = Integer.parseInt(row[1]);
+                        }else if(type.equals("inten")){
+                            inten = Integer.parseInt(row[1]);
+                        }else{
+                            CentralLogger.getInstance().info(ADLWidget.class, new WrongADLFormatException("Wrong Color Map dl_color Property."+fileLine));
+                        }
+                    }
+                    _rgbColor[i] = new RGBColor(r,g,b,inten);
+                    i++;
+                }
             }
         } else if (colors.isType("colors")) { //$NON-NLS-1$
             _rgbColor = new RGBColor[Integer.parseInt(anz[1])];
@@ -105,64 +130,6 @@ public final class ADLHelper {
                     + colors.getType() + Messages.ADLHelper_WrongADLFormatException_End);
         }
     }
-
-    // Alte Version kommt nicht mit mehr als 2 '_' im Recordnamen zurecht.
-
-    // /**
-    // * Remove all ",Whitspace and change $(name) to $channel$.
-    // * @param dirtyString The string to clean it.
-    // * @return the cleaned string.
-    // */
-    // public static String[] cleanString(final String dirtyString){
-    // String delimiter =""; //$NON-NLS-1$
-    // String[] tempString; //0=record, 1=_pid, 2=.LOLO
-    // String[] cleanString;
-    // String param=null;
-    // delimiter = dirtyString.replaceAll("\"", "").trim(); // use variable
-    // delimiter in wrong context. //$NON-NLS-1$ //$NON-NLS-2$
-    // tempString = delimiter.split("[\\._]"); //$NON-NLS-1$
-    // delimiter =""; //$NON-NLS-1$
-    // if(tempString.length<1){
-    // cleanString = new String[]{dirtyString,""}; //$NON-NLS-1$
-    // }else {
-    // cleanString = new String[tempString.length+1];
-    // cleanString[0]=""; //$NON-NLS-1$
-    // // if(tempString[0].contains("=")){ //$NON-NLS-1$
-    // // tempString[0]=tempString[0].split("=")[1]; //$NON-NLS-1$
-    // // }
-    // }
-    // for (int i = 0; i < tempString.length; i++) {
-    // if(i>tempString.length-2&&dirtyString.contains(".")){ //$NON-NLS-1$
-    // delimiter="."; //$NON-NLS-1$
-    // }
-    // String string = tempString[i];
-    // cleanString[0] = cleanString[0]+ delimiter+string;
-    // cleanString[i+1]=string;
-    // if(i==0){
-    // delimiter="_"; //$NON-NLS-1$
-    // }
-    // }
-    // if(cleanString[0].endsWith(".adl")){ //$NON-NLS-1$
-    // cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds");
-    // //$NON-NLS-1$ //$NON-NLS-2$
-    // }
-    // if(cleanString[1].startsWith("$")){ //$NON-NLS-1$
-    // String temp = cleanString[1].substring(cleanString[1].indexOf(')')+1);
-    // param=cleanString[1].replace("(", "").replace(')', '$');
-    // cleanString[1] ="$channel$"+temp; //$NON-NLS-1$
-    // }
-    // if(cleanString.length>2){
-    // cleanString[1]=cleanString[1]+"_"+cleanString[2]; //$NON-NLS-1$
-    // if(param!=null){
-    // cleanString[2]=param+"_"+cleanString[2]; //$NON-NLS-1$
-    // }
-    // }
-    // if(cleanString.length>3){
-    // cleanString[cleanString.length-1]=
-    // delimiter+cleanString[cleanString.length-1];
-    // }
-    // return cleanString;
-    // }
 
     /**
      * Remove all ",Whitspace and change $(name) to $channel$.

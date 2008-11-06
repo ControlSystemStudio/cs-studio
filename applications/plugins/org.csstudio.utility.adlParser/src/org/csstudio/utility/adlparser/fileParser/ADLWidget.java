@@ -140,7 +140,13 @@ public class ADLWidget {
             string=string.concat(_parent.toString()+"->"); //$NON-NLS-1$
         }
         string = string.concat(getType()+":"+_objectNr); //$NON-NLS-1$
-        
+        FileLine fileLine = null;
+        if(getBody().size()>0){
+            getBody().get(0);
+        }
+        if(fileLine!=null){
+            string = string.concat(Integer.toString(fileLine.getLineNumber()-1));
+        }
         return string;
     }
     

@@ -33,6 +33,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -44,10 +46,12 @@ public class Textinput extends Widget {
 
     /**
      * @param textInput The ADLWidget that describe the Textinput.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Textinput(final ADLWidget textInput) throws WrongADLFormatException {
-        super(textInput);
+    public Textinput(final ADLWidget textInput, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(textInput, storedBasicAttribute, storedDynamicAttribute);
         for (FileLine fileLine : textInput.getBody()) {
             String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$

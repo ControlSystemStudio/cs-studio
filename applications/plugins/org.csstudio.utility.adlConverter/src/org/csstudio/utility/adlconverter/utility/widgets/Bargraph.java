@@ -33,6 +33,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -44,10 +46,12 @@ public class Bargraph extends Widget {
 
     /**
      * @param bargraph The ADLWidget that describe the Bargraph.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Bargraph(final ADLWidget bargraph) throws WrongADLFormatException {
-        super(bargraph);
+    public Bargraph(final ADLWidget bargraph, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(bargraph, storedBasicAttribute, storedDynamicAttribute);
         boolean barOnly = false;
         String bool;
         int marksShowStatus = 0;

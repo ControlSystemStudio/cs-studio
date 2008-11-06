@@ -33,6 +33,8 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -44,10 +46,12 @@ public class ActionButton extends Widget {
 
     /**
      * @param actionButton The ADLWidget that describe the ActionButton.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ActionButton(final ADLWidget actionButton) throws WrongADLFormatException {
-        super(actionButton);
+    public ActionButton(final ADLWidget actionButton, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(actionButton, storedBasicAttribute, storedDynamicAttribute);
         Integer actionIndex=0;
         Integer pressIndex=-1;
         Integer releasIndex=-1;

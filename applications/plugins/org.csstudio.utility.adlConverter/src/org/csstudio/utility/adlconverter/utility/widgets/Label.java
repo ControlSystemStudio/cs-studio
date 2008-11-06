@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -34,6 +33,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -48,10 +49,12 @@ public class Label extends Widget {
 
     /**
      * @param label ADLWidget that describe the Label.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Label(final ADLWidget label) throws WrongADLFormatException {
-        super(label);
+    public Label(final ADLWidget label, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(label, storedBasicAttribute, storedDynamicAttribute);
         
         String labelText=null;
         if(getBasicAttribute()!=null){

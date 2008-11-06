@@ -29,6 +29,8 @@ import org.csstudio.sds.components.model.PolygonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 
 /**
@@ -41,9 +43,11 @@ public class Ellipse extends Widget {
 
     /**
      * @param ellipse The ADLWidget that describe the Ellipse.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public Ellipse(final ADLWidget ellipse, AbstractWidgetModel abstractWidgetModel) {
-        super(ellipse);
+    public Ellipse(final ADLWidget ellipse, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
+        super(ellipse, storedBasicAttribute, storedDynamicAttribute);
         if(getBasicAttribute()!=null){
             if((getBasicAttribute()!=null&&(getBasicAttribute().getWidth()==null||getBasicAttribute().getWidth().equals("0")))){ //$NON-NLS-1$
                 getBasicAttribute().setStyle("0"); //$NON-NLS-1$

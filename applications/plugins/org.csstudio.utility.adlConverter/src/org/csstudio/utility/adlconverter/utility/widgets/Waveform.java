@@ -38,6 +38,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -49,10 +51,12 @@ public class Waveform extends Widget {
 
     /**
      * @param widget ADLWidget that describe the Waveform.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      * @throws WrongADLFormatException 
      */
-    public Waveform(final ADLWidget widget) throws WrongADLFormatException {
-        super(widget);
+    public Waveform(final ADLWidget widget, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(widget, storedBasicAttribute, storedDynamicAttribute);
         
         _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
         _widget.setPropertyValue(WaveformModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
@@ -152,7 +156,7 @@ public class Waveform extends Widget {
                 double max = Double.parseDouble(row[1].trim());
                 _widget.setPropertyValue(WaveformModel.PROP_MAX+id, max);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
+                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
@@ -191,7 +195,7 @@ public class Waveform extends Widget {
                 // TODO: Für die X-Achse wird es nicht vom SDS unterstützt
 //                double min = Double.parseDouble(row[1].trim());
 //                _widget.setPropertyValue(WaveformModel.PROP_MIN, min);
-            }else if(parameter.equals("mayRange")){
+            }else if(parameter.equals("maxRange")){
                 // TODO: Für die X-Achse wird es nicht vom SDS unterstützt
 //                double max = Double.parseDouble(row[1].trim());
 //                _widget.setPropertyValue(WaveformModel.PROP_MAX, max);
@@ -201,7 +205,7 @@ public class Waveform extends Widget {
                 _widget.setPropertyValue(WaveformModel.PROP_X_AXIS_LABEL, xLabel);
                 _widget.setPropertyValue(WaveformModel.PROP_SHOW_AXES, 3);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
+                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
@@ -237,22 +241,32 @@ public class Waveform extends Widget {
             }else if(parameter.equals("ydata")){
                 if(idInt<WaveformModel.NUMBER_OF_ARRAYS){
                     String record = row[1].replaceAll("\"", "").trim();
-                    if(idInt==0){
-                        _widget.setPrimarPv(record);
+                    if(record.length()>0){
+                        String alias = "$channel"+idInt+"$";
+                        _widget.addAlias("channel"+idInt, record);
+                        if(idInt==0){
+                            _widget.setPrimarPv(alias);
+                        }
+                        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
+                        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(alias, String[].class ));
+                        _widget.setDynamicsDescriptor(WaveformModel.dataPropertyId(idInt), dynamicsDescriptor);
                     }
-                    DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-                    dynamicsDescriptor.addInputChannel(new ParameterDescriptor(record, String[].class ));
-                    _widget.setDynamicsDescriptor(WaveformModel.dataPropertyId(idInt), dynamicsDescriptor);
                     //TODO: trace
                 }else{
                     Formatter f = new Formatter();
                     f.format("Can not convert correct the Waveform. The Source have to many Wave's. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
                     CentralLogger.getInstance().info(this, f.toString());
                 }
-            }else if(parameter.equals("data_clr")&&idInt<WaveformModel.NUMBER_OF_ARRAYS){
-                _widget.setPropertyValue(WaveformModel.plotColorPropertyId(idInt), ADLHelper.getRGB(row[1].trim()));
+            }else if(parameter.equals("data_clr")){
+                if(idInt<WaveformModel.NUMBER_OF_ARRAYS){
+                    _widget.setPropertyValue(WaveformModel.plotColorPropertyId(idInt), ADLHelper.getRGB(row[1].trim()));
+                }else{
+                    Formatter f = new Formatter();
+                    f.format("Can not convert correct the Waveform. The Source have to many Wave's colors. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
+                    CentralLogger.getInstance().info(this, f.toString());
+                }
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
+                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
@@ -290,7 +304,7 @@ public class Waveform extends Widget {
                 String yLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(WaveformModel.PROP_Y_AXIS_LABEL,yLabel);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+waveform);
+                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }

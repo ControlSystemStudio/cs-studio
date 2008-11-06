@@ -35,6 +35,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -46,9 +48,11 @@ public class SixteenBinaryBar extends Widget {
 
     /**
      * @param sixteenBinaryBar
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public SixteenBinaryBar(ADLWidget sixteenBinaryBar) throws WrongADLFormatException {
-        super(sixteenBinaryBar);
+    public SixteenBinaryBar(ADLWidget sixteenBinaryBar, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+        super(sixteenBinaryBar, storedBasicAttribute, storedDynamicAttribute);
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor(_widget.getPrimaryPV(),Integer.class)); //$NON-NLS-1$        
         _widget.setDynamicsDescriptor(SixteenBinaryBarModel.PROP_VALUE, dynamicsDescriptor );

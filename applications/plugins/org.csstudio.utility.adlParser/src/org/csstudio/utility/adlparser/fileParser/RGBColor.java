@@ -53,9 +53,14 @@ public class RGBColor {
         }else{
             throw new WrongADLFormatException(Messages.RGBColor_WrongADLFormatException);
         }
-            
-
     }
+    
+    public RGBColor(final int red, int green, int blue, int inten) throws WrongADLFormatException{
+        setRed(red);
+        setGreen(green);
+        setBlue(blue);
+    }
+
     /** @return the red value. */
     public final int getRed() {
         return _red; 
@@ -81,12 +86,34 @@ public class RGBColor {
         _red = Integer.decode(temp);
     }
     /**
+     * @param red
+     */
+    private void setRed(int red) {
+        _red=red;
+    }
+
+    /**
+     * @param green
+     */
+    private void setGreen(int green) {
+        _green=green;
+    }
+
+    /**
      * @param clr The ADL Color was set and transform to RGB green. 
      */
     private void setGreen(final String clr) {
         String temp = "#".concat(clr.substring(2,4)); //$NON-NLS-1$
         _green = Integer.decode(temp);
     }
+    
+    /**
+     * @param blue
+     */
+    private void setBlue(int blue) {
+        _blue=blue;
+    }
+
     /**
      * @param clr The ADL Color was set and transform to RGB blue. 
      */

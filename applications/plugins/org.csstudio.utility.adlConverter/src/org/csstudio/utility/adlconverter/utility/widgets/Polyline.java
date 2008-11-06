@@ -30,6 +30,8 @@ import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -42,9 +44,11 @@ public class Polyline extends Widget{
 
     /**
      * @param polyline The ADL String for a Polyline
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public Polyline(final ADLWidget polyline, AbstractWidgetModel abstractWidgetModel) {
-        super(polyline);
+    public Polyline(final ADLWidget polyline, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
+        super(polyline, storedBasicAttribute, storedDynamicAttribute);
         if(getBasicAttribute()!=null){
             if(getBasicAttribute().getWidth()!=null){
                 _widget.setPropertyValue(PolylineModel.PROP_LINE_WIDTH, getBasicAttribute().getWidth());

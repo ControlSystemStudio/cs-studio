@@ -74,17 +74,18 @@ public class ADLSensitive extends WidgetPart {
     final void generateElements() {
         if(_chan!=null&&_chan[0].length()>0){
             _postfix = ADLHelper.setChan(_widgetModel,_chan);
-            if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){ //$NON-NLS-1$
-                DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
-                adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
-                _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
-            }else if(_sensitiveMode!=null && _sensitiveMode.equals("if zero")){ //$NON-NLS-1$
-                DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
-                adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
-                _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
-            }
+        }else{
+            _postfix="";
         }
-        
+        if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){ //$NON-NLS-1$
+            DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
+            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
+            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
+        }else if(_sensitiveMode!=null && _sensitiveMode.equals("if zero")){ //$NON-NLS-1$
+            DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
+            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
+            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
+        }
     }
 
     /**
@@ -114,12 +115,13 @@ public class ADLSensitive extends WidgetPart {
             }else if(row[0].trim().toLowerCase().equals("sensitive_mode")){ //$NON-NLS-1$
                 _sensitiveMode=ADLHelper.cleanString(row[1])[0];
             }else {
-                throw new WrongADLFormatException(Messages.ADLSensitive_WrongADLFormatException_Begin+parameter+Messages.ADLSensitive_WrongADLFormatException_End);
+                throw new WrongADLFormatException(Messages.ADLSensitive_WrongADLFormatException_Begin+fileLine+Messages.ADLSensitive_WrongADLFormatException_End);
             }
         }
-        if(_chan==null&&_sensitiveMode!=null){
-            CentralLogger.getInstance().warn(this,Messages.ADLSensitive_No_Channel_Warning + sensitive);
-        }
+
+//        if(_chan==null&&_sensitiveMode!=null){
+//            CentralLogger.getInstance().warn(this,Messages.ADLSensitive_No_Channel_Warning + sensitive);
+//        }
     }
 
     public String getPostfix() {

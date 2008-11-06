@@ -29,6 +29,8 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
+import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -40,9 +42,11 @@ public class Valuator extends Widget {
 
     /**
      * @param valuator ADLWidget that describe the Valuator.
+     * @param storedDynamicAttribute 
+     * @param storedBasicAttribute 
      */
-    public Valuator(final ADLWidget valuator) {
-        super(valuator);
+    public Valuator(final ADLWidget valuator, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
+        super(valuator, storedBasicAttribute, storedDynamicAttribute);
         // The Adl valuator have an empty top area (approx 10px).
         if(getObject()!=null){
             getObject().setY(getObject().getY());

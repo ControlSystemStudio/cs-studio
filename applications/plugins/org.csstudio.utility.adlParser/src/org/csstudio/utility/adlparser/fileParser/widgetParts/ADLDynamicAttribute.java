@@ -100,7 +100,15 @@ public class ADLDynamicAttribute extends WidgetPart{
     final void parseWidgetPart(final ADLWidget adlDynamicAttribute) throws WrongADLFormatException {
 
         assert !adlDynamicAttribute.isType("\"dynamic attribute\"") : Messages.ADLDynamicAttribute_AssertError_Begin+adlDynamicAttribute.getType()+Messages.ADLDynamicAttribute_AssertError_End; //$NON-NLS-1$
-        
+
+        for (ADLWidget adlWidget : adlDynamicAttribute.getObjects()) {
+            if(adlWidget.getType().equals("attr")){
+                for (FileLine fileLine : adlWidget.getBody()) {
+                    adlDynamicAttribute.addBody(fileLine);    
+                }
+            }
+        }
+
         _bool=false;
         _color=false;
 
@@ -135,7 +143,8 @@ public class ADLDynamicAttribute extends WidgetPart{
     final void generateElements() {
 //        _adlDynamicAttribute= new Element[1];
         if(_chan!=null){
-            ADLHelper.setChan(_parentWidgetModel, _chan);
+//            ADLHelper.setChan(_parentWidgetModel, _chan);
+            ADLHelper.setChan(_widgetModel, _chan);
             String channel = "$channel$";
             if(_chan.length>2){ //$NON-NLS-1$
                 channel = channel.concat("."+_chan[2]);
