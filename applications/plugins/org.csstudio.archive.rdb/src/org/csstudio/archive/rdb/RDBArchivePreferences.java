@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class RDBArchivePreferences
 {
     private static final String URL = "url";
+    private static final String SCHEMA = "schema";
     private static final String USER = "user";
     private static final String PASSWORD = "password";
 
@@ -17,6 +18,12 @@ public class RDBArchivePreferences
     public static String getURL()
     {
         return getString(URL);
+    }
+
+    /** @return Schema for RDB tables or <code>null</code> */
+    public static String getSchema()
+    {
+        return getString(SCHEMA);
     }
 
     /** @return User name for RDB archive server */
