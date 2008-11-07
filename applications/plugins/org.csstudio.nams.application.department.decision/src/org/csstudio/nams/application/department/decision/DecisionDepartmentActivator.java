@@ -27,7 +27,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
-
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
 import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler;
 import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction;
@@ -337,8 +336,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		configureExecutionService();
 
-		createMessagingConsumer();
-
+		createMessagingConsumer();	
+		
 		if (this._continueWorking) {
 			createMessagingProducer();
 		}
