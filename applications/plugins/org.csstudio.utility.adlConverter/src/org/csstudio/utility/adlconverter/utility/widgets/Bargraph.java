@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.BargraphModel;
+import org.csstudio.sds.cosyrules.color.DefaultEpicsAlarmForeground;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
@@ -33,8 +34,6 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -74,7 +73,11 @@ public class Bargraph extends Widget {
                 bool = Boolean.toString(row[1].toLowerCase().equals("up")); //$NON-NLS-1$
                 _widget.setPropertyValue(BargraphModel.PROP_ORIENTATION, bool);
             }else if(row[0].equals("scaleType")){ //$NON-NLS-1$
-                //TODO: Barghraph-->scaleType (Not Supported from SDS) 
+                String type = row[1].trim();
+                if(!type.equals("\"linear\"")){
+                    //TODO: Barghraph-->scaleType (Not Supported from SDS)
+                    CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
+                }
             }else if(row[0].equals("showAlarmLimits")&&!barOnly){ //$NON-NLS-1$
                 if(!row[1].toLowerCase().equals("\"off\"")){ //$NON-NLS-1$
                     marksShowStatus=1; // Bottom / Right
@@ -98,23 +101,34 @@ public class Bargraph extends Widget {
                 _widget.setPropertyValue(BargraphModel.PROP_BORDER_WIDTH, 0); 
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Bargraph --> format
-                CentralLogger.getInstance().debug(this, Messages.Bargraph_Format_Debug+row[0]);
+                CentralLogger.getInstance().debug(this, Messages.Bargraph_Format_Debug+fileLine);
             }else if(row[0].equals("limitType")){ //$NON-NLS-1$
                 //TODO: Bargraph --> limitType
-                CentralLogger.getInstance().debug(this, Messages.Bargraph_Limit_Type_Debug+row[0]);
+                CentralLogger.getInstance().debug(this, Messages.Bargraph_Limit_Type_Debug+fileLine);
             }else if(row[0].equals("highLimit")){ //$NON-NLS-1$
                 String temp = row[1].replaceAll("\"",""); //$NON-NLS-1$ //$NON-NLS-2$
                 _widget.setPropertyValue(BargraphModel.PROP_MAX, new Double(temp).toString()); //$NON-NLS-1$ //$NON-NLS-2$
-                System.out.println("max = "+temp); //$NON-NLS-1$
             }else if(row[0].equals("lowLimit")){ //$NON-NLS-1$
                 String temp = row[1].replaceAll("\"",""); //$NON-NLS-1$ //$NON-NLS-2$
                 _widget.setPropertyValue(BargraphModel.PROP_MIN, new Double(temp).toString()); //$NON-NLS-1$ //$NON-NLS-2$
-                System.out.println("min = "+temp); //$NON-NLS-1$
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
-                //TODO: Bargraph --> clrmod
-                CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+row[0]);
+                String type = row[1].trim();
+                if(!type.equals("alarm")){
+                    DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(DefaultEpicsAlarmForeground.TYPE_ID);
+                    dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"));
+                    _widget.setDynamicsDescriptor(BargraphModel.PROP_COLOR_FOREGROUND, dynamicsDescriptor);
+                }else{
+                    //  TODO: Bargraph --> clrmod
+                    CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
+                }
+            }else if(row[0].equals("label")){ //$NON-NLS-1$
+                //TODO: Bargraph --> label
+                CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
+            }else if(row[0].equals("fillmod")){ //$NON-NLS-1$
+                //TODO: Bargraph --> fillmod
+                CentralLogger.getInstance().debug(this, Messages.Bargraph_Clrmod_Debug+fileLine);
             }else{ //Bargraph have no Parameter                
-                throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+fileLine+Messages.Bargraph_WrongADLFormatException+bargraph);
+                throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+fileLine);
             } 
         }
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, marksShowStatus); 

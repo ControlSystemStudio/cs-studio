@@ -115,6 +115,8 @@ public class ChoiceButton extends Widget {
 //                // TODO: ActionButton-->pressed_label (Not Supported from SDS)
             if(row[0].equals("stacking")){ //$NON-NLS-1$
                 // not needed. 
+            }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
+//              // TODO: ActionButton-->clrmod
             }else{                
 
                 throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+fileLine);

@@ -191,7 +191,15 @@ public class ADLBasicAttribute extends WidgetPart{
     
     /** @return the fill */
     public final Double getFill() {
-        return Double.parseDouble(_fill);
+        try{
+            return Double.parseDouble(_fill);
+        } catch (NumberFormatException nfe) {
+            if(_fill.equals("\"solid\"")){
+                return 100d;
+            }else{
+                return 0d;
+            }
+        }
     }
     /** @param fill set the fill */
     public final void setFill(final String fill) {
