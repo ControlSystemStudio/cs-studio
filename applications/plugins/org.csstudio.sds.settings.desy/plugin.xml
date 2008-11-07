@@ -201,5 +201,50 @@
                name="Double Value">
          </parameterDescription>
       </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.IfEqual"
+            name="Equal (Two value) "
+            returnType="java.lang.Boolean"
+            ruleId="org.css.sds.ifEqual">
+         <parameterDescription
+               name="Value 1">
+         </parameterDescription>
+         <parameterDescription
+               name="Value 2">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.IfNotEqual"
+            name="Equal (Two value) "
+            returnType="java.lang.Boolean"
+            ruleId="org.css.sds.ifNotEqual">
+         <parameterDescription
+               name="Value 1">
+         </parameterDescription>
+         <parameterDescription
+               name="Value 2">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.IfGraterThen"
+            name="Greater Then (Two value) "
+            returnType="java.lang.Boolean"
+            ruleId="org.css.sds.ifGreaterThen">
+         <parameterDescription
+               name="Greatter Value">
+         </parameterDescription>
+         <parameterDescription
+               name="Smaller Value">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.Connected"
+            name="Connected"
+            returnType="Boolean"
+            ruleId="org.css.sds.connected">
+         <parameterDescription
+               name="Connection State">
+         </parameterDescription>
+      </rule>
    </extension>
 </plugin>
