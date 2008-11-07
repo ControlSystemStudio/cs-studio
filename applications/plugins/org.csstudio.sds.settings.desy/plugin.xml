@@ -237,23 +237,5 @@
                name="Smaller Value">
          </parameterDescription>
       </rule>
-      <rule
-            class="org.csstudio.sds.cosyrules.color.Connected"
-            name="Connected"
-            returnType="Boolean"
-            ruleId="org.css.sds.connected">
-         <parameterDescription
-               name="Connection State">
-         </parameterDescription>
-      </rule>
-      <rule
-            class="org.csstudio.sds.cosyrules.color.FillOnConnected"
-            name="Fill on Connected"
-            returnType="Integer"
-            ruleId="org.css.sds.fillOnConnected">
-         <parameterDescription
-               name="Connection State">
-         </parameterDescription>
-      </rule>
    </extension>
 </plugin>
