@@ -103,7 +103,7 @@ public class AddMountPointDlg extends Dialog {
 	    layout.numColumns = 1;
 	    composite.setLayout(layout);
 	    (new Label(composite, 0)).setText("Select mount point to add:");
-	    mountPoints = new List(composite,SWT.SINGLE);
+	    mountPoints = new List(composite,SWT.SINGLE|SWT.V_SCROLL);
 	    mountPoints.setItems(getSubDirs());
 	    GridData gridData = new GridData(256);
 	    mountPoints.setLayoutData(new GridData(256));
