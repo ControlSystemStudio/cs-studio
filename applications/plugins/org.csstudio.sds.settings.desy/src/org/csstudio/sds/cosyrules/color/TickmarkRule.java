@@ -53,15 +53,15 @@ public class TickmarkRule implements IRule {
             if(arguments.length > 1) {
                 if (arguments[1] instanceof Double) {
                     int temp = (int)(((Double)arguments[1])+0.5);
-                    if((temp==DynamicValueState.NORMAL.ordinal())){
+                    if((temp==0)){
                         return Double.NaN;
                     }
                 } else if (arguments[1] instanceof Long) {
-                    if(((Long) arguments[1])==DynamicValueState.NORMAL.ordinal()){
+                    if(((Long) arguments[1])==0){
                         return Double.NaN;
                     }
                 } else if (arguments[1] instanceof String) {
-                    if(((String) arguments[1]).equals(DynamicValueState.NORMAL.name())){
+                    if(((String) arguments[1]).equals("NO_ALARM")){
                         return Double.NaN;
                     }
                 }
