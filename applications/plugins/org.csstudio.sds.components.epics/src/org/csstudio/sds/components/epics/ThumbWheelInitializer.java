@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.epics;
+package org.csstudio.sds.components.epics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +27,7 @@ import java.util.Map;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.components.model.ThumbWheelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.eclipse.swt.graphics.RGB;
 
@@ -45,17 +46,22 @@ public final class ThumbWheelInitializer extends AbstractEpicsWidgetInitializer 
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeCommonAlarmBehaviour();
 
-		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$", "$channel$", null);
-		
+		initializeStaticProperty(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
+				1);
+
+		initializeDynamicProperty(ThumbWheelModel.PROP_VALUE, "$channel$",
+				"$channel$", null);
+
 		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,
-				9, 163));
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(
+				255, 9, 163));
 		colorsByConnectionState.put(ConnectionState.INITIAL, new RGB(255, 168,
 				222));
-		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(0, 0,
-				0));
+		colorsByConnectionState
+				.put(ConnectionState.CONNECTED, new RGB(0, 0, 0));
 		initializeDynamicPropertyForConnectionState(
-				RectangleModel.PROP_COLOR_FOREGROUND, "$channel$",
+				ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
 				colorsByConnectionState);
+
 	}
 }

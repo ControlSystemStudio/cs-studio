@@ -70,11 +70,13 @@ public final class BargraphInitializer extends AbstractEpicsWidgetInitializer {
 				BargraphModel.PROP_FILLBACKGROUND_COLOR, "$channel$",
 				colorsByConnectionState);
 
-		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(0, 0,
-				0));
+		Map<ConnectionState, Object> visibilityByConnectionState = new HashMap<ConnectionState, Object>();
+		visibilityByConnectionState.put(ConnectionState.CONNECTED, true);
+		visibilityByConnectionState.put(ConnectionState.CONNECTION_LOST, false);
+		visibilityByConnectionState.put(ConnectionState.INITIAL, false);
 		initializeDynamicPropertyForConnectionState(
-				BargraphModel.PROP_COLOR_FOREGROUND, "$channel$",
-				colorsByConnectionState);
+				BargraphModel.PROP_TRANSPARENT, "$channel$",
+				visibilityByConnectionState);
 
 		
 		

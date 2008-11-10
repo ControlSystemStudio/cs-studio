@@ -21,7 +21,14 @@
  */
 package org.csstudio.sds.components.epics;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
+import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
  * Initializes an ellipse with EPICS specific property values.
@@ -38,5 +45,16 @@ public final class EllipseInitializer extends AbstractEpicsWidgetInitializer {
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeCommonAlarmBehaviour();
 		initializeCommonConnectionStates();
+		initializeDynamicProperty(EllipseModel.PROP_FILL, "$channel$", null,
+				DirectConnectionRule.TYPE_ID);
+		Map<ConnectionState, Object> valueByConnectionState = new HashMap<ConnectionState, Object>();
+		valueByConnectionState.put(ConnectionState.CONNECTION_LOST,
+				0);
+		valueByConnectionState.put(ConnectionState.INITIAL, 0);
+		initializeDynamicPropertyForConnectionState(EllipseModel.PROP_FILL,
+				"$channel$", valueByConnectionState,
+				DirectConnectionRule.TYPE_ID);
+
+
 	}
 }

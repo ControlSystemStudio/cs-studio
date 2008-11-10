@@ -39,12 +39,14 @@ A widget initializer sets some global properties for a new widget. The initializ
 <em>Minimum (Dynamic)</em>: Input- channel is set to alias characteristic $channel$[graphMin].<br>
 <em>Value (Dynamic)</em>: Input- channel is set to alias $channel$.<br>
 <em>Color Fillbackground (Dynamic)</em>: Input- channel is set to alias $channel$ and connection states to the default status colors.<br>
+<em>Transparent background (Dynamic)</em>: Input- channel is set to alias $channel$ and connection state to true otherwise false.<br>
 <em>Fill color (Dynamic)</em>: Input- channel is set to characteristic alias $channel$[severity]
  with the rule for default alarm colors.<br>
 <em>Foreground color (Dynamic)</em>: Input- channel is set to alias $channel$ and connection states to the default status colors.<br><br>
 
 <img src="./../icons/ellipse.gif"/><strong> Ellipse: </strong><br>
-(Because the background of an Ellipse is disabled the default connection states are not visible.)<br><br>
+<em>Value (Dynamic)</em>: Input channel is set to alias $channel$ and value
+ for connection states 'initialize' and 'connection lost' are set to 0.<br><br>
 
 <img src="./../icons/label.gif"/><strong> Label: </strong><br>
 <em>Transparent (Static)</em>: Set to 'false'.<br>
@@ -73,7 +75,8 @@ A widget initializer sets some global properties for a new widget. The initializ
 (Because the background of an Ellipse is disabled the default connection states are not visible.)<br><br>
 
 <img src="./../icons/rectangle.gif"/><strong> Rectangle: </strong><br>
-(Because the background of an Ellipse is disabled the default connection states are not visible.)<br><br>
+<em>Value (Dynamic)</em>: Input channel is set to alias $channel$ and value
+ for connection states 'initialize' and 'connection lost' are set to 0.<br><br>
 
 <img src="./../icons/slider.gif"/><strong> Simple Slider: </strong><br>
 <em>Max (Dynamic)</em>: Input- channel is set to alias characteristic $channel$[graphMax].<br>
@@ -82,8 +85,7 @@ A widget initializer sets some global properties for a new widget. The initializ
 
 <img src="./../icons/sixteenbar.gif"/><strong> Sixteen Binary Bar: </strong><br>
 <em>Value (Dynamic)</em>: Input- channel is set to alias $channel$.<br>
-<em>Internal Frame Color (Dynamic)</em>: Input- channel is set to alias $channel$ and connection states to the default status colors.<br>
-(Because the background of a Sixteen Binary Bar is not visible the default connection states are not set.)<br><br>
+<em>Internal Frame Color (Dynamic)</em>: Input- channel is set to alias $channel$ and connection states to the default status colors.<br><br>
 
 <img src="./../icons/waveform.gif"/><strong> Strip Chart: </strong><br>
 <em>Value #1 (Dynamic)</em>: Input- channel is set to alias $channel$.<br>
@@ -100,9 +102,9 @@ A widget initializer sets some global properties for a new widget. The initializ
 <em>Transparent (Static)</em>: Set to 'false'.<br><br>
 
 <img src="./../icons/thumbwheel.gif"/><strong> Thumb Wheel: </strong><br>
+<em>Internal frame thickness (Static)</em>: Set frame thickness to 1.<br>
 <em>Value (Dynamic)</em>: Input- and Output channel is set to alias $channel$.<br>
-<em>Foreground Color (Dynamic)</em>: Input- channel is set to alias $channel$ and connection states to the default status colors.<br>
-(Because the background of a Thumb Wheel is not visible the default connection states are not set.)<br><br>
+<em>Internal Frame Color (Dynamic)</em>: Input- channel is set to alias $channel$ and connection states to the default status colors.<br><br>
 
 <img src="./../icons/waveform.gif"/><strong> Waveform: </strong><br>
 <em>Data #1 (Dynamic)</em>: Input- channel is set to alias $channel$.<br>
