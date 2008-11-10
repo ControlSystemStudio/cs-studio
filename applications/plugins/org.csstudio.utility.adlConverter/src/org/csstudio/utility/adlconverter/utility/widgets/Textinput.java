@@ -25,9 +25,11 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -67,7 +69,7 @@ public class Textinput extends Widget {
                 }else if(clrmod[0].equals("static")){ //$NON-NLS-1$
                     //TODO: Textinput-->clrmod(static)                 
                 }else{
-                    throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException+clrmod[0]);
+                    throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException+fileLine);
                 }
 
             }else if(row[0].startsWith("align")){ //$NON-NLS-1$
@@ -87,15 +89,25 @@ public class Textinput extends Widget {
                     id = 4;
                 }else{
                     //TODO: Textinput --> align formats
-                    CentralLogger.getInstance().debug(this, Messages.Textinput_Align_Debug+row[0]);
+                    CentralLogger.getInstance().debug(this, Messages.Textinput_Align_Debug+fileLine);
                 }
                 _widget.setPropertyValue(TextInputModel.PROP_TEXT_ALIGNMENT, id);
             }else if(row[0].equals("format")){ //$NON-NLS-1$
-                //TODO: Textinput --> format
-                CentralLogger.getInstance().debug(this, Messages.Textinput_Format_Debug+row[0]);
+                if(row[1].equals("\"string\"")){ //$NON-NLS-1$
+                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.TEXT);
+                }else if(row[1].equals("\"exponential\"")){ //$NON-NLS-1$
+                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.EXP);
+                }else if(row[1].equals("\"decimal\"")){ //$NON-NLS-1$
+                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.DOUBLE);
+                }else if(row[1].equals("\"hexadecimal\"")){ //$NON-NLS-1$
+                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.HEX);
+                }else{
+                    //TODO: Textinput --> format
+                    CentralLogger.getInstance().debug(this, Messages.Textinput_Format_Debug+fileLine);
+                }
             }else{                
 
-                throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);
+                throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+fileLine);
             } //polygon have no Parameter
         }
 //        <property type="sds.boolean" id="transparent" value="false" />

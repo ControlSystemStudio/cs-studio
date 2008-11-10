@@ -237,5 +237,17 @@
                name="Smaller Value">
          </parameterDescription>
       </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.TickmarkRule"
+            name="Tickmarks"
+            returnType="java.lang.Double"
+            ruleId="org.css.sds.Tickmark">
+         <parameterDescription
+               name="Value">
+         </parameterDescription>
+         <parameterDescription
+               name="Severity">
+         </parameterDescription>
+      </rule>
    </extension>
 </plugin>
