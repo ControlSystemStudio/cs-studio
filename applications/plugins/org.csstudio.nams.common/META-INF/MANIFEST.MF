@@ -7,7 +7,8 @@ Bundle-Activator: org.csstudio.nams.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.nams.service.logging,
- org.csstudio.nams.common.activatorUtils
+ org.csstudio.nams.common.activatorUtils,
+ org.csstudio.platform.libs.dal
 Eclipse-LazyStart: true
 Export-Package: 
  junit.extensions;uses:="junit.framework",
