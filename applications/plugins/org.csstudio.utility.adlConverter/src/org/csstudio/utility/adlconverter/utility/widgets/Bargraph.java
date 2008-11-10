@@ -94,7 +94,6 @@ public class Bargraph extends Widget {
                 }
             }else if(row[0].equals("showBar")){ //$NON-NLS-1$
                 barOnly=true;
-                marksShowStatus=0; // No scale
                 _widget.setPropertyValue(BargraphModel.PROP_SHOW_VALUES, false); 
                 scaleShowStatus=0; // No scale
 //              <property type="sds.integer" id="border.width" value="0" />
@@ -103,8 +102,18 @@ public class Bargraph extends Widget {
                 //TODO: Bargraph --> format
                 CentralLogger.getInstance().debug(this, Messages.Bargraph_Format_Debug+fileLine);
             }else if(row[0].equals("limitType")){ //$NON-NLS-1$
-                //TODO: Bargraph --> limitType
-                CentralLogger.getInstance().debug(this, Messages.Bargraph_Limit_Type_Debug+fileLine);
+                if(row[1].equals("\"from channel\"")){
+                    final String[] typ = new String[]{"lolo","lo","hi","hihi"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    final String[] val = new String[]{"0","25","75","100"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    final String[] color= new String[]{"0","1","2","3"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    assert( typ.length==val.length&&val.length==color.length);
+                    for (int i = 0; i < color.length; i++) {
+                        makeLevel(typ[i],val[i],color[i]);    
+                    }
+                }else{
+                    //TODO: Bargraph --> limitType
+                    CentralLogger.getInstance().debug(this, Messages.Bargraph_Limit_Type_Debug+fileLine);
+                }
             }else if(row[0].equals("highLimit")){ //$NON-NLS-1$
                 String temp = row[1].replaceAll("\"",""); //$NON-NLS-1$ //$NON-NLS-2$
                 _widget.setPropertyValue(BargraphModel.PROP_MAX, new Double(temp).toString()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -134,13 +143,6 @@ public class Bargraph extends Widget {
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, marksShowStatus); 
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_SCALE,scaleShowStatus);
 
-        final String[] typ = new String[]{"lolo","lo","hi","hihi"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        final String[] val = new String[]{"0","25","75","100"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        final String[] color= new String[]{"0","1","2","3"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        assert( typ.length==val.length&&val.length==color.length);
-        for (int i = 0; i < color.length; i++) {
-            makeLevel(typ[i],val[i],color[i]);    
-        }
         _widget.setPropertyValue(BargraphModel.PROP_MIN, 0.0);
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR",Double.class)); //$NON-NLS-1$
