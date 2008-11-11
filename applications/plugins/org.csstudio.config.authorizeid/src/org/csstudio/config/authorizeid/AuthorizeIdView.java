@@ -11,10 +11,15 @@ import org.csstudio.config.authorizeid.ldap.LdapGroups;
 import org.csstudio.config.authorizeid.ldap.LdapProp;
 import org.csstudio.config.authorizeid.ldap.ObjectClass1;
 import org.csstudio.config.authorizeid.ldap.ObjectClass2;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -57,6 +62,8 @@ public class AuthorizeIdView extends ViewPart {
 
 	static final int COL_EAIG = 0;
 	static final int COL_EAIR = 1;
+
+    private static final String SECURITY_ID = "AuthorizeId";
 	/**
 	 * Creates a view for the plugin.
 	 */
@@ -90,9 +97,11 @@ public class AuthorizeIdView extends ViewPart {
 		combo.addSelectionListener(new SelectionListener() {
 
 			public void widgetDefaultSelected(SelectionEvent e) {
+			    System.out.println("test aid");
 			}
 
 			public void widgetSelected(SelectionEvent e) {
+			    System.out.println("test aid 222");
 				refreshTable1();
 
 				table2.removeAll();
@@ -145,7 +154,6 @@ public class AuthorizeIdView extends ViewPart {
 
 		// TODO ask what this does
 		getSite().setSelectionProvider(tableViewer1);
-
 	}
 
 	/**
@@ -201,8 +209,10 @@ public class AuthorizeIdView extends ViewPart {
 		/**
 		 * "New" button for the first table.
 		 */
+	    boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
 		Button _new = new Button(parent, SWT.PUSH);
 		_new.setText(Messages.AuthorizeIdView_NEW);
+		_new.setEnabled(canExecute);
 		_new.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (combo.getText().equals("")) { //$NON-NLS-1$
@@ -239,6 +249,7 @@ public class AuthorizeIdView extends ViewPart {
 		 */
 		Button _edit = new Button(parent, SWT.PUSH);
 		_edit.setText(Messages.AuthorizeIdView_EDIT);
+		_edit.setEnabled(canExecute);
 		_edit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String name = table1.getSelection()[0].getText();
@@ -287,6 +298,7 @@ public class AuthorizeIdView extends ViewPart {
 		 */
 		Button _delete = new Button(parent, SWT.PUSH);
 		_delete.setText(Messages.AuthorizeIdView_DELETE);
+		_delete.setEnabled(canExecute);
 		_delete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 
@@ -395,8 +407,10 @@ public class AuthorizeIdView extends ViewPart {
 		/**
 		 * "New" button for second table.
 		 */
+	    boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
 		Button _new = new Button(parent, SWT.PUSH);
 		_new.setText(Messages.AuthorizeIdView_NEW);
+		_new.setEnabled(canExecute);
 		_new.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String _name = table1.getSelection()[0].getText();
@@ -426,6 +440,7 @@ public class AuthorizeIdView extends ViewPart {
 		 */
 		Button _edit = new Button(parent, SWT.PUSH);
 		_edit.setText(Messages.AuthorizeIdView_EDIT);
+		_edit.setEnabled(canExecute);
 		_edit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String _name = table1.getSelection()[0].getText();
@@ -456,6 +471,7 @@ public class AuthorizeIdView extends ViewPart {
 		 */
 		Button _delete = new Button(parent, SWT.PUSH);
 		_delete.setText(Messages.AuthorizeIdView_DELETE);
+		_delete.setEnabled(canExecute);
 		_delete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String _name = table1.getSelection()[0].getText();
