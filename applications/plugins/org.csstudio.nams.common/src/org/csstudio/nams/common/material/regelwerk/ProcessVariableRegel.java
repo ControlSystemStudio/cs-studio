@@ -301,7 +301,10 @@ public class ProcessVariableRegel implements VersandRegel {
 						final Number currentValueAsNumber = (Number) currentValue;
 						final double currentValueAsDouble = currentValueAsNumber
 								.doubleValue();
-
+						
+						// BUG:
+						// Hier gibt es eine ClassCastException
+						// compValue ist vom Typ String
 						final double compValueAsDouble = ((Number) this.compValue)
 								.doubleValue();
 
