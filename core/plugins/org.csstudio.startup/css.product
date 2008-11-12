@@ -49,7 +49,6 @@ http://www.desy.de/legal/license.htm
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -156,6 +155,17 @@ http://www.desy.de/legal/license.htm
    </plugins>
 
    <features>
+      <feature id="org.csstudio.archive.channelarchiver.feature" version="1.0.4"/>
+      <feature id="org.csstudio.archive.feature" version="1.0.4"/>
+      <feature id="org.csstudio.diag.probe.feature" version="1.0.5"/>
+      <feature id="org.csstudio.display.pvtable.feature" version="1.0.4"/>
+      <feature id="org.csstudio.editors.snleditor.feature" version="1.0.0"/>
+      <feature id="org.csstudio.sds.feature" version="1.0.5"/>
+      <feature id="org.csstudio.trends.databrowser.feature" version="1.0.4"/>
+      <feature id="org.csstudio.utilities.feature" version="1.0.1"/>
+      <feature id="org.csstudio.utility.screenshot.feature" version="1.0.1"/>
+      <feature id="org.csstudio.utility.sysmon.feature" version="1.0.1"/>
+      <feature id="org.csstudiodiag.epics.pvtree.feature" version="1.0.4"/>
       <feature id="org.csstudio.platform.feature" version="1.0.0"/>
       <feature id="org.csstudio.platform.feature.product" version="1.1.0"/>
    </features>
