@@ -40,6 +40,7 @@ import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -70,6 +71,8 @@ public class AlarmLogView extends LogView {
 
 	public static final String ID = AlarmLogView.class.getName();
 
+    private static final String SECURITY_ID = "operating";
+
 	private Timer timer = new Timer();
 
 	private final Vector<JMSMessage> _jmsMessagesToRemove = new Vector<JMSMessage>();
@@ -85,6 +88,7 @@ public class AlarmLogView extends LogView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+        boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
 
 		// in alarm table the 'ack' column must be the first one!
 		String preferenceColumnString = JmsLogsPlugin.getDefault()
@@ -121,6 +125,7 @@ public class AlarmLogView extends LogView {
 		ackButton.setText("Acknowledge");
 		ackButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
 				1, 1));
+		ackButton.setEnabled(canExecute);
 		final Combo ackCombo = new Combo(comp, SWT.SINGLE);
 		ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
 				2, 1));
