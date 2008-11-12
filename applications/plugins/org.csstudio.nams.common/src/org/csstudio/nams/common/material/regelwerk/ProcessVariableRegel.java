@@ -121,7 +121,12 @@ public class ProcessVariableRegel implements VersandRegel {
 		this.channelName = channelName;
 		this.operator = operator;
 		this.suggestedProcessVariableType = suggestedProcessVariableType;
+		
+		// FIXME mz 2008-11-12: The param comp value must be translated to fit the param SuggestedProcessVariableType.
+		// This will be a fast fix for the bug reported by MM on 11.11.08. A better solution would be different constructors.
 		this.compValue = compValue;
+		// FIXME-END.
+		
 		if (SuggestedProcessVariableType.LONG
 				.equals(suggestedProcessVariableType)) {
 			final ProcessVariableChangeListener<Long> intListener = new ProcessVariableChangeListener<Long>();
