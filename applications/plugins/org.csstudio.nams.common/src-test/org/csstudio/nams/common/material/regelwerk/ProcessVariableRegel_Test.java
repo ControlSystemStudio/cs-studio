@@ -84,6 +84,63 @@ public class ProcessVariableRegel_Test extends
 	}
 
 	@Test
+	public void testMatchOfDoubleValuesSmaller5_compValueAsString()
+			throws Throwable {
+
+		final IProcessVariableAddress channelName = this
+				.createDefaultPVAdress();
+		final Operator operator = Operator.SMALLER;
+		final SuggestedProcessVariableType suggestedProcessVariableType = SuggestedProcessVariableType.DOUBLE;
+		final Object compValue = "5.0";
+
+		final ProcessVariableRegel pvRegel = new ProcessVariableRegel(
+				this._connectionServiceMock, channelName, operator,
+				suggestedProcessVariableType, compValue);
+
+		// Without connection:
+		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),
+				pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// Now all with connection...
+		this._connectionServiceMock
+				.sendNewConnectionState(ConnectionState.CONNECTED);
+
+		// Without any current value:
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With a not matching value:
+		this._connectionServiceMock.sendNewValue(new Double(6.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		this._connectionServiceMock.sendNewValue(new Double(5.0));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+
+		// With matching value:
+		this._connectionServiceMock.sendNewValue(new Double(4.9));
+		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"), pvRegel);
+		pvRegel.pruefeNachrichtErstmalig(new AlarmNachricht("Nachricht"),
+				pListe);
+		Assert.assertEquals(RegelErgebnis.ZUTREFFEND, pListe
+				.gibErgebnisFuerRegel(pvRegel));
+	}
+
+	@Test
 	public void testMatchOfDoubleValuesGreaterThan5() throws Throwable {
 		final IProcessVariableAddress channelName = this
 				.createDefaultPVAdress();
@@ -758,7 +815,8 @@ public class ProcessVariableRegel_Test extends
 				return null;
 			}
 
-			public IProcessVariableAddress deriveCharacteristic(String characteristic) {
+			public IProcessVariableAddress deriveCharacteristic(
+					String characteristic) {
 				Assert.fail();
 				return null;
 			}

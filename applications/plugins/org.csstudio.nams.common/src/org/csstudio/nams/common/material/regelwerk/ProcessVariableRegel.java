@@ -124,7 +124,7 @@ public class ProcessVariableRegel implements VersandRegel {
 		
 		// FIXME mz 2008-11-12: The param comp value must be translated to fit the param SuggestedProcessVariableType.
 		// This will be a fast fix for the bug reported by MM on 11.11.08. A better solution would be different constructors.
-		this.compValue = compValue;
+		//this.compValue = compValue;
 		// FIXME-END.
 		
 		if (SuggestedProcessVariableType.LONG
@@ -132,16 +132,19 @@ public class ProcessVariableRegel implements VersandRegel {
 			final ProcessVariableChangeListener<Long> intListener = new ProcessVariableChangeListener<Long>();
 			pvService.register(intListener, channelName, ValueType.LONG);
 			this._processVariableChangeListener = intListener;
+			this.compValue = Long.valueOf(compValue.toString());
 		} else if (SuggestedProcessVariableType.DOUBLE
 				.equals(suggestedProcessVariableType)) {
 			final ProcessVariableChangeListener<Double> doubleListener = new ProcessVariableChangeListener<Double>();
 			pvService.register(doubleListener, channelName, ValueType.DOUBLE);
 			this._processVariableChangeListener = doubleListener;
+			this.compValue = Double.valueOf(compValue.toString());
 		} else if (SuggestedProcessVariableType.STRING
 				.equals(suggestedProcessVariableType)) {
 			final ProcessVariableChangeListener<String> stringListener = new ProcessVariableChangeListener<String>();
 			pvService.register(stringListener, channelName, ValueType.STRING);
 			this._processVariableChangeListener = stringListener;
+			this.compValue = compValue.toString();
 		} else {
 			throw new RuntimeException("Unknown suggested type: "
 					+ suggestedProcessVariableType.toString());
