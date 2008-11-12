@@ -36,7 +36,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
-import org.eclipse.ui.internal.util.StatusLineContributionItem;
+// import org.eclipse.ui.internal.util.StatusLineContributionItem;
 
 /**
  * The workbench advisor for the control system studio. <br>
@@ -135,34 +135,37 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 			_workbenchWindowconfigurer.getActionBarConfigurer()
 			.getStatusLineManager();
 		final SecurityFacade sf = SecurityFacade.getInstance();
-		final StatusLineContributionItem ci =
-			new StatusLineContributionItem("User name"); //$NON-NLS-1$
-		
-		_userListener = new IUserManagementListener() {
-			public void handleUserManagementEvent(final UserManagementEvent event) {
-				updateUserNameInStatusLine(ci);
-			}
-		};
-		sf.addUserManagementListener(_userListener);
-		
-		updateUserNameInStatusLine(ci);
-		statusLine.add(ci);
+
+		// TODO port to Eclipse 3_4
+		//		final StatusLineContributionItem ci =
+		//			new StatusLineContributionItem("User name"); //$NON-NLS-1$
+//		
+//		_userListener = new IUserManagementListener() {
+//			public void handleUserManagementEvent(final UserManagementEvent event) {
+//				updateUserNameInStatusLine(ci);
+//			}
+//		};
+//		sf.addUserManagementListener(_userListener);
+//		
+//		updateUserNameInStatusLine(ci);
+//		statusLine.add(ci);
 	}
 	
 	/**
 	 * Updates the user name displayed in the status line.
 	 * @param ci the status line item.
 	 */
-	@SuppressWarnings("restriction") //$NON-NLS-1$
-	private void updateUserNameInStatusLine(final StatusLineContributionItem ci) {
-		User user = SecurityFacade.getInstance().getCurrentUser();
-		if (user != null) {
-			ci.setText(NLS.bind(Messages.CssWorkbenchAdvisor_LoggedInAs,
-					user.getUsername()));
-		} else {
-			ci.setText(Messages.CssWorkbenchAdvisor_NotLoggedIn);
-		}
-	}
+// TODO Port to Eclipse 3_4
+	//	@SuppressWarnings("restriction") //$NON-NLS-1$
+//	private void updateUserNameInStatusLine(final StatusLineContributionItem ci) {
+//		User user = SecurityFacade.getInstance().getCurrentUser();
+//		if (user != null) {
+//			ci.setText(NLS.bind(Messages.CssWorkbenchAdvisor_LoggedInAs,
+//					user.getUsername()));
+//		} else {
+//			ci.setText(Messages.CssWorkbenchAdvisor_NotLoggedIn);
+//		}
+//	}
 	
 	/**
 	 * {@inheritDoc}

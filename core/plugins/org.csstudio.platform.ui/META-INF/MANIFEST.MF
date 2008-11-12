@@ -7,7 +7,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console,
  org.csstudio.platform;visibility:=reexport,
- org.eclipse.tomcat,
  org.eclipse.help,
  org.eclipse.update.ui,
  org.junit4,
