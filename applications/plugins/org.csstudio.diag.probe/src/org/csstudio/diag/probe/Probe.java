@@ -7,6 +7,7 @@ import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.util.swt.ComboHistoryHelper;
@@ -100,6 +101,8 @@ public class Probe extends ViewPart implements PVListener
 	 */
 	private static final String VALUE_PARAMETER_ID =
 		"org.csstudio.platform.ui.commands.saveValue.value"; //$NON-NLS-1$
+
+    private static final String SECURITY_ID = "operating";
 
 	/** Instance number, used to create a unique ID
      *  @see #createNewInstance()
@@ -278,6 +281,7 @@ public class Probe extends ViewPart implements PVListener
     /** Construct GUI. */
     private void createGUI(final Composite parent)
     {
+        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
         final FormLayout layout = new FormLayout();
         parent.setLayout(layout);
 
@@ -358,6 +362,7 @@ public class Probe extends ViewPart implements PVListener
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         btn_save_to_ioc.setLayoutData(gd);
+        btn_save_to_ioc.setEnabled(canExecute);
 
         // New Row
         final Label new_value_label = new Label(bottom_box, 0);
@@ -374,6 +379,7 @@ public class Probe extends ViewPart implements PVListener
         btn_adjust.setText(Messages.S_Adjust);
         btn_adjust.setToolTipText(Messages.S_ModValue);
         btn_adjust.setLayoutData(new GridData());
+        btn_adjust.setEnabled(canExecute);
         
         // Status bar
         label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
