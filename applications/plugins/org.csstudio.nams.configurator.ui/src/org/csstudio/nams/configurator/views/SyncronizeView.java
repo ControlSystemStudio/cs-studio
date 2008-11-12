@@ -271,18 +271,26 @@ public class SyncronizeView extends ViewPart implements
 	public void showBusy(boolean busy) {
 		super.showBusy(busy);
 
-		IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) getSite()
-				.getAdapter(IWorkbenchSiteProgressService.class);
 		if (busy) {
-			service.incrementBusy();
-			syncButton.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-			syncButton.setText(">>> "
-					+ Messages.SyncronizeView_sync_button_text + " <<<");
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					syncButton.setBackground(Display.getDefault()
+							.getSystemColor(SWT.COLOR_RED));
+					syncButton
+							.setText(">>> "
+									+ Messages.SyncronizeView_sync_button_text
+									+ " <<<");
+				}
+			});
 		} else {
-			service.decrementBusy();
-			//FIXME gs,mz 20080916 check swt thread access
-			syncButton.setBackground(buttonColor);
-			syncButton.setText(Messages.SyncronizeView_sync_button_text);
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					syncButton.setBackground(buttonColor);
+					syncButton
+							.setText(Messages.SyncronizeView_sync_button_text);
+				}
+			});
+
 		}
 	}
 
