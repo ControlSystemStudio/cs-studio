@@ -35,7 +35,6 @@ public class DeleteCommand extends AbstractHandler implements IHandler {
 
 	public static final String ID = "deleteEntry.command";
 	
-	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 
 		final Shell shell = HandlerUtil.getActiveShell(event);

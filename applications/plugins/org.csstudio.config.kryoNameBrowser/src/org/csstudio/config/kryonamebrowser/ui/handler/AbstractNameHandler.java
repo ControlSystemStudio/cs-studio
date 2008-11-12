@@ -17,7 +17,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public abstract class AbstractNameHandler extends AbstractHandler {
 
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getActiveWorkbenchWindow(event)
 				.getActivePage().getSelection();

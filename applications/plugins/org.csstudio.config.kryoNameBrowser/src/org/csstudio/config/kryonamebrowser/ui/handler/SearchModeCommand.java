@@ -13,7 +13,6 @@ public class SearchModeCommand extends AbstractHandler implements IHandler {
 
 	boolean isChecked;
 
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);

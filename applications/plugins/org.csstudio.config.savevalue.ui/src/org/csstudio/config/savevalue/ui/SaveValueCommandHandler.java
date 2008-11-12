@@ -56,7 +56,6 @@ public class SaveValueCommandHandler extends AbstractHandler {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public final Object execute(final ExecutionEvent event) throws ExecutionException {
 		String pv;
 		String value;

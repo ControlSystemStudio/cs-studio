@@ -21,7 +21,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class ExcelExportHandler extends AbstractHandler implements IHandler {
 
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
