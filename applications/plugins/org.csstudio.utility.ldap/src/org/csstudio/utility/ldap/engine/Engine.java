@@ -369,10 +369,7 @@ public class Engine extends Job {
         if (recordPath == null || attriebute == null) {
             return null;
         }
-        if (_ctx == null) {
-            _ctx = getLdapDirContext();
-        }
-        if (_ctx != null) {
+        if (getLdapDirContext() != null) {
             AttriebutSet attriebutSet = helpAttriebut(recordPath);
             try {
                 String[] attStrings = new String[] { attriebute.name() };
@@ -380,7 +377,7 @@ public class Engine extends Job {
                 try {
                     if (attriebutSet.getSearchControls().getSearchScope() == SearchControls.SUBTREE_SCOPE) {
                         SearchControls sc = attriebutSet.getSearchControls();
-                        NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet
+                        NamingEnumeration<SearchResult> searchResults = getLdapDirContext().search(attriebutSet
                                 .getPath(), attriebutSet.getFilter(), sc);
 
                         if (searchResults.hasMore()) {
@@ -390,7 +387,7 @@ public class Engine extends Job {
                             return "NOT_FOUND";
                         }
                     } else {
-                        attributes = _ctx.getAttributes(attriebutSet.getFilter() + ","
+                        attributes = getLdapDirContext().getAttributes(attriebutSet.getFilter() + ","
                                 + attriebutSet.getPath(), attStrings);
                     }
                 } catch (NamingException ne) {
@@ -432,16 +429,13 @@ public class Engine extends Job {
     synchronized public void setAttriebute(final String recordPath,
             final ChannelAttribute attriebute, final String value) {
         assert recordPath != null && attriebute != null && value != null : "The recordPath, attriebute and/or value are NULL";
-        if (_ctx == null) {
-            _ctx = getLdapDirContext();
-        }
-        if (_ctx != null) {
+        if (getLdapDirContext() != null) {
             AttriebutSet attriebutSet = helpAttriebut(recordPath);
             try {
                 String ldapChannelName = "";
                 if (attriebutSet.getSearchControls().getSearchScope() == SearchControls.SUBTREE_SCOPE) {
                     SearchControls sc = attriebutSet.getSearchControls();
-                    NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet
+                    NamingEnumeration<SearchResult> searchResults = getLdapDirContext().search(attriebutSet
                             .getPath(), attriebutSet.getFilter(), sc);
                     if (searchResults.hasMore()) {
                         SearchResult element = searchResults.next();
@@ -497,15 +491,12 @@ public class Engine extends Job {
                         .matches("[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*")) {
             return null;
         }
-        if (_ctx == null) {
-            _ctx = getLdapDirContext();
-        }
-        if (_ctx != null) {
+        if (getLdapDirContext() != null) {
             SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(SearchControls.ONELEVEL_SCOPE);
             ctrl.setTimeLimit(1000);
             try {
-                NamingEnumeration<SearchResult> answerFacility = _ctx.search("ou=epicsControls",
+                NamingEnumeration<SearchResult> answerFacility = getLdapDirContext().search("ou=epicsControls",
                         "efan=*", ctrl);
                 try {
                     while (answerFacility.hasMore()) {
@@ -513,7 +504,7 @@ public class Engine extends Job {
                         CentralLogger.getInstance().debug(this, "Facility found: " + facilityName);
                         String path = "ecom=EPICS-IOC," + facilityName + ",ou=epicsControls";
 
-                        NamingEnumeration<SearchResult> answerIOC = _ctx.search(path,
+                        NamingEnumeration<SearchResult> answerIOC = getLdapDirContext().search(path,
                                 "epicsIPAddress=" + ipAddress, ctrl);
                         if (answerIOC.hasMore()) {
                             String name = answerIOC.next().getName() + "," + path;
@@ -586,15 +577,12 @@ public class Engine extends Job {
         allRecordsList.setEventTime(eventTime);
         allRecordsList.setParentName(ldapPath);
 
-        if (_ctx == null) {
-            _ctx = getLdapDirContext();
-        }
-        if (_ctx != null) {
+        if (getLdapDirContext() != null) {
             SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(searchControls);
             try {
                 ArrayList<String> list = new ArrayList<String>();
-                NamingEnumeration<SearchResult> answer = _ctx.search(path, "eren=*", ctrl);
+                NamingEnumeration<SearchResult> answer = getLdapDirContext().search(path, "eren=*", ctrl);
                 // NamingEnumeration<SearchResult> answer =
                 // _ctx.search(ldapPath,"eren=*" , ctrl);
                 while (answer.hasMore()) {
@@ -748,7 +736,7 @@ public class Engine extends Job {
             SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
             try {
-                NamingEnumeration<SearchResult> results = _ctx.search("", string + "=" + channel,
+                NamingEnumeration<SearchResult> results = getLdapDirContext().search("", string + "=" + channel,
                         ctrl);
                 // System.out.println ("Engine.changeValue : Time to search
                 // channel: " + gregorianTimeDifference ( startTime, new
@@ -805,7 +793,7 @@ public class Engine extends Job {
         }
         try {
             ldapChannelName = ldapChannelName.replace("/", "\\/");
-            _ctx.modifyAttributes(ldapChannelName, modItemTemp);
+            getLdapDirContext().modifyAttributes(ldapChannelName, modItemTemp);
             _ldapWriteTimeCollector.setInfo(channel);
             _ldapWriteTimeCollector.setValue(gregorianTimeDifference(startTime,
                     new GregorianCalendar())
