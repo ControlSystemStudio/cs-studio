@@ -30,11 +30,13 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -49,9 +51,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -60,7 +64,9 @@ import org.eclipse.ui.IWorkbenchPartSite;
 
 public class JMSLogTableViewer extends TableViewer {
 
-	private Table table;
+    private static final String SECURITY_ID = "operating";
+
+    private Table table;
 
 	String[] columnHeader;
 
@@ -100,6 +106,7 @@ public class JMSLogTableViewer extends TableViewer {
 	public JMSLogTableViewer(Composite parent, IWorkbenchPartSite site,
 			String[] colNames, JMSMessageList j, int tableType, int style) {
 		super(parent, style);
+	    final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
 		this.tableType = tableType;
 		columnWidth = new int[colNames.length];
 		columnHeader = colNames;
@@ -114,19 +121,26 @@ public class JMSLogTableViewer extends TableViewer {
 			public void handleEvent(Event event) {
 				if (event.item instanceof TableItem && event.button == 0
 						&& event.detail == 32) {
-					TableItem ti = (TableItem) event.item;
-					if (ti.getChecked()) {
-						if (ti.getData() instanceof JMSMessage) {
-							List<JMSMessage> msgList = new ArrayList<JMSMessage>();
-							msgList.add((JMSMessage) event.item.getData());
-							SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
-							sendAck.schedule();
-						} else {
-							return;
-						}
-					} else {
-						ti.setChecked(true);
-					}
+				    TableItem ti = (TableItem) event.item;
+				    if(canExecute){
+    					if (ti.getChecked()) {
+    						if (ti.getData() instanceof JMSMessage) {
+    							List<JMSMessage> msgList = new ArrayList<JMSMessage>();
+    							msgList.add((JMSMessage) event.item.getData());
+    							SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
+    							sendAck.schedule();
+    						} else {
+    							return;
+    						}
+    					} else {
+    						ti.setChecked(true);
+    					}
+				    }else {
+                        ti.setChecked(false);
+				        Shell activeShell = Display.getCurrent().getActiveShell();
+				        MessageDialog md = new MessageDialog(activeShell,"Authorization",null,"Not Acknolageed!\n\rYou don't have the permission.",MessageDialog.WARNING, new String[]{"Ok"},0);
+				        md.open();
+				    }
 					//Click on other columns but ack should not check or uncheck the ack box
 				} else if (event.item instanceof TableItem && event.button == 0
 						&& event.detail == 0) {
@@ -191,7 +205,6 @@ public class JMSLogTableViewer extends TableViewer {
 		}
 
 		this.setInput(jmsml);
-
 		makeContextMenu(site);
 
 		new ProcessVariableDragSource(this.getTable(), this);
