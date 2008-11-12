@@ -23,6 +23,7 @@ package org.csstudio.diag.snlDebugger.ui;
 
 import org.csstudio.diag.snlDebugger.Activator;
 import org.csstudio.diag.snlDebugger.Messages;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
@@ -57,8 +58,7 @@ public class ShowSnlDebugger implements IWorkbenchWindowActionDelegate {
 	}
 
 	public void selectionChanged(final IAction action, final ISelection selection) {
-		// TODO Auto-generated method stub
-
+	    action.setEnabled(SecurityFacade.getInstance().canExecute("iocAccesses", false));
 	}
 
 

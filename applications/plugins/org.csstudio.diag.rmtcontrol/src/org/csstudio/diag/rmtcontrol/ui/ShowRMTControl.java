@@ -23,6 +23,7 @@ package org.csstudio.diag.rmtcontrol.ui;
 
 import org.csstudio.diag.rmtcontrol.Activator;
 import org.csstudio.diag.rmtcontrol.Messages;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
@@ -57,8 +58,7 @@ public class ShowRMTControl implements IWorkbenchWindowActionDelegate {
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
+	    action.setEnabled(SecurityFacade.getInstance().canExecute("iocAccesses", false));
 	}
 
 
