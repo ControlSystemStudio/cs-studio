@@ -21,36 +21,20 @@
  */
  package org.csstudio.alarm.treeView.jms;
 
-import java.util.List;
-
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.Alarm;
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
-import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.platform.libs.jms.MessageReceiver;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 
 
 /**
- * Subscribes to the alarm queue via JMS and updates the state of the alarm
- * tree.
+ * Manages the connections to the JMS server.
  * 
  * @author Joerg Rathlev
  */
-public class AlarmQueueSubscriber implements MessageListener {
+public class AlarmQueueSubscriber {
 	
 	/**
 	 * The logger used by this class.
@@ -68,9 +52,9 @@ public class AlarmQueueSubscriber implements MessageListener {
 	private MessageReceiver _receiver2;
 	
 	/**
-	 * The tree which will be updated by this subscriber.
+	 * The alarm message listener.
 	 */
-	private SubtreeNode _tree;
+	private AlarmMessageListener _listener;
 	
 	
 	/**
@@ -82,7 +66,7 @@ public class AlarmQueueSubscriber implements MessageListener {
 			throw new NullPointerException("tree must not be null");
 		}
 		
-		this._tree = tree;
+		_listener = new AlarmMessageListener(new AlarmTreeUpdater(tree));
 	}
 	
 	/**
@@ -90,11 +74,19 @@ public class AlarmQueueSubscriber implements MessageListener {
 	 * @param tree the root node of the tree.
 	 */
 	public final void setTree(final SubtreeNode tree) {
-		this._tree = tree;
+		// Note: this is called when the refresh feature of the tree view is
+		// used. The new tree is read from the LDAP directory, and then the
+		// existing listener is switched over to the new tree.
+		
+		if (tree == null) {
+			throw new NullPointerException("tree must not be null");
+		}
+
+		_listener.setUpdater(new AlarmTreeUpdater(tree));
 	}
 
 	/**
-	 * Connects to the JMS server.
+	 * Connects to the JMS servers.
 	 */
 	public final void openConnection() {
 		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
@@ -104,7 +96,7 @@ public class AlarmQueueSubscriber implements MessageListener {
 					prefs.getString(PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY),
 					prefs.getString(PreferenceConstants.JMS_URL_PRIMARY),
 					queues);
-			_receiver1.startListener(this);
+			_receiver1.startListener(_listener);
 		} catch (Exception e) {
 			LOG.error(this, "Error initializing JMS listener for primary server.", e);
 		}
@@ -114,14 +106,14 @@ public class AlarmQueueSubscriber implements MessageListener {
 					prefs.getString(PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY),
 					prefs.getString(PreferenceConstants.JMS_URL_SECONDARY),
 					queues);
-			_receiver2.startListener(this);
+			_receiver2.startListener(_listener);
 		} catch (Exception e) {
 			LOG.error(this, "Error initializing JMS listener for secondary server.", e);
 		}
 	}
 
 	/**
-	 * Disconnects from the JMS server.
+	 * Disconnects from the JMS servers.
 	 */
 	public final void closeConnection() {
 		try {
@@ -141,78 +133,4 @@ public class AlarmQueueSubscriber implements MessageListener {
 		}
 	}
 
-	/**
-	 * Called when a message is received via JMS.
-	 * @param message the message.
-	 */
-	public final void onMessage(final Message message) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (message instanceof MapMessage) {
-					processMessage((MapMessage) message);
-				}
-			}
-		});
-	}
-	
-	/**
-	 * Updates the alarm tree based on the specified message.
-	 * @param message an alarm message.
-	 */
-	private synchronized void processMessage(final MapMessage message) {
-		try {
-			String name = message.getString("NAME");
-			List<ProcessVariableNode> nodes = _tree.findProcessVariableNodes(name);
-			if (isAlarmAcknowledgement(message)) {
-				for (ProcessVariableNode node : nodes) {
-					node.removeHighestUnacknowledgedAlarm();
-				}
-			} else if (isAlarmMessage(message)) {
-				Severity severity = Severity.parseSeverity(message.getString("SEVERITY"));
-				for (ProcessVariableNode node : nodes) {
-					if (severity.isAlarm()) {
-						Alarm alarm = new Alarm(name, severity);
-						node.setActiveAlarm(alarm);
-					} else {
-						node.cancelAlarm();
-					}
-				}
-			}
-			message.acknowledge();
-		} catch (JMSException e) {
-			LOG.error(this, "Error processing JMS message", e);
-		}
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		IViewPart view = page.findView(AlarmTreeView.getID());
-		if (view instanceof AlarmTreeView) {
-			((AlarmTreeView)view).refresh();
-		}
-	}
-
-	/**
-	 * Returns whether the given message is an alarm acknowledgement.
-	 * 
-	 * @param message
-	 *            the message.
-	 * @return <code>true</code> if the message is an alarm acknowledgement,
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean isAlarmAcknowledgement(final MapMessage message) {
-		try {
-			String ack = message.getString("ACK");
-			return ack != null && ack.equals("TRUE");
-		} catch (JMSException e) {
-			return false;
-		}
-	}
-
-	/**
-	 * Returns whether the specified message is an alarm message.
-	 * @param msg the message.
-	 * @return <code>true</code>.
-	 */
-	private boolean isAlarmMessage(final MapMessage msg) {
-		// We currently assume that all received mesages are alarm messages
-		return true;
-	}
 }
