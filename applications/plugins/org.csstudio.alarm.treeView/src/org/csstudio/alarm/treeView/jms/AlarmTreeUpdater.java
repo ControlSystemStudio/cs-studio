@@ -35,11 +35,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Instances of this class update the alarm tree in response to alarm events.
+ * Applies updates to a tree of alarm nodes.
  * 
  * @author Joerg Rathlev
  */
-public final class AlarmTreeUpdater {
+final class AlarmTreeUpdater {
 	
 	/**
 	 * The tree which is updated by this updater.

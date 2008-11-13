@@ -59,30 +59,25 @@ public class AlarmQueueSubscriber {
 	
 	/**
 	 * Creates a new alarm queue subscriber.
-	 * @param tree the root node of the tree to which updates will be written.
 	 */
-	public AlarmQueueSubscriber(final SubtreeNode tree) {
-		if (tree == null) {
-			throw new NullPointerException("tree must not be null");
-		}
-		
-		_listener = new AlarmMessageListener(new AlarmTreeUpdater(tree));
+	public AlarmQueueSubscriber() {
+		_listener = new AlarmMessageListener();
 	}
-	
-	/**
-	 * Sets the tree wo which updates will be applied.
-	 * @param tree the root node of the tree.
-	 */
-	public final void setTree(final SubtreeNode tree) {
-		// Note: this is called when the refresh feature of the tree view is
-		// used. The new tree is read from the LDAP directory, and then the
-		// existing listener is switched over to the new tree.
-		
-		if (tree == null) {
-			throw new NullPointerException("tree must not be null");
-		}
 
-		_listener.setUpdater(new AlarmTreeUpdater(tree));
+	/**
+	 * Sets the tree to which updates will be applied. If set to
+	 * <code>null</code>, updates are queued and will be applied later when a
+	 * new update target is set by calling this method.
+	 * 
+	 * @param tree
+	 *            the root node of the tree, or <code>null</code>.
+	 */
+	public final void setUpdateTarget(final SubtreeNode tree) {
+		if (tree == null) {
+			_listener.setUpdater(null);
+		} else {
+			_listener.setUpdater(new AlarmTreeUpdater(tree));
+		}
 	}
 
 	/**
@@ -110,6 +105,9 @@ public class AlarmQueueSubscriber {
 		} catch (Exception e) {
 			LOG.error(this, "Error initializing JMS listener for secondary server.", e);
 		}
+		
+		// FIXME: to get this really correct, we would have to wait here until
+		// the connection is established. (or wait in the calling AlarmTreeView)
 	}
 
 	/**
@@ -131,6 +129,7 @@ public class AlarmQueueSubscriber {
 		} catch (Exception e) {
 			LOG.warn(this, "Error stopping secondary JMS listener", e);
 		}
+		_listener.stop();
 	}
 
 }
