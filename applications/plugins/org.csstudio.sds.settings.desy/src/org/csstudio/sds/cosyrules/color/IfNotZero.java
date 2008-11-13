@@ -48,21 +48,24 @@ public class IfNotZero implements IRule {
      * {@inheritDoc}
      */
     public Object evaluate(Object[] arguments) {
-        if (arguments[0] instanceof Double) {
-            Double d = (Double) arguments[0];
-            d=d+0.5;
-            return d.intValue()==0;
-        }else if (arguments[0] instanceof Long) {
-            return ((Long)  arguments[0])==0;
-        }else if(arguments[0] instanceof String) {
-            try{
-                Double d = Double.parseDouble((String) arguments[0]);  
-                d=d+0.5;
-                return d.intValue()==0;
-            }catch (NumberFormatException e) {
-                return true;
+        if(arguments!=null&&arguments.length>0){
+            if (arguments[0] instanceof Double) {
+                Double d = (Double) arguments[0];
+                boolean b1 = d<0.0001;
+                boolean b2 = d>-0.0001;
+                return !b1&&b2;
+            }else if (arguments[0] instanceof Long) {
+                return ((Long)  arguments[0])!=0;
+            }else if(arguments[0] instanceof String) {
+                try{
+                    Double d = Double.parseDouble((String) arguments[0]);  
+                    boolean b1 = d<0.0001;
+                    boolean b2 = d>-0.0001;
+                    return !b1&&b2;
+                }catch (NumberFormatException e) {
+                    return true;
+                }
             }
-                
         }
         return true;
     }
