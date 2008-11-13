@@ -193,15 +193,17 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		    if (updatedPropertyId==null || updatedPropertyId.equals(LabelModel.PROP_TEXTVALUE)
                     || updatedPropertyId.equals(LabelModel.PROP_PRECISION)) {
                 try {
-                    String pattern = "";
+                    String pattern = "0.";
                     for(int i=0;i<model.getPrecision();i++){
-                        pattern = pattern.concat("0");
+                        if(i==0){
+                            pattern = pattern.concat("0");
+                        }else{
+                            pattern = pattern.concat("#");
+                        }
                     }
                     pattern = pattern.concat("E00");
                     DecimalFormat expFormat = new DecimalFormat(pattern);
                     double d = Double.parseDouble(text);
-//                    expFormat.setMaximumFractionDigits(model.getPrecision());
-//                    expFormat.setMinimumFractionDigits(model.getPrecision());
                     toprint = expFormat.format(d);
                 } catch (Exception e) {
                     toprint = text;

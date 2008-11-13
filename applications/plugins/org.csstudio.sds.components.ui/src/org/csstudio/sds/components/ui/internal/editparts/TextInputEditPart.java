@@ -462,9 +462,13 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
             if (updatedPropertyId==null || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
                     || updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
                 try {
-                    String pattern = "";
+                    String pattern = "0.";
                     for(int i=0;i<model.getPrecision();i++){
-                        pattern = pattern.concat("0");
+                        if(i==0){
+                            pattern = pattern.concat("0");
+                        }else{
+                            pattern = pattern.concat("#");
+                        }
                     }
                     pattern = pattern.concat("E00");
                     DecimalFormat expFormat = new DecimalFormat(pattern);
