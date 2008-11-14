@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,14 +20,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.connector.voicemail.internal.pages;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
 import org.csstudio.ams.connector.voicemail.Messages;
 import org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin;
 import org.csstudio.ams.connector.voicemail.internal.SampleService;
@@ -40,17 +43,14 @@ import org.csstudio.ams.connector.voicemail.internal.SampleService;
  * @author
  * 
  */
-public class Page1 extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
-
+public class VoicemailPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage
+{
 	/**
 	 * Standard constructor.
 	 */
-	public Page1() {
-		/*
-		 * The usage of the style FieldEditorPreferencePage.GRID makes this
-		 * preference page have a grid layout.
-		 */
+	public VoicemailPreferencePage()
+	{
+		//Set grid layout
 		super(FieldEditorPreferencePage.GRID);
 	}
 
@@ -58,32 +58,39 @@ public class Page1 extends FieldEditorPreferencePage implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final void createFieldEditors() {
-
+	protected final void createFieldEditors()
+	{
 		addField(new StringFieldEditor(SampleService.P_VM_SERVICE,
 				Messages.P_VM_SERVICE, getFieldEditorParent()));
 		addField(new StringFieldEditor(SampleService.P_VM_PORT,
 				Messages.P_VM_PORT, getFieldEditorParent()));
 
-		adjustGridLayout();
+		new Label(this.getFieldEditorParent(), SWT.NONE);
+		new Label(this.getFieldEditorParent(), SWT.NONE);
+		
+        addField(new StringFieldEditor(SampleService.P_MARY_HOST,
+                Messages.P_MARY_HOST, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MARY_PORT,
+                Messages.P_MARY_PORT, getFieldEditorParent()));
+
+        adjustGridLayout();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void init(final IWorkbench workbench) {
-		/*
-		 * This methdos does not necessarily need to do anything. But it must be
-		 * implemented anyway.
-		 */
+	public final void init(final IWorkbench workbench)
+	{
+	    //This methdos does not necessarily need to do anything.
+	    // But it must be implemented anyway.
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final IPreferenceStore doGetPreferenceStore() {
+	protected final IPreferenceStore doGetPreferenceStore()
+	{
 		return VoicemailConnectorPlugin.getDefault().getPreferenceStore();
 	}
-
 }

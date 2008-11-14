@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -24,6 +25,7 @@ package org.csstudio.ams.connector.voicemail;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Hashtable;
 import javax.jms.Connection;
@@ -44,31 +46,36 @@ import org.csstudio.ams.connector.voicemail.internal.SampleService;
 import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import de.dfki.lt.mary.client.MaryClient;
+
 public class VoicemailConnectorWork extends Thread implements AmsConstants
 {
-    private VoicemailConnectorStart     vmcs            = null;
+    private VoicemailConnectorStart vmcs = null;
 
     // --- Sender ---
-    private Context             amsSenderContext    = null;
-    private ConnectionFactory   amsSenderFactory    = null;
-    private Connection          amsSenderConnection = null;
-    private Session             amsSenderSession    = null;
+    private Context amsSenderContext = null;
+    private ConnectionFactory amsSenderFactory = null;
+    private Connection amsSenderConnection = null;
+    private Session amsSenderSession = null;
 
-    private MessageProducer     amsPublisherReply   = null;
+    private MessageProducer amsPublisherReply = null;
 
-    // CHANGED BY: Markus M�ller, 06.11.2007
-    // private TopicSubscriber     amsSubscriberVm     = null;
-    // private MessageConsumer     amsSubscriberVm     = null;
+    // CHANGED BY: Markus Möller, 06.11.2007
+    // private TopicSubscriber amsSubscriberVm = null;
+    // private MessageConsumer amsSubscriberVm = null;
     private JmsRedundantReceiver amsReceiver = null; 
     
-    private Socket              server              = null; 
-    private DataInputStream     inStream            = null; 
-    private DataOutputStream    outStream           = null; 
-    private int                 telegramCnt         = 0;
-    
-    private Fifo                fifo                = new Fifo();
+    // Client class for the MARY TTS server
+    private MaryClient mary = null;
 
-    private short               sTest               = 0;                        // 0 - normal behavior, other - for test
+    private Socket server = null; 
+    private DataInputStream inStream = null; 
+    private DataOutputStream outStream = null; 
+    private int telegramCnt = 0;
+    
+    private Fifo fifo = new Fifo();
+
+    private short sTest = 0; // 0 - normal behavior, other - for test
 
     private boolean bStop = false;
     private boolean bStoppedClean = false;
@@ -112,7 +119,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             {
                 if (!bInitedVmService)
                 {
-                    bInitedVmService = initVmService();
+                    bInitedVmService = initMaryClient(); // initVmService();
                     if (!bInitedVmService)
                     {
                         iErr = VoicemailConnectorStart.STAT_ERR_VM_SERVICE;
@@ -150,11 +157,20 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                         Log.log(this, Log.FATAL, "could not receive from internal jms", e);
                         iErr = VoicemailConnectorStart.STAT_ERR_JMSCON;
                     }
+
+                    //TODO: TEST
+                    /*
                     if (message != null)
                     {
                         iErr = sendVmMsg(message);
                     }
+                    */
                     
+                    if (message != null)
+                    {
+                        iErr = sendMaryMsg(message);
+                    }
+
                     if (iErr != VoicemailConnectorStart.STAT_ERR_JMSCON)
                     {
                         while(!fifo.empty())
@@ -169,8 +185,11 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                         }
                     }
                     
+                    //TODO: TEST
+                    /*
                     if (iErr == VoicemailConnectorStart.STAT_OK)
                         iErr = readVmMsg(null);                                 // read max. limit vm, other in the next run
+                    */
                     
                     if (iErr == VoicemailConnectorStart.STAT_ERR_VM_SERVICE_SEND)
                     {
@@ -179,11 +198,13 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                         closeJms();                                             // recover msg
                         bInitedJms = false;
                     }
+                    
                     if (iErr == VoicemailConnectorStart.STAT_ERR_VM_SERVICE)
                     {
                         closeVmService();
                         bInitedVmService = false;
                     }
+                    
                     if (iErr == VoicemailConnectorStart.STAT_ERR_JMSCON
                     || iErr == VoicemailConnectorStart.STAT_ERR_VM_SERVICE_BADRSP)
                     {
@@ -218,6 +239,40 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         Log.log(this, Log.INFO, "Voicemail connector exited");
     }
 
+    private boolean initMaryClient()
+    {
+        int iPort;
+        boolean result;
+
+        IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
+        String strAdress = store.getString(SampleService.P_MARY_HOST);
+        
+        try
+        {
+            iPort = Integer.parseInt(store.getString(SampleService.P_MARY_PORT));
+        }
+        catch(NumberFormatException nfe)
+        {
+            iPort = 59125;
+            Log.log(this, Log.WARN, "Cannot read the port for the MARY server. Using default port: " + iPort);
+        }
+        
+        try
+        {
+            mary = new MaryClient(strAdress, iPort);
+            
+            result = true;
+        }
+        catch (IOException e)
+        {
+            Log.log(this, Log.ERROR, "Cannot init MARY client.");
+
+            result = false;
+        }
+        
+        return result;
+    }
+    
     /**
      * Init Voicemail-service
      * 
@@ -319,6 +374,9 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         Hashtable<String, String> properties = null;
         boolean result = false;
         
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+
+        
         try
         {
             storeAct = Activator.getDefault().getPreferenceStore();
@@ -338,7 +396,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus M�ller, 25.05.2007
+            // CHANGED BY: Markus Möller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
@@ -354,14 +412,14 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
 
             amsSenderConnection.start();
 
-            // CHANGED BY: Markus M�ller, 25.05.2007
+            // CHANGED BY: Markus Möller, 25.05.2007
             /*
             amsSubscriberVm = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR));
             */
             
-            // CHANGED BY: Markus M�ller, 28.06.2007
+            // CHANGED BY: Markus Möller, 28.06.2007
             /*
             amsSubscriberVm = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)),
@@ -382,7 +440,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     "amsSubscriberVm",
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR),
-                    VoicemailConnectorStart.CREATE_DURABLE);
+                    durable);
             if(result == false)
             {
                 Log.log(this, Log.FATAL, "could not create amsSubscriberVm");
@@ -437,6 +495,32 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             Log.log(this, Log.FATAL, "could not acknowledge", e);
         }
         return false;
+    }
+    
+    public int sendMaryMsg(Message message) throws Exception
+    {
+        int result = VoicemailConnectorStart.STAT_OK;
+        
+        if (!(message instanceof MapMessage))
+        {
+            Log.log(this, Log.WARN, "got unknown message " + message);
+            if(!acknowledge(message))
+            {
+                return VoicemailConnectorStart.STAT_ERR_JMSCON;
+            }
+            
+            return VoicemailConnectorStart.STAT_OK;
+        }
+
+        MapMessage msg = (MapMessage) message;
+        String text = msg.getString(MSGPROP_RECEIVERTEXT);
+        String recNo = msg.getString(MSGPROP_RECEIVERADDR);
+        String chainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
+        String textType = msg.getString(MSGPROP_TEXTTYPE);
+        
+        
+        
+        return result;
     }
     
     private int sendVmMsg(Message message) throws Exception

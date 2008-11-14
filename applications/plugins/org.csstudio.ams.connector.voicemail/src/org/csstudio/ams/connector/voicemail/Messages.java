@@ -32,7 +32,10 @@ public class Messages extends NLS {
 	public static String P_VM_SERVICE;
 	public static String P_VM_PORT;
 	
-	static {
+    public static String P_MARY_HOST;
+    public static String P_MARY_PORT;
+
+    static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 

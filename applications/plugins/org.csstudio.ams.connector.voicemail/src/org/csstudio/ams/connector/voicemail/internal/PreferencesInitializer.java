@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,6 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.connector.voicemail.internal;
 
 import org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin;
@@ -39,11 +41,14 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void initializeDefaultPreferences() {
-		IEclipsePreferences node = new DefaultScope()
-				.getNode(VoicemailConnectorPlugin.PLUGIN_ID);
+	public final void initializeDefaultPreferences()
+	{
+		IEclipsePreferences node = new DefaultScope().getNode(VoicemailConnectorPlugin.PLUGIN_ID);
 
 		node.put(SampleService.P_VM_SERVICE, "localhost");
 		node.put(SampleService.P_VM_PORT, "1001");
+		
+	    node.put(SampleService.P_MARY_HOST, "krykpcsms.desy.de");
+	    node.put(SampleService.P_MARY_PORT, "59125");
 	}
 }

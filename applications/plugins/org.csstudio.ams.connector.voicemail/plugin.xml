@@ -15,9 +15,9 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.ams.internal.pages.Page1"
-            class="org.csstudio.ams.connector.voicemail.internal.pages.Page1"
-            id="org.csstudio.ams.connector.voicemail.page1"
+            category="org.csstudio.ams.internal.pages.AmsPreferencePage"
+            class="org.csstudio.ams.connector.voicemail.internal.pages.VoicemailPreferencePage"
+            id="org.csstudio.ams.connector.voicemail.VoicemailPreferencePage"
             name="Connector Voice Mail"/>
    </extension>
    <extension
@@ -43,9 +43,9 @@
    <extension
          point="org.csstudio.platform.libs.dcf.action">
       <parametrizedAction
-            class="org.csstudio.ams.connector.voicemail.actions.VoicemalConnectorShutdownAction"
-            id="org.csstudio.ams.connector.voicemail.VoicemalConnectorShutdownAction"
-            name="Shutdown"
+            class="org.csstudio.ams.connector.voicemail.actions.VoicemalConnectorStopAction"
+            id="org.csstudio.ams.connector.voicemail.VoicemalConnectorStopAction"
+            name="Stop"
             parameters="Password">
       </parametrizedAction>
    </extension>

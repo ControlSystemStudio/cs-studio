@@ -9,9 +9,10 @@ Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
  org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.ui,
- org.csstudio.platform.libs.jms,
  org.csstudio.ams,
  org.csstudio.platform.libs.xmpp,
- org.csstudio.platform.libs.dcf
+ org.csstudio.platform.libs.dcf,
+ org.csstudio.platform.utility.jms
 Eclipse-LazyStart: true
-Bundle-ClassPath: .
+Bundle-ClassPath: lib/maryclient.jar,
+ .

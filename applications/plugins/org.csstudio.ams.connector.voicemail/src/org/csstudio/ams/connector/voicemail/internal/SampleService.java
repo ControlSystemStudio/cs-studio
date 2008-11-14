@@ -41,6 +41,9 @@ public class SampleService {
 	public static final String P_VM_SERVICE = "org.csstudio.ams.connector.voicemail.preferences.vmService";
 	public static final String P_VM_PORT = "org.csstudio.ams.connector.voicemail.preferences.vmPort";
 
+	public static final String P_MARY_HOST = "org.csstudio.ams.connector.voicemail.preferences.maryHost";
+    public static final String P_MARY_PORT = "org.csstudio.ams.connector.voicemail.preferences.maryPort";
+
 	/**
 	 * The only one instance of this service.
 	 */
@@ -76,5 +79,8 @@ public class SampleService {
 
 		System.out.println(P_VM_SERVICE + ": " + store.getString(P_VM_SERVICE));
 		System.out.println(P_VM_PORT + ": " + store.getString(P_VM_PORT));
+		
+	    System.out.println(P_MARY_HOST + ": " + store.getString(P_MARY_HOST));
+	    System.out.println(P_MARY_PORT + ": " + store.getString(P_MARY_PORT));
 	}
 }

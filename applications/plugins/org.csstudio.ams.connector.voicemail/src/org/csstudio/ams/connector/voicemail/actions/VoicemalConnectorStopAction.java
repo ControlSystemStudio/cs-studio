@@ -31,41 +31,42 @@ import org.csstudio.ams.connector.voicemail.VoicemailConnectorStart;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
 /**
- *  @author Markus Moeller
- *
+ * @author Markus Moeller
+ * 
  */
-public class VoicemalConnectorShutdownAction implements IAction
+public class VoicemalConnectorStopAction implements IAction
 {
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
      */
     public Object run(Object param)
     {
         String password = null;
-        
-        if(!(param instanceof Map))
+
+        if (!(param instanceof Map))
         {
             return "Parameter not available.";
         }
-        
-        Map<?, ?> map = (Map<?, ?>)param;
-        
+
+        Map<?, ?> map = (Map<?, ?>) param;
+
         try
         {
-            password = (String)map.get("Password");
-        
-            if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
+            password = (String) map.get("Password");
+
+            if (password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
             {
                 return "Invalid password";
             }
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
             return e.getMessage();
         }
 
         VoicemailConnectorStart.getInstance().setShutdown();
-        
-        return "VoicemailConnectorStart is shutting down now...";
+
+        return "VoicemailConnectorStart is stopping now...";
     }
 }
