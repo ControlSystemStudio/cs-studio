@@ -7,7 +7,7 @@ package org.csstudio.apputil.xml;
 @SuppressWarnings("nls")
 public class XMLHelper
 {
-    /** @return Returns string for indentation to given level. */
+    /** Add string for indentation to given level to buffer. */
     public static final void indent(final StringBuilder buf, int level)
     {
         while (level > 0)
@@ -15,6 +15,14 @@ public class XMLHelper
             buf.append("    ");
             --level;
         }
+    }
+
+    /** @return Returns string for indentation to given level. */
+    public static final String indent(int level)
+    {
+        final StringBuilder buf = new StringBuilder();
+        indent(buf, level);
+        return buf.toString();
     }
     
     /** @return Returns text with less-than and ampersands replaced by XML escapes.
@@ -45,7 +53,12 @@ public class XMLHelper
         return b.toString();
     }
 
-    /** Add tag and value to buffer with given indentation level. */
+    /** Add XML to buffer
+     *  @param buffer Buffer
+     *  @param level  Indentation level
+     *  @param tag    XML tag
+     *  @param value  Value to place in tag
+     */
     public static final void XML(final StringBuilder buffer, final int level,
     		final String tag, final String value)
     {
@@ -53,5 +66,20 @@ public class XMLHelper
         buffer.append("<").append(tag).append(">");
         buffer.append(escapeXMLstring(value));
         buffer.append("</").append(tag).append(">\n");
+    }
+
+    /** Format XML value in tag
+     *  @param buffer Buffer
+     *  @param level  Indentation level
+     *  @param tag    XML tag
+     *  @param value  Value to place in tag
+     *  @return XML for value in tag
+     */
+    public static final String XML(final int level,
+            final String tag, final String value)
+    {
+        final StringBuilder buffer = new StringBuilder();
+        XML(buffer, level, tag, value);
+        return buffer.toString();
     }
 }
