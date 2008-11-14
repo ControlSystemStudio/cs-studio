@@ -144,7 +144,7 @@ public class DOMHelper
     
     /** Locate a sub-element tagged 'name', return its boolean value.
      * 
-     *  Will only go one level down, not seach the whole tree.
+     *  Will only go one level down, not search the whole tree.
      *  
      *  @param element Element where to start looking. May be null.
      *  @param element_name Name of sub-element to locate.
@@ -160,7 +160,7 @@ public class DOMHelper
 
     /** Locate a sub-element tagged 'name', return its boolean value.
      * 
-     *  Will only go one level down, not seach the whole tree.
+     *  Will only go one level down, not search the whole tree.
      *  
      *  @param element Element where to start looking. May be null.
      *  @param element_name Name of sub-element to locate.
