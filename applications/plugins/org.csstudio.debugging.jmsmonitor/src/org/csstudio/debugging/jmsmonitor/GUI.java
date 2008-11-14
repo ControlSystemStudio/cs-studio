@@ -193,6 +193,8 @@ public class GUI implements ModelListener
         {
             public void run()
             {
+                if (table_viewer.getTable().isDisposed())
+                    return;
                 table_viewer.setInput(model.getMessages());
             }
         });
