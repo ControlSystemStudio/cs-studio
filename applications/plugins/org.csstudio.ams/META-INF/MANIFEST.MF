@@ -4,6 +4,8 @@ Bundle-Name: Ams Plug-in
 Bundle-SymbolicName: org.csstudio.ams; singleton:=true
 Bundle-Version: 1.0.4
 Bundle-Activator: org.csstudio.ams.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
@@ -12,8 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.libs.dal,
  org.csstudio.platform.libs.epics,
  org.csstudio.platform.libs.epics.ui,
- org.csstudio.platform.utility.jms
-Eclipse-LazyStart: true
+ org.csstudio.platform.utility.jms,
+ org.junit4;bundle-version="4.3.1"
 Bundle-ClassPath: libs/derbyclient.jar,
  libs/derbytools.jar,
  .

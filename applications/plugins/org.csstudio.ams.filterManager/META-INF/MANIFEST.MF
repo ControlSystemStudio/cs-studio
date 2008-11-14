@@ -4,6 +4,8 @@ Bundle-Name: FilterManager Plug-in
 Bundle-SymbolicName: org.csstudio.ams.filterManager;singleton:=true
 Bundle-Version: 1.0.3
 Bundle-Activator: org.csstudio.ams.filtermanager.FilterManagerPlugin
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
  org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -15,4 +17,3 @@ Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
  org.csstudio.platform.libs.xmpp,
  org.csstudio.platform.libs.dcf,
  org.csstudio.platform.utility.jms
-Eclipse-LazyStart: true

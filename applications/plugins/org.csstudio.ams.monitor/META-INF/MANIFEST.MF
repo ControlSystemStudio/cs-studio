@@ -4,7 +4,8 @@ Bundle-Name: Monitor Plug-in
 Bundle-SymbolicName: org.csstudio.ams.monitor;singleton:=true
 Bundle-Version: 1.0.4
 Bundle-Activator: org.csstudio.ams.monitor.MonitorPlugin
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.ams
-Eclipse-LazyStart: true
