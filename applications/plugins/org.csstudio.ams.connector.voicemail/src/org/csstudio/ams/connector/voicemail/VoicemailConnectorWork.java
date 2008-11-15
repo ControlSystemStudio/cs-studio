@@ -65,16 +65,15 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
     // private MessageConsumer amsSubscriberVm = null;
     private JmsRedundantReceiver amsReceiver = null; 
     
-    // Client class for the MARY TTS server
-    private MaryClient mary = null;
-
     private Socket server = null; 
     private DataInputStream inStream = null; 
     private DataOutputStream outStream = null; 
     private int telegramCnt = 0;
     
     private Fifo fifo = new Fifo();
-
+    
+    private SpeechProducer speech = null;
+    
     private short sTest = 0; // 0 - normal behavior, other - for test
 
     private boolean bStop = false;
@@ -257,17 +256,12 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             Log.log(this, Log.WARN, "Cannot read the port for the MARY server. Using default port: " + iPort);
         }
         
-        try
+        speech = new SpeechProducer(strAdress, iPort);
+        result = speech.isConnected();
+        if(result == false)
         {
-            mary = new MaryClient(strAdress, iPort);
-            
-            result = true;
-        }
-        catch (IOException e)
-        {
-            Log.log(this, Log.ERROR, "Cannot init MARY client.");
-
-            result = false;
+            speech.closeAll();
+            speech = null;
         }
         
         return result;
@@ -391,7 +385,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
             amsSenderConnection = amsSenderFactory.createConnection();
             
-            // ADDED BY: Markus M�ller, 25.05.2007
+            // ADDED BY: Markus Möller, 25.05.2007
             amsSenderConnection.setClientID("VoicemailConnectorWorkSenderInternal");
             
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
