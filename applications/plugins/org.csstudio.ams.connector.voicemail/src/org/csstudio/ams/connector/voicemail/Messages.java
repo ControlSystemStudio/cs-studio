@@ -35,6 +35,8 @@ public class Messages extends NLS {
     public static String P_MARY_HOST;
     public static String P_MARY_PORT;
 
+    public static String P_MARY_DEFAULT_LANGUAGE;
+
     static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

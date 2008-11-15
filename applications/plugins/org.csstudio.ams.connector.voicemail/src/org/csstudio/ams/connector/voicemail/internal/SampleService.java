@@ -44,6 +44,8 @@ public class SampleService {
 	public static final String P_MARY_HOST = "org.csstudio.ams.connector.voicemail.preferences.maryHost";
     public static final String P_MARY_PORT = "org.csstudio.ams.connector.voicemail.preferences.maryPort";
 
+    public static final String P_MARY_DEFAULT_LANGUAGE = "org.csstudio.ams.connector.voicemail.preferences.maryLanguage";
+
 	/**
 	 * The only one instance of this service.
 	 */
