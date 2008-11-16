@@ -23,6 +23,8 @@
  
 package org.csstudio.ams.connector.voicemail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -39,14 +41,19 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+
 import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.voicemail.internal.SampleService;
+import org.csstudio.ams.connector.voicemail.speech.SpeechProducer;
 import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import de.dfki.lt.mary.client.MaryClient;
+import de.dfki.lt.signalproc.util.AudioPlayer;
 
 public class VoicemailConnectorWork extends Thread implements AmsConstants
 {
@@ -156,7 +163,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                         Log.log(this, Log.FATAL, "could not receive from internal jms", e);
                         iErr = VoicemailConnectorStart.STAT_ERR_JMSCON;
                     }
-
+                    
                     //TODO: TEST
                     /*
                     if (message != null)
@@ -512,8 +519,13 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         String chainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
         String textType = msg.getString(MSGPROP_TEXTTYPE);
         
-        
-        
+        ByteArrayOutputStream baos = speech.getAudioStream(text);
+        AudioInputStream ais = AudioSystem.getAudioInputStream(
+                new ByteArrayInputStream(baos.toByteArray()));
+
+        AudioPlayer ap = new AudioPlayer(ais);
+        ap.start();
+
         return result;
     }
     

@@ -21,11 +21,16 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.ams.connector.voicemail;
+package org.csstudio.ams.connector.voicemail.speech;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.ams.Log;
 import de.dfki.lt.mary.client.MaryClient;
@@ -48,6 +53,11 @@ public class SpeechProducer
     /** Flag that indicates wheather or not the server was connected */
     private boolean connected;
     
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private SimpleDateFormat df = new SimpleDateFormat("dd. MMMMM yyyy HH:mm:ss");
+
+    private static final String regEx = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}";
+
     /**
      * 
      * @param address
@@ -81,6 +91,8 @@ public class SpeechProducer
             return null;
         }
         
+        text = workOnText(text);
+        
         String inputType = "TEXT_DE";
         String outputType = "AUDIO";
         String audioType = "WAVE";
@@ -101,11 +113,57 @@ public class SpeechProducer
         {
             ioe.printStackTrace();
         }
-
         
         return baos;
     }
     
+    private String workOnText(String text)
+    {
+        StringBuffer newText = new StringBuffer();
+        
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(text);
+        
+        Date d = null;
+        
+        int begin = 0;
+        int start = 0;
+        int ende = text.length();
+        
+        while(m.find(start))
+        {
+            start = m.start();
+            ende = m.end();
+            
+            /*System.out.println("Start: " + start);
+            System.out.println("Ende:  " + ende);
+            System.out.println("Part:  [" + text.substring(m.start(), m.end()) + "]");
+            */
+            
+            newText.append(text.substring(begin, start));
+            
+            try
+            {
+                d = sdf.parse(text.substring(m.start(), m.end()));
+
+                newText.append(df.format(d) + " Uhr");
+            }
+            catch(ParseException e)
+            {
+                Log.log(this, Log.ERROR, " *** ParseException *** : " + e.getMessage());
+                
+                newText.append("Übersetzungsfehler. ");
+            }
+            
+            begin = ende;
+            start = m.end();
+        }
+        
+        newText.append(text.substring(begin));
+        
+        return newText.toString();
+    }
+
     public boolean isConnected()
     {
         return connected;
