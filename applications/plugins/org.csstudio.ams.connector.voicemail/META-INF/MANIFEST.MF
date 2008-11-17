@@ -15,5 +15,7 @@ Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
  org.csstudio.platform.libs.dcf,
  org.csstudio.platform.utility.jms
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/maryclient.jar,
+Bundle-ClassPath: lib/capi.jar,
+ lib/maryclient.jar,
+ lib/signalproc.jar,
  .

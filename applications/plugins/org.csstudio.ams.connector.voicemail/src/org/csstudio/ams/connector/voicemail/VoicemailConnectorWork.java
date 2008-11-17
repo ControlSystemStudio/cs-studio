@@ -23,11 +23,8 @@
  
 package org.csstudio.ams.connector.voicemail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.Hashtable;
 import javax.jms.Connection;
@@ -41,19 +38,14 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-
 import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.voicemail.internal.SampleService;
-import org.csstudio.ams.connector.voicemail.speech.SpeechProducer;
+import org.csstudio.ams.connector.voicemail.isdn.CallCenter;
+import org.csstudio.ams.connector.voicemail.isdn.CallCenterException;
 import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
-
-import de.dfki.lt.mary.client.MaryClient;
-import de.dfki.lt.signalproc.util.AudioPlayer;
 
 public class VoicemailConnectorWork extends Thread implements AmsConstants
 {
@@ -72,14 +64,14 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
     // private MessageConsumer amsSubscriberVm = null;
     private JmsRedundantReceiver amsReceiver = null; 
     
+    private CallCenter callCenter = null;
+    
     private Socket server = null; 
     private DataInputStream inStream = null; 
     private DataOutputStream outStream = null; 
     private int telegramCnt = 0;
     
     private Fifo fifo = new Fifo();
-    
-    private SpeechProducer speech = null;
     
     private short sTest = 0; // 0 - normal behavior, other - for test
 
@@ -125,11 +117,13 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             {
                 if (!bInitedVmService)
                 {
-                    bInitedVmService = initMaryClient(); // initVmService();
+                    bInitedVmService = initCallCenter(); // initVmService();
                     if (!bInitedVmService)
                     {
                         iErr = VoicemailConnectorStart.STAT_ERR_VM_SERVICE;
-                        vmcs.setStatus(iErr);                                   // set it for not overwriting with next error
+                        
+                        // set it for not overwriting with next error
+                        vmcs.setStatus(iErr);
                     }
                 }
 
@@ -139,7 +133,9 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     if (!bInitedJms)
                     {
                         iErr = VoicemailConnectorStart.STAT_ERR_JMSCON;
-                        vmcs.setStatus(iErr);                                   // set it for not overwriting with next error
+                        
+                        // set it for not overwriting with next error
+                        vmcs.setStatus(iErr);
                     }
                 }
 
@@ -174,15 +170,18 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     
                     if (message != null)
                     {
-                        iErr = sendMaryMsg(message);
+                        iErr = sendIsdnMsg(message);
                     }
-
+                    
+                    /*
                     if (iErr != VoicemailConnectorStart.STAT_ERR_JMSCON)
                     {
                         while(!fifo.empty())
                         {
                             Telegram tel = (Telegram)fifo.fetch();
-                            iErr = readVmMsg(tel);                                  // send it to background
+                            
+                            // send it to background
+                            iErr = readVmMsg(tel);
                             if (iErr != VoicemailConnectorStart.STAT_OK)
                             {
                                 fifo.pushfront(tel);
@@ -190,18 +189,22 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                             }
                         }
                     }
+                    */
                     
                     //TODO: TEST
                     /*
                     if (iErr == VoicemailConnectorStart.STAT_OK)
-                        iErr = readVmMsg(null);                                 // read max. limit vm, other in the next run
+                    {
+                        // read max. limit vm, other in the next run
+                        iErr = readVmMsg(null);
+                    }
                     */
                     
                     if (iErr == VoicemailConnectorStart.STAT_ERR_VM_SERVICE_SEND)
                     {
                         closeVmService();
                         bInitedVmService = false;
-                        closeJms();                                             // recover msg
+                        closeJms();
                         bInitedJms = false;
                     }
                     
@@ -214,24 +217,33 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     if (iErr == VoicemailConnectorStart.STAT_ERR_JMSCON
                     || iErr == VoicemailConnectorStart.STAT_ERR_VM_SERVICE_BADRSP)
                     {
-                        closeJms();                                             //recover = reopen
+                        // recover = reopen
+                        closeJms();
                         bInitedJms = false;
                     }
                 }
 
                 if (iErr == VoicemailConnectorStart.STAT_ERR_VM_SERVICE_BADRSP)
+                {
                     sleeptime = 15000;
+                }
                 else
-                    sleeptime = 100;                                        //server is busy
+                {
+                    // server is busy
+                    sleeptime = 100;
+                }
+                
                 // set status in every loop
-                vmcs.setStatus(iErr);                                           // set error status, can be OK if no error
+                // set error status, can be OK if no error
+                vmcs.setStatus(iErr);
             }
             catch (Exception e)
             {
                 vmcs.setStatus(VoicemailConnectorStart.STAT_ERR_UNKNOWN);
                 Log.log(this, Log.FATAL, e);
 
-                closeVmService();                                                   // Disconnect - Don't forget to disconnect!
+                // Disconnect - Don't forget to disconnect!
+                closeVmService();
                 bInitedVmService = false;
                 closeJms();
                 bInitedJms = false;
@@ -245,30 +257,18 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         Log.log(this, Log.INFO, "Voicemail connector exited");
     }
 
-    private boolean initMaryClient()
+    private boolean initCallCenter()
     {
-        int iPort;
-        boolean result;
-
-        IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
-        String strAdress = store.getString(SampleService.P_MARY_HOST);
+        boolean result = false;
         
         try
         {
-            iPort = Integer.parseInt(store.getString(SampleService.P_MARY_PORT));
+            callCenter = new CallCenter();
+            result = true;
         }
-        catch(NumberFormatException nfe)
+        catch(CallCenterException cce)
         {
-            iPort = 59125;
-            Log.log(this, Log.WARN, "Cannot read the port for the MARY server. Using default port: " + iPort);
-        }
-        
-        speech = new SpeechProducer(strAdress, iPort);
-        result = speech.isConnected();
-        if(result == false)
-        {
-            speech.closeAll();
-            speech = null;
+            result = false;
         }
         
         return result;
@@ -498,7 +498,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         return false;
     }
     
-    public int sendMaryMsg(Message message) throws Exception
+    public int sendIsdnMsg(Message message) throws Exception
     {
         int result = VoicemailConnectorStart.STAT_OK;
         
@@ -516,15 +516,23 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         MapMessage msg = (MapMessage) message;
         String text = msg.getString(MSGPROP_RECEIVERTEXT);
         String recNo = msg.getString(MSGPROP_RECEIVERADDR);
-        String chainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
-        String textType = msg.getString(MSGPROP_TEXTTYPE);
+        // String chainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
+        // String textType = msg.getString(MSGPROP_TEXTTYPE);
         
-        ByteArrayOutputStream baos = speech.getAudioStream(text);
-        AudioInputStream ais = AudioSystem.getAudioInputStream(
-                new ByteArrayInputStream(baos.toByteArray()));
-
-        AudioPlayer ap = new AudioPlayer(ais);
-        ap.start();
+        try
+        {
+            callCenter.sendMessage(recNo, text);
+        }
+        catch(CallCenterException cce)
+        {
+            // TODO: What happens if we got an error?
+            result = VoicemailConnectorStart.STAT_ERR_VM_SERVICE_SEND;
+        }
+        
+        if(!acknowledge(message))
+        {
+            result = VoicemailConnectorStart.STAT_ERR_JMSCON;
+        }
 
         return result;
     }

@@ -23,22 +23,216 @@
 
 package org.csstudio.ams.connector.voicemail.isdn;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import org.csstudio.ams.Log;
+import org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin;
+import org.csstudio.ams.connector.voicemail.internal.SampleService;
+import org.csstudio.ams.connector.voicemail.speech.SpeechProducer;
+import org.eclipse.jface.preference.IPreferenceStore;
+import de.dfki.lt.signalproc.util.AudioConverterUtils;
+import uk.co.mmscomputing.device.capi.CapiCallApplication;
+import uk.co.mmscomputing.device.capi.CapiChannel;
+import uk.co.mmscomputing.device.capi.CapiMetadata;
+import uk.co.mmscomputing.device.capi.exception.CapiException;
+import uk.co.mmscomputing.device.capi.plc.DisconnectInd;
+import uk.co.mmscomputing.util.metadata.Metadata;
+import uk.co.mmscomputing.util.metadata.MetadataListener;
+
 /**
  * @author Markus Moeller
  *
  */
-public class CallCenter
+public class CallCenter implements MetadataListener
 {
+    /** CAPI Interface for sending and receiving telephone calls */
+    private CapiCallApplication appl = null;
+    
+    /** Class that encapsulates the MaryClient */
+    private SpeechProducer speech = null;
+    
     /** Flag that indicates whether or not the instance of this class is doing a calling */
     private boolean busy;
     
-    public CallCenter()
+    public CallCenter() throws CallCenterException
     {
         busy = false;
+        
+        initSpeechProducer();
+    }
+    
+    private void initSpeechProducer() throws CallCenterException
+    {
+        int iPort;
+
+        IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
+        String strAdress = store.getString(SampleService.P_MARY_HOST);
+        
+        try
+        {
+            iPort = Integer.parseInt(store.getString(SampleService.P_MARY_PORT));
+        }
+        catch(NumberFormatException nfe)
+        {
+            iPort = 59125;
+            Log.log(this, Log.WARN, "Cannot read the port for the MARY server. Using default port: " + iPort);
+        }
+        
+        speech = new SpeechProducer(strAdress, iPort);
+        if(!speech.isConnected())
+        {
+            speech.closeAll();
+            speech = null;
+            
+            throw new CallCenterException("Connection to MARY server failed.");
+        }
+    }
+
+    public void sendMessage(String receiver, String text) throws CallCenterException
+    {
+        AudioInputStream ais = null;
+        ByteArrayOutputStream baos = null;
+        
+        baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht vom Alarmsystem. Folgende Alarmmeldung wurde gesendet. " + text);
+
+        /*
+        try
+        {
+            ais = AudioSystem.getAudioInputStream();
+        }
+        catch(UnsupportedAudioFileException uafe)
+        {
+            throw new CallCenterException(uafe.getMessage());
+        }
+        catch(IOException ioe)
+        {
+            throw new CallCenterException(ioe.getMessage());
+        }
+        finally
+        {
+            if(ais != null)
+            {
+                try{ais.close();}catch(Exception e){}
+                ais = null;
+            }
+            
+            if(baos != null)
+            {
+                try{baos.close();}catch(Exception e){}
+                baos = null;
+            }
+        }
+        */
+        
+        CapiMetadata md = new CapiMetadata();
+
+        // need only one connection
+        md.useMaxLogicalConnections(1);
+        
+        // use first controller
+        md.useController(1);
+        
+        // set some defaults
+        md.useALaw();
+
+        md.use64kBit();                                
+
+        // want to listen
+        md.addListener(this);
+
+        try
+        {
+            appl = new CapiCallApplication(md);
+            
+            // start capi thread
+            appl.start();
+            
+            busy = true;
+            
+            try
+            {
+                System.err.println("Try connecting to " + receiver + ". Will wait for 10 sec.");
+                
+                // send connect request and wait for connection (max 10 sec.)
+                CapiChannel channel = appl.connect(receiver, 10000);
+                
+                // waste input data
+                channel.getInputStream().close();
+                
+                System.err.println("Connected to " + receiver);
+
+                /*
+                String  dtmfcode="0123";
+                
+                channel.startDTMF();
+                String dtmf=channel.getDTMFDigits(dtmfcode.length(),60000);// wait for 'length' DTMF tones within 60secs
+                System.err.println("DTMF "+dtmf+" ["+dtmfcode+"]");
+                if(dtmfcode.equals(dtmf)){
+                  System.out.println("\n\n\nSuccess "+dtmf+"\n\n\n");
+                }else{
+                  System.out.println("\n\n\nOps "+dtmf+"\n\n\n");
+                }
+                */
+                
+                try
+                {
+                    System.err.println("Try sending data to " + receiver);
+
+                    ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+                    // write from in ==> channel
+                    channel.writeToOutput(AudioConverterUtils.downSampling(ais, 8000));
+                }
+                catch(Exception e)
+                {
+                    System.err.println(e.getMessage());
+                }
+                
+                channel.close();
+            }
+            catch(Exception e)
+            {
+                System.err.println(e.getMessage());
+            }
+        
+            // ais.close();
+            appl.close();
+        }
+        catch(CapiException ce)
+        {
+            busy = false;
+            
+            throw new CallCenterException(ce.getMessage());
+        }
+        finally
+        {
+            busy = false;
+        }
     }
     
     public boolean isBusy()
     {
         return busy;
+    }
+
+    public void update(Object type, Metadata metadata)
+    {
+        // disconnected -> close application
+        if(type instanceof DisconnectInd)
+        {
+            System.err.println("End SpeechSend.");
+        }
+        else if(type instanceof Exception)
+        {
+            System.err.println(type);
+            // System.err.println(((Exception)data).getMessage());
+            ((Exception)type).printStackTrace();
+        }
+        else
+        {
+            System.err.println(type);
+        }
     }
 }
