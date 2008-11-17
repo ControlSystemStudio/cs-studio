@@ -280,6 +280,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
      * @return <code>true</code> if all o.k.,
      *   and <code>false</code> if Modem initialization failed.
      */
+    @SuppressWarnings("unused")
     private boolean initVmService()
     {
         try
@@ -539,6 +540,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         return result;
     }
     
+    @SuppressWarnings("unused")
     private int sendVmMsg(Message message) throws Exception
     {
         if (!(message instanceof MapMessage))
@@ -740,6 +742,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         return iRet;
     }
 
+    @SuppressWarnings("unused")
     private int readVmMsg(Telegram tel) throws Exception
     {
         int iErr = VoicemailConnectorStart.STAT_ERR_UNKNOWN;

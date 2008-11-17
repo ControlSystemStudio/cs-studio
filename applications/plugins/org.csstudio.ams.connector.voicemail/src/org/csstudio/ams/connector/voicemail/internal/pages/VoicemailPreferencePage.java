@@ -25,7 +25,6 @@ package org.csstudio.ams.connector.voicemail.internal.pages;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
@@ -76,6 +75,9 @@ public class VoicemailPreferencePage extends FieldEditorPreferencePage implement
 
         new Label(this.getFieldEditorParent(), SWT.NONE);
         new Label(this.getFieldEditorParent(), SWT.NONE);
+
+        addField(new StringFieldEditor(SampleService.P_MARY_DEFAULT_LANGUAGE,
+                Messages.P_MARY_DEFAULT_LANGUAGE, getFieldEditorParent()));
 
         adjustGridLayout();
 	}
