@@ -51,6 +51,6 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 	    node.put(SampleService.P_MARY_HOST, "krykpcsms.desy.de");
 	    node.put(SampleService.P_MARY_PORT, "59125");
 	    
-	    node.put(SampleService.P_MARY_DEFAULT_LANGUAGE, "Deutsch");
+	    node.put(SampleService.P_MARY_DEFAULT_LANGUAGE, "TEXT_DE");
 	}
 }

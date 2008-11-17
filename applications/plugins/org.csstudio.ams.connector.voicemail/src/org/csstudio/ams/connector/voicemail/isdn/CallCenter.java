@@ -65,22 +65,23 @@ public class CallCenter implements MetadataListener
     
     private void initSpeechProducer() throws CallCenterException
     {
-        int iPort;
+        int port;
 
         IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
-        String strAdress = store.getString(SampleService.P_MARY_HOST);
+        String address = store.getString(SampleService.P_MARY_HOST);
+        String inputType = store.getString(SampleService.P_MARY_DEFAULT_LANGUAGE);
         
         try
         {
-            iPort = Integer.parseInt(store.getString(SampleService.P_MARY_PORT));
+            port = Integer.parseInt(store.getString(SampleService.P_MARY_PORT));
         }
         catch(NumberFormatException nfe)
         {
-            iPort = 59125;
-            Log.log(this, Log.WARN, "Cannot read the port for the MARY server. Using default port: " + iPort);
+            port = 59125;
+            Log.log(this, Log.WARN, "Cannot read the port for the MARY server. Using default port: " + port);
         }
         
-        speech = new SpeechProducer(strAdress, iPort);
+        speech = new SpeechProducer(address, port, inputType);
         if(!speech.isConnected())
         {
             speech.closeAll();
@@ -90,13 +91,18 @@ public class CallCenter implements MetadataListener
         }
     }
 
-    public void sendMessage(String receiver, String text) throws CallCenterException
+    public void makeCall(String receiver, String text) throws CallCenterException
     {
         AudioInputStream ais = null;
         ByteArrayOutputStream baos = null;
         
-        baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht vom Alarmsystem. Folgende Alarmmeldung wurde gesendet. " + text);
-
+        baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Folgende Alarmmeldung wurde gesendet. " + text);
+        
+        if(baos == null)
+        {
+            throw new CallCenterException("Cannot create speech stream.");
+        }
+        
         /*
         try
         {

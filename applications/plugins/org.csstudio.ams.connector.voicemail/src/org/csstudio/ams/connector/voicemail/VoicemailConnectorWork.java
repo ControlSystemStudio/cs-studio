@@ -521,11 +521,13 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         
         try
         {
-            callCenter.sendMessage(recNo, text);
+            callCenter.makeCall(recNo, text);
         }
         catch(CallCenterException cce)
         {
             // TODO: What happens if we got an error?
+            Log.log(this, Log.ERROR, "Cannot make the call: " + cce.getMessage());
+            
             result = VoicemailConnectorStart.STAT_ERR_VM_SERVICE_SEND;
         }
         

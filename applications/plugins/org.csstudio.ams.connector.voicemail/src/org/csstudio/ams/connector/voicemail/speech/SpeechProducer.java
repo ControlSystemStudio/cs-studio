@@ -24,6 +24,8 @@
 package org.csstudio.ams.connector.voicemail.speech;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.ParseException;
@@ -31,7 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.csstudio.ams.Log;
 import de.dfki.lt.mary.client.MaryClient;
 
@@ -49,7 +50,10 @@ public class SpeechProducer
     
     /** Port of MARY server */
     private int maryPort = 0;
-    
+
+    /** Default input type (TEXT_DE, TEXT_EN) */
+    private String inputType = null;
+
     /** Flag that indicates wheather or not the server was connected */
     private boolean connected;
     
@@ -63,10 +67,11 @@ public class SpeechProducer
      * @param address
      * @param port
      */
-    public SpeechProducer(String address, int port)
+    public SpeechProducer(String address, int port, String inputType)
     {
         maryHost = address;
         maryPort = port;
+        this.inputType = inputType;
         
         try
         {
@@ -93,7 +98,6 @@ public class SpeechProducer
         
         text = workOnText(text);
         
-        String inputType = "TEXT_DE";
         String outputType = "AUDIO";
         String audioType = "WAVE";
         String defaultVoiceName = null;
@@ -102,16 +106,24 @@ public class SpeechProducer
         
         try
         {
-            mary.process(text, inputType, outputType, audioType,
-                defaultVoiceName, baos);
+            mary.process(text, inputType, outputType, audioType, defaultVoiceName, baos);
         }
         catch(UnknownHostException uhe)
         {
-            uhe.printStackTrace();
+            Log.log(Log.ERROR, " *** UnknownHostException *** : " + uhe.getMessage());
+            
+            baos = null;
         }
         catch(IOException ioe)
         {
-            ioe.printStackTrace();
+            Log.log(Log.ERROR, " *** IOException *** : " + ioe.getMessage());
+            
+            baos = null;
+        }
+        
+        if(baos == null)
+        {
+            baos = readErrorSpeechText();
         }
         
         return baos;
@@ -152,7 +164,7 @@ public class SpeechProducer
             {
                 Log.log(this, Log.ERROR, " *** ParseException *** : " + e.getMessage());
                 
-                newText.append("Übersetzungsfehler. ");
+                newText.append(" Übersetzungsfehler");
             }
             
             begin = ende;
@@ -164,6 +176,50 @@ public class SpeechProducer
         return newText.toString();
     }
 
+    public ByteArrayOutputStream readErrorSpeechText()
+    {
+        ByteArrayOutputStream baos = null;
+        FileInputStream file = null;
+        byte[] audio = new byte[65536];
+        int read = 0;
+        
+        try
+        {
+            file = new FileInputStream("./speech/error_server_offline.wav");
+            baos = new ByteArrayOutputStream();
+            while(file.available() > 0)
+            {
+                read = file.read(audio);
+                baos.write(audio, 0, read);
+                Log.log(Log.DEBUG, "read = " + read);
+            }
+        }
+        catch(FileNotFoundException fnfe)
+        {
+            Log.log(this, Log.ERROR, " *** FileNotFoundException *** : " + fnfe.getMessage());
+        }
+        catch(IOException ioe)
+        {
+            Log.log(this, Log.ERROR, " *** IOException *** : " + ioe.getMessage());
+            
+            if(baos != null)
+            {
+                try{baos.close();}catch(IOException e){ }                
+                baos = null;
+            }                       
+        }
+        finally
+        {
+            if(file != null)
+            {
+                try{file.close();}catch(IOException e){ }                
+                file = null;
+            }             
+        }
+        
+        return baos;
+    }
+    
     public boolean isConnected()
     {
         return connected;
