@@ -153,12 +153,12 @@ public class IocListReader {
 
 	public void readIocRecordNames() {
 		for (IOC ioc : _model.getIocList()) {
-			CentralLogger.getInstance().debug(this, "from ioclist: " + ioc); // das
+			CentralLogger.getInstance().debug(this, "from ioclist: " + ioc); 	// das
 																				// tut
 																				// NIX.
 																				// warum
 																				// nicht?
-			System.out.println("from ioclist: " + ioc); // das tut, was es soll.
+			System.out.println("from ioclist: " + ioc); 						// -------------> das tut, was es soll.
 			String pathFile = _prefs.getString(Activator.getDefault()
 					.getPluginId(),
 					LdapUpdaterPreferenceConstants.IOC_DBL_DUMP_PATH, "", null)

@@ -85,6 +85,15 @@ public class UpdateComparator {
 					e.printStackTrace();
 				}
 
+				// hier müssen die header-parameter geschrieben werden, zB epicsIPAddress, ...
+				//...
+				//...
+				//...
+				
+				// und wenn das fertig ist, müssen sie in dem exist-zweig auch aktualisiert werden, wenn
+				// sie noch nicht vorhanden sind.
+				// das ist dann fast der gleiche mechanismus wie bei den record-namen, nur der LDAP-level ist ein anderer.
+				
 				// -------------------------------------------------------------------------
 				// dann alle recordNames dieses IOC in LDAP anlegen
 				List<String> recordNames2 = ioc.getIocRecordNames();

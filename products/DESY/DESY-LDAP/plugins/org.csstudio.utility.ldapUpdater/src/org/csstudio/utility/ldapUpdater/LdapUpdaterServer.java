@@ -69,9 +69,14 @@ public class LdapUpdaterServer implements IApplication {
     }
     
     myDateTimeString dateTimeString = new myDateTimeString();   
-    String autostart = dateTimeString.getDateTimeString( "", "HH:mm:ss", (startSec)*1000);
-    _log.debug(this, "Time interval until autostart is " + autostart );
-    CentralLogger.getInstance().debug(this, "Time interval until autostart is " + autostart );            
+//    String autostart = dateTimeString.getDateTimeString( "", "HH:mm:ss", (startSec)*1000);
+//    _log.debug(this, "Time interval until autostart is " + autostart + " (UTC)");
+//    CentralLogger.getInstance().debug(this, "Time interval until autostart is " + autostart + " (UTC)");            
+
+    String delayStr = dateTimeString.getDateTimeString( "", "HH:mm:ss", (delay)*1000);
+    _log.debug(this, "Delay until autostart is " + delayStr + " (UTC)" );
+    CentralLogger.getInstance().debug(this, "Delay until autostart is " + delayStr + " (UTC)");            
+
     for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
         _log.debug(this, "Running startup service: " + s.toString());
         CentralLogger.getInstance().debug(this, "Running startup service: " + s.toString());

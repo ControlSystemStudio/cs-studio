@@ -46,6 +46,7 @@ public class ReadLdapDatabase implements Observer{
         
         for (String record : list) {
             CentralLogger.getInstance().debug(this, "LDAP: "+record);
+            
         }
         
         CentralLogger.getInstance().info(this, "IOC names in LDAP tree : "+list.size());   
