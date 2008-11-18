@@ -95,13 +95,7 @@ public class CallCenter implements MetadataListener
     {
         AudioInputStream ais = null;
         ByteArrayOutputStream baos = null;
-        
-        baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Folgende Alarmmeldung wurde gesendet. " + text);
-        
-        if(baos == null)
-        {
-            throw new CallCenterException("Cannot create speech stream.");
-        }
+        boolean repeat = true;
         
         /*
         try
@@ -132,6 +126,8 @@ public class CallCenter implements MetadataListener
         }
         */
         
+        baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Folgende Alarmmeldung wurde gesendet.");
+
         CapiMetadata md = new CapiMetadata();
 
         // need only one connection
@@ -159,7 +155,7 @@ public class CallCenter implements MetadataListener
             
             try
             {
-                System.err.println("Try connecting to " + receiver + ". Will wait for 10 sec.");
+                Log.log(Log.INFO, "Try connecting to " + receiver + ". Will wait for 10 sec.");
                 
                 // send connect request and wait for connection (max 10 sec.)
                 CapiChannel channel = appl.connect(receiver, 10000);
@@ -167,25 +163,19 @@ public class CallCenter implements MetadataListener
                 // waste input data
                 channel.getInputStream().close();
                 
-                System.err.println("Connected to " + receiver);
-
-                /*
-                String  dtmfcode="0123";
-                
-                channel.startDTMF();
-                String dtmf=channel.getDTMFDigits(dtmfcode.length(),60000);// wait for 'length' DTMF tones within 60secs
-                System.err.println("DTMF "+dtmf+" ["+dtmfcode+"]");
-                if(dtmfcode.equals(dtmf)){
-                  System.out.println("\n\n\nSuccess "+dtmf+"\n\n\n");
-                }else{
-                  System.out.println("\n\n\nOps "+dtmf+"\n\n\n");
-                }
-                */
+                Log.log(Log.INFO, "Connected to " + receiver);
                 
                 try
                 {
-                    System.err.println("Try sending data to " + receiver);
-
+                    Log.log(Log.INFO, "Try sending data to " + receiver);
+                    
+                    if(baos == null)
+                    {
+                        busy = false;
+                        
+                        throw new CallCenterException("Cannot create speech stream.");
+                    }
+                    
                     ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
                     // write from in ==> channel
@@ -193,14 +183,97 @@ public class CallCenter implements MetadataListener
                 }
                 catch(Exception e)
                 {
-                    System.err.println(e.getMessage());
+                    Log.log(Log.ERROR, e.getMessage());
+                }
+                finally
+                {                        
+                    if(ais!=null){try{ais.close();}catch(Exception e){}ais = null;}
+                    if(baos!=null){try{baos.close();}catch(Exception e){}baos = null;}
+                }
+
+                while(repeat)
+                {
+                    // Send the alarm text
+                    try
+                    {
+                        Log.log(Log.INFO, "Try sending data to " + receiver);
+    
+                        baos = speech.getAudioStream(text);
+                        
+                        if(baos == null)
+                        {
+                            busy = false;
+                            
+                            throw new CallCenterException("Cannot create speech stream.");
+                        }
+                        
+                        ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(baos.toByteArray()));
+    
+                        // write from in ==> channel
+                        channel.writeToOutput(AudioConverterUtils.downSampling(ais, 8000));
+                    }
+                    catch(Exception e)
+                    {
+                        Log.log(Log.ERROR, e.getMessage());
+                    }
+                    finally
+                    {                        
+                        if(ais!=null){try{ais.close();}catch(Exception e){}ais = null;}
+                        if(baos!=null){try{baos.close();}catch(Exception e){}baos = null;}
+                    }
+                    
+                    try
+                    {
+                        Log.log(Log.INFO, "Try sending data to " + receiver);
+    
+                        baos = speech.getAudioStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
+                        
+                        if(baos == null)
+                        {
+                            busy = false;
+                            
+                            throw new CallCenterException("Cannot create speech stream.");
+                        }
+                        
+                        ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(baos.toByteArray()));
+    
+                        // write from in ==> channel
+                        channel.writeToOutput(AudioConverterUtils.downSampling(ais, 8000));
+                    }
+                    catch(Exception e)
+                    {
+                        Log.log(Log.ERROR, e.getMessage());
+                    }
+                    finally
+                    {                        
+                        if(ais!=null){try{ais.close();}catch(Exception e){}ais = null;}
+                        if(baos!=null){try{baos.close();}catch(Exception e){}baos = null;}
+                    }
+
+                    channel.startDTMF();
+                    
+                    // wait for 'length' DTMF tones within 60secs
+                    String dtmf = channel.getDTMFDigits(1, 20000);
+                    
+                    Log.log(Log.INFO, "DTMF " + dtmf);
+                    
+                    if(dtmf.equals("1"))
+                    {
+                        Log.log(Log.INFO, "Success " + dtmf);
+                    }
+                    else
+                    {
+                        Log.log(Log.INFO, "OOOOps " + dtmf);
+                        
+                        repeat = false;
+                    }
                 }
                 
                 channel.close();
             }
             catch(Exception e)
             {
-                System.err.println(e.getMessage());
+                Log.log(Log.ERROR, e.getMessage());
             }
         
             // ais.close();
@@ -225,20 +298,18 @@ public class CallCenter implements MetadataListener
 
     public void update(Object type, Metadata metadata)
     {
-        // disconnected -> close application
+        // disconnected
         if(type instanceof DisconnectInd)
         {
-            System.err.println("End SpeechSend.");
+            Log.log(Log.DEBUG, "End SpeechSend.");
         }
         else if(type instanceof Exception)
         {
-            System.err.println(type);
-            // System.err.println(((Exception)data).getMessage());
-            ((Exception)type).printStackTrace();
+            Log.log(Log.DEBUG, type.toString(), (Exception)type);
         }
         else
         {
-            System.err.println(type);
+            Log.log(Log.DEBUG, type.toString());
         }
     }
 }
