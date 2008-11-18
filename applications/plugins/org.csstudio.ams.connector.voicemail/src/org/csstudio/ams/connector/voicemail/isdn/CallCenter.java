@@ -252,7 +252,7 @@ public class CallCenter implements MetadataListener
 
                     channel.startDTMF();
                     
-                    // wait for 'length' DTMF tones within 60secs
+                    // wait for 'length' DTMF tones within 20 secs
                     String dtmf = channel.getDTMFDigits(1, 20000);
                     
                     Log.log(Log.INFO, "DTMF " + dtmf);

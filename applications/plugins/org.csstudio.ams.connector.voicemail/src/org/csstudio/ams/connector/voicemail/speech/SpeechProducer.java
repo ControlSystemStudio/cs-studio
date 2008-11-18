@@ -76,10 +76,10 @@ public class SpeechProducer
         try
         {
             mary = new MaryClient(maryHost, maryPort);
-            
+
             connected = true;
         }
-        catch (IOException e)
+        catch(IOException e)
         {
             Log.log(this, Log.ERROR, "Cannot init MARY client.");
 

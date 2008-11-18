@@ -147,7 +147,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     if (vmcs.getStatus() == VoicemailConnectorStart.STAT_INIT)
                         vmcs.setStatus(VoicemailConnectorStart.STAT_OK);
 
-                    Log.log(this, Log.DEBUG, "runs");
+                    // Log.log(this, Log.DEBUG, "runs");
                     
                     Message message = null;
                     try

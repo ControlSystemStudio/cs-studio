@@ -145,7 +145,7 @@ public class VoicemailConnectorStart implements IApplication
                     bInitedJms = initJms();
                 }
         
-                Log.log(this, Log.DEBUG, "run");
+                // Log.log(this, Log.DEBUG, "run");
                 Thread.sleep(1000);
                 
                 SynchObject actSynch = new SynchObject(0, 0);
