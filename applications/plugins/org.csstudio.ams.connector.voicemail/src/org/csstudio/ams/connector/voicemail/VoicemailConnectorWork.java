@@ -152,7 +152,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     Message message = null;
                     try
                     {
-                        message = amsReceiver.receive("amsSubscriberVm");
+                        message = amsReceiver.receive("amsSubscriberVm");                        
                     }
                     catch(Exception e)
                     {
@@ -170,7 +170,9 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     
                     if (message != null)
                     {
+                        Log.log(this, Log.DEBUG, "Message received: " + message.toString());
                         iErr = sendIsdnMsg(message);
+                        Log.log(this, Log.DEBUG, "Message sent: " + iErr);
                     }
                     
                     /*

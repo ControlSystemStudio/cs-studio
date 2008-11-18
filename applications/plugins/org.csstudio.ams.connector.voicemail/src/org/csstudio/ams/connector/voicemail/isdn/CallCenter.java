@@ -242,7 +242,7 @@ public class CallCenter implements MetadataListener
                     }
                     catch(Exception e)
                     {
-                        Log.log(Log.ERROR, e.getMessage());
+                        Log.log(this, Log.ERROR, e.getMessage());
                     }
                     finally
                     {                        
@@ -255,15 +255,15 @@ public class CallCenter implements MetadataListener
                     // wait for 'length' DTMF tones within 20 secs
                     String dtmf = channel.getDTMFDigits(1, 20000);
                     
-                    Log.log(Log.INFO, "DTMF " + dtmf);
+                    Log.log(this, Log.INFO, "DTMF " + dtmf);
                     
                     if(dtmf.equals("1"))
                     {
-                        Log.log(Log.INFO, "Success " + dtmf);
+                        Log.log(this, Log.INFO, "Success " + dtmf);
                     }
                     else
                     {
-                        Log.log(Log.INFO, "OOOOps " + dtmf);
+                        Log.log(this, Log.INFO, "OOOOps " + dtmf);
                         
                         repeat = false;
                     }
@@ -273,7 +273,7 @@ public class CallCenter implements MetadataListener
             }
             catch(Exception e)
             {
-                Log.log(Log.ERROR, e.getMessage());
+                Log.log(this, Log.ERROR, e.getMessage());
             }
         
             // ais.close();
@@ -301,15 +301,15 @@ public class CallCenter implements MetadataListener
         // disconnected
         if(type instanceof DisconnectInd)
         {
-            Log.log(Log.DEBUG, "End SpeechSend.");
+            Log.log(this, Log.DEBUG, "End SpeechSend.");
         }
         else if(type instanceof Exception)
         {
-            Log.log(Log.DEBUG, type.toString(), (Exception)type);
+            Log.log(this, Log.DEBUG, type.toString(), (Exception)type);
         }
         else
         {
-            Log.log(Log.DEBUG, type.toString());
+            Log.log(this, Log.DEBUG, type.toString());
         }
     }
 }
