@@ -25,6 +25,8 @@ package org.csstudio.ams.connector.voicemail.isdn;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import org.csstudio.ams.Log;
@@ -52,6 +54,8 @@ public class CallCenter implements MetadataListener
     
     /** Class that encapsulates the MaryClient */
     private SpeechProducer speech = null;
+    
+    private CapiChannel channel = null;
     
     /** Flag that indicates whether or not the instance of this class is doing a calling */
     private boolean busy;
@@ -158,7 +162,7 @@ public class CallCenter implements MetadataListener
                 Log.log(Log.INFO, "Try connecting to " + receiver + ". Will wait for 10 sec.");
                 
                 // send connect request and wait for connection (max 10 sec.)
-                CapiChannel channel = appl.connect(receiver, 10000);
+                channel = appl.connect(receiver, 10000);
                 
                 // waste input data
                 channel.getInputStream().close();
@@ -208,7 +212,7 @@ public class CallCenter implements MetadataListener
                         }
                         
                         ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(baos.toByteArray()));
-    
+
                         // write from in ==> channel
                         channel.writeToOutput(AudioConverterUtils.downSampling(ais, 8000));
                     }
@@ -252,18 +256,18 @@ public class CallCenter implements MetadataListener
 
                     channel.startDTMF();
                     
-                    // wait for 'length' DTMF tones within 20 secs
-                    String dtmf = channel.getDTMFDigits(1, 20000);
+                    // wait for 'length' DTMF tones within 10 secs
+                    String dtmf = channel.getDTMFDigits(1, 10000);
                     
                     Log.log(this, Log.INFO, "DTMF " + dtmf);
                     
                     if(dtmf.equals("1"))
                     {
-                        Log.log(this, Log.INFO, "Success " + dtmf);
+                        Log.log(this, Log.INFO, "** REPEATING ** ");
                     }
                     else
                     {
-                        Log.log(this, Log.INFO, "OOOOps " + dtmf);
+                        Log.log(this, Log.INFO, "** DONE **");
                         
                         repeat = false;
                     }
@@ -275,9 +279,20 @@ public class CallCenter implements MetadataListener
             {
                 Log.log(this, Log.ERROR, e.getMessage());
             }
-        
-            // ais.close();
+            
             appl.close();
+
+            synchronized(appl)
+            {
+                try
+                {
+                    Log.log(this, Log.DEBUG, "CapiCallApplication() is waiting...");
+                    appl.wait(5000);
+                }
+                catch(InterruptedException ie) {}
+            }
+            // ais.close();
+            appl = null;
         }
         catch(CapiException ce)
         {
@@ -301,7 +316,20 @@ public class CallCenter implements MetadataListener
         // disconnected
         if(type instanceof DisconnectInd)
         {
-            Log.log(this, Log.DEBUG, "End SpeechSend.");
+            if(channel != null)
+            {
+                if(channel.isDTMFEnabled())
+                {
+                    Log.log(this, Log.DEBUG, "isDTMFEnabled() = true");
+                    
+                    try{channel.stopDTMF();}catch(IOException e)
+                    {
+                        Log.log(this, Log.DEBUG, e.getMessage());
+                    }
+                }
+            }
+            
+            Log.log(this, Log.DEBUG, "Disconnected");
         }
         else if(type instanceof Exception)
         {
