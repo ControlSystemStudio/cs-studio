@@ -71,8 +71,11 @@ public final class ParserADL {
             int lastDirtyLine=0;
             while((line = buffRead.readLine()) != null){
                 lineNumber++;
-                if(line.trim().length()>0){
-                    if(line.contains("{")){ //$NON-NLS-1$
+                line = line.trim();
+                if(line.length()>0){
+                    if(line.startsWith("#")){
+                        // do nothing comment line
+                    }else if(line.contains("{")){ //$NON-NLS-1$
                         children = new ADLWidget(line,children, lineNr++);
                     }else if (line.contains("}")){ //$NON-NLS-1$
                         children.getParent().addObject(children);

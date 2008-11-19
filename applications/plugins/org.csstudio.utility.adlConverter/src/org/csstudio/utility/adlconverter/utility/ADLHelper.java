@@ -64,7 +64,8 @@ public final class ADLHelper {
      * @return the converted RGB
      */
     public static RGB getRGB(final String clr) {
-        int colorID = Integer.parseInt(clr);
+        String color = clr.replaceAll("\"", "");
+        int colorID = Integer.parseInt(color);
         if (_rgbColor ==null || 0 > colorID || colorID >= _rgbColor.length) {
             return null;
         }

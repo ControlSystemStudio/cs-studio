@@ -196,6 +196,7 @@ public class ADLConverterMainView extends ViewPart {
                 }
                 _avaibleFiles.getList().selectAll();
                 refreshexamplePathLabel();
+                checkRelativPath();
             }
 
         });
@@ -208,7 +209,7 @@ public class ADLConverterMainView extends ViewPart {
             public void widgetSelected(final SelectionEvent e) {
                 _avaibleFiles.getList().removeAll();
                 _pathPos = 0;
-                _relativePathText.setText("");
+//                _relativePathText.setText("");
             }
 
         });
@@ -322,11 +323,14 @@ public class ADLConverterMainView extends ViewPart {
         _isRelativePath.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(final SelectionEvent e) {
-                // TODO Auto-generated method stub
-
+                 setBackground();
             }
 
             public void widgetSelected(final SelectionEvent e) {
+                setBackground();
+            }
+
+            private void setBackground() {
                 if (_isRelativePath.getSelection()) {
                     _relativePathText.setBackground(Display.getDefault().getSystemColor(
                             SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW));
@@ -334,7 +338,6 @@ public class ADLConverterMainView extends ViewPart {
                     _relativePathText.setBackground(Display.getDefault().getSystemColor(
                             SWT.COLOR_WIDGET_BACKGROUND));
                 }
-
             }
 
         });
@@ -402,6 +405,14 @@ public class ADLConverterMainView extends ViewPart {
         IPath relPath = getRelativPath((File) _avaibleFiles.getElementAt(0));
         _examplePathLabel.setText(relPath.toOSString());
     }
+    
+    private void checkRelativPath() {
+        File path = (File)_avaibleFiles.getElementAt(0);
+        if(!path.getAbsolutePath().contains(_relativePathText.getText())){
+            _relativePathText.setText("");
+        }
+    }
+
 
     /**
      * {@inheritDoc}

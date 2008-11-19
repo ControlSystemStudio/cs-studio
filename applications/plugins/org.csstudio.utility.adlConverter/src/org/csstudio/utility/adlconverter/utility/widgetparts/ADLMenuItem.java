@@ -159,7 +159,7 @@ public class ADLMenuItem extends WidgetPart{
                         map.put(param[0].trim(), param[1].trim());
                     }else{
                         if(params[i].trim().length()>0){
-                            CentralLogger.getInstance().warn(this, Messages.RelatedDisplayItem_Parameter_Error+params[i]);
+                            CentralLogger.getInstance().info(this, Messages.RelatedDisplayItem_Parameter_Error+params[i]);
                         }
                     }
                 }

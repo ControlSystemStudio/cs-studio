@@ -122,7 +122,7 @@ public class StripChart extends Widget {
             }else if(parameter.equals("clr")){
                 _widget.setPropertyValue(StripChartModel.plotColorPropertyId(index), ADLHelper.getRGB(row[1]));
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
+                CentralLogger.getInstance().info(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
@@ -158,7 +158,7 @@ public class StripChart extends Widget {
                 String yLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(StripChartModel.PROP_Y_AXIS_LABEL,yLabel);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
+                CentralLogger.getInstance().info(this, "Unknown StripChart "+stripChartPart.getType()+" paramerter: "+fileLine);
             }
         }
     }

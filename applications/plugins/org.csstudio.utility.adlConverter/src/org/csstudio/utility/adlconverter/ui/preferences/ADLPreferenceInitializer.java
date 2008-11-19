@@ -38,10 +38,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class ADLPreferenceInitializer extends AbstractPreferenceInitializer {
 
     /**
-     * 
+     * Default Constructor
      */
     public ADLPreferenceInitializer() {
-        // TODO Auto-generated constructor stub
     }
 
     /* (non-Javadoc)

@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -121,9 +122,20 @@ public class RelatedDisplay extends Widget {
             }else if(row[0].equals("label")){ //$NON-NLS-1$
                 label=row[1].replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
             }else if(row[0].equals("visual")){ //$NON-NLS-1$
-//                  TODO: RelatedDisplay-->visual  
+//              TODO: RelatedDisplay-->visual  
+//                CentralLogger.getInstance().info(this, "Unsupported Property: "+fileLine);
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
-//                  TODO: RelatedDisplay-->clrmod  
+//              TODO: RelatedDisplay-->clrmod  
+                CentralLogger.getInstance().info(this, "Unsupported Property: "+fileLine);
+            }else if(row[0].equals("selfkill")){ //$NON-NLS-1$
+//              TODO: RelatedDisplay-->selfkill  
+                CentralLogger.getInstance().info(this, "MEDM TODO: "+fileLine);
+            }else if(row[0].equals("menu_title")){ //$NON-NLS-1$
+//              TODO: RelatedDisplay-->menu_title  
+                CentralLogger.getInstance().info(this, "MEDM TODO: "+fileLine);
+            }else if(row[0].equals("decorate")){ //$NON-NLS-1$
+//              TODO: RelatedDisplay-->decorate  
+                CentralLogger.getInstance().info(this, "MEDM TODO: "+fileLine);
             }else{                
                 throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+fileLine);
             }

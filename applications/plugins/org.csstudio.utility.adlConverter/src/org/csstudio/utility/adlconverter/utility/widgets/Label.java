@@ -24,6 +24,8 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import java.util.ArrayList;
+
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -136,6 +138,7 @@ public class Label extends Widget {
         }
         int fontSize = ADLHelper.getFontSize("Times New Roman",labelText, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
         _widget.setPropertyValue(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE)); //$NON-NLS-1$
+
         if(getBasicAttribute()==null){
             _widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
         }else if(label.isType("Text")){ //$NON-NLS-1$

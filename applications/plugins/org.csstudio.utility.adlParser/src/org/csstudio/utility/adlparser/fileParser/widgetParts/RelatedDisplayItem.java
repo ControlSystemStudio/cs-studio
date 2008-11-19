@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ import org.eclipse.core.runtime.Path;
  * @version $Revision$
  * @since 20.09.2007
  */
-public class RelatedDisplayItem extends WidgetPart{
+public class RelatedDisplayItem extends WidgetPart {
 
     /**
      * The Button Label Text.
@@ -66,16 +67,20 @@ public class RelatedDisplayItem extends WidgetPart{
      * The root path for Widget.
      */
     private String _path;
-    private String _policy; 
+    private String _policy;
 
     /**
      * The default constructor.
      * 
-     * @param display An ADLWidget that correspond a ADL Related Display Item. 
-     * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
-     * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
+     * @param display
+     *            An ADLWidget that correspond a ADL Related Display Item.
+     * @param parentWidgetModel
+     *            The Widget that set the parameter from ADLWidget.
+     * @throws WrongADLFormatException
+     *             Wrong ADL format or untreated parameter found.
      */
-    public RelatedDisplayItem(final ADLWidget display, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
+    public RelatedDisplayItem(final ADLWidget display, final AbstractWidgetModel parentWidgetModel)
+            throws WrongADLFormatException {
         super(display, parentWidgetModel);
     }
 
@@ -86,51 +91,62 @@ public class RelatedDisplayItem extends WidgetPart{
     final void init() {
         _path = "/CSS/SDS";//"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/"; //$NON-NLS-1$
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
     final void parseWidgetPart(final ADLWidget display) throws WrongADLFormatException {
-//      assert !display.isType("display[n]") : "This "+display.getType()+" is not a ADL displayItem";
-      
-      for (FileLine fileLine : display.getBody()) {
-          String parameter = fileLine.getLine();
-          if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
-              continue;
-          }
-          String head = parameter.split("=")[0]; //$NON-NLS-1$
-          String tmp="";
-          try{
-               tmp= parameter.substring(head.length()+1);
-          }catch(StringIndexOutOfBoundsException exp){
-              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+fileLine+"("+display.getObjectNr()+":"+display.getType()+")["+parameter+"]");
-          }
-          String[] row=ADLHelper.cleanString(tmp);
-          head = head.trim().toLowerCase();
-          if(head.equals("label")){ //$NON-NLS-1$
-              _label=row[0];
-          }else if(head.equals("name")){ //$NON-NLS-1$
-              _name=row[0];
-          }else if(head.equals("args")){ //$NON-NLS-1$
-              _args=row;
-          }else if(head.equals("policy")){ //$NON-NLS-1$
-              _policy=row[0];
-          }else if(head.equals("x")){ //$NON-NLS-1$
-              // Do Nothing
-              // SDS not support this Property
-          }else if(head.equals("y")){ //$NON-NLS-1$
-              // Do Nothing
-              // SDS not support this Property
-          }else if(head.equals("width")){ //$NON-NLS-1$
-              // Do Nothing
-              // SDS not support this Property
-          }else if(head.equals("height")){ //$NON-NLS-1$
-              // Do Nothing
-              // SDS not support this Property
-          }else {
-              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+fileLine+"("+display.getObjectNr()+":"+display.getType()+")");
-          }
-      }
+        // assert !display.isType("display[n]") :
+        // "This "+display.getType()+" is not a ADL displayItem";
+
+        for (FileLine fileLine : display.getBody()) {
+            String parameter = fileLine.getLine();
+            if (parameter.trim().startsWith("//")) { //$NON-NLS-1$
+                continue;
+            }
+            String head = parameter.split("=")[0]; //$NON-NLS-1$
+            String tmp = "";
+            try {
+                tmp = parameter.substring(head.length() + 1);
+            } catch (StringIndexOutOfBoundsException exp) {
+                throw new WrongADLFormatException(
+                        Messages.RelatedDisplayItem_WrongADLFormatException_Begin + head
+                                + Messages.RelatedDisplayItem_WrongADLFormatException_Middle
+                                + fileLine + "(" + display.getObjectNr() + ":" + display.getType()
+                                + ")[" + parameter + "]");
+            }
+            String[] row = ADLHelper.cleanString(tmp);
+            head = head.trim().toLowerCase();
+            if (head.equals("label")) { //$NON-NLS-1$
+                _label = row[0];
+            } else if (head.equals("name")) { //$NON-NLS-1$
+                _name = row[0];
+            } else if (head.equals("args")) { //$NON-NLS-1$
+                _args = Arrays.copyOf(row, row.length+1);
+                _args[_args.length-1]=fileLine.toString();
+            } else if (head.equals("policy")) { //$NON-NLS-1$
+                _policy = row[0];
+            } else if (head.equals("x")) { //$NON-NLS-1$
+                // Do Nothing
+                // SDS not support this Property
+            } else if (head.equals("y")) { //$NON-NLS-1$
+                // Do Nothing
+                // SDS not support this Property
+            } else if (head.equals("width")) { //$NON-NLS-1$
+                // Do Nothing
+                // SDS not support this Property
+            } else if (head.equals("height")) { //$NON-NLS-1$
+                // Do Nothing
+                // SDS not support this Property
+            } else {
+                throw new WrongADLFormatException(
+                        Messages.RelatedDisplayItem_WrongADLFormatException_Begin + head
+                                + Messages.RelatedDisplayItem_WrongADLFormatException_Middle
+                                + fileLine + "(" + display.getObjectNr() + ":" + display.getType()
+                                + ")");
+            }
+        }
     }
 
     /**
@@ -138,60 +154,66 @@ public class RelatedDisplayItem extends WidgetPart{
      */
     final void generateElements() {
         _widgetModel.setPropertyValue(WaveformModel.PROP_LABELED_TICKS, true);
-        
+
         ActionData actionData = _widgetModel.getActionData();
-        if(actionData==null){
+        if (actionData == null) {
             actionData = new ActionData();
         }
-        
+
         // new Open Shell Action
         OpenDisplayActionModelFactory factoy = new OpenDisplayActionModelFactory();
         OpenDisplayActionModel action = (OpenDisplayActionModel) factoy.createWidgetAction();
-        
-        if(_label!=null){
-            action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION)
-            .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$
+
+        if (_label != null) {
+            action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION).setPropertyValue(
+                    _label.replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         // Set the Resource
-        if(_name!=null){
+        if (_name != null) {
             IPath path = new Path(_path);
-            if(!_name.toLowerCase().endsWith(".css-sds")){
-                _name=_name.concat(".css-sds");
+            if (!_name.toLowerCase().endsWith(".css-sds")) {
+                _name = _name.concat(".css-sds");
             }
             path = path.append(_name);
             WidgetProperty prop = action.getProperty(OpenDisplayActionModel.PROP_RESOURCE);
             prop.setPropertyValue(path);
         }
-        
-        if(_args!=null){
+
+        if (_args != null) {
             Map<String, String> map = new HashMap<String, String>();
             String[] params = _args[0].split(",");//$NON-NLS-1$
-            for(int i=0;i<params.length;i++){
-                String[] param = params[i].split("=");//$NON-NLS-1$
-                if(param.length==2){
-                    map.put(param[0].trim(), param[1].trim());
-                }else{
-                    if(params[i].trim().length()>0){
-                        CentralLogger.getInstance().warn(this, Messages.RelatedDisplayItem_Parameter_Error+params[i]);
+            for (int i = 0; i < params.length; i++) {
+
+                if (params[i].contains("=")) {
+                    String[] param = params[i].split("=");//$NON-NLS-1$
+                    if (param.length  >1) {
+                        map.put(param[0].trim(), param[1].trim());
+                    }else{
+                        map.put(param[0].trim(), "");
+                    }
+                } else {
+                    if (params[i].trim().length() > 0) {
+                        CentralLogger.getInstance().info(this,
+                                Messages.RelatedDisplayItem_Parameter_Error + params[i]+" ~ line: "+_args[_args.length-1]);
                     }
                 }
             }
-            
-            action.getProperty(OpenDisplayActionModel.PROP_ALIASES)
-            .setPropertyValue(map);
+
+            action.getProperty(OpenDisplayActionModel.PROP_ALIASES).setPropertyValue(map);
         }
-        
-        if(_policy!=null){
-            action.getProperty(OpenDisplayActionModel.PROP_CLOSE).setPropertyValue(_policy.contains("replace display"));
+
+        if (_policy != null) {
+            action.getProperty(OpenDisplayActionModel.PROP_CLOSE).setPropertyValue(
+                    _policy.contains("replace display"));
         }
         actionData.addAction(action);
         _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
     }
-    
+
     /**
      * 
-     * @return the Label of the Related Display Item. 
+     * @return the Label of the Related Display Item.
      */
     public final String getLabel() {
         return _label;

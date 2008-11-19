@@ -79,15 +79,18 @@ public class Waveform extends Widget {
                 throw new WrongADLFormatException(Messages.Bargraph_1);
             }
             if(row[0].equals("count")){ //$NON-NLS-1$
-                System.out.println("co");
+                // TODO: Waveform-->count
+                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
             }else if(row[0].equals("erase")){ //$NON-NLS-1$
-                System.out.println("er");
+                // TODO: Waveform-->erase
+                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
             }else if(row[0].equals("eraseMode")){ //$NON-NLS-1$
-                System.out.println("eM");
+                // TODO: Waveform-->eraseMode
+                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
             }else if(row[0].equals("erase_oldest")){ //$NON-NLS-1$
-                System.out.println("e_o");
+                // TODO: Waveform-->erase_oldest
+                CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
             }else if(row[0].equals("style")){ //$NON-NLS-1$
-                System.out.println("st");
                 String style = "1"; // Line //$NON-NLS-1$
                 String value = row[1].toLowerCase();
                 boolean line = value.contains("line");
@@ -156,7 +159,7 @@ public class Waveform extends Widget {
                 double max = Double.parseDouble(row[1].trim());
                 _widget.setPropertyValue(WaveformModel.PROP_MAX+id, max);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
@@ -205,7 +208,7 @@ public class Waveform extends Widget {
                 _widget.setPropertyValue(WaveformModel.PROP_X_AXIS_LABEL, xLabel);
                 _widget.setPropertyValue(WaveformModel.PROP_SHOW_AXES, 3);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
@@ -266,7 +269,7 @@ public class Waveform extends Widget {
                     CentralLogger.getInstance().info(this, f.toString());
                 }
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }
@@ -304,7 +307,7 @@ public class Waveform extends Widget {
                 String yLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(WaveformModel.PROP_Y_AXIS_LABEL,yLabel);
             }else{
-                CentralLogger.getInstance().warn(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
+                CentralLogger.getInstance().info(this, "Unknown Waveform "+waveformPart.getType()+" paramerter: "+fileLine);
             }
         }
     }

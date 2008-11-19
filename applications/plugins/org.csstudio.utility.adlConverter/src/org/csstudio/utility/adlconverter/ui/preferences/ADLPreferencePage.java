@@ -47,7 +47,6 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
      * editor knows how to save and restore itself.
      */
     public void init(IWorkbench workbench) {
-        // TODO Auto-generated method stub
 
     }
 }

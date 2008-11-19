@@ -133,11 +133,11 @@ public class ADLChildren {
                     _childrens.add(new SixteenBinaryBar(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"cartesian plot\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("cartesian plot")) { //$NON-NLS-1$
                     _childrens.add(new Waveform(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                }else if (adlWidget.getType().equals("\"choice button\"")) { //$NON-NLS-1$
+                }else if (adlWidget.getType().equals("choice button")) { //$NON-NLS-1$
                     _childrens.add(new ChoiceButton(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
@@ -145,7 +145,7 @@ public class ADLChildren {
                     _childrens.add(new GroupingContainer(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"dynamic symbol\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("dynamic symbol")) { //$NON-NLS-1$
                     _childrens.add(new Symbol(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
@@ -165,7 +165,7 @@ public class ADLChildren {
                     _childrens.add(new RelatedDisplay(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"message button\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("message button")) { //$NON-NLS-1$
                     _childrens.add(new ActionButton(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
@@ -191,11 +191,11 @@ public class ADLChildren {
                     _childrens.add(new Rectangle(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"related display\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("related display")) { //$NON-NLS-1$
                     _childrens.add(new RelatedDisplay(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"strip chart\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("strip chart")) { //$NON-NLS-1$
                     _childrens.add(new StripChart(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
@@ -203,11 +203,11 @@ public class ADLChildren {
                     _childrens.add(new Label(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"text update\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("text update")) { //$NON-NLS-1$
                     _childrens.add(new Label(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"text entry\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("text entry")) { //$NON-NLS-1$
                     _childrens.add(new Textinput(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
@@ -215,12 +215,12 @@ public class ADLChildren {
                     _childrens.add(new Valuator(adlWidget, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("\"basic attribute\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("basic attribute")) { //$NON-NLS-1$
                     storedBasicAttribute = adlWidget;
-                } else if (adlWidget.getType().equals("\"dynamic attribute\"")) { //$NON-NLS-1$
+                } else if (adlWidget.getType().equals("dynamic attribute")) { //$NON-NLS-1$
                     storedDynamicAttribute = adlWidget;
                 } else {
-                    CentralLogger.getInstance().warn(this,
+                    CentralLogger.getInstance().info(this,
                             Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE + adlWidget.getType()+ "(ObjectNo:"+adlWidget.getObjectNr()+" Widget: "+adlWidget);
                 }
             } catch (Exception e) {

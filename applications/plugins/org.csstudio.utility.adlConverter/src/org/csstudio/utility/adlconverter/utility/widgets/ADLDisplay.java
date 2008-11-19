@@ -96,10 +96,11 @@ public class ADLDisplay extends Widget{
                 CentralLogger.getInstance().debug(this, "gridon"+display.toString());
                 // TODO: SDS don't support yet. Display --> gridOn
             }else if(row[0].trim().toLowerCase().equals("snaptogrid")){ //$NON-NLS-1$
+                _widget.setPropertyValue(DisplayModel.PROP_GRID_ON, row[1].equals("1"));
                 CentralLogger.getInstance().debug(this, "snaptogrid"+display.toString());
                 // TODO: SDS don't support yet. Display --> snapToGrid
-            }else {
-                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+fileLine+Messages.Display_WrongADLFormatException_Parameter_End);
+            }else {//Unknown Property
+                CentralLogger.getInstance().info(this, "Unknwon Property: "+fileLine, new WrongADLFormatException(fileLine+Messages.Display_WrongADLFormatException_Parameter_End));
             }
 
         }

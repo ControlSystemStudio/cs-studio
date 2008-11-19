@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
@@ -95,8 +96,17 @@ public class ActionButton extends Widget {
                 // TODO: ActionButton-->clrmod
             }else if(row[0].equals("pressed_label")){ //$NON-NLS-1$
                 // TODO: ActionButton-->pressed_label (Not Supported from SDS)
-            }else{                
-
+                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
+            }else if(row[0].equals("inactive_label")){
+                // TODO: ActionButton-->inactive_label (medm: Not Supported from SDS)
+                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
+            }else if(row[0].equals("zero_label")){
+             // TODO: ActionButton-->zero_label (medm: Not Supported from SDS)
+                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
+            } else if(row[0].equals("one_label")){
+                // TODO: ActionButton-->one_label (medm: Not Supported from SDS)
+                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
+            }else{
                 throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+fileLine);
             }
         }

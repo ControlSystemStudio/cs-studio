@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -81,16 +82,30 @@ public class ADLObject extends WidgetPart{
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Begin+parameter+Messages.ADLObject_WrongADLFormatException_End);
             }
+            row[1] = row[1].replaceAll("\"", "").trim(); 
             if(row[0].trim().toLowerCase().equals("x")){ //$NON-NLS-1$
-                _x=Integer.parseInt(row[1].trim());
+                if(row[1].startsWith("$")){
+                    //TODO: ADLObject --> Dynamic x coordinate
+                    _x=0;
+                }else{
+                    _x=Integer.parseInt(row[1]);
+                }
             }else if(row[0].trim().toLowerCase().equals("y")){ //$NON-NLS-1$
-                _y=Integer.parseInt(row[1].trim());
+                if(row[1].startsWith("$")){
+                    //TODO: ADLObject --> Dynamic y coordinate
+                    _y=0;
+                }else {
+                    _y=Integer.parseInt(row[1]);
+                }
             }else if(row[0].trim().toLowerCase().equals("width")){ //$NON-NLS-1$
-                _width=Integer.parseInt(row[1].trim());
+                _width=Integer.parseInt(row[1]);
             }else if(row[0].trim().toLowerCase().equals("height")){ //$NON-NLS-1$
-                _height=Integer.parseInt(row[1].trim());
+                _height=Integer.parseInt(row[1]);
+            }else if(row[0].trim().toLowerCase().equals("groupid")){ //$NON-NLS-1$
+                // TODO: ADLObject->groupid
+                CentralLogger.getInstance().info(this, "Unhandel Parameter: "+fileLine);
             }else {
-                throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLObject_WrongADLFormatException_Parameter_End);
+                throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Parameter_Begin+fileLine+Messages.ADLObject_WrongADLFormatException_Parameter_End);
             }
         }
     }
