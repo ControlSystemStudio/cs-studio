@@ -52,8 +52,9 @@ public class PreferencePage extends FieldEditorPreferencePage
 			new StringFieldEditor(PreferenceConstants.P_STRING_URL, Messages.getString("PreferencePage.URL"), getFieldEditorParent())); //$NON-NLS-1$
 		addField(
 			new StringFieldEditor(PreferenceConstants.P_STRING_USER_DN, Messages.getString("PreferencePage.DN"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(
-				new StringFieldEditor(PreferenceConstants.P_STRING_USER_PASSWORD, Messages.getString("PreferencePage.PASS"), getFieldEditorParent())); //$NON-NLS-1$
+		StringFieldEditor sfeP= new StringFieldEditor(PreferenceConstants.P_STRING_USER_PASSWORD, Messages.getString("PreferencePage.PASS"), getFieldEditorParent()); //$NON-NLS-1$
+        sfeP.getTextControl(getFieldEditorParent()).setEchoChar('*');
+		addField(sfeP);		        
 		addField(
 				new StringFieldEditor(PreferenceConstants.SECURITY_PROTOCOL, Messages.getString("PreferencePage.SECURITY_PROTOCOL"), getFieldEditorParent())); //$NON-NLS-1$
 		addField(
