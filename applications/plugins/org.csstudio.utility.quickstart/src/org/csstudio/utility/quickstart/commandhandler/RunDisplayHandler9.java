@@ -9,7 +9,6 @@ public class RunDisplayHandler9 extends AbstractRunDisplayHandler {
 	 * Call methods for sds file i from inherited class to open sds file.
 	 * (This is the class for the 'handler' extension point.)
 	 */
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String[] sdsFileList = getFileList();
 		openDisplay(sdsFileList, 9);
