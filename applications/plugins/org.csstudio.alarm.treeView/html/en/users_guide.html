@@ -14,7 +14,7 @@
 &gt; Alarm Tree</i>.</p>
 <p>First, make sure that the LDAP directory server and the JMS servers are set
 up correctly. The alarm tree will listen to two JMS servers for redundancy.
-Chaning the JMS settings after the tree is already running requires a
+Changing the JMS settings after the tree is already running requires a
 restart.</p>
 <p>After the servers are set up, you can use the <i>Facility names</i> list to
 add the facilities that you would like to display in the tree. You can select
@@ -26,27 +26,32 @@ tree.</p>
 
 <h2>Using the view</h2>
 <h3>Icons</h3>
-<p>The view displays each node with two vertical, colored rectangles as the
-node's icon. The left part of the icon indicates the node's highest
-unacknowledged alarm, the right part indicates the current alarm state. The
-colors represent the following severities:</p>
+<p>The view displays each node with colored circles which indicate the current
+alarm state and, if applicable, the most severe past alarm which has not been
+acknowledged yet. The colors have the following meaning:</p>
 <ul>
+<li>Blue: invalid</li>
 <li>Red: major</li>
 <li>Yellow: minor</li>
-<li>Blue: invalid</li>
 <li>Green: no alarm</li>
 </ul>
+<p>The right/foreground icon always indicates the current alarm state. If the
+current alarm is acknowledged, a checkmark is displayed on top of the alarm
+icon. If there are past alarms for a node which have a higher severity than the
+current alarm and which have not been acknowledged yet, a second icon is
+displayed to the left of and behind the primary icon.</p>
 <p>For the leaf nodes which represent individual records (process variables),
 the icon indicates the alarm state of that record. For nodes which have child
 nodes, the icon indicates the highest severity of its children.</p>
 <h3>Acknowledging alarms</h3>
-<p>When a node has any unacknowledged alarms, as indicated by a color other
-than green for the left part of the icon, you can use the context menu of the
-node to send an acknowledgement message for that node. Note that the node will
-not be displayed as acknowledged immediately. The tree will update the node's
-state when it receives the acknowledgement message.</p>
-<p>When the selected node is a parent node, one acknowledgement message will be
-sent for each child that has an unacknowledged alarm.</p>
+<p>When a node has any unacknowledged alarms, you can use the context menu of
+then ode to send an acknowledgement message for that node. Note that the node
+will not be displayed as acknowledged immediately. The tree will update the
+node's state when it receives the acknowledgement message.</p>
+<p>An acknowledgement always acknowledges both the current alarm, and any past
+unacknowledged alarms. When the selected node is a parent node, one
+acknowledgement message will be sent for each child that has an unacknowledged
+alarm.</p>
 <h3>Opening the alarm display</h3>
 <p>If an alarm display is configured for a record in the LDAP directory, you
 can open that alarm display from the context menu using the &quot;Run alarm
