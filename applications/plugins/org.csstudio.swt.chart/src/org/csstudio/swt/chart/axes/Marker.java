@@ -13,7 +13,7 @@ public class Marker
     final private double position, value;
     
     /** The (multiline) text to display */
-    final private String text;
+    private String text;
     
     private boolean selected = false;
     
@@ -48,8 +48,13 @@ public class Marker
         return text;
     }
     
+    final public void setText(final String text)
+    {
+        this.text = text;
+    }
+
     /** @return <code>true</code> if currently selected */
-    final boolean isSelected()
+    final public boolean isSelected()
     {
         return selected;
     }

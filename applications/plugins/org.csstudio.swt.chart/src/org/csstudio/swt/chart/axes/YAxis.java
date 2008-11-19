@@ -158,7 +158,7 @@ public class YAxis extends Axis
     /** @return Array of current markers. */
     public final Marker[] getMarkers()
     {
-        Marker result[] = new Marker[markers.size()];
+        final Marker result[] = new Marker[markers.size()];
         return markers.toArray(result);
     }
 

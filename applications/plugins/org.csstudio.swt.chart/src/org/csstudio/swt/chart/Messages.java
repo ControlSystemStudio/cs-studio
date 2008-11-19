@@ -42,7 +42,8 @@ public class Messages extends NLS
     public static String TraceType_Lines;
     public static String TraceType_SingleLine;
     public static String TraceType_Markers;
-
+    public static String UpdateSelectedMarker;
+    public static String UpdateSelectedMarker_TT;
     
     static
     {
