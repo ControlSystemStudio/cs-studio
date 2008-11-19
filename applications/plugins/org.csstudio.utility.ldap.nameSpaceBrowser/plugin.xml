@@ -54,4 +54,13 @@
                />
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective">
+         <viewShortcut
+               id="org.csstudio.utility.ldap.namespacebrowser.ui.MainView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
 </plugin>

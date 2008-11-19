@@ -70,4 +70,13 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.utility.nameSpaceSearch.preference.PreferenceInitializer"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective">
+         <viewShortcut
+               id="org.csstudio.utility.nameSpaceSearch.ui.MainView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
 </plugin>
