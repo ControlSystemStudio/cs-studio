@@ -55,10 +55,10 @@ public final class PreferenceConstants {
 	public static final String JMS_CONTEXT_FACTORY_SECONDARY = "jms.contextfactory.2";
 	
 	/**
-	 * A preference that stores the name or names of the JMS queue to connect
+	 * A preference that stores the name or names of the JMS topics to connect
 	 * to.
 	 */
-	public static final String JMS_QUEUE = "jms.queue";
+	public static final String JMS_TOPICS = "jms.queue";
 	
 	/**
 	 * A preference that stores the facility names that should be displayed

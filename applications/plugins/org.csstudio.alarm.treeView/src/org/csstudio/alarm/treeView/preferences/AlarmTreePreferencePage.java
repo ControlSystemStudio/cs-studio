@@ -111,7 +111,7 @@ public class AlarmTreePreferencePage
 				"Provider URL:", g2));
 		// --INITIAL_CONTEXT_FACTORY
 		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
-		addField(new StringFieldEditor(PreferenceConstants.JMS_QUEUE,
+		addField(new StringFieldEditor(PreferenceConstants.JMS_TOPICS,
 				"Queue:", g2));
 	}
 

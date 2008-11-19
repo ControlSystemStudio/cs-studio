@@ -30,7 +30,7 @@ import java.util.Set;
 
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.jms.AlarmQueueSubscriber;
+import org.csstudio.alarm.treeView.jms.JmsConnector;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryReader;
@@ -48,7 +48,10 @@ import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -74,6 +77,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
@@ -274,7 +278,7 @@ public class AlarmTreeView extends ViewPart {
 	/**
 	 * The subscriber to the JMS alarm topic.
 	 */
-	private AlarmQueueSubscriber _alarmTopicSubscriber;
+	private JmsConnector _jmsConnector;
 	
 	/**
 	 * The acknowledge action.
@@ -361,7 +365,6 @@ public class AlarmTreeView extends ViewPart {
 		getSite().setSelectionProvider(_viewer);
 
 		startJmsConnection();
-		startDirectoryReaderJob();
 		
 		_viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(final SelectionChangedEvent event) {
@@ -376,14 +379,36 @@ public class AlarmTreeView extends ViewPart {
 	 * Starts the JMS connection.
 	 */
 	private void startJmsConnection() {
-		if (_alarmTopicSubscriber != null) {
+		_log.debug(this, "Starting JMS connection.");
+		if (_jmsConnector != null) {
 			// There is still an old connection. This shouldn't happen.
-			_alarmTopicSubscriber.closeConnection();
+			_jmsConnector.disconnect();
 			_log.warn(this, "There was an active JMS connection when starting a new connection");
 		}
 		
-		_alarmTopicSubscriber = new AlarmQueueSubscriber();
-		_alarmTopicSubscriber.openConnection();
+		final IWorkbenchSiteProgressService progressService =
+			(IWorkbenchSiteProgressService) getSite().getAdapter(
+					IWorkbenchSiteProgressService.class);
+		Job jmsConnectionJob = new Job("JMS Connection") {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
+				monitor.beginTask("Connecting to JMS servers",
+						IProgressMonitor.UNKNOWN);
+				_jmsConnector = new JmsConnector();
+				_jmsConnector.connect(monitor);
+				if (!monitor.isCanceled()) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							startDirectoryReaderJob();
+						}
+					});
+					return Status.OK_STATUS;
+				} else {
+					return Status.CANCEL_STATUS;
+				}
+			}
+		};
+		progressService.schedule(jmsConnectionJob, 0, true);
 	}
 
 	/**
@@ -404,6 +429,7 @@ public class AlarmTreeView extends ViewPart {
 	 * Starts a job which reads the contents of the directory in the background.
 	 */
 	private void startDirectoryReaderJob() {
+		_log.debug(this, "Starting directory reader.");
 		final IWorkbenchSiteProgressService progressService =
 			(IWorkbenchSiteProgressService) getSite().getAdapter(
 					IWorkbenchSiteProgressService.class);
@@ -416,7 +442,7 @@ public class AlarmTreeView extends ViewPart {
 			@Override
 			public void done(final IJobChangeEvent event) {
 				// Apply updates to the new tree
-				_alarmTopicSubscriber.setUpdateTarget(rootNode);
+				_jmsConnector.setUpdateTarget(rootNode);
 				
 				// Display the new tree.
 				asyncSetViewerInput(rootNode);
@@ -438,7 +464,7 @@ public class AlarmTreeView extends ViewPart {
 		
 		// Set the tree to which updates are applied to null. This means updates
 		// will be queued for later application.
-		_alarmTopicSubscriber.setUpdateTarget(null);
+		_jmsConnector.setUpdateTarget(null);
 		
 		// The directory is read in the background. Until then, set the viewer's
 		// input to a placeholder object.
@@ -452,7 +478,7 @@ public class AlarmTreeView extends ViewPart {
 	 * Stops the alarm queue subscriber.
 	 */
 	private void disposeJmsListener() {
-		_alarmTopicSubscriber.closeConnection();
+		_jmsConnector.disconnect();
 	}
 
 	/**
