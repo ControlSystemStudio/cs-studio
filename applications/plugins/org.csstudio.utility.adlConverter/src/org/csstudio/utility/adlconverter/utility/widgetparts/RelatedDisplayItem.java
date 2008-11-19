@@ -123,8 +123,9 @@ public class RelatedDisplayItem extends WidgetPart {
             } else if (head.equals("name")) { //$NON-NLS-1$
                 _name = row[0];
             } else if (head.equals("args")) { //$NON-NLS-1$
-                _args = Arrays.copyOf(row, row.length+1);
-                _args[_args.length-1]=fileLine.toString();
+                _args = row;
+//                _args = Arrays.copyOf(row, row.length+1);
+//                _args[_args.length-1]=fileLine.toString();
             } else if (head.equals("policy")) { //$NON-NLS-1$
                 _policy = row[0];
             } else if (head.equals("x")) { //$NON-NLS-1$

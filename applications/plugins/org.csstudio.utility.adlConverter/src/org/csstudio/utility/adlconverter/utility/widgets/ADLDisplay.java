@@ -67,8 +67,6 @@ public class ADLDisplay extends Widget{
         for (ADLWidget widget : display.getObjects()) {
             if(widget.isType("object")){ //$NON-NLS-1$
                     ADLObject object = new ADLObject(widget,_widget);
-                    // TODO: Überprüfen ob die +20 auf die Höhe einen Grund hatten. Auf den ersten Blick ist nichts zu finden.
-//                    _object.setHeight(_object.getHeight()+20);
                     object.setHeight(object.getHeight());
             }else {
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+widget.getType()+Messages.Display_WrongADLFormatException_Parameter_End);
@@ -98,7 +96,6 @@ public class ADLDisplay extends Widget{
             }else if(row[0].trim().toLowerCase().equals("snaptogrid")){ //$NON-NLS-1$
                 _widget.setPropertyValue(DisplayModel.PROP_GRID_ON, row[1].equals("1"));
                 CentralLogger.getInstance().debug(this, "snaptogrid"+display.toString());
-                // TODO: SDS don't support yet. Display --> snapToGrid
             }else {//Unknown Property
                 CentralLogger.getInstance().info(this, "Unknwon Property: "+fileLine, new WrongADLFormatException(fileLine+Messages.Display_WrongADLFormatException_Parameter_End));
             }

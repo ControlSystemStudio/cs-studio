@@ -102,7 +102,6 @@ public class Textinput extends Widget {
                 }else if(row[1].equals("\"hexadecimal\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.HEX);
                 }else{
-                    //TODO: Textinput --> format
                     CentralLogger.getInstance().debug(this, Messages.Textinput_Format_Debug+fileLine);
                 }
             }else{                

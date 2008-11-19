@@ -104,7 +104,6 @@ public class Waveform extends Widget {
             }
             
         }
-        // TODO: The wrong Widget for stripchart
     }
 
     /**
@@ -203,7 +202,7 @@ public class Waveform extends Widget {
 //                double max = Double.parseDouble(row[1].trim());
 //                _widget.setPropertyValue(WaveformModel.PROP_MAX, max);
             }else if(parameter.equals("timeFormat")){
-                //TODO: timeFormat
+                //TODO: Waveform --> timeFormat
                 String xLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(WaveformModel.PROP_X_AXIS_LABEL, xLabel);
                 _widget.setPropertyValue(WaveformModel.PROP_SHOW_AXES, 3);
@@ -239,8 +238,7 @@ public class Waveform extends Widget {
              * data_clr=20
              */
             if(parameter.equals("xdata")){
-//                _widget.
-                //TODO: trace
+                //TODO: Waveform --> xdata
             }else if(parameter.equals("ydata")){
                 if(idInt<WaveformModel.NUMBER_OF_ARRAYS){
                     String record = row[1].replaceAll("\"", "").trim();
@@ -254,7 +252,6 @@ public class Waveform extends Widget {
                         dynamicsDescriptor.addInputChannel(new ParameterDescriptor(alias, String[].class ));
                         _widget.setDynamicsDescriptor(WaveformModel.dataPropertyId(idInt), dynamicsDescriptor);
                     }
-                    //TODO: trace
                 }else{
                     Formatter f = new Formatter();
                     f.format("Can not convert correct the Waveform. The Source have to many Wave's. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);

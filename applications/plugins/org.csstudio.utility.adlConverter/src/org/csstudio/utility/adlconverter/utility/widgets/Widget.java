@@ -86,8 +86,7 @@ public abstract class Widget extends AbstractDisplayImporter {
                 _dynamicAttribute = new ADLDynamicAttribute(storedDynamicAttribute,_widget);
             }
         } catch (WrongADLFormatException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            CentralLogger.getInstance().info(this, e1);
         }
         
         if(_basicAttribute!=null){

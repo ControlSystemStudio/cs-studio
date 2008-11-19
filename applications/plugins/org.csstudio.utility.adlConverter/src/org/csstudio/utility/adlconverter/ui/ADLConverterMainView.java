@@ -312,7 +312,6 @@ public class ADLConverterMainView extends ViewPart {
                     path = dialog.getSelectedResource();
                     if (path != null) {
                         _targetPath = path;
-//                        _examplePathLabel.setText(_targetPath + _relativePathText.getText());
                         pathText.setText(path.toString());
                         refreshexamplePathLabel();
                     }
