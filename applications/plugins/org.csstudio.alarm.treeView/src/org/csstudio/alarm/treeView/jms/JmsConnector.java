@@ -22,11 +22,13 @@
 
 package org.csstudio.alarm.treeView.jms;
 
+import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
@@ -34,6 +36,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.transport.TransportListener;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
@@ -151,6 +155,38 @@ public final class JmsConnector {
 		} catch (NamingException e) {
 			_log.error(this, "Error getting connection factory for secondary JMS server.", e);
 		}
+		
+		// XXX the following code is for testing purposes only
+		try {
+			_connection[0].setExceptionListener(new ExceptionListener() {
+				public void onException(JMSException exception) {
+					System.err.println("JmsConnector: Exception listener of _connection[0] received an exception:");
+					exception.printStackTrace();
+				}
+			});
+			System.out.println("JmsConnector: Exception listener added to _connection[0]");
+		} catch (JMSException e) {
+			System.err.println("JmsConnector: Could not set exception listener on _connection[0]");
+		}
+		
+		ActiveMQConnection conn = (ActiveMQConnection) _connection[0];
+		conn.addTransportListener(new TransportListener() {
+			public void onCommand(Object command) {
+				System.out.println("JmsConnector: TransportListener.onCommand called with: " + command);
+			}
+
+			public void onException(IOException error) {
+				System.out.println("JmsConnector: TransportListener.onException called with: " + error);
+			}
+
+			public void transportInterupted() {
+				System.out.println("JmsConnector: TransportListener.transportInterrupted called.");
+			}
+
+			public void transportResumed() {
+				System.out.println("JmsConnector: TransportListener.transportResumed called.");
+			}
+		});
 	}
 
 	/**
