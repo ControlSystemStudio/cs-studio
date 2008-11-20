@@ -23,15 +23,29 @@ import org.csstudio.platform.utility.jms.JMSConnectionFactory;
  */
 public class Model implements ExceptionListener, MessageListener
 {
+    final private String topic_name;
     private volatile Connection connection;
     private volatile Session session;
     private volatile MessageConsumer consumer;
     
+    /** Run flag.
+     *  In principle we try to close the model properly.
+     *  But in case the main thread was still hung in the connection,
+     *  it will not get to the proper shutdown,
+     *  and there is no perfect way to interrupt an ongoing
+     *  "failover" connection problem.
+     *  So we set the 'run' flag to <code>false</code> to
+     *  suppress notifications and stop the main thread
+     *  in case it wakes up after a connection problem.
+     */
+    private volatile boolean run = true;
+
     final private ArrayList<ReceivedMessage> messages =
         new ArrayList<ReceivedMessage>();
     
     private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
+
 
     /** Initialize
      *  @param url JMS server URL
@@ -41,6 +55,7 @@ public class Model implements ExceptionListener, MessageListener
     @SuppressWarnings("nls")
     public Model(final String url, final String topic_name) throws Exception
     {
+        this.topic_name = topic_name;
         if (url == null  ||  url.length() <= 0)
             throw new Exception(Messages.ErrorNoURL);
         if (topic_name.length() <= 0)
@@ -51,10 +66,13 @@ public class Model implements ExceptionListener, MessageListener
             {
                 try
                 {
-	                connect(url, topic_name);
-	                synchronized (Model.this)
+	                connect(url);
+	                while (run)
 	                {
-	                	Model.this.wait();
+    	                synchronized (Model.this)
+    	                {
+    	                	Model.this.wait();
+    	                }
 	                }
 	                disconnect();
                 }
@@ -71,9 +89,10 @@ public class Model implements ExceptionListener, MessageListener
     }
 
     /** Connect to JMS; run in background thread 
+     *  @param url JMS server URL
      *  @throws Exception on error
      */
-    private void connect(final String url, final String topic_name) 
+    private void connect(final String url) 
     	throws Exception
     {
         connection = JMSConnectionFactory.connect(url);
@@ -115,6 +134,7 @@ public class Model implements ExceptionListener, MessageListener
     /** Must be called to release resources when no longer used */
 	public void close()
 	{
+	    run  = false;
 		synchronized (this)
 		{
 			this.notifyAll();
@@ -150,6 +170,8 @@ public class Model implements ExceptionListener, MessageListener
     /** @see MessageListener */
     public void onMessage(final Message message)
     {
+        if (! run)
+            return;
         if (message instanceof MapMessage)
             handleMapMessage((MapMessage) message);
         else
