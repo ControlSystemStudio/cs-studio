@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -75,24 +76,30 @@ import org.csstudio.ams.internal.SampleService;
 import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-/*- FIXME Frage kl�ren, warum das T_AMS_JMS immer in user feld steht, auch dieser Connector nicht angesteuert wird??? */
+/*- FIXME Frage klären, warum das T_AMS_JMS immer in user feld steht, auch dieser Connector nicht angesteuert wird??? */
 public class DistributorWork extends Thread implements AmsConstants {
 	private static final String HISTORY_DEST_TYPE_SMS = "SMS";
 	private static final String HISTORY_DEST_TYPE_VMAIL = "VMail";
 	private static final String HISTORY_DEST_TYPE_EMAIL = "EMail";
 	private static final String HISTORY_DEST_TYPE_JMS = "JMS";
-	public static final int TEXTTYPE_ALARM_WOCONFIRM = 1; // alarm without
-	// confirmation
-	public static final int TEXTTYPE_ALARM_WCONFIRM = 2; // alarm with
-	// confirmation
-	public static final int TEXTTYPE_ALARMCONFIRM_OK = 3; // alarm
-	// confirmation ok
-	public static final int TEXTTYPE_ALARMCONFIRM_NOK = 4; // alarm
-	// confirmation
-	// rejected
-	public static final int TEXTTYPE_STATUSCHANGE_OK = 5; // status change ok
-	public static final int TEXTTYPE_STATUSCHANGE_NOK = 6; // status change
-	// rejected
+	
+	 // alarm without confirmation
+	public static final int TEXTTYPE_ALARM_WOCONFIRM = 1;
+	
+	 // alarm with confirmation
+	public static final int TEXTTYPE_ALARM_WCONFIRM = 2;
+	
+	 // alarm confirmation ok
+	public static final int TEXTTYPE_ALARMCONFIRM_OK = 3;
+	
+	 // alarm confirmation rejected
+	public static final int TEXTTYPE_ALARMCONFIRM_NOK = 4;
+	
+	// status change ok
+	public static final int TEXTTYPE_STATUSCHANGE_OK = 5;
+	
+	// status change rejected
+	public static final int TEXTTYPE_STATUSCHANGE_NOK = 6;
 
 	// private final int CONSUMER_CONNECTIONS = 2;
 
