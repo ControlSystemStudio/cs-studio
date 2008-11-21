@@ -56,7 +56,7 @@ public class ADLMonitor extends WidgetPart{
     /**
      * The Record property/Feldname.
      */
-    private String _postfix;
+    private String _postfix="";
 
     /**
      * The default constructor.
@@ -128,7 +128,13 @@ public class ADLMonitor extends WidgetPart{
 //            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, dynamicsDescriptor);
         }
         if(_chan!=null){
-            _postfix = ADLHelper.setChan(_widgetModel,_chan);
+            /*
+             * EDIT: Helge Rickens 21.11.08
+             * Im alias ist der Postfix enthalten und wurde hier noch mal weiter gegeben.
+             * Dadurch kam es das der Postfix doppelt gesetzt wurde. 
+             */
+//            _postfix = ADLHelper.setChan(_widgetModel,_chan);
+            ADLHelper.setChan(_widgetModel,_chan);
         }
     }
 
