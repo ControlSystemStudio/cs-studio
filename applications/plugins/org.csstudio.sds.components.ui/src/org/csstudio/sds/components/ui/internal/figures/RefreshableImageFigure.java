@@ -21,9 +21,13 @@
  */
  package org.csstudio.sds.components.ui.internal.figures;
 
+import java.io.File;
+
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -37,6 +41,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
 
 /**
  * An image figure.
@@ -119,17 +124,39 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 		
 		try {
 			if (_image==null && !_path.isEmpty()) {
-				String currentPath = _path.toString();
+			    System.out.println("_path: "+_path);
+//			    _path
+				String currentPath = _path.toOSString();
+				System.out.println("currentPath: "+currentPath);
 				IPath fullPath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 				try {
-					temp=new Image(Display.getDefault(),currentPath);
+				    temp=new Image(Display.getDefault(),currentPath);
 				} catch (Exception e) {
 					try {
-						currentPath = fullPath.toString()+_path.toString();
+					        IPath append = fullPath.append(_path);
+//					        IPath makeAbsolute = append.makeAbsolute();
+//		                    IPath makeRelative = append.makeRelative();
+//		                    IPath makeUNC = append.makeUNC(false);
+//		                    IPath makeUNC2 = append.makeUNC(true);
+//		                    File file = append.toFile();
+//		                    boolean exists2 = file.exists();
+//		                    String portableString = append.toPortableString();
+		                    IFile[] findFilesForLocation = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(append);
+//		                    boolean exists3 = findFilesForLocation[0].exists();
+//		                    IPath fullPath2 = findFilesForLocation[0].getFullPath();
+		                    currentPath = findFilesForLocation[0].getLocation().toOSString();
+//		                    boolean exists = ResourcesPlugin.getWorkspace().getRoot().exists(append);
+//		                    IContainer[] findContainersForLocation = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(append);
+//		                    findContainersForLocation[0].exists();
+
+
+//					    currentPath = fullPath.append(_path).toOSString();
+//						currentPath = fullPath.toString()+_path.toString();
 						temp=new Image(Display.getDefault(),currentPath);
 					} catch (Exception ex) {
 						String[] segments = _path.segments();
 						String projectName = segments[0];
+
 						IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 						int index = 1;
 						IFolder folder = null;
