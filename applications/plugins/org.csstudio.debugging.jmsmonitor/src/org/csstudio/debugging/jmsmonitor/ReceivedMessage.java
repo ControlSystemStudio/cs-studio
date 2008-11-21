@@ -1,8 +1,10 @@
 package org.csstudio.debugging.jmsmonitor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.csstudio.platform.logging.JMSLogMessage;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -17,6 +19,9 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 @SuppressWarnings("nls")
 public class ReceivedMessage implements IPropertySource
 {
+    final private static SimpleDateFormat date_format =
+        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
+
     final private Date date;
     final private String type;
     final private ArrayList<MessageProperty> content;
@@ -49,6 +54,12 @@ public class ReceivedMessage implements IPropertySource
     public Date getDate()
     {
         return date;
+    }
+    
+    /** @return Time when message was received as string */
+    public String getDateString()
+    {
+        return date_format.format(date);
     }
 
     /** @return Message type */
@@ -99,14 +110,17 @@ public class ReceivedMessage implements IPropertySource
     /** IPropertySource */
 	public IPropertyDescriptor[] getPropertyDescriptors()
 	{
-		// Create read-only properties in the property view.
+		final int msg_props = content.size();
+        // Create read-only properties in the property view.
 		// (Would use TextPropertyDescriptor for edit-able)
 		final IPropertyDescriptor props[] =
-			new IPropertyDescriptor[content.size()];
-		for (int i=0; i<props.length; ++i)
+			new IPropertyDescriptor[2 + msg_props];
+		props[0] = new PropertyDescriptor(Messages.DateColumn, Messages.DateColumn);
+        props[1] = new PropertyDescriptor(Messages.TypeColumn, Messages.TypeColumn);
+		for (int i=0; i<msg_props; ++i)
 		{
 			final String name = content.get(i).getName();
-			props[i] = new PropertyDescriptor(name, name);
+			props[2+i] = new PropertyDescriptor(name, name);
 		}
 		return props;
 	}
@@ -114,6 +128,10 @@ public class ReceivedMessage implements IPropertySource
     /** IPropertySource */
 	public Object getPropertyValue(final Object id)
 	{
+	    if (Messages.DateColumn.equals(id))
+	        return getDateString();
+	    if (Messages.TypeColumn.equals(id))
+	        return type;
 		for (MessageProperty prop : content)
 			if (prop.getName().equals(id))
 				return prop.getValue();
