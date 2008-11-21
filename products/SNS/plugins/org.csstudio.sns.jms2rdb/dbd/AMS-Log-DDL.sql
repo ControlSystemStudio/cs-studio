@@ -2,6 +2,9 @@
 # Removed tables: msg_type, msg_type_property_type
 # Removed columns: message.msg_type_id
 # Added columns: message type, name, severity
+#
+#  NOTE: This has been updated from information from the DESY CSS web page.
+#        Unclear if it will still work, it has not been tested!
 
 -- Tabelle MESSAGE
 DROP TABLE message
