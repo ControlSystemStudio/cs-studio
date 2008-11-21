@@ -3,12 +3,27 @@
 
 <product name="JMSSender" id="org.csstudio.utility.jmssendcmd.product" application="org.csstudio.utility.jmssendcmd.main" useFeatures="false">
 
+
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
+
+   <windowImages/>
+
+
+   <launcher name="JMSSender">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+   </vm>
 
    <plugins>
       <plugin id="org.csstudio.apputil"/>
