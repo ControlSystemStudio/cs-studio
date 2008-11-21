@@ -27,7 +27,6 @@ public class BooleanOption extends Option
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("nls")
     @Override
     public int handle(final String[] args, final int position) throws Exception
     {
@@ -37,5 +36,11 @@ public class BooleanOption extends Option
             return 1;
         }
         return 0;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return getOption() + "=" + value; //$NON-NLS-1$
     }
 }

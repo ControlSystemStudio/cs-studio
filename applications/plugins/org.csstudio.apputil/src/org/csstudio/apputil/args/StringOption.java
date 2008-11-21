@@ -40,4 +40,10 @@ public class StringOption extends Option
         }
         return 0;
     }
+
+    @Override
+    public String toString()
+    {
+        return getOption() + "=" + value; //$NON-NLS-1$
+    }
 }
