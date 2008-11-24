@@ -2,23 +2,11 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="Distributor"
+         id="AmsDistributor"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run class="org.csstudio.ams.distributor.DistributorStart"/>
       </application>
-   </extension>
-   <extension
-         id="AmsDistributor"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.distributor.Distributor"
-            name="AmsDistributor">
-         <property
-               name="appName"
-               value="AmsDistributor">
-         </property>
-      </product>
    </extension>
    <extension
          point="org.csstudio.platform.libs.xmpp.loginHandlers">
@@ -36,6 +24,18 @@
             name="Stop"
             parameters="Password">
       </parametrizedAction>
+   </extension>
+   <extension
+         id="AmsDistributorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.distributor.AmsDistributor"
+            name="AmsDistributor">
+         <property
+               name="appName"
+               value="AmsDistributor">
+         </property>
+      </product>
    </extension>
 
 </plugin>
