@@ -82,8 +82,17 @@ public class GUI implements ModelListener
         layout.numColumns = 3;
         parent.setLayout(layout);
         
-        // Topic: ____topic ____ [Clear]
+        // URL:   ____url ____ 
         Label l = new Label(parent, 0);
+        l.setText(Messages.URLLabel);
+        l.setLayoutData(new GridData());
+
+        l = new Label(parent, 0);
+        l.setText(url);
+        l.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 2, 1));
+        
+        // Topic: ____topic ____ [Clear]
+        l = new Label(parent, 0);
         l.setText(Messages.TopicLabel);
         l.setLayoutData(new GridData());
         

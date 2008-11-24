@@ -22,6 +22,7 @@ public class Messages extends NLS
     public static String Topic_TT;
     public static String TopicLabel;
     public static String TypeColumn;
+    public static String URLLabel;
     public static String UnknownType;
     public static String Value;
     static
