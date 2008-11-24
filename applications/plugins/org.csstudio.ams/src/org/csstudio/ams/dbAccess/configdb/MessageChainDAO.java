@@ -69,7 +69,7 @@ public abstract class MessageChainDAO extends DAO
 
 	public static MessageChainTObject select(Connection con, int iMessageChainID) throws SQLException
 	{
-		final String query = "SELECT iMessageChainID,iMessageRef,iFilterRef,iFilterActionRef,iReceiverPos,tSendTime,tNextActTime,sChainState,cReceiverAdress FROM AMS_MessageChain WHERE iMessageChainID = "+ iMessageChainID;
+		final String query = "SELECT iMessageChainID,iMessageRef,iFilterRef,iFilterActionRef,iReceiverPos,tSendTime,tNextActTime,sChainState,cReceiverAdress FROM AMS_MessageChain WHERE iMessageChainID = ?";
 	
 		ResultSet rs = null;
 		PreparedStatement st = null;
@@ -78,6 +78,7 @@ public abstract class MessageChainDAO extends DAO
 		{
 			MessageChainTObject msgChain = null;
 			st = con.prepareStatement(query);
+			st.setInt(1, iMessageChainID);
 			rs = st.executeQuery();
 			
 			if(rs.next()) 
