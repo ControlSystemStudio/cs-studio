@@ -49,11 +49,14 @@ public class Model implements ExceptionListener, MessageListener
 
     /** Initialize
      *  @param url JMS server URL
+     *  @param user JMS user name or <code>null</code>
+     *  @param password JMS password or <code>null</code>
      *  @param topic_name JMS topic
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    public Model(final String url, final String topic_name) throws Exception
+    public Model(final String url, final String user, final String password,
+                 final String topic_name) throws Exception
     {
         this.topic_name = topic_name;
         if (url == null  ||  url.length() <= 0)
@@ -66,7 +69,7 @@ public class Model implements ExceptionListener, MessageListener
             {
                 try
                 {
-	                connect(url);
+	                connect(url, user, password);
 	                while (run)
 	                {
     	                synchronized (Model.this)
@@ -90,12 +93,14 @@ public class Model implements ExceptionListener, MessageListener
 
     /** Connect to JMS; run in background thread 
      *  @param url JMS server URL
+     *  @param user JMS user name or <code>null</code>
+     *  @param password JMS password or <code>null</code>
      *  @throws Exception on error
      */
-    private void connect(final String url) 
+    private void connect(final String url, final String user, final String password) 
     	throws Exception
     {
-        connection = JMSConnectionFactory.connect(url);
+        connection = JMSConnectionFactory.connect(url, user, password);
         connection.setExceptionListener(this);
         connection.start();
         session = connection.createSession(/* transacted */ false,

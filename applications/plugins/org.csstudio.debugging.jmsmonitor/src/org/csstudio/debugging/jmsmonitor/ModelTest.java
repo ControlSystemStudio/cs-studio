@@ -17,7 +17,7 @@ public class ModelTest implements ModelListener
     {
         String url = "failover:(tcp://ics-srv02.sns.ornl.gov:61616,tcp://ics-srv-epics1.ics.sns.gov:61616)";
         String topic = "LOG";
-        final Model model = new Model(url, topic);
+        final Model model = new Model(url, null, null, topic);
         model.addListener(this);
         
         System.out.println("Listening to messages, " +

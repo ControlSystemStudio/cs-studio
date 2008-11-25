@@ -39,5 +39,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
+        addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_USER, parent));
+        addField(new StringFieldEditor(Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent));
     }
 }

@@ -16,6 +16,8 @@ public class Messages extends NLS
     public static String ErrorType;
     public static String JMSMonitorPrefs;
     public static String Preferences_JMS_URL;
+    public static String Preferences_JMS_USER;
+    public static String Preferences_JMS_PASSWORD;
     public static String Property;
     public static String SeparatorValue;
     public static String SeperatorType;
@@ -23,6 +25,7 @@ public class Messages extends NLS
     public static String TopicLabel;
     public static String TypeColumn;
     public static String URLLabel;
+    public static String URLLabelFmt;
     public static String UnknownType;
     public static String Value;
     static

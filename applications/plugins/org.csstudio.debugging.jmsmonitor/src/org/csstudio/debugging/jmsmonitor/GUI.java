@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -25,7 +26,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class GUI implements ModelListener
 {
-    final private String url;
+    /** JMS Connection parameters */
+    final private String url, user, password;
 
     private Model model = null;
 
@@ -37,11 +39,17 @@ public class GUI implements ModelListener
     
     /** Initialize
      *  @param url JMS server URL
+     *  @param user JMS user name or <code>null</code>
+     *  @param password JMS password or <code>null</code>
      *  @param parent Parent widget
      */
-    public GUI(final String url, final Composite parent)
+    public GUI(final String url, final String user, final String password,
+               final Composite parent)
     {
         this.url = url;
+        this.user = user;
+        this.password = password;
+        
         createGUI(parent);
         
         topic.addSelectionListener(new SelectionAdapter()
@@ -88,7 +96,7 @@ public class GUI implements ModelListener
         l.setLayoutData(new GridData());
 
         l = new Label(parent, 0);
-        l.setText(url);
+        l.setText(NLS.bind(Messages.URLLabelFmt, new Object[] { url, user, password }));
         l.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 2, 1));
         
         // Topic: ____topic ____ [Clear]
@@ -168,7 +176,7 @@ public class GUI implements ModelListener
             clear();
             if (topic_name.length() <= 0)
                 return;
-            model = new Model(url, topic_name);
+            model = new Model(url, user, password, topic_name);
             modelChanged(model);
             model.addListener(GUI.this);
         }
