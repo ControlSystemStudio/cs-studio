@@ -63,6 +63,10 @@ public class Application implements IApplication, ExceptionListener
         final ArgParser parser = new ArgParser();
         final StringOption url = new StringOption(parser,
                 "-url", "JMS Server URL", "tcp://localhost:61616");
+        final StringOption jms_user = new StringOption(parser,
+                "-jms_user", "JMS User Name", null);
+        final StringOption jms_pass = new StringOption(parser,
+                "-jms_pass", "JMS Password", null);
         final StringOption topic = new StringOption(parser,
                 "-topic", "JMS Topic", "TEST");
         final StringOption type = new StringOption(parser,
@@ -96,7 +100,7 @@ public class Application implements IApplication, ExceptionListener
         application = app.get();
         try
         {
-            connect(url.get(), topic.get());
+            connect(url.get(), jms_user.get(), jms_pass.get(), topic.get());
             sendMsg();
             disconnect();
         }
@@ -110,12 +114,15 @@ public class Application implements IApplication, ExceptionListener
 
     /** Connect to JMS
      *  @param url
+     *  @param jms_user
+     *  @param jms_pass
      *  @param topic_name
      *  @throws Exception
      */
-    private void connect(final String url, final String topic_name) throws Exception
+    private void connect(final String url, final String jms_user,
+            final String jms_pass, final String topic_name) throws Exception
     {
-        connection = JMSConnectionFactory.connect(url);
+        connection = JMSConnectionFactory.connect(url, jms_user, jms_pass);
         connection.setExceptionListener(this);
         connection.start();
         session = connection.createSession(/* transacted */ false,
