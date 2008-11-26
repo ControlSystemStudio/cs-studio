@@ -26,14 +26,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Timer;
 
-import org.csstudio.platform.logging.CentralLogger;
-
 import oracle.jdbc.OracleDriver;
 
+import org.csstudio.alarm.dbaccess.archivedb.Activator;
+import org.csstudio.alarm.dbaccess.preferences.AlarmArchiveDBPreferenceConstants;
+import org.csstudio.platform.logging.CentralLogger;
+
 /**
- * Creates and holds the SQL connection. If the timer terminates
- * the connection will be closed. The timer is reseted with each 
- * DB access.
+ * Creates and holds the SQL connection. If the timer terminates the connection
+ * will be closed. The timer is reseted with each DB access.
  * 
  * @author jhatje
  * @author $Author$
@@ -42,57 +43,70 @@ import oracle.jdbc.OracleDriver;
  */
 public class DBConnection {
 
-    private String _url = "jdbc:oracle:thin:@(DESCRIPTION = "
-        + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521)) "
-        + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521)) "
-        + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv03.desy.de)(PORT = 1521)) "
-        + "(LOAD_BALANCE = yes) " + "(CONNECT_DATA = " + "(SERVER = DEDICATED) "
-        + "(SERVICE_NAME = desy_db.desy.de) " + "(FAILOVER_MODE = " + "(TYPE = NONE) "
-        + "(METHOD = BASIC) " + "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")";
+	private String _url = "jdbc:oracle:thin:@(DESCRIPTION = "
+			+ "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521)) "
+			+ "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521)) "
+			+ "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv03.desy.de)(PORT = 1521)) "
+			+ "(LOAD_BALANCE = yes) " + "(CONNECT_DATA = "
+			+ "(SERVER = DEDICATED) " + "(SERVICE_NAME = desy_db.desy.de) "
+			+ "(FAILOVER_MODE = " + "(TYPE = NONE) " + "(METHOD = BASIC) "
+			+ "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")";
 
-//    private String _user = "kryklogt";
-//    private String _password = "kryklogt";
-    private String _user = "KRYKAMS";
-    private String _password = "krykams";
+	// private String _user = "kryklogt";
+	// private String _password = "kryklogt";
+	private String _user = "KRYKAMS";
+	private String _password = "krykams";
 
 	private static DBConnection _instance;
-	
+
 	private Connection _dbConnection;
-	
+
 	private Timer _timer;
-	
+
 	private CloseConnectionTimerTask _timerTask;
-	
+
 	private DBConnection() {
 		_timer = new Timer();
-        try {
-            DriverManager.registerDriver(new OracleDriver());
+		try {
+			DriverManager.registerDriver(new OracleDriver());
 
-        } catch (Exception e) {
-        	CentralLogger.getInstance().error(this, "SQL Driver error " + e.getMessage());
-        }
+		} catch (Exception e) {
+			CentralLogger.getInstance().error(this,
+					"SQL Driver error " + e.getMessage());
+		}
 	}
-	
+
 	public static DBConnection getInstance() {
-        if(_instance == null){
-            _instance = new DBConnection();
-        }
-        return _instance;
+		if (_instance == null) {
+			_instance = new DBConnection();
+		}
+		return _instance;
 	}
-	
+
 	public Connection getConnection() {
+
+		_url = Activator.getDefault().getPluginPreferences().getString(
+				AlarmArchiveDBPreferenceConstants.DB_CONNECTION_STRING);
+		_user = Activator.getDefault().getPluginPreferences().getString(
+				AlarmArchiveDBPreferenceConstants.DB_USER);
+		_password = Activator.getDefault().getPluginPreferences().getString(
+				AlarmArchiveDBPreferenceConstants.DB_PASSWORD);
+
 		try {
 			if ((_dbConnection == null) || (_dbConnection.isClosed() == true)) {
-			    try {
-			        _dbConnection = DriverManager.getConnection(_url, _user, _password);
-			        _timerTask = new CloseConnectionTimerTask(_dbConnection);
-			        _timer.schedule(_timerTask, 60 * 1000, 60 * 1000);
-			    } catch (SQLException e) {
-			    	CentralLogger.getInstance().error(this, "SQL Connection error " + e.getMessage());
-			    }
+				try {
+					_dbConnection = DriverManager.getConnection(_url, _user,
+							_password);
+					_timerTask = new CloseConnectionTimerTask(_dbConnection);
+					_timer.schedule(_timerTask, 60 * 1000, 60 * 1000);
+				} catch (SQLException e) {
+					CentralLogger.getInstance().error(this,
+							"SQL Connection error " + e.getMessage());
+				}
 			}
 		} catch (SQLException e) {
-	    	CentralLogger.getInstance().error(this, "SQL Connection error " + e.getMessage());
+			CentralLogger.getInstance().error(this,
+					"SQL Connection error " + e.getMessage());
 		}
 		_timerTask.set_lastDBAcccessInMillisec(System.currentTimeMillis());
 		return _dbConnection;

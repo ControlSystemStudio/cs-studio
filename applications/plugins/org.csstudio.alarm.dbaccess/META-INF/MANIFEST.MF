@@ -8,7 +8,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.libs.jdbc,
- org.csstudio.platform
+ org.csstudio.platform.ui;bundle-version="1.1.0"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.alarm.dbaccess,
  org.csstudio.alarm.dbaccess.archivedb

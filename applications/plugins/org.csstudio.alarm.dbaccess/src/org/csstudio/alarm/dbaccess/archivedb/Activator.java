@@ -26,6 +26,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
@@ -34,7 +35,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class Activator extends AbstractCssUiPlugin {
 	
 	private Connection databaseConnection = null;
 
