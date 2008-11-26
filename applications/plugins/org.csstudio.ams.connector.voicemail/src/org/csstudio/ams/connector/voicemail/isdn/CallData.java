@@ -19,55 +19,61 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.ams.connector.voicemail.actions;
-
-import java.util.Map;
-
-import org.csstudio.ams.Messages;
-import org.csstudio.ams.connector.voicemail.VoicemailConnectorStart;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+package org.csstudio.ams.connector.voicemail.isdn;
 
 /**
  * @author Markus Moeller
- * 
+ *
  */
-public class VoicemalConnectorStopAction implements IAction
+public class CallData
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
-     */
-    public Object run(Object param)
+    private int messageChainId;
+    
+    private String receipient;
+    
+    private String statusCode;
+    
+    private String confirmCode;
+
+    public int getMessageChainId()
     {
-        String password = null;
+        return messageChainId;
+    }
 
-        if(!(param instanceof Map))
-        {
-            return "Parameter not available.";
-        }
+    public void setMessageChainId(int messageChainId)
+    {
+        this.messageChainId = messageChainId;
+    }
 
-        Map<?, ?> map = (Map<?, ?>) param;
+    public String getReceipient()
+    {
+        return receipient;
+    }
 
-        try
-        {
-            password = (String) map.get("Password");
+    public void setReceipient(String receipient)
+    {
+        this.receipient = receipient;
+    }
 
-            if (password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
-            {
-                return "Invalid password";
-            }
-        }
-        catch(Exception e)
-        {
-            return e.getMessage();
-        }
+    public String getStatusCode()
+    {
+        return statusCode;
+    }
 
-        VoicemailConnectorStart.getInstance().setShutdown();
+    public void setStatusCode(String statusCode)
+    {
+        this.statusCode = statusCode;
+    }
 
-        return "VoicemailConnectorStart is stopping now...";
+    public String getConfirmCode()
+    {
+        return confirmCode;
+    }
+
+    public void setConfirmCode(String confirmCode)
+    {
+        this.confirmCode = confirmCode;
     }
 }

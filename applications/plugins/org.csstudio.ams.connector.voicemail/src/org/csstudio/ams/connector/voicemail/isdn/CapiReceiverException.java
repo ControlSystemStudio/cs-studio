@@ -19,55 +19,36 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.ams.connector.voicemail.actions;
-
-import java.util.Map;
-
-import org.csstudio.ams.Messages;
-import org.csstudio.ams.connector.voicemail.VoicemailConnectorStart;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+package org.csstudio.ams.connector.voicemail.isdn;
 
 /**
  * @author Markus Moeller
- * 
+ *
  */
-public class VoicemalConnectorStopAction implements IAction
+public class CapiReceiverException extends Exception
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
-     */
-    public Object run(Object param)
+    /** Generated serial version id */
+    private static final long serialVersionUID = -8552462959721451366L;
+
+    public CapiReceiverException()
     {
-        String password = null;
+        super();
+    }
+    
+    public CapiReceiverException(final String message)
+    {
+        super(message);
+    }
 
-        if(!(param instanceof Map))
-        {
-            return "Parameter not available.";
-        }
+    public CapiReceiverException(final String message, final Throwable cause)
+    {
+        super(message, cause);
+    }
 
-        Map<?, ?> map = (Map<?, ?>) param;
-
-        try
-        {
-            password = (String) map.get("Password");
-
-            if (password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
-            {
-                return "Invalid password";
-            }
-        }
-        catch(Exception e)
-        {
-            return e.getMessage();
-        }
-
-        VoicemailConnectorStart.getInstance().setShutdown();
-
-        return "VoicemailConnectorStart is stopping now...";
+    public CapiReceiverException(final Throwable cause)
+    {
+        super(cause);
     }
 }

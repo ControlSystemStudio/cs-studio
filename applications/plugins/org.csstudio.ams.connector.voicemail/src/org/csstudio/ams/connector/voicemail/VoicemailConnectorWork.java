@@ -117,7 +117,8 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             {
                 if (!bInitedVmService)
                 {
-                    bInitedVmService = initCallCenter(); // initVmService();
+                    bInitedVmService = initCallCenter();
+                    // bInitedVmService = initVmService();
                     if (!bInitedVmService)
                     {
                         iErr = VoicemailConnectorStart.STAT_ERR_VM_SERVICE;
@@ -160,22 +161,21 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                         iErr = VoicemailConnectorStart.STAT_ERR_JMSCON;
                     }
                     
-                    //TODO: TEST
-                    /*
                     if (message != null)
                     {
                         iErr = sendVmMsg(message);
                     }
-                    */
                     
+                    //TODO: TEST
+                    /*
                     if (message != null)
                     {
                         Log.log(this, Log.DEBUG, "Message received: " + message.toString());
                         iErr = sendIsdnMsg(message);
                         Log.log(this, Log.DEBUG, "Message sent: " + iErr);
                     }
+                    */
                     
-                    /*
                     if (iErr != VoicemailConnectorStart.STAT_ERR_JMSCON)
                     {
                         while(!fifo.empty())
@@ -191,17 +191,22 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                             }
                         }
                     }
-                    */
+                    
+                    if (iErr == VoicemailConnectorStart.STAT_OK)
+                    {
+                        // read max. limit vm, other in the next run
+                        iErr = readVmMsg(null);
+                    }
                     
                     //TODO: TEST
                     /*
                     if (iErr == VoicemailConnectorStart.STAT_OK)
                     {
                         // read max. limit vm, other in the next run
-                        iErr = readVmMsg(null);
+                        iErr = readIsdnMsg(null);
                     }
                     */
-                    
+
                     if (iErr == VoicemailConnectorStart.STAT_ERR_VM_SERVICE_SEND)
                     {
                         closeVmService();
@@ -282,7 +287,6 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
      * @return <code>true</code> if all o.k.,
      *   and <code>false</code> if Modem initialization failed.
      */
-    @SuppressWarnings("unused")
     private boolean initVmService()
     {
         try
@@ -520,11 +524,11 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         String text = msg.getString(MSGPROP_RECEIVERTEXT);
         String recNo = msg.getString(MSGPROP_RECEIVERADDR);
         // String chainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
-        // String textType = msg.getString(MSGPROP_TEXTTYPE);
+        String textType = msg.getString(MSGPROP_TEXTTYPE);
         
         try
         {
-            callCenter.makeCall(recNo, text);
+            callCenter.makeCall(recNo, text, textType);
         }
         catch(CallCenterException cce)
         {
@@ -542,7 +546,6 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         return result;
     }
     
-    @SuppressWarnings("unused")
     private int sendVmMsg(Message message) throws Exception
     {
         if (!(message instanceof MapMessage))
@@ -744,7 +747,6 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         return iRet;
     }
 
-    @SuppressWarnings("unused")
     private int readVmMsg(Telegram tel) throws Exception
     {
         int iErr = VoicemailConnectorStart.STAT_ERR_UNKNOWN;
@@ -838,7 +840,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                     + telRead.getTelegramID() + "'");
 
             
-        Log.log(this, Log.DEBUG, "readReply . . . exit");
+        // Log.log(this, Log.DEBUG, "readReply . . . exit");
         return VoicemailConnectorStart.STAT_OK;
     }
 

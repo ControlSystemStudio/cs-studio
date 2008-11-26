@@ -34,6 +34,10 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.csstudio.ams.Log;
+import org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin;
+import org.csstudio.ams.connector.voicemail.internal.SampleService;
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import de.dfki.lt.mary.client.MaryClient;
 
 /**
@@ -62,13 +66,30 @@ public class SpeechProducer
 
     private static final String regEx = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}";
 
+    private static SpeechProducer instance = null;
+    
     /**
      * 
      * @param address
      * @param port
      */
-    public SpeechProducer(String address, int port, String inputType)
+    private SpeechProducer()
     {
+        IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
+        String address = store.getString(SampleService.P_MARY_HOST);
+        String inputType = store.getString(SampleService.P_MARY_DEFAULT_LANGUAGE);
+        int port = 0;
+        
+        try
+        {
+            port = Integer.parseInt(store.getString(SampleService.P_MARY_PORT));
+        }
+        catch(NumberFormatException nfe)
+        {
+            port = 59125;
+            Log.log(this, Log.WARN, "Cannot read the port for the MARY server. Using default port: " + port);
+        }
+
         maryHost = address;
         maryPort = port;
         this.inputType = inputType;
@@ -85,6 +106,16 @@ public class SpeechProducer
 
             connected = false;
         }
+    }
+    
+    public static synchronized SpeechProducer getInstance()
+    {
+        if(instance == null)
+        {
+            instance = new SpeechProducer();
+        }
+        
+        return instance;
     }
     
     public ByteArrayOutputStream getAudioStream(String text)
@@ -228,5 +259,10 @@ public class SpeechProducer
     public void closeAll()
     {
         mary = null;
+    }
+
+    public String getInputType()
+    {
+        return inputType;
     }
 }
