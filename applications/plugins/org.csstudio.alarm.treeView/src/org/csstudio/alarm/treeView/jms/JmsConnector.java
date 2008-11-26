@@ -160,31 +160,31 @@ public final class JmsConnector {
 		try {
 			_connection[0].setExceptionListener(new ExceptionListener() {
 				public void onException(JMSException exception) {
-					System.err.println("JmsConnector: Exception listener of _connection[0] received an exception:");
+					_log.debug(this, "JmsConnector: Exception listener of _connection[0] received an exception:");
 					exception.printStackTrace();
 				}
 			});
-			System.out.println("JmsConnector: Exception listener added to _connection[0]");
+			_log.debug(this, "JmsConnector: Exception listener added to _connection[0]");
 		} catch (JMSException e) {
-			System.err.println("JmsConnector: Could not set exception listener on _connection[0]");
+			_log.debug(this, "JmsConnector: Could not set exception listener on _connection[0]");
 		}
 		
 		ActiveMQConnection conn = (ActiveMQConnection) _connection[0];
 		conn.addTransportListener(new TransportListener() {
 			public void onCommand(Object command) {
-				System.out.println("JmsConnector: TransportListener.onCommand called with: " + command);
+				_log.debug(this, "JmsConnector: TransportListener.onCommand called with: " + command);
 			}
 
 			public void onException(IOException error) {
-				System.out.println("JmsConnector: TransportListener.onException called with: " + error);
+				_log.debug(this, "JmsConnector: TransportListener.onException called with: " + error);
 			}
 
 			public void transportInterupted() {
-				System.out.println("JmsConnector: TransportListener.transportInterrupted called.");
+				_log.debug(this, "JmsConnector: TransportListener.transportInterrupted called.");
 			}
 
 			public void transportResumed() {
-				System.out.println("JmsConnector: TransportListener.transportResumed called.");
+				_log.debug(this, "JmsConnector: TransportListener.transportResumed called.");
 			}
 		});
 	}
