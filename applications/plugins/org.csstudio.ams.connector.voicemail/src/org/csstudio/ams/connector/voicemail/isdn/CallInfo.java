@@ -48,6 +48,16 @@ public class CallInfo
         success = false;
     }
 
+    public CallInfo(String telephoneNumber, TextType textType)
+    {
+        this.telephoneNumber = telephoneNumber;
+        this.textType = textType;
+        chainIdAndPos = "";
+        confirmationCode = "";
+        statusCode = "";
+        success = false;
+    }
+
     public String getChainIdAndPos()
     {
         return chainIdAndPos;

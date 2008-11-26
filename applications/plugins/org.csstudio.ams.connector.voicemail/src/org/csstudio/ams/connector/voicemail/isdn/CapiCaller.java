@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+
+import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.voicemail.speech.SpeechProducer;
 import org.csstudio.platform.logging.CentralLogger;
 import de.dfki.lt.signalproc.util.AudioConverterUtils;
@@ -35,6 +37,7 @@ import uk.co.mmscomputing.device.capi.CapiCallApplication;
 import uk.co.mmscomputing.device.capi.CapiChannel;
 import uk.co.mmscomputing.device.capi.CapiMetadata;
 import uk.co.mmscomputing.device.capi.exception.CapiException;
+import uk.co.mmscomputing.device.capi.plc.DisconnectInd;
 import uk.co.mmscomputing.util.metadata.Metadata;
 import uk.co.mmscomputing.util.metadata.MetadataListener;
 
@@ -152,7 +155,7 @@ public class CapiCaller implements MetadataListener
     
     public CallInfo makeCallWithoutReply(String telephoneNumber, String message) throws CapiCallerException
     {
-        CallInfo callInfo = null;
+        CallInfo callInfo = new CallInfo(telephoneNumber, CallCenter.TextType.TEXTTYPE_ALARM_WOCONFIRM);
         AudioInputStream ais = null;
         ByteArrayOutputStream baos = null;
         boolean repeat = true;
@@ -198,8 +201,7 @@ public class CapiCaller implements MetadataListener
             }
             catch(Exception e)
             {
-                logger.error(this, e.getMessage());
-                
+                logger.error(this, e.getMessage());                
                 throw new CapiCallerException(e.getMessage());
             }
             finally
@@ -312,6 +314,7 @@ public class CapiCaller implements MetadataListener
         }
 
         busy = false;
+        callInfo.setSuccess(true);
 
         return callInfo;
     }
@@ -323,6 +326,31 @@ public class CapiCaller implements MetadataListener
 
     public void update(Object type, Metadata metadata)
     {
-        // TODO Auto-generated method stub        
+        // disconnected
+        if(type instanceof DisconnectInd)
+        {
+            if(channel != null)
+            {
+                if(channel.isDTMFEnabled())
+                {
+                    logger.debug(this, "isDTMFEnabled() = true");
+                    
+                    try{channel.stopDTMF();}catch(IOException e)
+                    {
+                        Log.log(this, Log.DEBUG, e.getMessage());
+                    }
+                }
+            }
+            
+            logger.debug(this, "Disconnected");
+        }
+        else if(type instanceof Exception)
+        {
+            logger.debug(this, type.toString(), (Exception)type);
+        }
+        else
+        {
+            logger.debug(this, type.toString());
+        }
     }
 }
