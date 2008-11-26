@@ -21,13 +21,17 @@
  */
  package org.csstudio.alarm.treeView.views;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import org.apache.activemq.transport.TransportListener;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jms.JmsConnector;
@@ -76,8 +80,11 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
@@ -91,6 +98,8 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
+
+import sun.awt.SunDisplayChanger;
 
 /**
  * Tree view of process variables and their alarm state. This view uses LDAP
@@ -331,6 +340,26 @@ public class AlarmTreeView extends ViewPart {
 	private Action _showPropertyViewAction;
 	
 	/**
+	 * The message area which can display error messages inside the view part.
+	 */
+	private Composite _messageArea;
+	
+	/**
+	 * The icon displayed in the message area.
+	 */
+	private Label _messageAreaIcon;
+	
+	/**
+	 * The message displayed in the message area.
+	 */
+	private Label _messageAreaMessage;
+	
+	/**
+	 * The description displayed in the message area.
+	 */
+	private Label _messageAreaDescription;
+	
+	/**
 	 * The logger used by this view.
 	 */
 	private final CentralLogger _log = CentralLogger.getInstance();
@@ -353,7 +382,36 @@ public class AlarmTreeView extends ViewPart {
 	 * {@inheritDoc}
 	 */
 	public final void createPartControl(final Composite parent) {
-		_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		parent.setLayout(layout);
+		
+		_messageArea = new Composite(parent, SWT.NONE);
+		final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		messageAreaLayoutData.exclude = true;
+		_messageArea.setVisible(false);
+		_messageArea.setLayoutData(messageAreaLayoutData);
+		_messageArea.setLayout(new GridLayout(2, false));
+		
+		_messageAreaIcon = new Label(_messageArea, SWT.NONE);
+		_messageAreaIcon.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 1, 2));
+		_messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
+		
+		_messageAreaMessage = new Label(_messageArea, SWT.WRAP);
+		_messageAreaMessage.setText("Test message");
+		// Be careful if changing the GridData below! The label will not wrap
+		// correctly for some settings.
+		_messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		
+		_messageAreaDescription = new Label(_messageArea, SWT.WRAP);
+		_messageAreaDescription.setText("This is an explanation of the test message.");
+		// Be careful if changing the GridData below! The label will not wrap
+		// correctly for some settings.
+		_messageAreaDescription.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		
+		_viewer = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		_viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		_viewer.setContentProvider(new AlarmTreeContentProvider());
 		_viewer.setLabelProvider(new AlarmTreeLabelProvider());
 		_viewer.setComparator(new ViewerComparator());
@@ -401,6 +459,41 @@ public class AlarmTreeView extends ViewPart {
 						public void run() {
 							startDirectoryReaderJob();
 						}
+					});
+					// XXX This is a dirty hack and must be refactored! This
+					// also doesn't work correctly because it monitors only one
+					// of the two connections.
+					_jmsConnector.addTransportListener(new TransportListener() {
+
+						public void onCommand(Object arg0) {
+							// do nothing
+						}
+
+						public void onException(IOException arg0) {
+							// do nothing
+						}
+
+						public void transportInterupted() {
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									setMessage(
+											SWT.ICON_WARNING,
+											"Connection error",
+											"Some or all of the information displayed "
+													+ "may be outdated. The alarm tree is currently "
+													+ "not connected to all alarm servers.");
+								}
+							});
+						}
+
+						public void transportResumed() {
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									hideMessage();
+								}
+							});
+						}
+						
 					});
 					return Status.OK_STATUS;
 				} else {
@@ -479,6 +572,42 @@ public class AlarmTreeView extends ViewPart {
 	 */
 	private void disposeJmsListener() {
 		_jmsConnector.disconnect();
+	}
+
+	/**
+	 * Sets the message displayed in the message area of this view part.
+	 * 
+	 * @param icon
+	 *            the icon to be displayed next to the message. Must be one of
+	 *            <code>SWT.ICON_ERROR</code>,
+	 *            <code>SWT.ICON_INFORMATION</code>,
+	 *            <code>SWT.ICON_WARNING</code>,
+	 *            <code>SWT.ICON_QUESTION</code>.
+	 * @param message
+	 *            the message.
+	 * @param description
+	 *            a descriptive text.
+	 */
+	private void setMessage(final int icon, final String message,
+			final String description) {
+		_messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
+		_messageAreaMessage.setText(message);
+		_messageAreaDescription.setText(description);
+//		_messageArea.pack();
+		_messageArea.layout();
+		
+		_messageArea.setVisible(true);
+		((GridData) _messageArea.getLayoutData()).exclude = false;
+		_messageArea.getParent().layout();
+	}
+	
+	/**
+	 * Hides the message displayed in this view part.
+	 */
+	private void hideMessage() {
+		_messageArea.setVisible(false);
+		((GridData) _messageArea.getLayoutData()).exclude = true;
+		_messageArea.getParent().layout();
 	}
 
 	/**

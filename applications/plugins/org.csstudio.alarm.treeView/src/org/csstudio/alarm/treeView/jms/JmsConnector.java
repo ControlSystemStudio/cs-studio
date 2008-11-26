@@ -245,4 +245,11 @@ public final class JmsConnector {
 		_session = null;
 	}
 
+	/**
+	 * @param transportListener
+	 */
+	public void addTransportListener(TransportListener transportListener) {
+		((ActiveMQConnection) _connection[0]).addTransportListener(transportListener);
+	}
+
 }
