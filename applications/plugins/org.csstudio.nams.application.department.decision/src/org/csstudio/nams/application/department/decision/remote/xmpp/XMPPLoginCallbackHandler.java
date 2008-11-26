@@ -10,8 +10,8 @@ import org.csstudio.platform.security.ILoginCallbackHandler;
 public class XMPPLoginCallbackHandler implements ILoginCallbackHandler {
 
 	static final String LOGIN_FAILED = "Possible hacking attempt: XMPP-remote-login: Authorization failed! (no details avail)";
-	static final String PASSWORD = "nams!login";
-	static final String USER = "nams-decision-department-application-remote-login-user";
+	static final String PASSWORD = "ams";
+	static final String USER = "ams-department-decision";
 	private static final String CREDENTIALS_VIA_XMPP_REQUESTED_MESSAGE = "Credentials via XMPP requested";
 	private static Logger logger;
 

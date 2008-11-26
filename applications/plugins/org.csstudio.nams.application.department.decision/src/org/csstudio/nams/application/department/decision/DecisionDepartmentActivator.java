@@ -28,6 +28,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
+import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
 import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler;
 import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
@@ -61,6 +62,8 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
+import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
@@ -92,7 +95,7 @@ import org.osgi.framework.BundleActivator;
  * @version 0.2.0-2008-06-10 (MZ): Change to use {@link AbstractBundleActivator}.
  */
 public class DecisionDepartmentActivator extends AbstractBundleActivator
-		implements IApplication, BundleActivator {
+		implements IApplication, BundleActivator, RemotelyStoppable {
 
 	class AusgangsKorbBearbeiter extends StepByStepProcessor {
 
@@ -334,6 +337,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
 
+        /* For XMPP login ADDED BY Markus Moeller 2008-11-26
+		for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
+        {
+            s.run();
+        }
+        */
+		
 		configureExecutionService();
 
 		createMessagingConsumer();	
@@ -724,6 +734,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.staticInject(DecisionDepartmentActivator.logger);
 		XMPPRemoteShutdownAction
 				.staticInject(DecisionDepartmentActivator.logger);
+        XMPPRemoteShutdownAction
+                .staticInject(this);
 
 		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
 				+ DecisionDepartmentActivator.PLUGIN_ID
@@ -892,5 +904,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		}
 
 		consumersConsumer.close();
-	};
+	}
+
+    public void stopRemotely(Logger logger)
+    {
+        //TODO: Wie stoppe ich die Anwendung?
+    };
 }
