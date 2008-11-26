@@ -219,11 +219,11 @@ final class AlarmMessageListener implements MessageListener {
 			throws JMSException {
 		String name = message.getString("NAME");
 		if (isAcknowledgement(message)) {
-			_log.info(this, "received ack: name=" + name);
+			_log.debug(this, "received ack: name=" + name);
 			_worker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
 		} else {
 			Severity severity = Severity.parseSeverity(message.getString("SEVERITY"));
-			_log.info(this, "received alarm: name=" + name + ", severity=" + severity);
+			_log.debug(this, "received alarm: name=" + name + ", severity=" + severity);
 			_worker.enqueue(PendingUpdate.createAlarmUpdate(name, severity));
 		}
 	}

@@ -130,7 +130,7 @@ public final class JmsConnector {
 				connected = connect(factory, topics, 0);
 			}
 			if (connected) {
-				_log.debug(this, "Connected to first JMS server.");
+				_log.info(this, "Connected to first JMS server.");
 			}
 		} catch (NamingException e) {
 			_log.error(this, "Error getting connection factory for primary JMS server.", e);
@@ -150,7 +150,7 @@ public final class JmsConnector {
 				connected = connect(factory, topics, 1);
 			}
 			if (connected) {
-				_log.debug(this, "Connected to second JMS server.");
+				_log.info(this, "Connected to second JMS server.");
 			}
 		} catch (NamingException e) {
 			_log.error(this, "Error getting connection factory for secondary JMS server.", e);
