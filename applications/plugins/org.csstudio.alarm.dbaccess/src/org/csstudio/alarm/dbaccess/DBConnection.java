@@ -52,10 +52,10 @@ public class DBConnection {
 			+ "(FAILOVER_MODE = " + "(TYPE = NONE) " + "(METHOD = BASIC) "
 			+ "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")";
 
-	// private String _user = "kryklogt";
-	// private String _password = "kryklogt";
-	private String _user = "KRYKAMS";
+	private String _user = "krykams";
 	private String _password = "krykams";
+	// private String _user = "KRYKAMS";
+	// private String _password = "krykams";
 
 	private static DBConnection _instance;
 
@@ -85,13 +85,15 @@ public class DBConnection {
 
 	public Connection getConnection() {
 
+		if (Activator.getDefault() != null) {
 		_url = Activator.getDefault().getPluginPreferences().getString(
 				AlarmArchiveDBPreferenceConstants.DB_CONNECTION_STRING);
 		_user = Activator.getDefault().getPluginPreferences().getString(
 				AlarmArchiveDBPreferenceConstants.DB_USER);
 		_password = Activator.getDefault().getPluginPreferences().getString(
 				AlarmArchiveDBPreferenceConstants.DB_PASSWORD);
-
+		}
+		
 		try {
 			if ((_dbConnection == null) || (_dbConnection.isClosed() == true)) {
 				try {

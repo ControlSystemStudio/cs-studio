@@ -21,8 +21,6 @@
  */
 package org.csstudio.alarm.dbaccess;
 
-import oracle.jdbc.OracleResultSet;
-import oracle.jdbc.OracleStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+
+import oracle.jdbc.OracleResultSet;
+import oracle.jdbc.OracleStatement;
 
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.platform.logging.CentralLogger;
@@ -124,7 +125,9 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 						// current row has the same message_id->
 						// it belongs to the current message
 						if (message != null) {
-							message.put(resultSet.getString(2), resultSet
+							String s = resultSet.getString(2);
+							String property = MessagePropertyTypeContent.getIDPropertyMapping().get(s);
+							message.put(property, resultSet
 									.getString(3));
 						}
 					} else {
@@ -140,7 +143,11 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 						currentMessageID = Integer.parseInt(resultSet
 								.getString(1));
 						message = new HashMap<String, String>();
-						message.put(resultSet.getString(2), resultSet
+						// get property name from MessagePropertyTypeContent
+						// that holds id, property mapping
+						String s = resultSet.getString(2);
+						String property = MessagePropertyTypeContent.getIDPropertyMapping().get(s);
+						message.put(property, resultSet
 								.getString(3));
 					}
 				}
@@ -179,45 +186,53 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			// because the SQL statement is designed only for AND.
 			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filter);
 			ResultSet result = null;
+			SQLBuilder sqlBuilder = new SQLBuilder();
 			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
-				switch (currentFilterSettingList.size()) {
-				case 0:
-					getMessages = _databaseConnection
-							.prepareStatement(SQLStatements.ARCHIVE_SIMPLE);
-					break;
-				case 1:
-					getMessages = _databaseConnection
-							.prepareStatement(SQLStatements.ARCHIVE_MESSAGES_1);
-					break;
-				case 2:
-					getMessages = _databaseConnection
-							.prepareStatement(SQLStatements.ARCHIVE_MESSAGES_2);
-					break;
-				case 3:
-					getMessages = _databaseConnection
-							.prepareStatement(SQLStatements.ARCHIVE_MESSAGES_3);
-					break;
-				default:
-					break;
-				}
+				String statement = sqlBuilder
+						.generateSQL(currentFilterSettingList);
+				getMessages = _databaseConnection.prepareStatement(statement);
 				int parameterIndex = 0;
 				// set the preparedStatement parameters
 				if (getMessages != null) {
+					// set filterItems with property in message table first
 					for (FilterItem filterSetting : currentFilterSettingList) {
-						parameterIndex++;
-						getMessages.setString(parameterIndex, filterSetting
-								.get_property());
-						parameterIndex++;
-						getMessages.setString(parameterIndex, filterSetting
-								.get_value());
-						CentralLogger.getInstance().debug(
-								this,
-								"DB query, filter Property: "
-										+ filterSetting.get_property()
-										+ "  Value: "
-										+ filterSetting.get_value()
-										+ "  Realtion: "
-										+ filterSetting.get_relation());
+						if (filterSetting.get_property().equalsIgnoreCase(
+								"inMessage")) {
+							parameterIndex++;
+							getMessages.setString(parameterIndex, filterSetting
+									.get_value());
+							CentralLogger.getInstance().debug(
+									this,
+									"DB query, filter Property: "
+											+ filterSetting.get_property()
+											+ "  Value: "
+											+ filterSetting.get_value()
+											+ "  Relation: "
+											+ filterSetting.get_relation());
+						}
+					}
+					// set filterItems with property in message_content table
+					for (FilterItem filterSetting : currentFilterSettingList) {
+						if (!filterSetting.get_property().equalsIgnoreCase(
+								"inMessage")) {
+							parameterIndex++;
+							String propertyName = filterSetting.get_property();
+							getMessages.setString(parameterIndex,
+									MessagePropertyTypeContent
+											.getPropertyIDMapping()
+											.get(propertyName));
+							parameterIndex++;
+							getMessages.setString(parameterIndex, filterSetting
+									.get_value());
+							CentralLogger.getInstance().debug(
+									this,
+									"DB query, filter Property: "
+											+ filterSetting.get_property()
+											+ "  Value: "
+											+ filterSetting.get_value()
+											+ "  Relation: "
+											+ filterSetting.get_relation());
+						}
 					}
 				}
 				String fromDate = buildDateString(from);
@@ -232,9 +247,9 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 								+ toDate);
 
 				// getMessages.setString(1, "NAME");
-				// getMessages.setString(2, "CMTBSTP4R21_temp");
-				// getMessages.setString(3, "2008-05-21 15:6:49");
-				// getMessages.setString(4, "2008-05-22 15:6:49");
+				// getMessages.setString(1, "XMTSTTP1262B_ai");
+				// getMessages.setString(2, "2008-10-15 10:06:49");
+				// getMessages.setString(3, "2008-10-17 20:06:49");
 				result = getMessages.executeQuery();
 				resultSetList.add(result);
 			}
@@ -262,11 +277,11 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 	/**
-	 * The list of Filter settings consists of property value pairs
-	 * associated with AND or OR. Because the sql statement is created only for
-	 * the AND parts (for a better performance the or will be merged in java)
-	 * this method split the FilterSetting list on the OR association and
-	 * returns a list of lists of filter settings associated only with AND.
+	 * The list of Filter settings consists of property value pairs associated
+	 * with AND or OR. Because the sql statement is created only for the AND
+	 * parts (for a better performance the or will be merged in java) this
+	 * method split the FilterSetting list on the OR association and returns a
+	 * list of lists of filter settings associated only with AND.
 	 * 
 	 * @param filter
 	 * @return
