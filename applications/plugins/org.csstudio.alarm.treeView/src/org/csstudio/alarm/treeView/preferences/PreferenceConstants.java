@@ -43,18 +43,6 @@ public final class PreferenceConstants {
 	public static final String JMS_URL_SECONDARY = "jms.url.2";
 	
 	/**
-	 * A preference that stores the class name of the context factory to use
-	 * for the primary JMS server.
-	 */
-	public static final String JMS_CONTEXT_FACTORY_PRIMARY = "jms.contextfactory.1";
-
-	/**
-	 * A preference that stores the class name of the context factory to use
-	 * for the secondary JMS server.
-	 */
-	public static final String JMS_CONTEXT_FACTORY_SECONDARY = "jms.contextfactory.2";
-	
-	/**
 	 * A preference that stores the name or names of the JMS topics to connect
 	 * to.
 	 */
@@ -65,5 +53,4 @@ public final class PreferenceConstants {
 	 * in the tree.
 	 */
 	public static final String FACILITIES = "NODE";
-
 }

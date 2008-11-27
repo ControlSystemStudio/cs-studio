@@ -52,6 +52,15 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Joerg Rathlev
  */
 final class JmsConnection implements TransportListener {
+	
+	/**
+	 * The initial context factory used for JNDI.
+	 */
+	// Note: this used to be a preference setting, but this class requires
+	// ActiveMQ anyway for the connection monitoring, so this cannot actually
+	// be changed. So we can use a constant here and keep the UI simple.
+	private static final String JNDI_CONTEXT_FACTORY =
+		"org.apache.activemq.jndi.ActiveMQInitialContextFactory";
 
 	/**
 	 * The logger used by this object.
@@ -62,11 +71,6 @@ final class JmsConnection implements TransportListener {
 	 * The topics that this connection will subscribe to.
 	 */
 	private String[] _topics;
-
-	/**
-	 * The initial context factory used for JNDI.
-	 */
-	private String _factory;
 
 	/**
 	 * The URI of the JMS broker which this connection connects to.
@@ -99,9 +103,6 @@ final class JmsConnection implements TransportListener {
 	 * @param connector
 	 *            the <code>JmsConnector</code> to which this connection
 	 *            belongs.
-	 * @param factory
-	 *            the JNDI initial context factory of the JNDI context in which
-	 *            the JMS connection factory will be looked up.
 	 * @param brokerUri
 	 *            the URI of the broker to connect to.
 	 * @param topics
@@ -109,11 +110,9 @@ final class JmsConnection implements TransportListener {
 	 * @param listener
 	 *            the message listener to which messages will be delivered.
 	 */
-	JmsConnection(final JmsConnector connector, final String factory,
-			final String brokerUri,	final String[] topics,
-			final MessageListener listener) {
+	JmsConnection(final JmsConnector connector, final String brokerUri,
+			final String[] topics, final MessageListener listener) {
 		_connector = connector;
-		_factory = factory;
 		_brokerUri = brokerUri;
 		_listener = listener;
 		_topics = new String[topics.length];
@@ -202,7 +201,7 @@ final class JmsConnection implements TransportListener {
 	private ConnectionFactory lookupConnectionFactory() throws JmsConnectionException {
 		_log.debug(this, "Looking up JMS connection factory.");
 		Hashtable<String, String> properties = new Hashtable<String, String>();
-		properties.put(Context.INITIAL_CONTEXT_FACTORY, _factory);
+		properties.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_CONTEXT_FACTORY);
 		properties.put(Context.PROVIDER_URL, _brokerUri);
 		try {
 			Context context = new InitialContext(properties);

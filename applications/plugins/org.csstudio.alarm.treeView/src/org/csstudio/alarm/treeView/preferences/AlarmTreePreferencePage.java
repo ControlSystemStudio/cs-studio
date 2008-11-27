@@ -31,7 +31,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -84,35 +83,19 @@ public class AlarmTreePreferencePage
 			
 		});
 		
-		// JMS Server Settings
-		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
-		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
-		g2.setLayout(new GridLayout(2,false));
-		// -- Primery Server
-		Label l1 = new Label(g2,SWT.NONE);
-		l1.setText("Primary server");
-		l1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
-		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY,
-				"Context factory:", g2));
+		Group jmsGroup = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
+		jmsGroup.setText("JMS settings");
+		jmsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		jmsGroup.setLayout(new GridLayout(2, false));
+		
 		addField(new StringFieldEditor(
 				PreferenceConstants.JMS_URL_PRIMARY,
-				"Provider URL:", g2));
-		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
-		// -- Secondary Server
-		Label l2 = new Label(g2,SWT.NONE);
-		l2.setText("Secondary server");
-		l2.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
-		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY,
-				"Context factory:", g2));
+				"First transport URI:", jmsGroup));
 		addField(new StringFieldEditor(
 				PreferenceConstants.JMS_URL_SECONDARY,
-				"Provider URL:", g2));
-		// --INITIAL_CONTEXT_FACTORY
-		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
+				"Second transport URI:", jmsGroup));
 		addField(new StringFieldEditor(PreferenceConstants.JMS_TOPICS,
-				"Queue:", g2));
+				"Topics:", jmsGroup));
 	}
 
 

@@ -168,12 +168,10 @@ public final class JmsConnector {
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String[] topics = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
 				PreferenceConstants.JMS_TOPICS, "", null).split(",");
-		String factory1 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY, "", null);
 		String url1 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_URL_PRIMARY, "", null);
-		String factory2 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY, "", null);
 		String url2 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_URL_SECONDARY, "", null);
 		
-		_connections[0] = new JmsConnection(this, factory1, url1, topics, _listener);
+		_connections[0] = new JmsConnection(this, url1, topics, _listener);
 		try {
 			_connections[0].start();
 		} catch (JmsConnectionException e) {
@@ -181,7 +179,7 @@ public final class JmsConnector {
 			throw e;
 		}
 		
-		_connections[1] = new JmsConnection(this, factory2, url2, topics, _listener);
+		_connections[1] = new JmsConnection(this, url2, topics, _listener);
 		try {
 			_connections[1].start();
 		} catch (JmsConnectionException e) {
