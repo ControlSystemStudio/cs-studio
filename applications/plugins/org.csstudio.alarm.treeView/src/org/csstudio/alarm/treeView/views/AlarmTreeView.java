@@ -34,6 +34,8 @@ import java.util.TimerTask;
 import org.apache.activemq.transport.TransportListener;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.jms.IConnectionMonitor;
+import org.csstudio.alarm.treeView.jms.JmsConnectionException;
 import org.csstudio.alarm.treeView.jms.JmsConnector;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
@@ -447,58 +449,47 @@ public class AlarmTreeView extends ViewPart {
 		final IWorkbenchSiteProgressService progressService =
 			(IWorkbenchSiteProgressService) getSite().getAdapter(
 					IWorkbenchSiteProgressService.class);
-		Job jmsConnectionJob = new Job("JMS Connection") {
+		Job jmsConnectionJob = new Job("Connecting to JMS brokers") {
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
 				monitor.beginTask("Connecting to JMS servers",
 						IProgressMonitor.UNKNOWN);
 				_jmsConnector = new JmsConnector();
-				_jmsConnector.connect(monitor);
-				if (!monitor.isCanceled()) {
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							startDirectoryReaderJob();
-						}
-					});
-					// XXX This is a dirty hack and must be refactored! This
-					// also doesn't work correctly because it monitors only one
-					// of the two connections.
-					_jmsConnector.addTransportListener(new TransportListener() {
+				_jmsConnector.addConnectionMonitor(new IConnectionMonitor() {
 
-						public void onCommand(Object arg0) {
-							// do nothing
-						}
+					public void onConnected() {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								hideMessage();
+								
+								// TODO: This rebuilds the whole tree from
+								// scratch. It would be better for the
+								// usability to resynchronize only.
+								startDirectoryReaderJob();
+							}
+						});
+					}
 
-						public void onException(IOException arg0) {
-							// do nothing
-						}
-
-						public void transportInterupted() {
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									setMessage(
-											SWT.ICON_WARNING,
-											"Connection error",
-											"Some or all of the information displayed "
-													+ "may be outdated. The alarm tree is currently "
-													+ "not connected to all alarm servers.");
-								}
-							});
-						}
-
-						public void transportResumed() {
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									hideMessage();
-								}
-							});
-						}
-						
-					});
-					return Status.OK_STATUS;
-				} else {
-					return Status.CANCEL_STATUS;
+					public void onDisconnected() {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								setMessage(
+										SWT.ICON_WARNING,
+										"Connection error",
+										"Some or all of the information displayed "
+												+ "may be outdated. The alarm tree is currently "
+												+ "not connected to all alarm servers.");
+							}
+						});
+					}
+					
+				});
+				try {
+					_jmsConnector.connect(monitor);
+				} catch (JmsConnectionException e) {
+					throw new RuntimeException("Could not connect to JMS brokers.", e);
 				}
+				return Status.OK_STATUS;
 			}
 		};
 		progressService.schedule(jmsConnectionJob, 0, true);

@@ -22,22 +22,9 @@
 
 package org.csstudio.alarm.treeView.jms;
 
-import java.io.IOException;
-import java.util.Hashtable;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.transport.TransportListener;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
@@ -62,22 +49,31 @@ public final class JmsConnector {
 	 * The alarm message listener.
 	 */
 	private AlarmMessageListener _listener;
-
+	
 	/**
-	 * The connections held by this object.
+	 * The connection monitors attached to this connector.
 	 */
-	private Connection[] _connection;
-
+	private List<IConnectionMonitor> _connectionMonitors;
+	
 	/**
-	 * The sessions held by this object.
+	 * The JMS connections held by this connector.
 	 */
-	private Session[] _session;
+	private JmsConnection[] _connections;
+	
+	/**
+	 * Whether this connector is connected, that is, whether all of its
+	 * underlying JMS connections are connected.
+	 */
+	private boolean _connected;
 	
 	/**
 	 * Creates a new JMS connector.
 	 */
 	public JmsConnector() {
 		_listener = new AlarmMessageListener();
+		_connectionMonitors = new CopyOnWriteArrayList<IConnectionMonitor>();
+		_connections = new JmsConnection[2];
+		_connected = false;
 	}
 	
 	/**
@@ -97,14 +93,78 @@ public final class JmsConnector {
 	}
 
 	/**
+	 * Adds the specified connection monitor to this connector.
+	 * 
+	 * @param monitor
+	 *            the connection monitor.
+	 */
+	public void addConnectionMonitor(final IConnectionMonitor monitor) {
+		_connectionMonitors.add(monitor);
+	}
+
+	/**
+	 * Removes the specified connection monitor from this connector.
+	 * 
+	 * @param monitor
+	 *            the connection monitor.
+	 */
+	public void removeConnectionMonitor(final IConnectionMonitor monitor) {
+		_connectionMonitors.remove(monitor);
+	}
+	
+	/**
+	 * Notifies the connection monitors that the connection was established.
+	 */
+	private void fireConnectedEvent() {
+		for (IConnectionMonitor monitor : _connectionMonitors) {
+			monitor.onConnected();
+		}
+	}
+	
+	/**
+	 * Notifies the connection monitors that the connection was closed or
+	 * interrupted.
+	 */
+	private void fireDisconnectedEvent() {
+		for (IConnectionMonitor monitor : _connectionMonitors) {
+			monitor.onDisconnected();
+		}
+	}
+	
+	/**
+	 * Called by the connection of this connector when their connection state
+	 * changes. Updates the connection state of this connector and notifies the
+	 * connection monitors if the state has changed.
+	 */
+	void onConnectionStateChanged() {
+		boolean connectedNow = true;
+		for (JmsConnection connection : _connections) {
+			connectedNow &= (connection != null ? connection.isConnected() : false);
+		}
+		
+		// If this connector was connected but is not connected now, or if it
+		// was not connected but is connected now, fire the appropriate event.
+		if (_connected && !connectedNow) {
+			_log.debug(this, "Connection state changed to disconnected.");
+			fireDisconnectedEvent();
+		} else if (!_connected && connectedNow) {
+			_log.debug(this, "Connection state changed to connected.");
+			fireConnectedEvent();
+		}
+		_connected = connectedNow;
+	}
+
+	/**
 	 * Connects to the JMS servers. This method blocks until the connection to
 	 * both servers is established.
 	 * 
 	 * @param monitor
 	 *            a progress monitor. Connecting to the first and second JMS
 	 *            server are reported as subtasks to the monitor.
+	 * @throws JmsConnectionException
+	 *             if the connection could not be established.
 	 */
-	public void connect(final IProgressMonitor monitor) {
+	public void connect(final IProgressMonitor monitor) throws JmsConnectionException {
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String[] topics = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
 				PreferenceConstants.JMS_TOPICS, "", null).split(",");
@@ -113,111 +173,22 @@ public final class JmsConnector {
 		String factory2 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY, "", null);
 		String url2 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_URL_SECONDARY, "", null);
 		
-		_session = new Session[2];
-		_connection = new Connection[2];
-		
-		// connect to the first server
-		monitor.subTask("First server");
-		Hashtable<String, String> properties = new Hashtable<String, String>();
-		properties.put(Context.INITIAL_CONTEXT_FACTORY, factory1);
-		properties.put(Context.PROVIDER_URL, url1);
+		_connections[0] = new JmsConnection(this, factory1, url1, topics, _listener);
 		try {
-			Context context = new InitialContext(properties);
-			ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
-			boolean connected = false;
-			while (!connected && !monitor.isCanceled()) {
-				_log.debug(this, "Trying to connect to first JMS server.");
-				connected = connect(factory, topics, 0);
-			}
-			if (connected) {
-				_log.info(this, "Connected to first JMS server.");
-			}
-		} catch (NamingException e) {
-			_log.error(this, "Error getting connection factory for primary JMS server.", e);
+			_connections[0].start();
+		} catch (JmsConnectionException e) {
+			_log.error(this, "Could not establish JMS connection to first broker.", e);
+			throw e;
 		}
 		
-		// connect to the second server
-		monitor.subTask("Second server");
-		properties = new Hashtable<String, String>();
-		properties.put(Context.INITIAL_CONTEXT_FACTORY, factory2);
-		properties.put(Context.PROVIDER_URL, url2);
+		_connections[1] = new JmsConnection(this, factory2, url2, topics, _listener);
 		try {
-			Context context = new InitialContext(properties);
-			ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
-			boolean connected = false;
-			while (!connected && !monitor.isCanceled()) {
-				_log.debug(this, "Trying to connect to second JMS server.");
-				connected = connect(factory, topics, 1);
-			}
-			if (connected) {
-				_log.info(this, "Connected to second JMS server.");
-			}
-		} catch (NamingException e) {
-			_log.error(this, "Error getting connection factory for secondary JMS server.", e);
-		}
-		
-		// XXX the following code is for testing purposes only
-		try {
-			_connection[0].setExceptionListener(new ExceptionListener() {
-				public void onException(JMSException exception) {
-					_log.debug(this, "JmsConnector: Exception listener of _connection[0] received an exception:");
-					exception.printStackTrace();
-				}
-			});
-			_log.debug(this, "JmsConnector: Exception listener added to _connection[0]");
-		} catch (JMSException e) {
-			_log.debug(this, "JmsConnector: Could not set exception listener on _connection[0]");
-		}
-		
-		ActiveMQConnection conn = (ActiveMQConnection) _connection[0];
-		conn.addTransportListener(new TransportListener() {
-			public void onCommand(Object command) {
-				_log.debug(this, "JmsConnector: TransportListener.onCommand called with: " + command);
-			}
-
-			public void onException(IOException error) {
-				_log.debug(this, "JmsConnector: TransportListener.onException called with: " + error);
-			}
-
-			public void transportInterupted() {
-				_log.debug(this, "JmsConnector: TransportListener.transportInterrupted called.");
-			}
-
-			public void transportResumed() {
-				_log.debug(this, "JmsConnector: TransportListener.transportResumed called.");
-			}
-		});
-	}
-
-	/**
-	 * Creates a connection to a JMS server.
-	 * 
-	 * @param connectionFactory
-	 *            the connection factory to use.
-	 * @param topics
-	 *            the topics to connect the listener to.
-	 * @param index
-	 *            the index of the server (0 or 1).
-	 * @return <code>true</code> if the connection succeeded, <code>false</code>
-	 *         otherwise.
-	 */
-	private boolean connect(final ConnectionFactory connectionFactory,
-			final String[] topics, final int index) {
-		try {
-			_connection[index] = connectionFactory.createConnection();
-			_session[index] = _connection[index].createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Destination[] topics1 = new Destination[2];
-			MessageConsumer[] consumers = new MessageConsumer[2];
-			for (int i = 0; i < topics.length; i++) {
-				topics1[i] = _session[index].createTopic(topics[i]);
-				consumers[i] = _session[index].createConsumer(topics1[i]);
-				consumers[i].setMessageListener(_listener);
-			}
-			_connection[index].start();
-			return true;
-		} catch (JMSException e) {
-			_log.warn(this, "Error connecting to JMS server.", e);
-			return false;
+			_connections[1].start();
+		} catch (JmsConnectionException e) {
+			_log.error(this, "Could not establish JMS connection to second broker.", e);
+			// Close the first connection before rethrowing.
+			_connections[0].close();
+			throw e;
 		}
 	}
 	
@@ -227,29 +198,12 @@ public final class JmsConnector {
 	public void disconnect() {
 		_log.debug(this, "Closing JMS connections.");
 		for (int i = 0; i < 2; i++) {
-			if (_connection[i] != null) {
-				try {
-					// Closing the connection will also close the session and
-					// the message consumers.
-					_connection[i].close();
-				} catch (JMSException e) {
-					_log.warn(this, "Error while closing JMS connection.", e);
-				}
+			if (_connections[i] != null) {
+				_connections[i].close();
+				_connections[i] = null;
 			}
 		}
-		
 		_listener.stop();
-		
-		// free the arrays
-		_connection = null;
-		_session = null;
-	}
-
-	/**
-	 * @param transportListener
-	 */
-	public void addTransportListener(TransportListener transportListener) {
-		((ActiveMQConnection) _connection[0]).addTransportListener(transportListener);
 	}
 
 }
