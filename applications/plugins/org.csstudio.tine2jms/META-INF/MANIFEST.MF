@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tine2Jms Plug-in
+Bundle-SymbolicName: org.csstudio.tine2jms;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.tine2jms.TineToJmsActivator
+Require-Bundle: org.eclipse.core.runtime.compatibility.auth;bundle-version="3.2.100",
+ org.csstudio.platform;bundle-version="1.1.0",
+ org.eclipse.core.runtime,
+ org.csstudio.platform.utility.jms;bundle-version="1.1.0",
+ org.csstudio.platform.libs.dcf;bundle-version="1.1.0",
+ org.csstudio.platform.libs.xmpp;bundle-version="1.1.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/tine.jar,
+ lib/commons-collections-3.2.jar,
+ lib/commons-configuration-1.5.jar,
+ lib/commons-lang-2.4.jar,
+ lib/concurrent-1.3.1.jar,
+ .

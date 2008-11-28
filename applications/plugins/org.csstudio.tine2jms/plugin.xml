@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="Tine2Jms"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.tine2jms.TineToJmsApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.tine2jms.xmpp.TineToJmsXmppLoginHandler"
+            id="org.csstudio.tine2jms.TineToJmsLoginHandler"
+            name="TineToJmsXmppLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.tine2jms.actions.TineToJmsStopAction"
+            id="org.csstudio.tine2jms.TineToJmsStopAction"
+            name="Stop"
+            parameters="Password"
+            visible="true">
+      </parametrizedAction>
+      <parametrizedAction
+            class="org.csstudio.tine2jms.actions.TineToJmsRestartAction"
+            id="org.csstudio.tine2jms.TineToJmsRestartAction"
+            parameters="param1,param2"
+            visible="true">
+      </parametrizedAction>
+   </extension>
+   <extension
+         id="Tine2JmsProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.tine2jms.Tine2Jms"
+            name="Tin2Jms">
+         <property
+               name="appName"
+               value="Tin2Jms">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
