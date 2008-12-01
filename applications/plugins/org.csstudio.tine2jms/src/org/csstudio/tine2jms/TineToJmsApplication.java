@@ -25,10 +25,8 @@ package org.csstudio.tine2jms;
 
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
@@ -39,8 +37,6 @@ import org.csstudio.tine2jms.util.JmsProducer;
 import org.csstudio.tine2jms.util.JmsProducerException;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-
-import de.desy.tine.server.alarms.TAlarmMessage;
 
 /**
  * @author Markus Moeller
@@ -55,10 +51,13 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
     private Logger logger = null;
     
     /** Alarm monitor */
-    private TineAlarmMonitor alarmMonitor = null;
+    private TineAlarmMonitor[] alarmMonitor = null;
     
     /** JMS producer */
     private JmsProducer producer = null;
+    
+    /** Array of alarm systems we want to monitor */
+    private String[] facilities = null;
     
     /** Flag that indicates wheather or not the application should be stopped */
     private boolean working;
@@ -120,8 +119,21 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
             catch(InterruptedException ie) {}
         }
         
-        alarmMonitor = new TineAlarmMonitor(this, configuration.getString("facility.name"));
+        facilities = configuration.getStringArray("facility.name");
+        if(facilities == null)
+        {
+            logger.error("No alarm system / facility is defined.");
+            
+            return IApplication.EXIT_OK;
+        }
         
+        alarmMonitor = new TineAlarmMonitor[facilities.length];
+        
+        for(int i = 0;i < facilities.length;i++)
+        {
+            alarmMonitor[i] = new TineAlarmMonitor(this, facilities[i]);
+        }
+
         while(working)
         {
             synchronized(this)
@@ -136,7 +148,10 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
             }
         }
         
-        alarmMonitor.close();
+        for(int i = 0;i < facilities.length;i++)
+        {
+            alarmMonitor[i].close();
+        }
         
         if(restart)
         {
@@ -146,11 +161,11 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
         return result;
     }
 
-    public void update(Observable messageCreator, Object obj)
+    public synchronized void update(Observable messageCreator, Object obj)
     {
         MapMessage msg = null;
         
-        TAlarmMessage alarm = (TAlarmMessage)obj;
+        AlarmMessage alarm = (AlarmMessage)obj;
         
         try
         {

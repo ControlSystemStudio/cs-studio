@@ -36,7 +36,7 @@ import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import de.desy.tine.server.alarms.TAlarmMessage;
+import org.csstudio.tine2jms.AlarmMessage;
 
 /**
  * @author Markus Moeller
@@ -91,7 +91,7 @@ public class JmsProducer
         }
     }
     
-    public void sendMessage(MapMessage message) throws JmsProducerException
+    public synchronized void sendMessage(MapMessage message) throws JmsProducerException
     {
         try
         {
@@ -118,27 +118,20 @@ public class JmsProducer
         if (context != null){try{context.close();}
         catch(NamingException e){}context=null;}
     }
-    
-    public MapMessage createMapMessages(TAlarmMessage[] alarms) throws JMSException
+
+    public synchronized MapMessage createMapMessages(AlarmMessage alarm) throws JMSException
     {
         MapMessage msg = session.createMapMessage();
 
-        return msg;
-    }
-
-    public MapMessage createMapMessages(TAlarmMessage alarm) throws JMSException
-    {
-        MapMessage msg = session.createMapMessage();
-
-        Date date = new Date(alarm.getTimeStamp());
+        Date date = new Date(alarm.getAlarmMessage().getTimeStamp());
         
         msg.setString("TYPE", "tine-alarm");
         msg.setString("EVENTTIME", dateFormat.format(date));
-        msg.setString("SEVERITY", SeverityMapper.getEPICSSeverity(alarm.getAlarmSeverity()));
-        msg.setString("NAME", alarm.getName());
-        msg.setString("TEXT", alarm.getAlarmDescriptorAsString());
-        msg.setString("FACILITY", alarm.getDevice());
-        msg.setString("HOST", alarm.getServer());
+        msg.setString("SEVERITY", SeverityMapper.getEPICSSeverity(alarm.getAlarmMessage().getAlarmSeverity()));
+        msg.setString("NAME", alarm.getAlarmMessage().getDevice());
+        msg.setString("TEXT", alarm.getAlarmMessage().getAlarmDescriptorAsString());
+        msg.setString("FACILITY", alarm.getContext());
+        msg.setString("HOST", alarm.getAlarmMessage().getServer());
 
         date = null;
         

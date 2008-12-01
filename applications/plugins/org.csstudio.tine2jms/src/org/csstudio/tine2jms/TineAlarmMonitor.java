@@ -42,6 +42,7 @@ import de.desy.tine.server.alarms.TAlarmMessage;
  */
 public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
 {
+    private String context = null;
     private Logger logger = null;
     private TLink tineLink = null;
     private SimpleDateFormat dateFormat = null;
@@ -49,6 +50,7 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
     
     public TineAlarmMonitor(Observer observer, String context)
     {
+        this.context = context;
         logger = Logger.getLogger(TineAlarmMonitor.class);
         this.addObserver(observer);
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -67,6 +69,7 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
     public void alarmsHandler(AlarmMonitor alarmMonitor)
     {
         TAlarmMessage alarm = null;
+        AlarmMessage am = null;
         Date date = null;
         
         TAlarmMessage[] ams = alarmMonitor.getLastAcquiredAlarms(0, true);
@@ -86,12 +89,14 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
                     this.lastTimeStamp = alarm.getTimeStamp();
                     
                     date = new Date(alarm.getTimeStamp());
-                    logger.debug("Neuer Alarm Timestamp: " + dateFormat.format(date));
-    
+                    logger.debug(context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
+                    
                     date = null;
-    
+                    
+                    am = new AlarmMessage(alarm, context);
+                    
                     setChanged();
-                    notifyObservers(alarm);
+                    notifyObservers(am);
                 }
             }
         }
