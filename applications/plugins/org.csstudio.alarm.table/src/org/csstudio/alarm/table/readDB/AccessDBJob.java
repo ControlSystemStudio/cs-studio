@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.readDB;
+package org.csstudio.alarm.table.readDB;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,53 +38,53 @@ import org.eclipse.core.runtime.jobs.Job;
  * Job for accessing the database
  * 
  * @author jhatje
- *
+ * 
  */
 
-public class ReadDBJob extends Job {
+public class AccessDBJob extends Job {
 
-	private final Calendar _to;
-	private final Calendar from;
-	private final DBAnswer dbAnswer;
-	private final String _filter;
-	private final int _maxAnswerSize;
+	private Calendar _to;
+	private Calendar _from;
+	private DBAnswer dbAnswer = null;
+	private int _maxAnswerSize;
 	private ArrayList<FilterItem> _filterSettings;
-	
-	public ReadDBJob(String name, DBAnswer dbAnswer,
-			Calendar from, Calendar to) {
+	private boolean _deleteMessages = false;
+
+	public AccessDBJob(String name) {
 		super(name);
+	}
+
+	public void setReadProperties(DBAnswer dbAnswer, Calendar from, Calendar to) {
+		setReadProperties(dbAnswer, from, to, null);
+	}
+
+	public void setReadProperties(DBAnswer dbAnswer, Calendar from,
+			Calendar to, ArrayList<FilterItem> filterSettings) {
+		this._deleteMessages = false;
 		this.dbAnswer = dbAnswer;
-		this.from = from;
+		this._from = from;
 		this._to = to;
-		this._filter = null;
-		String maxAnswerSize = JmsLogsPlugin.getDefault().getPluginPreferences().getString("maximum answer size");
+		this._filterSettings = filterSettings;
+		String maxAnswerSize = JmsLogsPlugin.getDefault()
+				.getPluginPreferences().getString("maximum answer size");
 		_maxAnswerSize = Integer.parseInt(maxAnswerSize);
 	}
 
-	public ReadDBJob(String name, DBAnswer dbAnswer,
-			Calendar from, Calendar to, String filter, ArrayList<FilterItem> filterSettings) {
-		super(name);
-		this.dbAnswer = dbAnswer;
-		this.from = from;
-		this._to = to;
-		_filter = filter;
-		_filterSettings = filterSettings;
-		String maxAnswerSize = JmsLogsPlugin.getDefault().getPluginPreferences().getString("maximum answer size");
-		_maxAnswerSize = Integer.parseInt(maxAnswerSize);
+	public void setDeleteFlag(boolean deleteMessages) {
+		this._deleteMessages = deleteMessages;
 	}
-
 	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		
-        ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
-        ArrayList<HashMap<String, String>> am = new ArrayList<HashMap<String,String>>();
-        if (_filter == null) {
-        	am = adba.getLogMessages(from, _to, _maxAnswerSize);
-        } else {
-        	am = adba.getLogMessages(from, _to, _filter, _filterSettings, _maxAnswerSize);
-        }
-        dbAnswer.setDBAnswer(am);
+
+		ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
+		ArrayList<HashMap<String, String>> am = new ArrayList<HashMap<String, String>>();
+		if (_deleteMessages == false) {
+			am = adba.getLogMessages(_from, _to, _filterSettings, _maxAnswerSize);
+		} else {
+			am = adba.deleteLogMessages(_from, _to, _filterSettings);
+		}
+		dbAnswer.setDBAnswer(am, adba.is_maxSize());
 		return Status.OK_STATUS;
 	}
 

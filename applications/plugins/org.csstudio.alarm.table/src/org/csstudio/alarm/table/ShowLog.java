@@ -50,7 +50,7 @@ public class ShowLog implements IWorkbenchWindowActionDelegate {
 		        IWorkbench workbench = PlatformUI.getWorkbench();
 		        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		        IWorkbenchPage page = window.getActivePage();
-		        page.showView(LogView.ID);
+		        page.showView(ViewLog.ID);
 		    }
 		    catch (Exception e)
 		    {

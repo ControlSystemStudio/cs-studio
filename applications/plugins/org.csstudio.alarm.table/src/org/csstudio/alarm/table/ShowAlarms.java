@@ -50,7 +50,7 @@ public class ShowAlarms implements IWorkbenchWindowActionDelegate {
 		        IWorkbench workbench = PlatformUI.getWorkbench();
 		        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		        IWorkbenchPage page = window.getActivePage();
-		        page.showView(AlarmLogView.ID);
+		        page.showView(ViewAlarm.ID);
 		    }
 		    catch (Exception e)
 		    {

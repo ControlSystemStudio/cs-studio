@@ -9,9 +9,9 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.alarm.table.LogViewArchive"
+            class="org.csstudio.alarm.table.ViewArchive"
             icon="icons/archiveTable.png"
-            id="org.csstudio.alarm.table.LogViewArchive"
+            id="org.csstudio.alarm.table.ViewArchive"
             name="JMS Log archive viewer"/>
    </extension>
    <extension
@@ -22,9 +22,9 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.alarm.table.LogView"
+            class="org.csstudio.alarm.table.ViewLog"
             icon="icons/logTable.png"
-            id="org.csstudio.alarm.table.LogView"
+            id="org.csstudio.alarm.table.ViewLog"
             name="JMS Log viewer"/>
    </extension>
    <extension
@@ -35,9 +35,9 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.alarm.table.AlarmLogView"
+            class="org.csstudio.alarm.table.ViewAlarm"
             icon="icons/alarmTable.png"
-            id="org.csstudio.alarm.table.AlarmLogView"
+            id="org.csstudio.alarm.table.ViewAlarm"
             name="JMS Alarm viewer"/>
    </extension>
    <extension

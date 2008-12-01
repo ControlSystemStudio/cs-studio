@@ -35,6 +35,7 @@ public class AlarmViewerPreferenceConstants {
 	public static final String SECONDARY_URL = "Alarm.provider_url.secondary"; //$NON-NLS-1$
 	public static final String QUEUE = "Alarm.message_queue"; //$NON-NLS-1$
     public static final String SENDER_URL = "Alarm.sender_url"; //$NON-NLS-1$
+    public static final String LOG_ALARM_SOUND_FILE = "Alarm.log_alarm_sound_file"; //$NON-NLS-1$
     
 
 

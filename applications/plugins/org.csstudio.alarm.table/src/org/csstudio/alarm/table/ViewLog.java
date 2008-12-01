@@ -64,9 +64,9 @@ import org.eclipse.ui.views.IViewRegistry;
  * @author jhatje
  *
  */
-public class LogView extends ViewPart implements MessageListener {
+public class ViewLog extends ViewPart implements MessageListener {
 
-	public static final String ID = LogView.class.getName();
+	public static final String ID = ViewLog.class.getName();
 
 	public Shell parentShell = null;
 
@@ -227,7 +227,7 @@ public class LogView extends ViewPart implements MessageListener {
 					} else if (message instanceof MapMessage) {
 						final MapMessage mm = (MapMessage) message;
                         CentralLogger.getInstance().debug(this, "received map message");
-//	DEBUG					JmsLogsPlugin.logInfo("LogView message received, MsgName: " + 
+//	DEBUG					JmsLogsPlugin.logInfo("ViewLog message received, MsgName: " + 
 //                        		mm.getString("NAME") + " Severity: " + mm.getString("SEVERITY") +
 //                        		" MsgTime: " + mm.getString("EVENTTIME"));
 						if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -271,7 +271,7 @@ public class LogView extends ViewPart implements MessageListener {
 	 * @throws JMSException 
      */
     protected void setAck(MapMessage message) {
-//DEBUG       JmsLogsPlugin.logInfo("LogView Ack message received, MsgName: " + 
+//DEBUG       JmsLogsPlugin.logInfo("ViewLog Ack message received, MsgName: " + 
 //       		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
        TableItem[] items = _tableViewer.getTable().getItems();
        	   for (TableItem item : items) {

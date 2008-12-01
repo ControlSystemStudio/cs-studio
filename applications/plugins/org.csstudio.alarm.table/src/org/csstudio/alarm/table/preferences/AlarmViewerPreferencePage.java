@@ -27,14 +27,8 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Group;
@@ -99,29 +93,43 @@ public class AlarmViewerPreferencePage
 
 
 		});
-		//
-		// Server Settings
-		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
-		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
-		g2.setLayout(new GridLayout(2,false));
+
+		
+		Group soundFile = new Group(getFieldEditorParent(), SWT.NONE);
+		soundFile.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
+		soundFile.setLayout(new GridLayout(2,false));
 		// -- Primery Server
-		Label l1 = new Label(g2,SWT.NONE);
-		l1.setText(Messages.JMSPreferencePage_ALARM_PRIMERY_SERVER);
-		l1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
+		Label soundLabel = new Label(soundFile,SWT.NONE);
+		soundLabel.setText("Sound File (Workspace Path)");
+		soundLabel.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE, "Workspace Path", soundFile));
+//        final StringFieldEditor soundFileEditor = new StringFieldEditor(AlarmViewerPreferenceConstants.PRIMARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, soundFile); 
+//		addField(primary_url);
+//		new Label(soundFile,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
+
+        //
+		// Server Settings
+        Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
+        g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
+        g2.setLayout(new GridLayout(2,false));
+        // -- Primery Server
+        Label l1 = new Label(g2,SWT.NONE);
+        l1.setText(Messages.JMSPreferencePage_ALARM_PRIMERY_SERVER);
+        l1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
+        addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
         final StringFieldEditor primary_url = new StringFieldEditor(AlarmViewerPreferenceConstants.PRIMARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2); 
-		addField(primary_url);
-		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
-		// -- Secondary Server
-		Label l2 = new Label(g2,SWT.NONE);
-		l2.setText(Messages.JMSPreferencePage_ALARM_SECONDARY_SERVER);
-		l2.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
+        addField(primary_url);
+        new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
+        // -- Secondary Server
+        Label l2 = new Label(g2,SWT.NONE);
+        l2.setText(Messages.JMSPreferencePage_ALARM_SECONDARY_SERVER);
+        l2.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
+        addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
         final StringFieldEditor secondary_url = new StringFieldEditor(AlarmViewerPreferenceConstants.SECONDARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2);
-		addField(secondary_url);
-		// --INITIAL_CONTEXT_FACTORY
-		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.QUEUE, Messages.JMSPreferencePage_ALARM_QUEUE_NAME, g2));
+        addField(secondary_url);
+        // --INITIAL_CONTEXT_FACTORY
+        new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
+        addField(new StringFieldEditor(AlarmViewerPreferenceConstants.QUEUE, Messages.JMSPreferencePage_ALARM_QUEUE_NAME, g2));
         final StringFieldEditor sender_URL = new StringFieldEditor(AlarmViewerPreferenceConstants.SENDER_URL, Messages.JMSPreferencePage_ALARM_SENDER_URL, g2);
         sender_URL.getTextControl(g2).setVisible(true);
         sender_URL.getTextControl(g2).setEditable(true);

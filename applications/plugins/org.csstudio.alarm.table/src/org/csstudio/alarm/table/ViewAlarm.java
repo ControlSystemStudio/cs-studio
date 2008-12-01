@@ -39,6 +39,7 @@ import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
+import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.jobs.Job;
@@ -57,21 +58,21 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
 
 /**
- * Add to the base class {@code LogView}: - the acknowledge button and combo
- * box - the send method for jms acknowledge messages - the rule for receiving a
- * new acknowledge message
+ * Add to the base class {@code ViewLog}: - the acknowledge button and combo box
+ * - the send method for jms acknowledge messages - the rule for receiving a new
+ * acknowledge message
  * 
- * @see LogView
+ * @see ViewLog
  * @author jhatje
  * @author $Author$
  * @version $Revision$
  * @since 06.06.2007
  */
-public class AlarmLogView extends LogView {
+public class ViewAlarm extends ViewLog {
 
-	public static final String ID = AlarmLogView.class.getName();
+	public static final String ID = ViewAlarm.class.getName();
 
-    private static final String SECURITY_ID = "operating";
+	private static final String SECURITY_ID = "operating";
 
 	private Timer timer = new Timer();
 
@@ -81,6 +82,8 @@ public class AlarmLogView extends LogView {
 
 	private RemoveAcknowledgedMessagesTask _removeMessageTask;
 
+	private Button soundEnableButton;
+
 	/**
 	 * Creates the view for the alarm log table.
 	 * 
@@ -88,7 +91,8 @@ public class AlarmLogView extends LogView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-        boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
+		boolean canExecute = SecurityFacade.getInstance().canExecute(
+				SECURITY_ID, false);
 
 		// in alarm table the 'ack' column must be the first one!
 		String preferenceColumnString = JmsLogsPlugin.getDefault()
@@ -119,7 +123,7 @@ public class AlarmLogView extends LogView {
 		Composite comp = new Composite(parent, SWT.NONE);
 
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
-		comp.setLayout(new GridLayout(4, false));
+		comp.setLayout(new GridLayout(5, false));
 
 		Button ackButton = new Button(comp, SWT.PUSH);
 		ackButton.setText("Acknowledge");
@@ -153,6 +157,30 @@ public class AlarmLogView extends LogView {
 		if (prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length() > 0)
 			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
 		ackCombo.select(4);
+
+		soundEnableButton = new Button(comp, SWT.PUSH);
+		if (Functions.is_sound()) {
+			soundEnableButton.setText("Disable Sound");
+		} else {
+			soundEnableButton.setText("Enable Sound");
+		}
+		soundEnableButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+				false, 1, 1));
+
+		soundEnableButton.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				if (Functions.is_sound()) {
+					Functions.set_sound(false);
+					ViewAlarm.this.soundEnableButton.setText("Enable Sound");
+				} else {
+					Functions.set_sound(true);
+					ViewAlarm.this.soundEnableButton.setText("Disable Sound");
+				}
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
 
 		GregorianCalendar currentTime = new GregorianCalendar(TimeZone
 				.getTimeZone("ECT"));
@@ -207,8 +235,8 @@ public class AlarmLogView extends LogView {
 		});
 
 		// create jface table viewer with paramter 2 for alarm table version
-		_tableViewer = new JMSLogTableViewer(parent, getSite(), columnNames, _messageList, 2,
-				SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
+		_tableViewer = new JMSLogTableViewer(parent, getSite(), columnNames,
+				_messageList, 2, SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
 
 		_tableViewer.setAlarmSorting(true);
 		makeActions();
@@ -235,23 +263,23 @@ public class AlarmLogView extends LogView {
 	@Override
 	protected void setAck(final MapMessage message) {
 
-//		Display.getDefault().asyncExec(new Runnable() {
-//		public void run() {
-			try {
-				JmsLogsPlugin.logInfo("AlarmLogView Ack message received, MsgName: "
-						+ message.getString("NAME") + " MsgTime: "
-						+ message.getString("EVENTTIME"));
-			
-			} catch (Exception e) {
-                e.printStackTrace();
-				JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-			}
-//		}
-//		});
-//		
-					TableItem[] items = _tableViewer.getTable().getItems();
+		// Display.getDefault().asyncExec(new Runnable() {
+		// public void run() {
+		try {
+			JmsLogsPlugin.logInfo("ViewAlarm Ack message received, MsgName: "
+					+ message.getString("NAME") + " MsgTime: "
+					+ message.getString("EVENTTIME"));
 
-					for (final TableItem item : items) {
+		} catch (Exception e) {
+			e.printStackTrace();
+			JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+		}
+		// }
+		// });
+		//		
+		TableItem[] items = _tableViewer.getTable().getItems();
+
+		for (final TableItem item : items) {
 			if (item.getData() instanceof JMSMessage) {
 				final JMSMessage jmsMessage = (JMSMessage) item.getData();
 				try {
@@ -270,26 +298,27 @@ public class AlarmLogView extends LogView {
 											+ _jmsMessagesToRemove.size());
 							if ((_removeMessageTask == null)
 									|| (_removeMessageTask.getState() == Job.NONE)) {
-								CentralLogger.getInstance().debug(this, "Create new 'RemoveAckMessage Task'");
+								CentralLogger.getInstance().debug(this,
+										"Create new 'RemoveAckMessage Task'");
 								_removeMessageTask = null;
 								_removeMessageTask = new RemoveAcknowledgedMessagesTask(
 										_messageList, _jmsMessagesToRemove);
-						        _removeMessageTask.schedule();
+								_removeMessageTask.schedule();
 							}
 						} else {
-//							Display.getDefault().asyncExec(new Runnable() {
-//								public void run() {
-//									try {
-//
+							// Display.getDefault().asyncExec(new Runnable() {
+							// public void run() {
+							// try {
+							//
 							item.setChecked(true);
 							jmsMessage.getHashMap().put("ACK_HIDDEN", "true");
 							jmsMessage.set_ackknowledgement(true);
-//									} catch (Exception e) {
-//					                    e.printStackTrace();
-//										JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-//									}
-//								}
-//								});
+							// } catch (Exception e) {
+							// e.printStackTrace();
+							//										JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+							// }
+							// }
+							// });
 
 						}
 						break;

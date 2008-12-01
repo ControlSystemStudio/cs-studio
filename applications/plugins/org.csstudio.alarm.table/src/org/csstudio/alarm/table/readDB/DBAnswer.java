@@ -19,32 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.readDB;
+package org.csstudio.alarm.table.readDB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 
-
 /**
- * Class holds the answer from the db. Notifies the
- * Observers if a new answer is set.
+ * Class holds the answer from the db. Notifies the Observers if a new answer is
+ * set.
  * 
  * @author jhatje
- *
+ * 
  */
 public class DBAnswer extends Observable {
 
 	ArrayList<HashMap<String, String>> dbAnswer;
-	
+
+	/** 
+	 *  maxSize is true if maxrow in the SQL statement has cut off more messages.
+	 */
+	boolean _maxSize = false;
+
+
 	public ArrayList<HashMap<String, String>> getDBAnswer() {
 		return dbAnswer;
 	}
+
+	public boolean is_maxSize() {
+		return _maxSize;
+	}
 	
-	public void setDBAnswer(ArrayList<HashMap<String, String>> answer) {
+	public void setDBAnswer(ArrayList<HashMap<String, String>> answer, boolean maxSize) {
+		_maxSize = maxSize;
 		dbAnswer = answer;
 		setChanged();
 		notifyObservers();
 	}
-	
+
 }

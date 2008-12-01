@@ -44,7 +44,7 @@ public class ArchivePopupAction extends ProcessVariablePopupAction {
 	        IWorkbenchPage page = window.getActivePage();
 	        try
 	        {
-	            LogViewArchive view = (LogViewArchive) page.showView(LogViewArchive.ID);
+	            ViewArchive view = (ViewArchive) page.showView(ViewArchive.ID);
 	            view.readDBFromExternalCall(pv_names[0]);
 	        }
 	        catch (Exception e)
