@@ -1,5 +1,6 @@
 package org.csstudio.debugging.jmsmonitor;
 
+import org.csstudio.apputil.ui.jface.preference.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -40,6 +41,6 @@ public class PreferencePage extends FieldEditorPreferencePage
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
         addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_USER, parent));
-        addField(new StringFieldEditor(Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent));
+        addField(new PasswordFieldEditor(Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent));
     }
 }

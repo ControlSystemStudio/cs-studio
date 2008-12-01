@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apputil UI
 Bundle-SymbolicName: org.csstudio.apputil.ui;singleton:=true
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Bundle-Vendor: Kay Kasemir
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
@@ -14,6 +14,7 @@ Require-Bundle: org.junit4,
  org.csstudio.logbook
 Export-Package: org.csstudio.apputil.ui.dialog,
  org.csstudio.apputil.ui.elog,
+ org.csstudio.apputil.ui.jface.preference,
  org.csstudio.apputil.ui.swt,
  org.csstudio.apputil.ui.swt.stringtable,
  org.csstudio.apputil.ui.time
