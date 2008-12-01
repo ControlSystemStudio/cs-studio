@@ -71,26 +71,33 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
         
         TAlarmMessage[] ams = alarmMonitor.getLastAcquiredAlarms(0, true);
         
-        date = new Date(alarmMonitor.getLastAcquiredAlarmTime());
-        logger.debug("Anzahl: " + ams.length + " - Last Acquiried Alarm Time: " + dateFormat.format(date));
-        date = null;
-
-        if(ams.length > 0)
+        if(ams != null)
         {
-            alarm = ams[ams.length - 1];
-            
-            if(alarm.getTimeStamp() > this.lastTimeStamp)
+            date = new Date(alarmMonitor.getLastAcquiredAlarmTime());
+            logger.debug("Anzahl: " + ams.length + " - Last Acquiried Alarm Time: " + dateFormat.format(date));
+            date = null;
+    
+            if(ams.length > 0)
             {
-                this.lastTimeStamp = alarm.getTimeStamp();
+                alarm = ams[ams.length - 1];
                 
-                date = new Date(alarm.getTimeStamp());
-                logger.debug("Neuer Alarm Timestamp: " + dateFormat.format(date));
-
-                date = null;
-
-                setChanged();
-                notifyObservers(alarm);
+                if(alarm.getTimeStamp() > this.lastTimeStamp)
+                {
+                    this.lastTimeStamp = alarm.getTimeStamp();
+                    
+                    date = new Date(alarm.getTimeStamp());
+                    logger.debug("Neuer Alarm Timestamp: " + dateFormat.format(date));
+    
+                    date = null;
+    
+                    setChanged();
+                    notifyObservers(alarm);
+                }
             }
+        }
+        else
+        {
+            logger.debug("No alarms");
         }
     }
 }
