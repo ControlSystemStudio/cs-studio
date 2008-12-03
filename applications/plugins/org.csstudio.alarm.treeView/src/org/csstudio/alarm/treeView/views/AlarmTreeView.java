@@ -21,17 +21,13 @@
  */
  package org.csstudio.alarm.treeView.views;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.apache.activemq.transport.TransportListener;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jms.IConnectionMonitor;
@@ -100,8 +96,6 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
-
-import sun.awt.SunDisplayChanger;
 
 /**
  * Tree view of process variables and their alarm state. This view uses LDAP
