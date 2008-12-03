@@ -128,7 +128,7 @@ public class JmsProducer
         msg.setString("TYPE", "tine-alarm");
         msg.setString("EVENTTIME", dateFormat.format(date));
         msg.setString("SEVERITY", SeverityMapper.getEPICSSeverity(alarm.getAlarmMessage().getAlarmSeverity()));
-        msg.setString("NAME", alarm.getAlarmMessage().getDevice());
+        msg.setString("NAME", "dal-tine://" + alarm.getAlarmMessage().getDevice());
         msg.setString("TEXT", alarm.getAlarmMessage().getAlarmDescriptorAsString());
         msg.setString("FACILITY", alarm.getContext());
         msg.setString("HOST", alarm.getAlarmMessage().getServer());
