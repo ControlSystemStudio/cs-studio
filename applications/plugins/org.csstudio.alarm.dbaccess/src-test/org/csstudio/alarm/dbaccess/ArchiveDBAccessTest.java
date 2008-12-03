@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,10 +37,10 @@ public class ArchiveDBAccessTest {
 		twoSubqueryFilterItems.add(hostItem);
 		twoSubqueryFilterItems.add(facilityItem);
 
-		hostItem = new FilterItem("host", "xmtsKryoPump", "and");
-		severityItem = new FilterItem("severity", "INVALID", "and");
-		typeItem = new FilterItem("name", "XMTSTTP1262B_ai", "end");
-		facilityItem = new FilterItem("facility", "MTH", "and");
+		hostItem = new FilterItem("host", "berndTest", "and");
+		severityItem = new FilterItem("type", "event", "and");
+		typeItem = new FilterItem("severity", "MAJOR", "end");
+		facilityItem = new FilterItem("facility", "TEST", "and");
 		fourFilterItemsBothTypes.add(hostItem);
 		fourFilterItemsBothTypes.add(severityItem);
 		fourFilterItemsBothTypes.add(facilityItem);
@@ -58,7 +57,9 @@ public class ArchiveDBAccessTest {
 //		 ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
 //				.getLogMessages(from, to, null, fourFilterItemsBothTypes, 100);
 		ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
-				.getLogMessages(from, to, 100);
+				.getLogMessages(from, to, null, 100);
+		int erg1 = ArchiveDBAccess.getInstance()
+				.countMessagesToDelete(fourFilterItemsBothTypes, from, to);
 
 		for (HashMap<String, String> hashMap : erg) {
 			Set<Entry<String, String>> entries = hashMap.entrySet();

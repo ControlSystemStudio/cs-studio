@@ -218,7 +218,7 @@ public class ViewArchive extends ViewPart implements Observer {
 		count.setLayoutData(gd);
 
 		Group deleteButtons = new Group(comp, SWT.LINE_SOLID);
-		deleteButtons.setText("Delete"); //$NON-NLS-1$
+		deleteButtons.setText("Delete Messages"); //$NON-NLS-1$
 		deleteButtons.setLayout(new GridLayout(1, true));
 		gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
 		gd.minimumHeight = 60;
@@ -255,19 +255,28 @@ public class ViewArchive extends ViewPart implements Observer {
 	}
 
 
+	/**
+	 * Button to delete messages currently displayed in the table.
+	 * 	 * 
+	 * @param comp
+	 */
 	private void createDeleteButton(Composite comp) {
 		Button delete = new Button(comp, SWT.PUSH);
 		delete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		delete.setText("Delete Messages");
+		delete.setText("Delete");
 		
 		delete.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * Set the 'delete' flag and use the current settings of the
+			 * select statement to delete the messages. The command
+			 * will delete all messages even if the table shows just
+			 * a subset!!
+			 */
 			public void widgetSelected(final SelectionEvent e) {
-//				dbReader.setReadProperties(ViewArchive.this._dbAnswer, _from, _to, _filterSettings);
-//				_countLabel.setText("*");
-//				_jmsLogTableViewer.getTable().setEnabled(false);
-//				dbReader.schedule();
-//
+				dbReader.setDeleteFlag(true);
+				dbReader.schedule();
 			}
 		});
 		

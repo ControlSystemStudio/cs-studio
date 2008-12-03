@@ -63,10 +63,25 @@ public class SQLBuilderTest {
 			+ "and ROWNUM < "
 			+ "50000 order by mc.MESSAGE_ID desc ";
 
+	 private String COUNT_FOUR_FILTER_ITEMS = "select count(m.id) "
+		 + "from  message m, message_content mc "
+		 + "where m.id = mc.MESSAGE_ID "
+		 + "and m.SEVERITY = ? "
+		 + "and m.TYPE = ? "
+		 + "and mc.message_id in (select mc.MESSAGE_ID from message_content mc "
+		 + "where mc.msg_property_type_id = ? and mc.VALUE = ? "
+		 + ") "
+		 + "and mc.message_id in (select mc.MESSAGE_ID from message_content mc "
+		 + "where mc.msg_property_type_id = ? and mc.VALUE = ? "
+		 + ") "
+		 + "and m.DATUM between to_date(? , 'YYYY-MM-DD HH24:MI:SS') and "
+		 + "to_date(? , 'YYYY-MM-DD HH24:MI:SS') ";
+	 
 	private ArrayList<FilterItem> noFilterItems = new ArrayList<FilterItem>();
 	private ArrayList<FilterItem> twoSimpleFilterItems = new ArrayList<FilterItem>();
 	private ArrayList<FilterItem> twoSubqueryFilterItems = new ArrayList<FilterItem>();
 	private ArrayList<FilterItem> fourFilterItemsBothTypes = new ArrayList<FilterItem>();
+	private ArrayList<FilterItem> fourFilterItemsBothTypesCount = new ArrayList<FilterItem>();
 
 	@Before
 	public void setUp() {
@@ -90,6 +105,15 @@ public class SQLBuilderTest {
 		fourFilterItemsBothTypes.add(severityItem);
 		fourFilterItemsBothTypes.add(facilityItem);
 		fourFilterItemsBothTypes.add(typeItem);
+
+		severityItem = new FilterItem("severity", "high", "and");
+		typeItem = new FilterItem("type", "event", "and");
+		hostItem = new FilterItem("host", "berndTest", "and");
+		facilityItem = new FilterItem("facility", "test", "and");
+		fourFilterItemsBothTypesCount.add(hostItem);
+		fourFilterItemsBothTypesCount.add(severityItem);
+		fourFilterItemsBothTypesCount.add(facilityItem);
+		fourFilterItemsBothTypesCount.add(typeItem);
 	}
 
 	/**
@@ -117,5 +141,10 @@ public class SQLBuilderTest {
 		System.out.println(erg);
 		System.out.println(FOUR_FILTER_ITEMS_BOTH_TYPES);
 		Assert.assertEquals(FOUR_FILTER_ITEMS_BOTH_TYPES, erg);
+
+		erg = b.generateSQLCount(fourFilterItemsBothTypesCount);
+		System.out.println(erg);
+		System.out.println(COUNT_FOUR_FILTER_ITEMS);
+		Assert.assertEquals(COUNT_FOUR_FILTER_ITEMS, erg);
 	}
 }

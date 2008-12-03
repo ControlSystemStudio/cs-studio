@@ -30,6 +30,7 @@ import org.csstudio.alarm.dbaccess.FilterItem;
 
 public interface ILogMessageArchiveAccess {
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, int maxAnswerSize);
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, ArrayList<FilterItem> settings, int maxAnswerSize);
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, ArrayList<FilterItem> settings, int maxAnswerSize);
+	public ArrayList<HashMap<String, String>> deleteLogMessages(Calendar from, Calendar to, ArrayList<FilterItem> settings);
+	public boolean is_maxSize();
 }

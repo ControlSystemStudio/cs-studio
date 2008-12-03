@@ -84,6 +84,7 @@ public class AccessDBJob extends Job {
 		} else {
 			am = adba.deleteLogMessages(_from, _to, _filterSettings);
 		}
+		_deleteMessages = false;
 		dbAnswer.setDBAnswer(am, adba.is_maxSize());
 		return Status.OK_STATUS;
 	}

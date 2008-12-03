@@ -20,19 +20,24 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class SQLBuilder {
 
-	private String commonSQLBegin = "select mc.message_id, mc.msg_property_type_id,  mc.value "
-			+ "from  message m, message_content mc "
+	private String rownum = "50000";
+
+	private String commonSQLColumns = "select mc.message_id, mc.msg_property_type_id,  mc.value ";
+
+	private String commonSQLFromWhere = "from  message m, message_content mc "
 			+ "where m.id = mc.MESSAGE_ID ";
 
-	private String commonSQLEnd = "and m.DATUM between to_date(? , 'YYYY-MM-DD HH24:MI:SS') and "
-			+ "to_date(? , 'YYYY-MM-DD HH24:MI:SS') "
-			+ "and ROWNUM < "
-			+ "50000 order by mc.MESSAGE_ID desc ";
+	private String commonSQLCount = "select count(m.id) ";
+
+	private String commonSQLDate = "and m.DATUM between to_date(? , 'YYYY-MM-DD HH24:MI:SS') and "
+			+ "to_date(? , 'YYYY-MM-DD HH24:MI:SS') ";
+
+	private String commonSQLRownum = "and ROWNUM < ";
+
+	private String commonSQLOrderBy = " order by mc.MESSAGE_ID desc ";
 
 	private String subqueryCondition = "and mc.message_id in (select mc.MESSAGE_ID from message_content mc "
-			+ "where mc.msg_property_type_id = ? and mc.VALUE = ? "
-			+ ") "
-;
+			+ "where mc.msg_property_type_id = ? and mc.VALUE = ? " + ") ";
 
 	/**
 	 * Build a prepared statement from the list of filter items. Analyse message
@@ -44,17 +49,34 @@ public class SQLBuilder {
 	 */
 	public String generateSQL(ArrayList<FilterItem> currentFilterSettingList) {
 
-		// complete statement
-		String preparedStatement = "";
+		String statementConditions = createContitions(currentFilterSettingList);
 
-		// Read meta information from message table to find out which
-		// properties/columns are added.
-		Set<String> propertiesInMessageTable = getPropertiesInMessageTable();
+		String preparedStatement = commonSQLColumns + commonSQLFromWhere
+				+ statementConditions + commonSQLDate + commonSQLRownum
+				+ rownum + commonSQLOrderBy;
 
-		String statementConditions = createContitions(currentFilterSettingList,
-				propertiesInMessageTable);
+		CentralLogger.getInstance().debug(this, preparedStatement);
 
-		preparedStatement = commonSQLBegin + statementConditions + commonSQLEnd;
+		return preparedStatement;
+	}
+
+	/**
+	 * Build a prepared statement for count from the list of filter items.
+	 * Analyse message table for property columns and take them into account for
+	 * the sql statement.
+	 * 
+	 * @param currentFilterSettingList
+	 * @return completed prepared sql statement for counting.
+	 */
+	public String generateSQLCount(
+			ArrayList<FilterItem> currentFilterSettingList) {
+
+		String statementConditions = createContitions(currentFilterSettingList);
+
+		String preparedStatement = commonSQLCount + commonSQLFromWhere
+				+ statementConditions + commonSQLDate;
+
+		CentralLogger.getInstance().debug(this, preparedStatement);
 
 		return preparedStatement;
 	}
@@ -67,10 +89,13 @@ public class SQLBuilder {
 	 * @return
 	 */
 	private String createContitions(
-			ArrayList<FilterItem> currentFilterSettingList,
-			Set<String> propertiesInMessageTable) {
+			ArrayList<FilterItem> currentFilterSettingList) {
 		String simpleConditionPart = "";
 		String subqueryConditionPart = "";
+
+		// Read meta information from message table to find out which
+		// properties/columns are added.
+		Set<String> propertiesInMessageTable = getPropertiesInMessageTable();
 
 		for (FilterItem item : currentFilterSettingList) {
 			if (propertiesInMessageTable.contains(item.get_property())) {
@@ -125,6 +150,14 @@ public class SQLBuilder {
 							+ sqle.getMessage());
 		}
 		return properties;
+	}
+
+	public String getRownum() {
+		return rownum;
+	}
+
+	public void setRownum(String rownum) {
+		this.rownum = rownum;
 	}
 
 }

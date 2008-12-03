@@ -35,6 +35,9 @@ import oracle.jdbc.OracleStatement;
 
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Main Class for DB query. Builds accordingly to the current FilterSettings the
@@ -50,8 +53,21 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 
 	private Connection _databaseConnection;
 
+	private int _maxAnswerSize = 5000;
+
 	/** Singleton instance */
 	private static ArchiveDBAccess _archiveDBAccess;
+
+	/**
+	 * maxSize is true if maxrow in the SQL statement has cut off more messages.
+	 */
+	private boolean _maxSize = false;
+
+	private SQLBuilder sqlBuilder;
+
+	public boolean is_maxSize() {
+		return _maxSize;
+	}
 
 	private ArchiveDBAccess() {
 	}
@@ -69,98 +85,83 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 	/**
-	 * Get messages from DB for a time period without FilterSettings.
-	 * 
-	 * @return ArrayList of messages in a HashMap
-	 */
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
-			Calendar to, int maxAnserSize) {
-		ArrayList<ResultSet> result = queryDatabase(null, from, to);
-		ArrayList<HashMap<String, String>> ergebniss = processResult(result);
-		return ergebniss;
-	}
-
-	/**
 	 * Get messages from DB for a time period and filter conditions.
 	 * 
 	 * @return ArrayList of messages in a HashMap
 	 */
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
-			Calendar to, String filter, ArrayList<FilterItem> filterSetting,
-			int maxAnserSize) {
+			Calendar to, ArrayList<FilterItem> filterSetting, int maxAnswerSize) {
+		_maxAnswerSize = maxAnswerSize;
 		ArrayList<ResultSet> result = queryDatabase(filterSetting, from, to);
-		ArrayList<HashMap<String, String>> ergebniss = processResult(result);
-		return ergebniss;
+		ArrayList<HashMap<String, String>> ergebnis = processResult(result);
+		return ergebnis;
 	}
 
 	/**
-	 * Assemble 'real' log messages from DBResult. The DB query returns a list
-	 * of message_id with property and value. To get a complete log message you
-	 * have to put all property-value pairs with the same message_id in one log
-	 * message together.
+	 * Delete messages from DB for a time period and filter conditions.
 	 * 
-	 * @param result
-	 *            List of Result Sets (we get more than one result set if there
-	 *            is an OR relation, because the SQL Statement is designed only
-	 *            for AND relations)
+	 */
+	public ArrayList<HashMap<String, String>> deleteLogMessages(Calendar from,
+			Calendar to, ArrayList<FilterItem> filterSetting) {
+		int msgToDelete = countMessagesToDelete(filterSetting, from, to);
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				 MessageBox messageBox =
+					   new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+					    SWT.OK|
+					    SWT.CANCEL|
+					    SWT.ICON_WARNING);
+					 messageBox.setMessage("www.korayguclu.de");
+					 messageBox.open();
+			}
+		});
+		System.out.println("testausgabe");
+		// ArrayList<String> msgIDsToDelete = getMessageIDsToDelete();
+		// ArrayList<HashMap<String, String>> ergebnis =
+		// deleteMessages(msgIDsToDelete);
+
+		// return ergebnis;
+		return null;
+	}
+
+	/**
+	 * Counts the real number of all messages that will be deleted with the
+	 * current filter settings (in the UI table are not more than 'MAXROWNUM'
+	 * messages displayed).
+	 * 
+	 * @param filterSetting
+	 * @param to
+	 * @param from
 	 * @return
 	 */
-	private ArrayList<HashMap<String, String>> processResult(
-			ArrayList<ResultSet> result) {
+	public int countMessagesToDelete(ArrayList<FilterItem> filterSetting,
+			Calendar from, Calendar to) {
 
-		// List of 'real' log messages (we want to see in the table)
-		ArrayList<HashMap<String, String>> messageResultList = new ArrayList<HashMap<String, String>>();
+		int msgNumber = 0;
 		try {
-			// the current 'real' log message
-			HashMap<String, String> message = null;
-			// run through all result sets (for each OR relation in the
-			// FilterSetting
-			// we get one more resultSet)
-			for (ResultSet resultSet : result) {
-				// identifier for the current message. initialized with a not
-				// existing message id
-				int currentMessageID = -1;
-				while (resultSet.next()) {
-					if (currentMessageID == resultSet.getInt(1)) {
-						// current row has the same message_id->
-						// it belongs to the current message
-						if (message != null) {
-							String s = resultSet.getString(2);
-							String property = MessagePropertyTypeContent.getIDPropertyMapping().get(s);
-							message.put(property, resultSet
-									.getString(3));
-						}
-					} else {
-						// this result row belongs to a new message
-						// if there is already a previous message put it to the
-						// messageResultList.
-						if (message != null) {
-							messageResultList.add(message);
-						}
-						// update current message id and
-						// put the first property value pair in the new
-						// message
-						currentMessageID = Integer.parseInt(resultSet
-								.getString(1));
-						message = new HashMap<String, String>();
-						// get property name from MessagePropertyTypeContent
-						// that holds id, property mapping
-						String s = resultSet.getString(2);
-						String property = MessagePropertyTypeContent.getIDPropertyMapping().get(s);
-						message.put(property, resultSet
-								.getString(3));
-					}
-				}
-				// put the last message to the messageResultList
-				// (the message should be not null anyway)
-				if (message != null) {
-					messageResultList.add(message);
-				}
+			_databaseConnection = DBConnection.getInstance().getConnection();
+			PreparedStatement getMessages = null;
+			// the filter setting has to be separated at the OR relation
+			// because the SQL statement is designed only for AND.
+			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filterSetting);
+			ResultSet result = null;
+			sqlBuilder = new SQLBuilder();
+			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
+				String statement = sqlBuilder
+						.generateSQLCount(currentFilterSettingList);
+				getMessages = _databaseConnection.prepareStatement(statement);
+				getMessages = setVariables(getMessages,
+						currentFilterSettingList, from, to);
+				result = getMessages.executeQuery();
+				result.next();
+				msgNumber = msgNumber + Integer.parseInt(result.getString(1));
+				CentralLogger.getInstance().debug(this,
+						"Messages to delete: " + msgNumber);
 			}
 		} catch (SQLException e) {
 			CentralLogger.getInstance().error(this, e.getMessage());
 		}
-		return messageResultList;
+		return msgNumber;
 	}
 
 	/**
@@ -186,66 +187,15 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			// because the SQL statement is designed only for AND.
 			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filter);
 			ResultSet result = null;
-			SQLBuilder sqlBuilder = new SQLBuilder();
+			sqlBuilder = new SQLBuilder();
+			sqlBuilder.setRownum(Integer.toString(_maxAnswerSize * 15));
 			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
 				String statement = sqlBuilder
 						.generateSQL(currentFilterSettingList);
 				getMessages = _databaseConnection.prepareStatement(statement);
-				int parameterIndex = 0;
-				// set the preparedStatement parameters
-				if (getMessages != null) {
-					// set filterItems with property in message table first
-					for (FilterItem filterSetting : currentFilterSettingList) {
-						if (filterSetting.get_property().equalsIgnoreCase(
-								"inMessage")) {
-							parameterIndex++;
-							getMessages.setString(parameterIndex, filterSetting
-									.get_value());
-							CentralLogger.getInstance().debug(
-									this,
-									"DB query, filter Property: "
-											+ filterSetting.get_property()
-											+ "  Value: "
-											+ filterSetting.get_value()
-											+ "  Relation: "
-											+ filterSetting.get_relation());
-						}
-					}
-					// set filterItems with property in message_content table
-					for (FilterItem filterSetting : currentFilterSettingList) {
-						if (!filterSetting.get_property().equalsIgnoreCase(
-								"inMessage")) {
-							parameterIndex++;
-							String propertyName = filterSetting.get_property();
-							getMessages.setString(parameterIndex,
-									MessagePropertyTypeContent
-											.getPropertyIDMapping()
-											.get(propertyName));
-							parameterIndex++;
-							getMessages.setString(parameterIndex, filterSetting
-									.get_value());
-							CentralLogger.getInstance().debug(
-									this,
-									"DB query, filter Property: "
-											+ filterSetting.get_property()
-											+ "  Value: "
-											+ filterSetting.get_value()
-											+ "  Relation: "
-											+ filterSetting.get_relation());
-						}
-					}
-				}
-				String fromDate = buildDateString(from);
-				String toDate = buildDateString(to);
-				parameterIndex++;
-				getMessages.setString(parameterIndex, fromDate);
-				parameterIndex++;
-				getMessages.setString(parameterIndex, toDate);
-				CentralLogger.getInstance().debug(
-						this,
-						"DB query, start time: " + fromDate + "  end time: "
-								+ toDate);
 
+				getMessages = setVariables(getMessages,
+						currentFilterSettingList, from, to);
 				// getMessages.setString(1, "NAME");
 				// getMessages.setString(1, "XMTSTTP1262B_ai");
 				// getMessages.setString(2, "2008-10-15 10:06:49");
@@ -258,6 +208,148 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		}
 
 		return resultSetList;
+	}
+
+	/**
+	 * Set the variables from the filter settings in the prepared statement.
+	 * 
+	 * @param getMessages
+	 * @param currentFilterSettingList
+	 * @param from
+	 * @param to
+	 * @return
+	 * @throws SQLException
+	 */
+	private PreparedStatement setVariables(PreparedStatement getMessages,
+			ArrayList<FilterItem> currentFilterSettingList, Calendar from,
+			Calendar to) throws SQLException {
+
+		int parameterIndex = 0;
+		// set the preparedStatement parameters
+		if (getMessages != null) {
+			// set filterItems with property in message table first
+			for (FilterItem filterSetting : currentFilterSettingList) {
+				if (filterSetting.get_property().equalsIgnoreCase("inMessage")) {
+					parameterIndex++;
+					getMessages.setString(parameterIndex, filterSetting
+							.get_value());
+					CentralLogger.getInstance().debug(
+							this,
+							"DB query, filter Property: "
+									+ filterSetting.get_property()
+									+ "  Value: " + filterSetting.get_value()
+									+ "  Relation: "
+									+ filterSetting.get_relation());
+				}
+			}
+			// set filterItems with property in message_content table
+			for (FilterItem filterSetting : currentFilterSettingList) {
+				if (!filterSetting.get_property().equalsIgnoreCase("inMessage")) {
+					parameterIndex++;
+					String propertyName = filterSetting.get_property();
+					getMessages.setString(parameterIndex,
+							MessagePropertyTypeContent.getPropertyIDMapping()
+									.get(propertyName));
+					parameterIndex++;
+					getMessages.setString(parameterIndex, filterSetting
+							.get_value());
+					CentralLogger.getInstance().debug(
+							this,
+							"DB query, filter Property: "
+									+ filterSetting.get_property()
+									+ "  Value: " + filterSetting.get_value()
+									+ "  Relation: "
+									+ filterSetting.get_relation());
+				}
+			}
+		}
+		String fromDate = buildDateString(from);
+		String toDate = buildDateString(to);
+		parameterIndex++;
+		getMessages.setString(parameterIndex, fromDate);
+		parameterIndex++;
+		getMessages.setString(parameterIndex, toDate);
+		CentralLogger.getInstance().debug(this,
+				"DB query, start time: " + fromDate + "  end time: " + toDate);
+		return getMessages;
+	}
+
+	/**
+	 * Assemble 'real' log messages from DBResult. The DB query returns a list
+	 * of message_id with property and value. To get a complete log message you
+	 * have to put all property-value pairs with the same message_id in one log
+	 * message together.
+	 * 
+	 * @param result
+	 *            List of Result Sets (we get more than one result set if there
+	 *            is an OR relation, because the SQL Statement is designed only
+	 *            for AND relations)
+	 * @return
+	 */
+	private ArrayList<HashMap<String, String>> processResult(
+			ArrayList<ResultSet> result) {
+
+		// number of rows in all result sets (to check for max row num.
+		int currentRowNum = 1;
+		_maxSize = false;
+
+		// List of 'real' log messages (we want to see in the table)
+		ArrayList<HashMap<String, String>> messageResultList = new ArrayList<HashMap<String, String>>();
+		try {
+			// the current 'real' log message
+			HashMap<String, String> message = null;
+			// run through all result sets (for each OR relation in the
+			// FilterSetting
+			// we get one more resultSet)
+			for (ResultSet resultSet : result) {
+				// identifier for the current message. initialized with a not
+				// existing message id
+				int currentMessageID = -1;
+				while (resultSet.next()) {
+					currentRowNum++;
+					if (currentMessageID == resultSet.getInt(1)) {
+						// current row has the same message_id->
+						// it belongs to the current message
+						if (message != null) {
+							String s = resultSet.getString(2);
+							String property = MessagePropertyTypeContent
+									.getIDPropertyMapping().get(s);
+							message.put(property, resultSet.getString(3));
+						}
+					} else {
+						// this result row belongs to a new message
+						// if there is already a previous message put it to the
+						// messageResultList.
+						if (message != null) {
+							messageResultList.add(message);
+						}
+						// update current message id and
+						// put the first property value pair in the new
+						// message
+						currentMessageID = Integer.parseInt(resultSet
+								.getString(1));
+						message = new HashMap<String, String>();
+						// get property name from MessagePropertyTypeContent
+						// that holds id, property mapping
+						String s = resultSet.getString(2);
+						String property = MessagePropertyTypeContent
+								.getIDPropertyMapping().get(s);
+						message.put(property, resultSet.getString(3));
+					}
+				}
+				// put the last message to the messageResultList
+				// (the message should be not null anyway)
+				if (message != null) {
+					messageResultList.add(message);
+				}
+			}
+		} catch (SQLException e) {
+			CentralLogger.getInstance().error(this, e.getMessage());
+		}
+		if (currentRowNum == Integer.parseInt(sqlBuilder.getRownum())) {
+			_maxSize = true;
+		}
+		return messageResultList;
 	}
 
 	/**
@@ -368,4 +460,5 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 					"Can not close DB connection", e);
 		}
 	}
+
 }
