@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional"
       label="Optional Features"
-      version="1.0.11">
+      version="1.0.15">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -25,13 +25,6 @@
 
    <plugin
          id="org.csstudio.alarm.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.alarm.clientmodel"
          download-size="0"
          install-size="0"
          version="0.0.0"
