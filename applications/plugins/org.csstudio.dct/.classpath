@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src-test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.csstudio.platform.libs.jmock"/>
+	<classpathentry kind="lib" path="lib/ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxen-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxen-jdom.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jdom.jar" sourcepath="lib/jdom-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/saxpath.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xerces.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
