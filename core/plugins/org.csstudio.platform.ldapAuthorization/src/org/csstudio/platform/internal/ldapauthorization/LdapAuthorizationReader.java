@@ -20,20 +20,15 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.platform.internal.ldapauthorization;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
@@ -55,12 +50,6 @@ import org.eclipse.core.runtime.Preferences;
  */
 public class LdapAuthorizationReader implements IAuthorizationProvider {
 
-	/**
-	 * The name of the configuration file from which rights associated with
-	 * actions are read.
-	 */
-	private static final String CONFIG_FILE = "actionrights.conf";
-	
 	/**
 	 * Map of the rights associated with actions.
 	 */
@@ -122,74 +111,57 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 	 * <p>Syntax errors in configuration files are ignored.</p>
 	 */
 	public RightSet getRights(String actionId) {
-		if (actionsrights == null) {
-			loadActionRights();
+		synchronized (this) {
+			if (actionsrights == null) {
+				loadActionRightsFromLdap();
+			}
 		}
 		return actionsrights.get(actionId);
 	}
 	
 	/**
-	 * Loads the configuration file with the actions' rights.
+	 * Loads the actions' rights from LDAP.
 	 */
-	private void loadActionRights() {
+	private void loadActionRightsFromLdap() {
 		actionsrights = new HashMap<String, RightSet>();
-		InputStream input = null;
+		
 		try {
-			input = new FileInputStream(CONFIG_FILE);
-			Properties p = new Properties();
-			p.load(input);
+			DirContext ctx = new InitialDirContext(createEnvironment());
 			
-			for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements(); ) {
-				String actionId = (String) e.nextElement();
-				RightSet rights = RightsParser.parseRightSet(p.getProperty(actionId), actionId);
-				actionsrights.put(actionId, rights);
-			}
-		} catch (FileNotFoundException fnfe) {
-			CentralLogger.getInstance().info(this,
-					"Rights configuration file could not be found. Creating a sample file.");
-			PrintStream out = null;
-			try {
-				out = new PrintStream(CONFIG_FILE);
-				out.println("# Rights configuration file for the Control System Studio");
-				out.println("# ");
-				out.println("# Rights are configured using the following syntax:");
-				out.println("# ");
-				out.println("# action = (role, group) ...");
-				out.println("# ");
-				out.println("# where action is the id of the action, and role and group are");
-				out.println("# the role and group of the users that are granted permission to");
-				out.println("# execute actions with the given id. To grant permission to more");
-				out.println("# than one role group combination, specify multiple role group");
-				out.println("# combinations separated by white space.");
-				out.println("");
-				out.println("# Example entry:");
-				out.println("example = (admin, css) (developer, css)");
-			} catch (IOException e) {
-				CentralLogger.getInstance().warn(this,
-						"Error creating sample rights configuration file.", e);
-			} finally {
-				if (out != null) {
-					out.close();
+			SearchControls ctrls = new SearchControls();
+			ctrls.setReturningObjFlag(false);
+			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+			
+			String filter = "(objectClass=epicsAuthIdGR)";
+			NamingEnumeration<SearchResult> results =
+				ctx.search("ou=EpicsAuthorizeID", filter, ctrls);
+			while (results.hasMore()) {
+				SearchResult r = results.next();
+				Attributes attributes = r.getAttributes();
+				Attribute eainAttr = attributes.get("eain");
+				String authId = (String) eainAttr.get();
+				Attribute eaigAttr = attributes.get("eaig");
+				String group = (String) eaigAttr.get();
+				Attribute eairAttr = attributes.get("eair");
+				String role = (String) eairAttr.get();
+				
+				RightSet rights = actionsrights.get(authId);
+				if (rights == null) {
+					rights = new RightSet(authId);
+					actionsrights.put(authId, rights);
 				}
+				rights.addRight(new Right(role, group));
 			}
-		} catch (IOException e) {
-			// Currently, ignore this error. Using a configuration file for
-			// the permissions is only a workaround until we have an LDAP-based
-			// implementation, so it is ok if the file cannot be read.
-			CentralLogger.getInstance().debug(this,
-					"Error reading rights associated with actions.", e);
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					CentralLogger.getInstance().warn(this,
-							"Could not close input file.", e);
-				}
-			}
+			
+			CentralLogger.getInstance().debug(this, "Authorization " +
+					"information successfully loaded from LDAP directory.");
+			
+		} catch (NamingException e) {
+			CentralLogger.getInstance().error(this,
+					"Error loading authorization information from LDAP directory.", e);
 		}
 	}
-
+	
 	/**
 	 * Parses a search result into a right.
 	 * @param r the LDAP search result.
