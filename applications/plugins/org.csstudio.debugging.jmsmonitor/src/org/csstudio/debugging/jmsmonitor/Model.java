@@ -23,10 +23,10 @@ import org.csstudio.platform.utility.jms.JMSConnectionFactory;
  */
 public class Model implements ExceptionListener, MessageListener
 {
-    final private String topic_name;
-    private volatile Connection connection;
-    private volatile Session session;
-    private volatile MessageConsumer consumer;
+    final private String topic_names;
+    private volatile Connection connection = null;
+    private volatile Session session = null;
+    private volatile MessageConsumer consumer[] = new MessageConsumer[0];
     
     /** Run flag.
      *  In principle we try to close the model properly.
@@ -51,17 +51,17 @@ public class Model implements ExceptionListener, MessageListener
      *  @param url JMS server URL
      *  @param user JMS user name or <code>null</code>
      *  @param password JMS password or <code>null</code>
-     *  @param topic_name JMS topic
+     *  @param topic_names JMS topics, separated by comma
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
     public Model(final String url, final String user, final String password,
-                 final String topic_name) throws Exception
+                 final String topic_names) throws Exception
     {
-        this.topic_name = topic_name;
+        this.topic_names = topic_names;
         if (url == null  ||  url.length() <= 0)
             throw new Exception(Messages.ErrorNoURL);
-        if (topic_name.length() <= 0)
+        if (topic_names.length() <= 0)
             throw new Exception(Messages.ErrorNoTopic);
         final Runnable connector = new Runnable()
         {
@@ -105,9 +105,15 @@ public class Model implements ExceptionListener, MessageListener
         connection.start();
         session = connection.createSession(/* transacted */ false,
                                            Session.AUTO_ACKNOWLEDGE);
-        final Topic topic = session.createTopic(topic_name);
-        consumer = session.createConsumer(topic);
-        consumer.setMessageListener(this);
+        
+        final String[] names = topic_names.split(", *"); //$NON-NLS-1$
+        consumer = new MessageConsumer[names.length];
+        for (int i=0; i<names.length; ++i)
+        {
+            final Topic topic = session.createTopic(names[i]);
+            consumer[i] = session.createConsumer(topic);
+            consumer[i].setMessageListener(this);
+        }
         synchronized (messages)
         {
             messages.clear();
@@ -122,8 +128,8 @@ public class Model implements ExceptionListener, MessageListener
 	    messages.clear();
 	    try
 	    {
-	        if (consumer != null)
-	            consumer.close();
+	        for (MessageConsumer c : consumer)
+                c.close();
 	        if (session != null)
 	            session.close();
 	        if (connection != null)
