@@ -16,7 +16,7 @@ public class ReceivedMessageProvider implements IStructuredContentProvider
      */
     public void inputChanged(Viewer viewer, Object old_input, Object new_input)
     {
-        messages  = (ReceivedMessage[]) new_input;
+        messages = (ReceivedMessage[]) new_input;
     }
 
     /** {@inheritDoc} */
