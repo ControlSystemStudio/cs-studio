@@ -14,13 +14,8 @@ import org.eclipse.ui.IPerspectiveFactory;
 public class Perspective implements IPerspectiveFactory
 {
     public static final String ID = Perspective.class.getName();
-    private static final String ID_PROGRESS =
-        "org.csstudio.platform.ui.views.progress"; //$NON-NLS-1$
-    private static final String ID_NAVIGATOR =
-    	"org.eclipse.ui.views.ResourceNavigator"; //$NON-NLS-1$
     final private static String ID_SNS_PV_UTIL = 
         "org.csstudio.sns.pvutil.view.PVUtilView"; //$NON-NLS-1$
-
     
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
@@ -37,16 +32,16 @@ public class Perspective implements IPerspectiveFactory
                         IPageLayout.BOTTOM, 0.66f, editor);
         // Stuff for 'left'
         left.addView(ArchiveView.ID);
-        left.addView(ID_NAVIGATOR);
+        left.addView(IPageLayout.ID_RES_NAV);
         left.addPlaceholder(ID_SNS_PV_UTIL);
         // Stuff for 'bottom'
         bottom.addView(ConfigView.ID);
         bottom.addView(ExportView.ID);
         bottom.addPlaceholder(SampleView.ID);
-        bottom.addPlaceholder(ID_PROGRESS);
+        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
         
         // Populate the "Window/Views..." menu with suggested views
-        layout.addShowViewShortcut(ID_NAVIGATOR);
-        layout.addShowViewShortcut(ID_PROGRESS);
+        layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
+        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
     }
 }

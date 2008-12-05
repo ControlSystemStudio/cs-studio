@@ -17,11 +17,9 @@ public class CSS_Perspective implements IPerspectiveFactory
     // Copied them here instead of using their ...View.ID member so that
     // this plugin doesn't depend on other app plugins.
     private static final String ID_PROBE = "org.csstudio.diag.probe.Probe";
-    private static final String ID_NAVIGATOR = "org.eclipse.ui.views.ResourceNavigator";
     private static final String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     private static final String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
     private static final String ID_DATABROWSER_CONFIG = "org.csstudio.trends.databrowser.configview.ConfigView";
-    private static final String ID_PROGRESS = "org.csstudio.platform.ui.views.progress";
     final private static String ID_SNS_PV_UTIL = "org.csstudio.sns.pvutil.view.PVUtilView";
 
     public void createInitialLayout(IPageLayout layout)
@@ -38,15 +36,14 @@ public class CSS_Perspective implements IPerspectiveFactory
                         IPageLayout.BOTTOM, 0.66f, editor);
         
         // Stuff for 'left'
-        left.addView(ID_NAVIGATOR);
+        left.addView(IPageLayout.ID_RES_NAV);
         left.addPlaceholder(ID_SNS_PV_UTIL);
         
         // Stuff for 'bottom'
         bottom.addPlaceholder(ID_PROBE);
         bottom.addPlaceholder(ID_PROBE + ":*");
         bottom.addPlaceholder(ID_DATABROWSER_CONFIG);
-        // bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
-        bottom.addPlaceholder(ID_PROGRESS);
+        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
         
         // Populate the "Window/Perspectives..." menu with suggested persp.
         layout.addPerspectiveShortcut(ID);
@@ -54,6 +51,6 @@ public class CSS_Perspective implements IPerspectiveFactory
 
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(ID_CLOCK);
-        layout.addShowViewShortcut(ID_PROGRESS);
+        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
 	}
 }
