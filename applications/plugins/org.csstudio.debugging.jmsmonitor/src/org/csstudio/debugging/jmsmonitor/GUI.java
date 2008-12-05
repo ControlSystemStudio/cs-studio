@@ -2,6 +2,7 @@ package org.csstudio.debugging.jmsmonitor;
 
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -11,6 +12,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -20,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPageLayout;
 
 /** JMS monitor GUI
  *  @author Kay Kasemir
@@ -140,6 +144,17 @@ public class GUI implements ModelListener
         view_col.setLabelProvider(new ContentLabelProvider());
 
         new AutoSizeControlListener(parent, table);
+        
+        // Double-click on message opens detail
+        table_viewer.getTable().addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseDoubleClick(MouseEvent e)
+            {
+                new OpenViewAction(IPageLayout.ID_PROP_SHEET).run();
+            }
+        });
+
         
         clear();
     }
