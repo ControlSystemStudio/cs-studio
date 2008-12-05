@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<links>
+   <link type="CONSTANT" pattern=".*" default="" description="CONSTANT" />
+   <link type="PV_LINK" pattern=".*" default="" description="PV_LINK" />
+   <link type="VME_IO" pattern="#C\d+ S\d+ @.*" default="#C0 S0 @" description="VME_IO - #Ccard Ssignal @parm"  />
+   <link type="CAMAC_IO" pattern="#B\d+ C\d+ N\d+ A\d+ F\d+ @.*" default="CAMAC_IO - #B0 C0 N0 A0 F0 @" description="#Bbranch Ccrate Nstation Asubaddress Ffunction @parm" />
+   <link type="AB_IO" pattern="#L\d+ A\d+ C\d+ S\d+ @.*" default="#L0 A0 C0 S0 @" description="AB_IO - #Llink Aadapter Ccard Ssignal @parm" />
+   <link type="GPIB_IO" pattern="#L\d+ A\d+ @.*" default="#L0 A0 @" description="GPIB_IO - #Llink Aaddr @parm"  />
+   <link type="BITBUS_IO" pattern="#L\d+ N\d+ P\d+ S\d+ @.*" default="BITBUS_IO - @L0 N0 P0 S0 @" description="#Llink Nnode Pport Ssignal @parm"  />
+   <link type="INST_IO" pattern="@.*" default="@" description="INST_IO - @"  />
+   <link type="BBGPIB_IO" pattern="#L\d+ B\d+ G\d+ @.*" default="#L0 B0 G0 @" description="BBGPIB_IO - #Llink Bbbaddr Ggpibaddr @parm"  />
+   <link type="RF_IO" pattern="#R\d+ M\d+ D\d+ E\d+ @.*" default="#R0 M0 D0 E0 @" description="RF_IO - #Rcryo Mmicro Ddataset Eelement"  />
+   <link type="VXI_IO" pattern="#V\d+ (C\d+)?+  S\d+ @.*" default="#V0 C0 S0 @" description="VXI_IO - #Vframe Cslot Ssignal @parm"  />
+</links>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE plugins SYSTEM 'com.cosylab.vdct:plugins'>
+
+<plugins>
+  <plugin class="com.cosylab.vdct.plugins.LinkTypeConfig" autostart="true"/>
+  <plugin class="com.cosylab.vdct.plugins.DebugSimulator" autostart="true">
+    <param name="max" value="100" />
+    <param name="interval" value="1000" />
+    <param name="min" value="0" />
+    <param name="source" value="Oracle" />
+    <param name="lastrun" value="Wed Jul 10 11:14:13 CEST 2002" />
+  </plugin>
+  <plugin class="com.cosylab.vdct.plugins.DebugSimulator" autostart="true">
+    <param name="max" value="200" />
+    <param name="interval" value="1000" />
+    <param name="min" value="100" />
+    <param name="source" value="EPICS" />
+    <param name="lastrun" value="Wed Jul 10 11:14:13 CEST 2002" />
+  </plugin>
+  <plugin class="com.cosylab.vdct.plugins.ExportSimulator" autostart="true" />
+</plugins>
+

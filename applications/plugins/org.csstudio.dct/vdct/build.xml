@@ -1,0 +1,42 @@
+<project name="VisualDCT" default="jar" basedir=".">
+
+	<property name="project.name" value="${ant.project.name}"/>
+
+	<property name="build.output" value="${user.home}/vdct/visualdct/builds"/>
+
+	<property name="javadoc.packages" value="com.cosylab.vdct.*"/>
+	
+	<path id="build.classpath">
+	</path>
+	
+	<property name="build.classpath.ext" refid="build.classpath"/>
+	
+	<target name="release">
+		<ant antfile="VDCTBuild.xml" dir="." target="release"/>
+	</target>
+	
+	<target name="build">
+		<ant antfile="VDCTBuild.xml" dir="." target="build"/>
+	</target>
+
+	<target name="all">
+		<ant antfile="VDCTBuild.xml" dir="." target="all"/>
+	</target>
+
+	<target name="jar">
+		<ant antfile="VDCTBuildSimple.xml" dir="." target="jar"/>
+	</target>
+
+	<target name="jarcomplex">
+		<ant antfile="VDCTBuild.xml" dir="." target="jar"/>
+	</target>
+
+	<target name="doc">
+		<ant antfile="VDCTBuild.xml" dir="." target="doc"/>
+	</target>
+	
+	<target name="rt">
+		<ant antfile="VDCTBuild.xml" dir="." target="rt"/>
+	</target>
+
+</project>

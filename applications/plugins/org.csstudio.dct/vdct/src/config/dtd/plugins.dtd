@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT plugins (plugin*)>
+
+<!ELEMENT plugin (param*)>
+<!ATTLIST plugin class CDATA #REQUIRED>
+<!ATTLIST plugin autostart (true|false) #REQUIRED>
+
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
+<!ATTLIST param value CDATA #REQUIRED>
