@@ -29,14 +29,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
-import javax.jms.Session; // import javax.jms.TopicSubscriber;
+import javax.jms.Session;
+// import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -812,10 +812,22 @@ public class DistributorWork extends Thread implements AmsConstants {
 		msg.setString(MSGPROP_RECEIVERADDR, addr);
 		msg.setString(MSGPROP_MESSAGECHAINID_AND_POS, chainIdAndPos);
 		msg.setString(MSGPROP_TEXTTYPE, "" + texttype);
+        msg.setString(MSGPROP_GROUP_WAIT_TIME, "0");
 		amsPublisherVoiceMail.send(msg);
 	}
 
-	private boolean acknowledge(Message msg) {
+    private void publishToConnectorVoiceMail(String text, String addr,
+            String chainIdAndPos, int texttype, Date nextActTime) throws JMSException {
+        MapMessage msg = amsSenderSession.createMapMessage();
+        msg.setString(MSGPROP_RECEIVERTEXT, text);
+        msg.setString(MSGPROP_RECEIVERADDR, addr);
+        msg.setString(MSGPROP_MESSAGECHAINID_AND_POS, chainIdAndPos);
+        msg.setString(MSGPROP_TEXTTYPE, "" + texttype);
+        msg.setString(MSGPROP_GROUP_WAIT_TIME, getTimeString(nextActTime));
+        amsPublisherVoiceMail.send(msg);
+    }
+
+    private boolean acknowledge(Message msg) {
 		try {
 			msg.acknowledge();
 			return true;
@@ -2887,7 +2899,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 						break;
 					case FILTERACTIONTYPE_VM_GR:
 						publishToConnectorVoiceMail(text, user.getPhone(),
-								chainIdAndPos, TEXTTYPE_ALARM_WCONFIRM);// VoiceMail
+								chainIdAndPos, TEXTTYPE_ALARM_WCONFIRM, msgChain.getNextActTime());// VoiceMail
 						break;
 					case FILTERACTIONTYPE_MAIL_GR:
 						publishToConnectorMail(text, user.getEmail(), user
@@ -2991,6 +3003,11 @@ public class DistributorWork extends Thread implements AmsConstants {
 			// work
 		}
 	}
+
+    public String getTimeString(java.util.Date date)
+    {
+        return String.valueOf(date.getTime());
+    }
 
 	//
 	// End: Message Chain
