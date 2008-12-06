@@ -73,7 +73,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * @author Markus Möller
+ * @author Markus Mï¿½ller
  *
  */
 
@@ -151,7 +151,7 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
         filterComposite = new Group(mainComposite, SWT.NONE);
         filterComposite.setLayout(new GridLayout(7,false));
         filterComposite.setLayoutData(Utils.getGridData(-1, -1, 1, 1, SWT.FILL, SWT.FILL, true, false));
-        filterComposite.setText(Messages.getString("AMSConnectorMessageManagerView_filterComposite"));
+        filterComposite.setText(Messages.getString("AMSMessageManagerView_filterComposite"));
 
         cmdRefresh = new CommandButton(filterComposite, CommandButton.REFRESH);
         cmdRefresh.setLayoutData(Utils.getGridData(-1, -1, 1, 1, SWT.BEGINNING, SWT.CENTER, false, false));
@@ -450,7 +450,7 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
                         
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus Möller, 25.05.2007
+            // CHANGED BY: Markus Mï¿½ller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
