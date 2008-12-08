@@ -112,7 +112,6 @@ public class SmsConnectorStart implements IApplication
         bStop = true;
     }
 
-    @SuppressWarnings("deprecation")
     public Object start(IApplicationContext context) throws Exception
     {
         Log.log(this, Log.INFO, "start");
@@ -137,7 +136,7 @@ public class SmsConnectorStart implements IApplication
                     bInitedJms = initJms();
                 }
         
-                Log.log(this, Log.DEBUG, "is running");
+                // Log.log(this, Log.DEBUG, "is running");
                 Thread.sleep(1000);
                 
                 SynchObject actSynch = new SynchObject(0, 0);

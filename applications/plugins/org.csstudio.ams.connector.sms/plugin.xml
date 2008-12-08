@@ -21,18 +21,6 @@
             name="Connector SMS"/>
    </extension>
    <extension
-         id="AmsSmsConnector"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.connector.sms.SmsConnector"
-            name="Ams SMSConnector">
-         <property
-               name="appName"
-               value="Ams SMSConnector">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.csstudio.platform.libs.xmpp.loginHandlers">
       <loginHandler
             class="org.csstudio.ams.connector.sms.xmpp.SmsConnectorLoginCallbackHandler"
@@ -59,6 +47,18 @@
             name="Restart"
             parameters="Password">
       </parametrizedAction>
+   </extension>
+   <extension
+         id="AmsSmsConnectorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.sms.SmsConnector"
+            name="AmsSmsConnector">
+         <property
+               name="appName"
+               value="AmsSmsConnector">
+         </property>
+      </product>
    </extension>
 
 </plugin>

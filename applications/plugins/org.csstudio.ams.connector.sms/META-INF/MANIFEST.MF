@@ -15,6 +15,6 @@ Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
  org.csstudio.platform.libs.dcf,
  org.csstudio.platform.utility.jms
 Bundle-ClassPath: libs/comm.jar,
- libs/smslib-3.3.1.jar,
+ libs/smslib-3.3.2.jar,
  libs/log4j.jar,
  .

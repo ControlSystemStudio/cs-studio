@@ -142,7 +142,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     if (scs.getStatus() == SmsConnectorStart.STAT_INIT)
                         scs.setStatus(SmsConnectorStart.STAT_OK);
 
-                    Log.log(this, Log.DEBUG, "is running");
+                    // Log.log(this, Log.DEBUG, "is running");
 
                     // First check the connectors manage topic
                     // Maybe a user wants to delete some messages
