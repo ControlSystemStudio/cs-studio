@@ -61,6 +61,7 @@ public interface AmsConstants
 	public final static String MSGPROP_RECEIVERADDR = AMS_PREFIX + "RECEIVER-ADDR"; 
 	public final static String MSGPROP_SUBJECT_USERNAME = AMS_PREFIX + "SUBJECT-USERNAME"; 
 	public final static String MSGPROP_TEXTTYPE = AMS_PREFIX + "RECEIVER-TEXTTYPE"; 
+    public final static String MSGPROP_GROUP_WAIT_TIME = AMS_PREFIX + "RECEIVER-WAITTIME"; 
 	
 	//common
 	public final static String MSGPROP_MESSAGECHAINID_AND_POS = AMS_PREFIX + "MESSAGECHAIN-ID_AND_POS";// append UserGroup_User.iPos as String with length = MSG_POS_LENGTH_FOR_MSGPROP
@@ -130,7 +131,7 @@ public interface AmsConstants
 //	ORGINAL
 	//StartSync (1. aus Command-Topic gelesen)
 	// 2. FMR-Stop
-	// 3. lösche alle MSG aus Command-Topic
+	// 3. lï¿½sche alle MSG aus Command-Topic
 	// 4. ALARM an Dist
 	// ~~~~~~~~~~~~~~~~~
 	// 4.1 Dist leert Dist-Topic, bis CMD von FMR
@@ -138,17 +139,17 @@ public interface AmsConstants
 	// 4.3 DB-Flag setzen
 	// 4.4 Kopieren
 	// 4.5 Dist neu starten
-	// 4.6 Bestätigung an FMR
+	// 4.6 Bestï¿½tigung an FMR
 	// ~~~~~~~~~~~~~~~~~
-	// 5. Auf Bestätigung von Dist warten, alle anderen MSG in Command-Topic löschen, da jetzt auf aktuellen Stand
+	// 5. Auf Bestï¿½tigung von Dist warten, alle anderen MSG in Command-Topic lï¿½schen, da jetzt auf aktuellen Stand
 	// 6. FMR-Neu starten
-	// 7. DB-Flag zurücksetzen
+	// 7. DB-Flag zurï¿½cksetzen
 	//EndSync
 //	ORGINAL
 
 	// State 1 = FMR Replicating 
 	// 2. FMR-Stop
-	// 3. lösche alle MSG aus Command-Topic
+	// 3. lï¿½sche alle MSG aus Command-Topic
 	// State 2 = Alarm => Dist gesendet
 	// 4. ALARM an Dist
 	// ~~~~~~~~~~~~~~~~~
@@ -159,10 +160,10 @@ public interface AmsConstants
 	
 	// 4.3 DB-Flag setzen
 	// 4.4 Kopieren
-	// 7. DB-Flag zurücksetzen
+	// 7. DB-Flag zurï¿½cksetzen
 
 	// State = 4 = Dist Replicating End, Notify FMR
-	// 4.6 Bestätigung an FMR
+	// 4.6 Bestï¿½tigung an FMR
 	// 4.5 Dist neu starten
 	// State = 0 = fertig
 
