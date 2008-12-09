@@ -270,7 +270,7 @@ public class ArchiveView extends ViewPart
         AutoSizeColumn.make(table, Messages.KeyCol, 50, 20);
         AutoSizeColumn.make(table, Messages.DescriptionCol, 100, 100);
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(box, table);
+        new AutoSizeControlListener(table);
         archive_table_viewer = new TableViewer(table);
         archive_table_viewer.setLabelProvider(new ArchiveTableLabelProvider());
         archive_table_viewer.setContentProvider(new ArrayContentProvider());
@@ -361,7 +361,7 @@ public class ArchiveView extends ViewPart
             AutoSizeColumn.make(table, Messages.StartCol, 85, 20);
         AutoSizeColumn.make(table, Messages.EndCol, 85, 20);
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(box, table);
+        new AutoSizeControlListener(table);
         name_table_viewer = new TableViewer(table);
         name_table_viewer.setUseHashlookup(true);
         name_table_viewer.setLabelProvider(new NameTableItemLabelProvider(show_start_times));

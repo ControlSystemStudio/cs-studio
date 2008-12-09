@@ -252,7 +252,7 @@ public class FormulaDialog extends Dialog
                 AutoSizeColumn.make(table, col.getTitle(), col.getMinSize(),
                                     col.getWeight());
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(box, table);
+        new AutoSizeControlListener(table);
         
         input_table = new TableViewer(table);
         input_table.setLabelProvider(new InputTableLabelProvider());

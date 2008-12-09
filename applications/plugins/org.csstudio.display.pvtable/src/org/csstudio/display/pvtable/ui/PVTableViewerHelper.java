@@ -113,7 +113,7 @@ public class PVTableViewerHelper
                         PVTableHelper.sizes[i],
                         PVTableHelper.weights[i]);
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(parent, table);
+        new AutoSizeControlListener(table);
     
         table_viewer = new TableViewer(table);
         // Enable hashmap for resolving 'PVListEntry' to associated SWT widget.

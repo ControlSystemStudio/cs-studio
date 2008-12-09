@@ -62,7 +62,7 @@ public class StringTableEditor extends Composite
 		col.setEditingSupport(new StringColumnEditor(list, items));
 		list.setContentProvider(new StringTableContentProvider());
 		list.setInput(items);
-		new AutoSizeControlListener(this, table);
+		new AutoSizeControlListener(table);
 		
 		// Buttons: up/down/delete
 		final ImageRegistry images = new ImageRegistry();

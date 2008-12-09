@@ -147,7 +147,7 @@ public class SampleView extends PlotAwareView
         AutoSizeColumn.make(table, Messages.QualityCol,   85,  50);
         AutoSizeColumn.make(table, Messages.SourceCol,    50,  90);
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(parent, table);
+        new AutoSizeControlListener(table);
 
         table_viewer = new TableViewer(table);
         table_viewer.setLabelProvider(new SampleTableLabelProvider());

@@ -143,7 +143,7 @@ public class GUI implements ModelListener
         view_col = AutoSizeColumn.make(table_viewer, Messages.ContentColumn, 400, 100);
         view_col.setLabelProvider(new ContentLabelProvider());
 
-        new AutoSizeControlListener(parent, table);
+        new AutoSizeControlListener(table);
         
         // Double-click on message opens detail
         table_viewer.getTable().addMouseListener(new MouseAdapter()

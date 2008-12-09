@@ -408,7 +408,7 @@ public class ConfigView extends PlotAwareView
                                 col.getWeight(), col.isCentered());
         }
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(box, table);
+        new AutoSizeControlListener(table);
         
         pv_table_viewer = new TableViewer(table);
         // Enable hashmap for resolving 'PVListEntry' to associated SWT widget.
@@ -492,7 +492,7 @@ public class ConfigView extends PlotAwareView
         AutoSizeColumn.make(table, Messages.Key,   50,  10);
         AutoSizeColumn.make(table, Messages.URL,  200, 100);
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(box, table);
+        new AutoSizeControlListener(table);
         // Attach TableViewer
         archive_table_viewer = new TableViewer(table);
         archive_table_viewer.setLabelProvider(new ArchiveDataSourceLabelProvider());

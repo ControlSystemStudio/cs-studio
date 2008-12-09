@@ -36,54 +36,6 @@ public class AutoSizeColumn
         return weight;
     }
 
-    /** Create a new auto-size column.
-     *  <p>
-     *  The 'data' of the column will be set to the auto-size info,
-     *  so applications can no longer use the 'data' for other
-     *  custom purposes!
-     *  
-     *  @param table The table to which this column belongs.
-     *  @param header The column header.
-     *  @param min_size The minimum column width in pixels.
-     *  @param weight The 'weight' used in getting a share of additional
-     *                screen space.
-     *  @return Returns the table column.
-     *  @see #make(TableViewer, String, int, int, boolean)
-     */
-    public static TableColumn make(Table table, String header,
-            int min_size, int weight)
-    {
-        return make(table, header, min_size, weight, false);
-    }
-
-    /** Create a new auto-size column.
-     *  <p>
-     *  The 'data' of the column will be set to the auto-size info,
-     *  so applications can no longer use the 'data' for other
-     *  custom purposes!
-     *  
-     *  @param table The table to which this column belongs.
-     *  @param header The column header.
-     *  @param min_size The minimum column width in pixels.
-     *  @param weight The 'weight' used in getting a share of additional
-     *                screen space.
-     *  @param center Center-align the column?
-     *  @return Returns the table column.
-     *  @see #make(TableViewer, String, int, int, boolean)
-     */
-	public static TableColumn make(Table table, String header,
-			int min_size, int weight, boolean center)
-	{
-		TableColumn col = new TableColumn(table, SWT.LEFT);
-		col.setText(header);
-		col.setData(new AutoSizeColumn(min_size, weight));
-		col.setMoveable(true);
-        col.setWidth(min_size);
-        if (center)
-            col.setAlignment(SWT.CENTER);
-		return col;
-	}
-	
     /** Create a new auto-size table column.
      *  <p>
      *  The 'data' of the column will be set to the auto-size info,
@@ -95,6 +47,9 @@ public class AutoSizeColumn
      *  @param min_size The minimum column width in pixels.
      *  @param weight The 'weight' used in getting a share of additional
      *                screen space.
+     *                Suggested values are 100 for "normal",
+     *                then higher or lower values to get more/less
+     *                of the available space beyond the 'min_size'.
      *  @param center Center-align the column?
      *  @return Table viewer column.
      *  @since 2008-06-24
@@ -113,23 +68,37 @@ public class AutoSizeColumn
         return view_col;
     }
 
-    /** Create a new auto-size table column.
-     *  <p>
-     *  The 'data' of the column will be set to the auto-size info,
-     *  so applications can no longer use the 'data' for other
-     *  custom purposes!
-     *  
-     *  @param table_viewer The table viewer to which this column belongs.
-     *  @param header The column header.
-     *  @param min_size The minimum column width in pixels.
-     *  @param weight The 'weight' used in getting a share of additional
-     *                screen space.
-     *  @return Table viewer column.
+    /** @see #make(TableViewer, String, int, int, boolean)
      *  @since 2008-06-24
      */
     public static TableViewerColumn make(final TableViewer table_viewer,
             final String header, final int min_size, final int weight)
     {
         return make(table_viewer, header, min_size, weight, false);
+    }
+
+    /** Create a new auto-size column.
+     *  @see #make(TableViewer, String, int, int, boolean)
+     */
+	public static TableColumn make(Table table, String header,
+			int min_size, int weight, boolean center)
+	{
+		TableColumn col = new TableColumn(table, SWT.LEFT);
+		col.setText(header);
+        col.setMoveable(true);
+        col.setWidth(min_size);
+        col.setData(new AutoSizeColumn(min_size, weight));
+        if (center)
+            col.setAlignment(SWT.CENTER);
+		return col;
+	}
+
+    /** Create a new auto-size column.
+     *  @see #make(TableViewer, String, int, int, boolean)
+     */
+    public static TableColumn make(Table table, String header,
+            int min_size, int weight)
+    {
+        return make(table, header, min_size, weight, false);
     }
 }
