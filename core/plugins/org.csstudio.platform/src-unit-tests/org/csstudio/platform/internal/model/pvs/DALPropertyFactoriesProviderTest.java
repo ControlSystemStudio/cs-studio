@@ -22,10 +22,12 @@
  /**
  * 
  */
-package org.csstudio.platform.model.pvs;
+package org.csstudio.platform.internal.model.pvs;
 
 import static org.junit.Assert.*;
 
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

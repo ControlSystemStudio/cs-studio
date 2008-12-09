@@ -21,7 +21,9 @@
  */
  package org.csstudio.platform.data;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.platform.data.IValue.Quality;
 import org.junit.Test;
@@ -30,7 +32,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ValueTest extends TestCase
+public class ValueTest 
 {
     @Test
 	public void testEquality() throws Exception

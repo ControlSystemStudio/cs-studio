@@ -20,6 +20,7 @@ import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.Timestamp;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -125,7 +126,7 @@ public class ProcessVariableConnectionServiceTest {
 		assertTrue(_service.getConnectors().contains(connector));
 	}
 
-	@Test
+	@Test(timeout=1000)
 	public final void testCleanupThread1() throws Exception {
 		// temporary connectors are only blocked for a certain amount of time
 		Double value = _service.readValueSynchronously(pv, ValueType.DOUBLE);
@@ -137,7 +138,7 @@ public class ProcessVariableConnectionServiceTest {
 
 	}
 
-	@Test
+	@Test(timeout=1000)
 	public final void testCleanupThread2() throws Exception {
 		// permanent connectors live until they are explicitly unregistered
 		IProcessVariableValueListener listener = new ProcessVariableValueAdapter();
@@ -158,7 +159,7 @@ public class ProcessVariableConnectionServiceTest {
 		assertEquals(0, _service.getConnectors().size());
 	}
 
-	@Test
+	@Test(timeout=1000)
 	public final void testCleanupThread3() throws Exception {
 		// permanent connectors live until they are no longer referenced (after
 		// garbage collection=
@@ -205,8 +206,9 @@ public class ProcessVariableConnectionServiceTest {
 	 * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#readValueAsynchronously(org.csstudio.platform.model.pvs.IProcessVariableAddress, org.csstudio.platform.simpledal.ValueType, org.csstudio.platform.simpledal.IProcessVariableValueListener)}.
 	 */
 	@Test
+	@Ignore("Not implemented yet!")
 	public final void testReadValueAsynchronously() {
-
+	    // FIXME mz: 2008-12-09: Implementieren!!!
 	}
 
 	/**
@@ -226,7 +228,7 @@ public class ProcessVariableConnectionServiceTest {
 	 * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#writeValueAsynchronously(org.csstudio.platform.model.pvs.IProcessVariableAddress, java.lang.Object, org.csstudio.platform.simpledal.ValueType, IProcessVariableWriteListener)}.
 	 * @throws ConnectionException 
 	 */
-	@Test
+	@Test(timeout=1000)
 	public final void testWriteValueAsynchronously() throws ConnectionException {
 		double newValue = 5.0;
 		_service.writeValueAsynchronously(pv, newValue, ValueType.DOUBLE, null);
@@ -250,7 +252,7 @@ public class ProcessVariableConnectionServiceTest {
 	 * {@link org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService#unregister(org.csstudio.platform.simpledal.IProcessVariableValueListener)}.
 	 * @throws InterruptedException 
 	 */
-	@Test
+	@Test(timeout=1000)
 	public final void testUnregister() throws InterruptedException {
 		IProcessVariableValueListener listener = new ProcessVariableValueAdapter();
 		_service.register(listener, pv, ValueType.DOUBLE);
@@ -272,7 +274,9 @@ public class ProcessVariableConnectionServiceTest {
 	}
 
 	@Test
+	@Ignore("Not implemented yet!")
 	public void testGetConnectorsSuffix() {
+	    // FIXME mz: 2008-12-09: Implementieren!!!
 	}
 
 }
