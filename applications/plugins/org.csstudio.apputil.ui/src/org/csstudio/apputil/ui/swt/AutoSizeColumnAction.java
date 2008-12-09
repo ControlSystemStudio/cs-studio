@@ -16,9 +16,9 @@ public class AutoSizeColumnAction extends Action
     
     public AutoSizeColumnAction(final AutoSizeControlListener autosize)
     {
-        super("Autosize Columns", AS_CHECK_BOX);
+        super(Messages.AutoSizeColumns, AS_CHECK_BOX);
         this.autosize = autosize;
-        setImageDescriptor(Activator.getImageDescriptor("icons/autosize.gif"));
+        setImageDescriptor(Activator.getImageDescriptor("icons/autosize.gif")); //$NON-NLS-1$
         setChecked(autosize.isAutosizing());
     }
 
