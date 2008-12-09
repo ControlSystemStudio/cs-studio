@@ -71,6 +71,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -106,6 +107,47 @@ import org.eclipse.ui.views.IViewRegistry;
  * @author Joerg Rathlev
  */
 public class AlarmTreeView extends ViewPart {
+
+	/**
+	 * Monitors the connection to the JMS backend system and displays a message
+	 * in the tree view if the JMS connection fails. When the JMS connection is
+	 * established or restored, triggers loading the current state from the
+	 * LDAP directory.
+	 */
+	private final class AlarmTreeConnectionMonitor implements
+			IConnectionMonitor {
+		/**
+		 * {@inheritDoc}
+		 */
+		public void onConnected() {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					hideMessage();
+					
+					// TODO: This rebuilds the whole tree from
+					// scratch. It would be better for the
+					// usability to resynchronize only.
+					startDirectoryReaderJob();
+				}
+			});
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void onDisconnected() {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					setMessage(
+							SWT.ICON_WARNING,
+							"Connection error",
+							"Some or all of the information displayed "
+									+ "may be outdated. The alarm tree is currently "
+									+ "not connected to all alarm servers.");
+				}
+			});
+		}
+	}
 
 	/**
 	 * Implements drop support for the alarm tree. This implementation supports
@@ -356,6 +398,27 @@ public class AlarmTreeView extends ViewPart {
 	private Label _messageAreaDescription;
 	
 	/**
+	 * A filter which hides all nodes which are not currently in an alarm state.
+	 */
+	private ViewerFilter _currentAlarmFilter;
+	
+	/**
+	 * The action which toggles the filter on and off.
+	 */
+	private Action _toggleFilterAction;
+
+	/**
+	 * Whether the filter is active.
+	 */
+	private boolean _isFilterActive;
+	
+	/**
+	 * The connection monitor instance which monitors the JMS connection of
+	 * this tree view.
+	 */
+	private AlarmTreeConnectionMonitor _connectionMonitor;
+	
+	/**
 	 * The logger used by this view.
 	 */
 	private final CentralLogger _log = CentralLogger.getInstance();
@@ -411,6 +474,8 @@ public class AlarmTreeView extends ViewPart {
 		_viewer.setContentProvider(new AlarmTreeContentProvider());
 		_viewer.setLabelProvider(new AlarmTreeLabelProvider());
 		_viewer.setComparator(new ViewerComparator());
+		
+		_currentAlarmFilter = new CurrentAlarmFilter();
 
 		initializeContextMenu();
 		makeActions();
@@ -449,35 +514,8 @@ public class AlarmTreeView extends ViewPart {
 				monitor.beginTask("Connecting to JMS servers",
 						IProgressMonitor.UNKNOWN);
 				_jmsConnector = new JmsConnector();
-				_jmsConnector.addConnectionMonitor(new IConnectionMonitor() {
-
-					public void onConnected() {
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								hideMessage();
-								
-								// TODO: This rebuilds the whole tree from
-								// scratch. It would be better for the
-								// usability to resynchronize only.
-								startDirectoryReaderJob();
-							}
-						});
-					}
-
-					public void onDisconnected() {
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								setMessage(
-										SWT.ICON_WARNING,
-										"Connection error",
-										"Some or all of the information displayed "
-												+ "may be outdated. The alarm tree is currently "
-												+ "not connected to all alarm servers.");
-							}
-						});
-					}
-					
-				});
+				_connectionMonitor = new AlarmTreeConnectionMonitor();
+				_jmsConnector.addConnectionMonitor(_connectionMonitor);
 				try {
 					_jmsConnector.connect(monitor);
 				} catch (JmsConnectionException e) {
@@ -556,6 +594,11 @@ public class AlarmTreeView extends ViewPart {
 	 * Stops the alarm queue subscriber.
 	 */
 	private void disposeJmsListener() {
+		// Remove the connection monitor, so that it doesn't try to display an
+		// error message in this disposed view when the connection is closed.
+		_jmsConnector.removeConnectionMonitor(_connectionMonitor);
+		_connectionMonitor = null;
+		
 		_jmsConnector.disconnect();
 	}
 
@@ -578,7 +621,6 @@ public class AlarmTreeView extends ViewPart {
 		_messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
 		_messageAreaMessage.setText(message);
 		_messageAreaDescription.setText(description);
-//		_messageArea.pack();
 		_messageArea.layout();
 		
 		_messageArea.setVisible(true);
@@ -758,7 +800,6 @@ public class AlarmTreeView extends ViewPart {
 	 * @param manager the menu manager.
 	 */
 	private void fillLocalPullDown(final IMenuManager manager) {
-		// currently there are no actions in the pulldown menu
 	}
 
 	/**
@@ -812,6 +853,8 @@ public class AlarmTreeView extends ViewPart {
 	 * @param manager the menu manager.
 	 */
 	private void fillLocalToolBar(final IToolBarManager manager) {
+		manager.add(_toggleFilterAction);
+		manager.add(new Separator());
 		manager.add(_showPropertyViewAction);
 		manager.add(_reloadAction);
 	}
@@ -1105,6 +1148,23 @@ public class AlarmTreeView extends ViewPart {
 		IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench().getViewRegistry();
 		IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
 		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
+		
+		_toggleFilterAction = new Action("Show Only Alarms", Action.AS_CHECK_BOX) {
+			@Override
+			public void run() {
+				if (_isFilterActive) {
+					_viewer.removeFilter(_currentAlarmFilter);
+					_isFilterActive = false;
+				} else {
+					_viewer.addFilter(_currentAlarmFilter);
+					_isFilterActive = true;
+				}
+			}
+		};
+		_toggleFilterAction.setToolTipText("Show Only Alarms");
+		_toggleFilterAction.setChecked(_isFilterActive);
+		_toggleFilterAction.setImageDescriptor(
+				AlarmTreePlugin.getImageDescriptor("./icons/no_alarm_filter.png"));
 	}
 	
 	/**

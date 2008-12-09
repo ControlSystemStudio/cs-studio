@@ -12,9 +12,9 @@
             allowMultiple="false"
             category="org.csstudio"
             class="org.csstudio.alarm.treeView.views.AlarmTreeView"
-            icon="icons/Alarm.gif"
+            icon="icons/alarm_tree.png"
             id="org.csstudio.alarm.treeView.views.LdapTView"
-            name="Alarm Treeview">
+            name="Alarm Tree">
       </view>
    </extension>
    <extension
@@ -50,9 +50,9 @@
             visible="true">
          <action
                class="org.csstudio.alarm.treeView.views.ShowTreeView"
-               icon="icons/Alarm.gif"
+               icon="icons/alarm_tree.png"
                id="org.csstudio.alarm.treeView.action1"
-               label="Tree View"
+               label="Alarm Tree"
                menubarPath="css/alarm/"
                style="push"/>
       </actionSet>
