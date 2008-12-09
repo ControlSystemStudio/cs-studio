@@ -19,12 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.dbaccess;
+package org.csstudio.alarm.dbaccess.archivedb;
 
 /**
- * Holds the setting for one filter condition of the archive search
- * (Property, value, AND /OR relation).
- * The data is set by the 'ExpertSearchDialog'.
+ * Holds the setting for one filter condition of the archive search (Property,
+ * value, AND /OR relation). The data is set by the 'ExpertSearchDialog'.
  * 
  * @author jhatje
  * @author $Author$
@@ -36,7 +35,7 @@ public class FilterItem {
 	private String _property;
 
 	private String _value;
-	
+
 	private String _relation;
 
 	public FilterItem(String _property, String _value, String _relation) {
@@ -72,7 +71,4 @@ public class FilterItem {
 	public void set_relation(String _relation) {
 		this._relation = _relation;
 	}
-	
-	
-	
 }

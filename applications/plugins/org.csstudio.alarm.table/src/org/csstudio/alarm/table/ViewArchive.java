@@ -22,6 +22,7 @@
 
 package org.csstudio.alarm.table;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,7 +33,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
-import org.csstudio.alarm.dbaccess.FilterItem;
+import org.csstudio.alarm.dbaccess.archivedb.Filter;
+import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
@@ -40,13 +42,15 @@ import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
-import org.csstudio.alarm.table.readDB.DBAnswer;
 import org.csstudio.alarm.table.readDB.AccessDBJob;
+import org.csstudio.alarm.table.readDB.DBAnswer;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -54,7 +58,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -62,6 +65,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
@@ -109,8 +113,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	private ColumnPropertyChangeListener _columnPropertyChangeListener;
 
 	/** The default / last filter. */
-	private String _filter = ""; //$NON-NLS-1$
-
+	//	private String _filter = ""; //$NON-NLS-1$
 	/**
 	 * The Answer from the DB.
 	 */
@@ -126,21 +129,26 @@ public class ViewArchive extends ViewPart implements Observer {
 	 * Current settings of the filter that they are available to delete the
 	 * displayed messages.
 	 */
-	private GregorianCalendar _from;
-	private GregorianCalendar _to;
-	private ArrayList<FilterItem> _filterSettings;
-	
-	private AccessDBJob dbReader = new AccessDBJob("DBReader");
+	private Filter _filter;
+	// private GregorianCalendar _from;
+	// private GregorianCalendar _to;
+	// private ArrayList<FilterItem> _filterSettings;
+
+	private AccessDBJob _dbReader = new AccessDBJob("DBReader");
 
 	/**
 	 * The Show Property View action.
 	 */
 	private Action _showPropertyViewAction;
 
+	private boolean _canExecute = false;
+
 	/**
 	 * The ID of the property view.
 	 */
 	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+
+	private static final String SECURITY_ID = "alarmAdministration";
 
 	public ViewArchive() {
 		super();
@@ -150,6 +158,8 @@ public class ViewArchive extends ViewPart implements Observer {
 
 	/** {@inheritDoc} */
 	public final void createPartControl(final Composite parent) {
+		_canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID,
+				false);
 
 		_disp = parent.getDisplay();
 
@@ -217,17 +227,17 @@ public class ViewArchive extends ViewPart implements Observer {
 		gd.minimumWidth = 75;
 		count.setLayoutData(gd);
 
-		Group deleteButtons = new Group(comp, SWT.LINE_SOLID);
-		deleteButtons.setText("Delete Messages"); //$NON-NLS-1$
-		deleteButtons.setLayout(new GridLayout(1, true));
-		gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
-		gd.minimumHeight = 60;
-		gd.minimumWidth = 60;
-		deleteButtons.setLayoutData(gd);
+		if (_canExecute) {
+			Group deleteButtons = new Group(comp, SWT.LINE_SOLID);
+			deleteButtons.setText("Delete Messages"); //$NON-NLS-1$
+			deleteButtons.setLayout(new GridLayout(1, true));
+			gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
+			gd.minimumHeight = 60;
+			gd.minimumWidth = 60;
+			deleteButtons.setLayoutData(gd);
+			createDeleteButton(deleteButtons);
+		}
 
-		createDeleteButton(deleteButtons);
-
-		
 		_countLabel = new Label(count, SWT.RIGHT);
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		_countLabel.setLayoutData(gd);
@@ -254,32 +264,34 @@ public class ViewArchive extends ViewPart implements Observer {
 
 	}
 
-
 	/**
-	 * Button to delete messages currently displayed in the table.
-	 * 	 * 
+	 * Button to delete messages currently displayed in the table. *
+	 * 
 	 * @param comp
 	 */
 	private void createDeleteButton(Composite comp) {
 		Button delete = new Button(comp, SWT.PUSH);
-		delete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				1, 1));
+		delete
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+						1));
 		delete.setText("Delete");
-		
+
 		delete.addSelectionListener(new SelectionAdapter() {
 
 			/**
-			 * Set the 'delete' flag and use the current settings of the
-			 * select statement to delete the messages. The command
-			 * will delete all messages even if the table shows just
-			 * a subset!!
+			 * Set the 'delete' flag and use the current settings of the select
+			 * statement to delete the messages. The command will delete all
+			 * messages even if the table shows just a subset!!
 			 */
 			public void widgetSelected(final SelectionEvent e) {
-				dbReader.setDeleteFlag(true);
-				dbReader.schedule();
+				_dbReader.setReadProperties(ViewArchive.this._dbAnswer, _filter
+						.copy());
+				_dbReader
+						.setAccessType(AccessDBJob.DBAccessType.READ_MSG_NUMBER_TO_DELETE);
+				_dbReader.schedule();
 			}
 		});
-		
+
 	}
 
 	/**
@@ -316,8 +328,6 @@ public class ViewArchive extends ViewPart implements Observer {
 	private void fillLocalToolBar(final IToolBarManager manager) {
 		manager.add(_showPropertyViewAction);
 	}
-	
-	
 
 	/**
 	 * Create a Button to selet the last 24 hour.
@@ -335,9 +345,10 @@ public class ViewArchive extends ViewPart implements Observer {
 
 			public void widgetSelected(final SelectionEvent e) {
 				// ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-				_to = new GregorianCalendar();
-				_from = (GregorianCalendar) _to.clone();
+				GregorianCalendar _to = new GregorianCalendar();
+				GregorianCalendar _from = (GregorianCalendar) _to.clone();
 				_from.add(GregorianCalendar.HOUR_OF_DAY, -24);
+				_filter = new Filter(null, _from, _to);
 				callDBReadJob();
 			}
 		});
@@ -359,9 +370,10 @@ public class ViewArchive extends ViewPart implements Observer {
 		b72hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(final SelectionEvent e) {
 				// ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-				_to = new GregorianCalendar();
-				_from = (GregorianCalendar) _to.clone();
+				GregorianCalendar _to = new GregorianCalendar();
+				GregorianCalendar _from = (GregorianCalendar) _to.clone();
 				_from.add(GregorianCalendar.HOUR_OF_DAY, -72);
+				_filter = new Filter(null, _from, _to);
 				callDBReadJob();
 			}
 		});
@@ -381,9 +393,10 @@ public class ViewArchive extends ViewPart implements Observer {
 
 		b168hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(final SelectionEvent e) {
-				_to = new GregorianCalendar();
-				_from = (GregorianCalendar) _to.clone();
+				GregorianCalendar _to = new GregorianCalendar();
+				GregorianCalendar _from = (GregorianCalendar) _to.clone();
 				_from.add(GregorianCalendar.HOUR_OF_DAY, -168);
+				_filter = new Filter(null, _from, _to);
 				callDBReadJob();
 			}
 
@@ -418,20 +431,21 @@ public class ViewArchive extends ViewPart implements Observer {
 					try {
 						StartEndTimeParser parser = new StartEndTimeParser(
 								lowString, highString);
-						_from = (GregorianCalendar) parser.getStart();
+						GregorianCalendar _from = (GregorianCalendar) parser
+								.getStart();
 						_fromTime = TimestampFactory.fromCalendar(_from);
-						_to = (GregorianCalendar) parser.getEnd();
+						GregorianCalendar _to = (GregorianCalendar) parser
+								.getEnd();
 						_toTime = TimestampFactory.fromCalendar(_to);
+						_filter = new Filter(null, _from, _to);
 						callDBReadJob();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						JmsLogsPlugin.logInfo(e1.getMessage());
 					}
-
 				}
 			}
 		});
-
 	}
 
 	/**
@@ -461,10 +475,10 @@ public class ViewArchive extends ViewPart implements Observer {
 				}
 
 				ExpertSearchDialog dlg = new ExpertSearchDialog(_parentShell,
-						_fromTime, _toTime, _filter);
+						_fromTime, _toTime);
 
-				_to = new GregorianCalendar();
-				_from = (GregorianCalendar) _to.clone();
+				GregorianCalendar _to = new GregorianCalendar();
+				GregorianCalendar _from = (GregorianCalendar) _to.clone();
 				if (dlg.open() == ExpertSearchDialog.OK) {
 					_fromTime = dlg.getStart();
 					_toTime = dlg.getEnd();
@@ -477,7 +491,9 @@ public class ViewArchive extends ViewPart implements Observer {
 						_from.setTimeInMillis((long) high * 1000);
 						_to.setTimeInMillis((long) low * 1000);
 					}
-					_filter = dlg.getFilterString();
+					ArrayList<FilterItem> _filterSettings = dlg
+							.get_filterConditions();
+					_filter = new Filter(_filterSettings, _from, _to);
 					callDBReadJob();
 				}
 			}
@@ -486,22 +502,23 @@ public class ViewArchive extends ViewPart implements Observer {
 	}
 
 	public void readDBFromExternalCall(IProcessVariable pv) {
-		_from = new GregorianCalendar();
-		_to = new GregorianCalendar();
+		GregorianCalendar _from = new GregorianCalendar();
+		GregorianCalendar _to = new GregorianCalendar();
 		_from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
 		showNewTime(_from, _to);
-		_filterSettings = new ArrayList<FilterItem>();
+		ArrayList<FilterItem> _filterSettings = new ArrayList<FilterItem>();
 		_filterSettings.add(new FilterItem("name", pv.getName(), "END"));
+		_filter = new Filter(_filterSettings, _from, _to);
 		callDBReadJob();
 	}
 
 	private void callDBReadJob() {
-		showNewTime(_from, _to);
-		dbReader.setReadProperties(ViewArchive.this._dbAnswer, _from, _to, _filterSettings);
+		showNewTime(_filter.getFrom(), _filter.getTo());
+		_dbReader.setReadProperties(ViewArchive.this._dbAnswer, _filter.copy());
 		_countLabel.setText("*");
 		_jmsLogTableViewer.getTable().setEnabled(false);
-		dbReader.schedule();
-
+		_dbReader.setAccessType(AccessDBJob.DBAccessType.READ_MESSAGES);
+		_dbReader.schedule();
 	}
 
 	/**
@@ -591,38 +608,74 @@ public class ViewArchive extends ViewPart implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		_disp.syncExec(new Runnable() {
 			public void run() {
-				_jmsMessageList.clearList();
-				_jmsLogTableViewer.refresh();
-				ArrayList<HashMap<String, String>> answer = _dbAnswer
-						.getDBAnswer();
-				int size = answer.size();
-				if (_dbAnswer.is_maxSize()) {
-					_countLabel.setBackground(Display.getCurrent()
-							.getSystemColor(SWT.COLOR_RED));
-					_countLabel.setText(Integer.toString(size) + "(maximum)");
-				} else {
-					_countLabel.setText(Integer.toString(size));
-					_countLabel.setBackground(Display.getCurrent()
-							.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-				}
-				_jmsLogTableViewer.getTable().setEnabled(true);
-				if (size > 0) {
-					_jmsMessageList.addJMSMessageList(answer);
-				} else {
-					String[] propertyNames = JmsLogsPlugin.getDefault()
-							.getPluginPreferences().getString(
-									LogViewerPreferenceConstants.P_STRING)
-							.split(";"); //$NON-NLS-1$
+				if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.LOG_MESSAGES) {
+					_jmsMessageList.clearList();
+					_jmsLogTableViewer.refresh();
+					ArrayList<HashMap<String, String>> answer = _dbAnswer
+							.getLogMessages();
+					int size = answer.size();
+					if (_dbAnswer.is_maxSize()) {
+						_countLabel.setBackground(Display.getCurrent()
+								.getSystemColor(SWT.COLOR_RED));
+						_countLabel.setText(Integer.toString(size)
+								+ "(maximum)");
+					} else {
+						_countLabel.setText(Integer.toString(size));
+						_countLabel.setBackground(Display.getCurrent()
+								.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+					}
+					_jmsLogTableViewer.getTable().setEnabled(true);
+					if (size > 0) {
+						_jmsMessageList.addJMSMessageList(answer);
+					} else {
+						String[] propertyNames = JmsLogsPlugin.getDefault()
+								.getPluginPreferences().getString(
+										LogViewerPreferenceConstants.P_STRING)
+								.split(";"); //$NON-NLS-1$
 
-					JMSMessage jmsMessage = new JMSMessage(propertyNames);
-					String firstColumnName = _columnNames[0];
-					jmsMessage.setProperty(firstColumnName,
-							Messages.LogViewArchive_NoMessageInDB);
-					_jmsMessageList.addJMSMessage(jmsMessage);
+						JMSMessage jmsMessage = new JMSMessage(propertyNames);
+						String firstColumnName = _columnNames[0];
+						jmsMessage.setProperty(firstColumnName,
+								Messages.LogViewArchive_NoMessageInDB);
+						_jmsMessageList.addJMSMessage(jmsMessage);
+					}
+				}
+				if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.MSG_NUMBER_TO_DELETE) {
+					MessageBox messageBox = new MessageBox(Display.getDefault()
+							.getActiveShell(), SWT.OK | SWT.CANCEL
+							| SWT.ICON_WARNING);
+					messageBox.setText("Confirmation");
+					messageBox.setMessage("Ca. "
+							+ Math.abs(_dbAnswer.get_msgNumberToDelete() / 11)
+							+ " will be deleted from the data base."
+							+ System.getProperty("line.separator")
+							+ "(Deleting one message can take up to 1 second)");
+					int buttonID = messageBox.open();
+					switch (buttonID) {
+					case SWT.OK:
+						CentralLogger.getInstance().debug(this,
+								"delete operation confirmed by the user.");
+						_dbReader.setReadProperties(ViewArchive.this._dbAnswer,
+								_filter.copy());
+						_dbReader
+								.setAccessType(AccessDBJob.DBAccessType.DELETE);
+						_dbReader.schedule();
+						break;
+					case SWT.CANCEL:
+						CentralLogger.getInstance().debug(this,
+								"delete operation canceld by user.");
+						break;
+					}
 				}
 
+				if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.DELETE_RESULT) {
+					MessageBox messageBox = new MessageBox(Display.getDefault()
+							.getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
+					messageBox.setText("Deleted");
+					messageBox.setMessage("Messages are deleted");
+					messageBox.open();
+				}
 			}
 		});
 	}
-
 }

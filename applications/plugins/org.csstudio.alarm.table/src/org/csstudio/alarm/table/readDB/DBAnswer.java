@@ -29,32 +29,110 @@ import java.util.Observable;
  * Class holds the answer from the db. Notifies the Observers if a new answer is
  * set.
  * 
+ * There are three types of DB answers:
+ * 
+ * 1: List of all log messages for the DB query.
+ * 2: number of log messages that will be deleted (for the warning-message dialog)
+ * 3: result (ok, error) of the delete operation.
+ * 
  * @author jhatje
  * 
  */
 public class DBAnswer extends Observable {
 
-	ArrayList<HashMap<String, String>> dbAnswer;
+	/**
+	 * result of DB query for log messages
+	 */
+	ArrayList<HashMap<String, String>> _logMessages;
 
 	/** 
 	 *  maxSize is true if maxrow in the SQL statement has cut off more messages.
 	 */
 	boolean _maxSize = false;
 
-
-	public ArrayList<HashMap<String, String>> getDBAnswer() {
-		return dbAnswer;
+	/**
+	 * number of messages to delete from DB.
+	 */
+	int _msgNumberToDelete = -1;
+	
+	/**
+	 * message of the DB delete operation (success, error, ...)
+	 */
+	String _deleteResult = null;
+	
+	ResultType _dbqueryType;
+	
+	/**
+	 * Types of answer from DB
+	 */
+	public enum ResultType {
+		LOG_MESSAGES,
+		MSG_NUMBER_TO_DELETE,
+		DELETE_RESULT
 	}
 
+	public ResultType getDbqueryType() {
+		return _dbqueryType;
+	}
+	
+	public void setDbqueryType(ResultType dbqueryType) {
+		this._dbqueryType = dbqueryType;
+	}
+	
 	public boolean is_maxSize() {
 		return _maxSize;
 	}
 	
-	public void setDBAnswer(ArrayList<HashMap<String, String>> answer, boolean maxSize) {
+	public void setLogMssages(ArrayList<HashMap<String, String>> answer, boolean maxSize) {
+		_dbqueryType = ResultType.LOG_MESSAGES;
 		_maxSize = maxSize;
-		dbAnswer = answer;
+		_logMessages = answer;
+		
+		//set properties for other operations to invalid states.
+		_deleteResult = null;
+		_msgNumberToDelete = -1;
+
 		setChanged();
 		notifyObservers();
 	}
+	
+	public ArrayList<HashMap<String, String>> getLogMessages() {
+		return _logMessages;
+	}
+	
+	public int get_msgNumberToDelete() {
+		return _msgNumberToDelete;
+	}
+	
+	public void set_msgNumberToDelete(int numberToDelete) {
+		_dbqueryType = ResultType.MSG_NUMBER_TO_DELETE;
+		_msgNumberToDelete = numberToDelete;
+		
+		//set properties for other operations to invalid states.
+		_deleteResult = null;
 
+		setChanged();
+		notifyObservers();
+	}
+	
+	public String getDeleteResult() {
+		return _deleteResult;
+	}
+	
+	public void setDeleteResult(String deleteResult) {
+		_dbqueryType = ResultType.DELETE_RESULT;
+		this._deleteResult = deleteResult;
+
+		//set properties for other operations to invalid states.
+		_msgNumberToDelete = -1;
+		_maxSize = false;
+		_logMessages = null;
+
+		setChanged();
+		notifyObservers();
+	}
+	
+	public void set_maxSize(boolean size) {
+		_maxSize = size;
+	}
 }

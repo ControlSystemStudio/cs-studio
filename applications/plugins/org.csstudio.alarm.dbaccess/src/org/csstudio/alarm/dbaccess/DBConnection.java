@@ -52,8 +52,8 @@ public class DBConnection {
 			+ "(FAILOVER_MODE = " + "(TYPE = NONE) " + "(METHOD = BASIC) "
 			+ "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")";
 
-	private String _user = "krykams";
-	private String _password = "krykams";
+	private String _user = "kryklogt";
+	private String _password = "kryklogt";
 	// private String _user = "KRYKAMS";
 	// private String _password = "krykams";
 

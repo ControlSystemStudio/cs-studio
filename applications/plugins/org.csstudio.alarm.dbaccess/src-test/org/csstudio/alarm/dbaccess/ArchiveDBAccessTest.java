@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +23,7 @@ public class ArchiveDBAccessTest {
 	private ArrayList<FilterItem> twoSimpleFilterItems = new ArrayList<FilterItem>();
 	private ArrayList<FilterItem> twoSubqueryFilterItems = new ArrayList<FilterItem>();
 	private ArrayList<FilterItem> fourFilterItemsBothTypes = new ArrayList<FilterItem>();
+	private ArrayList<FilterItem> testFilterItemList = new ArrayList<FilterItem>();
 
 	@Before
 	public void setUp() {
@@ -45,21 +47,33 @@ public class ArchiveDBAccessTest {
 		fourFilterItemsBothTypes.add(severityItem);
 		fourFilterItemsBothTypes.add(facilityItem);
 		fourFilterItemsBothTypes.add(typeItem);
+		
+		hostItem = new FilterItem("host", "berndTest", "and");
+		severityItem = new FilterItem("type", "event", "and");
+		typeItem = new FilterItem("severity", "MAJOR", "end");
+		facilityItem = new FilterItem("facility", "TEST", "and");
+		testFilterItemList.add(hostItem);
+		testFilterItemList.add(severityItem);
+		testFilterItemList.add(facilityItem);
+		testFilterItemList.add(typeItem);
+
 	}
 
 	@Test
 	public void testGetLogMessages() {
 		Calendar from = Calendar.getInstance();
-		from.set(2008, Calendar.NOVEMBER, 27, 16, 8, 0);
+		from.set(2008, Calendar.DECEMBER, 1, 5, 5, 0);
 		Calendar to = Calendar.getInstance();
-		to.set(2008, Calendar.NOVEMBER, 27, 16, 12, 0);
+		to.set(2008, Calendar.DECEMBER, 8, 6, 9, 0);
 
 //		 ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
 //				.getLogMessages(from, to, null, fourFilterItemsBothTypes, 100);
 		ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
-				.getLogMessages(from, to, null, 100);
+				.getLogMessages(from, to, testFilterItemList, 500);
 		int erg1 = ArchiveDBAccess.getInstance()
 				.countMessagesToDelete(fourFilterItemsBothTypes, from, to);
+
+		System.out.println("number: " + erg1);
 
 		for (HashMap<String, String> hashMap : erg) {
 			Set<Entry<String, String>> entries = hashMap.entrySet();

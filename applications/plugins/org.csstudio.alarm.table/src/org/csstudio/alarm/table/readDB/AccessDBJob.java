@@ -26,16 +26,22 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
-import org.csstudio.alarm.dbaccess.FilterItem;
+import org.csstudio.alarm.dbaccess.archivedb.Filter;
+import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.readDB.DBAnswer.ResultType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * Job for accessing the database
+ * Job for accessing the database. There are three types of access:
+ * 
+ * 1: read log messages for time period and filter.
+ * 2: read number of messages to delete from DB (for warning message)
+ * 3: delete messages from DB.
  * 
  * @author jhatje
  * 
@@ -48,45 +54,56 @@ public class AccessDBJob extends Job {
 	private DBAnswer dbAnswer = null;
 	private int _maxAnswerSize;
 	private ArrayList<FilterItem> _filterSettings;
-	private boolean _deleteMessages = false;
 
+	DBAccessType accessType;
+	
+
+
+	/**
+	 * Types of answer from DB
+	 */
+	public enum DBAccessType {
+		READ_MESSAGES,
+		READ_MSG_NUMBER_TO_DELETE,
+		DELETE
+	}
+
+	
 	public AccessDBJob(String name) {
 		super(name);
 	}
 
-	public void setReadProperties(DBAnswer dbAnswer, Calendar from, Calendar to) {
-		setReadProperties(dbAnswer, from, to, null);
-	}
-
-	public void setReadProperties(DBAnswer dbAnswer, Calendar from,
-			Calendar to, ArrayList<FilterItem> filterSettings) {
-		this._deleteMessages = false;
+	public void setReadProperties(DBAnswer dbAnswer, Filter filter) {
 		this.dbAnswer = dbAnswer;
-		this._from = from;
-		this._to = to;
-		this._filterSettings = filterSettings;
+		this._from = filter.getFrom();
+		this._to = filter.getTo();
+		this._filterSettings = filter.getFilterItems();
 		String maxAnswerSize = JmsLogsPlugin.getDefault()
 				.getPluginPreferences().getString("maximum answer size");
 		_maxAnswerSize = Integer.parseInt(maxAnswerSize);
 	}
 
-	public void setDeleteFlag(boolean deleteMessages) {
-		this._deleteMessages = deleteMessages;
-	}
 	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 
 		ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
 		ArrayList<HashMap<String, String>> am = new ArrayList<HashMap<String, String>>();
-		if (_deleteMessages == false) {
+		if (accessType == DBAccessType.READ_MESSAGES) {
 			am = adba.getLogMessages(_from, _to, _filterSettings, _maxAnswerSize);
-		} else {
-			am = adba.deleteLogMessages(_from, _to, _filterSettings);
+			dbAnswer.setLogMssages(am, adba.is_maxSize());
+		} else if (accessType == DBAccessType.READ_MSG_NUMBER_TO_DELETE){
+			int msgNumber = adba.countDeleteLogMessages(_from, _to, _filterSettings);
+			dbAnswer.set_msgNumberToDelete(msgNumber);
+		} else if (accessType == DBAccessType.DELETE) {
+			String resultMsg = adba.deleteLogMessages(_from, _to, _filterSettings);
+			accessType = DBAccessType.READ_MESSAGES;
+			dbAnswer.setDeleteResult(resultMsg);
 		}
-		_deleteMessages = false;
-		dbAnswer.setDBAnswer(am, adba.is_maxSize());
 		return Status.OK_STATUS;
 	}
-
+	
+	public void setAccessType(DBAccessType accessType) {
+		this.accessType = accessType;
+	}
 }

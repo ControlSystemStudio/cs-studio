@@ -19,8 +19,8 @@ public class AlarmArchiveDBPreferenceInitializer extends
 		        + "(LOAD_BALANCE = yes) " + "(CONNECT_DATA = " + "(SERVER = DEDICATED) "
 		        + "(SERVICE_NAME = desy_db.desy.de) " + "(FAILOVER_MODE = " + "(TYPE = NONE) "
 		        + "(METHOD = BASIC) " + "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")");
-		store.setDefault(AlarmArchiveDBPreferenceConstants.DB_USER, "kryklogt");
-		store.setDefault(AlarmArchiveDBPreferenceConstants.DB_PASSWORD, "kryklogt");
+		store.setDefault(AlarmArchiveDBPreferenceConstants.DB_USER, "krykams");
+		store.setDefault(AlarmArchiveDBPreferenceConstants.DB_PASSWORD, "krykams");
 
 	}
 

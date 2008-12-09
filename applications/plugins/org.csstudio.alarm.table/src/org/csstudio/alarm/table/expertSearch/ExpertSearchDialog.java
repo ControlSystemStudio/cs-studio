@@ -27,7 +27,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
-import org.csstudio.alarm.dbaccess.FilterItem;
+import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
@@ -161,12 +161,11 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
      * @param end The default start time or null for now.
      * @param filter The default filtersor null for none.
      */
-	public ExpertSearchDialog(final Shell shell, final ITimestamp start, final ITimestamp end, final String filter){
+	public ExpertSearchDialog(final Shell shell, final ITimestamp start, final ITimestamp end){
 	        super(shell);
 	        this._shell=shell;
 	        this._start = start;
 	        this._end = end;
-            _filter = filter;
 	    }
 
     /** {@inheritDoc} */

@@ -29,15 +29,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
 
+import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Main Class for DB query. Builds accordingly to the current FilterSettings the
@@ -63,7 +63,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 */
 	private boolean _maxSize = false;
 
-	private SQLBuilder sqlBuilder;
+	private SQLBuilder _sqlBuilder;
 
 	public boolean is_maxSize() {
 		return _maxSize;
@@ -91,6 +91,8 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 */
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
 			Calendar to, ArrayList<FilterItem> filterSetting, int maxAnswerSize) {
+		CentralLogger.getInstance().debug(this,
+				"from time: " + from + ", to time: " + to);
 		_maxAnswerSize = maxAnswerSize;
 		ArrayList<ResultSet> result = queryDatabase(filterSetting, from, to);
 		ArrayList<HashMap<String, String>> ergebnis = processResult(result);
@@ -98,30 +100,54 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 	/**
-	 * Delete messages from DB for a time period and filter conditions.
+	 * Count messages from DB for a time period and filter conditions that will
+	 * be deleted.
 	 * 
 	 */
-	public ArrayList<HashMap<String, String>> deleteLogMessages(Calendar from,
-			Calendar to, ArrayList<FilterItem> filterSetting) {
+	public int countDeleteLogMessages(Calendar from, Calendar to,
+			ArrayList<FilterItem> filterSetting) {
 		int msgToDelete = countMessagesToDelete(filterSetting, from, to);
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-			public void run() {
-				 MessageBox messageBox =
-					   new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-					    SWT.OK|
-					    SWT.CANCEL|
-					    SWT.ICON_WARNING);
-					 messageBox.setMessage("www.korayguclu.de");
-					 messageBox.open();
-			}
-		});
-		System.out.println("testausgabe");
-		// ArrayList<String> msgIDsToDelete = getMessageIDsToDelete();
-		// ArrayList<HashMap<String, String>> ergebnis =
-		// deleteMessages(msgIDsToDelete);
+		return msgToDelete;
+	}
 
-		// return ergebnis;
-		return null;
+	/**
+	 * Delete messages from DB. Because we have to delete the messages from
+	 * tables message and message_content we retrieve in the first step all
+	 * message_ids and delete them in the next step.
+	 * 
+	 */
+	public String deleteLogMessages(Calendar from, Calendar to,
+			ArrayList<FilterItem> settings) {
+		String operationResult = "Messages deleted";
+		CentralLogger.getInstance().debug(this, "delete messages");
+		_maxAnswerSize = -1;
+		ArrayList<ResultSet> result = queryDatabase(settings, from, to);
+		Set<String> messageIdsToDelete = readMessageIdFromResult(result);
+		for (String string : messageIdsToDelete) {
+			System.out.println(string);
+		}
+		try {
+			deleteFromDB(messageIdsToDelete);
+		} catch (SQLException e) {
+			operationResult = "DB Exception. Delete operation canceled.";
+			CentralLogger.getInstance().error(this, "Delete operation error " + e.getMessage());
+		}
+		return operationResult;
+	}
+
+	private Set<String> readMessageIdFromResult(ArrayList<ResultSet> result) {
+		Set<String> messageIds = new HashSet<String>();
+		try {
+			for (ResultSet resultSet : result) {
+				while (resultSet.next()) {
+					messageIds.add(resultSet.getString(1));
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return messageIds;
 	}
 
 	/**
@@ -145,9 +171,9 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			// because the SQL statement is designed only for AND.
 			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filterSetting);
 			ResultSet result = null;
-			sqlBuilder = new SQLBuilder();
+			_sqlBuilder = new SQLBuilder();
 			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
-				String statement = sqlBuilder
+				String statement = _sqlBuilder
 						.generateSQLCount(currentFilterSettingList);
 				getMessages = _databaseConnection.prepareStatement(statement);
 				getMessages = setVariables(getMessages,
@@ -162,6 +188,32 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			CentralLogger.getInstance().error(this, e.getMessage());
 		}
 		return msgNumber;
+	}
+
+	/**
+	 * Delete messages with message_ids stored in 'messageIdsToDelete' from
+	 * tables 'message' and 'message_content'.
+	 * 
+	 * @param messageIdsToDelete
+	 * @throws SQLException 
+	 */
+	private void deleteFromDB(Set<String> messageIdsToDelete) throws SQLException {
+		_databaseConnection = DBConnection.getInstance().getConnection();
+		//Delete from table 'message'
+		PreparedStatement deleteFromMessage = _databaseConnection
+				.prepareStatement("delete from message m where m.id = ?");
+		for (String msgID : messageIdsToDelete) {
+			deleteFromMessage.setString(1, msgID);
+			deleteFromMessage.execute();
+		}
+		
+		//Delete from table 'message_content'
+		PreparedStatement deleteFromMessageContent = _databaseConnection
+				.prepareStatement("delete from message_content mc where mc.message_id = ?");
+		for (String msgID : messageIdsToDelete) {
+			deleteFromMessageContent.setString(1, msgID);
+			deleteFromMessageContent.execute();
+		}
 	}
 
 	/**
@@ -187,10 +239,10 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			// because the SQL statement is designed only for AND.
 			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filter);
 			ResultSet result = null;
-			sqlBuilder = new SQLBuilder();
-			sqlBuilder.setRownum(Integer.toString(_maxAnswerSize * 15));
+			_sqlBuilder = new SQLBuilder();
+			_sqlBuilder.setRownum(Integer.toString(_maxAnswerSize * 15));
 			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
-				String statement = sqlBuilder
+				String statement = _sqlBuilder
 						.generateSQL(currentFilterSettingList);
 				getMessages = _databaseConnection.prepareStatement(statement);
 
@@ -346,7 +398,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		} catch (SQLException e) {
 			CentralLogger.getInstance().error(this, e.getMessage());
 		}
-		if (currentRowNum == Integer.parseInt(sqlBuilder.getRownum())) {
+		if (currentRowNum == Integer.parseInt(_sqlBuilder.getRownum())) {
 			_maxSize = true;
 		}
 		return messageResultList;

@@ -67,7 +67,7 @@ public class AlarmViewerPreferenceInitializer extends
 		store
 				.setDefault(
 						AlarmViewerPreferenceConstants.PRIMARY_URL,
-						"failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectAttempts=2,maxReconnectDelay=5000"); //$NON-NLS-1$
+						"failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectAttempts=4&maxReconnectDelay=5000"); //$NON-NLS-1$
 		store
 				.setDefault(
 						AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY,
@@ -75,12 +75,12 @@ public class AlarmViewerPreferenceInitializer extends
 		store
 				.setDefault(
 						AlarmViewerPreferenceConstants.SECONDARY_URL,
-						"failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectAttempts=2,maxReconnectDelay=5000"); //$NON-NLS-1$
+						"failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectAttempts=4&maxReconnectDelay=5000"); //$NON-NLS-1$
 		store.setDefault(AlarmViewerPreferenceConstants.QUEUE, "ALARM,ACK"); //$NON-NLS-1$
 		store
 				.setDefault(
 						AlarmViewerPreferenceConstants.SENDER_URL,
-						"failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+						"failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectAttempts=4&maxReconnectDelay=5000"); //$NON-NLS-1$
 	}
 
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -51,6 +52,12 @@ public class SQLBuilder {
 
 		String statementConditions = createContitions(currentFilterSettingList);
 
+		//rownum < 1 -> do not set a maximum ROWNUM in the SQL statement.
+		if((rownum.equalsIgnoreCase("")) || (Integer.parseInt(rownum) < 1)) {
+			rownum = "";
+			commonSQLRownum = "";
+		}
+		
 		String preparedStatement = commonSQLColumns + commonSQLFromWhere
 				+ statementConditions + commonSQLDate + commonSQLRownum
 				+ rownum + commonSQLOrderBy;
