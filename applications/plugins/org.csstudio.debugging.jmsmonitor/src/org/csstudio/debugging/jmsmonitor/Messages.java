@@ -21,6 +21,7 @@ public class Messages extends NLS
     public static String Property;
     public static String SeparatorValue;
     public static String SeperatorType;
+    public static String ShowProperties;
     public static String Topic_TT;
     public static String TopicLabel;
     public static String TypeColumn;

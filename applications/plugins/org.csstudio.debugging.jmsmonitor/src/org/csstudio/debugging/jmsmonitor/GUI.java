@@ -1,8 +1,11 @@
 package org.csstudio.debugging.jmsmonitor;
 
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
+import org.csstudio.apputil.ui.swt.AutoSizeColumnAction;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -40,7 +43,7 @@ public class GUI implements ModelListener
     private Text topic;
 
     private Button clear;
-    
+
     /** Initialize
      *  @param url JMS server URL
      *  @param user JMS user name or <code>null</code>
@@ -143,7 +146,8 @@ public class GUI implements ModelListener
         view_col = AutoSizeColumn.make(table_viewer, Messages.ContentColumn, 400, 100);
         view_col.setLabelProvider(new ContentLabelProvider());
 
-        new AutoSizeControlListener(table);
+        final Action autosize =
+            new AutoSizeColumnAction(new AutoSizeControlListener(table));
         
         // Double-click on message opens detail
         table_viewer.getTable().addMouseListener(new MouseAdapter()
@@ -154,7 +158,12 @@ public class GUI implements ModelListener
                 new OpenViewAction(IPageLayout.ID_PROP_SHEET).run();
             }
         });
-
+        
+        // Context menu
+        final MenuManager manager = new MenuManager();
+        manager.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.ShowProperties));
+        manager.add(autosize);
+        table.setMenu(manager.createContextMenu(table));
         
         clear();
     }
