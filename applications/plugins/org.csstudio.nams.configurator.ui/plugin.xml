@@ -90,6 +90,15 @@
       </editor>
    </extension>
    <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.nams.configurator.PerspectiveFactory"
+            fixed="true"
+            id="org.csstudio.nams.newconfigurator.perspective"
+            name="%perspective.name.0">
+      </perspective>
+   </extension>
+   <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.csstudio.nams.newconfigurator.perspective">
@@ -170,15 +179,12 @@
                visible="true">
          </view>
       </perspectiveExtension>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.nams.configurator.PerspectiveFactory"
-            fixed="true"
-            id="org.csstudio.nams.newconfigurator.perspective"
-            name="%perspective.name.0">
-      </perspective>
+      <perspectiveExtension
+            targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective">
+         <perspectiveShortcut
+               id="org.csstudio.nams.newconfigurator.perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
