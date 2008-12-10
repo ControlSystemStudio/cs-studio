@@ -234,7 +234,8 @@ public final class SecurityFacade {
 	/**
 	 * Returns the currently logged in user.
 	 * 
-	 * @return the currently logged in user.
+	 * @return the currently logged in user. Returns <code>null</code> if no
+	 *         user is currently logged in.
 	 */
 	public User getCurrentUser() {
 		return _context.getUser();
