@@ -32,7 +32,9 @@ public class AutoSizeControlListener
 {
 	private static final int BORDER_STUFF = 4;
 	final private Table table;
-	private boolean autosize = true;
+	private boolean autosize = false;
+	/** Flag to remember initial run to allow one Auto-size on initial run */
+    private boolean initial_run = true;
 
     /** Constructor.
      *  @param container Typically the Parent of the table. No longer used!
@@ -87,8 +89,9 @@ public class AutoSizeControlListener
 	@Override
 	public void controlResized(final ControlEvent ignored)
 	{
-        if (!autosize)
+        if (!autosize && !initial_run)
             return;
+        initial_run = false;
 
 		int i, total_weight = 0, total_min = 0;
 		// Compute sum of all weights and minimum sizes.
