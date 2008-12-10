@@ -327,4 +327,16 @@
         </menu>
      </menuContribution>
   </extension>
+  <extension
+        point="org.eclipse.ui.menus">
+     <menuContribution
+           locationURI="toolbar:org.eclipse.ui.trim.status">
+        <toolbar
+              id="org.csstudio.platform.ui.loginInformationToolbar">
+           <control
+                 class="org.csstudio.platform.ui.internal.workbench.LoginInformationToolbar">
+           </control>
+        </toolbar>
+     </menuContribution>
+  </extension>
 </plugin>
