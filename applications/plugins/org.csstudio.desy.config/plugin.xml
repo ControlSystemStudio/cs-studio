@@ -6,6 +6,7 @@
       <perspective
             class="org.csstudio.desy.config.AlarmManagmentPerspectiveFactory"
             fixed="true"
+            icon="image/fire.jpg"
             id="org.csstudio.desy.config.AlarmManagment"
             name="Alarm Displays">
       </perspective>
@@ -96,6 +97,12 @@
                relationship="fast"
                visible="true">
          </view>
+         <perspectiveShortcut
+               id="org.csstudio.nams.newconfigurator.perspective">
+         </perspectiveShortcut>
+         <perspectiveShortcut
+               id="org.csstudio.desy.config.AlarmManagment">
+         </perspectiveShortcut>
       </perspectiveExtension>
    </extension>
 
