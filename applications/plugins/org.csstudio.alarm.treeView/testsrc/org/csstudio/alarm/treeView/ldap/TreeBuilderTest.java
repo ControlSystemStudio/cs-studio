@@ -39,7 +39,6 @@ public class TreeBuilderTest {
 	private SubtreeNode _tree;
 	private SubtreeNode _a;
 	private SubtreeNode _b;
-	private ProcessVariableNode _pv1;
 	
 	/**
 	 * <p>Initializes a tree for testing. The tree will have the following
@@ -57,7 +56,6 @@ public class TreeBuilderTest {
 		_tree = new SubtreeNode("root");
 		_a = new SubtreeNode(_tree, "a", ObjectClass.FACILITY);
 		_b = new SubtreeNode(_a, "b", ObjectClass.COMPONENT);
-		_pv1 = new ProcessVariableNode(_a, "pv:1");
 	}
 	
 	@Test
