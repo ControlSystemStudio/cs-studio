@@ -48,7 +48,6 @@ public class TreeBuilderTest {
 	 * root           [SubtreeNode]
 	 *   +--a         [SubtreeNode, efan=a]
 	 *      +--b      [SubtreeNode, ecom=b,efan=a]
-	 *      +--pv:1   [ProcessVariableNode, eren=pv:1,efan=a]
 	 * </pre>
 	 */
 	@Before
