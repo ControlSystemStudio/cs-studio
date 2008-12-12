@@ -37,18 +37,18 @@ public enum ControlSystemEnum implements IAdaptable {
 	SDS_SIMULATOR("local", null, false, "icons/cs-local.png"),
 
 	DAL_SIMULATOR("simulator", "Simulator", true, "icons/controlsystem-local"),
-
+	@Deprecated
 	DAL_EPICS("dal-epics", "EPICS", true, "icons/controlsystem-epics"),
-
+	@Deprecated
 	DAL_TINE("dal-tine", "TINE", true, "icons/controlsystem-tine"),
-
+	@Deprecated
 	DAL_TANGO("dal-tango", null, false, "icons/controlsystem-tango"),
 
-//	TINE("tine", "TINE", true, "icons/controlsystem-epics"),
-//
-//	EPICS("epics", "EPICS", true, "icons/controlsystem-epics"),
-//
-//	TANGO("tango", null, false, "icons/controlsystem-epics"),
+	TINE("tine", "TINE", true, "icons/controlsystem-epics"),
+
+	EPICS("epics", "EPICS", true, "icons/controlsystem-epics"),
+
+	TANGO("tango", null, false, "icons/controlsystem-epics"),
 
 	LOCAL("local", null, false, "icons/controlsystem-local"),
 	
