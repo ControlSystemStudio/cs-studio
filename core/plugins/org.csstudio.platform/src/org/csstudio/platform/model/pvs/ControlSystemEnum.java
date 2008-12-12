@@ -24,6 +24,8 @@
  */
 package org.csstudio.platform.model.pvs;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 
@@ -37,10 +39,19 @@ public enum ControlSystemEnum implements IAdaptable {
 	SDS_SIMULATOR("local", null, false, "icons/cs-local.png"),
 
 	DAL_SIMULATOR("simulator", "Simulator", true, "icons/controlsystem-local"),
+	/**
+	 * @Deprecated replaced by EPICS.
+	 */
 	@Deprecated
 	DAL_EPICS("dal-epics", "EPICS", true, "icons/controlsystem-epics"),
+	/**
+     * @Deprecated replaced by TINE.
+     */
 	@Deprecated
 	DAL_TINE("dal-tine", "TINE", true, "icons/controlsystem-tine"),
+	/**
+     * @Deprecated replaced by TANGO.
+     */
 	@Deprecated
 	DAL_TANGO("dal-tango", null, false, "icons/controlsystem-tango"),
 
@@ -87,6 +98,25 @@ public enum ControlSystemEnum implements IAdaptable {
 		return _supportedByDAL;
 	}
 
+	/**
+	 * Get only the ControlSystem that are shown or selectable. 
+	 * @return the visible ControlSystem. 
+	 */
+	public static ControlSystemEnum[] valuesShown() {
+	    ArrayList<ControlSystemEnum> list = new ArrayList<ControlSystemEnum>();
+	    for (ControlSystemEnum cs : values()) {
+	        switch(cs) {
+	            case DAL_EPICS:
+	            case DAL_TANGO:
+	            case DAL_TINE:
+	                break;
+	            default:
+	                list.add(cs);
+	        }
+        }
+	    return list.toArray(new ControlSystemEnum[0]);
+	}
+	
 	@Override
 	public String toString() {
 		return name();

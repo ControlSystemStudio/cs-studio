@@ -44,11 +44,11 @@ public class ControlSystemPreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected void createFieldEditors() {
-		String[][] labelsAndValues = new String[ControlSystemEnum.values().length][2];
-		for (int i = 0; i < ControlSystemEnum.values().length; i++) {
+		String[][] labelsAndValues = new String[ControlSystemEnum.valuesShown().length][2];
+		for (int i = 0; i < ControlSystemEnum.valuesShown().length; i++) {
 			labelsAndValues[i] = new String[] {
-					ControlSystemEnum.values()[i].name(),
-					ControlSystemEnum.values()[i].name() };
+					ControlSystemEnum.valuesShown()[i].name(),
+					ControlSystemEnum.valuesShown()[i].name() };
 		}
 		RadioGroupFieldEditor radioFields = new RadioGroupFieldEditor(
 				ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM, "Control Systems", 1,

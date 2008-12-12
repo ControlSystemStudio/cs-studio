@@ -64,7 +64,7 @@ public class ChooseControlSystemPrefixDialog extends MessageDialog {
 			}
 
 		});
-		tv.setInput(ControlSystemEnum.values());
+		tv.setInput(ControlSystemEnum.valuesShown());
 
 		tv.addSelectionChangedListener(new ISelectionChangedListener() {
 
