@@ -193,7 +193,7 @@ public final class PlatformPreferencesInitializer extends
 	 *            the preferences node to use
 	 */
 	private void initializeControlSystemPreferences(final IEclipsePreferences node) {
-		node.put(ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM, ControlSystemEnum.DAL_EPICS.name());
+		node.put(ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM, ControlSystemEnum.EPICS.name());
 		node.putBoolean(ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM, true);
 	}
 
