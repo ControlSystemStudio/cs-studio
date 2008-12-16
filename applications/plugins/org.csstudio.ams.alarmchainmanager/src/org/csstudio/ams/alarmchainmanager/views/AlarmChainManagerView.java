@@ -73,7 +73,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * @author Markus M�ller
+ * @author Markus Möller
  *
  */
 
