@@ -1,10 +1,13 @@
 package org.csstudio.platform.utility.jms;
 
+import java.io.IOException;
+
 import javax.jms.Connection;
 import javax.jms.JMSException;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.transport.TransportListener;
 
 /** Helper for connecting to a JMS server.
  *  Shields from the underling ActiveMQ API,
@@ -46,5 +49,39 @@ public class JMSConnectionFactory
         final ActiveMQConnectionFactory factory =
             new ActiveMQConnectionFactory(user, password, url);
         return factory.createConnection();
+    }
+    
+    /** Add a listener that is notified about JMS connection issues
+     *  to a connection.
+     *  @param connection Connection to monitor
+     *  @param listener JMSConnectionListener to notify
+     */
+    public static void addListener(final Connection connection,
+            final JMSConnectionListener listener)
+    {
+        final org.apache.activemq.ActiveMQConnection amq_connection =
+            (org.apache.activemq.ActiveMQConnection) connection;
+        amq_connection.addTransportListener(new TransportListener()
+        {
+            public void onCommand(Object arg0)
+            {
+                // Ignore
+            }
+
+            public void onException(IOException arg0)
+            {
+                // Ignore
+            }
+
+            public void transportInterupted()
+            {
+                listener.linkDown();
+            }
+
+            public void transportResumed()
+            {
+                listener.linkUp();
+            }
+        });
     }
 }
