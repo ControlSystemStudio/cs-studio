@@ -3,7 +3,6 @@
 
 <product name="JMS to RDB" id="org.csstudio.sns.jms2rdb.product" application="org.csstudio.sns.jms2rdb.application" useFeatures="false">
 
-
    <configIni use="default">
    </configIni>
 
@@ -13,14 +12,12 @@
 
    <windowImages/>
 
-
-   <launcher name="jms2rdb">
+   <launcher name="JMS2RDB">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -40,12 +37,12 @@
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
-      <plugin id="org.eclipse.core.filesystem.linux.ppc"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
-      <plugin id="org.eclipse.core.filesystem.macosx"/>
-      <plugin id="org.eclipse.core.filesystem.solaris.sparc"/>
-      <plugin id="org.eclipse.core.filesystem.win32.x86"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
