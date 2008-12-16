@@ -23,4 +23,16 @@ public class StringUtil {
 
 		return result;
 	}
+
+	public static String capitalize(String s) {
+		String result = s;
+		if (hasLength(s)) {
+			result = s.substring(0,1).toUpperCase() + s.substring(1);
+		}
+		return result;
+	}
+
+	public static boolean hasLength(String s) {
+		return (s != null && !"".equals(s));
+	}
 }
