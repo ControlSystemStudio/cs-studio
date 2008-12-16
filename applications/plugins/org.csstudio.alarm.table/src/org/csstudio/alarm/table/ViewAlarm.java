@@ -99,7 +99,7 @@ public class ViewAlarm extends ViewLog {
 				.getPluginPreferences().getString(
 						AlarmViewerPreferenceConstants.P_STRINGAlarm);
 
-		preferenceColumnString = "Ack,25;" + preferenceColumnString; //$NON-NLS-1$
+		preferenceColumnString = "ACK,25;" + preferenceColumnString; //$NON-NLS-1$
 
 		// read the column names from the preference page
 		columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
@@ -171,9 +171,12 @@ public class ViewAlarm extends ViewLog {
 			public void widgetSelected(SelectionEvent e) {
 				if (Functions.is_sound()) {
 					Functions.set_sound(false);
+					ViewAlarm.this._messageList.setSound(false);
 					ViewAlarm.this.soundEnableButton.setText("Enable Sound");
+					
 				} else {
 					Functions.set_sound(true);
+					ViewAlarm.this._messageList.setSound(true);
 					ViewAlarm.this.soundEnableButton.setText("Disable Sound");
 				}
 			}
@@ -210,12 +213,14 @@ public class ViewAlarm extends ViewLog {
 						message = (JMSMessage) ti.getData();
 						// ComboBox selection for all messages or for a special
 						// severity
+						System.out.println("combo " + ackCombo.getItem(ackCombo.getSelectionIndex()));
 						if (ackCombo.getItem(ackCombo.getSelectionIndex())
 								.equals(message.getProperty("SEVERITY"))
-								|| (ackCombo.getSelectionIndex() == 0)) {
+								|| (ackCombo.getItem(ackCombo.getSelectionIndex())
+										.equals("ALL"))) {
 							// add the message only if it is not yet
 							// acknowledged.
-							if (message.is_ackknowledgement() == false) {
+							if (message.isAcknowledged() == false) {
 								msgList.add(message);
 							}
 						}
@@ -312,7 +317,7 @@ public class ViewAlarm extends ViewLog {
 							//
 							item.setChecked(true);
 							jmsMessage.getHashMap().put("ACK_HIDDEN", "true");
-							jmsMessage.set_ackknowledgement(true);
+							jmsMessage.setAcknowledged(true);
 							// } catch (Exception e) {
 							// e.printStackTrace();
 							//										JmsLogsPlugin.logException("", e); //$NON-NLS-1$

@@ -80,7 +80,7 @@ public class ViewLog extends ViewPart implements MessageListener {
 	public String[] columnNames;
 
 	public ColumnPropertyChangeListener cl;
-
+	
 	/**
 	 * The Show Property View action.
 	 */

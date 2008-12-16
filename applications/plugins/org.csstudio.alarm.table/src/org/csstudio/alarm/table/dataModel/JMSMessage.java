@@ -19,71 +19,70 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.dataModel;
+package org.csstudio.alarm.table.dataModel;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.model.IProcessVariable;
-
-//import org.csstudio.platform.model.IProcessVariableName;
-//import org.csstudio.data.exchange.ProcessVariableName;
-
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+/**
+ * Message received from the JMS server. The properties of messages are not
+ * restricted but the table will only display properties for which a column with
+ * the same name is defined.
+ * 
+ * @author jhatje
+ * 
+ */
+public class JMSMessage extends PlatformObject implements IProcessVariable {
 
-public class JMSMessage extends PlatformObject implements IProcessVariable {//,
-//		org.csstudio.data.exchange.IFrontEndControllerName{
-
+	/**
+	 * The properties of the message.
+	 */
 	private HashMap<String, String> messageProperties = new HashMap<String, String>();
-//	private String[] propertyNames;
-	
-	/** 
-	 * for alarm table: false->no other message with the same pv name and an other
-	 * severity is in the table. true->another OLDER message with same pv an other
-	 * severity is in the table and the label provider change the color to gray.
+
+	/**
+	 * for alarm table: false->no other message with the same pv name and an
+	 * other severity is in the table. true->another OLDER message with same pv
+	 * an other severity is in the table and the label provider change the color
+	 * to gray.
 	 */
 	private boolean _backgroundColorGray = false;
-	
+
 	/**
 	 * is this message already acknowledged?
 	 */
-	private boolean _ackknowledgement = false;
-	
+	private boolean _acknowledged = false;
+
 	/**
 	 * How many times has this pv changed the alarm status
 	 */
 	private int _alarmChangeCount = 0;
-	
-	public boolean is_ackknowledgement() {
-		return _ackknowledgement;
-	}
-
-	public void set_ackknowledgement(boolean _ackknowledgement) {
-		this._ackknowledgement = _ackknowledgement;
-	}
 
 	/**
-	 * Initialisation of HashMap with actual message properties.
-	 *
+	 * Default constructor
+	 */
+	public JMSMessage() {
+		super();
+	}
+	
+	/**
+	 * Constructor with initial message properties.
 	 */
 	public JMSMessage(String[] propNames) {
 		super();
-//		propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
-//			getString(LogViewerPreferenceConstants.P_STRING).split(";");
-		for(int i = 0; i < propNames.length; i++) {
+		for (int i = 0; i < propNames.length; i++) {
 			messageProperties.put(propNames[i].split(",")[0], ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
-	
+
 	/**
-	 * Setting value of a message property
+	 * Set value of a message property
 	 * 
-	 * @param property 
+	 * @param property
 	 * @param value
 	 */
 	public void setProperty(String property, String value) {
@@ -91,33 +90,33 @@ public class JMSMessage extends PlatformObject implements IProcessVariable {//,
 			messageProperties.put(property, value);
 		}
 	}
-	
-	
+
 	/**
-	 * Returns value of the requested property 
+	 * Returns value of the requested property
 	 * 
 	 * @param property
 	 * @return
 	 */
 	public String getProperty(String property) {
-		
-		//if the table asks for the severity we return the severity value
-		//set in the preferences
+
+		// if the table asks for the severity we return the severity value
+		// set in the preferences
 		if (property.equals("SEVERITY")) { //$NON-NLS-1$
-			if(messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
+			if (messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
 				return findSeverityValue();
 			}
 		}
-		
-		//to get the severity key (the 'real' severity get from the map message)
-		//we have to ask for 'SEVERITY_KEY'
+
+		// to get the severity key (the 'real' severity get from the map
+		// message)
+		// we have to ask for 'SEVERITY_KEY'
 		if (property.equals("SEVERITY_KEY")) { //$NON-NLS-1$
-			if(messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
+			if (messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
 				return messageProperties.get("SEVERITY"); //$NON-NLS-1$
 			}
 		}
-		
-		//all other properties
+
+		// all other properties
 		if (messageProperties.containsKey(property)) {
 			String s = messageProperties.get(property);
 			if (s != null) {
@@ -129,20 +128,21 @@ public class JMSMessage extends PlatformObject implements IProcessVariable {//,
 			return ""; //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * returns the severity value for the severity key of this message.
 	 * 
 	 * @return
 	 */
 	private String findSeverityValue() {
-		
+
 		String severityKey = messageProperties.get("SEVERITY");//$NON-NLS-1$
-		if(severityKey.equals("")) {
+		if (severityKey.equals("")) {
 			return "";
 		}
-		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault().getPreferenceStore();
-		
+		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
+				.getPreferenceStore();
+
 		if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
 			return preferenceStore.getString("value 0"); //$NON-NLS-1$
 		}
@@ -173,21 +173,21 @@ public class JMSMessage extends PlatformObject implements IProcessVariable {//,
 		if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
 			return preferenceStore.getString("value 9"); //$NON-NLS-1$
 		}
-		
+
 		return "invalid severity";
 	}
-	
-	
+
 	/**
-	 * Returns the number of the severity. The number represents the
-	 * level of the severity.
+	 * Returns the number of the severity. The number represents the level of
+	 * the severity.
 	 * 
 	 * @return
 	 */
 	public int getSeverityNumber() {
-		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
+				.getPreferenceStore();
 		String severityKey = messageProperties.get("SEVERITY"); //$NON-NLS-1$
-		
+
 		if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
 			return 0;
 		}
@@ -218,37 +218,16 @@ public class JMSMessage extends PlatformObject implements IProcessVariable {//,
 		if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
 			return 9;
 		}
-		
+
 		return -1;
-		
+
 	}
 
-
 	public String getName() {
-		// TODO Auto-generated method stub
 		return messageProperties.get("NAME"); //$NON-NLS-1$
 	}
 
-//	public Object getAdapter(Class adapter) {
-//		JmsLogsPlugin.logInfo("get adapter: " + adapter);
-//		
-//		
-////	    if (adapter.equals(IProcessVariableName.class)) {
-////	    	IProcessVariableName pvn = new ProcessVariableName("hallo jan");
-////	    	return pvn;
-////	    } 
-//        return null;
-//		
-////		if (adapter.isInstance(ipvn)) {
-////			IProcessVariableName pvn = new ProcessVariableName("hallo jan");
-////			return pvn;
-////		}
-////		// TODO Auto-generated method stub
-////		return Platform.getAdapterManager().getAdapter(this, adapter);
-//	}
-
 	public String getTypeId() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -260,9 +239,9 @@ public class JMSMessage extends PlatformObject implements IProcessVariable {//,
 		this._backgroundColorGray = backgroundColorGray;
 	}
 
-	public HashMap<String, String> getHashMap(){
-	    return messageProperties;
-    }
+	public HashMap<String, String> getHashMap() {
+		return messageProperties;
+	}
 
 	public int get_alarmChangeCount() {
 		return _alarmChangeCount;
@@ -270,5 +249,29 @@ public class JMSMessage extends PlatformObject implements IProcessVariable {//,
 
 	public void set_alarmChangeCount(int changeCount) {
 		_alarmChangeCount = changeCount;
+	}
+
+	public boolean isAcknowledged() {
+		return _acknowledged;
+	}
+	
+	public void setAcknowledged(boolean ack) {
+		this._acknowledged = ack;
+	}
+	
+	/**
+	 * @return deep copy of the JMSMessage.
+	 */
+	public JMSMessage copy() {
+		JMSMessage newMessage = new JMSMessage();
+		Set<String> properties = messageProperties.keySet();
+		for (String entry : properties) {
+			String value = messageProperties.get(entry);
+			newMessage.messageProperties.put(entry, value);
+		}
+		newMessage._acknowledged = this._acknowledged;
+		newMessage._alarmChangeCount = this._alarmChangeCount;
+		newMessage._backgroundColorGray = this._backgroundColorGray;
+		return newMessage;
 	}
 }

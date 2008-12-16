@@ -75,6 +75,9 @@ public class Functions {
 	 */
 	private static synchronized void playMp3(final InputStream stream) {
 		if (_mp3Player != null) {
+			if (!_mp3Player.isComplete()) {
+				return;
+			}
 			_mp3Player.close();
 		}
 		// run in new thread to play in background

@@ -52,15 +52,12 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 */
 	@Override
 	synchronized public void addJMSMessage(MapMessage mm) throws JMSException {
-		if (mm.getString("SEVERITY").equalsIgnoreCase("MAJOR")) {
+		if ((alarmSound) && (mm.getString("SEVERITY").equalsIgnoreCase("MAJOR"))) {
 			String mp3Path = JmsLogsPlugin
 					.getDefault()
 					.getPluginPreferences()
 					.getString(
 							AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE);
-
-			System.out
-					.println("new major alarm message Sound file: " + mp3Path);
 			if((mp3Path != null) && (!mp3Path.equals(""))) {
 				Functions.playMp3(mp3Path);
 			}
@@ -136,7 +133,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 * provider can set a brighter color. Test if the EVENTTIME of the new
 	 * message is really newer than an existing message. (It is important to use
 	 * the <code>removeMessage</code> method from <code>MessageList</code> that
-	 * the changeListeners on the model were actualised.)
+	 * the changeListeners on the model were updated.)
 	 * 
 	 * @param mm
 	 *            The new MapMessage
@@ -208,4 +205,5 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		}
 		return equalPreviousMessage;
 	}
+	
 }

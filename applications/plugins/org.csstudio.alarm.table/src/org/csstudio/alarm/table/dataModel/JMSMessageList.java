@@ -41,7 +41,9 @@ public class JMSMessageList {
 	protected Vector<JMSMessage> JMSMessages = new Vector<JMSMessage>();
 	protected Set<IJMSMessageViewer> changeListeners = new HashSet<IJMSMessageViewer>();
 	private String[] propertyNames;
-	
+
+	protected boolean alarmSound = true;
+
 	public JMSMessageList(String[] propNames) {
 		propertyNames = propNames;
 	}
@@ -200,5 +202,8 @@ public class JMSMessageList {
 	public void clearList() {
 		JMSMessages.clear();
 	}
-	
+
+	public void setSound(boolean sound) {
+		this.alarmSound = sound;
+	}
 }
