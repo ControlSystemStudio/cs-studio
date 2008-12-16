@@ -70,7 +70,7 @@ public class JMSMessage extends PlatformObject implements IProcessVariable {
 	}
 	
 	/**
-	 * Constructor with initial message properties.
+	 * Constructor with initial message properties of the table columns.
 	 */
 	public JMSMessage(String[] propNames) {
 		super();

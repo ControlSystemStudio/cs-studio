@@ -72,7 +72,7 @@ public class TableContentProvider implements IJMSMessageViewer,
 	}
 
 	public Object[] getElements(Object inputElement) {
-		return messageList.getMessages().toArray();
+		return messageList.getJMSMessageList().toArray();
 	}
 
 }
