@@ -1,5 +1,6 @@
 package org.csstudio.dct.ui.editor;
 
+import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;

@@ -1,5 +1,7 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.commands.AddPrototypeCommand;
@@ -22,7 +24,7 @@ public class AddPrototypeAction extends AbstractOutlineAction {
 		Command result = null;
 
 		if (selection instanceof IFolder) {
-			result = new AddPrototypeCommand((IFolder) selection, new Prototype("neu"));
+			result = new AddPrototypeCommand((IFolder) selection, new Prototype("neu", UUID.randomUUID()));
 		}
 
 		return result;

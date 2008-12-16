@@ -33,7 +33,7 @@ public class RecordTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		parentRecord = new Record("record_$a$", "ai");
+		parentRecord = new Record("record_$a$", "ai", UUID.randomUUID());
 		parentRecord.addField("field1", "value1");
 		parentRecord.addField("field2", "value2");
 		parentRecord.addField("field3", "value3");
@@ -41,7 +41,7 @@ public class RecordTest {
 		parentRecord.addProperty("property2", "propertyvalue2");
 		parentRecord.addProperty("property3", "propertyvalue3");
 
-		record = new Record(parentRecord);
+		record = new Record(parentRecord, UUID.randomUUID());
 		record.addField("field4", "value4");
 		record.addProperty("property4", "propertyvalue4");
 	}
@@ -51,8 +51,8 @@ public class RecordTest {
 	 */
 	@Test
 	public final void testEquals() {
-		Record r1 = new Record(record);
-		Record r2 = new Record(record);
+		Record r1 = new Record(record, UUID.randomUUID());
+		Record r2 = new Record(record, UUID.randomUUID());
 
 		// .. parent
 		assertEquals(r1, r2);
@@ -76,7 +76,7 @@ public class RecordTest {
 		assertEquals(r1, r2);
 
 		// .. container
-		Prototype prototype = new Prototype("a");
+		Prototype prototype = new Prototype("a", UUID.randomUUID());
 		r1.setContainer(prototype);
 		assertNotSame(r1, r2);
 		r2.setContainer(prototype);
@@ -98,9 +98,9 @@ public class RecordTest {
 	 */
 	@Test
 	public final void testGetFinalProperties() {
-		Map<String, Object> parentProperties = parentRecord.getProperties();
-		Map<String, Object> properties = record.getProperties();
-		Map<String, Object> finalProperties = record.getFinalProperties();
+		Map<String, String> parentProperties = parentRecord.getProperties();
+		Map<String, String> properties = record.getProperties();
+		Map<String, String> finalProperties = record.getFinalProperties();
 		assertNotNull(parentProperties);
 		assertNotNull(properties);
 		assertNotNull(finalProperties);
@@ -240,7 +240,7 @@ public class RecordTest {
 	 */
 	@Test
 	public final void testSetContainer() {
-		Prototype prototype = new Prototype("p");
+		Prototype prototype = new Prototype("p", UUID.randomUUID());
 		record.setContainer(prototype);
 		assertEquals(prototype, record.getContainer());
 	}
@@ -252,7 +252,7 @@ public class RecordTest {
 	 */
 	@Test
 	public final void testIsInheritedFromPrototype() {
-		Prototype prototype = new Prototype("p");
+		Prototype prototype = new Prototype("p", UUID.randomUUID());
 		parentRecord.setContainer(prototype);
 		assertEquals(prototype, parentRecord.getContainer());
 
@@ -304,7 +304,7 @@ public class RecordTest {
 		assertNotSame(r1.hashCode(), r4.hashCode());
 		
 		// .. container must equals
-		IPrototype prototype = new Prototype("test");
+		IPrototype prototype = new Prototype("test", UUID.randomUUID());
 		r1.setContainer(prototype);
 		assertNotSame(r1, r2);
 		assertNotSame(r1.hashCode(), r2.hashCode());

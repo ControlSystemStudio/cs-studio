@@ -1,5 +1,7 @@
 package org.csstudio.dct.model.commands;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.internal.Folder;
@@ -14,13 +16,13 @@ import static org.junit.Assert.*;
  * @author Sven Wende
  * 
  */
-public class AddPrototypeCommandTest {
+public class AddPrototypeCommandTest extends AbstractCommandTest{
 	private IPrototype prototype;
 	private IFolder folder;
 	
 	@Before
-	public void setUp() throws Exception {
-		prototype = new Prototype("test");
+	public void doSetUp() throws Exception {
+		prototype = new Prototype("test", UUID.randomUUID());
 		folder = new Folder("test");
 	}
 	

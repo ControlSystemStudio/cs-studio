@@ -1,5 +1,6 @@
 package org.csstudio.dct.model.internal;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -14,34 +15,24 @@ import org.csstudio.dct.model.IRecord;
  */
 public abstract class AbstractPropertyContainer extends AbstractElement implements IPropertyContainer {
 
-	private Map<String, Object> properties = new HashMap<String, Object>();
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param name
-	 *            the record name
-	 * 
-	 */
-	public AbstractPropertyContainer(String name) {
-		super(name);
-	}
+	private Map<String, String> properties;
 
 	public AbstractPropertyContainer(String name, UUID id) {
 		super(name, id);
+		properties = new HashMap<String, String>();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addProperty(String key, Object value) {
+	public void addProperty(String key, String value) {
 		properties.put(key, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getProperty(String key) {
+	public String getProperty(String key) {
 		return properties.get(key);
 	}
 
@@ -55,8 +46,15 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Object> getProperties() {
-		return properties;
+	public boolean hasProperty(String key) {
+		return properties.containsKey(key);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String, String> getProperties() {
+		return Collections.unmodifiableMap(properties);
 	}
 
 //	/**

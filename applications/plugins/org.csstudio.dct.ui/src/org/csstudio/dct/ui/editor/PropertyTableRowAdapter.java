@@ -7,6 +7,8 @@ import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.commands.ChangePropertyKeyCommand;
 import org.csstudio.dct.model.commands.ChangePropertyValueCommand;
 import org.csstudio.dct.ui.Activator;
+import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.util.ReplaceAliasesUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
@@ -22,6 +24,10 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 		this.propertyKey = propertyKey;
 	}
 
+	public String getPropertyKey() {
+		return propertyKey;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -35,7 +41,7 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	 */
 	@Override
 	protected RGB doGetForegroundColorForValue(IPropertyContainer delegate) {
-		Map<String, Object> localProperties = delegate.getProperties();
+		Map<String, String> localProperties = delegate.getProperties();
 		boolean inherited = !localProperties.containsKey(propertyKey);
 		RGB rgb = inherited ? ColorSettings.INHERITED_RECORD_FIELD_VALUE : ColorSettings.OVERRIDDEN_RECORD_FIELD_VALUE;
 		return rgb;
@@ -100,7 +106,7 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	 */
 	@Override
 	protected Command doSetValue(IPropertyContainer delegate, Object value) {
-		return new ChangePropertyValueCommand(delegate, propertyKey, value);
+		return new ChangePropertyValueCommand(delegate, propertyKey, value!=null?value.toString():null);
 	}
 
 	/**
@@ -111,4 +117,16 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 		return CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/field.png");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compareTo(ITableRow row) {
+		int result = 0;
+		if(row instanceof PropertyTableRowAdapter) {
+			result = propertyKey.compareTo(((PropertyTableRowAdapter) row).propertyKey);
+		}
+		
+		return result;
+	}
 }

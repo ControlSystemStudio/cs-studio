@@ -6,10 +6,11 @@ import java.util.Stack;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IContainer;
-import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IInstanceContainer;
 import org.csstudio.dct.model.IPrototype;
+import org.csstudio.dct.model.IRecord;
+import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.util.CompareUtil;
 
 /**
@@ -22,19 +23,9 @@ public class Instance extends AbstractContainer implements IInstance {
 	private Map<String, String> parameterValues;
 	private IInstanceContainer container;
 
-	public Instance(IContainer parent) {
-		super(null, parent);
-		this.parameterValues = new HashMap<String, String>();
-	}
-	
 	public Instance(IContainer parent, UUID id) {
 		super(null, parent, id);
 		this.parameterValues = new HashMap<String, String>();
-	}
-
-	public Instance(String name, IPrototype prototype) {
-		this(prototype);
-		setName(name);
 	}
 
 	public Instance(String name, IPrototype prototype, UUID id) {
@@ -98,8 +89,12 @@ public class Instance extends AbstractContainer implements IInstance {
 		this.container = container;
 	}
 
-	public Map<String, Object> getFinalProperties() {
-		Map<String, Object> result = new HashMap<String, Object>();
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String, String> getFinalProperties() {
+		Map<String, String> result = new HashMap<String, String>();
 
 		Stack<IContainer> stack = getParentStack();
 
@@ -110,7 +105,23 @@ public class Instance extends AbstractContainer implements IInstance {
 
 		return result;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void accept(IVisitor visitor) {
+		visitor.visit(this);
+		
+		for(IInstance instance : getInstances()) {
+			instance.accept(visitor);
+		}
+		
+		for(IRecord record : getRecords()) {
+			record.accept(visitor);
+		}
+	}
+	
+	
 	/**
 	 *{@inheritDoc}
 	 */

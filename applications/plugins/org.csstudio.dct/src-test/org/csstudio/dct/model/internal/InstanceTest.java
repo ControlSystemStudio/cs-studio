@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.csstudio.dct.model.IInstanceContainer;
 import org.csstudio.dct.model.IPrototype;
@@ -30,15 +31,15 @@ public class InstanceTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		prototype1 = new Prototype("prototype1");
-		prototype1.addRecord(new Record("r1", "ai"));
-		prototype1.addRecord(new Record("r2", "ai"));
+		prototype1 = new Prototype("prototype1", UUID.randomUUID());
+		prototype1.addRecord(new Record("r1", "ai", UUID.randomUUID()));
+		prototype1.addRecord(new Record("r2", "ai", UUID.randomUUID()));
 		
-		prototype2 = new Prototype("prototype2");
-		prototype2.addRecord(new Record("r3", "ai"));
-		prototype2.addInstance(new Instance(prototype1));
+		prototype2 = new Prototype("prototype2", UUID.randomUUID());
+		prototype2.addRecord(new Record("r3", "ai", UUID.randomUUID()));
+		prototype2.addInstance(new Instance(prototype1, UUID.randomUUID()));
 		
-		instance = new Instance("instance", prototype2);
+		instance = new Instance("instance", prototype2, UUID.randomUUID());
 		instance.setParameterValue("name_a", "value_a");
 		instance.setParameterValue("name_b", "value_b");
 	}
@@ -48,8 +49,8 @@ public class InstanceTest {
 	 */
 	@Test
 	public final void testEquals() {
-		Instance i1 = new Instance(prototype1);
-		Instance i2 = new Instance(prototype1);
+		Instance i1 = new Instance(prototype1, UUID.randomUUID());
+		Instance i2 = new Instance(prototype1, UUID.randomUUID());
 		
 		// .. parent
 		assertEquals(i1, i2);
@@ -73,7 +74,7 @@ public class InstanceTest {
 		assertEquals(i1, i2);
 		
 		// .. records
-		Record record = new Record("r", "ai");
+		Record record = new Record("r", "ai", UUID.randomUUID());
 		i1.addRecord(record);
 		assertNotSame(i1, i2);
 		i2.addRecord(record);

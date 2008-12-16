@@ -1,5 +1,6 @@
 package org.csstudio.dct.ui.internal;
 
+import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
@@ -16,7 +17,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter2;
  * 
  */
 @SuppressWarnings("unchecked")
-public class AdapterFactory implements IAdapterFactory {
+public class ModelAdapterFactory implements IAdapterFactory {
 
 	/**
 	 * {@inheritDoc}
@@ -35,6 +36,8 @@ public class AdapterFactory implements IAdapterFactory {
 				adapter = new InstanceWorkbenchAdapter();
 			} else if (adaptableObject instanceof IRecord) {
 				adapter = new RecordWorkbenchAdapter();
+			} else if (adaptableObject instanceof IRecordDefinition) {
+				adapter = new RecordDefinitionWorkbenchAdapter();
 			}
 		}
 		return adapter;

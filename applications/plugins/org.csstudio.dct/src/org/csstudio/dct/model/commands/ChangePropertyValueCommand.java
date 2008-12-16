@@ -15,10 +15,10 @@ import org.eclipse.gef.commands.Command;
 public class ChangePropertyValueCommand extends Command {
 	private IPropertyContainer container;
 	private String key;
-	private Object value;
-	private Object oldValue;
+	private String value;
+	private String oldValue;
 
-	public ChangePropertyValueCommand(IPropertyContainer container, String key, Object value) {
+	public ChangePropertyValueCommand(IPropertyContainer container, String key, String value) {
 		assert container != null;
 		assert key != null;
 		assert value != null;

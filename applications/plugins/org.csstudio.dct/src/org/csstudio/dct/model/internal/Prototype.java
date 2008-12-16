@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
+import org.csstudio.dct.model.IRecord;
+import org.csstudio.dct.model.IVisitor;
 
 /**
  * Standard implementation of {@link IPrototype}.
@@ -16,17 +19,6 @@ import org.csstudio.dct.model.IPrototype;
 public class Prototype extends AbstractContainer implements IPrototype {
 	private List<Parameter> parameters;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param name
-	 *            the name of the prototype
-	 */
-	public Prototype(String name) {
-		super(name, null);
-		this.parameters = new ArrayList<Parameter>();
-	}
-	
 	public Prototype(String name, UUID id) {
 		super(name, null, id);
 		this.parameters = new ArrayList<Parameter>();
@@ -92,6 +84,21 @@ public class Prototype extends AbstractContainer implements IPrototype {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void accept(IVisitor visitor) {
+		visitor.visit(this);
+		
+		for(IInstance instance : getInstances()) {
+			instance.accept(visitor);
+		}
+		
+		for(IRecord record : getRecords()) {
+			record.accept(visitor);
+		}
 	}
 	
 	/**

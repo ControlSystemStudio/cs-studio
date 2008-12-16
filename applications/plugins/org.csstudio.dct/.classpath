@@ -15,5 +15,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xerces.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

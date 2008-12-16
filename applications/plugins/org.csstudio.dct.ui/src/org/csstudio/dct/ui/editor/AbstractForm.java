@@ -3,27 +3,29 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
+import java.util.UUID;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
+import org.csstudio.dct.ui.Activator;
+import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * Base class for editing forms for {@link IRecord}, {@link IInstance} and
@@ -40,13 +42,15 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	private Composite mainComposite;
 	private E input;
 	private Label headlineLabel;
-//	private TableCitizenTable propertyTable;
-	private CommandStack commandStack;
+	private TableCitizenTable commonTable;
+	private Link link;
+	private DctEditor editor;
 
-	public AbstractForm(CommandStack commandStack) {
-		assert commandStack != null;
-		this.commandStack = commandStack;
-		commandStack.addCommandStackListener(this);
+	public AbstractForm(DctEditor editor) {
+		assert editor != null;
+		assert editor.getCommandStack() != null;
+		this.editor = editor;
+		editor.getCommandStack().addCommandStackListener(this);
 	}
 
 	/**
@@ -60,21 +64,63 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	public void createControl(Composite parent) {
 		// .. main composite
 		mainComposite = new Composite(parent, SWT.None);
-		GridLayout layout = LayoutUtil.createGridLayout(1, 15, 15, 15);
+		GridLayout layout = LayoutUtil.createGridLayout(1, 5, 5, 5);
 		mainComposite.setLayout(layout);
 
 		// .. headline label
 		headlineLabel = new Label(mainComposite, SWT.NONE);
 		headlineLabel.setFont(CustomMediaFactory.getInstance().getFont("Arial", 16, SWT.BOLD));
-		headlineLabel.setText("Edit " + input + ":");
+		headlineLabel.setText(doGetFormLabel());
 		headlineLabel.setLayoutData(LayoutUtil.createGridData());
 
+		// .. jump links
+		link = new Link(mainComposite, SWT.NONE);
+		link.setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell());
+		link.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				UUID id = null;
+
+				try {
+					id = UUID.fromString(event.text);
+
+					if (id != null) {
+						editor.selectItemInOutline(id);
+					}
+				} catch (Exception e) {
+				}
+
+			}
+		});
+
+		// .. create expand bar
+		ExpandBar expandBar = new ExpandBar(mainComposite, SWT.V_SCROLL);
+		expandBar.setLayoutData(LayoutUtil.createGridDataForFillingCell());
+		expandBar.setSpacing(8);
+
+		// create overview
+		Composite composite = new Composite(expandBar, SWT.NONE);
+		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
+
+		commonTable = new TableCitizenTable(composite, SWT.None, getCommandStack());
+		commonTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(100));
+
+		ExpandItem expandItem = new ExpandItem(expandBar, SWT.NONE);
+		expandItem.setText("Common Settings");
+		expandItem.setHeight(170);
+		expandItem.setControl(composite);
+		expandItem.setExpanded(true);
+		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_common.png"));
+
 		// .. let subclasses add their own widgets
-		doCreateControl(mainComposite, commandStack);
+		doCreateControl(expandBar, getCommandStack());
 	}
 
+	protected abstract String doGetFormLabel();
+
+	protected abstract void doAddCommonRows(List<ITableRow> rows, E input);
+
 	public CommandStack getCommandStack() {
-		return commandStack;
+		return editor.getCommandStack();
 	}
 
 	/**
@@ -95,11 +141,33 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	public void setInput(Object in) {
 		this.input = (E) in;
 
+		// .. refresh links
+		link.setText(doGetLinkText(input));
+
 		// .. refresh headline label
-		headlineLabel.setText("Edit " + (this.input != null ? this.input.getId().toString() : "?") + ":");
+		headlineLabel.setText(doGetFormLabel());
+
+		// prepare input for overview table
+		List<ITableRow> rows = new ArrayList<ITableRow>();
+		rows.add(new BeanPropertyTableRowAdapter("Identifier", input, getCommandStack(), "id", true));
+		doAddCommonRows(rows, input);
+		commonTable.setInput(rows);
 
 		doSetInput(input);
 	}
+
+	/**
+	 * Subclasses my provide a text, which will appear under the headline. The
+	 * text can contain links in the following format
+	 * 
+	 * <code>
+	 * 		<a href="${elementId}">link</a>
+	 * </code>
+	 * 
+	 * 
+	 * @return
+	 */
+	protected abstract String doGetLinkText(E input);
 
 	/**
 	 * Returns the input object for this editing form.
@@ -123,13 +191,13 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	/**
 	 * Templates method. Used by subclasses to prepare their widgets.
 	 * 
-	 * @param parent
-	 *            the parent composite
+	 * @param bar
+	 *            the expand bar
 	 * 
 	 * @param commandStack
 	 *            the command stack
 	 */
-	protected abstract void doCreateControl(Composite parent, CommandStack commandStack);
+	protected abstract void doCreateControl(ExpandBar bar, CommandStack commandStack);
 
 	/**
 	 * Template method that is called, when the input for this form changes.

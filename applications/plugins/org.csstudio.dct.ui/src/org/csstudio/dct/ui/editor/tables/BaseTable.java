@@ -1,7 +1,9 @@
 package org.csstudio.dct.ui.editor.tables;
 
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.swt.widgets.Composite;
 
 public abstract class BaseTable<E> {
@@ -46,7 +48,7 @@ public abstract class BaseTable<E> {
 	public TableViewer getViewer() {
 		return viewer;
 	}
-
+	
 	/**
 	 * Template method. Subclasses should create the table viewer here.
 	 * 

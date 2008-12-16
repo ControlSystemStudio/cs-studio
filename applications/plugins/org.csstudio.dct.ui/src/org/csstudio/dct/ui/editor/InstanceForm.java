@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.internal.Parameter;
+import org.csstudio.dct.ui.Activator;
+import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 
 /**
  * Editing component for {@link IPrototype}.
@@ -27,39 +26,33 @@ import org.eclipse.swt.widgets.Menu;
  */
 public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 
-
-	private TableCitizenTable overviewTable;
 	private TableCitizenTable parameterValuesTable;
 
-	public InstanceForm(CommandStack commandStack) {
-		super(commandStack);
+	public InstanceForm(DctEditor editor) {
+		super(editor);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doCreateControl(Composite parent, CommandStack commandStack) {
-		super.doCreateControl(parent, commandStack);
-		
-		Group group;
+	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
+		super.doCreateControl(bar, commandStack);
 
-		// create overview
-		group = new Group(parent, SWT.NONE);
-		group.setLayoutData(LayoutUtil.createGridData(500, 100));
-		group.setLayout(new FillLayout());
-		group.setText("Common");
-		overviewTable = new TableCitizenTable(group, SWT.None, commandStack);
-		
 		// create field table
-		group = new Group(parent, SWT.NONE);
-		group.setLayoutData(LayoutUtil.createGridDataForVerticalFillingCell(500));
-		group.setLayout(new FillLayout());
-		group.setText("Parameter Values");
-		parameterValuesTable = new TableCitizenTable(group, SWT.None, commandStack);
-		
-	}
+		Composite composite = new Composite(bar, SWT.NONE);
+		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
+		parameterValuesTable = new TableCitizenTable(composite, SWT.None, commandStack);
+		parameterValuesTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
+
+		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE, 0);
+		expandItem.setText("Parameter Values");
+		expandItem.setHeight(270);
+		expandItem.setControl(composite);
+		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_parametervalues.png"));
+
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -67,15 +60,6 @@ public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 	@Override
 	protected void doSetInput(IInstance instance) {
 		super.doSetInput(instance);
-		
-		// prepare input for overview table
-		List<ITableRow> rowsForOverview = new ArrayList<ITableRow>();
-		// ... name
-		rowsForOverview.add(new ElementNameTableRowAdapter(instance, getCommandStack()));
-		// ... derived from
-		rowsForOverview.add(new DerivedFromTableRowAdapter(instance, getCommandStack()));
-
-		overviewTable.setInput(rowsForOverview);
 
 		// prepare input for parameter table
 		List<ITableRow> rowsForParameters = new ArrayList<ITableRow>();
@@ -87,7 +71,7 @@ public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 
 	}
 
-	class DerivedFromTableRowAdapter extends AbstractReadOnlyTableRowAdapter<IInstance> {
+	public static class DerivedFromTableRowAdapter extends AbstractReadOnlyTableRowAdapter<IInstance> {
 
 		public DerivedFromTableRowAdapter(IInstance delegate, CommandStack commandStack) {
 			super(delegate, commandStack);
@@ -110,5 +94,32 @@ public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
+	@Override
+	protected String doGetFormLabel() {
+		return "Instance";
+	}
+
+	@Override
+	protected void doAddCommonRows(List<ITableRow> rows, IInstance instance) {
+		// ... name
+		rows.add(new BeanPropertyTableRowAdapter("Name", instance, getCommandStack(), "name"));
+		// ... derived from
+		rows.add(new DerivedFromTableRowAdapter(instance, getCommandStack()));
+
+	}
+
+	/**
+	 * 
+	 *{@inheritDoc}
+	 */
+	@Override
+	protected String doGetLinkText(IInstance instance) {
+		String text = "jump to defining <a href=\"" + instance.getPrototype().getId() + "\">prototype</a> or <a href=\""
+				+ instance.getParent().getId() + "\">parent instance</a>";
+		return text;
+	}
 
 }

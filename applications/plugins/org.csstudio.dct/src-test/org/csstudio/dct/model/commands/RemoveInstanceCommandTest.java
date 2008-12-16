@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
@@ -21,20 +23,20 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class RemoveInstanceCommandTest {
+public class RemoveInstanceCommandTest extends AbstractCommandTest {
 	private IPrototype prototypeA;
 	private IPrototype prototypeB;
 	private IInstance instanceA;
 	private IFolder folder;
 
 	@Before
-	public void setUp() throws Exception {
-		prototypeA = new Prototype("prototypeA");
+	public void doSetUp() throws Exception {
+		prototypeA = new Prototype("prototypeA", UUID.randomUUID());
 		
-		new AddRecordCommand(prototypeA, RecordFactory.createRecord("ai", "RecordA1")).execute();
+		new AddRecordCommand(prototypeA, RecordFactory.createRecord(project, "ai", "RecordA1", UUID.randomUUID())).execute();
 		
-		instanceA = new Instance(prototypeA);
-		prototypeB = new Prototype("prototypeB");
+		instanceA = new Instance(prototypeA, UUID.randomUUID());
+		prototypeB = new Prototype("prototypeB", UUID.randomUUID());
 		folder = new Folder("folder");
 	}
 

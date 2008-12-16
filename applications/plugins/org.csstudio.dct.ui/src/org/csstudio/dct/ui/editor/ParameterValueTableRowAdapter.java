@@ -1,7 +1,9 @@
 package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.model.commands.ChangeParameterValueCommand;
 import org.csstudio.dct.model.internal.Parameter;
+import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.RGB;
@@ -27,9 +29,7 @@ public class ParameterValueTableRowAdapter extends AbstractTableRowAdapter<IInst
 
 	@Override
 	protected Command doSetValue(IInstance instance, Object value) {
-		instance.setParameterValue(parameter.getName(), value.toString());
-		// FIXME: Command liefern!
-		return null;
+		return new ChangeParameterValueCommand(instance, parameter.getName(), value!=null?value.toString():null);
 	}
 
 	@Override

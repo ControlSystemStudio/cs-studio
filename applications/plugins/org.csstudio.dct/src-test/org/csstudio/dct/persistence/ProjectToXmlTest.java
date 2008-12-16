@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
@@ -46,33 +47,33 @@ public class ProjectToXmlTest {
 	public void setUp() throws Exception {
 //		project = UseCase.createProject();
 		
-		project = new Project("project");
+		project = new Project("project", UUID.randomUUID());
 		
 		IFolder f1 = new Folder("f1");
 		project.addMember(f1);
 		f1.setParentFolder(project);
 		
-		IPrototype p1 = new Prototype("p1");
+		IPrototype p1 = new Prototype("p1", UUID.randomUUID());
 		new AddPrototypeCommand(f1, p1).execute();
-		IRecord r1 = RecordFactory.createRecord("ai", "r1");
+		IRecord r1 = RecordFactory.createRecord(project, "ai", "r1", UUID.randomUUID());
 		new AddRecordCommand(p1, r1).execute();
 		
-		IInstance i11 = new Instance(p1);
+		IInstance i11 = new Instance(p1, UUID.randomUUID());
 		new AddInstanceCommand(f1, i11).execute();
 		
-		IPrototype p2 = new Prototype("p2");
+		IPrototype p2 = new Prototype("p2", UUID.randomUUID());
 		new AddPrototypeCommand(f1, p2).execute();
-		IRecord r2 = RecordFactory.createRecord("ai", "r2");
+		IRecord r2 = RecordFactory.createRecord(project, "ai", "r2", UUID.randomUUID());
 		new AddRecordCommand(p2, r2).execute();
 		
-		IInstance i2 = new Instance(p2);
+		IInstance i2 = new Instance(p2, UUID.randomUUID());
 		new AddInstanceCommand(p1, i2).execute();
 		
 		IFolder f2 = new Folder("f2");
 		project.addMember(f2);
 		f2.setParentFolder(project);
 		
-		IInstance i12 = new Instance(p1);
+		IInstance i12 = new Instance(p1, UUID.randomUUID());
 		new AddInstanceCommand(f2, i12).execute();
 		
 		
@@ -82,8 +83,8 @@ public class ProjectToXmlTest {
 
 	@Test
 	public final void testCreateX() throws IOException {
-		Prototype p1 = new Prototype("p1");
-		Prototype p2 = new Prototype("p2");
+		Prototype p1 = new Prototype("p1", UUID.randomUUID());
+		Prototype p2 = new Prototype("p2", UUID.randomUUID());
 		
 		Set<IElement> set1 = new HashSet<IElement>();
 		set1.add(p1);

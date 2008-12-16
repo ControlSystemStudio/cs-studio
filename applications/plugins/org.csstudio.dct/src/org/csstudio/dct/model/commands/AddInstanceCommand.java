@@ -1,5 +1,7 @@
 package org.csstudio.dct.model.commands;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
@@ -47,7 +49,7 @@ public class AddInstanceCommand extends Command {
 
 			// ... add-push to model elements that inherit from here
 			for (IContainer c : container.getDependentContainers()) {
-				Instance pushedInstance = new Instance(instance);
+				Instance pushedInstance = new Instance(instance, UUID.randomUUID());
 				internalCommand.add(new AddInstanceCommand(c, pushedInstance));
 			}
 		}

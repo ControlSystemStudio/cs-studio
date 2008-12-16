@@ -16,6 +16,12 @@ import org.csstudio.dct.model.internal.Project;
 import org.jdom.Document;
 import org.jdom.Element;
 
+/**
+ * Converts a {@link Project} to XML format.
+ * 
+ * @author Sven Wende
+ *
+ */
 public class ProjectToXml {
 	private Project project;
 	private Map<IElement, String> ids;
@@ -56,6 +62,8 @@ public class ProjectToXml {
 	
 	private Element createElement(Project project) {
 		Element element = createElement((IFolder) project);
+		
+		element.setAttribute("dbd", project.getDbdPath());
 
 		return element;
 	}
@@ -242,9 +250,8 @@ public class ProjectToXml {
 		String n = record.getName();
 		element.setAttribute("name", (n != null && n.length() > 0) ? n : "{inherited}");
 
-		// LIST INDEX
-		int index = record.getContainer().getRecords().indexOf(record);
-		element.setAttribute("index", ""+index);
+		// TYPE
+		element.setAttribute("type", record.getType());
 		
 		// PARENT
 		IRecord parentRecord = record.getParentRecord();

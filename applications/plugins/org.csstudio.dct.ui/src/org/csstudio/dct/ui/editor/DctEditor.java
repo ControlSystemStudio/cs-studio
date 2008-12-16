@@ -1,14 +1,17 @@
 package org.csstudio.dct.ui.editor;
 
 import java.util.EventObject;
+import java.util.UUID;
 
 import org.csstudio.dct.export.IRecordRenderer;
 import org.csstudio.dct.export.internal.DbFileRecordRenderer;
+import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Folder;
+import org.csstudio.dct.model.internal.MyVisitor;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.persistence.Service;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
@@ -21,12 +24,12 @@ import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -71,7 +74,8 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 				if (sel != null && sel.getFirstElement() != null) {
 					Object o = sel.getFirstElement();
 
-//FIXME: Editing Components in Enumeration abspeichern und Code verschlanken!
+					// FIXME: Editing Components in Enumeration abspeichern und
+					// Code verschlanken!
 					if (o instanceof Project) {
 						stackLayout.topControl = projectEditingComponent.getMainComposite();
 						projectEditingComponent.setInput(o);
@@ -97,7 +101,7 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 
 	private Project getProject() {
 		if (project == null) {
-			project = new Project("Project");
+			project = new Project("Project", UUID.randomUUID());
 			project.addMember(new Folder("Test"));
 		}
 
@@ -109,24 +113,27 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		stackLayout = new StackLayout();
 		contentPanel.setLayout(stackLayout);
 
-		projectEditingComponent = new ProjectForm(commandStack);
+		projectEditingComponent = new ProjectForm(this);
 		projectEditingComponent.createControl(contentPanel);
-		
-		folderEditingComponent = new FolderForm(commandStack);
+
+		folderEditingComponent = new FolderForm(this);
 		folderEditingComponent.createControl(contentPanel);
 
-		prototypeEditingComponent = new PrototypeForm(commandStack);
+		prototypeEditingComponent = new PrototypeForm(this);
 		prototypeEditingComponent.createControl(contentPanel);
 
-		instanceEditingComponent = new InstanceForm(commandStack);
+		instanceEditingComponent = new InstanceForm(this);
 		instanceEditingComponent.createControl(contentPanel);
 
-		recordEditingComponent = new RecordForm(commandStack);
+		recordEditingComponent = new RecordForm(this);
 		recordEditingComponent.createControl(contentPanel);
-		stackLayout.topControl = recordEditingComponent.getMainComposite();
+
+		// .. initially, the project itself is selected
+		projectEditingComponent.setInput(getProject());
+		stackLayout.topControl = projectEditingComponent.getMainComposite();
 
 		int index = addPage(contentPanel);
-		setPageText(index, "dd");
+		setPageText(index, "Edit");
 	}
 
 	void createPage1() {
@@ -197,7 +204,7 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 
 		// .. fallback
 		if (project == null) {
-			project = new Project("New Project");
+			project = new Project("New Project", UUID.randomUUID());
 		}
 
 		super.init(site, editorInput);
@@ -250,12 +257,22 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 			outline.setInput(getProject());
 			outline.setCommandStack(commandStack);
 			outline.addSelectionChangedListener(outlineSelectionListener);
+			outline.setSelection(new StructuredSelection(getProject()));
 			result = outline;
+			getSite().setSelectionProvider(outline);
 		}
 		return result;
 	}
 
 	public void commandStackChanged(EventObject event) {
 		firePropertyChange(PROP_DIRTY);
+	}
+
+	public void selectItemInOutline(UUID id) {
+		IElement element = new MyVisitor().search(project, id);
+
+		if (element != null) {
+			getSite().getSelectionProvider().setSelection(new StructuredSelection(element));
+		}
 	}
 }

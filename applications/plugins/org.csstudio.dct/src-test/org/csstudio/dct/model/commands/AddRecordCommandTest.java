@@ -6,6 +6,7 @@ package org.csstudio.dct.model.commands;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
@@ -25,7 +26,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class AddRecordCommandTest {
+public class AddRecordCommandTest extends AbstractCommandTest {
 	private IPrototype prototype;
 	private IInstance instance;
 	private IRecord record;
@@ -35,11 +36,11 @@ public class AddRecordCommandTest {
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
-		prototype = new Prototype("P");
-		instance = new Instance(prototype);
+	public void doSetUp() throws Exception {
+		prototype = new Prototype("P", UUID.randomUUID());
+		instance = new Instance(prototype, UUID.randomUUID());
 		prototype.addDependentContainer(instance);
-		record = RecordFactory.createRecord("ai", "r");
+		record = RecordFactory.createRecord(project, "ai", "r", UUID.randomUUID());
 		command = new AddRecordCommand(prototype, record);
 	}
 

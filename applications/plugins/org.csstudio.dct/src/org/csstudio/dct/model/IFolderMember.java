@@ -6,7 +6,7 @@ package org.csstudio.dct.model;
  * @author Sven Wende
  * 
  */
-public interface IFolderMember {
+public interface IFolderMember extends IElement {
 	/**
 	 * Sets the parent folder.
 	 * 

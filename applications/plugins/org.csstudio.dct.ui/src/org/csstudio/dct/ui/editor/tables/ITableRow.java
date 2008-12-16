@@ -1,10 +1,12 @@
-package org.csstudio.dct.ui.editor;
+package org.csstudio.dct.ui.editor.tables;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
 
-public interface ITableRow {
+public interface ITableRow extends Comparable<ITableRow>{
 
 	String getKey();
 
@@ -35,5 +37,7 @@ public interface ITableRow {
 	boolean canModifyKey();
 
 	boolean canModifyValue();
+
+	CellEditor getValueCellEditor(Composite parent);
 
 }

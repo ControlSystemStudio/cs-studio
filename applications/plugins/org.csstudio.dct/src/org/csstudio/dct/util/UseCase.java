@@ -1,8 +1,8 @@
 package org.csstudio.dct.util;
 
 import java.util.Map;
+import java.util.UUID;
 
-import org.csstudio.dct.metamodel.Factory;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;
@@ -16,16 +16,15 @@ import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.internal.Prototype;
-import org.csstudio.dct.model.internal.Record;
 import org.csstudio.dct.model.internal.RecordFactory;
 
 public class UseCase {
 	
 	public static Project createProject() {
 		// create a project
-		Project project = new Project("Hera Ring");
+		Project project = new Project("Hera Ring", UUID.randomUUID());
 		
-		project.setDbdVersion("1.0.a");
+		project.setDbdPath("1.0.a");
 		project.setIoc("HeraIoc");
 		
 		// create a folder structure
@@ -37,7 +36,7 @@ public class UseCase {
 
 		
 		/** create prototype A **/
-		Prototype prototypeA = new Prototype("Pump");
+		Prototype prototypeA = new Prototype("Pump", UUID.randomUUID());
 		new AddPrototypeCommand(prototypesFolder, prototypeA).execute();
 
 		// ... with parameters
@@ -45,7 +44,7 @@ public class UseCase {
 		prototypeA.addParameter(new Parameter("nr", ""));
 		
 		// ... with records
-		IRecord recordA1 = RecordFactory.createRecord("ai", "Pump_$building$_$nr$");
+		IRecord recordA1 = RecordFactory.createRecord(project, "ai", "Pump_$building$_$nr$", UUID.randomUUID());
 		recordA1.addField("FOPR", ".1");
 		recordA1.addField("HOLO", "${max}");
 		recordA1.addField("LOLO", "${min}");
@@ -53,7 +52,7 @@ public class UseCase {
 		
 		
 		/** create a prototype B **/
-		Prototype prototypeB = new Prototype("ChillerStation");
+		Prototype prototypeB = new Prototype("ChillerStation", UUID.randomUUID());
 		new AddPrototypeCommand(prototypesFolder, prototypeB).execute();
 		
 		// ... with parameters
@@ -62,31 +61,31 @@ public class UseCase {
 		prototypeB.addParameter(new Parameter("min", ""));
 		
 		// ... with records
-		IRecord recordB1 = RecordFactory.createRecord("ai", "Chiller_$name$_1");
+		IRecord recordB1 = RecordFactory.createRecord(project, "ai", "Chiller_$name$_1", UUID.randomUUID());
 		recordB1.addField("SCAN", ".1");
 		recordB1.addField("HOPR", "$max$}");
 		recordB1.addField("LOPR", "$min$");
 		new AddRecordCommand(prototypeB, recordB1).execute();
 		
-		IRecord recordB2 = RecordFactory.createRecord("ai", "Chiller_$name$_2");
+		IRecord recordB2 = RecordFactory.createRecord(project, "ai", "Chiller_$name$_2", UUID.randomUUID());
 		recordB2.addField("SCAN", ".1");
 		recordB2.addField("HOPR", "$max$");
 		recordB2.addField("LOPR", "$min$");
 		new AddRecordCommand(prototypeB, recordB2).execute();
 		
 		// ... with an instance of prototype A
-		IInstance instanceA1 = new Instance(prototypeA);
+		IInstance instanceA1 = new Instance(prototypeA, UUID.randomUUID());
 		new AddInstanceCommand(prototypeB, instanceA1).execute();
 		instanceA1.setParameterValue("building", "hera");
 		
 		/** create instances of Prototyp B **/
-		IInstance instanceB1 = new Instance(prototypeB);
+		IInstance instanceB1 = new Instance(prototypeB, UUID.randomUUID());
 		new AddInstanceCommand(instancesFolder, instanceB1).execute();
 		instanceB1.setParameterValue("name", "haus_A");
 		instanceB1.getRecords().get(0).addField("SCAN", ".2");
 		
 		
-		IInstance instanceB2 = new Instance(prototypeB);
+		IInstance instanceB2 = new Instance(prototypeB, UUID.randomUUID());
 		new AddInstanceCommand(instancesFolder, instanceB2).execute();
 		instanceB2.setParameterValue("name", "haus_B");
 		instanceB2.getRecords().get(0).addField("SCAN", ".3");

@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
+import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.model.internal.AbstractElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,10 @@ public class AbstractElementTest {
 	@Before
 	public void setUp() throws Exception {
 		element = new AbstractElement(NAME, ID) {
+
+			public void accept(IVisitor visitor) {
+				
+			}
 		};
 	}
 	
@@ -68,15 +73,24 @@ public class AbstractElementTest {
 	 */
 	@Test
 	public final void testEqualsHashCode() {
-		AbstractElement element2 = new AbstractElement(NAME, ID) {};
+		AbstractElement element2 = new AbstractElement(NAME, ID) {
+			public void accept(IVisitor visitor) {
+				
+			}};
 		assertEquals(element, element2);
 		assertEquals(element.hashCode(), element2.hashCode());
 		
-		AbstractElement element3 = new AbstractElement("othername", ID) {};
+		AbstractElement element3 = new AbstractElement("othername", ID) {
+			public void accept(IVisitor visitor) {
+				
+			}};
 		assertNotSame(element, element3);
 		assertNotSame(element.hashCode(), element3.hashCode());
 		
-		AbstractElement element4 = new AbstractElement(NAME, UUID.randomUUID()) {};
+		AbstractElement element4 = new AbstractElement(NAME, UUID.randomUUID()) {
+			public void accept(IVisitor visitor) {
+				
+			}};
 		assertNotSame(element, element4);
 		assertNotSame(element.hashCode(), element4.hashCode());
 	}

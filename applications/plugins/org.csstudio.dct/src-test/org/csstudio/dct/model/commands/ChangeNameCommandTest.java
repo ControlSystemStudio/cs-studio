@@ -2,6 +2,8 @@ package org.csstudio.dct.model.commands;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.internal.Prototype;
 import org.junit.Before;
@@ -21,7 +23,7 @@ public class ChangeNameCommandTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		element = new Prototype("test");
+		element = new Prototype("test", UUID.randomUUID());
 	}
 
 	/**

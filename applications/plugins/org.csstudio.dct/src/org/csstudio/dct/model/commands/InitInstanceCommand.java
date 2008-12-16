@@ -1,5 +1,7 @@
 package org.csstudio.dct.model.commands;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IRecord;
@@ -28,13 +30,13 @@ public class InitInstanceCommand extends Command {
 		if (parent != null) {
 			// inherit all records from parent
 			for (IRecord r : parent.getRecords()) {
-				Record record = new Record(r);
+				Record record = new Record(r, UUID.randomUUID());
 				internalCmd.add(new AddRecordCommand(instance, record));
 			}
 
 			// inherit all instances
 			for (IInstance pInstance : parent.getInstances()) {
-				Instance iInstance = new Instance(pInstance);
+				Instance iInstance = new Instance(pInstance, UUID.randomUUID());
 				internalCmd.add(new AddInstanceCommand(instance, iInstance));
 			}
 		}

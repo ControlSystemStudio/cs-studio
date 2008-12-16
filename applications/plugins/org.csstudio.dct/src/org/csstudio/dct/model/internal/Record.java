@@ -7,10 +7,12 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
+import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
+import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.util.CompareUtil;
 import org.csstudio.dct.util.RecordUtil;
 import org.csstudio.dct.util.ReplaceAliasesUtil;
@@ -28,36 +30,11 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 	private Map<String, Object> fields = new HashMap<String, Object>();
 	private List<IRecord> inheritingRecords = new ArrayList<IRecord>();
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param name
-	 *            the record name
-	 * 
-	 * @param type
-	 *            the record type
-	 */
-	Record(String name, String type) {
-		super(name);
-		this.type = type;
-	}
-	
-	Record(String name, String type, UUID id) {
+	public Record(String name, String type, UUID id) {
 		super(name, id);
 		this.type = type;
 	}
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param parentRecord
-	 *            a parent record
-	 */
-	public Record(IRecord parentRecord) {
-		super(null);
-		this.parentRecord = parentRecord;
-	}
-	
 	public Record(IRecord parentRecord, UUID id) {
 		super(null, id);
 		this.parentRecord = parentRecord;
@@ -74,8 +51,8 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Object> getFinalProperties() {
-		Map<String, Object> result = new HashMap<String, Object>();
+	public Map<String, String> getFinalProperties() {
+		Map<String, String> result = new HashMap<String, String>();
 
 		Stack<IRecord> stack = getRecordStack();
 
@@ -216,23 +193,20 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 	}
 
 	/**
-	 * Collect all parent records in a stack. On top of the returned stack is
-	 * the parent that resides at the top of the hierarchy.
-	 * 
-	 * @return all parent records, including this
+	 * {@inheritDoc}
 	 */
-	private Stack<IRecord> getRecordStack() {
-		Stack<IRecord> stack = new Stack<IRecord>();
-
-		IRecord r = this;
-
-		while (r != null) {
-			stack.add(r);
-			r = r.getParentRecord();
-		}
-		return stack;
+	public IRecordDefinition getRecordDefinition() {
+		IRecord base = getRecordStack().pop();
+		return base.getRecordDefinition();
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void accept(IVisitor visitor) {
+		visitor.visit(this);
+	}
+	
 	/**
 	 *{@inheritDoc}
 	 */
@@ -275,5 +249,24 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 
 		return result;
 	}
+
+	/**
+	 * Collect all parent records in a stack. On top of the returned stack is
+	 * the parent that resides at the top of the hierarchy.
+	 * 
+	 * @return all parent records, including this
+	 */
+	private Stack<IRecord> getRecordStack() {
+		Stack<IRecord> stack = new Stack<IRecord>();
+
+		IRecord r = this;
+
+		while (r != null) {
+			stack.add(r);
+			r = r.getParentRecord();
+		}
+		return stack;
+	}
+
 
 }

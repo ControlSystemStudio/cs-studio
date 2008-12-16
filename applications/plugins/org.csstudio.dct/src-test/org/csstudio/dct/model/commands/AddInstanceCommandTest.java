@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
@@ -23,7 +25,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class AddInstanceCommandTest {
+public class AddInstanceCommandTest extends AbstractCommandTest {
 	private IPrototype prototypeA;
 	private IInstance instanceA;
 	private IPrototype prototypeB;
@@ -34,13 +36,13 @@ public class AddInstanceCommandTest {
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
-		prototypeA = new Prototype("A");
-		instanceA = new Instance(prototypeA);
+	public void doSetUp() throws Exception {
+		prototypeA = new Prototype("A", UUID.randomUUID());
+		instanceA = new Instance(prototypeA, UUID.randomUUID());
 		prototypeA.addDependentContainer(instanceA);
 
-		prototypeB = new Prototype("B");
-		instanceB = new Instance(prototypeB);
+		prototypeB = new Prototype("B", UUID.randomUUID());
+		instanceB = new Instance(prototypeB, UUID.randomUUID());
 
 		command = new AddInstanceCommand(prototypeA, instanceB);
 	}

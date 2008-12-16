@@ -31,4 +31,12 @@ public interface IElement {
 	 *            the name of the element
 	 */
 	void setName(String name);
+
+	/**
+	 * Accepts the specified visitor.
+	 * 
+	 * @param visitor
+	 *            the visitor
+	 */
+	void accept(IVisitor visitor);
 }

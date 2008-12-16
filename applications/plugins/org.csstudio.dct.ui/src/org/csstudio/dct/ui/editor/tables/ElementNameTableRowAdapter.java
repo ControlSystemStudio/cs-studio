@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui.editor;
+package org.csstudio.dct.ui.editor.tables;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.commands.ChangeNameCommand;

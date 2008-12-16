@@ -5,7 +5,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.csstudio.dct.ui.editor.DctEditor"
-            contributorClass="org.csstudio.dct.ui.editor.MultiPageEditorContributor"
+            contributorClass="org.csstudio.dct.ui.editor.DctEditorContributor"
             extensions="css-dct"
             icon="icons/dctfile.png"
             id="org.csstudio.dct.ui.DctEditor"
@@ -16,7 +16,17 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.csstudio.dct.model.IElement"
-            class="org.csstudio.dct.ui.internal.AdapterFactory">
+            class="org.csstudio.dct.ui.internal.ModelAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter2">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.dct.metamodel.IRecordDefinition"
+            class="org.csstudio.dct.ui.internal.ModelAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>

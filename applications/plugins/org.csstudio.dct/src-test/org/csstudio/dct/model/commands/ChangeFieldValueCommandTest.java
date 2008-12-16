@@ -5,6 +5,8 @@ package org.csstudio.dct.model.commands;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.junit.Before;
@@ -16,15 +18,15 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class ChangeFieldValueCommandTest {
+public class ChangeFieldValueCommandTest extends AbstractCommandTest{
 	private IRecord record;
 
 	/**	
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
-		record = RecordFactory.createRecord("ai", "test");
+	public void doSetUp() throws Exception {
+		record = RecordFactory.createRecord(project, "ai", "test", UUID.randomUUID());
 	}
 
 	/**

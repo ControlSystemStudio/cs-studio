@@ -11,6 +11,15 @@ import java.util.Map;
 public interface IPropertyContainer extends IElement {
 
 	/**
+	 * Returns true when this container has a certain property.
+	 * 
+	 * @param name
+	 *            the property name
+	 * @return true, when the property exists
+	 */
+	boolean hasProperty(String name);
+
+	/**
 	 * Adds the specified property.
 	 * 
 	 * @param name
@@ -19,7 +28,7 @@ public interface IPropertyContainer extends IElement {
 	 * @param value
 	 *            the property value
 	 */
-	void addProperty(String name, Object value);
+	void addProperty(String name, String value);
 
 	/**
 	 * Returns the value for the specified property.
@@ -29,7 +38,7 @@ public interface IPropertyContainer extends IElement {
 	 * 
 	 * @return the value
 	 */
-	Object getProperty(String name);
+	String getProperty(String name);
 
 	/**
 	 * Removes the specified property.
@@ -45,7 +54,7 @@ public interface IPropertyContainer extends IElement {
 	 * 
 	 * @return aggregated property information
 	 */
-	Map<String, Object> getFinalProperties();
+	Map<String, String> getFinalProperties();
 
 	/**
 	 * Returns all properties that are locally defined for this record.
@@ -57,5 +66,5 @@ public interface IPropertyContainer extends IElement {
 	 * 
 	 * @return
 	 */
-	Map<String, Object> getProperties();
+	Map<String, String> getProperties();
 }

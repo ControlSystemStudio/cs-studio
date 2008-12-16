@@ -1,11 +1,16 @@
-package org.csstudio.dct.ui.editor;
+package org.csstudio.dct.ui.editor.tables;
 
+import org.csstudio.dct.model.IRecord;
+import org.csstudio.dct.ui.editor.ColorSettings;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
 
 public class AbstractTableRowAdapter<E> implements ITableRow {
 	public static final String DEFAULT_FONT = "Arial";
@@ -71,7 +76,9 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	}
 
 	public final Object getValue() {
-		return doGetValue(delegate);
+		Object v = doGetValue(delegate);
+
+		return v != null ? v : "";
 	}
 
 	public final Object getValueForDisplay() {
@@ -93,6 +100,20 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	public final boolean canModifyValue() {
 		return doCanModifyValue(delegate);
 	}
+	
+	
+	public final CellEditor getValueCellEditor(Composite parent) {
+		return doGetValueCellEditor(delegate, parent);
+	}
+	
+	public int compareTo(ITableRow row) {
+		return 0;
+	}
+	
+	protected CellEditor doGetValueCellEditor(E delegate, Composite parent) {
+		return new TextCellEditor(parent);
+	}
+	
 
 	protected RGB doGetBackgroundColorForKey(E delegate) {
 		return null;
@@ -115,7 +136,7 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	}
 
 	protected RGB doGetForegroundColorForValue(E delegate) {
-		return null;
+		return canModifyValue()?ColorSettings.MODIFYABLE:ColorSettings.UNMODIFYABLE;
 	}
 
 	protected Image doGetImage(E delegate) {
@@ -146,11 +167,12 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 		return null;
 	}
 
-	protected boolean doCanModifyKey(E delegate2) {
+	protected boolean doCanModifyKey(E delegate) {
 		return false;
 	}
 
-	protected boolean doCanModifyValue(E delegate2) {
+	protected boolean doCanModifyValue(E delegate) {
 		return true;
 	}
+
 }

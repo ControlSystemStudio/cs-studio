@@ -17,6 +17,7 @@ import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
+import org.csstudio.dct.model.commands.ChangeDbdFileCommand;
 import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Parameter;
@@ -79,6 +80,10 @@ public class XmlToProject {
 		// .. create the project
 		UUID id = getIdFromXml(root);
 		project = new Project(root.getAttributeValue("name"), id);
+		
+		String dbdPath = root.getAttributeValue("dbd");
+		new ChangeDbdFileCommand(project, dbdPath).execute();
+		
 		modelElements.put(id, project);
 		preconditions.remove(root);
 
@@ -402,7 +407,7 @@ public class XmlToProject {
 			parentRecord.addDependentRecord(record);
 		} else {
 			// .. new record
-			record = RecordFactory.createRecord("ai", xmlRecordElement.getAttributeValue("name"), id);
+			record = RecordFactory.createRecord(project, xmlRecordElement.getAttributeValue("type"), xmlRecordElement.getAttributeValue("name"), id);
 			record.getParentRecord().addDependentRecord(record);
 		}
 

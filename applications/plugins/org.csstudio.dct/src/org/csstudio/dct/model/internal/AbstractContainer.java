@@ -16,6 +16,7 @@ import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
+import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.util.CompareUtil;
 
 /**
@@ -52,18 +53,6 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	 */
 	private List<IRecord> records = new ArrayList<IRecord>();
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param parent
-	 *            the inheritance parent
-	 */
-	public AbstractContainer(String name, IContainer parent) {
-		super(name);
-		assert (parent != null) || (parent instanceof IPrototype) || (parent instanceof IFolder) : "Each instance must have a parent. Only prototypes have no parent.";
-		this.parent = parent;
-	}
-	
 	public AbstractContainer(String name, IContainer parent, UUID id) {
 		super(name, id);
 		assert (parent != null) || (parent instanceof IPrototype) || (parent instanceof IFolder) : "Each instance must have a parent. Only prototypes have no parent.";
@@ -234,8 +223,8 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Object> getFinalProperties() {
-		Map<String, Object> result = new HashMap<String, Object>();
+	public Map<String, String> getFinalProperties() {
+		Map<String, String> result = new HashMap<String, String>();
 
 		Stack<IContainer> stack = getParentStack();
 
@@ -271,23 +260,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	public List<IRecordContainer> getDependentRecordContainers() {
 		return new ArrayList<IRecordContainer>(dependentContainers);
 	}
-
-//	/**
-//	 * {@inheritDoc}
-//	 */
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = super.hashCode();
-//		// ??
-////		result = prime * result + ((folder == null) ? 0 : folder.hashCode());
-//		
-//		result = prime * result + ((instances == null) ? 0 : instances.hashCode());
-//		result = prime * result + ((records == null) ? 0 : records.hashCode());
-//		return result;
-//	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

@@ -3,6 +3,8 @@ package org.csstudio.dct.model.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.internal.Prototype;
 import org.junit.Before;
@@ -22,7 +24,7 @@ public class ChangePropertyKeyCommandTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		container = new Prototype("test");
+		container = new Prototype("test", UUID.randomUUID());
 	}
 
 	/**

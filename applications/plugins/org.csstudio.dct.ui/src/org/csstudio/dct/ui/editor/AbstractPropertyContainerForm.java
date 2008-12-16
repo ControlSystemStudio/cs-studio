@@ -4,17 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.dct.model.IPropertyContainer;
+import org.csstudio.dct.model.commands.AddPropertyCommand;
+import org.csstudio.dct.model.commands.RemovePropertyCommand;
+import org.csstudio.dct.ui.Activator;
+import org.csstudio.dct.ui.editor.outline.internal.RemovePrototypeCommand;
+import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerFocusCellManager;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Abstract base class for forms that edit model elements which contain
@@ -28,18 +47,105 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
 	private TableCitizenTable propertyTable;
 
-	public AbstractPropertyContainerForm(CommandStack commandStack) {
-		super(commandStack);
+	public AbstractPropertyContainerForm(DctEditor editor) {
+		super(editor);
 	}
 
 	@Override
-	protected void doCreateControl(Composite parent, CommandStack commandStack) {
+	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
 		// .. input table for properties
-		Group group = new Group(parent, SWT.NONE);
-		group.setLayoutData(LayoutUtil.createGridDataForVerticalFillingCell(500));
-		group.setLayout(new FillLayout());
-		group.setText("Properties");
-		propertyTable = new TableCitizenTable(group, SWT.None, commandStack);
+		Composite composite = new Composite(bar, SWT.NONE);
+		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
+
+		propertyTable = new TableCitizenTable(composite, SWT.None, commandStack);
+		propertyTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
+
+		// .. add/remove buttons for properties
+		Composite buttons = new Composite(composite, SWT.None);
+		buttons.setLayout(new FillLayout());
+
+		Button addButton = new Button(buttons, SWT.FLAT);
+		addButton.setText("Add");
+		addButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Property Name",
+						"Please enter a name for the new property:", "", new IInputValidator() {
+							public String isValid(String newText) {
+								String error = null;
+
+								if(newText==null || newText.length()==0) {
+									error = "Name cannot be empty.";
+								}
+								if (getInput().getProperty(newText) != null) {
+									error = "Property already exists.";
+								}
+
+								return error;
+							}
+						});
+
+				if (dialog.open() == InputDialog.OK) {
+					String name = dialog.getValue();
+					
+					// .. insert the property
+					Command cmd = new AddPropertyCommand(getInput(), name);
+					getCommandStack().execute(cmd);
+
+					// .. activate the cell editor for the new row
+					TableViewer viewer = propertyTable.getViewer();
+					List<PropertyTableRowAdapter> rows = (List<PropertyTableRowAdapter>) viewer.getInput();
+					
+					PropertyTableRowAdapter insertedRow = null;
+					
+					for(PropertyTableRowAdapter r : rows) {
+						if(name.equals(r.getPropertyKey())) {
+							insertedRow = r;
+						}
+					}
+					
+					if(insertedRow!=null) {
+						viewer.editElement(insertedRow, 1);
+					}
+						
+				}
+
+			}
+		});
+
+		final Button removeButton = new Button(buttons, SWT.FLAT);
+		removeButton.setEnabled(false);
+		removeButton.setText("Remove");
+		removeButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// .. get the selected property
+				IStructuredSelection sel = (IStructuredSelection)propertyTable.getViewer().getSelection();
+				assert !sel.isEmpty();
+				PropertyTableRowAdapter row = (PropertyTableRowAdapter) sel.getFirstElement();
+				String key = row.getPropertyKey();
+				
+				// .. remove the property
+				Command cmd = new RemovePropertyCommand(getInput(), key);
+				getCommandStack().execute(cmd);
+				
+				// .. clear selection
+				propertyTable.getViewer().setSelection(null);
+			}
+		});
+		
+		propertyTable.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				removeButton.setEnabled(!event.getSelection().isEmpty());
+			}
+		});
+
+		// .. the expand item
+		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
+		expandItem.setText("Properties");
+		expandItem.setHeight(270);
+		expandItem.setControl(composite);
+		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_properties.png"));
 
 		// ... popup menu for properties
 		TableViewer viewer = propertyTable.getViewer();
@@ -51,7 +157,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 		Menu menu = popupMenu.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 	}
-	
+
 	@Override
 	protected void doSetInput(E input) {
 		// .. prepare input for property table
@@ -65,7 +171,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 			propertyTable.setInput(rowsForProperties);
 		}
 	};
-	
+
 	/**
 	 * Returns the currently selected property.
 	 * 

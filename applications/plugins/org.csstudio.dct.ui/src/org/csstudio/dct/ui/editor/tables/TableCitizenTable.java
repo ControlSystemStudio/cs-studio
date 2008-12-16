@@ -2,8 +2,7 @@ package org.csstudio.dct.ui.editor.tables;
 
 import java.util.List;
 
-import org.csstudio.dct.ui.editor.AbstractTableRowAdapter;
-import org.csstudio.dct.ui.editor.ITableRow;
+import org.csstudio.dct.ui.Activator;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -24,6 +23,7 @@ import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -78,7 +78,7 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 		final Table table = new Table(parent, style | SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
 		table.setLinesVisible(true);
 		// table.setLayoutData(LayoutUtil.createGridDataForFillingCell());
-		table.setHeaderVisible(true);
+		table.setHeaderVisible(false);
 
 		// create viewer
 		TableViewer viewer = new TableViewer(table);
@@ -94,7 +94,7 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 		valColumn.getColumn().setMoveable(false);
 		valColumn.getColumn().setWidth(300);
 		valColumn.setEditingSupport(new ValueColumnEditingSupport(viewer));
-
+		
 		// define column properties
 		viewer.setColumnProperties(columnNames);
 
@@ -114,37 +114,33 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 				.create(viewer, focusCellManager, actSupport, ColumnViewerEditor.TABBING_HORIZONTAL
 						| ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL
 						| ColumnViewerEditor.KEYBOARD_ACTIVATION);
+		
+		// .. sorter
+		viewer.setSorter(new ViewerSorter(){
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				ITableRow r1 = (ITableRow) e1;
+				ITableRow r2 = (ITableRow) e2;
+				return r1.compareTo(r2);
+			}
+		});
 
 		viewer.setContentProvider(new ContentProvider());
 		viewer.setLabelProvider(new LabelProvider());
 		
-//		viewer.setCellModifier(new CellModifier(viewer, getCommandStack()));
-
-		// CellEditor[] cellEditors = new CellEditor[2];
-		// cellEditors[0] = new TextCellEditor(viewer.getTable());
-		// cellEditors[1] = new TextCellEditor(viewer.getTable());
-		// viewer.setCellEditors(cellEditors);
-
 		return viewer;
 	}
 
-
-	/**
-	 * Creates additional cell editors. The default implementation provides an
-	 * empty list. Subclasses may override.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 * @return a list with cell editors
-	 */
+/**
+ * @deprecated
+ * @param parent
+ * @param modelObject
+ * @return
+ */
 	protected CellEditor getKeyCellEditor(Composite parent, Object modelObject) {
 		return new TextCellEditor(parent);
 	}
 
-	protected CellEditor getValueCellEditor(Composite parent, Object modelObject) {
-		return new TextCellEditor(parent);
-
-	}
 
 	class KeyColumnEditingSupport extends EditingSupport {
 
@@ -191,7 +187,8 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return getValueCellEditor(((TableViewer) getViewer()).getTable(), element);
+			ITableRow row = (ITableRow) element;
+			return row.getValueCellEditor(((TableViewer) getViewer()).getTable());
 		}
 
 		@Override
@@ -205,6 +202,11 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 			ITableRow row = (ITableRow) element;
 			row.setValue(value);
 			getViewer().refresh();
+		}
+
+		@Override
+		public ColumnViewer getViewer() {
+			return super.getViewer();
 		}
 	}
 

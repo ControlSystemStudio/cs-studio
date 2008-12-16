@@ -9,6 +9,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.internal.Parameter;
@@ -33,7 +34,7 @@ public class PrototypeTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		prototype = new Prototype("prototype");
+		prototype = new Prototype("prototype", UUID.randomUUID());
 		parameter1 = new Parameter("p1", "1");
 		parameter2 = new Parameter("p2", "2");
 		parameter3 = new Parameter("p3", "3");
@@ -47,8 +48,8 @@ public class PrototypeTest {
 	 */
 	@Test
 	public final void testEquals() {
-		Prototype p1 = new Prototype("p");
-		Prototype p2 = new Prototype("p");
+		Prototype p1 = new Prototype("p", UUID.randomUUID());
+		Prototype p2 = new Prototype("p", UUID.randomUUID());
 		
 		// .. parent
 		assertEquals(p1, p2);
@@ -72,14 +73,14 @@ public class PrototypeTest {
 		assertEquals(p1, p2);
 		
 		// .. records
-		Record record = new Record("r", "ai");
+		Record record = new Record("r", "ai", UUID.randomUUID());
 		p1.addRecord(record);
 		assertNotSame(p1, p2);
 		p2.addRecord(record);
 		assertEquals(p1, p2);
 		
 		// .. instances
-		Instance instance = new Instance(prototype);
+		Instance instance = new Instance(prototype, UUID.randomUUID());
 		p1.addInstance(instance);
 		assertNotSame(p1, p2);
 		p2.addInstance(instance);

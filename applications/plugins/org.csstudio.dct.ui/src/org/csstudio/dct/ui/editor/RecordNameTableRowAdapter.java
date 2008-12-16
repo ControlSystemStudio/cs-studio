@@ -2,6 +2,7 @@ package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.ChangeNameCommand;
+import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.util.RecordUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;

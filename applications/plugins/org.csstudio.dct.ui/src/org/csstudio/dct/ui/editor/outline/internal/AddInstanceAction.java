@@ -1,5 +1,7 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
@@ -33,7 +35,7 @@ public class AddInstanceAction extends AbstractOutlineAction {
 		if (rsd.open() == Window.OK) {
 			IPrototype prototype = (IPrototype) rsd.getSelection();
 
-			IInstance instance = new Instance(prototype);
+			IInstance instance = new Instance(prototype, UUID.randomUUID());
 			
 			if (selection instanceof IFolder) {
 				result = new AddInstanceCommand((IFolder) selection, instance);

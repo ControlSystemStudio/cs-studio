@@ -3,13 +3,8 @@ package org.csstudio.dct.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.dct.metamodel.Factory;
-import org.csstudio.dct.metamodel.IFieldDefinition;
-import org.csstudio.dct.metamodel.IRecordDefinition;
-import org.csstudio.dct.metamodel.internal.DatabaseDefinition;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.internal.Record;
 
 public class RecordUtil {
 	

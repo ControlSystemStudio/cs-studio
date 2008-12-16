@@ -15,6 +15,7 @@ import org.csstudio.dct.model.internal.Prototype;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
@@ -36,7 +37,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class InitInstanceCommandTest {
+public class InitInstanceCommandTest extends AbstractCommandTest{
 	private Prototype prototypeA;
 	private Prototype prototypeB;
 	private IRecord recordA;
@@ -46,19 +47,19 @@ public class InitInstanceCommandTest {
 	private InitInstanceCommand command;
 	
 	@Before
-	public void setUp() throws Exception {
-		prototypeA = new Prototype("A");
-		prototypeB = new Prototype("B");
+	public void doSetUp() throws Exception {
+		prototypeA = new Prototype("A", UUID.randomUUID());
+		prototypeB = new Prototype("B", UUID.randomUUID());
 	
-		recordA = RecordFactory.createRecord("ai", "rA");
+		recordA = RecordFactory.createRecord(project, "ai", "rA", UUID.randomUUID());
 		new AddRecordCommand(prototypeA, recordA).execute();
-		recordB = RecordFactory.createRecord("ai", "rB");
+		recordB = RecordFactory.createRecord(project, "ai", "rB", UUID.randomUUID());
 		new AddRecordCommand(prototypeB, recordB).execute();
 		
-		instanceA = new Instance(prototypeA);
+		instanceA = new Instance(prototypeA, UUID.randomUUID());
 		new AddInstanceCommand(prototypeB, instanceA).execute();
 		
-		instanceB = new Instance(prototypeB);
+		instanceB = new Instance(prototypeB, UUID.randomUUID());
 		command = new InitInstanceCommand(instanceB);
 	}
 	

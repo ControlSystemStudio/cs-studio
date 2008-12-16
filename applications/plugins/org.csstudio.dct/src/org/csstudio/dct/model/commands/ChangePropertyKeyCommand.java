@@ -44,7 +44,7 @@ public class ChangePropertyKeyCommand extends Command {
 	}
 
 	private void doSwitch(String key, String newKey) {
-		Object value = container.getProperty(key);
+		String value = container.getProperty(key);
 		container.removeProperty(key);
 		container.addProperty(newKey, value);
 

@@ -1,9 +1,13 @@
 package org.csstudio.dct.model.internal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.csstudio.dct.metamodel.IDatabaseDefinition;
+import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;
@@ -17,23 +21,51 @@ import org.csstudio.dct.model.IRecord;
  * @author Sven Wende
  */
 public class Project extends Folder {
-	private String dbdVersion;
+	private transient Map<String, BaseRecord> baseRecords;
+	private transient IDatabaseDefinition databaseDefinition;
+	
+	private String path;
 	private String ioc;
 
-	public Project(String name) {
-		super(name);
-	}
-	
 	public Project(String name, UUID id) {
 		super(name, id);
+		baseRecords = new HashMap<String, BaseRecord>();
+		databaseDefinition = null;
+	}
+	
+	public IDatabaseDefinition getDatabaseDefinition() {
+		return databaseDefinition;
+	}
+	
+	public void setDatabaseDefinition(IDatabaseDefinition databaseDefinition) {
+		this.databaseDefinition = databaseDefinition;
 	}
 
-	public String getDbdVersion() {
-		return dbdVersion;
+	public BaseRecord getBaseRecord(String type) {
+		if(!baseRecords.containsKey(type)) {
+			baseRecords.put(type, new BaseRecord(null));
+		}
+		
+		return baseRecords.get(type);
 	}
 
-	public void setDbdVersion(String dbdVersion) {
-		this.dbdVersion = dbdVersion;
+	
+	public Map<String, BaseRecord> getBaseRecords() {
+		return baseRecords;
+	}
+	
+	public void setBaseRecords(Map<String, BaseRecord> baseRecords) {
+		this.baseRecords = baseRecords;
+	}
+	
+	
+
+	public String getDbdPath() {
+		return path;
+	}
+
+	public void setDbdPath(String path) {
+		this.path = path;
 	}
 
 	public String getIoc() {
@@ -47,7 +79,7 @@ public class Project extends Folder {
 	public List<IRecord> getFinalRecords() {
 		return getFinalRecords(this);
 	}
-	
+
 	private List<IRecord> getFinalRecords(IFolder folder) {
 		List<IRecord> result = new ArrayList<IRecord>();
 		

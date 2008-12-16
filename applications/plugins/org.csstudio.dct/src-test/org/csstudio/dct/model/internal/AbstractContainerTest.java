@@ -8,6 +8,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
@@ -22,33 +24,33 @@ import org.junit.Test;
 public class AbstractContainerTest {
 	@Test
 	public final void testInheritance() {
-		Project project = new Project("Test");
+		Project project = new Project("Test", UUID.randomUUID());
 
 		// prototype 1 (contains record 1)
-		IPrototype p1 = new Prototype("p1");
-		Record r1 = new Record("r1", "ai");
+		IPrototype p1 = new Prototype("p1", UUID.randomUUID());
+		Record r1 = new Record("r1", "ai", UUID.randomUUID());
 		p1.addRecord(r1);
 		project.addMember(p1);
 
 		// prototype 2 (contains record 2)
-		IPrototype p2 = new Prototype("p2");
-		IRecord r2 = new Record("r2", "ai");
+		IPrototype p2 = new Prototype("p2", UUID.randomUUID());
+		IRecord r2 = new Record("r2", "ai", UUID.randomUUID());
 		p2.addRecord(r2);
 		project.addMember(p2);
 
 		// prototype 3 (contains record 3 + instance of prototype 1 + instance
 		// of prototype 2)
-		IPrototype p3 = new Prototype("p2");
-		IRecord r3 = new Record("r3", "ai");
+		IPrototype p3 = new Prototype("p2", UUID.randomUUID());
+		IRecord r3 = new Record("r3", "ai", UUID.randomUUID());
 		p3.addRecord(r3);
-		Instance i1 = new Instance(p1);
+		Instance i1 = new Instance(p1, UUID.randomUUID());
 		p3.addInstance(i1);
-		Instance i2 = new Instance(p2);
+		Instance i2 = new Instance(p2, UUID.randomUUID());
 		p3.addInstance(i2);
 		project.addMember(p3);
 
 		// instance of prototype 3
-		IInstance i3 = new Instance(p3);
+		IInstance i3 = new Instance(p3, UUID.randomUUID());
 		project.addMember(i3);
 
 		// asserts
@@ -107,7 +109,7 @@ public class AbstractContainerTest {
 		assertTrue(p3.getInstance(1).getRecords().get(0).isInheritedFromPrototype());
 
 		// Adding a new record in prototype 1
-		Record r11 = new Record("r11", "ai");
+		Record r11 = new Record("r11", "ai", UUID.randomUUID());
 		p1.addRecord(r11);
 
 		assertEquals(2, p3.getInstances().get(0).getRecords().size());
@@ -130,7 +132,7 @@ public class AbstractContainerTest {
 		assertFalse(p1.getDependentContainers().contains(i1));
 
 		// Adding new Sub-instance to prototype 3
-		IInstance i5 = new Instance(p1);
+		IInstance i5 = new Instance(p1, UUID.randomUUID());
 		p3.addInstance(i5);
 		assertEquals(2, i3.getInstances().size());
 		assertEquals(2, i3.getInstances().get(1).getRecords().size());

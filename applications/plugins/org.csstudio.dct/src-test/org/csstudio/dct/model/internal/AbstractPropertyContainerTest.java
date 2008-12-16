@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.UUID;
 
+import org.csstudio.dct.model.IVisitor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,8 +32,12 @@ public class AbstractPropertyContainerTest {
 	@Before
 	public void setUp() throws Exception {
 		container = new AbstractPropertyContainer(NAME, ID) {
-			public Map<String, Object> getFinalProperties() {
+			public Map<String, String> getFinalProperties() {
 				return null;
+			}
+
+			public void accept(IVisitor visitor) {
+				
 			}
 		};
 		container.addProperty("p1", "v1");
@@ -41,7 +46,7 @@ public class AbstractPropertyContainerTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.dct.model.internal.AbstractPropertyContainer#addProperty(java.lang.String, java.lang.Object)}
+	 * {@link org.csstudio.dct.model.internal.AbstractPropertyContainer#addProperty(java.lang.String, String)}
 	 * .
 	 */
 	@Test
@@ -81,7 +86,7 @@ public class AbstractPropertyContainerTest {
 	 */
 	@Test
 	public final void testGetProperties() {
-		Map<String, Object> properties = container.getProperties();
+		Map<String, String> properties = container.getProperties();
 		assertNotNull(properties);
 		assertFalse(properties.isEmpty());
 		assertEquals(2, properties.size());
@@ -99,8 +104,12 @@ public class AbstractPropertyContainerTest {
 	@Test
 	public final void testEqualsHashCode() {
 		AbstractPropertyContainer container2 = new AbstractPropertyContainer(NAME, ID) {
-			public Map<String, Object> getFinalProperties() {
+			public Map<String, String> getFinalProperties() {
 				return null;
+			}
+
+			public void accept(IVisitor visitor) {
+				
 			}
 		};
 

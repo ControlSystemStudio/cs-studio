@@ -15,7 +15,9 @@ public class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
 	 */
 	@Override
 	protected String doGetLabel(IRecord record) {
-		return record.isInheritedFromPrototype() ? RecordUtil.getResolvedName(record) : record.getName();
+		String name = record.isInheritedFromPrototype() ? RecordUtil.getResolvedName(record) : record.getName();
+		
+		return name + " [" + record.getType() + "]";
 	}
 
 	/**

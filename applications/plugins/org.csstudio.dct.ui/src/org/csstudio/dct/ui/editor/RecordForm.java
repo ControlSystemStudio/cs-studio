@@ -3,35 +3,46 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.dct.metamodel.Factory;
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IMenuDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IPropertyContainer;
+import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.internal.Parameter;
+import org.csstudio.dct.model.commands.AddPropertyCommand;
+import org.csstudio.dct.ui.Activator;
+import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.MenuCellEditor;
 import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Editing component for {@link IRecord}.
@@ -40,61 +51,72 @@ import org.eclipse.swt.widgets.Text;
  * 
  */
 public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
-
-	private TableCitizenTable overviewTable;
 	private TableCitizenTable recordFieldTable;
 	
-	public RecordForm(CommandStack commandStack) {
-		super(commandStack);
+	public RecordForm(DctEditor editor) {
+		super(editor);
 	}
+
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doCreateControl(Composite parent, CommandStack commandStack) {
-		super.doCreateControl(parent, commandStack);
+	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
+		super.doCreateControl(bar, commandStack);
 		
-		Group group;
-
-		// .. overview
-		group = new Group(parent, SWT.NONE);
-		group.setLayoutData(LayoutUtil.createGridData(500, 100));
-		group.setLayout(new FillLayout());
-		group.setText("Common");
-		overviewTable = new TableCitizenTable(group, SWT.None, commandStack);
-
 		// .. field table
-		group = new Group(parent, SWT.NONE);
-		group.setLayoutData(LayoutUtil.createGridDataForVerticalFillingCell(500));
-		group.setLayout(new FillLayout());
-		group.setText("Fields");
-		recordFieldTable = new TableCitizenTable(group, SWT.None, commandStack){
+		Composite composite = new Composite(bar, SWT.NONE);
+		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
+		recordFieldTable = new TableCitizenTable(composite, SWT.None, commandStack);
+		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(300));
+		
+		// .. popup menu
+//		TableViewer viewer = recordFieldTable.getViewer();
+//		MenuManager popupMenu = new MenuManager();
+//		OpenRecordMetaDataAction action = new OpenRecordMetaDataAction(this);
+//		popupMenu.add(action);
+//		Menu menu = popupMenu.createContextMenu(viewer.getControl());
+//		viewer.getControl().setMenu(menu);
+		
+		// .. filter button
+		Composite buttons = new Composite(composite, SWT.None);
+		buttons.setLayout(new FillLayout());
+		
+		final Button addButton = new Button(buttons, SWT.CHECK);
+		addButton.setText("Show All (includes empty settings)");
+		addButton.addMouseListener(new MouseAdapter() {
 			@Override
-			protected CellEditor getValueCellEditor(Composite parent, Object a) {
-				CellEditor result = new TextCellEditor(parent);
-				
-				String fName = ((RecordFieldTableRowAdapter)a).getKey();
-				
-				IDatabaseDefinition dbd = Factory.createSampleDatabaseDefinition();
-				IRecordDefinition rdef = dbd.getRecordDefinition(RecordForm.this.getInput().getType());
-				IFieldDefinition fdef = rdef.getFieldDefinitions(fName);
-				
-				
-				if(fdef!=null) {
-					IMenuDefinition mdef = fdef.getMenu();
+			public void mouseUp(MouseEvent e) {
+				if(addButton.getSelection()) {
+					recordFieldTable.getViewer().setFilters(new ViewerFilter[0]);
+				} else {
+					ViewerFilter filter = new ViewerFilter() {
+						@Override
+						public boolean select(Viewer viewer, Object parentElement, Object element) {
+							RecordFieldTableRowAdapter row = (RecordFieldTableRowAdapter) element;
+							return row.getDelegate().getField(row.getFieldKey())!=null;
+						}
+					};
 					
-					if(mdef!=null) {
-						result =   new MenuCellEditor(parent, mdef);
-					}
+					recordFieldTable.getViewer().setFilters(new ViewerFilter[]{filter});
 				}
 				
-				return  result;
+				
 			}
-			
-		};
-	}
+		});
+		
+		addButton.setSelection(true);
+		
+		// .. the expand item
+		ExpandItem expandItem = new ExpandItem (bar, SWT.NONE);
+		expandItem.setText("Fields");
+		expandItem.setHeight(370);
+		expandItem.setControl(composite);
+		expandItem.setExpanded(true);
+		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_fields.png"));
+	}		
 
 	/**
 	 * {@inheritDoc}
@@ -103,11 +125,6 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	protected void doSetInput(IRecord record) {
 		super.doSetInput(record);
 		
-		// prepare input for overview table
-		List<ITableRow> rowsForOverview = new ArrayList<ITableRow>();
-		rowsForOverview.add(new RecordNameTableRowAdapter(record, getCommandStack()));
-		overviewTable.setInput(rowsForOverview);
-
 		// prepare input for field table
 		List<ITableRow> rowsForFields = new ArrayList<ITableRow>();
 
@@ -118,4 +135,53 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		recordFieldTable.setInput(rowsForFields);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
+	@Override
+	protected String doGetFormLabel() {
+		return "Record";
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	@Override
+	protected void doAddCommonRows(List<ITableRow> rows, IRecord record) {
+		rows.add(new RecordNameTableRowAdapter(record, getCommandStack()));
+		rows.add(new BeanPropertyTableRowAdapter("Type", record, getCommandStack(), "type", true));
+	}
+	
+	/**
+	 * 
+	 *{@inheritDoc}
+	 */
+	@Override
+	protected String doGetLinkText(IRecord record) {
+		String text = "";
+
+		if(record.getParentRecord() !=null ) {
+			text+="jump to <a href=\""+record.getParentRecord().getId()+"\">parent record</a>";
+		}
+		
+		return text;
+	}
+	
+	/**
+	 * Returns the currently selected property.
+	 * 
+	 * @return the selected property or null
+	 */
+	public String getSelectedField() {
+		String result = null;
+
+		IStructuredSelection sel = recordFieldTable != null ? (IStructuredSelection) recordFieldTable.getViewer().getSelection() : null;
+
+		if (sel != null && sel.getFirstElement() != null) {
+			RecordFieldTableRowAdapter adapter = (RecordFieldTableRowAdapter) sel.getFirstElement();
+			result = adapter.getKey();
+		}
+
+		return result;
+	}
 }

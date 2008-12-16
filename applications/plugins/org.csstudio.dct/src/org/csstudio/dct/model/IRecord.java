@@ -3,6 +3,8 @@ package org.csstudio.dct.model;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.dct.metamodel.IRecordDefinition;
+
 /**
  * Represents a record.
  * 
@@ -60,8 +62,6 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 */
 	String getType();
 
-	
-	
 	/**
 	 * Adds the specified property.
 	 * 
@@ -71,7 +71,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * @param value
 	 *            the property value
 	 */
-	void addProperty(String name, Object value);
+	void addProperty(String name, String value);
 
 	/**
 	 * Returns the value for the specified property.
@@ -81,7 +81,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * 
 	 * @return the value
 	 */
-	Object getProperty(String name);
+	String getProperty(String name);
 
 	/**
 	 * Removes the specified property.
@@ -97,7 +97,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * 
 	 * @return aggregated property information
 	 */
-	Map<String, Object> getFinalProperties();
+	Map<String, String> getFinalProperties();
 
 	/**
 	 * Returns all properties that are locally defined for this record.
@@ -109,9 +109,8 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * 
 	 * @return
 	 */
-	Map<String, Object> getProperties();
+	Map<String, String> getProperties();
 
-	
 	/**
 	 * Adds the specified field.
 	 * 
@@ -160,5 +159,13 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * @return aggregated field information
 	 */
 	Map<String, Object> getFinalFields();
+
+	/**
+	 * Returns the record definition which contains the informations stored in a
+	 * database definition file.
+	 * 
+	 * @return the record definition
+	 */
+	IRecordDefinition getRecordDefinition();
 
 }
