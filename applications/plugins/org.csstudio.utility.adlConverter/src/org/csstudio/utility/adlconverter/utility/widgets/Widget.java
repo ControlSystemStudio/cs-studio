@@ -213,9 +213,9 @@ public abstract class Widget extends AbstractDisplayImporter {
         for (ADLWidget obj : widget.getObjects()) {
             if (obj.isType("object")) { //$NON-NLS-1$
                 _object = new ADLObject(obj, _widget);
-            } else if (obj.isType("\"basic attribute\"")) { //$NON-NLS-1$
+            } else if (obj.isType("basic attribute")) { //$NON-NLS-1$
                 _basicAttribute = new ADLBasicAttribute(obj, _widget);
-            } else if (obj.isType("\"dynamic attribute\"")) { //$NON-NLS-1$
+            } else if (obj.isType("dynamic attribute")) { //$NON-NLS-1$
                 _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
             } else if (obj.isType("points")) { //$NON-NLS-1$
                 _points = new ADLPoints(obj, _widget);
