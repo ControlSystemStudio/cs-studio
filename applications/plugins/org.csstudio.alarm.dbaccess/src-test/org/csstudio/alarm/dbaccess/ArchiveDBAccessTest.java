@@ -1,14 +1,23 @@
 package org.csstudio.alarm.dbaccess;
 
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Class that builds prepared SQL statements for settings in the expert search
@@ -25,7 +34,7 @@ public class ArchiveDBAccessTest {
 	private ArrayList<FilterItem> fourFilterItemsBothTypes = new ArrayList<FilterItem>();
 	private ArrayList<FilterItem> testFilterItemList = new ArrayList<FilterItem>();
 
-	@Before
+//	@Before
 	public void setUp() {
 		FilterItem severityItem = new FilterItem("severity", "high", "and");
 		FilterItem typeItem = new FilterItem("type", "event", "and");
@@ -59,6 +68,92 @@ public class ArchiveDBAccessTest {
 
 	}
 
+	private int currentFirstColumn;
+    protected String currentSecondColumn;
+    protected String currentThirdColumn;
+	
+	@Test
+	public void testProcessResult() throws Throwable {
+	    List<ResultSet> dbdaten = new ArrayList<ResultSet>();
+	    
+	    // Prepare ResultSet-Mock:
+	    ResultSet resultSet = mock(ResultSet.class);
+	    
+	    doAnswer(new Answer<Boolean>() {
+            public Boolean answer(InvocationOnMock invocation) throws Throwable {
+                currentFirstColumn = 23;
+                currentSecondColumn = "property1";
+                currentThirdColumn = "value1";
+                return true;
+            }
+	    }).doAnswer(new Answer<Boolean>() {
+            public Boolean answer(InvocationOnMock invocation) throws Throwable {
+                currentFirstColumn = 42;
+                currentSecondColumn = "property2";
+                currentThirdColumn = "value2";
+                return true;
+            }
+        }).doAnswer(new Answer<Boolean>() {
+            public Boolean answer(InvocationOnMock invocation) throws Throwable {
+                return false;
+            }
+        }).when(resultSet).next();
+	    
+	    doAnswer(new Answer<Integer>() {
+            public Integer answer(InvocationOnMock invocation) throws Throwable {
+                return currentFirstColumn;
+            }
+	    }).when(resultSet).getInt(1);
+	    
+	    doAnswer(new Answer<String>() {
+	        public String answer(InvocationOnMock invocation) throws Throwable {
+	            return ""+ currentFirstColumn;
+	        }
+	    }).when(resultSet).getString(1);
+	    
+	    doAnswer(new Answer<String>() {
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                return currentSecondColumn;
+            }
+        }).when(resultSet).getString(2);
+	    
+	    doAnswer(new Answer<String>() {
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                return currentThirdColumn;
+            }
+        }).when(resultSet).getString(3);
+	    
+	    // Prepare param-list:
+	    dbdaten.add(resultSet);
+	    
+	    // Prepare ArchiveDB-Access-Tool:
+	    SQLBuilder sqlBuilder = new SQLBuilder();
+	    sqlBuilder.setRownum("100");
+	    ArchiveDBAccess out = new ArchiveDBAccess(sqlBuilder) {
+	        @Override
+	        protected Map<String, String> getIDPropertyMapping() {
+	            Map<String, String> result = new HashMap<String, String>();
+	            result.put("property1", "mappedProperty1");
+	            result.put("property2", "mappedProperty2");
+	            return result;
+	        }
+	    };
+	    
+	    // Run method under test
+	    List<HashMap<String, String>> result = out.processResult(dbdaten);
+	    
+	    // check result:
+	    assertNotNull(result);
+	    assertEquals(2, result.size());
+	    
+	    Map<String,String> firstRow = result.get(0);
+	    assertEquals("value1", firstRow.get("mappedProperty1"));
+
+	    Map<String,String> secondRow = result.get(1);
+	    assertEquals("value2", secondRow.get("mappedProperty2"));
+	}
+	
+	@Ignore("This is an integration test and should be moved to special test case.")
 	@Test
 	public void testGetLogMessages() {
 		Calendar from = Calendar.getInstance();

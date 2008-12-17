@@ -30,6 +30,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import oracle.jdbc.OracleResultSet;
@@ -49,7 +51,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @version $Revision$
  * @since 22.05.2008
  */
-public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
+public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 
 	private Connection _databaseConnection;
 
@@ -63,13 +65,17 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 */
 	private boolean _maxSize = false;
 
-	private SQLBuilder _sqlBuilder;
+	SQLBuilder _sqlBuilder;
 
 	public boolean is_maxSize() {
 		return _maxSize;
 	}
 
-	private ArchiveDBAccess() {
+	/**
+	 * ONLY FOR TEST PURPOSES!
+	 */
+	ArchiveDBAccess(SQLBuilder sqlBuilder) {
+	    _sqlBuilder = sqlBuilder;
 	}
 
 	/**
@@ -79,7 +85,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 */
 	public static ArchiveDBAccess getInstance() {
 		if (_archiveDBAccess == null) {
-			_archiveDBAccess = new ArchiveDBAccess();
+			_archiveDBAccess = new ArchiveDBAccess(new SQLBuilder());
 		}
 		return _archiveDBAccess;
 	}
@@ -239,7 +245,6 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			// because the SQL statement is designed only for AND.
 			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filter);
 			ResultSet result = null;
-			_sqlBuilder = new SQLBuilder();
 			_sqlBuilder.setRownum(Integer.toString(_maxAnswerSize * 15));
 			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
 				String statement = _sqlBuilder
@@ -332,14 +337,14 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 * have to put all property-value pairs with the same message_id in one log
 	 * message together.
 	 * 
-	 * @param result
+	 * @param results
 	 *            List of Result Sets (we get more than one result set if there
 	 *            is an OR relation, because the SQL Statement is designed only
 	 *            for AND relations)
 	 * @return
 	 */
-	private ArrayList<HashMap<String, String>> processResult(
-			ArrayList<ResultSet> result) {
+	ArrayList<HashMap<String, String>> processResult(
+			List<ResultSet> results) {
 
 		// number of rows in all result sets (to check for max row num.
 		int currentRowNum = 1;
@@ -353,7 +358,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			// run through all result sets (for each OR relation in the
 			// FilterSetting
 			// we get one more resultSet)
-			for (ResultSet resultSet : result) {
+			for (ResultSet resultSet : results) {
 				// identifier for the current message. initialized with a not
 				// existing message id
 				int currentMessageID = -1;
@@ -364,8 +369,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 						// it belongs to the current message
 						if (message != null) {
 							String s = resultSet.getString(2);
-							String property = MessagePropertyTypeContent
-									.getIDPropertyMapping().get(s);
+							String property = getIDPropertyMapping().get(s);
 							message.put(property, resultSet.getString(3));
 						}
 					} else {
@@ -384,8 +388,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 						// get property name from MessagePropertyTypeContent
 						// that holds id, property mapping
 						String s = resultSet.getString(2);
-						String property = MessagePropertyTypeContent
-								.getIDPropertyMapping().get(s);
+						String property = getIDPropertyMapping().get(s);
 						message.put(property, resultSet.getString(3));
 					}
 				}
@@ -403,6 +406,11 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		}
 		return messageResultList;
 	}
+
+    protected Map<String, String> getIDPropertyMapping() {
+        return MessagePropertyTypeContent
+        		.getIDPropertyMapping();
+    }
 
 	/**
 	 * Create from Calendar a date of type String in the format of the SQL
