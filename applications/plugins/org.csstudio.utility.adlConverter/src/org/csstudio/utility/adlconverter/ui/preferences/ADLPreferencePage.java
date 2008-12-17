@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -31,14 +32,13 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
             IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
             IFolder file = root.getFolder(new Path(pref));
             if(!file.exists()){
-                
                 getPreferenceStore().setValue(ADLConverterPreferenceConstants.P_STRING_Path_Target, "/NoPath");
             }
         }
         FieldEditor targetFieldEditor = new ContainerFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Target,"Target Path:",getFieldEditorParent());
         addField(targetFieldEditor);
         addField(new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target,"Relativ Target Path:",getFieldEditorParent()));
-
+        addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part,"Remove absolute path part:", getFieldEditorParent()));
     }
 
     /**

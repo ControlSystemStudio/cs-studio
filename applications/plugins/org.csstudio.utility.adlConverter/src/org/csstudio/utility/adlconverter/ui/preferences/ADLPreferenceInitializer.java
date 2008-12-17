@@ -52,6 +52,7 @@ public class ADLPreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Source,".");
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Target,"/CSS/SDS");
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target,"");
+        store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part,"/applic/graphic");
     }
 
 }

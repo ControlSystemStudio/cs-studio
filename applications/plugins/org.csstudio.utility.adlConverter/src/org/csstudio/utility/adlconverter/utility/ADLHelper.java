@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +33,9 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
@@ -49,7 +50,7 @@ import org.eclipse.swt.graphics.TextLayout;
 public final class ADLHelper {
     /** Contain all colors of an ADL Colormap as a RGBColor. */
     private static RGBColor[] _rgbColor;
-
+    private static String PATH_REMOVE_PART = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
     /**
      * The default Constructor.
      */
@@ -166,6 +167,9 @@ public final class ADLHelper {
             cleanString[i + 1] = string;
         }
         if (cleanString[0].endsWith(".adl")) { //$NON-NLS-1$
+            if(cleanString[0].startsWith(PATH_REMOVE_PART)) {
+                cleanString[0] = cleanString[0].replaceAll(PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 //        if (cleanString[1].startsWith("$")) { //$NON-NLS-1$
