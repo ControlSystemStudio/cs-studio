@@ -32,6 +32,7 @@ public class AutoSizeControlListener
 {
 	private static final int BORDER_STUFF = 4;
 	final private Table table;
+	final private boolean only_once;
 	private boolean autosize = false;
 	/** Flag to remember initial run to allow one Auto-size on initial run */
     private boolean initial_run = true;
@@ -44,16 +45,27 @@ public class AutoSizeControlListener
      */
     public AutoSizeControlListener(final Composite container, final Table table)
 	{
-	    this(table);
+	    this(table, false);
 	}
 
     /** Constructor.
      *  @param table The table to resize automatically
      */
-    @SuppressWarnings("nls")
     public AutoSizeControlListener(final Table table)
+    {
+        this(table, false);
+    }
+
+    /** Constructor.
+     *  @param table The table to resize automatically
+     *  @param only_once Disable auto-resize after initial resize
+     *                   (to be re-enabled by user via AutoSizeColumnAction?)
+     */
+    @SuppressWarnings("nls")
+    public AutoSizeControlListener(final Table table, final boolean only_once)
 	{
 		this.table = table;
+		this.only_once = only_once;
 		for (int i = 0; i < table.getColumnCount(); ++i)
 		{
 			final TableColumn column = table.getColumn(i);
@@ -72,7 +84,7 @@ public class AutoSizeControlListener
 	}
 
     /** @param enable Enable or disable the auto-sizing? */
-	void enableAutosize(boolean enable)
+	void enableAutosize(final boolean enable)
     {
         autosize = enable;
         if (autosize)
@@ -89,7 +101,7 @@ public class AutoSizeControlListener
 	@Override
 	public void controlResized(final ControlEvent ignored)
 	{
-        if (!autosize && !initial_run)
+        if (only_once && !autosize && !initial_run)
             return;
         initial_run = false;
 

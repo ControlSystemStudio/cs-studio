@@ -147,7 +147,7 @@ public class GUI implements ModelListener
         view_col.setLabelProvider(new ContentLabelProvider());
 
         final Action autosize =
-            new AutoSizeColumnAction(new AutoSizeControlListener(table));
+            new AutoSizeColumnAction(new AutoSizeControlListener(table, true));
         
         // Double-click on message opens detail
         table_viewer.getTable().addMouseListener(new MouseAdapter()
