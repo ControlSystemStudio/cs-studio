@@ -3,32 +3,26 @@ package org.csstudio.trends.databrowser.model;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.TraceType;
+import org.junit.Test;
 
-/** Test for ModelItem
+/** (Headless) JUnit Plug-in Test for ModelItem
  *  <p>
  *  Requires test database or 'excas' to run.
- *  <p>
- *  Since the ModelItem uses an SWT Color,
- *  not sure how to run this as a Unit test,
- *  so it's an application for
- *  <pre> 
- *   "Run as .. SWT Application"
- *  </pre>
  *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class FormulaModelItemTest
 {
+    @Test
     public void testModelItemScan() throws Exception
     {
-        PVModelItem.test_mode = true;
-        
-        PVModelItem fred = new PVModelItem(null, "fred",
+        final Model model = new Model();
+        PVModelItem fred = new PVModelItem(model, "fred",
                         1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
-        PVModelItem janet = new PVModelItem(null, "janet",
+        PVModelItem janet = new PVModelItem(model, "janet",
                         1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
@@ -60,7 +54,7 @@ public class FormulaModelItemTest
         dumpSamples(janet.getSamples());
         
         System.out.println("Formula:");
-        FormulaModelItem formula = new FormulaModelItem(null, "calc",
+        FormulaModelItem formula = new FormulaModelItem(model, "calc",
                         0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         FormulaInput inputs[] = new FormulaInput[]
@@ -69,6 +63,7 @@ public class FormulaModelItemTest
             new FormulaInput(janet),
         };
         formula.setFormula("1000*fred + janet", inputs);
+        formula.compute();
         samples = formula.getSamples();
         dumpSamples(samples);
     }
@@ -80,11 +75,5 @@ public class FormulaModelItemTest
             ModelSample sample = samples.get(i);
             System.out.println(sample.toString());
         }
-    }
-    
-    public static void main(String[] args) throws Exception
-    {
-        FormulaModelItemTest test = new FormulaModelItemTest();
-        test.testModelItemScan();
     }
 }

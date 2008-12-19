@@ -18,7 +18,6 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
-import org.csstudio.utility.pv.IPVFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -36,13 +35,6 @@ public class PVModelItem
     /** <code>"request"</code> */
     private static final String TAG_REQUEST = "request"; //$NON-NLS-1$
 
-    /** For unit tests within this package,
-     *  ModelItem can directly use EPICS_V3_PV,
-     *  because the extension mechanism used by the PVFactory
-     *  won't work in simple unit tests outside of an Eclipse runtime.
-     */
-    static public boolean test_mode = false;
-    
     /** The control system PV from which to get new values. */
     private PV pv;
     
@@ -111,16 +103,6 @@ public class PVModelItem
     {
         try
         {
-            if (test_mode)
-            {
-            	// For unit tests we create an EPICS_V3_PV
-            	// without going through the platform registry.
-            	// To avoid a dependency/import of the ..pv.epics
-            	// code, use Class.forName:
-            	final IPVFactory factory = (IPVFactory)
-            		Class.forName("org.csstudio.utility.pv.epics.EPICSPVFactory").newInstance();
-                return factory.createPV(pv_name);
-            }
             return PVFactory.createPV(pv_name);
         }
         catch (Exception ex)
@@ -134,7 +116,7 @@ public class PVModelItem
     @Override
     public void dispose()
     {
-        if (pv.isRunning())
+        if (pv != null && pv.isRunning())
             pv.stop();
         samples.clear();
         archives.clear();
@@ -143,12 +125,12 @@ public class PVModelItem
     
     /** @see IModelItem#changeName(String) */
     @Override
-    public void changeName(String new_name)
+    public void changeName(final String new_name)
     {
         // Avoid duplicates, do not allow if new name already in model.
         if (model.findItem(new_name) != null)
             return;
-        boolean was_running = pv.isRunning();
+        boolean was_running = pv != null  &&  pv.isRunning();
         if (was_running)
             stop();
         // Name change looks like remove/add back in
@@ -279,6 +261,8 @@ public class PVModelItem
     /** Start the item (subscribe, ...) */
     public final void start()
     {
+        if (pv == null)
+            return;
         try
         {
             pv.addListener(this);
@@ -293,6 +277,8 @@ public class PVModelItem
     /** Stop the item (subscribe, ...) */
     public final void stop()
     {
+        if (pv == null)
+            return;
         pv.removeListener(this);
         pv.stop();
     }
@@ -311,7 +297,8 @@ public class PVModelItem
     {
         synchronized (this)
         {
-            current_value = pv.getValue();
+            if (pv != null)
+                current_value = pv.getValue();
         }
     }
 

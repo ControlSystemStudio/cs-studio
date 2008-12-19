@@ -3,28 +3,22 @@ package org.csstudio.trends.databrowser.model;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.TraceType;
+import org.junit.Test;
 
-/** Test for the PVModelItem
+/** (Headless) JUnit Plug-inTest for the PVModelItem
  *  <p>
  *  Requires test database or 'excas' to run.
- *  <p>
- *  Since the ModelItem uses an SWT Color,
- *  not sure how to run this as a Unit test,
- *  so it's an application for
- *  <pre> 
- *   "Run as .. SWT Application"
- *  </pre>
  *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class PVModelItemTest
 {
+    @Test
     public void testModelItemScan() throws Exception
     {
-        PVModelItem.test_mode = true;
-        
-        PVModelItem item = new PVModelItem(null, "fred",
+        final Model model = new Model();
+        final PVModelItem item = new PVModelItem(model, "fred",
                         1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
@@ -42,7 +36,7 @@ public class PVModelItemTest
         }
         item.stop();
 
-        IModelSamples samples = item.getSamples();
+        final IModelSamples samples = item.getSamples();
         final int N = samples.size();
         if (N < 5)
             throw new Exception("Only " + N + " values?");
@@ -52,11 +46,5 @@ public class PVModelItemTest
             ModelSample sample = samples.get(i);
             System.out.println(sample.toString());
         }
-    }
-    
-    public static void main(String[] args) throws Exception
-    {
-        PVModelItemTest test = new PVModelItemTest();
-        test.testModelItemScan();
     }
 }

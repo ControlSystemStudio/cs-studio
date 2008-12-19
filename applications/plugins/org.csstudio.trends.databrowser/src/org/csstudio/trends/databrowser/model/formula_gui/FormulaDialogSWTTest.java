@@ -4,7 +4,6 @@ import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.model.PVModelItem;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -26,9 +25,6 @@ public class FormulaDialogSWTTest
         // Without setting a layout, you see nothing at all!
         shell.setLayout(new FillLayout());
 
- 
-        PVModelItem.test_mode = true;
-        
         Model model = new Model();
         model.addPV("fred");
         model.addPV("freddy");
