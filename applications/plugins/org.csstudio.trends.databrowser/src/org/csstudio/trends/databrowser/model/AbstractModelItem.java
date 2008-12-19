@@ -34,6 +34,7 @@ public abstract class AbstractModelItem
     static final String TAG_RED = "red"; //$NON-NLS-1$
     static final String TAG_AUTOSCALE = "autoscale"; //$NON-NLS-1$
     static final String TAG_VISIBLE = "visible"; //$NON-NLS-1$
+    static final String TAG_AXIS_VISIBLE = "axis_visible"; //$NON-NLS-1$
     static final String TAG_MAX = "max"; //$NON-NLS-1$
     static final String TAG_MIN = "min"; //$NON-NLS-1$
     static final String TAG_LINEWIDTH = "linewidth"; //$NON-NLS-1$
@@ -88,9 +89,26 @@ public abstract class AbstractModelItem
     /** Use log scale? */
     protected boolean log_scale;
     
+    /** Initialize
+     *  @param model
+     *  @param pv_name
+     *  @param axis_index
+     *  @param min
+     *  @param max
+     *  @param trace_visible
+     *  @param axis_visible
+     *  @param auto_scale
+     *  @param red
+     *  @param green
+     *  @param blue
+     *  @param line_width
+     *  @param trace_type
+     *  @param log_scale
+     */
     AbstractModelItem(final Model model, final String pv_name,
             final int axis_index, final double min, final double max,
-            final boolean visible,
+            final boolean trace_visible,
+            final boolean axis_visible,
             final boolean auto_scale,
             final int red, final int green, final int blue,
             final int line_width,
@@ -102,9 +120,8 @@ public abstract class AbstractModelItem
         this.axis_index = axis_index;
         this.axis_low = min;
         this.axis_high = max;
-        this.visible = visible;
-        // TODO get from config
-        axis_visible = true;
+        this.visible = trace_visible;
+        this.axis_visible = axis_visible;
         this.auto_scale = auto_scale;
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
@@ -410,6 +427,7 @@ public abstract class AbstractModelItem
         XMLHelper.XML(b, 3, TAG_MIN, Double.toString(axis_low));
         XMLHelper.XML(b, 3, TAG_MAX, Double.toString(axis_high));
         XMLHelper.XML(b, 3, TAG_VISIBLE, Boolean.toString(isVisible()));
+        XMLHelper.XML(b, 3, TAG_AXIS_VISIBLE, Boolean.toString(isAxisVisible()));
         XMLHelper.XML(b, 3, TAG_AUTOSCALE, Boolean.toString(getAutoScale()));
         XMLHelper.indent(b, 3); b.append("<" + TAG_COLOR + ">\n");
         XMLHelper.XML(b, 4, TAG_RED, Integer.toString(color.getRed()));

@@ -25,7 +25,7 @@ public class PVModelItemTest
         PVModelItem.test_mode = true;
         
         PVModelItem item = new PVModelItem(null, "fred",
-                        1024, 0, 0, 0, true, false, 0, 0, 0, 0,
+                        1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
         item.start();

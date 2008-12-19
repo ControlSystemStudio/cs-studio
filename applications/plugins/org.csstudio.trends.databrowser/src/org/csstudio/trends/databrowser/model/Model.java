@@ -499,7 +499,8 @@ public class Model
         // Default low..high range
         double low = 0.0;
         double high = 10.0;
-        final boolean visible = true;
+        final boolean trace_visible = true;
+        final boolean axis_visible = true;
         boolean auto_scale;
         try
         {
@@ -528,14 +529,16 @@ public class Model
         {
         case ProcessVariable:
             item = new PVModelItem(this, pv_name, live_buffer_size,
-                            		axis_index, low, high, visible, auto_scale,
+                            		axis_index, low, high, trace_visible,
+                            		axis_visible, auto_scale,
                                     red, green, blue, line_width, trace_type,
                                     log_scale,
                                     IPVModelItem.RequestType.OPTIMIZED);
             break;
         case Formula:
             item = new FormulaModelItem(this, pv_name, 
-                                    axis_index, low, high, visible, auto_scale,
+                                    axis_index, low, high, trace_visible,
+                                    axis_visible, auto_scale,
                                     red, green, blue, line_width, trace_type,
                                     log_scale);
             if (items.size() > 0)

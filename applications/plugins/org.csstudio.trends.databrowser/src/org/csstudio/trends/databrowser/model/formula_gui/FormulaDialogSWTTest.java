@@ -10,6 +10,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** SWT app for testing the Formula dialog.
+ *  <p>
+ *  Will complain "Cannot create PV ..." because the
+ *  full plugin support is missing in a standalone test.
  *  @author Kay Kasemir
  */
 public class FormulaDialogSWTTest
@@ -33,7 +36,7 @@ public class FormulaDialogSWTTest
         model.addPV("janet");
 
         FormulaModelItem formula = new FormulaModelItem(model, "calc",
-                        0, 0, 0, true, false, 0, 0, 0, 0,
+                        0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         FormulaInput inputs[] = new FormulaInput[]
         {

@@ -25,11 +25,11 @@ public class FormulaModelItemTest
         PVModelItem.test_mode = true;
         
         PVModelItem fred = new PVModelItem(null, "fred",
-                        1024, 0, 0, 0, true, false, 0, 0, 0, 0,
+                        1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
         PVModelItem janet = new PVModelItem(null, "janet",
-                        1024, 0, 0, 0, true, false, 0, 0, 0, 0,
+                        1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
         fred.start();
@@ -61,7 +61,7 @@ public class FormulaModelItemTest
         
         System.out.println("Formula:");
         FormulaModelItem formula = new FormulaModelItem(null, "calc",
-                        0, 0, 0, true, false, 0, 0, 0, 0,
+                        0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         FormulaInput inputs[] = new FormulaInput[]
         {

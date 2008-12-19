@@ -43,14 +43,16 @@ public class FormulaModelItem extends AbstractModelItem
     /** Constructor */
     public FormulaModelItem(Model model, String pv_name,
                             int axis_index, double min, double max,
-                            boolean visible,
+                            boolean trace_visible,
+                            boolean axis_visible,
                             boolean auto_scale,
                             int red, int green, int blue,
                             int line_width,
                             TraceType trace_type,
                             boolean log_scale)
     {
-        super(model, pv_name, axis_index, min, max, visible, auto_scale,
+        super(model, pv_name, axis_index, min, max, trace_visible,
+              axis_visible, auto_scale,
               red, green, blue, line_width, trace_type, log_scale);
         if (invalid_severity == null)
             invalid_severity = new ISeverity()
@@ -203,14 +205,16 @@ public class FormulaModelItem extends AbstractModelItem
         final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
         final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
         final double max = DOMHelper.getSubelementDouble(pv, TAG_MAX, 10.0);
-        final boolean visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
+        final boolean trace_visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
+        final boolean axis_visible = DOMHelper.getSubelementBoolean(pv, TAG_AXIS_VISIBLE, true);
         final boolean auto_scale = DOMHelper.getSubelementBoolean(pv, TAG_AUTOSCALE);
         final int rgb[] = loadColorFromDOM(pv);
         final boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
         final TraceType trace_type = loadTraceTypeFromDOM(pv);
         final FormulaModelItem item =
             new FormulaModelItem(model, name, axis_index,
-                      min, max, visible, auto_scale, rgb[0], rgb[1], rgb[2],
+                      min, max, trace_visible, axis_visible,
+                      auto_scale, rgb[0], rgb[1], rgb[2],
                       line_width, trace_type, log_scale);
         
         // Get the actual formula

@@ -72,7 +72,8 @@ public class PVModelItem
      *  @param axis_index The Y axis to use [0, 1, ...]
      *  @param min,
      *  @param max The Y axis range
-     *  @param visible
+     *  @param trace_visible
+     *  @param axis_visible
      *  @param auto_scale
      *  @param red,
      *  @param green,
@@ -86,17 +87,19 @@ public class PVModelItem
      *  but the ChartItem must not be running when released.
      *  @see #stop
      */
-    public PVModelItem(Model model, String pv_name, int live_buffer_size,
-    		int axis_index, double min, double max,
-            boolean visible,
-            boolean auto_scale,
-            int red, int green, int blue,
-            int line_width,
-            TraceType trace_type,
-            boolean log_scale,
-            RequestType request_type)
+    public PVModelItem(final Model model, final String pv_name,
+            final int live_buffer_size,
+            final int axis_index, final double min, final double max,
+            final boolean trace_visible, final boolean axis_visible,
+            final boolean auto_scale,
+            final int red, final int green, final int blue,
+            final int line_width,
+            final TraceType trace_type,
+            final boolean log_scale,
+            final RequestType request_type)
     {
-        super(model, pv_name, axis_index, min, max, visible, auto_scale,
+        super(model, pv_name, axis_index, min, max, trace_visible,
+              axis_visible, auto_scale,
               red, green , blue, line_width, trace_type, log_scale);
         pv = createPV(pv_name);
         samples = new ModelSamples(live_buffer_size);
@@ -227,7 +230,8 @@ public class PVModelItem
         final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
         final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
         final double max = DOMHelper.getSubelementDouble(pv, TAG_MAX, 10.0);
-        final boolean visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
+        final boolean trace_visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
+        final boolean axis_visible = DOMHelper.getSubelementBoolean(pv, TAG_AXIS_VISIBLE, true);
         final boolean auto_scale = DOMHelper.getSubelementBoolean(pv, TAG_AUTOSCALE);
         final int rgb[] = loadColorFromDOM(pv);
         final boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
@@ -236,7 +240,7 @@ public class PVModelItem
         
         final PVModelItem item =
             new PVModelItem(model, name, ring_size, axis_index,
-                          min, max, visible, auto_scale,
+                          min, max, trace_visible, axis_visible, auto_scale,
                           rgb[0], rgb[1], rgb[2],
                           line_width, trace_type, log_scale,
                           request_type);
