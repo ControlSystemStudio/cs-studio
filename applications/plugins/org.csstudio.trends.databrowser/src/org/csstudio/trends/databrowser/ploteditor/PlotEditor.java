@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.ploteditor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
@@ -316,7 +317,8 @@ public class PlotEditor extends EditorPart
         context_menu.add(new Separator());
         final Action view_action = new OpenPlotEditorAsViewAction(this);
         context_menu.add(view_action);
-        context_menu.add(new OpenPerspectiveAction(Messages.OpenPerspective, Perspective.ID));
+        context_menu.add(new OpenPerspectiveAction(icon,
+                                    Messages.OpenPerspective, Perspective.ID));
         context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
         context_menu.addMenuListener(new IMenuListener()
