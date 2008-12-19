@@ -27,7 +27,7 @@ public class PVTableLabelProvider extends LabelProvider implements
     /** Get text for all but the 'select' column,
      *  where some placeholder is returned.
      */
-	public String getColumnText(Object obj, int index)
+	public String getColumnText(final Object obj, final int index)
 	{
         if (obj == PVTableHelper.empty_row)
         {
@@ -39,14 +39,15 @@ public class PVTableLabelProvider extends LabelProvider implements
 	}
 
     /** {@inheritDoc} */
-	public Image getColumnImage(Object obj, int index)
+	public Image getColumnImage(final Object obj, final int index)
 	{
         if (obj != PVTableHelper.empty_row)
         {
-            IModelItem entry = (IModelItem) obj;
+            final IModelItem entry = (IModelItem) obj;
             if (index == PVTableHelper.Column.VISIBLE.ordinal())
                 return images.getImage(entry.isVisible());
-                            
+            if (index == PVTableHelper.Column.AXIS_VISIBLE.ordinal())
+                return images.getImage(entry.isAxisVisible());
             if (index == PVTableHelper.Column.AUTO_SCALE.ordinal())
                 return images.getImage(entry.getAutoScale());
         }
@@ -56,19 +57,19 @@ public class PVTableLabelProvider extends LabelProvider implements
     /** Change the background of the 'color' cells to the item's color.
      *  @see org.eclipse.jface.viewers.ITableColorProvider
      */
-    public Color getBackground(Object obj, int index)
+    public Color getBackground(final Object obj, final int index)
     {
         if (index == PVTableHelper.Column.COLOR.ordinal()  &&
             obj != PVTableHelper.empty_row)
         {
-            IModelItem entry = (IModelItem) obj;
+            final IModelItem entry = (IModelItem) obj;
             return entry.getColor();
         }
         return null;
     }
 
     /** @see org.eclipse.jface.viewers.ITableColorProvider */
-    public Color getForeground(Object obj, int index)
+    public Color getForeground(final Object obj, final int index)
     {
         return null;
     }

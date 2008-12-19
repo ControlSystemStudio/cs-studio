@@ -103,10 +103,12 @@ public class TraceNameYAxis extends YAxis
     }
     
     @Override
-    public final int getPixelWidth(GC gc)
+    public final int getPixelWidth(final GC gc)
     {
+        if (!isVisible())
+            return 0;
         determineLayout(gc);
-        Point char_size = gc.textExtent("X"); //$NON-NLS-1$
+        final Point char_size = gc.textExtent("X"); //$NON-NLS-1$
         // Room for (vertical) label rows + value text + tick markers.
         return (row_widths.length + 1)*char_size.y + TICK_LENGTH;
     }

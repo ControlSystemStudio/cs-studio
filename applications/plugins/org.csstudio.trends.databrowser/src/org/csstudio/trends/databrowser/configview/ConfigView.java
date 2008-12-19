@@ -433,6 +433,7 @@ public class ConfigView extends PlotAwareView
         }
         else
             editors[PVTableHelper.Column.AXIS.ordinal()] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.AXIS_VISIBLE.ordinal()] = new CheckboxCellEditor(table);
         editors[PVTableHelper.Column.COLOR.ordinal()] = new RGBCellEditor(table);
         editors[PVTableHelper.Column.LINE_WIDTH.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.LOG_SCALE.ordinal()] = new CheckboxCellEditor(table);

@@ -563,26 +563,43 @@ public class Model
     }
 
     /** Set axis limits of all items on given axis. */
-    public void setAxisLimits(int axis_index, double low, double high)
+    public void setAxisLimits(final int axis_index,
+                              final double low, final double high)
     {
         for (AbstractModelItem item : items)
         {
-            if (item.getAxisIndex() != axis_index)
-                continue;
-            // Don't call setAxisMin(), Max(), since that would recurse.
-            item.setAxisLimitsSilently(low, high);
-            fireEntryConfigChanged(item);
+            if (item.getAxisIndex() == axis_index &&
+                (item.getAxisLow()  != low ||
+                 item.getAxisHigh() != high))
+            {
+                // Don't call setAxisMin(), Max(), since that would recurse.
+                item.setAxisLimitsSilently(low, high);
+                fireEntryConfigChanged(item);
+            }
         }
     }
     
-    /** Set axis type (log, linear) of all items on given axis. */
-    void setLogScale(int axis_index, boolean use_log_scale)
+    /** Set axis visibility of all items on given axis. */
+    void setAxisVisible(final int axis_index, final boolean visible)
     {
         for (AbstractModelItem item : items)
         {
-            if (item.getAxisIndex() != axis_index)
-                continue;
-            if (item.getLogScale() != use_log_scale)
+            if (item.getAxisIndex() == axis_index &&
+                item.isAxisVisible() != visible)
+            {
+                item.setAxisVisibleSilently(visible);
+                fireEntryConfigChanged(item);
+            }
+        }
+    }
+
+    /** Set axis type (log, linear) of all items on given axis. */
+    void setLogScale(final int axis_index, final boolean use_log_scale)
+    {
+        for (AbstractModelItem item : items)
+        {
+            if (item.getAxisIndex() == axis_index  &&
+                item.getLogScale() != use_log_scale)
             {
                 item.setLogScaleSilently(use_log_scale);
                 fireEntryConfigChanged(item);
@@ -594,13 +611,12 @@ public class Model
      *  <p>
      *  Also updates the auto scaling of all other items on same axis.
      */
-    void setAutoScale(int axis_index, boolean use_auto_scale)
+    void setAutoScale(final int axis_index, final boolean use_auto_scale)
     {
         for (AbstractModelItem item : items)
         {
-            if (item.getAxisIndex() != axis_index)
-                continue;
-            if (item.getAutoScale() != use_auto_scale)
+            if (item.getAxisIndex() == axis_index  &&
+                item.getAutoScale() != use_auto_scale)
             {
                 item.setAutoScaleSilently(use_auto_scale);
                 fireEntryConfigChanged(item);
@@ -611,7 +627,7 @@ public class Model
     /** Add an archive data source to all items in the model.
      *  @see IModelItem#addArchiveDataSource(IArchiveDataSource)
      */
-    public void addArchiveDataSource(IArchiveDataSource archive)
+    public void addArchiveDataSource(final IArchiveDataSource archive)
     {
         for (IModelItem item : items)
             if (item instanceof IPVModelItem)

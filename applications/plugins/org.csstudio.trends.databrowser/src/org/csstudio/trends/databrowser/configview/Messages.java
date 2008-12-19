@@ -84,6 +84,7 @@ public class Messages extends NLS
     public static String ScanPeriodMustBeGt;
     public static String ScanPeriodSecs;
     public static String SetGraphTimes;
+    public static String AxisVisible;
     public static String StartEndDlg;
     public static String StartEndDlg_TT;
     public static String StartTime;

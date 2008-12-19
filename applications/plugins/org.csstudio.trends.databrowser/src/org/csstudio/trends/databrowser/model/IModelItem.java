@@ -57,6 +57,20 @@ public interface IModelItem extends IProcessVariableWithSamples
      */
     public void setVisible(boolean yesno);
 
+    /** Show the axis?
+     *  Trace will still show, this only controls
+     *  visibility of the axis
+     *  @see #setVisible(boolean)
+     *  @see #setAxisVisible(boolean)
+     */
+    public boolean isAxisVisible();
+
+    /** Make axis visible or hide it
+     *  @param visible <code>true</code> to display axis
+     *  @see #isAxisVisible()
+     */
+    public void setAxisVisible(boolean visible);
+
     /** @return Returns <code>true</code> if trace should be auto-scaled. */
     public boolean getAutoScale();
     

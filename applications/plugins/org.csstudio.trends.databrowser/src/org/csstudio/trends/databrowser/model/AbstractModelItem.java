@@ -62,6 +62,9 @@ public abstract class AbstractModelItem
     /** Is the item visible? */
     protected boolean visible;
     
+    /** Is the axis visible? */
+    private boolean axis_visible;
+    
     /** Auto scale trace */
     protected boolean auto_scale;
 
@@ -85,14 +88,14 @@ public abstract class AbstractModelItem
     /** Use log scale? */
     protected boolean log_scale;
     
-    AbstractModelItem(Model model, String pv_name,
-            int axis_index, double min, double max,
-            boolean visible,
-            boolean auto_scale,
-            int red, int green, int blue,
-            int line_width,
-            TraceType trace_type,
-            boolean log_scale)
+    AbstractModelItem(final Model model, final String pv_name,
+            final int axis_index, final double min, final double max,
+            final boolean visible,
+            final boolean auto_scale,
+            final int red, final int green, final int blue,
+            final int line_width,
+            final TraceType trace_type,
+            final boolean log_scale)
     {
         this.model = model;
         name = pv_name;
@@ -100,6 +103,8 @@ public abstract class AbstractModelItem
         this.axis_low = min;
         this.axis_high = max;
         this.visible = visible;
+        // TODO get from config
+        axis_visible = true;
         this.auto_scale = auto_scale;
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
@@ -183,7 +188,7 @@ public abstract class AbstractModelItem
      *  Derived classes might also need to change PV names etc.
      *  @see IModelItem#changeName(String)
      */
-    public void changeName(String new_name)
+    public void changeName(final String new_name)
     {
         // Avoid duplicates, do not allow if new name already in model.
         if (model.findItem(new_name) != null)
@@ -233,14 +238,14 @@ public abstract class AbstractModelItem
     {   return axis_high; }
 
     /** @see IModelItem#setAxisLow(double) */
-    final public void setAxisLow(double limit)
+    final public void setAxisLow(final double limit)
     {   
         axis_low = limit;
         model.setAxisLimits(axis_index, axis_low, axis_high);
     }
 
     /** @see IModelItem#setAxisHigh(double) */
-    final public void setAxisHigh(double limit)
+    final public void setAxisHigh(final double limit)
     {   
         axis_high = limit;
         model.setAxisLimits(axis_index, axis_low, axis_high);
@@ -250,7 +255,7 @@ public abstract class AbstractModelItem
      *  <p>
      *  Used by model to avoid recursion that would result from setAxisMin/Max.
      */
-    final public void setAxisLimitsSilently(double low, double high)
+    final public void setAxisLimitsSilently(final double low, final double high)
     {
         axis_low = low;
         axis_high = high;
@@ -263,7 +268,7 @@ public abstract class AbstractModelItem
     }
     
     /** @see IModelItem#setVisible(boolean) */
-    final public void setVisible(boolean yesno)
+    final public void setVisible(final boolean yesno)
     {
         if (visible == yesno)
             return; // no change
@@ -272,10 +277,39 @@ public abstract class AbstractModelItem
         model.fireEntryConfigChanged(this);
     }
     
-    /** @see IModelItem#setAutoScale(boolean) */
-    final public void setAutoScale(boolean auto_scale) 
+    final public boolean isAxisVisible()
     {
-        // Notify model of this change.
+       return axis_visible; 
+    }
+
+    /** Make axis visible or hide it
+     *  @param axis_visible <code>true</code> to display axis
+     *  @see #isAxisVisible()
+     */
+    final public void setAxisVisible(final boolean axis_visible)
+    {
+        // Notify model of this change because it affects all
+        // items on same axis
+        model.setAxisVisible(axis_index, axis_visible);
+    }
+
+    /** Make axis visible or hide it
+     *  @param axis_visible <code>true</code> to display axis
+     *  <p>
+     *  For internal use by the model to avoid recursion
+     *  as would happen with setAxisVisible.
+     *  @see #setAxisVisible()
+     */
+    final public void setAxisVisibleSilently(final boolean axis_visible)
+    {
+        this.axis_visible = axis_visible;
+    }
+    
+    /** @see IModelItem#setAutoScale(boolean) */
+    final public void setAutoScale(final boolean auto_scale) 
+    {
+        // Notify model of this change because it affects all
+        // items on same axis
         model.setAutoScale(axis_index, auto_scale);
     }
     
@@ -285,7 +319,7 @@ public abstract class AbstractModelItem
      *  as would happen with setAutoScale.
      *  @see #setLogScale(boolean)
      */
-    final void setAutoScaleSilently(boolean auto_scale) 
+    final void setAutoScaleSilently(final boolean auto_scale) 
     {
         this.auto_scale = auto_scale;
     }
@@ -299,7 +333,7 @@ public abstract class AbstractModelItem
     {   return color; }
     
     /** @see IModelItem#setColor(Color) */
-    final public void setColor(Color new_color)
+    final public void setColor(final Color new_color)
     {
         color.dispose();
         color = new_color;
@@ -314,7 +348,7 @@ public abstract class AbstractModelItem
     }
     
     /** Set the trace to a new line width. */
-    final public void setLineWidth(int new_width)
+    final public void setLineWidth(final int new_width)
     {
         line_width = new_width;
         // Notify model of this change.
@@ -328,7 +362,7 @@ public abstract class AbstractModelItem
     } 
     
     /** Set new display type */
-    final public void setTraceType(TraceType new_trace_type) 
+    final public void setTraceType(final TraceType new_trace_type) 
     {
         if(trace_type == new_trace_type)
             return;
@@ -344,7 +378,7 @@ public abstract class AbstractModelItem
     }
 
     /** Configure to use log. scale or not. */
-    final public void setLogScale(boolean use_log_scale)
+    final public void setLogScale(final boolean use_log_scale)
     {
         // Notify model of this change.
         model.setLogScale(axis_index, use_log_scale);
@@ -356,7 +390,7 @@ public abstract class AbstractModelItem
      *  as would happen with setLogScale.
      *  @see #setLogScale(boolean)
      */
-    final void setLogScaleSilently(boolean use_log_scale)
+    final void setLogScaleSilently(final boolean use_log_scale)
     {
         log_scale = use_log_scale;
     }
@@ -413,11 +447,9 @@ public abstract class AbstractModelItem
         }
         return default_rgb;
     }
-
-    
     
     /** Helper for loading trace type from DOM. */
-    protected static TraceType loadTraceTypeFromDOM(Element pv)
+    protected static TraceType loadTraceTypeFromDOM(final Element pv)
     {
         String trace_type_txt = DOMHelper.getSubelementString(pv, TAG_TRACE_TYPE);
         if (trace_type_txt.length() > 0)

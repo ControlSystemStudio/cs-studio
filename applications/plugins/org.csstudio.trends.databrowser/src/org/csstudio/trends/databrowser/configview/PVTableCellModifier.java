@@ -65,6 +65,8 @@ public class PVTableCellModifier implements ICellModifier
                     return new Integer(entry.getAxisIndex());
                 // Otherwise: fall through to String for text editor
                 break; // use string
+            case AXIS_VISIBLE:
+                return new Boolean(entry.isAxisVisible());
             case MIN:
                 break; // use string
             case MAX:
@@ -129,6 +131,10 @@ public class PVTableCellModifier implements ICellModifier
             case AXIS:
                 final int new_axis = Integer.valueOf(value.toString());
                 entry.setAxisIndex(new_axis);
+                return;
+            case AXIS_VISIBLE:
+                final boolean axis_visible = ((Boolean)value).booleanValue();
+                entry.setAxisVisible(axis_visible);
                 return;
             case MIN:
                 final double new_min = Double.valueOf(value.toString());

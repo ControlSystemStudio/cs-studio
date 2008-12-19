@@ -28,6 +28,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public class YAxis extends Axis
 {
+    /** Is the axis itself visible?
+     *  Doesn't affect he data on the axis
+     */
+    private boolean visible = true;
+
     /** The traces to plot. */
     private ArrayList<Trace> traces = new ArrayList<Trace>();
     
@@ -57,7 +62,7 @@ public class YAxis extends Axis
     
     /** <code>true</code> if this axis auto-zooms. */
     private boolean auto_scale = false;
-    
+
     /** Construct a new Y axis.
      *  <p>
      *  Note that end users will typically <b>not</b> create new Y axes,
@@ -82,6 +87,23 @@ public class YAxis extends Axis
         return "YAxis '" + label + "'";
     }
 
+    /** Hide or display an axis?
+     *  Does not affect the traces of the axis.
+     *  They will be displayed even if the axis itself is not drawn.
+     */
+    public void setVisible(final boolean visible)
+    {
+        this.visible  = visible;
+    }
+
+    /** @return <code>true</code> if axis is visible
+     *  @see #setVisible(boolean)
+     */
+    public boolean isVisible()
+    {
+        return visible;
+    }
+    
     /** Set a new label. */
     public final void setLabel(String new_label)
     {
@@ -460,9 +482,11 @@ public class YAxis extends Axis
     }
     
     /** @return Width (approximated) of this axis in pixels */
-    public int getPixelWidth(GC gc)
+    public int getPixelWidth(final GC gc)
     {
-        Point char_size = gc.textExtent("X"); //$NON-NLS-1$
+        if (!visible)
+            return 0;
+        final Point char_size = gc.textExtent("X"); //$NON-NLS-1$
         // Room for label (vertical) + value text + tick markers.
         return 2*char_size.y + TICK_LENGTH;
     }
@@ -475,7 +499,8 @@ public class YAxis extends Axis
     @SuppressWarnings("nls")
     public void paint(final Color grid_color, final PaintEvent event)
     {
-        if (!region.intersects(event.x, event.y, event.width, event.height))
+        if (! (visible &&
+               region.intersects(event.x, event.y, event.width, event.height)))
             return;
         if (Chart.debug)
             System.out.println("paint axis '" + getLabel() + "', "

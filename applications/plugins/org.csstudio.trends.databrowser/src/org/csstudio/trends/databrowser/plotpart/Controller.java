@@ -439,7 +439,7 @@ public class Controller implements ArchiveFetchJobListener
     }
     
     /** Connect a model item to the display by adding it to the chart. */
-    private void addToDisplay(IModelItem new_item)
+    private void addToDisplay(final IModelItem new_item)
     {
         // Avoid infinite loops if we are changing the model ourselves
         if (controller_changes_model)
@@ -447,7 +447,7 @@ public class Controller implements ArchiveFetchJobListener
         // In case the item is invisible, don't actually add it to the plot...
         if (new_item.isVisible())
         {
-            int yaxis_index = new_item.getAxisIndex();
+            final int yaxis_index = new_item.getAxisIndex();
             // Assert that the chart has the requested Y Axis.
             while (yaxis_index >= chart.getNumYAxes())
                 chart.addYAxis();
@@ -455,7 +455,7 @@ public class Controller implements ArchiveFetchJobListener
             // For the trace name, we use the item name plus its units.
             // Remember this when later trying to locate an item
             // by its trace name!
-            Trace trace = chart.addTrace(getTraceName(new_item),
+            final Trace trace = chart.addTrace(getTraceName(new_item),
                                          new_item.getSamples(),
                                          new_item.getColor(),
                                          new_item.getLineWidth(),
@@ -465,9 +465,11 @@ public class Controller implements ArchiveFetchJobListener
             controller_changes_yaxes = true;
             try
             {
-	            YAxis yaxis = trace.getYAxis();
+	            final YAxis yaxis = trace.getYAxis();
 	            yaxis.setValueRange(new_item.getAxisLow(), new_item.getAxisHigh());
 	            // Do we need to change the axis type?
+	            if (new_item.isAxisVisible() != yaxis.isVisible())
+	                yaxis.setVisible(new_item.isAxisVisible());
 	            if (new_item.getLogScale() != yaxis.isLogarithmic())
 	                yaxis.setLogarithmic(new_item.getLogScale());
 	            if (new_item.getAutoScale() != yaxis.getAutoScale())

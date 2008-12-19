@@ -194,17 +194,16 @@ public class ChartTest
      *  @param yaxis Axis to use or <code>null</code> for new axis to create.
      *  @return
      */
-    private YAxis addDemoTrace(String name, YAxis yaxis)
+    private YAxis addDemoTrace(final String name, YAxis yaxis)
     {
         // Create new sample sequence
-        ChartSampleSequenceContainer seq = new ChartSampleSequenceContainer();
-        int i;
-        int N = 100;
-        double twopi = 2.0 * Math.PI;
-        double phase = twopi * Math.random();
-        double shift = 100 + 10.0*Math.random();
-        double x0 = TimestampFactory.now().toDouble();
-        for (i=0; i<=N; ++i)
+        final ChartSampleSequenceContainer seq = new ChartSampleSequenceContainer();
+        final int N = 100;
+        final double twopi = 2.0 * Math.PI;
+        final double phase = twopi * Math.random();
+        final double shift = 100 + 10.0*Math.random();
+        final double x0 = TimestampFactory.now().toDouble();
+        for (int i=0; i<=N; ++i)
         {
             double x;
             if ((chart_flags & Chart.TIME_CHART) != 0)
@@ -238,12 +237,16 @@ public class ChartTest
         else
             yaxis.setLabel(name);
         final int axis_index = chart.getYAxisIndex(yaxis);
+        // Auto-scale every other axis
         if ((axis_index % 2) == 1)
             yaxis.setAutoScale(true);
-        i = chart.getNumTraces();
-        Color color = new Color(null, DefaultColors.getRed(i),
-                                DefaultColors.getGreen(i),
-                                DefaultColors.getBlue(i));
+        // Hide every 3rd axis
+        if ((axis_index % 3) == 1)
+            yaxis.setVisible(false);
+        final int next = chart.getNumTraces();
+        Color color = new Color(null, DefaultColors.getRed(next),
+                                DefaultColors.getGreen(next),
+                                DefaultColors.getBlue(next));
         // Add to chart
         chart.addTrace(name, seq, color, 0, axis_index,
                        TraceType.Area);
