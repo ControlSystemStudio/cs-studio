@@ -467,9 +467,9 @@ public class Chart extends Canvas
     /** @returns Returns the selected or first y axis. */
     YAxis getSelectedOrFirstYAxis()
     {
-        for (YAxis yaxis : yaxes)
-            if (yaxis.isSelected())
-                return yaxis;
+        final YAxis selected = getSelectedYAxis();
+        if (selected != null)
+            return selected;
         return yaxes.get(0);
     }
     
@@ -920,26 +920,19 @@ public class Chart extends Canvas
             }
             // No marker selected.
             // Pass click on to listeners.
-            final YAxis current = getSelectedOrFirstYAxis();
-            firePointSelected(current, xaxis.getValue(x), current.getValue(y));
+            firePointSelected(x, y);
             return;
         }
         // A click on a Y axis selects it, and de-selects the others.
-        boolean any_selected = false;
         setRedraw(false);
         for (int i=0; i<yaxes.size(); ++i)
         {
-            YAxis yaxis = yaxes.get(i);
+            final YAxis yaxis = yaxes.get(i);
             boolean selected = yaxis.getRegion().contains(x, y);
             yaxes.get(i).setSelected(selected);
-            if (selected)
-                any_selected = true;
         }
         // redraw the plot, since the grid might have changed
         setRedraw(true);
-        
-        if (any_selected)
-            return;
     }
 
     /** Send aboutToZoomOrPan event to listeners */
@@ -950,10 +943,10 @@ public class Chart extends Canvas
     }
     
     /** Send pointSelected event to listeners */
-    private void firePointSelected(YAxis current, double xval, double yval)
+    private void firePointSelected(final int x, final int y)
     {
         for (ChartListener listener : listeners)
-            listener.pointSelected(xaxis, current, xval, yval);
+            listener.pointSelected(x, y);
     }
     
     /** Handle a rubber-band-zoom for the given region. */

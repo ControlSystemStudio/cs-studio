@@ -66,18 +66,18 @@ public class ChartTest
                         + description);
             }
 
-            public void changedXAxis(XAxis xaxis)
+            public void changedXAxis(final XAxis xaxis)
             {
                 System.out.println("ChartTest ChartListener: XAxis changed");
             }
 
-            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
+            public void changedYAxis(final YAxisListener.Aspect what, final YAxis yaxis)
             {
                 System.out.println("ChartTest ChartListener: " + yaxis
                                 + " has new " + what);
             }
 
-            public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
+            public void pointSelected(final int x, final int y)
             {
                 System.out.println("ChartTest ChartListener: Point " +
                                 x + ", " + y + " Selected");

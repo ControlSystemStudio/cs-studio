@@ -96,11 +96,9 @@ public class InteractiveChart extends Composite
             public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
             { /* NOP */ }
 
-            public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
+            public void pointSelected(final int x, final int y)
             {
-                if (yaxis == null)
-                    return;
-                addMarker(xaxis, yaxis, x, y);
+                addMarker(x, y);
             }
         });
     }
@@ -485,37 +483,65 @@ public class InteractiveChart extends Composite
     }
     
     /** Add a marker for the current screen coord.
-     *  @param xaxis XAxis
-     *  @param yaxis YAxix
-     *  @param x X coord in value space
-     *  @param y Y coord in value space
+     *  @param sx,sy X/Y coords in screen coords
      */
-    private void addMarker(XAxis xaxis, YAxis yaxis, double x, double y)
+    private void addMarker(final int sx, final int sy)
     {
-        // Adds a marker for the selected sample
-        final TraceSample best = yaxis.getClosestSample(xaxis, x, y);
-        if (best == null)
+        // Get value space x0/y0 for screen coords sx, sy ...
+        final XAxis xaxis = chart.getXAxis();
+        final double x0 = xaxis.getValue(sx);
+        // ... using which Y axis?
+        TraceSample best_sample = null;
+        YAxis best_axis = chart.getSelectedYAxis();
+        if (best_axis != null)
+        {   // Use selected axis
+            final double y0 = best_axis.getValue(sy);
+            best_sample = best_axis.getClosestSample(xaxis, x0, y0);
+        }
+        else
+        {   // Locate Y Axis with closest sample
+            long closest = Long.MAX_VALUE;
+            for (int i=0;  i<chart.getNumYAxes(); ++i)
+            {   // Get nearest sample on this yaxis
+                final YAxis yaxis = chart.getYAxis(i);
+                final double y0 = yaxis.getValue(sy);
+                final TraceSample near = yaxis.getClosestSample(xaxis, x0, y0);
+                if (near == null)
+                    continue;
+                // Is that the best match to sx/sy?
+                final int x = xaxis.getScreenCoord(near.getSample().getX());
+                final int y = yaxis.getScreenCoord(near.getSample().getY());
+                final int dx = sx-x, dy = sy-y;
+                final long dist = dx*dx + dy*dy;
+                if (dist < closest)
+                {
+                    closest = dist;
+                    best_sample = near;
+                    best_axis = yaxis;
+                }
+            }
+        }
+        if (best_sample == null)
             return;
-        final ChartSample sample = best.getSample();
-        x = sample.getX();
-        y = sample.getY();
+        
+        // Add marker for the selected sample
+        final ChartSample sample = best_sample.getSample();
+        final double x = sample.getX(),  y = sample.getY();
         final StringBuilder b = new StringBuilder();
-        b.append(best.getTrace().getName());
+        b.append(best_sample.getTrace().getName());
         b.append("\n"); //$NON-NLS-1$
         b.append(xaxis.getTicks().format(x, 2));
         // Show value, unless it's NaN or +- inf
-        if (!Double.isInfinite(y) &&
-            !Double.isNaN(y))
+        if (! (Double.isInfinite(y) || Double.isNaN(y)))
         {
             b.append("\n"); //$NON-NLS-1$
-            b.append(yaxis.getTicks().format(y, 2));
+            b.append(best_axis.getTicks().format(y, 2));
         }
         if (sample.getInfo() != null)
         {
             b.append("\n"); //$NON-NLS-1$
             b.append(sample.getInfo());
         }
-        final Marker marker = new Marker(x, y, b.toString());
-        yaxis.addMarker(marker);
+        best_axis.addMarker(new Marker(x, y, b.toString()));
     }
 } 

@@ -210,7 +210,7 @@ public class Controller implements ArchiveFetchJobListener
             gui.addCurrentZoomToUndoStack(description);
         }
 
-        public void changedXAxis(XAxis xaxis)
+        public void changedXAxis(final XAxis xaxis)
         {
             // Did the controller cause this?
             if (controller_changes_xaxis)
@@ -251,7 +251,7 @@ public class Controller implements ArchiveFetchJobListener
             getArchivedData(null);
         }
 
-        public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
+        public void changedYAxis(final YAxisListener.Aspect what, final YAxis yaxis)
         {
             // Avoid infinite loop: We are changing the axes, so ignore.
             if (controller_changes_yaxes)
@@ -298,7 +298,7 @@ public class Controller implements ArchiveFetchJobListener
             }
         }
 
-        public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
+        public void pointSelected(final int x, final int y)
         { /* NOP */ }
     };
     

@@ -30,4 +30,11 @@ public class TraceSample
     {
         return trace;
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("TraceSample %s @ %g/%g", //$NON-NLS-1$
+                sample.getType().name(), sample.getX(), sample.getY());
+    }
 }

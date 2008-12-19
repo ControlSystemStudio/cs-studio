@@ -1,8 +1,6 @@
 package org.csstudio.swt.chart;
 
-import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.XAxisListener;
-import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
 
 /** Listener for a Chart.
@@ -19,6 +17,7 @@ public interface ChartListener extends XAxisListener, YAxisListener
     
     /** A coordinate was selected.
      *  Somebody clicked the mouse on the graph area.
+     *  @param x, y Selected screen coordinates
      */
-    public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y);
+    public void pointSelected(int x, int y);
 }

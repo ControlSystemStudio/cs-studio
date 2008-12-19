@@ -192,4 +192,11 @@ public class Axis
             dirty_ticks = false;
         }
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("Axis '%s', value %g...%g", //$NON-NLS-1$
+                getLabel(), getLowValue(), getHighValue());
+    }
 }
