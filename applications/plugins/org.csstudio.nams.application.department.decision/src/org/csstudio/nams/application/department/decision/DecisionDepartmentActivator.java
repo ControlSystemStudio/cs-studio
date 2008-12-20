@@ -338,9 +338,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						"Decision department application is going to be initialized...");
 
         /* For XMPP login ADDED BY Markus Moeller 2008-11-26
-		for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
+		for(IStartupServiceListener service : StartupServiceEnumerator.getServices())
         {
-            s.run();
+            service.run();
         }
         */
 		
