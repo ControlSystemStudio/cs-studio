@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.1"?>
+<?pde version="3.4"?>
 
-<product name="Jms2Ora" id="org.csstudio.alarm.jms2ora.Jms2OraProduct" application="org.csstudio.alarm.Jms2OraId" useFeatures="false">
+<product name="Jms2Ora" id="org.csstudio.alarm.jms2ora.Jms2OraProduct" application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId" useFeatures="false">
 
-   <configIni use="default"/>
+   <configIni use="default">
+   </configIni>
 
    <launcherArgs>
       <programArgs>-console</programArgs>
@@ -38,7 +39,7 @@
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
-      <plugin id="org.eclipse.core.resources.win32" fragment="true"/>
+      <plugin id="org.eclipse.core.resources.win32"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
