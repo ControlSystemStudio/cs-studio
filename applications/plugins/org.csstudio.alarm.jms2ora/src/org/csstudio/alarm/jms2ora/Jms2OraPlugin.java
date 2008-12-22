@@ -26,8 +26,9 @@ package org.csstudio.alarm.jms2ora;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.osgi.framework.BundleContext;
@@ -46,12 +47,15 @@ public class Jms2OraPlugin extends AbstractCssPlugin
 	/** The configuration */
     private PropertiesConfiguration config = null;
 
+    private Logger logger = null;
+    
     /**
 	 * The constructor
 	 */
 	public Jms2OraPlugin()
 	{
 	    plugin = this;
+	    createLogger();
 	}
 
     @Override
@@ -67,7 +71,7 @@ public class Jms2OraPlugin extends AbstractCssPlugin
         }
         catch(ConfigurationException e)
         {
-            CentralLogger.getInstance().error(this, "Configuration not loadable...");
+            logger.error("Configuration not loadable...");
         }
 
         for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
@@ -75,13 +79,23 @@ public class Jms2OraPlugin extends AbstractCssPlugin
             s.run();
         }
         
-        CentralLogger.getInstance().info(this, "Jms2Ora started...");
+        logger.info("Jms2Ora started...");
     }
 
     @Override
     protected void doStop(BundleContext context) throws Exception
     {
+    }
+
+    private boolean createLogger()
+    {
+        boolean result = false;
         
+        PropertyConfigurator.configure("log4j-jms2ora.properties");
+        
+        logger = Logger.getLogger(Jms2OraApplication.class);
+        
+        return result;
     }
 
 	/**

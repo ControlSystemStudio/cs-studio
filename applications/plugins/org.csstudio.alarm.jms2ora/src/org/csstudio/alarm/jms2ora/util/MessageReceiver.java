@@ -42,14 +42,14 @@ import javax.jms.Topic;
 
 public class MessageReceiver
 {
-    private Hashtable<String, String>   properties  = null;
-    private Context                     context     = null;
-    private ConnectionFactory           factory     = null;
-    private Connection                  connection  = null;
-    private Session                     session     = null;
-    private MessageConsumer[]           receiver    = null;
-    private Topic                       destination = null;  // if ! topic: Destination
-    private String[]                    topics      = null;
+    private Hashtable<String, String> properties  = null;
+    private Context context = null;
+    private ConnectionFactory factory = null;
+    private Connection connection = null;
+    private Session session = null;
+    private MessageConsumer[] receiver = null;
+    private Topic destination = null;
+    private String[] topics = null;
 
 	/*
     public MessageReceiver() throws NamingException
@@ -132,50 +132,31 @@ public class MessageReceiver
             {
                 if(r != null)
                 {
-        			try
-                    {
-                        r.close();
-                    }
-                    catch(JMSException e) { }
+        			try{r.close();}catch(JMSException e){}
+        			r = null;
                 }
-                
-    			r = null;
     		}
         }
         
         if(session != null)
         {
-            try
-            {
-                session.close();
-            }
-            catch(JMSException jmse) { }
+            try{session.close();}catch(JMSException jmse){}
+            session = null;
         }
         
         if(connection != null)
         {
-            try
-            {
-                connection.stop();
-            }
-            catch(JMSException jmse) { }
-        
-            try
-            {
-                connection.close();
-            }
-            catch(JMSException jmse) { }     
+            try{connection.stop();}catch(JMSException jmse){}        
+            try{connection.close();}catch(JMSException jmse){}
+            connection = null;
         }
 
         //properties  = null;
         
         if(context != null)
         {
-            try
-            {
-                context.close();
-            }
-            catch(NamingException e) { }
+            try{context.close();}catch(NamingException e){}
+            context = null;
         }
         
         //properties  = null;

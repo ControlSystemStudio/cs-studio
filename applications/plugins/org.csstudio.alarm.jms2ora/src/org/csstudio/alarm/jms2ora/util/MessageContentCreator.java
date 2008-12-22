@@ -54,6 +54,9 @@ public class MessageContentCreator
     
     /** Object for database handling */
     private DatabaseLayer dbLayer = null;
+    
+    /** Filter to avoid message storms */
+    private MessageFilter messageFilter = null;
 
     /** Number of bytes that can be stored in the column value of the table MESSAGE_CONTENT  */
     private int valueLength = 0;
@@ -78,6 +81,8 @@ public class MessageContentCreator
         }
         
         initDiscardTypes();
+        
+        messageFilter = MessageFilter.getInstance();
     }
     
     private void initDiscardTypes()
@@ -110,6 +115,11 @@ public class MessageContentCreator
     public boolean arePropertiesAvailable()
     {
         return (!msgProperty.isEmpty());
+    }
+    
+    public synchronized void stopWorking()
+    {
+        messageFilter.stopWorking();
     }
     
     public MessageContent convertMapMessage(MapMessage mmsg)
@@ -287,6 +297,16 @@ public class MessageContentCreator
             }
         }
         
+        if(messageFilter.shouldBeBlocked(msgContent))
+        {
+            logger.debug("Block it!");
+            msgContent.deleteContent();
+        }
+        else
+        {
+            logger.debug("Process it!");
+        }
+
         return msgContent;
     }
     

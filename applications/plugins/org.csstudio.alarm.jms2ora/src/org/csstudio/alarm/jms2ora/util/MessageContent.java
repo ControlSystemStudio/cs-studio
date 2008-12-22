@@ -92,6 +92,16 @@ public class MessageContent implements Serializable
         return(!msgIdContent.isEmpty());
     }
     
+    public void deleteContent()
+    {
+        msgIdContent.clear();
+        msgIdContent = null;
+        msgIdContent = new Hashtable<Long, String>();
+        
+        unknownContent.clear();
+        unknownContent = null;
+        unknownContent = new Vector<String>();
+    }
     /**
      * 
      *  @return True, if the object contains unknown message properties, false otherwise
@@ -165,6 +175,61 @@ public class MessageContent implements Serializable
         result = result + "(discard=" + discard + ")";
 
         result = result + "}";
+        
+        return result;
+    }
+    
+    public String toStringWithoutEventtime()
+    {
+        String temp = null;
+        String result = "{MessageContent";
+        
+        result = result + ":[Known properties]";
+        
+        Enumeration<String> list = msgNameContent.keys();
+        while(list.hasMoreElements())
+        {
+            temp = list.nextElement();
+            if(temp.compareToIgnoreCase("EVENTTIME") != 0)
+            {
+                result = result + "(" + temp + "=" + msgNameContent.get(temp) + ")";
+            }
+        }
+        
+        result = result + ":[Unknown properties]";
+
+        list = unknownContent.elements();
+        while(list.hasMoreElements())
+        {
+            temp = list.nextElement();
+            result = result + "(" + temp + ")";
+        }
+        
+        result = result + ":[Object attributes]";
+        
+        result = result + "(unknownId=" + unknownId + ")";
+        result = result + "(discard=" + discard + ")";
+
+        result = result + "}";
+        
+        return result;
+    }
+
+    public boolean isEqual(MessageContent mc)
+    {
+        boolean result;
+        String temp;
+        
+        temp = mc.toStringWithoutEventtime();
+        
+        if(temp.compareTo(this.toStringWithoutEventtime()) == 0)
+        {
+            result = true;
+        }
+        else
+        {
+            result = false;
+        }
         
         return result;
     }

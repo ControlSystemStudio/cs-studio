@@ -36,6 +36,7 @@ import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
+import org.csstudio.alarm.jms2ora.util.SimpleStatistic;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
@@ -74,11 +75,12 @@ public class MessageProcessor extends Thread implements MessageListener
     private static MessageProcessor instance = null;
     
     /** Queue for received messages */
-    private ConcurrentLinkedQueue<MapMessage> messages = new ConcurrentLinkedQueue<MapMessage>();
+    private ConcurrentLinkedQueue<MessageContent> messages = new ConcurrentLinkedQueue<MessageContent>();
     
     /** Object for database handling */
     private DatabaseLayer dbLayer = null;
     
+    /** Object that creates the MessageContent objects */
     private MessageContentCreator contentCreator = null;
     
     /** Array of message receivers */
@@ -86,6 +88,9 @@ public class MessageProcessor extends Thread implements MessageListener
     
     /** Reads and holds the configuration stored in the confid file */
     private PropertiesConfiguration config = null;
+    
+    /** A very simple statistic class */
+    private SimpleStatistic statistic = null;
     
     /** The logger */
     private Logger logger = null;
@@ -105,10 +110,10 @@ public class MessageProcessor extends Thread implements MessageListener
     /** Indicates whether or not this thread stopped clean */
     private boolean stoppedClean = false;
     
-    private Jms2OraStart parent = null;
+    private Jms2OraApplication parent = null;
     
-    private final String version = " 2.1.1";
-    private final String build = " - BUILD 2008-10-16 09:20";
+    private final String version = " 2.2.0";
+    private final String build = " - BUILD 2008-12-22 11:40";
     private final String application = "Jms2Ora";
 
     /** Time to sleep in ms */
@@ -129,7 +134,7 @@ public class MessageProcessor extends Thread implements MessageListener
                                        "Message is empty.",
                                        "Database error",
                                        "JMS error",
-                                       "General error"};
+                                       "General error" };
 
     /**
      * A nice private constructor...
@@ -146,6 +151,8 @@ public class MessageProcessor extends Thread implements MessageListener
         dbLayer = new DatabaseLayer(config.getString("database.url"), config.getString("database.user"), config.getString("database.password"));
         
         contentCreator = new MessageContentCreator(dbLayer);
+        
+        statistic = SimpleStatistic.getInstance();
         
         if(config.containsKey("provider.url") && config.containsKey("topic.names"))
         {
@@ -208,11 +215,9 @@ public class MessageProcessor extends Thread implements MessageListener
     public void run()
     {
         MessageContent content = null;
-        MapMessage mapMessage  = null;
         int result;
         
-        logger.info("Started" + application + version + build);
-        
+        logger.info("Started" + application + version + build);        
         logger.info("Waiting for messages...");
         
         while(running)
@@ -221,9 +226,7 @@ public class MessageProcessor extends Thread implements MessageListener
 
             while(!messages.isEmpty() && running)
             {
-                mapMessage = messages.poll();
-                
-                content = contentCreator.convertMapMessage(mapMessage);               
+                content = messages.poll();
                 result = processMessage(content);
                 if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
                 {                    
@@ -237,12 +240,23 @@ public class MessageProcessor extends Thread implements MessageListener
                     if(result != PM_RETURN_OK)
                     {
                         logger.info(infoText[result]);
+                        if(result == PM_RETURN_DISCARD)
+                        {
+                            statistic.incrementNumberOfDiscardedMessages();
+                        }
+                        else if(result == this.PM_RETURN_EMPTY)
+                        {
+                            statistic.incrementNumberOfEmptyMessages();
+                        }
                     }
                     else
                     {
+                        statistic.incrementNumberOfStoredMessages();
                         logger.debug(infoText[result]);
                     }
                 }
+                
+                logger.debug(statistic.toString());
                 
                 parent.setStatus(ApplicState.WORKING);
             }
@@ -255,15 +269,17 @@ public class MessageProcessor extends Thread implements MessageListener
                 {
                     try
                     {
-                        wait(SLEEPING_TIME);                    
+                        wait(SLEEPING_TIME);
                     }
                     catch(InterruptedException ie)
                     {
-                        logger.error("*** InterruptedException *** : executeMe() : wait() : " + ie.getMessage());
+                        logger.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
                     
                         running = false;
                     }               
                 }
+                
+                logger.debug("Waked up...");
             }
         }
         
@@ -279,8 +295,7 @@ public class MessageProcessor extends Thread implements MessageListener
         
         while(!messages.isEmpty())
         {
-            mapMessage = messages.poll();
-            content = contentCreator.convertMapMessage(mapMessage);
+            content = messages.poll();
             
             result = processMessage(content);
             if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
@@ -295,7 +310,7 @@ public class MessageProcessor extends Thread implements MessageListener
                 writtenToDb++;
             }
             
-            mapMessage = null;
+            content = null;
         }
         
         stoppedClean = true;
@@ -315,10 +330,16 @@ public class MessageProcessor extends Thread implements MessageListener
     
     public void onMessage(Message message)
     {
+        MessageContent content = null;
+        
+        logger.debug("onMessage(): " + message.toString());
+        
         if(message instanceof MapMessage)
         {
-            messages.add((MapMessage)message);
-        
+            content = contentCreator.convertMapMessage((MapMessage)message);
+            messages.add(content);
+            statistic.incrementNumberOfReceivedMessages();
+
             synchronized(this)
             {
                 notify();
@@ -421,13 +442,14 @@ public class MessageProcessor extends Thread implements MessageListener
         }
     }
     
-    public void setParent(Jms2OraStart parent)
+    public void setParent(Jms2OraApplication parent)
     {
         this.parent = parent;
     }
     
     public synchronized void stopWorking()
     {
+        contentCreator.stopWorking();
         running = false;
         
         this.notify();

@@ -25,9 +25,7 @@
 package org.csstudio.alarm.jms2ora;
 
 import java.io.File;
-
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.SynchObject;
 import org.eclipse.equinox.app.IApplication;
@@ -40,9 +38,9 @@ import org.eclipse.equinox.app.IApplicationContext;
  *
  */
 
-public class Jms2OraStart implements IApplication
+public class Jms2OraApplication implements IApplication
 {
-    private static Jms2OraStart instance = null;
+    private static Jms2OraApplication instance = null;
     
     /** The MessageProcessor does all the work on messages */
     private MessageProcessor messageProcessor = null;
@@ -71,31 +69,20 @@ public class Jms2OraStart implements IApplication
     /** Time to sleep in ms */
     private long WAITFORTHREAD = 20000 ;
 
-    public Jms2OraStart()
+    public Jms2OraApplication()
     {
         instance = this;
-        
-        createLogger();    
+        logger = Logger.getLogger(Jms2OraApplication.class);
         createObjectFolder();
     
         sync = new SynchObject(ApplicState.INIT, System.currentTimeMillis());
     }
     
-    public static Jms2OraStart getInstance()
+    public static Jms2OraApplication getInstance()
     {
         return instance;
     }
     
-    private boolean createLogger()
-    {
-        boolean result = false;
-        
-        PropertyConfigurator.configure("log4j-jms2ora.properties");
-        
-        logger = Logger.getLogger(Jms2OraStart.class);
-        
-        return result;
-    }
 
     public Object start(IApplicationContext context) throws Exception
     {
