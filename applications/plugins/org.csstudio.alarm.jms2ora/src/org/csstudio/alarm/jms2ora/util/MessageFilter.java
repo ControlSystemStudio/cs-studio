@@ -23,7 +23,9 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 
 /**
  * @author Markus Moeller
@@ -40,11 +42,17 @@ public class MessageFilter
     /** Thread that checks the hash table containing the stored messages */
     private WatchDog watchdog = null;
     
-    private final long TIME_DIFF = 120000;
+    private long timePeriod = 120000;
+    
+    private long watchdogWaitTime = 120000;
     
     private MessageFilter()
     {
-        messages = new MessageFilterContainer();
+        PropertiesConfiguration conf = Jms2OraPlugin.getDefault().getConfiguration();
+        timePeriod = conf.getLong("watchdog.period", 120000);
+        watchdogWaitTime = conf.getLong("watchdog.wait", 60000);
+        
+        messages = new MessageFilterContainer(conf.getInt("filter.bundle", 100));
         watchdog = new WatchDog();
         watchdog.start();
     }
@@ -93,7 +101,7 @@ public class MessageFilter
                 {
                     try
                     {
-                        wait(60000);
+                        wait(watchdogWaitTime);
                     }
                     catch(InterruptedException ie)
                     {
@@ -106,7 +114,7 @@ public class MessageFilter
                 
                 synchronized(messages)
                 {
-                    count = messages.removeInvalidContent(TIME_DIFF);
+                    count = messages.removeInvalidContent(timePeriod);
                     logger.debug("WatchDog has removed " + count + " message(s).");
                 }
             }

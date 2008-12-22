@@ -45,19 +45,23 @@ public class MessageFilterContainer
     /** Vector object containing used id's*/
     private Vector<Long> freeIds;
 
+    /** Number of messages that initiates a collected message */
+    private int messageBundle;
+    
     /** */
     private long nextId;
     
     /**
      * Standard constructor
      */
-    public MessageFilterContainer()
+    public MessageFilterContainer(int bundle)
     {
         messages = new Hashtable<String, Long>();
         messageTime = new Hashtable<Long, Long>();
         messageCount = new Hashtable<Long, Integer>();
         freeIds = new Vector<Long>();
         nextId = 1;
+        messageBundle = bundle;
     }
     
     /**
@@ -85,7 +89,7 @@ public class MessageFilterContainer
             messageTime.put(id, System.currentTimeMillis());
             
             count = messageCount.get(id);
-            if(count >= 100)
+            if(count >= messageBundle)
             {
                 // Do not block the message because now we have a bundle of messages.
                 // For 100 received messages that are identical, send only one message.
@@ -145,7 +149,7 @@ public class MessageFilterContainer
      * @param timeDiff
      * @return
      */
-    public synchronized int removeInvalidContent(final long timeDiff)
+    public synchronized int removeInvalidContent(long timePeriod)
     {
         Enumeration<Long> tableId = null;
         long ct = 0;
@@ -157,7 +161,7 @@ public class MessageFilterContainer
         while(tableId.hasMoreElements())
         {
             id = tableId.nextElement().longValue();
-            if((ct - messageTime.get(id).longValue()) > timeDiff)
+            if((ct - messageTime.get(id).longValue()) > timePeriod)
             {
                 messageCount.remove(id);
                 messageTime.remove(id);
