@@ -148,6 +148,24 @@ public class Application implements IApplication, ExceptionListener
                     break;
 
                 // TODO decode more message properties from input?
+                // EDM will send text lines with tag/value pairs,
+                // one message per line:
+                // user="..." host="..." dsp="..."  <more tags>\n
+                // user="..." host="..." dsp="..."  <more tags>\n
+                //
+                // Meaning of the tags:
+                // user = user name
+                // host = host name
+                // dsp = X Display name
+                // name = pv name
+                // old = old pv value
+                // new = new pv value
+                //
+                // Example:
+                // ssh = "remote-ip remote-port local-ip local-port"
+                // user="sinclair" host="orib36"
+                // ssh="::ffff:192.168.18.51 43902 ffff:160.91.72.139 22"
+                // dsp=":0.0" name="orib36:ao0" old="8.131325" new="8.231325"
                 final MapMessage map = session.createMapMessage();
                 map.setString(JMSLogMessage.TYPE, type);
                 map.setString(JMSLogMessage.APPLICATION_ID, application);
