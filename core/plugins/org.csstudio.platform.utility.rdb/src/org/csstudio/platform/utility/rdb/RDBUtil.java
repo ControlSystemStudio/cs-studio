@@ -3,6 +3,7 @@ package org.csstudio.platform.utility.rdb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
@@ -134,11 +135,22 @@ public class RDBUtil
 	
 	private boolean isConnected() {
 		
+		Statement testQuery;
+		
 		try {
-			PreparedStatement testQuery = connection.prepareStatement("SHOW DATABASES");
-			testQuery.executeQuery();
+			testQuery = connection.createStatement();
 		} catch (SQLException e) {
 			return false;
+		}
+		
+		try {			
+			testQuery.executeQuery("SHOW DATABASES");
+		} catch (SQLException e) {
+			return false;
+		} finally {
+			try {
+				testQuery.close();
+			} catch (SQLException e) {}
 		}
 		return true;	
 	}
