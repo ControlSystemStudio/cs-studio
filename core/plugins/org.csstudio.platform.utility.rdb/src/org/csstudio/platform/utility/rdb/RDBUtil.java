@@ -10,6 +10,9 @@ import org.csstudio.platform.utility.rdb.internal.OracleRDB;
  */
 public class RDBUtil
 {
+	/** Database URL */
+	final private String url;
+	
     /** Connection to the SQL server */
     final private Connection connection;
     
@@ -41,9 +44,10 @@ public class RDBUtil
      *  @throws Exception
      *  @see #connect(String)
      */
-    protected RDBUtil(final Dialect dialect,
+    protected RDBUtil(final String url, final Dialect dialect,
     		          final Connection connection) throws Exception
     {
+    	this.url = url;
     	this.dialect = dialect;
     	this.connection = connection;
         connection.setAutoCommit(false);
@@ -71,6 +75,7 @@ public class RDBUtil
 	public static RDBUtil connect(final String url,
 	        final String user, final String password) throws Exception
     {
+		Activator.getLogger().debug("RDBUtil connects to " + url);
         if (url.startsWith(JDBC_MYSQL))
             return MySQL_RDB.connect(url, user, password);
         if (url.startsWith(JDBC_ORACLE))
@@ -101,6 +106,7 @@ public class RDBUtil
 	/** Close the RDB connection. */
 	public void close()
 	{
+		Activator.getLogger().debug("RDBUtil disconnects " + url);
 		try
 		{
 			connection.close();

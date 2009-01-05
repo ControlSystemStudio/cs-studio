@@ -16,9 +16,9 @@ public class MySQL_RDB extends RDBUtil
     /** Hidden constructor.
      *  @see #connect(String)
      */
-    private MySQL_RDB(final Connection connection) throws Exception
+    private MySQL_RDB(final String url, final Connection connection) throws Exception
     {
-        super(Dialect.MySQL, connection);
+        super(url, Dialect.MySQL, connection);
     }
 
     /** Connect to the database.
@@ -44,6 +44,6 @@ public class MySQL_RDB extends RDBUtil
         final DatabaseMetaData meta = connection.getMetaData();
         Activator.getLogger().debug("MySQL connection: " + meta.getDatabaseProductName()
                         + " " + meta.getDatabaseProductVersion());
-        return new MySQL_RDB(connection);
+        return new MySQL_RDB(url, connection);
     }
 }

@@ -16,9 +16,9 @@ public class OracleRDB extends RDBUtil
     /** Hidden constructor.
      *  @see #connect(String)
      */
-    private OracleRDB(final Connection connection) throws Exception
+    private OracleRDB(final String url, final Connection connection) throws Exception
     {
-        super(Dialect.Oracle, connection);
+        super(url, Dialect.Oracle, connection);
     }
 
     /** Connect to the database.
@@ -46,6 +46,6 @@ public class OracleRDB extends RDBUtil
         // Basic database info
         final DatabaseMetaData meta = connection.getMetaData();
         Activator.getLogger().debug(meta.getDatabaseProductVersion());
-        return new OracleRDB(connection);
+        return new OracleRDB(url, connection);
     }
 }
