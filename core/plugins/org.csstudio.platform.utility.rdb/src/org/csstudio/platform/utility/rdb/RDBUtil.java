@@ -1,6 +1,8 @@
 package org.csstudio.platform.utility.rdb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
@@ -12,9 +14,11 @@ public class RDBUtil
 {
 	/** Database URL */
 	final private String url;
+	final private String user;
+	final private String password;
 	
     /** Connection to the SQL server */
-    final private Connection connection;
+    private Connection connection;
     
     /** Start of MySQL URL */
     private static final String JDBC_MYSQL = "jdbc:mysql://"; //$NON-NLS-1$
@@ -44,10 +48,12 @@ public class RDBUtil
      *  @throws Exception
      *  @see #connect(String)
      */
-    protected RDBUtil(final String url, final Dialect dialect,
+    protected RDBUtil(final String url, final String user, final String password, final Dialect dialect,
     		          final Connection connection) throws Exception
     {
     	this.url = url;
+    	this.user = user;
+    	this.password = password;
     	this.dialect = dialect;
     	this.connection = connection;
         connection.setAutoCommit(false);
@@ -91,9 +97,18 @@ public class RDBUtil
         return connect(url, null, null);
     }
 	
-	/** @return SQL connection */
+	/** @return SQL connection 
+	 * @throws Exception */
 	public Connection getConnection()
 	{
+		try {
+			if(!isConnected()){
+				Activator.getLogger().debug("Connection Lost! Reconnect to " + url);				
+				connection = connect(url, user, password).getConnection();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return connection;
 	}
 
@@ -115,5 +130,16 @@ public class RDBUtil
 		{
 			Activator.getLogger().error("Connection close error", ex); //$NON-NLS-1$
 		}
+	}
+	
+	private boolean isConnected() {
+		
+		try {
+			PreparedStatement testQuery = connection.prepareStatement("SHOW DATABASES");
+			testQuery.executeQuery();
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;	
 	}
 }
