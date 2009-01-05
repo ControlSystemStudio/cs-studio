@@ -9,20 +9,19 @@ import org.eclipse.jface.viewers.Viewer;
  *  <p>
  *  Will provide Integer index values which allow the label provider
  *  and editor to access the correct elements in the string list.
- * @author Kay Kasemir
+ * @author Kay Kasemir, Xihui Chen
  *
  */
 public class StringTableContentProvider implements IStructuredContentProvider
 {
 	/** Magic number for the final 'add' element */
 	final public static Integer ADD_ELEMENT = new Integer(-1);
-	private List<String> items;
+	private List<?> items;
 
 	/** {@inheritDoc} */
-	@SuppressWarnings("unchecked")
 	public void inputChanged(final Viewer viewer, final Object old, final Object new_input)
 	{
-		items = (List<String>) new_input;
+		items = (List<?>) new_input;
 	}
 
 	/** {@inheritDoc} */
