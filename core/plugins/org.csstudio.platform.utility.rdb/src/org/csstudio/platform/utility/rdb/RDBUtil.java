@@ -103,7 +103,9 @@ public class RDBUtil
 	{
 		try {
 			if(!isConnected()){
-				Activator.getLogger().debug("Connection Lost! Reconnect to " + url);				
+				Activator.getLogger().debug("Connection Lost! Reconnect to " + url);
+				if(!connection.isClosed())
+					close();
 				connection = connect(url, user, password).getConnection();
 			}
 		} catch (Exception e) {
