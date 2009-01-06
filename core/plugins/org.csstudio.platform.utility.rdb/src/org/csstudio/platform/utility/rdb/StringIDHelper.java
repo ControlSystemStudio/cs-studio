@@ -1,5 +1,6 @@
 package org.csstudio.platform.utility.rdb;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -19,6 +20,7 @@ public class StringIDHelper
     final private String name_column;
     private PreparedStatement sel_by_name = null;
     private PreparedStatement sel_by_id = null;
+    private Connection connection = null;
     
     /** Construct helper
      *  @param rdb RDBUTil
@@ -31,6 +33,12 @@ public class StringIDHelper
             final String name_column)
     {
         this.rdb = rdb;
+        try {
+			this.connection = rdb.getConnection();
+		} catch (Exception e) {
+			//discard the exception, simply print its stack trace
+			e.printStackTrace();
+		}
         this.table = table;
         this.id_column = id_column;
         this.name_column = name_column;
@@ -66,8 +74,10 @@ public class StringIDHelper
      */
     public StringID find(final String name) throws Exception
     {
-        if (sel_by_name == null)
-            sel_by_name = rdb.getConnection().prepareStatement(
+        Connection tempConnection = rdb.getConnection();       	
+    	if (sel_by_name == null || connection != tempConnection)
+    		connection = tempConnection;
+            sel_by_name = connection.prepareStatement(
                 "SELECT " + id_column + " FROM " + table +
                 " WHERE "+ name_column + "=?");
         sel_by_name.setString(1, name);
@@ -84,8 +94,10 @@ public class StringIDHelper
      */
     public StringID find(final int id) throws Exception
     {
-        if (sel_by_id == null)
-            sel_by_id = rdb.getConnection().prepareStatement(
+    	Connection tempConnection = rdb.getConnection();       	
+        if (sel_by_id == null || connection != tempConnection)
+        	connection = tempConnection;
+            sel_by_id = connection.prepareStatement(
                     "SELECT " + name_column + " FROM " + table +
                     " WHERE "+ id_column + "=?");
         sel_by_id.setInt(1, id);

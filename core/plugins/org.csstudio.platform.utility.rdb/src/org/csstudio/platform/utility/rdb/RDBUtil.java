@@ -147,6 +147,8 @@ abstract public class RDBUtil
                     "Connection Lost! Reconnect to " + url);
             close();
             connection = do_connect(url, user, password);
+            connection.setAutoCommit(false);
+            test_query = connection.prepareStatement(getConnectionTestQuery());
         }
         return connection;
 	}
@@ -162,9 +164,10 @@ abstract public class RDBUtil
 			connection.close();
 			connection = null;
 		}
-		catch (Exception ex)
+		catch (SQLException ex)
 		{
-			Activator.getLogger().error("Connection close error", ex);
+			//simply discard this exception since in most cases,
+			//this method is called due to connection lost.
 		}
 	}
 

@@ -49,6 +49,6 @@ public class MySQL_RDB extends RDBUtil
     @Override
     protected String getConnectionTestQuery()
     {
-        return "SHOW DATABASES";
+        return "SELECT 1";
     }
 }
