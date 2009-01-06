@@ -60,6 +60,10 @@ public class TableContentProvider implements IJMSMessageViewer,
 		tableViewer.remove(jmsm);
 	}
 
+	public void updateJMSMessage(JMSMessage jmsm) {
+		tableViewer.update(jmsm, null);
+	}
+	
 	public void dispose() {
 		messageList.removeChangeListener(this);
 	}
@@ -74,5 +78,6 @@ public class TableContentProvider implements IJMSMessageViewer,
 	public Object[] getElements(Object inputElement) {
 		return messageList.getJMSMessageList().toArray();
 	}
+
 
 }

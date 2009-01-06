@@ -76,6 +76,9 @@ public class TableLabelProvider extends LabelProvider implements
 	public String getColumnText(Object element, int index) {
 		try {
             JMSMessage jmsm = (JMSMessage) element;
+//            if (index == 0) {
+//            	return "true";
+//            }
             return jmsm.getProperty(columnNames[index].toUpperCase());
 			
 		} catch (Exception e) {

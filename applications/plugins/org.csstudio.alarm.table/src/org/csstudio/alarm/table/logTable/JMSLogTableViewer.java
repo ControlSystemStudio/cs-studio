@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.logTable;
+package org.csstudio.alarm.table.logTable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,20 +53,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 public class JMSLogTableViewer extends TableViewer {
 
-    private static final String SECURITY_ID = "operating";
+	private static final String SECURITY_ID = "operating";
 
-    private Table table;
+	private Table table;
 
 	String[] columnHeader;
 
@@ -89,24 +91,26 @@ public class JMSLogTableViewer extends TableViewer {
 	private JMSMessageList jmsml;
 
 	private int tableType;
-	
+
 	int[] columnWidth;
 
 	/**
-	 * Setting Column names from preference pages, providers. 
-	 * tableType: (1: log table, 2: alarm table, 3: archive table)
-	 * The table type is necessary for sorting the messages.
+	 * Setting Column names from preference pages, providers. tableType: (1: log
+	 * table, 2: alarm table, 3: archive table) The table type is necessary for
+	 * sorting the messages.
 	 * 
 	 * @param parent
 	 * @param site
 	 * @param colNames
 	 * @param j
-	 * @param tableType (1: log table, 2: alarm table, 3: archive table)
+	 * @param tableType
+	 *            (1: log table, 2: alarm table, 3: archive table)
 	 */
 	public JMSLogTableViewer(Composite parent, IWorkbenchPartSite site,
 			String[] colNames, JMSMessageList j, int tableType, int style) {
 		super(parent, style);
-	    final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
+		final boolean canExecute = SecurityFacade.getInstance().canExecute(
+				SECURITY_ID, false);
 		this.tableType = tableType;
 		columnWidth = new int[colNames.length];
 		columnHeader = colNames;
@@ -121,27 +125,36 @@ public class JMSLogTableViewer extends TableViewer {
 			public void handleEvent(Event event) {
 				if (event.item instanceof TableItem && event.button == 0
 						&& event.detail == 32) {
-				    TableItem ti = (TableItem) event.item;
-				    if(canExecute){
-    					if (ti.getChecked()) {
-    						if (ti.getData() instanceof JMSMessage) {
-    							List<JMSMessage> msgList = new ArrayList<JMSMessage>();
-    							msgList.add((JMSMessage) event.item.getData());
-    							SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
-    							sendAck.schedule();
-    						} else {
-    							return;
-    						}
-    					} else {
-    						ti.setChecked(true);
-    					}
-				    }else {
-                        ti.setChecked(false);
-				        Shell activeShell = Display.getCurrent().getActiveShell();
-				        MessageDialog md = new MessageDialog(activeShell,"Authorization",null,"Not Acknolageed!\n\rYou don't have the permission.",MessageDialog.WARNING, new String[]{"Ok"},0);
-				        md.open();
-				    }
-					//Click on other columns but ack should not check or uncheck the ack box
+					TableItem ti = (TableItem) event.item;
+					if (canExecute) {
+						if (ti.getChecked()) {
+							if (ti.getData() instanceof JMSMessage) {
+								List<JMSMessage> msgList = new ArrayList<JMSMessage>();
+								msgList.add(((JMSMessage) event.item.getData())
+										.copy());
+								SendAcknowledge sendAck = SendAcknowledge
+										.newFromJMSMessage(msgList);
+								sendAck.schedule();
+							} else {
+								return;
+							}
+						} else {
+							ti.setChecked(true);
+						}
+					} else {
+						ti.setChecked(false);
+						Shell activeShell = Display.getCurrent()
+								.getActiveShell();
+						MessageDialog md = new MessageDialog(
+								activeShell,
+								"Authorization",
+								null,
+								"Not Acknowledged!\n\rPermission denied.",
+								MessageDialog.WARNING, new String[] { "Ok" }, 0);
+						md.open();
+					}
+					// Click on other columns but ack should not check or
+					// uncheck the ack box
 				} else if (event.item instanceof TableItem && event.button == 0
 						&& event.detail == 0) {
 					TableItem ti = (TableItem) event.item;
@@ -155,24 +168,26 @@ public class JMSLogTableViewer extends TableViewer {
 		for (int i = 0; i < columnHeader.length; i++) {
 			final TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
 			String[] temp = columnHeader[i].split(",");
-			tableColumn.addDisposeListener(new DisposeListener(){
+			tableColumn.addDisposeListener(new DisposeListener() {
 
 				public void widgetDisposed(DisposeEvent e) {
-					columnWidth[tableColumn.getParent().indexOf(tableColumn)]=tableColumn.getWidth();
+					columnWidth[tableColumn.getParent().indexOf(tableColumn)] = tableColumn
+							.getWidth();
 				}
-				
+
 			});
 			colName = temp[0];
-			columnName[i]=colName;
+			columnName[i] = colName;
 			tableColumn.setText(temp[0]);
-			if(temp.length==2){
-				tableColumn.setWidth(Integer.parseInt(columnHeader[i].split(",")[1]));
-			}else if (i == 0 && tableType == 2) {
+			if (temp.length == 2) {
+				tableColumn.setWidth(Integer.parseInt(columnHeader[i]
+						.split(",")[1]));
+			} else if (i == 0 && tableType == 2) {
 				tableColumn.setWidth(25);
 
 			} else
 				tableColumn.setWidth(100);
-//			colName = columnNames[i];
+			// colName = columnNames[i];
 			tableColumn.addSelectionListener(new SelectionAdapter() {
 
 				private String cName = colName;
@@ -192,12 +207,12 @@ public class JMSLogTableViewer extends TableViewer {
 				}
 			});
 		}
-		//		this.setContentProvider(new JMSMessageContentProvider());
+		// this.setContentProvider(new JMSMessageContentProvider());
 
 		this.setContentProvider(new TableContentProvider(this, jmsml));
 		TableLabelProvider labelProvider = new TableLabelProvider(columnName);
 		this.setLabelProvider(labelProvider);
-		//		this.setLabelProvider(new JMSMessageLabelProvider());
+		// this.setLabelProvider(new JMSMessageLabelProvider());
 		if (tableType == 1) {
 			JMSLogTableViewer.this.setSorter(new JMSMessageSorterLog());
 		} else if (tableType == 2) {
@@ -211,6 +226,22 @@ public class JMSLogTableViewer extends TableViewer {
 
 	}
 
+	@Override
+	protected void doUpdateItem(Widget widget, Object element, boolean fullMap) {
+		super.doUpdateItem(widget, element, fullMap);
+		if (element instanceof JMSMessage) {
+			JMSMessage message = (JMSMessage) element;
+			if (widget instanceof TableItem) {
+				final TableItem item = (TableItem) widget;
+				if (message.getProperty("ACK").equalsIgnoreCase("TRUE")) {
+					item.setChecked(true);
+				} else {
+					item.setChecked(false);
+				}
+			}
+		}
+	}
+
 	public void setColumnNames(String[] colNames) {
 		columnHeader = colNames;
 	}
@@ -219,7 +250,7 @@ public class JMSLogTableViewer extends TableViewer {
 		MenuManager manager = new MenuManager("#PopupMenu");
 		Control contr = this.getControl();
 		manager.add(new ShowMessagePropertiesAction(this));
-		
+
 		if ((tableType == 1) || (tableType == 2)) {
 			manager.add(new DeleteAction(this));
 			manager.add(new DeleteAllAction(this));
@@ -237,8 +268,9 @@ public class JMSLogTableViewer extends TableViewer {
 				if (e.button == 3) {
 					TableLabelProvider lablProvider = (TableLabelProvider) JMSLogTableViewer.this
 							.getLabelProvider();
-					//					JMSMessageLabelProvider lablProvider = (JMSMessageLabelProvider) JMSLogTableViewer.this
-					//					.getLabelProvider();
+					// JMSMessageLabelProvider lablProvider =
+					// (JMSMessageLabelProvider) JMSLogTableViewer.this
+					// .getLabelProvider();
 
 					Table t = JMSLogTableViewer.this.getTable();
 					TableItem ti = t.getItem(new Point(e.x, e.y));

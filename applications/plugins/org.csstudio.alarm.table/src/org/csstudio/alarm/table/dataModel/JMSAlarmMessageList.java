@@ -21,10 +21,10 @@
  */
 package org.csstudio.alarm.table.dataModel;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -32,15 +32,27 @@ import javax.jms.MapMessage;
 import javazoom.jl.player.Player;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.RemoveAcknowledgedMessagesTask;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.utility.Functions;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.jobs.Job;
 
+/**
+ * List of alarm messages for alarm table. The class includes also the logic in
+ * which case a message should be deleted, highlighted etc.
+ * 
+ * @author jhatje
+ * 
+ */
 public class JMSAlarmMessageList extends JMSMessageList {
 
 	/** number of alarm status changes in the message with the same pv name. */
 	private int alarmStatusChanges = 0;
-	private FileInputStream fis = null;
 	private static Player _mp3Player;
+
+	private RemoveAcknowledgedMessagesTask _removeMessageTask;
+	private Vector<JMSMessage> _messagesToRemove = new Vector<JMSMessage>();
 
 	public JMSAlarmMessageList(String[] propNames) {
 		super(propNames);
@@ -51,55 +63,141 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 * 
 	 */
 	@Override
-	synchronized public void addJMSMessage(MapMessage mm) throws JMSException {
-		if ((alarmSound) && (mm.getString("SEVERITY").equalsIgnoreCase("MAJOR"))) {
+	synchronized public void addJMSMessage(MapMessage newMessage)
+			throws JMSException {
+		if (checkValidity(newMessage)) {
+			Iterator iterator = changeListeners.iterator();
+			if (alarmSound) {
+				playAlarmSound(newMessage);
+			}
+			// An acknowledge message was received.
+			if (newMessage.getString("ACK") != null && newMessage.getString("ACK").toUpperCase().equals("TRUE")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				JMSMessage jmsm = setAcknowledge(newMessage);
+				if (jmsm != null) {
+					while (iterator.hasNext())
+						((IJMSMessageViewer) iterator.next())
+								.updateJMSMessage(jmsm);
+				}
+				return;
+			}
+			boolean equalMessageInTable = equalMessageNameInTable(newMessage);
+			// do not insert messages with type: 'status', unless there is a
+			// previous message with the same NAME in the table.
+			if ((newMessage.getString("TYPE").equalsIgnoreCase("status") && (equalMessageInTable == false))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				return;
+			}
+			// is there an old message from same pv
+			// (deleteOrGrayOutEqualMessages == true) -> display new message
+			// anyway is new message NOT from Type NO_ALARM -> display message
+			if ((deleteOrGrayOutEqualMessages(newMessage))
+					|| (newMessage.getString("SEVERITY").equalsIgnoreCase("NO_ALARM")) == false) { //$NON-NLS-1$
+				JMSMessage jmsm = addMessageProperties(newMessage);
+				if (equalMessageInTable == false) {
+					jmsm.setProperty("COUNT", "0");
+				} else {
+					jmsm.setProperty("COUNT", String
+							.valueOf(alarmStatusChanges + 1));
+				}
+				jmsm.set_alarmChangeCount(alarmStatusChanges + 1);
+				JMSMessages.add(JMSMessages.size(), jmsm);
+				while (iterator.hasNext())
+					((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
+			}
+		}
+	}
+
+	/**
+	 * Plays a mp3 file set in the preferences if a alarm message with severity
+	 * MAJOR is received.
+	 * 
+	 * @param newMessage
+	 */
+	private void playAlarmSound(MapMessage newMessage) throws JMSException {
+		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MAJOR")) {
 			String mp3Path = JmsLogsPlugin
 					.getDefault()
 					.getPluginPreferences()
 					.getString(
 							AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE);
-			if((mp3Path != null) && (!mp3Path.equals(""))) {
+			if ((mp3Path != null) && (!mp3Path.equals(""))) {
 				Functions.playMp3(mp3Path);
 			}
 		}
-		if (mm == null) {
-			return;
+	}
+
+	/**
+	 * Check if the new message is valid alarm message
+	 * 
+	 * @param newMessage
+	 */
+	private boolean checkValidity(MapMessage newMessage) throws JMSException {
+		if (newMessage == null) {
+			return false;
 		}
-		if (mm.getString("TYPE") == null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			return;
+		if (newMessage.getString("TYPE") == null) {
+			return false;
 		}
-		boolean equalMessageInTable = equalMessageNameInTable(mm);
-		// do not insert messges with type: 'status', unless there is a previous
-		// message
-		// with the same NAME in the table.
-		if ((mm.getString("TYPE").equalsIgnoreCase("status") && (equalMessageInTable == false))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			return;
-		} else {
-			String severity = null;
-			severity = mm.getString("SEVERITY"); //$NON-NLS-1$
-			if (severity != null) {
-				// is there an old message from same pv
-				// (deleteOrGrayOutEqualMessages == true)
-				// -> display new message anyway
-				// is new message NOT from Type NO_ALARM -> display message
-				if ((deleteOrGrayOutEqualMessages(mm))
-						|| (severity.equalsIgnoreCase("NO_ALARM")) == false) { //$NON-NLS-1$
-					JMSMessage jmsm = addMessageProperties(mm);
-					if (equalMessageInTable == false) {
-						jmsm.setProperty("COUNT", "0");
-					} else {
-						jmsm.setProperty("COUNT", String
-								.valueOf(alarmStatusChanges + 1));
+		if (newMessage.getString("SEVERITY") == null) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param newMessage
+	 * @throws JMSException
+	 * @throws JMSException
+	 */
+	protected JMSMessage setAcknowledge(final MapMessage newMessage)
+			throws JMSException {
+
+		JMSMessage newJMSMessage = null;
+		CentralLogger.getInstance().info(this, "ViewAlarm Ack message received, MsgName: "
+				+ newMessage.getString("NAME") + " MsgTime: "
+				+ newMessage.getString("EVENTTIME"));
+		System.out.println("ViewAlarm Ack message received, MsgName: "
+		+ newMessage.getString("NAME") + " MsgTime: "
+		+ newMessage.getString("EVENTTIME"));
+		for (JMSMessage message : JMSMessages) {
+			if (message.getName().equals(newMessage.getString("NAME"))
+					&& message.getProperty("EVENTTIME").equals(
+							newMessage.getString("EVENTTIME"))) {
+				if ((message.isBackgroundColorGray() == true)
+						|| (message.getProperty("SEVERITY_KEY")
+								.equalsIgnoreCase("NO_ALARM"))
+						|| (message.getProperty("SEVERITY_KEY")
+								.equalsIgnoreCase("INVALID"))) {
+					_messagesToRemove.add(message);
+					System.out.println("ViewAlarm add message MsgName: "
+							+ message.getProperty("NAME") + " MsgTime: "
+							+ message.getProperty("EVENTTIME"));
+					CentralLogger.getInstance().debug(
+							this,
+							"add message, removelist size: "
+									+ _messagesToRemove.size());
+					if ((_removeMessageTask == null)
+							|| (_removeMessageTask.getState() == Job.NONE)) {
+						CentralLogger.getInstance().debug(this,
+								"Create new 'RemoveAckMessage Task'");
+						_removeMessageTask = null;
+						_removeMessageTask = new RemoveAcknowledgedMessagesTask(
+								this, _messagesToRemove);
+						_removeMessageTask.schedule();
 					}
-					jmsm.set_alarmChangeCount(alarmStatusChanges + 1);
-					JMSMessages.add(JMSMessages.size(), jmsm);
-					Iterator iterator = changeListeners.iterator();
-					while (iterator.hasNext())
-						((IJMSMessageViewer) iterator.next())
-								.addJMSMessage(jmsm);
+				} else {
+					System.out.println("ViewAlarm set ack MsgName: "
+							+ message.getProperty("NAME") + " MsgTime: "
+							+ message.getProperty("EVENTTIME"));
+					message.getHashMap().put("ACK_HIDDEN", "TRUE");
+					message.setProperty("ACK", "TRUE");
+					message.setAcknowledged(true);
+					return message;
 				}
+				break;
 			}
 		}
+		return null;
 	}
 
 	/**
@@ -197,13 +295,13 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			while (it.hasNext()) {
 				addJMSMessage(it.next());
 			}
-
+System.out.println("toRemove size: " + jmsMessagesToRemove.size());
 			jmsMessagesToRemove.clear();
+			System.out.println("toRemoveAndAdd size: " + jmsMessagesToRemoveAndAdd.size());
 			jmsMessagesToRemoveAndAdd.clear();
 		} catch (JMSException e) {
 			JmsLogsPlugin.logException("No SEVERITY in message", e);
 		}
 		return equalPreviousMessage;
 	}
-	
 }

@@ -219,42 +219,22 @@ public class ViewLog extends ViewPart implements MessageListener {
 		if (message == null) {
 			JmsLogsPlugin.logError("Message == null");
 		}
-//		Display.getDefault().asyncExec(new Runnable() {
-//			public void run() {
 				try {
 					if (message instanceof TextMessage) {
 						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
 						final MapMessage mm = (MapMessage) message;
+                		Display.getDefault().asyncExec(new Runnable() {
+            			public void run() {
+            				try {
+            					_messageList.addJMSMessage(mm);
+            					} catch (Exception e) {
+                                e.printStackTrace();
+            					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+            				}
+            			}
+            			});
                         CentralLogger.getInstance().debug(this, "received map message");
-//	DEBUG					JmsLogsPlugin.logInfo("ViewLog message received, MsgName: " + 
-//                        		mm.getString("NAME") + " Severity: " + mm.getString("SEVERITY") +
-//                        		" MsgTime: " + mm.getString("EVENTTIME"));
-						if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	                        CentralLogger.getInstance().debug(this, "received acknowledge message");
-	                		Display.getDefault().syncExec(new Runnable() {
-	                			public void run() {
-	                				try {
-	        							setAck(mm);
-	                				} catch (Exception e) {
-	                	                e.printStackTrace();
-	                					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-	                				}
-	                			}
-	                			});
-
-						} else {
-                    		Display.getDefault().asyncExec(new Runnable() {
-                    			public void run() {
-                    				try {
-                    					_messageList.addJMSMessage(mm);
-                    					} catch (Exception e) {
-                                        e.printStackTrace();
-                    					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-                    				}
-                    			}
-                    			});
-                        }
 					} else {
 						JmsLogsPlugin.logError("received message is an unknown type");
 					}
@@ -262,37 +242,7 @@ public class ViewLog extends ViewPart implements MessageListener {
                     e.printStackTrace();
 					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
 				}
-//			}
-//		});
 	}
-
-	/**
-     * @param message
-	 * @throws JMSException 
-     */
-    protected void setAck(MapMessage message) {
-//DEBUG       JmsLogsPlugin.logInfo("ViewLog Ack message received, MsgName: " + 
-//       		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
-       TableItem[] items = _tableViewer.getTable().getItems();
-       	   for (TableItem item : items) {
-           if (item.getData() instanceof JMSMessage) {
-            JMSMessage jmsMessage = (JMSMessage) item.getData();
-            try {
-                if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                	jmsMessage.getHashMap().put("ACK","true"); //$NON-NLS-1$ //$NON-NLS-2$
-                    _tableViewer.refresh();
-                    break;
-                }
-                
-            } catch (JMSException e) {
-                JmsLogsPlugin.logException("can not set ACK", e);
-            }
-            
-        }
-       }
-        
-    }
-
 
     public void dispose() {
     	saveColumn();

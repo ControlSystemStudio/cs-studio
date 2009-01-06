@@ -31,7 +31,7 @@ public class RemoveAcknowledgedMessagesTask extends Job {
 		_lastRemovedMessageInMillisec = System.currentTimeMillis();
 		while ((System.currentTimeMillis() - _lastRemovedMessageInMillisec) < _closeThresholdInMillisec) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(20000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -62,22 +62,29 @@ public class RemoveAcknowledgedMessagesTask extends Job {
 				this,
 				"removeMessage started, removelist size: "
 						+ _jmsMessagesToRemove.size());
-
-		final JMSMessage[] a = _jmsMessagesToRemove.toArray(new JMSMessage[0]);
-
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				try {
-					_messagesInTable.removeJMSMessage(a);
-				} catch (Exception e) {
-					e.printStackTrace();
-					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+		for (JMSMessage newMessage : _jmsMessagesToRemove) {
+			System.out.println("ViewAlarm Ack message received, MsgName: "
+					+ newMessage.getProperty("NAME") + " MsgTime: "
+					+ newMessage.getProperty("EVENTTIME"));
+		}
+		synchronized (_jmsMessagesToRemove) {
+			
+			final JMSMessage[] a = _jmsMessagesToRemove.toArray(new JMSMessage[0]);
+	
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					try {
+						_messagesInTable.removeJMSMessage(a);
+					} catch (Exception e) {
+						e.printStackTrace();
+						JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+					}
 				}
+			});
+	
+			for (JMSMessage message : a) {
+				_jmsMessagesToRemove.remove(message);
 			}
-		});
-
-		for (JMSMessage message : a) {
-			_jmsMessagesToRemove.remove(message);
 		}
 		// jmsMessagesToRemove.clear();
 		CentralLogger.getInstance().debug(

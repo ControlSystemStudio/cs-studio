@@ -28,7 +28,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.jms.JMSException;
@@ -52,7 +51,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
@@ -221,7 +219,7 @@ public class ViewAlarm extends ViewLog {
 							// add the message only if it is not yet
 							// acknowledged.
 							if (message.isAcknowledged() == false) {
-								msgList.add(message);
+								msgList.add(message.copy());
 							}
 						}
 
@@ -265,7 +263,6 @@ public class ViewAlarm extends ViewLog {
 	 * @param message
 	 * @throws JMSException
 	 */
-	@Override
 	protected void setAck(final MapMessage message) {
 
 		// Display.getDefault().asyncExec(new Runnable() {

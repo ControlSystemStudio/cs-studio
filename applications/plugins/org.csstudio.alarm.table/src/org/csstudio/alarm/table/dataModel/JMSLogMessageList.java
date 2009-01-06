@@ -19,45 +19,62 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.dataModel;
+package org.csstudio.alarm.table.dataModel;
 
 import java.util.Iterator;
 
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TableItem;
 
 public class JMSLogMessageList extends JMSMessageList {
 
-	
 	public JMSLogMessageList(String[] propNames) {
 		super(propNames);
 	}
 
 	/**
-	 * Add a new JMSMessage to the collection of JMSMessages 
+	 * Add a new JMSMessage to the collection of JMSMessages
+	 * 
+	 * @throws JMSException
 	 */
-	synchronized public void addJMSMessage(MapMessage mm) {
-		if (mm == null) {
-			return;
-		} else {
-			limitMessageListSize();
-			JMSMessage jmsm = addMessageProperties(mm);
-			JMSMessages.add(JMSMessages.size(), jmsm);
+	synchronized public void addJMSMessage(MapMessage mm) throws JMSException {
+		if (mm != null) {
 			Iterator iterator = changeListeners.iterator();
-			while (iterator.hasNext())
-				((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
+			if (mm.getString("ACK") != null && mm.getString("ACK").toUpperCase().equals("TRUE")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				CentralLogger.getInstance().debug(this,
+						"received acknowledge message");
+				for (JMSMessage message : JMSMessages) {
+					if (message.getName().equals(mm.getString("NAME")) && message.getProperty("EVENTTIME").equals(mm.getString("EVENTTIME"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						message.getHashMap().put("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
+						while (iterator.hasNext())
+							((IJMSMessageViewer) iterator.next()).updateJMSMessage(message);
+						break;
+					}
+				}
+			} else {
+				limitMessageListSize();
+				JMSMessage jmsm = addMessageProperties(mm);
+				JMSMessages.add(JMSMessages.size(), jmsm);
+				while (iterator.hasNext())
+					((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
+			}
 		}
 	}
 
-	
 	/**
-	 * If message list size is bigger than in the preferences defined
-	 * delete oldest messages
+	 * If message list size is bigger than in the preferences defined delete
+	 * oldest messages
 	 */
 	private void limitMessageListSize() {
-		String maximumRowNumber = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.MAX);
+		String maximumRowNumber = JmsLogsPlugin.getDefault()
+				.getPluginPreferences().getString(
+						LogViewerPreferenceConstants.MAX);
 		int maxRowNumber;
 		try {
 			maxRowNumber = Integer.parseInt(maximumRowNumber);

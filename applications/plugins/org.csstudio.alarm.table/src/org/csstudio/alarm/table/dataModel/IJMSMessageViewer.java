@@ -19,40 +19,46 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.dataModel;
+package org.csstudio.alarm.table.dataModel;
 
 public interface IJMSMessageViewer {
 
 	/**
-	 * Update the view to reflect the fact that a JMSMessage was added 
-	 * to the JMSMessage list
+	 * Update the view to reflect the fact that a JMSMessage was added to the
+	 * JMSMessage list
 	 * 
 	 * @param jmsm
 	 */
 	public void addJMSMessage(JMSMessage jmsm);
 
 	/**
-	 * Update the view to reflect the fact that an array of JMSMessages was added 
-	 * to the JMSMessage list
+	 * Update the view to reflect the fact that an array of JMSMessages was
+	 * added to the JMSMessage list
 	 * 
 	 * @param jmsm
 	 */
 	public void addJMSMessages(JMSMessage[] jmsm);
-	
+
 	/**
-	 * Update the view to reflect the fact that a JMSMessage was removed 
-	 * from the JMSMessage list
+	 * Update the view to reflect the fact that a JMSMessage was removed from
+	 * the JMSMessage list
 	 * 
 	 * @param jmsm
 	 */
 	public void removeJMSMessage(JMSMessage jmsm);
 
 	/**
-	 * Update the view to reflect the fact that an array of JMSMessages was removed 
-	 * from the JMSMessage list
+	 * Update the view to reflect the fact that an array of JMSMessages was
+	 * removed from the JMSMessage list
 	 * 
 	 * @param jmsm
 	 */
 	public void removeJMSMessage(JMSMessage[] jmsm);
-	
+
+	/**
+	 * Update the view to reflect the fact that properties of a JMSMessages was
+	 * updated
+	 * 
+	 */
+	public void updateJMSMessage(JMSMessage jmsm);
 }
