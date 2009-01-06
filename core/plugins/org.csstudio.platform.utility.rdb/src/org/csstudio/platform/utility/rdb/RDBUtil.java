@@ -1,30 +1,36 @@
 package org.csstudio.platform.utility.rdb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
 
 /** Obtain database connection for various RDB systems.
  *  @author Kay Kasemir
+ *  @author Xihui Chen
  */
-public class RDBUtil
+@SuppressWarnings("nls")
+abstract public class RDBUtil
 {
-	/** Database URL */
+    /** Start of MySQL URL */
+    private static final String JDBC_MYSQL = "jdbc:mysql://";
+
+    /** Start of Oracle URL */
+    private static final String JDBC_ORACLE = "jdbc:oracle:";
+
+    /** Database URL */
 	final private String url;
+	
+    /** Database User */
 	final private String user;
+    
+	/** Database Password */
 	final private String password;
 	
     /** Connection to the SQL server */
-    private Connection connection;
-    
-    /** Start of MySQL URL */
-    private static final String JDBC_MYSQL = "jdbc:mysql://"; //$NON-NLS-1$
-
-    /** Start of Oracle URL */
-    private static final String JDBC_ORACLE = "jdbc:oracle:"; //$NON-NLS-1$
+	private Connection connection;
     
     /** Database dialect.
      *  For starters, the connection mechanisms vary, and since
@@ -41,24 +47,10 @@ public class RDBUtil
     
     /** @see Dialect */
     final private Dialect dialect;
-    
-    /** Constructor for derived classes.
-     *  @param dialect
-     *  @param connection
-     *  @throws Exception
-     *  @see #connect(String)
-     */
-    protected RDBUtil(final String url, final String user, final String password, final Dialect dialect,
-    		          final Connection connection) throws Exception
-    {
-    	this.url = url;
-    	this.user = user;
-    	this.password = password;
-    	this.dialect = dialect;
-    	this.connection = connection;
-        connection.setAutoCommit(false);
-    }
 
+    /** Statement used to check the connection */
+    private PreparedStatement test_query;
+    
     /** Connect to the database.
      *  <p>
      *  The URL format depends on the database dialect.
@@ -74,19 +66,19 @@ public class RDBUtil
      *  @param url Database URL
      *  @param user User name or <code>null</code> if part of url
      *  @param password Password or <code>null</code> if part of url
-     *  @return RDBArchiveServer
-     *  @exception on error
+     *  @return RDBUtil
+     *  @throws Exception on error
      *  @see #close()
      */
-	public static RDBUtil connect(final String url,
-	        final String user, final String password) throws Exception
+    public static RDBUtil connect(final String url,
+            final String user, final String password) throws Exception
     {
-		Activator.getLogger().debug("RDBUtil connects to " + url);
+    	Activator.getLogger().debug("RDBUtil connects to " + url);
         if (url.startsWith(JDBC_MYSQL))
-            return MySQL_RDB.connect(url, user, password);
+            return new MySQL_RDB(url, user, password);
         if (url.startsWith(JDBC_ORACLE))
-            return OracleRDB.connect(url, user, password);
-        throw new Error("Unsupported database dialect"); //$NON-NLS-1$
+            return new OracleRDB(url, user, password);
+        throw new Error("Unsupported database dialect");
     }
 
     /** Connect with only a url.
@@ -96,63 +88,115 @@ public class RDBUtil
     {
         return connect(url, null, null);
     }
-	
-	/** @return SQL connection 
-	 * @throws Exception */
-	public Connection getConnection()
+
+    /** Constructor for derived classes.
+     *  @param url Database URL
+     *  @param user ... user
+     *  @param password ... password
+     *  @param dialect
+     *  @throws Exception on error
+     *  @see #connect(String, String, String)
+     */
+    protected RDBUtil(final String url, final String user, final String password,
+                      final Dialect dialect) throws Exception
+    {
+    	this.url = url;
+    	this.user = user;
+    	this.password = password;
+    	this.dialect = dialect;
+    	this.connection = do_connect(url, user, password);
+        connection.setAutoCommit(false);
+        test_query = connection.prepareStatement(getConnectionTestQuery());
+    }
+
+    /** @return Dialect info. */
+    public Dialect getDialect()
+    {
+    	return dialect;
+    }
+
+    /** Derived class must implement to create the database connection.
+     *  @param url RDB URL
+     *  @param user User name or <code>null</code> if part of url
+     *  @param password Password or <code>null</code> if part of url
+     *  @return JDBC connection
+     *  @throws Exception on error
+     */
+    abstract protected Connection do_connect(final String url,
+            final String user, final String password) throws Exception;
+
+    /** Get the JDBC connection.
+	 *  This method will try to return a connection that's
+	 *  valid after network errors or RDB timeouts by checking
+	 *  the validity of the connection and re-connecting if
+	 *  necessary.
+	 *  It will <u>not</u> re-open a connection that was
+	 *  specifically closed by calling <code>close()</code>
+	 *  because that would indicate a logical error in the code.
+	 *  @return SQL connection
+	 *  @throws Exception when necessary re-connection fails or
+	 *          when called on a closed connection
+	 */
+	public Connection getConnection() throws Exception
 	{
-		try {
-			if(!isConnected()){
-				Activator.getLogger().debug("Connection Lost! Reconnect to " + url);
-				if(!connection.isClosed())
-					close();
-				connection = connect(url, user, password).getConnection();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return connection;
+	    if (connection.isClosed())
+	        throw new Exception("Connection " + url + " was closed");
+        if (!isConnected())
+        {
+            Activator.getLogger().debug(
+                    "Connection Lost! Reconnect to " + url);
+            close();
+            connection = do_connect(url, user, password);
+        }
+        return connection;
 	}
 
-	/** @return Dialect info. */
-	public Dialect getDialect()
-	{
-		return dialect;
-	}
-	
 	/** Close the RDB connection. */
 	public void close()
 	{
-		Activator.getLogger().debug("RDBUtil disconnects " + url);
+		Activator.getLogger().debug("RDBUtil closes " + url);
 		try
 		{
+		    test_query.close();
+		    test_query = null;
 			connection.close();
+			connection = null;
 		}
 		catch (Exception ex)
 		{
-			Activator.getLogger().error("Connection close error", ex); //$NON-NLS-1$
+			Activator.getLogger().error("Connection close error", ex);
 		}
 	}
-	
-	private boolean isConnected() {
-		
-		Statement testQuery;
-		
-		try {
-			testQuery = connection.createStatement();
-		} catch (SQLException e) {
-			return false;
-		}
-		
-		try {			
-			testQuery.executeQuery("SHOW DATABASES");
-		} catch (SQLException e) {
-			return false;
-		} finally {
-			try {
-				testQuery.close();
-			} catch (SQLException e) {}
-		}
-		return true;	
-	}
+
+	/** Determine if the connection is still usable by executing a simple
+	 *  statement.
+	 *  @return <code>true</code> if connection still OK
+	 *  @see #getConnectionTestQuery()
+	 */
+    private boolean isConnected()
+    {
+        try
+        {
+            test_query.execute();
+        }
+        catch (SQLException e)
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    /** Derived classes must implement this to provide a statement that's
+     *  suitable for testing the connection state.
+     *  @return SQL for statement that gives a cheap way of testing the
+     *          connection state
+     */
+    abstract protected String getConnectionTestQuery();
+
+    /** @return String representation for debugging */
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + " for " + url;
+    }
 }

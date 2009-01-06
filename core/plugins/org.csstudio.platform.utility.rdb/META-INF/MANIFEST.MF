@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RDB Utility Plug-in
 Bundle-SymbolicName: org.csstudio.platform.utility.rdb
-Bundle-Version: 1.1.0
+Bundle-Version: 1.2.0
 Bundle-Activator: org.csstudio.platform.utility.rdb.Activator
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.junit4,
