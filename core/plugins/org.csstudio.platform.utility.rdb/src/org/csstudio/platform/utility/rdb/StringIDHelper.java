@@ -75,11 +75,12 @@ public class StringIDHelper
     public StringID find(final String name) throws Exception
     {
         Connection tempConnection = rdb.getConnection();       	
-    	if (sel_by_name == null || connection != tempConnection)
+    	if (sel_by_name == null || connection != tempConnection) {
     		connection = tempConnection;
             sel_by_name = connection.prepareStatement(
                 "SELECT " + id_column + " FROM " + table +
                 " WHERE "+ name_column + "=?");
+    	}
         sel_by_name.setString(1, name);
         final ResultSet result = sel_by_name.executeQuery();
         if (result.next())
@@ -95,11 +96,12 @@ public class StringIDHelper
     public StringID find(final int id) throws Exception
     {
     	Connection tempConnection = rdb.getConnection();       	
-        if (sel_by_id == null || connection != tempConnection)
+        if (sel_by_id == null || connection != tempConnection) {
         	connection = tempConnection;
             sel_by_id = connection.prepareStatement(
                     "SELECT " + name_column + " FROM " + table +
                     " WHERE "+ id_column + "=?");
+        }
         sel_by_id.setInt(1, id);
         final ResultSet result = sel_by_id.executeQuery();
         if (result.next())
