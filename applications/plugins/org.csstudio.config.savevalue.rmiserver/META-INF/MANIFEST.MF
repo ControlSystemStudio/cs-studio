@@ -9,5 +9,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.config.savevalue.service,
  org.csstudio.platform,
  org.csstudio.platform.libs.xmpp,
- org.csstudio.platform.libs.dcf
+ org.csstudio.platform.libs.dcf,
+ org.junit4
 Eclipse-LazyStart: true
