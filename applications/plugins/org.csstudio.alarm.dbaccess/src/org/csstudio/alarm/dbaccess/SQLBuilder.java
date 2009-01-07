@@ -164,6 +164,9 @@ public class SQLBuilder {
 	}
 
 	public void setRownum(String rownum) {
+		CentralLogger.getInstance().debug(this,	"set rownum to "
+						+ this.rownum);
+	
 		this.rownum = rownum;
 	}
 

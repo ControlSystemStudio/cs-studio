@@ -74,8 +74,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	/**
 	 * ONLY FOR TEST PURPOSES!
 	 */
-	ArchiveDBAccess(SQLBuilder sqlBuilder) {
-	    _sqlBuilder = sqlBuilder;
+	ArchiveDBAccess() {
 	}
 
 	/**
@@ -85,7 +84,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 */
 	public static ArchiveDBAccess getInstance() {
 		if (_archiveDBAccess == null) {
-			_archiveDBAccess = new ArchiveDBAccess(new SQLBuilder());
+			_archiveDBAccess = new ArchiveDBAccess();
 		}
 		return _archiveDBAccess;
 	}
@@ -100,6 +99,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		CentralLogger.getInstance().debug(this,
 				"from time: " + from + ", to time: " + to);
 		_maxAnswerSize = maxAnswerSize;
+		CentralLogger.getInstance().debug(this, "set maxAnswerSize to " + _maxAnswerSize);
 		ArrayList<ResultSet> result = queryDatabase(filterSetting, from, to);
 		ArrayList<HashMap<String, String>> ergebnis = processResult(result);
 		return ergebnis;
@@ -245,7 +245,10 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			// because the SQL statement is designed only for AND.
 			ArrayList<ArrayList<FilterItem>> separatedFilterSettings = separateFilterSettings(filter);
 			ResultSet result = null;
-			_sqlBuilder.setRownum(Integer.toString(_maxAnswerSize * 15));
+			String maxRownum = Integer.toString(_maxAnswerSize * 15);
+			_sqlBuilder = new SQLBuilder();
+			_sqlBuilder.setRownum(maxRownum);
+			CentralLogger.getInstance().debug(this, "set maxRowNum to " + maxRownum);
 			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
 				String statement = _sqlBuilder
 						.generateSQL(currentFilterSettingList);
