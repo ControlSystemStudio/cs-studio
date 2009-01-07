@@ -21,10 +21,9 @@
  */
  package de.desy.css.dal.tine;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import junit.framework.TestCase;
 
+import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
@@ -38,7 +37,7 @@ import org.epics.css.dal.spi.PropertyFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TINEPlugTest {
+public class TINEPlugTest extends TestCase {
 	/**
 	 * The application context.
 	 */
@@ -57,7 +56,8 @@ public class TINEPlugTest {
 	/**
 	 * The TINE property we connect to.
 	 */
-	private static final String PROPERTY_NAME = "DEFAULT/TIMESRV/device_0/SYSTIME";
+	//private static final String PROPERTY_NAME = "DEFAULT/TIMESRV/device_0/SYSTIME";
+	private static final String PROPERTY_NAME = "TINE/DEFAULT/JavaIOC-EQM/valueOnly/valueOnly";
 
 	/**
 	 * Set up the test case.
@@ -150,5 +150,42 @@ public class TINEPlugTest {
 				_eventCount++;
 			}
 		};
+	}
+
+	public void testMandatoryCharacteristics() {
+		
+		try {
+			
+			DynamicValueProperty property = _propertyFactory.getProperty(PROPERTY_NAME, DoubleProperty.class, null);
+
+			CharacteristicInfo[] infos= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class, null);
+			
+			assertNotNull(infos);
+			
+			for (int i = 0; i < infos.length; i++) {
+				CharacteristicInfo info= infos[i];
+				assertNotNull(info);
+	
+				if ( info.isMeta() ) {
+					continue;
+				}
+					
+				
+				Object value= property.getCharacteristic(info.getName());
+				
+				System.out.println(info.getName()+" '"+value+"' "+(value!=null ? value.getClass().getName() : ""));
+				
+				//assertNotNull("'"+info.getName()+"' is null",value);
+				//assertTrue("'"+info.getName()+"' is "+value.getClass().getName(), info.getType().isAssignableFrom(value.getClass()));
+				
+				
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
 	}
 }
