@@ -51,12 +51,6 @@ final class ServerInfoRequest
 		//	  }                 sevr[]
 		//	} = archiver.info()
 		version = (Integer) result.get("ver");
-        if (version < EXPECTED_VERSION)
-            Plugin.getLogger().warn("Warning: "
-                            + "Expected ChannelArchiver "
-                            + "XML-RPC Network Data Server Version "
-                            + EXPECTED_VERSION
-                            + ", but got " + version);
 		description = (String) result.get("desc");
 		// Get 'how'. Silly code to copy that into a type-safe vector.
 		Vector tmp =  (Vector) result.get("how");

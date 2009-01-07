@@ -13,7 +13,6 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.logging.CentralLogger;
 
 /** Handles the "archiver.values" request and its results.
  *  @author Kay Kasemir
@@ -165,11 +164,7 @@ public class ValuesRequest
 		{
             // The 2.8.1 server will give 'ENUM' type values
             // with Numeric meta data, units = "<No data>"
-            // as an error message. Warn, but don't stop.
-		    if (value_type == TYPE_ENUM)
-		        CentralLogger.getInstance().getLogger(this)
-		            .warn("Received numeric meta information for " + name +
-		                  ", value type " + value_type);
+            // as an error message.
 			return ValueFactory.createNumericMetaData(
 	                (Double) meta_hash.get("disp_low"),
                     (Double) meta_hash.get("disp_high"),
