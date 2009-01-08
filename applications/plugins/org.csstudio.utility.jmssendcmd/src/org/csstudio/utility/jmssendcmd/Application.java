@@ -2,22 +2,10 @@ package org.csstudio.utility.jmssendcmd;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.Topic;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
-import org.csstudio.platform.logging.JMSLogMessage;
-import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -25,35 +13,15 @@ import org.eclipse.equinox.app.IApplicationContext;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Application implements IApplication, ExceptionListener
+public class Application implements IApplication
 {
-    private String application = "JMSSender";
+    final private static String DEFAULT_URL = "tcp://localhost:61616";
+    final private static String DEFAULT_TOPIC = "TEST";
+    final private static String DEFAULT_TYPE = "log";
+    private static final String DEFAULT_APP = "JMSSender";
+    private String application;
     private String type;
-    private String user;
-    private String host;
-
-    private Connection connection;
-    private Session session;
-    private Topic topic;
-    private MessageProducer producer;
     
-
-    /** Initialize */
-    public Application()
-    {
-        user = System.getProperty("user.name");
-        if (user == null  ||  user.length() <= 0)
-            user = "<unknown>";
-        try
-        {
-            host = InetAddress.getLocalHost().getHostName();
-        }
-        catch (Exception ex)
-        {
-            host = "<unknown>";
-        }
-    }
-
     /** @see IApplication */
     public Object start(IApplicationContext context) throws Exception
     {
@@ -62,17 +30,19 @@ public class Application implements IApplication, ExceptionListener
             (String []) context.getArguments().get("application.args");
         final ArgParser parser = new ArgParser();
         final StringOption url = new StringOption(parser,
-                "-url", "JMS Server URL", "tcp://localhost:61616");
+                "-url", "JMS Server URL (default: " + DEFAULT_URL + ")", DEFAULT_URL);
         final StringOption jms_user = new StringOption(parser,
                 "-jms_user", "JMS User Name", null);
         final StringOption jms_pass = new StringOption(parser,
                 "-jms_pass", "JMS Password", null);
         final StringOption topic = new StringOption(parser,
-                "-topic", "JMS Topic", "TEST");
+                "-topic", "JMS Topic (default: " + DEFAULT_TOPIC + ")", DEFAULT_TOPIC);
         final StringOption type = new StringOption(parser,
-                "-type", "Message type", "log");
+                "-type", "Message type (default: " + DEFAULT_TYPE + ")", DEFAULT_TYPE);
         final StringOption app = new StringOption(parser,
-                "-app", "Application type", "JMS Log Sender");
+                "-app", "Application type (default: " + DEFAULT_APP + ")", DEFAULT_APP);
+        final StringOption text = new StringOption(parser,
+                "-text", "Send given text (default: read from stdin)", null);
         final BooleanOption help = new BooleanOption(parser,
                 "-h", "Help");
         try
@@ -100,9 +70,13 @@ public class Application implements IApplication, ExceptionListener
         application = app.get();
         try
         {
-            connect(url.get(), jms_user.get(), jms_pass.get(), topic.get());
-            sendMsg();
-            disconnect();
+            final JMSSender sender = new JMSSender(url.get(), jms_user.get(),
+                    jms_pass.get(), topic.get());
+            if (text.get() != null)
+                sender.send(type.get(), application, text.get());
+            else
+                sendMsgFromInput(sender);
+            sender.disconnect();
         }
         catch (Exception ex)
         {
@@ -112,28 +86,10 @@ public class Application implements IApplication, ExceptionListener
         return IApplication.EXIT_OK;
     }
 
-    /** Connect to JMS
-     *  @param url
-     *  @param jms_user
-     *  @param jms_pass
-     *  @param topic_name
-     *  @throws Exception
+    /** Read message text from stdin, send to JMS
+     *  @param sender JMSSender
      */
-    private void connect(final String url, final String jms_user,
-            final String jms_pass, final String topic_name) throws Exception
-    {
-        connection = JMSConnectionFactory.connect(url, jms_user, jms_pass);
-        connection.setExceptionListener(this);
-        connection.start();
-        session = connection.createSession(/* transacted */ false,
-                                           Session.AUTO_ACKNOWLEDGE);
-        topic = session.createTopic(topic_name);
-        producer = session.createProducer(topic);
-        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-    }
-    
-    /** Send Messages to JMS */
-    private void sendMsg()
+    private void sendMsgFromInput(final JMSSender sender)
     {
         final BufferedReader in =
             new BufferedReader(new InputStreamReader(System.in));
@@ -146,8 +102,8 @@ public class Application implements IApplication, ExceptionListener
                 final String text = in.readLine();
                 if (text == null)
                     break;
-
-                // TODO decode more message properties from input?
+                // TODO Option to decode more message properties from input.
+                //
                 // EDM will send text lines with tag/value pairs,
                 // one message per line:
                 // user="..." host="..." dsp="..."  <more tags>\n
@@ -166,39 +122,13 @@ public class Application implements IApplication, ExceptionListener
                 // user="sinclair" host="orib36"
                 // ssh="::ffff:192.168.18.51 43902 ffff:160.91.72.139 22"
                 // dsp=":0.0" name="orib36:ao0" old="8.131325" new="8.231325"
-                final MapMessage map = session.createMapMessage();
-                map.setString(JMSLogMessage.TYPE, type);
-                map.setString(JMSLogMessage.APPLICATION_ID, application);
-                map.setString(JMSLogMessage.HOST, host);
-                map.setString(JMSLogMessage.USER, user);
-                map.setString(JMSLogMessage.TEXT, text);
-                producer.send(map);
+                sender.send(type, application, text);
             }
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
-    }
-
-    /** Disconnect from JMS */
-    private void disconnect()
-    {
-        try
-        {
-            producer.close();
-            session.close();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-    
-    /** @see ExceptionListener */
-    public void onException(final JMSException ex)
-    {
-        ex.printStackTrace();
     }
 
     /** @see IApplication */
