@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.1"?>
+<?pde version="3.4"?>
 
-<product name="product" id="org.csstudio.diag.interconnectionServer.product" application="org.csstudio.diag.interconnectionServer.application" useFeatures="false">
+<product name="Interconnection Server" id="org.csstudio.diag.interconnectionServer.product" application="org.csstudio.diag.interconnectionServer.application" version="1.0.4" useFeatures="false">
 
-   <configIni use="default"/>
+
+   <configIni use="default">
+   </configIni>
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
       <vmArgs>-Xmx512m -Xms256m</vmArgs>
    </launcherArgs>
+
+   <windowImages/>
+
 
    <launcher>
       <solaris/>
@@ -16,6 +21,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -33,16 +39,16 @@
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
-      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
+      <plugin id="org.eclipse.core.filesystem.macosx"/>
+      <plugin id="org.eclipse.core.filesystem.solaris.sparc"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
-      <plugin id="org.eclipse.core.resources.win32" fragment="true"/>
+      <plugin id="org.eclipse.core.resources.win32"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>

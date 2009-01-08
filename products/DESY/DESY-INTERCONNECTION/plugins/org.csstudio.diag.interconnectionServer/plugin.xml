@@ -14,10 +14,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.diag.interconnectionServer.application"
-            name="product">
+            name="Interconnection Server">
          <property
                name="appName"
-               value="product">
+               value="Interconnection Server">
          </property>
       </product>
    </extension>
