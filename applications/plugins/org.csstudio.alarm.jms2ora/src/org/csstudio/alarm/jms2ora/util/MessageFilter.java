@@ -52,7 +52,7 @@ public class MessageFilter
         timePeriod = conf.getLong("watchdog.period", 120000);
         watchdogWaitTime = conf.getLong("watchdog.wait", 60000);
         
-        messages = new MessageFilterContainer(conf.getInt("filter.bundle", 100));
+        messages = new MessageFilterContainer(conf.getInt("filter.sendBound", 100), conf.getInt("filter.maxSentMessages", 6));
         watchdog = new WatchDog();
         watchdog.start();
     }

@@ -130,9 +130,9 @@ public class DatabaseLayer
             
             saveColumnNames();
         }
-        catch(SQLException sqle)
+        catch(Exception e)
         {
-            logger.error("*** SQLException *** : Cannot read the table column names: " + sqle.getMessage());
+            logger.error("*** Exception *** : Cannot read the table column names: " + e.getMessage());
             logger.error("Using stored column names.");
             
             readColumnNames();
@@ -286,9 +286,9 @@ public class DatabaseLayer
         {
             result = !(dbService.getConnection().isClosed());
         }
-        catch(SQLException sqle)
+        catch(Exception e)
         {
-            logger.error("*** EXCEPTION *** : " + sqle.getMessage());
+            logger.error("*** Exception *** : " + e.getMessage());
             
             result = false;
         }
@@ -378,10 +378,10 @@ public class DatabaseLayer
                 }
 
             }
-            catch(SQLException sqle)
+            catch(Exception e)
             {
                 msgId = -1;
-                if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+                if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
             }  
             
             if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
@@ -459,10 +459,10 @@ public class DatabaseLayer
                     contentId++;
                 }
             }
-            catch(SQLException sqle)
+            catch(Exception e)
             {
                 result = false;
-                if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
+                if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
             }            
             
             // Write the unknown properties, if we have some
@@ -567,9 +567,9 @@ public class DatabaseLayer
                 }
             }
         }
-        catch(SQLException sqle)
+        catch(Exception e)
         {
-            logger.error("*** SQLException *** : " + sqle.getMessage());
+            logger.error("*** Exception *** : " + e.getMessage());
             
             msgProperty.clear();
         }
@@ -618,9 +618,9 @@ public class DatabaseLayer
                 }
             }
         }
-        catch(SQLException sqle)
+        catch(Exception e)
         {
-            logger.error("*** SQLException *** : " + sqle.getMessage());
+            logger.error("*** Exception *** : " + e.getMessage());
             
             result = 0;
         }
@@ -653,7 +653,7 @@ public class DatabaseLayer
                 result += 1;
             }
         }
-        catch (SQLException e)
+        catch(Exception e)
         {
             result = -1;
         }
@@ -693,7 +693,7 @@ public class DatabaseLayer
             pst.executeUpdate();
             if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
         }
-        catch(SQLException sqle){}
+        catch(Exception e){}
 
         close();
     }

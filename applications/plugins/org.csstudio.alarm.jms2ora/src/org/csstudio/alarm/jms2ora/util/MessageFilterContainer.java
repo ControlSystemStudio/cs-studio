@@ -46,22 +46,26 @@ public class MessageFilterContainer
     private Vector<Long> freeIds;
 
     /** Number of messages that initiates a collected message */
-    private int messageBundle;
+    private int sendBound;
     
+    /** Number of messages that initiates a collected message */
+    private int maxSentMessages;
+
     /** */
     private long nextId;
     
     /**
      * Standard constructor
      */
-    public MessageFilterContainer(int bundle)
+    public MessageFilterContainer(int sendBound, int maxSentMessages)
     {
         messages = new Hashtable<String, Long>();
         messageTime = new Hashtable<Long, Long>();
         messageCount = new Hashtable<Long, Integer>();
         freeIds = new Vector<Long>();
         nextId = 1;
-        messageBundle = bundle;
+        this.sendBound = sendBound;
+        this.maxSentMessages = maxSentMessages;
     }
     
     /**
@@ -89,7 +93,7 @@ public class MessageFilterContainer
             messageTime.put(id, System.currentTimeMillis());
             
             count = messageCount.get(id);
-            if(count >= messageBundle)
+            if(count >= sendBound)
             {
                 // Do not block the message because now we have a bundle of messages.
                 // For 100 received messages that are identical, send only one message.
