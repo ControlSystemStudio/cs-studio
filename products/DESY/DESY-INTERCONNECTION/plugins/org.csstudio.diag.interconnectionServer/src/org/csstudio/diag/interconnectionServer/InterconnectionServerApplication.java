@@ -34,7 +34,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  * 
  * @author Matthias Clausen, Joerg Rathlev
  */
-public class InterconnectionServerApplication implements IApplication {
+public final class InterconnectionServerApplication implements IApplication {
 
 	// FIXME: This is currently set from the outside by the RestartIcServer
 	// and StopIcServer actions. That's not good.
