@@ -20,9 +20,10 @@ public class MySQL_RDB extends RDBUtil
      *  @param password ... password
      *  @throws Exception on error
      */
-    public MySQL_RDB(final String url, final String user, final String password) throws Exception
+    public MySQL_RDB(final String url, final String user, final String password, 
+    		final boolean autoReconnect) throws Exception
     {
-        super(url, user, password, Dialect.MySQL);
+        super(url, user, password, Dialect.MySQL, autoReconnect);
     }
 
     /** {@inheritDoc} */

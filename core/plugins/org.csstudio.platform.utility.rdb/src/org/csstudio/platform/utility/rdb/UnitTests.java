@@ -16,7 +16,7 @@ public class UnitTests
 	public void connect() throws Exception
 	{
 		// Connect to Oracle or MySQL RDB
-		RDBUtil rdb = RDBUtil.connect(TestSetup.URL);
+		RDBUtil rdb = RDBUtil.connect(TestSetup.URL, true);
 		System.out.println(rdb.getDialect());
 		assertEquals(RDBUtil.Dialect.Oracle, rdb.getDialect());
 		

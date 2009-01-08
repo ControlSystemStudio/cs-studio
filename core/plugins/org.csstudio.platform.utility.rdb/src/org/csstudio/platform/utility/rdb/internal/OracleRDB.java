@@ -21,10 +21,10 @@ public class OracleRDB extends RDBUtil
      *  @param password ... password
      *  @throws Exception on error
      */
-    public OracleRDB(final String url, final String user, final String password
-    		) throws Exception
+    public OracleRDB(final String url, final String user, final String password,
+    		final boolean autoReconnect) throws Exception
     {
-        super(url, user, password, Dialect.Oracle);
+        super(url, user, password, Dialect.Oracle, autoReconnect);
     }
 
     /** {@inheritDoc} */

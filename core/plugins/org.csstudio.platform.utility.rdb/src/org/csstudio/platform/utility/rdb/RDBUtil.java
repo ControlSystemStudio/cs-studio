@@ -31,6 +31,9 @@ abstract public class RDBUtil
 	
     /** Connection to the SQL server */
 	private Connection connection;
+	
+	/** Whether reconnect to RDB automatically in case of connection lost */
+	private boolean autoReconnect = false;
     
     /** Database dialect.
      *  For starters, the connection mechanisms vary, and since
@@ -69,26 +72,71 @@ abstract public class RDBUtil
      *  @return RDBUtil
      *  @throws Exception on error
      *  @see #close()
+     *  @deprecated Use the version with autoReconnect: {@link #connect(String, String, String, boolean)}
      */
     public static RDBUtil connect(final String url,
             final String user, final String password) throws Exception
     {
     	Activator.getLogger().debug("RDBUtil connects to " + url);
         if (url.startsWith(JDBC_MYSQL))
-            return new MySQL_RDB(url, user, password);
+            return new MySQL_RDB(url, user, password, false);
         if (url.startsWith(JDBC_ORACLE))
-            return new OracleRDB(url, user, password);
+            return new OracleRDB(url, user, password, false);
         throw new Error("Unsupported database dialect");
     }
 
     /** Connect with only a url.
      *  @see #connect(String, String, String)
+     *  @deprecated Use the version with autoReconnect: {@link #connect(String, boolean)}
      */
     public static RDBUtil connect(final String url) throws Exception
     {
         return connect(url, null, null);
     }
 
+    
+    /** Connect to the database.
+     *  <p>
+     *  The URL format depends on the database dialect.
+     *  <p>
+     *  For MySQL resp. Oracle, the formats are:
+     *  <pre>
+     *     jdbc:mysql://[host]:[port]/[database]?user=[user]&password=[password]
+     *     jdbc:oracle:thin:[user]/[password]@//[host]:[port]/[database]
+     *  </pre>
+     *  
+     *  For Oracle, the port is usually 1521.
+     *  
+     *  @param url Database URL
+     *  @param user User name or <code>null</code> if part of url
+     *  @param password Password or <code>null</code> if part of url
+     *  @param autoReconnect If true, reconnect to RDB automatically 
+     *  in case of connection lost
+     *  @return RDBUtil
+     *  @throws Exception on error
+     *  @see #close()   
+     */
+    public static RDBUtil connect(final String url,
+            final String user, final String password, final boolean autoReconnect) throws Exception
+    {
+    	Activator.getLogger().debug("RDBUtil connects to " + url);
+        if (url.startsWith(JDBC_MYSQL))
+            return new MySQL_RDB(url, user, password, autoReconnect);
+        if (url.startsWith(JDBC_ORACLE))
+            return new OracleRDB(url, user, password, autoReconnect);
+        throw new Error("Unsupported database dialect");
+    }
+
+    /** Connect with only a url.
+     *  @see #connect(String, String, String, Boolean)  
+     */
+    public static RDBUtil connect(final String url, final boolean autoReconnect) throws Exception
+    {
+        return connect(url, null, null, autoReconnect);
+    }
+    
+    
+    
     /** Constructor for derived classes.
      *  @param url Database URL
      *  @param user ... user
@@ -98,15 +146,17 @@ abstract public class RDBUtil
      *  @see #connect(String, String, String)
      */
     protected RDBUtil(final String url, final String user, final String password,
-                      final Dialect dialect) throws Exception
+                      final Dialect dialect, final boolean autoReconnect) throws Exception
     {
     	this.url = url;
     	this.user = user;
     	this.password = password;
+    	this.autoReconnect = autoReconnect;
     	this.dialect = dialect;
     	this.connection = do_connect(url, user, password);
         connection.setAutoCommit(false);
-        test_query = connection.prepareStatement(getConnectionTestQuery());
+        if(autoReconnect)
+        	test_query = connection.prepareStatement(getConnectionTestQuery());
     }
 
     /** @return Dialect info. */
@@ -139,28 +189,33 @@ abstract public class RDBUtil
 	 */
 	public Connection getConnection() throws Exception
 	{
-	    if (connection.isClosed())
-	        throw new Exception("Connection " + url + " was closed");
-        if (!isConnected())
-        {
-            Activator.getLogger().debug(
-                    "Connection Lost! Reconnect to " + url);
-            close();
-            connection = do_connect(url, user, password);
-            connection.setAutoCommit(false);
-            test_query = connection.prepareStatement(getConnectionTestQuery());
-        }
+	    if(autoReconnect) {
+			if (connection.isClosed())
+		        throw new Exception("Connection " + url + " was closed");
+	        if (!isConnected())
+	        {
+	            Activator.getLogger().debug(
+	                    "Connection Lost! Reconnect to " + url);
+	            close();
+	            connection = do_connect(url, user, password);
+	            connection.setAutoCommit(false);
+	            test_query = connection.prepareStatement(getConnectionTestQuery());
+	        }
+	    }
         return connection;
+        
 	}
 
 	/** Close the RDB connection. */
 	public void close()
 	{
 		Activator.getLogger().debug("RDBUtil closes " + url);
+		
 		try
-		{
-		    test_query.close();
-		    test_query = null;
+		{	if(autoReconnect) {
+		    	test_query.close();
+		    	test_query = null;
+			}
 			connection.close();
 			connection = null;
 		}

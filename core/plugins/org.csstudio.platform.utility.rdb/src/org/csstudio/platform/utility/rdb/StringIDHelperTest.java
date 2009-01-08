@@ -13,7 +13,7 @@ public class StringIDHelperTest
     @Test
     public void test() throws Exception
     {
-        final RDBUtil rdb = RDBUtil.connect(TestSetup.URL);
+        final RDBUtil rdb = RDBUtil.connect(TestSetup.URL, true);
         
         final StringIDHelper helper =
             new StringIDHelper(rdb, "RETENT", "RETENT_ID", "DESCR");
