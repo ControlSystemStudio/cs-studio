@@ -22,46 +22,56 @@ package org.csstudio.diag.interconnectionServer;
  */
 
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
-import org.csstudio.diag.interconnectionServer.server.ServerCommands;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
-import org.eclipse.core.runtime.IPlatformRunnable;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.equinox.app.IApplication;
+import org.eclipse.equinox.app.IApplicationContext;
 
-public class HeadlessRunnable implements IPlatformRunnable {
+/**
+ * The application class for the interconnection server.
+ * 
+ * @author Matthias Clausen, Joerg Rathlev
+ */
+public class InterconnectionServerApplication implements IApplication {
 
+	// FIXME: This is currently set from the outside by the RestartIcServer
+	// and StopIcServer actions. That's not good.
 	public static boolean SHUTDOWN = false;
-    private static InterconnectionServer thisServer = null;
 	
-	public Object run(Object args) throws Exception {
-
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object start(IApplicationContext context) throws Exception {
 		System.out.println("start IcServer");
 		CentralLogger.getInstance().info(this, "start IcServer");
 		
-		thisServer = InterconnectionServer.getInstance();
-        
-        //System.out.println ("vor start init");
-        //Timer.Start.init();
-        
-        //System.out.println ("vor start all timer");
-        //Timer.Start.all();
+		runStartupServices();
 		
-//		System.out.println( "Head Commands : " + ServerCommands.getCommands());
+		context.applicationRunning();
+		InterconnectionServer ics = InterconnectionServer.getInstance();
+        ics.executeMe();
         
+        if ( SHUTDOWN) {
+        	return EXIT_OK;
+        } else {
+        	return EXIT_RESTART;
+        }
+	}
+
+	/**
+	 * Runs the startup services.
+	 */
+	private void runStartupServices() {
 		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
 			s.run();
 		}
-        thisServer.executeMe();
-        System.out.println ("IC_Server should never get here.");
-        
-        if ( SHUTDOWN) {
-        	return IPlatformRunnable.EXIT_OK;
-        } else {
-        	return IPlatformRunnable.EXIT_RESTART;
-        }
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void stop() {
+		// TODO: implement code to forcibly stop the application
 	}
 }

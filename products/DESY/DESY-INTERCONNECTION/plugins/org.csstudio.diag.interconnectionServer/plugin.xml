@@ -6,7 +6,7 @@
 
          point="org.eclipse.core.runtime.applications">
       <application>
-         <run class="org.csstudio.diag.interconnectionServer.HeadlessRunnable"/>
+         <run class="org.csstudio.diag.interconnectionServer.InterconnectionServerApplication"/>
       </application>
    </extension>
    <extension

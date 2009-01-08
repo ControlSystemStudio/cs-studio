@@ -48,7 +48,7 @@ public class RestartIcServer implements IAction {
 		 * stop here - nicely
 		 */
 		// System.exit(0);
-		HeadlessRunnable.SHUTDOWN = false;
+		InterconnectionServerApplication.SHUTDOWN = false;
 		return "" + result;
 	}
 

@@ -48,7 +48,7 @@ public class StopIcServer implements IAction {
 		 * stop here - nicely
 		 */
 		// System.exit(0);
-		HeadlessRunnable.SHUTDOWN = true;
+		InterconnectionServerApplication.SHUTDOWN = true;
 		return "" + result;
 	}
 
