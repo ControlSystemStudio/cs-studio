@@ -31,10 +31,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	/**
+	 * {@inheritDoc}
 	 */
 	public void initializeDefaultPreferences() {
 		IEclipsePreferences prefs = new DefaultScope().getNode(
@@ -51,11 +49,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_ALARMS, "3600000");
 		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "600000");
 		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "3600000");
-		prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50");
-		//prefs.put(PreferenceConstants.SECONDARY_JMS_URL	, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50");
+		prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500&maxReconnectAttempts=50");
 		prefs.put(PreferenceConstants.NUMBER_OF_READ_THREADS, "50");
 		prefs.put(PreferenceConstants.NUMBER_OF_COMMAND_THREADS, "25");
 		prefs.put(PreferenceConstants.CONNECTION_CLIENT_ID, "IC-Server");
 	}
-
 }
