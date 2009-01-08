@@ -27,6 +27,11 @@ import java.text.*;
 import org.csstudio.platform.logging.CentralLogger;
 
 public class Statistic {
+	/*
+	 * XXX: this class has a slightly misleading name. Its inner class
+	 * StatisticContent is used to track the beacon times/timeouts (for the
+	 * watchdog functionality).
+	 */
 	
 	private static Statistic statisticInstance = null;
 	Hashtable<String,StatisticContent>	connectionList	= null;
