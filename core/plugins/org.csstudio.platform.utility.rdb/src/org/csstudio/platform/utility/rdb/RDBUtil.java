@@ -29,13 +29,13 @@ abstract public class RDBUtil
 	/** Database Password */
 	final private String password;
 	
+    /** Whether reconnect to RDB automatically in case of connection lost */
+    final private boolean autoReconnect;
+
     /** Connection to the SQL server */
 	private Connection connection;
 	
-	/** Whether reconnect to RDB automatically in case of connection lost */
-	private boolean autoReconnect = false;
-    
-    /** Database dialect.
+	/** Database dialect.
      *  For starters, the connection mechanisms vary, and since
      *  SQL isn't fully normed, there might be more differences
      *  that we need to handle, so we keep track of the dialect.
