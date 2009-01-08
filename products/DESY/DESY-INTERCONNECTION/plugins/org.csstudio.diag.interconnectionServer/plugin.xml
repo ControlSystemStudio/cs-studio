@@ -30,11 +30,6 @@
    </extension>
    <extension
          point="org.csstudio.platform.libs.dcf.action">
-      <parametrizedAction
-            class="org.csstudio.diag.interconnectionServer.SampleAction"
-            id="org.csstudio.diag.interconnectionServer.sampleAction"
-            name="Sample Action"
-            parameters="param1,param2"/>
       <simpleAction
             class="org.csstudio.diag.interconnectionServer.GetListOfClients"
             id="org.csstudio.diag.interconnectionServer.getListOfClients"

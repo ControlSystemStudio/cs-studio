@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: InterconnectionServer Plug-in
+Bundle-Name: Interconnection Server Plug-in
 Bundle-SymbolicName: org.csstudio.diag.interconnectionServer;singleton:=true
 Bundle-Version: 1.0.4
 Bundle-Activator: org.csstudio.diag.interconnectionServer.Activator
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.libs.jms,
@@ -12,5 +11,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.dcf,
  org.csstudio.utility.ldap,
  org.csstudio.utility.namespace.utility
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: DESY
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

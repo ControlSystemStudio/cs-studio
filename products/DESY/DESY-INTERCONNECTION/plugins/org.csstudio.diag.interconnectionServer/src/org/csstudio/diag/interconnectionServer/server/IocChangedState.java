@@ -21,20 +21,7 @@ package org.csstudio.diag.interconnectionServer.server;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import java.text.SimpleDateFormat;
-
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-
-import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 
 /**

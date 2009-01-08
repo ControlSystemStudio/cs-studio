@@ -23,10 +23,8 @@ package org.csstudio.diag.interconnectionServer.server;
 
 
 import java.io.IOException;
-import java.net.*;
-import java.util.Enumeration;
-
-import org.csstudio.diag.interconnectionServer.server.Statistic.StatisticContent;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
 /**
  * Still used??
@@ -36,22 +34,10 @@ import org.csstudio.diag.interconnectionServer.server.Statistic.StatisticContent
  */
 public class ServerCommands extends Thread{
 	
-	private DatagramSocket socket;
-	private DatagramPacket packet;
-	private String attribute;
-	private String value;
-	private TagList.TagProperties tagProperties;
-	
 	private static String RETURN_MESSAGE_OK = "Ok";
 	private static String RETURN_MESSAGE_ERROR = "Error";
 	
 	public ServerCommands ( String attribute, String value, TagList.TagProperties tagProperties, DatagramSocket socket, DatagramPacket packet) {
-		this.attribute			= attribute;
-		this.socket				= socket;
-		this.packet				= packet;
-		this.value				= value;
-		this.tagProperties		= TagList.getInstance().getTagProperties( attribute);
-		
 		this.start();
 	}
 	

@@ -29,8 +29,6 @@ public class GetStatisticInformation implements IAction {
 
 	public Object run(Object param) {
 		String result = null;
-		// TODO Auto-generated method stub
-		// test only CollectorSupervisor.getInstance().printCollection();
 		result = "----------- RESULT -----------\n";
 		result += CollectorSupervisor.getInstance().getCollectionAsString();
 		result += Statistic.getInstance().getStatisticAsString();

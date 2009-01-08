@@ -38,7 +38,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
-import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
@@ -60,19 +59,12 @@ public class ClientRequest implements Runnable
     private String				packetData 		= null;
 	private DatagramSocket      socket          = null;
     private DatagramPacket      packet          = null;
-    // private Session             alarmSession, logSession, putLogSession         = null;
-    // private Destination         alarmDestination, logDestination, putLogDestination     = null;
-    private Connection          alarmConnection, logConnection, putLogConnection    = null;
-    // private MessageProducer		alarmSender, logSender, putLogSender	= null;
-    //private MessageProducer     sender          = null;
-    //private MapMessage          message         = null;
     private Statistic			statistic		= null;
     public Statistic.StatisticContent  statisticContent = null;
     public TagList 				tagList			= null;
     InterconnectionServer icServer = null;
     private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE	= true;
     private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE = false;
-    private boolean				wasSwitchOver = false;				
     private int statusMessageDelay = 0;
     
 	/* 
@@ -87,48 +79,22 @@ public class ClientRequest implements Runnable
         this.packetData = packetData;
 		this.socket       = d;
 		this.packet       = p;
-		/*
-		this.alarmSession      = jmsAlarmSession;
-		this.logSession      = jmsLogSession;
-		this.putLogSession      = jmsPutLogSession;
-        this.alarmDestination  = jmsAlarmDestination;
-        this.logDestination  = jmsLogDestination;
-        this.putLogDestination  = jmsPutLogDestination;
-        this.alarmSender = jmsAlarmSender;
-        this.logSender = jmsLogSender;
-        this.putLogSender = jmsPutLogSender;
-        */
-		this.alarmConnection = alarmConnection;
-		this.logConnection = logConnection;
-		this.putLogConnection = puLogConnection;
 		
         this.statistic	  = Statistic.getInstance();
         this.tagList 	  = TagList.getInstance();
-        
-        /*
-         * get started from executor
-         */
-		// this.start();
 	}
 	
 	public void run()
 	{
-	    DatagramPacket 	newPacket       = null;
 	    InetAddress    	address         = null;
 	    String			hostName		= null;
 	    String         	daten           = null;
-	    String 			ldapIocName 	= null;
-	    String         	answerString    = null;
 	    String[]       	attribute       = null;
 	    int            	length          = 0;
 	    int            	port            = 0;
 	    String			statisticId		= null;
 	    boolean 		received		= true;
 	    MapMessage      message         = null;
-	    MessageProducer sender          = null;
-//	    Session         alarmSession	= null;
-//	    Session         logSession		= null;
-//	    Session         putLogSession	= null;
         
         address 	= packet.getAddress();
         hostName 	= address.getHostName();
@@ -143,18 +109,6 @@ public class ClientRequest implements Runnable
         length 		= packet.getLength();
         statisticId	= hostName + ":" + port;
         GregorianCalendar parseTime = new GregorianCalendar();
-        GregorianCalendar afterJmsSendTime = new GregorianCalendar();
-        GregorianCalendar afterUdpAcknowledgeTime = new GregorianCalendar();
-        GregorianCalendar afterLdapWriteTime = new GregorianCalendar();
-
-//		//get properties from xml store.
-//		XMLStore store = XMLStore.getInstance();
-//		String jmsTimeToLiveAlarms = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"jmsTimeToLiveAlarms", false);
-//		String jmsTimeToLiveLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"jmsTimeToLiveLogs", false);
-//		String jmsTimeToLivePutLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"jmsTimeToLivePutLogs", false);
 
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String jmsTimeToLiveAlarms = prefs.getString(Activator.getDefault().getPluginId(),
@@ -183,8 +137,6 @@ public class ClientRequest implements Runnable
          */
         icServer.getClientRequestTheadCollector().incrementValue();
         
-        ///System.out.println("Time: - start 		= " + dateToString(new GregorianCalendar()));
-        //
         // write out some statistics
         //
         statisticContent = statistic.getContentObject( statisticId);
@@ -294,7 +246,6 @@ public class ClientRequest implements Runnable
     				// TODO: handle exception
     			}
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-        		afterUdpAcknowledgeTime = new GregorianCalendar();
         		///System.out.println("Time-ALARM: - after send UDP reply	= " + dateToString(new GregorianCalendar()));
         		//
         		// time to update the LDAP server entry
@@ -303,7 +254,6 @@ public class ClientRequest implements Runnable
         		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE);
         		
         		//System.out.print("aLe");
-        		afterLdapWriteTime = new GregorianCalendar();
         		
         		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
         		if (showMessageIndicatorB) {

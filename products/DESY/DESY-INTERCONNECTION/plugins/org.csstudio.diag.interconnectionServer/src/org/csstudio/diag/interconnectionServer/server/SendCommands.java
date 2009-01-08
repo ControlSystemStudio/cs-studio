@@ -58,16 +58,6 @@ public class SendCommands {
         int             result      = 0;
         byte 			buffer[]	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
         commandList	= new Hashtable<String,CommandInstance>();
-//        currentId = PreferenceProperties.SENT_START_ID;
-
-//		//get properties from xml store.
-//		XMLStore store = XMLStore.getInstance();
-//		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"commandPortNumber", false);
-//		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"dataPortNumber", false);
-//		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"sentStartID", false);
 
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),

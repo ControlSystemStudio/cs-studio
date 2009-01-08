@@ -23,7 +23,6 @@ package org.csstudio.diag.interconnectionServer.server;
 
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.text.SimpleDateFormat;
@@ -56,8 +55,6 @@ import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.statistic.CollectorSupervisor;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
@@ -70,21 +67,16 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class InterconnectionServer
 {
     private static InterconnectionServer		thisServer = null;
-    private String                      instanceName    = null;    
     private DatagramSocket              serverSocket    = null; 
-    private DatagramSocket              serverCommandSocket    = null; 
     private Session                     alarmSession, logSession, putLogSession	        	= null;
     private Connection                  alarmConnection, logConnection, putLogConnection    = null;
-	private Destination                 alarmDestination, logDestination, putLogDestination = null;
-	private MessageProducer				alarmSender, logSender, putLogSender		= null;
-	private boolean 					primaryServerUsed = true;
+	private Destination                 putLogDestination = null;
 	private int							sendMessageErrorCount	= 0;
 	public int 							successfullJmsSentCountdown = PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN;
 	private	volatile boolean         	quit        = false;
 	private int messageCounter = 0;
 	private String						localHostName = "defaultLocalHost";
 	private BeaconWatchdog				beaconWatchdog = null;
-	//private static int					errorContNamingException = 0;
     
     public final String NAME    = "IcServer";
     public final String VERSION = " 1.1.2";
@@ -113,29 +105,15 @@ public class InterconnectionServer
     	Hashtable<String, String>   properties      = null;
     	Context                     alarmContext, logContext, putLogContext      	   	= null;
     	ConnectionFactory           alarmFactory, logFactory, putLogFactory        		= null;
-    	//Connection                  alarmConnection, logConnection, putLogConnection    = null;
-    	PrintStream                 newout          = null;
         int							errorContNamingException = 0;
         ActiveMQConnectionFactory connectionFactory = null;
         boolean activeMqIsActive = false;
         
-        // Den Namen dieser Instanz setzen (wird für JMS benötigt)
-        instanceName = PreferenceProperties.PROCESS_NAME;
-
         //
         // remember how often we came here
         //
         Statistic.getInstance().incrementNumberOfJmsServerFailover();
         
-//		//get properties from xml store.
-//		XMLStore store = XMLStore.getInstance();
-//		String jmsContextFactory = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"jmsContextFactory", false);
-//		String primaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"primaryJmsUrl", false);
-//		String secondaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"secondaryJmsUrl", false);
-
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String jmsContextFactory = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.JMS_CONTEXT_FACTORY, "", null);  
@@ -143,53 +121,20 @@ public class InterconnectionServer
 	    		PreferenceConstants.PRIMARY_JMS_URL, "", null);
 	    String connectionClientId = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.CONNECTION_CLIENT_ID, "", null);  
-	    /*
-	     * do not use the secondary URL any more
-	     *
-	    String secondaryJmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.SECONDARY_JMS_URL, "", null);  
-        */
-        
         properties = new Hashtable<String, String>();
         
         properties.put(Context.INITIAL_CONTEXT_FACTORY, jmsContextFactory);
-        //
-        // choose to start the primary - or the secondary JMS server
-        //
-        //if ( primaryServerUsed) {
-        	if ( (jmsContextFactory) != null && jmsContextFactory.toUpperCase().equals("ACTIVEMQ")) {
-        		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
-        		activeMqIsActive = true;
-        		CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
+    	if ( (jmsContextFactory) != null && jmsContextFactory.toUpperCase().equals("ACTIVEMQ")) {
+    		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
+    		activeMqIsActive = true;
+    		CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
 //        		System.out.println( "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
-        	} else {
-        		properties.put(Context.PROVIDER_URL, primaryJmsUrl);
-        		CentralLogger.getInstance().info(this, "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
+    	} else {
+    		properties.put(Context.PROVIDER_URL, primaryJmsUrl);
+    		CentralLogger.getInstance().info(this, "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
 //        		System.out.println( "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
-        	}
+    	}
 
-//        	this.primaryServerUsed = false;
-//        } else {
-//        	if ( (jmsContextFactory) != null && jmsContextFactory.toUpperCase().equals("ACTIVEMQ")) {
-//        		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
-//        		activeMqIsActive = true;
-//        		CentralLogger.getInstance().info(this, "Connect SECONDARY to Active-MQ-Server: " + secondaryJmsUrl);
-////        		System.out.println( "Connect SECONDARY to Active-MQ-Server: " + secondaryJmsUrl);
-//        	} else {
-//        		properties.put(Context.PROVIDER_URL, secondaryJmsUrl);
-//        		CentralLogger.getInstance().info(this, "Connect SECONDARY to JMS-Server: " + secondaryJmsUrl);
-////        		System.out.println( "Connect SECONDARY to JMS-Server: " + secondaryJmsUrl);
-//        	}
-//        	this.primaryServerUsed = true;
-//        }
-
-        /*
-         * not used in our environment
-         * 
-        properties.put(Context.SECURITY_PRINCIPAL, "admin");
-        properties.put(Context.SECURITY_CREDENTIALS, "openjms");
-         */
-        
         //
         // setup ALARM connection
         //
@@ -336,16 +281,9 @@ public class InterconnectionServer
     private void disconnectFromIocs() {
     	String[] listOfNodes = Statistic.getInstance().getNodeNameArray();
     	
-//		//get properties from xml store.
-//		XMLStore store = XMLStore.getInstance();
-//		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"commandPortNumber", false);
-
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.COMMAND_PORT_NUMBER, "", null);  
-        
-
 		
 		int commandPortNum = Integer.parseInt(commandPortNumber);
 
@@ -386,38 +324,9 @@ public class InterconnectionServer
     }
     
     private InterconnectionServer() {
-    	// absicherung
-    	
-//    	//get properties from xml preferences
-//    	XMLStore store = XMLStore.getInstance();
-//		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"sentStartID", false);
-
-//		//create a defaultscope for the plugin. Otherwise the preference initialzier
-//		//will be called AFTER StartupService and the LoginCallbackhandler
-//		//has no preference values.
-//		IEclipsePreferences prefsx = new DefaultScope().getNode(
-//				Activator.getDefault().getPluginId());
-		IEclipsePreferences prefs = new DefaultScope().getNode(
-				Activator.getDefault().getPluginId());
-
-//		prefs.put(PreferenceConstants.XMPP_USER_NAME, "icserver-alarm");
-//		prefs.put(PreferenceConstants.XMPP_PASSWORD, "icserver");
-//		prefs.put(PreferenceConstants.DATA_PORT_NUMBER, "18324");
-//		prefs.put(PreferenceConstants.COMMAND_PORT_NUMBER, "18325");
-//		prefs.put(PreferenceConstants.SENT_START_ID, "5000000");
-//		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY, "ACTIVEMQ");
-//		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_ALARMS, "3600000");
-//		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "600000");
-//		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "3600000");
-//		prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50");
-//		prefs.put(PreferenceConstants.SECONDARY_JMS_URL	, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50");
-
-    	
         IPreferencesService prefService = Platform.getPreferencesService();
 	    sendCommandId = prefService.getInt(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.SENT_START_ID, 0, null);  
-//		sendCommandId = Integer.parseInt(sentStartID);
 
     }
     
@@ -511,11 +420,6 @@ public class InterconnectionServer
         
 //        System.out.println("\n" + NAME + VERSION + BUILD + "\nInternal Name: " + instanceName);
 
-//		//get properties from xml store.
-//		XMLStore store = XMLStore.getInstance();
-//		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-//				"dataPortNumber", false);
-
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String dataPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.DATA_PORT_NUMBER, "", null);  
@@ -572,11 +476,6 @@ public class InterconnectionServer
             
             return -1;
         }
-        
-        /*
-         * create thread group for the thread which will be created here:
-         */
-        ThreadGroup somegroup = new ThreadGroup ("ClientRequests");
     
         // TODO: Abbruchbedingung einfügen
         //       z.B. Receiver für Queue COMMAND einfügen

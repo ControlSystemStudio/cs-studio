@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldap.engine.Engine.ChannelAttribute;
 
 /**
  * Helper class for local LDAP support.
@@ -320,14 +319,4 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 				"alarm set by IC-Server", 											// text
 				null);																// howTo
 	}
-
-	private String getRecordAttribut(String recordPath, ChannelAttribute attribut){
-	    return Engine.getInstance().getAttriebute(recordPath, attribut);
-	}
-
-
-    private void setRecordAttribut(String recordPath, ChannelAttribute attribut, String value){
-        Engine.getInstance().setAttriebute(recordPath, attribut, value);
-    }
-
 }

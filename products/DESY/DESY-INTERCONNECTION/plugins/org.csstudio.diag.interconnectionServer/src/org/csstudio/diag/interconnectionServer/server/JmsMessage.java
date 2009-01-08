@@ -23,7 +23,6 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import java.text.SimpleDateFormat;
 
-import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
