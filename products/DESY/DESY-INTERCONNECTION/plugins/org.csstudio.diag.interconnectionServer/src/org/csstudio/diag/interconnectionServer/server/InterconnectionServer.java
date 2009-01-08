@@ -300,7 +300,11 @@ public class InterconnectionServer
     	/*
     	 * exit main loop
     	 */
+    	// FIXME: this doesn't work if the main loop does not receive any
+    	// datagrams because it blocks on the socket, so the main loop never
+    	// reaches the point where it will notice that the quit flag is set.
     	setQuit(true);
+    	
     	while(this.running) {
 //    		Thread.yield();
 //    		try {
