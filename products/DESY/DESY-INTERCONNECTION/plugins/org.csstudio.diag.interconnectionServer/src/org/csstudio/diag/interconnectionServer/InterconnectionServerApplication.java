@@ -1,4 +1,5 @@
 package org.csstudio.diag.interconnectionServer;
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -38,25 +39,25 @@ public class InterconnectionServerApplication implements IApplication {
 	// FIXME: This is currently set from the outside by the RestartIcServer
 	// and StopIcServer actions. That's not good.
 	public static boolean SHUTDOWN = false;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 		System.out.println("start IcServer");
 		CentralLogger.getInstance().info(this, "start IcServer");
-		
+
 		runStartupServices();
-		
+
 		context.applicationRunning();
 		InterconnectionServer ics = InterconnectionServer.getInstance();
-        ics.executeMe();
-        
-        if ( SHUTDOWN) {
-        	return EXIT_OK;
-        } else {
-        	return EXIT_RESTART;
-        }
+		ics.executeMe();
+
+		if (SHUTDOWN) {
+			return EXIT_OK;
+		} else {
+			return EXIT_RESTART;
+		}
 	}
 
 	/**
