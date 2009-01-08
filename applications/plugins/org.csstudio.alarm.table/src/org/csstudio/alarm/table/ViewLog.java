@@ -215,7 +215,7 @@ public class ViewLog extends ViewPart implements MessageListener {
 	 * 
 	 * Receives the JMS message. If it is an ack 
 	 */
-	synchronized public void onMessage(final Message message) {
+	public void onMessage(final Message message) {
 		if (message == null) {
 			JmsLogsPlugin.logError("Message == null");
 		}
@@ -224,16 +224,16 @@ public class ViewLog extends ViewPart implements MessageListener {
 						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
 						final MapMessage mm = (MapMessage) message;
-                		Display.getDefault().asyncExec(new Runnable() {
-            			public void run() {
-            				try {
-            					_messageList.addJMSMessage(mm);
-            					} catch (Exception e) {
-                                e.printStackTrace();
-            					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-            				}
-            			}
-            			});
+    					_messageList.addJMSMessage(mm);
+//                		Display.getDefault().asyncExec(new Runnable() {
+//            			public void run() {
+//            				try {
+//            					} catch (Exception e) {
+//                                e.printStackTrace();
+//            					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+//            				}
+//            			}
+//            			});
                         CentralLogger.getInstance().debug(this, "received map message");
 					} else {
 						JmsLogsPlugin.logError("received message is an unknown type");

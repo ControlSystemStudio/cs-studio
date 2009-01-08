@@ -63,7 +63,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 * 
 	 */
 	@Override
-	synchronized public void addJMSMessage(MapMessage newMessage)
+	public synchronized void addJMSMessage(MapMessage newMessage)
 			throws JMSException {
 		if (checkValidity(newMessage)) {
 			Iterator iterator = changeListeners.iterator();
@@ -176,15 +176,15 @@ public class JMSAlarmMessageList extends JMSMessageList {
 							this,
 							"add message, removelist size: "
 									+ _messagesToRemove.size());
-					if ((_removeMessageTask == null)
-							|| (_removeMessageTask.getState() == Job.NONE)) {
-						CentralLogger.getInstance().debug(this,
-								"Create new 'RemoveAckMessage Task'");
-						_removeMessageTask = null;
-						_removeMessageTask = new RemoveAcknowledgedMessagesTask(
-								this, _messagesToRemove);
-						_removeMessageTask.schedule();
-					}
+//					if ((_removeMessageTask == null)
+//							|| (_removeMessageTask.getState() == Job.NONE)) {
+//						CentralLogger.getInstance().debug(this,
+//								"Create new 'RemoveAckMessage Task'");
+//						_removeMessageTask = null;
+//						_removeMessageTask = new RemoveAcknowledgedMessagesTask(
+//								this, _messagesToRemove);
+//						_removeMessageTask.schedule();
+//					}
 				} else {
 					System.out.println("ViewAlarm set ack MsgName: "
 							+ message.getProperty("NAME") + " MsgTime: "
@@ -197,6 +197,10 @@ public class JMSAlarmMessageList extends JMSMessageList {
 				break;
 			}
 		}
+		for (JMSMessage message : _messagesToRemove) {
+			removeJMSMessage(message);
+		}
+		_messagesToRemove.clear();
 		return null;
 	}
 

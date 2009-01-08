@@ -22,11 +22,13 @@
 
 package org.csstudio.alarm.table.logTable;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.IJMSMessageViewer;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author jhatje
@@ -44,24 +46,70 @@ public class TableContentProvider implements IJMSMessageViewer,
 		messageList = jmsml;
 	}
 	
-	public void addJMSMessage(JMSMessage jmsm) {
+	public void addJMSMessage(final JMSMessage jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+		public void run() {
+			try {
+				tableViewer.add(jmsm);
+				} catch (Exception e) {
+                e.printStackTrace();
+				JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+			}
+		}
+		});
+
+	}
+
+	public void addJMSMessages(final JMSMessage[] jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
 		tableViewer.add(jmsm);
+				} catch (Exception e) {
+	                e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+			});
 	}
 
-	public void addJMSMessages(JMSMessage[] jmsm) {
-		tableViewer.add(jmsm);
-	}
-
-	public void removeJMSMessage(JMSMessage jmsm) {
+	public void removeJMSMessage(final JMSMessage jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
 		tableViewer.remove(jmsm);
+				} catch (Exception e) {
+	                e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+			});
 	}
 
-	public void removeJMSMessage(JMSMessage[] jmsm) {
+	public void removeJMSMessage(final JMSMessage[] jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
 		tableViewer.remove(jmsm);
+				} catch (Exception e) {
+	                e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+			});
 	}
 
-	public void updateJMSMessage(JMSMessage jmsm) {
+	public void updateJMSMessage(final JMSMessage jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
 		tableViewer.update(jmsm, null);
+				} catch (Exception e) {
+	                e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+			});
 	}
 	
 	public void dispose() {
