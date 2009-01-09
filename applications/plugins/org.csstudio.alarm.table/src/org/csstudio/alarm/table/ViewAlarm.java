@@ -211,7 +211,6 @@ public class ViewAlarm extends ViewLog {
 						message = (JMSMessage) ti.getData();
 						// ComboBox selection for all messages or for a special
 						// severity
-						System.out.println("combo " + ackCombo.getItem(ackCombo.getSelectionIndex()));
 						if (ackCombo.getItem(ackCombo.getSelectionIndex())
 								.equals(message.getProperty("SEVERITY"))
 								|| (ackCombo.getItem(ackCombo.getSelectionIndex())

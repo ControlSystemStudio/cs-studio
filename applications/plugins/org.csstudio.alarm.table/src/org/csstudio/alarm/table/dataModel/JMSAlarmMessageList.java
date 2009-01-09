@@ -156,9 +156,6 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		CentralLogger.getInstance().info(this, "ViewAlarm Ack message received, MsgName: "
 				+ newMessage.getString("NAME") + " MsgTime: "
 				+ newMessage.getString("EVENTTIME"));
-		System.out.println("ViewAlarm Ack message received, MsgName: "
-		+ newMessage.getString("NAME") + " MsgTime: "
-		+ newMessage.getString("EVENTTIME"));
 		for (JMSMessage message : JMSMessages) {
 			if (message.getName().equals(newMessage.getString("NAME"))
 					&& message.getProperty("EVENTTIME").equals(
@@ -169,26 +166,11 @@ public class JMSAlarmMessageList extends JMSMessageList {
 						|| (message.getProperty("SEVERITY_KEY")
 								.equalsIgnoreCase("INVALID"))) {
 					_messagesToRemove.add(message);
-					System.out.println("ViewAlarm add message MsgName: "
-							+ message.getProperty("NAME") + " MsgTime: "
-							+ message.getProperty("EVENTTIME"));
 					CentralLogger.getInstance().debug(
 							this,
 							"add message, removelist size: "
 									+ _messagesToRemove.size());
-//					if ((_removeMessageTask == null)
-//							|| (_removeMessageTask.getState() == Job.NONE)) {
-//						CentralLogger.getInstance().debug(this,
-//								"Create new 'RemoveAckMessage Task'");
-//						_removeMessageTask = null;
-//						_removeMessageTask = new RemoveAcknowledgedMessagesTask(
-//								this, _messagesToRemove);
-//						_removeMessageTask.schedule();
-//					}
 				} else {
-					System.out.println("ViewAlarm set ack MsgName: "
-							+ message.getProperty("NAME") + " MsgTime: "
-							+ message.getProperty("EVENTTIME"));
 					message.getHashMap().put("ACK_HIDDEN", "TRUE");
 					message.setProperty("ACK", "TRUE");
 					message.setAcknowledged(true);
@@ -299,9 +281,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			while (it.hasNext()) {
 				addJMSMessage(it.next());
 			}
-System.out.println("toRemove size: " + jmsMessagesToRemove.size());
 			jmsMessagesToRemove.clear();
-			System.out.println("toRemoveAndAdd size: " + jmsMessagesToRemoveAndAdd.size());
 			jmsMessagesToRemoveAndAdd.clear();
 		} catch (JMSException e) {
 			JmsLogsPlugin.logException("No SEVERITY in message", e);
