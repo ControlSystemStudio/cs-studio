@@ -25,8 +25,8 @@ package org.csstudio.platform.utility.jms;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.TreeSet;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Connection;
@@ -67,7 +67,8 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
     private Hashtable<String, MessageConsumer[]> subscriber = null;
     
     /** Queues for the messages */
-    private Hashtable<String, ConcurrentLinkedQueue<Message>> messages = null;
+    // private Hashtable<String, ConcurrentLinkedQueue<Message>> messages = null;
+    private Hashtable<String, TreeSet<Message>> messages = null;
     
     /** Array of URL strings */
     private String[] urlList = null;
@@ -185,10 +186,10 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             
             if(messages == null)
             {
-                messages = new Hashtable<String, ConcurrentLinkedQueue<Message>>();
+                messages = new Hashtable<String, TreeSet<Message>>();
             }
             
-            messages.put(name, new ConcurrentLinkedQueue<Message>());
+            messages.put(name, new TreeSet<Message>(new MessageComperator()));
             
             result = true;
         }
@@ -226,22 +227,24 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
 	 */   
     public Message receive(String name, long waitTime)
     {
-        ConcurrentLinkedQueue<Message> queue = null;
+        TreeSet<Message> subscriberQueue = null;
         MessageConsumer[] c = null;
         Message[] m = null;
         Message result = null;
         
-        // First check the internal message queue
+        // First check the internal subscriber message queue
         if(messages.containsKey(name))
         {
-            queue = messages.get(name);
+            subscriberQueue = messages.get(name);
             
-            if(!queue.isEmpty())
+            if(!subscriberQueue.isEmpty())
             {
-                result = queue.poll();
+                // Get the oldest message == the first element in the TreeSet
+                result = subscriberQueue.first();
+                subscriberQueue.remove(result);
             }
         }
-        
+
         // Return when a message was found in the queue
         if(result != null)
         {
@@ -265,10 +268,12 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                     if(waitTime > 0)
                     {
                         m[i] = c[i].receive(waitTime);
+                        if(m[i] != null) subscriberQueue.add(m[i]);
                     }
                     else
                     {
                         m[i] = c[i].receiveNoWait();
+                        if(m[i] != null) subscriberQueue.add(m[i]);
                     }
                 }
                 catch(JMSException jmse)
@@ -277,50 +282,11 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 }
             }
             
-            // All servers sent a message
-            if((m[0] != null) && (m[1] != null))
+            // Get the first message. It is the oldest one. Maybe we just have one message.
+            if(!subscriberQueue.isEmpty())
             {
-                try
-                {
-                    // Check the time stamp
-                    if(m[0].getJMSTimestamp() <= m[1].getJMSTimestamp())
-                    {
-                        // The oldest message first
-                        result = m[0];
-                        
-                        // The newest message will be stored in the queue
-                        if(queue != null)
-                        {
-                            queue.add(m[1]);
-                        }
-                    }
-                    else // and vice versa...
-                    {
-                        result = m[1];
-                        
-                        if(queue != null)
-                        {
-                            queue.add(m[0]);
-                        }
-                    }
-                }
-                catch(JMSException jmse)
-                {
-                    result = m[0];
-                    
-                    if(queue != null)
-                    {
-                        queue.add(m[1]);
-                    }
-                }            
-            }
-            else if(m[0] == null && m[1] != null) // Only one message
-            {
-                result = m[1];
-            }
-            else if(m[0] != null && m[1] == null) // Only one message
-            {
-                result = m[0];
+                result = subscriberQueue.first();
+                subscriberQueue.remove(result);
             }
         }
         
@@ -347,14 +313,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         {
             for(int i = 0;i < connectionCount;i++)
             {
-                if(connection[i] != null)
-                {
-                    try
-                    {
-                        connection[i].stop();
-                    }
-                    catch(JMSException jmse) { }
-                }
+                if(connection[i] != null){try{connection[i].stop();}catch(JMSException jmse){}}
             }
         }
         
@@ -368,11 +327,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 
                 for(int i = 0;i < c.length;i++)
                 {
-                    try
-                    {
-                        c[i].close();
-                    }
-                    catch(JMSException jmse) { }
+                    try{c[i].close();}catch(JMSException jmse){}
                 }
             }
             
@@ -386,12 +341,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             {
                 if(session[i] != null)
                 {
-                    try
-                    {
-                        session[i].close();
-                    }
-                    catch(JMSException jmse) { }
-                    
+                    try{session[i].close();}catch(JMSException jmse){}
                     session[i] = null;
                 }
             }
@@ -400,20 +350,12 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             {
                 if(connection[i] != null)
                 {
-                    try
-                    {
-                        connection[i].close();
-                    }
-                    catch(JMSException jmse) { }
-                    
+                    try{connection[i].close();}catch(JMSException jmse){}
                     connection[i] = null;
                 }
             }
             
-            if(factory != null)
-            {
-                factory[i] = null;
-            }            
+            if(factory != null){factory[i]=null;}            
         }
         
         factory = null;
