@@ -25,7 +25,10 @@ import java.io.Serializable;
 
 public abstract class TObject implements Serializable 
 {
-	public final boolean strEquals(String str1, String str2)
+    /** Generated serial version id */
+    private static final long serialVersionUID = -2271251924558176471L;
+
+    public final boolean strEquals(String str1, String str2)
 	{
 		if(str1 == str2)
 			return true;

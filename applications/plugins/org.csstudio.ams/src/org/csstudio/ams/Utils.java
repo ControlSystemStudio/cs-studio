@@ -49,7 +49,7 @@ public class Utils
 	{
     	MapMessage msg = session.createMapMessage();
 		
-		Enumeration enumProps = in.getMapNames(); //?getMapNames
+		Enumeration<?> enumProps = in.getMapNames(); //?getMapNames
 		while (enumProps.hasMoreElements())
 		{
 			String propName = (String)enumProps.nextElement();
@@ -94,7 +94,7 @@ public class Utils
 	public static String getMessageString(MapMessage in) throws JMSException
 	{
 		String ret = null;
-		Enumeration enumProps = in.getMapNames(); //?getMapNames
+		Enumeration<?> enumProps = in.getMapNames(); //?getMapNames
 		while (enumProps.hasMoreElements())
 		{
 			String propName = (String)enumProps.nextElement();

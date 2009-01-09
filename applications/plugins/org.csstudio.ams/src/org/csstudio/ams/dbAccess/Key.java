@@ -25,7 +25,10 @@ import java.io.Serializable;
 
 public abstract class Key implements ItemInterface,Serializable
 {
-	public static final int USER_KEY = 1;
+	/** Generated serial version id */
+    private static final long serialVersionUID = -4085423169819630838L;
+
+    public static final int USER_KEY = 1;
 	public static final int USERGROUP_KEY = 2;
 	public static final int FILTER_KEY = 3;
 	public static final int FILTERCONDITION_KEY = 4;
