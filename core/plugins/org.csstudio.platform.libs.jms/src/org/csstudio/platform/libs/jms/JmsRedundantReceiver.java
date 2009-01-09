@@ -51,6 +51,7 @@ import javax.naming.NamingException;
  * 
  */
 
+@Deprecated
 public class JmsRedundantReceiver implements IJmsRedundantReceiver
 {
     /** Number of redundant connections */

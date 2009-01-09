@@ -46,7 +46,9 @@ import javax.naming.NamingException;
  * A message producer uses several connections (fallbacks).
  * 
  * @author C1 WPS / Kai Meyer, Matthias Zeimer
+ * @deprecated
  */
+@Deprecated
 public class JmsRedundantProducer implements IJmsProducer {
 
 	/**
