@@ -229,7 +229,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
     {
         TreeSet<Message> subscriberQueue = null;
         MessageConsumer[] c = null;
-        Message[] m = null;
+        Message m = null;
         Message result = null;
         
         // First check the internal subscriber message queue
@@ -256,10 +256,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         {
             // Get the MessageConsumer objects for all hosts
             c = subscriber.get(name);
-            
-            // Create a new array of Message
-            m = new Message[c.length];
-            
+                        
             // Receive the next message from all hosts
             for(int i = 0;i < c.length;i++)
             {
@@ -267,19 +264,21 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 {
                     if(waitTime > 0)
                     {
-                        m[i] = c[i].receive(waitTime);
-                        if(m[i] != null) subscriberQueue.add(m[i]);
+                        m = c[i].receive(waitTime);
+                        if(m != null) subscriberQueue.add(m);
                     }
                     else
                     {
-                        m[i] = c[i].receiveNoWait();
-                        if(m[i] != null) subscriberQueue.add(m[i]);
+                        m = c[i].receiveNoWait();
+                        if(m != null) subscriberQueue.add(m);
                     }
                 }
                 catch(JMSException jmse)
                 {
-                    m[i] = null;
+                    m = null;
                 }
+                
+                m = null;
             }
             
             // Get the first message. It is the oldest one. Maybe we just have one message.
