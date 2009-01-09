@@ -25,48 +25,37 @@ package org.csstudio.platform.utility.jms;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.Topic;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
  * 
- * The class <code>JmsRedundantReceiver</code> handles the redundant connections to JMS servers. It uses queues
+ * This class handles the redundant connections to JMS servers. It uses queues
  * to store messages if two or more servers holds messages for a consumer. They will be stored chronological. The
  * oldest message will be returned first to a client.
  * 
  * @author Markus Moeller
- * @version 1.0
+ * @version 1.1
+ * @since 08.01.2009
  * 
  */
 
 public class JmsRedundantReceiver implements IJmsRedundantReceiver
 {
-    /** Number of redundant connections */
-    private final int CONNECTION_COUNT = 2;
-
     /** Client id */
     private String clientId = null;
     
-    /** Property set for JNDI */
-    private Hashtable<String, String> properties = null;
-    
-    /** Array of contexts */
-    private Context[] context = null;
-    
     /** Array of factories */
-    private ConnectionFactory[] factory = null;
+    private ActiveMQConnectionFactory[] factory = null;
     
     /** Array of JMS connections */
     private Connection[] connection  = null;
@@ -81,42 +70,52 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
     private Hashtable<String, ConcurrentLinkedQueue<Message>> messages = null;
     
     /** Array of URL strings */
-    private String[] urls = null;
+    private String[] urlList = null;
     
     /** Number of redundant connections */
+    private int connectionCount;
+
+    /** Flag that indicates whether or not the connections are established. */
     private boolean connected = false;
     
-    /**
-     * 
-     * @param id - The client Id used by the connection object.
-     * @param url1 - URL of the first JMS Server
-     * @param url2 - URL of the second JMS Server
-     */
-    
-    public JmsRedundantReceiver(String id, String url1, String url2)
+    public JmsRedundantReceiver(String id, String[] urls)
     {
-        urls = new String[CONNECTION_COUNT];
+        Vector<String> tempList = null;
         
-        urls[0] = url1;
-        urls[1] = url2;
+        if(urls == null)
+        {
+            return;
+        }
+        
+        tempList = new Vector<String>();
+        
+        for(String s : urls)
+        {
+            // Count the valid url entries
+            if(s != null)
+            {
+                if(s.trim().length() > 0)
+                {
+                    tempList.add(s.trim());
+                }
+            }
+        }
+        
+        connectionCount = tempList.size();
+        urlList = new String[connectionCount];
+        tempList.toArray(urlList);        
         
         clientId = id;
 
-        context = new Context[CONNECTION_COUNT];
-        factory = new ConnectionFactory[CONNECTION_COUNT];
-        connection = new Connection[CONNECTION_COUNT];
-        session = new Session[CONNECTION_COUNT];
+        factory = new ActiveMQConnectionFactory[connectionCount];
+        connection = new Connection[connectionCount];
+        session = new Session[connectionCount];
 
-        for(int i = 0;i < CONNECTION_COUNT;i++)
-        {
-            properties = new Hashtable<String, String>();
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-            properties.put(Context.PROVIDER_URL, urls[i]);
-            
+        for(int i = 0;i < connectionCount;i++)
+        {            
             try
             {
-                context[i] = new InitialContext(properties);
-                factory[i] = (ConnectionFactory)context[i].lookup("ConnectionFactory");
+                factory[i] = new ActiveMQConnectionFactory(urlList[i]);
                 connection[i] = factory[i].createConnection();
                 connection[i].setClientID(clientId);
                 session[i] = connection[i].createSession(false, Session.CLIENT_ACKNOWLEDGE);
@@ -125,10 +124,6 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 
                 connected = true;
             }
-            catch(NamingException ne)
-            {
-                connected = false;
-            }
             catch(JMSException jmse)
             {
                 connected = false;
@@ -136,11 +131,21 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         }
     }
     
-    /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
-	 */
+    /**
+     * 
+     * @param id - The client Id used by the connection object.
+     * @param url1 - URL of the first JMS Server
+     * @param url2 - URL of the second JMS Server
+     */
+    public JmsRedundantReceiver(String id, String url1, String url2)
+    {
+        this(id, new String[] { url1, url2 });
+    }
     
-    public boolean createRedundantSubscriber(String name, String destination)
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String, java.lang.String, boolean)
+     */
+    public boolean createRedundantSubscriber(String name, String destination, String durableName, boolean durable)
     {
         MessageConsumer[] sub = null;
         Topic topic = null;
@@ -156,16 +161,24 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             return false;
         }
         
-        sub = new MessageConsumer[CONNECTION_COUNT];
+        sub = new MessageConsumer[connectionCount];
         
         try
         {
-            for(int i = 0;i < CONNECTION_COUNT;i++)
+            for(int i = 0;i < connectionCount;i++)
             {
                 topic = session[i].createTopic(destination);
-                sub[i] = session[i].createConsumer(topic);
                 
-                Logger.getLogger(this.getClass().getName()).log(Level.INFO, name + " -> Topic: " + destination + " " + urls[i]);
+                if((durable == true) && (durableName != null))
+                {
+                    sub[i] = session[i].createDurableSubscriber(topic, durableName);
+                }
+                else
+                {
+                    sub[i] = session[i].createConsumer(topic);
+                }
+                
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, name + " -> Topic: " + destination + " " + urlList[i]);
             }
             
             subscriber.put(name, sub);
@@ -189,6 +202,15 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         }
         
         return result;
+    }
+
+    /* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
+	 */
+    
+    public boolean createRedundantSubscriber(String name, String destination)
+    {
+        return createRedundantSubscriber(name, destination, null, false);
     }
     
     /* (non-Javadoc)
@@ -323,7 +345,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
 
         if(connection != null)
         {
-            for(int i = 0;i < CONNECTION_COUNT;i++)
+            for(int i = 0;i < connectionCount;i++)
             {
                 if(connection[i] != null)
                 {
@@ -358,7 +380,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             subscriber = null;
         }
 
-        for(int i = 0;i < CONNECTION_COUNT;i++)
+        for(int i = 0;i < connectionCount;i++)
         {
             if(session != null)
             {
@@ -391,30 +413,11 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             if(factory != null)
             {
                 factory[i] = null;
-            }
-            
-            if(context != null)
-            {
-                if(context[i] != null)
-                {
-                    try
-                    {
-                        context[i].close();
-                    }
-                    catch(NamingException ne) { }
-                    
-                    context[i] = null;
-                }
-            }
+            }            
         }
         
         factory = null;
         connection = null;
         session = null;
-        context = null;
-        if (properties!=null) {
-        	properties.clear();
-        }
-        properties = null;
     }   
 }

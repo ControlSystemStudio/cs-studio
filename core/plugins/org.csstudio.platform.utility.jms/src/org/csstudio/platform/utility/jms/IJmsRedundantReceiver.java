@@ -5,15 +5,30 @@ import javax.jms.Message;
 public interface IJmsRedundantReceiver {
 
 	/**
+	 * Create a non-durable subscriber identified by the given name. The name is just used within the object.
 	 * 
-	 * @param name Name of the subscriber
+	 * @param name Object internal name of the subscriber
 	 * @param destination Name of the topic
 	 * @return True - Subscriber have been created, false - Subscriber have not been created
 	 * 
 	 */
-
 	public abstract boolean createRedundantSubscriber(String name,
 			String destination);
+
+	
+    /**
+     * Create a durable subscriber identified by the given name. The name is just used within the object.
+     * The parameter durableName is used to register this durable subscriber to the JMS server.
+     * 
+     * @param name Object internal name of the subscriber
+     * @param destination Name of the topic
+     * @param durableName Name of the durable subscriber
+     * @param durable true, if the subscriber should be durable
+     * @return True - Subscriber have been created, false - Subscriber have not been created
+     * 
+     */
+	public abstract boolean createRedundantSubscriber(String name,
+	            String destination, String durableName, boolean durable);
 
 	/**
 	 * Returns the current message. The method does not wait and returns immediately if no message
