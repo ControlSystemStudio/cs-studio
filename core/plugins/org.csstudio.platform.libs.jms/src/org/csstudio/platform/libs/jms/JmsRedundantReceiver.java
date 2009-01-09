@@ -48,7 +48,7 @@ import javax.naming.NamingException;
  * 
  * @author Markus Moeller
  * @version 1.0
- * 
+ * @deprecated org.csstudio.platform.utility.jms.JmsRedundantReceiver instead
  */
 
 @Deprecated
