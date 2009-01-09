@@ -55,7 +55,7 @@ import org.csstudio.ams.dbAccess.configdb.HistoryDAO;
 import org.csstudio.ams.dbAccess.configdb.HistoryTObject;
 import org.csstudio.ams.dbAccess.configdb.MessageDAO;
 import org.csstudio.ams.filter.IFilterCondition;
-import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class FilterManagerWork extends Thread implements AmsConstants

@@ -41,7 +41,7 @@ import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.internal.SampleService;
-import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;

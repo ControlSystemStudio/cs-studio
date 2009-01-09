@@ -73,7 +73,7 @@ import org.csstudio.ams.dbAccess.configdb.UserGroupUserDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserTObject;
 import org.csstudio.ams.dbAccess.configdb.UserTObject;
 import org.csstudio.ams.internal.SampleService;
-import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /*- FIXME Frage klären, warum das T_AMS_JMS immer in user feld steht, auch dieser Connector nicht angesteuert wird??? */

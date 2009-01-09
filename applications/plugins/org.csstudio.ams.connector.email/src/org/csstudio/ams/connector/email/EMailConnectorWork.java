@@ -37,7 +37,7 @@ import javax.mail.internet.MimeMessage;
 import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class EMailConnectorWork extends Thread implements AmsConstants

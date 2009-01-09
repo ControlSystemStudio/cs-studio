@@ -24,13 +24,12 @@
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-
 import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.platform.libs.jms.JmsRedundantProducer;
-import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
-import org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId;
+import org.csstudio.platform.utility.jms.JmsRedundantProducer;
+import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsRedundantProducer.ProducerId;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class JMSConnectorWork extends Thread implements AmsConstants {

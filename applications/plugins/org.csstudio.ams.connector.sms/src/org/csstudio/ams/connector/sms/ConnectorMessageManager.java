@@ -27,16 +27,14 @@ package org.csstudio.ams.connector.sms;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-
 import org.csstudio.ams.Log;
-import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 
 /**
  * This class handles the communication between the connector message manager plugin and the connector.
