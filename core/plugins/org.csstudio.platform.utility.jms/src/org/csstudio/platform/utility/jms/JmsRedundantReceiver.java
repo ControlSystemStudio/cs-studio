@@ -235,8 +235,10 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         // First check the internal subscriber message queue
         if(messages.containsKey(name))
         {
+            // Get the message queue for the subscriber
             subscriberQueue = messages.get(name);
             
+            // If we have a message in this queue, deliver it first!
             if(!subscriberQueue.isEmpty())
             {
                 // Get the oldest message == the first element in the TreeSet
@@ -262,12 +264,13 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             {
                 try
                 {
+                    // Wait for a message for some miliseconds
                     if(waitTime > 0)
                     {
                         m = c[i].receive(waitTime);
                         if(m != null) subscriberQueue.add(m);
                     }
-                    else
+                    else // ... or just have a look and return immediately
                     {
                         m = c[i].receiveNoWait();
                         if(m != null) subscriberQueue.add(m);
