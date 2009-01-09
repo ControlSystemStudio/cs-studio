@@ -28,8 +28,9 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 
 /**
+ * Comparator for sorting the JMS messages by their timestamps. The oldest messages should be delivered first.
+ * 
  * @author Markus Moeller
- * @param <T>
  *
  */
 public class MessageComperator implements Comparator<Message>
