@@ -60,7 +60,7 @@ public class Functions {
 		    	f = workspaceRoot.getLocation().append(path).toFile();
 		    }
             try {
-                FileInputStream fis = new FileInputStream(f);
+                FileInputStream fis = new FileInputStream(path);
                 playMp3(fis);
             } catch (FileNotFoundException e) {
                 CentralLogger.getInstance().error(Functions.class, e);

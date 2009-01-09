@@ -25,6 +25,7 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
@@ -99,10 +100,11 @@ public class AlarmViewerPreferencePage
 		soundFile.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
 		soundFile.setLayout(new GridLayout(2,false));
 		// -- Primery Server
-		Label soundLabel = new Label(soundFile,SWT.NONE);
-		soundLabel.setText("Sound File (Workspace Path)");
-		soundLabel.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE, "Workspace Path", soundFile));
+//		Label soundLabel = new Label(soundFile,SWT.NONE);
+//		soundLabel.setText("Sound File (Workspace Path)");
+//		soundLabel.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
+		addField(new FileFieldEditor(AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE, "Sound File", soundFile));
+//		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE, "Workspace Path", soundFile));
 //        final StringFieldEditor soundFileEditor = new StringFieldEditor(AlarmViewerPreferenceConstants.PRIMARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, soundFile); 
 //		addField(primary_url);
 //		new Label(soundFile,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
