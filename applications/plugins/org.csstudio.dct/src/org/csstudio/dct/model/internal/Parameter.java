@@ -1,6 +1,5 @@
 package org.csstudio.dct.model.internal;
 
-import org.apache.tools.ant.taskdefs.XSLTProcess.Param;
 import org.csstudio.dct.util.CompareUtil;
 
 /**

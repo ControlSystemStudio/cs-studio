@@ -3,6 +3,7 @@ package org.csstudio.dct.model.commands;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.internal.Record;
@@ -24,7 +25,7 @@ abstract class AbstractRecordCommand extends Command {
 	 * @param record
 	 *            the record
 	 */
-	protected void addRecord(IRecordContainer container, IRecord record) {
+	protected void addRecord(IContainer container, IRecord record) {
 		container.addRecord(record);
 
 		// ... link physical container
@@ -36,7 +37,7 @@ abstract class AbstractRecordCommand extends Command {
 		// ... add-push to model elements that inherit from here
 		for (IRecordContainer c : container.getDependentRecordContainers()) {
 			IRecord pushedRecord = new Record(record, UUID.randomUUID());
-			addRecord(c, pushedRecord);
+			addRecord((IContainer) c, pushedRecord);
 		}
 	}
 

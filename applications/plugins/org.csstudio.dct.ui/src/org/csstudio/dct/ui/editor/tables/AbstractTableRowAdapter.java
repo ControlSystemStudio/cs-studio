@@ -1,7 +1,7 @@
 package org.csstudio.dct.ui.editor.tables;
 
-import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.editor.ColorSettings;
+import org.csstudio.platform.util.StringUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;
@@ -18,6 +18,7 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 
 	private CommandStack commandStack;
 	private E delegate;
+	private String error;
 
 	public AbstractTableRowAdapter(E delegate, CommandStack commandStack) {
 		assert delegate != null;
@@ -26,6 +27,18 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 		this.commandStack = commandStack;
 	}
 
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public boolean hasError() {
+		return StringUtil.hasLength(error);
+	}
+	
 	public E getDelegate() {
 		return delegate;
 	}
@@ -47,11 +60,19 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	}
 
 	public final RGB getForegroundColorForKey() {
-		return doGetForegroundColorForKey(delegate);
+		return StringUtil.hasLength(error) ? getForegroundColorForErrors() : doGetForegroundColorForKey(delegate);
 	}
 
 	public final RGB getForegroundColorForValue() {
-		return doGetForegroundColorForValue(delegate);
+		return StringUtil.hasLength(error) ? getForegroundColorForErrors() : doGetForegroundColorForValue(delegate);
+	}
+
+	public final RGB getForegroundColorForErrors() {
+		return new RGB(255, 0, 0);
+	}
+
+	public final RGB getBackgroundColorForErrors() {
+		return null;
 	}
 
 	public final Image getImage() {
@@ -100,20 +121,18 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	public final boolean canModifyValue() {
 		return doCanModifyValue(delegate);
 	}
-	
-	
+
 	public final CellEditor getValueCellEditor(Composite parent) {
 		return doGetValueCellEditor(delegate, parent);
 	}
-	
+
 	public int compareTo(ITableRow row) {
 		return 0;
 	}
-	
+
 	protected CellEditor doGetValueCellEditor(E delegate, Composite parent) {
 		return new TextCellEditor(parent);
 	}
-	
 
 	protected RGB doGetBackgroundColorForKey(E delegate) {
 		return null;
@@ -136,7 +155,7 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	}
 
 	protected RGB doGetForegroundColorForValue(E delegate) {
-		return canModifyValue()?ColorSettings.MODIFYABLE:ColorSettings.UNMODIFYABLE;
+		return canModifyValue() ? ColorSettings.MODIFYABLE : ColorSettings.UNMODIFYABLE;
 	}
 
 	protected Image doGetImage(E delegate) {
@@ -174,5 +193,6 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	protected boolean doCanModifyValue(E delegate) {
 		return true;
 	}
+
 
 }

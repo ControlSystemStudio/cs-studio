@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public interface ITableRow extends Comparable<ITableRow>{
 
+	boolean hasError();
+	
 	String getKey();
 
 	void setKey(String string);
@@ -26,6 +28,10 @@ public interface ITableRow extends Comparable<ITableRow>{
 
 	RGB getBackgroundColorForValue();
 
+	RGB getForegroundColorForErrors();
+	
+	RGB getBackgroundColorForErrors();
+
 	FontData getFontForKey();
 
 	FontData getFontForValue();
@@ -39,5 +45,7 @@ public interface ITableRow extends Comparable<ITableRow>{
 	boolean canModifyValue();
 
 	CellEditor getValueCellEditor(Composite parent);
+
+	String getError();
 
 }

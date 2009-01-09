@@ -7,16 +7,21 @@ import org.csstudio.dct.model.IPropertyContainer;
 import org.eclipse.gef.commands.Command;
 
 /**
- * Undoable command that changes the key of a property of a
- * {@link IPropertyContainer}.
+ * Undoable command that adds a property.
  * 
  * @author Sven Wende
  */
 public class AddPropertyCommand extends Command {
 	private IPropertyContainer container;
 	private String key;
-	private String newKey;
-
+	/**
+	 * Constructor.
+	 * 
+	 * @param container
+	 *            the property container
+	 * @param key
+	 *            the property key
+	 */
 	public AddPropertyCommand(IPropertyContainer container, String key) {
 		assert container != null;
 		assert key != null;

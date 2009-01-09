@@ -47,7 +47,6 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 
 	// private TableCitizenTable overviewTable;
 	private TableCitizenTable parameterTable;
-
 	private ParameterAddAction parameterAddAction;
 	private ParameterRemoveAction parameterRemoveAction;
 

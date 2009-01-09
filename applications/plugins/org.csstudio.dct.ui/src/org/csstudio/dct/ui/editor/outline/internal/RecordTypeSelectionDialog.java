@@ -28,10 +28,8 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -42,6 +40,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+/**
+ * Selection dialog for record types. Only one record type can be chosen at a
+ * time.
+ * 
+ * @author Sven Wende
+ * 
+ */
 public final class RecordTypeSelectionDialog extends Dialog {
 
 	private String message;
@@ -101,7 +106,7 @@ public final class RecordTypeSelectionDialog extends Dialog {
 		viewer = new TreeViewer(composite);
 		viewer.getControl().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
-		viewer.setContentProvider(new WorkbenchContentProvider(){
+		viewer.setContentProvider(new WorkbenchContentProvider() {
 			@Override
 			public Object[] getElements(Object element) {
 				return (Object[]) element;
@@ -120,6 +125,11 @@ public final class RecordTypeSelectionDialog extends Dialog {
 		super.okPressed();
 	}
 
+	/**
+	 * Returns the selected record definition.
+	 * 
+	 * @return the selected record definition
+	 */
 	public IRecordDefinition getSelection() {
 		return selection;
 	}

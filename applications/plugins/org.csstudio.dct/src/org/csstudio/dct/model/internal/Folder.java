@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
-import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -138,7 +136,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder, I
 	 * {@inheritDoc}
 	 */
 	public void accept(IVisitor visitor) {
-		visitor.visit(this);
+		visitor.visit((Project) this);
 		
 		for(IFolderMember member : getMembers()) {
 			member.accept(visitor);

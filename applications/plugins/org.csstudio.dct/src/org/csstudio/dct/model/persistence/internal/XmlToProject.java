@@ -1,22 +1,18 @@
-package org.csstudio.dct.persistence;
+package org.csstudio.dct.model.persistence.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.tools.ant.util.CollectionUtils;
-import org.apache.tools.ant.util.StringUtils;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.commands.ChangeDbdFileCommand;
 import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.model.internal.Instance;
@@ -289,6 +285,7 @@ public class XmlToProject {
 	 * @param xmlElement
 	 *            the xmlElement representing the record
 	 */
+	@SuppressWarnings("unchecked")
 	void createInstance(Element xmlInstanceElement) {
 		assert xmlInstanceElement != null;
 		assert xmlInstanceElement.getName().equals("instance");
@@ -434,7 +431,7 @@ public class XmlToProject {
 		}
 
 		// ADD RECORD TO CONTAINER
-		IRecordContainer container = getAlreadyCreatedModelElement(containerId);
+		IContainer container = getAlreadyCreatedModelElement(containerId);
 		assert container != null;
 		// .. add
 		//FiXME: ??
@@ -561,39 +558,18 @@ public class XmlToProject {
 		}
 	}
 
-//	private int getInsertIndex(List elements, String idString) {
-//		int id = Integer.valueOf(idString);
-//		int result = 0;
+//	private UUID getId(Object element) {
+//		assert element != null;
+//		assert modelElements.containsValue(element) : "modelElements.containsValue(element)";
 //
-//		if (elements.size() > 0) {
-//			Iterator<Object> it = elements.iterator();
-//
-//			int elementId = -1;
-//			result = -1;
-//			while (elementId < id && it.hasNext()) {
-//				elementId = getId(it.next());
-//				result++;
-//			}
-//			
-//			if(elementId<id) {
-//				result++;
+//		for (UUID id : modelElements.keySet()) {
+//			if (modelElements.get(id) == element) {
+//				return  id;
 //			}
 //		}
-//		return result;
+//
+//		throw new IllegalArgumentException("Element is not created yet.");
 //	}
-
-	private UUID getId(Object element) {
-		assert element != null;
-		assert modelElements.containsValue(element) : "modelElements.containsValue(element)";
-
-		for (UUID id : modelElements.keySet()) {
-			if (modelElements.get(id) == element) {
-				return  id;
-			}
-		}
-
-		throw new IllegalArgumentException("Element is not created yet.");
-	}
 	
 	private UUID getIdFromXml(Element xmlElement) {
 		String id = xmlElement.getAttributeValue("id");

@@ -23,6 +23,9 @@
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter2">
          </adapter>
+         <adapter
+               type="org.eclipse.ui.IActionFilter">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.csstudio.dct.metamodel.IRecordDefinition"
@@ -143,6 +146,24 @@
             id="org.csstudio.dct.ui.DctPerspective"
             name="DCT Perspective">
       </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            icon="icons/errror_decoration.png"
+            id="org.csstudio.dct.ui.decorator2"
+            label="aa"
+            lightweight="true"
+            location="BOTTOM_LEFT"
+            state="true">
+         <enablement>
+            <objectState
+                  name="error"
+                  value="true">
+            </objectState>
+         </enablement>
+      </decorator>
    </extension>
 
 </plugin>

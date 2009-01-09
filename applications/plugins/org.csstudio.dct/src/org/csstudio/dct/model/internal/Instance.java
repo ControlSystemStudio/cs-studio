@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IInstanceContainer;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
@@ -21,7 +20,6 @@ import org.csstudio.dct.util.CompareUtil;
 public class Instance extends AbstractContainer implements IInstance {
 
 	private Map<String, String> parameterValues;
-	private IInstanceContainer container;
 
 	public Instance(IContainer parent, UUID id) {
 		super(null, parent, id);
@@ -81,15 +79,6 @@ public class Instance extends AbstractContainer implements IInstance {
 		}
 	}
 
-	public IInstanceContainer getContainer() {
-		return container;
-	}
-
-	public void setContainer(IInstanceContainer container) {
-		this.container = container;
-	}
-
-	
 	/**
 	 * {@inheritDoc}
 	 */

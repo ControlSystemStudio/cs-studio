@@ -3,8 +3,6 @@ package org.csstudio.dct.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.dct.model.internal.Instance;
-
 /**
  * Represents an inheritable container that contains instances or records.
  * 
@@ -15,6 +13,22 @@ import org.csstudio.dct.model.internal.Instance;
  */
 public interface IContainer extends IFolderMember, IRecordContainer, IInstanceContainer, IPropertyContainer {
 	/**
+	 * Returns the physical container.
+	 * 
+	 * @return the physical container
+	 */
+	IContainer getContainer();
+
+	/**
+	 * Sets the physical container.
+	 * 
+	 * @param instanceContainer
+	 *            the physical container
+	 */
+	void setContainer(IContainer instanceContainer);
+	
+	/**
+	 * 
 	 * Returns the parent. The parent is the super object, this instances
 	 * derives from. May be another instance or a prototype.
 	 * 
@@ -44,15 +58,42 @@ public interface IContainer extends IFolderMember, IRecordContainer, IInstanceCo
 	 *            the dependent container
 	 */
 	void removeDependentContainer(IContainer container);
-	
-	
+
 	/**
 	 * Resolves all inheritance relationships for this container and returns an
-	 * aggregate view on all parameters value.
+	 * aggregate view on all parameter values.
 	 * 
 	 * @return all parameter values
 	 */
 	Map<String, String> getFinalParameterValues();
+
+	/**
+	 * Sets a value for the specified parameter.
+	 * 
+	 * @param key
+	 *            the parameter name
+	 * @param value
+	 *            the parameter value
+	 */
+	void setParameterValue(String key, String value);
+	
+	/**
+	 * Returns a value for the specified parameter.
+	 * 
+	 * @param key
+	 *            the parameter name
+	 * @return the value or null
+	 */
+	String getParameterValue(String key);
+
+	/**
+	 * Returns true, if a value for the specified parameter exists.
+	 * 
+	 * @param key
+	 *            the parameter name
+	 * @return true, if a value exist
+	 */
+	boolean hasParameterValue(String key);
 	
 	/**
 	 * Returns all locally defined parameter values.

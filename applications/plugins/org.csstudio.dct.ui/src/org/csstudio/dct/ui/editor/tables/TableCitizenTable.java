@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Table;
 public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 	private static final String KEY = "key";//$NON-NLS-1$ 
 	private static final String VALUE = "value"; //$NON-NLS-1$
+	private static final String ERROR = "error"; //$NON-NLS-1$
 
 	public TableCitizenTable(Composite parent, int style, CommandStack commandStack) {
 		super(parent, style, commandStack);
@@ -72,7 +73,7 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 	@Override
 	protected TableViewer doCreateViewer(Composite parent, int style) {
 		// define column names
-		String[] columnNames = new String[] { KEY, VALUE };
+		String[] columnNames = new String[] { KEY, VALUE, ERROR };
 
 		// create table
 		final Table table = new Table(parent, style | SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
@@ -94,6 +95,11 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 		valColumn.getColumn().setMoveable(false);
 		valColumn.getColumn().setWidth(300);
 		valColumn.setEditingSupport(new ValueColumnEditingSupport(viewer));
+		
+		TableViewerColumn errorColumn = new TableViewerColumn(viewer, SWT.NONE);
+		errorColumn.getColumn().setText("Error");
+		errorColumn.getColumn().setMoveable(false);
+		errorColumn.getColumn().setWidth(300);
 		
 		// define column properties
 		viewer.setColumnProperties(columnNames);
@@ -341,10 +347,13 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 
 			switch (index) {
 			case 0:
-				bgColor = row.getBackgroundColorForKey();
+				bgColor = row.hasError() ? row.getBackgroundColorForErrors() : row.getBackgroundColorForKey();
 				break;
 			case 1:
-				bgColor = row.getBackgroundColorForValue();
+				bgColor =  row.hasError() ? row.getBackgroundColorForErrors() : row.getBackgroundColorForValue();
+				break;
+			case 2:
+				bgColor = row.getBackgroundColorForErrors();
 				break;
 			default:
 				bgColor = null;
@@ -360,10 +369,13 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 
 			switch (index) {
 			case 0:
-				fgColor = row.getForegroundColorForKey();
+				fgColor =  row.hasError() ? row.getForegroundColorForErrors() : row.getForegroundColorForKey();
 				break;
 			case 1:
-				fgColor = row.getForegroundColorForValue();
+				fgColor =  row.hasError() ? row.getForegroundColorForErrors() : row.getForegroundColorForValue();
+				break;
+			case 2:
+				fgColor = row.getForegroundColorForErrors();
 				break;
 			default:
 				fgColor = null;
@@ -413,6 +425,9 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 			case 1:
 				Object v = row.getValueForDisplay();
 				result = v != null ? v.toString() : null;
+				break;
+			case 2:
+				result = row.getError();
 				break;
 			default:
 				break;

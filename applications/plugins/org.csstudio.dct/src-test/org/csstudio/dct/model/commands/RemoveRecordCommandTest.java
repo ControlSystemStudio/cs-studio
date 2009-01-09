@@ -46,7 +46,7 @@ public class RemoveRecordCommandTest extends AbstractCommandTest {
 		AddRecordCommand cmd = new AddRecordCommand(prototype, record);
 		cmd.execute();
 		
-		command = new RemoveRecordCommand(prototype, record);
+		command = new RemoveRecordCommand(record);
 	}
 
 	/**

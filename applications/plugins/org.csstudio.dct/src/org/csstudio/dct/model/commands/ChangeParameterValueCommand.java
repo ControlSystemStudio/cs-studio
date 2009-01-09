@@ -32,7 +32,14 @@ public class ChangeParameterValueCommand extends Command {
 	@Override
 	public void execute() {
 		oldValue = instance.getParameterValue(key);
-		instance.setParameterValue(key, value);
+		
+		Object parentValue = instance.getParent() != null ? instance.getParent().getParameterValue(key) : "";
+		
+		if (value == null || "".equals(value) || value.equals(parentValue)) {
+			instance.setParameterValue(key, null);
+		} else {
+			instance.setParameterValue(key, value);
+		}
 	}
 
 	/**
@@ -40,7 +47,11 @@ public class ChangeParameterValueCommand extends Command {
 	 */
 	@Override
 	public void undo() {
-		instance.setParameterValue(key, oldValue);
+		if (oldValue != null) {
+			instance.setParameterValue(key, oldValue);
+		} else {
+			instance.setParameterValue(key, null);
+		}
 	}
 
 }

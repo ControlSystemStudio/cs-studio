@@ -12,8 +12,14 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchContentProvider;
@@ -23,8 +29,8 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 public final class OutlinePage extends ContentOutlinePage implements CommandStackListener {
 	private Project input;
 	private CommandStack commandStack;
+	private TreeViewer viewer;
 
-	
 	public OutlinePage(Project input, CommandStack commandStack) {
 		this.input = input;
 		this.commandStack = commandStack;
@@ -41,14 +47,15 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-		final TreeViewer viewer = getTreeViewer();
-		viewer.setLabelProvider(new WorkbenchLabelProvider());
+		viewer = getTreeViewer();
+		viewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
+
 		viewer.setContentProvider(new WorkbenchContentProvider());
 		viewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
-		
+
 		viewer.setInput(new WorkbenchAdapter() {
 			public Object[] getChildren(Object o) {
-				return new Object[]{input};
+				return new Object[] { input };
 			}
 		});
 
@@ -81,13 +88,36 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	public Project getInput() {
 		return input;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void commandStackChanged(EventObject event) {
 		if (getTreeViewer() != null) {
 			getTreeViewer().refresh();
+		}
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		if (getTreeViewer() != null) {
+			getTreeViewer().setSelection(selection, true);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		super.selectionChanged(event);
+
+		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+
+		if (sel != null && sel.getFirstElement() != null) {
+			viewer.setExpandedState(sel.getFirstElement(), true);
+			viewer.refresh(sel.getFirstElement(), false);
+			System.out.println("XXXXXXXX" + sel.getFirstElement());
 		}
 	}
 }

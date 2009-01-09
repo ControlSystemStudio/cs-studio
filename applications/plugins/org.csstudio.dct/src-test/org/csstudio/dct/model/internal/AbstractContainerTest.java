@@ -101,12 +101,12 @@ public class AbstractContainerTest {
 		assertTrue(p2.getDependentContainers().contains(i2));
 		assertTrue(p3.getDependentContainers().contains(i3));
 
-		assertFalse(r1.isInheritedFromPrototype());
-		assertFalse(r2.isInheritedFromPrototype());
-		assertFalse(r3.isInheritedFromPrototype());
+		assertFalse(r1.isInherited());
+		assertFalse(r2.isInherited());
+		assertFalse(r3.isInherited());
 
-		assertTrue(p3.getInstance(0).getRecords().get(0).isInheritedFromPrototype());
-		assertTrue(p3.getInstance(1).getRecords().get(0).isInheritedFromPrototype());
+		assertTrue(p3.getInstance(0).getRecords().get(0).isInherited());
+		assertTrue(p3.getInstance(1).getRecords().get(0).isInherited());
 
 		// Adding a new record in prototype 1
 		Record r11 = new Record("r11", "ai", UUID.randomUUID());
@@ -118,7 +118,7 @@ public class AbstractContainerTest {
 		assertEquals(2, i3.getInstances().get(0).getRecords().size());
 		assertSame(i3.getInstances().get(0).getRecords().get(1).getParentRecord(), p3.getInstances().get(0).getRecords().get(1));
 
-		assertTrue(i3.getInstances().get(0).getRecords().get(1).isInheritedFromPrototype());
+		assertTrue(i3.getInstances().get(0).getRecords().get(1).isInherited());
 
 		// Removing the record from prototype 2
 		p2.removeRecord(p2.getRecords().get(0));

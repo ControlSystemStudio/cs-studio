@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
-import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;

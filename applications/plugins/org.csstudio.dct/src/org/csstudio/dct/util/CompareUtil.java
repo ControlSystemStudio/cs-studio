@@ -1,7 +1,6 @@
 package org.csstudio.dct.util;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IRecord;
 
 /**
  * Collection of utility methods that help comparing things.
@@ -12,8 +11,11 @@ import org.csstudio.dct.model.IRecord;
 public class CompareUtil {
 	/**
 	 * Compares two Objects.
-	 * @param s1 Object 1
-	 * @param s2 Object 2
+	 * 
+	 * @param s1
+	 *            Object 1
+	 * @param s2
+	 *            Object 2
 	 * @return true, if both Object equal
 	 */
 	public static boolean equals(Object o1, Object o2) {
@@ -31,20 +33,30 @@ public class CompareUtil {
 
 		return result;
 	}
-	
+
+	/**
+	 * Compares the id´s of two elements.
+	 * 
+	 * @param o1
+	 *            element 1
+	 * @param o2
+	 *            element 2
+	 * @return true, if the id´s of both elements equal or both elements are
+	 *         null
+	 */
 	public static boolean idsEqual(IElement o1, IElement o2) {
 		boolean result = false;
-		
-		if(o1!=null) {
-			if(o2!=null) {
+
+		if (o1 != null) {
+			if (o2 != null) {
 				result = equals(o1.getId(), o2.getId());
 			}
 		} else {
-			if(o2==null) {
+			if (o2 == null) {
 				result = true;
 			}
 		}
-		
+
 		return result;
 	}
 }

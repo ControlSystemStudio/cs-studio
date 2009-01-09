@@ -16,7 +16,6 @@ import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
-import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.util.CompareUtil;
 
 /**
@@ -27,6 +26,8 @@ import org.csstudio.dct.util.CompareUtil;
  */
 public abstract class AbstractContainer extends AbstractPropertyContainer implements IContainer, IFolderMember {
 
+	private IContainer container;
+	
 	/**
 	 * The parent in the inheritance hierarchy.
 	 */
@@ -59,6 +60,14 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 		this.parent = parent;
 	}
 
+	public IContainer getContainer() {
+		return container;
+	}
+
+	public void setContainer(IContainer container) {
+		this.container = container;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

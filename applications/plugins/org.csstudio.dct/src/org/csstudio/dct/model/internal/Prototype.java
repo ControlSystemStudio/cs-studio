@@ -133,4 +133,23 @@ public class Prototype extends AbstractContainer implements IPrototype {
 		return result;
 		
 	}
+
+
+	public String getParameterValue(String key) {
+		return getParameterValues().get(key);
+	}
+
+
+	public boolean hasParameterValue(String key) {
+		return getParameterValues().get(key)!=null;
+	}
+
+
+	public void setParameterValue(String key, String value) {
+		for(Parameter p : parameters) {
+			if(key.equals(p.getName())) {
+				p.setDefaultValue(value);
+			}
+		}
+	}
 }

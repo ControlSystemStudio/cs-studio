@@ -3,17 +3,11 @@
  */
 package org.csstudio.dct.model.commands;
 
+import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
-import org.csstudio.dct.metamodel.persistence.internal.MetaModelService;
-import org.csstudio.dct.model.internal.BaseRecord;
 import org.csstudio.dct.model.internal.Project;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
-
-import com.cosylab.vdct.util.StringUtils;
 
 /**
  * Undoable command that changes the database definition (dbd) reference of a
@@ -54,7 +48,7 @@ public class ChangeDbdFileCommand extends Command {
 		project.setDbdPath(path);
 
 		// .. try to read the definition from file
-		IDatabaseDefinition databaseDefinition = path != null ? MetaModelService.getInstance().read(path) : null;
+		IDatabaseDefinition databaseDefinition = path != null ? DctActivator.getDefault().getPersistenceService().loadDatabaseDefinition(path) : null;
 
 		// .. set the definition
 		project.setDatabaseDefinition(databaseDefinition);

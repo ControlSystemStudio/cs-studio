@@ -1,9 +1,7 @@
-package org.csstudio.dct.persistence;
+package org.csstudio.dct.model.persistence.internal;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tools.ant.util.StringUtils;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
@@ -13,6 +11,7 @@ import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.model.internal.Project;
+import org.csstudio.platform.util.StringUtil;
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -24,15 +23,10 @@ import org.jdom.Element;
  */
 public class ProjectToXml {
 	private Project project;
-	private Map<IElement, String> ids;
-
-	private int objectIdCounter;
 
 	public ProjectToXml(Project project) {
 		assert project != null;
 		this.project = project;
-		ids = new HashMap<IElement, String>();
-		objectIdCounter = 1;
 	}
 
 	public Document createDocument() {
@@ -62,8 +56,7 @@ public class ProjectToXml {
 	
 	private Element createElement(Project project) {
 		Element element = createElement((IFolder) project);
-		
-		element.setAttribute("dbd", project.getDbdPath());
+		element.setAttribute("dbd", StringUtil.trimNull(project.getDbdPath()));
 
 		return element;
 	}
@@ -293,29 +286,6 @@ public class ProjectToXml {
 
 		return element;
 	}
-
-	/**
-	 * Returns an unique id for the specified xml element. Each call with the
-	 * same xml element delivers the same id. The first call for a certain xml
-	 * element creates a serial id.
-	 * 
-	 * @param element
-	 *            the xml element
-	 * @return a unique id
-	 */
-//	private String getId(IElement element) {
-//		assert element != null;
-//		String id = null;
-//		if (ids.containsKey(element)) {
-//			id = ids.get(element);
-//		} else {
-//			objectIdCounter++;
-//			id = "" + objectIdCounter;
-//			ids.put(element, id);
-//		}
-//
-//		return id;
-//	}
 
 	/**
 	 * Convenience method that echos the specified source string when it is not

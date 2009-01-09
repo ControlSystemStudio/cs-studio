@@ -5,14 +5,14 @@ import java.util.Map;
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IMenuDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
-import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.ChangeFieldValueCommand;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.MenuCellEditor;
-import org.csstudio.dct.util.ReplaceAliasesUtil;
+import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -74,22 +74,20 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object doGetValueForDisplay(IRecord delegate) {
+	protected Object doGetValueForDisplay(IRecord record) {
 		Object result = null;
 		
-		Object value = doGetValue(delegate);
+		Object value = doGetValue(record);
 
 		if(value==null) {
 			result = "<empty>";
 		} else {
-			if(!delegate.isInheritedFromPrototype()) {
-				result = value;
-			} else {
+			result = value;
+			if(record.isInherited()) {
 				try {
-					Map<String, String> params = ((IContainer) delegate.getContainer()).getFinalParameterValues();
-					result = ReplaceAliasesUtil.createCanonicalName(value.toString(), params);
-				} catch (Exception e) {
-					e.printStackTrace();
+					result = AliasResolutionUtil.resolve(value.toString(), record);
+				} catch (AliasResolutionException e) {
+					setError(e.getMessage());
 				}
 			}
 		}

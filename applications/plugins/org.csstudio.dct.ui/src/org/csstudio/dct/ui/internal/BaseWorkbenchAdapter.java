@@ -14,7 +14,6 @@ import org.eclipse.ui.model.IWorkbenchAdapter2;
  */
 @SuppressWarnings("unchecked")
 public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWorkbenchAdapter2 {
-
 	/**
 	 * {@inheritDoc}
 	 */

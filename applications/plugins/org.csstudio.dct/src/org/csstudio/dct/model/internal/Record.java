@@ -11,11 +11,8 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.util.CompareUtil;
-import org.csstudio.dct.util.RecordUtil;
-import org.csstudio.dct.util.ReplaceAliasesUtil;
 
 /**
  * Standard implementation of {@link IRecord}.
@@ -26,7 +23,7 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 
 	private String type;
 	private IRecord parentRecord;
-	private IRecordContainer container;
+	private IContainer container;
 	private Map<String, Object> fields = new HashMap<String, Object>();
 	private List<IRecord> inheritingRecords = new ArrayList<IRecord>();
 
@@ -141,7 +138,7 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IRecordContainer getContainer() {
+	public IContainer getContainer() {
 		return container;
 	}
 
@@ -155,15 +152,37 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setContainer(IRecordContainer container) {
+	public void setContainer(IContainer container) {
 		this.container = container;
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public boolean isAbstract() {
+		return getRootContainer(getContainer()) instanceof IPrototype;
+	}
+	
+	/**
+	 * Recursive helper method which determines the root container.
+	 * 
+	 * @param container a starting container
+	 * 
+	 * @return the root container of the specified starting container
+	 */
+	private IContainer getRootContainer(IContainer container) {
+		if(container.getContainer()!=null) {
+			return getRootContainer(container.getContainer());
+		} else {
+			return container;
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isInheritedFromPrototype() {
-		boolean result = getParentRecord() != null && !(getContainer() instanceof IPrototype);
+	public boolean isInherited() {
+		boolean result = !(getParentRecord() instanceof BaseRecord);
 		return result;
 	}
 
@@ -199,14 +218,14 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 		IRecord base = getRecordStack().pop();
 		return base.getRecordDefinition();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void accept(IVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+
 	/**
 	 *{@inheritDoc}
 	 */
@@ -235,10 +254,12 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 				if (CompareUtil.equals(getType(), record.getType())) {
 					// .. fields
 					if (getFields().equals(record.getFields())) {
-						// .. parent record id (we check the id only, to prevent stack overflows)
+						// .. parent record id (we check the id only, to prevent
+						// stack overflows)
 						if (CompareUtil.idsEqual(getParentRecord(), record.getParentRecord())) {
-							// .. container (we check the id only, to prevent stack overflows)
-							if(CompareUtil.idsEqual(getContainer(),record.getContainer())) {
+							// .. container (we check the id only, to prevent
+							// stack overflows)
+							if (CompareUtil.idsEqual(getContainer(), record.getContainer())) {
 								result = true;
 							}
 						}
@@ -268,5 +289,17 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 		return stack;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
+	public Map<String, String> getFinalParameterValues() {
+		Map<String, String> result = new HashMap<String, String>();
+
+		if (getContainer() instanceof IContainer) {
+			result.putAll(((IContainer) getContainer()).getFinalParameterValues());
+		}
+
+		return result;
+	}
 
 }

@@ -1,4 +1,4 @@
-package org.csstudio.dct.model.internal;
+package org.csstudio.dct.model.visitors;
 
 import java.util.UUID;
 
@@ -8,13 +8,19 @@ import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
-import org.eclipse.ui.internal.Model;
+import org.csstudio.dct.model.internal.Project;
 
-public class MyVisitor implements IVisitor {
+/**
+ * Visitor implementation that can be used to find elements in the hierarchical
+ * model by their id.
+ * 
+ * @author swende
+ * 
+ */
+public class SearchVisitor implements IVisitor {
 	private UUID id;
 	private IElement result;
 
-	
 	/**
 	 *{@inheritDoc}
 	 */
@@ -49,15 +55,35 @@ public class MyVisitor implements IVisitor {
 	public void visit(IRecord record) {
 		doVisit(record);
 	}
-	
+
+	/**
+	 * Deep search for an element in a project.
+	 * 
+	 * @param project
+	 *            the project
+	 * @param id
+	 *            the id of the target element
+	 * @return an element with the specified id or null
+	 */
 	public IElement search(Project project, UUID id) {
+		assert project != null;
+		assert id != null;
+
 		this.id = id;
 		this.result = null;
 		project.accept(this);
-		
+
+		assert result == null || id.equals(result.getId());
+
 		return result;
 	}
 
+	/**
+	 * Checks whether the id of the visited element matches the target id.
+	 * 
+	 * @param element
+	 *            the element
+	 */
 	private void doVisit(IElement element) {
 		if (id.equals(element.getId())) {
 			result = element;

@@ -7,6 +7,7 @@ import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Project;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 
@@ -39,6 +40,8 @@ public class ModelAdapterFactory implements IAdapterFactory {
 			} else if (adaptableObject instanceof IRecordDefinition) {
 				adapter = new RecordDefinitionWorkbenchAdapter();
 			}
+		} else if(adapterType == IActionFilter.class) {
+			adapter = new ActionFilterAdapter();
 		}
 		return adapter;
 	}
@@ -48,7 +51,7 @@ public class ModelAdapterFactory implements IAdapterFactory {
 	 */
 
 	public Class[] getAdapterList() {
-		return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class };
+		return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class, IActionFilter.class };
 	}
 
 }

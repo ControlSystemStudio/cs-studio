@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.dct.util;
+package org.csstudio.dct.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +27,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.platform.util.StringUtil;
 
 /**
- * A utility class, which helps to validate inputs for or apply alias substitutions
- * to channel names.
+ * A utility class, which helps to validate inputs for or apply alias
+ * substitutions to channel names.
  * 
  * @author Sven Wende
  * 
+ * @deprecated: TODO: Methoden nach {@link AliasResolutionUtil} verschieben
+ * 
  */
-public final class ReplaceAliasesUtil {
+final class ReplaceAliasesUtil {
 
 	/**
 	 * Private constructor.
@@ -44,28 +47,29 @@ public final class ReplaceAliasesUtil {
 	}
 
 	/**
-	 * Regular expression which is used to find alias names in an arbitrary string.
+	 * Regular expression which is used to find alias names in an arbitrary
+	 * string.
 	 */
-	private static final Pattern FIND_ALIAS_NAME_PATTERN = Pattern
-			.compile("\\$([^$]*)\\$");
+	private static final Pattern FIND_ALIAS_NAME_PATTERN = Pattern.compile("\\$([^$]*)\\$");
 
 	/**
-	 * Regular expression which is used to validate arbitrary inputs. In general any text is
-	 * valid. Optionally inputs can contain aliases, which are bordered by "$"
-	 * signs. In this case, the input must contain an even number of "$" signs
-	 * and at least one other sign between two "$" signs.
+	 * Regular expression which is used to validate arbitrary inputs. In general
+	 * any text is valid. Optionally inputs can contain aliases, which are
+	 * bordered by "$" signs. In this case, the input must contain an even
+	 * number of "$" signs and at least one other sign between two "$" signs.
 	 */
-	private static final Pattern VALIDATE_TEXT_PATTERN = Pattern
-			.compile("[^$]*([^$]*\\$[^$]+\\$[^$]*)*[^$]*");
+	private static final Pattern VALIDATE_TEXT_PATTERN = Pattern.compile("[^$]*([^$]*\\$[^$]+\\$[^$]*)*[^$]*");
 
 	/**
-	 * Generates a regular expression which is used to replace aliases in arbitrary texts.
+	 * Generates a regular expression which is used to replace aliases in
+	 * arbitrary texts.
 	 * 
 	 * @param aliasName
 	 *            the alias name, which should be found (without the bordering
 	 *            "$" signs
 	 * 
-	 * @return a regular expression which is used to replace aliases in arbitrary texts
+	 * @return a regular expression which is used to replace aliases in
+	 *         arbitrary texts
 	 * 
 	 */
 	private static Pattern createSearchPattern(final String aliasName) {
@@ -74,7 +78,7 @@ public final class ReplaceAliasesUtil {
 
 	public static List<String> getRequiredAliasNames(final String input) {
 		List<String> result = new ArrayList<String>();
-		
+
 		// Get a Matcher based on the target string.
 		Matcher matcher = FIND_ALIAS_NAME_PATTERN.matcher(input);
 
@@ -83,9 +87,10 @@ public final class ReplaceAliasesUtil {
 			String name = matcher.group(1);
 			result.add(name);
 		}
-		
+
 		return result;
 	}
+
 	/**
 	 * Tests the validity of the provided input string. In general any non-empty
 	 * text is valid. Optionally inputs can contain aliases, which are bordered
@@ -124,24 +129,21 @@ public final class ReplaceAliasesUtil {
 	 * @return a canonical representation of the provided input string in which
 	 *         all aliases are replaced by their values
 	 */
-	public static String createCanonicalName(final String input,
-			final Map<String, String> aliases) throws Exception {
+	public static String createCanonicalName(final String input, final Map<String, String> aliases) throws AliasResolutionException {
 		// check validity of the input
 		if (!testValidity(input)) {
-			throw new Exception("The name >" + input + "< is invalid");
+			throw new AliasResolutionException("The name >" + input + "< is invalid");
 		}
 
 		// check validity of all aliases
 		for (String alias : aliases.keySet()) {
 			String aliasValue = aliases.get(alias);
 			if (!testValidity(aliasValue)) {
-				throw new Exception("The alias value >" + aliasValue
-						+ "< for the alias >" + alias + "< is invalid.");
+				throw new AliasResolutionException("The alias value >" + aliasValue + "< for the alias >" + alias + "< is invalid.");
 			}
 		}
 
-		return getFullQualifiedName(input, new ArrayList<String>(), false,
-				aliases);
+		return doResolve(input, new ArrayList<String>(), false, aliases);
 	}
 
 	/**
@@ -168,20 +170,18 @@ public final class ReplaceAliasesUtil {
 	 *             replacement procedure (e.g. in case of circular references
 	 *             between aliases (e.g. when $a$=$b$ and $b$=$a$)
 	 */
-	private static String getFullQualifiedName(final String input,
-			final List<String> markerList, final boolean isAlias,
-			final Map<String, String> aliases) throws Exception {
+	private static String doResolve(final String input, final List<String> markerList, final boolean isAlias, final Map<String, String> aliases)
+			throws AliasResolutionException {
 
 		String result = "";
-
+		
+		// .. special treatment if we are resolving an alias
 		if (isAlias) {
 			if (!aliases.containsKey(input)) {
-//				throw new Exception("The alias <" + input
-//						+ "> could not be resolved!");
+				 throw new AliasResolutionException("$" + input + "$ is not resolvable.");
 			} else {
 				if (markerList.contains(input)) {
-					throw new Exception("The alias <" + input
-							+ "> causes a circular relation.");
+					throw new AliasResolutionException("$" + input + "$ causes a circular relation.");
 				} else {
 					result = aliases.get(input);
 					markerList.add(input);
@@ -191,22 +191,19 @@ public final class ReplaceAliasesUtil {
 			result = input;
 		}
 
-		// Get a Matcher based on the target string.
+		// .. find all variables that needs to be replaced by real values
 		Matcher matcher = FIND_ALIAS_NAME_PATTERN.matcher(result);
 
-		// Find all the matches.
 		while (matcher.find()) {
-			String requiredAliasName = matcher.group(1);
+			String alias = matcher.group(1);
 
-			String canonicalName = getFullQualifiedName(requiredAliasName,
-					markerList, true, aliases);
-
-			if(canonicalName==null || canonicalName.length()<=0) {
-				canonicalName = "??";
-			}
-			Matcher matcher2 = createSearchPattern(requiredAliasName).matcher(
-					result);
-			result = matcher2.replaceAll(canonicalName);
+			// .. recursively resolve the alias itself 
+			String resolvedAlias = doResolve(alias, markerList, true, aliases);
+			assert StringUtil.hasLength(resolvedAlias);
+			
+			// .. replace all occurences of the alias in the initial string
+			Matcher matcher2 = createSearchPattern(alias).matcher(result);
+			result = matcher2.replaceAll(resolvedAlias);
 		}
 
 		return result;

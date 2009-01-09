@@ -1,7 +1,8 @@
 package org.csstudio.dct.ui.internal;
 
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.util.RecordUtil;
+import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.AliasResolutionException;
 
 /**
  * UI adapter for {@link IRecord}.
@@ -15,7 +16,14 @@ public class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
 	 */
 	@Override
 	protected String doGetLabel(IRecord record) {
-		String name = record.isInheritedFromPrototype() ? RecordUtil.getResolvedName(record) : record.getName();
+		String name = record.getNameFromHierarchy();
+		
+		if(record.isInherited()) {
+			try {
+				name = AliasResolutionUtil.resolve(record.getNameFromHierarchy(), record);
+			} catch (AliasResolutionException e) {
+			}
+		}
 		
 		return name + " [" + record.getType() + "]";
 	}
@@ -25,7 +33,7 @@ public class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
 	 */
 	@Override
 	protected String doGetIcon(IRecord record) {
-		return record.isInheritedFromPrototype() ? "icons/record_inherited.png" : "icons/record.png";
+		return record.isInherited() ? "icons/record_inherited.png" : "icons/record.png";
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.dct.persistence;
+package org.csstudio.dct.model.persistence.internal;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -23,6 +23,8 @@ import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.internal.Prototype;
 import org.csstudio.dct.model.internal.RecordFactory;
+import org.csstudio.dct.model.persistence.internal.ProjectToXml;
+import org.csstudio.dct.model.persistence.internal.XmlToProject;
 import org.csstudio.dct.util.UseCase;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -98,7 +100,7 @@ public class ProjectToXmlTest {
 	
 	/**
 	 * Test method for
-	 * {@link org.csstudio.dct.persistence.ProjectToXml#createDocument(org.csstudio.dct.model.internal.Project)}
+	 * {@link org.csstudio.dct.model.persistence.internal.ProjectToXml#createDocument(org.csstudio.dct.model.internal.Project)}
 	 * .
 	 * 
 	 * @throws IOException

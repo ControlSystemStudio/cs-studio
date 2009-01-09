@@ -2,8 +2,6 @@ package org.csstudio.dct.model;
 
 import java.util.List;
 
-import org.csstudio.dct.model.internal.Instance;
-
 /**
  * Represents a container for {@link IInstanceContainer}s.
  * 

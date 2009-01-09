@@ -160,8 +160,10 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	protected String doGetLinkText(IRecord record) {
 		String text = "";
 
-		if(record.getParentRecord() !=null ) {
+		if(record.isInherited()) {
 			text+="jump to <a href=\""+record.getParentRecord().getId()+"\">parent record</a>";
+		} else {
+			text+="Record has no parent.";
 		}
 		
 		return text;

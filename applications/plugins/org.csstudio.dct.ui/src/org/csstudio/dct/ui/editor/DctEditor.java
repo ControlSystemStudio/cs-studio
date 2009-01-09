@@ -1,23 +1,32 @@
 package org.csstudio.dct.ui.editor;
 
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.export.IRecordRenderer;
 import org.csstudio.dct.export.internal.DbFileRecordRenderer;
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Folder;
-import org.csstudio.dct.model.internal.MyVisitor;
 import org.csstudio.dct.model.internal.Project;
-import org.csstudio.dct.persistence.Service;
+import org.csstudio.dct.model.visitors.ProblemVisitor;
+import org.csstudio.dct.model.visitors.SearchVisitor;
+import org.csstudio.dct.model.visitors.ProblemVisitor.Error;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
@@ -25,6 +34,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
@@ -36,6 +47,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -159,8 +171,9 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 	public void doSave(IProgressMonitor monitor) {
 		FileEditorInput in = (FileEditorInput) getEditorInput();
 		try {
-			Service.save(in.getFile(), getProject());
+			DctActivator.getDefault().getPersistenceService().saveProject(in.getFile(), getProject());
 			commandStack.markSaveLocation();
+			markErrors();
 			firePropertyChange(PROP_DIRTY);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -189,7 +202,8 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		if (!(editorInput instanceof IFileEditorInput))
 			throw new PartInitException("Invalid Input: Must be IFileEditorInput");
-
+		super.init(site, editorInput);
+		
 		IFile file = ((IFileEditorInput) editorInput).getFile();
 
 		// .. set editor title
@@ -197,8 +211,9 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 
 		try {
 			// .. load the file contents
-			project = Service.load(file);
+			project = DctActivator.getDefault().getPersistenceService().loadProject(file);
 		} catch (Exception e) {
+			e.printStackTrace();
 			project = null;
 		}
 
@@ -207,7 +222,8 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 			project = new Project("New Project", UUID.randomUUID());
 		}
 
-		super.init(site, editorInput);
+		// .. refresh markers
+		markErrors();
 	}
 
 	@Override
@@ -235,7 +251,7 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 	void renderDbFilePreview() {
 		StringBuffer sb = new StringBuffer();
 
-		IRecordRenderer renderer = new DbFileRecordRenderer();
+		IRecordRenderer renderer = new DbFileRecordRenderer(false);
 
 		for (IRecord r : getProject().getFinalRecords()) {
 			sb.append(renderer.render(r));
@@ -260,19 +276,85 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 			outline.setSelection(new StructuredSelection(getProject()));
 			result = outline;
 			getSite().setSelectionProvider(outline);
+		} else if (adapter == IGotoMarker.class) {
+			return new IGotoMarker() {
+				public void gotoMarker(IMarker marker) {
+					try {
+						String location = (String) marker.getAttribute(IMarker.LOCATION);
+
+						if (StringUtil.hasLength(location)) {
+							UUID id = UUID.fromString(location);
+							selectItemInOutline(id);
+						}
+					} catch (CoreException e) {
+						CentralLogger.getInstance().info(this, e);
+					}
+				}
+			};
 		}
 		return result;
 	}
 
 	public void commandStackChanged(EventObject event) {
 		firePropertyChange(PROP_DIRTY);
+		// FIXME: Auskommentieren, wenn Markierung nach jeder Änderung gewünscht und performant genug!!
+//		markErrors();
+	}
+
+	private void markErrors() {
+		// .. find problems
+		ProblemVisitor visitor = new ProblemVisitor();
+		getProject().accept(visitor);
+		Set<Error> errors = visitor.getErrors();
+
+		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+
+		try {
+			// .. clear old markers
+			file.deleteMarkers(IMarker.PROBLEM, true, 1);
+
+			// .. add new markers
+			for (Error e : errors) {
+				IMarker marker = file.createMarker(IMarker.PROBLEM);
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
+				marker.setAttribute(IMarker.LOCATION, e.getId().toString());
+				marker.setAttribute(IMarker.MESSAGE, e.getErrorMessage());
+			}
+		} catch (CoreException e) {
+			CentralLogger.getInstance().info(this, e);
+		}
 	}
 
 	public void selectItemInOutline(UUID id) {
-		IElement element = new MyVisitor().search(project, id);
+		IElement element = new SearchVisitor().search(project, id);
 
 		if (element != null) {
-			getSite().getSelectionProvider().setSelection(new StructuredSelection(element));
+			List<Object> path = new ArrayList<Object>();
+			findPathToRoot(element, path);
+			getSite().getSelectionProvider().setSelection(new TreeSelection(new TreePath(path.toArray())));
 		}
 	}
+
+	private void findPathToRoot(IElement element, List<Object> path) {
+		if (element != null) {
+			path.add(0, element);
+
+			if (element instanceof IRecord) {
+				IRecord record = (IRecord) element;
+				findPathToRoot(record.getContainer(), path);
+			} else if(element instanceof IContainer) {
+				IContainer container = (IContainer) element;
+				
+				if(container.getContainer()!=null) {
+					findPathToRoot(container.getContainer(), path);
+				} else {
+					findPathToRoot(container.getParentFolder(), path);
+				}
+			} else if(element instanceof IFolder) {
+				IFolder folder = (IFolder) element;
+				findPathToRoot(folder.getParentFolder(), path);
+			}
+		}
+	}
+
 }

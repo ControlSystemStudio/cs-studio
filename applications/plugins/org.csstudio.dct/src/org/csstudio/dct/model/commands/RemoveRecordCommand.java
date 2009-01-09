@@ -1,5 +1,6 @@
 package org.csstudio.dct.model.commands;
 
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
 
@@ -11,26 +12,17 @@ import org.csstudio.dct.model.IRecordContainer;
  */
 public class RemoveRecordCommand extends AbstractRecordCommand {
 
-	private IRecordContainer container;
+	private IContainer container;
 	private IRecord record;
 
 	public RemoveRecordCommand(IRecord record) {
-		this(record.getContainer(), record);
-	}
-	
-	/**
-	 * @deprecated
-	 * @param container
-	 * @param record
-	 */
-	public RemoveRecordCommand(IRecordContainer container, IRecord record) {
 		assert container != null;
 		assert record != null;
-		this.container = container;
+		this.container = record.getContainer();
 		this.record = record;
 		assert container==record.getContainer();
 	}
-
+	
 	/**
 	 *{@inheritDoc}
 	 */

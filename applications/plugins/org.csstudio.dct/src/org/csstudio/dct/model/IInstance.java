@@ -1,6 +1,5 @@
 package org.csstudio.dct.model;
 
-import java.util.List;
 
 
 /**
@@ -33,20 +32,7 @@ import java.util.List;
  * 
  */
 public interface IInstance extends  IContainer {
-	/**
-	 * Sets the physical container.
-	 * 
-	 * @param instanceContainer
-	 *            the physical container
-	 */
-	void setContainer(IInstanceContainer instanceContainer);
 
-	/**
-	 * Returns the physical container.
-	 * 
-	 * @return the physical container
-	 */
-	IInstanceContainer getContainer();
 
 	/**
 	 * Returns the prototype this instances is derived from.
@@ -55,32 +41,6 @@ public interface IInstance extends  IContainer {
 	 */
 	IPrototype getPrototype();
 
-	/**
-	 * Sets a value for the specified parameter.
-	 * 
-	 * @param key
-	 *            the parameter name
-	 * @param value
-	 *            the parameter value
-	 */
-	void setParameterValue(String key, String value);
-
-	/**
-	 * Returns a value for the specified parameter.
-	 * 
-	 * @param key
-	 *            the parameter name
-	 * @return the value or null
-	 */
-	String getParameterValue(String key);
-
-	/**
-	 * Returns true, if a value for the specified parameter exists.
-	 * 
-	 * @param key
-	 *            the parameter name
-	 * @return true, if a value exist
-	 */
-	boolean hasParameterValue(String key);
+	
 
 }

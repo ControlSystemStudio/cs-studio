@@ -1,5 +1,6 @@
 package org.csstudio.dct.model.commands;
 
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
 
@@ -11,10 +12,10 @@ import org.csstudio.dct.model.IRecordContainer;
  */
 public class AddRecordCommand extends AbstractRecordCommand {
 
-	private IRecordContainer container;
+	private IContainer container;
 	private IRecord record;
 
-	public AddRecordCommand(IRecordContainer container, IRecord record) {
+	public AddRecordCommand(IContainer container, IRecord record) {
 		this.container = container;
 		this.record = record;
 	}

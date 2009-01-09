@@ -1,15 +1,15 @@
 package org.csstudio.dct.ui.editor;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.commands.ChangePropertyKeyCommand;
 import org.csstudio.dct.model.commands.ChangePropertyValueCommand;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.util.ReplaceAliasesUtil;
+import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -81,11 +81,8 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 		try {
 			String input = delegate.getFinalProperties().get(propertyKey).toString();
 
-			//FIXME: Parameterauflösung ausprogrammieren.
-			Map<String, String> params = new HashMap<String, String>();
-			
-
-			result = ReplaceAliasesUtil.createCanonicalName(input, params);
+			//FIXME: Harten Cast auflösen!
+			result = AliasResolutionUtil.resolve(input, (IElement) delegate);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

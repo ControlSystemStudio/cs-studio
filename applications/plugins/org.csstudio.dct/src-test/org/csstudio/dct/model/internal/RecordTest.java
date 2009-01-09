@@ -246,20 +246,20 @@ public class RecordTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.csstudio.dct.model.internal.Record#isInheritedFromPrototype()}
-	 * .
-	 */
-	@Test
-	public final void testIsInheritedFromPrototype() {
-		Prototype prototype = new Prototype("p", UUID.randomUUID());
-		parentRecord.setContainer(prototype);
-		assertEquals(prototype, parentRecord.getContainer());
-
-		assertFalse(parentRecord.isInheritedFromPrototype());
-		assertTrue(record.isInheritedFromPrototype());
-
-	}
+		 * Test method for
+		 * {@link org.csstudio.dct.model.internal.Record#isInherited()}
+		 * .
+		 */
+		@Test
+		public final void testIsInherited() {
+			Prototype prototype = new Prototype("p", UUID.randomUUID());
+			parentRecord.setContainer(prototype);
+			assertEquals(prototype, parentRecord.getContainer());
+	
+			assertFalse(parentRecord.isInherited());
+			assertTrue(record.isInherited());
+	
+		}
 
 	/**
 	 * Test method for

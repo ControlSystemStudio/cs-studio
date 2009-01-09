@@ -3,7 +3,8 @@ package org.csstudio.dct.ui.editor;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.ChangeNameCommand;
 import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
-import org.csstudio.dct.util.RecordUtil;
+import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.AliasResolutionException;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.RGB;
@@ -32,7 +33,17 @@ class RecordNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 
 	@Override
 	protected Object doGetValueForDisplay(IRecord record) {
-		return record.isInheritedFromPrototype() ? RecordUtil.getResolvedName(record) : record.getName();
+		String result = record.getNameFromHierarchy();
+
+		if (record.isInherited()) {
+			try {
+				result = AliasResolutionUtil.resolve(record.getNameFromHierarchy(), record);
+			} catch (AliasResolutionException e) {
+				setError(e.getMessage());
+			}
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -41,14 +52,14 @@ class RecordNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 		if (value != null && !value.equals(record.getNameFromHierarchy())) {
 			result = new ChangeNameCommand(record, value.toString());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	protected RGB doGetForegroundColorForValue(IRecord record) {
 		String name = record.getName();
-		return (name!=null && name.length()>0 ) ? ColorSettings.OVERRIDDEN_RECORD_FIELD_VALUE : ColorSettings.INHERITED_RECORD_FIELD_VALUE;
+		return (name != null && name.length() > 0) ? ColorSettings.OVERRIDDEN_RECORD_FIELD_VALUE : ColorSettings.INHERITED_RECORD_FIELD_VALUE;
 	}
 
 }

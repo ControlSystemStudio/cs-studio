@@ -1,6 +1,5 @@
 package org.csstudio.dct.model;
 
-import java.util.List;
 import java.util.Map;
 
 import org.csstudio.dct.metamodel.IRecordDefinition;
@@ -26,7 +25,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * 
 	 * @return the physical container
 	 */
-	IRecordContainer getContainer();
+	IContainer getContainer();
 
 	/**
 	 * Sets the physical container
@@ -34,14 +33,23 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * @param container
 	 *            the physical container
 	 */
-	void setContainer(IRecordContainer container);
+	void setContainer(IContainer container);
 
 	/**
-	 * Returns true, if this record is inherited from a prototype.
+	 * Returns true, if this record is abstract. A record is abstract, when it
+	 * is part of a prototype.
 	 * 
-	 * @return true, if this record is inherited from a prototype
+	 * @return true, if this record is abstract
 	 */
-	boolean isInheritedFromPrototype();
+	boolean isAbstract();
+
+	/**
+	 * Returns true, if this record is inherited. A record is inherited, when it
+	 * is backed by record in a prototype.
+	 * 
+	 * @return true, if this record is inherited
+	 */
+	boolean isInherited();
 
 	/**
 	 * Returns the name for this record that arises from the record hierarchy.
@@ -167,5 +175,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * @return the record definition
 	 */
 	IRecordDefinition getRecordDefinition();
+
+	Map<String, String> getFinalParameterValues();
 
 }

@@ -4,6 +4,7 @@ import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.commands.ChangeParameterValueCommand;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
+import org.csstudio.dct.util.AliasResolutionUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.RGB;
@@ -23,8 +24,7 @@ public class ParameterValueTableRowAdapter extends AbstractTableRowAdapter<IInst
 
 	@Override
 	protected Object doGetValue(IInstance instance) {
-		String key = parameter.getName();
-		return instance.hasParameterValue(key) ? instance.getParameterValue(key) : parameter.getDefaultValue();
+		return AliasResolutionUtil.getParameterValueFromHierarchy(instance, parameter.getName());
 	}
 
 	@Override

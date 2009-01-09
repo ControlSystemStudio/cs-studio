@@ -3,14 +3,17 @@
  */
 package org.csstudio.dct.model.internal;
 
-import static org.easymock.classextension.EasyMock.*;
-import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 import java.util.UUID;
 
-import org.csstudio.dct.model.IInstanceContainer;
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IPrototype;
 import org.junit.Before;
 import org.junit.Test;
@@ -167,7 +170,7 @@ public class InstanceTest {
 	 */
 	@Test
 	public final void testSetContainer() {
-		IInstanceContainer container = createMock(IInstanceContainer.class);
+		IContainer container = createMock(IContainer.class);
 		instance.setContainer(container);
 		assertEquals(container, instance.getContainer());
 	}
