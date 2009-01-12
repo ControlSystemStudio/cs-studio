@@ -45,8 +45,8 @@ public interface IJmsRedundantReceiver {
 	public abstract Message receive(String name);
 
 	/**
-	 * Returns the current message. The method waits <code>waitTime</code> miliseconds and returns if
-	 * no message have been received.
+	 * Returns the current message. The method waits <code>waitTime</code> miliseconds for <b>every</b>
+	 * subscriber and returns if no message have been received.
 	 * <p>
 	 * It takes the messages from the internal queue first. If the
 	 * queue does not contain a message, the method calls the receive() method of the MessageConsumer
