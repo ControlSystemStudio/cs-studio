@@ -10,13 +10,18 @@ public interface Annunciator
 	 *  of certain acronyms.
 	 *  @param translations
 	 */
-	public abstract void setTranslations(Translation[] translations);
+	public void setTranslations(Translation[] translations);
+	
+	   /** Set volume
+     *  @param volume Volume level 0...1
+     */
+    public void setVolume(final float volume);
 	
 	/** Speak some text
 	 *  @param something Text to speak
 	 */
-	public abstract void say(final String something);
+	public void say(final String something);
 
 	/** Must be called when Annunciator no longer needed to release resources */
-	public abstract void close();
+	public void close();
 }

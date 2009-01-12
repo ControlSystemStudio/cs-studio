@@ -45,9 +45,18 @@ public class FreeTTSAnnunciator implements Annunciator
 
         // Allocate resources for the voice.
         voice.allocate();
+    }
+	
+	/** Set volume
+	 *  @param volume Volume level 0...1
+	 */
+	public void setVolume(final float volume)
+	{
+	    voice.setVolume(volume);
 	}
 	
-	public void setTranslations(Translation[] translations)
+	/** Define translations */
+	public void setTranslations(final Translation[] translations)
 	{
 		this.translations = translations;
 	}
