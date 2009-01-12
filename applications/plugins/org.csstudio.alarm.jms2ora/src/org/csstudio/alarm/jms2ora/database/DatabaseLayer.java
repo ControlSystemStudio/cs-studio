@@ -242,11 +242,11 @@ public class DatabaseLayer
     {        
         try
         {
-            dbService = RDBUtil.connect(url, user, password);
+            dbService = RDBUtil.connect(url, user, password, true);
         }
         catch(Exception e)
         {
-            logger.error(" *** EXCEPTION *** : " + e.getMessage());
+            logger.error("*** Exception *** : connect(): " + e.getMessage());
             
             return false;
         }
@@ -288,7 +288,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : " + e.getMessage());
+            logger.error("*** Exception *** : isConnected(): " + e.getMessage());
             
             result = false;
         }
@@ -380,6 +380,8 @@ public class DatabaseLayer
             }
             catch(Exception e)
             {
+                logger.error("*** Exception ***: createMessageEntry(): " + e.getMessage());
+                
                 msgId = -1;
                 if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
             }  
@@ -461,6 +463,8 @@ public class DatabaseLayer
             }
             catch(Exception e)
             {
+                logger.error("*** Exception ***: createMessageContentEntries(): Write known messages: " + e.getMessage());
+
                 result = false;
                 if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
             }            
@@ -497,6 +501,8 @@ public class DatabaseLayer
                     }
                     catch(SQLException sqle)
                     {
+                        logger.error("*** SQLException ***: createMessageContentEntries(): Write unknown properties: " + sqle.getMessage());
+
                         result = false;
                         if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
                     }            
@@ -569,7 +575,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : " + e.getMessage());
+            logger.error("*** Exception *** : getMessageProperties(): " + e.getMessage());
             
             msgProperty.clear();
         }
@@ -620,7 +626,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
-            logger.error("*** Exception *** : " + e.getMessage());
+            logger.error("*** Exception *** : getMaxNumberofValueBytes(): " + e.getMessage());
             
             result = 0;
         }
@@ -655,6 +661,7 @@ public class DatabaseLayer
         }
         catch(Exception e)
         {
+            logger.error("*** Exception *** : getNextId(): " + e.getMessage());
             result = -1;
         }
         finally
@@ -693,7 +700,10 @@ public class DatabaseLayer
             pst.executeUpdate();
             if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
         }
-        catch(Exception e){}
+        catch(Exception e)
+        {
+            logger.error("*** Exception *** : deleteMessage(): " + e.getMessage());
+        }
 
         close();
     }

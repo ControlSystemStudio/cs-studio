@@ -101,6 +101,11 @@ public class MessageFilterContainer
                 
                 count = 0;                
             }
+            else if(count <= maxSentMessages)
+            {
+                // The message should not be blocked.
+                blockIt = false;
+            }
             else
             {
                 // The message should be blocked.

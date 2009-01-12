@@ -258,6 +258,9 @@ public class MessageProcessor extends Thread implements MessageListener
                 
                 logger.debug(statistic.toString());
                 
+                // IMPORTANT: Refresh the current state, otherwise Jms2Ora will restart if many messages
+                // are stored in the queue and state switching does not happen while storing all
+                // the messages.
                 parent.setStatus(ApplicState.WORKING);
             }
 
