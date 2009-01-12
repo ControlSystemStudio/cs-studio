@@ -2,6 +2,9 @@ package org.csstudio.platform.util;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,4 +36,26 @@ public class StringUtilTest {
 		assertFalse(StringUtil.hasLength(null));
 	}
 
+	@Test
+	public final void testToSeparatedString() {
+		List<String> l = new ArrayList<String>();
+		assertEquals("", StringUtil.toSeparatedString(l, ","));
+		l.add("a");
+		assertEquals("a", StringUtil.toSeparatedString(l, ","));
+		l.add("b");
+		assertEquals("a,b", StringUtil.toSeparatedString(l, ","));
+		l.add("c");
+		assertEquals("a;b;c", StringUtil.toSeparatedString(l, ";"));
+	}
+	
+	@Test
+	public final void testTrimNull() {
+		assertEquals("", StringUtil.trimNull(null));
+		assertEquals("", StringUtil.trimNull(""));
+		assertEquals("a", StringUtil.trimNull("a"));
+		assertEquals("a ", StringUtil.trimNull("a "));
+		assertEquals(" a ", StringUtil.trimNull(" a "));
+	}
+
+		
 }

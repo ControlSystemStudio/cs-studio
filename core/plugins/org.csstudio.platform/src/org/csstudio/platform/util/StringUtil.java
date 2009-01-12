@@ -1,6 +1,9 @@
 package org.csstudio.platform.util;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 public class StringUtil {
 
@@ -34,5 +37,25 @@ public class StringUtil {
 
 	public static boolean hasLength(String s) {
 		return (s != null && !"".equals(s));
+	}
+
+	public static String toSeparatedString(Collection<String> collection, String separator) {
+		StringBuffer sb = new StringBuffer();
+		
+		if(!collection.isEmpty()) {
+			Iterator<String> it = collection.iterator();
+			sb.append(it.next());
+			
+			while(it.hasNext()) {
+				sb.append(separator);
+				sb.append(it.next());
+			}
+		}
+		
+		return sb.toString();
+	}
+
+	public static String trimNull(String s) {
+		return hasLength(s)?s:"";
 	}
 }
