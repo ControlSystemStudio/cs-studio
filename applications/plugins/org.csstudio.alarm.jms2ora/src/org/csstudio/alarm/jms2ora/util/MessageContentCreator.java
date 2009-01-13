@@ -65,9 +65,9 @@ public class MessageContentCreator
     private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
     private final String formatOneDigit = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
 
-    public MessageContentCreator(DatabaseLayer dbLayer)
+    public MessageContentCreator(String dbUrl, String dbUser, String dbPassword)
     {
-        this.dbLayer = dbLayer;
+        dbLayer = new DatabaseLayer(dbUrl, dbUser, dbPassword);
         
         logger = Logger.getLogger(MessageContentCreator.class);
         
@@ -122,7 +122,7 @@ public class MessageContentCreator
         messageFilter.stopWorking();
     }
     
-    public MessageContent convertMapMessage(MapMessage mmsg)
+    public synchronized MessageContent convertMapMessage(MapMessage mmsg)
     {
         MessageContent msgContent = null;
         Enumeration<?> lst = null;

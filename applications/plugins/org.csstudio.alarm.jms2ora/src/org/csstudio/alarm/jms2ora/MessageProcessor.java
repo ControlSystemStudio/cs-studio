@@ -112,8 +112,8 @@ public class MessageProcessor extends Thread implements MessageListener
     
     private Jms2OraApplication parent = null;
     
-    private final String version = " 2.2.0";
-    private final String build = " - BUILD 2008-12-22 11:40";
+    private final String version = " 2.2.1";
+    private final String build = " - BUILD 2009-01-13 08:15";
     private final String application = "Jms2Ora";
 
     /** Time to sleep in ms */
@@ -148,9 +148,15 @@ public class MessageProcessor extends Thread implements MessageListener
         // Get the configuration
         config = Jms2OraPlugin.getDefault().getConfiguration();
         
-        dbLayer = new DatabaseLayer(config.getString("database.url"), config.getString("database.user"), config.getString("database.password"));
+        String url = config.getString("database.url");
+        String user = config.getString("database.user");
+        String password = config.getString("database.password");
         
-        contentCreator = new MessageContentCreator(dbLayer);
+        dbLayer = new DatabaseLayer(url, user, password);
+
+        // Instantiate MessageContentCreator that uses its own database layer
+        // IMPORTANT: Do not let it use the database layer created above
+        contentCreator = new MessageContentCreator(url, user, password);
         
         statistic = SimpleStatistic.getInstance();
         

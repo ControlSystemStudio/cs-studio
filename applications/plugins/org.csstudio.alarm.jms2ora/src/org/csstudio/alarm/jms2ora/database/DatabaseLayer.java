@@ -306,7 +306,7 @@ public class DatabaseLayer
      * @return The ID of the new entry or -1 if it fails.
      */
     
-    public long createMessageEntry(long typeId, MessageContent content)
+    public synchronized long createMessageEntry(long typeId, MessageContent content)
     {
         PreparedStatement pst = null;
         String sql = null;
@@ -403,7 +403,7 @@ public class DatabaseLayer
      * 
      */
     
-    public boolean createMessageContentEntries(long msgId, MessageContent msgContent)
+    public synchronized boolean createMessageContentEntries(long msgId, MessageContent msgContent)
     {
         Enumeration<?> lst = null;
         PreparedStatement pst = null;
@@ -544,7 +544,7 @@ public class DatabaseLayer
         }
     }
 
-    public Hashtable<String, Long> getMessageProperties()
+    public synchronized Hashtable<String, Long> getMessageProperties()
     {
         PreparedStatement pst = null;
         ResultSet rsProperty = null;
@@ -590,7 +590,7 @@ public class DatabaseLayer
         return msgProperty;
     }
     
-    public int getMaxNumberofValueBytes()
+    public synchronized int getMaxNumberofValueBytes()
     {
         PreparedStatement pst = null;
         ResultSetMetaData rsMetaData = null;
@@ -641,7 +641,7 @@ public class DatabaseLayer
         return result;
     }
 
-    public long getNextId(String tableName)
+    public synchronized long getNextId(String tableName)
     {
         PreparedStatement pst = null;
         ResultSet rsMsg = null;
@@ -678,7 +678,7 @@ public class DatabaseLayer
      * 
      *  @param msgId The id of the message that has to be deleted.
      */
-    public void deleteMessage(long msgId)
+    public synchronized void deleteMessage(long msgId)
     {
         PreparedStatement pst = null;
         
