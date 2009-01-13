@@ -418,6 +418,7 @@ public class MessageContentCreator
     {
         boolean result = false;
                 
+        logger.debug("readMessageProperties(): Reading message properties.");
         
         // Delete old hash table, if there are any
         if(msgProperty != null)
