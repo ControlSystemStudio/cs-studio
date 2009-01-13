@@ -37,11 +37,4 @@ public abstract class RowEditDialog extends Dialog {
 		super.configureShell(newShell);
 		newShell.setText("Edit Row Data");		
 	}
-	
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, "OK", true);
-		createButton(parent, IDialogConstants.CANCEL_ID, "Cancel", true);
-	}
-	
 }
