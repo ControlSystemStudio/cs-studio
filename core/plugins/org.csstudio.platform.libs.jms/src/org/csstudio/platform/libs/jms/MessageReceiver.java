@@ -44,6 +44,10 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 /**
  * Class used to establish connection with jms server.
+ * 
+ * @deprecated
+ * Use MessageReceiver in plugin 'org.csstudio.platform.utility.jms.
+ *
  */
 public class MessageReceiver {
     /**
