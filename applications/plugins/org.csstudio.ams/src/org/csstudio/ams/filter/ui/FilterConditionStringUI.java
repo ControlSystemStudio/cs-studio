@@ -72,7 +72,7 @@ public class FilterConditionStringUI extends FilterConditionUI
 	private final static int TYPE_NUMBER = 1;
 	private final static int TYPE_TIME = 2;
 	
-	private List[] operatorLists = new List[3];
+	private List<?>[] operatorLists = new List[3];
 	
 	private FilterConditionStringTObject condition = null;
 	private FilterConditionStringTObject conditionOrg = null;
