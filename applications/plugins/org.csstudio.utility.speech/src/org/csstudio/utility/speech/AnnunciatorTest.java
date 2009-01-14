@@ -1,13 +1,5 @@
 package org.csstudio.utility.speech;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.junit.Test;
 
 /** Unit-test of the Annunciator
@@ -41,7 +33,17 @@ public class AnnunciatorTest
 	@Test
 	public void test() throws Exception
 	{		
-		final Annunciator talker = new FreeTTSAnnunciator();
+	    // Create FreeTTSAnnunciator, list voices
+		final FreeTTSAnnunciator tts = new FreeTTSAnnunciator("kevin16");
+		final String[] voices = tts.getVoiceNames();
+		for (String voice : voices)
+        {
+		    System.out.println("Voice '" + voice + "'");
+        }
+
+		// From now on, only use the Annunciator interface
+        final Annunciator talker = tts;
+		
 		talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
 		talker.setTranslations(translations);
 		talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
