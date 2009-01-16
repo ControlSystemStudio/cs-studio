@@ -81,6 +81,9 @@ public class AlarmViewerPreferenceInitializer extends
 				.setDefault(
 						AlarmViewerPreferenceConstants.SENDER_URL,
 						"failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+		store
+		.setDefault(
+				AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE,
+				"..\\beep.mp3"); //$NON-NLS-1$	
 	}
-
 }
