@@ -143,7 +143,7 @@ public final class PlatformPreferencesInitializer extends
 		node.put(CentralLogger.PROP_LOG4J_JMS_PATTERN,
 				"%d{ISO8601} %-5p [%t] %c: %m%n");
 		node.put(CentralLogger.PROP_LOG4J_JMS_URL,
-		        "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectAttempts=4&maxReconnectDelay=5000");
+		        "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
 		node.put(CentralLogger.PROP_LOG4J_JMS_TOPIC, JMSLogMessage.DEFAULT_TOPIC);
 		node.put(CentralLogger.PROP_LOG4J_JMS_USER, "");
 		node.put(CentralLogger.PROP_LOG4J_JMS_PASSWORD, "");
