@@ -1,0 +1,91 @@
+<paceconfig>
+<name>HPRF Limit Config</name>
+<title>HPRF Pwr and Duty Cycle Limits</title>
+<columns>
+   <column>
+     <name>PwrLmt</name>
+     <access >ro</access>
+     <pv >${S}_HPRF:Cav${N}:PwrLmt</pv>
+   </column>
+   <column>
+     <name>PwrLmtAdm</name>
+     <access >rw</access>
+     <pv >${S}_HPRF:Cav${N}:PwrLmtAdm</pv>
+   </column>
+   <column>
+     <name>PwrLmtRad</name>
+     <access >rw</access>
+     <pv >${S}_HPRF:Cav${N}:PwrLmtRad</pv>
+   </column>
+   <column>
+     <name>DutyLmt</name>
+     <access >ro</access>
+     <pv >${S}_HPRF:Cav${N}:DutyLmt</pv>
+   </column>
+   <column>
+     <name>DutyLmtAdm</name>
+     <access >rw</access>
+     <pv >${S}_HPRF:Cav${N}:DutyLmtAdm</pv>
+   </column>
+   <column>
+     <name>DutyLmtRad</name>
+     <access >rw</access>
+     <pv >${S}_HPRF:Cav${N}:DutyLmtRad</pv>
+   </column>
+
+</columns>
+
+<instances>
+   <instance>
+     <!--  TODO Turn 'col' into 'row' or 'name' and show in left table col. -->
+     <name>SCL 12a</name>
+     <macros>S=SCL,N=12a</macros>
+   </instance>
+   <instance>
+     <name>SCL 12b</name>
+     <macros>S=SCL,N=12b</macros>
+   </instance>
+   <instance>
+     <name>SCL 12c</name>
+     <macros>S=SCL,N=12c</macros>
+   </instance>
+   <instance>
+     <name>SCL 12d</name>
+     <macros>S=SCL,N=12d</macros>
+   </instance>
+   <instance>
+     <name>SCL 13a</name>
+     <macros>S=SCL,N=13a</macros>
+   </instance>
+   <instance>
+     <name>SCL 13b</name>
+     <macros>S=SCL,N=13b</macros>
+   </instance>
+   <instance>
+     <name>SCL 13ca</name>
+     <macros>S=SCL,N=13c</macros>
+   </instance>
+   <instance>
+     <name>SCL 13d</name>
+     <macros>S=SCL,N=13d</macros>
+   </instance>
+   <instance>
+     <name>SCL 14a</name>
+     <macros>S=SCL,N=14a</macros>
+   </instance>
+    <instance>
+     <name>SCL 14b</name>
+     <macros>S=SCL,N=14b</macros>
+   </instance>
+    <instance>
+     <name>SCL 14c</name>
+     <macros>S=SCL,N=14c</macros>
+   </instance>
+    <instance>
+     <name>SCL 14d</name>
+     <macros>S=SCL,N=14d</macros>
+   </instance>
+   <!--  Many more...: see ~/xml/hprf.xml -->
+   
+</instances>
+</paceconfig>

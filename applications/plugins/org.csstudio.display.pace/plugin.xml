@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="PACE Editor"
+            extensions="pace"
+            default="true"
+            filenames="pace"
+            icon="icons/pace.gif"
+            class="table_editor.PACETableEditor"
+            id="table_editor.PACETableEditor">
+         <contentTypeBinding
+               contentTypeId="table_editor.PACETableEditor">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+         <extension
+           point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+    </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.pace"
+            file-extensions="pace"
+            id="PACETableEditor"
+            name="PACE Table Editor"
+            priority="normal">
+      </content-type>
+   </extension>
+    <extension
+          point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="table_editor.PACETableEditor"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="table_editor.ShowTableAction"
+               icon="icons/pace.gif"
+               id="table_editor.showtableaction"
+               label="PACE Table Editor"
+               menubarPath="css/display/"
+               style="push"
+               tooltip="MenuTooltip"/>
+      </actionSet>
+   </extension>
+    <extension
+          point="org.eclipse.ui.views">
+       <category
+             id="org.csstudio"
+             name="CSS">
+       </category>
+    </extension>
+</plugin>
+
+

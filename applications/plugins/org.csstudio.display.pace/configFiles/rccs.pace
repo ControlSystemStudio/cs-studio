@@ -1,0 +1,61 @@
+
+<!-- 
+ GUI Idea:
+ 
+       Temperature P-Gain          | Temperature I-Gain
+DTL...
+DTL1   DTL_RCCS:CV101:PID_Temp_KP  | DTL_RCCS:CV101:PID_Temp_KI
+DTL2   DTL_RCCS:CV201:PID_Temp_KP  | DTL_RCCS:CV201:PID_Temp_KI
+CCL...
+CCL1   CCL_RCCS:CV101:PID_Temp_KP  | CCL_RCCS:CV101:PID_Temp_KI
+ -->
+
+<paceconfig>
+<name>RCCS P/I/D Gain Config</name>
+<title>RCCS P/I/D Gain</title>
+<columns>
+   <column>
+     <name>Flow P. Gain</name>
+	  <access >rw</access>
+	  <pv >${S}_RCCS:CV${N}02:PID_KP</pv>
+   </column>
+   <column>
+     <name>Flow P. Readback</name>
+	  <access >ro</access>
+	  <pv >${S}_RCCS:CV10${N}:PID_KP_Rdbk</pv>
+   </column>
+   <column>
+     <name>Flow I. Gain</name>
+	  <access >rw</access>
+	  <pv >${S}_RCCS:CV${N}02:PID_KI</pv>
+   </column>
+   <column>
+     <name>Flow I. Readback</name>
+	  <access >ro</access>
+	  <pv >${S}_RCCS:CV10${N}:PID_KI_Rdbk</pv>
+   </column>
+   <column>
+     <name>Pump P. Gain</name>
+	  <access >ro</access>
+	  <pv >${S}_RCCS:PMP${N}01:PID_KP</pv>
+   </column>
+</columns>
+
+<instances>
+     <instance>
+     <!--  TODO Turn 'col' into 'row' or 'name' and show in left table col. -->
+       <name>DTL 1</name>
+       <macros>S=DTL,N=1</macros>
+     </instance>
+     <instance>
+       <name>DTL 2</name>
+       <macros>S=DTL,N=2</macros>
+     </instance>
+     <instance>
+       <name>CCL 2</name>
+       <macros>S=CCL,N=2</macros>
+     </instance>
+   <!--  Many more...: DTL 1..6, CCL 1..4. -->
+</instances>
+
+</paceconfig>
