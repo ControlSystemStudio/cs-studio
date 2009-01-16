@@ -1,5 +1,6 @@
 package table_gui;
 
+import org.csstudio.display.pace.Preferences;
 import org.csstudio.display.pace.model.old.Cell;
 import org.csstudio.display.pace.model.old.Model;
 import org.csstudio.display.pace.model.old.Rows;
@@ -30,7 +31,6 @@ import org.eclipse.ui.PlatformUI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import table_editor.Preferences;
 
 /**
  * SaveAllToElog

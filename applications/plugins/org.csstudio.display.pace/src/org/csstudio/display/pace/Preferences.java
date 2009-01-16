@@ -1,4 +1,4 @@
-package table_editor;
+package org.csstudio.display.pace;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  @author Delphy Nypaver Armstrong
  */
 @SuppressWarnings("nls")
-
 public class Preferences
 {
    /** @return RDB URL */
