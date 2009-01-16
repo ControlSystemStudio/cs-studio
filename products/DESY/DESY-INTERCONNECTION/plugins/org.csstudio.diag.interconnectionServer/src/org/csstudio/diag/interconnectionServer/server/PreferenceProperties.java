@@ -64,12 +64,12 @@ public class PreferenceProperties {
 
 	///public static String PRIMARY_JMS_URL = "tcp://elogbook.desy.de:64616";	//TCP
 	//value is now read from the xml store
-	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP PP
-	//public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://elogbook.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
+	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000";	//TCP PP
+	//public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://elogbook.desy.de:64616)?maxReconnectDelay=5000";	//TCP
 	//public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";
 	///public static String SECONDARY_JMS_URL = "tcp://krynfs.desy.de:62616";
 	//value is now read from the xml store
-	//public static String SECONDARY_JMS_URL = "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50";	// PP
+	//public static String SECONDARY_JMS_URL = "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=5000";	// PP
 	///public static String SECONDARY_JMS_URL = "tcp://elogbook.desy.de:64616";
 
 	

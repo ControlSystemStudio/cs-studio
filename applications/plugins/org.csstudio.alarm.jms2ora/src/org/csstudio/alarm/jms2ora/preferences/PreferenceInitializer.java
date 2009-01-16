@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * @author Markus Möller
+ * @author Markus Mï¿½ller
  *
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer
@@ -43,8 +43,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
 
         prefs.put(PreferenceConstants.XMPP_USER_NAME, "jms2oracle");
         prefs.put(PreferenceConstants.XMPP_PASSWORD, "jms2oracle");
-        prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50");
-        prefs.put(PreferenceConstants.SECONDARY_JMS_URL , "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50");
+        prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
+        prefs.put(PreferenceConstants.SECONDARY_JMS_URL , "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
         prefs.put(PreferenceConstants.ALARM_TOPIC, "ALARM");
         prefs.put(PreferenceConstants.LOG_TOPIC , "LOG");
     }
