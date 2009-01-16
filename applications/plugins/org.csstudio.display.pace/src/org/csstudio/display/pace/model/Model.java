@@ -92,7 +92,7 @@ public class Model
     public void addListener(final ModelListener listener)
     {
         if (this.listener != null)
-            throw new Error("Can only handle one listener");
+            throw new Error("Can only handle one listener"); //$NON-NLS-1$
         this.listener = listener;
     }
 
@@ -100,10 +100,9 @@ public class Model
     public void removeListener(final ModelListener listener)
     {
         if (this.listener != listener)
-            throw new Error("Unknown listener");
+            throw new Error("Unknown listener"); //$NON-NLS-1$
         this.listener = null;
     }
-
     
     /** @return Overall title of the Model */
     public String getTitle()

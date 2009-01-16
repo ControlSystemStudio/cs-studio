@@ -22,8 +22,11 @@ public class Cell implements PVListener
     final private PV pv;
     
     /** Most recent value received from PV */
-    private String current_value = UNKNOWN;
+    private volatile String current_value = null;
 
+    /** Value that the user entered. */
+    private volatile String user_value = null;
+    
     /** Initialize
      *  @param instance Instance (row) that holds this cell
      *  @param column Column that holds this cell
@@ -50,9 +53,47 @@ public class Cell implements PVListener
         return pv.getName();
     }
 
+    /** If the user entered a value, that's it.
+     *  Otherwise it's the PV's value, or UNKNOWN
+     *  if we have nothing.
+     *  @return Value of this cell
+     */
+    public String getValue()
+    {
+        if (user_value != null)
+            return user_value;
+        if (current_value != null)
+            return current_value;
+        return UNKNOWN;
+    }
+    
+    /** Set a user-specified value.
+     *  <p>
+     *  If this value matches the PV's value, we revert to the PV's value.
+     *  Otherwise this defines a new value that the user entered to
+     *  replace the original value of the PV.
+     *  @param value Value that the user entered for this cell
+     */
+    public void setUserValue(final String value)
+    {
+        if (value.equals(current_value))
+            user_value = null;
+        else
+            user_value = value;
+        instance.getModel().fireCellUpdate(this);
+    }
+
+    /** Clear a user-specified value, revert to the PV's original value. */
+    public void clearUserValue()
+    {
+        user_value = null;
+        instance.getModel().fireCellUpdate(this);
+    }
+    
+    /** @return <code>true</code> if user entered a value */
     public boolean isEdited()
     {
-        return false;
+        return user_value != null;
     }
 
     /** Start the PV connection */
@@ -67,12 +108,14 @@ public class Cell implements PVListener
         pv.stop();
     }
 
+    // PVListener
     public void pvDisconnected(final PV pv)
     {
-        current_value = UNKNOWN;
+        current_value = null;
         instance.getModel().fireCellUpdate(this);
     }
 
+    // PVListener
     public void pvValueUpdate(final PV pv)
     {
         current_value = ValueUtil.getString(pv.getValue());
@@ -83,6 +126,6 @@ public class Cell implements PVListener
     @Override
     public String toString()
     {
-        return "Cell " + pv.getName() + " = " + current_value;
+        return "Cell " + pv.getName() + " = " + getValue();
     }
 }
