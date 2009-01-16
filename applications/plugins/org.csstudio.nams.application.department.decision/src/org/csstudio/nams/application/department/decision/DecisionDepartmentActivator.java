@@ -337,12 +337,11 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
 
-        /* For XMPP login ADDED BY Markus Moeller 2008-11-26
+        /* For XMPP login ADDED BY Markus Moeller 2008-11-26 */
 		for(IStartupServiceListener service : StartupServiceEnumerator.getServices())
         {
             service.run();
         }
-        */
 		
 		configureExecutionService();
 
@@ -906,8 +905,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		consumersConsumer.close();
 	}
 
-    public void stopRemotely(Logger logger)
+    public synchronized void stopRemotely(Logger logger)
     {
-        //TODO: Wie stoppe ich die Anwendung?
+        _continueWorking = false;
     };
 }
