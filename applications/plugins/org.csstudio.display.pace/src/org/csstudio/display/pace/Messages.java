@@ -1,0 +1,28 @@
+package org.csstudio.display.pace;
+
+import org.eclipse.osgi.util.NLS;
+
+public class Messages extends NLS
+{
+    private static final String BUNDLE_NAME = "org.csstudio.display.pace.messages"; //$NON-NLS-1$
+
+    public static String InstanceLabelProvider_OrigAppendix;
+
+    public static String InstanceLabelProvider_PVValueFormat;
+
+    public static String InstanceLabelProvider_ReadOnlyAppendix;
+
+    public static String SystemColumn;
+    public static String UnknownValue;
+    
+    static
+    {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages()
+    {
+        // Prevent instantiation
+    }
+}

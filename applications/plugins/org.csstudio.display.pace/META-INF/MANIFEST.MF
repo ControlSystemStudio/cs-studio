@@ -12,5 +12,6 @@ Require-Bundle: org.junit4,
  org.csstudio.logbook.sns,
  org.csstudio.logbook,
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0",
- org.csstudio.apputil;bundle-version="1.0.6"
+ org.csstudio.apputil;bundle-version="1.0.6",
+ org.csstudio.apputil.ui;bundle-version="1.0.9"
 Bundle-Vendor: Delphy Armstrong, Kay Kasemir

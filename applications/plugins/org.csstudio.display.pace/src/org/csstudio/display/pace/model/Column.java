@@ -46,7 +46,7 @@ public class Column
     }
 
     /** @return Column name/title */
-    protected String getName()
+    public String getName()
     {
         return name;
     }

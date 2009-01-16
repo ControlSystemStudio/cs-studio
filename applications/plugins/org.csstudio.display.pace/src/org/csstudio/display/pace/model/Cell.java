@@ -1,5 +1,6 @@
 package org.csstudio.display.pace.model;
 
+import org.csstudio.display.pace.Messages;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -9,11 +10,8 @@ import org.csstudio.utility.pv.PVListener;
  *  @author Kay Kasemir
  *  @author Delphy Nypaver Armstrong
  */
-@SuppressWarnings("nls")
 public class Cell implements PVListener
 {
-    private static final String UNKNOWN = "--";
-
     final private Instance instance;
 
     final private Column column;
@@ -64,7 +62,7 @@ public class Cell implements PVListener
             return user_value;
         if (current_value != null)
             return current_value;
-        return UNKNOWN;
+        return Messages.UnknownValue;
     }
     
     /** Set a user-specified value.
@@ -81,6 +79,14 @@ public class Cell implements PVListener
         else
             user_value = value;
         instance.getModel().fireCellUpdate(this);
+    }
+
+    /** @return Value that user entered to replace the original value,
+     *          or <code>null</code>
+     */
+    public String getUserValue()
+    {
+        return user_value;
     }
 
     /** Clear a user-specified value, revert to the PV's original value. */
@@ -123,6 +129,7 @@ public class Cell implements PVListener
     }
 
     /** @return String representation for debugging */
+    @SuppressWarnings("nls")
     @Override
     public String toString()
     {

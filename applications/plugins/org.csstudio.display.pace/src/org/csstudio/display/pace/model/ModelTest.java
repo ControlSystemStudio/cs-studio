@@ -1,15 +1,17 @@
 package org.csstudio.display.pace.model;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit plug-in test of Model
- *  (runs as headless application)
+ *  
+ *  Runs as headless application.
+ *  For PV connections to work, use junit_customization.ini
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -52,6 +54,8 @@ public class ModelTest
         final Model model =
             new Model(new FileInputStream("configFiles/rf_admin.pace"));
         model.addListener(listener);
+        
+        // Model has not been edited, find a cell to test changes
         updates = 0;
         assertFalse(model.isEdited());
         final Cell cell = model.getInstance(1).getCell(1);
@@ -62,12 +66,15 @@ public class ModelTest
         assertEquals(1, updates);
         assertTrue(cell.isEdited());
         assertTrue(model.isEdited());
-    
+        assertEquals("10", cell.getValue());
+        assertEquals("10", cell.getUserValue());
+        
         // Revert to original value
         cell.clearUserValue();
         assertEquals(2, updates);
         assertFalse(cell.isEdited());
         assertFalse(model.isEdited());
+        assertEquals(null, cell.getUserValue());
     }
 
     /** Check PV connection */
