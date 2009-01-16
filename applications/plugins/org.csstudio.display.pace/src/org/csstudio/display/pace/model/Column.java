@@ -52,7 +52,7 @@ public class Column
     }
 
     /** @return <code>true</code> for read-only column */
-    protected boolean isReadonly()
+    public boolean isReadonly()
     {
         return readonly;
     }

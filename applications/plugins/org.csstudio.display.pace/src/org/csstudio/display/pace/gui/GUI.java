@@ -4,6 +4,7 @@ import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.csstudio.display.pace.Messages;
 import org.csstudio.display.pace.model.Cell;
+import org.csstudio.display.pace.model.Column;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -71,12 +72,14 @@ public class GUI implements ModelListener
         col.setLabelProvider(new InstanceLabelProvider(-1));
         for (int c=0;  c<model.getColumnCount();  ++c)
         {
+            final Column model_col = model.getColumn(c);
             col = AutoSizeColumn.make(table_viewer,
-                                model.getColumn(c).getName(), MIN_SIZE, 100);
+                                model_col.getName(), MIN_SIZE, 100);
             // Tell column how to display the model elements
             col.setLabelProvider(new InstanceLabelProvider(c));
+            if (! model_col.isReadonly())
+                col.setEditingSupport(new ModelCellEditor(table_viewer, c));
         }
-        
         new AutoSizeControlListener(table);
         
         table_viewer.setInput(model);
