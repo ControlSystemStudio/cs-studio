@@ -52,7 +52,9 @@ public class InstanceLabelProvider extends CellLabelProvider
          return tip;
      }
 
-     /** Update one cell of the table */
+     /** @param gui_cell Cell in GUI that we need to update with info
+      *                  from the corresponding cell in the Model
+      */
      @Override
      public void update(final ViewerCell gui_cell)
      {
