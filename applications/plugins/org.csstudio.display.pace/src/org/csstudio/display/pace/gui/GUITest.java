@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 /** Standalone GUI test, run as headless JUnit plugin test.
+ *  Runs as headless application.
+ *  For PV connections to work, use junit_customization.ini
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -22,11 +24,13 @@ public class GUITest
    
         final Model model =
             new Model(new FileInputStream("configFiles/rf_admin.pace"));
-        new GUI(shell, model);
-
+        final GUI gui = new GUI(shell, model);
+        model.start();
+        
         shell.open();
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
                 display.sleep();
+        model.stop();
     }
 }

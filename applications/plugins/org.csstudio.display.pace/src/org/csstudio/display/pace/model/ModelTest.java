@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import org.junit.Test;
 
 /** JUnit plug-in test of Model
- *  
  *  Runs as headless application.
  *  For PV connections to work, use junit_customization.ini
  *  @author Kay Kasemir

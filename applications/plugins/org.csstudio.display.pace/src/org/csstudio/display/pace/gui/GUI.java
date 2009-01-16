@@ -3,7 +3,9 @@ package org.csstudio.display.pace.gui;
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.csstudio.display.pace.Messages;
+import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Model;
+import org.csstudio.display.pace.model.ModelListener;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -19,7 +21,7 @@ import org.eclipse.swt.widgets.Table;
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
-public class GUI
+public class GUI implements ModelListener
 {
     private static final int MIN_SIZE = 100;
     private TableViewer table_viewer;
@@ -31,6 +33,7 @@ public class GUI
     public GUI(final Composite parent, final Model model)
     {
         createComponents(parent, model);
+        model.addListener(this);
     }
 
     /** Create GUI elements
@@ -77,5 +80,22 @@ public class GUI
         new AutoSizeControlListener(table);
         
         table_viewer.setInput(model);
+    }
+
+    // ModelListener
+    public void cellUpdate(final Cell cell)
+    {
+        final Table table = table_viewer.getTable();
+        if (table.isDisposed())
+            return;
+        table.getDisplay().asyncExec(new Runnable()
+        {
+            public void run()
+            {
+                if (table.isDisposed())
+                    return;
+                table_viewer.update(cell.getInstance(), null);
+            }
+        });
     }
 }

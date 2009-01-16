@@ -39,6 +39,12 @@ public class Cell implements PVListener
         pv.addListener(this);
     }
 
+    /** @return Instance (row) that contains this cell */
+    public Instance getInstance()
+    {
+        return instance;
+    }
+
     /** @return <code>true</code> for read-only cell */
     public boolean isReadOnly()
     {
