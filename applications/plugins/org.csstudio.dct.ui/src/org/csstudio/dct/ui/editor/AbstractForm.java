@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IPrototype;
-import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
@@ -28,15 +26,13 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * Base class for editing forms for {@link IRecord}, {@link IInstance} and
- * {@link IPrototype}.
- * 
- * The class already prepares an input table for properties which are common to
- * all three mentioned model parts.
+ * Base class for all editing forms. The class already prepares input element
+ * that are common to all model parts and takes care of refreshes.
  * 
  * @author Sven Wende
  * 
  * @param <E>
+ *            the type of element that is edited with a form
  */
 public abstract class AbstractForm<E extends IElement> implements CommandStackListener {
 	private Composite mainComposite;
@@ -46,6 +42,12 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	private Link link;
 	private DctEditor editor;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param editor
+	 *            a DCT editor instance
+	 */
 	public AbstractForm(DctEditor editor) {
 		assert editor != null;
 		assert editor.getCommandStack() != null;
@@ -58,10 +60,8 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	 * 
 	 * @param parent
 	 *            the parent composite
-	 * @param commandStack
-	 *            a command stack
 	 */
-	public void createControl(Composite parent) {
+	public final void createControl(Composite parent) {
 		// .. main composite
 		mainComposite = new Composite(parent, SWT.None);
 		GridLayout layout = LayoutUtil.createGridLayout(1, 5, 5, 5);
@@ -87,6 +87,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 						editor.selectItemInOutline(id);
 					}
 				} catch (Exception e) {
+					CentralLogger.getInstance().warn(this, e);
 				}
 
 			}
@@ -115,11 +116,11 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 		doCreateControl(expandBar, getCommandStack());
 	}
 
-	protected abstract String doGetFormLabel();
-
-	protected abstract void doAddCommonRows(List<ITableRow> rows, E input);
-
-	public CommandStack getCommandStack() {
+	/**
+	 * Returns the comand stack.
+	 * @return the command stack
+	 */
+	public final CommandStack getCommandStack() {
 		return editor.getCommandStack();
 	}
 
@@ -128,17 +129,18 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	 * 
 	 * @return the main composite
 	 */
-	public Composite getMainComposite() {
+	public final Composite getMainComposite() {
 		return mainComposite;
 	}
 
 	/**
 	 * Sets the input object for this editing form.
 	 * 
-	 * @param input
-	 *            the input object
+	 * @param in
+	 *            the current input element for the form
 	 */
-	public void setInput(Object in) {
+	@SuppressWarnings("unchecked")
+	public final void setInput(Object in) {
 		this.input = (E) in;
 
 		// .. refresh links
@@ -150,43 +152,70 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 		// prepare input for overview table
 		List<ITableRow> rows = new ArrayList<ITableRow>();
 		rows.add(new BeanPropertyTableRowAdapter("Identifier", input, getCommandStack(), "id", true));
+		rows.add(new NameTableRowAdapter(input, getCommandStack()));
 		doAddCommonRows(rows, input);
 		commonTable.setInput(rows);
 
 		doSetInput(input);
 	}
-
-	/**
-	 * Subclasses my provide a text, which will appear under the headline. The
-	 * text can contain links in the following format
-	 * 
-	 * <code>
-	 * 		<a href="${elementId}">link</a>
-	 * </code>
-	 * 
-	 * 
-	 * @return
-	 */
-	protected abstract String doGetLinkText(E input);
-
+	
 	/**
 	 * Returns the input object for this editing form.
 	 * 
 	 * @return the input object
 	 */
-	public E getInput() {
+	public final E getInput() {
 		return input;
 	}
 
 	/**
 	 * Refreshes this form.
 	 */
-	public void refresh() {
-		E input = getInput();
+	public final void refresh() {
 		if (input != null) {
 			setInput(input);
 		}
 	}
+	
+	/**
+	 *{@inheritDoc}
+	 */
+	public final void commandStackChanged(EventObject event) {
+		refresh();
+	}
+	
+	/**
+	 * Template method. Subclasses return a label text for the form title here.
+	 * 
+	 * @return a label text for the form title
+	 */
+	protected abstract String doGetFormLabel();
+
+	/**
+	 * Template method. Subclasses can add table rows for the "common settings"
+	 * table here.
+	 * 
+	 * @param rows
+	 *            a list with table rows for the "common settings"
+	 * @param input
+	 *            the current input element for the form
+	 */
+	protected abstract void doAddCommonRows(List<ITableRow> rows, E input);
+
+
+	/**
+	 * Subclasses my provide a text, which will appear underneath the headline.
+	 * The text can contain links in the following format
+	 * 
+	 * <code>
+	 * 		<a href="${elementId}">link</a>
+	 * </code>
+	 * 
+	 * @param input
+	 *            the current input element for the form 
+	 * @return a text with link that will appear underneath the headline
+	 */
+	protected abstract String doGetLinkText(E input);
 
 	/**
 	 * Templates method. Used by subclasses to prepare their widgets.
@@ -208,11 +237,6 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	 */
 	protected abstract void doSetInput(E input);
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void commandStackChanged(EventObject event) {
-		refresh();
-	}
+
 
 }

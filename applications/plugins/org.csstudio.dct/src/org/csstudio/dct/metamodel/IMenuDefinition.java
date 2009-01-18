@@ -31,7 +31,7 @@ public interface IMenuDefinition {
 	void addChoice(IChoice choice);
 	
 	/**
-	 * Removes a choice
+	 * Removes a choice.
 	 * @param choice the choice
 	 */
 	void removeChoice(IChoice choice);

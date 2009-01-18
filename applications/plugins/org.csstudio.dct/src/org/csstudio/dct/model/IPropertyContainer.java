@@ -64,7 +64,7 @@ public interface IPropertyContainer extends IElement {
 	 * been stored with this record. If you want an aggregate view you have to
 	 * use {@link #getFinalFields()}.
 	 * 
-	 * @return
+	 * @return the properties that are locally defined for this record
 	 */
 	Map<String, String> getProperties();
 }

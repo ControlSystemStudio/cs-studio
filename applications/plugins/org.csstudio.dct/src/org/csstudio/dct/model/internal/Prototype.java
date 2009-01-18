@@ -16,14 +16,18 @@ import org.csstudio.dct.model.IVisitor;
  * 
  * @author Sven Wende
  */
-public class Prototype extends AbstractContainer implements IPrototype {
+public final class Prototype extends AbstractContainer implements IPrototype {
 	private List<Parameter> parameters;
 
+	/**
+	 * Constructor.
+	 * @param name the name
+	 * @param id the id
+	 */
 	public Prototype(String name, UUID id) {
 		super(name, null, id);
 		this.parameters = new ArrayList<Parameter>();
-	}	
-	
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -85,22 +89,29 @@ public class Prototype extends AbstractContainer implements IPrototype {
 
 		return result;
 	}
-	
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public boolean isInherited() {
+		return false;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void accept(IVisitor visitor) {
 		visitor.visit(this);
-		
-		for(IInstance instance : getInstances()) {
+
+		for (IInstance instance : getInstances()) {
 			instance.accept(visitor);
 		}
-		
-		for(IRecord record : getRecords()) {
+
+		for (IRecord record : getRecords()) {
 			record.accept(visitor);
 		}
 	}
-	
+
 	/**
 	 *{@inheritDoc}
 	 */
@@ -131,23 +142,29 @@ public class Prototype extends AbstractContainer implements IPrototype {
 		int result = super.hashCode();
 		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
 		return result;
-		
+
 	}
 
-
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getParameterValue(String key) {
 		return getParameterValues().get(key);
 	}
 
-
+	/**
+	 *{@inheritDoc}
+	 */
 	public boolean hasParameterValue(String key) {
-		return getParameterValues().get(key)!=null;
+		return getParameterValues().get(key) != null;
 	}
 
-
+	/**
+	 *{@inheritDoc}
+	 */
 	public void setParameterValue(String key, String value) {
-		for(Parameter p : parameters) {
-			if(key.equals(p.getName())) {
+		for (Parameter p : parameters) {
+			if (key.equals(p.getName())) {
 				p.setDefaultValue(value);
 			}
 		}

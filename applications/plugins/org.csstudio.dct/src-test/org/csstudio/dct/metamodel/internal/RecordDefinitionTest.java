@@ -8,7 +8,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.junit.Before;
@@ -20,7 +19,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class RecordDefinitionTest {
+public final class RecordDefinitionTest {
 
 	private RecordDefinition recordDefinition;
 	
@@ -43,7 +42,7 @@ public class RecordDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.RecordDefinition#RecordDefinition(java.lang.String)}.
 	 */
 	@Test
-	public final void testRecordDefinition() {
+	public void testRecordDefinition() {
 		assertEquals("ai", recordDefinition.getType());
 	}
 	
@@ -52,7 +51,7 @@ public class RecordDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.RecordDefinition#getFieldDefinitions(String)}.
 	 */
 	@Test
-	public final void testGetFieldDefinition() {
+	public void testGetFieldDefinition() {
 		Collection<IFieldDefinition> fields = recordDefinition.getFieldDefinitions();
 		assertEquals(fieldDefinition1, recordDefinition.getFieldDefinitions("SEVR"));
 		assertEquals(fieldDefinition2, recordDefinition.getFieldDefinitions("PREC"));
@@ -63,7 +62,7 @@ public class RecordDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.RecordDefinition#getFieldDefinitions()}.
 	 */
 	@Test
-	public final void testGetFieldDefinitions() {
+	public void testGetFieldDefinitions() {
 		Collection<IFieldDefinition> fields = recordDefinition.getFieldDefinitions();
 		assertEquals(2, fields.size());
 		assertTrue(fields.contains(fieldDefinition1));
@@ -75,7 +74,7 @@ public class RecordDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.RecordDefinition#addFieldDefinition(org.csstudio.dct.metamodel.IFieldDefinition)}.
 	 */
 		@Test
-		public final void testAddFieldDefinition() {
+		public void testAddFieldDefinition() {
 			IFieldDefinition def = new FieldDefinition("EGUL", "DBF_DOUBLE");
 			assertFalse(recordDefinition.getFieldDefinitions().contains(def));
 			recordDefinition.addFieldDefinition(def);
@@ -86,7 +85,7 @@ public class RecordDefinitionTest {
 		 * Test method for {@link org.csstudio.dct.metamodel.internal.RecordDefinition#removeFieldDefinition(org.csstudio.dct.metamodel.IFieldDefinition)}.
 		 */
 		@Test
-		public final void testRemoveFieldDefinition() {
+		public void testRemoveFieldDefinition() {
 			assertTrue(recordDefinition.getFieldDefinitions().contains(fieldDefinition1));
 			assertTrue(recordDefinition.getFieldDefinitions().contains(fieldDefinition2));
 			recordDefinition.removeFieldDefinition(fieldDefinition1);
@@ -100,7 +99,7 @@ public class RecordDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.RecordDefinition#getType()}.
 	 */
 	@Test
-	public final void testGetType() {
+	public void testGetType() {
 		assertEquals("ai", recordDefinition.getType());
 	}
 

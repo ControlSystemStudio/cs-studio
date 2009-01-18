@@ -13,7 +13,7 @@ import org.csstudio.dct.metamodel.IMenuDefinition;
  * @author Sven Wende
  * 
  */
-public class MenuDefinition implements IMenuDefinition {
+public final class MenuDefinition implements IMenuDefinition {
 
 	private String name;
 	private List<IChoice> choices;

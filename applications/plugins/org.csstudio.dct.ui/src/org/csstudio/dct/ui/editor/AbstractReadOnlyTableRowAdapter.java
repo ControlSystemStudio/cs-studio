@@ -6,6 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
+
 public class AbstractReadOnlyTableRowAdapter<E> extends AbstractTableRowAdapter<E>{
 
 	public AbstractReadOnlyTableRowAdapter(E delegate, CommandStack commandStack) {

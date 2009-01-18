@@ -17,7 +17,7 @@ import org.csstudio.dct.model.internal.Project;
  * @author swende
  * 
  */
-public class SearchVisitor implements IVisitor {
+public final class SearchVisitor implements IVisitor {
 	private UUID id;
 	private IElement result;
 

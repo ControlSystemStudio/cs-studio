@@ -31,7 +31,15 @@ public interface IElement {
 	 *            the name of the element
 	 */
 	void setName(String name);
+	
+	/**
+	 * Returns true, if this element is inherited. 
+	 * 
+	 * @return true, if this element is inherited
+	 */
+	boolean isInherited();
 
+	
 	/**
 	 * Accepts the specified visitor.
 	 * 

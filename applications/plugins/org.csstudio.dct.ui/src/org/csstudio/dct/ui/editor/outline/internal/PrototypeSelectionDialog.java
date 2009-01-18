@@ -23,8 +23,8 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
 import org.csstudio.dct.model.IFolder;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
-import org.csstudio.dct.model.internal.Project;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -47,7 +47,7 @@ public final class PrototypeSelectionDialog extends Dialog {
 	
 	private IPrototype selection;
 	
-	private Project project;
+	private IProject project;
 	
 	private TreeViewer treeViewer;
 	
@@ -69,7 +69,7 @@ public final class PrototypeSelectionDialog extends Dialog {
 	 *            (folders).
 	 */
 	public PrototypeSelectionDialog(final Shell parentShell,
-			final String dialogMessage, final Project project) {
+			final String dialogMessage, final IProject project) {
 		super(parentShell);
 		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
 				| SWT.BORDER | SWT.RESIZE);

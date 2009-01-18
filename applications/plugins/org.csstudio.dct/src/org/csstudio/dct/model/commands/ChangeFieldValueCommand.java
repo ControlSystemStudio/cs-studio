@@ -11,12 +11,18 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class ChangeFieldValueCommand extends Command {
+public final class ChangeFieldValueCommand extends Command {
 	private IRecord record;
 	private String key;
 	private Object value;
 	private Object oldValue;
 
+	/**
+	 * Constructor.
+	 * @param record the record
+	 * @param key the field name
+	 * @param value the field value
+	 */
 	public ChangeFieldValueCommand(IRecord record, String key, Object value) {
 		this.record = record;
 		this.key = key;

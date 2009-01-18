@@ -1,5 +1,6 @@
 package org.csstudio.dct.model;
 
+import java.util.List;
 import java.util.Map;
 
 import org.csstudio.dct.metamodel.IRecordDefinition;
@@ -10,8 +11,15 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
  * @author Sven Wende
  * 
  */
-public interface IRecord extends IPropertyContainer, IRecordParent {
+public interface IRecord extends IPropertyContainer, IElement {
 
+	/**
+	 * Returns the EPICs name from the record hierarchy.
+	 * @deprecated Use Util instead.
+	 * @return the EPICs name from the record hierarchy
+	 */
+	String getEpicsNameFromHierarchy();
+	
 	/**
 	 * Returns the parent. The parent is the super object, this record derives
 	 * from.
@@ -28,7 +36,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	IContainer getContainer();
 
 	/**
-	 * Sets the physical container
+	 * Sets the physical container.
 	 * 
 	 * @param container
 	 *            the physical container
@@ -44,25 +52,18 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	boolean isAbstract();
 
 	/**
-	 * Returns true, if this record is inherited. A record is inherited, when it
-	 * is backed by record in a prototype.
+	 * Returns the EPICS name.
 	 * 
-	 * @return true, if this record is inherited
+	 * @return the EPICS name
 	 */
-	boolean isInherited();
-
+	String getEpicsName();
+	
 	/**
-	 * Returns the name for this record that arises from the record hierarchy.
-	 * The delivered name can be defined on this record directly or is inherited
-	 * from one of its parents.
-	 * 
-	 * Don´t mix this with #getName() which delivers the name that is locally
-	 * defined (can be null).
-	 * 
-	 * @return the record name as it is inherited from the hierarchy
+	 * Sets the EPICS name
+	 * @param epicsName the EPICS name
 	 */
-	String getNameFromHierarchy();
-
+	void setEpicsName(String epicsName);
+	
 	/**
 	 * Returns the record type.
 	 * 
@@ -115,7 +116,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * been stored with this record. If you want an aggregate view you have to
 	 * use {@link #getFinalFields()}.
 	 * 
-	 * @return
+	 * @return the properties that are locally defined for this record
 	 */
 	Map<String, String> getProperties();
 
@@ -156,7 +157,7 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 * been stored with this record. If you want an aggregate view you have to
 	 * use {@link #getFinalFields()}.
 	 * 
-	 * @return
+	 * @return the fields that are locally defined for this record
 	 */
 	Map<String, Object> getFields();
 
@@ -176,6 +177,26 @@ public interface IRecord extends IPropertyContainer, IRecordParent {
 	 */
 	IRecordDefinition getRecordDefinition();
 
-	Map<String, String> getFinalParameterValues();
+	/**
+	 * Returns all records that inherit from this record.
+	 * 
+	 * @return all records that inherit from this record
+	 */
+	List<IRecord> getDependentRecords();
 
+	/**
+	 * Adds a record that inherits from this record.
+	 * 
+	 * @param record
+	 *            a record that inherits from this record
+	 */
+	void addDependentRecord(IRecord record);
+
+	/**
+	 * Removes a record that inherits from this record.
+	 * 
+	 * @param record
+	 *            a record that inherits from this record
+	 */
+	void removeDependentRecord(IRecord record);
 }

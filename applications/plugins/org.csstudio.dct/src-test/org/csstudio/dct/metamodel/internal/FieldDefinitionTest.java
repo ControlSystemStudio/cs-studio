@@ -15,9 +15,9 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class FieldDefinitionTest {
+public final class FieldDefinitionTest {
 
-	FieldDefinition fieldDefinition;
+	private FieldDefinition fieldDefinition;
 
 	/**
 	 * @throws java.lang.Exception
@@ -32,7 +32,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#FieldDefinition(java.lang.String, java.lang.String)}.
 	 */
 	@Test
-	public final void testFieldDefinition() {
+	public void testFieldDefinition() {
 		assertEquals("DBF_SHORT", fieldDefinition.getType());
 		assertEquals("PREC", fieldDefinition.getName());
 	}
@@ -42,7 +42,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getExtra()}.
 	 */
 	@Test
-	public final void testGetSetExtra() {
+	public void testGetSetExtra() {
 		assertNull(fieldDefinition.getExtra());
 		String extra = "epicsMutexId	mlok";
 		fieldDefinition.setExtra(extra);
@@ -55,7 +55,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getInitial()}.
 	 */
 	@Test
-	public final void testGetSetInitial() {
+	public void testGetSetInitial() {
 		assertNull(fieldDefinition.getInitial());
 		String initial = "1";
 		fieldDefinition.setInitial(initial);
@@ -67,7 +67,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getInterest()}.
 	 */
 	@Test
-	public final void testGetSetInterest() {
+	public void testGetSetInterest() {
 		assertNull(fieldDefinition.getInterest());
 		String interest = "1";
 		fieldDefinition.setInterest(interest);
@@ -79,7 +79,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getMenu()}.
 	 */
 	@Test
-	public final void testGetSetMenu() {
+	public void testGetSetMenu() {
 		assertNull(fieldDefinition.getMenu());
 		MenuDefinition menu = new MenuDefinition("menu");
 		fieldDefinition.setMenuDefinition(menu);
@@ -92,7 +92,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getName()}.
 	 */
 	@Test
-	public final void testGetName() {
+	public void testGetName() {
 		assertEquals("PREC", fieldDefinition.getName());
 
 	}
@@ -102,7 +102,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getPrompt()}.
 	 */
 	@Test
-	public final void testGetSetPrompt() {
+	public void testGetSetPrompt() {
 		assertNull(fieldDefinition.getPrompt());
 		String prompt = "Access Security Group";
 		fieldDefinition.setPrompt(prompt);
@@ -115,7 +115,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getPromptGroup()}.
 	 */
 	@Test
-	public final void testGetSetPromptGroup() {
+	public void testGetSetPromptGroup() {
 		assertNull(fieldDefinition.getPromptGroup());
 		String promptgroup = "GUI_COMMON";
 		fieldDefinition.setPromptGroup(promptgroup);
@@ -127,7 +127,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getSize()}.
 	 */
 	@Test
-	public final void testGetSetSize() {
+	public void testGetSetSize() {
 		assertNull(fieldDefinition.getSize());
 		String size = "29";
 		fieldDefinition.setSize(size);
@@ -140,7 +140,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getSpecial()}.
 	 */
 	@Test
-	public final void testGetSetSpecial() {
+	public void testGetSetSpecial() {
 		assertNull(fieldDefinition.getSpecial());
 		String special = "SPC_NOMOD";
 		fieldDefinition.setSpecial(special);
@@ -153,7 +153,7 @@ public class FieldDefinitionTest {
 	 * {@link org.csstudio.dct.metamodel.internal.FieldDefinition#getType()}.
 	 */
 	@Test
-	public final void testGetType() {
+	public void testGetType() {
 		assertEquals("DBF_SHORT", fieldDefinition.getType());
 	}
 

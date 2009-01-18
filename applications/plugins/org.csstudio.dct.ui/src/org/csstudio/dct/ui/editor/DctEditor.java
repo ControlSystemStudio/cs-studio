@@ -13,13 +13,14 @@ import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.visitors.ProblemVisitor;
 import org.csstudio.dct.model.visitors.SearchVisitor;
-import org.csstudio.dct.model.visitors.ProblemVisitor.Error;
+import org.csstudio.dct.model.visitors.ProblemVisitor.MarkableError;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -88,7 +89,7 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 
 					// FIXME: Editing Components in Enumeration abspeichern und
 					// Code verschlanken!
-					if (o instanceof Project) {
+					if (o instanceof IProject) {
 						stackLayout.topControl = projectEditingComponent.getMainComposite();
 						projectEditingComponent.setInput(o);
 					} else if (o instanceof IFolder) {
@@ -200,10 +201,11 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 	 * checks that the input is an instance of <code>IFileEditorInput</code>.
 	 */
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
-		if (!(editorInput instanceof IFileEditorInput))
+		if (!(editorInput instanceof IFileEditorInput)) {
 			throw new PartInitException("Invalid Input: Must be IFileEditorInput");
+		}
 		super.init(site, editorInput);
-		
+
 		IFile file = ((IFileEditorInput) editorInput).getFile();
 
 		// .. set editor title
@@ -297,15 +299,16 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 
 	public void commandStackChanged(EventObject event) {
 		firePropertyChange(PROP_DIRTY);
-		// FIXME: Auskommentieren, wenn Markierung nach jeder Änderung gewünscht und performant genug!!
-//		markErrors();
+		// FIXME: Auskommentieren, wenn Markierung nach jeder Änderung gewünscht
+		// und performant genug!!
+		// markErrors();
 	}
 
 	private void markErrors() {
 		// .. find problems
 		ProblemVisitor visitor = new ProblemVisitor();
 		getProject().accept(visitor);
-		Set<Error> errors = visitor.getErrors();
+		Set<MarkableError> errors = visitor.getErrors();
 
 		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 
@@ -314,7 +317,7 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 			file.deleteMarkers(IMarker.PROBLEM, true, 1);
 
 			// .. add new markers
-			for (Error e : errors) {
+			for (MarkableError e : errors) {
 				IMarker marker = file.createMarker(IMarker.PROBLEM);
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
 				marker.setAttribute(IMarker.LOCATION, e.getId().toString());
@@ -342,19 +345,18 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 			if (element instanceof IRecord) {
 				IRecord record = (IRecord) element;
 				findPathToRoot(record.getContainer(), path);
-			} else if(element instanceof IContainer) {
+			} else if (element instanceof IContainer) {
 				IContainer container = (IContainer) element;
-				
-				if(container.getContainer()!=null) {
+
+				if (container.getContainer() != null) {
 					findPathToRoot(container.getContainer(), path);
 				} else {
 					findPathToRoot(container.getParentFolder(), path);
 				}
-			} else if(element instanceof IFolder) {
+			} else if (element instanceof IFolder) {
 				IFolder folder = (IFolder) element;
 				findPathToRoot(folder.getParentFolder(), path);
 			}
 		}
 	}
-
 }

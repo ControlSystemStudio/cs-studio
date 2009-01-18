@@ -4,37 +4,62 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
 
+/**
+ * Base class for actions that deal with the command stack of a DCT editor
+ * (Undo/Redo).
+ * 
+ * @author Sven Wende
+ * 
+ */
 public abstract class AbstractCommandStackAction extends AbstractDctEditorAction implements CommandStackEventListener {
 	private CommandStack commandStack;
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
-	protected void activeEditorChanged(DctEditor editor) {
+	protected final void activeEditorChanged(DctEditor editor) {
 		if (commandStack != null) {
 			commandStack.removeCommandStackEventListener(this);
 		}
 
 		commandStack = editor.getCommandStack();
 		commandStack.addCommandStackEventListener(this);
-		
-		getProxyAction().setEnabled(isActionEnabled(commandStack));
-	}
 
-	public void run(IAction action) {
-		doRun(commandStack);
+		getActionProxy().setEnabled(isActionEnabled(commandStack));
 	}
-
-	protected abstract void doRun(CommandStack commandStack);
-	
-	protected abstract boolean isActionEnabled(CommandStack commandStack);
 
 	/**
 	 *{@inheritDoc}
 	 */
-	public void stackChanged(CommandStackEvent event) {
-		getProxyAction().setEnabled(isActionEnabled(commandStack));
+	public final void run(IAction action) {
+		doRun(commandStack);
 	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public final void stackChanged(CommandStackEvent event) {
+		getActionProxy().setEnabled(isActionEnabled(commandStack));
+	}
+
+	/**
+	 * Template method which is called when the action is executed.
+	 * 
+	 * @param commandStack
+	 *            the command stack
+	 */
+	protected abstract void doRun(CommandStack commandStack);
+
+	/**
+	 * Template method. Inheriting classes must return the action enabled
+	 * state.
+	 * 
+	 * @param commandStack
+	 *            the command stack
+	 * @return true, if the action is enabled, false otherwise
+	 */
+	protected abstract boolean isActionEnabled(CommandStack commandStack);
+
 }

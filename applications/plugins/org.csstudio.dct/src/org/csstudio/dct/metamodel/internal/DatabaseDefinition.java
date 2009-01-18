@@ -8,19 +8,21 @@ import java.util.Map;
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
 
-
 /**
  * Standard implementation of {@link IDatabaseDefinition}.
  * 
  * @author Sven Wende
  * 
  */
-public class DatabaseDefinition implements IDatabaseDefinition {
+public final class DatabaseDefinition implements IDatabaseDefinition {
 	private Map<String, IRecordDefinition> recordDefinitions;
 	private String dbdVersion;
-	
+
 	/**
 	 * Constructor.
+	 * 
+	 * @param dbdVersion
+	 *            the dbd version
 	 */
 	public DatabaseDefinition(String dbdVersion) {
 		assert dbdVersion != null;
@@ -41,7 +43,7 @@ public class DatabaseDefinition implements IDatabaseDefinition {
 	public IRecordDefinition getRecordDefinition(String recordType) {
 		return recordDefinitions.get(recordType);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -55,7 +57,7 @@ public class DatabaseDefinition implements IDatabaseDefinition {
 	public void removeRecordDefinition(IRecordDefinition recordDefinition) {
 		recordDefinitions.remove(recordDefinition.getType());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

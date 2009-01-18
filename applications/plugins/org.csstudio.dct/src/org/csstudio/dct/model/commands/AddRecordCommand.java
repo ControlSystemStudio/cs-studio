@@ -2,19 +2,23 @@ package org.csstudio.dct.model.commands;
 
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.IRecordContainer;
 
 /**
- * Command that adds a {@link IRecord} to a {@link IRecordContainer}.
+ * Command that adds a {@link IRecord} to a container.
  * 
  * @author Sven Wende
  * 
  */
-public class AddRecordCommand extends AbstractRecordCommand {
+public final class AddRecordCommand extends AbstractRecordCommand {
 
 	private IContainer container;
 	private IRecord record;
 
+	/**
+	 * Constructor.
+	 * @param container the record container
+	 * @param record the record
+	 */
 	public AddRecordCommand(IContainer container, IRecord record) {
 		this.container = container;
 		this.record = record;

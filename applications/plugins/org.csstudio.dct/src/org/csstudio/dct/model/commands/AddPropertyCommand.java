@@ -11,7 +11,7 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class AddPropertyCommand extends Command {
+public final class AddPropertyCommand extends Command {
 	private IPropertyContainer container;
 	private String key;
 	/**

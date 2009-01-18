@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class ChangeFieldValueCommandTest extends AbstractCommandTest{
+public final class ChangeFieldValueCommandTest extends AbstractCommandTest{
 	private IRecord record;
 
 	/**	
@@ -26,7 +26,7 @@ public class ChangeFieldValueCommandTest extends AbstractCommandTest{
 	 */
 	@Before
 	public void doSetUp() throws Exception {
-		record = RecordFactory.createRecord(project, "ai", "test", UUID.randomUUID());
+		record = RecordFactory.createRecord(getProject(), "ai", "test", UUID.randomUUID());
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class ChangeFieldValueCommandTest extends AbstractCommandTest{
 	 * .
 	 */
 	@Test
-	public final void testExecute() {
+	public void testExecute() {
 		String id = "test";
 		String value = "a";
 		String newValue = "b";

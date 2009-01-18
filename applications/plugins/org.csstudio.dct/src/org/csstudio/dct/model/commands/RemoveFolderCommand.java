@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui.editor.outline.internal;
+package org.csstudio.dct.model.commands;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
@@ -10,7 +10,7 @@ import org.eclipse.gef.commands.Command;
  * @author Sven Wende
  * 
  */
-public class RemoveFolderCommand extends Command implements ISelectAfterExecution {
+public final class RemoveFolderCommand extends Command implements ISelectAfterExecution {
 	private IFolder folder;
 	private IFolder container;
 

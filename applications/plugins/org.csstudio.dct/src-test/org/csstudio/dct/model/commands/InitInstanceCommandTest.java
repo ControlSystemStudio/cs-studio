@@ -1,33 +1,16 @@
 package org.csstudio.dct.model.commands;
 
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.commands.AddInstanceCommand;
-import org.csstudio.dct.model.commands.AddRecordCommand;
-import org.csstudio.dct.model.commands.InitInstanceCommand;
-import org.csstudio.dct.model.internal.Instance;
-import org.csstudio.dct.model.internal.Prototype;
-import static org.junit.Assert.*;
-
-import java.util.List;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Prototype;
-import org.csstudio.dct.model.internal.Record;
 import org.csstudio.dct.model.internal.RecordFactory;
-import org.junit.Before;
-import org.junit.Test;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,9 +18,9 @@ import org.junit.Test;
  * Test class for {@link InitInstanceCommand}.
  * 
  * @author Sven Wende
- *
+ * 
  */
-public class InitInstanceCommandTest extends AbstractCommandTest{
+public final class InitInstanceCommandTest extends AbstractCommandTest {
 	private Prototype prototypeA;
 	private Prototype prototypeB;
 	private IRecord recordA;
@@ -45,29 +28,33 @@ public class InitInstanceCommandTest extends AbstractCommandTest{
 	private IInstance instanceA;
 	private IInstance instanceB;
 	private InitInstanceCommand command;
-	
+
+	/**
+	 *{@inheritDoc}
+	 */
 	@Before
 	public void doSetUp() throws Exception {
 		prototypeA = new Prototype("A", UUID.randomUUID());
 		prototypeB = new Prototype("B", UUID.randomUUID());
-	
-		recordA = RecordFactory.createRecord(project, "ai", "rA", UUID.randomUUID());
+
+		recordA = RecordFactory.createRecord(getProject(), "ai", "rA", UUID.randomUUID());
 		new AddRecordCommand(prototypeA, recordA).execute();
-		recordB = RecordFactory.createRecord(project, "ai", "rB", UUID.randomUUID());
+		recordB = RecordFactory.createRecord(getProject(), "ai", "rB", UUID.randomUUID());
 		new AddRecordCommand(prototypeB, recordB).execute();
-		
+
 		instanceA = new Instance(prototypeA, UUID.randomUUID());
 		new AddInstanceCommand(prototypeB, instanceA).execute();
-		
+
 		instanceB = new Instance(prototypeB, UUID.randomUUID());
 		command = new InitInstanceCommand(instanceB);
 	}
-	
+
 	/**
-	 * Test method for {@link org.csstudio.dct.model.commands.InitInstanceCommand#execute()}.
+	 * Test method for
+	 * {@link org.csstudio.dct.model.commands.InitInstanceCommand#execute()}.
 	 */
 	@Test
-	public final void testExecute() {
+	public void testExecute() {
 		verifyAlways();
 		verifyBeforeCommandExecution();
 		command.execute();
@@ -77,7 +64,7 @@ public class InitInstanceCommandTest extends AbstractCommandTest{
 		verifyAlways();
 		verifyBeforeCommandExecution();
 	}
-	
+
 	private void verifyAlways() {
 		assertNotNull(prototypeA);
 		assertNotNull(prototypeB);
@@ -99,7 +86,7 @@ public class InitInstanceCommandTest extends AbstractCommandTest{
 		assertEquals(recordA, instanceA.getRecords().get(0).getParentRecord());
 		assertEquals(0, instanceA.getInstances().size());
 	}
-	
+
 	private void verifyBeforeCommandExecution() {
 		assertEquals(0, instanceB.getRecords().size());
 		assertEquals(0, instanceB.getInstances().size());
@@ -111,7 +98,5 @@ public class InitInstanceCommandTest extends AbstractCommandTest{
 		assertEquals(1, instanceB.getInstances().size());
 		assertEquals(instanceA, instanceB.getInstance(0).getParent());
 	}
-
-
 
 }

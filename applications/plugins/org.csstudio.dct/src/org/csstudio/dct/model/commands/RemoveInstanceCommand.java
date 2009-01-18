@@ -13,12 +13,16 @@ import org.eclipse.gef.commands.CompoundCommand;
  * @author Sven Wende
  * 
  */
-public class RemoveInstanceCommand extends Command {
+public final class RemoveInstanceCommand extends Command {
 	private CompoundCommand internalCommand;
-	protected IContainer container;
-	protected IFolder folder;
-	protected IInstance instance;
+	private IContainer container;
+	private IFolder folder;
+	private IInstance instance;
 
+	/**
+	 * Constructor.
+	 * @param instance the instance
+	 */
 	public RemoveInstanceCommand(IInstance instance) {
 		assert instance != null;
 		assert instance.getParentFolder() != null || instance.getContainer() != null;

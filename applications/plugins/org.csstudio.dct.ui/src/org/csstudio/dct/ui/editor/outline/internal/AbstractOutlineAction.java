@@ -1,7 +1,8 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.IProject;
+import org.csstudio.dct.model.commands.ISelectAfterExecution;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.action.IAction;
@@ -66,8 +67,8 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 
 	protected abstract Command createCommand(IElement selection);
 
-	protected Project getProject() {
-		Project result = null;
+	protected IProject getProject() {
+		IProject result = null;
 		IPage currentPage = outlineView.getCurrentPage();
 
 		if (currentPage instanceof OutlinePage) {

@@ -9,7 +9,7 @@ import org.csstudio.dct.model.commands.ChangePropertyValueCommand;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -43,7 +43,7 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	protected RGB doGetForegroundColorForValue(IPropertyContainer delegate) {
 		Map<String, String> localProperties = delegate.getProperties();
 		boolean inherited = !localProperties.containsKey(propertyKey);
-		RGB rgb = inherited ? ColorSettings.INHERITED_RECORD_FIELD_VALUE : ColorSettings.OVERRIDDEN_RECORD_FIELD_VALUE;
+		RGB rgb = inherited ? ColorSettings.INHERITED_VALUE : ColorSettings.OVERRIDDEN_VALUE;
 		return rgb;
 	}
 
@@ -82,7 +82,7 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 			String input = delegate.getFinalProperties().get(propertyKey).toString();
 
 			//FIXME: Harten Cast auflösen!
-			result = AliasResolutionUtil.resolve(input, (IElement) delegate);
+			result = ResolutionUtil.resolve(input, (IElement) delegate);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

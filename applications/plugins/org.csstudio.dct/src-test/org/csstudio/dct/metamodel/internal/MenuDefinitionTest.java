@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class MenuDefinitionTest {
+public final class MenuDefinitionTest {
 
 	private MenuDefinition menuDefinition;
 	private IChoice yesChoice;
@@ -41,7 +41,7 @@ public class MenuDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.MenuDefinition#getChoices()}.
 	 */
 	@Test
-	public final void testGetChoices() {
+	public void testGetChoices() {
 		List<IChoice> choices = menuDefinition.getChoices();
 		assertEquals(2, choices.size());
 		assertTrue(choices.contains(yesChoice));
@@ -52,7 +52,7 @@ public class MenuDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.MenuDefinition#addChoice(org.csstudio.dct.metamodel.IChoice)}.
 	 */
 	@Test
-	public final void testAddChoice() {
+	public void testAddChoice() {
 		IChoice maybeChoice = new Choice("menuYesNoMAYBE", "Maybe");
 		assertFalse(menuDefinition.getChoices().contains(maybeChoice));
 		menuDefinition.addChoice(maybeChoice);
@@ -63,7 +63,7 @@ public class MenuDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.MenuDefinition#removeChoice(org.csstudio.dct.metamodel.IChoice)}.
 	 */
 	@Test
-	public final void testRemoveChoice() {
+	public void testRemoveChoice() {
 		assertTrue(menuDefinition.getChoices().contains(yesChoice));
 		assertTrue(menuDefinition.getChoices().contains(noChoice));
 		menuDefinition.removeChoice(yesChoice);
@@ -75,7 +75,7 @@ public class MenuDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.MenuDefinition#getName()}.
 	 */
 	@Test
-	public final void testGetName() {
+	public void testGetName() {
 		assertEquals("menuYesNo", menuDefinition.getName());
 	}
 

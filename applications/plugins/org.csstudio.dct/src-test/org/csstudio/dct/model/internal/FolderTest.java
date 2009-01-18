@@ -3,14 +3,20 @@
  */
 package org.csstudio.dct.model.internal;
 
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.reset;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
-import org.csstudio.dct.model.internal.Folder;
 import org.junit.Before;
 import org.junit.Test;
-import static org.easymock.classextension.EasyMock.*;
 
 /**
  * Test cases for {@link Folder}.
@@ -18,7 +24,7 @@ import static org.easymock.classextension.EasyMock.*;
  * @author Sven Wende
  * 
  */
-public class FolderTest {
+public final class FolderTest {
 	private Folder folder;
 	private IFolderMember member1;
 	private IFolderMember member2;
@@ -32,8 +38,15 @@ public class FolderTest {
 		folder = new Folder("test");
 		member1 = createMock(IFolderMember.class);
 		member2 = createMock(IFolderMember.class);
+		expect(member1.getParentFolder()).andReturn(null).anyTimes();
+		expect(member2.getParentFolder()).andReturn(null).anyTimes();
+		replay(member1, member2);
 		folder.addMember(member1);
 		folder.addMember(member2);
+		reset(member1, member2);
+		expect(member1.getParentFolder()).andReturn(folder).anyTimes();
+		expect(member2.getParentFolder()).andReturn(folder).anyTimes();
+		replay(member1, member2);
 		parent = createMock(IFolder.class);
 		folder.setParentFolder(parent);
 	}
@@ -42,7 +55,7 @@ public class FolderTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Folder#getMembers()}.
 	 */
 	@Test
-	public final void testGetMembers() {
+	public void testGetMembers() {
 		assertEquals(2, folder.getMembers().size());
 		assertTrue(folder.getMembers().contains(member1));
 		assertTrue(folder.getMembers().contains(member2));
@@ -53,7 +66,7 @@ public class FolderTest {
 	 * {@link org.csstudio.dct.model.internal.Folder#addMember(org.csstudio.dct.model.IFolderMember)}.
 	 */
 	@Test
-	public final void testAddMemberIFolderMember() {
+	public void testAddMemberIFolderMember() {
 		IFolderMember member3 = createMock(IFolderMember.class);
 
 		assertFalse(folder.getMembers().contains(member3));
@@ -67,7 +80,7 @@ public class FolderTest {
 	 * {@link org.csstudio.dct.model.internal.Folder#addMember(int, org.csstudio.dct.model.IFolderMember)}.
 	 */
 	@Test
-	public final void testAddMemberIntIFolderMember() {
+	public void testAddMemberIntIFolderMember() {
 		IFolderMember member3 = createMock(IFolderMember.class);
 
 		assertFalse(folder.getMembers().contains(member3));
@@ -81,7 +94,7 @@ public class FolderTest {
 	 * {@link org.csstudio.dct.model.internal.Folder#removeMember(org.csstudio.dct.model.IFolderMember)}.
 	 */
 	@Test
-	public final void testRemoveMemberIFolderMember() {
+	public void testRemoveMemberIFolderMember() {
 		folder.removeMember(member1);
 		folder.removeMember(member2);
 		assertTrue(folder.getMembers().isEmpty());
@@ -92,7 +105,7 @@ public class FolderTest {
 	 * {@link org.csstudio.dct.model.internal.Folder#removeMember(int)}.
 	 */
 	@Test
-	public final void testRemoveMemberInt() {
+	public void testRemoveMemberInt() {
 		folder.removeMember(1);
 		assertTrue(folder.getMembers().contains(member1));
 		assertFalse(folder.getMembers().contains(member2));
@@ -103,7 +116,7 @@ public class FolderTest {
 	 * {@link org.csstudio.dct.model.internal.Folder#getParentFolder()}.
 	 */
 	@Test
-	public final void testGetParentFolder() {
+	public void testGetParentFolder() {
 		assertEquals(parent, folder.getParentFolder());
 	}
 
@@ -112,7 +125,7 @@ public class FolderTest {
 	 * {@link org.csstudio.dct.model.internal.Folder#setParentFolder(org.csstudio.dct.model.IFolder)}.
 	 */
 	@Test
-	public final void testSetParentFolder() {
+	public void testSetParentFolder() {
 		assertEquals(parent, folder.getParentFolder());
 		folder.setParentFolder(null);
 		assertNull(folder.getParentFolder());

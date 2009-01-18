@@ -14,6 +14,7 @@ import org.csstudio.dct.metamodel.internal.MenuDefinition;
 import org.csstudio.dct.metamodel.internal.RecordDefinition;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.persistence.IPersistenceService;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -22,6 +23,8 @@ import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
+import com.cosylab.vdct.Console;
+import com.cosylab.vdct.ConsoleInterface;
 import com.cosylab.vdct.dbd.DBDData;
 import com.cosylab.vdct.dbd.DBDFieldData;
 import com.cosylab.vdct.dbd.DBDMenuData;
@@ -34,7 +37,7 @@ import com.cosylab.vdct.dbd.DBDResolver;
  * @author Sven Wende
  * 
  */
-public class PersistenceService implements IPersistenceService {
+public final class PersistenceService implements IPersistenceService {
 	/**
 	 *{@inheritDoc}
 	 */
@@ -104,6 +107,35 @@ public class PersistenceService implements IPersistenceService {
 	private IDatabaseDefinition doLoadDatabaseDefinition(String path) {
 		DatabaseDefinition databaseDefinition = new DatabaseDefinition("1.0");
 
+		// .. redirect the VDCT console
+		Console.setInstance(new ConsoleInterface() {
+
+			public void flush() {
+				
+			}
+
+			public void print(String text) {
+				CentralLogger.getInstance().info(null, text);
+			}
+
+			public void println() {
+				CentralLogger.getInstance().info(null, "\r\n");
+			}
+
+			public void println(String text) {
+				CentralLogger.getInstance().info(null, text);				
+			}
+
+			public void println(Throwable thr) {
+				CentralLogger.getInstance().error(null, thr);
+			}
+
+			public void silent(String text) {
+				CentralLogger.getInstance().debug(null, text);
+			}
+			
+		});
+		
 		// .. use the VDCT parser
 		DBDData data = new DBDData();
 		DBDResolver.resolveDBD(data, path);
@@ -126,6 +158,9 @@ public class PersistenceService implements IPersistenceService {
 
 				FieldDefinition fieldDefinition = new FieldDefinition(fieldName, DBDResolver.getFieldType(fieldData.getField_type()));
 
+				// .. initial value
+				fieldDefinition.setInitial(fieldData.getInit_value());
+
 				// .. prompt
 				fieldDefinition.setPrompt(fieldData.getPrompt_value());
 
@@ -142,7 +177,6 @@ public class PersistenceService implements IPersistenceService {
 						menuDefinition.addChoice(new Choice(choiceId, description));
 					}
 
-					System.err.println(fieldDefinition.getName());
 					fieldDefinition.setMenuDefinition(menuDefinition);
 				}
 

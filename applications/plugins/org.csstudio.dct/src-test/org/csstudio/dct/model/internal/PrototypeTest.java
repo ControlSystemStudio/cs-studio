@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IPrototype;
-import org.csstudio.dct.model.internal.Parameter;
-import org.csstudio.dct.model.internal.Prototype;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,11 +21,11 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class PrototypeTest {
-	IPrototype prototype;
-	Parameter parameter1;
-	Parameter parameter2;
-	Parameter parameter3;
+public final class PrototypeTest {
+	private IPrototype prototype;
+	private Parameter parameter1;
+	private Parameter parameter2;
+	private Parameter parameter3;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -47,7 +45,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#equals()}.
 	 */
 	@Test
-	public final void testEquals() {
+	public void testEquals() {
 		Prototype p1 = new Prototype("p", UUID.randomUUID());
 		Prototype p2 = new Prototype("p", UUID.randomUUID());
 		
@@ -92,7 +90,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#getParameters()}.
 	 */
 	@Test
-	public final void testGetParameters() {
+	public void testGetParameters() {
 		assertEquals(2, prototype.getParameters().size());
 		assertEquals(parameter1, prototype.getParameters().get(0));
 		assertEquals(parameter2, prototype.getParameters().get(1));
@@ -102,7 +100,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#addParameter(org.csstudio.dct.model.internal.Parameter)}.
 	 */
 	@Test
-	public final void testAddParameterParameter() {
+	public void testAddParameterParameter() {
 		prototype.addParameter(parameter3);
 		assertEquals(3, prototype.getParameters().size());
 		assertEquals(parameter1, prototype.getParameters().get(0));
@@ -114,7 +112,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#addParameter(int, org.csstudio.dct.model.internal.Parameter)}.
 	 */
 	@Test
-	public final void testAddParameterIntParameter() {
+	public void testAddParameterIntParameter() {
 		prototype.addParameter(1, parameter3);
 		assertEquals(3, prototype.getParameters().size());
 		assertEquals(parameter1, prototype.getParameters().get(0));
@@ -126,7 +124,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#removeParameter(org.csstudio.dct.model.internal.Parameter)}.
 	 */
 	@Test
-	public final void testRemoveParameterParameter() {
+	public void testRemoveParameterParameter() {
 		prototype.removeParameter(parameter2);
 		assertEquals(1, prototype.getParameters().size());
 		assertEquals(parameter1, prototype.getParameters().get(0));
@@ -136,7 +134,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#removeParameter(int)}.
 	 */
 	@Test
-	public final void testRemoveParameterInt() {
+	public void testRemoveParameterInt() {
 		prototype.removeParameter(1);
 		assertEquals(1, prototype.getParameters().size());
 		assertEquals(parameter1, prototype.getParameters().get(0));
@@ -146,7 +144,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#hasParameter(java.lang.String)}.
 	 */
 	@Test
-	public final void testHasParameter() {
+	public void testHasParameter() {
 		assertTrue(prototype.hasParameter("p1"));
 		assertFalse(prototype.hasParameter("xx"));
 	}
@@ -155,7 +153,7 @@ public class PrototypeTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Prototype#getParameterValues()}.
 	 */
 	@Test
-	public final void testGetParameterValues() {
+	public void testGetParameterValues() {
 		Map<String, String> values = prototype.getParameterValues();
 		
 		assertEquals(2, values.size());

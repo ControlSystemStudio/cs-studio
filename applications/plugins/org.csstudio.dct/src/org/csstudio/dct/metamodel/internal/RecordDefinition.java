@@ -14,7 +14,7 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
  * @author Sven Wende
  * 
  */
-public class RecordDefinition implements IRecordDefinition {
+public final class RecordDefinition implements IRecordDefinition {
 	private String type;
 	private Map<String, IFieldDefinition> fieldDefinitions;
 

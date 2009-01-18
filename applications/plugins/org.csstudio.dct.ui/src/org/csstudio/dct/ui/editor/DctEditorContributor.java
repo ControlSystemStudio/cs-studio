@@ -45,8 +45,9 @@ public class DctEditorContributor extends MultiPageEditorActionBarContributor {
 	 */
 
 	public void setActivePage(IEditorPart part) {
-		if (activeEditorPart == part)
+		if (activeEditorPart == part) {
 			return;
+		}
 
 		activeEditorPart = part;
 

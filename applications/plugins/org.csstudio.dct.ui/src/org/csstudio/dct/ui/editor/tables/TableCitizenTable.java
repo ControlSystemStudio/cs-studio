@@ -275,7 +275,7 @@ public class TableCitizenTable extends BaseTable<List<ITableRow>> {
 		}
 	}
 
-	private static class SetValueCommand extends Command {
+	private static final class SetValueCommand extends Command {
 		private ITableRow delegate;
 		private Object value;
 		private Object oldValue;

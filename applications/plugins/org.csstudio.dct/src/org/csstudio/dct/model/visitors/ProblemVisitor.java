@@ -2,19 +2,20 @@ package org.csstudio.dct.model.visitors;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.model.internal.Project;
-import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.AliasResolutionException;
+import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.util.StringUtil;
 
 /**
@@ -24,16 +25,16 @@ import org.csstudio.platform.util.StringUtil;
  * @author Sven Wende
  * 
  */
-public class ProblemVisitor implements IVisitor {
-	private Map<String, Set<UUID>> finalRecordNames;
-	private Set<Error> errors;
+public final class ProblemVisitor implements IVisitor {
+	private Map<String, Set<UUID>> finalEpicsNames;
+	private Set<MarkableError> errors;
 
 	/**
 	 * Constructor.
 	 */
 	public ProblemVisitor() {
-		errors = new HashSet<Error>();
-		finalRecordNames = new HashMap<String, Set<UUID>>();
+		errors = new HashSet<MarkableError>();
+		finalEpicsNames = new HashMap<String, Set<UUID>>();
 	}
 
 	/**
@@ -41,7 +42,7 @@ public class ProblemVisitor implements IVisitor {
 	 */
 	public void visit(Project project) {
 		if (!StringUtil.hasLength(project.getDbdPath())) {
-			errors.add(new Error(project.getId(), "No DBD file specified for project."));
+			errors.add(new MarkableError(project.getId(), "No DBD file specified for project."));
 		}
 	}
 
@@ -71,26 +72,26 @@ public class ProblemVisitor implements IVisitor {
 	 */
 	public void visit(IRecord record) {
 		// .. check name resolution
-		Set<String> missing = determineMissingAliases(record.getNameFromHierarchy(), record);
+		Set<String> missing = determineMissingAliases(AliasResolutionUtil.getNameFromHierarchy(record), record);
 		if (!missing.isEmpty()) {
-			errors.add(new Error(record.getId(), "Parameters [" + StringUtil.toSeparatedString(missing, ",")
+			errors.add(new MarkableError(record.getId(), "Parameters [" + StringUtil.toSeparatedString(missing, ",")
 					+ "] in record name cannot be resolved."));
 		} else {
-			// .. check that final record names for concrete records are unique
+			// .. check that final EPICS names for concrete records are unique
 			// all over the project
 			if (!record.isAbstract()) {
 				try {
-					String finalName = AliasResolutionUtil.resolve(record.getNameFromHierarchy(), record);
+					String finalEpicsName = ResolutionUtil.resolve(record.getEpicsNameFromHierarchy(), record);
 
-					if (finalRecordNames.containsKey(finalName)) {
-						finalRecordNames.get(finalName).add(record.getId());
+					if (finalEpicsNames.containsKey(finalEpicsName)) {
+						finalEpicsNames.get(finalEpicsName).add(record.getId());
 
-						for (UUID id : finalRecordNames.get(finalName)) {
-							errors.add(new Error(id, "Record name \"" + finalName + "\" is not unique."));
+						for (UUID id : finalEpicsNames.get(finalEpicsName)) {
+							errors.add(new MarkableError(id, "Record name \"" + finalEpicsName + "\" is not unique."));
 						}
 					} else {
-						finalRecordNames.put(finalName, new HashSet<UUID>());
-						finalRecordNames.get(finalName).add(record.getId());
+						finalEpicsNames.put(finalEpicsName, new HashSet<UUID>());
+						finalEpicsNames.get(finalEpicsName).add(record.getId());
 					}
 
 				} catch (Exception e) {
@@ -104,9 +105,9 @@ public class ProblemVisitor implements IVisitor {
 
 		for (String key : fields.keySet()) {
 			try {
-				AliasResolutionUtil.resolve((String) fields.get(key), record);
+				ResolutionUtil.resolve((String) fields.get(key), record);
 			} catch (AliasResolutionException e) {
-				errors.add(new Error(record.getId(), "Resolution error:" + e.getMessage()));
+				errors.add(new MarkableError(record.getId(), "Resolution error:" + e.getMessage()));
 			}
 		}
 	}
@@ -116,7 +117,7 @@ public class ProblemVisitor implements IVisitor {
 	 * 
 	 * @return all discovered errors
 	 */
-	public Set<Error> getErrors() {
+	public Set<MarkableError> getErrors() {
 		return errors;
 	}
 
@@ -134,7 +135,7 @@ public class ProblemVisitor implements IVisitor {
 		Map<String, String> aliases = AliasResolutionUtil.getFinalAliases(record.getContainer());
 
 		if (StringUtil.hasLength(value)) {
-			List<String> required = AliasResolutionUtil.getRequiredAliasNames(value);
+			Set<String> required = DctActivator.getDefault().getFieldFunctionService().findRequiredVariables(value);
 
 			if (!required.isEmpty()) {
 				for (String r : required) {
@@ -154,7 +155,7 @@ public class ProblemVisitor implements IVisitor {
 	 * @author Sven Wende
 	 * 
 	 */
-	public static class Error {
+	public static final class MarkableError {
 		private UUID id;
 		private String message;
 
@@ -166,8 +167,9 @@ public class ProblemVisitor implements IVisitor {
 		 * @param message
 		 *            the error message
 		 */
-		private Error(UUID id, String message) {
-			super();
+		private MarkableError(UUID id, String message) {
+			assert id != null;
+			assert message != null;
 			this.id = id;
 			this.message = message;
 		}
@@ -207,24 +209,19 @@ public class ProblemVisitor implements IVisitor {
 		 */
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Error other = (Error) obj;
-			if (id == null) {
-				if (other.id != null)
-					return false;
-			} else if (!id.equals(other.id))
-				return false;
-			if (message == null) {
-				if (other.message != null)
-					return false;
-			} else if (!message.equals(other.message))
-				return false;
-			return true;
+			boolean result = false;
+			
+			if(obj instanceof MarkableError) {
+				MarkableError me = (MarkableError) obj;
+				
+				if(id.equals(me.id)) {
+					if(message.equals(me.message)) {
+						result = true;
+					}
+				}
+			}
+			
+			return result;
 		}
 
 	}

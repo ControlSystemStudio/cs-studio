@@ -11,7 +11,7 @@ import java.util.Set;
  * @author Sven Wende
  * 
  */
-public interface IContainer extends IFolderMember, IRecordContainer, IInstanceContainer, IPropertyContainer {
+public interface IContainer extends IFolderMember, IRecordContainer, IInstanceContainer, IPropertyContainer, IElement {
 	/**
 	 * Returns the physical container.
 	 * 

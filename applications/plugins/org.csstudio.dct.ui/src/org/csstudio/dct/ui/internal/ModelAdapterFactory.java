@@ -3,9 +3,9 @@ package org.csstudio.dct.ui.internal;
 import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.internal.Project;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -27,7 +27,7 @@ public class ModelAdapterFactory implements IAdapterFactory {
 		Object adapter = null;
 
 		if (adapterType == IWorkbenchAdapter.class || adapter == IWorkbenchAdapter2.class) {
-			if (adaptableObject instanceof Project) {
+			if (adaptableObject instanceof IProject) {
 				adapter = new ProjectWorkbenchAdapter();
 			} else if (adaptableObject instanceof IFolder) {
 				adapter = new FolderWorkbenchAdapter();

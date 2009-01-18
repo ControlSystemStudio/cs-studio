@@ -10,36 +10,49 @@ import org.csstudio.dct.metamodel.IDatabaseDefinition;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
 
 /**
  * Represents a project. A project is the root of the hierarchy.
  * 
- * TODO: Extract Interface
- * 
  * @author Sven Wende
  */
-public class Project extends Folder {
+public final class Project extends Folder implements IProject {
 	private transient Map<String, BaseRecord> baseRecords;
 	private transient IDatabaseDefinition databaseDefinition;
 	
 	private String path;
 	private String ioc;
 
+	/**
+	 * Constructor.
+	 * @param name the name
+	 * @param id the id
+	 */
 	public Project(String name, UUID id) {
 		super(name, id);
 		baseRecords = new HashMap<String, BaseRecord>();
 		databaseDefinition = null;
 	}
 	
+		/**
+		 *{@inheritDoc}
+		 */
 	public IDatabaseDefinition getDatabaseDefinition() {
 		return databaseDefinition;
 	}
 	
+		/**
+		 *{@inheritDoc}
+		 */
 	public void setDatabaseDefinition(IDatabaseDefinition databaseDefinition) {
 		this.databaseDefinition = databaseDefinition;
 	}
 
+		/**
+		 *{@inheritDoc}
+		 */
 	public BaseRecord getBaseRecord(String type) {
 		if(!baseRecords.containsKey(type)) {
 			baseRecords.put(type, new BaseRecord(null));
@@ -49,32 +62,53 @@ public class Project extends Folder {
 	}
 
 	
+		/**
+		 *{@inheritDoc}
+		 */
 	public Map<String, BaseRecord> getBaseRecords() {
 		return baseRecords;
 	}
 	
+		/**
+		 *{@inheritDoc}
+		 */
 	public void setBaseRecords(Map<String, BaseRecord> baseRecords) {
 		this.baseRecords = baseRecords;
 	}
 	
 	
 
+		/**
+		 *{@inheritDoc}
+		 */
 	public String getDbdPath() {
 		return path;
 	}
 
+		/**
+		 *{@inheritDoc}
+		 */
 	public void setDbdPath(String path) {
 		this.path = path;
 	}
 
+		/**
+		 *{@inheritDoc}
+		 */
 	public String getIoc() {
 		return ioc;
 	}
 
+		/**
+		 *{@inheritDoc}
+		 */
 	public void setIoc(String ioc) {
 		this.ioc = ioc;
 	}
 	
+		/**
+		 *{@inheritDoc}
+		 */
 	public List<IRecord> getFinalRecords() {
 		return getFinalRecords(this);
 	}

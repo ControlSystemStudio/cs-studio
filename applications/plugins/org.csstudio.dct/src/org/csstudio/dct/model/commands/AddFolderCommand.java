@@ -1,24 +1,17 @@
-package org.csstudio.dct.ui.editor.outline.internal;
+package org.csstudio.dct.model.commands;
 
-import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
-import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Folder;
-import org.csstudio.dct.model.internal.RecordFactory;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
 
 /**
- * Undoable command which adds a new record to the model.
+ * Undoable command which adds a new folder to the model.
  * 
  * @author Sven Wende
  * 
  */
-public class AddFolderCommand extends Command implements ISelectAfterExecution {
+public final class AddFolderCommand extends Command implements ISelectAfterExecution {
 	private IFolder folder;
 	private IFolder parentFolder;
 
@@ -26,7 +19,9 @@ public class AddFolderCommand extends Command implements ISelectAfterExecution {
 	 * Constructor.
 	 * 
 	 * @param parentFolder
-	 *            the folder which will contain the new prototype
+	 *            the parent folder
+	 * @param name
+	 *            then name of the new folder
 	 */
 	public AddFolderCommand(IFolder parentFolder, String name) {
 		assert parentFolder != null;

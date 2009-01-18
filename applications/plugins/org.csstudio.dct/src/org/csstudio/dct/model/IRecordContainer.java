@@ -38,7 +38,17 @@ public interface IRecordContainer extends IElement {
 	 */
 	void removeRecord(IRecord record);
 	
+	/**
+	 * Sets a record at the specified index.
+	 * @param index the index
+	 * @param record the record
+	 */
+	void setRecord(int index, IRecord record);
+	
+	/**
+	 * Returns dependent record containers.
+	 * @return dependent record containers
+	 */
 	List<IRecordContainer> getDependentRecordContainers();
 
-	void setRecord(int index, IRecord record);
 }

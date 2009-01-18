@@ -3,28 +3,46 @@ package org.csstudio.dct.model.commands;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IContainer;
+import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.internal.Instance;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 
-public class AddInstanceCommand extends Command {
+/**
+ * Command that adds an instance to a folder or container.
+ * 
+ * @author Sven Wende
+ * 
+ */
+public final class AddInstanceCommand extends Command implements ISelectAfterExecution {
 	private CompoundCommand internalCommand;
-	protected IContainer container;
-	protected IFolder folder;
-	protected IInstance instance;
-	
+	private IContainer container;
+	private IFolder folder;
+	private IInstance instance;
+
+	/**
+	 * Constructor.
+	 * @param folder the folder
+	 * @param instance the instance
+	 */
 	public AddInstanceCommand(IFolder folder, IInstance instance) {
-		assert instance.getParentFolder() == folder;
+		assert instance != null;
+		assert instance.getParentFolder() == null;
 		assert instance.getContainer() == null;
 		this.instance = instance;
 		this.folder = folder;
 	}
 
+	/**
+	 * Constructor.
+	 * @param container the container
+	 * @param instance the instance
+	 */
 	public AddInstanceCommand(IContainer container, IInstance instance) {
+		assert instance != null;
 		assert instance.getParentFolder() == null;
-		assert instance.getContainer() == container;
 		this.instance = instance;
 		this.container = container;
 	}
@@ -53,7 +71,7 @@ public class AddInstanceCommand extends Command {
 				internalCommand.add(new AddInstanceCommand(c, pushedInstance));
 			}
 		}
-		
+
 		// ... link to super
 		instance.getParent().addDependentContainer(instance);
 
@@ -74,6 +92,13 @@ public class AddInstanceCommand extends Command {
 			instance.setContainer(null);
 		}
 		instance.getParent().removeDependentContainer(instance);
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public IElement getElementToSelect() {
+		return instance;
 	}
 
 }

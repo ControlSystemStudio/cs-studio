@@ -12,12 +12,18 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class ChangePropertyValueCommand extends Command {
+public final class ChangePropertyValueCommand extends Command {
 	private IPropertyContainer container;
 	private String key;
 	private String value;
 	private String oldValue;
 
+	/**
+	 * Constructor.
+	 * @param container the property container
+	 * @param key the property key
+	 * @param value the property value
+	 */
 	public ChangePropertyValueCommand(IPropertyContainer container, String key, String value) {
 		assert container != null;
 		assert key != null;

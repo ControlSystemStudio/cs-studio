@@ -3,19 +3,17 @@
  */
 package org.csstudio.dct.model.commands;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.IRecordContainer;
-import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Prototype;
-import org.csstudio.dct.model.internal.Record;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +24,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class AddRecordCommandTest extends AbstractCommandTest {
+public final class AddRecordCommandTest extends AbstractCommandTest {
 	private IPrototype prototype;
 	private IInstance instance;
 	private IRecord record;
@@ -40,7 +38,7 @@ public class AddRecordCommandTest extends AbstractCommandTest {
 		prototype = new Prototype("P", UUID.randomUUID());
 		instance = new Instance(prototype, UUID.randomUUID());
 		prototype.addDependentContainer(instance);
-		record = RecordFactory.createRecord(project, "ai", "r", UUID.randomUUID());
+		record = RecordFactory.createRecord(getProject(), "ai", "r", UUID.randomUUID());
 		command = new AddRecordCommand(prototype, record);
 	}
 
@@ -48,7 +46,7 @@ public class AddRecordCommandTest extends AbstractCommandTest {
 	 * Test method for {@link org.csstudio.dct.model.commands.AddRecordCommand#execute()}.
 	 */
 	@Test
-	public final void testExecute() {
+	public void testExecute() {
 		verifyBeforeCommandExecution();
 		command.execute();
 		verifyAfterCommandExecution();

@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class DatabaseDefinitionTest {
+public final class DatabaseDefinitionTest {
 	private DatabaseDefinition databaseDefinition;
 
 	private IRecordDefinition recordDefinition1, recordDefinition2;
@@ -40,7 +40,7 @@ public class DatabaseDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.DatabaseDefinition#DatabaseDefinition()}.
 	 */
 	@Test
-	public final void testDatabaseDefinition() {
+	public void testDatabaseDefinition() {
 		assertEquals("1.0.1.a", databaseDefinition.getDbdVersion());
 	}
 
@@ -48,14 +48,14 @@ public class DatabaseDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.DatabaseDefinition#addRecordDefinition(org.csstudio.dct.metamodel.IRecordDefinition)}.
 	 */
 	@Test
-	public final void testAddRecordDefinition() {
+	public void testAddRecordDefinition() {
 	}
 
 	/**
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.DatabaseDefinition#getRecordDefinitions()}.
 	 */
 	@Test
-	public final void testGetRecordDefinitions() {
+	public void testGetRecordDefinitions() {
 		List<IRecordDefinition> recordDefinitions = databaseDefinition.getRecordDefinitions();
 		assertEquals(2, recordDefinitions.size());
 		assertTrue(recordDefinitions.contains(recordDefinition1));
@@ -66,7 +66,7 @@ public class DatabaseDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.DatabaseDefinition#getRecordDefinition(String)}.
 	 */
 	@Test
-	public final void testGetRecordDefinition() {
+	public void testGetRecordDefinition() {
 		assertEquals(recordDefinition1, databaseDefinition.getRecordDefinition("ai"));
 		assertEquals(recordDefinition2, databaseDefinition.getRecordDefinition("ao"));
 	}
@@ -75,7 +75,7 @@ public class DatabaseDefinitionTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.DatabaseDefinition#removeRecordDefinition(org.csstudio.dct.metamodel.IRecordDefinition)}.
 	 */
 	@Test
-	public final void testRemoveRecordDefinition() {
+	public void testRemoveRecordDefinition() {
 		List<IRecordDefinition> recordDefinitions = databaseDefinition.getRecordDefinitions();
 		assertTrue(recordDefinitions.contains(recordDefinition1));
 		assertTrue(recordDefinitions.contains(recordDefinition2));

@@ -1,10 +1,11 @@
 package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.commands.ChangeNameCommand;
+import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
 import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
-import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.AliasResolutionException;
+import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.ResolutionUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.RGB;
@@ -15,29 +16,29 @@ import org.eclipse.swt.graphics.RGB;
  * @author Sven Wende
  * 
  */
-class RecordNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
+class RecordEpicsNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 
-	public RecordNameTableRowAdapter(IRecord record, CommandStack commandStack) {
+	public RecordEpicsNameTableRowAdapter(IRecord record, CommandStack commandStack) {
 		super(record, commandStack);
 	}
 
 	@Override
 	protected String doGetKey(IRecord record) {
-		return "Name";
+		return "EPICS Name";
 	}
 
 	@Override
 	protected Object doGetValue(IRecord record) {
-		return record.getNameFromHierarchy();
+		return AliasResolutionUtil.getEpicsNameFromHierarchy(record);
 	}
 
 	@Override
 	protected Object doGetValueForDisplay(IRecord record) {
-		String result = record.getNameFromHierarchy();
+		String result = AliasResolutionUtil.getEpicsNameFromHierarchy(record);
 
 		if (record.isInherited()) {
 			try {
-				result = AliasResolutionUtil.resolve(record.getNameFromHierarchy(), record);
+				result = ResolutionUtil.resolve(result, record);
 			} catch (AliasResolutionException e) {
 				setError(e.getMessage());
 			}
@@ -49,8 +50,8 @@ class RecordNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 	@Override
 	protected Command doSetValue(IRecord record, Object value) {
 		Command result = null;
-		if (value != null && !value.equals(record.getNameFromHierarchy())) {
-			result = new ChangeNameCommand(record, value.toString());
+		if (value != null && !value.equals(record.getEpicsNameFromHierarchy())) {
+			result = new ChangeBeanPropertyCommand(record, "epicsName", value.toString());
 		}
 
 		return result;
@@ -58,8 +59,8 @@ class RecordNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 
 	@Override
 	protected RGB doGetForegroundColorForValue(IRecord record) {
-		String name = record.getName();
-		return (name != null && name.length() > 0) ? ColorSettings.OVERRIDDEN_RECORD_FIELD_VALUE : ColorSettings.INHERITED_RECORD_FIELD_VALUE;
+		String name = record.getEpicsName();
+		return (name != null && name.length() > 0) ? ColorSettings.OVERRIDDEN_VALUE : ColorSettings.INHERITED_VALUE;
 	}
 
 }

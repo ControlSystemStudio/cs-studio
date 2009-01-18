@@ -9,7 +9,7 @@ import org.csstudio.dct.metamodel.IChoice;
  * @author Sven Wende
  * 
  */
-public class Choice implements IChoice {
+public final class Choice implements IChoice {
 	private String description;
 	private String id;
 

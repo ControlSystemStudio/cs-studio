@@ -2,6 +2,7 @@ package org.csstudio.dct.ui.editor.outline.internal;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
+import org.csstudio.dct.model.commands.AddFolderCommand;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;

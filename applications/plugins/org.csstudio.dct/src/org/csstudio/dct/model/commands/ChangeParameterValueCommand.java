@@ -11,12 +11,18 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class ChangeParameterValueCommand extends Command {
+public final class ChangeParameterValueCommand extends Command {
 	private IInstance instance;
 	private String key;
 	private String value;
 	private String oldValue;
 
+	/**
+	 * Constructor.
+	 * @param container the container
+	 * @param key the parameter name
+	 * @param value the parameter value
+	 */
 	public ChangeParameterValueCommand(IInstance container, String key, String value) {
 		assert container != null;
 		assert key != null;

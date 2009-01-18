@@ -1,11 +1,8 @@
-/**
- * 
- */
 package org.csstudio.dct.ui.editor.outline.internal;
 
 import java.util.EventObject;
 
-import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.IProject;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.jface.action.Action;
@@ -27,16 +24,16 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 public final class OutlinePage extends ContentOutlinePage implements CommandStackListener {
-	private Project input;
+	private IProject input;
 	private CommandStack commandStack;
 	private TreeViewer viewer;
 
-	public OutlinePage(Project input, CommandStack commandStack) {
+	public OutlinePage(IProject input, CommandStack commandStack) {
 		this.input = input;
 		this.commandStack = commandStack;
 	}
 
-	public void setInput(Project input) {
+	public void setInput(IProject input) {
 		this.input = input;
 
 		if (getTreeViewer() != null) {
@@ -49,6 +46,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		super.createControl(parent);
 		viewer = getTreeViewer();
 		viewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
+		viewer.setUseHashlookup(true);
 
 		viewer.setContentProvider(new WorkbenchContentProvider());
 		viewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
@@ -85,7 +83,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		return commandStack;
 	}
 
-	public Project getInput() {
+	public IProject getInput() {
 		return input;
 	}
 

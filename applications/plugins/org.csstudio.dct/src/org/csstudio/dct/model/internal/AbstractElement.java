@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.util.CompareUtil;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * Standard implementation of {@link IElement}.
@@ -11,7 +13,7 @@ import org.csstudio.dct.util.CompareUtil;
  * @author Sven Wende
  * 
  */
-public abstract class AbstractElement implements IElement {
+public abstract class AbstractElement implements IElement, IAdaptable {
 	private String name;
 	private UUID id;
 
@@ -26,6 +28,14 @@ public abstract class AbstractElement implements IElement {
 		id = UUID.randomUUID();
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param id
+	 *            the id
+	 */
 	public AbstractElement(String name, UUID id) {
 		assert id != null;
 		this.name = name;
@@ -35,18 +45,21 @@ public abstract class AbstractElement implements IElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setName(String name) {
+	public final void setName(String name) {
 		this.name = name;
 	}
 
-	public UUID getId() {
+	/**
+	 * {@inheritDoc}
+	 */
+	public final UUID getId() {
 		return id;
 	}
 
@@ -58,7 +71,7 @@ public abstract class AbstractElement implements IElement {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-//		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		// result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -82,4 +95,11 @@ public abstract class AbstractElement implements IElement {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public final Object getAdapter(Class adapter) {
+		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}
 }

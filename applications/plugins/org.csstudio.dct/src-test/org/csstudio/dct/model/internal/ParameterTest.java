@@ -3,9 +3,9 @@
  */
 package org.csstudio.dct.model.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
-import org.csstudio.dct.model.internal.Parameter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class ParameterTest {
+public final class ParameterTest {
 	private Parameter parameter;
 	private String name;
 	private String defaultValue;
@@ -34,7 +34,7 @@ public class ParameterTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Parameter#getName()}.
 	 */
 	@Test
-	public final void testGetName() {
+	public void testGetName() {
 		assertEquals(name, parameter.getName());
 	}
 
@@ -42,7 +42,7 @@ public class ParameterTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Parameter#setName(java.lang.String)}.
 	 */
 	@Test
-	public final void testSetName() {
+	public void testSetName() {
 		assertEquals(name, parameter.getName());
 		parameter.setName("name2");
 		assertEquals("name2", parameter.getName());
@@ -52,7 +52,7 @@ public class ParameterTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Parameter#getDefaultValue()}.
 	 */
 	@Test
-	public final void testGetDefaultValue() {
+	public void testGetDefaultValue() {
 		assertEquals(defaultValue, parameter.getDefaultValue());
 	}
 
@@ -60,7 +60,7 @@ public class ParameterTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Parameter#setDefaultValue(java.lang.String)}.
 	 */
 	@Test
-	public final void testSetDefaultValue() {
+	public void testSetDefaultValue() {
 		assertEquals(defaultValue, parameter.getDefaultValue());
 		parameter.setDefaultValue("defaultValue2");
 		assertEquals("defaultValue2", parameter.getDefaultValue());
@@ -70,7 +70,7 @@ public class ParameterTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Parameter#equals}.
 	 */
 	@Test
-	public final void testEquals() {
+	public void testEquals() {
 		assertEquals(parameter, new Parameter(parameter.getName(), parameter.getDefaultValue()));
 		assertNotSame(parameter, new Parameter(parameter.getName()+"x", parameter.getDefaultValue()));
 		assertNotSame(parameter, new Parameter(parameter.getName(), parameter.getDefaultValue()+"x"));

@@ -21,14 +21,23 @@ import org.jdom.Element;
  * @author Sven Wende
  *
  */
-public class ProjectToXml {
+public final class ProjectToXml {
 	private Project project;
 
+	/**
+	 * Constructor.
+	 * @param project a project
+	 */
 	public ProjectToXml(Project project) {
 		assert project != null;
 		this.project = project;
 	}
 
+	/**
+	 * Returns a xml representation of the provided project;
+	 * 
+	 * @return a xml representation of the provided project.
+	 */
 	public Document createDocument() {
 		Document document = new Document();
 		Element rootElement = createElement(project);
@@ -172,7 +181,7 @@ public class ProjectToXml {
 	 * </instance>
 	 * </code>
 	 * 
-	 * @param instance
+	 * @param instance the instance
 	 * @return
 	 */
 	private Element createElement(IInstance instance) {
@@ -243,6 +252,10 @@ public class ProjectToXml {
 		String n = record.getName();
 		element.setAttribute("name", (n != null && n.length() > 0) ? n : "{inherited}");
 
+		// EPICS NAME
+		String epicsName = record.getEpicsName();
+		element.setAttribute("epicsname", (epicsName != null && epicsName.length() > 0) ? epicsName : "{inherited}");
+		
 		// TYPE
 		element.setAttribute("type", record.getType());
 		

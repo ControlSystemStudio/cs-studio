@@ -12,10 +12,15 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class RemoveParameterCommand extends Command {
+public final class RemoveParameterCommand extends Command {
 	private IPrototype prototype;
 	private Parameter parameter;
 
+	/**
+	 * Constructor.
+	 * @param prototype the prototype
+	 * @param parameter the parameter
+	 */
 	public RemoveParameterCommand(IPrototype prototype, Parameter parameter) {
 		assert prototype != null;
 		assert parameter != null;

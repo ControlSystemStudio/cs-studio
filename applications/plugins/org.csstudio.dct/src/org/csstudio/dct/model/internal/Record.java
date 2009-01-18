@@ -19,19 +19,31 @@ import org.csstudio.dct.util.CompareUtil;
  * 
  * @author Sven Wende
  */
-public class Record extends AbstractPropertyContainer implements IRecord {
-
+public final class Record extends AbstractPropertyContainer implements IRecord {
+	
 	private String type;
+	private String epicsName;
 	private IRecord parentRecord;
 	private IContainer container;
 	private Map<String, Object> fields = new HashMap<String, Object>();
 	private List<IRecord> inheritingRecords = new ArrayList<IRecord>();
 
+	/**
+	 * Constructor.
+	 * @param name the name
+	 * @param type the type
+	 * @param id the id
+	 */
 	public Record(String name, String type, UUID id) {
 		super(name, id);
 		this.type = type;
 	}
 
+	/**
+	 * Constructor.
+	 * @param parentRecord the parent record
+	 * @param id the id
+	 */
 	public Record(IRecord parentRecord, UUID id) {
 		super(null, id);
 		this.parentRecord = parentRecord;
@@ -110,9 +122,24 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 *{@inheritDoc}
 	 */
-	public String getNameFromHierarchy() {
+	public String getEpicsName() {
+		return epicsName;
+	}
+	
+	/**
+	 *{@inheritDoc}
+	 */
+	public void setEpicsName(String epicsName) {
+		this.epicsName = epicsName;
+	}
+
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public String getEpicsNameFromHierarchy() {
 		String name = "unknown";
 
 		Stack<IRecord> stack = getRecordStack();
@@ -120,8 +147,8 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 		while (!stack.isEmpty()) {
 			IRecord top = stack.pop();
 
-			if (top.getName() != null && top.getName().length() > 0) {
-				name = top.getName();
+			if (top.getEpicsName() != null && top.getEpicsName().length() > 0) {
+				name = top.getEpicsName();
 			}
 		}
 
@@ -226,6 +253,7 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 		visitor.visit(this);
 	}
 
+	
 	/**
 	 *{@inheritDoc}
 	 */
@@ -233,9 +261,9 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((fields == null) ? 0 : fields.hashCode());
-		result = prime * result + ((inheritingRecords == null) ? 0 : inheritingRecords.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+//		result = prime * result + ((fields == null) ? 0 : fields.hashCode());
+//		result = prime * result + ((inheritingRecords == null) ? 0 : inheritingRecords.hashCode());
+//		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -288,18 +316,4 @@ public class Record extends AbstractPropertyContainer implements IRecord {
 		}
 		return stack;
 	}
-
-	/**
-	 *{@inheritDoc}
-	 */
-	public Map<String, String> getFinalParameterValues() {
-		Map<String, String> result = new HashMap<String, String>();
-
-		if (getContainer() instanceof IContainer) {
-			result.putAll(((IContainer) getContainer()).getFinalParameterValues());
-		}
-
-		return result;
-	}
-
 }

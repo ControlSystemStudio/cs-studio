@@ -26,7 +26,7 @@ public class ActionFilterAdapter implements IActionFilter {
 
 			String errors = "false";
 			try {
-				IMarker markers[] = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
+				IMarker[] markers = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
 
 				for (IMarker marker : markers) {
 					if (id.toString().equals(marker.getAttribute(IMarker.LOCATION))) {

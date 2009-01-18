@@ -3,25 +3,30 @@
  */
 package org.csstudio.dct.model.commands;
 
-import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
-import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.IProject;
+import org.csstudio.dct.model.persistence.internal.PersistenceService;
 import org.eclipse.gef.commands.Command;
 
 /**
  * Undoable command that changes the database definition (dbd) reference of a
- * {@link Project}.
+ * {@link IProject}.
  * 
  * @author Sven Wende
  * 
  */
-public class ChangeDbdFileCommand extends Command {
-	private Project project;
+public final class ChangeDbdFileCommand extends Command {
+	private IProject project;
 	private String currentPath;
 	private String oldPath;
 
-	public ChangeDbdFileCommand(Project project, String path) {
+	/**
+	 * Constructor.
+	 * @param project the project
+	 * @param path the path to the dbd file
+	 */
+	public ChangeDbdFileCommand(IProject project, String path) {
 		this.project = project;
 		this.currentPath = path;
 		this.oldPath = project.getDbdPath();
@@ -48,7 +53,7 @@ public class ChangeDbdFileCommand extends Command {
 		project.setDbdPath(path);
 
 		// .. try to read the definition from file
-		IDatabaseDefinition databaseDefinition = path != null ? DctActivator.getDefault().getPersistenceService().loadDatabaseDefinition(path) : null;
+		IDatabaseDefinition databaseDefinition = path != null ? new PersistenceService().loadDatabaseDefinition(path) : null;
 
 		// .. set the definition
 		project.setDatabaseDefinition(databaseDefinition);

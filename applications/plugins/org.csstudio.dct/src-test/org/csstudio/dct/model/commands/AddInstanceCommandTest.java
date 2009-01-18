@@ -3,19 +3,17 @@
  */
 package org.csstudio.dct.model.commands;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
-import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.commands.AddInstanceCommand;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Prototype;
-import org.csstudio.dct.model.internal.RecordFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +23,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class AddInstanceCommandTest extends AbstractCommandTest {
+public final class AddInstanceCommandTest extends AbstractCommandTest {
 	private IPrototype prototypeA;
 	private IInstance instanceA;
 	private IPrototype prototypeB;
@@ -53,7 +51,7 @@ public class AddInstanceCommandTest extends AbstractCommandTest {
 	 * .
 	 */
 	@Test
-	public final void testExecute() {
+	public void testExecute() {
 		verifyAlways();
 		verifyBeforeCommandExecution();
 		command.execute();

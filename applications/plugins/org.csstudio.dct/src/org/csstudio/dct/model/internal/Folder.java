@@ -7,15 +7,13 @@ import java.util.UUID;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IVisitor;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * Standard implementation of {@link IFolder}.
  * 
  * @author Sven Wende
  */
-public class Folder extends AbstractElement implements IFolderMember, IFolder, IAdaptable {
+public class Folder extends AbstractElement implements IFolderMember, IFolder {
 	private List<IFolderMember> members;
 	private IFolder parentFolder;
 
@@ -29,7 +27,16 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder, I
 		super(name);
 		members = new ArrayList<IFolderMember>();
 	}
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            the name
+	 * 
+	 * @param id
+	 *            the id
+	 */
 	public Folder(String name, UUID id) {
 		super(name, id);
 		members = new ArrayList<IFolderMember>();
@@ -38,44 +45,45 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder, I
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<IFolderMember> getMembers() {
+	public final List<IFolderMember> getMembers() {
 		return members;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addMember(IFolderMember member) {
-		assert member.getParentFolder() != null;
+	public final void addMember(IFolderMember member) {
+		assert member != null;
+		assert member.getParentFolder() == null;
 		members.add(member);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setMember(int index, IFolderMember member) {
-		assert member.getParentFolder() != null;
-		
+	public final void setMember(int index, IFolderMember member) {
+		assert member != null;
+
 		// .. fill with nulls
-		while(index>=members.size()) {
+		while (index >= members.size()) {
 			members.add(null);
 		}
-		
+
 		members.set(index, member);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addMember(int index, IFolderMember member) {
-		assert member.getParentFolder() != null;
+	public final void addMember(int index, IFolderMember member) {
+		assert member.getParentFolder() == null;
 		members.add(index, member);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeMember(IFolderMember member) {
+	public final void removeMember(IFolderMember member) {
 		assert member.getParentFolder() == this : "member.getParentFolder()==this";
 		members.remove(member);
 	}
@@ -83,7 +91,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder, I
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeMember(int index) {
+	public final void removeMember(int index) {
 		IFolderMember member = members.remove(index);
 
 		assert member.getParentFolder() == this : "member.getParentFolder()==this";
@@ -92,23 +100,15 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder, I
 	/**
 	 * {@inheritDoc}
 	 */
-	public IFolder getParentFolder() {
+	public final IFolder getParentFolder() {
 		return parentFolder;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setParentFolder(IFolder folder) {
+	public final void setParentFolder(IFolder folder) {
 		parentFolder = folder;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
-		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
 	/**
@@ -133,17 +133,6 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder, I
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public void accept(IVisitor visitor) {
-		visitor.visit((Project) this);
-		
-		for(IFolderMember member : getMembers()) {
-			member.accept(visitor);
-		}
-	}
-	
-	/**
 	 *{@inheritDoc}
 	 */
 	@Override
@@ -155,6 +144,22 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder, I
 
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
+	public final boolean isInherited() {
+		return false;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public final void accept(IVisitor visitor) {
+		visitor.visit((Folder) this);
+
+		for (IFolderMember member : getMembers()) {
+			member.accept(visitor);
+		}
+	}
 
 }

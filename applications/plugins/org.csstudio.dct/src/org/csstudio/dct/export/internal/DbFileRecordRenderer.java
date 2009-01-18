@@ -6,6 +6,7 @@ import org.csstudio.dct.export.IRecordRenderer;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.ResolutionUtil;
 
 /**
  * Renders records in DB file syntax (as accepted by an IOC).
@@ -13,7 +14,7 @@ import org.csstudio.dct.util.AliasResolutionUtil;
  * @author Sven Wende
  * 
  */
-public class DbFileRecordRenderer implements IRecordRenderer {
+public final class DbFileRecordRenderer implements IRecordRenderer {
 	private static final String NEWLINE = "\r\n";
 	private boolean renderEmptyFields = false;
 
@@ -37,7 +38,7 @@ public class DbFileRecordRenderer implements IRecordRenderer {
 		sb.append(record.getType());
 		sb.append(", \"");
 		try {
-			sb.append(AliasResolutionUtil.resolve(record.getNameFromHierarchy(), record));
+			sb.append(ResolutionUtil.resolve(AliasResolutionUtil.getNameFromHierarchy(record), record));
 		} catch (AliasResolutionException e) {
 			sb.append("<" + e.getMessage() + ">");
 		}
@@ -57,7 +58,7 @@ public class DbFileRecordRenderer implements IRecordRenderer {
 	
 				String fieldValue = "";
 				try {
-					sb.append(AliasResolutionUtil.resolve(v, record));
+					sb.append(ResolutionUtil.resolve(v, record));
 				} catch (AliasResolutionException e) {
 					fieldValue = "<" + e.getMessage() + ">";
 				}

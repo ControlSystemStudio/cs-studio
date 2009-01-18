@@ -3,6 +3,8 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NameParser;
+
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.internal.Parameter;
@@ -104,8 +106,6 @@ public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IInstance instance) {
-		// ... name
-		rows.add(new BeanPropertyTableRowAdapter("Name", instance, getCommandStack(), "name"));
 		// ... derived from
 		rows.add(new DerivedFromTableRowAdapter(instance, getCommandStack()));
 

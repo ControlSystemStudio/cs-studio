@@ -24,7 +24,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class InstanceTest {
+public final class InstanceTest {
 	private IPrototype prototype1, prototype2;
 	
 	private Instance instance;
@@ -51,7 +51,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#equals()}.
 	 */
 	@Test
-	public final void testEquals() {
+	public void testEquals() {
 		Instance i1 = new Instance(prototype1, UUID.randomUUID());
 		Instance i2 = new Instance(prototype1, UUID.randomUUID());
 		
@@ -96,7 +96,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#Instance(org.csstudio.dct.model.IContainer)}.
 	 */
 	@Test
-	public final void testInstanceIContainer() {
+	public void testInstanceIContainer() {
 		assertEquals(prototype2, instance.getParent());
 	}
 
@@ -104,7 +104,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#Instance(java.lang.String, org.csstudio.dct.model.IContainer)}.
 	 */
 	@Test
-	public final void testInstanceStringIContainer() {
+	public void testInstanceStringIContainer() {
 		assertEquals("instance", instance.getName());
 		assertEquals(prototype2, instance.getParent());
 	}
@@ -113,7 +113,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#getParameterValues()}.
 	 */
 	@Test
-	public final void testGetParameterValues() {
+	public void testGetParameterValues() {
 		Map<String, String> values = instance.getParameterValues();
 		assertEquals(2, values.size());
 		assertEquals("value_a", values.get("name_a"));
@@ -124,7 +124,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#setParameterValue(java.lang.String, java.lang.String)}.
 	 */
 	@Test
-	public final void testSetParameterValue() {
+	public void testSetParameterValue() {
 		// change a parameter value
 		instance.setParameterValue("name_a", "value_a_changed");
 		
@@ -142,7 +142,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#getParameterValue(java.lang.String)}.
 	 */
 	@Test
-	public final void testGetParameterValue() {
+	public void testGetParameterValue() {
 		assertEquals("value_a", instance.getParameterValue("name_a"));
 		assertEquals("value_b", instance.getParameterValue("name_b"));
 	}
@@ -151,7 +151,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#hasParameterValue(java.lang.String)}.
 	 */
 	@Test
-	public final void testHasParameterValue() {
+	public void testHasParameterValue() {
 		assertTrue(instance.hasParameterValue("name_a"));
 		assertTrue(instance.hasParameterValue("name_b"));
 		assertFalse(instance.hasParameterValue("name_x"));
@@ -161,7 +161,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#getContainer()}.
 	 */
 	@Test
-	public final void testGetContainer() {
+	public void testGetContainer() {
 		assertNull(instance.getContainer());
 	}
 
@@ -169,7 +169,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#setContainer(org.csstudio.dct.model.IInstanceContainer)}.
 	 */
 	@Test
-	public final void testSetContainer() {
+	public void testSetContainer() {
 		IContainer container = createMock(IContainer.class);
 		instance.setContainer(container);
 		assertEquals(container, instance.getContainer());
@@ -179,7 +179,7 @@ public class InstanceTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Instance#getPrototype()}.
 	 */
 	@Test
-	public final void testGetPrototype() {
+	public void testGetPrototype() {
 		assertEquals(prototype2, instance.getPrototype());
 	}
 

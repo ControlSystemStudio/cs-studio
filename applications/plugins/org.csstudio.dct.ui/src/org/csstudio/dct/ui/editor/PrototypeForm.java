@@ -212,7 +212,6 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 	 */
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IPrototype prototype) {
-		rows.add(new BeanPropertyTableRowAdapter("Name", prototype, getCommandStack(), "name"));
 	}
 
 	/**

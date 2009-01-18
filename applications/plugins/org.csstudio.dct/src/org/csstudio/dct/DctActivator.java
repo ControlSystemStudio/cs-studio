@@ -2,40 +2,42 @@ package org.csstudio.dct;
 
 import org.csstudio.dct.model.persistence.IPersistenceService;
 import org.csstudio.dct.model.persistence.internal.PersistenceService;
+import org.csstudio.dct.nameresolution.IFieldFunctionService;
+import org.csstudio.dct.nameresolution.internal.FieldFunctionService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
  */
-public class DctActivator extends AbstractUIPlugin {
+public final class DctActivator extends AbstractUIPlugin {
 	private IPersistenceService persistenceService;
-	
+	private IFieldFunctionService fieldFunctionService;
+
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.dct2";
 
 	// The shared instance
 	private static DctActivator plugin;
-	
+
 	/**
-	 * The constructor
+	 * The constructor.
 	 */
 	public DctActivator() {
 		persistenceService = new PersistenceService();
+		fieldFunctionService = new FieldFunctionService();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -43,14 +45,14 @@ public class DctActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the shared instance
-	 *
+	 * Returns the shared instance.
+	 * 
 	 * @return the shared instance
 	 */
 	public static DctActivator getDefault() {
 		return plugin;
 	}
-	
+
 	/**
 	 * Returns the persistence service.
 	 * 
@@ -60,4 +62,12 @@ public class DctActivator extends AbstractUIPlugin {
 		return persistenceService;
 	}
 
+	/**
+	 * Returns the field function service.
+	 * 
+	 * @return the field function service
+	 */
+	public IFieldFunctionService getFieldFunctionService() {
+		return fieldFunctionService;
+	}
 }

@@ -2,6 +2,7 @@ package org.csstudio.dct.ui.editor;
 
 import java.util.Map;
 
+import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IMenuDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
@@ -11,8 +12,7 @@ import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.MenuCellEditor;
-import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.dct.util.AliasResolutionException;
+import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -29,7 +29,7 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 		super(delegate, commandStack);
 		this.fieldKey = fieldKey;
 	}
-	
+
 	public String getFieldKey() {
 		return fieldKey;
 	}
@@ -41,7 +41,7 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 	protected RGB doGetForegroundColorForValue(IRecord delegate) {
 		Map<String, Object> localFields = delegate.getFields();
 		boolean inherited = !localFields.containsKey(fieldKey);
-		RGB rgb = inherited ? ColorSettings.INHERITED_RECORD_FIELD_VALUE : ColorSettings.OVERRIDDEN_RECORD_FIELD_VALUE;
+		RGB rgb = inherited ? ColorSettings.INHERITED_VALUE : ColorSettings.OVERRIDDEN_VALUE;
 		return rgb;
 	}
 
@@ -75,23 +75,30 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 	 */
 	@Override
 	protected Object doGetValueForDisplay(IRecord record) {
-		Object result = null;
-		
+		String result = null;
+
 		Object value = doGetValue(record);
 
-		if(value==null) {
+		if (value == null || "".equals(value.toString().trim())) {
 			result = "<empty>";
 		} else {
-			result = value;
-			if(record.isInherited()) {
+			if (record.isInherited()) {
+				// resolve functions and parameters
 				try {
-					result = AliasResolutionUtil.resolve(value.toString(), record);
-				} catch (AliasResolutionException e) {
+					result = value.toString();
+					
+					result = ResolutionUtil.resolve(value.toString(), record);
+					
+					result = DctActivator.getDefault().getFieldFunctionService().evaluate(result, record, fieldKey);
+					
+					result = ResolutionUtil.resolve(result, record);
+				} catch (Exception e) {
 					setError(e.getMessage());
 				}
+			} else {
+				result  = value.toString();
 			}
 		}
-
 
 		return result;
 	}
@@ -135,17 +142,17 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 
 		return result;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public int compareTo(ITableRow row) {
 		int result = 0;
-		if(row instanceof RecordFieldTableRowAdapter) {
+		if (row instanceof RecordFieldTableRowAdapter) {
 			result = fieldKey.compareTo(((RecordFieldTableRowAdapter) row).fieldKey);
 		}
-		
+
 		return result;
 	}
 }

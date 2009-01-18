@@ -28,6 +28,7 @@ Export-Package: org.apache.commons.beanutils,
  org.csstudio.dct.model.internal,
  org.csstudio.dct.model.persistence,
  org.csstudio.dct.model.visitors,
+ org.csstudio.dct.nameresolution,
  org.csstudio.dct.util
 Bundle-ClassPath: lib/ant.jar,
  lib/jaxen-core.jar,
@@ -39,4 +40,5 @@ Bundle-ClassPath: lib/ant.jar,
  lib/xml-apis.jar,
  .,
  lib/commons-beanutils-1.8.0.jar,
- lib/commons-logging-1.1.1.jar
+ lib/commons-logging-1.1.1.jar,
+ lib/VisualDCT.jar

@@ -5,7 +5,9 @@ import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
+import org.csstudio.dct.model.commands.RemoveFolderCommand;
 import org.csstudio.dct.model.commands.RemoveInstanceCommand;
+import org.csstudio.dct.model.commands.RemovePrototypeCommand;
 import org.csstudio.dct.model.commands.RemoveRecordCommand;
 import org.eclipse.gef.commands.Command;
 

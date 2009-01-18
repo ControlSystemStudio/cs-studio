@@ -8,13 +8,15 @@ import org.csstudio.dct.model.IElement;
  * @author Sven Wende
  * 
  */
-public class CompareUtil {
+public final class CompareUtil {
+	private CompareUtil() {
+	}
 	/**
 	 * Compares two Objects.
 	 * 
-	 * @param s1
+	 * @param o1
 	 *            Object 1
-	 * @param s2
+	 * @param o2
 	 *            Object 2
 	 * @return true, if both Object equal
 	 */

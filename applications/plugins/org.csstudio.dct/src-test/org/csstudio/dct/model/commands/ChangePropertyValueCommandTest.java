@@ -15,7 +15,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class ChangePropertyValueCommandTest {
+public final class ChangePropertyValueCommandTest {
 	private IPropertyContainer container;
 
 	/**
@@ -32,7 +32,7 @@ public class ChangePropertyValueCommandTest {
 	 * .
 	 */
 	@Test
-	public final void testExecute() {
+	public void testExecute() {
 		String id = "test";
 		String value = "value";
 		String newValue = "newvalue";

@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui.editor.outline.internal;
+package org.csstudio.dct.model.commands;
 
 import org.csstudio.dct.model.IElement;
 

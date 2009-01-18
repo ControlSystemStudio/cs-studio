@@ -3,7 +3,8 @@
  */
 package org.csstudio.dct.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
@@ -57,10 +58,18 @@ public class CompareUtilTest {
 		IElement element1 = new AbstractElement("e1", id1) {
 			public void accept(IVisitor visitor) {
 			}
+
+			public boolean isInherited() {
+				return false;
+			}
 		};
 
 		IElement element2 = new AbstractElement("e2", id2) {
 			public void accept(IVisitor visitor) {
+			}
+
+			public boolean isInherited() {
+				return false;
 			}
 		};
 

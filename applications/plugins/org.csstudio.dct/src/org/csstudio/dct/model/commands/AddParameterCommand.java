@@ -12,14 +12,18 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class AddParameterCommand extends Command {
+public final class AddParameterCommand extends Command {
 	private IPrototype prototype;
 	private Parameter parameter;
 
+	/**
+	 * Constructor.
+	 * @param prototype the prototype
+	 * @param parameter the parameter
+	 */
 	public AddParameterCommand(IPrototype prototype, Parameter parameter) {
 		assert prototype != null;
 		assert parameter != null;
-		assert prototype.hasParameter(parameter.getName());
 		this.prototype = prototype;
 		this.parameter = parameter;
 	}

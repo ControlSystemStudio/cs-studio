@@ -2,6 +2,7 @@ package org.csstudio.dct.model.internal;
 
 import java.util.UUID;
 
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
 
 /**
@@ -10,7 +11,10 @@ import org.csstudio.dct.model.IRecord;
  * @author Sven Wende
  * 
  */
-public class RecordFactory {
+public final class RecordFactory {
+	private RecordFactory() {
+	}
+	
 	/**
 	 * Creates a record. The record is equipped with all fields that are known
 	 * for the type of record.
@@ -25,7 +29,7 @@ public class RecordFactory {
 	 *            the id for the new record
 	 * @return the record
 	 */
-	public static IRecord createRecord(Project project, String type, String name, UUID id) {
+	public static IRecord createRecord(IProject project, String type, String name, UUID id) {
 		assert project != null;
 		assert type != null;
 		assert id != null;

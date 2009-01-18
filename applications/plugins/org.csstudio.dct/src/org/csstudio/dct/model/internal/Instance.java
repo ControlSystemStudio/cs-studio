@@ -2,7 +2,6 @@ package org.csstudio.dct.model.internal;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IContainer;
@@ -17,15 +16,26 @@ import org.csstudio.dct.util.CompareUtil;
  * 
  * @author Sven Wende
  */
-public class Instance extends AbstractContainer implements IInstance {
+public final class Instance extends AbstractContainer implements IInstance {
 
 	private Map<String, String> parameterValues;
 
+	/**
+	 * Constructor.
+	 * @param parent the parent container
+	 * @param id the id
+	 */
 	public Instance(IContainer parent, UUID id) {
 		super(null, parent, id);
 		this.parameterValues = new HashMap<String, String>();
 	}
 
+	/**
+	 * Constructor.
+	 * @param name the name
+	 * @param prototype the prototype
+	 * @param id the id
+	 */
 	public Instance(String name, IPrototype prototype, UUID id) {
 		this(prototype, id);
 		setName(name);
@@ -80,19 +90,10 @@ public class Instance extends AbstractContainer implements IInstance {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 *{@inheritDoc}
 	 */
-	public Map<String, String> getFinalProperties() {
-		Map<String, String> result = new HashMap<String, String>();
-
-		Stack<IContainer> stack = getParentStack();
-
-		while (!stack.isEmpty()) {
-			IContainer top = stack.pop();
-			result.putAll(top.getProperties());
-		}
-
-		return result;
+	public boolean isInherited() {
+		return getContainer() instanceof IInstance;
 	}
 	
 	/**
@@ -138,15 +139,13 @@ public class Instance extends AbstractContainer implements IInstance {
 		return result;
 	}
 
-//	/**
-//	 *{@inheritDoc}
-//	 */
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = super.hashCode();
-//		result = prime * result + ((parameterValues == null) ? 0 : parameterValues.hashCode());
-//		return result;
-//
-//	}
+	/**
+	 *{@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		return result;
+
+	}
 }

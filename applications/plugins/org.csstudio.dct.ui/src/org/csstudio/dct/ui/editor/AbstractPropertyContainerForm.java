@@ -7,7 +7,6 @@ import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.commands.AddPropertyCommand;
 import org.csstudio.dct.model.commands.RemovePropertyCommand;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.outline.internal.RemovePrototypeCommand;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -17,13 +16,10 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerFocusCellManager;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -42,15 +38,43 @@ import org.eclipse.ui.PlatformUI;
  * @author Sven Wende
  * 
  * @param <E>
+ *            the type of element that is edited with a form
  */
 public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer> extends AbstractForm<E> {
 
 	private TableCitizenTable propertyTable;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param editor
+	 *            a DCT editor instance
+	 */
 	public AbstractPropertyContainerForm(DctEditor editor) {
 		super(editor);
 	}
 
+	/**
+	 * Returns the currently selected property.
+	 * 
+	 * @return the selected property or null
+	 */
+	public final String getSelectedProperty() {
+		String result = null;
+
+		IStructuredSelection sel = propertyTable != null ? (IStructuredSelection) propertyTable.getViewer().getSelection() : null;
+
+		if (sel != null && sel.getFirstElement() != null) {
+			PropertyTableRowAdapter adapter = (PropertyTableRowAdapter) sel.getFirstElement();
+			result = adapter.getKey();
+		}
+
+		return result;
+	}
+	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
 		// .. input table for properties
@@ -67,6 +91,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 		Button addButton = new Button(buttons, SWT.FLAT);
 		addButton.setText("Add");
 		addButton.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void mouseDown(MouseEvent e) {
 				InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Property Name",
@@ -74,7 +99,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 							public String isValid(String newText) {
 								String error = null;
 
-								if(newText==null || newText.length()==0) {
+								if (newText == null || newText.length() == 0) {
 									error = "Name cannot be empty.";
 								}
 								if (getInput().getProperty(newText) != null) {
@@ -87,7 +112,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
 				if (dialog.open() == InputDialog.OK) {
 					String name = dialog.getValue();
-					
+
 					// .. insert the property
 					Command cmd = new AddPropertyCommand(getInput(), name);
 					getCommandStack().execute(cmd);
@@ -95,19 +120,19 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 					// .. activate the cell editor for the new row
 					TableViewer viewer = propertyTable.getViewer();
 					List<PropertyTableRowAdapter> rows = (List<PropertyTableRowAdapter>) viewer.getInput();
-					
+
 					PropertyTableRowAdapter insertedRow = null;
-					
-					for(PropertyTableRowAdapter r : rows) {
-						if(name.equals(r.getPropertyKey())) {
+
+					for (PropertyTableRowAdapter r : rows) {
+						if (name.equals(r.getPropertyKey())) {
 							insertedRow = r;
 						}
 					}
-					
-					if(insertedRow!=null) {
+
+					if (insertedRow != null) {
 						viewer.editElement(insertedRow, 1);
 					}
-						
+
 				}
 
 			}
@@ -120,20 +145,20 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 			@Override
 			public void mouseDown(MouseEvent e) {
 				// .. get the selected property
-				IStructuredSelection sel = (IStructuredSelection)propertyTable.getViewer().getSelection();
+				IStructuredSelection sel = (IStructuredSelection) propertyTable.getViewer().getSelection();
 				assert !sel.isEmpty();
 				PropertyTableRowAdapter row = (PropertyTableRowAdapter) sel.getFirstElement();
 				String key = row.getPropertyKey();
-				
+
 				// .. remove the property
 				Command cmd = new RemovePropertyCommand(getInput(), key);
 				getCommandStack().execute(cmd);
-				
+
 				// .. clear selection
 				propertyTable.getViewer().setSelection(null);
 			}
 		});
-		
+
 		propertyTable.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				removeButton.setEnabled(!event.getSelection().isEmpty());
@@ -158,6 +183,9 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 		viewer.getControl().setMenu(menu);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected void doSetInput(E input) {
 		// .. prepare input for property table
@@ -172,21 +200,4 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 		}
 	};
 
-	/**
-	 * Returns the currently selected property.
-	 * 
-	 * @return the selected property or null
-	 */
-	public String getSelectedProperty() {
-		String result = null;
-
-		IStructuredSelection sel = propertyTable != null ? (IStructuredSelection) propertyTable.getViewer().getSelection() : null;
-
-		if (sel != null && sel.getFirstElement() != null) {
-			PropertyTableRowAdapter adapter = (PropertyTableRowAdapter) sel.getFirstElement();
-			result = adapter.getKey();
-		}
-
-		return result;
-	}
 }

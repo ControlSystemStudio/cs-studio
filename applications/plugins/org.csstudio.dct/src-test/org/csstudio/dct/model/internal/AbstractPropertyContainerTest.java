@@ -21,7 +21,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class AbstractPropertyContainerTest {
+public final class AbstractPropertyContainerTest {
 	private static final String NAME = "test";
 	private static final UUID ID = UUID.randomUUID();
 	private AbstractPropertyContainer container;
@@ -39,6 +39,10 @@ public class AbstractPropertyContainerTest {
 			public void accept(IVisitor visitor) {
 				
 			}
+
+			public boolean isInherited() {
+				return false;
+			}
 		};
 		container.addProperty("p1", "v1");
 		container.addProperty("p2", "v2");
@@ -50,7 +54,7 @@ public class AbstractPropertyContainerTest {
 	 * .
 	 */
 	@Test
-	public final void testAddProperty() {
+	public void testAddProperty() {
 		assertNull(container.getProperty("p3"));
 		container.addProperty("p3", "v3");
 		assertEquals("v3", container.getProperty("p3"));
@@ -62,7 +66,7 @@ public class AbstractPropertyContainerTest {
 	 * .
 	 */
 	@Test
-	public final void testGetProperty() {
+	public void testGetProperty() {
 		assertEquals("v1", container.getProperty("p1"));
 		assertEquals("v2", container.getProperty("p2"));
 	}
@@ -73,7 +77,7 @@ public class AbstractPropertyContainerTest {
 	 * .
 	 */
 	@Test
-	public final void testRemoveProperty() {
+	public void testRemoveProperty() {
 		assertEquals("v1", container.getProperty("p1"));
 		container.removeProperty("p1");
 		assertNull(container.getProperty("p1"));
@@ -85,7 +89,7 @@ public class AbstractPropertyContainerTest {
 	 * .
 	 */
 	@Test
-	public final void testGetProperties() {
+	public void testGetProperties() {
 		Map<String, String> properties = container.getProperties();
 		assertNotNull(properties);
 		assertFalse(properties.isEmpty());
@@ -102,7 +106,7 @@ public class AbstractPropertyContainerTest {
 	 * .
 	 */
 	@Test
-	public final void testEqualsHashCode() {
+	public void testEqualsHashCode() {
 		AbstractPropertyContainer container2 = new AbstractPropertyContainer(NAME, ID) {
 			public Map<String, String> getFinalProperties() {
 				return null;
@@ -110,6 +114,10 @@ public class AbstractPropertyContainerTest {
 
 			public void accept(IVisitor visitor) {
 				
+			}
+
+			public boolean isInherited() {
+				return false;
 			}
 		};
 

@@ -6,7 +6,24 @@ package org.csstudio.dct.model.commands;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.eclipse.gef.commands.Command;
 
-public class ChangeBeanPropertyCommand extends Command {
+/**
+ * Command that changes a named bean property.
+ * 
+ * @author Sven Wende
+ * 
+ */
+public final class ChangeBeanPropertyCommand extends Command {
+	private Object delegate;
+	private String propertyName;
+	private Object value;
+	private Object oldValue;
+	
+	/**
+	 * Constructor.
+	 * @param delegate the object
+	 * @param propertyName the name of the property
+	 * @param value the new value
+	 */
 	public ChangeBeanPropertyCommand(Object delegate, String propertyName, Object value) {
 		super();
 		this.delegate = delegate;
@@ -14,11 +31,9 @@ public class ChangeBeanPropertyCommand extends Command {
 		this.value = value;
 	}
 
-	private Object delegate;
-	private String propertyName;
-	private Object value;
-	private Object oldValue;
-	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void execute() {
 		PropertyUtilsBean util = new PropertyUtilsBean();
@@ -30,6 +45,9 @@ public class ChangeBeanPropertyCommand extends Command {
 		}
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void undo() {
 		PropertyUtilsBean util = new PropertyUtilsBean();
@@ -39,5 +57,5 @@ public class ChangeBeanPropertyCommand extends Command {
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
+
 }

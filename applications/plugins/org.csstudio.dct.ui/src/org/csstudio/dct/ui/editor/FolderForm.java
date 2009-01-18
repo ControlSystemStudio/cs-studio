@@ -36,7 +36,6 @@ public class FolderForm extends AbstractForm<IFolder> {
 
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IFolder folder) {
-		rows.add(new BeanPropertyTableRowAdapter("Name", folder, getCommandStack(), "name"));
 	}
 
 	/**

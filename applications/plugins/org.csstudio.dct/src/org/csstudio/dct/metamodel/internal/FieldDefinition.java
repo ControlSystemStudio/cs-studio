@@ -3,14 +3,13 @@ package org.csstudio.dct.metamodel.internal;
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IMenuDefinition;
 
-
 /**
  * Standard implementation of {@link IFieldDefinition}.
  * 
  * @author Sven Wende
  * 
  */
-public class FieldDefinition implements IFieldDefinition {
+public final class FieldDefinition implements IFieldDefinition {
 	private String extra;
 	private String initial;
 	private String interest;
@@ -22,6 +21,14 @@ public class FieldDefinition implements IFieldDefinition {
 	private String type;
 	private IMenuDefinition menuDefinition;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param type
+	 *            the type
+	 */
 	public FieldDefinition(String name, String type) {
 		assert type != null;
 		assert name != null;
@@ -29,74 +36,152 @@ public class FieldDefinition implements IFieldDefinition {
 		this.name = name;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getExtra() {
 		return extra;
 	}
 
+	/**
+	 * Sets extra.
+	 * 
+	 * @param extra
+	 *            extra
+	 */
 	public void setExtra(String extra) {
 		this.extra = extra;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getInitial() {
 		return initial;
 	}
 
+	/**
+	 * Sets the initial value.
+	 * 
+	 * @param initial
+	 *            the initial value
+	 */
 	public void setInitial(String initial) {
 		this.initial = initial;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getInterest() {
 		return interest;
 	}
 
+	/**
+	 * Sets the interest.
+	 * 
+	 * @param interest
+	 *            the interest
+	 */
 	public void setInterest(String interest) {
 		this.interest = interest;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public IMenuDefinition getMenu() {
 		return menuDefinition;
 	}
 
+	/**
+	 * Sets the menu.
+	 * 
+	 * @param menuDefinition
+	 *            the menu
+	 */
 	public void setMenuDefinition(IMenuDefinition menuDefinition) {
 		this.menuDefinition = menuDefinition;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getPrompt() {
 		return prompt;
 	}
 
+	/**
+	 * Sets the prompt.
+	 * 
+	 * @param prompt
+	 *            the prompt
+	 */
 	public void setPrompt(String prompt) {
 		this.prompt = prompt;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getPromptGroup() {
 		return promptGroup;
 	}
 
+	/**
+	 * Sets the prompt group.
+	 * 
+	 * @param promptGroup
+	 *            the prompt group
+	 */
 	public void setPromptGroup(String promptGroup) {
 		this.promptGroup = promptGroup;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getSize() {
 		return size;
 	}
 
+	/**
+	 * Sets the size.
+	 * 
+	 * @param size
+	 *            the size
+	 */
 	public void setSize(String size) {
 		this.size = size;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getSpecial() {
 		return special;
 	}
 
+	/**
+	 * Sets the special.
+	 * 
+	 * @param special
+	 *            the special
+	 */
 	public void setSpecial(String special) {
 		this.special = special;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getType() {
 		return type;
 	}

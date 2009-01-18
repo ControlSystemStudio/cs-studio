@@ -6,10 +6,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IPropertyContainer;
-import org.csstudio.dct.model.IRecord;
 
 /**
- * Standard implementation of {@link IRecord}.
+ * Standard implementation of {@link IPropertyContainer}.
  * 
  * @author Sven Wende
  */
@@ -17,57 +16,62 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
 
 	private Map<String, String> properties;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param id
+	 *            the id
+	 */
 	public AbstractPropertyContainer(String name, UUID id) {
 		super(name, id);
 		properties = new HashMap<String, String>();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addProperty(String key, String value) {
+	public final void addProperty(String key, String value) {
 		properties.put(key, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getProperty(String key) {
+	public final String getProperty(String key) {
 		return properties.get(key);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeProperty(String key) {
+	public final void removeProperty(String key) {
 		properties.remove(key);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean hasProperty(String key) {
+	public final boolean hasProperty(String key) {
 		return properties.containsKey(key);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, String> getProperties() {
+	public final Map<String, String> getProperties() {
 		return Collections.unmodifiableMap(properties);
 	}
 
-//	/**
-//	 *{@inheritDoc}
-//	 */
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = super.hashCode();
-//		result = prime * result + ((properties == null) ? 0 : properties.hashCode());
-//		return result;
-//	}
+	/**
+	 *{@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		return result;
+	}
 
 	/**
 	 *{@inheritDoc}

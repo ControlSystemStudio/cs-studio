@@ -3,33 +3,15 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.dct.metamodel.IDatabaseDefinition;
-import org.csstudio.dct.metamodel.IFieldDefinition;
-import org.csstudio.dct.metamodel.IMenuDefinition;
-import org.csstudio.dct.metamodel.IRecordDefinition;
-import org.csstudio.dct.model.IPropertyContainer;
-import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.commands.AddPropertyCommand;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.ui.editor.tables.MenuCellEditor;
 import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
@@ -40,9 +22,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Editing component for {@link IRecord}.
@@ -71,14 +50,6 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		recordFieldTable = new TableCitizenTable(composite, SWT.None, commandStack);
 		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(300));
-		
-		// .. popup menu
-//		TableViewer viewer = recordFieldTable.getViewer();
-//		MenuManager popupMenu = new MenuManager();
-//		OpenRecordMetaDataAction action = new OpenRecordMetaDataAction(this);
-//		popupMenu.add(action);
-//		Menu menu = popupMenu.createContextMenu(viewer.getControl());
-//		viewer.getControl().setMenu(menu);
 		
 		// .. filter button
 		Composite buttons = new Composite(composite, SWT.None);
@@ -148,8 +119,8 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	 */
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IRecord record) {
-		rows.add(new RecordNameTableRowAdapter(record, getCommandStack()));
 		rows.add(new BeanPropertyTableRowAdapter("Type", record, getCommandStack(), "type", true));
+		rows.add(new RecordEpicsNameTableRowAdapter(record, getCommandStack()));
 	}
 	
 	/**

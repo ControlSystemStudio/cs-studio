@@ -21,7 +21,7 @@ import org.csstudio.dct.model.IVisitor;
  * @author Sven Wende
  * 
  */
-public class BaseRecord implements IRecord {
+public final class BaseRecord implements IRecord {
 	private IRecordDefinition recordDefinition;
 	private List<IRecord> inheritingRecords = new ArrayList<IRecord>();
 	private Map<String, Object> fields;
@@ -108,6 +108,30 @@ public class BaseRecord implements IRecord {
 		return null;
 	}
 
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public String getEpicsName() {
+		return null;
+	}
+
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public String getEpicsNameFromHierarchy() {
+		return null;
+	}
+	
+	/**
+	 *{@inheritDoc}
+	 */
+	public void setEpicsName(String epicsName) {
+		
+	}
+
+	
 	/**
 	 *{@inheritDoc}
 	 */
@@ -235,6 +259,9 @@ public class BaseRecord implements IRecord {
 		return new HashMap<String, String>();
 	}
 
+	/**
+		 *{@inheritDoc}
+	 */
 	public boolean isAbstract() {
 		return true;
 	}

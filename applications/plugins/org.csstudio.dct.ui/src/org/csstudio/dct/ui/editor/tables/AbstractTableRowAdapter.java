@@ -20,6 +20,14 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	private E delegate;
 	private String error;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param delegate
+	 *            the delegate
+	 * @param commandStack
+	 *            the command stack
+	 */
 	public AbstractTableRowAdapter(E delegate, CommandStack commandStack) {
 		assert delegate != null;
 		assert commandStack != null;
@@ -27,6 +35,9 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 		this.commandStack = commandStack;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public String getError() {
 		return error;
 	}
@@ -38,51 +49,91 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	public boolean hasError() {
 		return StringUtil.hasLength(error);
 	}
-	
+
 	public E getDelegate() {
 		return delegate;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final RGB getBackgroundColorForKey() {
 		return doGetBackgroundColorForKey(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final RGB getBackgroundColorForValue() {
 		return doGetBackgroundColorForValue(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final FontData getFontForKey() {
 		return doGetFontForKey(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final FontData getFontForValue() {
 		return doGetFontForValue(delegate);
 	}
+	
+	/**
+	 *{@inheritDoc}
+	 */
+	public FontData getFontForError() {
+		return doGetFontForError(delegate);
+	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final RGB getForegroundColorForKey() {
 		return StringUtil.hasLength(error) ? getForegroundColorForErrors() : doGetForegroundColorForKey(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final RGB getForegroundColorForValue() {
 		return StringUtil.hasLength(error) ? getForegroundColorForErrors() : doGetForegroundColorForValue(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final RGB getForegroundColorForErrors() {
 		return new RGB(255, 0, 0);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final RGB getBackgroundColorForErrors() {
 		return null;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final Image getImage() {
 		return doGetImage(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final String getKey() {
 		return doGetKey(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final void setKey(String key) {
 		Command cmd = doSetKey(delegate, key);
 
@@ -92,20 +143,32 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final String getKeyDescription() {
 		return doGetKeyDescription(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final Object getValue() {
 		Object v = doGetValue(delegate);
 
 		return v != null ? v : "";
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final Object getValueForDisplay() {
 		return doGetValueForDisplay(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final void setValue(Object value) {
 		Command cmd = doSetValue(delegate, value);
 
@@ -114,14 +177,23 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 		}
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final boolean canModifyKey() {
 		return doCanModifyKey(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final boolean canModifyValue() {
 		return doCanModifyValue(delegate);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public final CellEditor getValueCellEditor(Composite parent) {
 		return doGetValueCellEditor(delegate, parent);
 	}
@@ -147,6 +219,10 @@ public class AbstractTableRowAdapter<E> implements ITableRow {
 	}
 
 	protected FontData doGetFontForValue(E delegate) {
+		return new FontData(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
+	}
+	
+	protected FontData doGetFontForError(E delegate) {
 		return new FontData(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
 	}
 

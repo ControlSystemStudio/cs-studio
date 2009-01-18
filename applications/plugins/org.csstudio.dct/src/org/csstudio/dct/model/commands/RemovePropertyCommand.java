@@ -12,11 +12,16 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class RemovePropertyCommand extends Command {
+public final class RemovePropertyCommand extends Command {
 	private IPropertyContainer container;
 	private String key;
 	private String value;
 	
+	/**
+	 * Constructor.
+	 * @param container the property container
+	 * @param key the key
+	 */
 	public RemovePropertyCommand(IPropertyContainer container, String key) {
 		assert container != null;
 		assert key != null;

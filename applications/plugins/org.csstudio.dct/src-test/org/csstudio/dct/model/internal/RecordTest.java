@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.UUID;
 
+import org.csstudio.dct.metamodel.internal.RecordDefinition;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.junit.Before;
@@ -24,7 +25,8 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class RecordTest {
+public final class RecordTest {
+	private BaseRecord baseRecord;
 	private Record parentRecord;
 	private Record record;
 
@@ -33,14 +35,18 @@ public class RecordTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		parentRecord = new Record("record_$a$", "ai", UUID.randomUUID());
+		baseRecord = new BaseRecord(new RecordDefinition("ai"));
+		
+		parentRecord = new Record(baseRecord, UUID.randomUUID());
+		parentRecord.setName("Pump");
+		parentRecord.setEpicsName("record_$a$");
 		parentRecord.addField("field1", "value1");
 		parentRecord.addField("field2", "value2");
 		parentRecord.addField("field3", "value3");
 		parentRecord.addProperty("property1", "propertyvalue1");
 		parentRecord.addProperty("property2", "propertyvalue2");
 		parentRecord.addProperty("property3", "propertyvalue3");
-
+		
 		record = new Record(parentRecord, UUID.randomUUID());
 		record.addField("field4", "value4");
 		record.addProperty("property4", "propertyvalue4");
@@ -50,7 +56,7 @@ public class RecordTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Record#equals()}.
 	 */
 	@Test
-	public final void testEquals() {
+	public void testEquals() {
 		Record r1 = new Record(record, UUID.randomUUID());
 		Record r2 = new Record(record, UUID.randomUUID());
 
@@ -87,7 +93,7 @@ public class RecordTest {
 	 * Test method for {@link org.csstudio.dct.model.internal.Record#getType()}.
 	 */
 	@Test
-	public final void testGetType() {
+	public  void testGetType() {
 		assertEquals("ai", parentRecord.getType());
 		assertEquals("ai", record.getType());
 	}
@@ -97,7 +103,7 @@ public class RecordTest {
 	 * {@link org.csstudio.dct.model.internal.Record#getFinalProperties()}.
 	 */
 	@Test
-	public final void testGetFinalProperties() {
+	public  void testGetFinalProperties() {
 		Map<String, String> parentProperties = parentRecord.getProperties();
 		Map<String, String> properties = record.getProperties();
 		Map<String, String> finalProperties = record.getFinalProperties();
@@ -128,7 +134,7 @@ public class RecordTest {
 	 * .
 	 */
 	@Test
-	public final void testAddField() {
+	public void testAddField() {
 		assertNull(record.getField("field5"));
 		record.addField("field5", "value5");
 		assertEquals("value5", record.getField("field5"));
@@ -140,7 +146,7 @@ public class RecordTest {
 	 * .
 	 */
 	@Test
-	public final void testGetField() {
+	public void testGetField() {
 		assertEquals("value1", parentRecord.getField("field1"));
 		assertEquals("value2", parentRecord.getField("field2"));
 		assertEquals("value3", parentRecord.getField("field3"));
@@ -152,7 +158,7 @@ public class RecordTest {
 	 * .
 	 */
 	@Test
-	public final void testRemoveField() {
+	public void testRemoveField() {
 		assertEquals("value1", parentRecord.getField("field1"));
 		parentRecord.removeField("field1");
 		assertNull(parentRecord.getField("field1"));
@@ -163,7 +169,7 @@ public class RecordTest {
 	 * {@link org.csstudio.dct.model.internal.Record#getFields()}.
 	 */
 	@Test
-	public final void testGetFields() {
+	public void testGetFields() {
 		Map<String, Object> fields = record.getFields();
 		assertNotNull(fields);
 		assertFalse(fields.isEmpty());
@@ -176,7 +182,7 @@ public class RecordTest {
 	 * {@link org.csstudio.dct.model.internal.Record#getFinalFields()}.
 	 */
 	@Test
-	public final void testGetFinalFields() {
+	public void testGetFinalFields() {
 		Map<String, Object> parentFields = parentRecord.getFields();
 		Map<String, Object> fields = record.getFields();
 		Map<String, Object> finalFields = record.getFinalFields();
@@ -203,14 +209,20 @@ public class RecordTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.dct.model.internal.Record#getNameFromHierarchy(boolean)}
+	 * {@link org.csstudio.dct.model.internal.Record#getEpicsNameFromHierarchy(boolean)}
 	 * .
 	 */
-	@Test
-	public final void testGetNameFromHierarchy() {
-		assertEquals("record_$a$", record.getNameFromHierarchy());
-		record.setName("myname");
-		assertEquals("myname", record.getNameFromHierarchy());
+	public void testGetEpicsNameFromHierarchy() {
+		assertEquals("record_$a$", parentRecord.getEpicsName());
+		assertNull(record.getEpicsName());
+		assertEquals("record_$a$", parentRecord.getEpicsNameFromHierarchy());
+		assertEquals("record_$a$", record.getEpicsNameFromHierarchy());
+		
+		record.setEpicsName("myname");
+		assertEquals("record_$a$", parentRecord.getEpicsName());
+		assertEquals("myname", record.getEpicsName());
+		assertEquals("record_$a$", parentRecord.getEpicsNameFromHierarchy());
+		assertEquals("myname", record.getEpicsNameFromHierarchy());
 	}
 
 	/**
@@ -218,9 +230,10 @@ public class RecordTest {
 	 * {@link org.csstudio.dct.model.internal.Record#getParentRecord()}.
 	 */
 	@Test
-	public final void testGetParentRecord() {
+	public void testGetParentRecord() {
+		assertNull(baseRecord.getParentRecord());
+		assertEquals(baseRecord, parentRecord.getParentRecord());
 		assertEquals(parentRecord, record.getParentRecord());
-		assertNull(parentRecord.getParentRecord());
 	}
 
 	/**
@@ -228,7 +241,7 @@ public class RecordTest {
 	 * {@link org.csstudio.dct.model.internal.Record#getContainer()}.
 	 */
 	@Test
-	public final void testGetContainer() {
+	public void testGetContainer() {
 		assertNull(parentRecord.getContainer());
 		assertNull(record.getContainer());
 	}
@@ -239,7 +252,7 @@ public class RecordTest {
 	 * .
 	 */
 	@Test
-	public final void testSetContainer() {
+	public void testSetContainer() {
 		Prototype prototype = new Prototype("p", UUID.randomUUID());
 		record.setContainer(prototype);
 		assertEquals(prototype, record.getContainer());
@@ -251,7 +264,7 @@ public class RecordTest {
 		 * .
 		 */
 		@Test
-		public final void testIsInherited() {
+		public void testIsInherited() {
 			Prototype prototype = new Prototype("p", UUID.randomUUID());
 			parentRecord.setContainer(prototype);
 			assertEquals(prototype, parentRecord.getContainer());
@@ -267,7 +280,7 @@ public class RecordTest {
 	 * .
 	 */
 	@Test
-	public final void testGetAddRemoveDependentRecord() {
+	public void testGetAddRemoveDependentRecord() {
 		assertTrue(parentRecord.getDependentRecords().isEmpty());
 		// add
 		parentRecord.addDependentRecord(record);
@@ -283,7 +296,7 @@ public class RecordTest {
 	 * {@link org.csstudio.dct.model.internal.Record#equals(Object)} .
 	 */
 	@Test
-	public final void testEqualsHashCode() {
+	public void testEqualsHashCode() {
 		UUID id = UUID.randomUUID();
 
 		// .. ids must equal

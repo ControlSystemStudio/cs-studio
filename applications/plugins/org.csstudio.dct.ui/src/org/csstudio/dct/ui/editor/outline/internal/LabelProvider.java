@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.csstudio.dct.ui.editor.outline.internal;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;

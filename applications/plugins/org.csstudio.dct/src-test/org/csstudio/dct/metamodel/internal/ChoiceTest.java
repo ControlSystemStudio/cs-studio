@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public class ChoiceTest {
+public final class ChoiceTest {
 
 	private Choice choice;
 	
@@ -30,7 +30,7 @@ public class ChoiceTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.Choice#getDescription()}.
 	 */
 	@Test
-	public final void testGetDescription() {
+	public void testGetDescription() {
 		assertEquals("description", choice.getDescription());
 	}
 
@@ -38,7 +38,7 @@ public class ChoiceTest {
 	 * Test method for {@link org.csstudio.dct.metamodel.internal.Choice#getId()}.
 	 */
 	@Test
-	public final void testGetId() {
+	public void testGetId() {
 		assertEquals("id", choice.getId());
 	}
 

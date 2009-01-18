@@ -12,16 +12,21 @@ import org.eclipse.gef.commands.Command;
  * 
  * @author Sven Wende
  */
-public class ChangePropertyKeyCommand extends Command {
+public final class ChangePropertyKeyCommand extends Command {
 	private IPropertyContainer container;
 	private String key;
-	private String value;
 	private String newKey;
 
+	/**
+	 * Constructor.
+	 * @param container the property container
+	 * @param key the key
+	 * @param newKey the new key
+	 */
 	public ChangePropertyKeyCommand(IPropertyContainer container, String key, String newKey) {
 		assert container != null;
 		assert key != null;
-		assert value != null;
+		assert newKey != null;
 		this.container = container;
 		this.key = key;
 		this.newKey = newKey;
@@ -44,11 +49,9 @@ public class ChangePropertyKeyCommand extends Command {
 	}
 
 	private void doSwitch(String key, String newKey) {
-		String value = container.getProperty(key);
+		String v = container.getProperty(key);
 		container.removeProperty(key);
-		container.addProperty(newKey, value);
-
-		System.err.println("Switched from :" + key + " to " + newKey + " with value " + value);
+		container.addProperty(newKey, v);
 	}
 
 }

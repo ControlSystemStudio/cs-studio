@@ -30,7 +30,7 @@ import org.jdom.Element;
  * @author Sven Wende
  * 
  */
-public class XmlToProject {
+public final class XmlToProject {
 	private Document document;
 
 	/**
@@ -54,7 +54,7 @@ public class XmlToProject {
 	 * @param document
 	 *            the xml document
 	 */
-	public XmlToProject(Document document) {
+	public XmlToProject(final Document document) {
 		assert document != null;
 		this.document = document;
 	}
@@ -181,17 +181,17 @@ public class XmlToProject {
 	 * 	</folder>
 	 * </code>
 	 * 
-	 * @param xmlPrototypeElement
+	 * @param xmlFolderElement
 	 *            the xml element
 	 */
 	void createFolder(Element xmlFolderElement) {
 		assert xmlFolderElement != null;
 		assert xmlFolderElement.getName().equals("folder");
 		assert modelElements.get(xmlFolderElement.getAttributeValue("parent")) == null;
-		assert xmlFolderElement.getAttributeValue("capacity")!=null;
 		assert xmlFolderElement.getParentElement() != null;
 		assert xmlFolderElement.getParentElement().getAttributeValue("id") != null;
-		assert modelElements.get(xmlFolderElement.getParentElement().getAttributeValue("id")) != null;
+		System.out.println(">>>>>>>>>"+xmlFolderElement.getParentElement().getAttributeValue("id"));
+		assert modelElements.get(UUID.fromString(xmlFolderElement.getParentElement().getAttributeValue("id"))) != null;
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the folder
@@ -241,7 +241,7 @@ public class XmlToProject {
 		assert modelElements.get(xmlPrototypeElement.getAttributeValue("parent")) == null;
 		assert xmlPrototypeElement.getParentElement() != null;
 		assert xmlPrototypeElement.getParentElement().getAttributeValue("id") != null;
-		assert modelElements.get(xmlPrototypeElement.getParentElement().getAttributeValue("id")) != null;
+		assert modelElements.get(UUID.fromString(xmlPrototypeElement.getParentElement().getAttributeValue("id"))) != null;
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the prototype
@@ -282,17 +282,17 @@ public class XmlToProject {
 	 * <instance name="{name}" id={id} parent="{parentId}"> <record
 	 * ...>...</record> ... <instance ...>...</instance> ... </instance>
 	 * 
-	 * @param xmlElement
-	 *            the xmlElement representing the record
+	 * @param xmlInstanceElement
+	 *            the xmlElement representing the instance
 	 */
 	@SuppressWarnings("unchecked")
 	void createInstance(Element xmlInstanceElement) {
 		assert xmlInstanceElement != null;
 		assert xmlInstanceElement.getName().equals("instance");
-		assert modelElements.get(xmlInstanceElement.getAttributeValue("parent")) != null;
+		assert modelElements.get(UUID.fromString(xmlInstanceElement.getAttributeValue("parent"))) != null;
 		assert xmlInstanceElement.getParentElement() != null;
 		assert xmlInstanceElement.getParentElement().getAttributeValue("id") != null;
-		assert modelElements.get(xmlInstanceElement.getParentElement().getAttributeValue("id")) != null;
+		assert modelElements.get(UUID.fromString(xmlInstanceElement.getParentElement().getAttributeValue("id"))) != null;
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the instance
@@ -375,7 +375,7 @@ public class XmlToProject {
 		assert xmlRecordElement.getName().equals("record");
 		assert xmlRecordElement.getParentElement() != null;
 		assert xmlRecordElement.getParentElement().getAttributeValue("id") != null;
-		assert modelElements.get(xmlRecordElement.getParentElement().getAttributeValue("id")) != null;
+		assert modelElements.get(UUID.fromString(xmlRecordElement.getParentElement().getAttributeValue("id"))) != null;
 
 		IRecord record = null;
 
@@ -409,10 +409,15 @@ public class XmlToProject {
 		}
 
 		assert record != null;
-		// READ RECORD NAME
+		
+		// READ NAME
 		String recordName = xmlRecordElement.getAttributeValue("name");
 		record.setName(recordName.equals("{inherited}") ? null : recordName);
-
+		
+		// READ EPICS NAME
+		String epicsName = xmlRecordElement.getAttributeValue("epicsname");
+		record.setEpicsName(recordName.equals("{inherited}") ? null : epicsName);
+		
 		// READ FIELD INFORMATION
 		for (Element xmlFieldElement : (List<Element>) xmlRecordElement.getChildren("field")) {
 			String name = xmlFieldElement.getAttributeValue("name");
@@ -453,8 +458,8 @@ public class XmlToProject {
 	 *   ...
 	 * </code>
 	 * 
-	 * @param container
-	 * @param xmlParentElement
+	 * @param container the container
+	 * @param xmlParentElement the xml element
 	 */
 	@SuppressWarnings("unchecked")
 	private void readProperties(IPropertyContainer container, Element xmlParentElement) {

@@ -7,7 +7,7 @@ import org.csstudio.dct.util.CompareUtil;
  * 
  * @author Sven Wende
  */
-public class Parameter {
+public final class Parameter {
 	private String name;
 	private String defaultValue;
 
@@ -34,7 +34,7 @@ public class Parameter {
 	}
 
 	/**
-	 * Sets the name
+	 * Sets the name.
 	 * 
 	 * @param name
 	 *            the name

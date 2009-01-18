@@ -3,6 +3,8 @@ package org.csstudio.dct.ui.internal;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.AliasResolutionException;
+import org.csstudio.dct.util.ResolutionUtil;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * UI adapter for {@link IRecord}.
@@ -16,12 +18,13 @@ public class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
 	 */
 	@Override
 	protected String doGetLabel(IRecord record) {
-		String name = record.getNameFromHierarchy();
+		String name = AliasResolutionUtil.getNameFromHierarchy(record);
 		
 		if(record.isInherited()) {
 			try {
-				name = AliasResolutionUtil.resolve(record.getNameFromHierarchy(), record);
+				name = ResolutionUtil.resolve(name, record);
 			} catch (AliasResolutionException e) {
+				CentralLogger.getInstance().warn(this, e);
 			}
 		}
 		

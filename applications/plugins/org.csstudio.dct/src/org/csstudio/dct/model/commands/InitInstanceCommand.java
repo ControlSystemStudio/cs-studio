@@ -10,10 +10,20 @@ import org.csstudio.dct.model.internal.Record;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 
-public class InitInstanceCommand extends Command {
+/**
+ * Command the initializes an instance.
+ * 
+ * @author Sven Wende
+ *
+ */
+public final class InitInstanceCommand extends Command {
 	private CompoundCommand internalCmd;
 	private IInstance instance;
 
+	/**
+	 * Constructor.
+	 * @param instance the instance
+	 */
 	public InitInstanceCommand(IInstance instance) {
 		this.instance = instance;
 	}

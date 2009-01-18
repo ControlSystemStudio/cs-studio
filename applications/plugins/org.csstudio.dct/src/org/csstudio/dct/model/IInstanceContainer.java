@@ -17,10 +17,12 @@ public interface IInstanceContainer extends IElement {
 	List<IInstance> getInstances();
 
 	/**
-	 * Adds an instance at the specified position
+	 * Returns the instance at the specified position.
 	 * 
 	 * @param index
 	 *            the position index
+	 *            
+	 * @return the instance
 	 */
 	IInstance getInstance(int index);
 
@@ -49,8 +51,12 @@ public interface IInstanceContainer extends IElement {
 	 *            the instance
 	 */
 	void removeInstance(IInstance instance);
-	
-	void setInstance(int index, IInstance instance);
 
+	/**
+	 * Sets the instance at the specified list index.
+	 * @param index the list index
+	 * @param instance the instance
+	 */
+	void setInstance(int index, IInstance instance);
 
 }

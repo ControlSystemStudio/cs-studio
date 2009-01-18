@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * UI adapter for {@link IInstance}.
@@ -29,7 +30,7 @@ public class InstanceWorkbenchAdapter extends BaseWorkbenchAdapter<IInstance> {
 	 */
 	@Override
 	protected String doGetLabel(IInstance instance) {
-		return instance.getName() + " [" + instance.getPrototype().getName()+"]";
+		return AliasResolutionUtil.getNameFromHierarchy(instance) + " [" + instance.getPrototype().getName()+"]";
 	}
 
 	/**

@@ -3,12 +3,12 @@
  */
 package org.csstudio.dct.model.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 import java.util.UUID;
 
 import org.csstudio.dct.model.IVisitor;
-import org.csstudio.dct.model.internal.AbstractElement;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +25,7 @@ public class AbstractElementTest {
 	private AbstractElement element;
 
 	/**
+	 * Setup.
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -33,6 +34,10 @@ public class AbstractElementTest {
 
 			public void accept(IVisitor visitor) {
 				
+			}
+
+			public boolean isInherited() {
+				return false;
 			}
 		};
 	}
@@ -76,6 +81,10 @@ public class AbstractElementTest {
 		AbstractElement element2 = new AbstractElement(NAME, ID) {
 			public void accept(IVisitor visitor) {
 				
+			}
+
+			public boolean isInherited() {
+				return false;
 			}};
 		assertEquals(element, element2);
 		assertEquals(element.hashCode(), element2.hashCode());
@@ -83,6 +92,10 @@ public class AbstractElementTest {
 		AbstractElement element3 = new AbstractElement("othername", ID) {
 			public void accept(IVisitor visitor) {
 				
+			}
+
+			public boolean isInherited() {
+				return false;
 			}};
 		assertNotSame(element, element3);
 		assertNotSame(element.hashCode(), element3.hashCode());
@@ -90,6 +103,10 @@ public class AbstractElementTest {
 		AbstractElement element4 = new AbstractElement(NAME, UUID.randomUUID()) {
 			public void accept(IVisitor visitor) {
 				
+			}
+
+			public boolean isInherited() {
+				return false;
 			}};
 		assertNotSame(element, element4);
 		assertNotSame(element.hashCode(), element4.hashCode());
