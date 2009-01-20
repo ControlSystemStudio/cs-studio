@@ -2,6 +2,7 @@ package org.csstudio.display.pace.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,7 +35,8 @@ public class Model
     final private ArrayList<Instance> instances = new ArrayList<Instance>();
     
     /** Listener to be notified of model changes */
-    private ModelListener listener;
+    private CopyOnWriteArrayList<ModelListener> listeners =
+        new CopyOnWriteArrayList<ModelListener>();
     
     /** Initialize model from XML file stream
      *  @param stream Stream for XML file
@@ -91,17 +93,13 @@ public class Model
     /** @param listener Listener to add */
     public void addListener(final ModelListener listener)
     {
-        if (this.listener != null)
-            throw new Error("Can only handle one listener"); //$NON-NLS-1$
-        this.listener = listener;
+        listeners.add(listener);
     }
 
     /** @param listener Listener to remove */
     public void removeListener(final ModelListener listener)
     {
-        if (this.listener != listener)
-            throw new Error("Unknown listener"); //$NON-NLS-1$
-        this.listener = null;
+        listeners.remove(listener);
     }
     
     /** @return Overall title of the Model */
@@ -180,7 +178,7 @@ public class Model
      */
     public void fireCellUpdate(final Cell cell)
     {
-        if (listener != null)
+        for (ModelListener listener : listeners)
             listener.cellUpdate(cell);
     }
 }

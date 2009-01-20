@@ -1,5 +1,6 @@
 package org.csstudio.display.pace.gui;
 
+import org.csstudio.display.pace.Messages;
 import org.csstudio.display.pace.model.Cell;
 import org.eclipse.jface.action.Action;
 
@@ -9,19 +10,29 @@ import org.eclipse.jface.action.Action;
  */
 public class RestoreCellAction extends Action
 {   
-    final private Cell cell;
+    final private Cell cells[];
 
-    public RestoreCellAction(final Cell cell)
+    public RestoreCellAction(final Cell[] cells)
     {
-        super("Restore Original Value");
-        setToolTipText("Replace entered value with value of underlying PV");
-        this.cell = cell;
-        setEnabled(cell.isEdited());
+        super(Messages.RestoreCell);
+        setToolTipText(Messages.RestoreCell_TT);
+        this.cells = cells;
+        boolean enabled = false;
+        if (cells != null)
+            for (Cell cell : cells)
+                if (cell.isEdited())
+                {
+                    enabled = true;
+                    break;
+                }
+        setEnabled(enabled);
     }
 
     @Override
     public void run()
     {
-        cell.clearUserValue();
+        for (Cell cell : cells)
+            if (cell.isEdited())
+                cell.clearUserValue();
     }
 }

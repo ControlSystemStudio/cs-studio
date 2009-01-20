@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -32,6 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -115,7 +117,8 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         
         // Create TableViewer that displays Model in Table
         table_viewer = new TableViewer(parent,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.VIRTUAL);
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.VIRTUAL |
+                SWT.FULL_SELECTION);
         // Some tweaks to the underlying table widget
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
@@ -183,6 +186,9 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         });
     }
 
+    /** Create context menu
+     *  @param site Workbench site where menu will get registered or <code>null</code>
+     */
     private void createContextMenu(final IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
@@ -195,16 +201,44 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             site.registerContextMenu(manager, this);
     }
 
-    // IMenuListener
+    /** Fill context menu depending on current selection
+     *  @param manager Menu manager
+     *  @see IMenuListener
+     */
     public void menuAboutToShow(final IMenuManager manager)
     {
-        if (selected_cell != null)
-        manager.add(new RestoreCellAction(selected_cell));
+        final Cell cells[] = getSelectedCells();
+        manager.add(new RestoreCellAction(cells));
+        manager.add(new SetCellValueAction(table_viewer.getTable().getShell(),
+                                           cells));
         // Placeholder for CSS PV contributions
         manager.add(new GroupMarker("additions")); //$NON-NLS-1$
         manager.add(new Separator());
     }
 
+    /** @return Currently selected editable(!) cells or <code>null</code> */
+    private Cell [] getSelectedCells()
+    {
+        // Anything selected at all?
+        if (selected_cell == null)
+            return null;
+        final Column column = selected_cell.getColumn();
+        // Read-only?
+        if (column.isReadonly())
+            return null;
+        // TableViewer selection has Model Instance (row) entries
+        final Object[] sel =
+            ((IStructuredSelection) table_viewer.getSelection()).toArray();
+        // Turn into Cell array
+        final Cell cells[] = new Cell[sel.length];
+        for (int i = 0; i < sel.length; i++)
+        {
+            final Instance instance = (Instance) sel[i];
+            cells[i] = instance.getCell(column);
+        }
+        return cells;
+    }
+    
     // ModelListener
     public void cellUpdate(final Cell cell)
     {

@@ -84,6 +84,17 @@ public class Instance
         return cells[c];
     }
 
+    /** @param column Column in model
+     *  @return Cell at given column in this instance/row
+     */
+    public Cell getCell(final Column column)
+    {
+        for (int c=0; c<model.getColumnCount(); ++c)
+            if (model.getColumn(c) == column)
+                return cells[c];
+        return null;
+    }
+
     /** @return String representation for debugging */
     @Override
     public String toString()

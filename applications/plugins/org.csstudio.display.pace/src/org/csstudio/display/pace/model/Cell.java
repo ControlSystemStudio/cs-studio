@@ -46,6 +46,12 @@ public class Cell implements PVListener, IProcessVariable
         return instance;
     }
 
+    /** @return Column that contains this cell */
+    public Column getColumn()
+    {
+        return column;
+    }
+    
     /** @return <code>true</code> for read-only cell */
     public boolean isReadOnly()
     {
