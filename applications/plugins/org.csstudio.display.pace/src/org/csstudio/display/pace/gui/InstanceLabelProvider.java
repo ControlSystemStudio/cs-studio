@@ -77,6 +77,8 @@ public class InstanceLabelProvider extends CellLabelProvider
              final Display display = Display.getCurrent();
              gui_cell.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
          }
+         else
+             gui_cell.setBackground(null);
          // Highlight read-only cells
          if (cell.isReadOnly())
          {
