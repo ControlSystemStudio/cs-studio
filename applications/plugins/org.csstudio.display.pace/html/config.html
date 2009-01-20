@@ -5,9 +5,20 @@
 <body>
 
 <h1>Configuration Files</h1>
-PACE Editor configuration files are in XML format.  They are 
-stored in the <b>config</b> subdirectory and have a <b>.pace</b> file 
-extension.
+This is about creating new PACE configuration files or editing existing
+PACE configuration files.
+To <u>use</u> the configuration files, see
+<a href=open_config.html>Starting the PACE Editor</a>.
+
+<p>
+PACE Editor configuration files are in XML format and have a <b>.pace</b> file 
+extension. To edit them, select "Open With...", "Text Editor" from the
+Navigator context menu of the file. To create new files, use
+"New...", "Other", "General", "File" in the Navigator context menu
+and make sure to use a .pace file extension for the new file.
+<p>
+When done editing, once open the file via "Open With...", "PACE" in the
+Navigator to re-establish PACE as the default tool for opening the file.
 
 <h2>Tags</h2>
 The configuration files expect certain tags to define the
@@ -26,8 +37,8 @@ column headers and the rows.  These tags are described below.
    &lt;!-- There can be more columns -->
  &lt;/columns></pre>
 Where the cell access can be <b>rw</b> for read-write or <b>ro</b> for read-only.
-The pv name for the cell contains macros, which are defined below in
-the <b>instances</b>.
+The pv name for the cell contains macros with curly brackets,
+which are defined below in the <b>instances</b>.
 <pre> </pre>
 <li>And finally the <b>instance</b> or Row Tags.
 <pre>&lt;instances>
@@ -46,29 +57,24 @@ column definition above.
 <h2>Configuration File Example</h2>
 <pre> <b>example.pace</b></pre>
 <pre> 
-&lt;!-- 
-  Example config file
- -->
+&lt;!-- Example config file -->
 &lt;paceconfig>
-&lt;title> Title &lt;/title>
-&lt;columns>
-   &lt;column>
-      &lt;name>Column Header&lt;/name>
-	 &lt;access >rw&lt;/access>
-	 &lt;pv>${S}_RCCS:CV${N}02:PID_KP</pv>
-    &lt;/column>
-   &lt;!-- There can be more columns -->
-&lt;/columns>
-
-&lt;instances>
-     &lt;instance>
-     &lt;!--  TODO Turn 'col' into 'row' or 'name' and show in left table col. -->
-       &lt;name>DTL 1&lt;/name>
-       &lt;macros>S=DTL,N=1&lt;/macros>
-     &lt;/instance>
-   &lt;!--  Many more...: DTL 1..6, CCL 1..4. -->
-&lt;/instances>
-
+    &lt;title> Title &lt;/title>
+    &lt;columns>
+        &lt;column>
+            &lt;name>Column Header&lt;/name>
+	        &lt;access>rw&lt;/access>
+	        &lt;pv>${S}_RCCS:CV${N}02:PID_KP</pv>
+        &lt;/column>
+       &lt;!-- There can be more columns -->
+    &lt;/columns>
+    &lt;instances>
+        &lt;instance>
+            &lt;name>DTL 1&lt;/name>
+            &lt;macros>S=DTL,N=1&lt;/macros>
+        &lt;/instance>
+        &lt;!--  Many more...: DTL 1..6, CCL 1..4. -->
+    &lt;/instances>
 &lt;/paceconfig></pre>
 </body>
 </html>

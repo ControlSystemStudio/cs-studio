@@ -11,6 +11,7 @@ public class Macro
 {
     /** Macro name and replacement value */
     final private String name, value;
+    
     /** Compiled regular expression for macro ${name} */
     final private Pattern pattern;
 
@@ -56,13 +57,6 @@ public class Macro
         pattern = Pattern.compile("\\$\\{" + name + "\\}");
     }
     
-    /** @return String representation for debugging */
-    @Override
-    public String toString()
-    {
-        return name + "=" + value;
-    }
-
     /** Apply macro to input
      *  @param input
      *  @return Input with replaces macro values
@@ -70,5 +64,12 @@ public class Macro
     public String apply(final String input)
     {
         return pattern.matcher(input).replaceAll(value);
+    }
+
+    /** @return String representation for debugging */
+    @Override
+    public String toString()
+    {
+        return name + "=" + value;
     }
 }

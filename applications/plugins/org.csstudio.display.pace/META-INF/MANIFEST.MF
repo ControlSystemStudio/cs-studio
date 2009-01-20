@@ -3,15 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: PACE
 Bundle-SymbolicName: org.csstudio.display.pace;singleton:=true
 Bundle-Version: 1.0.0
+Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  org.eclipse.jface,
  org.eclipse.core.resources;bundle-version="3.4.0",
- org.eclipse.ui.ide,
- org.csstudio.utility.pv,
- org.csstudio.utility.pv.epics,
- org.csstudio.logbook.sns,
- org.csstudio.logbook,
- org.csstudio.platform.utility.rdb;bundle-version="1.0.0",
+ org.eclipse.ui;bundle-version="3.4.0",
  org.csstudio.apputil;bundle-version="1.0.6",
- org.csstudio.apputil.ui;bundle-version="1.0.9"
+ org.csstudio.apputil.ui;bundle-version="1.0.9",
+ org.csstudio.utility.pv,
+ org.csstudio.logbook
 Bundle-Vendor: Delphy Armstrong, Kay Kasemir

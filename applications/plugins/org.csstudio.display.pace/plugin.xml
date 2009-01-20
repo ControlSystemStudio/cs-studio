@@ -5,7 +5,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="PACE Editor"
+            name="%Editor"
             extensions="pace"
             default="true"
             filenames="pace"

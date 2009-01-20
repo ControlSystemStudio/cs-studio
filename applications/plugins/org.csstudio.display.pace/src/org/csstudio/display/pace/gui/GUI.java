@@ -11,6 +11,7 @@ import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -27,6 +28,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -146,6 +149,21 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             col.setLabelProvider(new InstanceLabelProvider(c));
             if (! model_col.isReadonly())
                 col.setEditingSupport(new ModelCellEditor(table_viewer, c));
+            // Clicking on column header runs SetCellValueAction
+            col.getColumn().addSelectionListener(new SelectionAdapter()
+            {
+                @Override
+                public void widgetSelected(SelectionEvent e)
+                {
+                    final Cell[] cells = getSelectedCells();
+                    if (cells == null)
+                        return;
+                    final IAction action =
+                        new SetCellValueAction(table.getShell(),
+                                               cells);
+                    action.run();
+                }
+            });
         }
         new AutoSizeControlListener(table);
         
@@ -155,11 +173,21 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     /** Update <code>selected_cell</code> from mouse position */
     private void addCellTracker()
     {
+        // This part is a bit unfortunate:
+        // The TableViewer handles most of the interfacing between the
+        // SWT table and the Model, but it only handles selections
+        // on the row/Instance level, while we want to perform certain
+        // tasks on the Cell level.
+        // This code tracks the currently selected Model Cell, the Cell
+        // under the last mouse click.
+        // Since the Cell has a reference to its Column,
+        // and the TableViewer provides all selected rows/Instances,
+        // this then leads to all selected Cells.
         table_viewer.getTable().addListener(SWT.MouseDown, new Listener()
         {
-            @SuppressWarnings("nls")
             public void handleEvent(final Event event)
             {
+                // Get cell in SWT Table
                 final Point point = new Point(event.x, event.y);
                 final ViewerCell viewer_cell = table_viewer.getCell(point);
                 if (viewer_cell == null)
@@ -167,6 +195,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                     selected_cell = null;
                     return;
                 }
+                // Get Model's row/Instance, then Model's Cell in there
                 final Instance instance = (Instance) viewer_cell.getElement();
                 final int col_idx = viewer_cell.getColumnIndex();
                 if (col_idx <= 0)
@@ -175,11 +204,9 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                     return;
                 }
                 selected_cell = instance.getCell(col_idx-1);
-                System.out.println("Cell " + selected_cell);
+                // Update selection listeners
                 for (ISelectionChangedListener listener : listeners)
-                {
                     listener.selectionChanged(new SelectionChangedEvent(GUI.this, getSelection()));
-                }
             }
         });
     }
@@ -221,13 +248,13 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         if (selected_cell == null)
             return null;
         final Column column = selected_cell.getColumn();
-        // Read-only?
+        // Only return editable cells
         if (column.isReadonly())
             return null;
         // TableViewer selection has Model Instance (row) entries
+        // Turn into Cell array
         final Object[] sel =
             ((IStructuredSelection) table_viewer.getSelection()).toArray();
-        // Turn into Cell array
         final Cell cells[] = new Cell[sel.length];
         for (int i = 0; i < sel.length; i++)
         {
@@ -237,7 +264,9 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         return cells;
     }
     
-    // ModelListener
+    /** Update table when Cell in Model changed
+     *  @see ModelListener
+     */
     public void cellUpdate(final Cell cell)
     {
         final Table table = table_viewer.getTable();
