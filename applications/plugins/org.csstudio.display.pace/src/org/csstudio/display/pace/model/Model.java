@@ -114,18 +114,18 @@ public class Model
         return columns.size();
     }
 
-    /** @return The number of rows in the table. */
-    public int getInstanceCount()
-    {
-        return instances.size();
-    }
-
     /** @param i Index 0 .. getColumnCount()-1
      *  @return Column at given index
      */
     public Column getColumn(final int i)
     {
         return columns.get(i);
+    }
+
+    /** @return The number of rows in the table. */
+    public int getInstanceCount()
+    {
+        return instances.size();
     }
 
     /** @param i Index 0 .. getInstanceCount()-1
@@ -165,20 +165,32 @@ public class Model
     }
 
     
+    /** Save values entered by user to PVs
+     *  @throws Exception on error
+     */
+    public void saveUserValues() throws Exception
+    {
+        for (Instance instance : instances)
+        {
+            for (int c = 0; c < getColumnCount(); c++)
+                instance.getCell(c).saveUserValue();
+        }
+    }
+
+    /** Notify listeners of cell update
+     *  @param cell Cell that changed
+     */
+    void fireCellUpdate(final Cell cell)
+    {
+        for (ModelListener listener : listeners)
+            listener.cellUpdate(cell);
+    }
+
     /** @return Info string for debugging */
     @SuppressWarnings("nls")
     @Override
     public String toString()
     {
         return "PACE Model '" + title + "'";
-    }
-
-    /** Notify listeners of cell update
-     *  @param cell Cell that changed
-     */
-    public void fireCellUpdate(final Cell cell)
-    {
-        for (ModelListener listener : listeners)
-            listener.cellUpdate(cell);
     }
 }

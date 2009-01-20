@@ -71,6 +71,13 @@ public class Cell implements PVListener, IProcessVariable
             return current_value;
         return Messages.UnknownValue;
     }
+
+    /** @return Original value of PV or <code>null</code>
+     */
+    public String getCurrentValue()
+    {
+        return current_value;
+    }
     
     /** Set a user-specified value.
      *  <p>
@@ -103,6 +110,16 @@ public class Cell implements PVListener, IProcessVariable
         instance.getModel().fireCellUpdate(this);
     }
     
+    /** Save value entered by user to PV
+     *  @throws Exception on error
+     */
+    public void saveUserValue() throws Exception
+    {
+        if (!isEdited())
+            return;
+        pv.setValue(user_value);
+    }
+
     /** @return <code>true</code> if user entered a value */
     public boolean isEdited()
     {

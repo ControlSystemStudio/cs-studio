@@ -16,6 +16,16 @@ public class Messages extends NLS
 
     public static String RestoreCell_TT;
 
+    public static String SaveError;
+
+    public static String SaveInto;
+
+    public static String SaveMessage;
+
+    public static String SavePVInfoFmt;
+
+    public static String SaveTitle;
+
     public static String SetValue;
 
     public static String SetValue_Msg;

@@ -1,15 +1,22 @@
 package org.csstudio.display.pace;
 
+import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.display.pace.gui.GUI;
 import org.csstudio.display.pace.model.Cell;
+import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
+import org.csstudio.logbook.ILogbook;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -22,7 +29,6 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     implements ModelListener
 {
     private Model model;
-    private GUI gui;
     boolean is_dirty = false;
     
     /** Initialize Model from editor input */
@@ -47,14 +53,14 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             throw new PartInitException(ex.getMessage());
         }
         // Set window title
-        setContentDescription(file.getName());
+        setContentDescription(model.getTitle());
     }
 
     /** Create GUI */
     @Override
     public void createPartControl(final Composite parent)
     {
-        gui = new GUI(parent, model, getSite());
+        new GUI(parent, model, getSite());
         model.addListener(this);
         try
         {
@@ -77,27 +83,85 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     @Override
     public void setFocus()
     {
-        // NOP
+        // no need to set focus
     }
 
+    /** @return <code>true</code> if Model contains user changes */
     @Override
     public boolean isDirty()
     {
         return is_dirty;
     }
-
+    
+    /** "Save" means create elog entry about changes, then write user values
+     *   to PVs.
+     *   @see org.eclipse.ui.part.EditorPart#doSave(IProgressMonitor)
+     */
     @Override
-    public void doSave(IProgressMonitor monitor)
+    public void doSave(final IProgressMonitor monitor)
     {
-        // TODO Auto-generated method stub
-
+        // Create info text that lists changed values
+        final StringBuilder body = new StringBuilder();
+        body.append(Messages.SaveInto);
+        for (int i=0; i<model.getInstanceCount(); ++i)
+        {
+            final Instance instance = model.getInstance(i);
+            for (int c=0; c<model.getColumnCount(); ++c)
+            {
+                final Cell cell = instance.getCell(c);
+                if (!cell.isEdited())
+                    continue;
+                body.append(NLS.bind(Messages.SavePVInfoFmt,
+                                     new Object[]
+                                     {
+                                        cell.getName(),
+                                        cell.getCurrentValue(),
+                                        cell.getUserValue()
+                                     }));
+            }
+        }
+        // Display ELog entry dialog
+        final Shell shell = getSite().getShell();
+        try
+        {
+            final ElogDialog dialog = new ElogDialog(shell,
+                    Messages.SaveTitle, Messages.SaveMessage,
+                    body.toString(), null)
+            {
+                // Perform ELog entry, then save changed values
+                @Override
+                public void makeElogEntry(String logbook_name, String user,
+                        String password, String title, String body)
+                        throws Exception
+                {
+                    final ILogbook logbook = getLogbook_factory()
+                        .connect(logbook_name, user, password);
+                    try
+                    {
+                        logbook.createEntry(title, body, null);
+                    }
+                    finally
+                    {
+                        logbook.close();
+                    }
+                    // Exceptions in here are caught by ELog dialog
+                    // and will be displayed there
+                    // (maybe not in the most obvious way...)
+                    model.saveUserValues();
+                }
+            };
+            dialog.open();
+        }
+        catch (Exception ex)
+        {
+            MessageDialog.openError(shell, Messages.SaveError, ex.getMessage());
+        }
     }
 
     @Override
     public void doSaveAs()
     {
-        // TODO Auto-generated method stub
-
+        doSave(new NullProgressMonitor());
     }
 
     /** @return <code>false</code> to prohibit 'save as' */
@@ -107,7 +171,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         return false;
     }
 
-    /** Update the editor's "dirty" state based on model
+    /** Update the editor's "dirty" state when model changes
      *  @see ModelListener
      */
     public void cellUpdate(final Cell cell)

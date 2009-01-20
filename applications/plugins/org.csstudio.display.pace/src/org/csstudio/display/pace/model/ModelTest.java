@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
@@ -16,13 +17,14 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ModelTest
 {
-    private int updates = 0;
+    private AtomicInteger updates = new AtomicInteger(0);
     
+    // ModelListener that counts received updates
     final private ModelListener listener = new ModelListener()
     {
         public void cellUpdate(final Cell cell)
         {
-            ++updates;
+            updates.incrementAndGet();
             System.out.println("CellUpdate: " + cell);
         }
     };
@@ -55,14 +57,14 @@ public class ModelTest
         model.addListener(listener);
         
         // Model has not been edited, find a cell to test changes
-        updates = 0;
+        updates.set(0);
         assertFalse(model.isEdited());
         final Cell cell = model.getInstance(1).getCell(1);
         assertFalse(cell.isReadOnly());
         
         // Edit a cell
         cell.setUserValue("10");
-        assertEquals(1, updates);
+        assertEquals(1, updates.get());
         assertTrue(cell.isEdited());
         assertTrue(model.isEdited());
         assertEquals("10", cell.getValue());
@@ -70,7 +72,7 @@ public class ModelTest
         
         // Revert to original value
         cell.clearUserValue();
-        assertEquals(2, updates);
+        assertEquals(2, updates.get());
         assertFalse(cell.isEdited());
         assertFalse(model.isEdited());
         assertEquals(null, cell.getUserValue());
@@ -83,11 +85,12 @@ public class ModelTest
         final Model model =
             new Model(new FileInputStream("configFiles/rf_admin.pace"));
         model.addListener(listener);
-        updates = 0;
+        updates.set(0);
         model.start();
         Thread.sleep(5000);
         model.stop();
         assertFalse(model.isEdited());
-        assertTrue(updates > 0);
+        // Should have received a few (initial) updates
+        assertTrue(updates.get() > 0);
      }    
 }

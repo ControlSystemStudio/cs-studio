@@ -24,7 +24,7 @@ public class GUITest
    
         final Model model =
             new Model(new FileInputStream("configFiles/rf_admin.pace"));
-        final GUI gui = new GUI(shell, model, null);
+        new GUI(shell, model, null);
         model.start();
         
         shell.open();
