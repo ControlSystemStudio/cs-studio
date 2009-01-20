@@ -1,5 +1,7 @@
 package org.csstudio.display.pace.gui;
 
+import java.util.ArrayList;
+
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.csstudio.display.pace.Messages;
@@ -8,13 +10,17 @@ import org.csstudio.display.pace.model.Column;
 import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -27,14 +33,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the Model
- * 
+ *  <p>
+ *  Creates TableViewer for displaying and editing the Model's Instance rows,
+ *  updating the GUI in response to model changes.
+ *  Can also act as an ISelectionProvider, handing out the currently
+ *  selected Cell (PV).
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
-public class GUI implements ModelListener, IMenuListener
+public class GUI implements ModelListener, IMenuListener, ISelectionProvider
 {
     /** Minimum column width */
     private static final int MIN_SIZE = 100;
@@ -44,6 +55,9 @@ public class GUI implements ModelListener, IMenuListener
     
     /** Currently selected Cell in Model or <code>null</code> */
     private Cell selected_cell = null;
+    
+    final private ArrayList<ISelectionChangedListener> listeners =
+        new ArrayList<ISelectionChangedListener>();
 
     /** Initialize
      *  @param parent Parent widget
@@ -56,10 +70,39 @@ public class GUI implements ModelListener, IMenuListener
         createComponents(parent, model);
         addCellTracker();
         model.addListener(this);
-        // TODO context menu
         createContextMenu(site);
+        if (site != null)
+            site.setSelectionProvider(this);
     }
 
+    // ISelectionProvider
+    public void addSelectionChangedListener(
+            final ISelectionChangedListener listener)
+    {
+        listeners.add(listener);
+    }
+
+    // ISelectionProvider
+    public void removeSelectionChangedListener(
+            final ISelectionChangedListener listener)
+    {
+        listeners.remove(listener);
+    }
+
+    // ISelectionProvider
+    public void setSelection(final ISelection selection)
+    {
+        // NOP, don't allow outside code to change selection
+    }
+
+    // ISelectionProvider
+    public ISelection getSelection()
+    {
+        if (selected_cell == null)
+            return null;
+        return new StructuredSelection(selected_cell);
+    }
+    
     /** Create GUI elements
      *  @param parent Parent widget
      *  @param model Model to display
@@ -132,6 +175,10 @@ public class GUI implements ModelListener, IMenuListener
                 }
                 selected_cell = instance.getCell(col_idx-1);
                 System.out.println("Cell " + selected_cell);
+                for (ISelectionChangedListener listener : listeners)
+                {
+                    listener.selectionChanged(new SelectionChangedEvent(GUI.this, getSelection()));
+                }
             }
         });
     }
@@ -145,7 +192,7 @@ public class GUI implements ModelListener, IMenuListener
         table.setMenu(manager.createContextMenu(table));
         // Allow extensions to add to the context menu
         if (site != null)
-            site.registerContextMenu(manager, table_viewer);
+            site.registerContextMenu(manager, this);
     }
 
     // IMenuListener

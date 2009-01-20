@@ -2,6 +2,7 @@ package org.csstudio.display.pace.model;
 
 import org.csstudio.display.pace.Messages;
 import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -10,7 +11,7 @@ import org.csstudio.utility.pv.PVListener;
  *  @author Kay Kasemir
  *  @author Delphy Nypaver Armstrong
  */
-public class Cell implements PVListener
+public class Cell implements PVListener, IProcessVariable
 {
     final private Instance instance;
 
@@ -51,12 +52,6 @@ public class Cell implements PVListener
         return column.isReadonly();
     }
     
-    /** @return PV name */
-    public String getPV()
-    {
-        return pv.getName();
-    }
-
     /** If the user entered a value, that's it.
      *  Otherwise it's the PV's value, or UNKNOWN
      *  if we have nothing.
@@ -132,6 +127,27 @@ public class Cell implements PVListener
     {
         current_value = ValueUtil.getString(pv.getValue());
         instance.getModel().fireCellUpdate(this);
+    }
+
+    // IProcessVariable
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Class adapter)
+    {
+        return null;
+    }
+
+    /** @return PV name
+     *  @see IProcessVariable
+     */
+    public String getName()
+    {
+        return pv.getName();
+    }
+
+    // IProcessVariable
+    public String getTypeId()
+    {
+        return IProcessVariable.TYPE_ID;
     }
 
     /** @return String representation for debugging */

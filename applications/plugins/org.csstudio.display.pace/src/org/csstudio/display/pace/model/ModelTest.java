@@ -42,7 +42,7 @@ public class ModelTest
         assertEquals(96, model.getInstanceCount());
         assertEquals("DTL 2", model.getInstance(6).getName());
 
-        assertEquals("DTL_HPRF:Cav2:DutyLmt", model.getInstance(6).getCell(3).getPV());
+        assertEquals("DTL_HPRF:Cav2:DutyLmt", model.getInstance(6).getCell(3).getName());
     }
 
     /** Check editing */

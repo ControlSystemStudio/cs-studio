@@ -44,7 +44,7 @@ public class InstanceLabelProvider extends CellLabelProvider
          // Cell column
          final Cell cell = instance.getCell(column);
          String tip = NLS.bind(Messages.InstanceLabelProvider_PVValueFormat,
-                               cell.getPV(), cell.getValue());
+                               cell.getName(), cell.getValue());
          if (cell.isEdited())
              tip = tip + Messages.InstanceLabelProvider_OrigAppendix + cell.getUserValue();
          if (cell.isReadOnly())
