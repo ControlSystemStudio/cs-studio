@@ -39,7 +39,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Joerg Rathlev
  */
-final class AlarmTreeUpdater {
+class AlarmTreeUpdater {
 	
 	/**
 	 * The tree which is updated by this updater.
