@@ -8,5 +8,6 @@ Require-Bundle: org.junit4,
  org.csstudio.platform.libs.jms;visibility:=reexport,
  org.eclipse.core.runtime
 Export-Package: org.csstudio.platform.utility.jms,
+ org.csstudio.platform.utility.jms.asyncreceiver,
  org.csstudio.platform.utility.jms.preferences
 Bundle-ClassPath: .
