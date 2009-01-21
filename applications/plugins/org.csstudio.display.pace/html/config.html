@@ -12,17 +12,19 @@ To <u>use</u> the configuration files, see
 
 <p>
 PACE Editor configuration files are in XML format and have a <b>.pace</b> file 
-extension. To edit them, select "Open With...", "Text Editor" from the
+extension. To edit them, select <b>Open With...</b>, <b>Text Editor</b> from the
 Navigator context menu of the file. To create new files, use
-"New...", "Other", "General", "File" in the Navigator context menu
-and make sure to use a .pace file extension for the new file.
+<b>New...</b>, <b>Other</b>, <b>General</b>, <b>File</b>
+in the Navigator context menu
+and make sure to use a <b>.pace</b> file extension for the new file.
 <p>
-When done editing, once open the file via "Open With...", "PACE" in the
-Navigator to re-establish PACE as the default tool for opening the file.
+When done editing, once open the file via <b>Open With...</b>, <b>PACE</b>
+in the Navigator context menu of the file to re-establish PACE as the default
+tool for opening the file.
 
-<h2>Tags</h2>
+<h2>XML Tags</h2>
 The configuration files expect certain tags to define the
-column headers and the rows.  These tags are described below.
+column headers and the rows.
 <ul>
 <li>Root Element Opening and Closing Tags  <pre> &lt;paceconfig> ...  &lt;/paceconfig> </pre>
 <li>Fill ... with the <b>title</b> tag
@@ -37,9 +39,9 @@ column headers and the rows.  These tags are described below.
    &lt;!-- There can be more columns -->
  &lt;/columns></pre>
 Where the cell access can be <b>rw</b> for read-write or <b>ro</b> for read-only.
-The pv name for the cell contains macros with curly brackets,
-which are defined below in the <b>instances</b>.
-<pre> </pre>
+The PV name for the cell contains macros with curly brackets.
+Replacement values for the macro variables are 
+defined below under <b>instances</b>.
 <li>And finally the <b>instance</b> or Row Tags.
 <pre>&lt;instances>
      &lt;instance>
@@ -49,13 +51,11 @@ which are defined below in the <b>instances</b>.
    &lt;!--  Many more...: DTL 1..6, CCL 1..4. -->
 &lt;/instances></pre>
 Where <b>instance</b> is a row definition and <b>name</b> is put in the first cell of the row.
-Followed <b>macro</b> definitions that were used in the pv names in the
-column definition above.
-<pre> </pre>
+The <b>macro</b> definitions are used to turn the macro-ized PV names of the
+column definitions into specific PV instances.
 </ul>
 
 <h2>Configuration File Example</h2>
-<pre> <b>example.pace</b></pre>
 <pre> 
 &lt;!-- Example config file -->
 &lt;paceconfig>
@@ -78,3 +78,4 @@ column definition above.
 &lt;/paceconfig></pre>
 </body>
 </html>
+ 

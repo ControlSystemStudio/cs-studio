@@ -3,57 +3,37 @@
 <title>Saving Limit Changes</title>
 </head>
 <body>
-<h1>Saving Limit Changes</h1>
+
+<h1>Saving Changes</h1>
+After <a href=edit_limits.html>editing some values</a>,
+the changes can be written to the underlying process variables
+by selecting <b>File/Save</b> from the menu bar.
 <p>
-There are two options for saving changes made to limit values.
-<h2>Save Selected Changed Limit Values</h2>
+When closing a PACE table with modified values, you will also
+be asked if you want to save the changes or close without saving.
+<p>
+Before actually writing the changes to the PVs, a dialog as shown
+below will prompt for information to be entered into the ELog.
+
+<p>
+<img src=EnterLogData.png width=523 height=507/>
+<p> 
+
 <ul>
-<li>Highlight the row or rows containing the limit values you want saved.
-<li>Click the right mouse button over a highlighted cell in the column containing 
-the changed limit value or values you would like to save.  A context menu will be 
-displayed with the <b>Save Selected</b> option.  Slide your mouse over this option
-and press the left mouse button.
-<li>Any highligted row that contains unchanged limit values will be ignored.  Only 
-highlighted changed limits in the selected column will be displayed on the next screen.  
-To set all the highlighted cells in the selected column to the same value see
-<a href=edit_limits.html>Changing Limit Values</a>.
-<li>A screen for entering the e-log data will be displayed, as shown
-below.
-<p>
-<img src=EnterLogData.png width=356 height=628/>
-<p> 
-<li>Enter your 3 character UCAMS user id and password.  Edit the title, if 
-you'd like.  
-<li>If the information being displayed looks correct, press the <b>OK</b> 
-button to send the changed pv limit values to Channel Access and make an e-log entry.
-<li>If you want to terminate the transaction, press the  <b>Cancel</b> button.
+<li>Enter your ELog user name and password.
+<li>You can edit the title and text, which starts out as a list
+    of modified PVs and their values
+<li>Press <b>OK</b> to perform the ELog entry and PV update.
+<li>.. or press <b>Cancel</b>.
 </ul>
-<p>
-<h2>Save All Changed Limit Values</h2>
-<p>
-To save all the edited limit values being displayed in the table, 
-<p>
-<ul>
-<li>Press Ctrl+S or
-<li>Press the left mouse button over the <b>File</b> option on the menu bar, shown 
-in the  upper left corner of the screen below.
-<p>
-<img src=PACEscreen.png width=1457 height=376/>
-<p> 
-<li>Select the <b>Save</b> option.
-<li>A dialog similar the the one below will be displayed, 
-<p>
-<img src=EnterAllLogData.png width=525 height=942/>
-<p> 
-<li>Enter your 3 character UCAMS user id and password.  Edit the title, if 
-you'd like.  
-<li>If the information being displayed looks correct, press the <b>OK</b> 
-button to send the changed pv limit values to Channel Access and make an e-log entry.
-<li>If you want to terminate the transaction, press the  <b>Cancel</b> button.
-</ul>
-<p>
-Once the limit values are saved, the main display will show the new limit values and 
-the yellow cell backgrounds will no longer exist. And the <b>Pace Editor</b> title bar 
-will no longer contain an <b>*</b>.  
+
+<h2>Save not available</h2>
+The option to save changes is only available when there are any
+modified values.
+This is also indicated via an asterix in the PACE table title.
+If no values where modified from the PVs' original values,
+there is nothing to save and the option to do so is
+not available.
+
 </body>
 </html>

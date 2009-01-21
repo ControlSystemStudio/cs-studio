@@ -1,52 +1,44 @@
 <html>
 <head>
-<title>Changing Limit Values</title>
+<title>Editing Values</title>
 </head>
 <body>
-<h1>Changing Limit Values</h1>
+
+<h1>Editing Values</h1>
+Edit values by clicking into the cell, entering a new value, then
+pressing <b>Return</b>. The background of edited cells changes to
+indicate that they differ from the original value of the PV.
+Note that changes are not written out to PVs, yet,
+until the changes are <a href=save_limits.html>saved.</a>
+
 <p>
-Only limits that are displayed in "rw" columns can be changed.  
-These <b>acess</b> permissions are defined in 
-<a href=config.html>Configuration Files</a>.  If the tooltip 
-for the pv limit value you want to change displays
-<b>ReadWrite</b>, the limits can be edited.  See 
-<a href=tooltips.html>Tooltip Display</a>
-for instructions on how to display tooltips.
-<h2>Change A Single Limit Value</h2>
-<ul>
-<li>Click the left mouse button over the editable limit 
-<a href=tooltips.html>Tooltip Display</a>.
-<li>Type the new limit value in the highlighted cell and press the 
-<b>Enter</b> key.  If pressing the left mouse button has no effect
-on the cell, you are trying to edit an noneditable limit.
-<li>Edited limit values are displayed with a yellow cell background 
-and the <b>Pace Editor</b> title bar contains an <b>*</b> when the
-table has been edited.  As seen in the <a href=tooltips.html>Tooltip Display</a> 
-image.
-</ul>
-<p>
+
+Cells in columns which have a gray background and a
+<a href=tooltips.html>Tooltip</a>
+that indicates <b>read-only</b> can not be edited.
+See <a href=config.html>Configuration Files</a>.
+
 <h2>Change Multiple Limits To The Same Value</h2>
+To set multiple cells in a row to the same value,
+select the desired rows, then right-click on 
+one cell in the desired column and invoke <b>Set Value</b>
+from the context menu.
 <p>
-To change multiple limits to the same value
-<ul>
-<li>Highlight the rows that contain the limits you want to change.
-<li>Press the left mouse button on the column header of the limits
-you want to edit.  The screen below will be displayed, containing
-the column header you selected.
+In the example below, the rows for "MEBT 1" to "CCL 4"
+were selected, then the right button context menu
+was invoked on one of the selected cells in the
+"PwrLmtAdm" column. After entering a value and pressing <b>OK</b>,
+the "PwrLmtAdm" cells for rows "MEBT 1" to "CCL 4"
+will be set to the entered value.
 <p>
-<img src=InputValue.png width=482 height=214/>
-<p>
-<li>Enter the value you want the limits changed to.  
-<li>Press the <b>Enter</b> key or the <b>OK</b> button to set the new 
-value.  The <b>Input Value for Selected Rows</b> window will disappear 
-and within seconds the new values will be displayed in the selected
-column for the highlighted rows.
-<li>Or press the <b>Cancel</b> button on the  <b>Input Value for Selected Rows</b> 
-window to abort the transaction.
-<li>Edited limit values are displayed with a yellow cell background and the 
-<b>Pace Editor</b> title bar contains an <b>*</b> when the table has been edited.  
-As seen in the <a href=tooltips.html>Tooltip Display</a> image.  
-</ul>
-<p>
+<img src=InputValue.png width=699  height=380/>
+
+
+<h2>Revert Changes</h2>
+To set selected edited cells back to their original value,
+select the desired rows, then right-click on 
+one cell in the desired column and invoke <b>Restore Original Value</b>
+from the context menu.
+
 </body>
 </html>
