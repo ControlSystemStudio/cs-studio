@@ -22,14 +22,14 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.alarm.treeView.model.ObjectClass;
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import junit.framework.TestCase;
 
 /**
  * @author Joerg Rathlev
