@@ -95,6 +95,9 @@ public class LogArchiveViewerPreferencePage
 		StringFieldEditor answerSize = new StringFieldEditor(LogArchiveViewerPreferenceConstants.MAX_ANSWER_SIZE,Messages.LogArchiveViewerPreferencePage_maxAnswerSize,getFieldEditorParent());
 		answerSize.getLabelControl(getFieldEditorParent()).setToolTipText(Messages.LogArchiveViewerPreferencePage_javaDateFormat);
 		addField(answerSize);
+		StringFieldEditor answerSizeExport = new StringFieldEditor(LogArchiveViewerPreferenceConstants.MAX_ANSWER_SIZE_EXPORT,Messages.LogArchiveViewerPreferencePage_maxAnswerSizeExport,getFieldEditorParent());
+		answerSize.getLabelControl(getFieldEditorParent()).setToolTipText(Messages.LogArchiveViewerPreferencePage_javaDateFormat);
+		addField(answerSizeExport);
 		}
 
 
@@ -107,6 +110,4 @@ public class LogArchiveViewerPreferencePage
 
 	public void init(IWorkbench workbench) {
 	}
-
-
 }

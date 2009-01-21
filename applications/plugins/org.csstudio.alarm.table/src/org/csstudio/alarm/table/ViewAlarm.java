@@ -38,6 +38,7 @@ import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
+import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
@@ -107,13 +108,13 @@ public class ViewAlarm extends ViewLog {
 
 		parentShell = parent.getShell();
 
-		initializeJMSReceiver(
-				parentShell,
-				AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY,
-				AlarmViewerPreferenceConstants.PRIMARY_URL,
-				AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY,
-				AlarmViewerPreferenceConstants.SECONDARY_URL,
-				AlarmViewerPreferenceConstants.QUEUE);
+		String primCtxFactory = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY);
+		String primURL = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.PRIMARY_URL);
+		String secCtxFactory = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY);
+		String secURL = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.SECONDARY_URL);
+		String queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE); //$NON-NLS-1$
+		
+		initializeJMSConnection(parentShell, primCtxFactory, primURL, secCtxFactory, secURL, queues);
 
 		GridLayout grid = new GridLayout();
 		grid.numColumns = 1;

@@ -29,11 +29,12 @@ import java.util.Observable;
  * Class holds the answer from the db. Notifies the Observers if a new answer is
  * set.
  * 
- * There are three types of DB answers:
+ * There are four types of DB answers:
  * 
  * 1: List of all log messages for the DB query.
  * 2: number of log messages that will be deleted (for the warning-message dialog)
  * 3: result (ok, error) of the delete operation.
+ * 4: result (ok, error) of the export operation.
  * 
  * @author jhatje
  * 
@@ -61,6 +62,8 @@ public class DBAnswer extends Observable {
 	String _deleteResult = null;
 	
 	ResultType _dbqueryType;
+
+	private String _exportResult;
 	
 	/**
 	 * Types of answer from DB
@@ -68,7 +71,8 @@ public class DBAnswer extends Observable {
 	public enum ResultType {
 		LOG_MESSAGES,
 		MSG_NUMBER_TO_DELETE,
-		DELETE_RESULT
+		DELETE_RESULT,
+		EXPORT_RESULT
 	}
 
 	public ResultType getDbqueryType() {
@@ -132,6 +136,17 @@ public class DBAnswer extends Observable {
 		notifyObservers();
 	}
 	
+	public String getExportResult() {
+		return _exportResult;
+	}
+	
+	public void setExportResult(String exportResult, boolean maxSize) {
+		_dbqueryType = ResultType.EXPORT_RESULT;
+		this._exportResult = exportResult;
+		_maxSize = maxSize;
+		setChanged();
+		notifyObservers();
+	}
 	public void set_maxSize(boolean size) {
 		_maxSize = size;
 	}

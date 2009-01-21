@@ -1,5 +1,6 @@
+
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,28 +20,45 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.dbaccess.archivedb;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
+package org.csstudio.alarm.table.utility;
 
-public interface ILogMessageArchiveAccess {
+import org.eclipse.swt.graphics.Rectangle;
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
-			Calendar to, ArrayList<FilterItem> settings, int maxAnswerSize);
+public final class DialogUnit
+{
+    private final static int baseUnitX  = 6;
+    private final static int baseUnitY  = 13;
+    private final static int CORRECTION = 18;
 
-	public String deleteLogMessages(Calendar from, Calendar to,
-			ArrayList<FilterItem> settings);
+    private DialogUnit() { }
+    
+    public final static int mapUnitX(int unitX)
+    {
+        return (unitX * baseUnitX) / 4;
+    }
 
-	public int countDeleteLogMessages(Calendar _from, Calendar _to,
-			ArrayList<FilterItem> settings);
-
-	public String exportLogMessages(Calendar _from, Calendar _to,
-			ArrayList<FilterItem> settings, int answerSize, File path,
-			String[] columnNames);
-
-	public boolean is_maxSize();
-
+    public final static int mapUnitY(int unitY)
+    {
+        return (unitY * baseUnitY) / 8;
+    }
+    
+    public final static int mapUnitYWithCorrection(int unitY)
+    {
+        return ((unitY * baseUnitY) / 8) - CORRECTION;
+    }
+    
+    public final static Rectangle mapUnits(Rectangle r)
+    {
+        Rectangle rect = new Rectangle(DialogUnit.mapUnitX(r.x), DialogUnit.mapUnitYWithCorrection(r.y), DialogUnit.mapUnitX(r.width), DialogUnit.mapUnitY(r.height));
+        
+        return rect;
+    }
+    
+    public final static Rectangle mapUnitsWithoutCorrection(Rectangle r)
+    {
+        Rectangle rect = new Rectangle(DialogUnit.mapUnitX(r.x), DialogUnit.mapUnitY(r.y), DialogUnit.mapUnitX(r.width), DialogUnit.mapUnitY(r.height));
+        
+        return rect;
+    }
 }

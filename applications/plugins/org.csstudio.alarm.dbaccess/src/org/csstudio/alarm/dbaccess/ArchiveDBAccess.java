@@ -21,6 +21,8 @@
  */
 package org.csstudio.alarm.dbaccess;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -72,12 +74,6 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 	/**
-	 * ONLY FOR TEST PURPOSES!
-	 */
-	ArchiveDBAccess() {
-	}
-
-	/**
 	 * Get singleton instance.
 	 * 
 	 * @return instance
@@ -100,9 +96,28 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 				"from time: " + from + ", to time: " + to);
 		_maxAnswerSize = maxAnswerSize;
 		CentralLogger.getInstance().debug(this, "set maxAnswerSize to " + _maxAnswerSize);
-		ArrayList<ResultSet> result = queryDatabase(filterSetting, from, to);
-		ArrayList<HashMap<String, String>> ergebnis = processResult(result);
-		return ergebnis;
+		ArrayList<ResultSet> dbResult = queryDatabase(filterSetting, from, to);
+		ArrayList<HashMap<String, String>> messageList = processResult(dbResult);
+		return messageList;
+	}
+
+	/**
+	 * Export log messages from the DB into an excel file.
+	 */
+	public String exportLogMessages(Calendar from, Calendar to,
+			ArrayList<FilterItem> filterSetting, int maxAnswerSize, File path, String[] columnNames) {
+		String exportResult = "Export completed";
+		_maxAnswerSize = maxAnswerSize;
+		ArrayList<ResultSet> dbResult = queryDatabase(filterSetting, from, to);
+		ArrayList<HashMap<String, String>> messageList = processResult(dbResult);
+		LogMessageExporter exporter = new LogMessageExporter();
+		try {
+			exporter.exportExcelFile(messageList, path, columnNames);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return exportResult;
 	}
 
 	/**
@@ -523,5 +538,6 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 					"Can not close DB connection", e);
 		}
 	}
+
 
 }

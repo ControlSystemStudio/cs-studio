@@ -21,6 +21,7 @@
  */
 package org.csstudio.alarm.table.readDB;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -30,7 +31,6 @@ import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.readDB.DBAnswer.ResultType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -39,9 +39,9 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * Job for accessing the database. There are three types of access:
  * 
- * 1: read log messages for time period and filter.
- * 2: read number of messages to delete from DB (for warning message)
- * 3: delete messages from DB.
+ * 1: read log messages for time period and filter. 2: read number of messages
+ * to delete from DB (for warning message) 3: delete messages from DB.
+ * 4: export messages in an excel file
  * 
  * @author jhatje
  * 
@@ -56,53 +56,65 @@ public class AccessDBJob extends Job {
 	private ArrayList<FilterItem> _filterSettings;
 
 	DBAccessType accessType;
-	
-
+	private File _path;
+	private String[] _columnNames;
 
 	/**
 	 * Types of answer from DB
 	 */
 	public enum DBAccessType {
-		READ_MESSAGES,
-		READ_MSG_NUMBER_TO_DELETE,
-		DELETE
+		READ_MESSAGES, READ_MSG_NUMBER_TO_DELETE, DELETE, EXPORT
 	}
 
-	
 	public AccessDBJob(String name) {
 		super(name);
 	}
 
 	public void setReadProperties(DBAnswer dbAnswer, Filter filter) {
+		setReadProperties(dbAnswer, filter, null, null);
+	}
+
+	public void setReadProperties(DBAnswer dbAnswer, Filter filter, File path, String[] columnNames) {
 		this.dbAnswer = dbAnswer;
 		this._from = filter.getFrom();
 		this._to = filter.getTo();
 		this._filterSettings = filter.getFilterItems();
-		String maxAnswerSize = JmsLogsPlugin.getDefault()
-				.getPluginPreferences().getString("maximum answer size");
-		_maxAnswerSize = Integer.parseInt(maxAnswerSize);
+		this._path = path;
+		this._columnNames = columnNames;
 	}
 
-	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 
 		ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
 		ArrayList<HashMap<String, String>> am = new ArrayList<HashMap<String, String>>();
 		if (accessType == DBAccessType.READ_MESSAGES) {
-			am = adba.getLogMessages(_from, _to, _filterSettings, _maxAnswerSize);
+			String maxAnswerSize = JmsLogsPlugin.getDefault()
+					.getPluginPreferences().getString("maximum answer size");
+			_maxAnswerSize = Integer.parseInt(maxAnswerSize);
+					am = adba.getLogMessages(_from, _to, _filterSettings, _maxAnswerSize);
 			dbAnswer.setLogMssages(am, adba.is_maxSize());
-		} else if (accessType == DBAccessType.READ_MSG_NUMBER_TO_DELETE){
-			int msgNumber = adba.countDeleteLogMessages(_from, _to, _filterSettings);
+		} else if (accessType == DBAccessType.READ_MSG_NUMBER_TO_DELETE) {
+			int msgNumber = adba.countDeleteLogMessages(_from, _to,
+					_filterSettings);
 			dbAnswer.set_msgNumberToDelete(msgNumber);
 		} else if (accessType == DBAccessType.DELETE) {
-			String resultMsg = adba.deleteLogMessages(_from, _to, _filterSettings);
+			String resultMsg = adba.deleteLogMessages(_from, _to,
+					_filterSettings);
 			accessType = DBAccessType.READ_MESSAGES;
 			dbAnswer.setDeleteResult(resultMsg);
+		} else if (accessType == DBAccessType.EXPORT) {
+			String maxAnswerSize = JmsLogsPlugin.getDefault()
+					.getPluginPreferences().getString("maximum answer size export");
+			_maxAnswerSize = Integer.parseInt(maxAnswerSize);
+			accessType = DBAccessType.READ_MESSAGES;
+			String resultMsg = adba.exportLogMessages(_from, _to, _filterSettings,
+					_maxAnswerSize, _path, _columnNames);
+			dbAnswer.setExportResult(resultMsg, adba.is_maxSize());
 		}
 		return Status.OK_STATUS;
 	}
-	
+
 	public void setAccessType(DBAccessType accessType) {
 		this.accessType = accessType;
 	}

@@ -135,7 +135,9 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			return false;
 		}
 		if (newMessage.getString("TYPE") == null) {
-			return false;
+			if ((newMessage.getString("ACK") == null) || (!newMessage.getString("ACK").equals("TRUE"))) {
+				return false;
+			}
 		}
 		if (newMessage.getString("SEVERITY") == null) {
 			return false;
@@ -158,8 +160,8 @@ public class JMSAlarmMessageList extends JMSMessageList {
 				+ newMessage.getString("EVENTTIME"));
 		for (JMSMessage message : JMSMessages) {
 			if (message.getName().equals(newMessage.getString("NAME"))
-					&& message.getProperty("EVENTTIME").equals(
-							newMessage.getString("EVENTTIME"))) {
+					&& message.getProperty("SEVERITY").equals(
+							newMessage.getString("SEVERITY"))) {
 				if ((message.isBackgroundColorGray() == true)
 						|| (message.getProperty("SEVERITY_KEY")
 								.equalsIgnoreCase("NO_ALARM"))

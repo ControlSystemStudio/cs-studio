@@ -63,6 +63,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
@@ -70,6 +71,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
@@ -175,7 +177,7 @@ public class ViewArchive extends ViewPart implements Observer {
 		parent.setLayout(grid);
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
-		comp.setLayout(new GridLayout(5, false));
+		comp.setLayout(new GridLayout(6, false));
 
 		Group buttons = new Group(comp, SWT.LINE_SOLID);
 		buttons.setText(Messages.getString("LogViewArchive_period")); //$NON-NLS-1$
@@ -227,6 +229,15 @@ public class ViewArchive extends ViewPart implements Observer {
 		gd.minimumWidth = 75;
 		count.setLayoutData(gd);
 
+		Group exportButtons = new Group(comp, SWT.LINE_SOLID);
+		exportButtons.setText("Export Messages"); //$NON-NLS-1$
+		exportButtons.setLayout(new GridLayout(1, true));
+		gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
+		gd.minimumHeight = 60;
+		gd.minimumWidth = 60;
+		exportButtons.setLayoutData(gd);
+		createExportButton(exportButtons);
+		
 		if (_canExecute) {
 			Group deleteButtons = new Group(comp, SWT.LINE_SOLID);
 			deleteButtons.setText("Delete Messages"); //$NON-NLS-1$
@@ -294,6 +305,50 @@ public class ViewArchive extends ViewPart implements Observer {
 
 	}
 
+	/**
+	 * Button to export messages currently displayed in the table. *
+	 * 
+	 * @param comp
+	 */
+	private void createExportButton(Composite comp) {
+		Button export = new Button(comp, SWT.PUSH);
+		export
+		.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+				1));
+		export.setText("Export *.xls");
+		
+		export.addSelectionListener(new SelectionAdapter() {
+			
+			/**
+			 * 
+			 */
+			public void widgetSelected(final SelectionEvent e) {
+				// File standard dialog
+				FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SAVE);
+
+				// Set the text
+				fileDialog.setText("Save File");
+				// Set filter on .txt files
+				fileDialog.setFilterExtensions(new String[] { "*.xls" });
+				// Put in a readable name for the filter
+				fileDialog
+						.setFilterNames(new String[] { "Excel 97-2003 format(*.xls)" });
+
+				// Open Dialog and save result of selection
+				String selected = fileDialog.open();
+
+				File path = new File(selected);
+				
+				_dbReader.setReadProperties(ViewArchive.this._dbAnswer, _filter
+						.copy(), path, _columnNames);
+				_dbReader
+				.setAccessType(AccessDBJob.DBAccessType.EXPORT);
+				_dbReader.schedule();
+			}
+		});
+		
+	}
+	
 	/**
 	 * Creates the actions offered by this view.
 	 */
@@ -675,6 +730,20 @@ public class ViewArchive extends ViewPart implements Observer {
 					messageBox.setMessage("Messages are deleted");
 					messageBox.open();
 				}
+				
+				if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.EXPORT_RESULT) {
+					MessageBox messageBox = new MessageBox(Display.getDefault()
+							.getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
+					messageBox.setText("Export");
+					if (_dbAnswer.is_maxSize()) {
+						messageBox.setMessage("Export is completed. (Maximum size of messages are exceeded!)");
+					} else {
+						messageBox.setMessage("Export is completed");
+					}
+					messageBox.open();
+				}
+				
+				
 			}
 		});
 	}

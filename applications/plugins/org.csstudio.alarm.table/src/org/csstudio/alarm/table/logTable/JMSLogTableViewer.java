@@ -30,6 +30,7 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.utility.MailSenderDialog;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.eclipse.jface.action.IMenuListener;
@@ -53,7 +54,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -109,6 +109,10 @@ public class JMSLogTableViewer extends TableViewer {
 	public JMSLogTableViewer(Composite parent, IWorkbenchPartSite site,
 			String[] colNames, JMSMessageList j, int tableType, int style) {
 		super(parent, style);
+//		MailSenderDialog dialog = new MailSenderDialog(Display.getCurrent().getActiveShell());
+//		
+//		int value = dialog.open();
+
 		final boolean canExecute = SecurityFacade.getInstance().canExecute(
 				SECURITY_ID, false);
 		this.tableType = tableType;
@@ -250,6 +254,7 @@ public class JMSLogTableViewer extends TableViewer {
 		MenuManager manager = new MenuManager("#PopupMenu");
 		Control contr = this.getControl();
 		manager.add(new ShowMessagePropertiesAction(this));
+		manager.add(new SendMessagePropertiesAction(this));
 
 		if ((tableType == 1) || (tableType == 2)) {
 			manager.add(new DeleteAction(this));
