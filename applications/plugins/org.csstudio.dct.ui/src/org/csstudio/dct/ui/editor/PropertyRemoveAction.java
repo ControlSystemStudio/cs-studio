@@ -1,7 +1,6 @@
 package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.model.IPropertyContainer;
-import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
@@ -12,7 +11,7 @@ import org.eclipse.jface.action.Action;
  * @author Sven Wende
  * 
  */
-public class PropertyRemoveAction extends Action {
+public final class PropertyRemoveAction extends Action {
 	
 	private AbstractPropertyContainerForm form;
 

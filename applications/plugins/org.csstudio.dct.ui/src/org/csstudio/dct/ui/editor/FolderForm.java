@@ -3,24 +3,38 @@ package org.csstudio.dct.ui.editor;
 import java.util.List;
 
 import org.csstudio.dct.model.IFolder;
-import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ExpandBar;
 
+/**
+ * Editing form for folders.
+ * 
+ * @author Sven Wende
+ * 
+ */
 public class FolderForm extends AbstractForm<IFolder> {
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param editor
+	 *            the editor instance
+	 */
 	public FolderForm(DctEditor editor) {
 		super(editor);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
 
 	}
-
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected void doSetInput(IFolder input) {
 
@@ -33,7 +47,10 @@ public class FolderForm extends AbstractForm<IFolder> {
 	protected String doGetFormLabel() {
 		return "Folder";
 	}
-
+	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IFolder folder) {
 	}
@@ -44,8 +61,8 @@ public class FolderForm extends AbstractForm<IFolder> {
 	 */
 	@Override
 	protected String doGetLinkText(IFolder folder) {
-		String text ="";
-		
+		String text = "";
+
 		if (folder.getParentFolder() != null) {
 			text = "jump to <a href=\"" + folder.getParentFolder().getId() + "\">parent folder</a>";
 		}

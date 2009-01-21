@@ -8,11 +8,17 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.ui.PlatformUI;
 
-public class AddFolderAction extends AbstractOutlineAction {
+/**
+ * Action that adds a folder.
+ * 
+ * @author Sven Wende
+ * 
+ */
+public final class AddFolderAction extends AbstractOutlineAction {
 
-	public AddFolderAction()  {
-	}
-
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected Command createCommand(IElement selection) {
 		Command result = null;
@@ -24,8 +30,8 @@ public class AddFolderAction extends AbstractOutlineAction {
 							return null;
 						}
 					});
-			
-			if(dialog.open()==InputDialog.OK){
+
+			if (dialog.open() == InputDialog.OK) {
 				String name = dialog.getValue();
 				result = new AddFolderCommand((IFolder) selection, name);
 			}

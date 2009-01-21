@@ -7,8 +7,8 @@ import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.commands.AddPropertyCommand;
 import org.csstudio.dct.model.commands.RemovePropertyCommand;
 import org.csstudio.dct.ui.Activator;
+import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.Command;
@@ -42,7 +42,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer> extends AbstractForm<E> {
 
-	private TableCitizenTable propertyTable;
+	private ConvenienceTableWrapper propertyTable;
 
 	/**
 	 * Constructor.
@@ -66,7 +66,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
 		if (sel != null && sel.getFirstElement() != null) {
 			PropertyTableRowAdapter adapter = (PropertyTableRowAdapter) sel.getFirstElement();
-			result = adapter.getKey();
+			result = adapter.getPropertyKey();
 		}
 
 		return result;
@@ -76,12 +76,12 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
+	protected void doCreateControl(ExpandBar bar, final CommandStack commandStack) {
 		// .. input table for properties
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		propertyTable = new TableCitizenTable(composite, SWT.None, commandStack);
+		propertyTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
 		propertyTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
 		// .. add/remove buttons for properties
@@ -115,7 +115,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
 					// .. insert the property
 					Command cmd = new AddPropertyCommand(getInput(), name);
-					getCommandStack().execute(cmd);
+					commandStack.execute(cmd);
 
 					// .. activate the cell editor for the new row
 					TableViewer viewer = propertyTable.getViewer();
@@ -152,7 +152,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 
 				// .. remove the property
 				Command cmd = new RemovePropertyCommand(getInput(), key);
-				getCommandStack().execute(cmd);
+				commandStack.execute(cmd);
 
 				// .. clear selection
 				propertyTable.getViewer().setSelection(null);
@@ -194,7 +194,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 			List<ITableRow> rowsForProperties = new ArrayList<ITableRow>();
 
 			for (String key : container.getFinalProperties().keySet()) {
-				rowsForProperties.add(new PropertyTableRowAdapter(container, key, getCommandStack()));
+				rowsForProperties.add(new PropertyTableRowAdapter(container, key));
 			}
 			propertyTable.setInput(rowsForProperties);
 		}

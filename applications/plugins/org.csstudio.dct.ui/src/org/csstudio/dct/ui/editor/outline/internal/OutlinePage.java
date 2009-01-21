@@ -8,31 +8,47 @@ import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
+/**
+ * An outline page implementation that displays a {@link IProject} in the
+ * outline view using a tree.
+ * 
+ * @author Sven Wende
+ * 
+ */
 public final class OutlinePage extends ContentOutlinePage implements CommandStackListener {
 	private IProject input;
 	private CommandStack commandStack;
 	private TreeViewer viewer;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param input
+	 *            the project to display
+	 * @param commandStack
+	 *            a command stack
+	 */
 	public OutlinePage(IProject input, CommandStack commandStack) {
 		this.input = input;
 		this.commandStack = commandStack;
 	}
 
+	/**
+	 * Sets the input for the outline.
+	 * 
+	 * @param input
+	 *            the project to display
+	 */
 	public void setInput(IProject input) {
 		this.input = input;
 
@@ -41,6 +57,9 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
@@ -73,16 +92,32 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		getSite().registerContextMenu("css.dct.outline", menuManager, viewer);
 	}
 
+	/**
+	 * Sets the command stack.
+	 * 
+	 * @param commandStack
+	 *            the command stack
+	 */
 	public void setCommandStack(CommandStack commandStack) {
 		this.commandStack = commandStack;
 		this.commandStack.addCommandStackListener(this);
 
 	}
 
+	/**
+	 * Returns the command stack.
+	 * 
+	 * @return the command stack
+	 */
 	public CommandStack getCommandStack() {
 		return commandStack;
 	}
 
+	/**
+	 * Returns the current input.
+	 * 
+	 * @return the current project
+	 */
 	public IProject getInput() {
 		return input;
 	}
@@ -96,6 +131,9 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setSelection(ISelection selection) {
 		if (getTreeViewer() != null) {

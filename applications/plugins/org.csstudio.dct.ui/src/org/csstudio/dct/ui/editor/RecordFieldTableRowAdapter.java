@@ -9,27 +9,40 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.ChangeFieldValueCommand;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.ui.editor.tables.MenuCellEditor;
 import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 
-public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
+/**
+ * Table adapter for record fields.
+ * 
+ * @author Sven Wende
+ * 
+ */
+public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 	private String fieldKey;
 
-	public RecordFieldTableRowAdapter(IRecord delegate, String fieldKey, CommandStack commandStack) {
-		super(delegate, commandStack);
+	/**
+	 * Constructor.
+	 * 
+	 * @param record the record
+	 * @param fieldKey the field name
+	 */
+	public RecordFieldTableRowAdapter(IRecord record, String fieldKey) {
+		super(record);
 		this.fieldKey = fieldKey;
 	}
 
+	/**
+	 * Returns the name of the field.
+	 * @return the field name
+	 */
 	public String getFieldKey() {
 		return fieldKey;
 	}
@@ -66,15 +79,16 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object doGetValue(IRecord delegate) {
-		return delegate.getFinalFields().get(fieldKey);
+	protected String doGetValue(IRecord delegate) {
+		Object o = delegate.getFinalFields().get(fieldKey);
+		return o != null ? o.toString() : null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object doGetValueForDisplay(IRecord record) {
+	protected String doGetValueForDisplay(IRecord record) {
 		String result = null;
 
 		Object value = doGetValue(record);
@@ -86,17 +100,17 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 				// resolve functions and parameters
 				try {
 					result = value.toString();
-					
+
 					result = ResolutionUtil.resolve(value.toString(), record);
-					
+
 					result = DctActivator.getDefault().getFieldFunctionService().evaluate(result, record, fieldKey);
-					
+
 					result = ResolutionUtil.resolve(result, record);
 				} catch (Exception e) {
 					setError(e.getMessage());
 				}
 			} else {
-				result  = value.toString();
+				result = value.toString();
 			}
 		}
 
@@ -147,7 +161,7 @@ public class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IRecord>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int compareTo(ITableRow row) {
+	protected int doCompareTo(ITableRow row) {
 		int result = 0;
 		if (row instanceof RecordFieldTableRowAdapter) {
 			result = fieldKey.compareTo(((RecordFieldTableRowAdapter) row).fieldKey);

@@ -42,15 +42,22 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+/**
+ * Selection dialog that displays only the prototypes that are contained in a
+ * project.
+ * 
+ * @author Sven Wende
+ * 
+ */
 public final class PrototypeSelectionDialog extends Dialog {
 	private String message;
-	
+
 	private IPrototype selection;
-	
+
 	private IProject project;
-	
+
 	private TreeViewer treeViewer;
-	
+
 	/**
 	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
 	 * will have no visual representation (no widgets) until it is told to open.
@@ -63,20 +70,16 @@ public final class PrototypeSelectionDialog extends Dialog {
 	 *            shell
 	 * @param dialogMessage
 	 *            the dialog message, or <code>null</code> if none
-	 * @param fileExtensions
-	 *            the file extensions of files to show in the dialog. Use an
-	 *            empty array or <code>null</code> to show only containers
-	 *            (folders).
+	 * @param project
+	 *            the project
 	 */
-	public PrototypeSelectionDialog(final Shell parentShell,
-			final String dialogMessage, final IProject project) {
+	public PrototypeSelectionDialog(final Shell parentShell, final String dialogMessage, final IProject project) {
 		super(parentShell);
-		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
-				| SWT.BORDER | SWT.RESIZE);
+		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
 		message = dialogMessage;
 		this.project = project;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -96,21 +99,18 @@ public final class PrototypeSelectionDialog extends Dialog {
 		if (message != null) {
 			Label label = new Label(composite, SWT.WRAP);
 			label.setText(message);
-			GridData data = new GridData(GridData.GRAB_HORIZONTAL
-					| GridData.HORIZONTAL_ALIGN_FILL
-					| GridData.VERTICAL_ALIGN_CENTER);
+			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
 			data.horizontalSpan = 2;
 			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 			label.setLayoutData(data);
 		}
-		
-		
+
 		treeViewer = new TreeViewer(composite);
-		treeViewer.getTree().setLayoutData(LayoutUtil.createGridDataForFillingCell(200,400));
+		treeViewer.getTree().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
 		treeViewer.setLabelProvider(new WorkbenchLabelProvider());
 		treeViewer.setContentProvider(new WorkbenchContentProvider());
 		treeViewer.setAutoExpandLevel(4);
-		treeViewer.addFilter(new ViewerFilter(){
+		treeViewer.addFilter(new ViewerFilter() {
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				return element instanceof IPrototype || element instanceof IFolder;
@@ -125,10 +125,14 @@ public final class PrototypeSelectionDialog extends Dialog {
 	 */
 	@Override
 	protected void okPressed() {
-		selection = (IPrototype) ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+		selection = (IPrototype) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
 		super.okPressed();
 	}
-	
+
+	/**
+	 * Returns the selected prototype.
+	 * @return the selected prototype
+	 */
 	public IPrototype getSelection() {
 		return selection;
 	}

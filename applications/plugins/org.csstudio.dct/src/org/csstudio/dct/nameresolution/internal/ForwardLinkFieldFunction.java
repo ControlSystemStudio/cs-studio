@@ -3,6 +3,7 @@ package org.csstudio.dct.nameresolution.internal;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.RecordFinder;
+import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * Implementation for the forwardlink() function.
@@ -21,7 +22,7 @@ public final class ForwardLinkFieldFunction  implements IFieldFunction {
 		String result = null;
 
 		if (r != null) {
-			result = r.getEpicsNameFromHierarchy();
+			result = AliasResolutionUtil.getEpicsNameFromHierarchy(r);
 		} else {
 			result = "No Record found";
 		}

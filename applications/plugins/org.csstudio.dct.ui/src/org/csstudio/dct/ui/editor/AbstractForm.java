@@ -7,9 +7,8 @@ import java.util.UUID;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
@@ -38,7 +37,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	private Composite mainComposite;
 	private E input;
 	private Label headlineLabel;
-	private TableCitizenTable commonTable;
+	private ConvenienceTableWrapper commonTable;
 	private Link link;
 	private DctEditor editor;
 
@@ -102,10 +101,10 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 		Composite composite = new Composite(expandBar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		commonTable = new TableCitizenTable(composite, SWT.None, getCommandStack());
+		commonTable = WidgetUtil.createKeyColumErrorTable(composite, getCommandStack());
 		commonTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(100));
 
-		ExpandItem expandItem = new ExpandItem(expandBar, SWT.NONE);
+		ExpandItem expandItem = new ExpandItem(expandBar, SWT.NONE, 0);
 		expandItem.setText("Common Settings");
 		expandItem.setHeight(170);
 		expandItem.setControl(composite);
@@ -117,10 +116,10 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	}
 
 	/**
-	 * Returns the comand stack.
+	 * Returns the command stack.
 	 * @return the command stack
 	 */
-	public final CommandStack getCommandStack() {
+	public CommandStack getCommandStack() {
 		return editor.getCommandStack();
 	}
 
@@ -151,8 +150,8 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
 		// prepare input for overview table
 		List<ITableRow> rows = new ArrayList<ITableRow>();
-		rows.add(new BeanPropertyTableRowAdapter("Identifier", input, getCommandStack(), "id", true));
-		rows.add(new NameTableRowAdapter(input, getCommandStack()));
+		rows.add(new BeanPropertyTableRowAdapter("Identifier", input, "id", true));
+		rows.add(new NameTableRowAdapter(input));
 		doAddCommonRows(rows, input);
 		commonTable.setInput(rows);
 

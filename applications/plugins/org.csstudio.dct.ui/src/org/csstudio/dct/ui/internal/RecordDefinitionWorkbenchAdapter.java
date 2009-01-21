@@ -7,7 +7,7 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
  * 
  * @author Sven Wende
  */
-public class RecordDefinitionWorkbenchAdapter extends BaseWorkbenchAdapter<IRecordDefinition> {
+public final class RecordDefinitionWorkbenchAdapter extends BaseWorkbenchAdapter<IRecordDefinition> {
 
 	/**
 	 * {@inheritDoc}

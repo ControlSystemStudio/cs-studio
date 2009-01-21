@@ -3,15 +3,11 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NameParser;
-
 import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
@@ -21,15 +17,21 @@ import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 
 /**
- * Editing component for {@link IPrototype}.
+ * Editing component for instances.
  * 
  * @author Sven Wende
  * 
  */
-public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
+public final class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 
-	private TableCitizenTable parameterValuesTable;
+	private ConvenienceTableWrapper parameterValuesTable;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param editor
+	 *            the editor instance
+	 */
 	public InstanceForm(DctEditor editor) {
 		super(editor);
 	}
@@ -45,12 +47,13 @@ public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		parameterValuesTable = new TableCitizenTable(composite, SWT.None, commandStack);
+		parameterValuesTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
 		parameterValuesTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
-		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE, 0);
+		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE, 1);
 		expandItem.setText("Parameter Values");
 		expandItem.setHeight(270);
+		expandItem.setExpanded(true);
 		expandItem.setControl(composite);
 		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_parametervalues.png"));
 
@@ -66,33 +69,10 @@ public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 		// prepare input for parameter table
 		List<ITableRow> rowsForParameters = new ArrayList<ITableRow>();
 		for (Parameter parameter : instance.getPrototype().getParameters()) {
-			rowsForParameters.add(new ParameterValueTableRowAdapter(instance, parameter, getCommandStack()));
+			rowsForParameters.add(new ParameterValueTableRowAdapter(instance, parameter));
 		}
 
 		parameterValuesTable.setInput(rowsForParameters);
-
-	}
-
-	public static class DerivedFromTableRowAdapter extends AbstractReadOnlyTableRowAdapter<IInstance> {
-
-		public DerivedFromTableRowAdapter(IInstance delegate, CommandStack commandStack) {
-			super(delegate, commandStack);
-		}
-
-		@Override
-		protected boolean doCanModifyValue(IInstance instance) {
-			return false;
-		}
-
-		@Override
-		protected String doGetKey(IInstance instance) {
-			return "Derived From Prototype";
-		}
-
-		@Override
-		protected Object doGetValue(IInstance instance) {
-			return instance.getPrototype().getName();
-		}
 
 	}
 
@@ -104,11 +84,12 @@ public class InstanceForm extends AbstractPropertyContainerForm<IInstance> {
 		return "Instance";
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IInstance instance) {
-		// ... derived from
-		rows.add(new DerivedFromTableRowAdapter(instance, getCommandStack()));
-
+		rows.add(new BeanPropertyTableRowAdapter("Type", instance, "prototype.name", true));
 	}
 
 	/**

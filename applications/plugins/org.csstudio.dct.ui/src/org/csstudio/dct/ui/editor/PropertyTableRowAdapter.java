@@ -7,27 +7,43 @@ import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.commands.ChangePropertyKeyCommand;
 import org.csstudio.dct.model.commands.ChangePropertyValueCommand;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
-public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyContainer> {
+/**
+ * Table adapter for Properties.
+ * 
+ * @author Sven Wende
+ * 
+ */
+public final class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyContainer> {
 	private String propertyKey;
 
-	public PropertyTableRowAdapter(IPropertyContainer delegate, String propertyKey, CommandStack commandStack) {
-		super(delegate, commandStack);
+	/**
+	 * Constructor.
+	 * 
+	 * @param delegate
+	 *            a property container
+	 * @param propertyKey
+	 *            the property name
+	 */
+	public PropertyTableRowAdapter(IPropertyContainer delegate, String propertyKey) {
+		super(delegate);
 		this.propertyKey = propertyKey;
 	}
 
+	/**
+	 * Returns the property name.
+	 * @return the property name
+	 */
 	public String getPropertyKey() {
 		return propertyKey;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -67,7 +83,7 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object doGetValue(IPropertyContainer delegate) {
+	protected String doGetValue(IPropertyContainer delegate) {
 		return delegate.getFinalProperties().get(propertyKey);
 	}
 
@@ -75,13 +91,13 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object doGetValueForDisplay(IPropertyContainer delegate) {
-		Object result = doGetValue(delegate);
+	protected String doGetValueForDisplay(IPropertyContainer delegate) {
+		String result = doGetValue(delegate);
 
 		try {
 			String input = delegate.getFinalProperties().get(propertyKey).toString();
 
-			//FIXME: Harten Cast auflösen!
+			// FIXME: Harten Cast auflösen!
 			result = ResolutionUtil.resolve(input, (IElement) delegate);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -94,8 +110,8 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Command doSetKey(IPropertyContainer delegate, String key) {
-		return new ChangePropertyKeyCommand(delegate, propertyKey, key);
+	protected Command doSetKey(IPropertyContainer delegate, Object key) {
+		return new ChangePropertyKeyCommand(delegate, propertyKey, key != null ? key.toString() : null);
 	}
 
 	/**
@@ -103,7 +119,7 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	 */
 	@Override
 	protected Command doSetValue(IPropertyContainer delegate, Object value) {
-		return new ChangePropertyValueCommand(delegate, propertyKey, value!=null?value.toString():null);
+		return new ChangePropertyValueCommand(delegate, propertyKey, value != null ? value.toString() : null);
 	}
 
 	/**
@@ -118,12 +134,12 @@ public class PropertyTableRowAdapter extends AbstractTableRowAdapter<IPropertyCo
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int compareTo(ITableRow row) {
+	protected int doCompareTo(ITableRow row) {
 		int result = 0;
-		if(row instanceof PropertyTableRowAdapter) {
+		if (row instanceof PropertyTableRowAdapter) {
 			result = propertyKey.compareTo(((PropertyTableRowAdapter) row).propertyKey);
 		}
-		
+
 		return result;
 	}
 }

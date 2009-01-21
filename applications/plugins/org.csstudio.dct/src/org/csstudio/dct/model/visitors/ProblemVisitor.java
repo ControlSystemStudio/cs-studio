@@ -81,7 +81,7 @@ public final class ProblemVisitor implements IVisitor {
 			// all over the project
 			if (!record.isAbstract()) {
 				try {
-					String finalEpicsName = ResolutionUtil.resolve(record.getEpicsNameFromHierarchy(), record);
+					String finalEpicsName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
 
 					if (finalEpicsNames.containsKey(finalEpicsName)) {
 						finalEpicsNames.get(finalEpicsName).add(record.getId());

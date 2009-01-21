@@ -12,7 +12,7 @@ import org.csstudio.dct.util.AliasResolutionUtil;
  * @author Sven Wende
  */
 @SuppressWarnings("unchecked")
-public class InstanceWorkbenchAdapter extends BaseWorkbenchAdapter<IInstance> {
+public final class InstanceWorkbenchAdapter extends BaseWorkbenchAdapter<IInstance> {
 
 	/**
 	 * {@inheritDoc}

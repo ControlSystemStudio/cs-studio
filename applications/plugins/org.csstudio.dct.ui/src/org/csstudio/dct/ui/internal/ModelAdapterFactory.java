@@ -18,7 +18,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter2;
  * 
  */
 @SuppressWarnings("unchecked")
-public class ModelAdapterFactory implements IAdapterFactory {
+public final class ModelAdapterFactory implements IAdapterFactory {
 
 	/**
 	 * {@inheritDoc}

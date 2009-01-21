@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.dct.model.IFolder;
-import org.csstudio.dct.model.internal.Folder;
 
 /**
- * UI adapter for {@link Folder}.
+ * UI adapter for folders.
  * 
  * @author Sven Wende
  */
@@ -17,7 +16,7 @@ public class FolderWorkbenchAdapter extends BaseWorkbenchAdapter<IFolder> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object[] doGetChildren(IFolder folder) {
+	protected final Object[] doGetChildren(IFolder folder) {
 		List<Object> result = new ArrayList<Object>();
 		result.addAll(folder.getMembers());
 		return result.toArray();
@@ -27,7 +26,7 @@ public class FolderWorkbenchAdapter extends BaseWorkbenchAdapter<IFolder> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected String doGetLabel(IFolder folder) {
+	protected final String doGetLabel(IFolder folder) {
 		return folder.getName();
 	}
 
@@ -38,7 +37,4 @@ public class FolderWorkbenchAdapter extends BaseWorkbenchAdapter<IFolder> {
 	protected String doGetIcon(IFolder folder) {
 		return "icons/folder.png";
 	}
-
-	
-
 }

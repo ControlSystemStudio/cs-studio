@@ -8,7 +8,7 @@ import org.eclipse.gef.commands.CommandStack;
  * 
  * @author Sven Wende
  */
-public class UndoAction extends AbstractCommandStackAction {
+public final class UndoAction extends AbstractCommandStackAction {
 
 	/**
 	 *{@inheritDoc}

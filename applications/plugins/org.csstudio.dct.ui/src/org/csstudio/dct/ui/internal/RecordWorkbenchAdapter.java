@@ -1,8 +1,8 @@
 package org.csstudio.dct.ui.internal;
 
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.AliasResolutionException;
+import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -11,7 +11,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * 
  * @author Sven Wende
  */
-public class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
+public final class RecordWorkbenchAdapter extends BaseWorkbenchAdapter<IRecord> {
 
 	/**
 	 * {@inheritDoc}

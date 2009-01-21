@@ -103,7 +103,7 @@ public final class PersistenceService implements IPersistenceService {
 	 *            the absolute path to the dbd file
 	 * @return the database definition (meta model)
 	 */
-	@SuppressWarnings({"unchecked" })
+	@SuppressWarnings( { "unchecked" })
 	private IDatabaseDefinition doLoadDatabaseDefinition(String path) {
 		DatabaseDefinition databaseDefinition = new DatabaseDefinition("1.0");
 
@@ -111,7 +111,7 @@ public final class PersistenceService implements IPersistenceService {
 		Console.setInstance(new ConsoleInterface() {
 
 			public void flush() {
-				
+
 			}
 
 			public void print(String text) {
@@ -123,7 +123,7 @@ public final class PersistenceService implements IPersistenceService {
 			}
 
 			public void println(String text) {
-				CentralLogger.getInstance().info(null, text);				
+				CentralLogger.getInstance().info(null, text);
 			}
 
 			public void println(Throwable thr) {
@@ -133,9 +133,9 @@ public final class PersistenceService implements IPersistenceService {
 			public void silent(String text) {
 				CentralLogger.getInstance().debug(null, text);
 			}
-			
+
 		});
-		
+
 		// .. use the VDCT parser
 		DBDData data = new DBDData();
 		DBDResolver.resolveDBD(data, path);
@@ -170,14 +170,16 @@ public final class PersistenceService implements IPersistenceService {
 				if (menuName != null && menuName.length() > 0) {
 					DBDMenuData menuData = data.getDBDMenuData(menuName);
 
-					MenuDefinition menuDefinition = new MenuDefinition(menuName);
+					if (menuData != null) {
+						MenuDefinition menuDefinition = new MenuDefinition(menuName);
 
-					for (String choiceId : (Set<String>) menuData.getChoices().keySet()) {
-						String description = menuData.getChoices().get(choiceId).toString();
-						menuDefinition.addChoice(new Choice(choiceId, description));
+						for (String choiceId : (Set<String>) menuData.getChoices().keySet()) {
+							String description = menuData.getChoices().get(choiceId).toString();
+							menuDefinition.addChoice(new Choice(choiceId, description));
+						}
+
+						fieldDefinition.setMenuDefinition(menuDefinition);
 					}
-
-					fieldDefinition.setMenuDefinition(menuDefinition);
 				}
 
 				recordDefinition.addFieldDefinition(fieldDefinition);

@@ -6,7 +6,6 @@ import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IInstanceContainer;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.commands.AddInstanceCommand;
 import org.csstudio.dct.model.internal.Instance;
@@ -15,12 +14,12 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Undoable command which adds a new instance to the model.
+ * Action that adds an instance.
  * 
  * @author Sven Wende
  * 
  */
-public class AddInstanceAction extends AbstractOutlineAction {
+public final class AddInstanceAction extends AbstractOutlineAction {
 
 	/**
 	 * {@inheritDoc}

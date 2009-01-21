@@ -8,9 +8,8 @@ import org.csstudio.dct.model.commands.AddParameterCommand;
 import org.csstudio.dct.model.commands.RemoveParameterCommand;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.Command;
@@ -39,29 +38,34 @@ import org.eclipse.ui.PlatformUI;
  * @author Sven Wende
  * 
  */
-public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
+public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 
+	private ConvenienceTableWrapper parameterTable;
+	private ParameterAddAction parameterAddAction;
+	private ParameterRemoveAction parameterRemoveAction;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param editor
+	 *            the editor instance
+	 */
 	public PrototypeForm(DctEditor editor) {
 		super(editor);
 	}
-
-	// private TableCitizenTable overviewTable;
-	private TableCitizenTable parameterTable;
-	private ParameterAddAction parameterAddAction;
-	private ParameterRemoveAction parameterRemoveAction;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
+	protected void doCreateControl(ExpandBar bar, final CommandStack commandStack) {
 		super.doCreateControl(bar, commandStack);
 
 		// create field table
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		parameterTable = new TableCitizenTable(composite, SWT.None, commandStack);
+		parameterTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
 		parameterTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
 		// .. add/remove buttons for properties
@@ -73,46 +77,7 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 		addButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Property Name",
-						"Please enter a name for the new property:", "", new IInputValidator() {
-							public String isValid(String newText) {
-								String error = null;
-
-								if(newText==null || newText.length()==0) {
-									error = "Name cannot be empty.";
-								}
-								if (getInput().hasParameter(newText)) {
-									error = "Parameter already exists.";
-								}
-
-								return error;
-							}
-						});
-
-				if (dialog.open() == InputDialog.OK) {
-					// .. add the parameter
-					Parameter parameter = new Parameter(dialog.getValue(), null);
-					Command cmd = new AddParameterCommand(getInput(), parameter);
-					getCommandStack().execute(cmd);
-
-					// .. activate the cell editor for the new row
-					TableViewer viewer = parameterTable.getViewer();
-					List<ParameterTableRowAdapter> rows = (List<ParameterTableRowAdapter>) viewer.getInput();
-					
-					ParameterTableRowAdapter insertedRow = null;
-					
-					for(ParameterTableRowAdapter r : rows) {
-						if(parameter.equals(r.getDelegate())) {
-							insertedRow = r;
-						}
-					}
-					
-					if(insertedRow!=null) {
-						viewer.editElement(insertedRow, 1);
-					}
-						
-				}
-
+				addParameter();
 			}
 		});
 
@@ -122,21 +87,10 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 		removeButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				// .. get the selected parameter
-				IStructuredSelection sel = (IStructuredSelection)parameterTable.getViewer().getSelection();
-				assert !sel.isEmpty();
-				ParameterTableRowAdapter row = (ParameterTableRowAdapter) sel.getFirstElement();
-				Parameter parameter = row.getDelegate();
-				
-				// .. remove the parameter
-				Command cmd = new RemoveParameterCommand(getInput(), parameter);
-				getCommandStack().execute(cmd);
-				
-				// .. clear selection
-				parameterTable.getViewer().setSelection(null);
+				removeParameter();
 			}
 		});
-		
+
 		parameterTable.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				removeButton.setEnabled(!event.getSelection().isEmpty());
@@ -145,6 +99,7 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 
 		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
 		expandItem.setText("Parameter");
+		expandItem.setExpanded(true);
 		expandItem.setHeight(270);
 		expandItem.setControl(composite);
 		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_parameter.png"));
@@ -170,14 +125,10 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 		// prepare input for parameter table
 		List<ITableRow> rowsForParameters = new ArrayList<ITableRow>();
 		for (Parameter p : prototype.getParameters()) {
-			rowsForParameters.add(new ParameterTableRowAdapter(p, getCommandStack()));
+			rowsForParameters.add(new ParameterTableRowAdapter(p));
 		}
 
 		parameterTable.setInput(rowsForParameters);
-	}
-
-	public void refreshParameters() {
-		doSetInput(getInput());
 	}
 
 	/**
@@ -196,6 +147,15 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Exposes the table viewer for parameters.
+	 * 
+	 * @return the table viewer for parameters
+	 */
+	TableViewer getParameterTableViewer() {
+		return parameterTable.getViewer();
 	}
 
 	/**
@@ -224,4 +184,67 @@ public class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
 
 		return text;
 	}
+
+	/**
+	 * Adds a parameter to the parameter table.
+	 */
+	void removeParameter() {
+		// .. get the selected parameter
+		IStructuredSelection sel = (IStructuredSelection) parameterTable.getViewer().getSelection();
+		assert !sel.isEmpty();
+		ParameterTableRowAdapter row = (ParameterTableRowAdapter) sel.getFirstElement();
+		Parameter parameter = row.getDelegate();
+
+		// .. remove the parameter
+		Command cmd = new RemoveParameterCommand(getInput(), parameter);
+		getCommandStack().execute(cmd);
+
+		// .. clear selection
+		parameterTable.getViewer().setSelection(null);
+	}
+
+	/**
+	 * Removes the currently selected parameter from the parameter table.
+	 */
+	void addParameter() {
+		InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Property Name",
+				"Please enter a name for the new property:", "", new IInputValidator() {
+					public String isValid(String newText) {
+						String error = null;
+
+						if (newText == null || newText.length() == 0) {
+							error = "Name cannot be empty.";
+						}
+						if (getInput().hasParameter(newText)) {
+							error = "Parameter already exists.";
+						}
+
+						return error;
+					}
+				});
+
+		if (dialog.open() == InputDialog.OK) {
+			// .. add the parameter
+			Parameter parameter = new Parameter(dialog.getValue(), null);
+			Command cmd = new AddParameterCommand(getInput(), parameter);
+			getCommandStack().execute(cmd);
+
+			// .. activate the cell editor for the new row
+			List<ParameterTableRowAdapter> rows = (List<ParameterTableRowAdapter>) parameterTable.getViewer().getInput();
+
+			ParameterTableRowAdapter insertedRow = null;
+
+			for (ParameterTableRowAdapter r : rows) {
+				if (parameter.equals(r.getDelegate())) {
+					insertedRow = r;
+				}
+			}
+
+			if (insertedRow != null) {
+				parameterTable.getViewer().editElement(insertedRow, 1);
+			}
+
+		}
+	}
+
 }

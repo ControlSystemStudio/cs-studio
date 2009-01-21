@@ -1,5 +1,6 @@
 package org.csstudio.dct.ui.editor.tables;
 
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -7,12 +8,12 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * Represents a table row in a standardized {@link BaseTable}. The standardized
- * table consists of 3 columns. The first column contains a key (or
- * description), the second a value and the third (optionally) an error message.
- * Rows for the standardized table have to implement this interface which allows
- * for the manipulation of many layout aspects (e.g. fore and background
- * colors), too.
+ * Represents a table row being used in a {@link ConvenienceTableWrapper}. This
+ * interface allows for an easy adaption of domain objects to be displayed and
+ * edited in a table.
+ * 
+ * All aspects of the table representation (colors, fonts etc.) and the editing
+ * behaviour (editing allowed, celleditor) can be controlled via this interface.
  * 
  * @author Sven Wende
  * 
@@ -20,157 +21,91 @@ import org.eclipse.swt.widgets.Composite;
 public interface ITableRow extends Comparable<ITableRow> {
 
 	/**
-	 * Returns the key which is displayed in the first column of the table.
+	 * Returns the value which is displayed in the specified column.
 	 * 
-	 * @return the key
+	 * @param column
+	 *            the column index
+	 * @return the value for the specified column
 	 */
-	String getKey();
+	String getDisplayValue(int column);
 
 	/**
-	 * This method is called, when the user changes the key in the first column
-	 * of the table.
+	 * Returns the editing value which is displayed in the specified column when
+	 * it switches to edit mode.
 	 * 
-	 * @param key
-	 *            the new key
+	 * @param column
+	 *            the column index
+	 * 
+	 * @return the editing value for the specified column
 	 */
-	void setKey(String key);
+	String getEditingValue(int column);
 
 	/**
-	 * Returns a description for the key in the first column.
+	 * Returns true, if the value in the specified column can be edited.
 	 * 
-	 * @return a description for the key in the first column
+	 * @param column
+	 *            the column index
+	 * @return true, if the value in the specified column can be edited
 	 */
-	String getKeyDescription();
+	boolean canModify(int column);
 
 	/**
-	 * Returns the value which is initially displayed in the second column when
-	 * the user switches into edit mode.
+	 * Returns the cell editor for the specified column.
 	 * 
-	 * @return the editing value for the second column
+	 * @param column
+	 *            the column index
+	 * @param parent
+	 *            a parent composite
+	 * @return the cell editor for the specified column
 	 */
-	Object getValue();
-	
+	CellEditor getCellEditor(int column, Composite parent);
+
 	/**
-	 * This method is called, when the user changes the value in the second column
-	 * of the table.
+	 * This method is called, when the value in the specified column was edited.
 	 * 
+	 * @param column
+	 *            the column index
 	 * @param value
 	 *            the new value
+	 * @param commandStack
+	 *            a command stack, which can be used to execute commands
 	 */
-	void setValue(Object value);
+	void setValue(int column, Object value, CommandStack commandStack);
 
 	/**
-	 * Returns the value which is displayed in the second column.
+	 * Returns the background color for the specified column.
 	 * 
-	 * @return the display value for the second column
+	 * @param column
+	 *            the column index
+	 * @return the background color for the specified column
 	 */
-	Object getValueForDisplay();
+	RGB getBackgroundColor(int column);
 
 	/**
-	 * Returns true, if there is an error for this row.
+	 * Returns the foreground color for the specified column.
 	 * 
-	 * @return true, if there is an error for this row
+	 * @param column
+	 *            the column index
+	 * @return the foreground color for the specified column
 	 */
-	boolean hasError();
+	RGB getForegroundColor(int column);
 
 	/**
-	 * Returns the error which is displayed in the third column of the table.
+	 * Returns the font for the specified column.
 	 * 
-	 * @return the error
+	 * @param column
+	 *            the column index
+	 * @return the font for the specified column
 	 */
-	String getError();
-	
-	/**
-	 * Returns the foreground color for the first (key) column.
-	 * 
-	 * @return the foreground color for the first (key) column
-	 */
-	RGB getForegroundColorForKey();
+	FontData getFont(int column);
 
 	/**
-	 * Returns the background color for the first (key) column.
+	 * Returns the image for the specified column.
 	 * 
-	 * @return the background color for the first (key) column
+	 * @param column
+	 *            the column index
+	 * @return the image for the specified column
 	 */
-	RGB getBackgroundColorForKey();
-
-	/**
-	 * Returns the foreground color for the second (value) column.
-	 * 
-	 * @return the foreground color for the second (value) column
-	 */
-	RGB getForegroundColorForValue();
-
-	/**
-	 * Returns the background color for the second (value) column.
-	 * 
-	 * @return the background color for the second (value) column
-	 */
-	RGB getBackgroundColorForValue();
-
-	/**
-	 * Returns the foreground color for the third (error) column.
-	 * 
-	 * @return the foreground color for the third (error) column
-	 */
-	RGB getForegroundColorForErrors();
-
-	/**
-	 * Returns the background color for the third (error) column.
-	 * 
-	 * @return the background color for the third (error) column
-	 */
-	RGB getBackgroundColorForErrors();
-
-	/**
-	 * Returns the font for the first (key) column.
-	 * 
-	 * @return the font for the first (key) column
-	 */
-	FontData getFontForKey();
-
-	/**
-	 * Returns the font for the second (value) column.
-	 * 
-	 * @return the font for the second (value) column
-	 */
-	FontData getFontForValue();
-
-	/**
-	 * Returns the font for the third (error) column.
-	 * 
-	 * @return the font for the third (error) column
-	 */
-	FontData getFontForError();
-	
-	/**
-	 * Returns an image for the row.
-	 * 
-	 * @return an image for the row
-	 */
-	Image getImage();
-
-	/**
-	 * Returns true, if the key in the first column can be changed by the user.
-	 * @return true, if the key in the first column can be changed by the user
-	 */
-	boolean canModifyKey();
-
-	/**
-	 * Returns true, if the value in the second column can be changed by the user.
-	 * @return true, if the value in the second column can be changed by the user
-	 */	
-	boolean canModifyValue();
-
-	/**
-	 * Returns the cell editor for the second (value) column.
-	 * 
-	 * @param parent the parent composite
-	 * 
-	 * @return the cell editor for the second (value) column
-	 */
-	CellEditor getValueCellEditor(Composite parent);
-
-	
+	Image getImage(int column);
 
 }

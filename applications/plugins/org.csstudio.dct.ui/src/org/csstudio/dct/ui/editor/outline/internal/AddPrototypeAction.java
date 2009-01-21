@@ -9,12 +9,12 @@ import org.csstudio.dct.model.internal.Prototype;
 import org.eclipse.gef.commands.Command;
 
 /**
- * Popup menu action for the outline view that creates new prototypes.
+ * Popup menu action for the outline view that creates a new prototype.
  * 
  * @author Sven Wende
  * 
  */
-public class AddPrototypeAction extends AbstractOutlineAction {
+public final class AddPrototypeAction extends AbstractOutlineAction {
 
 	/**
 	 * {@inheritDoc}

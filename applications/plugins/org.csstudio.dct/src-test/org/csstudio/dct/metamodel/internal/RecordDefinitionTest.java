@@ -52,7 +52,6 @@ public final class RecordDefinitionTest {
 	 */
 	@Test
 	public void testGetFieldDefinition() {
-		Collection<IFieldDefinition> fields = recordDefinition.getFieldDefinitions();
 		assertEquals(fieldDefinition1, recordDefinition.getFieldDefinitions("SEVR"));
 		assertEquals(fieldDefinition2, recordDefinition.getFieldDefinitions("PREC"));
 	}

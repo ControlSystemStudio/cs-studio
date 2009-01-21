@@ -1,14 +1,13 @@
 package org.csstudio.dct.ui.internal;
 
 import org.csstudio.dct.model.IFolder;
-import org.csstudio.dct.model.internal.Project;
 
 /**
- * UI adapter for {@link Project}.
+ * UI adapter for projects.
  * 
  * @author Sven Wende
  */
-public class ProjectWorkbenchAdapter extends FolderWorkbenchAdapter {
+public final class ProjectWorkbenchAdapter extends FolderWorkbenchAdapter {
 
 	/**
 	 * {@inheritDoc}

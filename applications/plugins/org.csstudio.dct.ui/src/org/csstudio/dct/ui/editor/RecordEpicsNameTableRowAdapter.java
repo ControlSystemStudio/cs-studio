@@ -2,12 +2,10 @@ package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
-import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -18,8 +16,8 @@ import org.eclipse.swt.graphics.RGB;
  */
 class RecordEpicsNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 
-	public RecordEpicsNameTableRowAdapter(IRecord record, CommandStack commandStack) {
-		super(record, commandStack);
+	public RecordEpicsNameTableRowAdapter(IRecord record) {
+		super(record);
 	}
 
 	@Override
@@ -28,12 +26,12 @@ class RecordEpicsNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 	}
 
 	@Override
-	protected Object doGetValue(IRecord record) {
+	protected String doGetValue(IRecord record) {
 		return AliasResolutionUtil.getEpicsNameFromHierarchy(record);
 	}
 
 	@Override
-	protected Object doGetValueForDisplay(IRecord record) {
+	protected String doGetValueForDisplay(IRecord record) {
 		String result = AliasResolutionUtil.getEpicsNameFromHierarchy(record);
 
 		if (record.isInherited()) {

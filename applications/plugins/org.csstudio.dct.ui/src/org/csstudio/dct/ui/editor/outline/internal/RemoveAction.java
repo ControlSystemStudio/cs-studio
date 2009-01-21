@@ -17,7 +17,7 @@ import org.eclipse.gef.commands.Command;
  * @author Sven Wende
  * 
  */
-public class RemoveAction extends AbstractOutlineAction {
+public final class RemoveAction extends AbstractOutlineAction {
 
 	/**
 	 * {@inheritDoc}

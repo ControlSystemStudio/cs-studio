@@ -59,7 +59,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * @author Sven Wende
  * 
  */
-public class DctEditor extends MultiPageEditorPart implements CommandStackListener {
+public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
 	private Project project;
 	private CommandStack commandStack;
 	private ISelectionChangedListener outlineSelectionListener;
@@ -74,6 +74,9 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 
 	private StyledText dbFilePreviewText;
 
+	/**
+	 * Constructor.
+	 */
 	public DctEditor() {
 		super();
 		commandStack = new CommandStack();
@@ -169,6 +172,9 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		createPage1();
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public void doSave(IProgressMonitor monitor) {
 		FileEditorInput in = (FileEditorInput) getEditorInput();
 		try {
@@ -181,6 +187,9 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		}
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public void doSaveAs() {
 		IEditorPart editor = getEditor(0);
 		editor.doSaveAs();
@@ -188,17 +197,8 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		setInput(editor.getEditorInput());
 	}
 
-	/*
-	 * (non-Javadoc) Method declared on IEditorPart
-	 */
-	public void gotoMarker(IMarker marker) {
-		setActivePage(0);
-		IDE.gotoMarker(getEditor(0), marker);
-	}
-
 	/**
-	 * The <code>MultiPageEditorExample</code> implementation of this method
-	 * checks that the input is an instance of <code>IFileEditorInput</code>.
+	 *{@inheritDoc}
 	 */
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		if (!(editorInput instanceof IFileEditorInput)) {
@@ -228,20 +228,23 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		markErrors();
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public boolean isDirty() {
 		return commandStack.isDirty();
 	}
 
-	/*
-	 * (non-Javadoc) Method declared on IEditorPart.
+	/**
+	 *{@inheritDoc}
 	 */
 	public boolean isSaveAsAllowed() {
 		return true;
 	}
 
 	/**
-	 * Calculates the contents of page 2 when the it is activated.
+	 *{@inheritDoc}
 	 */
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
@@ -263,10 +266,18 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		dbFilePreviewText.setText(sb.toString());
 	}
 
+	/**
+	 * Returns the command stack used by this editor.
+	 * 
+	 * @return the command stack used by this editor
+	 */
 	public CommandStack getCommandStack() {
 		return commandStack;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public Object getAdapter(Class adapter) {
 		Object result = null;
 
@@ -297,6 +308,9 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		return result;
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	public void commandStackChanged(EventObject event) {
 		firePropertyChange(PROP_DIRTY);
 		// FIXME: Auskommentieren, wenn Markierung nach jeder Änderung gewünscht
@@ -328,6 +342,12 @@ public class DctEditor extends MultiPageEditorPart implements CommandStackListen
 		}
 	}
 
+	/**
+	 * Selects the model element with the specified id in the outline view.
+	 * 
+	 * @param id
+	 *            the element id
+	 */
 	public void selectItemInOutline(UUID id) {
 		IElement element = new SearchVisitor().search(project, id);
 

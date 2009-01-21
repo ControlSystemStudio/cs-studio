@@ -1,14 +1,11 @@
 package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
-import org.csstudio.dct.ui.editor.tables.AbstractTableRowAdapter;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -19,8 +16,8 @@ import org.eclipse.swt.graphics.RGB;
  */
 class NameTableRowAdapter extends AbstractTableRowAdapter<IElement> {
 
-	public NameTableRowAdapter(IElement element, CommandStack commandStack) {
-		super(element, commandStack);
+	public NameTableRowAdapter(IElement element) {
+		super(element);
 	}
 
 	@Override
@@ -29,12 +26,12 @@ class NameTableRowAdapter extends AbstractTableRowAdapter<IElement> {
 	}
 
 	@Override
-	protected Object doGetValue(IElement element) {
+	protected String doGetValue(IElement element) {
 		return AliasResolutionUtil.getNameFromHierarchy(element);
 	}
 
 	@Override
-	protected Object doGetValueForDisplay(IElement element) {
+	protected String doGetValueForDisplay(IElement element) {
 		String result =AliasResolutionUtil.getNameFromHierarchy(element);
 
 		if (element.isInherited()) {

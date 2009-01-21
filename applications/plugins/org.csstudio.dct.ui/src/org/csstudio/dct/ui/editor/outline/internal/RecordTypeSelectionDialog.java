@@ -66,10 +66,8 @@ public final class RecordTypeSelectionDialog extends Dialog {
 	 *            shell
 	 * @param dialogMessage
 	 *            the dialog message, or <code>null</code> if none
-	 * @param fileExtensions
-	 *            the file extensions of files to show in the dialog. Use an
-	 *            empty array or <code>null</code> to show only containers
-	 *            (folders).
+	 * @param recordDefinitions
+	 *            the record definitions
 	 */
 	public RecordTypeSelectionDialog(final Shell parentShell, final String dialogMessage, final List<IRecordDefinition> recordDefinitions) {
 		super(parentShell);

@@ -8,9 +8,12 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 
 /**
- * Base UI adapter.
+ * Base class for workbench adapters for elements of the DCT model.
  * 
  * @author Sven Wende
+ * 
+ * @param <E>
+ *            the element type
  */
 @SuppressWarnings("unchecked")
 public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWorkbenchAdapter2 {
@@ -121,6 +124,8 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 	/**
 	 * Provide an image. the element
 	 * 
+	 * @param object the element
+	 * 
 	 * @return an image
 	 */
 	protected String doGetIcon(E object) {
@@ -130,7 +135,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 	/**
 	 * Provide a label.
 	 * 
-	 * @param element
+	 * @param object
 	 *            the element
 	 * @return a label
 	 */
@@ -141,7 +146,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 	/**
 	 * Provide the parent.
 	 * 
-	 * @param element
+	 * @param object
 	 *            the element
 	 * @return the parent
 	 */

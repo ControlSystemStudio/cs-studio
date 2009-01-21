@@ -27,14 +27,14 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(IViewPart view) {
+	public final void init(IViewPart view) {
 		outlineView = (ContentOutline) view;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void run(IAction action) {
+	public final void run(IAction action) {
 		Command command = createCommand(selectedElement);
 		execute(command);
 
@@ -51,7 +51,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
+	public final void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 
@@ -65,9 +65,23 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 		}
 	}
 
+	/**
+	 * Template method. Subclasses have to return a command that does the real
+	 * action.
+	 * 
+	 * @param selection
+	 *            the currently selected element
+	 * 
+	 * @return a command which does the real action
+	 */
 	protected abstract Command createCommand(IElement selection);
 
-	protected IProject getProject() {
+	/**
+	 * Returns the {@link IProject} that is currently displayed in the outline.
+	 * 
+	 * @return the current project
+	 */
+	protected final IProject getProject() {
 		IProject result = null;
 		IPage currentPage = outlineView.getCurrentPage();
 
@@ -77,7 +91,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 
 		return result;
 	}
-	
+
 	/**
 	 * Executes the specified command.
 	 * 

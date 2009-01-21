@@ -21,74 +21,75 @@
  */
 package org.csstudio.dct.ui.editor.tables;
 
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.swt.SWT;
+import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Base class for dialog based cell editors.
+ * A cell editor implementation that opens a dialog to let the user choose a
+ * resource of the local workspace.
  * 
  * @author Sven Wende
  * 
  */
-public abstract class AbstractDialogCellEditor extends CellEditor {
+public final class WorkspaceResourceCellEditor extends AbstractDialogCellEditor {
 
-	private Shell _shell;
-	private final String _title;
-	private boolean _dialogIsOpen = false;
+	private IPath _path;
+	private String[] _fileExtensions;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param parent
-	 *            the parent composite
-	 * @param title
-	 *            the dialog title
+	 * @param parent a parent composite
+	 * @param fileExtensions accepted file extensions
+	 * @param title the dialog title 
 	 */
-	public AbstractDialogCellEditor(final Composite parent, final String title) {
-		super(parent, SWT.NONE);
-		_shell = parent.getShell();
-		_title = title;
+	public WorkspaceResourceCellEditor(final Composite parent, final String[] fileExtensions, String title) {
+		super(parent, title);
+		_fileExtensions = fileExtensions;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void activate() {
-		if (!_dialogIsOpen) {
-			_dialogIsOpen = true;
-			this.openDialog(_shell, _title);
-			_dialogIsOpen = false;
+	protected Object doGetValue() {
+		return _path;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doSetValue(final Object value) {
+		if (value == null || !(value instanceof IPath)) {
+			_path = new Path("");
+		} else {
+			_path = (IPath) value;
 		}
 	}
 
 	/**
-	 * Template method. Subclasses should open a dialog within this method.
-	 * 
-	 * @param shell
-	 *            a shell
-	 * @param dialogTitle
-	 *            the dialog title
-	 */
-	protected abstract void openDialog(final Shell shell, final String dialogTitle);
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final Control createControl(final Composite parent) {
-		return null;
-	}
+	protected void openDialog(final Shell parentShell, final String dialogTitle) {
+		ResourceSelectionDialog rsd = new ResourceSelectionDialog(parentShell, dialogTitle, _fileExtensions);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetFocus() {
-		// Ignore
-	}
+		if (_path != null) {
+			rsd.setSelectedResource(_path);
+		}
 
+		if (rsd.open() == Window.OK) {
+			if (rsd.getSelectedResource() != null) {
+				_path = rsd.getSelectedResource();
+			}
+			fireApplyEditorValue();
+		} else {
+			fireCancelEditor();
+		}
+	}
 }

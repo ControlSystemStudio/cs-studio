@@ -5,9 +5,8 @@ import java.util.List;
 
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.tables.BeanPropertyTableRowAdapter;
+import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.dct.ui.editor.tables.TableCitizenTable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
@@ -29,13 +28,18 @@ import org.eclipse.swt.widgets.ExpandItem;
  * @author Sven Wende
  * 
  */
-public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
-	private TableCitizenTable recordFieldTable;
-	
+public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
+	private ConvenienceTableWrapper recordFieldTable;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param editor
+	 *            the editor instance
+	 */
 	public RecordForm(DctEditor editor) {
 		super(editor);
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -43,51 +47,50 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	@Override
 	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
 		super.doCreateControl(bar, commandStack);
-		
+
 		// .. field table
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		recordFieldTable = new TableCitizenTable(composite, SWT.None, commandStack);
+		recordFieldTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
 		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(300));
-		
+
 		// .. filter button
 		Composite buttons = new Composite(composite, SWT.None);
 		buttons.setLayout(new FillLayout());
-		
+
 		final Button addButton = new Button(buttons, SWT.CHECK);
 		addButton.setText("Show All (includes empty settings)");
 		addButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				if(addButton.getSelection()) {
+				if (addButton.getSelection()) {
 					recordFieldTable.getViewer().setFilters(new ViewerFilter[0]);
 				} else {
 					ViewerFilter filter = new ViewerFilter() {
 						@Override
 						public boolean select(Viewer viewer, Object parentElement, Object element) {
 							RecordFieldTableRowAdapter row = (RecordFieldTableRowAdapter) element;
-							return row.getDelegate().getField(row.getFieldKey())!=null;
+							return row.getDelegate().getField(row.getFieldKey()) != null;
 						}
 					};
-					
-					recordFieldTable.getViewer().setFilters(new ViewerFilter[]{filter});
+
+					recordFieldTable.getViewer().setFilters(new ViewerFilter[] { filter });
 				}
-				
-				
+
 			}
 		});
-		
+
 		addButton.setSelection(true);
-		
+
 		// .. the expand item
-		ExpandItem expandItem = new ExpandItem (bar, SWT.NONE);
+		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
 		expandItem.setText("Fields");
 		expandItem.setHeight(370);
 		expandItem.setControl(composite);
 		expandItem.setExpanded(true);
 		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_fields.png"));
-	}		
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -95,12 +98,12 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	@Override
 	protected void doSetInput(IRecord record) {
 		super.doSetInput(record);
-		
+
 		// prepare input for field table
 		List<ITableRow> rowsForFields = new ArrayList<ITableRow>();
 
 		for (String key : record.getFinalFields().keySet()) {
-			rowsForFields.add(new RecordFieldTableRowAdapter(record, key, getCommandStack()));
+			rowsForFields.add(new RecordFieldTableRowAdapter(record, key));
 		}
 
 		recordFieldTable.setInput(rowsForFields);
@@ -119,10 +122,10 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	 */
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IRecord record) {
-		rows.add(new BeanPropertyTableRowAdapter("Type", record, getCommandStack(), "type", true));
-		rows.add(new RecordEpicsNameTableRowAdapter(record, getCommandStack()));
+		rows.add(new BeanPropertyTableRowAdapter("Type", record, "type", true));
+		rows.add(new RecordEpicsNameTableRowAdapter(record));
 	}
-	
+
 	/**
 	 * 
 	 *{@inheritDoc}
@@ -131,15 +134,15 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	protected String doGetLinkText(IRecord record) {
 		String text = "";
 
-		if(record.isInherited()) {
-			text+="jump to <a href=\""+record.getParentRecord().getId()+"\">parent record</a>";
+		if (record.isInherited()) {
+			text += "jump to <a href=\"" + record.getParentRecord().getId() + "\">parent record</a>";
 		} else {
-			text+="Record has no parent.";
+			text += "Record has no parent.";
 		}
-		
+
 		return text;
 	}
-	
+
 	/**
 	 * Returns the currently selected property.
 	 * 
@@ -152,7 +155,7 @@ public class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		if (sel != null && sel.getFirstElement() != null) {
 			RecordFieldTableRowAdapter adapter = (RecordFieldTableRowAdapter) sel.getFirstElement();
-			result = adapter.getKey();
+			result = adapter.getFieldKey();
 		}
 
 		return result;

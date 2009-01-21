@@ -11,7 +11,7 @@ import org.csstudio.dct.model.IPrototype;
  * @author Sven Wende
  */
 @SuppressWarnings("unchecked")
-public class PrototypeWorkbenchAdapter extends BaseWorkbenchAdapter<IPrototype> {
+public final class PrototypeWorkbenchAdapter extends BaseWorkbenchAdapter<IPrototype> {
 
 	/**
 	 * {@inheritDoc}
