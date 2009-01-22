@@ -33,7 +33,7 @@ import AAPI.AnswerChannelInfo;
  */
 public class NamesRequest implements ClientRequest
 {
-	private final boolean debug=true;
+	private final boolean debug=false;
 	private final boolean debugOut=false;
 	private int key;
 	private String pattern;

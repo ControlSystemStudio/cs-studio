@@ -571,7 +571,7 @@ public class AAPI {
 			int err = readStream.readInt();
 			int ver = readStream.readInt();
 			if (err != 0) {
-				System.err.println("AAPI error: "+new String(rawAnswer));
+				System.err.println("AAPI error: " + err);
 				return null;
 			}
 			return rawAnswer;
