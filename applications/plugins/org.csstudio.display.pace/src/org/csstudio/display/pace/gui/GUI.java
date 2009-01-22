@@ -155,7 +155,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                 @Override
                 public void widgetSelected(SelectionEvent e)
                 {
-                    final Cell[] cells = getSelectedCells();
+                    final Cell[] cells = getSelectedCells(model_col);
                     if (cells == null)
                         return;
                     final IAction action =
@@ -241,13 +241,22 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         manager.add(new Separator());
     }
 
-    /** @return Currently selected editable(!) cells or <code>null</code> */
+    /** @return Currently selected editable(!) cells from column that
+     *          was latest clicked, or <code>null</code>
+     */
     private Cell [] getSelectedCells()
     {
         // Anything selected at all?
         if (selected_cell == null)
             return null;
-        final Column column = selected_cell.getColumn();
+        return getSelectedCells(selected_cell.getColumn());
+    }
+    
+    /** @param column Column from which to get the cells
+     *  @return Currently selected editable(!) cells or <code>null</code>
+     */
+    private Cell[] getSelectedCells(final Column column)
+    {
         // Only return editable cells
         if (column.isReadonly())
             return null;
@@ -263,7 +272,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         }
         return cells;
     }
-    
+
     /** Update table when Cell in Model changed
      *  @see ModelListener
      */
