@@ -35,6 +35,7 @@ public class Messages extends NLS
 	public static String AMSMonitorView_optLast;
 	public static String AMSMonitorView_lblLastCount;
 	public static String AMSMonitorView_cboInterval;
+	public static String AMSMonitorView_excelExport;
 	public static String AMSMonitorView_optPeriod;
 	public static String AMSMonitorView_lblPeriodStart;
 	public static String AMSMonitorView_lblPeriodEnd;
