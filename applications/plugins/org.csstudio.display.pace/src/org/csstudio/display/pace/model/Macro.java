@@ -2,7 +2,7 @@ package org.csstudio.display.pace.model;
 
 import java.util.regex.Pattern;
 
-/** A macro that replaces some ${name} with a value.
+/** A macro that replaces <pre>${name}</pre> or <pre>$(name)</pre> with a value.
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
@@ -54,7 +54,7 @@ public class Macro
     {
         this.name = name;
         this.value = value;
-        pattern = Pattern.compile("\\$\\{" + name + "\\}");
+        pattern = Pattern.compile("\\$[{(]" + name + "[)}]");
     }
     
     /** Apply macro to input

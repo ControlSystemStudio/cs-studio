@@ -23,6 +23,6 @@ public class MacroTest
                 macros[1].apply("${S}_RF:Gadget${N}:Signal"));
         
         assertEquals("Test_RF:Gadget2:Signal",
-                Macro.apply(macros, "${S}_RF:Gadget${N}:Signal"));
+                Macro.apply(macros, "${S}_RF:Gadget$(N):Signal"));
     }
 }
