@@ -27,7 +27,6 @@ import java.util.*;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.util.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.printing.*;
@@ -40,7 +39,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ScreenshotWorker
 {
-    private Hashtable<String, String> messageContent  = null;
+    private Hashtable<String, String> messageContent = null;
     private Display display = null;
     private Composite mainComposite;
     private Color paintColorBlack, paintColorWhite; // alias for paintColors[0] and [1]
@@ -48,6 +47,7 @@ public class ScreenshotWorker
     private ImageBundle imageBundle = null;
     private PaintSurface paintSurface; // paint surface for drawing
     private int restart = 0;
+    
     /** */
     private int startDelay  = 0;
 
@@ -255,247 +255,15 @@ public class ScreenshotWorker
 
     public void processCapture()
     {
+        ImageCreator ic = new ImageCreator(display);
         imageBundle = new ImageBundle();
         
-        captureImages(imageBundle);        
-    }
-    
-    public void captureImages(ImageBundle in)
-    {
-//        ImageLoader loader  = null;
-        Rectangle   rect    = null;
-        Image       img     = null;
-        Image       dispImg = null;
-        GC          gc      = null;
-        
-        // Screen dump
-        gc = new GC(display);        
-        rect = display.getBounds();
-        dispImg = new Image(display, rect.width, rect.height);
-        gc.copyArea(dispImg, 0, 0);
-        in.setScreenImage(dispImg);
-        gc.dispose();
-        gc = null;
-        
-        // ------ TEST -------
-//        loader = new ImageLoader();
-//        ImageData[] imageData = new ImageData[1];
-//        imageData[0] = dispImg.getImageData();
-//        loader.data = imageData;
-//        loader.save("D:\\screen.bmp", SWT.IMAGE_BMP);
-        
-        // Window dump
-        rect = getPartControl(display, false, true);
-
-        if(rect != null)
-        {
-            normalizeRectangle(display.getBounds(), rect);
-
-            img = new Image(display, rect.width, rect.height);
-            
-            gc = new GC(img);            
-            gc.drawImage(dispImg, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);            
-            in.setWindowImage(img);            
-            gc.dispose();
-            gc = null;
-            
-//            imageData[0] = img.getImageData();
-//            loader.data = imageData;
-//            loader.save("D:\\window.bmp", SWT.IMAGE_BMP);
-
-            img.dispose();           
-            img = null;
-        }
-        
-        // Section dump
-        rect = getPartControl(display, true, false);
-
-        if(rect != null)
-        {
-            System.out.println("Rectangle: " + rect.toString());
-            
-            normalizeRectangle(display.getBounds(), rect);
-            
-            System.out.println("Normalisiert Rectangle: " + rect.toString());
-            
-            img = new Image(display, rect.width, rect.height);
-            
-            gc = new GC(img);            
-            gc.drawImage(dispImg, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
-            in.setSectionImage(img);
-            gc.dispose();
-            gc = null;
-            
-//            imageData[0] = img.getImageData();
-//            loader.data = imageData;
-//            loader.save("D:\\section.bmp", SWT.IMAGE_BMP);
-            
-            img.dispose();
-            img = null;
-        }
-        
-        dispImg.dispose();
-        dispImg = null;
-    }
-    
-    private void normalizeRectangle(Rectangle displayBounds, Rectangle target)
-    {
-        if(target == null)
-        {
-            return;
-        }
-        else
-        {
-            target.x = Math.max(target.x, displayBounds.x);
-            target.y = Math.max(target.y, displayBounds.y);
-            target.width = Math.min(target.x + target.width, displayBounds.x + displayBounds.width) - target.x;
-            target.height = Math.min(target.y + target.height, displayBounds.y + displayBounds.height) - target.y;
-            
-            return;
-        }
-    }
-
-    /**
-     * 
-     * @param display
-     * @param section
-     * @param shell
-     * @return
-     */
-    
-    private Rectangle getPartControl(Display display, boolean section, boolean shell)
-    {
-        Control partControl = display.getFocusControl();
-        if(partControl != null && !partControl.isDisposed())
-        {
-            Control previousContr = null;
-            for(; partControl != null; partControl = partControl.getParent())
-            {
-                if(partControl instanceof Shell)
-                {
-                    return partControl.getBounds();
-                }
-                if(!shell)
-                {
-                    boolean isView = partControl instanceof ViewForm;
-                    if(!isView && (partControl instanceof Composite))
-                    {
-                        Composite parent = ((Composite)partControl).getParent();
-                        if(parent != null)
-                        {
-                            Control children[] = parent.getChildren();
-                            for(int i = 0; i < children.length; i++)
-                            {
-                                if(children[i] instanceof ToolBar)
-                                {
-                                    isView = true;
-                                    break;
-                                }
-                                if(previousContr == null || !(children[i] instanceof Sash))
-                                {
-                                    continue;
-                                }
-                                partControl = previousContr;
-                                isView = true;
-                                break;
-                            }
-
-                        }
-                    }
-                    if(isView)
-                    {
-                        Point origin = partControl.toDisplay(0, 0);
-                        Rectangle bounds = partControl.getBounds();
-                        if(section)
-                        {
-                            Composite parent;
-                            for(Control sectionControl = partControl; sectionControl != null; sectionControl = parent)
-                            {
-                                parent = sectionControl.getParent();
-                                if(parent == null)
-                                {
-                                    break;
-                                }
-                                Control children[] = parent.getChildren();
-                                for(int i = 0; i < children.length; i++)
-                                {
-                                    Control child = children[i];
-                                    if(child instanceof Sash)
-                                    {
-                                        Point sashSize = ((Sash)child).getSize();
-                                        int sashWidth = 2 * Math.min(sashSize.x, sashSize.y) - 1;
-                                        Rectangle parentBounds = parent.getBounds();
-                                        Point parentOrigin = parent.toDisplay(0, 0);
-                                        int left = parentOrigin.x - sashWidth;
-                                        int right = left + parentBounds.width + sashWidth;
-                                        int top = parentOrigin.y - sashWidth;
-                                        int bottom = top + parentBounds.height + sashWidth;
-                                        for(int j = i; j < children.length; j++)
-                                        {
-                                            Control c2 = children[j];
-                                            if(c2 instanceof Sash)
-                                            {
-                                                Point loc = c2.toDisplay(0, 0);
-                                                Point size = c2.getSize();
-                                                if(size.x < size.y)
-                                                {
-                                                    if(loc.x < origin.x && loc.x > left)
-                                                    {
-                                                        left = loc.x;
-                                                    }
-                                                    int r = loc.x + size.x;
-                                                    if(r > origin.x + bounds.width && r < right)
-                                                    {
-                                                        right = r;
-                                                    }
-                                                } else
-                                                {
-                                                    if(loc.y < origin.y && loc.y > top)
-                                                    {
-                                                        top = loc.y;
-                                                    }
-                                                    int r = loc.y + size.y;
-                                                    if(r > origin.y + bounds.height && r < bottom)
-                                                    {
-                                                        bottom = r;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        bounds.x = left;
-                                        bounds.y = top;
-                                        bounds.width = right - left;
-                                        bounds.height = bottom - top;
-                                        return bounds;
-                                    }
-                                }
-
-                                if(parent instanceof Shell)
-                                {
-                                    break;
-                                }
-                            }
-
-                            return null;
-                        } else
-                        {
-                            bounds.x = origin.x;
-                            bounds.y = origin.y;
-                            return bounds;
-                        }
-                    }
-                }
-                previousContr = partControl;
-            }
-        }
-        
-        return null;
+        ic.captureImages(imageBundle);        
     }
     
     public boolean performPrint(Shell shell, Image image)
     {
-        GC      gc      = null;
+        GC gc = null;
         boolean success = true;
 
         PrintDialog dialog = new PrintDialog(shell);
@@ -532,10 +300,10 @@ public class ScreenshotWorker
 
                     System.out.println(image.toString() + ", " + bounds.x + ", " + bounds.y + ", " + bounds.width + ", " + bounds.height + ", " + xoff + ", " + yoff + ", " + aWidth + ", " + aHeight);
                     
-                    System.out.println(gc.toString());
-
                     gc = new GC(printer);
    
+                    System.out.println(gc.toString());
+
                     gc.drawImage(image, bounds.x, bounds.y, bounds.width, bounds.height, xoff, yoff, aWidth, aHeight);
                     
                     printer.endPage();                    

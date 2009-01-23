@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/activation.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/dsn.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/imap.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mailapi.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/smtp.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/activation.jar" sourcepath="org.csstudio.utility.screenshotsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/dsn.jar" sourcepath="org.csstudio.utility.screenshotsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/imap.jar" sourcepath="org.csstudio.utility.screenshotsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/mailapi.jar" sourcepath="org.csstudio.utility.screenshotsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/smtp.jar" sourcepath="org.csstudio.utility.screenshotsrc.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

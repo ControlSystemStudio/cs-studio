@@ -5,11 +5,11 @@ Bundle-SymbolicName: org.csstudio.utility.screenshot; singleton:=true
 Bundle-Version: 1.1.2
 Bundle-Activator: org.csstudio.utility.screenshot.ScreenshotPlugin
 Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.ui
-Eclipse-LazyStart: true
 Bundle-ClassPath: lib/activation.jar,
  lib/dsn.jar,
  lib/imap.jar,
@@ -17,3 +17,4 @@ Bundle-ClassPath: lib/activation.jar,
  lib/smtp.jar,
  .
 Export-Package: org.csstudio.utility.screenshot
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
