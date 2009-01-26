@@ -152,7 +152,8 @@ public class ScreenshotWorker
      * 
      * @return the display we're using
      */
-    public Display getDisplay() {
+    public Display getDisplay()
+    {
         return mainComposite.getDisplay();
     }
 

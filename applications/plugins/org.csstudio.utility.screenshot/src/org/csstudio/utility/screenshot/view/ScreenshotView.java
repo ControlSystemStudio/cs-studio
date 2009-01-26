@@ -23,6 +23,9 @@
 
 package org.csstudio.utility.screenshot.view;
 
+import java.awt.datatransfer.FlavorEvent;
+import java.awt.datatransfer.FlavorListener;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
@@ -30,6 +33,7 @@ import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.csstudio.utility.screenshot.destination.MailImageWorker;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.menu.action.*;
+import org.csstudio.utility.screenshot.util.ClipboardHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -48,10 +52,11 @@ import org.eclipse.ui.part.ViewPart;
  * @author Markus Moeller
  *
  */
-public class ScreenshotView extends ViewPart
+public class ScreenshotView extends ViewPart implements FlavorListener
 {
-    private ScreenshotWorker worker = null;
-    private IImageWorker[] imageWorker = null;
+    private ScreenshotWorker worker;
+    private IImageWorker[] imageWorker;
+    private Action toolBarPasteAction;
     
     /**
      * 
@@ -89,11 +94,12 @@ public class ScreenshotView extends ViewPart
         
         worker = new ScreenshotWorker(parent);
 
-        /*** Add toolbar contributions ***/
+        // Add toolbar contributions
         IActionBars actionBars = getViewSite().getActionBars();
         IToolBarManager toolbarManager = actionBars.getToolBarManager();
         IMenuManager menuBar = actionBars.getMenuManager();
         
+        // Zoom icons
         tempAction = new ZoomInAction(worker);
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/zoomin.gif"));
         toolbarManager.add(tempAction);
@@ -110,6 +116,18 @@ public class ScreenshotView extends ViewPart
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/original.gif"));
         toolbarManager.add(tempAction);
 
+        toolbarManager.add(new Separator());
+        
+        // Copy / Paste icons
+        tempAction = new EditCopyAction(worker);
+        tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/copy.gif"));
+        toolbarManager.add(tempAction);
+
+        toolBarPasteAction = new EditPasteAction(worker);
+        toolBarPasteAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/paste.gif"));
+        toolbarManager.add(toolBarPasteAction);
+        ClipboardHandler.getInstance().addListener(this);
+        
         toolbarManager.add(new Separator());
 
         // Create the menu
@@ -248,5 +266,17 @@ public class ScreenshotView extends ViewPart
     public void setFocus()
     {
         worker.setFocus();
+    }
+
+    public void flavorsChanged(FlavorEvent flavorEvent)
+    {
+        if(ClipboardHandler.getInstance().isImageAvailable())
+        {
+            toolBarPasteAction.setEnabled(true);
+        }
+        else
+        {
+            toolBarPasteAction.setEnabled(false);
+        }
     }
 }

@@ -9,7 +9,8 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
- org.csstudio.platform.ui
+ org.csstudio.platform.ui,
+ org.eclipse.core.resources
 Bundle-ClassPath: lib/activation.jar,
  lib/dsn.jar,
  lib/imap.jar,

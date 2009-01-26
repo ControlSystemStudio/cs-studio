@@ -25,14 +25,15 @@ package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
+import org.csstudio.utility.screenshot.util.ClipboardHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.graphics.Image;
 
 public class EditCopyAction extends Action implements IMenuListener
 {
-    ScreenshotWorker worker   = null;
+    private ScreenshotWorker worker = null;
     
     public EditCopyAction(ScreenshotWorker w)
     {
@@ -45,13 +46,21 @@ public class EditCopyAction extends Action implements IMenuListener
         this.setEnabled(true);
     }
     
-    public void run()
-    {
-        MessageDialog.openInformation(null, ScreenshotMessages.getString("ScreenshotPlugin.Screenshot"), ScreenshotMessages.getString("ScreenshotView.MESSAGE_NOT_IMPLEMENTED"));
-    }
-
     public void menuAboutToShow(IMenuManager manager)
     {
         
+    }
+    
+    public void run()
+    {
+        Image swtImage = null;
+        
+        swtImage = worker.getDisplayedImage();
+        if(swtImage == null)
+        {
+            return;
+        }
+        
+        ClipboardHandler.getInstance().setClipboardImage(swtImage.getImageData());        
     }
 }
