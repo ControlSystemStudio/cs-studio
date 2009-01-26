@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: LDAP Authorization Plug-in
+Bundle-SymbolicName: org.csstudio.sns.ldapAuthorization;singleton:=true
+Bundle-Version: 1.1.0
+Bundle-Activator: org.csstudio.sns.ldapauthorization.Activator
+Bundle-Vendor: sns
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform
+Eclipse-LazyStart: true
+Export-Package: org.csstudio.sns.ldapauthorization;x-friends:="org.csstudio.platform.ldapauthorization.ui"
