@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.1"?>
+<?pde version="3.4"?>
 
 <product name="SNS CSS" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" useFeatures="true">
 
@@ -10,7 +10,12 @@
       </text>
    </aboutInfo>
 
-   <configIni use="custom" path="/org.csstudio.sns.product/SNS_CSS_configs/config.ini"/>
+   <configIni use="default">
+      <linux>/org.csstudio.sns.product/SNS_CSS_configs/config.ini</linux>
+      <macosx>/org.csstudio.sns.product/SNS_CSS_configs/config.ini</macosx>
+      <solaris>/org.csstudio.sns.product/SNS_CSS_configs/config.ini</solaris>
+      <win32>/org.csstudio.sns.product/SNS_CSS_configs/config.ini</win32>
+   </configIni>
 
    <launcherArgs>
    </launcherArgs>
@@ -44,6 +49,7 @@
       <feature id="org.csstudio.sns.feature.applications" version="0.0.0"/>
       <feature id="org.csstudio.sns.feature.core" version="0.0.0"/>
       <feature id="org.csstudio.sns.feature.eclipse" version="0.0.0"/>
+      <feature id="org.csstudio.sns.feature.optional" version="1.0.15"/>
    </features>
 
 </product>

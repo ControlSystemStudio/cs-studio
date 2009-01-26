@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Dictionary;
 
+import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
+import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.platform.workspace.WorkspaceDialog;
 import org.csstudio.platform.workspace.WorkspaceInfo;
@@ -19,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
@@ -417,7 +421,15 @@ public class Application implements IApplication
             name = "SNS CSS";
         final String version = headers.get("Bundle-Version");
         PluginActivator.getLogger().info(
-                                       name + " " + version + ": " + instance);
+                                       name + " " + version + ": " + instance); 
+        
+        
+        SecurityFacade sf = SecurityFacade.getInstance();
+		String lastUser = Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,SecurityFacade.LOGIN_LAST_USER_NAME , "", null);
+		sf.setLoginCallbackHandler(new LoginDialog(null,lastUser));
+		if (sf.isLoginOnStartupEnabled()) {
+			sf.authenticateApplicationUser();
+		}
         
         // Run the workbench
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
