@@ -60,7 +60,7 @@ public class ScreenshotWorker
 
     private static final int numPaletteRows = 3;
     private static final int numPaletteCols = 50;
-        
+    
     public ScreenshotWorker(Composite p)
     {
         mainComposite = p;

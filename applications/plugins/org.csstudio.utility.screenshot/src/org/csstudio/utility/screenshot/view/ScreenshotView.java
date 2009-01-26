@@ -25,7 +25,6 @@ package org.csstudio.utility.screenshot.view;
 
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
-
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
@@ -58,14 +57,10 @@ public class ScreenshotView extends ViewPart implements FlavorListener
     private IImageWorker[] imageWorker;
     private Action toolBarPasteAction;
     
-    /**
-     * 
-     */
-    public ScreenshotView() { }
-
-    /**
-     * 
-     */
+    /**  */
+    public ScreenshotView() {}
+        
+    /**  */
     public void createPartControl(Composite parent)
     {
         Action tempAction = null;
