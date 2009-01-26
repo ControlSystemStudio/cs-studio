@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * The class <code>ImageBundle</code> contains the captured images of the Eclipse window.
  * 
- * @author Markus Möller
+ * @author Markus MÃ¶ller
  *
  */
 
@@ -170,10 +170,19 @@ public class ImageBundle
                 imgHeight = 0;
             }
         }
-
-        displayedImage = new Image(null, i.getImageData());        
-        imgWidth = displayedImage.getBounds().width;
-        imgHeight = displayedImage.getBounds().height;
+        
+        if(i != null)
+        {
+            displayedImage = new Image(null, i.getImageData());        
+            imgWidth = displayedImage.getBounds().width;
+            imgHeight = displayedImage.getBounds().height;
+        }
+        else
+        {
+            displayedImage = new Image(null, 2, 2);        
+            imgWidth = displayedImage.getBounds().width;
+            imgHeight = displayedImage.getBounds().height;
+        }
         
         if(gc != null)
         {
@@ -185,6 +194,11 @@ public class ImageBundle
         }
         
         gc = new GC(displayedImage);
+        
+        if(i == null)
+        {
+            gc.drawRectangle(0, 0, 2, 2);
+        }
     }
     
     public int getImageWidth()
