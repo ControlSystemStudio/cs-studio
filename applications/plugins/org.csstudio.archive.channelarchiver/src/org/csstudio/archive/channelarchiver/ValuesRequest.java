@@ -108,9 +108,9 @@ public class ValuesRequest
 			params.add(new Integer(how));
 			result = (Vector<Object>) xmlrpc.execute("archiver.values", params);
 		}
-		catch (XmlRpcException e)
+		catch (XmlRpcException ex)
 		{
-			throw new Exception("archiver.values call failed", e);
+			throw new Exception("archiver.values call failed: " + ex.getMessage());
 		}
 		// result := { string name,  meta, int32 type,
         //              int32 count,  values }[]
