@@ -40,6 +40,7 @@ import org.csstudio.platform.security.Right;
 import org.csstudio.platform.security.RightSet;
 import org.csstudio.platform.security.User;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.osgi.util.NLS;
 
 
 /**
@@ -76,7 +77,9 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 			ctrls.setReturningObjFlag(true);
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			
-			String filter = "(memberUid=" + username + ')'; //$NON-NLS-1$  
+			// String filter = "(memberUid=" + username + ')'; //$NON-NLS-1$  
+			String filter = NLS.bind("(memberUid={0})", username); //$NON-NLS-1$  
+			
 			NamingEnumeration<SearchResult> results =
 				ctx.search("ou=CSSGroupRole", filter, ctrls);
 			while (results.hasMore()) {
