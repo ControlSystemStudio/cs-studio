@@ -35,7 +35,7 @@ public class Model
     final private ArrayList<Instance> instances = new ArrayList<Instance>();
     
     /** Listener to be notified of model changes */
-    private CopyOnWriteArrayList<ModelListener> listeners =
+    final private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
     
     /** Initialize model from XML file stream
