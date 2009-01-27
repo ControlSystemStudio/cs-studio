@@ -24,8 +24,9 @@
 import org.csstudio.platform.AbstractCssPlugin;
 import org.osgi.framework.BundleContext;
 
-/**
- * The activator class controls the plug-in life cycle
+/** The activator class controls the plug-in life cycle
+ *  @author Original author unknown
+ *  @author Kay Kasemir
  */
 public class Activator extends AbstractCssPlugin {
 	/** The plug-in ID as defined in MANIFEST.MF */
