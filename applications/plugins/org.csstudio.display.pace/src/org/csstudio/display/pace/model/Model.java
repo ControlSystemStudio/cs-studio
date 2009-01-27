@@ -136,7 +136,7 @@ public class Model
         return instances.get(i);
     }
     
-    /** @return <code>true</code> if any call has been edited. */
+    /** @return <code>true</code> if any cell has been edited. */
     public boolean isEdited()
     {
         for (Instance instance : instances)
@@ -165,7 +165,7 @@ public class Model
     }
 
     
-    /** Save values entered by user to PVs
+    /** Save values entered by user to the PVs
      *  @throws Exception on error
      */
     public void saveUserValues() throws Exception

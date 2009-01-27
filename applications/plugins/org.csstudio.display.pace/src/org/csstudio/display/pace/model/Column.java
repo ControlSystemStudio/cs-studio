@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
  *  Describes one column in the table/model.
  *  The PV is described with macros,
  *  and the Instance definition then replaces the macros
- *  to get the actuall PV for a Cell.
+ *  to get the actual PV for a Cell.
  *
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir

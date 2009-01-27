@@ -47,8 +47,9 @@ public class Macro
     }
 
     /** Initialize
-     *  @param name
-     *  @param value
+     *  @param name Macro name to be used as
+     *              <pre>${name}</pre> or <pre>$(name)</pre>
+     *  @param value Replacement value for the macro name
      */
     public Macro(final String name, final String value)
     {
@@ -58,7 +59,7 @@ public class Macro
     }
     
     /** Apply macro to input
-     *  @param input
+     *  @param input Input text that may contain macros
      *  @return Input with replaces macro values
      */
     public String apply(final String input)
