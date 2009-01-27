@@ -28,13 +28,27 @@ import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * This is the superclass for any Action that depends on the rights of the
- * current user.
+ * current user. <br>
+ * The subclass must be implemented by following these rules: <br>
+ * <ul>
+ * <li>move the codes from {@link #run()} to {@link #doWork()}</li>
+ * <li>call {@link #setEnabledWithoutAuthorization(boolean)} 
+ * whenever the enabled state of the action regardless authorization changed.</li>
+ * <li>call <code>setEnabled(SecurityFacade.getInstance().canExecute(AUTH_ID, defaultPermission))</code> 
+ * whenever its enabled state is supposed to become <code>true</code></li>
+ * </ul>
+ * 
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan
- *         Hofer
+ *         Hofer 
+ * @author Xihui Chen
  */
 public abstract class AbstractUserDependentAction extends Action implements
 		IUserManagementListener, IRightsManagementListener {
@@ -49,19 +63,15 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 */
 	private boolean _defaultPermission;
 
+    /**
+     *  The enabled state of the action regardless the authorization
+     */
+    private boolean enabledWithoutAuthorization = true;
+    
+
+
 	/**
-	 * Constructor. Registers this action as UserManagementListener and
-	 * RightsManagementListener.
-	 * 
-	 * @param rightId
-	 *            ID of the right necessary to execute this action.
-	 */
-	public AbstractUserDependentAction(final String rightId) {
-		this(rightId, true);
-	}
-	
-	/**
-	 * Constructor. Registers this action as UserManagementListener and
+	 * Registers this action as UserManagementListener and
 	 * RightsManagementListener.
 	 * 
 	 * @param rightId
@@ -70,7 +80,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 *            whether this action should be permitted if no rights are
 	 *            configured for the action.
 	 */
-	public AbstractUserDependentAction(final String rightId,
+	protected void init(final String rightId,
 			final boolean defaultPermission) {
 		assert rightId != null;
 		_rightId = rightId;
@@ -80,7 +90,112 @@ public abstract class AbstractUserDependentAction extends Action implements
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 		updateState();
 	}
+	
+	/**
+	 * Constructor. Registers this action as UserManagementListener and
+	 * RightsManagementListener.
+	 * 
+	 * @param rightId
+	 *            ID of the right necessary to execute this action.
+	 * @see Action#Action() 
+	 */
+	public AbstractUserDependentAction(final String rightId) {
+		super();
+		init(rightId, true);
+	}
+	
+	
+	/**
+	 * Constructor. Registers this action as UserManagementListener and
+	 * RightsManagementListener. 
+	 * @param rightId
+	 *            ID of the right necessary to execute this action.
+	 * @param defaultPermission
+	 *            whether this action should be permitted if no rights are
+	 *            configured for the action.
+	 * @see Action#Action() 
+	 */
+	public AbstractUserDependentAction(final String rightID,
+			final boolean defaultPermission) {
+		super();
+		init(rightID,defaultPermission);		
+	}
+	
+	/**
+	 * Constructor. Registers this action as UserManagementListener and
+	 * RightsManagementListener. 
+	 * @param text
+	 * 			  the string used as the text for the action, or null if there is no text
+	 * @param rightId
+	 *            ID of the right necessary to execute this action.
+	 * @param defaultPermission
+	 *            whether this action should be permitted if no rights are
+	 *            configured for the action.
+	 * @see Action#Action(String) 
+	 */
+	public AbstractUserDependentAction(String text, final String rightID,
+			final boolean defaultPermission) {
+		super(text);
+		init(rightID,defaultPermission);		
+	}
+	
+	/**
+	 * Constructor. Registers this action as UserManagementListener and
+	 * RightsManagementListener. 
+	 * @param text
+	 *            the action's text, or <code>null</code> if there is no text
+	 * @param image
+	 *            the action's image, or <code>null</code> if there is no
+	 *            image	 * 			  
+	 * @param rightId
+	 *            ID of the right necessary to execute this action.
+	 * @param defaultPermission
+	 *            whether this action should be permitted if no rights are
+	 *            configured for the action.
+	 * @see Action#Action(String, ImageDescriptor) 
+	 */
+	public AbstractUserDependentAction(String text, ImageDescriptor image, final String rightID,
+			final boolean defaultPermission) {
+		super(text,image);
+		init(rightID,defaultPermission);		
+	}
 
+/**
+	 * Constructor. Registers this action as UserManagementListener and
+	 * RightsManagementListener. 
+	 * @param text
+	 *            the action's text, or <code>null</code> if there is no text
+	 * @param style
+	 *            one of <code>AS_PUSH_BUTTON</code>,
+	 *            <code>AS_CHECK_BOX</code>, <code>AS_DROP_DOWN_MENU</code>,
+	 *            <code>AS_RADIO_BUTTON</code>, and
+	 *            <code>AS_UNSPECIFIED</code>. 			  
+	 * @param rightId
+	 *            ID of the right necessary to execute this action.
+	 * @param defaultPermission
+	 *            whether this action should be permitted if no rights are
+	 *            configured for the action.
+	 * @see Action#Action(String, int) 
+	 */
+	public AbstractUserDependentAction(String text, int style, final String rightID,
+			final boolean defaultPermission) {
+		super(text,style);
+		init(rightID,defaultPermission);		
+	}
+	
+	/**
+	 * Set the enabled state of the action regardless the authorization. 
+	 * This function must be called whenever the enabled state of 
+	 * the action regardless authorization changed.
+	 *   
+	 * @param enabledWithoutAuthorization
+	 * 				 The enabled state of the action regardless the authorization
+	 */
+	protected void setEnabledWithoutAuthorization(
+			boolean enabledWithoutAuthorization) {
+		this.enabledWithoutAuthorization = enabledWithoutAuthorization;
+	}
+	
 	/**
 	 * @return ID of the right necessary to execute this action.
 	 */
@@ -89,10 +204,11 @@ public abstract class AbstractUserDependentAction extends Action implements
 	}
 
 	/**
-	 * Updates state depending on user permission.
+	 * Updates the enabled state depending on user permission.
 	 */
 	protected void updateState() {
-		setEnabled(SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission));
+		if(enabledWithoutAuthorization)
+			setEnabled(SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission));
 	}
 
 	/**
@@ -102,6 +218,9 @@ public abstract class AbstractUserDependentAction extends Action implements
 	public final void run() {
 		if (SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission)) {
 			doWork();
+		}else {
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Failed",
+					"You are not authorized to perform this action!");
 		}
 	}
 
@@ -136,7 +255,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	protected final void finalize() throws Throwable {
 		super.finalize();
 		// TODO: to be checked by Kai and Torsten
-		//UserManagementService.getInstance().removeListener(this);
+		SecurityFacade.getInstance().removeUserManagementListener(this);
 		RightsManagementService.getInstance().removeListener(this);
 	}
 
