@@ -52,7 +52,8 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         {
             throw new PartInitException(ex.getMessage());
         }
-        // Set window title
+        // Set window title and message
+        setPartName(file.getName());
         setContentDescription(model.getTitle());
     }
 
