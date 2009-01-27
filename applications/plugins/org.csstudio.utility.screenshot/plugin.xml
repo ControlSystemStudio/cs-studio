@@ -11,7 +11,7 @@
             label="Screenshot Action Set"
             visible="true">
          <action
-               accelerator="s"
+               accelerator="CTRL+ALT+S"
                class="org.csstudio.utility.screenshot.action.OpenScreenshotWindowAction"
                icon="icons/camera16.gif"
                id="OpenScreenshotWindow"
