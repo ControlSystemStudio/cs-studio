@@ -48,13 +48,19 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * Performs user login via JAAS.
  * 
  * @author Joerg Rathlev
+ * @author Xihui Chen
  */
 public class JaasLoginModule implements ILoginModule {
 	
 	/**
+	 * preference name.
+	 */
+	private static final String JAAS_CONFIG = "jaasconfig";
+
+	/**
 	 * The name of the configuration entry for the JAAS {@link LoginContext}.
 	 */
-	private static final String CONTEXT_NAME = "ControlSystemStudio";
+	private static String contextName;
 	
 	/**
 	 * The key for the property of the User object which stores the JAAS
@@ -82,15 +88,11 @@ public class JaasLoginModule implements ILoginModule {
 	 * {@inheritDoc}
 	 */
 	public User login(ILoginCallbackHandler handler) {
-		
+		//get 
 		IPreferencesService service = Platform.getPreferencesService();
-		String contextName = service.getString(Activator.PLUGIN_ID, 
-				"jaasconfig", null, null);
-		System.out.println(contextName);
-		
-		contextName = Activator.getDefault().getPluginPreferences().getString("jaasconfig");
-		System.out.println(contextName);
-		
+		contextName = service.getString(Activator.PLUGIN_ID, 
+				JAAS_CONFIG, null, null);
+	
 		CredentialsCallbackHandler ch = new CredentialsCallbackHandler();
 		setConfigFileProperty();
 		LoginContext loginCtx = null;
@@ -103,7 +105,7 @@ public class JaasLoginModule implements ILoginModule {
 			// method failed. This is why a new LoginContext instance is
 			// created in every iteration through this loop.
 			try {
-				loginCtx = new LoginContext(CONTEXT_NAME, ch);
+				loginCtx = new LoginContext(contextName, ch);
 			} catch (LoginException e) {
 				log.error(this, "Login error: cannot create a JAAS LoginContext. Using anonymously.", e);
 				return null;
