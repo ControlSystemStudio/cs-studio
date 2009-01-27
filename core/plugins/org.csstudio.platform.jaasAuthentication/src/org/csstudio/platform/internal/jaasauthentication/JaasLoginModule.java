@@ -41,6 +41,8 @@ import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.ILoginModule;
 import org.csstudio.platform.security.User;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Performs user login via JAAS.
@@ -80,6 +82,15 @@ public class JaasLoginModule implements ILoginModule {
 	 * {@inheritDoc}
 	 */
 	public User login(ILoginCallbackHandler handler) {
+		
+		IPreferencesService service = Platform.getPreferencesService();
+		String contextName = service.getString(Activator.PLUGIN_ID, 
+				"jaasconfig", null, null);
+		System.out.println(contextName);
+		
+		contextName = Activator.getDefault().getPluginPreferences().getString("jaasconfig");
+		System.out.println(contextName);
+		
 		CredentialsCallbackHandler ch = new CredentialsCallbackHandler();
 		setConfigFileProperty();
 		LoginContext loginCtx = null;
