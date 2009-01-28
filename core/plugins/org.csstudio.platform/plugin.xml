@@ -5,7 +5,7 @@
    <extension-point id="loginModule" name="Login Module" schema="schema/loginModule.exsd"/>
    <extension-point id="authorizationProvider" name="Authorization Provider" schema="schema/authorizationProvider.exsd"/>
    <extension-point id="startupListener" name="Startup Listener" schema="schema/startupListener.exsd"/>
-   <extension-point id="authorizeId" name="Authorize Id" schema="schema/authorizeId.exsd"/>
+   <extension-point id="authorizationId" name="Authorization Id" schema="schema/authorizationId.exsd"/>
 <!--
    <extension
          point="de.desy.css.core.logManagers">
@@ -39,11 +39,15 @@
             typeId="css:processVariableWithSamples"/>
    </extension>
    <extension
-         point="org.csstudio.platform.authorizeId">
+         point="org.csstudio.platform.authorizationId">
       <id
             default="true"
-            description="use in example"
+            description="Used in examples and documentation."
             id="example">
+         <usage
+               default="true"
+               location="This is where the action for which the ID is used should be described.">
+         </usage>
       </id>
    </extension>
 

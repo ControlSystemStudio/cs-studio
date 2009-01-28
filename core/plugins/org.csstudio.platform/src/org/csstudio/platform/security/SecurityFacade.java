@@ -22,7 +22,11 @@
 package org.csstudio.platform.security;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.CSSPlatformPlugin;
@@ -31,8 +35,14 @@ import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.LoginContext;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+import sun.reflect.generics.visitor.Reifier;
 
 /**
  * This Service executes instances of
@@ -95,6 +105,11 @@ public final class SecurityFacade {
         "org.csstudio.platform.lastUserName";
 
 	/**
+	 * ID of the {@code authorizationId} extension point.
+	 */
+	private static final String AUTHORIZATION_ID_EXTENSION_POINT = "org.csstudio.platform.authorizationId";
+
+	/**
 	 * Private constructor due to singleton pattern.
 	 */
 	private SecurityFacade() {
@@ -116,6 +131,20 @@ public final class SecurityFacade {
 	public static synchronized SecurityFacade getInstance() {
 		if (_instance == null) {
 			_instance = new SecurityFacade();
+			
+			// ----------------------------------------------------------------
+			// FIXME: this output was added only for testing!
+			for (RegisteredAuthorizationId authId : _instance.getRegisteredAuthorizationIds()) {
+				System.out.println("Authorization ID: " + authId.getId());
+				System.out.println("Description:      " + authId.getDescription());
+				System.out.println("Usages:");
+				for (AuthorizationIdUsage usage : authId.getUsage()) {
+					System.out.println("  Location:       " + usage.getLocation());
+					System.out.println("    Default:      " + usage.isAllowedByDefault());
+				}
+			}
+			// ----------------------------------------------------------------
+
 		}
 
 		return _instance;
@@ -285,6 +314,58 @@ public final class SecurityFacade {
 	
 	public void removeUserManagementListener(IUserManagementListener listener) {
 		_userListeners.remove(listener);
+	}
+
+	/**
+	 * Returns an unmodifiable collection of authorization IDs that are
+	 * registered with the {@code authorizationId} extension point. If the same
+	 * authorization ID is described by multiple extensions, only one of the
+	 * descriptions will be returned. It is undefined which description will be
+	 * chosen. Uses of an authorization ID defined by multiple extensions will
+	 * be merged together.
+	 * 
+	 * @return an unmodifiable collection of registered authorization IDs.
+	 */
+	public Collection<RegisteredAuthorizationId> getRegisteredAuthorizationIds() {
+		Map<String, RegisteredAuthorizationId> authIds =
+			new HashMap<String, RegisteredAuthorizationId>();
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		IExtension[] extensions = extensionRegistry
+				.getExtensionPoint(AUTHORIZATION_ID_EXTENSION_POINT)
+				.getExtensions();
+		for (IExtension extension : extensions) {
+			IConfigurationElement[] elements = extension.getConfigurationElements();
+			for (IConfigurationElement element : elements) {
+				if ("id".equals(element.getName())) {
+					// Ok, we found a contribution of type "id"
+					String id = element.getAttribute("id");
+					String description = element.getAttribute("description");
+					IConfigurationElement[] usageElements = element.getChildren("usage");
+					List<AuthorizationIdUsage> usages = new ArrayList<AuthorizationIdUsage>(usageElements.length);
+					for (IConfigurationElement usageElement : usageElements) {
+						String location = usageElement.getAttribute("location");
+						boolean allowByDefault = "true".equals(usageElement.getAttribute("default"));
+						usages.add(new AuthorizationIdUsage(location, allowByDefault));
+					}
+					
+					// If the map already contains an existing description, we
+					// need to merge the existing description with the new one.
+					RegisteredAuthorizationId existing = authIds.get(id);
+					if (existing != null) {
+						Collection<AuthorizationIdUsage> existingUsages =
+							existing.getUsage();
+						usages.addAll(existingUsages);
+					}
+					
+					// Finally, create the new description.
+					RegisteredAuthorizationId authId =
+						new RegisteredAuthorizationId(id, description, usages);
+					authIds.put(id, authId);
+				}
+			}
+		}
+		
+		return Collections.unmodifiableCollection(authIds.values());
 	}
 
 }

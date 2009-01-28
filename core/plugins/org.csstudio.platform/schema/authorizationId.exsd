@@ -3,7 +3,7 @@
 <schema targetNamespace="org.csstudio.platform" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.csstudio.platform" id="authorizeId" name="Authorize Id"/>
+         <meta.schema plugin="org.csstudio.platform" id="authorizationId" name="Authorization Id"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -48,45 +48,50 @@
    </element>
 
    <element name="id">
+      <annotation>
+         <documentation>
+            An authorization ID.
+         </documentation>
+      </annotation>
       <complexType>
          <sequence>
-            <element ref="location" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="usage" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  The Authorize Id
+                  The authorization ID described by this contribution.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="description" type="string">
             <annotation>
                <documentation>
-                  The Description of the authorize Id.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="default" type="boolean" use="required">
-            <annotation>
-               <documentation>
-                  Whether to permit the access by default.
+                  Description of the authorization ID. Use this to describe what this ID should be used for, for example, what kind of actions it is supposed to be associated with.
                </documentation>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
-   <element name="location">
+   <element name="usage">
       <annotation>
          <documentation>
-            Location where the id is used.
+            Describes a place where this authorization ID is used.
          </documentation>
       </annotation>
       <complexType>
          <attribute name="location" type="string" use="required">
             <annotation>
                <documentation>
-                  The location
+                  The location where the authorization ID is used. For example, a description of the action for which the authorization ID is used.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="default" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  Whether access is permitted by default.
                </documentation>
             </annotation>
          </attribute>
