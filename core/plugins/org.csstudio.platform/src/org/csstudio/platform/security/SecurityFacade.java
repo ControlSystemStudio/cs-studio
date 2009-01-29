@@ -131,20 +131,6 @@ public final class SecurityFacade {
 	public static synchronized SecurityFacade getInstance() {
 		if (_instance == null) {
 			_instance = new SecurityFacade();
-			
-			// ----------------------------------------------------------------
-			// FIXME: this output was added only for testing!
-			for (RegisteredAuthorizationId authId : _instance.getRegisteredAuthorizationIds()) {
-				System.out.println("Authorization ID: " + authId.getId());
-				System.out.println("Description:      " + authId.getDescription());
-				System.out.println("Usages:");
-				for (AuthorizationIdUsage usage : authId.getUsage()) {
-					System.out.println("  Location:       " + usage.getLocation());
-					System.out.println("    Default:      " + usage.isAllowedByDefault());
-				}
-			}
-			// ----------------------------------------------------------------
-
 		}
 
 		return _instance;
@@ -319,10 +305,11 @@ public final class SecurityFacade {
 	/**
 	 * Returns an unmodifiable collection of authorization IDs that are
 	 * registered with the {@code authorizationId} extension point. If the same
-	 * authorization ID is described by multiple extensions, only one of the
-	 * descriptions will be returned. It is undefined which description will be
-	 * chosen. Uses of an authorization ID defined by multiple extensions will
-	 * be merged together.
+	 * authorization ID is described by multiple extensions, only one
+	 * description for that ID will be returned. The description for that ID
+	 * will contain the usage declarations from all plug-ins declaring usages
+	 * for that ID, and the description text for the ID itself from one of the
+	 * plug-ins.
 	 * 
 	 * @return an unmodifiable collection of registered authorization IDs.
 	 */
@@ -334,38 +321,96 @@ public final class SecurityFacade {
 				.getExtensionPoint(AUTHORIZATION_ID_EXTENSION_POINT)
 				.getExtensions();
 		for (IExtension extension : extensions) {
-			IConfigurationElement[] elements = extension.getConfigurationElements();
-			for (IConfigurationElement element : elements) {
-				if ("id".equals(element.getName())) {
-					// Ok, we found a contribution of type "id"
-					String id = element.getAttribute("id");
-					String description = element.getAttribute("description");
-					IConfigurationElement[] usageElements = element.getChildren("usage");
-					List<AuthorizationIdUsage> usages = new ArrayList<AuthorizationIdUsage>(usageElements.length);
-					for (IConfigurationElement usageElement : usageElements) {
-						String location = usageElement.getAttribute("location");
-						boolean allowByDefault = "true".equals(usageElement.getAttribute("default"));
-						usages.add(new AuthorizationIdUsage(location, allowByDefault));
-					}
-					
-					// If the map already contains an existing description, we
-					// need to merge the existing description with the new one.
-					RegisteredAuthorizationId existing = authIds.get(id);
-					if (existing != null) {
-						Collection<AuthorizationIdUsage> existingUsages =
-							existing.getUsage();
-						usages.addAll(existingUsages);
-					}
-					
-					// Finally, create the new description.
-					RegisteredAuthorizationId authId =
-						new RegisteredAuthorizationId(id, description, usages);
-					authIds.put(id, authId);
-				}
-			}
+			loadRegisteredAuthorizationIdExtension(extension, authIds);
 		}
 		
 		return Collections.unmodifiableCollection(authIds.values());
+	}
+
+	/**
+	 * Loads the registered authorization IDs from the specified extension.
+	 * 
+	 * @param extension
+	 *            the extension.
+	 * @param authIds
+	 *            the map to which the registered IDs found in the extension
+	 *            will be added.
+	 */
+	private void loadRegisteredAuthorizationIdExtension(IExtension extension,
+			Map<String, RegisteredAuthorizationId> authIds) {
+		IConfigurationElement[] elements = extension.getConfigurationElements();
+		for (IConfigurationElement element : elements) {
+			if (contributesAuthorizationId(element)) {
+				loadRegisteredAuthorizationIdElement(element, authIds);
+			}
+		}
+	}
+
+	/**
+	 * Determines whether a configuration element contributes a registered
+	 * authorization ID.
+	 * 
+	 * @param element
+	 *            the configuration element.
+	 * @return <code>true</code> if the elment contributes an authorization ID,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean contributesAuthorizationId(IConfigurationElement element) {
+		return "id".equals(element.getName());
+	}
+
+	/**
+	 * Loads a registered authorization ID from the specified configuration
+	 * element.
+	 * 
+	 * @param element
+	 *            the configuration element.
+	 * @param authIds
+	 *            the map to which the registered IDs found in the extension
+	 *            will be added.
+	 */
+	private void loadRegisteredAuthorizationIdElement(
+			IConfigurationElement element,
+			Map<String, RegisteredAuthorizationId> authIds) {
+		String id = element.getAttribute("id");
+		String description = element.getAttribute("description");
+		List<AuthorizationIdUsage> usages = loadAuthorizationIdUsages(element);
+		
+		// If the map already contains an existing description, we
+		// need to merge the existing description with the new one.
+		RegisteredAuthorizationId existing = authIds.get(id);
+		if (existing != null) {
+			Collection<AuthorizationIdUsage> existingUsages =
+				existing.getUsage();
+			usages.addAll(existingUsages);
+		}
+		
+		// Finally, create the new description.
+		RegisteredAuthorizationId authId =
+			new RegisteredAuthorizationId(id, description, usages);
+		authIds.put(id, authId);
+	}
+
+	/**
+	 * Loads the usages of the authorization ID from a configuration element.
+	 * 
+	 * @param element
+	 *            the configuration element.
+	 * @return a list of authorization ID usages. If the configuration element
+	 *         does not contain any usage descriptions, the returned list will
+	 *         be empty.
+	 */
+	private List<AuthorizationIdUsage> loadAuthorizationIdUsages(
+			IConfigurationElement element) {
+		IConfigurationElement[] usageElements = element.getChildren("usage");
+		List<AuthorizationIdUsage> usages = new ArrayList<AuthorizationIdUsage>(usageElements.length);
+		for (IConfigurationElement usageElement : usageElements) {
+			String location = usageElement.getAttribute("location");
+			boolean allowByDefault = "true".equals(usageElement.getAttribute("default"));
+			String plugin = usageElement.getContributor().getName();
+			usages.add(new AuthorizationIdUsage(location, allowByDefault, plugin));
+		}
+		return usages;
 	}
 
 }

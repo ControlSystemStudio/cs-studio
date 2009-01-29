@@ -303,6 +303,11 @@
               optional="true">
         </commandParameter>
      </command>
+     <command
+           description="Shows the registered authorization IDs"
+           id="org.csstudio.platform.ui.commands.showAuthorizationIds"
+           name="Show authorization IDs">
+     </command>
   </extension>
   <extension
         point="org.eclipse.ui.menus">
@@ -326,6 +331,14 @@
            </command>
         </menu>
      </menuContribution>
+     <menuContribution
+           locationURI="menu:management">
+        <command
+              commandId="org.csstudio.platform.ui.commands.showAuthorizationIds"
+              label="Show authorization IDs"
+              style="push">
+        </command>
+     </menuContribution>
   </extension>
   <extension
         point="org.eclipse.ui.menus">
@@ -338,5 +351,12 @@
            </control>
         </toolbar>
      </menuContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.handlers">
+     <handler
+           class="org.csstudio.platform.ui.internal.actions.ShowAuthorizationIds"
+           commandId="org.csstudio.platform.ui.commands.showAuthorizationIds">
+     </handler>
   </extension>
 </plugin>

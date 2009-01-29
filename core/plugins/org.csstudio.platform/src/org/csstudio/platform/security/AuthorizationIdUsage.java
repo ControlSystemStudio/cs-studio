@@ -31,6 +31,7 @@ public final class AuthorizationIdUsage {
 
 	private final String _location;
 	private final boolean _allowByDefault;
+	private final String _plugin;
 
 	/**
 	 * Creates a new authorization ID usage description.
@@ -42,10 +43,15 @@ public final class AuthorizationIdUsage {
 	 * @param allowByDefault
 	 *            <code>true</code> if usage of the associated action is allowed
 	 *            by default, <code>false</code> otherwise.
+	 * @param plugin
+	 *            the name of the plug-in which contributed this usage
+	 *            description.
 	 */
-	public AuthorizationIdUsage(String location, boolean allowByDefault) {
+	public AuthorizationIdUsage(String location, boolean allowByDefault,
+			String plugin) {
 		_location = location;
 		_allowByDefault = allowByDefault;
+		_plugin = plugin;
 	}
 
 	/**
@@ -67,5 +73,14 @@ public final class AuthorizationIdUsage {
 	 */
 	public boolean isAllowedByDefault() {
 		return _allowByDefault;
+	}
+	
+	/**
+	 * Returns the name of the plug-in which contributed this usage description.
+	 * 
+	 * @return the name of the plug-in which contributed this usage description.
+	 */
+	public String getPlugIn() {
+		return _plugin;
 	}
 }

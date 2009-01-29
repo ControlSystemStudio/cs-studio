@@ -42,12 +42,36 @@
          point="org.csstudio.platform.authorizationId">
       <id
             default="true"
-            description="Used in examples and documentation."
+            description="This ID should be used in examples and documentation."
             id="example">
-         <usage
-               default="true"
-               location="This is where the action for which the ID is used should be described.">
-         </usage>
+      </id>
+   </extension>
+   <extension
+         name="Legacy authorization IDs"
+         point="org.csstudio.platform.authorizationId">
+      <id
+            description="Permission for the IOC tools."
+            id="iocAccesses">
+      </id>
+      <id
+            description="Permission to open and use the AMS Configurator."
+            id="amsconfigurator">
+      </id>
+      <id
+            description="Permission to configure the Authorization Id."
+            id="AuthorizeId">
+      </id>
+      <id
+            description="Permission for operating/ alarm acknowledge."
+            id="operating">
+      </id>
+      <id
+            description="Permission for testing tools."
+            id="testing">
+      </id>
+      <id
+            description="Administration of alarm configuration and database."
+            id="alarmAdministration">
       </id>
    </extension>
 
