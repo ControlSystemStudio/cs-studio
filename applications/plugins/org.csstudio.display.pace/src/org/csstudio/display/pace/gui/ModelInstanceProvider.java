@@ -11,7 +11,10 @@ import org.eclipse.jface.viewers.Viewer;
  *  of the table (Model).
  *  
  *  @author Kay Kasemir
+ *  
+ *     reviewed by Delphy 01/29/09
  */
+//TODO Explain requests - "requests for the rows"
 public class ModelInstanceProvider implements ILazyContentProvider
 {
     private TableViewer table_viewer;
@@ -35,6 +38,7 @@ public class ModelInstanceProvider implements ILazyContentProvider
     }
 
     /** Called by viewer to ask for an element (row, instance) of the model */
+    //TODO Explain - does more than "ask for an element"
     public void updateElement(final int row)
     {
         table_viewer.replace(model.getInstance(row), row);

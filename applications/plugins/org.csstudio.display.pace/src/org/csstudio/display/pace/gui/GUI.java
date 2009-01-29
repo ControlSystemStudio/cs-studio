@@ -47,6 +47,9 @@ import org.eclipse.ui.IWorkbenchPartSite;
  *  selected Cell (PV).
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
+ *  
+ *  
+ *    reviewed by Delphy 01/28/09
  */
 public class GUI implements ModelListener, IMenuListener, ISelectionProvider
 {
@@ -59,9 +62,11 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     /** Currently selected Cell in Model or <code>null</code> */
     private Cell selected_cell = null;
     
+    // TODO Explain the array of listeners being for selection changes
     final private ArrayList<ISelectionChangedListener> listeners =
         new ArrayList<ISelectionChangedListener>();
-
+// TODO Explain you are initializing the GUI maybe put a comment or two explaining
+    //what that entails
     /** Initialize
      *  @param parent Parent widget
      *  @param model Model to display
@@ -78,7 +83,8 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             site.setSelectionProvider(this);
     }
 
-    // ISelectionProvider
+    // ISelectionProvider  
+    //TODO better explanation of method than ISelectionProvider
     public void addSelectionChangedListener(
             final ISelectionChangedListener listener)
     {
@@ -86,6 +92,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     }
 
     // ISelectionProvider
+    //TODO better explanation of method than ISelectionProvider
     public void removeSelectionChangedListener(
             final ISelectionChangedListener listener)
     {
@@ -93,12 +100,14 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     }
 
     // ISelectionProvider
+    //TODO better explanation of method than ISelectionProvider
     public void setSelection(final ISelection selection)
     {
         // NOP, don't allow outside code to change selection
     }
 
     // ISelectionProvider
+    //TODO better explanation of method than ISelectionProvider
     public ISelection getSelection()
     {
         if (selected_cell == null)
@@ -131,6 +140,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
         
+        //TODO document
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
     
         // Connect TableViewer to the Model: Provide content from model...
@@ -146,10 +156,13 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             col = AutoSizeColumn.make(table_viewer,
                                 model_col.getName(), MIN_SIZE, 100);
             // Tell column how to display the model elements
+            //TODO do you mean rw, ro, Explain "how to"
             col.setLabelProvider(new InstanceLabelProvider(c));
             if (! model_col.isReadonly())
                 col.setEditingSupport(new ModelCellEditor(table_viewer, c));
             // Clicking on column header runs SetCellValueAction
+            //TODO Explain running SetCellValueAction and what you SelectionListener
+            // is doing
             col.getColumn().addSelectionListener(new SelectionAdapter()
             {
                 @Override
@@ -166,7 +179,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             });
         }
         new AutoSizeControlListener(table);
-        
+        //TODO Explain
         table_viewer.setInput(model);
     }
 
@@ -188,6 +201,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             public void handleEvent(final Event event)
             {
                 // Get cell in SWT Table
+               //TODO mention how you get the cell (mouse point)
                 final Point point = new Point(event.x, event.y);
                 final ViewerCell viewer_cell = table_viewer.getCell(point);
                 if (viewer_cell == null)
@@ -205,6 +219,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                 }
                 selected_cell = instance.getCell(col_idx-1);
                 // Update selection listeners
+                // TODO Explain update
                 for (ISelectionChangedListener listener : listeners)
                     listener.selectionChanged(new SelectionChangedEvent(GUI.this, getSelection()));
             }
@@ -214,6 +229,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     /** Create context menu
      *  @param site Workbench site where menu will get registered or <code>null</code>
      */
+    //TODO could explain the method better than "create context menu"
     private void createContextMenu(final IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
@@ -230,6 +246,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
      *  @param manager Menu manager
      *  @see IMenuListener
      */
+    //TODO explain "depending on current selection"
     public void menuAboutToShow(final IMenuManager manager)
     {
         final Cell cells[] = getSelectedCells();
@@ -261,7 +278,9 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         if (column.isReadonly())
             return null;
         // TableViewer selection has Model Instance (row) entries
+        //TODO and you're using them how?
         // Turn into Cell array
+        // TODO explain you are using column
         final Object[] sel =
             ((IStructuredSelection) table_viewer.getSelection()).toArray();
         final Cell cells[] = new Cell[sel.length];
@@ -276,6 +295,8 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     /** Update table when Cell in Model changed
      *  @see ModelListener
      */
+    //TODO explain how you get changed cell
+    // all ModelListener tells me is that it calls this method
     public void cellUpdate(final Cell cell)
     {
         final Table table = table_viewer.getTable();

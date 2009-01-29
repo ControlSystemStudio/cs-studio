@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Display;
  *  
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
+ *  
+ *    reviewed by Delphy 01/29/09
  */
 public class InstanceLabelProvider extends CellLabelProvider
 {
@@ -27,6 +29,7 @@ public class InstanceLabelProvider extends CellLabelProvider
       *  @param column Column of the model that this label provider handles.
       *                -1 for the instance name, &ge;0 for cells
       */
+     // TODO Explain -1 for the instance name, &ge;0 for cells
      InstanceLabelProvider(final int column)
      {
          this.column = column;
@@ -43,6 +46,7 @@ public class InstanceLabelProvider extends CellLabelProvider
              return instance.getName();
          // Cell column
          final Cell cell = instance.getCell(column);
+         // TODO State that you are creating the tooltip and appending if necessary
          String tip = NLS.bind(Messages.InstanceLabelProvider_PVValueFormat,
                                cell.getName(), cell.getValue());
          if (cell.isEdited())
@@ -62,6 +66,7 @@ public class InstanceLabelProvider extends CellLabelProvider
          final Instance instance = (Instance) gui_cell.getElement();
 
          // Special name column?
+         // TODO Explain how the special name column became < 0 rather than 0, the first column
          if (column < 0)
          {
              gui_cell.setText(instance.getName());
@@ -72,6 +77,7 @@ public class InstanceLabelProvider extends CellLabelProvider
          gui_cell.setText(cell.getValue());
 
          // Highlight edited cells
+         // TODO add "in yellow"
          if (cell.isEdited())
          {
              final Display display = Display.getCurrent();
@@ -80,6 +86,7 @@ public class InstanceLabelProvider extends CellLabelProvider
          else
              gui_cell.setBackground(null);
          // Highlight read-only cells
+         // TODO add "in light grey - inactive"
          if (cell.isReadOnly())
          {
              final Display display = Display.getCurrent();

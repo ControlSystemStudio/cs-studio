@@ -11,7 +11,11 @@ import org.junit.Test;
  *  Runs as headless application.
  *  For PV connections to work, use junit_customization.ini
  *  @author Kay Kasemir
+ *  
+ *    reviewed by Delphy 01/28/09
  */
+//TODO Explain "use junit_customization.ini"
+//some comments in the code below would be nice
 @SuppressWarnings("nls")
 public class GUITest
 {
@@ -21,10 +25,12 @@ public class GUITest
         final Display display = Display.getDefault();
         final Shell shell = new Shell(display);
         shell.setBounds(10, 100, 800, 600);
-   
+        
+        // TODO add exception
         final Model model =
             new Model(new FileInputStream("configFiles/rf_admin.pace"));
         new GUI(shell, model, null);
+        // TODO add exception
         model.start();
         
         shell.open();

@@ -5,6 +5,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Preferences. Defaults are provided in preferences.ini
  *  @author Delphy Nypaver Armstrong
+ *  
+ *    reviewed by Delphy 01/28/09
  */
 @SuppressWarnings("nls")
 public class Preferences

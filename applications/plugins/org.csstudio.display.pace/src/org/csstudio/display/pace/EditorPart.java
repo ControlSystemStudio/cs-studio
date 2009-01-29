@@ -24,6 +24,8 @@ import org.eclipse.ui.PartInitException;
 /** Eclipse EditorPart for the PACE Model and GUI
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
+ *  
+ *      reviewed by Delphy 01/28/09
  */
 public class EditorPart extends org.eclipse.ui.part.EditorPart
     implements ModelListener
@@ -57,7 +59,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         setContentDescription(model.getTitle());
     }
 
-    /** Create GUI */
+    /** Create GUI using the model as input. */
     @Override
     public void createPartControl(final Composite parent)
     {
@@ -107,6 +109,8 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         for (int i=0; i<model.getInstanceCount(); ++i)
         {
             final Instance instance = model.getInstance(i);
+            // Check every cell in each instance (row) to see if they have been 
+            // edited.  If they have add them to the elog message.
             for (int c=0; c<model.getColumnCount(); ++c)
             {
                 final Cell cell = instance.getCell(c);
@@ -160,8 +164,10 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     }
 
     @Override
+    // TODO Explain 
     public void doSaveAs()
     {
+       //TODO check for exception
         doSave(new NullProgressMonitor());
     }
 

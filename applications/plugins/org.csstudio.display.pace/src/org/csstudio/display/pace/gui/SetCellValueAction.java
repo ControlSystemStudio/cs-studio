@@ -9,7 +9,10 @@ import org.eclipse.swt.widgets.Shell;
 
 /** Action that sets several cells to the same user-supplied value
  *  @author Kay Kasemir
+ *  
+ *      reviewed by Delphy 01/29/09
  */
+//TODO could mentions what actions use this
 public class SetCellValueAction extends Action
 {
     final private Shell shell;

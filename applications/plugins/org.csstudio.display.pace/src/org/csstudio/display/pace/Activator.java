@@ -4,6 +4,11 @@ import org.eclipse.core.runtime.Plugin;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
+ *  @author Delphy Nypaver Armstrong
+ *  @author Kay Kasemir
+ *  
+ *    reviewed by Delphy 01/28/09
  */
 public class Activator extends Plugin
 {

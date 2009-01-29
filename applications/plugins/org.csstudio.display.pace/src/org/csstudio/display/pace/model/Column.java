@@ -12,6 +12,8 @@ import org.w3c.dom.Element;
  *
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
+ *  
+ *      reviewed by Delphy 01/29/09
  */
 @SuppressWarnings("nls")
 public class Column
@@ -24,11 +26,14 @@ public class Column
      *  @param col_node DOM node for column info
      *  @return Column
      */
+    //TODO should this check for an exception?
     public static Column fromDOM(Element col_node)
     {
+       //TODO Explain what DOM is doing for you
         final String name = DOMHelper.getSubelementString(col_node, "name");
         final String pv_pattern = DOMHelper.getSubelementString(col_node, "pv");
         final String access = DOMHelper.getSubelementString(col_node, "access");
+        //TODO explain the equals below transforming into access for the column
         return new Column(name, pv_pattern, "ro".equalsIgnoreCase(access));
     }
 
@@ -67,6 +72,7 @@ public class Column
     @Override
     public String toString()
     {
+       //TODO Explain string representation of the column
         return "Column '" + name + "', PV '" + pv_with_macros + "'" +
                (readonly ? " (read-only)" : "");
     }

@@ -8,8 +8,11 @@ import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 
 /** One cell in the model: PV, its most recent value, user's value, ...
+ *     TODO Explain ...
  *  @author Kay Kasemir
  *  @author Delphy Nypaver Armstrong
+ *  
+ *   reviewed by Delphy 01/29/09
  */
 public class Cell implements PVListener, IProcessVariable
 {
@@ -30,6 +33,8 @@ public class Cell implements PVListener, IProcessVariable
      *  @param instance Instance (row) that holds this cell
      *  @param column Column that holds this cell
      *  @throws Exception on error
+     *  
+     *     TODO Explain possible errors
      */
     public Cell(final Instance instance, final Column column) throws Exception
     {

@@ -2,6 +2,11 @@ package org.csstudio.display.pace;
 
 import org.eclipse.osgi.util.NLS;
 
+// TODO Explain, take credit @author
+/**
+*    reviewed by Delphy 01/28/09
+*/
+
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.display.pace.messages"; //$NON-NLS-1$

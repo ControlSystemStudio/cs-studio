@@ -9,8 +9,12 @@ import org.w3c.dom.Element;
  *  <p>
  *  Describes one row in the table/model: Name of the instance, macros to use.
  *
+ *  TODO add describes cells in the row
+ *  
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
+ *  
+ *    reviewed by Delphy 01/29/09
  */
 @SuppressWarnings("nls")
 public class Instance
@@ -27,9 +31,12 @@ public class Instance
      */
     public static Instance fromDOM(final Model model, Element node) throws Exception
     {
+       //TODO Explain what DOM is doing for you 
         final String name = DOMHelper.getSubelementString(node, "name");
         final String macro_text = DOMHelper.getSubelementString(node, "macros");
+        //TODO Explain 
         final Macro macros[] = Macro.fromList(macro_text);
+        //TODO Read instance definition from configuration file ... create the instance 
         return new Instance(model, name, macros);
     }
 
@@ -60,6 +67,7 @@ public class Instance
         cells = new Cell[columns.size()];
         for (int c = 0; c < cells.length; c++)
         {
+           // TODO Explain the information in the column class used to create a cell
             cells[c] = new Cell(this, columns.get(c));
         }
     }
@@ -101,6 +109,7 @@ public class Instance
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("Instance '" + name + "'");
+        //TODO Explain what you are appending
         for (int i=0; i<macros.length; ++i)
         {
             if (i > 0)
