@@ -7,8 +7,11 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 
-/** One cell in the model: PV, its most recent value, user's value, ...
- *     TODO Explain ...
+/** One cell in the model.
+ *  Knows about the Instance and Column where this cell resides,
+ *  connects to a PV, holds the most recent value of the PV
+ *  as well as an optional user value that overrides the PV's value
+ *  
  *  @author Kay Kasemir
  *  @author Delphy Nypaver Armstrong
  *  
@@ -31,10 +34,11 @@ public class Cell implements PVListener, IProcessVariable
     
     /** Initialize
      *  @param instance Instance (row) that holds this cell
-     *  @param column Column that holds this cell
-     *  @throws Exception on error
-     *  
-     *     TODO Explain possible errors
+     *                  and provides the macro substitutions for the cell
+     *  @param column   Column that holds this cell
+     *                  and provides the macro-ized PV name
+     *                  for all cells in the column
+     *  @throws Exception on error in macro substitution or PV creation
      */
     public Cell(final Instance instance, final Column column) throws Exception
     {

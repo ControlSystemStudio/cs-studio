@@ -8,8 +8,7 @@ import org.w3c.dom.Element;
 /** Definition of a PACE model instance.
  *  <p>
  *  Describes one row in the table/model: Name of the instance, macros to use.
- *
- *  TODO add describes cells in the row
+ *  After full initialization by Model, it also holds the cells in the row.
  *  
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
@@ -28,15 +27,20 @@ public class Instance
      *  @param model Model
      *  @param node DOM node for instance info
      *  @return Instance
+     *  @throws Exception when expected DOM elements are missing or macros
+     *          don't parse
      */
     public static Instance fromDOM(final Model model, Element node) throws Exception
     {
-       //TODO Explain what DOM is doing for you 
+        // Get expected name and macro info
         final String name = DOMHelper.getSubelementString(node, "name");
         final String macro_text = DOMHelper.getSubelementString(node, "macros");
-        //TODO Explain 
+        if (name.length() <= 0)
+            throw new Exception("Missing instance name");
+        // Parse macro definition. OK to be empty, but errors result in exception
         final Macro macros[] = Macro.fromList(macro_text);
-        //TODO Read instance definition from configuration file ... create the instance 
+        // Read instance definition from configuration file ... create the instance
+        // Cells will be added later in createCells()
         return new Instance(model, name, macros);
     }
 
@@ -60,16 +64,16 @@ public class Instance
 
     /** Create cells for each column
      *  @param columns Column definitions
-     *  @throws Exception on error 
+     *  @throws Exception on error in macros or in PV creation
      */
     void createCells(final List<Column> columns) throws Exception
     {
         cells = new Cell[columns.size()];
+        // Using the macros for this instance,
+        // create a cell for each column by expanding
+        // the macroized PV name of the column
         for (int c = 0; c < cells.length; c++)
-        {
-           // TODO Explain the information in the column class used to create a cell
             cells[c] = new Cell(this, columns.get(c));
-        }
     }
 
     /** @return Instance name, title for row */
@@ -109,7 +113,7 @@ public class Instance
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("Instance '" + name + "'");
-        //TODO Explain what you are appending
+        // List all the macros that define this instance
         for (int i=0; i<macros.length; ++i)
         {
             if (i > 0)

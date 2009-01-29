@@ -8,8 +8,8 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Table;
 
 /** Editor for a cell in the Model, allowing users to enter values
- *  which are meant to replace the PV's value
- *  //TODO add cause of replace ... after save to elog ...
+ *  which are meant to replace the PV's value with a "user" value
+ *  which can later be saved to the PV after ELog entry
  *  @author Kay Kasemir
  *  
  *    reviewed by Delphy 01/29/09
@@ -53,11 +53,10 @@ public class ModelCellEditor extends EditingSupport
         return instance.getCell(cell_index).getValue();
     }
 
-    /** Update model with entered value
+    /** Set cell's "user" value to entered value
      *  @param element Should be Instance because of ModelInstanceProvider
      *  @param value Should be String because of getCellEditor()
      */
-    // TODO Clarify "update model", that is doesn't yet store/save the "entered value"
     @Override
     protected void setValue(final Object element, final Object value)
     {

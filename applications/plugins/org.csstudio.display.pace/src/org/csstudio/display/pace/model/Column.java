@@ -25,15 +25,20 @@ public class Column
     /** Parse and create Column from DOM
      *  @param col_node DOM node for column info
      *  @return Column
+     *  @throws Exception on missing DOM elements
      */
-    //TODO should this check for an exception?
-    public static Column fromDOM(Element col_node)
+    public static Column fromDOM(final Element col_node) throws Exception
     {
-       //TODO Explain what DOM is doing for you
+        // Get expected sub-elements
         final String name = DOMHelper.getSubelementString(col_node, "name");
         final String pv_pattern = DOMHelper.getSubelementString(col_node, "pv");
         final String access = DOMHelper.getSubelementString(col_node, "access");
-        //TODO explain the equals below transforming into access for the column
+        if (name.length() <= 0)
+            throw new Exception("Missing column name");
+        if (pv_pattern.length() <= 0)
+            throw new Exception("Missing PV name pattern");
+        // When access=="ro", make read-only. Otherwise, including no access
+        // info, use read/write
         return new Column(name, pv_pattern, "ro".equalsIgnoreCase(access));
     }
 
@@ -68,11 +73,10 @@ public class Column
         return pv_with_macros;
     }
 
-    /** @return String representation for debugging */
+    /** @return Column name, PV, access representation for debugging */
     @Override
     public String toString()
     {
-       //TODO Explain string representation of the column
         return "Column '" + name + "', PV '" + pv_with_macros + "'" +
                (readonly ? " (read-only)" : "");
     }

@@ -42,13 +42,12 @@ public class Model
     
     /** Initialize model from XML file stream
      *  @param stream Stream for XML file
-     *  @throws Exception on error
+     *  @throws Exception on error: Missing XML elements, errors in macros,
+     *          problems in PV creation
      */
     @SuppressWarnings("nls")
     public Model(final InputStream stream) throws Exception
     {
-       
- 
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         final DocumentBuilder db = dbf.newDocumentBuilder();
         final Document doc = db.parse(stream);
@@ -60,45 +59,40 @@ public class Model
         if (!root_name.equals(XML_ROOT))
             throw new Exception("Got " + root_name + " instead of 'paceconfig'");
 
-        // TODO maybe state that you are using the plugin org.csstudio.apputil.xml.DOMHelper for 
-        // parsing the XML file
+        // Using org.csstudio.apputil.xml.DOMHelper plugin for parsing the XML file
         
         // Get Title
         title = DOMHelper.getSubelementString(root_node, XML_TITLE);
        
-        // Read column definitions
-        //TODO Explain what DOM is doing for you
+        // Read column definitions: Locate list of columns
         final Element cols_node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), XML_COLUMNS);
         if (cols_node == null)
-            return;
+            return; // empty file? Is that an error or just empty?
+        // Traverse down to first column definition, loop over them
         Element col_node =
             DOMHelper.findFirstElementNode(cols_node.getFirstChild(), XML_COLUMN);
         while (col_node != null)
         {
-           //TODO If instances.fromDom throws an exception why doesn't column.getDOM
             final Column column = Column.fromDOM(col_node);
             columns.add(column);
             col_node = DOMHelper.findNextElementNode(col_node, XML_COLUMN);
         }
         
-        // Read instance definitions
+        // Locate instance definitions
         final Element insts_node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), XML_INSTANCES);
         if (insts_node == null)
             return;
-        
-        //TODO Explain parsing each instance definition to create the Instances class
+        // Traverse down to first instance definition, loop over them
         Element inst_node =
             DOMHelper.findFirstElementNode(insts_node.getFirstChild(), XML_INSTANCE);
         while (inst_node != null)
         {
-           //TODO check for exception
             final Instance instance = Instance.fromDOM(this, inst_node);
             instances.add(instance);
             inst_node = DOMHelper.findNextElementNode(inst_node, XML_INSTANCE);
         }
         
-        // Create cells
-        //TODO check for exceptions
+        // Create cells, passing exceptions back up
         for (Instance instance : instances)
             instance.createCells(columns);
     }
@@ -158,8 +152,8 @@ public class Model
                     return true;
         return false;
     }
-// TODO explance where the pvs come from (each cell)
-    /** Start the PV connections 
+
+    /** Start the PV connections of all cells in model
      *  @throws Exception on error
      */
     public void start() throws Exception
@@ -169,7 +163,7 @@ public class Model
                 instance.getCell(c).start();
     }
 
-    /** Stop the PV connections */
+    /** Stop the PV connections of all cells in model */
     public void stop()
     {
         for (Instance instance : instances)
@@ -177,15 +171,15 @@ public class Model
                 instance.getCell(c).stop();
     }
 
-    //TODO Explain that you look for them .. search and save
-    /** Save values entered by user to the PVs
-     *  @throws Exception on error
+    /** Save values entered by user to the PVs.
+     *  Any cells with 'user' values meant to replace
+     *  the original PV value gets written to the PV.
+     *  @throws Exception on error writing to the PV
      */
     public void saveUserValues() throws Exception
     {
         for (Instance instance : instances)
         {
-           //TODO check for exception
             for (int c = 0; c < getColumnCount(); c++)
                 instance.getCell(c).saveUserValue();
         }

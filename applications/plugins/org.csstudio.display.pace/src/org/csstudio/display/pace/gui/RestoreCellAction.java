@@ -5,12 +5,12 @@ import org.csstudio.display.pace.model.Cell;
 import org.eclipse.jface.action.Action;
 
 /** Action that restores a cell's value to the original value,
- *  replacing what the user might have entered.
+ *  replacing the "user" value.
+ *  
  *  @author Kay Kasemir
  *  
  *    reviewed by Delphy 01/29/09
  */
-//TODO Explain "replacing what the user ..." refers to the table cell
 public class RestoreCellAction extends Action
 {   
     final private Cell cells[];
@@ -18,10 +18,12 @@ public class RestoreCellAction extends Action
     public RestoreCellAction(final Cell[] cells)
     {
         super(Messages.RestoreCell);
-        // TODO mention replacing tooltip
+        // On most OS, the action tool tip doesn't show anywhere,
+        // but we set it anyway
         setToolTipText(Messages.RestoreCell_TT);
         this.cells = cells;
-        // TODO explain "enabled"
+        // Only enable the action for cells that were actually
+        // edited. Otherwise, there would be nothing to restore.
         boolean enabled = false;
         if (cells != null)
             for (Cell cell : cells)
@@ -36,7 +38,8 @@ public class RestoreCellAction extends Action
     @Override
     public void run()
     {
-       //TODO Explain "clearUserValue"
+        // Explain "clearUserValue"?
+        // It's explained in the javadoc of clearUserValue().
         for (Cell cell : cells)
             if (cell.isEdited())
                 cell.clearUserValue();

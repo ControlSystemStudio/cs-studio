@@ -26,10 +26,22 @@ public class InstanceLabelProvider extends CellLabelProvider
      final private int column;
 
      /** Construct label provider for Model elements
+      *  <p>
+      *  There's a shift in column indices between GUI and Model:
+      *  The left-most GUI column uses -1 in this argument to display the
+      *  name of the Instance (row).
+      *  Remaining GUI columns use column &ge;0 to display
+      *  Model cells at the given column index.
+      *  <p>
+      *  Meaning:
+      *  <ul>
+      *  <li>GUI Column 0 = Model's Instance name for each row
+      *  <li>GUI Column 1 = Model's Column 0 
+      *  <li>GUI Column 2 = Model's Column 1
+      *  <li>... 
+      *  </ul>
       *  @param column Column of the model that this label provider handles.
-      *                -1 for the instance name, &ge;0 for cells
       */
-     // TODO Explain -1 for the instance name, &ge;0 for cells
      InstanceLabelProvider(final int column)
      {
          this.column = column;
@@ -46,9 +58,10 @@ public class InstanceLabelProvider extends CellLabelProvider
              return instance.getName();
          // Cell column
          final Cell cell = instance.getCell(column);
-         // TODO State that you are creating the tooltip and appending if necessary
+         // Creating basic PV name, value tooltip
          String tip = NLS.bind(Messages.InstanceLabelProvider_PVValueFormat,
                                cell.getName(), cell.getValue());
+         // Extend to show 'edited' or 'read-only' state
          if (cell.isEdited())
              tip = tip + Messages.InstanceLabelProvider_OrigAppendix + cell.getCurrentValue();
          if (cell.isReadOnly())
@@ -65,8 +78,7 @@ public class InstanceLabelProvider extends CellLabelProvider
          // ModelInstanceProvider should always provided "Instance" elements
          final Instance instance = (Instance) gui_cell.getElement();
 
-         // Special name column?
-         // TODO Explain how the special name column became < 0 rather than 0, the first column
+         // Special name column? See comments in constructor
          if (column < 0)
          {
              gui_cell.setText(instance.getName());
@@ -76,8 +88,7 @@ public class InstanceLabelProvider extends CellLabelProvider
          final Cell cell = instance.getCell(column);
          gui_cell.setText(cell.getValue());
 
-         // Highlight edited cells
-         // TODO add "in yellow"
+         // Highlight edited cells with yellow background
          if (cell.isEdited())
          {
              final Display display = Display.getCurrent();
@@ -85,8 +96,8 @@ public class InstanceLabelProvider extends CellLabelProvider
          }
          else
              gui_cell.setBackground(null);
-         // Highlight read-only cells
-         // TODO add "in light grey - inactive"
+         // Highlight read-only cells with "inactive" background, usually
+         // a light grey
          if (cell.isReadOnly())
          {
              final Display display = Display.getCurrent();

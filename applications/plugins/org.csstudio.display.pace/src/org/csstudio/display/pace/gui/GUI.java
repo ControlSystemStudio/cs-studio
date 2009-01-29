@@ -16,6 +16,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,6 +28,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -56,25 +58,29 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     /** Minimum column width */
     private static final int MIN_SIZE = 100;
     
+    /** Model handed by this GUI */
+    final private Model model;
+
     /** Table Viewer for Model's "Instance" rows */
     private TableViewer table_viewer;
     
     /** Currently selected Cell in Model or <code>null</code> */
     private Cell selected_cell = null;
     
-    // TODO Explain the array of listeners being for selection changes
+    /** Listeners that registered for this ISelectionProvider */
     final private ArrayList<ISelectionChangedListener> listeners =
         new ArrayList<ISelectionChangedListener>();
-// TODO Explain you are initializing the GUI maybe put a comment or two explaining
-    //what that entails
-    /** Initialize
+
+    /** Initialize GUI: Create widgets that display the model
      *  @param parent Parent widget
      *  @param model Model to display
-     *  @param site Workbench site or <code>null</code>
+     *  @param site Workbench site where GUI can act as ISelectionProvider,
+     *              or <code>null</code>.
      */
     public GUI(final Composite parent, final Model model,
             final IWorkbenchPartSite site)
     {
+        this.model = model;
         createComponents(parent, model);
         addCellTracker();
         model.addListener(this);
@@ -83,31 +89,29 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             site.setSelectionProvider(this);
     }
 
-    // ISelectionProvider  
-    //TODO better explanation of method than ISelectionProvider
+    // @see ISelectionProvider  
     public void addSelectionChangedListener(
             final ISelectionChangedListener listener)
     {
         listeners.add(listener);
     }
 
-    // ISelectionProvider
-    //TODO better explanation of method than ISelectionProvider
+    // @see ISelectionProvider  
     public void removeSelectionChangedListener(
             final ISelectionChangedListener listener)
     {
         listeners.remove(listener);
     }
 
-    // ISelectionProvider
-    //TODO better explanation of method than ISelectionProvider
+    // @see ISelectionProvider  
     public void setSelection(final ISelection selection)
     {
         // NOP, don't allow outside code to change selection
     }
 
-    // ISelectionProvider
-    //TODO better explanation of method than ISelectionProvider
+    /** Provide selected Cells of model or <code>null</code>
+     *  @see ISelectionProvider
+     */
     public ISelection getSelection()
     {
         if (selected_cell == null)
@@ -140,7 +144,6 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
         
-        //TODO document
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
     
         // Connect TableViewer to the Model: Provide content from model...
@@ -156,31 +159,49 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             col = AutoSizeColumn.make(table_viewer,
                                 model_col.getName(), MIN_SIZE, 100);
             // Tell column how to display the model elements
-            //TODO do you mean rw, ro, Explain "how to"
             col.setLabelProvider(new InstanceLabelProvider(c));
             if (! model_col.isReadonly())
                 col.setEditingSupport(new ModelCellEditor(table_viewer, c));
-            // Clicking on column header runs SetCellValueAction
-            //TODO Explain running SetCellValueAction and what you SelectionListener
-            // is doing
+            // Clicking on column header allows entry into _all_ cells of
+            // model
             col.getColumn().addSelectionListener(new SelectionAdapter()
             {
                 @Override
                 public void widgetSelected(SelectionEvent e)
                 {
-                    final Cell[] cells = getSelectedCells(model_col);
-                    if (cells == null)
-                        return;
-                    final IAction action =
-                        new SetCellValueAction(table.getShell(),
-                                               cells);
-                    action.run();
+                    setAllCellsInColumn(model_col);
                 }
             });
         }
         new AutoSizeControlListener(table);
-        //TODO Explain
+        // table viewer is set up to handle data of type Model.
+        // Conenct to specific model
         table_viewer.setInput(model);
+    }
+
+    /** Set all cells in column to a user-entered value
+     *  @param column Column to set
+     */
+    protected void setAllCellsInColumn(final Column column)
+    {
+        // Any rows to set?
+        if (model.getInstanceCount() <= 0)
+            return;
+        // Using value of first selected test as suggestion,
+        // prompt for value to be put into all selected cells
+        final String message =
+            NLS.bind(Messages.SetColumnValue_Msg, column.getName());
+        final InputDialog input =
+            new InputDialog(table_viewer.getTable().getShell(),
+                            Messages.SetValue_Title,
+                            message,
+                            model.getInstance(0).getCell(column).getValue(), null);
+        if (input.open() != InputDialog.OK)
+            return;
+        // Update value of selected cells
+        final String user_value = input.getValue();
+        for (int row=0;  row < model.getInstanceCount();  ++row)
+            model.getInstance(row).getCell(column).setUserValue(user_value);
     }
 
     /** Update <code>selected_cell</code> from mouse position */
@@ -200,8 +221,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         {
             public void handleEvent(final Event event)
             {
-                // Get cell in SWT Table
-               //TODO mention how you get the cell (mouse point)
+                // Get cell in SWT Table from mouse position
                 final Point point = new Point(event.x, event.y);
                 final ViewerCell viewer_cell = table_viewer.getCell(point);
                 if (viewer_cell == null)
@@ -218,18 +238,17 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                     return;
                 }
                 selected_cell = instance.getCell(col_idx-1);
-                // Update selection listeners
-                // TODO Explain update
+                // Update selection listeners about newly selected cells
                 for (ISelectionChangedListener listener : listeners)
                     listener.selectionChanged(new SelectionChangedEvent(GUI.this, getSelection()));
             }
         });
     }
 
-    /** Create context menu
+    /** Create dynamic context menu
      *  @param site Workbench site where menu will get registered or <code>null</code>
+     *  @see #menuAboutToShow(IMenuManager)
      */
-    //TODO could explain the method better than "create context menu"
     private void createContextMenu(final IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
@@ -242,11 +261,10 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             site.registerContextMenu(manager, this);
     }
 
-    /** Fill context menu depending on current selection
+    /** Fill context menu with actions for the currently selected cells.
      *  @param manager Menu manager
      *  @see IMenuListener
      */
-    //TODO explain "depending on current selection"
     public void menuAboutToShow(final IMenuManager manager)
     {
         final Cell cells[] = getSelectedCells();
@@ -274,13 +292,13 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
      */
     private Cell[] getSelectedCells(final Column column)
     {
-        // Only return editable cells
+        // Read-only column has no editable cells
         if (column.isReadonly())
             return null;
-        // TableViewer selection has Model Instance (row) entries
-        //TODO and you're using them how?
-        // Turn into Cell array
-        // TODO explain you are using column
+        // TableViewer selection has the currently selected _Instance_ entries
+        // of the Model.
+        // Use the selected Column (see addCellTracker) to
+        // get the currently selected _Cells_
         final Object[] sel =
             ((IStructuredSelection) table_viewer.getSelection()).toArray();
         final Cell cells[] = new Cell[sel.length];
@@ -292,16 +310,22 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         return cells;
     }
 
-    /** Update table when Cell in Model changed
+    /** Update table when Cell in Model changed.
+     *  <p>
+     *  Could be called directly by Cell because PV sent new value.
+     *  Could be called by cell after we edited it, or maybe in the
+     *  future other forces will change the cell.
+     *  In any case: A cell changed, and we have to update the GUI.
+     *  
      *  @see ModelListener
      */
-    //TODO explain how you get changed cell
-    // all ModelListener tells me is that it calls this method
     public void cellUpdate(final Cell cell)
     {
         final Table table = table_viewer.getTable();
         if (table.isDisposed())
             return;
+        // Call can originate from non-UI thread in case of PV updates,
+        // so transfer to UI thread when accessing the SWT table 
         table.getDisplay().asyncExec(new Runnable()
         {
             public void run()

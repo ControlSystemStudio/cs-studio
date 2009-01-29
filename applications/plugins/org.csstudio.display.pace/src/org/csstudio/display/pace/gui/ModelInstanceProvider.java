@@ -7,14 +7,13 @@ import org.eclipse.jface.viewers.Viewer;
 
 /** A (lazy) content provider for the GUI's table.
  *  <p>
- *  Gets called by the TableViewer with requests for the rows (Instances)
- *  of the table (Model).
+ *  TableViewer calls this, asking for updates to the "rows" of the
+ *  SWT Table, and we respond with Instances of the Model.
  *  
  *  @author Kay Kasemir
  *  
  *     reviewed by Delphy 01/29/09
  */
-//TODO Explain requests - "requests for the rows"
 public class ModelInstanceProvider implements ILazyContentProvider
 {
     private TableViewer table_viewer;
@@ -37,8 +36,10 @@ public class ModelInstanceProvider implements ILazyContentProvider
             table_viewer.setItemCount(model.getInstanceCount());
     }
 
-    /** Called by viewer to ask for an element (row, instance) of the model */
-    //TODO Explain - does more than "ask for an element"
+    /** Called by viewer; we have to update the given row of the TableViewer
+     *  with the corresponding Model element (Instance)
+     *  @param row Row to update
+     */
     public void updateElement(final int row)
     {
         table_viewer.replace(model.getInstance(row), row);

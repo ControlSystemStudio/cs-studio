@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Shell;
  *  
  *      reviewed by Delphy 01/29/09
  */
-//TODO could mentions what actions use this
 public class SetCellValueAction extends Action
 {
     final private Shell shell;
@@ -28,6 +27,7 @@ public class SetCellValueAction extends Action
         setToolTipText(Messages.SetValue_TT);
         this.shell = shell;
         this.cells = cells;
+        // Only enable if there are cells to set.
         if (cells == null)
             setEnabled(false);
     }

@@ -5,13 +5,12 @@ package org.csstudio.display.pace.model;
  *  
  *   reviewed by Delphy 01/28/09
  */
-//TODO Model changes need to be explained  
-// cell has userVaue ... isdirty ...
 public interface ModelListener
 {
-    /** Notification of cell update
-     *  @param cell Cell that changed
+    /** Notification of cell update.
+     *  @param cell Cell that changed its value in any way:
+     *              Received new data from PV,
+     *              user updated the value, reset to original value, ...
      */
     void cellUpdate(Cell cell);
-
 }

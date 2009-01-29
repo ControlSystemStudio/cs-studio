@@ -13,3 +13,4 @@ Require-Bundle: org.junit4,
  org.csstudio.utility.pv,
  org.csstudio.logbook
 Bundle-Vendor: Delphy Armstrong, Kay Kasemir
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

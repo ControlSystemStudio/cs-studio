@@ -8,35 +8,53 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 /** Standalone GUI test, run as headless JUnit plugin test.
- *  Runs as headless application.
- *  For PV connections to work, use junit_customization.ini
+ *  For PV connections to work, use junit_customization.ini:
+ *  
+ *  When first using "Run/Run As/JUnit plugin test" on this file,
+ *  it should start but the PVs will probably not connect
+ *  because of missing ChannelAccess settings.
+ *  
+ *  Edit ChannelAccess settings in junit_customization.ini,
+ *  then use "Run/Run Configurations..." to edit the run configuration
+ *  which was initialized with defaults in the previous step by adding
+ *  something like this under "Arguments", "Program Arguments":
+ *  
+ *   -pluginCustomization /full/path/to/the/Workspace/org.csstudio.display.pace/junit_customization.ini
+ *
+ *  While editing the Run Configuration, one can also select 
+ *     Main, Program To Run, Application: No Application (headless mode)
+ *  to prevent the rest of the Eclipse Workbench from starting up.
+ *  
  *  @author Kay Kasemir
  *  
  *    reviewed by Delphy 01/28/09
  */
-//TODO Explain "use junit_customization.ini"
-//some comments in the code below would be nice
 @SuppressWarnings("nls")
 public class GUITest
 {
     @Test
     public void testGUI() throws Exception
     {
+        // Open display & shell ourself.
+        // Real application would have Eclipse Workbench site
         final Display display = Display.getDefault();
         final Shell shell = new Shell(display);
         shell.setBounds(10, 100, 800, 600);
         
-        // TODO add exception
+        // Exceptions are not expected and handled by JUnit
+        // framework by displaying them.
         final Model model =
             new Model(new FileInputStream("configFiles/rf_admin.pace"));
         new GUI(shell, model, null);
-        // TODO add exception
         model.start();
-        
+
+        // SWT main loop, in real application handled by workbench
         shell.open();
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
                 display.sleep();
+        
+        // Model shutdown
         model.stop();
     }
 }

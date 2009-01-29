@@ -31,7 +31,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     implements ModelListener
 {
     private Model model;
-    boolean is_dirty = false;
+    private boolean is_dirty = false;
     
     /** Initialize Model from editor input */
     @Override
@@ -163,11 +163,12 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         }
     }
 
+    /** "SaveAs isn't allowed and should not get invoked,
+     *  but in case it is, we handle it like 'doSave'
+     */
     @Override
-    // TODO Explain 
     public void doSaveAs()
     {
-       //TODO check for exception
         doSave(new NullProgressMonitor());
     }
 
