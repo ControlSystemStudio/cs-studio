@@ -52,7 +52,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         this.message = message;
         this.initial_title = initial_title;
         this.initial_body = initial_body;
-        this.logbooks = logbook_factory.getLoogbooks();
+        this.logbooks = logbook_factory.getLogbooks();
         this.image_filename = image_filename;
 
         // Try to allow resize, because the 'text' section could
