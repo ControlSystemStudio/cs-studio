@@ -87,7 +87,8 @@ public class ProcessVariableDragSource implements DragSourceListener
      *  Check if there are any PV items in the current selection.
      *  Remember them, or cancel the drag request.
      */
-	public void dragStart(DragSourceEvent event)
+	@SuppressWarnings("unchecked")
+    public void dragStart(DragSourceEvent event)
 	{
         pvs.clear();
         // Get all PVs from the current selection.
@@ -129,11 +130,11 @@ public class ProcessVariableDragSource implements DragSourceListener
         }
         else if (TextTransfer.getInstance().isSupportedType(event.dataType))
 		{
-			StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 			for (int i = 0; i < pvs.size(); ++i)
 			{
 				if (i > 0)
-					buf.append(", ");
+					buf.append(", "); //$NON-NLS-1$
 				buf.append(pvs.get(i).getName());
 			}
 			event.data = buf.toString();
