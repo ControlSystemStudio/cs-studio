@@ -185,7 +185,8 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     protected void setAllCellsInColumn(final Column column)
     {
         // Any rows to set?
-        if (model.getInstanceCount() <= 0)
+        if (model.getInstanceCount() <= 0  ||
+            column.isReadonly())
             return;
         // Using value of first selected test as suggestion,
         // prompt for value to be put into all selected cells
