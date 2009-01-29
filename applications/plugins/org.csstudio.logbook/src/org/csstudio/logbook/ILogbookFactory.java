@@ -1,7 +1,7 @@
 package org.csstudio.logbook;
 
 /** Interface to something that can create logbooks
- *  @author nypaver
+ *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
 public interface ILogbookFactory
@@ -15,7 +15,7 @@ public interface ILogbookFactory
      *  @return List of logbook names. Maybe empty, but not <code>null</code>.
      *  @throws Exception on error
      */
-    public String[] getLoogbooks() throws Exception;
+    public String[] getLogbooks() throws Exception;
     
     /** In case there are multiple logbooks, this would
      *  provide the suggested default.

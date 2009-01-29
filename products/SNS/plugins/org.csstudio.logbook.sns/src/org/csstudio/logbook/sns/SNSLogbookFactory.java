@@ -17,11 +17,12 @@ public class SNSLogbookFactory implements ILogbookFactory
 {
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
-    public String[] getLoogbooks() throws Exception
+    public String[] getLogbooks() throws Exception
     {
         final ArrayList<String> names = new ArrayList<String>();
         final RDBUtil rdb = RDBUtil.connect(Preferences.getURL(),
-                Preferences.getLogListUser(), Preferences.getLogListPassword());
+                Preferences.getLogListUser(), Preferences.getLogListPassword(),
+                false);
         final Statement statement = rdb.getConnection().createStatement();
         try
         {
@@ -81,7 +82,7 @@ public class SNSLogbookFactory implements ILogbookFactory
             throw new Exception("Missing logbook URL");
         if (logbook == null)
             throw new Exception("Missing logbook name");
-        final RDBUtil rdb = RDBUtil.connect(url, user, password);
+        final RDBUtil rdb = RDBUtil.connect(url, user, password, false);
         return new SNSLogbook(rdb, user, logbook);
     }
 }

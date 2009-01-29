@@ -33,7 +33,7 @@ public class LogbookTest
         assertNotNull(logbook_factory);
         
         // Show available logbooks.
-        final String[] logbooks = logbook_factory.getLoogbooks();
+        final String[] logbooks = logbook_factory.getLogbooks();
         assertNotNull(logbooks);
         System.out.println("Available logbooks:");
         for (String log_name : logbooks)
