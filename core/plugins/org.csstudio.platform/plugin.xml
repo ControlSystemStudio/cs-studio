@@ -41,7 +41,6 @@
    <extension
          point="org.csstudio.platform.authorizationId">
       <id
-            default="true"
             description="This ID should be used in examples and documentation."
             id="example">
       </id>
