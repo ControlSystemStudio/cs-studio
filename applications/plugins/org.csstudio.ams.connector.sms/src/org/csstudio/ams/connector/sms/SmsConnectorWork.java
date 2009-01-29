@@ -1,5 +1,6 @@
+
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -47,6 +48,7 @@ import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;
 import org.smslib.Message.MessageEncodings;
 import org.smslib.Message.MessageTypes;
+import org.smslib.InboundBinaryMessage;
 import org.smslib.OutboundMessage;
 import org.smslib.Service;
 import org.smslib.StatusReportMessage;
@@ -54,7 +56,7 @@ import org.smslib.modem.SerialModemGateway;
 
 public class SmsConnectorWork extends Thread implements AmsConstants
 {
-    private SmsConnectorStart   scs                 = null;
+    private SmsConnectorStart scs = null;
 
     // private final int CONSUMER_CONNECTIONS = 2;
     
@@ -68,18 +70,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
     // --- Receiver ---
     private JmsRedundantReceiver amsReceiver = null;    
-    /*private Context[]           amsReceiverContext    = new Context[CONSUMER_CONNECTIONS];
-    private ConnectionFactory[] amsReceiverFactory    = new ConnectionFactory[CONSUMER_CONNECTIONS];
-    private Connection[]        amsReceiverConnection = new Connection[CONSUMER_CONNECTIONS];
-    private Session[]           amsReceiverSession    = new Session[CONSUMER_CONNECTIONS];
 
-    // CHANGED BY: Markus Möller, 28.06.2007
-    // private TopicSubscriber     amsSubscriberSms    = null;
-    private MessageConsumer[]     amsSubscriberSms    = new MessageConsumer[CONSUMER_CONNECTIONS];
-    */
     private Service modemService = null;
     // private CSoftwareService srv = null;
-
+    
+    /** Container for SMS */
+    private SmsContainer smsContainer;
+    
     private short sTest = 0; // 0 - normal behavior, other - for test
     private boolean bStop = false;
     private boolean bStoppedClean = false;
@@ -96,6 +93,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     {
         // Set the "parent" object
         this.scs = scs;
+        smsContainer = new SmsContainer();
     }
     
     public void run()
@@ -190,27 +188,34 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
                     if(iErr == SmsConnectorStart.STAT_OK)
                     {
+                        // TODO: The methods should throw an exception
                         // Now look for SMS messages
                         message = null;
                         try
                         {
                             message = amsReceiver.receive("amsSubscriberSms");
+                            iErr = smsContainer.addSms(message);
                         }
                         catch(Exception e)
                         {
-                            Log.log(this, Log.FATAL, "could not receive from internal jms: amsSubscriberSms", e);
+                            Log.log(this, Log.FATAL, "Could not receive from internal jms: amsSubscriberSms", e);
                             iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                         }
                         
                         if (message != null)
                         {
-                            iErr = sendSmsMsg(message);                             // send 1 SMS, other in the next run
+                            //FIXME:
+                            //TODO:
+                            // send 1 SMS, other in the next run
+                            // iErr = sendSmsMsg(message);
+                            iErr = sendSmsMsg();
                             sleep(100);
                         }
                         
                         if (iErr == SmsConnectorStart.STAT_OK)
                         {
-                            iErr = readSmsMsg(/*1*/);                                   // read max. limit SMS, other in the next run
+                            // read max. limit SMS, other in the next run
+                            iErr = readSmsMsg(/*1*/);
                             sleep(50);
                         }
                         
@@ -219,7 +224,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             Log.log(this, Log.ERROR, "Closing Modem.");
                             closeModem();
                             bInitedModem = false;
-                            closeJms();                                             // recover msg
+                            closeJms();
                             bInitedJms = false;
                         }
                         
@@ -240,26 +245,54 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 }
 
                 // set status in every loop
-                scs.setStatus(iErr);                                            // set error status, can be OK if no error
+                // set error status, can be OK if no error
+                scs.setStatus(iErr);
             }
             catch(Exception e)
             {
-                scs.setStatus(SmsConnectorStart.STAT_ERR_UNKNOWN);
+                scs.setStatus(SmsConnectorStart.STAT_ERR_UNDEFINED);
                 Log.log(this, Log.FATAL, e);
 
-                closeModem();                                                   // Disconnect - Don't forget to disconnect!
+                closeModem();
                 bInitedModem = false;
                 closeJms();
                 bInitedJms = false;
             }
         }
         
+        // Store the remaining messages
+        if(smsContainer.hasContent())
+        {
+            if(smsContainer.storeContent("./"))
+            {
+                Log.log(this, Log.INFO, "SMS objects have been stored.");
+                
+                smsContainer = null;
+            }
+            else
+            {
+                Log.log(this, Log.WARN, "SMS objects have NOT been stored.");
+            }
+        }
+
         // Close all
-        closeModem();                                                   // Disconnect - Don't forget to disconnect!
+        closeModem();
         closeJms();
         bStoppedClean = true;
         
         Log.log(this, Log.INFO, "SMS connector exited");
+    }
+    
+    public boolean storeRemainingMessages()
+    {
+        boolean success = false;
+        
+        if(smsContainer != null)
+        {
+            success = smsContainer.storeContent("./");
+        }
+        
+        return success;
     }
     
     /**
@@ -445,7 +478,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus M�ller, 25.05.2007
+            // CHANGED BY: Markus Möller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
@@ -535,12 +568,47 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         return false;
     }
     
+    /**
+     * Sends the SMS stored in the SmsContainer.
+     * 
+     * @return Error code
+     */
+    private int sendSmsMsg() throws Exception
+    {
+        Sms sms = null;
+        int iErr = SmsConnectorStart.STAT_OK;
+        
+        if(smsContainer.hasContent())
+        {
+            sms = smsContainer.getFirstSms();
+            if(sms != null)
+            {
+                Log.log(this, Log.DEBUG, "SMS: " + sms.toString());
+                if((sms.getType() == Sms.Type.OUT) && (sms.getState() != Sms.State.SENT))
+                {
+                    if(sendSms(sms))
+                    {
+                        smsContainer.removeSms(sms);
+                    }
+                    else
+                    {
+                        iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
+                    }
+                }
+            }
+        }
+        
+        return iErr;
+    }
+    
     private int sendSmsMsg(Message message) throws Exception
     {
         if (!(message instanceof MapMessage))
         {
             Log.log(this, Log.WARN, "got unknown message " + message);
-            if (!acknowledge(message))                                          // deletes all received messages of the session
+            
+            // Deletes all received messages of the session
+            if (!acknowledge(message))
                 return SmsConnectorStart.STAT_ERR_JMSCON;
             return SmsConnectorStart.STAT_OK;
         }
@@ -551,8 +619,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             String recNo = msg.getString(MSGPROP_RECEIVERADDR);
             String parsedRecNo = null;
 
-            int iErr = SmsConnectorStart.STAT_ERR_UNKNOWN;
-            for (int j = 1 ; j <= 5 ; j++)                                      //only for short net breaks
+            int iErr = SmsConnectorStart.STAT_ERR_UNDEFINED;
+            for (int j = 1 ; j <= 5 ; j++) //only for short net breaks
             {
                 if (parsedRecNo == null)
                 {
@@ -563,7 +631,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     catch (Exception e)
                     {
                         Log.log(this, Log.FATAL, "Parsing phone number - failed.");
-                        if (acknowledge(message))                               // deletes all received messages of the session
+                        if (acknowledge(message)) // deletes all received messages of the session
                             return SmsConnectorStart.STAT_OK;
                         iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                     }
@@ -618,6 +686,23 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         return sbMobile.toString();
     }
     
+    public boolean sendSms(Sms sms) throws Exception
+    {
+        boolean success;
+        
+        success = sendSms(sms.getMessage(), sms.getPhoneNumber());
+        if(success)
+        {
+            sms.setState(Sms.State.SENT);
+        }
+        else
+        {
+            sms.setState(Sms.State.NOT_SENT);
+        }
+        
+        return success;
+    }
+    
     /**
      * Send SMS with text to receiver address.
      * 
@@ -645,7 +730,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         msg.setEncoding(MessageEncodings.ENC7BIT);
 
         // Do we require a Delivery Status Report?
-        msg.setStatusReport(true);                                              // Delivery Status Report
+        // Delivery Status Report
+        msg.setStatusReport(true);
 
         // We can also define the validity period.
         // Validity period is always defined in hours.
@@ -678,7 +764,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             Log.log(this, Log.INFO, "call modem.sendMessage");
             int totalOutBefore = modemService.getOutboundMessageCount();// total number of outbound messages since restart
             
-            // TODO: Eventuell die Liste aller Modems und ihre Zust�nde ausgeben
+            // TODO: Eventuell die Liste aller Modems und ihre Zustände ausgeben
             // Log.log(this, Log.INFO, "Modem connected: " + modemService.getConnected());
             try
             {
@@ -709,7 +795,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
     private int readSmsMsg(/*int limit*/) throws Exception
     {
-        int iErr = SmsConnectorStart.STAT_ERR_UNKNOWN;
+        int iErr = SmsConnectorStart.STAT_ERR_UNDEFINED;
         for (int j = 1 ; j <= 5 ; j++)                                          //TEMPORARAY connections error try some times 
         {                                                                       // (short breaks of ethernet or gsm net)
             iErr = readModem(/*limit*/);
@@ -752,9 +838,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         try
         {
-            if (sTest == 0)
-                modemService.readMessages(msgList, MessageClasses.ALL /*, limit*/);// Read up to number of messages, read other SMS at the next run.
-        }                                                                       // read out all messages in linked list
+            if(sTest == 0)
+            {
+                // Read up to number of messages, read other SMS at the next run.
+                // Read out all messages in linked list
+                modemService.readMessages(msgList, MessageClasses.ALL /*, limit*/);        
+            }
+        }
         catch(Exception e)
         {
             Log.log(this, Log.FATAL, "could not readMessages", e);
@@ -780,9 +870,21 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         for (int i = 0; i < msgList.size(); i++)
         {
             InboundMessage smsMsg = (InboundMessage) msgList.get(i);
-            String text = smsMsg.getText();
-
-            if (smsMsg.getType() == MessageTypes.STATUSREPORT)
+            String text = null;
+            
+            // BEWARE: We can get an InboundBinaryMessage and will run into problems
+            //         if we want to get the message text. The getText() method
+            //         of InboundBinaryMessage just throws an exception!!!!!!!
+            if(smsMsg instanceof InboundBinaryMessage)
+            {
+                text = "[InboundBinaryMessage] Cannot read the content.";
+            }
+            else
+            {
+                text = smsMsg.getText();
+            }
+            
+            if(smsMsg.getType() == MessageTypes.STATUSREPORT)
             {
                 StatusReportMessage smsStat = (StatusReportMessage)smsMsg;
                 Log.log(this, Log.INFO, "receive statusReport message: '" + text 

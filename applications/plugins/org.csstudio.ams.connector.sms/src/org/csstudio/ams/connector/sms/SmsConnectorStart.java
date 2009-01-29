@@ -49,8 +49,8 @@ public class SmsConnectorStart implements IApplication
     public final static int STAT_OK = 1;
     public final static int STAT_ERR_MODEM = 2;
     public final static int STAT_ERR_MODEM_SEND = 3;
-    public final static int STAT_ERR_JMSCON = 4;                                // jms communication to ams internal jms partners
-    public final static int STAT_ERR_UNKNOWN = 5;
+    public final static int STAT_ERR_JMSCON = 4; // jms communication to ams internal jms partners
+    public final static int STAT_ERR_UNDEFINED = 5;
     public final static int STAT_SENDING = 6;
     public final static int STAT_READING = 7;
 
@@ -145,7 +145,7 @@ public class SmsConnectorStart implements IApplication
                 // If the current status signals a modem error
                 // THEN
                 // Do a automatic restart
-                if(!sObj.hasStatusSet(actSynch, 180, STAT_ERR_UNKNOWN) || sObj.getSynchStatus() == STAT_ERR_MODEM)
+                if(!sObj.hasStatusSet(actSynch, 180, STAT_ERR_UNDEFINED) || sObj.getSynchStatus() == STAT_ERR_MODEM)
                 {
                     // every 2 minutes if blocked
                     Log.log(this, Log.FATAL, "TIMEOUT: status has not changed the last 3 minutes.");
@@ -254,6 +254,7 @@ public class SmsConnectorStart implements IApplication
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
                 scw.closeModem();
                 scw.closeJms();
+                scw.storeRemainingMessages();
                 scw = null;
             }
         }

@@ -1,0 +1,14 @@
+2009-01-19 14:47:06,609 ERROR [Thread-6] org.smslib: GTW: modem.com2: Unhandled SMS in inbox, skipping...
+java.lang.NumberFormatException: For input string: "FN"
+	at java.lang.NumberFormatException.forInputString(Unknown Source)
+	at java.lang.Integer.parseInt(Unknown Source)
+	at org.ajwcc.pduUtils.gsm3040.PduUtils.pduToBytes(PduUtils.java:968)
+	at org.ajwcc.pduUtils.gsm3040.PduParser.parsePdu(PduParser.java:154)
+	at org.smslib.modem.ModemGateway.readMessagesPDU(ModemGateway.java:407)
+	at org.smslib.modem.ModemGateway.readMessages(ModemGateway.java:147)
+	at org.smslib.Service.readMessages(Service.java:435)
+	at org.smslib.Service.readMessages(Service.java:339)
+	at org.csstudio.ams.connector.sms.SmsConnectorWork.readModem(SmsConnectorWork.java:756)
+	at org.csstudio.ams.connector.sms.SmsConnectorWork.readSmsMsg(SmsConnectorWork.java:715)
+	at org.csstudio.ams.connector.sms.SmsConnectorWork.run(SmsConnectorWork.java:213)
+2009-01-19 14:47:06,609 ERROR [Thread-6] org.smslib: GTW: modem.com2: ERROR PDU: 079194710167000006600C91947181069497901091415413409010914154834000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFNFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
