@@ -222,7 +222,12 @@ final class AlarmMessageListener implements MessageListener {
 			_log.debug(this, "received ack: name=" + name);
 			_worker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
 		} else {
-			Severity severity = Severity.parseSeverity(message.getString("SEVERITY"));
+			String severityValue = message.getString("SEVERITY");
+			if (severityValue == null) {
+				_log.warn(this, "Received alarm message which did not contain SEVERITY! Message ignored. Message was: " + message);
+				return;
+			}
+			Severity severity = Severity.parseSeverity(severityValue);
 			_log.debug(this, "received alarm: name=" + name + ", severity=" + severity);
 			_worker.enqueue(PendingUpdate.createAlarmUpdate(name, severity));
 		}
