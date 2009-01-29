@@ -8,6 +8,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.logbook;visibility:=reexport,
  org.junit4,
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0"
-Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Export-Package: org.csstudio.logbook.sns

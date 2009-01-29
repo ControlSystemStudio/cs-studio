@@ -7,4 +7,3 @@ Bundle-Vendor: SNS
 Export-Package: org.csstudio.logbook
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4
-Eclipse-LazyStart: false
