@@ -731,7 +731,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
         // Do we require a Delivery Status Report?
         // Delivery Status Report
-        msg.setStatusReport(true);
+        // msg.setStatusReport(true);
 
         // We can also define the validity period.
         // Validity period is always defined in hours.
