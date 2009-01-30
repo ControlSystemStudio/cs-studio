@@ -116,9 +116,9 @@ public class Application implements IApplication
                 // name = pv name
                 // old = old pv value
                 // new = new pv value
+                // ssh = "remote-ip remote-port local-ip local-port"
                 //
                 // Example:
-                // ssh = "remote-ip remote-port local-ip local-port"
                 // user="sinclair" host="orib36"
                 // ssh="::ffff:192.168.18.51 43902 ffff:160.91.72.139 22"
                 // dsp=":0.0" name="orib36:ao0" old="8.131325" new="8.231325"
