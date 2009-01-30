@@ -1,10 +1,12 @@
 package org.csstudio.debugging.jmsmonitor;
 
+import org.csstudio.apptuil.securestorage.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Access to preferences for JMS Monitor
  *  @author Kay Kasemir
+ *  @author Xihui Chen
  */
 @SuppressWarnings("nls")
 public class Preferences
@@ -22,13 +24,21 @@ public class Preferences
 
     public static String getJMS_User()
     {
-        final IPreferencesService preferences = Platform.getPreferencesService();
-        return preferences.getString(Activator.ID, JMS_USER, null, null);
+       return getSecureString(JMS_USER);
     }
 
     public static String getJMS_Password()
     {
-        final IPreferencesService preferences = Platform.getPreferencesService();
-        return preferences.getString(Activator.ID, JMS_PASSWORD, null, null);
+        return getSecureString(JMS_PASSWORD);
     }
+    
+    private static String getSecureString(final String setting) {
+    	String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);
+        if(value == null){
+        	final IPreferencesService preferences = Platform.getPreferencesService();
+        	value = preferences.getString(Activator.ID, setting, null, null);
+        }        	
+        return value;
+    }
+    
 }

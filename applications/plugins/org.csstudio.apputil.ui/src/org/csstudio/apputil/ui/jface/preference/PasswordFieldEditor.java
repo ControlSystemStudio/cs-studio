@@ -1,5 +1,8 @@
 package org.csstudio.apputil.ui.jface.preference;
 
+
+import org.csstudio.apptuil.securestorage.SecureStorage;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -11,11 +14,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+
 /** StringFieldEditor for Passwords
  *  <p>
  *  Copied StringFieldEditor sources, stripped,
  *  replaced Text style with password option
  *  @author Kay Kasemir
+ *  @author Xihui Chen
  */
 public class PasswordFieldEditor extends FieldEditor
 {
@@ -23,7 +28,18 @@ public class PasswordFieldEditor extends FieldEditor
      * Cached valid state.
      */
     private boolean isValid;
-
+    
+    /**
+     * whether the data should be encrypted or not in displaying and storage 
+     */
+    private boolean encrypt = true;
+    
+    /**
+    * Absolute or relative path to the preference node. It must be unique in the 
+    * secure storage.
+    */
+    private String nodePath;
+    
     /**
      * Old text value.
      * @since 3.4 this field is protected.
@@ -55,20 +71,41 @@ public class PasswordFieldEditor extends FieldEditor
     /**
      * Creates a string field editor of unlimited width.
      * Use the method <code>setTextLimit</code> to limit the text.
+     * The data in this field will be encrypted in displaying and storage.
      * 
      * @param name the name of the preference this field editor works on
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
+     * @param nodePath absolute or relative path to the preference node. It must be unique in the 
+     * 		  secure storage. It is recommended to use your plugin ID.
      */
-    public PasswordFieldEditor(String name, String labelText, Composite parent)
+    public PasswordFieldEditor(String name, String labelText, Composite parent, String nodePath)
+    {
+       this(name, labelText, parent, nodePath, true);
+    }
+
+    /**
+     * Creates a string field editor of unlimited width.
+     * Use the method <code>setTextLimit</code> to limit the text.
+     * 
+     * @param name the name of the preference this field editor works on
+     * @param labelText the label text of the field editor
+     * @param parent the parent of the field editor's control
+     * @param nodePath absolute or relative path to the preference node. It must be unique in the 
+     * 		  secure storage. It is recommended to use your plugin ID.
+     * @param encrypt true if value is to be encrypted, false value does not need to be encrypted 
+     */
+    public PasswordFieldEditor(String name, String labelText, Composite parent, String nodePath, boolean encrypt)
     {
         init(name, labelText);
+        this.encrypt = encrypt;
+        this.nodePath = nodePath;
         isValid = false;
         errorMessage = JFaceResources
                 .getString("StringFieldEditor.errorMessage");//$NON-NLS-1$
         createControl(parent);
     }
-
+    
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
@@ -152,9 +189,21 @@ public class PasswordFieldEditor extends FieldEditor
      */
     protected void doLoad() {
         if (textField != null) {
-            String value = getPreferenceStore().getString(getPreferenceName());
-            textField.setText(value);
-            oldValue = value;
+        	String value = null;
+         	try {
+					value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
+					if(value == null)
+						value = getPreferenceStore().getString(getPreferenceName());
+				} catch (Exception e) {
+					CentralLogger.getInstance().getLogger(this).error(
+							"Error in retrieving data from secure storage. " +
+							"The default preference value of _" +
+							getPreferenceName()+ "_ will be loaded.", e);				
+					value = getPreferenceStore().getString(getPreferenceName());
+				}        	
+        		    		
+			textField.setText(value);
+			oldValue = value;
         }
     }
 
@@ -173,8 +222,13 @@ public class PasswordFieldEditor extends FieldEditor
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
-    protected void doStore() {
-        getPreferenceStore().setValue(getPreferenceName(), textField.getText());
+    protected void doStore() {    	
+    	try {    		
+			SecureStorage.getNode(nodePath).put(getPreferenceName(), textField.getText(), encrypt);
+			SecureStorage.getNode(nodePath).flush();
+		} catch (Exception e) {
+			CentralLogger.getInstance().getLogger(this).error(e);
+		}
     }
 
     /**
@@ -228,7 +282,10 @@ public class PasswordFieldEditor extends FieldEditor
      */
     public Text getTextControl(Composite parent) {
         if (textField == null) {
-            textField = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
+        	if(encrypt)
+        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
+        	else
+        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER);   		
             textField.setFont(parent.getFont());
             textField.addKeyListener(new KeyAdapter() {
                 public void keyReleased(KeyEvent e) {
@@ -356,5 +413,6 @@ public class PasswordFieldEditor extends FieldEditor
     public void setEnabled(boolean enabled, Composite parent) {
         super.setEnabled(enabled, parent);
         getTextControl(parent).setEnabled(enabled);
-    }
+    }    
+   
 }

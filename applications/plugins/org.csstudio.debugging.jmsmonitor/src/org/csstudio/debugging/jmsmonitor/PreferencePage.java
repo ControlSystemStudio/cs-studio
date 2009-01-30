@@ -14,6 +14,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  *  <p>
  *  plugin.xml registers this with the Eclipse preference GUI
  *  @author Kay Kasemir
+ *  @author Xihui Chen
  */
 public class PreferencePage extends FieldEditorPreferencePage
     implements IWorkbenchPreferencePage
@@ -40,7 +41,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.JMS_URL, Messages.Preferences_JMS_URL, parent));
-        addField(new StringFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_USER, parent));
-        addField(new PasswordFieldEditor(Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent));
+        addField(new PasswordFieldEditor(Preferences.JMS_USER, Messages.Preferences_JMS_USER, parent, Activator.ID, false));
+        addField(new PasswordFieldEditor(Preferences.JMS_PASSWORD, Messages.Preferences_JMS_PASSWORD, parent, Activator.ID));
     }
 }

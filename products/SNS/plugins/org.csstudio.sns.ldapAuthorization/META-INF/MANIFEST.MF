@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.sns.ldapauthorization.Activator
 Bundle-Vendor: sns
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.apputil;bundle-version="1.0.6"
 Eclipse-LazyStart: true
-Export-Package: org.csstudio.sns.ldapauthorization;x-friends:="org.csstudio.platform.ldapauthorization.ui"
+Export-Package: org.csstudio.sns.ldapauthorization

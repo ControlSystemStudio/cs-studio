@@ -34,6 +34,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.csstudio.apptuil.securestorage.SecureStorage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.IAuthorizationProvider;
 import org.csstudio.platform.security.Right;
@@ -48,6 +49,7 @@ import org.eclipse.osgi.util.NLS;
  * associated with actions from a configuration file.
  * 
  * @author Joerg Rathlev
+ * @author Xihui Chen
  */
 public class LdapAuthorizationReader implements IAuthorizationProvider {
 
@@ -182,8 +184,14 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 	private Hashtable<String, String> createEnvironment() {
 		Preferences prefs = Activator.getDefault().getPluginPreferences();
 		String url = prefs.getString(PreferenceConstants.LDAP_URL);
-		String user = prefs.getString(PreferenceConstants.LDAP_USER);
-		String password = prefs.getString(PreferenceConstants.LDAP_PASSWORD);
+		String user = SecureStorage.retrieveSecureStorage(
+				Activator.PLUGIN_ID, PreferenceConstants.LDAP_USER);
+		if(user == null)
+			user = prefs.getString(PreferenceConstants.LDAP_USER);
+		String password = SecureStorage.retrieveSecureStorage(
+				Activator.PLUGIN_ID, PreferenceConstants.LDAP_PASSWORD);
+		if(password == null)
+			password = prefs.getString(PreferenceConstants.LDAP_PASSWORD);
 		
 		Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");

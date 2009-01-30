@@ -21,6 +21,7 @@
  */
  package org.csstudio.sns.ldapauthorization.ui;
 
+import org.csstudio.apputil.ui.jface.preference.PasswordFieldEditor;
 import org.csstudio.sns.ldapauthorization.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -49,12 +50,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		addField(new StringFieldEditor(PreferenceConstants.LDAP_URL,
 				"URL:",
 				getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.LDAP_USER,
+		addField(new PasswordFieldEditor(PreferenceConstants.LDAP_USER,
 				"User:",
-				getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.LDAP_PASSWORD,
+				getFieldEditorParent(), Activator.PLUGIN_ID, false));
+		addField(new PasswordFieldEditor(PreferenceConstants.LDAP_PASSWORD,
 				"Password:",
-				getFieldEditorParent()));
+				getFieldEditorParent(), Activator.PLUGIN_ID));
 	}
 
 	public void init(IWorkbench workbench) {

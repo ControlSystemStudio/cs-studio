@@ -7,9 +7,5 @@
             class="org.csstudio.sns.ldapauthorization.LdapAuthorizationReader"
             id="org.csstudio.sns.ldapAuthorization.provider"/>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.sns.ldapauthorization.PreferenceInitializer"/>
-   </extension>
 
 </plugin>
