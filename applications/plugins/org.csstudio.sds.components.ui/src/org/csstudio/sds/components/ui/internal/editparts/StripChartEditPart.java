@@ -216,7 +216,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
 			setPropertyChangeHandler(StripChartModel.valuePropertyId(i),
 					new DataChangeHandler(i));
-			setPropertyChangeHandler(StripChartModel.valuePropertyId(i),
+			setPropertyChangeHandler(StripChartModel.enablePlotPropertyId(i),
 					new EnablePlotChangeHandler(i));
 		}
 	}
