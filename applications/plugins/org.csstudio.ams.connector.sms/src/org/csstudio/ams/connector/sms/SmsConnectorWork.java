@@ -731,7 +731,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
         // Do we require a Delivery Status Report?
         // Delivery Status Report
+        
+        // Changed by Markus Moeller, 2009-01-30
+        // To avoid restarts of the modems
         // msg.setStatusReport(true);
+        msg.setStatusReport(false);
 
         // We can also define the validity period.
         // Validity period is always defined in hours.
