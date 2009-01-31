@@ -31,6 +31,16 @@ import java.io.Serializable;
  */
 public class Sms implements Serializable
 {
+    enum State
+    {
+        NEW, SENT, NOT_SENT
+    }
+    
+    enum Type
+    {
+        OUT, IN
+    }
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -8520701491907741075L;
 
@@ -150,15 +160,5 @@ public class Sms implements Serializable
     public void setType(Sms.Type type)
     {
         this.type = type;
-    }
-
-    enum State
-    {
-        NEW, SENT, NOT_SENT
-    }
-    
-    enum Type
-    {
-        OUT, IN
     }
 }
