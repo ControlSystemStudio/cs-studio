@@ -34,7 +34,12 @@ public class SmsComperator implements Comparator<Sms>, Serializable
 {
     /** Generated serial version id */
     private static final long serialVersionUID = 2782893510854286259L;
-
+    
+    /**
+     * Compares the timestamp of the SMS.
+     * 
+     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     */
     public int compare(Sms sms0, Sms sms1)
     {
         int result;
