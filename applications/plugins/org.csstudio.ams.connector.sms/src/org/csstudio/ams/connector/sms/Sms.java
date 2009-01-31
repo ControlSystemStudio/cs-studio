@@ -31,11 +31,19 @@ import java.io.Serializable;
  */
 public class Sms implements Serializable
 {
+    /**
+     * @author Markus
+     *
+     */
     enum State
     {
-        NEW, SENT, NOT_SENT
+        NEW, SENT, FAILED
     }
     
+    /**
+     * @author Markus
+     *
+     */
     enum Type
     {
         OUT, IN

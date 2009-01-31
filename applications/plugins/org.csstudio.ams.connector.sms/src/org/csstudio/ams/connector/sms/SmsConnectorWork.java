@@ -697,7 +697,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         }
         else
         {
-            sms.setState(Sms.State.NOT_SENT);
+            sms.setState(Sms.State.FAILED);
         }
         
         return success;
