@@ -3,7 +3,6 @@ package org.csstudio.diag.pvutil.sns;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -13,6 +12,10 @@ import org.csstudio.diag.pvutil.model.PVUtilDataAPI;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
+/** Implementation of the PVUtilDataAPI for the SNS RDB
+ *  @author Dave Purcell
+ */
+@SuppressWarnings("nls")
 public class SNSPVUtilData implements PVUtilDataAPI
 {
    final private RDBUtil rdbutil;   
@@ -26,8 +29,9 @@ public class SNSPVUtilData implements PVUtilDataAPI
    * @throws Exception
    */
    public SNSPVUtilData() throws Exception
-	{ rdbutil = RDBUtil.connect(URL);
-	}
+   {
+       rdbutil = RDBUtil.connect(URL, true);
+    }
 	
 	/* (non-Javadoc)
 	 * @see org.csstudio.pvutil.model.PVUtilDataAPI#getFECs(java.lang.String)
@@ -61,8 +65,6 @@ public class SNSPVUtilData implements PVUtilDataAPI
         {
         	select.close();
         }
-
-        connection.close();
 
         // Convert to plain java array
         final FEC[] fecArray = new FEC[fecs.size()];
@@ -180,8 +182,6 @@ public class SNSPVUtilData implements PVUtilDataAPI
             select.close();
         }
         
-        connection.close();
-        
         // Convert to plain java array
         final PV[] pvArray = new PV[pvs.size()];
 		return pvs.toArray(pvArray);
@@ -195,11 +195,11 @@ public class SNSPVUtilData implements PVUtilDataAPI
 	 * approriate for implementation.
 	 * Null can not be returned.
 	 */
-	public String getStartDeviceID() {
+	public String getStartDeviceID()
+	{
 		return ":IOC";
 		//return "LLRF";
 		//return "%";
 		//return "";
 	}
-
 }

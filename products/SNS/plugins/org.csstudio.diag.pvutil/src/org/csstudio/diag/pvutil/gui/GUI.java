@@ -2,7 +2,7 @@ package org.csstudio.diag.pvutil.gui;
 
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
-import org.csstudio.diag.pvutil.model.PVUtilControl;
+import org.csstudio.diag.pvutil.model.PVUtilModel;
 import org.csstudio.diag.pvutil.model.PVUtilListener;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.TableViewer;
@@ -30,7 +30,7 @@ public class GUI implements PVUtilListener
 
 {
     private Display display = Display.getDefault();
-    private PVUtilControl control;
+    private PVUtilModel model;
     /** Sash for the two GUI sub-sections divided by the moving bar */
     private SashForm form;
     private int form_weights[] = new int[] { 50, 50 };
@@ -52,9 +52,9 @@ public class GUI implements PVUtilListener
         All
     }
 
-    public GUI(Composite shell, final PVUtilControl control)
+    public GUI(Composite shell, final PVUtilModel model)
     {
-    	this.control = control;
+    	this.model = model;
         shell.setLayout(new FillLayout());
 
         // Split into upper and lower sash
@@ -172,7 +172,7 @@ public class GUI implements PVUtilListener
         // to our "model":
         pv_table = new TableViewer(device_table_widget);
         // Turns request for table row into "Device"
-        pv_table.setContentProvider(new PVProvider(pv_table, control));
+        pv_table.setContentProvider(new PVProvider(pv_table, model));
         // Turns request for column 0, 1, 2, ... into Device's name, parent, ...
         pv_table.setLabelProvider(new PVLabelProvider());
     }
@@ -193,7 +193,7 @@ public class GUI implements PVUtilListener
                 if (e.detail == SWT.TRAVERSE_RETURN)
                 {
                     String fecName = fecEntry.getText().trim();
-                    control.setDeviceIDFilter(fecName);
+                    model.setFECFilter(fecName);
                 }
             }
         });
@@ -209,7 +209,7 @@ public class GUI implements PVUtilListener
             public void widgetSelected(SelectionEvent event)
             {
         		final String[] dvc = deviceList.getSelection();
-        		control.setFECFilter(dvc[0]);
+        		model.setFECName(dvc[0]);
             }
         });
 
@@ -226,7 +226,7 @@ public class GUI implements PVUtilListener
                 if (e.detail == SWT.TRAVERSE_RETURN)
                 {
                     final String pvFilter = recPVFilterEntry.getText().trim();
-                    control.setPVFilter(pvFilter);
+                    model.setPVFilter(pvFilter);
                  }
             }
         });
@@ -240,7 +240,7 @@ public class GUI implements PVUtilListener
             @Override
             public void widgetSelected(SelectionEvent event)
             {
-            	control.setObjectClear(ItemIndex.FEC);
+            	model.setObjectClear(ItemIndex.FEC);
                 fecEntry.setText("");
                 deviceList.deselectAll();
             }
@@ -254,7 +254,7 @@ public class GUI implements PVUtilListener
             @Override
             public void widgetSelected(SelectionEvent event)
             {
-            	control.setObjectClear(ItemIndex.PV);
+            	model.setObjectClear(ItemIndex.PV);
                 recPVFilterEntry.setText("");
             }
         });
@@ -267,7 +267,7 @@ public class GUI implements PVUtilListener
             @Override
             public void widgetSelected(SelectionEvent event)
             {
-            	control.setObjectClear(ItemIndex.All);
+            	model.setObjectClear(ItemIndex.All);
                 recPVFilterEntry.setText("");
                 fecEntry.setText("");
                 deviceList.deselectAll();
@@ -277,11 +277,11 @@ public class GUI implements PVUtilListener
         
         
         //Initialize these in the fec_model.
-        control.setDeviceIDFilter(control.getStartDeviceID());
-        fecEntry.setText(control.getStartDeviceID());
+        model.setFECFilter(model.getStartDeviceID());
+        fecEntry.setText(model.getStartDeviceID());
 
         // Subscribe to changes
-        control.addListener(this);
+        model.addListener(this);
     }
 
     /**
@@ -328,17 +328,17 @@ public class GUI implements PVUtilListener
             	switch (what)
             	{
             	case FEC_CHANGE:
-	                final int N = control.getFECCount();
+	                final int N = model.getFECCount();
 	                deviceList.removeAll();
 	                for (int i = 0; i < N; i++)
 	                {
-	                    final String fec = control.getFEC(i).getName();
+	                    final String fec = model.getFEC(i).getName();
 	                    deviceList.add(fec);
 	                }
 	                break;
             	case PV_CHANGE:
 	                // Setting the count causes an update
-	                pv_table.setItemCount(control.getPVCount());
+	                pv_table.setItemCount(model.getPVCount());
 	                pv_table.refresh();
 	                break;
             	}
@@ -352,9 +352,9 @@ public class GUI implements PVUtilListener
      */
     public void reInitialize()
     {
-        control.setDeviceIDFilter(control.getStartDeviceID());
-        fecEntry.setText(control.getStartDeviceID());
-        control.setPVFilter("");
+        model.setFECFilter(model.getStartDeviceID());
+        fecEntry.setText(model.getStartDeviceID());
+        model.setPVFilter("");
     }
 
     public void setFocus()
@@ -362,5 +362,4 @@ public class GUI implements PVUtilListener
         // Set focus FEC Filter
     	fecEntry.setFocus();
     }
-
 }

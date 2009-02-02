@@ -1,7 +1,7 @@
 package org.csstudio.diag.pvutil.gui;
 
 
-import org.csstudio.diag.pvutil.model.PVUtilControl;
+import org.csstudio.diag.pvutil.model.PVUtilModel;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -10,9 +10,9 @@ import org.eclipse.jface.viewers.Viewer;
 public class PVProvider implements ILazyContentProvider
 {
     final private TableViewer pv_table;
-	final private PVUtilControl control;
+	final private PVUtilModel control;
 
-    public PVProvider(TableViewer pv_table, PVUtilControl control)
+    public PVProvider(TableViewer pv_table, PVUtilModel control)
     {
         this.pv_table = pv_table;
         this.control = control;

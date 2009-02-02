@@ -1,6 +1,6 @@
 package org.csstudio.diag.pvutil.model;
 
-/** Listener interface to PVUtilDataAPI */
+/** Listener interface to PVUtilModel */
 public interface PVUtilListener
 {
 	/** value to indicate which data set changed  */
@@ -11,6 +11,7 @@ public interface PVUtilListener
 		/** The FEC info changed */
 		PV_CHANGE
 	}
-    /** Something in the IOC model changed: New entries, deleted entries, renamed entries, ... */
+	
+    /** Something in the model changed: New entries, deleted entries, renamed entries, ... */
     public void pvUtilChanged(ChangeEvent what);
 }

@@ -1,7 +1,18 @@
 package org.csstudio.diag.pvutil.model;
 
+/** API to be implemented by providers of the
+ *  extension point org.csstudio.diag.pvutil.pvutildata
+ *  <p>
+ *  Provides information about FECs and the PVs on them.
+ * 
+ *  @author Kay Kasemir
+ *  @author Dave Purcell
+ */
 public interface PVUtilDataAPI
 {
+    /** ID of the extension point for providing PVUtilDataAPI */
+    final public static String DATA_EXT_ID = "org.csstudio.diag.pvutil.pvutildata";//$NON-NLS-1$
+
 	/** Get a starting string filter that will populate the FEC List when the plug-in is started.
 	 *  Null should be replaced by an empty string ""
 	 *  Some string has to be returned to produce list.
@@ -9,7 +20,7 @@ public interface PVUtilDataAPI
 	 */
 	public String getStartDeviceID(); 
 	
-	/** Get an Array of FEC type based on the filter string supplied.
+	/** Get an Array of FECs based on the filter string supplied.
 	 *  @param filter FEC name filter or <code>null</code>
 	 *  @return Array of FECs (never <code>null</code>)
 	 */

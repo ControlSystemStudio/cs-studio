@@ -1,7 +1,7 @@
 package org.csstudio.diag.pvutil.gui;
 
 
-import org.csstudio.diag.pvutil.model.PVUtilControl;
+import org.csstudio.diag.pvutil.model.PVUtilModel;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class TestMain
         Shell shell = new Shell(display);
         shell.setText("PV Utility");
         
-        PVUtilControl control = new PVUtilControl (); 
+        PVUtilModel control = new PVUtilModel (); 
         new GUI(shell, control);
 
         shell.pack();

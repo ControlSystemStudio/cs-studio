@@ -1,14 +1,15 @@
 package org.csstudio.diag.pvutil.model;
 
 import org.csstudio.platform.model.IFrontEndControllerName;
+import org.eclipse.core.runtime.PlatformObject;
 
-/** One FEC in the PVUtilDataAPI.
- *  @see SNSRDBModelPV
- *  @author 9pj
+/** One Front-End-Controller (FEC) in the PVUtilDataAPI.
+ *  @see PVUtilDataAPI
+ *  @author Dave Purcell
  */
-public class FEC  implements IFrontEndControllerName
+public class FEC extends PlatformObject implements IFrontEndControllerName
 {
-    final String fec_nm;
+    final private String fec_nm;
 
     public FEC(final String fec_nm)
     {
@@ -26,12 +27,8 @@ public class FEC  implements IFrontEndControllerName
     	return fec_nm;
     }
 
+    // IFrontEndControllerName
 	public String getTypeId() {
 		return IFrontEndControllerName.TYPE_ID;
-	}
-
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

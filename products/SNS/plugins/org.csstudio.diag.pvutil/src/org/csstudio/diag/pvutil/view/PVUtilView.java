@@ -1,7 +1,7 @@
 package org.csstudio.diag.pvutil.view;
 
 import org.csstudio.diag.pvutil.gui.GUI;
-import org.csstudio.diag.pvutil.model.PVUtilControl;
+import org.csstudio.diag.pvutil.model.PVUtilModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IFrontEndControllerName;
 import org.csstudio.platform.model.IProcessVariable;
@@ -33,14 +33,14 @@ public class PVUtilView extends ViewPart
     final public static String ID = PVUtilView.class.getName();
     //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
     public static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod"; //$NON-NLS-1$
-    private PVUtilControl control = null;
+    private PVUtilModel model = null;
     private GUI gui;
     
     public PVUtilView()
     {
         try
         {
-            control = new PVUtilControl();
+            model = new PVUtilModel();
         }
         catch (Exception ex)
         {
@@ -51,52 +51,50 @@ public class PVUtilView extends ViewPart
     @Override
     public void createPartControl(Composite parent)
     {
-        if (control != null)
+        if (model == null)
         {
-            gui = new GUI(parent, control);
-           
-            // Allow Eclipse to listen to PV selection changes
-            final TableViewer pv_table = gui.getPVTableViewer();
-            getSite().setSelectionProvider(pv_table);
-            
-            // Allow dragging PV names & Archive Info out of the name table.
-            new ProcessVariableDragSource(pv_table.getTable(),
-                            pv_table);
-            
-            // Enable 'Drop'
-            final Text pv_filter = gui.getPVFilterText();
-            new ProcessVariableDropTarget(pv_filter)
-            {
-                @Override
-                public void handleDrop(IProcessVariable name,
-                                       DropTargetEvent event)
-                {
-                    setPVFilter(name.getName());
-                }
-            };
-           
-            // Add empty context menu so that other CSS apps can
-            // add themselves to it
-            MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-            menuMgr.setRemoveAllWhenShown(true);
-            Menu menu = menuMgr.createContextMenu(pv_table.getControl());
-            pv_table.getControl().setMenu(menu);
-            getSite().registerContextMenu(menuMgr, pv_table);
-            
-            // Add context menu to the name table.
-            // One reason: Get object contribs for the NameTableItems.
-              IWorkbenchPartSite site = getSite();
-              MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-              manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-              Menu contextMenu = manager.createContextMenu(pv_table.getControl());
-              pv_table.getControl().setMenu(contextMenu);
-              site.registerContextMenu(manager, pv_table);
-        
-        }
-        else
             new Label(parent, 0).setText("Cannot initialize"); //$NON-NLS-1$
+            return;
+        }
+        gui = new GUI(parent, model);
+       
+        // Allow Eclipse to listen to PV selection changes
+        final TableViewer pv_table = gui.getPVTableViewer();
+        getSite().setSelectionProvider(pv_table);
+        
+        // Allow dragging PV names & Archive Info out of the name table.
+        new ProcessVariableDragSource(pv_table.getTable(),
+                        pv_table);
+        
+        // Enable 'Drop'
+        final Text pv_filter = gui.getPVFilterText();
+        new ProcessVariableDropTarget(pv_filter)
+        {
+            @Override
+            public void handleDrop(IProcessVariable name,
+                                   DropTargetEvent event)
+            {
+                setPVFilter(name.getName());
+            }
+        };
+       
+        // Add empty context menu so that other CSS apps can
+        // add themselves to it
+        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(true);
+        Menu menu = menuMgr.createContextMenu(pv_table.getControl());
+        pv_table.getControl().setMenu(menu);
+        getSite().registerContextMenu(menuMgr, pv_table);
+        
+        // Add context menu to the name table.
+        // One reason: Get object contribs for the NameTableItems.
+        IWorkbenchPartSite site = getSite();
+        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        Menu contextMenu = manager.createContextMenu(pv_table.getControl());
+        pv_table.getControl().setMenu(contextMenu);
+        site.registerContextMenu(manager, pv_table);
     }
-
    
     @Override
     public void setFocus()
@@ -121,13 +119,6 @@ public class PVUtilView extends ViewPart
         return false;
     }
     
-    public void setPVFilter(String pv_name)
-    {
-        gui.getPVFilterText().setText(pv_name);
-        control.setPVFilter(pv_name);
-    }
-
-
     public static boolean activateWithDevice(IFrontEndControllerName device_name)
     {
         try
@@ -145,11 +136,15 @@ public class PVUtilView extends ViewPart
         return false;
     }
     
-    public void setDeviceFilter(String device_name)
+    private void setPVFilter(final String pv_name)
     {
-        gui.getDeviceFilterText().setText(device_name);
-        control.setDeviceIDFilter(device_name);
+        gui.getPVFilterText().setText(pv_name);
+        model.setPVFilter(pv_name);
     }
 
-
+    private void setDeviceFilter(final String device_name)
+    {
+        gui.getDeviceFilterText().setText(device_name);
+        model.setFECFilter(device_name);
+    }
 }

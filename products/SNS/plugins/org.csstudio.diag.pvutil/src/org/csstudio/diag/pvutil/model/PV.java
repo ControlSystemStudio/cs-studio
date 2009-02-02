@@ -3,17 +3,17 @@ package org.csstudio.diag.pvutil.model;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
 
-/** One device in the model: A PV with name, record type, FEC name, ...
+/** One PV in the model: PV name and additional info text
  *  
  *  Also functions as a CSS IProcessVariable
- *  @see SNSRDBModelPV
- *  @author 9pj
+ *  @see PVUtilDataAPI
+ *  @author Dave Purcell
  */
 public class PV extends PlatformObject implements IProcessVariable
 {
-    final String pv, infoString;
+    final private String pv, infoString;
 
-    public PV( final String pv, final String infoString)
+    public PV(final String pv, final String infoString)
     {
         this.pv = pv;
         this.infoString = infoString;
@@ -23,6 +23,11 @@ public class PV extends PlatformObject implements IProcessVariable
     public String getName()
     {
         return pv;
+    }
+
+    public String getInfoString()
+    {
+        return infoString;
     }
 
     /** @see IProcessVariable */
@@ -35,10 +40,5 @@ public class PV extends PlatformObject implements IProcessVariable
     public String toString()
     {
         return "PV: " + pv; //$NON-NLS-1$
-    }
-
-    public String getInfoString()
-    {
-        return infoString;
     }
 }

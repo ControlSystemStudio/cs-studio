@@ -9,8 +9,8 @@ import org.csstudio.diag.pvutil.sns.SNSPVUtilData;
 
 import org.junit.Test;
 
-public class SNSPVUtilDataTest {
-	public int i = 0;
+public class SNSPVUtilDataTest
+{
 
 	@Test
 	public void testGetFECs() throws Exception
@@ -22,6 +22,7 @@ public class SNSPVUtilDataTest {
 		FEC[] fecs = newPVUtil.getFECs("%LLRF%");
 		assertTrue(fecs.length > 0);
 		
+		int i = 0;
 		for (FEC fec : fecs) 
 		{
 			System.out.println(fec);
@@ -32,8 +33,6 @@ public class SNSPVUtilDataTest {
 			i++;
 			if (i == 10) break;
 		}
-			
-		
 	}
 
 	@Test
@@ -46,6 +45,7 @@ public class SNSPVUtilDataTest {
 		// having a list is success 
 		PV[] pvs = newPVUtil.getPVs("SCL_LLRF:IOC17d","");
 		assertTrue(pvs.length > 0);
+        int i = 0;
 		for (PV pv : pvs)
 		{
 			System.out.println(pv);
@@ -55,8 +55,7 @@ public class SNSPVUtilDataTest {
 			}
 			i++;
 			if (i == 10) break;
-		}
-		
+		}		
 	}
 
 	@Test
@@ -69,6 +68,7 @@ public class SNSPVUtilDataTest {
 		// having a list is success 
 		PV[] pvs = newPVUtil.getPVs("","%:xAvg");
 		assertTrue(pvs.length > 0);
+        int i = 0;
 		for (PV pv : pvs)
 		{
 			System.out.println(pv);
@@ -80,7 +80,6 @@ public class SNSPVUtilDataTest {
 			if (i == 10) break;
 		}
 	}
-
 
 	@Test
 	public void testGetPVsFromPVandFEC() throws Exception
@@ -92,6 +91,7 @@ public class SNSPVUtilDataTest {
 		// having a list is success 
 		PV[] pvs = newPVUtil.getPVs("SCL_LLRF:IOC17d","%:Time%");
 		assertTrue(pvs.length > 0);
+        int i = 0;
 		for (PV pv : pvs)
 		{
 			System.out.println(pv);
@@ -101,8 +101,6 @@ public class SNSPVUtilDataTest {
 			}
 			i++;
 			if (i == 10) break;
-		}
-	
+		}	
 	}
-
 }
