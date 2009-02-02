@@ -197,9 +197,9 @@ public class Collector {
 		System.out.println ("\nApplication: " + getApplication());
 		System.out.println ("Descriptor: " + getDescriptor());
 		System.out.println ("Counter: " + getCount());
-		System.out.println ("Actual value: " + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount() + "Info: " + getActualValue().getInfo());
-		System.out.println ("Highest Value: " + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount()  + "Info: " + getHighestValue().getInfo());
-		System.out.println ("Lowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount()  + "Info: " + getLowestValue().getInfo());
+		System.out.println ("Actual value: " + getActualValue().getValue() + " \tDate Actual: " + dateToString(getActualValue().getTime()) + " \tCount Actual: " + getActualValue().getCount() + "Info Actual: " + getActualValue().getInfo());
+		System.out.println ("Highest Value: " + getHighestValue().getValue() + " \tDate Highest: " + dateToString(getHighestValue().getTime()) + " \tCount Highest: " + getHighestValue().getCount()  + "Info Highest: " + getHighestValue().getInfo());
+		System.out.println ("Lowest Value: " + getLowestValue().getValue() + " \tDate Lowest: " + dateToString(getLowestValue().getTime()) + " \tCount Lowest: " + getLowestValue().getCount()  + "Info Lowest: " + getLowestValue().getInfo());
 		System.out.println ("Mean Value abs: " + getMeanValueAbsolute());
 		System.out.println ("Mean Value rel.: " + getMeanValuerelative());
 		System.out.println ("Alarm Limit (abs) : " + getAlarmHandler().getHighAbsoluteLimit());
