@@ -19,6 +19,8 @@ import org.csstudio.platform.logging.CentralLogger;
  *  <p>
  *  To use this throttle, implement the <code>update</code> routine
  *  to handle the throttled triggers.
+ *
+ *  @param <T> Type of event object passed into <code>trigger</code>
  *  @author Kay Kasemir
  */
 abstract public class GUIUpdateThrottle<T> implements Runnable
