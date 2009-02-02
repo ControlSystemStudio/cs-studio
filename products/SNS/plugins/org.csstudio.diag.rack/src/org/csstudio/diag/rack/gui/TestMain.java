@@ -1,6 +1,6 @@
 package org.csstudio.diag.rack.gui;
 
-import org.csstudio.diag.rack.model.RackControl;
+import org.csstudio.diag.rack.model.RackModel;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class TestMain
         shell.setText("Real Rack Profile Utility");
 
         
-        RackControl control = new RackControl();
+        RackModel control = new RackModel();
         new GUI(shell, control);
 
         shell.pack();

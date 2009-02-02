@@ -23,7 +23,7 @@ public class SNSRackData implements RackDataAPI
 
 	public SNSRackData() throws Exception
 		{ 
-			rdbutil = RDBUtil.connect(URL);
+			rdbutil = RDBUtil.connect(URL, true);
 		}
 		
 	   
@@ -68,13 +68,9 @@ public class SNSRackData implements RackDataAPI
 	        rset.close();
 	        stmt.close();
 	        
-	        connection.close();
-	        
 	        final String[] rackArray = new String[rackList.size()]; 
 		return rackList.toArray(rackArray);
 	}
-
-
 	
 	
 	/* (non-Javadoc)
@@ -135,9 +131,7 @@ public class SNSRackData implements RackDataAPI
 	            select.close();
 	        }
 
-	        connection.close();
-	        
-        final RackList[] rackListArray = new RackList[rackDvcList.size()]; 
+	    final RackList[] rackListArray = new RackList[rackDvcList.size()]; 
 		return rackDvcList.toArray(rackListArray);
 	}
 

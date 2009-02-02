@@ -1,7 +1,7 @@
 package org.csstudio.diag.rack.view;
 
 import org.csstudio.diag.rack.gui.GUI;
-import org.csstudio.diag.rack.model.RackControl;
+import org.csstudio.diag.rack.model.RackModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
@@ -26,7 +26,7 @@ public class RackView extends ViewPart
 	    final public static String ID = RackView.class.getName();
 	    //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
 	    public static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod"; //$NON-NLS-1$
-	    private RackControl control = null;
+	    private RackModel control = null;
 	    private GUI gui;
     	
     	
@@ -34,7 +34,7 @@ public class RackView extends ViewPart
 	    {
         	try
 	        {
-        		control = new RackControl();    
+        		control = new RackModel();    
 	        }
 	        catch (Exception ex)
 	        {

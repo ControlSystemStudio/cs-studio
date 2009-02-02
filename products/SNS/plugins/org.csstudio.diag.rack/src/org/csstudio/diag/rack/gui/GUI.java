@@ -2,8 +2,8 @@ package org.csstudio.diag.rack.gui;
 
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
-import org.csstudio.diag.rack.listeners.RackUtilListener;
-import org.csstudio.diag.rack.model.RackControl;
+import org.csstudio.diag.rack.model.RackModel;
+import org.csstudio.diag.rack.model.RackModelListener;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -29,11 +29,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 @SuppressWarnings("nls")
-public class GUI implements RackUtilListener 
+public class GUI implements RackModelListener 
 
 {
     
-    private RackControl rackControl;
+    private RackModel rackControl;
     private Display display = Display.getDefault();
 
     /** Sash for the two GUI sub-sections divided by the moving bar */
@@ -53,7 +53,7 @@ public class GUI implements RackUtilListener
 	final Color device_color = display.getSystemColor (SWT.COLOR_DARK_GRAY);
 	private int rackHeight;
 
-    public GUI(Composite shell, final RackControl control)
+    public GUI(Composite shell, final RackModel control)
     {
     	this.rackControl = control;
     	this.rackHeight = rackControl.getRackHeight();
@@ -203,7 +203,7 @@ public class GUI implements RackUtilListener
           	}
 
 				try {
-					if ((rackControl.getRackDvcList().length == 0) ) {
+					if ((rackControl.getRackDvcListCount() == 0) ) {
 						e.gc.drawRectangle(90, 115, 300, rackHeight*15);
 						e.gc.drawText("Empty", 240, (rackHeight*15/2)+115);
 	  			    	}
@@ -395,7 +395,7 @@ public class GUI implements RackUtilListener
         rackControl.setRackFilter("");
  
         // Subscribe to changes
-        rackControl.addRacksListener(this);
+        rackControl.addListener(this);
 
 
 

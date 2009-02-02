@@ -1,7 +1,7 @@
 package org.csstudio.diag.rack.gui;
 
 
-import org.csstudio.diag.rack.model.RackControl;
+import org.csstudio.diag.rack.model.RackModel;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -10,9 +10,9 @@ import org.eclipse.jface.viewers.Viewer;
 public class RackDVCListProvider implements ILazyContentProvider
 {
     final private TableViewer rack_list_table;
-    final private RackControl rackControl;
+    final private RackModel rackControl;
 
-    public RackDVCListProvider(TableViewer rack_list_table, RackControl rackControl)
+    public RackDVCListProvider(TableViewer rack_list_table, RackModel rackControl)
     {
         this.rack_list_table = rack_list_table;
         this.rackControl = rackControl;

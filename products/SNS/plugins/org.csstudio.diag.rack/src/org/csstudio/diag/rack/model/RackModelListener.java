@@ -1,7 +1,7 @@
-package org.csstudio.diag.rack.listeners;
+package org.csstudio.diag.rack.model;
 
 /** Listener interface to RackDataAPI */
-public interface RackUtilListener
+public interface RackModelListener
 {
 	/** value to indicate which data set changed  */
 	public enum ChangeEvent
