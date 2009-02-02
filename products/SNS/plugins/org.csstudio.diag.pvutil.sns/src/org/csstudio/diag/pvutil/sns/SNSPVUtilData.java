@@ -30,7 +30,7 @@ public class SNSPVUtilData implements PVUtilDataAPI
    */
    public SNSPVUtilData() throws Exception
    {
-       rdbutil = RDBUtil.connect(URL);
+       rdbutil = RDBUtil.connect(URL, true);
     }
 	
 	/* (non-Javadoc)
