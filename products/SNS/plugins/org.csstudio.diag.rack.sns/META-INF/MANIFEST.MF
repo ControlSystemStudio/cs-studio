@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SNS Rack Utility Data Supplier
+Bundle-SymbolicName: org.csstudio.diag.rack.sns;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: Dave Purcell
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.csstudio.platform,
+ org.csstudio.apputil.ui,
+ org.csstudio.platform.ui,
+ org.eclipse.ui.views,
+ org.csstudio.utility.pv,
+ org.junit4,
+ org.csstudio.platform.utility.rdb,
+ org.csstudio.diag.rack

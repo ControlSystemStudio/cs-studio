@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SNS PV Utility SNSRDB Data
+Bundle-SymbolicName: org.csstudio.diag.pvutil.sns;singleton:=true
+Bundle-Version: 1.0.2
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.csstudio.platform,
+ org.csstudio.apputil.ui,
+ org.csstudio.platform.ui,
+ org.eclipse.ui.views,
+ org.csstudio.utility.pv,
+ org.junit4,
+ org.csstudio.platform.utility.rdb,
+ org.csstudio.diag.pvutil
+Bundle-Vendor: Dave Purcell
