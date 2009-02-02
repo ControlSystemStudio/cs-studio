@@ -36,6 +36,7 @@
                menubarPath="org.csstudio.popmenu/content"/>
       </objectContribution>
    </extension>
+   <!-- No need to start standalone, since you only get data via object contrib startup
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -51,6 +52,7 @@
                style="push"/>
       </actionSet>
    </extension>
+   -->
    <extension
          point="org.eclipse.help.toc">
       <toc
