@@ -26,6 +26,7 @@ public class Messages extends NLS
     public static String SetColumnValue_Msg;
     public static String SetValue;
     public static String SetValue_Msg;
+    public static String SetValue_Msg_WithReadonlyWarning;
     public static String SetValue_Title;
     public static String SetValue_TT;
     public static String SystemColumn;

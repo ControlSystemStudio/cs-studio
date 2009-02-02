@@ -10,6 +10,6 @@ Require-Bundle: org.junit4,
  org.eclipse.ui;bundle-version="3.4.0",
  org.csstudio.apputil;bundle-version="1.0.6",
  org.csstudio.apputil.ui;bundle-version="1.0.9",
- org.csstudio.utility.pv,
+ org.csstudio.utility.pv;bundle-version="1.0.8",
  org.csstudio.logbook
 Bundle-Vendor: Delphy Armstrong, Kay Kasemir

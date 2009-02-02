@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Epics PV Plug-in
 Bundle-SymbolicName: org.csstudio.utility.pv.epics;singleton:=true
-Bundle-Version: 1.0.7
+Bundle-Version: 1.0.8
 Bundle-Activator: org.csstudio.utility.pv.epics.Activator
 Bundle-Vendor: Kay Kasemir
 Bundle-Localization: plugin
-Require-Bundle: org.csstudio.utility.pv,
+Require-Bundle: org.csstudio.utility.pv;bundle-version="1.0.8",
  org.csstudio.platform.libs.epics;visibility:=reexport,
  org.junit4
 Eclipse-LazyStart: true

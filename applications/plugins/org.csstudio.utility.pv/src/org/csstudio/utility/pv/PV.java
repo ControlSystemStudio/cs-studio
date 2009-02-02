@@ -67,6 +67,9 @@ public interface PV extends IProcessVariable
      */
     public boolean isConnected();
     
+    /** @return <code>true</code> if we have write access to the PV */
+    public boolean isWriteAllowed();
+    
     /** Internal state information on the PV.
      *  <p>
      *  Especially when <code>isConnected()</code> is <code>false</code>,

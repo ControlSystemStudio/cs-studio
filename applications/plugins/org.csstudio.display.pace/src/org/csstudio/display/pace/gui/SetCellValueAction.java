@@ -37,8 +37,18 @@ public class SetCellValueAction extends Action
     {
         // Using value of first selected test as suggestion,
         // prompt for value to be put into all selected cells
+        boolean writable = true;
+        for (Cell cell : cells)
+            if (!cell.isPVWriteAllowed())
+            {
+                writable = false;
+                break;
+            }
         final String message =
-            NLS.bind(Messages.SetValue_Msg, cells[0].getColumn().getName());
+            NLS.bind(writable
+                     ? Messages.SetValue_Msg
+                     : Messages.SetValue_Msg_WithReadonlyWarning,
+                     cells[0].getColumn().getName());
         final InputDialog input = new InputDialog(shell, Messages.SetValue_Title,
                 message, cells[0].getValue(), null);
         if (input.open() != InputDialog.OK)

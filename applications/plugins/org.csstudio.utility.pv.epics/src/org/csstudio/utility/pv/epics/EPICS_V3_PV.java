@@ -400,6 +400,12 @@ public class EPICS_V3_PV
         return connected;
     }
 
+    /** {@inheritDoc} */
+    public boolean isWriteAllowed()
+    {
+        return connected && channel_ref.getChannel().getWriteAccess();
+    }
+    
     /** {@inheritDoc} */ 
     public String getStateInfo()
     {

@@ -67,6 +67,15 @@ public class Cell implements PVListener, IProcessVariable
         return column.isReadonly();
     }
     
+    /** Even though a cell may be configured as writable,
+     *  the underlying PV might still prohibit write access. 
+     *  @return <code>true</code> for PVs that can be written.
+     */
+    public boolean isPVWriteAllowed()
+    {
+        return pv.isWriteAllowed();
+    }
+    
     /** If the user entered a value, that's it.
      *  Otherwise it's the PV's value, or UNKNOWN
      *  if we have nothing.

@@ -64,7 +64,7 @@ public class InstanceLabelProvider extends CellLabelProvider
          // Extend to show 'edited' or 'read-only' state
          if (cell.isEdited())
              tip = tip + Messages.InstanceLabelProvider_OrigAppendix + cell.getCurrentValue();
-         if (cell.isReadOnly())
+         if (cell.isReadOnly() || !cell.isPVWriteAllowed())
              tip = tip + Messages.InstanceLabelProvider_ReadOnlyAppendix;
          return tip;
      }
