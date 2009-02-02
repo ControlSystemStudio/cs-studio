@@ -63,7 +63,8 @@ public class Functions {
                 FileInputStream fis = new FileInputStream(path);
                 playMp3(fis);
             } catch (FileNotFoundException e) {
-                CentralLogger.getInstance().error(Functions.class, e);
+                CentralLogger.getInstance().warn(Functions.class, "Invalid Path for alarm mp3 file");
+                CentralLogger.getInstance().debug(Functions.class, e);
             }
 	}
 
