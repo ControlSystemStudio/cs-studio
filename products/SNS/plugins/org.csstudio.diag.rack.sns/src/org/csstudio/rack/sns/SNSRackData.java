@@ -23,7 +23,7 @@ public class SNSRackData implements RackDataAPI
 
 	public SNSRackData() throws Exception
 		{ 
-			rdbutil = RDBUtil.connect(URL, true);
+			rdbutil = RDBUtil.connect(URL);
 		}
 		
 	   
