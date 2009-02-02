@@ -77,6 +77,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     /** Container for SMS */
     private SmsContainer smsContainer;
     
+    /** Reading period (in ms) for the modem */
+    private long readWaitingPeriod;
+    
     private short sTest = 0; // 0 - normal behavior, other - for test
     private boolean bStop = false;
     private boolean bStoppedClean = false;
@@ -94,17 +97,20 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         // Set the "parent" object
         this.scs = scs;
         smsContainer = new SmsContainer();
+        readWaitingPeriod = 0;
     }
     
     public void run()
     {
         boolean bInitedModem = false;
         boolean bInitedJms = false;        
-        bStop = false;
-        bStoppedClean = false;
+        long lastReadingTime = 0;
         int iErr = SmsConnectorStart.STAT_OK;
         
-        Log.log(this, Log.INFO, "start sms connector work");
+        bStop = false;
+        bStoppedClean = false;
+
+        Log.log(this, Log.INFO, "Start sms connector work");
 
         while(bStop == false)
         {
@@ -214,9 +220,12 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         
                         if (iErr == SmsConnectorStart.STAT_OK)
                         {
-                            // read max. limit SMS, other in the next run
-                            iErr = readSmsMsg(/*1*/);
-                            sleep(50);
+                            if((System.currentTimeMillis() - lastReadingTime) > readWaitingPeriod)
+                            {
+                                // read max. limit SMS, other in the next run
+                                iErr = readSmsMsg(/*1*/);
+                                lastReadingTime = System.currentTimeMillis();
+                            }                            
                         }
                         
                         if (iErr == SmsConnectorStart.STAT_ERR_MODEM_SEND)
@@ -329,6 +338,18 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             ////////////////////////////////////////////////////////////////////////
             IPreferenceStore store = SmsConnectorPlugin.getDefault().getPreferenceStore();
             
+            try
+            {
+                readWaitingPeriod = Long.parseLong(store.getString(SampleService.P_MODEM_READ_WAITING_PERIOD));
+                
+                Log.log(this, Log.INFO, "Waiting period for reading: " + readWaitingPeriod);
+            }
+            catch(NumberFormatException e)
+            {
+                readWaitingPeriod = 10000;
+                Log.log(this, Log.WARN, "Waiting period for reading is not valid. Using default: " + readWaitingPeriod);
+            }
+
             try
             {
                 modemCount = Integer.parseInt(store.getString(SampleService.P_MODEM_COUNT));

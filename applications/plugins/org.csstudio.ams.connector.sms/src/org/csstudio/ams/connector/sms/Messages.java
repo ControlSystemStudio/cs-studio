@@ -50,6 +50,8 @@ public class Messages extends NLS
     public static String P_MODEM3_MODEL;
     public static String P_MODEM3_SIMPIM;
 
+    public static String P_MODEM_READ_WAITING_PERIOD;
+    
     static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

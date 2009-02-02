@@ -62,5 +62,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 	    node.put(SampleService.P_MODEM3_MANUFACTURE, "");
 	    node.put(SampleService.P_MODEM3_MODEL, "");
 	    node.put(SampleService.P_MODEM3_SIMPIM, "");
+	    
+	    node.put(SampleService.P_MODEM_READ_WAITING_PERIOD, "5000");
 	}
 }

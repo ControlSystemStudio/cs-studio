@@ -62,6 +62,8 @@ public class SampleService
     public static final String P_MODEM3_MODEL = "org.csstudio.ams.connector.sms.preferences.modem3Model";
     public static final String P_MODEM3_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modem3SimPin";
 
+    public static final String P_MODEM_READ_WAITING_PERIOD = "org.csstudio.ams.connector.sms.preferences.modemReadWaitingPeriod";
+
     /**
 	 * The only one instance of this service.
 	 */

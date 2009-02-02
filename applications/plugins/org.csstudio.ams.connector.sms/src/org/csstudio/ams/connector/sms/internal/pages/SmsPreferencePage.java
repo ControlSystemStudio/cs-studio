@@ -63,6 +63,11 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected final void createFieldEditors() {
 
+        addField(new StringFieldEditor(SampleService.P_MODEM_READ_WAITING_PERIOD,
+                Messages.P_MODEM_READ_WAITING_PERIOD, getFieldEditorParent()));
+
+        new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
+
 	    addField(new StringFieldEditor(SampleService.P_MODEM_COUNT,
 	            Messages.P_MODEM_COUNT, getFieldEditorParent()));
 
