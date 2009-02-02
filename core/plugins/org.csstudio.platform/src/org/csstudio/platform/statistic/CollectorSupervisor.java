@@ -78,7 +78,7 @@ public final class CollectorSupervisor {
     }
     
     public String getCollectionAsXMLString () {
-        final String[] _COLUMN_NAMES = "Application,Descriptor,Counter,Actual value,Date,Count,Highest Value,Date,Count,Lowest Value,Date,Count,Mean Value abs,Mean Value rel.,Alarm Limit (abs),Alarm Limit (rel),Hard Limit".split(",");
+        final String[] _COLUMN_NAMES = "Application,Descriptor,Counter,Actual value,Date Actual,Count Actual,Highest Value,Date Highest,Count Highest,Lowest Value,Date Lowest,Count Lowest,Mean Value abs,Mean Value rel.,Alarm Limit (abs),Alarm Limit (rel),Hard Limit".split(",");
 //        File xmlFile = new File("c:\\tmp\\XMLStatisticFile.xml");
         System.out.println("Make new Doc");
         try{

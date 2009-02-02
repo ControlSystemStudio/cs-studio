@@ -214,9 +214,9 @@ public class Collector {
 		result += ("\n\nApplication: " + getApplication());
 		result += ("\nDescriptor: " + getDescriptor());
 		result += ("\nCounter: " + getCount());
-		result += ("\nActual value: " + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount() + "Info: " + getActualValue().getInfo());
-		result += ("\nHighest Value: " + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount() + "Info: " + getHighestValue().getInfo());
-		result += ("\nLowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount() + "Info: " + getLowestValue().getInfo());
+		result += ("\nActual value: " + getActualValue().getValue() + " \tDate Actual: " + dateToString(getActualValue().getTime()) + " \tCount Actual: " + getActualValue().getCount() + "Info Actual: " + getActualValue().getInfo());
+		result += ("\nHighest Value: " + getHighestValue().getValue() + " \tDate Highest: " + dateToString(getHighestValue().getTime()) + " \tCount Highest: " + getHighestValue().getCount() + "Info Highest: " + getHighestValue().getInfo());
+		result += ("\nLowest Value: " + getLowestValue().getValue() + " \tDate Lowest: " + dateToString(getLowestValue().getTime()) + " \tCount Lowest: " + getLowestValue().getCount() + "Info Lowest: " + getLowestValue().getInfo());
 		result += ("\nMean Value abs: " + getMeanValueAbsolute());
 		result += ("\nMean Value rel.: " + getMeanValuerelative());
 		result += ("Alarm Limit (abs) : " + getAlarmHandler().getHighAbsoluteLimit());
@@ -235,9 +235,9 @@ public String getCollectorStatusAsXml () {
 		result += ("\n<Application>" + getApplication());
 		result += ("\n<Descriptor>" + getDescriptor());
 		result += ("\n<Counter>" + getCount());
-		result += ("\n<Actual value>" + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount() + "Info: " + getActualValue().getInfo());
-		result += ("\n<Highest Value>" + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount() + "Info: " + getHighestValue().getInfo());
-		result += ("\n<Lowest Value>" + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount() + "Info: " + getLowestValue().getInfo());
+		result += ("\n<Actual value>" + getActualValue().getValue() + " \tDate Actual: " + dateToString(getActualValue().getTime()) + " \tCount Actual: " + getActualValue().getCount() + "Info Actual: " + getActualValue().getInfo());
+		result += ("\n<Highest Value>" + getHighestValue().getValue() + " \tDate Highest: " + dateToString(getHighestValue().getTime()) + " \tCount Highest: " + getHighestValue().getCount() + "Info Highest: " + getHighestValue().getInfo());
+		result += ("\n<Lowest Value>" + getLowestValue().getValue() + " \tDate Lowest: " + dateToString(getLowestValue().getTime()) + " \tCount Lowest: " + getLowestValue().getCount() + "Info Lowest: " + getLowestValue().getInfo());
 		result += ("\n<Mean Value abs>" + getMeanValueAbsolute());
 		result += ("\n<Mean Value rel>" + getMeanValuerelative());
 		// more ..
