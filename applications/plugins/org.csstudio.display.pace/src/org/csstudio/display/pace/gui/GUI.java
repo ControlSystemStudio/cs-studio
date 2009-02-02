@@ -69,6 +69,45 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     /** Listeners that registered for this ISelectionProvider */
     final private ArrayList<ISelectionChangedListener> listeners =
         new ArrayList<ISelectionChangedListener>();
+    
+    /** Throttle for cell updates.
+     *  The model will 'trigger' this throttle in <code>cellUpdate</code>.
+     *  For individual cell changes, the throttle causes an <code>update</code>
+     *  after a small delay, but bursts of cell changes get combined into a
+     *  delayed overall refresh of the table, since that is more efficient
+     *  than many individual cell updates.
+     *  
+     *  Statistics are always iffy, but with the "LLRF_HPM_ADC_Limits"
+     *  config file which contains about 7 * 97 * 2Hz, i.e. about 1000
+     *  updates per second, the CPU load dropped from near 100% to about
+     *  15% after replacing direct cell updates with this throttle
+     *  on a 2.8GHz Mac.
+     */
+    final private GUIUpdateThrottle<Cell> gui_update_throttle
+       = new GUIUpdateThrottle<Cell>(300, 2000)
+    {
+        @Override
+        protected void update(final Cell cell)
+        {
+            final Table table = table_viewer.getTable();
+            if (table.isDisposed())
+                return;
+            // Call can originate from non-UI thread in case of PV updates,
+            // so transfer to UI thread when accessing the SWT table 
+            table.getDisplay().asyncExec(new Runnable()
+            {
+                public void run()
+                {
+                    if (table.isDisposed())
+                        return;
+                    if (cell == null)
+                        table_viewer.refresh();
+                    else
+                        table_viewer.update(cell.getInstance(), null);
+                }
+            });
+        }
+    };
 
     /** Initialize GUI: Create widgets that display the model
      *  @param parent Parent widget
@@ -321,19 +360,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
      */
     public void cellUpdate(final Cell cell)
     {
-        final Table table = table_viewer.getTable();
-        if (table.isDisposed())
-            return;
-        // Call can originate from non-UI thread in case of PV updates,
-        // so transfer to UI thread when accessing the SWT table 
-        table.getDisplay().asyncExec(new Runnable()
-        {
-            public void run()
-            {
-                if (table.isDisposed())
-                    return;
-                table_viewer.update(cell.getInstance(), null);
-            }
-        });
+        // Notify the throttle mechanism of changed cell
+        gui_update_throttle.trigger(cell);
     }
 }
