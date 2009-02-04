@@ -12,4 +12,4 @@ Export-Package: org.csstudio.apptuil.securestorage,
  org.csstudio.apputil.xml
 Require-Bundle: org.junit4,
  org.csstudio.platform,
- org.eclipse.equinox.security;bundle-version="1.0.1"
+ org.eclipse.equinox.security;bundle-version="1.0.0"
