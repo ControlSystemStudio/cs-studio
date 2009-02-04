@@ -25,6 +25,8 @@ package org.csstudio.ams.distributor;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -139,7 +141,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	 * ConnectionFactory[CONSUMER_CONNECTIONS]; private Connection[]
 	 * amsReceiverConnection = new Connection[CONSUMER_CONNECTIONS]; private
 	 * Session[] amsReceiverSession = new Session[CONSUMER_CONNECTIONS]; //
-	 * CHANGED BY: Markus M�ller, 28.06.2007 // private TopicSubscriber
+	 * CHANGED BY: Markus Möller, 28.06.2007 // private TopicSubscriber
 	 * amsSubscriberDist = null; private MessageConsumer[] amsSubscriberDist =
 	 * new MessageConsumer[CONSUMER_CONNECTIONS]; // private TopicSubscriber
 	 * amsSubscriberReply = null; private MessageConsumer[] amsSubscriberReply =
@@ -153,12 +155,18 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 	private MessageProducer extPublisherAlarm = null;
 
+	/** Container that holds the information about the connector topics. */
+	private ConnectorTopicContainer topicContainer;
+	
     private boolean bStop = false;
     private boolean bStoppedClean = false;
 
 	public DistributorWork(DistributorStart ds)
 	{
 		this.ds = ds;
+		
+		// Create the container that holds the information about the connector topics.
+		topicContainer = new ConnectorTopicContainer();
 	}
 
 	public void run()
@@ -382,6 +390,8 @@ public class DistributorWork extends Thread implements AmsConstants {
 	private boolean initJmsInternal() {
 		IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
 		Hashtable<String, String> properties = null;
+		String topicName = null;
+		boolean full = false;
 		boolean durable = false;
 		boolean result = false;
 		
@@ -412,7 +422,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			amsSenderSession = amsSenderConnection.createSession(false,
 					Session.CLIENT_ACKNOWLEDGE);
 
-			// CHANGED BY: Markus M�ller, 25.05.2007
+			// CHANGED BY: Markus Möller, 25.05.2007
 			/*
 			 * amsPublisherCommand =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
@@ -437,60 +447,81 @@ public class DistributorWork extends Thread implements AmsConstants {
 			 * storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR)));
 			 */
 
+			topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
+			
+			//TODO: Get information from the preference
+			full = false;
+			
 			amsPublisherSms = amsSenderSession
-					.createProducer(amsSenderSession
-							.createTopic(storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR)));
-			if (amsPublisherSms == null) {
+					.createProducer(amsSenderSession.createTopic(topicName));
+			if (amsPublisherSms == null)
+			{
 				Log.log(this, Log.FATAL, "could not create amsPublisherSms");
 				return false;
 			}
-
+			
+			topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "SmsConnector", full));
+			
 			// ADDED BY: Kai Meyer, Matthias Zeimer, 17.10.2007
-			String jmsTargetTopicName = storeAct
-					.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
-			Log.log(Log.INFO,
+			topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
+
+	         //TODO: Get information from the preference
+            full = true;
+            
+            Log.log(Log.INFO,
 					"DistributorWork.initJmsInternal(): jmsTargetTopicName="
-							+ jmsTargetTopicName);
+							+ topicName);
 			amsPublisherJms = amsSenderSession.createProducer(amsSenderSession
-					.createTopic(jmsTargetTopicName));
+					.createTopic(topicName));
 			if (amsPublisherJms == null) {
 				Log.log(this, Log.FATAL, "could not create amsPublisherJms");
 				return false;
 			}
 
-			// CHANGED BY: Markus M�ller, 25.05.2007
+            topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "JmsConnector", full));
+
+            // CHANGED BY: Markus Möller, 25.05.2007
 			/*
 			 * amsPublisherMail =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
 			 * storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)));
 			 */
 
-			amsPublisherMail = amsSenderSession
-					.createProducer(amsSenderSession
-							.createTopic(storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)));
+            topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
+
+            //TODO: Get information from the preference
+            full = false;
+			
+            amsPublisherMail = amsSenderSession
+					.createProducer(amsSenderSession.createTopic(topicName));
 			if (amsPublisherMail == null) {
 				Log.log(this, Log.FATAL, "could not create amsPublisherMail");
 				return false;
 			}
 
-			// CHANGED BY: Markus M�ller, 25.05.2007
+            topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "EMailConnector", full));
+
+            // CHANGED BY: Markus Möller, 25.05.2007
 			/*
 			 * amsPublisherVoiceMail =
 			 * amsSession.createProducer((Topic)amsContext.lookup(
 			 * storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)));
 			 */
 
-			amsPublisherVoiceMail = amsSenderSession
-					.createProducer(amsSenderSession
-							.createTopic(storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)));
+            topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
+
+            //TODO: Get information from the preference
+            full = false;
+
+            amsPublisherVoiceMail = amsSenderSession
+					.createProducer(amsSenderSession.createTopic(topicName));
 			if (amsPublisherVoiceMail == null) {
 				Log.log(this, Log.FATAL,
 						"could not create amsPublisherVoiceMail");
 				return false;
 			}
+
+			topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "VoicemailConnector", full));
 
 			amsSenderConnection.start();
 
@@ -772,17 +803,39 @@ public class DistributorWork extends Thread implements AmsConstants {
 	 *            The JMS-Destination-Topic
 	 * @throws JMSException
 	 */
-	private void publishToConnectorJms(String text, String topic)
+	private void publishToConnectorJms(String text, String topic, HashMap<String, String> map)
 			throws JMSException {
 		MapMessage msg = amsSenderSession.createMapMessage();
+		
 		msg.setString(MSGPROP_RECEIVERTEXT, text);
 		msg.setString(MSGPROP_RECEIVERADDR, topic);
+		
+		//TODO: Add the alarm message here!!!
+		if(map != null)
+		{
+		    if(!map.isEmpty())
+		    {
+		        // The marker for a message containing the origin alarm message
+		        msg.setString(MSGPROP_EXTENDED_MESSAGE, "true");
+		        
+		        String key;
+		        Iterator<String> keys = map.keySet().iterator();
+		        while(keys.hasNext())
+		        {
+		            key = keys.next();
+		            msg.setString(key, map.get(key));
+		        }
+		        
+		        key = null;
+		        keys = null;
+		    }
+		}
+		
 		amsPublisherJms.send(msg);
-		Log
-				.log(
-						Log.INFO,
-						"DistributorWork.publishToConnectorJms(): Message sent via amsPublisherJms.send([text=\""
-								+ text + "\", topic=\"" + topic + "\"]);");
+		
+		Log.log(Log.INFO,
+				"DistributorWork.publishToConnectorJms(): Message sent via amsPublisherJms.send([text=\""
+				+ text + "\", topic=\"" + topic + "\"]);");
 	}
 
 	private void publishToConnectorMail(String text, String addr,
@@ -1672,7 +1725,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 							.getString(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY));
 			freeTopicConn = freeTopicFactory.createConnection();
 
-			// ADDED BY: Markus M�ller, 25.05.2007
+			// ADDED BY: Markus Möller, 25.05.2007
 			freeTopicConn.setClientID("DistributorWorkFree");
 
 			freeTopicConn.start();
@@ -1760,6 +1813,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 	// JMSException,
 	// AMSException
 	{
+	    ConnectorTopic ct = null;
+	    HashMap<String, String> map = null;
+	    
 		UserTObject user = UserDAO.select(conDb, fa.getReceiverRef());
 		if (fa.getFilterActionTypeRef() != FILTERACTIONTYPE_TO_JMS
 				&& user.getActive() == 0) {
@@ -1768,23 +1824,34 @@ public class DistributorWork extends Thread implements AmsConstants {
 			return DistributorStart.STAT_FALSE;
 		}
 
-		switch (fa.getFilterActionTypeRef()) {
-		case FILTERACTIONTYPE_TO_JMS:
-			TopicTObject topic = TopicDAO.select(conDb, fa.getReceiverRef());
-			publishToConnectorJms(text, topic.getTopicName());
-			break;
-		case FILTERACTIONTYPE_SMS:
-			publishToConnectorSms(text, user.getMobilePhone()); // SMS
-			break;
-		case FILTERACTIONTYPE_VM:
-			publishToConnectorVoiceMail(text, user.getPhone(),
+		switch (fa.getFilterActionTypeRef())
+		{
+		    case FILTERACTIONTYPE_TO_JMS:
+		        TopicTObject topic = TopicDAO.select(conDb, fa.getReceiverRef());
+		        ct = topicContainer.getConnectorTopicByConnectorName("JmsConnector");
+		        if(ct.isFullMessageReceiver())
+		        {
+		            map = this.getMessageContent(mapMsg);
+		        }
+		        
+		        publishToConnectorJms(text, topic.getTopicName(), map);
+		        break;
+		        
+		    case FILTERACTIONTYPE_SMS:
+		        publishToConnectorSms(text, user.getMobilePhone()); // SMS
+		        break;
+		        
+		    case FILTERACTIONTYPE_VM:
+		        publishToConnectorVoiceMail(text, user.getPhone(),
 					TEXTTYPE_ALARM_WOCONFIRM); // VoiceMail
-			break;
-		case FILTERACTIONTYPE_MAIL:
-			publishToConnectorMail(text, user.getEmail(), user.getName()); // E-Mail
-			break;
-		default:
-			throw new AMSException(
+		        break;
+		
+		    case FILTERACTIONTYPE_MAIL:
+		        publishToConnectorMail(text, user.getEmail(), user.getName()); // E-Mail
+		        break;
+		        
+		    default:
+		        throw new AMSException(
 					"Configuration is invalid. FilterActionType="
 							+ fa.getFilterActionTypeRef());
 		}
@@ -1793,7 +1860,29 @@ public class DistributorWork extends Thread implements AmsConstants {
 				null, 0, 0, 0, TopicDAO.select(conDb, fa.getReceiverRef()));
 		return DistributorStart.STAT_OK;
 	}
-
+	
+	private HashMap<String, String> getMessageContent(MapMessage message)
+	{
+	    HashMap<String, String> map = new HashMap<String, String>();
+	    String key = null;
+	    
+	    try
+        {
+            Enumeration<?> list = message.getMapNames();
+            while(list.hasMoreElements())
+            {
+                key = (String)list.nextElement();
+                map.put(key, message.getString(key));
+            }
+        }
+	    catch(JMSException jmse)
+        {
+	        map.clear();
+        }
+	    
+	    return map;
+	}
+	
 	private int sendMessageToUserGroup(MapMessage mapMsg, String text,
 			FilterActionTObject fa) throws Exception // INCLUDING -
 	// SQLException,
@@ -2521,7 +2610,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				txt += " (confirmation initiated from " + originator + ")";
 
 			addr = " with Topic=" + topic.getTopicName();
-			publishToConnectorJms(txt, topic.getTopicName());
+			publishToConnectorJms(txt, topic.getTopicName(), null);
 			Log.log(this, Log.INFO, "Reply Confirmation:'" + txt
 					+ "' send to topic=" + topic.getTopicName() + " via JMS("
 					+ topic.getTopicName() + ")");
@@ -2877,7 +2966,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 				case USERFILTERALARMTYPE_JMS:
 					TopicTObject topic = TopicDAO.select(conDb, fa
 							.getReceiverRef());
-					publishToConnectorJms(text, topic.getTopicName()); // JMS
+					publishToConnectorJms(text, topic.getTopicName(), null); // JMS
 					msgChain.setReceiverAdress(topic.getTopicName());
 					iPref = USERFILTERALARMTYPE_JMS;
 					break;

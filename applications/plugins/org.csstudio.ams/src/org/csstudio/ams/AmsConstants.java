@@ -62,6 +62,7 @@ public interface AmsConstants
 	public final static String MSGPROP_SUBJECT_USERNAME = AMS_PREFIX + "SUBJECT-USERNAME"; 
 	public final static String MSGPROP_TEXTTYPE = AMS_PREFIX + "RECEIVER-TEXTTYPE"; 
     public final static String MSGPROP_GROUP_WAIT_TIME = AMS_PREFIX + "RECEIVER-WAITTIME"; 
+    public final static String MSGPROP_EXTENDED_MESSAGE = AMS_PREFIX + "EXTENDED-MESSAGE"; 
 	
 	//common
 	public final static String MSGPROP_MESSAGECHAINID_AND_POS = AMS_PREFIX + "MESSAGECHAIN-ID_AND_POS";// append UserGroup_User.iPos as String with length = MSG_POS_LENGTH_FOR_MSGPROP
