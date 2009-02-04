@@ -449,8 +449,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
 			topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
 			
-			//TODO: Get information from the preference
-			full = false;
+			full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD);
 			
 			amsPublisherSms = amsSenderSession
 					.createProducer(amsSenderSession.createTopic(topicName));
@@ -465,8 +464,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			// ADDED BY: Kai Meyer, Matthias Zeimer, 17.10.2007
 			topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
 
-	         //TODO: Get information from the preference
-            full = true;
+            full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD);
             
             Log.log(Log.INFO,
 					"DistributorWork.initJmsInternal(): jmsTargetTopicName="
@@ -489,8 +487,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
             topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
 
-            //TODO: Get information from the preference
-            full = false;
+            full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD);
 			
             amsPublisherMail = amsSenderSession
 					.createProducer(amsSenderSession.createTopic(topicName));
@@ -510,8 +507,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 
             topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
 
-            //TODO: Get information from the preference
-            full = false;
+            full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD);
 
             amsPublisherVoiceMail = amsSenderSession
 					.createProducer(amsSenderSession.createTopic(topicName));

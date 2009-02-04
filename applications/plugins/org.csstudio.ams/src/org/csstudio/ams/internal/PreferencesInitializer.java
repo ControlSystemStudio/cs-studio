@@ -147,12 +147,16 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         node.put(SampleService.P_JMS_AMS_TSUB_MESSAGEMINDER, "SUB_AMS_MESSAGEMINDER");
 
         node.put(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR, "T_AMS_CON_SMS");
+        node.put(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD, "false");
         node.put(SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR, "SUB_AMS_CON_SMS");
         node.put(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR, "T_AMS_CON_MAIL");
+        node.put(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD, "false");
         node.put(SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR, "SUB_AMS_CON_MAIL");
         node.put(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR, "T_AMS_CON_VOICEMAIL");
+        node.put(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD, "false");
         node.put(SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR, "SUB_AMS_CON_VOICEMAIL");
         node.put(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR, "T_AMS_CON_JMS");
+        node.put(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD, "true");
         node.put(SampleService.P_JMS_AMS_TSUB_JMS_CONNECTOR, "SUB_AMS_CON_JMS");
 
         node.put(SampleService.P_JMS_AMS_TOPIC_COMMAND, "COMMAND");

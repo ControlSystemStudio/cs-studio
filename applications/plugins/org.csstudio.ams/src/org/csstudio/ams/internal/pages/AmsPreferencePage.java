@@ -222,6 +222,7 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 				Messages.P_JMS_EXT_TOPIC_STATUSCHANGE, c0));
 
 		// ams internal topics
+		BooleanFieldEditor bfe = null;
 		TabItem tabJmsAms = new TabItem(tabs, SWT.NONE);
 		tabJmsAms.setText(Messages.P_JMS_AMS);
 		c0 = new Composite(tabs,SWT.NONE);
@@ -247,19 +248,37 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR,
-				Messages.P_JMS_AMS_TOPIC_SMS_CONNECTOR, c0));
+				Messages.P_JMS_AMS_TOPIC_SMS_CONNECTOR, c0));        
+		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD,
+                Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
+		bfe.setEnabled(false, c0);
+		addField(bfe);
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_SMS_CONNECTOR, c0));
+		
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR, c0));
+		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD,
+                Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
+		bfe.setEnabled(false, c0);
+        addField(bfe);
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_EMAIL_CONNECTOR, c0));
+		
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR, c0));
+		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD,
+                Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
+		bfe.setEnabled(false, c0);
+        addField(bfe);
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR, c0));
+		
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR,
 				Messages.P_JMS_AMS_TOPIC_JMS_CONNECTOR, c0));
+		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD,
+                Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
+        addField(bfe);
 		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_JMS_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_JMS_CONNECTOR, c0));
 

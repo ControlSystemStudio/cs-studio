@@ -94,7 +94,7 @@ public class Messages extends NLS
 	public static String P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR;
 	public static String P_JMS_AMS_TOPIC_JMS_CONNECTOR;
 	public static String P_JMS_AMS_TSUB_JMS_CONNECTOR;
-	
+	public static String P_JMS_AMS_TOPIC_FORWARD;
 	
 	public static String P_JMS_AMS_TOPIC_COMMAND;
 	public static String P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END;
