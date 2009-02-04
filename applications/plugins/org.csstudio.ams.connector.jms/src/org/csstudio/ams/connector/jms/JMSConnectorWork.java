@@ -21,6 +21,10 @@
  */
  package org.csstudio.ams.connector.jms;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -233,45 +237,108 @@ public class JMSConnectorWork extends Thread implements AmsConstants {
 	 *            The Message, have to be a MapMessage, not null.
 	 * @return true if successfully sent, false otherwise.
 	 */
-	private boolean sendJMSMessageIntern(Message message) {
+	private boolean sendJMSMessageIntern(Message message)
+	{
 		assert message != null : "Precondition unresolved: message != null";
 
+		MapMessage mmsg = null;
+		HashMap<String, String> map = null;
 		boolean result = true;
-		try {
-			String topicName = ((MapMessage) message)
-					.getString(AmsConstants.MSGPROP_RECEIVERADDR);
-			messageProducer.send(messageProducerId, topicName, message);
-			Log.log(Log.INFO,
-					"JMSConnectorWork.sendJMSMessageIntern(): Message succesfully sent to topic \""
+		
+		// The message have to be a MapMessage object
+		if(!(message instanceof MapMessage))
+		{
+		    Log.log(Log.WARN, "The message is NOT a MapMessage object.");
+		    
+		    // We handle a non MapMessage object as NO ERROR
+		    return result;
+		}
+		
+		mmsg = (MapMessage)message;
+		
+		try
+		{
+		    // Get the name of the destination topic
+	        String topicName = mmsg.getString(AmsConstants.MSGPROP_RECEIVERADDR);
+
+	        // First we have to check if the message contains the "raw" alarm message
+		    if(mmsg.itemExists(MSGPROP_EXTENDED_MESSAGE))
+		    {
+		        // Get the complete content
+		        map = this.getMessageContent(mmsg);
+	            
+		        if(map != null)
+		        {
+		            if(!map.isEmpty())
+		            {
+		                mmsg = null;
+		                mmsg = messageProducer.createMapMessage();
+		                
+		                // We have to delete all AMS related keys
+		                String key;
+		                Iterator<String> keys = map.keySet().iterator();
+		                while(keys.hasNext())
+		                {
+		                    key = keys.next().trim();
+		                    
+		                    if(!key.startsWith(AMS_PREFIX))
+		                    {
+		                        mmsg.setString(key, map.get(key));
+		                    }
+		                }
+		                
+		                key = null;
+		                keys = null;
+		            }
+		        }
+		    }
+		    
+			messageProducer.send(messageProducerId, topicName, mmsg);
+			
+			mmsg = null;
+			
+			Log.log(Log.INFO, "JMSConnectorWork.sendJMSMessageIntern(): Message succesfully sent to topic \""
 							+ topicName + "\"");
-		} catch (ClassCastException ce) {
+		}
+		catch(ClassCastException ce)
+		{
 			Log.log(Log.INFO, "Probably invalid message type", ce);
 			result = false;
-		} catch (JMSException je) {
+		}
+		catch(JMSException je)
+		{
 			Log.log(Log.INFO, "JMS-Failure", je);
 			result = false;
-		} catch (RuntimeException e) {
+		}
+		catch(RuntimeException e)
+		{
 			Log.log(Log.INFO, "JMS-Failure", e);
 			result = false;
 		}
+		
 		return result;
 	}
 
-	private int sendJMSMsg(Message message) throws Exception {
+	private int sendJMSMsg(Message message) throws Exception
+	{
 		int iErr = JMSConnectorStart.STAT_ERR_UNKNOWN;
 
 		for (int j = 1; j <= 5; j++) // only for short net breaks
 		{
-			Log.log(Log.INFO,
-					"JMSConnectorWork.sendJMSMsg(): Try to send message, attemp number: "
-							+ j);
-			if (sendJMSMessageIntern(message)) {
-				if (acknowledge(message)) // deletes all received messages of
-					// the session
+			Log.log(Log.INFO, "JMSConnectorWork.sendJMSMsg(): Try to send message, attemp number: " + j);
+			if(sendJMSMessageIntern(message))
+			{
+                // deletes all received messages of
+                // the session
+				if(acknowledge(message))
+				{
 					return JMSConnectorStart.STAT_OK;
-
+				}
+				
 				iErr = JMSConnectorStart.STAT_ERR_JMS_CONNECTION_FAILED;
-			} else {
+			}
+			else
+			{
 				iErr = JMSConnectorStart.STAT_ERR_JMS_SEND;
 			}
 
@@ -279,6 +346,27 @@ public class JMSConnectorWork extends Thread implements AmsConstants {
 		}
 
 		return iErr;
-
 	}
+	
+    private HashMap<String, String> getMessageContent(MapMessage message)
+    {
+        HashMap<String, String> map = new HashMap<String, String>();
+        String key = null;
+        
+        try
+        {
+            Enumeration<?> list = message.getMapNames();
+            while(list.hasMoreElements())
+            {
+                key = (String)list.nextElement();
+                map.put(key, message.getString(key));
+            }
+        }
+        catch(JMSException jmse)
+        {
+            map.clear();
+        }
+        
+        return map;
+    }
 }
