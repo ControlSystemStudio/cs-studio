@@ -19,54 +19,53 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sns.dummyauthorization;
-
-
+package org.csstudio.sns.dummyauthorization;
 
 import org.csstudio.platform.security.IAuthorizationProvider;
 import org.csstudio.platform.security.Right;
 import org.csstudio.platform.security.RightSet;
 import org.csstudio.platform.security.User;
 
-/**
- * A dummy authorization provider. It makes every user could have the rights for all actions.
+/** A dummy authorization provider. It makes every user could have the rights for all actions.
  * 
- * @author Xihui Chen
+ *  @author Xihui Chen
+ *  @author Kay Kasemir
  */
-public class DummyAuthorizationReader implements IAuthorizationProvider {
-
+@SuppressWarnings("nls")
+public class DummyAuthorizationReader implements IAuthorizationProvider
+{
+    /** Every user and every action will get this dummy right */
+    final private Right dummy_right = new Right("DummyRole", "DummyGroup");
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
 	 */
-	public RightSet getRights(User user) {
-		String username = user.getUsername();
-		// If the user was authenticated via Kerberos, the username may be a
-		// fully qualified name (name@EXAMPLE.COM). We only want the first
-		// part of the name.
-		if (username.contains("@")) {
-			username = username.substring(0, username.indexOf('@'));
-		}
+	public RightSet getRights(final User user)
+	{
+	    // Not using the user, but beware of this:
+//		String username = user.getUsername();
+//		// If the user was authenticated via Kerberos, the username may be a
+//		// fully qualified name (name@EXAMPLE.COM). We only want the first
+//		// part of the name.
+//		if (username.contains("@")) {
+//			username = username.substring(0, username.indexOf('@'));
+//		}
 		
-		RightSet rights = new RightSet("Dummy Rights");
-	
-		rights.addRight(new Right("DummyRole", "DummyGroup"));
+	    final RightSet rights = new RightSet("Dummy Rights");
+	    rights.addRight(dummy_right);
 		
 		return rights;
 	}
-	
-
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.security.IAuthorizationProvider#getRights(java.lang.String)
 	 */
-	public RightSet getRights(String authId) {
-		
-		RightSet rights = new RightSet(authId);
-		
-		rights.addRight(new Right("DummyRole", "DummyGroup"));
-		
-		return rights;
+	public RightSet getRights(final String authId)
+	{
+	    final RightSet rights = new RightSet(authId);
+        rights.addRight(dummy_right);
+        
+        return rights;
 	}
 }
 	
