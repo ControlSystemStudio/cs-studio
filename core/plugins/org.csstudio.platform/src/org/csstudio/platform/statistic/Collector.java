@@ -369,14 +369,14 @@ public String getCollectorStatusAsXml () {
 	
 	/**
 	 * Convert Gregorian date into string.
-	 * actually format is yyyy-MM-dd HH:mm:ss.S
+	 * actually format is yyyy-MM-dd HH:mm:ss.SSS
 	 * 
 	 * @param gregorsDate The Date to convert do default String format
 	 * @return The Date as String
 	 */
 	public static String dateToString ( GregorianCalendar gregorsDate) {
 		Date d = gregorsDate.getTime();
-		SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.S" );
+		SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
 	    return df.format(d);
 	}
 

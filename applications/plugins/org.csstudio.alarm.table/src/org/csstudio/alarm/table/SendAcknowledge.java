@@ -56,7 +56,7 @@ import org.eclipse.core.runtime.jobs.Job;
 public class SendAcknowledge extends Job {
 
 	List<JMSMessage> messagesToSend;
-	private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S";
+	private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
 	/**
 	 * @param msg

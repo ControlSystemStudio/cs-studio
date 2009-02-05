@@ -56,7 +56,7 @@ public class LogArchiveViewerPreferenceInitializer extends AbstractPreferenceIni
 				"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"DESTINATION" //$NON-NLS-1$
 		);
-        store.setDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.S"); //$NON-NLS-1$
+        store.setDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.SSS"); //$NON-NLS-1$
 		store.setDefault(LogArchiveViewerPreferenceConstants.MAX_ANSWER_SIZE,"500"); //$NON-NLS-1$
 		store.setDefault(LogArchiveViewerPreferenceConstants.MAX_ANSWER_SIZE_EXPORT,"5000"); //$NON-NLS-1$
 	}
