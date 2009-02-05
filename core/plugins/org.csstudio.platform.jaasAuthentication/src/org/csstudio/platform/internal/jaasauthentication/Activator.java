@@ -30,7 +30,7 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractCssPlugin {
 	/** The plug-in ID as defined in MANIFEST.MF */
-	public static final String PLUGIN_ID = "org.csstudio.platform.jaasAuthentication";
+	public static final String PLUGIN_ID = "org.csstudio.platform.jaasAuthentication"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;
@@ -44,6 +44,7 @@ public class Activator extends AbstractCssPlugin {
 	
 	@Override
 	protected void doStart(BundleContext context) throws Exception {
+	    // NOP
 	}
 	
 	@Override
@@ -64,5 +65,4 @@ public class Activator extends AbstractCssPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
-
 }

@@ -35,6 +35,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.securestore.SecureStore;
 import org.csstudio.platform.security.Credentials;
@@ -49,19 +50,15 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * 
  * @author Joerg Rathlev
  * @author Xihui Chen
+ * @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class JaasLoginModule implements ILoginModule {
-	
-	/**
-	 * preference name.
+	/** Preference key that selects one of the entries in the JAAS config file.
+	 *  @see #CONFIG_FILE
 	 */
 	private static final String JAAS_CONFIG = "jaasconfig";
 
-	/**
-	 * The name of the configuration entry for the JAAS {@link LoginContext}.
-	 */
-	private static String contextName;
-	
 	/**
 	 * The key for the property of the User object which stores the JAAS
 	 * {@link Subject}.
@@ -74,28 +71,26 @@ public class JaasLoginModule implements ILoginModule {
 	 */
 	private static final String AUTH_CONFIG_PROPERTY = "java.security.auth.login.config";
 	
-	/**
-	 * The name of the JAAS configuration file included in the plug-in.
+	/** The name of the JAAS configuration file included in the plug-in.
+	 *  @see #JAAS_CONFIG
 	 */
 	private static final String CONFIG_FILE = "conf/auth.conf";
 
 	/**
-	 * The logger.
-	 */
-	private static final CentralLogger log = CentralLogger.getInstance();
-
-	/**
 	 * {@inheritDoc}
 	 */
-	public User login(ILoginCallbackHandler handler) {
-		//get 
-		IPreferencesService service = Platform.getPreferencesService();
-		contextName = service.getString(Activator.PLUGIN_ID, 
+	public User login(final ILoginCallbackHandler handler) {
+		// Determine which JAAS configuration entry to use
+		final IPreferencesService service = Platform.getPreferencesService();
+		final String contextName = service.getString(Activator.PLUGIN_ID, 
 				JAAS_CONFIG, null, null);
+        final Logger logger = CentralLogger.getInstance().getLogger(this);
+        if (logger.isDebugEnabled())
+            logger.debug("Using JAAS config '" + contextName + "'");
 	
-		CredentialsCallbackHandler ch = new CredentialsCallbackHandler();
+		final CredentialsCallbackHandler ch = new CredentialsCallbackHandler();
 		setConfigFileProperty();
-		LoginContext loginCtx = null;
+		LoginContext loginCtx = null;  
 		User user = null;
 		boolean loggedIn = false;
 		
@@ -107,7 +102,7 @@ public class JaasLoginModule implements ILoginModule {
 			try {
 				loginCtx = new LoginContext(contextName, ch);
 			} catch (LoginException e) {
-				log.error(this, "Login error: cannot create a JAAS LoginContext. Using anonymously.", e);
+                logger.error("Login error: cannot create a JAAS LoginContext. Using anonymously.", e);
 				return null;
 			}
 			
@@ -115,10 +110,10 @@ public class JaasLoginModule implements ILoginModule {
 			if (ch.credentials != null) {
 				try {
 					loginCtx.login();  // this will call back to get the credentials
-					Subject subject = loginCtx.getSubject();
+					final Subject subject = loginCtx.getSubject();
 					user = subjectToUser(subject);
 					loggedIn = true;
-					SecureStore store = SecureStore.getInstance();
+					final SecureStore store = SecureStore.getInstance();
 					store.unlock(user.getUsername(),
 							ch.credentials.getPassword());
 				} catch (LoginException e) {
@@ -126,7 +121,7 @@ public class JaasLoginModule implements ILoginModule {
 					// more specific exception than LoginException.
 					
 					handler.signalFailedLoginAttempt();
-					log.info(this, "Login failed", e);
+					logger.info("Login failed", e);
 				}
 			} else {
 				// no credentials -> anonymous login
@@ -144,9 +139,9 @@ public class JaasLoginModule implements ILoginModule {
 	 * configuration file included in this plug-in.
 	 */
 	private void setConfigFileProperty() {
-		String prop = System.getProperty(AUTH_CONFIG_PROPERTY);
+		final String prop = System.getProperty(AUTH_CONFIG_PROPERTY);
 		if (prop == null || !(new File(prop).exists())) {
-			URL url = Activator.getDefault().getBundle()
+			final URL url = Activator.getDefault().getBundle()
 				.getResource(CONFIG_FILE);
 			System.setProperty(AUTH_CONFIG_PROPERTY, url.toExternalForm());
 		}
@@ -158,8 +153,8 @@ public class JaasLoginModule implements ILoginModule {
 	 * @return a CSS {@code User}.
 	 * @throws LoginException if no user object can be created for the subject.
 	 */
-	private User subjectToUser(Subject subject) throws LoginException {
-		User user = new User(subjectToUsername(subject));
+	private User subjectToUser(final Subject subject) throws LoginException {
+		final User user = new User(subjectToUsername(subject));
 		user.setProperty(SUBJECT_PROPERTY, subject);
 		return user;
 	}
@@ -173,7 +168,7 @@ public class JaasLoginModule implements ILoginModule {
 	 * @return a username.
 	 * @throws LoginException if the subject does not contain any principals.
 	 */
-	private String subjectToUsername(Subject subject) throws LoginException {
+	private String subjectToUsername(final Subject subject) throws LoginException {
 		for (Principal p :  subject.getPrincipals()) {
 			// return the name of the first principal
 			return p.getName();
@@ -207,7 +202,7 @@ public class JaasLoginModule implements ILoginModule {
 		 * Handles username and password callbacks by returning the username
 		 * and password of the credentials. Other callbacks are not supported.
 		 */
-		public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+		public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 			for (Callback c : callbacks) {
 				if (c instanceof NameCallback) {
 					// return the username
@@ -221,5 +216,4 @@ public class JaasLoginModule implements ILoginModule {
 			}
 		}
 	}
-
 }
