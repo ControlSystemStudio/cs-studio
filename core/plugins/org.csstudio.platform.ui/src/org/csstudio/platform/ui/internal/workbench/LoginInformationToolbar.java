@@ -26,6 +26,7 @@ import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
+import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -58,7 +59,11 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
 					// cause the contribution manager to ask the contribution
 					// (i.e., the login information toolbar) to re-create its
 					// control with the updated information.
-					LoginInformationToolbar.this.getParent().update(true);
+					final IContributionManager parent =
+					    LoginInformationToolbar.this.getParent();
+					// Parent can be null for SNS CSS
+					if (parent != null)
+					    parent.update(true);
 				}
 			});
 		}
