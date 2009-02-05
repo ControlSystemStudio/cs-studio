@@ -34,69 +34,97 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
-/**
- * The LoginContext performs the authentication by invoking
- * the Login module and stores the authenticated user.
- *
+/** The LoginContext performs the authentication by invoking
+ *  the Login module and storing the authenticated user.
+ *  <p>
+ *  Expects exactly one authentication module.
+ *  
+ *  @author Original author wasn't listed
+ *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public final class LoginContext {
-	private String _name;
+    /** ID of extension point for login modules */
+	private static final String LOGIN_MODULE_EXT_ID = "org.csstudio.platform.loginModule";
+	
+    final private String _name;
 	private User _user = null;
 	
-	public LoginContext(String name) {
+	/** Initialize
+	 *  @param name Name of this login context
+	 */
+	public LoginContext(final String name)
+	{
 		_name = name;
 	}
 	
-	public String getName() {
+    /** @return Name of this login context */
+	public String getName()
+	{
 		return _name;
 	}
 	
-	public void login(ILoginCallbackHandler handler) {
-		ILoginModule loginModule = getLoginModule();
+	/** Perform login, setting user name if successful
+	 *  @param handler ILoginCallbackHandler
+	 */
+	public void login(final ILoginCallbackHandler handler) {
+		final ILoginModule loginModule = getLoginModule();
 		if (loginModule != null) {
 			_user = loginModule.login(handler);
 			if (_user != null) {
-				CentralLogger.getInstance().info(this,
+				CentralLogger.getInstance().getLogger(this).info(
 						"User logged in: " + _user.getUsername());
 				new InstanceScope().getNode(CSSPlatformPlugin.ID).put(SecurityFacade.LOGIN_LAST_USER_NAME, _user.getUsername());
 				RightsManagementService.getInstance().readRightsForUser(_user);
 			} else {
-				CentralLogger.getInstance().info(this, "Using anonymously");
+				CentralLogger.getInstance().getLogger(this).info("Anonymous login");
 			}
 		} else {
 			_user = null;
 		}
 	}
-	
-	private ILoginModule getLoginModule() {
+
+	/** Obtain the login module.
+	 *  Expects exactly one implementation.
+	 *  
+	 *  @return ILoginModule or <code>null</code>
+	 */
+	private ILoginModule getLoginModule()
+	{
 		IExtension[] extension = Platform.getExtensionRegistry()
-			.getExtensionPoint("org.csstudio.platform.loginModule")
+			.getExtensionPoint(LOGIN_MODULE_EXT_ID)
 			.getExtensions();
-		if (extension.length > 0) {
-			IExtension lmExtension = extension[0];
-			IConfigurationElement lmConfigElement = lmExtension
+		if (extension.length == 1)
+		{
+		    final IExtension lmExtension = extension[0];
+			final IConfigurationElement lmConfigElement = lmExtension
 					.getConfigurationElements()[0];
-			try {
+			try
+			{
 				return (ILoginModule) lmConfigElement
 						.createExecutableExtension("class");
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
 			}
-		} else {
-			return null;
+			catch (CoreException e)
+			{
+			    CentralLogger.getInstance().getLogger(this).
+			        error("Cannot obtain login module", e);
+			}
 		}
+		else if (extension.length > 1)
+            CentralLogger.getInstance().getLogger(this).
+                error("Found multiple login modules");
+		return null;
 	}
 	
 	public void logout() {
-		
+	    // NOP
 	}
 	
 	public User getUser() {
 		return _user;
 	}
 	
+	/** @return <code>true</code> if we located exactly one login module */
 	public boolean isLoginAvailable() {
 		return (getLoginModule() != null);
 	}
