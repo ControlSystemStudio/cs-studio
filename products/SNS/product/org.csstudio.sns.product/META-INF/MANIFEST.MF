@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.intro,
  org.eclipse.core.resources,
  org.eclipse.ui.browser,
- org.csstudio.platform.workspace
+ org.csstudio.platform.workspace,
+ org.csstudio.sns.startuphelper;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Bundle-Activator: org.csstudio.sns.product.PluginActivator

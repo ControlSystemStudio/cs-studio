@@ -1,17 +1,16 @@
 package org.csstudio.sns.product;
 
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Dictionary;
 
-import org.csstudio.platform.CSSPlatformPlugin;
-import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
-import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.platform.workspace.RelaunchConstants;
-import org.csstudio.platform.workspace.WorkspaceDialog;
 import org.csstudio.platform.workspace.WorkspaceInfo;
+import org.csstudio.sns.startuphelper.StartupAuthenticationHelper;
+import org.csstudio.sns.startuphelper.StartupHelper;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -22,7 +21,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
@@ -65,6 +63,7 @@ import org.eclipse.ui.PlatformUI;
  *       Can it still mean: Same code for Application, *Advisor, ...?
  *        
  *  @author Kay Kasemir
+ *  @author Xihui Chen
  */
 public class Application implements IApplication
 {
@@ -77,9 +76,20 @@ public class Application implements IApplication
     /** Command-line switch to provide link behind <code>SHARE_NAME</code> */
     private static final String SHARE_LINK = "-share_link"; //$NON-NLS-1$
     
+    /** Command-line switch to provide the default user in login dialog */
+    private static final String USER = "-u"; //$NON-NLS-1$
+   
+    /** Command-line switch to provide the password of default user in login dialog */
+    private static final String PASSWORD = "-p"; //$NON-NLS-1$
+    
+    /** user name and password for startup login*/
+    String username = null;
+    String password = null;
+    
+    
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
-    {
+    {    	
         final Display display = PlatformUI.createDisplay();
         if (display == null)
         {
@@ -98,6 +108,7 @@ public class Application implements IApplication
             for (int i=0; i<args.length; ++i)
             {
                 final String arg = args[i];
+             
                 if (arg.equalsIgnoreCase(HELP) ||
                     arg.equalsIgnoreCase("-?")) //$NON-NLS-1$
                 {
@@ -106,6 +117,7 @@ public class Application implements IApplication
                     System.exit(0);
                     return EXIT_OK;
                 }
+                
                 if (arg.equalsIgnoreCase(WORKSPACE_PROMPT))
                 {
                     force_workspace_prompt = true;
@@ -119,6 +131,7 @@ public class Application implements IApplication
                         }
                     }
                 }
+                
                 if (arg.equalsIgnoreCase(SHARE_LINK))
                 {
                     if ((i + 1) < args.length)
@@ -139,6 +152,50 @@ public class Application implements IApplication
                         return EXIT_OK;
                     }
                 }
+                
+                if (arg.equalsIgnoreCase(USER)) {
+                	if ((i + 1) < args.length)
+                    {
+                        final String next = args[i+1];
+                        if (!next.startsWith("-")) //$NON-NLS-1$
+                        {
+                            username = next;
+                            ++i;
+                        }
+                    }
+                    if (username == null)
+                    {
+                        System.out.println("Error: Missing username"); //$NON-NLS-1$
+                        showHelp();
+                        // Exit ASAP, see comment below.
+                        System.exit(0);
+                        return EXIT_OK;
+                    }
+                }
+                if (arg.equalsIgnoreCase(PASSWORD)) {
+                	if ((i + 1) < args.length)
+                    {
+                        final String next = args[i+1];
+                        if (!next.startsWith("-")) //$NON-NLS-1$
+                        {
+                            password = next;
+                            ++i;
+                        }
+                    }
+                    if (password == null)
+                    {   
+                    	 Console cons = System.console();
+                    	 char[] passwd;
+                    	 if (cons != null &&
+                    	     (passwd = cons.readPassword("[%s]", "Password:")) != null) {
+                    		 password = passwd.toString();
+                    	 } else {      	 
+                    		 System.out.println("Error: no console associated with current JVM." +
+                    		 		"You have to input your password in the startup dialog"); //$NON-NLS-1$                    		
+                    	 }      
+                    }
+                }
+                
             }
                 
             if (! checkInstanceLocation(force_workspace_prompt,
@@ -201,6 +258,10 @@ public class Application implements IApplication
         System.out.format("  %-35s : Create '%s' link to shared folder\n",
                 SHARE_LINK + " /path/to/some/folder",
                 Messages.Project_SharedFolderName);
+        System.out.format("  %-35s : provide the default user in login dialog\n",
+                USER + " username");
+        System.out.format("  %-35s : provide the password of default user in login dialog\n",
+                PASSWORD + " username");
     }
 
     /** Check or select the workspace.
@@ -221,7 +282,7 @@ public class Application implements IApplication
      *         Set <code>false</code> in an Office setting where users can
      *         uncheck the "ask again" option and use the last workspace as
      *         a default. 
-     * @param  default_workspace Default to use
+     *  @param  default_workspace Default to use
      *  @return <code>true</code> if all OK
      */
     private boolean checkInstanceLocation(final boolean force_prompt,
@@ -274,18 +335,28 @@ public class Application implements IApplication
         final WorkspaceInfo workspace_info =
             new WorkspaceInfo(default_workspace, !force_prompt);
         // Prompt in any case? Or did user decide to be asked again?
-        boolean show_dialog = force_prompt | workspace_info.getShowDialog();
+        boolean show_Workspace = force_prompt | workspace_info.getShowDialog();
+        boolean show_Login = true;
+        
+        //initialize startupHelper
+        StartupHelper startupHelper = new StartupHelper(null, workspace_info, 
+        		username, password, show_Login, show_Workspace);
+        
         while (true)
         {
-            if (show_dialog)
-            {
-                final WorkspaceDialog workspace_dialog =
-                    new WorkspaceDialog(null, workspace_info, !force_prompt);
-                if (! workspace_dialog.prompt())
+            if (show_Workspace || show_Login)
+            {                
+                if (! startupHelper.openStartupDialog())
                     return false; // cancelled
+                
+                //get username and password from startup dialog
+                if(show_Login) {
+                	username = startupHelper.getUserName();
+                	password = startupHelper.getPassword();
+                }
             }
             // In case of errors, we will have to ask...
-            show_dialog = true;
+            show_Workspace = true;
 
             try
             {
@@ -307,6 +378,7 @@ public class Application implements IApplication
             }
             // by this point it has been determined that the workspace is
             // already in use -- force the user to choose again
+            show_Login = false;
             MessageDialog.openError(null,
                     org.csstudio.platform.workspace.Messages.Workspace_InUseErrorTitle, 
                     NLS.bind(org.csstudio.platform.workspace.Messages.Workspace_InUseError,
@@ -423,13 +495,8 @@ public class Application implements IApplication
         PluginActivator.getLogger().info(
                                        name + " " + version + ": " + instance); 
         
-        
-        SecurityFacade sf = SecurityFacade.getInstance();
-		String lastUser = Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,SecurityFacade.LOGIN_LAST_USER_NAME , "", null);
-		sf.setLoginCallbackHandler(new LoginDialog(null,lastUser));
-		if (sf.isLoginOnStartupEnabled()) {
-			sf.authenticateApplicationUser();
-		}
+        //authenticate user
+        StartupAuthenticationHelper.authenticate(username, password);
         
         // Run the workbench
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
