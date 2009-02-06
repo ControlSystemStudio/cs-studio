@@ -25,6 +25,7 @@ package org.csstudio.platform.ui.security;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.ui.dialogs.LoginDialog;
+import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
@@ -34,6 +35,7 @@ import org.eclipse.swt.widgets.Display;
  * dialog to the user.
  * 
  * @author Joerg Rathlev
+ * @author Xihui Chen
  */
 public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 
@@ -50,7 +52,14 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 	/**
 	 * The user name that will be shown in the dialog when it opens.
 	 */
-	private String _defaultUserName;
+	private String _defaultUserName = null;
+	
+	/**
+	 * if this is not null, it will be used to pass the first time of authentication. 
+	 * If it failed, this will be set to null, so a login dialog will be popped up for user
+	 * reenter the password again.
+	 */
+	private String _defaultPassword = null;
 	
 	/**
 	 * Creates a new login callback handler.
@@ -65,10 +74,33 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 	 */
 	public UiLoginCallbackHandler(final String title, final String message, 
 			final String defaultUserName) {
-		_title = title;
-		_message = message;
-		_defaultUserName = defaultUserName;
+		this._title = title;
+		this._message = message;
+		this._defaultUserName = defaultUserName;
 	}
+	
+	/**
+	 * Creates a new login callback handler.
+	 * 
+	 * @param title
+	 *            the title of the login dialog.
+	 * @param message
+	 *            the message shown in the login dialog.
+	 * @param defaultUserName
+	 *            the user name that is preset in the dialog when it opens. Set
+	 *            this to <code>null</code> for no preset.
+	 * @param defaultPassword
+	 * 			  if this is not null, it will be used to pass the first time of authentication.   
+	 */
+	public UiLoginCallbackHandler(final String title, final String message, 
+			final String defaultUserName, final String defaultPassword) {
+		this._title = title;
+		this._message = message;
+		this._defaultUserName = defaultUserName;
+		this._defaultPassword = defaultPassword;
+	}
+	
+	
 	
 	/**
 	 * Displays a login dialog and returns the credentials that were entered by
@@ -80,24 +112,36 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 		// and the UI thread
 		final Credentials[] credentials = new Credentials[1];
 		
+		//if there is default user name and password provided, use them for authentication
+		if(_defaultUserName != null && _defaultPassword != null){ 			
+			WorkspaceIndependentStore.writeLastLoginUser(_defaultUserName);
+			credentials[0] = new Credentials(_defaultUserName, _defaultPassword);
+			_defaultPassword = null; //the default password should only be used once.
+			return credentials[0];
+		}
+			
 		// run the login dialog in the UI thread
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
 				LoginDialog dialog = new LoginDialog(
 						Display.getCurrent().getActiveShell(),
-						_title, _message, _defaultUserName);
+						_title, _message, WorkspaceIndependentStore.readLastLoginUser());
 				if (dialog.open() == Window.OK) {
 					credentials[0] = dialog.getLoginCredentials();
 				}
 			}
 		});
+		
 		return credentials[0];
+		
+			
 	}
 
 	/**
 	 * Displays an error message to the user.
 	 */
 	public void signalFailedLoginAttempt() {
+		
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
 				MessageDialog.openError(null, _title,
