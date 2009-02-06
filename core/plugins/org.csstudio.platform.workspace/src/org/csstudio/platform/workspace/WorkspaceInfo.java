@@ -1,5 +1,6 @@
 package org.csstudio.platform.workspace;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -67,7 +68,12 @@ public class WorkspaceInfo
             return; // OK, recent_workspaces.get(0) is the one we want
         
         // No previous info, or we're asked to use initial_default in any case:
-        setSelectedWorkspace(initial_default.getFile());
+        if(initial_default != null)
+        	setSelectedWorkspace(initial_default.getFile());
+        else
+        	//if no default workspace provided, use "@usr.home/CSS-Workspaces/Default"
+        	setSelectedWorkspace(System.getProperty("user.home") //$NON-NLS-1$
+                    + File.separator + "CSS-Workspaces" + File.separator + "Default");
     }
 
     /** Read previous settings from preference store */
@@ -110,14 +116,16 @@ public class WorkspaceInfo
     }
     
     /** Set the selected workspace, add to list of recent workspaces */
-    void setSelectedWorkspace(String workspace)
+    public void setSelectedWorkspace(String workspace)
     {
         // Add to top of list
         recent_workspaces.add(0, normalize(workspace));
         // Remove duplicates of this workspace down the list
-        for (int i=1 /* ! */; i<recent_workspaces.size(); ++i)
-            if (recent_workspaces.get(i).equals(workspace))
+        for (int i=1 /* ! */; i<recent_workspaces.size();i++)
+            if (recent_workspaces.get(i).equals(normalize(workspace))) {
                 recent_workspaces.remove(i);
+                i--;
+            }
         // Limit list size
         while (recent_workspaces.size() > RECENT_WORKSPACE_MAX)
             recent_workspaces.remove(recent_workspaces.size() - 1);
@@ -149,7 +157,7 @@ public class WorkspaceInfo
     }
 
     /** Show workspace dialog be shown again? */
-    void setShowDialog(boolean show)
+    public void setShowDialog(boolean show)
     {
         show_dialog = show;
     }
