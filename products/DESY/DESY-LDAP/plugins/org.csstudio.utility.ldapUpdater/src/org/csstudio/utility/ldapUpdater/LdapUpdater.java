@@ -22,6 +22,13 @@
 /*
  * $Id$
  */
+
+/*
+ * todo : functionallity to delete one IOC's ldap data, but NOT the header info
+ * should be startable via xmpp, prompt asking for IOCname.
+ */
+
+
 package org.csstudio.utility.ldapUpdater;
 
 // import Entry;
@@ -98,7 +105,14 @@ public class LdapUpdater {
 		}
 		busy=true;
         CentralLogger.getInstance().info(this, "start" );
+    	long startTime = System.currentTimeMillis();
+        long endTime=0L;
+        long deltaTime;
+        myDateTimeString dateTimeString = new myDateTimeString();
+        String now= dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", startTime);
 
+        CentralLogger.getInstance().info(this, "-------------------------------------------------------------------" );
+        CentralLogger.getInstance().info(this, "start" + " at " + now + "  ( " + startTime +" )" );
         
 
     	_model=new DataModel();
@@ -109,14 +123,6 @@ public class LdapUpdater {
     	
     	ReadLdapDatabase ldapReader=new ReadLdapDatabase(_model);
     	   	
-    	long startTime = System.currentTimeMillis();
-        long endTime=0L;
-        long deltaTime;
-        myDateTimeString dateTimeString = new myDateTimeString();
-        String now= dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", startTime);
-
-        CentralLogger.getInstance().info(this, "-------------------------------------------------------------------" );
-        CentralLogger.getInstance().info(this, "start" + " at " + now + "  ( " + startTime +" )" );
 
         ldapReader.readLdap();        
         hashReader.readFile();

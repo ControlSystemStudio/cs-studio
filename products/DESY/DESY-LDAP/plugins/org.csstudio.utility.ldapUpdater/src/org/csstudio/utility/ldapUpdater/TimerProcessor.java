@@ -3,6 +3,9 @@ package org.csstudio.utility.ldapUpdater;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
+
 public class TimerProcessor {
 
 	private static long delay;
@@ -29,7 +32,9 @@ public class TimerProcessor {
  				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				CentralLogger.getInstance().info  (this, "LdapUpdater is busy" );
+				CentralLogger.getInstance().error (this, "LdapUpdater is busy" );
 			}
         }
     }

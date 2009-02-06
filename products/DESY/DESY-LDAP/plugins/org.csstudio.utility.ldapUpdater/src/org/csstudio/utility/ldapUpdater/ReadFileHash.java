@@ -34,7 +34,8 @@ public class ReadFileHash {
 			fr = new BufferedReader(new FileReader(_prefs.getString(Activator.getDefault().getPluginId(),
     	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null) + histfile ));
 
-        String line;
+			String pathFile=LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + histfile ;
+			String line;
         while ((line = fr.readLine()) != null) {
             if (line.length() > 0) {
 //              CentralLogger.getInstance().info(this,line);
@@ -59,10 +60,14 @@ public class ReadFileHash {
         }
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();	
+//			e.printStackTrace();	
+			CentralLogger.getInstance().error (this, "Error : File not Found(r) : " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + histfile );
+			_model.setSerror(_model.getSerror()+1);			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_model.setSerror(_model.getSerror()+2);			
+			CentralLogger.getInstance().error (this, "I/O-Exception while handling " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + histfile );
 		}
 
         CentralLogger.getInstance().info(this, "IOC names in history-file : "+_histMap.size());

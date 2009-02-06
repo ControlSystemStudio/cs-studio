@@ -94,21 +94,29 @@ public class IocListReader {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-			System.out.println(e.getMessage());
+//			System.err.println("Error: " + e.getMessage());
+//			System.out.println("Error: " + e.getMessage());
+			_model.setSerror(_model.getSerror()+1);			
+			CentralLogger.getInstance().error(this, "File not Found : " + e.getMessage() ); 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		} finally {
+//			e.printStackTrace();
+//			System.err.println("Error: " + e.getMessage());
+//			System.out.println("Error: " + e.getMessage());
+			_model.setSerror(_model.getSerror()+2);			
+			CentralLogger.getInstance().error(this, "IOExeption : " + e.getMessage() ); 
+				} finally {
 			if (fr != null) {
 				try {
 					fr.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					System.out.println(e.getMessage());
-					System.out.println(e.toString());
+//					System.err.println("Error: " + e.getMessage());
+//					System.out.println("Error: " + e.getMessage());
+//					System.err.println("Error: " + e.toString());
+//					System.out.println("Error: " + e.toString());
+					CentralLogger.getInstance().error(this, "Error: " + e.getMessage() + e.toString()); 
 				}
 			}
 		}
@@ -158,7 +166,8 @@ public class IocListReader {
 																				// NIX.
 																				// warum
 																				// nicht?
-			System.out.println("from ioclist: " + ioc); 						// -------------> das tut, was es soll.
+//			System.out.println("from ioclist: " + ioc); 						// -------------> das tut, was es soll.
+			CentralLogger.getInstance().info(this, "from ioclist: " + ioc);		// -------------> das tut auch, was es soll. 						
 			String pathFile = _prefs.getString(Activator.getDefault()
 					.getPluginId(),
 					LdapUpdaterPreferenceConstants.IOC_DBL_DUMP_PATH, "", null)
@@ -175,25 +184,33 @@ public class IocListReader {
 				}
 				ioc.setIocRecordNames(temp);
 			} catch (FileNotFoundException e) {
-				System.err.println(e.getMessage());
-				System.out.println(e.getMessage());
+				_model.setSerror(_model.getSerror()+1);			
+				CentralLogger.getInstance().error(this, "File not Found : " + pathFile );
+//				System.err.println(e.getMessage());
+//				System.out.println(e.getMessage());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.out.println(e.getMessage());
+				_model.setSerror(_model.getSerror()+2);			
+				CentralLogger.getInstance().error (this, "I/O-Execption while trying to read " + pathFile );
+//				e.printStackTrace();
+//				System.out.println(e.getMessage());
+//				System.out.println(e.getMessage());
 			} finally {
 				if (fr != null) {
 					try {
 						fr.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
-						System.out.println(e.getMessage());
+//						e.printStackTrace();
+//						System.err.println("error: " + e.getMessage());
+//						System.out.println("error: " + e.getMessage());
+						_model.setSerror(_model.getSerror()+2);			
+						CentralLogger.getInstance().error (this, "I/O-Execption while trying to close " + pathFile );
 					}
 				}
 			}
 		}
-		CentralLogger.getInstance().info(this, "all record names read");
+		CentralLogger.getInstance().info(this, "all record names read.");
 	}
 
 }

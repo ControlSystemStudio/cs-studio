@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldapUpdater.model.DataModel;
+
 // import sun.security.krb5.internal.crypto.e;
 
 // junit.samples.VectorTest.java
@@ -25,6 +28,8 @@ import java.util.regex.Pattern;
  * @since 04.2008
  */
 public class accessFile {
+
+	private DataModel _model;
 
 /**
  * 
@@ -82,10 +87,20 @@ public class accessFile {
             }
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+//          e.printStackTrace();
+//			System.err.println("Error: " + e.getMessage());
+//			System.out.println("Error: " + e.getMessage());
+			CentralLogger.getInstance().error(this, "File not Found : " + e.getMessage() );
+			_model.setSerror(_model.getSerror()+1);		
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+//            e.printStackTrace();
+//			System.err.println("Error: " + e.getMessage());
+//			System.out.println("Error: " + e.getMessage());
+//			System.err.println("Error: " + e.toString());
+//			System.out.println("Error: " + e.toString());
+			_model.setSerror(_model.getSerror()+2);			
+			CentralLogger.getInstance().error(this, "IOExeption: " + e.getMessage() + e.toString() ); 
         }
         return firstParameter;
     }

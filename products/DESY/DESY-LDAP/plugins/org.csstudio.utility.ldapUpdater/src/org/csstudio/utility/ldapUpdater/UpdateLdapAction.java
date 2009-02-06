@@ -1,6 +1,7 @@
 package org.csstudio.utility.ldapUpdater;
 
 import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.logging.CentralLogger;
 
 public class UpdateLdapAction implements IAction {
 
@@ -15,7 +16,8 @@ public class UpdateLdapAction implements IAction {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			CentralLogger.getInstance().error (this, "Exception while try to start run" );		
 		}
 		return ("ok");
 	}

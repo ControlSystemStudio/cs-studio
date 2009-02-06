@@ -33,7 +33,7 @@ public class UpdateComparator {
 	public void compareLDAPWithIOC() {
 		int ind = 0;
 		Boolean _recordsWritten=false;
-		
+		Boolean error_found=true;
 		for (IOC ioc : _model.getIocList()) {
 			if (_model.getHistoryMap().get(ioc.getName()) != null) {
 				List<String> recordNames = ioc.getIocRecordNames();
@@ -52,11 +52,15 @@ public class UpdateComparator {
 							try {
 								directory.bind(f.toString(), null, afe); // = Record schreiben
 								CentralLogger.getInstance().info( this," Record geschrieben: \"" + ioc.getName()+ " - " + recordName + "\"");
+								ioc.set_mustWriteIOCToHistory(true);
+								error_found=false;
 							} catch (NamingException e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
+//								e.printStackTrace();
+								CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc.getName() + " " + recordName);
+								error_found=true;
 							}
-							ioc.set_mustWriteIOCToHistory(true);
+//							ioc.set_mustWriteIOCToHistory(true);
 						}
 					}
 				}
@@ -80,9 +84,12 @@ public class UpdateComparator {
 				try {
 					directory.bind(f.toString(), null, afe); // = iocNamen schreiben
 					CentralLogger.getInstance().info(this, "iocName geschrieben : " + ioc);
+					error_found=false;
 				} catch (NamingException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+//					e.printStackTrace();
+					CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc);
+					error_found=true;
 				}
 
 				// hier müssen die header-parameter geschrieben werden, zB epicsIPAddress, ...
@@ -96,33 +103,41 @@ public class UpdateComparator {
 				
 				// -------------------------------------------------------------------------
 				// dann alle recordNames dieses IOC in LDAP anlegen
-				List<String> recordNames2 = ioc.getIocRecordNames();
-				for (String recordName2 : recordNames2) {
-					ind = (recordName2.indexOf("+"))
-							+ (recordName2.indexOf("/"));
-					if (ind < 0) {
-						InLdap inLdap = new InLdap();
-						if (!inLdap.existRecord(ioc, recordName2)) {
-							// System.out.println(recordName2);
-							DirContext directory2 = Engine.getInstance().getLdapDirContext();
-							Formatter f2 = new Formatter();
-							f2.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
-											recordName2, ioc.getName(), ioc.getGroup());
-							Attributes afe2 = attributesForEntry("epicsRecord","eren", recordName2);
-							try {
-								directory2.bind(f2.toString(), null, afe2); // = ioc records schreiben
-								CentralLogger.getInstance().info(this,
-										"Record geschrieben!" + ioc.getName() + " - " + recordName2);
-							} catch (NamingException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+				if  (!error_found) {
+
+					List<String> recordNames2 = ioc.getIocRecordNames();
+					for (String recordName2 : recordNames2) {
+						ind = (recordName2.indexOf("+"))
+						+ (recordName2.indexOf("/"));
+						if (ind < 0) {
+							InLdap inLdap = new InLdap();
+							if (!inLdap.existRecord(ioc, recordName2)) {
+								// System.out.println(recordName2);
+								DirContext directory2 = Engine.getInstance().getLdapDirContext();
+								Formatter f2 = new Formatter();
+								f2.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
+												recordName2, ioc.getName(), ioc.getGroup());
+								Attributes afe2 = attributesForEntry("epicsRecord","eren", recordName2);
+								try {
+										directory2.bind(f2.toString(), null, afe2); // = ioc records schreiben
+										CentralLogger.getInstance().info(this,
+												"Record geschrieben!" + ioc.getName() + " - " + recordName2);
+										error_found=false;
+								} catch (NamingException e) {
+									// TODO Auto-generated catch block
+//									e.printStackTrace();
+									CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc.getName() + " " + recordName2);
+									error_found=true;
+								}
 							}
+							ioc.set_mustWriteIOCToHistory(true);
 						}
-						ioc.set_mustWriteIOCToHistory(true);
 					}
 				}
 			}
-			if ( ioc.is_mustWriteIOCToHistory()) { AppendLineToHistfile(ioc.getName()); }
+			if  (!error_found) {
+				if ( ioc.is_mustWriteIOCToHistory()) { AppendLineToHistfile(ioc.getName()); }
+			}
 		}
 	}
 
@@ -162,14 +177,15 @@ public class UpdateComparator {
 			now = now / 1000; // now is now in seconds
 			
 			String _iocname = iocname;
-			do  { _iocname = _iocname.concat ( " " ); } while (_iocname.length() < 16);
+			do  { _iocname = _iocname.concat ( " " ); } while (_iocname.length() < 20);
             
 			fw.append ( _iocname + "xxx     " + now + "   " + ymd_hms + System.getProperty("line.separator" ) ); 
 			fw.flush();
 			fw.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			CentralLogger.getInstance().error (this, "I/O-Exception while try to append a line to " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + "" + null + "history.dat");
 		}
 	}
 }
