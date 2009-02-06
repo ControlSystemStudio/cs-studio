@@ -21,18 +21,16 @@
  */
  package org.csstudio.platform.internal.usermanagement;
 
-import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.ILoginModule;
-import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
+import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /** The LoginContext performs the authentication by invoking
  *  the Login module and storing the authenticated user.
@@ -41,6 +39,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
  *  
  *  @author Original author wasn't listed
  *  @author Kay Kasemir
+ *  @author Xihui Chen
  */
 @SuppressWarnings("nls")
 public final class LoginContext {
@@ -74,7 +73,7 @@ public final class LoginContext {
 			if (_user != null) {
 				CentralLogger.getInstance().getLogger(this).info(
 						"User logged in: " + _user.getUsername());
-				new InstanceScope().getNode(CSSPlatformPlugin.ID).put(SecurityFacade.LOGIN_LAST_USER_NAME, _user.getUsername());
+				WorkspaceIndependentStore.writeLastLoginUser(_user.getUsername());
 				RightsManagementService.getInstance().readRightsForUser(_user);
 			} else {
 				CentralLogger.getInstance().getLogger(this).info("Anonymous login");

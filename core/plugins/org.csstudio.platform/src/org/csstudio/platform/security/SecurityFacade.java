@@ -41,8 +41,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-import sun.reflect.generics.visitor.Reifier;
 
 /**
  * This Service executes instances of

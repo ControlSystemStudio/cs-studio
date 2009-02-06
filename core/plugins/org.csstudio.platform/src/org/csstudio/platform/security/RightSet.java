@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
-
 /**
  * A <code>RightSet</code> consists of an amount of <code>Rights</code> and
  * a name.
