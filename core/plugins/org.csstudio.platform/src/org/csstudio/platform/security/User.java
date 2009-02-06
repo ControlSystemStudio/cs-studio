@@ -29,9 +29,10 @@ import java.util.Map;
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class User {
-	private String _username;
-	private Map<String, Object> _attributes = new HashMap<String, Object>();
+public class User
+{
+    final private String _username;
+	final private Map<String, Object> _attributes = new HashMap<String, Object>();
 	
 	public User(String username) {
 		_username = username;
@@ -64,4 +65,11 @@ public class User {
 		return _attributes.get(key);
 	}
 	
+	/** @return String representation for debugging */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        return "User '" + _username + "'";
+    }
 }
