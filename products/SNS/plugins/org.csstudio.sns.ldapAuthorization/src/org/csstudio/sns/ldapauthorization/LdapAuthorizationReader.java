@@ -41,10 +41,8 @@ import org.csstudio.platform.security.Right;
 import org.csstudio.platform.security.RightSet;
 import org.csstudio.platform.security.User;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.osgi.util.NLS;
-
 
 /**
  * Reads a user's roles and groups from an LDAP directory, and the rights
@@ -57,14 +55,25 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("nls")
 public class LdapAuthorizationReader implements IAuthorizationProvider
 {
+    /** LDAP search context for users' rights */ 
+    private static final String USER_RIGHTS_CONTEXT = "ou=CSSGroupRole";
+
     /** LDAP Attribute that has the user name */
     private static final String USER_ATTRIB = "memberUid";
     
+    /** Tag in DN that's used as the 'Group' part of a Right */
+    final static String RIGHT_GROUP_TAG = "ou=";
+
+    /** Tag in DN that's used as the 'Role' part of a Right */
+    final static String RIGHT_ROLE_TAG = "cn=";
+
     /** Map of the rights associated with actions */
 	private Map<String, RightSet> actionsrights;
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
+	/** Given a user name, determine the user's rights,
+	 *  i.e. which roles the user has in which groups.
+	 *  @param user authenticated user name
+	 *  @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
 	 */
     public RightSet getRights(final User user)
 	{
@@ -88,7 +97,7 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 			final String filter = NLS.bind("({0}={1})", USER_ATTRIB, username);  
 			
 			final NamingEnumeration<SearchResult> results =
-				ctx.search("ou=CSSGroupRole", filter, ctrls);
+				ctx.search(USER_RIGHTS_CONTEXT, filter, ctrls);
 			while (results.hasMore())
 			{
 				final SearchResult r = results.next();
@@ -104,51 +113,57 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.security.IAuthorizationProvider#getRights(java.lang.String)
+	/** Determine the rights that are required to perform a given action
+	 *  @param actionId Action ID
+	 *  @see org.csstudio.platform.security.IAuthorizationProvider#getRights(java.lang.String)
 	 */
-	public RightSet getRights(String authId) {
-		synchronized (this) {
-			if (actionsrights == null) {
-				loadActionRightsFromLdap();
-			}
+	public RightSet getRights(final String actionId)
+	{
+		synchronized (this)
+		{
+			if (actionsrights == null)
+			    loadActionRightsFromLdap();
 		}
-		return actionsrights.get(authId);
+		return actionsrights.get(actionId);
 	}
 	
 	/**
 	 * Loads the actions' rights from LDAP.
 	 */
-	private void loadActionRightsFromLdap() {
+	private void loadActionRightsFromLdap()
+	{
 		actionsrights = new HashMap<String, RightSet>();
 		
-		try {
-			DirContext ctx = new InitialDirContext(createEnvironment());
+		try
+		{
+		    final DirContext ctx = new InitialDirContext(createEnvironment());
 			
-			SearchControls ctrls = new SearchControls();
+			final SearchControls ctrls = new SearchControls();
 			ctrls.setReturningObjFlag(false);
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			
-			String filter = "(objectClass=cssAuthorizeID)";
-			NamingEnumeration<SearchResult> results =
+			final String filter = "(objectClass=cssAuthorizeID)";
+			final NamingEnumeration<SearchResult> results =
 				ctx.search("ou=CSSAuthorizeID", filter, ctrls);
-			while (results.hasMore()) {
-				SearchResult r = results.next();
-				Attributes attributes = r.getAttributes();
-				Attribute auid = attributes.get("auid");
-				String authId = (String) auid.get();
-				Attribute groupRoleAttr = attributes.get("cssGroupRole");
+			while (results.hasMore())
+			{
+				final SearchResult r = results.next();
+				final Attributes attributes = r.getAttributes();
+				final Attribute auid = attributes.get("auid");
+				final String authId = (String) auid.get();
+				final Attribute groupRoleAttr = attributes.get("cssGroupRole");
 				
-				RightSet rights = new RightSet(authId);
+				final RightSet rights = new RightSet(authId);
 				parseGroupRoleAttr(groupRoleAttr, rights);
 				actionsrights.put(authId, rights);
 		
 			}
-			
 			CentralLogger.getInstance().debug(this, "Authorization " +
 					"information successfully loaded from LDAP directory.");
 			
-		} catch (NamingException e) {
+		}
+		catch (NamingException e)
+		{
 			CentralLogger.getInstance().error(this,
 					"Error loading authorization information from LDAP directory.", e);
 		}
@@ -173,15 +188,15 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 		}		
 	}
 
-
 	/**
 	 * Parses a search result into a right.
 	 * @param r the LDAP search result.
 	 */
-	private Right parseSearchResult(SearchResult r) {
-		String n = r.getName();
-		String group = n.substring(n.indexOf("ou=")+3);
-		String role = n.substring(n.indexOf("cn=")+3, n.indexOf(",ou="));
+	private Right parseSearchResult(final SearchResult r)
+	{
+	    final String dn = r.getName();
+	    final String group = dn.substring(dn.indexOf(RIGHT_GROUP_TAG)+3);
+		final String role = dn.substring(dn.indexOf(RIGHT_ROLE_TAG)+3, dn.indexOf("," + RIGHT_GROUP_TAG));
 		return new Right(role, group);
 	}
 
@@ -204,8 +219,14 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 		final Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, url);
-		env.put(Context.SECURITY_PRINCIPAL, user);
-		env.put(Context.SECURITY_CREDENTIALS, password);
+		if (user.length() <= 0  ||  password.length() <= 0)
+		    env.put(Context.SECURITY_AUTHENTICATION, "none");
+		else
+	    {
+		    env.put(Context.SECURITY_PRINCIPAL, user);
+	        env.put(Context.SECURITY_CREDENTIALS, password);
+	    }
+		
 		return env;
 	}
 }
