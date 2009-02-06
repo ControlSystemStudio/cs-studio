@@ -40,7 +40,9 @@ import org.csstudio.platform.security.IAuthorizationProvider;
 import org.csstudio.platform.security.Right;
 import org.csstudio.platform.security.RightSet;
 import org.csstudio.platform.security.User;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.osgi.util.NLS;
 
 
@@ -50,51 +52,56 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Joerg Rathlev
  * @author Xihui Chen
+ * @author Kay Kasemir
  */
-public class LdapAuthorizationReader implements IAuthorizationProvider {
-
-	/**
-	 * Map of the rights associated with actions.
-	 */
+@SuppressWarnings("nls")
+public class LdapAuthorizationReader implements IAuthorizationProvider
+{
+    /** LDAP Attribute that has the user name */
+    private static final String USER_ATTRIB = "memberUid";
+    
+    /** Map of the rights associated with actions */
 	private Map<String, RightSet> actionsrights;
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
 	 */
-	public RightSet getRights(User user) {
+    public RightSet getRights(final User user)
+	{
 		String username = user.getUsername();
 		// If the user was authenticated via Kerberos, the username may be a
 		// fully qualified name (name@EXAMPLE.COM). We only want the first
 		// part of the name.
-		if (username.contains("@")) {
+		if (username.contains("@"))
 			username = username.substring(0, username.indexOf('@'));
-		}
 		
-		RightSet rights = new RightSet("LDAP Rights");
-		try {
-			DirContext ctx = new InitialDirContext(createEnvironment());
+		final RightSet rights = new RightSet("LDAP Rights");
+		try
+		{
+		    final DirContext ctx = new InitialDirContext(createEnvironment());
 			
-			SearchControls ctrls = new SearchControls();
-			ctrls.setReturningAttributes(new String[] {"memberUid"});
+			final SearchControls ctrls = new SearchControls();
+			ctrls.setReturningAttributes(new String[] { USER_ATTRIB });
 			ctrls.setReturningObjFlag(true);
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			
-			// String filter = "(memberUid=" + username + ')'; //$NON-NLS-1$  
-			String filter = NLS.bind("(memberUid={0})", username); //$NON-NLS-1$  
+			final String filter = NLS.bind("({0}={1})", USER_ATTRIB, username);  
 			
-			NamingEnumeration<SearchResult> results =
+			final NamingEnumeration<SearchResult> results =
 				ctx.search("ou=CSSGroupRole", filter, ctrls);
-			while (results.hasMore()) {
-				SearchResult r = results.next();
+			while (results.hasMore())
+			{
+				final SearchResult r = results.next();
 				rights.addRight(parseSearchResult(r));
 			}
-		} catch (NamingException e) {
-			CentralLogger.getInstance().error(this,
-					"Error reading authorization for user: " + user, e);
+		}
+		catch (NamingException e)
+		{
+			CentralLogger.getInstance().getLogger(this).error(
+					"Error reading authorization for user: " + username, e);
 		}
 		return rights;
 	}
-	
 
 
 	/* (non-Javadoc)
@@ -178,22 +185,23 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 		return new Right(role, group);
 	}
 
-	/**
-	 * Creates the environment for the LDAP connection.
+	/** @return Environment for the LDAP connection,
+	 *          partially obtained from preferences
 	 */
-	private Hashtable<String, String> createEnvironment() {
-		Preferences prefs = Activator.getDefault().getPluginPreferences();
-		String url = prefs.getString(PreferenceConstants.LDAP_URL);
+	private Hashtable<String, String> createEnvironment()
+	{
+	    final IPreferencesService prefs = Platform.getPreferencesService();
+	    final String url = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.LDAP_URL, null, null);
 		String user = SecureStorage.retrieveSecureStorage(
 				Activator.PLUGIN_ID, PreferenceConstants.LDAP_USER);
-		if(user == null)
-			user = prefs.getString(PreferenceConstants.LDAP_USER);
+		if (user == null)
+			user = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.LDAP_USER, null, null);
 		String password = SecureStorage.retrieveSecureStorage(
 				Activator.PLUGIN_ID, PreferenceConstants.LDAP_PASSWORD);
-		if(password == null)
-			password = prefs.getString(PreferenceConstants.LDAP_PASSWORD);
+		if (password == null)
+			password = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.LDAP_PASSWORD, null, null);
 		
-		Hashtable<String, String> env = new Hashtable<String, String>();
+		final Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, url);
 		env.put(Context.SECURITY_PRINCIPAL, user);
