@@ -1,15 +1,19 @@
 package org.csstudio.apputil.text;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
 /** JUnit test for RegExHelper.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RegExHelperTest
 {
-    @SuppressWarnings("nls")
     @Test
     public void testRegexFromGlob()
     {
@@ -28,5 +32,14 @@ public class RegExHelperTest
 
         // PVs
         assertEquals("SCL_..RF:IOC.*:Load", RegExHelper.regexFromGlob("SCL_??RF:IOC*:Load"));
+    }
+    
+    @Test
+    public void testMatch()
+    {
+        final Pattern pattern =
+            Pattern.compile(RegExHelper.fullRegexFromGlob("me*MPS"));
+        assertTrue(pattern.matcher("Some_MPS:PV").matches());
+        assertFalse(pattern.matcher("Another_MPS:PV").matches());
     }
 }
