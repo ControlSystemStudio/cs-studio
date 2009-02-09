@@ -43,6 +43,7 @@
       <plugin id="org.csstudio.platform.libs.xmpp"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.workspace"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
