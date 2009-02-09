@@ -3,6 +3,7 @@ package org.csstudio.apputil.ui.jface.preference;
 
 import org.csstudio.apptuil.securestorage.SecureStorage;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -187,21 +188,27 @@ public class PasswordFieldEditor extends FieldEditor
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
-    protected void doLoad() {
-        if (textField != null) {
+    @SuppressWarnings("nls")
+    @Override
+    protected void doLoad()
+    {
+        if (textField != null)
+        {
         	String value = null;
-         	try {
-					value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
-					if(value == null)
-						value = getPreferenceStore().getString(getPreferenceName());
-				} catch (Exception e) {
-					CentralLogger.getInstance().getLogger(this).error(
+         	try
+         	{
+				value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
+				if(value == null)
+					value = getPreferenceStore().getString(getPreferenceName());
+         	}
+         	catch (Exception e)
+         	{
+				CentralLogger.getInstance().getLogger(this).error(
 							"Error in retrieving data from secure storage. " +
 							"The default preference value of _" +
 							getPreferenceName()+ "_ will be loaded.", e);				
-					value = getPreferenceStore().getString(getPreferenceName());
-				}        	
-        		    		
+				value = getPreferenceStore().getString(getPreferenceName());
+			}        	
 			textField.setText(value);
 			oldValue = value;
         }
@@ -222,11 +229,17 @@ public class PasswordFieldEditor extends FieldEditor
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
-    protected void doStore() {    	
-    	try {    		
-			SecureStorage.getNode(nodePath).put(getPreferenceName(), textField.getText(), encrypt);
-			SecureStorage.getNode(nodePath).flush();
-		} catch (Exception e) {
+    @Override
+    protected void doStore()
+    {    	
+    	try
+    	{    		
+			final ISecurePreferences node = SecureStorage.getNode(nodePath);
+            node.put(getPreferenceName(), textField.getText(), encrypt);
+			node.flush();
+		}
+    	catch (Exception e)
+    	{
 			CentralLogger.getInstance().getLogger(this).error(e);
 		}
     }
@@ -237,14 +250,17 @@ public class PasswordFieldEditor extends FieldEditor
      *
      * @return the error message, or <code>null</code> if none
      */
-    public String getErrorMessage() {
+    public String getErrorMessage()
+    {
         return errorMessage;
     }
 
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
-    public int getNumberOfControls() {
+    @Override
+    public int getNumberOfControls()
+    {
         return 2;
     }
 
