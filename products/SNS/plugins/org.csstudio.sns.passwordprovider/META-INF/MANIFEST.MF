@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SNS Password Provider
 Bundle-SymbolicName: org.csstudio.sns.passwordprovider;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.csstudio.sns.passwordprovider.Activator
 Bundle-Vendor: Xihui Chen
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.security

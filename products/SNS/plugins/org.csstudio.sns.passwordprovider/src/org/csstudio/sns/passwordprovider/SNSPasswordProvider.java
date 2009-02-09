@@ -1,21 +1,17 @@
 package org.csstudio.sns.passwordprovider;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import javax.crypto.spec.PBEKeySpec;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.provider.IPreferencesContainer;
 import org.eclipse.equinox.security.storage.provider.PasswordProvider;
 
+/** PasswordProvider for
+ *  extension point org.eclipse.equinox.security.secureStorage.
+ *  Generates a password without requiring user input
+ *  @author Xihui Chen
+ */
 public class SNSPasswordProvider extends PasswordProvider {
-
-	public SNSPasswordProvider() {
-		
-	}
-
 	@Override
 	public PBEKeySpec getPassword(IPreferencesContainer container,
 			int passwordType) {	
