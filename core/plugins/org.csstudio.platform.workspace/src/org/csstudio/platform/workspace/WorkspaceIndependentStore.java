@@ -7,7 +7,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.service.prefs.Preferences;
 
 /** To store preferences which are independent from workspace. 
- * 	These preferences are stored at <code>@user.dir/configuration/.settings</code>
+ * 	These preferences are stored at <code>Install_Location/configuration/.settings</code>
  *  You can add your own preference by inheriting this class
  *  @author Xihui Chen
  */

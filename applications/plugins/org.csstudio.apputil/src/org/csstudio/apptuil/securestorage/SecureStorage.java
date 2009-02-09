@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 
@@ -21,7 +22,8 @@ public class SecureStorage {
 	 */
 	public static String retrieveSecureStorage(String nodePath, String key) {
     	try {
-    		File file = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"secure_storage");
+    		URL secureFileLoc = new URL(Platform.getInstallLocation().getURL()+"secure_storage");
+    		File file = new File(secureFileLoc.toURI());
     		if(file.exists()) {
 	        	URL url = file.toURI().toURL();    	
 	        	ISecurePreferences root = SecurePreferencesFactory.open(url, null);
@@ -50,10 +52,8 @@ public class SecureStorage {
 	 * @throws Exception
 	 */
 	public static ISecurePreferences getNode(String nodePath) throws Exception {
-	    	File file = new File(System.getProperty("user.dir") + 
-	    			System.getProperty("file.separator")+"secure_storage");
-	        URL url = file.toURI().toURL();    	
-	        ISecurePreferences root = SecurePreferencesFactory.open(url, null);
+			URL secureFileLoc = new URL(Platform.getInstallLocation().getURL()+"secure_storage"); 	
+	        ISecurePreferences root = SecurePreferencesFactory.open(secureFileLoc, null);
 	    	if(root == null)	
 	    		throw new Exception("Unable to get root node of secure storage");
 		    return root.node(nodePath);    		
