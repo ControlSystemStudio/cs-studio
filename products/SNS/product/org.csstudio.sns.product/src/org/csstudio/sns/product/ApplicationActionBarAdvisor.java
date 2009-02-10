@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
+import org.csstudio.platform.ui.internal.actions.LogoutAction;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
@@ -14,6 +15,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -23,14 +25,21 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.part.CoolItemGroupMarker;
 
+
 /** Create workbench window actions, menu bar, coolbar.
  *  @author Kay Kasemir
  *  @author Alexander Will provided most of the hints
  *          in the CssWorkbenchAdvisor code
+ *  @author Xihui Chen
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
-    /** ID of CSS SNS Menu */
+    /**
+     * Group ID of user toolbar
+     */
+    private static final String CSS_Toolbar_USER = "user"; //$NON-NLS-1$
+
+	/** ID of CSS SNS Menu */
     private static final String CSS_MENU_WEB = "web"; //$NON-NLS-1$
     
     private IAction create_new;
@@ -39,6 +48,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IAction save;
     private IAction save_as;
     private IAction save_all;
+    private IAction logout;
     private IAction quit;
     private IAction new_window;
     private IContributionItem open_windows;
@@ -79,6 +89,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         save_all = ActionFactory.SAVE_ALL .create(window);
         register(save_all);
+        
+        logout = new LogoutAction(window);
+        register(logout);
         
         quit = ActionFactory.QUIT.create(window);
         register(quit);
@@ -187,6 +200,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_file.add(new Separator());
         menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
         menu_file.add(new Separator());
+        menu_file.add(logout);
         menu_file.add(quit);
         menubar.add(menu_file);
     }
@@ -272,10 +286,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     protected void fillCoolBar(ICoolBarManager coolbar)
     {
         IToolBarManager file_bar = new ToolBarManager();
+        IToolBarManager user_bar = new ToolBarManager();   
+        coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
+        coolbar.add(new ToolBarContributionItem(user_bar, CSS_Toolbar_USER));
+        
         file_bar.add(create_new);
-        file_bar.add(save);
+        file_bar.add(save);       
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
         file_bar.add(new Separator());
-        coolbar.add(file_bar);
+        
+        user_bar.add(new CoolItemGroupMarker("css_login"));
+        user_bar.add(logout);
+       
     }
+    
 }

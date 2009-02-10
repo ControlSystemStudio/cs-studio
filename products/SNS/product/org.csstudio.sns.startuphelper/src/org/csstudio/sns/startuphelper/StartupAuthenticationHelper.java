@@ -1,5 +1,6 @@
 package org.csstudio.sns.startuphelper;
 
+import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.security.UiLoginCallbackHandler;
 
@@ -14,9 +15,14 @@ import org.csstudio.platform.ui.security.UiLoginCallbackHandler;
 public class StartupAuthenticationHelper {
 
 	public static void authenticate(final String username, final String password){
+		Credentials defaultCredentials;
+		if(username == null)
+			defaultCredentials = Credentials.ANONYMOUS;
+		else
+			defaultCredentials = new Credentials(username, password);
     	final SecurityFacade sf = SecurityFacade.getInstance();
 		sf.setLoginCallbackHandler(new UiLoginCallbackHandler(Messages.StartupAuthenticationHelper_Login, 
-				Messages.StartupAuthenticationHelper_LoginTip, username, password));		
+				Messages.StartupAuthenticationHelper_LoginTip, defaultCredentials));		
 		sf.authenticateApplicationUser();	
 	}
 	

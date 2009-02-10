@@ -28,7 +28,7 @@
  * as possible to prevent passwords from being kept in memory
  * unnecessarily.
  *
- * @author Anze Vodovnik, Jörg Rathlev
+ * @author Anze Vodovnik, Jörg Rathlev, Xihui Chen
  */
 public final class Credentials {
 
@@ -41,6 +41,12 @@ public final class Credentials {
 	 * The password.
 	 */
 	private String _password;
+	
+	/**
+	 * Anonymous user's credentials
+	 */
+	final public static Credentials ANONYMOUS = 
+		new Credentials(null, null);
 	
 	/**
 	 * Creates a new {@code Credentials} object.

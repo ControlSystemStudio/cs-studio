@@ -92,22 +92,15 @@
       <actionSet
             id="org.eclipse.csstudio.ui.systemActions"
             label="System Actions"
-            visible="true">
-         <action
-               class="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
-               icon="icons/workspaceExplorer.png"
-               id="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
-               label="%menuOpenExplorer"
-               menubarPath="file/fileEnd"
-               style="push"
-               toolbarPath="fileEnd"
-               tooltip="%menuOpenExplorer"/>                 
+            visible="true">         
          <action
                class="org.csstudio.platform.ui.internal.actions.LoginAction"
+               icon="icons/switch_user.png"
                id="org.csstudio.platform.ui.LoginAction"
                label="%menuLogin"
                menubarPath="file/fileEnd"
-               style="push">
+               style="push"
+               toolbarPath="user/css_login">
             <enablement>
                <systemProperty
                      name="org.csstudio.platform.loginAvailable"
@@ -127,6 +120,16 @@
                label="%exportPreferences"
                menubarPath="file/fileEnd"
                style="push">
+         </action>
+         <action
+               class="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
+               icon="icons/workspaceExplorer.png"
+               id="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
+               label="%menuOpenExplorer"
+               menubarPath="file/fileEnd"
+               style="push"
+               toolbarPath="file/fileEnd"
+               tooltip="%menuOpenExplorer"> 
          </action>
       </actionSet>
    </extension>

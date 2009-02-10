@@ -24,12 +24,14 @@
 
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
-import org.csstudio.platform.security.SecurityFacade;
-import org.eclipse.core.runtime.Platform;
+import org.csstudio.platform.workspace.Messages;
+import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -48,7 +50,7 @@ import org.eclipse.swt.widgets.Text;
  * and may not work correctly if called in another thread. Future versions of
  * this class will no longer implement <code>ILoginCallbackHandler</code>.</p>
  * 
- * @author Alexander Will, Jörg Rathlev, Anže Vodovnik
+ * @author Alexander Will, Jörg Rathlev, Anže Vodovnik, Xihui Chen
  */
 public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
 
@@ -62,6 +64,10 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 */
 	private Text _password;
 	
+	/**
+	 * checkbox to show "Login as anonymous"
+	 */
+	private Button _loginAnonymous;
 	/**
 	 * Checkbox for option to remember username and password.
 	 */
@@ -86,6 +92,8 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * The message displayed in the dialog.
 	 */
 	private final String _message;
+
+	
 	
 	/**
 	 * Creates a new login dialog.
@@ -161,7 +169,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 
 		// user name
 		Label label = new Label(contents, SWT.NONE);
-		label.setText("User name:");
+		label.setText(Messages.LoginDialog_UserName);
 		_username = new Text(contents, SWT.BORDER | SWT.FLAT);
 
 		_username.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -170,9 +178,30 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		
 		// password
 		label = new Label(contents, SWT.NONE);
-		label.setText("Password:");
+		label.setText(Messages.LoginDialog_Password);
 		_password = new Text(contents, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
 		_password.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		
+		// remember password checkbox (invisible by default)
+		_loginAnonymous = new Button(contents, SWT.CHECK);
+		_loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
+		_loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+		_loginAnonymous.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(_loginAnonymous.getSelection()) {
+					_username.setText(Messages.LoginDialog_Anonymous);
+					_password.setText(""); //$NON-NLS-1$
+					_username.setEnabled(false);
+					_password.setEnabled(false);
+				} else {
+					_username.setText(_lastUser != null ? _lastUser : ""); //$NON-NLS-1$
+					_username.setEnabled(true);
+					_password.setEnabled(true);
+				}
+			}
+		});
+		
 		
 		// remember password checkbox (invisible by default)
 		_rememberLogin = new Button(contents, SWT.CHECK);
@@ -218,10 +247,13 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final void okPressed() {
-		_credentials = new Credentials(this._username.getText(), 
-										this._password.getText());
-		Platform.getPreferencesService().getRootNode().put(Platform.getPreferencesService().getRootNode().get(SecurityFacade.LOGIN_LAST_USER_NAME, ""), this._username.getText());
+	protected final void okPressed() {		
+		if(_loginAnonymous.getSelection())
+			_credentials = Credentials.ANONYMOUS;
+		else {
+			_credentials = new Credentials(this._username.getText(), this._password.getText());
+			WorkspaceIndependentStore.writeLastLoginUser(this._username.getText());
+		}
 		// reset the username & password field
 		_username = null;
 		_password = null;

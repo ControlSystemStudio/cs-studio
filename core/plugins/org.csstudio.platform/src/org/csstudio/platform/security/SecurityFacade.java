@@ -50,7 +50,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * get the current instance of the IRights- and IUserManagement.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
- * & Jörg Rathlev & Anze Vodovnik
+ * & Jörg Rathlev & Anze Vodovnik & Xihui Chen
  */
 public final class SecurityFacade {
 
@@ -189,6 +189,14 @@ public final class SecurityFacade {
 	public void setLoginCallbackHandler(final ILoginCallbackHandler handler) {
 		_loginCallbackHandler = handler;
 	}
+	
+	/**
+	 * get the currently registered LoginCallbackHandler
+	 * @param handler the handler.
+	 */
+	public ILoginCallbackHandler getRegisteredLoginCallbackHandler() {
+		return _loginCallbackHandler;
+	}
 
 	/**
 	 * Checks if the current user has the permission referenced by the given ID.
@@ -269,6 +277,7 @@ public final class SecurityFacade {
 						"User management event listener threw unexpected RuntimeException", e);
 			}
 		}
+		
 	}
 	
 	/**

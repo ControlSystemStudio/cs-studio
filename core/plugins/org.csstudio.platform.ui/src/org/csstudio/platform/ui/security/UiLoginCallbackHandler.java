@@ -50,16 +50,11 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 	private String _message;
 	
 	/**
-	 * The user name that will be shown in the dialog when it opens.
-	 */
-	private String _defaultUserName = null;
-	
-	/**
 	 * if this is not null, it will be used to pass the first time of authentication. 
 	 * If it failed, this will be set to null, so a login dialog will be popped up for user
 	 * reenter the password again.
 	 */
-	private String _defaultPassword = null;
+	private Credentials _defaultCredentials = null;
 	
 	/**
 	 * Creates a new login callback handler.
@@ -68,15 +63,11 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 	 *            the title of the login dialog.
 	 * @param message
 	 *            the message shown in the login dialog.
-	 * @param defaultUserName
-	 *            the user name that is preset in the dialog when it opens. Set
-	 *            this to <code>null</code> for no preset.
 	 */
-	public UiLoginCallbackHandler(final String title, final String message, 
-			final String defaultUserName) {
+	public UiLoginCallbackHandler(final String title, final String message) {
 		this._title = title;
 		this._message = message;
-		this._defaultUserName = defaultUserName;
+
 	}
 	
 	/**
@@ -93,11 +84,10 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 	 * 			  if this is not null, it will be used to pass the first time of authentication.   
 	 */
 	public UiLoginCallbackHandler(final String title, final String message, 
-			final String defaultUserName, final String defaultPassword) {
+			final Credentials defaultCredentials) {
 		this._title = title;
 		this._message = message;
-		this._defaultUserName = defaultUserName;
-		this._defaultPassword = defaultPassword;
+		this._defaultCredentials = defaultCredentials;
 	}
 	
 	
@@ -112,11 +102,16 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
 		// and the UI thread
 		final Credentials[] credentials = new Credentials[1];
 		
-		//if there is default user name and password provided, use them for authentication
-		if(_defaultUserName != null && _defaultPassword != null){ 			
-			WorkspaceIndependentStore.writeLastLoginUser(_defaultUserName);
-			credentials[0] = new Credentials(_defaultUserName, _defaultPassword);
-			_defaultPassword = null; //the default password should only be used once.
+		//if there were default user name and password provided, use them for authentication
+		if(_defaultCredentials != null){			
+			//Anonymous login
+			if(_defaultCredentials == Credentials.ANONYMOUS) {				
+				credentials[0] = Credentials.ANONYMOUS;			
+			} else {
+				WorkspaceIndependentStore.writeLastLoginUser(_defaultCredentials.getUsername());
+				credentials[0] = _defaultCredentials;	
+			}
+			_defaultCredentials = null; //the default credentials should only be used once.		
 			return credentials[0];
 		}
 			

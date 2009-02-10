@@ -80,6 +80,8 @@ public final class LoginContext {
 			}
 		} else {
 			_user = null;
+			CentralLogger.getInstance().getLogger(this).warn("No login module provided. " +
+					"The system acts as anonymous login");
 		}
 	}
 

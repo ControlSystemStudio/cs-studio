@@ -180,7 +180,7 @@ public class StartupDialog extends TitleAreaDialog {
 		
 		if(showLogin) {
 			Group loginGroup = new Group(contents, SWT.SHADOW_ETCHED_IN);
-			loginGroup.setText(Messages.StartupDialog_Login);
+			loginGroup.setText(Messages.LoginDialog_Login);
 			createLoginSection(loginGroup);
 		}
 		
@@ -251,7 +251,7 @@ public class StartupDialog extends TitleAreaDialog {
 		
 		// user name
 		Label label = new Label(group, SWT.NONE);
-		label.setText(Messages.StartupDialog_UserName);
+		label.setText(Messages.LoginDialog_UserName);
 		_usernameText = new Text(group, SWT.BORDER | SWT.FLAT);
 
 		_usernameText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -260,20 +260,20 @@ public class StartupDialog extends TitleAreaDialog {
 		
 		// password
 		label = new Label(group, SWT.NONE);
-		label.setText(Messages.StartupDialog_Password);
+		label.setText(Messages.LoginDialog_Password);
 		_passwordText = new Text(group, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
 		_passwordText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_passwordText.setText(defaultPassword != null ? defaultPassword : ""); //$NON-NLS-1$
 		
 		// remember password checkbox (invisible by default)
 		_loginAnonymous = new Button(group, SWT.CHECK);
-		_loginAnonymous.setText(Messages.StartupDialog_LoginAnonymous);
+		_loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
 		_loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 		_loginAnonymous.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if(_loginAnonymous.getSelection()) {
-					_usernameText.setText(Messages.StartupDialog_Anonymous);
+					_usernameText.setText(Messages.LoginDialog_Anonymous);
 					_passwordText.setText(""); //$NON-NLS-1$
 					_usernameText.setEnabled(false);
 					_passwordText.setEnabled(false);
@@ -301,10 +301,15 @@ public class StartupDialog extends TitleAreaDialog {
 	@Override
 	protected final void okPressed() {
 		if(showLogin) {
-			defaultUser = this._usernameText.getText();
-			defaultPassword = this._passwordText.getText();
-		}
-		
+			if(_loginAnonymous.getSelection()) { // Anonymous login
+				defaultUser = null;
+				defaultPassword = "";
+			}
+			else {
+				defaultUser = this._usernameText.getText();
+				defaultPassword = this._passwordText.getText();
+			}
+		}		
 		if(showWorkspace && !checkWorkspace())
 			return;
 		super.okPressed();

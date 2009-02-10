@@ -41,6 +41,7 @@ import org.csstudio.platform.securestore.SecureStore;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.ILoginModule;
+import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -108,24 +109,28 @@ public class JaasLoginModule implements ILoginModule {
 			
 			ch.credentials = handler.getCredentials();
 			if (ch.credentials != null) {
-				try {
-					loginCtx.login();  // this will call back to get the credentials
-					final Subject subject = loginCtx.getSubject();
-					user = subjectToUser(subject);
+				//Anonymous login
+				if(ch.credentials == Credentials.ANONYMOUS) {
 					loggedIn = true;
-					final SecureStore store = SecureStore.getInstance();
-					store.unlock(user.getUsername(),
-							ch.credentials.getPassword());
-				} catch (LoginException e) {
-					// Note: LoginContext unfortunately does not throw a
-					// more specific exception than LoginException.
-					
-					handler.signalFailedLoginAttempt();
-					logger.info("Login failed", e);
+				} else {	//real login			
+					try {
+						loginCtx.login();  // this will call back to get the credentials
+						final Subject subject = loginCtx.getSubject();
+						user = subjectToUser(subject);
+						loggedIn = true;
+						final SecureStore store = SecureStore.getInstance();
+						store.unlock(user.getUsername(),
+								ch.credentials.getPassword());
+					} catch (LoginException e) {
+						// Note: LoginContext unfortunately does not throw a
+						// more specific exception than LoginException.						
+						handler.signalFailedLoginAttempt();
+						logger.info("Login failed", e);
+					}
 				}
-			} else {
-				// no credentials -> anonymous login
+			} else { //user canceled, keep the current user as it was
 				loggedIn = true;
+				user = SecurityFacade.getInstance().getCurrentUser();
 			}
 		}
 		return user;
