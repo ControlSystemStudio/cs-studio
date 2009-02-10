@@ -7,6 +7,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="libs/comm.jar" sourcepath="org.csstudio.ams.connector.smssrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="libs/log4j.jar" sourcepath="org.csstudio.ams.connector.smssrc.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

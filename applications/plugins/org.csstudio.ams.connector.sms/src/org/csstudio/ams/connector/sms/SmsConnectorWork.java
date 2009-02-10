@@ -42,6 +42,7 @@ import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.internal.SampleService;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.smslib.InboundMessage;
@@ -397,7 +398,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 strSimPin[i] = (strSimPin[i] == null) ? "" : strSimPin[i];
             }
                         
-            modemService = new Service();
+            modemService = new Service(CentralLogger.getInstance().getLogger(this));
             
             for(int i = 0;i < modemCount;i++)
             {
