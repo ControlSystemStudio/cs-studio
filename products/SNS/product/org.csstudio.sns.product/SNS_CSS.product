@@ -49,7 +49,7 @@
       <feature id="org.csstudio.sns.feature.applications" version="0.0.0"/>
       <feature id="org.csstudio.sns.feature.core" version="0.0.0"/>
       <feature id="org.csstudio.sns.feature.eclipse" version="0.0.0"/>
-      <feature id="org.csstudio.sns.feature.optional" version="1.0.15"/>
+      <feature id="org.csstudio.sns.feature.optional" version="0.0.0"/>
    </features>
 
 </product>
