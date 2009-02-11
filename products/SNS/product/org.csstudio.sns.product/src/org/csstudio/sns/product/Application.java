@@ -1,8 +1,9 @@
 package org.csstudio.sns.product;
 
-import java.io.Console;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Dictionary;
 
@@ -83,8 +84,8 @@ public class Application implements IApplication
     private static final String PASSWORD = "-p"; //$NON-NLS-1$
     
     /** user name and password for startup login*/
-    String username = null;
-    String password = null;
+    private String username = null;
+    private String password = null;
     
     
     /** {@inheritDoc} */
@@ -184,18 +185,13 @@ public class Application implements IApplication
                     }
                     if (password == null)
                     {   
-                    	 Console cons = System.console();
-                    	 char[] passwd;
-                    	 if (cons != null &&
-                    	     (passwd = cons.readPassword("[%s]", "Password:")) != null) {
-                    		 password = passwd.toString();
-                    	 } else {      	 
-                    		 System.out.println("Error: no console associated with current JVM." +
-                    		 		"You have to input your password in the startup dialog"); //$NON-NLS-1$                    		
-                    	 }      
+                        final BufferedReader console = 
+                            new BufferedReader(new InputStreamReader(System.in));
+                        System.out.print("Password: ");
+                        System.out.flush();
+                        password = console.readLine();
                     }
                 }
-                
             }
                 
             if (! checkInstanceLocation(force_workspace_prompt,
