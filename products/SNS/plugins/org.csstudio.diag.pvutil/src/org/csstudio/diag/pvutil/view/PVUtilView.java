@@ -138,8 +138,11 @@ public class PVUtilView extends ViewPart
     
     private void setPVFilter(final String pv_name)
     {
-        gui.getPVFilterText().setText(pv_name);
+    	gui.getDeviceFilterText().setText("");
+        model.setFECFilter("");
+    	gui.getPVFilterText().setText(pv_name);
         model.setPVFilter(pv_name);
+        
     }
 
     private void setDeviceFilter(final String device_name)
