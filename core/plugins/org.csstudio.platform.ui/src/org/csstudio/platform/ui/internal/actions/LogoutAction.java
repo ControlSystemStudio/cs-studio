@@ -46,15 +46,11 @@ public class LogoutAction extends Action implements IWorkbenchAction, IUserManag
 		sf.setLoginCallbackHandler(oldLCH);
 	}
 
-	@Override
 	public void dispose() {
 		SecurityFacade.getInstance().removeUserManagementListener(this);
 	}
 
-	@Override
 	public void handleUserManagementEvent(UserManagementEvent event) {
 		setEnabled(SecurityFacade.getInstance().getCurrentUser() != null);
 	}
-
-	
 }
