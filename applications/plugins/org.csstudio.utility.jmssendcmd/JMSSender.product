@@ -3,7 +3,6 @@
 
 <product name="JMSSender" id="org.csstudio.utility.jmssendcmd.product" application="org.csstudio.utility.jmssendcmd.main" useFeatures="false">
 
-
    <configIni use="default">
    </configIni>
 
@@ -13,14 +12,12 @@
 
    <windowImages/>
 
-
    <launcher name="JMSSender">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -32,6 +29,7 @@
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.workspace"/>
       <plugin id="org.csstudio.utility.jmssendcmd"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
