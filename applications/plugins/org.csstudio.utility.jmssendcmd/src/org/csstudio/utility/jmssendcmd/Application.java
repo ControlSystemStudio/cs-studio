@@ -5,12 +5,14 @@ import java.io.InputStreamReader;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
+import org.csstudio.apputil.args.EDMOption;
 import org.csstudio.apputil.args.StringOption;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /** Eclipse application for JMS 'Send' command
  *  @author Kay Kasemir
+ *  @author Delphy Armstrong
  */
 @SuppressWarnings("nls")
 public class Application implements IApplication
@@ -21,6 +23,7 @@ public class Application implements IApplication
     private static final String DEFAULT_APP = "JMSSender";
     private String application;
     private String type;
+   private boolean edm_mode;
     
     /** @see IApplication */
     public Object start(IApplicationContext context) throws Exception
@@ -43,8 +46,11 @@ public class Application implements IApplication
                 "-app", "Application type (default: " + DEFAULT_APP + ")", DEFAULT_APP);
         final StringOption text = new StringOption(parser,
                 "-text", "Send given text (default: read from stdin)", null);
+        final BooleanOption edm_mode = new BooleanOption(parser,
+              "-edm_mode", "Parse EDM 'put' log formatted input");
         final BooleanOption help = new BooleanOption(parser,
                 "-h", "Help");
+  
         try
         {
             parser.parse(args);
@@ -68,12 +74,13 @@ public class Application implements IApplication
         System.out.println("Application: " + app.get());
         this.type = type.get();
         application = app.get();
+        this.edm_mode = edm_mode.get();
         try
         {
             final JMSSender sender = new JMSSender(url.get(), jms_user.get(),
                     jms_pass.get(), topic.get());
             if (text.get() != null)
-                sender.send(type.get(), application, text.get());
+                sender.send(type.get(), application, text.get(), false);
             else
                 sendMsgFromInput(sender);
             sender.disconnect();
@@ -102,27 +109,7 @@ public class Application implements IApplication
                 final String text = in.readLine();
                 if (text == null)
                     break;
-                // TODO Option to decode more message properties from input.
-                //
-                // EDM will send text lines with tag/value pairs,
-                // one message per line:
-                // user="..." host="..." dsp="..."  <more tags>\n
-                // user="..." host="..." dsp="..."  <more tags>\n
-                //
-                // Meaning of the tags:
-                // user = user name
-                // host = host name
-                // dsp = X Display name
-                // name = pv name
-                // old = old pv value
-                // new = new pv value
-                // ssh = "remote-ip remote-port local-ip local-port"
-                //
-                // Example:
-                // user="sinclair" host="orib36"
-                // ssh="::ffff:192.168.18.51 43902 ffff:160.91.72.139 22"
-                // dsp=":0.0" name="orib36:ao0" old="8.131325" new="8.231325"
-                sender.send(type, application, text);
+                sender.send(type, application, text, edm_mode);
             }
         }
         catch (Exception ex)

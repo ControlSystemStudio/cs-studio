@@ -16,6 +16,7 @@ import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
 /** Send messages (MapMessage) to JMS
  *  @author Kay Kasemir
+ *  @author Delphy Armstrong
  */
 @SuppressWarnings("nls")
 public class JMSSender implements ExceptionListener
@@ -76,17 +77,38 @@ public class JMSSender implements ExceptionListener
      *  @param type Message TYPE
      *  @param application Message APPLICATION
      *  @param text Message TEXT
+    * @param edm_mode 
      *  @throws Exception on error
      */
     public void send(final String type, final String application,
-            final String text) throws Exception
+            final String text, boolean edm_mode) throws Exception
     {
-        final MapMessage map = session.createMapMessage();
-        map.setString(JMSLogMessage.TYPE, type);
-        map.setString(JMSLogMessage.APPLICATION_ID, application);
-        map.setString(JMSLogMessage.HOST, host);
-        map.setString(JMSLogMessage.USER, user);
-        map.setString(JMSLogMessage.TEXT, text);
+       final MapMessage map = session.createMapMessage();
+/**
+ * If the type is "put", it is an EDM option.  Different options are added to 
+ * the map to reflect these options.
+ */
+        if(edm_mode)
+        {
+           EDMParser parser = new EDMParser(text);
+
+           map.setString(JMSLogMessage.TYPE, type);
+           map.setString(JMSLogMessage.APPLICATION_ID, application);
+           map.setString(JMSLogMessage.HOST, parser.getHost());
+           map.setString(JMSLogMessage.USER, parser.getUser());
+           map.setString(JMSLogMessage.NAME, parser.getPVName());
+           map.setString(JMSLogMessage.TEXT, parser.getPVName() + "=" + parser.getValue());
+           map.setString(JMSLogEDMMessage.PVVALUE, parser.getValue());
+
+        }
+        else
+        {
+           map.setString(JMSLogMessage.TYPE, type);
+           map.setString(JMSLogMessage.APPLICATION_ID, application);
+           map.setString(JMSLogMessage.HOST, host);
+           map.setString(JMSLogMessage.USER, user);
+           map.setString(JMSLogMessage.TEXT, text);
+        }
         producer.send(map);
     }
 
@@ -100,7 +122,7 @@ public class JMSSender implements ExceptionListener
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+           System.err.println("Error: " + ex.getMessage());
         }
     }
     
