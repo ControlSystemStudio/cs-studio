@@ -66,8 +66,8 @@ public final class ParameterTableRowAdapter extends AbstractTableRowAdapter<Para
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected Image doGetImage(Parameter delegate) {
-		return CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/parameter.png");
+	protected Image doGetImage(Parameter delegate,int columnIndex) {
+		return columnIndex==0?CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/parameter.png"):null;
 	}
 
 }

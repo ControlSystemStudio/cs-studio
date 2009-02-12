@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.ExpandBar;
  * @author Sven Wende
  * 
  */
-public class FolderForm extends AbstractForm<IFolder> {
+public final class FolderForm extends AbstractForm<IFolder> {
 
 	/**
 	 * Constructor.

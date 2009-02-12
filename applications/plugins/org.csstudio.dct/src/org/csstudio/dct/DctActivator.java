@@ -4,6 +4,8 @@ import org.csstudio.dct.model.persistence.IPersistenceService;
 import org.csstudio.dct.model.persistence.internal.PersistenceService;
 import org.csstudio.dct.nameresolution.IFieldFunctionService;
 import org.csstudio.dct.nameresolution.internal.FieldFunctionService;
+import org.csstudio.platform.DummyIoNameService;
+import org.csstudio.platform.IoNameService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -15,7 +17,13 @@ public final class DctActivator extends AbstractUIPlugin {
 	private IFieldFunctionService fieldFunctionService;
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.dct2";
+	public static final String PLUGIN_ID = "org.csstudio.dct";
+
+	/**
+	 * The ID of the "Exporters" extension point.
+	 */
+	public static final String EXTPOINT_EXPORTERS = PLUGIN_ID
+			+ ".exporters"; //$NON-NLS-1$
 
 	// The shared instance
 	private static DctActivator plugin;

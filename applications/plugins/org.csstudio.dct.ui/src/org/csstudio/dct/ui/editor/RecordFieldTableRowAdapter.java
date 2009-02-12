@@ -31,8 +31,10 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	/**
 	 * Constructor.
 	 * 
-	 * @param record the record
-	 * @param fieldKey the field name
+	 * @param record
+	 *            the record
+	 * @param fieldKey
+	 *            the field name
 	 */
 	public RecordFieldTableRowAdapter(IRecord record, String fieldKey) {
 		super(record);
@@ -41,6 +43,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 
 	/**
 	 * Returns the name of the field.
+	 * 
 	 * @return the field name
 	 */
 	public String getFieldKey() {
@@ -52,7 +55,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	 */
 	@Override
 	protected RGB doGetForegroundColorForValue(IRecord delegate) {
-		Map<String, Object> localFields = delegate.getFields();
+		Map<String, String> localFields = delegate.getFields();
 		boolean inherited = !localFields.containsKey(fieldKey);
 		RGB rgb = inherited ? ColorSettings.INHERITED_VALUE : ColorSettings.OVERRIDDEN_VALUE;
 		return rgb;
@@ -122,15 +125,38 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	 */
 	@Override
 	protected Command doSetValue(IRecord delegate, Object value) {
-		return new ChangeFieldValueCommand(delegate, fieldKey, value);
+		return new ChangeFieldValueCommand(delegate, fieldKey, value.toString());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Image doGetImage(IRecord delegate) {
-		return CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/field.png");
+	protected Image doGetImage(IRecord delegate, int columnIndex) {
+		Image img = null;
+		switch (columnIndex) {
+		case 0:
+			img = CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/field.png");
+			break;
+		case 1:
+			IRecordDefinition rdef = delegate.getRecordDefinition();
+
+			if (rdef != null) {
+				IFieldDefinition fdef = rdef.getFieldDefinitions(this.fieldKey);
+
+				if (fdef != null) {
+					IMenuDefinition mdef = fdef.getMenu();
+
+					if (mdef != null) {
+						img = CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/menu_arrow.png");
+					}
+				}
+			}
+			break;
+		default:
+		}
+
+		return img;
 	}
 
 	/**
@@ -138,7 +164,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	 */
 	@Override
 	protected CellEditor doGetValueCellEditor(IRecord delegate, Composite parent) {
-		CellEditor result = new TextCellEditor(parent);
+		CellEditor result = new ContentProposingTextCellEditor(parent, delegate);
 
 		IRecordDefinition rdef = delegate.getRecordDefinition();
 

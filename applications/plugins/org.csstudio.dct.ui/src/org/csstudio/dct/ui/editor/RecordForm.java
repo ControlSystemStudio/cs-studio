@@ -7,6 +7,8 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
+import org.csstudio.dct.util.AliasResolutionUtil;
+import org.csstudio.dct.util.CompareUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
@@ -52,36 +54,27 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		recordFieldTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
+		recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
 		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(300));
 
 		// .. filter button
 		Composite buttons = new Composite(composite, SWT.None);
 		buttons.setLayout(new FillLayout());
 
-		final Button addButton = new Button(buttons, SWT.CHECK);
-		addButton.setText("Show All (includes empty settings)");
-		addButton.addMouseListener(new MouseAdapter() {
+		final Button hideDefaultsButton = new Button(buttons, SWT.CHECK);
+		hideDefaultsButton.setText("Hide Defaults");
+		hideDefaultsButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				if (addButton.getSelection()) {
-					recordFieldTable.getViewer().setFilters(new ViewerFilter[0]);
+				if (hideDefaultsButton.getSelection()) {
+					recordFieldTable.getViewer().setFilters(new ViewerFilter[] { new HideDefaultsFilter() });
 				} else {
-					ViewerFilter filter = new ViewerFilter() {
-						@Override
-						public boolean select(Viewer viewer, Object parentElement, Object element) {
-							RecordFieldTableRowAdapter row = (RecordFieldTableRowAdapter) element;
-							return row.getDelegate().getField(row.getFieldKey()) != null;
-						}
-					};
-
-					recordFieldTable.getViewer().setFilters(new ViewerFilter[] { filter });
+					recordFieldTable.getViewer().setFilters(new ViewerFilter[0]);
 				}
-
 			}
 		});
 
-		addButton.setSelection(true);
+		hideDefaultsButton.setSelection(false);
 
 		// .. the expand item
 		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
@@ -159,5 +152,24 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		}
 
 		return result;
+	}
+	
+	private abstract class AbstractFilter extends ViewerFilter {
+		@Override
+		public final boolean select(Viewer viewer, Object parentElement, Object element) {
+			RecordFieldTableRowAdapter row = (RecordFieldTableRowAdapter) element;
+			return doSelect(row.getDelegate(), row.getFieldKey());
+		}
+		
+		protected abstract boolean doSelect(IRecord record, String field);
+	}
+	
+	private final class HideDefaultsFilter extends AbstractFilter {
+		@Override
+		protected boolean doSelect(IRecord record, String field) {
+			String finalValue = record.getFinalFields().get(field);
+			String defaultValue = record.getDefaultFields().get(field);
+			return !CompareUtil.equals(finalValue, defaultValue);
+		}
 	}
 }

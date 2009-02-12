@@ -1,4 +1,6 @@
 Manifest-Version: 1.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
 Bundle-Name: Ui Plug-in
 Bundle-SymbolicName: org.csstudio.dct.ui;singleton:=true
@@ -15,4 +17,5 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.eclipse.gef,
  org.csstudio.dct;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+
+

@@ -1,6 +1,5 @@
 package org.csstudio.dct.ui.editor;
 
-import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.gef.commands.Command;
@@ -15,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Base class for all table row adapters that are used to adapt domain objects
- * for a {@link ConvenienceTableWrapper} with the following column layout:
+ * for a ConvenienceTableWrapper with the following column layout:
  * 
  * <ul>
  * <li>1. column = Description</li>
@@ -237,7 +236,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	 *{@inheritDoc}
 	 */
 	public final Image getImage(int column) {
-		return column == 0 ? doGetImage(delegate) : null;
+		return doGetImage(delegate, column);
 	}
 
 	/**
@@ -384,7 +383,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	 *            the domain object
 	 * @return an image
 	 */
-	protected Image doGetImage(E delegate) {
+	protected Image doGetImage(E delegate, int columnIndex) {
 		return null;
 	}
 

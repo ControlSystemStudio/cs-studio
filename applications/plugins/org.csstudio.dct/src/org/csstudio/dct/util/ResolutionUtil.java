@@ -1,6 +1,7 @@
 package org.csstudio.dct.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.csstudio.dct.DctActivator;
@@ -40,6 +41,30 @@ public final class ResolutionUtil {
 		}
 
 		String result = DctActivator.getDefault().getFieldFunctionService().resolve(source, aliases);
+
+		return result;
+	}
+
+	public static Map<String, String> resolveFields(IRecord record) {
+		Map<String, String> result = new HashMap<String, String>();
+		
+		Map<String, String> aliases = AliasResolutionUtil.getFinalAliases(record.getContainer());
+
+		Map<String, String> fields = record.getFinalFields();
+		for(String key : fields.keySet()) {
+			String value = fields.get(key);
+			
+			String resolved = "";
+			try {
+				resolved = DctActivator.getDefault().getFieldFunctionService().resolve(value, aliases);
+				resolved = DctActivator.getDefault().getFieldFunctionService().evaluate(resolved, record, key);
+				resolved = DctActivator.getDefault().getFieldFunctionService().resolve(resolved, aliases);
+			} catch (Exception e) {
+				resolved = "<Error: "+e.getMessage()+">";
+			}
+			
+			result.put(key, resolved);
+		}
 
 		return result;
 	}

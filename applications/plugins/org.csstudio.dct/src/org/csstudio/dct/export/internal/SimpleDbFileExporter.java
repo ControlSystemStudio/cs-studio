@@ -2,7 +2,8 @@ package org.csstudio.dct.export.internal;
 
 import java.util.Map;
 
-import org.csstudio.dct.export.IRecordRenderer;
+import org.csstudio.dct.export.IExporter;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
@@ -14,17 +15,22 @@ import org.csstudio.dct.util.ResolutionUtil;
  * @author Sven Wende
  * 
  */
-public final class DbFileRecordRenderer implements IRecordRenderer {
+public final class SimpleDbFileExporter implements IExporter {
 	private static final String NEWLINE = "\r\n";
 	private boolean renderEmptyFields = false;
 
+
+	public SimpleDbFileExporter() {
+		this(true);
+	}
+	
 	/**
 	 * Constructor.
 	 * 
 	 * @param renderEmptyFields
 	 *            flag that indicates whether empty fields should be rendered
 	 */
-	public DbFileRecordRenderer(boolean renderEmptyFields) {
+	public SimpleDbFileExporter(boolean renderEmptyFields) {
 		this.renderEmptyFields = renderEmptyFields;
 	}
 
@@ -38,7 +44,7 @@ public final class DbFileRecordRenderer implements IRecordRenderer {
 		sb.append(record.getType());
 		sb.append(", \"");
 		try {
-			sb.append(ResolutionUtil.resolve(AliasResolutionUtil.getNameFromHierarchy(record), record));
+			sb.append(ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record));
 		} catch (AliasResolutionException e) {
 			sb.append("<" + e.getMessage() + ">");
 		}
@@ -46,24 +52,16 @@ public final class DbFileRecordRenderer implements IRecordRenderer {
 		sb.append("\") {");
 		sb.append(NEWLINE);
 	
-		Map<String, Object> fields = record.getFinalFields();
+		Map<String, String> fields = ResolutionUtil.resolveFields(record);
 	
 		for (String key : fields.keySet()) {
-			String v = fields.get(key) != null ? fields.get(key).toString() : "";
+			String v = fields.get(key) != null ? fields.get(key) : "";
 	
 			if (("".equals(v) && renderEmptyFields) || !"".equals(v)) {
 				sb.append("   field(");
 				sb.append(key);
 				sb.append(", \"");
-	
-				String fieldValue = "";
-				try {
-					sb.append(ResolutionUtil.resolve(v, record));
-				} catch (AliasResolutionException e) {
-					fieldValue = "<" + e.getMessage() + ">";
-				}
-				sb.append(fieldValue);
-	
+				sb.append(v);
 				sb.append("\")");
 				sb.append(NEWLINE);
 			}
@@ -71,6 +69,15 @@ public final class DbFileRecordRenderer implements IRecordRenderer {
 	
 		sb.append("}");
 	
+		return sb.toString();
+	}
+
+	public String export(IProject project) {
+		StringBuffer sb = new StringBuffer();
+		for (IRecord r :project.getFinalRecords()) {
+			sb.append(render(r));
+			sb.append("\r\n\r\n");
+		}
 		return sb.toString();
 	}
 

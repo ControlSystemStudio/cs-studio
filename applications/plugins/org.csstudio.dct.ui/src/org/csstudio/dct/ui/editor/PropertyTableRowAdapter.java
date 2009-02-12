@@ -126,8 +126,8 @@ public final class PropertyTableRowAdapter extends AbstractTableRowAdapter<IProp
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Image doGetImage(IPropertyContainer delegate) {
-		return CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/field.png");
+	protected Image doGetImage(IPropertyContainer delegate, int columnIndex) {
+		return columnIndex==0?CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/field.png"):null;
 	}
 
 	/**

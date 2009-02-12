@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="exporters" name="exporters" schema="schema/exporters.exsd"/>
+   <extension
+         point="org.csstudio.dct.exporters">
+      <exporter
+            class="org.csstudio.dct.export.internal.SimpleDbFileExporter"
+            description="Standard DB-File"
+            icon="icons/db-file-exporter.png"
+            id="simpleDbExporter">
+      </exporter>
+      <exporter
+            class="org.csstudio.dct.export.internal.AdvancedDbFileExporter"
+            description="Advanced DB-File"
+            icon="icons/db-file-exporter.png"
+            id="advancedDbExporter">
+      </exporter>
+      <exporter
+            class="org.csstudio.dct.export.internal.RecordNamesExporter"
+            description="Record Names"
+            icon="icons/db-file-exporter.png"
+            id="recordNameExporter">
+      </exporter>
+   </extension>
+
+</plugin>

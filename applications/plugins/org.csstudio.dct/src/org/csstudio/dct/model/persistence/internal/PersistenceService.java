@@ -158,9 +158,6 @@ public final class PersistenceService implements IPersistenceService {
 
 				FieldDefinition fieldDefinition = new FieldDefinition(fieldName, DBDResolver.getFieldType(fieldData.getField_type()));
 
-				// .. initial value
-				fieldDefinition.setInitial(fieldData.getInit_value());
-
 				// .. prompt
 				fieldDefinition.setPrompt(fieldData.getPrompt_value());
 
@@ -181,6 +178,9 @@ public final class PersistenceService implements IPersistenceService {
 						fieldDefinition.setMenuDefinition(menuDefinition);
 					}
 				}
+				
+				// .. initial value
+				fieldDefinition.setInitial(fieldData.getInit_value());
 
 				recordDefinition.addFieldDefinition(fieldDefinition);
 			}

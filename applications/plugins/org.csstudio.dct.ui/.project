@@ -31,11 +31,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>com.atlassw.tools.eclipse.checkstyle.CheckstyleNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>runtime-dct</name>
-			<type>2</type>
-			<location>C:/Entwicklung/eclipse_workspaces/runtime-dct</location>
-		</link>
-	</linkedResources>
 </projectDescription>

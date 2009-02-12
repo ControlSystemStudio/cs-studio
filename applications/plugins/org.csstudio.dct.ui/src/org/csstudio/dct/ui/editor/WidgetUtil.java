@@ -30,7 +30,7 @@ public final class WidgetUtil {
 	 *            a command stack
 	 * @return a new standard table with 3 columns (for key, value, error)
 	 */
-	public static ConvenienceTableWrapper createKeyColumErrorTable(Composite parent, CommandStack commandStack) {
+	public static ConvenienceTableWrapper create3ColumnTable(Composite parent, CommandStack commandStack) {
 		ColumnConfig[] cc = new ColumnConfig[3];
 		cc[0] = new ColumnConfig("KEY", "Description", 200);
 		cc[1] = new ColumnConfig("VALUE", "Value", 300);

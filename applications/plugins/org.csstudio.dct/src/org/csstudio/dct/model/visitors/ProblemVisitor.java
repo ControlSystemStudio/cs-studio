@@ -101,11 +101,11 @@ public final class ProblemVisitor implements IVisitor {
 		}
 
 		// .. check field resolution
-		Map<String, Object> fields = record.getFields();
+		Map<String, String> fields = record.getFields();
 
 		for (String key : fields.keySet()) {
 			try {
-				ResolutionUtil.resolve((String) fields.get(key), record);
+				ResolutionUtil.resolve(fields.get(key), record);
 			} catch (AliasResolutionException e) {
 				errors.add(new MarkableError(record.getId(), "Resolution error:" + e.getMessage()));
 			}

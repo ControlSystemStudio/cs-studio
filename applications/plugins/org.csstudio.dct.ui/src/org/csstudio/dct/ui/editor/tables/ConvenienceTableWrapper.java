@@ -21,12 +21,17 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ControlEditor;
+import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
 /**
  * Convenience wrapper for a SWT table viewer that allows for easy and fine
@@ -53,6 +58,7 @@ public final class ConvenienceTableWrapper {
 	private ColumnConfig[] columnConfigurations;
 	private TableViewer viewer;
 	private CommandStack commandStack;
+	private Table table;
 
 	/**
 	 * Constructor.
@@ -107,7 +113,7 @@ public final class ConvenienceTableWrapper {
 	 */
 	private TableViewer doCreateViewer(Composite parent, int style) {
 		// create table
-		final Table table = new Table(parent, style | SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
+		table = new Table(parent, style | SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(false);
 
@@ -134,10 +140,11 @@ public final class ConvenienceTableWrapper {
 		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(viewer) {
 			protected boolean isEditorActivationEvent(final ColumnViewerEditorActivationEvent event) {
 				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
-						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
+						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
 						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.F2)
 						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
 			}
+
 		};
 
 		TableViewerEditor
@@ -258,7 +265,7 @@ public final class ConvenienceTableWrapper {
 	 * 
 	 * @author Sven Wende
 	 */
-	static final class LabelProvider extends ColumnLabelProvider {
+	final class LabelProvider extends ColumnLabelProvider {
 
 		/**
 		 * {@inheritDoc}
@@ -266,6 +273,7 @@ public final class ConvenienceTableWrapper {
 		@Override
 		public void update(final ViewerCell cell) {
 			ITableRow row = (ITableRow) cell.getElement();
+
 			int index = cell.getColumnIndex();
 
 			// set the text

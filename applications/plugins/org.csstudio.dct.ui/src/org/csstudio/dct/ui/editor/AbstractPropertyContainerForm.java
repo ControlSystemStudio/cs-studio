@@ -81,7 +81,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		propertyTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
+		propertyTable = WidgetUtil.create3ColumnTable(composite, commandStack);
 		propertyTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
 		// .. add/remove buttons for properties

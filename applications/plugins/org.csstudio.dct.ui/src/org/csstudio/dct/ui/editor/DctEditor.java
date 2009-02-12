@@ -7,8 +7,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.csstudio.dct.DctActivator;
-import org.csstudio.dct.export.IRecordRenderer;
-import org.csstudio.dct.export.internal.DbFileRecordRenderer;
+import org.csstudio.dct.export.ExporterDescriptor;
+import org.csstudio.dct.export.Extensions;
+import org.csstudio.dct.export.IExporter;
+import org.csstudio.dct.export.internal.AdvancedDbFileExporter;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
@@ -24,6 +26,7 @@ import org.csstudio.dct.model.visitors.ProblemVisitor.MarkableError;
 import org.csstudio.dct.ui.editor.outline.internal.OutlinePage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -31,23 +34,27 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -68,10 +75,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	private PrototypeForm prototypeEditingComponent;
 	private InstanceForm instanceEditingComponent;
 	private RecordForm recordEditingComponent;
-
 	private StackLayout stackLayout;
 	private Composite contentPanel;
-
 	private StyledText dbFilePreviewText;
 
 	/**
@@ -154,9 +159,35 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 	void createPage1() {
 		Composite composite = new Composite(getContainer(), SWT.NONE);
-		FillLayout layout = new FillLayout();
-		composite.setLayout(layout);
+		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 5, 5, 5, 5, 5));
+
+		Composite c = new Composite(composite, SWT.NONE);
+		c.setLayoutData(LayoutUtil.createGridData());
+		c.setLayout(new FillLayout());
+		
+		Label label = new Label(c, SWT.NONE);
+		label.setText("Choose Format:");
+		ComboViewer viewer = new ComboViewer(new CCombo(c, SWT.READ_ONLY | SWT.BORDER));
+		viewer.getCCombo().setEditable(false);
+		viewer.getCCombo().setVisibleItemCount(20);
+		viewer.setContentProvider(new ArrayContentProvider());
+		viewer.setLabelProvider(new LabelProvider()) ;
+		viewer.setInput(Extensions.lookupExporterExtensions().toArray());
+		
+		viewer.addSelectionChangedListener(new ISelectionChangedListener(){
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection  sel = (IStructuredSelection) event.getSelection();
+				ExporterDescriptor descriptor = (ExporterDescriptor) sel.getFirstElement();
+				
+				if(descriptor!=null) {
+					dbFilePreviewText.setText(descriptor.getExporter().export(getProject()));
+				}
+			}
+		});
+		
+		
 		dbFilePreviewText = new StyledText(composite, SWT.H_SCROLL | SWT.V_SCROLL);
+		dbFilePreviewText.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 		dbFilePreviewText.setEditable(false);
 		dbFilePreviewText.setFont(CustomMediaFactory.getInstance().getFont("Courier", 11, SWT.NORMAL));
 
@@ -244,29 +275,6 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	}
 
 	/**
-	 *{@inheritDoc}
-	 */
-	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);
-		if (newPageIndex == 1) {
-			renderDbFilePreview();
-		}
-	}
-
-	void renderDbFilePreview() {
-		StringBuffer sb = new StringBuffer();
-
-		IRecordRenderer renderer = new DbFileRecordRenderer(false);
-
-		for (IRecord r : getProject().getFinalRecords()) {
-			sb.append(renderer.render(r));
-			sb.append("\r\n\r\n");
-		}
-
-		dbFilePreviewText.setText(sb.toString());
-	}
-
-	/**
 	 * Returns the command stack used by this editor.
 	 * 
 	 * @return the command stack used by this editor
@@ -278,6 +286,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 *{@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		Object result = null;
 
@@ -315,7 +324,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		firePropertyChange(PROP_DIRTY);
 		// FIXME: Auskommentieren, wenn Markierung nach jeder Änderung gewünscht
 		// und performant genug!!
-		// markErrors();
+		 markErrors();
 	}
 
 	private void markErrors() {

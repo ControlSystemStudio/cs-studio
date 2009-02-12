@@ -101,7 +101,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 		Composite composite = new Composite(expandBar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		commonTable = WidgetUtil.createKeyColumErrorTable(composite, getCommandStack());
+		commonTable = WidgetUtil.create3ColumnTable(composite, getCommandStack());
 		commonTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(100));
 
 		ExpandItem expandItem = new ExpandItem(expandBar, SWT.NONE, 0);

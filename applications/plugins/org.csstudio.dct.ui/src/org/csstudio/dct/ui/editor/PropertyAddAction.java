@@ -11,6 +11,7 @@ import org.eclipse.jface.action.Action;
  * @author Sven Wende
  */
 public class PropertyAddAction extends Action {
+	@SuppressWarnings("unchecked")
 	private AbstractPropertyContainerForm form;
 
 	/**
@@ -19,6 +20,7 @@ public class PropertyAddAction extends Action {
 	 * @param form
 	 *            a component that provides access to a property container
 	 */
+	@SuppressWarnings("unchecked")
 	public PropertyAddAction(AbstractPropertyContainerForm form) {
 		assert form != null;
 		this.form = form;

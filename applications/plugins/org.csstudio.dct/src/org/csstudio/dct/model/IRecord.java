@@ -129,7 +129,7 @@ public interface IRecord extends IPropertyContainer, IElement {
 	 * @param value
 	 *            the field value
 	 */
-	void addField(String name, Object value);
+	void addField(String name, String value);
 
 	/**
 	 * Returns the value for the specified field.
@@ -139,7 +139,7 @@ public interface IRecord extends IPropertyContainer, IElement {
 	 * 
 	 * @return the value
 	 */
-	Object getField(String name);
+	String getField(String name);
 
 	/**
 	 * Removes the specified field value.
@@ -159,7 +159,7 @@ public interface IRecord extends IPropertyContainer, IElement {
 	 * 
 	 * @return the fields that are locally defined for this record
 	 */
-	Map<String, Object> getFields();
+	Map<String, String> getFields();
 
 	/**
 	 * Resolves all inheritance relationships for this record and returns an
@@ -167,8 +167,15 @@ public interface IRecord extends IPropertyContainer, IElement {
 	 * 
 	 * @return aggregated field information
 	 */
-	Map<String, Object> getFinalFields();
+	Map<String, String> getFinalFields();
 
+	/**
+	 * Returns the default field values for this record as they are inherited from the database definition (dbd).
+	 * 
+	 * @return default field values
+	 */
+	Map<String, String> getDefaultFields();
+	
 	/**
 	 * Returns the record definition which contains the informations stored in a
 	 * database definition file.

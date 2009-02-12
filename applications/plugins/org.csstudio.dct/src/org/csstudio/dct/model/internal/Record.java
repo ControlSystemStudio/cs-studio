@@ -20,19 +20,23 @@ import org.csstudio.dct.util.CompareUtil;
  * @author Sven Wende
  */
 public final class Record extends AbstractPropertyContainer implements IRecord {
-	
+
 	private String type;
 	private String epicsName;
 	private IRecord parentRecord;
 	private IContainer container;
-	private Map<String, Object> fields = new HashMap<String, Object>();
+	private Map<String, String> fields = new HashMap<String, String>();
 	private List<IRecord> inheritingRecords = new ArrayList<IRecord>();
 
 	/**
 	 * Constructor.
-	 * @param name the name
-	 * @param type the type
-	 * @param id the id
+	 * 
+	 * @param name
+	 *            the name
+	 * @param type
+	 *            the type
+	 * @param id
+	 *            the id
 	 */
 	public Record(String name, String type, UUID id) {
 		super(name, id);
@@ -41,8 +45,11 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 
 	/**
 	 * Constructor.
-	 * @param parentRecord the parent record
-	 * @param id the id
+	 * 
+	 * @param parentRecord
+	 *            the parent record
+	 * @param id
+	 *            the id
 	 */
 	public Record(IRecord parentRecord, UUID id) {
 		super(null, id);
@@ -78,14 +85,14 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addField(String key, Object value) {
+	public void addField(String key, String value) {
 		fields.put(key, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getField(String key) {
+	public String getField(String key) {
 		return fields.get(key);
 	}
 
@@ -99,15 +106,15 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Object> getFields() {
+	public Map<String, String> getFields() {
 		return fields;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Object> getFinalFields() {
-		Map<String, Object> result = new HashMap<String, Object>();
+	public Map<String, String> getFinalFields() {
+		Map<String, String> result = new HashMap<String, String>();
 
 		Stack<IRecord> stack = getRecordStack();
 
@@ -122,19 +129,39 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String, String> getDefaultFields() {
+		Map<String, String> result = new HashMap<String, String>();
+
+		Stack<IRecord> stack = getRecordStack();
+
+		// add the field values of the parent hierarchy, values can be overriden
+		// by children
+		if (!stack.isEmpty()) {
+			IRecord top = stack.pop();
+
+			if (top instanceof BaseRecord) {
+				result.putAll(top.getFields());
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 *{@inheritDoc}
 	 */
 	public String getEpicsName() {
 		return epicsName;
 	}
-	
+
 	/**
 	 *{@inheritDoc}
 	 */
 	public void setEpicsName(String epicsName) {
 		this.epicsName = epicsName;
 	}
-
 
 	/**
 	 *{@inheritDoc}
@@ -189,16 +216,17 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	public boolean isAbstract() {
 		return getRootContainer(getContainer()) instanceof IPrototype;
 	}
-	
+
 	/**
 	 * Recursive helper method which determines the root container.
 	 * 
-	 * @param container a starting container
+	 * @param container
+	 *            a starting container
 	 * 
 	 * @return the root container of the specified starting container
 	 */
 	private IContainer getRootContainer(IContainer container) {
-		if(container.getContainer()!=null) {
+		if (container.getContainer() != null) {
 			return getRootContainer(container.getContainer());
 		} else {
 			return container;
@@ -253,7 +281,6 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 		visitor.visit(this);
 	}
 
-	
 	/**
 	 *{@inheritDoc}
 	 */

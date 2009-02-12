@@ -13,6 +13,7 @@ import org.eclipse.jface.action.Action;
  */
 public final class PropertyRemoveAction extends Action {
 	
+	@SuppressWarnings("unchecked")
 	private AbstractPropertyContainerForm form;
 
 	/**
@@ -21,6 +22,7 @@ public final class PropertyRemoveAction extends Action {
 	 * @param form
 	 *            a component that provides access to a property container
 	 */
+	@SuppressWarnings("unchecked")
 	public PropertyRemoveAction(AbstractPropertyContainerForm form) {
 		assert form != null;
 		this.form = form;

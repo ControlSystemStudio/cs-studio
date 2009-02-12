@@ -65,7 +65,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		parameterTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
+		parameterTable = WidgetUtil.create3ColumnTable(composite, commandStack);
 		parameterTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
 		// .. add/remove buttons for properties
@@ -206,6 +206,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 	/**
 	 * Removes the currently selected parameter from the parameter table.
 	 */
+	@SuppressWarnings("unchecked")
 	void addParameter() {
 		InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Property Name",
 				"Please enter a name for the new property:", "", new IInputValidator() {

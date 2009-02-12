@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ManifestVersion: 2
 Bundle-Name: Dct Plug-in
-Bundle-SymbolicName: org.csstudio.dct
+Bundle-SymbolicName: org.csstudio.dct;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.dct.DctActivator
 Require-Bundle: org.eclipse.ui,
@@ -42,3 +43,4 @@ Bundle-ClassPath: lib/ant.jar,
  lib/commons-beanutils-1.8.0.jar,
  lib/commons-logging-1.1.1.jar,
  lib/VisualDCT.jar
+

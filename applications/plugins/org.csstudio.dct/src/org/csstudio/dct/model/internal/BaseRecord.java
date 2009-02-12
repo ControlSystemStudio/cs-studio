@@ -24,7 +24,7 @@ import org.csstudio.dct.model.IVisitor;
 public final class BaseRecord implements IRecord {
 	private IRecordDefinition recordDefinition;
 	private List<IRecord> inheritingRecords = new ArrayList<IRecord>();
-	private Map<String, Object> fields;
+	private Map<String, String> fields;
 
 	/**
 	 * Constructor.
@@ -39,16 +39,29 @@ public final class BaseRecord implements IRecord {
 	/**
 	 * Sets the record definition.
 	 * 
-	 * @param recordDefinition the record definition
+	 * @param recordDefinition
+	 *            the record definition
 	 */
 	public void setRecordDefinition(IRecordDefinition recordDefinition) {
 		this.recordDefinition = recordDefinition;
 
-		fields = new HashMap<String, Object>();
+		fields = new HashMap<String, String>();
 
 		if (recordDefinition != null) {
 			for (IFieldDefinition fd : recordDefinition.getFieldDefinitions()) {
-				fields.put(fd.getName(), fd.getInitial());
+				// determine default value
+				String defaultValue = "";
+
+				if (fd.getInitial() != null && fd.getInitial().length() > 0) {
+					defaultValue = fd.getInitial();
+				} else {
+					if (fd.getMenu() != null && fd.getMenu().getChoices() != null && fd.getMenu().getChoices().size() > 0) {
+						defaultValue = fd.getMenu().getChoices().get(0).getDescription();
+					}
+				}
+
+				fields.put(fd.getName(), defaultValue);
+
 			}
 		}
 	}
@@ -56,7 +69,7 @@ public final class BaseRecord implements IRecord {
 	/**
 	 *{@inheritDoc}
 	 */
-	public void addField(String name, Object value) {
+	public void addField(String name, String value) {
 	}
 
 	/**
@@ -75,21 +88,28 @@ public final class BaseRecord implements IRecord {
 	/**
 	 *{@inheritDoc}
 	 */
-	public Object getField(String name) {
+	public String getField(String name) {
 		return fields.get(name);
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
-	public Map<String, Object> getFields() {
+	public Map<String, String> getFields() {
 		return fields;
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
-	public Map<String, Object> getFinalFields() {
+	public Map<String, String> getDefaultFields() {
+		return getFields();
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public Map<String, String> getFinalFields() {
 		return getFields();
 	}
 
@@ -108,7 +128,6 @@ public final class BaseRecord implements IRecord {
 		return null;
 	}
 
-
 	/**
 	 *{@inheritDoc}
 	 */
@@ -116,22 +135,20 @@ public final class BaseRecord implements IRecord {
 		return null;
 	}
 
-
 	/**
 	 *{@inheritDoc}
 	 */
 	public String getEpicsNameFromHierarchy() {
 		return null;
 	}
-	
+
 	/**
 	 *{@inheritDoc}
 	 */
 	public void setEpicsName(String epicsName) {
-		
+
 	}
 
-	
 	/**
 	 *{@inheritDoc}
 	 */
@@ -260,7 +277,7 @@ public final class BaseRecord implements IRecord {
 	}
 
 	/**
-		 *{@inheritDoc}
+	 *{@inheritDoc}
 	 */
 	public boolean isAbstract() {
 		return true;

@@ -47,7 +47,7 @@ public final class InstanceForm extends AbstractPropertyContainerForm<IInstance>
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		parameterValuesTable = WidgetUtil.createKeyColumErrorTable(composite, commandStack);
+		parameterValuesTable = WidgetUtil.create3ColumnTable(composite, commandStack);
 		parameterValuesTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
 		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE, 1);

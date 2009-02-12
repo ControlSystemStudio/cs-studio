@@ -48,7 +48,7 @@ class RecordEpicsNameTableRowAdapter extends AbstractTableRowAdapter<IRecord> {
 	@Override
 	protected Command doSetValue(IRecord record, Object value) {
 		Command result = null;
-		if (value != null && !value.equals(record.getEpicsNameFromHierarchy())) {
+		if (value != null && !value.equals(AliasResolutionUtil.getEpicsNameFromHierarchy(record))) {
 			result = new ChangeBeanPropertyCommand(record, "epicsName", value.toString());
 		}
 

@@ -9,10 +9,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.IFieldFunctionService;
 import org.csstudio.dct.util.AliasResolutionException;
+import org.csstudio.platform.DummyIoNameService;
 import org.csstudio.platform.util.StringUtil;
 
 /**
@@ -43,6 +45,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
 		// FIXME: 2009-01-14: swende: Maybe turn this to an extension point.
 		registerFunction("forwardlink", new ForwardLinkFieldFunction());
 		registerFunction("datalink", new DataLinkFieldFunction());
+		registerFunction("ioname", new IoNameFieldFunction(new DummyIoNameService()));
 	}
 
 	/**

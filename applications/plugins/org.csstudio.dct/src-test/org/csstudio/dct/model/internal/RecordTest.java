@@ -170,7 +170,7 @@ public final class RecordTest {
 	 */
 	@Test
 	public void testGetFields() {
-		Map<String, Object> fields = record.getFields();
+		Map<String, String> fields = record.getFields();
 		assertNotNull(fields);
 		assertFalse(fields.isEmpty());
 		assertTrue(fields.containsKey("field4"));
@@ -183,9 +183,9 @@ public final class RecordTest {
 	 */
 	@Test
 	public void testGetFinalFields() {
-		Map<String, Object> parentFields = parentRecord.getFields();
-		Map<String, Object> fields = record.getFields();
-		Map<String, Object> finalFields = record.getFinalFields();
+		Map<String, String> parentFields = parentRecord.getFields();
+		Map<String, String> fields = record.getFields();
+		Map<String, String> finalFields = record.getFinalFields();
 		assertNotNull(parentFields);
 		assertNotNull(fields);
 		assertNotNull(finalFields);
