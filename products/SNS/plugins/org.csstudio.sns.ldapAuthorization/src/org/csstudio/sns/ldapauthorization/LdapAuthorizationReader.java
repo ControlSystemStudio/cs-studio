@@ -152,9 +152,9 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 				final Attribute auid = attributes.get("auid");
 				final String authId = (String) auid.get();
 				final Attribute groupRoleAttr = attributes.get("cssGroupRole");
-				
 				final RightSet rights = new RightSet(authId);
-				parseGroupRoleAttr(groupRoleAttr, rights);
+				if(groupRoleAttr !=null)
+					parseGroupRoleAttr(groupRoleAttr, rights);
 				actionsrights.put(authId, rights);
 		
 			}
