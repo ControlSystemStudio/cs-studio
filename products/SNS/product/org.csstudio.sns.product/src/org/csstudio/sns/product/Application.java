@@ -8,6 +8,7 @@ import java.util.Dictionary;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.platform.workspace.WorkspaceInfo;
+import org.csstudio.sns.startuphelper.PasswordInput;
 import org.csstudio.sns.startuphelper.StartupAuthenticationHelper;
 import org.csstudio.sns.startuphelper.StartupHelper;
 import org.eclipse.core.resources.IFolder;

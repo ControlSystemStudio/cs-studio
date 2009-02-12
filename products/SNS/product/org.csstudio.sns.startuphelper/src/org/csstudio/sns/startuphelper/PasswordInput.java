@@ -1,4 +1,4 @@
-package org.csstudio.sns.product;
+package org.csstudio.sns.startuphelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
