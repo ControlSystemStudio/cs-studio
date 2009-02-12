@@ -7,6 +7,7 @@ import java.util.Dictionary;
 
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.workspace.RelaunchConstants;
+import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.csstudio.platform.workspace.WorkspaceInfo;
 import org.csstudio.sns.startuphelper.PasswordInput;
 import org.csstudio.sns.startuphelper.StartupAuthenticationHelper;
@@ -327,6 +328,10 @@ public class Application implements IApplication
         // Prompt in any case? Or did user decide to be asked again?
         boolean show_Workspace = force_prompt | workspace_info.getShowDialog();
         boolean show_Login = true;
+        
+        //if no user name provided, display last login user.
+        if(username == null) 
+        	username = WorkspaceIndependentStore.readLastLoginUser();
         
         //initialize startupHelper
         StartupHelper startupHelper = new StartupHelper(null, workspace_info, 
