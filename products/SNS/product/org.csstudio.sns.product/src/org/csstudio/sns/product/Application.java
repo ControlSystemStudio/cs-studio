@@ -1,9 +1,7 @@
 package org.csstudio.sns.product;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Dictionary;
 
@@ -86,7 +84,6 @@ public class Application implements IApplication
     /** user name and password for startup login*/
     private String username = null;
     private String password = null;
-    
     
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
@@ -184,12 +181,8 @@ public class Application implements IApplication
                         }
                     }
                     if (password == null)
-                    {   
-                        final BufferedReader console = 
-                            new BufferedReader(new InputStreamReader(System.in));
-                        System.out.print("Password: ");
-                        System.out.flush();
-                        password = console.readLine();
+                    {      
+                        password = PasswordInput.readPassword("Enter password: ");            
                     }
                 }
             }
