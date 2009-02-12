@@ -1,9 +1,10 @@
 package org.csstudio.platform.workspace;
 
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 /** To store preferences which are independent from workspace. 
@@ -14,7 +15,7 @@ import org.osgi.service.prefs.Preferences;
 public class WorkspaceIndependentStore
 {
     /** Qualifier used as preference store ID */
-    private static final String PREF_QUALIFIER = WorkspaceIndependentStore.class.getName();
+    private static final String PREF_QUALIFIER = "org.csstudio.platform";//$NON-NLS-1$
 
     /** Preference ID */
     private static final String LAST_LOGIN_USER = "last_login_user"; //$NON-NLS-1$
@@ -37,12 +38,12 @@ public class WorkspaceIndependentStore
     
     /**Get the value of the input preference ID.
      * @param preferenceID the key trying to get its value
-     * @return value associated with preferenceID
+     * @return value associated with preferenceID. return "" if no value got.
      */
     protected static String getString(final String preferenceID) {
-    	final IPreferenceStore store = new ScopedPreferenceStore(
-                new ConfigurationScope(), PREF_QUALIFIER);
-    	return store.getString(preferenceID);
+    	Preferences configurationNode = new ConfigurationScope().getNode(PREF_QUALIFIER);
+    	String value = configurationNode.get(preferenceID, "");
+    	return value;    
     }
     
     /**Write the value of the input preference ID into ConfigurationScope preference store
@@ -53,6 +54,14 @@ public class WorkspaceIndependentStore
     	 final Preferences node =
             new ConfigurationScope().getNode(PREF_QUALIFIER);
     	 node.put(preferenceID, value);    
+    	 try {
+			node.flush();
+		} catch (BackingStoreException e) {
+		    Activator.getInstance().getLog().log(
+                    new Status(IStatus.ERROR, Activator.ID,
+                            "Cannot persist " + preferenceID + ": "
+                            + e.getMessage()));
+		}
     }
 
 }
