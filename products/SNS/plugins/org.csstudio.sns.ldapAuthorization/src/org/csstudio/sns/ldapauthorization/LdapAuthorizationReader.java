@@ -34,7 +34,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.apptuil.securestorage.SecureStorage;
+import org.csstudio.apputil.securestorage.SecureStorage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.IAuthorizationProvider;
 import org.csstudio.platform.security.Right;

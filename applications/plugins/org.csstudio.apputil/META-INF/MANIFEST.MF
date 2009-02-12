@@ -4,10 +4,10 @@ Bundle-Name: Apputil Plug-in
 Bundle-SymbolicName: org.csstudio.apputil
 Bundle-Version: 1.0.7
 Bundle-Vendor: Kay Kasemir
-Export-Package: org.csstudio.apptuil.securestorage,
- org.csstudio.apputil.args,
+Export-Package: org.csstudio.apputil.args,
  org.csstudio.apputil.formula,
  org.csstudio.apputil.ringbuffer,
+ org.csstudio.apputil.securestorage,
  org.csstudio.apputil.text,
  org.csstudio.apputil.time,
  org.csstudio.apputil.xml

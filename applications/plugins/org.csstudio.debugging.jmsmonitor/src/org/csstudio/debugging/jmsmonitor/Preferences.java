@@ -1,6 +1,6 @@
 package org.csstudio.debugging.jmsmonitor;
 
-import org.csstudio.apptuil.securestorage.SecureStorage;
+import org.csstudio.apputil.securestorage.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 

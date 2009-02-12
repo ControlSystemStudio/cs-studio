@@ -1,4 +1,4 @@
-package org.csstudio.apptuil.securestorage;
+package org.csstudio.apputil.securestorage;
 
 import java.io.File;
 import java.net.URL;

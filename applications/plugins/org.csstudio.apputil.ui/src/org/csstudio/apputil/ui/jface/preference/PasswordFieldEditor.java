@@ -1,7 +1,7 @@
 package org.csstudio.apputil.ui.jface.preference;
 
 
-import org.csstudio.apptuil.securestorage.SecureStorage;
+import org.csstudio.apputil.securestorage.SecureStorage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.jface.preference.FieldEditor;
@@ -298,8 +298,10 @@ public class PasswordFieldEditor extends FieldEditor
      */
     public Text getTextControl(Composite parent) {
         if (textField == null) {
-        	if(encrypt)
-        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
+        	if(encrypt) {
+        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        		textField.setEchoChar('*');
+        	}
         	else
         		textField = new Text(parent, SWT.SINGLE | SWT.BORDER);   		
             textField.setFont(parent.getFont());
