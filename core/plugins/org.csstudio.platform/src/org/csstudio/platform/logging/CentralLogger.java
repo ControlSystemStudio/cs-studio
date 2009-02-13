@@ -27,6 +27,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.security.SecureStorage;
 
 /**
  * The central logging service of the CSS platform, based on Log4j.
@@ -508,8 +509,8 @@ public final class CentralLogger {
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_PATTERN);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_URL);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_TOPIC);
-		fillFromStore(result, prefs, PROP_LOG4J_JMS_USER);
-		fillFromStore(result, prefs, PROP_LOG4J_JMS_PASSWORD);
+		fillFromSecureStorage(result, PROP_LOG4J_JMS_USER);
+		fillFromSecureStorage(result, PROP_LOG4J_JMS_PASSWORD);
 
 		// create the log4j root property
 		String rootProperty = "debug"; //$NON-NLS-1$
@@ -546,5 +547,22 @@ public final class CentralLogger {
 			final org.eclipse.core.runtime.Preferences prefs,
 			final String propertyID) {
 		p.setProperty(propertyID, prefs.getString(propertyID));
+	}
+	
+	/**
+	 * Fill the given properties object (java.util) with a certain property that
+	 * is read from secure storage
+	 * (org.eclipse.core.runtime.Preferences).
+	 * 
+	 * @param p
+	 *            Properties object to fill.
+
+	 * @param propertyID
+	 *            The ID of the certain property.
+	 */
+	private void fillFromSecureStorage(final Properties p,
+			final String propertyID) {
+		p.setProperty(propertyID, SecureStorage.retrieveSecureStorage(CSSPlatformPlugin.getDefault().getBundle()
+							.getSymbolicName(), propertyID));
 	}
 }

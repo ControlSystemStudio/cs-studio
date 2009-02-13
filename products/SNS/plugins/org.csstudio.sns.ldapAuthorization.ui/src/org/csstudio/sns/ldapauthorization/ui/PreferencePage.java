@@ -21,7 +21,7 @@
  */
  package org.csstudio.sns.ldapauthorization.ui;
 
-import org.csstudio.apputil.ui.jface.preference.PasswordFieldEditor;
+import org.csstudio.platform.ui.security.PasswordFieldEditor;
 import org.csstudio.sns.ldapauthorization.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -42,7 +42,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 	public PreferencePage() {
 		super(GRID);
 		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-				Activator.getDefault().getBundle().getSymbolicName()));
+				Activator.PLUGIN_ID));
 	}
 	
 	@Override

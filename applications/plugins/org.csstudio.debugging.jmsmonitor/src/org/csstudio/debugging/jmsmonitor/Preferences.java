@@ -1,6 +1,6 @@
 package org.csstudio.debugging.jmsmonitor;
 
-import org.csstudio.apputil.securestorage.SecureStorage;
+import org.csstudio.platform.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -33,11 +33,7 @@ public class Preferences
     }
     
     private static String getSecureString(final String setting) {
-    	String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);
-        if(value == null){
-        	final IPreferencesService preferences = Platform.getPreferencesService();
-        	value = preferences.getString(Activator.ID, setting, null, null);
-        }        	
+    	String value = SecureStorage.retrieveSecureStorage(Activator.ID, setting);        	
         return value;
     }
     

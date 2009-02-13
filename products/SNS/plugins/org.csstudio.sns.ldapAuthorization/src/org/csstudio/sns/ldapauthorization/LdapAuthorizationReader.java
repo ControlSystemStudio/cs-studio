@@ -34,11 +34,11 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.apputil.securestorage.SecureStorage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.IAuthorizationProvider;
 import org.csstudio.platform.security.Right;
 import org.csstudio.platform.security.RightSet;
+import org.csstudio.platform.security.SecureStorage;
 import org.csstudio.platform.security.User;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -207,16 +207,11 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 	{
 	    final IPreferencesService prefs = Platform.getPreferencesService();
 	    final String url = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.LDAP_URL, null, null);
-		String user = SecureStorage.retrieveSecureStorage(
+		final String user = SecureStorage.retrieveSecureStorage(
 				Activator.PLUGIN_ID, PreferenceConstants.LDAP_USER);
-		if (user == null)
-			user = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.LDAP_USER, null, null);
-		String password = SecureStorage.retrieveSecureStorage(
+		final String password = SecureStorage.retrieveSecureStorage(
 				Activator.PLUGIN_ID, PreferenceConstants.LDAP_PASSWORD);
-		if (password == null)
-			password = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.LDAP_PASSWORD, null, null);
-		
-		final Hashtable<String, String> env = new Hashtable<String, String>();
+			final Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, url);
 		if (user.length() <= 0  ||  password.length() <= 0)

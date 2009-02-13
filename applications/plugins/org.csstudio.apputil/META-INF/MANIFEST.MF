@@ -7,7 +7,6 @@ Bundle-Vendor: Kay Kasemir
 Export-Package: org.csstudio.apputil.args,
  org.csstudio.apputil.formula,
  org.csstudio.apputil.ringbuffer,
- org.csstudio.apputil.securestorage,
  org.csstudio.apputil.text,
  org.csstudio.apputil.time,
  org.csstudio.apputil.xml

@@ -1,26 +1,41 @@
-package org.csstudio.apputil.securestorage;
+package org.csstudio.platform.security;
 
 import java.io.File;
 import java.net.URL;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.securestore.SecureStore;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 
-/**This class includes the useful functions related with secure storage.
+/**Secure Storage is used to save sensitive data such as user name and password in 
+ * encrypted style. The secure storage file with a name of <code>secure_storage</code>
+ * is under the directory where the program is installed.
+ * <p> 
+ * To encrypt the sensitive data, a master password provider must be provided which could be
+ * configured under <code>General->Security->Secure Storage</code>. For more information, 
+ * please see {@link ISecurePreferences}
+ * </p>
+ * <p>
+ * Note: SecureStorage is different from {@link SecureStore} whose data is encrypted by 
+ * the login user's password. SecureStorage is used to store sensitive data per installation
+ * whereas {@link SecureStore} store sensitive data for per user.
+ * </p>
+ * This class includes the helpful functions for secure storage. 
+ * 
  * @author Xihui Chen
  */
 public class SecureStorage {
 	
 	/**Retrieve value of the key specified from the secure storage file  
-	 * @param nodePath path to the root node
+	 * @param qualifier path to the root node
 	 * @param key key with this the value is associated
 	 * @return value associated the key. 
 	 * If value was stored in an encrypted form, it will be decrypted. 
 	 * null if the secure storage file or the key does not exist.
 	 */
-	public static String retrieveSecureStorage(String nodePath, String key) {
+	public static String retrieveSecureStorage(String qualifier, String key) {
     	try {
     		URL secureFileLoc = new URL(Platform.getInstallLocation().getURL()+"secure_storage");
     		File file = new File(secureFileLoc.toURI());
@@ -28,7 +43,7 @@ public class SecureStorage {
 	        	URL url = file.toURI().toURL();    	
 	        	ISecurePreferences root = SecurePreferencesFactory.open(url, null);
 	    		if(root != null) {	    			
-		    		ISecurePreferences node = root.node(nodePath);
+		    		ISecurePreferences node = root.node(qualifier);
 		      		String value = node.get(key, null);
 		      		if(value != null){ //if the key exist in this node, return the value, otherwise return the default preference
 		      			return value;
@@ -41,12 +56,13 @@ public class SecureStorage {
     	} catch (Exception e) {
 			CentralLogger.getInstance().getLogger(SecureStorage.class).error(e);
 		}		
-		return null;
+    	//in case of no value in secure storage, return the preference value 
+    	return Platform.getPreferencesService().getString(qualifier, key, null, null);
+		
     }
 	
 	 /**Get node for security storage. The secure storage file with a name of 
-	  * <code>secure_storage</code> is under the user's 
-	  * working directory. Generally, it is same as where the program is installed.
+	  * <code>secure_storage</code> is under the directory where the program is installed.
 	 * @param nodePath path to the root node
 	 * @return node associated with the nodePath
 	 * @throws Exception

@@ -21,8 +21,10 @@
  */
 package org.csstudio.platform.ui.internal.logging;
 
+import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.platform.ui.security.PasswordFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -66,12 +68,14 @@ public class JmsAppenderPreferencePage extends AbstractAppenderPreferencePage {
 				CentralLogger.PROP_LOG4J_JMS_TOPIC,
 				Messages.JmsAppenderPreferencePage_TOPIC, getFieldEditorParent()));
 
-		addField(new StringFieldEditor(
+		addField(new PasswordFieldEditor(
 				CentralLogger.PROP_LOG4J_JMS_USER,
-				Messages.JmsAppenderPreferencePage_USER, getFieldEditorParent()));
+				Messages.JmsAppenderPreferencePage_USER, getFieldEditorParent(),
+				CSSPlatformPlugin.getDefault().getBundle().getSymbolicName(), false));
 
-		addField(new StringFieldEditor(
+		addField(new PasswordFieldEditor(
 				CentralLogger.PROP_LOG4J_JMS_PASSWORD,
-				Messages.JmsAppenderPreferencePage_PASSWORD, getFieldEditorParent()));
+				Messages.JmsAppenderPreferencePage_PASSWORD, getFieldEditorParent(),
+				CSSPlatformPlugin.getDefault().getBundle().getSymbolicName(), true));
 	}
 }

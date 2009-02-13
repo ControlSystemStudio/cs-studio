@@ -1,8 +1,8 @@
-package org.csstudio.apputil.ui.jface.preference;
+package org.csstudio.platform.ui.security;
 
 
-import org.csstudio.apputil.securestorage.SecureStorage;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.security.SecureStorage;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -101,15 +101,16 @@ public class PasswordFieldEditor extends FieldEditor
      * @param name the name of the preference this field editor works on
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
-     * @param nodePath absolute or relative path to the preference node. It must be unique in the 
-     * 		  secure storage. It is recommended to use your plugin ID.
+     * @param qualifier absolute or relative path to the preference node. It must be unique
+     * 		  in the secure storage. It must be same as the qualifier of the 
+     * 		  preference store of the preference page which including this field editor. 
      * @param encrypt true if value is to be encrypted, false value does not need to be encrypted 
      */
-    public PasswordFieldEditor(String name, String labelText, Composite parent, String nodePath, boolean encrypt)
+    public PasswordFieldEditor(String name, String labelText, Composite parent, String qualifier, boolean encrypt)
     {
         init(name, labelText);
         this.encrypt = encrypt;
-        this.nodePath = nodePath;
+        this.nodePath = qualifier;
         isValid = false;
         errorMessage = JFaceResources
                 .getString("StringFieldEditor.errorMessage");//$NON-NLS-1$

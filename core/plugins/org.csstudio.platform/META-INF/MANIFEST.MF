@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.csstudio.platform.libs.jmock,
  org.csstudio.platform.utility.jms,
  org.csstudio.platform.libs.dal,
- org.csstudio.platform.workspace;bundle-version="1.1.0"
+ org.csstudio.platform.workspace,
+ org.eclipse.equinox.security
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
 Export-Package: org.apache.log4j,

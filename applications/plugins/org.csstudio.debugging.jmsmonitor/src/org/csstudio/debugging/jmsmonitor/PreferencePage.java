@@ -1,6 +1,6 @@
 package org.csstudio.debugging.jmsmonitor;
 
-import org.csstudio.apputil.ui.jface.preference.PasswordFieldEditor;
+import org.csstudio.platform.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
