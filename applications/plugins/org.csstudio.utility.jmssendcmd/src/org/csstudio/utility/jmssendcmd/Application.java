@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
-import org.csstudio.apputil.args.EDMOption;
 import org.csstudio.apputil.args.StringOption;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -46,6 +45,11 @@ public class Application implements IApplication
                 "-app", "Application type (default: " + DEFAULT_APP + ")", DEFAULT_APP);
         final StringOption text = new StringOption(parser,
                 "-text", "Send given text (default: read from stdin)", null);
+        
+        /**
+         * Use the -edm_mode if the string being parsed is from EDM.  This will set
+         * the edm_mode variable to true.
+         */
         final BooleanOption edm_mode = new BooleanOption(parser,
               "-edm_mode", "Parse EDM 'put' log formatted input");
         final BooleanOption help = new BooleanOption(parser,
