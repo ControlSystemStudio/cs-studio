@@ -70,6 +70,8 @@ public class PasswordFieldEditor extends FieldEditor
     
     private boolean passwordChanged = false;
     
+    private boolean loadFromDefault = false;
+    
     /**
      * Creates a new string field editor 
      */
@@ -233,8 +235,10 @@ public class PasswordFieldEditor extends FieldEditor
 	            String value = getPreferenceStore().getDefaultString(
 	                    getPreferenceName());
 	            textField.setText(value);
-        	} else
+        	} else {
         		textField.setText(FAKE_PASSWORD);
+        		loadFromDefault = true;
+        	}
         }
         valueChanged();
     }
@@ -246,12 +250,19 @@ public class PasswordFieldEditor extends FieldEditor
     protected void doStore()
     {    	
     	try
-    	{  if(!encrypt || passwordChanged) {  		
+    	{   if(!encrypt || passwordChanged) {  		
 				final ISecurePreferences node = SecureStorage.getNode(nodePath);
 	            node.put(getPreferenceName(), textField.getText(), encrypt);
 				node.flush();
 				passwordChanged = false;
-	    	}
+	    	} else if(encrypt && loadFromDefault && !passwordChanged) {
+    			final ISecurePreferences node = SecureStorage.getNode(nodePath);
+	            node.put(getPreferenceName(), getPreferenceStore().getDefaultString(
+	                    getPreferenceName()), encrypt);
+				node.flush();
+				loadFromDefault = false;
+    		}
+    			
 		}
     	catch (Exception e)
     	{
