@@ -8,6 +8,10 @@ public enum MessageKeyEnum {
      */
     ACK("ACK"),
     /**
+     * XXX Comment
+     */
+    ACK_TIME("ACK_TIME"),
+    /**
 	 * XXX Comment
 	 */
 	AMS_FILTERID("AMS-FILTERID"),
@@ -47,6 +51,10 @@ public enum MessageKeyEnum {
 	 * XXX Comment
 	 */
 	FACILITY("FACILITY"),
+    /**
+     * XXX Comment
+     */
+	FILENAME("FILENAME"),
 	/**
 	 * XXX Comment
 	 */
@@ -66,6 +74,10 @@ public enum MessageKeyEnum {
 	/**
 	 * XXX Comment
 	 */
+	LOST("LOST"),
+    /**
+     * XXX Comment
+     */
 	MSGPROP_COMMAND("COMMAND"),
 	/**
 	 * XXX Comment
@@ -113,11 +125,22 @@ public enum MessageKeyEnum {
 	 * XXX Comment
 	 */
 	USER("USER"),
-
 	/**
 	 * XXX Comment
 	 */
-	VALUE("VALUE");
+	VALUE("VALUE"),
+    /**
+     * XXX Comment
+     */
+	VALUE_MAX("VALUE-MAX"),
+    /**
+     * XXX Comment
+     */
+	VALUE_MIN("VALUE_MIN"),
+    /**
+     * XXX Comment
+     */
+	VALUE_OLD("VALUE-OLD");
 
 	public static MessageKeyEnum getEnumFor(final String value) {
 		for (final MessageKeyEnum mke : MessageKeyEnum.values()) {
