@@ -26,6 +26,7 @@ import org.csstudio.sns.ldapauthorization.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -35,6 +36,7 @@ import org.csstudio.sns.ldapauthorization.Activator;
  * Preference page for the LDAP authorization.
  * 
  * @author Joerg Rathlev
+ * @author Xihui Chen
  */
 public class PreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
@@ -60,6 +62,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 
 	public void init(IWorkbench workbench) {
 		// nothing to do
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
+		setMessage("Changes will only take effect after restart");
 	}
 
 }
