@@ -53,10 +53,14 @@ public class EDMParser
            optionStr= edm_log_line.substring(posn+2,edm_log_line.length()-1);
            done = true;
          }
-         space++;
+         int blank=option.lastIndexOf(" ");
         /**
          * Based on the option read, set the appropriate variable to optionStr. 
          */
+         if(blank >=0)
+           option=option.substring(option.lastIndexOf(" ")+1);
+         space++;
+
          if(option.equalsIgnoreCase("host"))
             host=optionStr;
          else if(option.equalsIgnoreCase("user"))
