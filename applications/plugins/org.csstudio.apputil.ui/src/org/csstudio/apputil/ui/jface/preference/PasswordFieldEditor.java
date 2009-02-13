@@ -64,6 +64,13 @@ public class PasswordFieldEditor extends FieldEditor
     private boolean emptyStringAllowed = true;
 
     /**
+     * Fake password to be displayed or copied.
+     */
+    private static final String FAKE_PASSWORD = "*********"; //$NON-NLS-1$
+    
+    private boolean passwordChanged = false;
+    
+    /**
      * Creates a new string field editor 
      */
     protected PasswordFieldEditor() {
@@ -195,20 +202,23 @@ public class PasswordFieldEditor extends FieldEditor
         if (textField != null)
         {
         	String value = null;
-         	try
-         	{
-				value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
-				if(value == null)
+        	if(!encrypt) {	        	
+	         	try
+	         	{
+					value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
+					if(value == null)
+						value = getPreferenceStore().getString(getPreferenceName());
+	         	}
+	         	catch (Exception e)
+	         	{
+					CentralLogger.getInstance().getLogger(this).error(
+								"Error in retrieving data from secure storage. " +
+								"The default preference value of _" +
+								getPreferenceName()+ "_ will be loaded.", e);				
 					value = getPreferenceStore().getString(getPreferenceName());
-         	}
-         	catch (Exception e)
-         	{
-				CentralLogger.getInstance().getLogger(this).error(
-							"Error in retrieving data from secure storage. " +
-							"The default preference value of _" +
-							getPreferenceName()+ "_ will be loaded.", e);				
-				value = getPreferenceStore().getString(getPreferenceName());
-			}        	
+				}        	
+        	} else
+        		value = FAKE_PASSWORD;
 			textField.setText(value);
 			oldValue = value;
         }
@@ -219,9 +229,12 @@ public class PasswordFieldEditor extends FieldEditor
      */
     protected void doLoadDefault() {
         if (textField != null) {
-            String value = getPreferenceStore().getDefaultString(
-                    getPreferenceName());
-            textField.setText(value);
+        	if(!encrypt){
+	            String value = getPreferenceStore().getDefaultString(
+	                    getPreferenceName());
+	            textField.setText(value);
+        	} else
+        		textField.setText(FAKE_PASSWORD);
         }
         valueChanged();
     }
@@ -233,10 +246,12 @@ public class PasswordFieldEditor extends FieldEditor
     protected void doStore()
     {    	
     	try
-    	{    		
-			final ISecurePreferences node = SecureStorage.getNode(nodePath);
-            node.put(getPreferenceName(), textField.getText(), encrypt);
-			node.flush();
+    	{  if(!encrypt || passwordChanged) {  		
+				final ISecurePreferences node = SecureStorage.getNode(nodePath);
+	            node.put(getPreferenceName(), textField.getText(), encrypt);
+				node.flush();
+				passwordChanged = false;
+	    	}
 		}
     	catch (Exception e)
     	{
@@ -299,14 +314,15 @@ public class PasswordFieldEditor extends FieldEditor
     public Text getTextControl(Composite parent) {
         if (textField == null) {
         	if(encrypt) {
-        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        		textField.setEchoChar('*');
+        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
         	}
         	else
         		textField = new Text(parent, SWT.SINGLE | SWT.BORDER);   		
             textField.setFont(parent.getFont());
             textField.addKeyListener(new KeyAdapter() {
                 public void keyReleased(KeyEvent e) {
+                	if(encrypt)
+                		passwordChanged = !textField.getText().equals(FAKE_PASSWORD); 
                     valueChanged();
                 }
             });
@@ -409,7 +425,7 @@ public class PasswordFieldEditor extends FieldEditor
      * (or reset to the default value) from the preference store.
      * </p>
      */
-    protected void valueChanged() {
+    protected void valueChanged() {    	   	
         setPresentsDefaultValue(false);
         boolean oldState = isValid;
         refreshValidState();
