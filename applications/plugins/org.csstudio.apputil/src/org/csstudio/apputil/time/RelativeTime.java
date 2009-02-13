@@ -72,7 +72,6 @@ public class RelativeTime
      *  its case has to match Sergei's orignal specification,
      *  which explains the specific choice of upper and lower case in here.
      */
-    @SuppressWarnings("nls")
     static final String tokens[] = new String[]
     {
         YEAR_TOKEN,

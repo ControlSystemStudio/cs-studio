@@ -16,7 +16,6 @@ import java.util.Calendar;
 public class AbsoluteTimeParser
 {
     /** The accepted date formats for absolute times. */
-    @SuppressWarnings("nls")
     private static final DateFormat[] parsers = new SimpleDateFormat[]
     {   // Most complete version first
         new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS"),
