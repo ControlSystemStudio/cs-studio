@@ -20,6 +20,39 @@ public class ArgsTest
     };
 
     @Test
+    public void testErrorForUnknownOption() throws Exception
+    {
+        final ArgParser parser = new ArgParser();
+        try
+        {
+            parser.parse(args);
+            fail("Should have reported unknown option");
+        }
+        catch (Exception ex)
+        {
+            assertEquals("Unknown option '-url'", ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testErrorForExtraParameters() throws Exception
+    {
+        final ArgParser parser = new ArgParser();
+        new BooleanOption(parser, "-help", "Help");
+        new StringOption(parser, "-url", "URL", "http://localhost");
+        new IntegerOption(parser, "-port", "TCP Port", 4812);
+        try
+        {
+            parser.parse(args);
+            fail("Should have reported extra parameters");
+        }
+        catch (Exception ex)
+        {
+            assertEquals("Extra, non-option parameter 'another'", ex.getMessage());
+        }
+    }
+        
+    @Test
     public void testArgs() throws Exception
     {
         // Create parser for the "-..." options
@@ -58,38 +91,5 @@ public class ArgsTest
         assertEquals(2, extra.length);
         assertEquals("another", extra[0]);
         assertEquals("parameter", extra[1]);
-    }
-
-    @Test
-    public void testErrorForUnknownOption() throws Exception
-    {
-        final ArgParser parser = new ArgParser();
-        try
-        {
-            parser.parse(args);
-            fail("Should have reported unknown option");
-        }
-        catch (Exception ex)
-        {
-            assertEquals("Unknown option '-url'", ex.getMessage());
-        }
-    }
-    
-    @Test
-    public void testErrorForExtraParameters() throws Exception
-    {
-        final ArgParser parser = new ArgParser();
-        new BooleanOption(parser, "-help", "Help");
-        new StringOption(parser, "-url", "URL", "http://localhost");
-        new IntegerOption(parser, "-port", "TCP Port", 4812);
-        try
-        {
-            parser.parse(args);
-            fail("Should have reported extra parameters");
-        }
-        catch (Exception ex)
-        {
-            assertEquals("Extra, non-option parameter 'another'", ex.getMessage());
-        }
     }
 }
