@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 
 import org.csstudio.platform.CSSPlatformPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.securestore.SecureStore;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
