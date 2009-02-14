@@ -3,9 +3,12 @@ package org.csstudio.platform.security;
 import java.io.File;
 import java.net.URL;
 
+import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.securestore.SecureStore;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 
@@ -49,12 +52,10 @@ public class SecureStorage {
 		      			return value;
 		      		}
 	    		}
-    		}else {
-    			CentralLogger.getInstance().getLogger(SecureStorage.class).debug(
-    					"The secure storage file does not exist.");
     		}
     	} catch (Exception e) {
-			CentralLogger.getInstance().getLogger(SecureStorage.class).error(e);
+    		CSSPlatformPlugin.getDefault().getLog().log(new Status(IStatus.ERROR, CSSPlatformPlugin.ID,
+    				"Failed to read value of " + key + " from secure storage", e));
 		}		
     	//in case of no value in secure storage, return the preference value 
     	return Platform.getPreferencesService().getString(qualifier, key, null, null);
