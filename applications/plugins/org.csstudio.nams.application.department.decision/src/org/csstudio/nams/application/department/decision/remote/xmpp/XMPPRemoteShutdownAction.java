@@ -14,7 +14,7 @@ public class XMPPRemoteShutdownAction implements IAction {
 
 	private static String ACTION_LOGIN_FAILED = XMPPLoginCallbackHandler.LOGIN_FAILED
 			+ " [requested action: \"shutdown\"]";
-	private static String ACTION_LOGIN_SUCCEDED = "Login succeded for user "
+	private static String ACTION_LOGIN_SUCCEDED = "OK: [0] - Login succeded for user "
 			+ XMPPLoginCallbackHandler.USER
 			+ ", shutdown has been initiated [requested action: \"shutdown\"]";
 	private static Logger logger;

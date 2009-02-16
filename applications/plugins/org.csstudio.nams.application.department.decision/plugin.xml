@@ -24,7 +24,7 @@
       <parametrizedAction
             class="org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction"
             id="org.csstudio.nams.application.department.decision.remote.RemoteShutdownAction"
-            name="shutdown"
+            name="Stop"
             parameters="authorisation">
       </parametrizedAction>
    </extension>

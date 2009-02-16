@@ -42,7 +42,7 @@ public class MassageMinderStopAction implements IAction {
         String password = null;
 
         if (!(param instanceof Map)) {
-            return "Parameter not available.";
+            return "ERROR: [1] - Parameter not available.";
         }
 
         Map<?, ?> map = (Map<?, ?>) param;
@@ -51,7 +51,7 @@ public class MassageMinderStopAction implements IAction {
             password = (String) map.get("Password");
 
             if (password.compareTo(Messages.Pref_Password_ShutdownAction) != 0) {
-                return "Invalid password";
+                return "ERROR: [2] - Invalid password";
             }
         } catch (Exception e) {
             return e.getMessage();
@@ -59,6 +59,6 @@ public class MassageMinderStopAction implements IAction {
 
         MessageMinderStart.getInstance().setRun(false);
 
-        return "Massage Minder is stopping now...";
+        return "OK: [0] - Massage Minder is stopping now...";
     }
 }

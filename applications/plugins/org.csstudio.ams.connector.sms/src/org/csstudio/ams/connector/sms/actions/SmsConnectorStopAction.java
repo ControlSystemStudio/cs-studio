@@ -42,7 +42,7 @@ public class SmsConnectorStopAction implements IAction
         
         if(!(param instanceof Map))
         {
-            return "Parameter not available.";
+            return "ERROR: [1] - Parameter not available.";
         }
         
         Map<?, ?> map = (Map<?, ?>)param;
@@ -53,7 +53,7 @@ public class SmsConnectorStopAction implements IAction
         
             if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
             {
-                return "Invalid password";
+                return "ERROR: [2] - Invalid password";
             }
         }
         catch(Exception e)
@@ -63,6 +63,6 @@ public class SmsConnectorStopAction implements IAction
         
         SmsConnectorStart.getInstance().setShutdown();
         
-        return "SmsConnector is stopping now...";
+        return "OK: [0] - SmsConnector is stopping now...";
     }
 }
