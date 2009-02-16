@@ -50,8 +50,8 @@ public class StringSplitterTest extends TestCase {
     	final String result[] = StringSplitter.splitIgnoreInQuotes(
     			"|||This is a|| || |\"complicated||test.\"|||Hello, \"fox|and\"dog|", '|', false);
     	assertEquals("This is a", result[0]);
-    	assertEquals(" ", result[1]);
-    	assertEquals(" ", result[2]);    	
+    	assertEquals("", result[1]);
+    	assertEquals("", result[2]);    	
     	assertEquals("\"complicated||test.\"", result[3]);    	
     	assertEquals("Hello, \"fox|and\"dog", result[4]);
     }
@@ -60,7 +60,7 @@ public class StringSplitterTest extends TestCase {
     public void test5() throws Exception
     {
     	final String result[] = StringSplitter.splitIgnoreInQuotes(
-    			"group.provider.url=\"ldap://localhost:389/ou=People,dc=test,dc=ics\"", '=', true);
+    			"group.provider.url = \"ldap://localhost:389/ou=People,dc=test,dc=ics\"", '=', true);
     	assertEquals("group.provider.url", result[0]);
     	assertEquals("ldap://localhost:389/ou=People,dc=test,dc=ics", result[1]);
     }

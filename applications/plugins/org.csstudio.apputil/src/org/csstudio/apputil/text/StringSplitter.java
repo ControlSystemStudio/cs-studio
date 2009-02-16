@@ -18,12 +18,16 @@ public class StringSplitter {
 	 * but the split characters between two quotes will be ignored.
 	 * @param source string to be split
 	 * @param splitChar the character used to split the source string
-	 * @param deleteHeadTailQuotes delete the quotes in head and tail if true
+	 * @param deleteHeadTailQuotes delete the quotes in the head and tail
+	 * of individual elements if true
 	 * @return an array of individual elements
 	 * @throws Exception Exception on parse error (missing end of quoted string)
 	 */
-	public static String[] splitIgnoreInQuotes(String source, char splitChar, boolean deleteHeadTailQuotes) throws Exception {
+	public static String[] splitIgnoreInQuotes(String source, char splitChar, 
+			boolean deleteHeadTailQuotes) throws Exception {
 		
+		// Trim, replace tabs with spaces so we only need to handle
+        // space in the following
 		source = source.replace('\t', SPACE).trim();
 		final List<String> resultList = new ArrayList<String>();
 		int pos = 0;
@@ -51,6 +55,7 @@ public class StringSplitter {
 			}	
 			
 			String subString = source.substring(start, pos);
+			subString = subString.trim();
 			if(deleteHeadTailQuotes)
 				//only delete quotes when both head and tail are quote
 				if(subString.charAt(0) == QUOTE && subString.charAt(subString.length()-1) == QUOTE)
