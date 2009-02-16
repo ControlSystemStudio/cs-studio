@@ -97,8 +97,7 @@ public class JMSSender implements ExceptionListener
            map.setString(JMSLogMessage.HOST, parser.getHost());
            map.setString(JMSLogMessage.USER, parser.getUser());
            map.setString(JMSLogMessage.NAME, parser.getPVName());
-           map.setString(JMSLogMessage.TEXT, parser.getPVName() + "=" + parser.getValue()
-                 + " (old: " + parser.getOriginalValue()+")");
+           map.setString(JMSLogMessage.TEXT, parser.getPVText());
            map.setString(JMSLogEDMMessage.PVVALUE, parser.getValue());
            map.setString(JMSLogEDMMessage.OLDPVVALUE, parser.getOriginalValue());
 

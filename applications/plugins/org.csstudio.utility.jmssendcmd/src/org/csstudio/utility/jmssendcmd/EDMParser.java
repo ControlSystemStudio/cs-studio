@@ -1,5 +1,7 @@
 package org.csstudio.utility.jmssendcmd;
 
+import org.csstudio.platform.logging.CentralLogger;
+
 public class EDMParser
 {
    /** Current value */
@@ -20,18 +22,15 @@ public class EDMParser
    /** option for the display value */
    private String dsp;
    
-   private boolean done=false;
-   
    public EDMParser(String edm_log_line)
    {
-      int posn = 0;
       int space = 0;
       String option = "";
       String optionStr = "";
+      boolean done=false;
       while(!done)
       {
-
-         posn = edm_log_line.indexOf("=");
+         final int posn = edm_log_line.indexOf("=");
 
          /**
           * Retrieve the option
@@ -53,7 +52,7 @@ public class EDMParser
            optionStr= edm_log_line.substring(posn+2,edm_log_line.length()-1);
            done = true;
          }
-         int blank=option.lastIndexOf(" ");
+         final int blank=option.lastIndexOf(" ");
         /**
          * Based on the option read, set the appropriate variable to optionStr. 
          */
@@ -80,9 +79,41 @@ public class EDMParser
           * Move past the first " character
           */
          space = 1;
-
       }
-      pvtext=getPVName() + "="+ getValue();
+      pvtext=getPVName() + "="+ getValue() + " (old: " + getOriginalValue()+")";
+      /**
+       * If this is a remote ssh connection, set the host to the IP address
+       * of the machine the connection was made from.
+       */
+      if(ssh!=null)
+      {
+         if(ssh.indexOf("f:")+2!=ssh.lastIndexOf("f:")+2 &&
+            ssh.indexOf(' ')!=ssh.lastIndexOf(' '))
+           host=ssh.substring(ssh.indexOf("f:")+2, ssh.indexOf(' '));
+         else 
+            CentralLogger.getInstance().getLogger(this).debug(
+                  "ssh entry has an INVALID format. " + ssh);
+      }
+      if(user==null)
+      {
+         CentralLogger.getInstance().getLogger(this).debug(
+               "user entry cannot be NULL");
+      }
+      if(host==null)
+      {
+         CentralLogger.getInstance().getLogger(this).debug(
+               "host entry cannot be NULL");
+      }
+      if(value==null)
+      {
+         CentralLogger.getInstance().getLogger(this).debug(
+               "value entry cannot be NULL");
+      }
+      if(name==null)
+      {
+         CentralLogger.getInstance().getLogger(this).debug(
+               "pv name entry cannot be NULL");
+      }
    }
    
    String getUser()
