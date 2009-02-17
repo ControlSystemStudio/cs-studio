@@ -12,6 +12,7 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.jms.Topic;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -183,47 +184,68 @@ public class Model implements ExceptionListener, MessageListener
     {
         if (! run)
             return;
-        if (message instanceof MapMessage)
-            handleMapMessage((MapMessage) message);
-        else
-            CentralLogger.getInstance().getLogger(this).error(
-                "Message type " + message.getClass().getName() + " not handled"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    /** Handle received MapMessage
-     *  @param message The MapMessage
-     */
-    @SuppressWarnings("unchecked")
-    private void handleMapMessage(final MapMessage message)
-    {
         try
         {
-            final Enumeration<String> names = message.getMapNames();
-            final ArrayList<MessageProperty> content =
-                new ArrayList<MessageProperty>();
-            String type = Messages.UnknownType;
-            while (names.hasMoreElements())
-            {
-                final String name = names.nextElement();
-                final String value = message.getString(name);
-                if (JMSLogMessage.TYPE.equals(name))
-                    type = value;
-                else
-                    content.add(new MessageProperty(name, value));
-            }
-            final ReceivedMessage entry = new ReceivedMessage(type, content);
-            // Add to end of list
-            synchronized (messages)
-            {
-                messages.add(entry);
-            }
-            fireModelChanged();
+            if (message instanceof MapMessage)
+                handleMapMessage((MapMessage) message);
+            else if (message instanceof TextMessage)
+                handleTextMessage((TextMessage) message);
+            else
+                CentralLogger.getInstance().getLogger(this).error(
+                    "Message type " + message.getClass().getName() + " not handled"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         catch (Exception ex)
         {
             CentralLogger.getInstance().getLogger(this).error(
                     "Message error " + ex.getMessage(), ex); //$NON-NLS-1$
         }
+    }
+
+    /** Handle received MapMessage
+     *  @param message The MapMessage
+     * @throws Exception on error
+     */
+    @SuppressWarnings("unchecked")
+    private void handleMapMessage(final MapMessage message) throws Exception
+    {
+        final Enumeration<String> names = message.getMapNames();
+        final ArrayList<MessageProperty> content =
+            new ArrayList<MessageProperty>();
+        String type = Messages.UnknownType;
+        while (names.hasMoreElements())
+        {
+            final String name = names.nextElement();
+            final String value = message.getString(name);
+            if (JMSLogMessage.TYPE.equals(name))
+                type = value;
+            else
+                content.add(new MessageProperty(name, value));
+        }
+        final ReceivedMessage entry = new ReceivedMessage(type, content);
+        // Add to end of list
+        synchronized (messages)
+        {
+            messages.add(entry);
+        }
+        fireModelChanged();
+    }
+
+    /** Handle received TextMessage
+     *  @param message The TextMessage
+     * @throws Exception on error
+     */
+    private void handleTextMessage(final TextMessage message) throws Exception
+    {
+        final ArrayList<MessageProperty> content =
+            new ArrayList<MessageProperty>();
+        content.add(new MessageProperty("TextMessage", message.getText())); //$NON-NLS-1$
+        final ReceivedMessage entry = new ReceivedMessage("TEXT", content); //$NON-NLS-1$
+        // Add to end of list
+        synchronized (messages)
+        {
+            messages.add(entry);
+        }
+        fireModelChanged();
     }
 
     /** Notify listeners */
