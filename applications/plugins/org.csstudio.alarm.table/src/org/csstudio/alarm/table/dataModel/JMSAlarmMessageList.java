@@ -83,8 +83,11 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			boolean equalMessageInTable = equalMessageNameInTable(newMessage);
 			// do not insert messages with type: 'status', unless there is a
 			// previous message with the same NAME in the table.
-			if ((newMessage.getString("TYPE").equalsIgnoreCase("status") && (equalMessageInTable == false))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				return;
+			if (newMessage.getString("TYPE").equalsIgnoreCase("status")) {
+				if (equalMessageInTable == true) {
+					updateMessageInTableForDisconnected(newMessage);
+					return;
+				}
 			}
 			// is there an old message from same pv
 			// (deleteOrGrayOutEqualMessages == true) -> display new message
@@ -103,6 +106,48 @@ public class JMSAlarmMessageList extends JMSMessageList {
 				while (iterator.hasNext())
 					((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
 			}
+		}
+	}
+
+	/**
+	 * Updates the existing message in the table with new properties for new
+	 * status. If there are two existing messages in table delete the older one.
+	 * 
+	 * @param newMessage
+	 * @throws JMSException
+	 */
+	private void updateMessageInTableForDisconnected(MapMessage newMessage)
+			throws JMSException {
+		JMSMessage messageToRemove = null;
+		for (JMSMessage message : JMSMessages) {
+			String currentInList = message.getProperty("NAME");
+			String currentMessage = newMessage.getString("NAME");
+			if (currentInList.equalsIgnoreCase(currentMessage) == true) {
+				// the new status is disconnected, set severity to "offline"
+				if (newMessage.getString("STATUS").equalsIgnoreCase(
+						"DISCONNECTED")) {
+					// if this message in table is an old one delete it
+					if (message.isBackgroundColorGray()) {
+						messageToRemove = message;
+					} else {
+						message.setProperty("STATUS", "DISCONNECTED");
+						updateJMSMessage(message);
+					}
+					// the new status is not disconnected update properties with
+					// values of the new message.
+				} else {
+					message.setProperty("SEVERITY", newMessage
+							.getString("SEVERITY"));
+					message.setProperty("STATUS", newMessage
+							.getString("STATUS"));
+					message.setProperty("TIMESTAMP", newMessage
+							.getString("TIMESTMAP"));
+					updateJMSMessage(message);
+				}
+			}
+		}
+		if (messageToRemove != null) {
+			removeJMSMessage(messageToRemove);
 		}
 	}
 
@@ -135,7 +180,8 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			return false;
 		}
 		if (newMessage.getString("TYPE") == null) {
-			if ((newMessage.getString("ACK") == null) || (!newMessage.getString("ACK").equals("TRUE"))) {
+			if ((newMessage.getString("ACK") == null)
+					|| (!newMessage.getString("ACK").equals("TRUE"))) {
 				return false;
 			}
 		}
@@ -155,9 +201,11 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			throws JMSException {
 
 		JMSMessage newJMSMessage = null;
-		CentralLogger.getInstance().info(this, "ViewAlarm Ack message received, MsgName: "
-				+ newMessage.getString("NAME") + " MsgTime: "
-				+ newMessage.getString("EVENTTIME"));
+		CentralLogger.getInstance().info(
+				this,
+				"ViewAlarm Ack message received, MsgName: "
+						+ newMessage.getString("NAME") + " MsgTime: "
+						+ newMessage.getString("EVENTTIME"));
 		for (JMSMessage message : JMSMessages) {
 			if (message.getName().equals(newMessage.getString("NAME"))
 					&& message.getProperty("SEVERITY").equals(

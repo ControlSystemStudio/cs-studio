@@ -126,7 +126,7 @@
       <extension
          point="org.eclipse.help.toc">
       <toc
-            file="toc.xml"
+            file="toc.xml_old"
             primary="true">
       </toc>
    </extension>

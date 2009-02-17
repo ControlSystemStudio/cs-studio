@@ -156,6 +156,15 @@ public class JMSMessageList {
 	}
 
 	/**
+	 * Call listeners to update the message.
+	 */
+	public void updateJMSMessage(JMSMessage jmsm) {
+		Iterator<IJMSMessageViewer> iterator = changeListeners.iterator();
+		while (iterator.hasNext())
+			((IJMSMessageViewer) iterator.next()).updateJMSMessage(jmsm);
+	}
+
+	/**
 	 * Remove a message from the list.
 	 */
 	public void removeJMSMessage(JMSMessage jmsm) {
