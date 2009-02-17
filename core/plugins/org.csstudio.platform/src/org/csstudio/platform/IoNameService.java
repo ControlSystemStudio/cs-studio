@@ -1,5 +1,7 @@
 package org.csstudio.platform;
 
+import java.util.List;
+
 /**
  * Interface for the IO name service.
  * 
@@ -8,14 +10,22 @@ package org.csstudio.platform;
 // FIXME: swende: Provide a real implementation
 public interface IoNameService {
 	/**
-	 * Returns the IO name for the specified key.
+	 * Returns the Epics Address for the specified IO name.
 	 * 
-	 * @param key
+	 * @param ioName
 	 *            the key (mandatory)
 	 * @param field
 	 *            a field name (optional)
-	 * @return the IO name for the specified key or null if no IO name exists
-	 *         for that key
+	 * @return the Epics address for the specified IO name or null if no Epics address exists
+	 *         for that IO name
 	 */
-	String getIoName(String key, String field);
+	String getEpicsAddress(String ioName, String field);
+	
+	/**
+	 * Returns a list off all configured IO names.
+	 *  
+	 * @return a list of IO names.
+	 */
+	List<String> getAllIoNames();
+	
 }
