@@ -2,6 +2,10 @@ package org.csstudio.utility.jmssendcmd;
 
 import org.csstudio.platform.logging.CentralLogger;
 
+/** Parse the input EDM string.
+ *  @author Delphy Armstrong
+ */
+
 public class EDMParser
 {
    /** Current value */
@@ -21,13 +25,20 @@ public class EDMParser
    private String ssh;
    /** option for the display value */
    private String dsp;
+   /** parsed string error flag */
+   private boolean error;
    
+  /** Parse the input EDM string.
+   *  
+   * @param edm_log_line
+   */
    public EDMParser(String edm_log_line)
    {
       int space = 0;
       String option = "";
       String optionStr = "";
       boolean done=false;
+      error=false;
       while(!done)
       {
          final int posn = edm_log_line.indexOf("=");
@@ -60,6 +71,9 @@ public class EDMParser
            option=option.substring(option.lastIndexOf(" ")+1);
          space++;
 
+         /** 
+          * Retrieve various parts of the parsed EDM string.
+          */
          if(option.equalsIgnoreCase("host"))
             host=optionStr;
          else if(option.equalsIgnoreCase("user"))
@@ -73,10 +87,11 @@ public class EDMParser
          else if(option.equalsIgnoreCase("new"))
             value=optionStr;
          else if(option.equalsIgnoreCase("old"))
-            oldVal=optionStr;         
+            oldVal=optionStr;   
+         /** Move to the next option of the input string */
          edm_log_line=edm_log_line.substring(space);
          /**
-          * Move past the first " character
+          * Move past the first " " character
           */
          space = 1;
       }
@@ -91,29 +106,50 @@ public class EDMParser
             ssh.indexOf(' ')!=ssh.lastIndexOf(' '))
            host=ssh.substring(ssh.indexOf("f:")+2, ssh.indexOf(' '));
          else 
+         {
             CentralLogger.getInstance().getLogger(this).debug(
                   "ssh entry has an INVALID format. " + ssh);
+            error=true;
+            return;
+         }
       }
+      /**
+       * If an error exists in the entries for user, host, value or pv name
+       * set the error flag to true and return;
+       */
       if(user==null)
       {
          CentralLogger.getInstance().getLogger(this).debug(
                "user entry cannot be NULL");
+         error=true;
+         return;
       }
       if(host==null)
       {
          CentralLogger.getInstance().getLogger(this).debug(
                "host entry cannot be NULL");
+         error=true;
+         return;
       }
       if(value==null)
       {
          CentralLogger.getInstance().getLogger(this).debug(
                "value entry cannot be NULL");
+         error=true;
+         return;
       }
       if(name==null)
       {
          CentralLogger.getInstance().getLogger(this).debug(
                "pv name entry cannot be NULL");
+         error=true;
+         return;
       }
+   }
+   
+   boolean hasError()
+   {
+      return error;
    }
    
    String getUser()

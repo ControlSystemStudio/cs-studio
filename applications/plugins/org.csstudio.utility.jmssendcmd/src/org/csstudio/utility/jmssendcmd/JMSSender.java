@@ -86,12 +86,16 @@ public class JMSSender implements ExceptionListener
        final MapMessage map = session.createMapMessage();
 /**
  * If the type is "put", it is an EDM option.  Different options are added to 
- * the map to reflect these options.
+ * the map to reflect the input EDM string.
  */
         if(edm_mode)
         {
            EDMParser parser = new EDMParser(text);
-
+           /**
+            * If the parsed EDM input string has an error, return.
+            * Otherwise fill the MapMessage with the input EDM values.
+            */
+           if(parser.hasError()) return;
            map.setString(JMSLogMessage.TYPE, type);
            map.setString(JMSLogMessage.APPLICATION_ID, application);
            map.setString(JMSLogMessage.HOST, parser.getHost());
@@ -110,6 +114,10 @@ public class JMSSender implements ExceptionListener
            map.setString(JMSLogMessage.USER, user);
            map.setString(JMSLogMessage.TEXT, text);
         }
+        /**
+         * Send the MessageMap to the JMS producer to produce and send the
+         * JMS message.
+         */
         producer.send(map);
     }
 
