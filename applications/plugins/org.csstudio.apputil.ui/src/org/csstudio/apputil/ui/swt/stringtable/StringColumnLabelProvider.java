@@ -26,7 +26,7 @@ public class StringColumnLabelProvider extends CellLabelProvider
 	@Override
 	public void update(final ViewerCell cell)
 	{
-		final List<String> items = (List<String>) viewer.getInput();
+		final List<String> items = (List<String>)((TableInputWrapper)viewer.getInput()).getItems();
 		final int index = ((Integer)cell.getElement()).intValue();
 		if (index < 0)
 			cell.setText("<Add>");

@@ -10,15 +10,16 @@ import org.eclipse.swt.widgets.Table;
 
 /** Editor for table with string list
  *  @author Kay Kasemir
+ *  @author Xihui Chen
  */
 public class StringColumnEditor extends EditingSupport
 {
-	final private List<String> items;
+	final private TableInputWrapper wrapper;
 
-	public StringColumnEditor(final TableViewer viewer, final List<String> items)
+	public StringColumnEditor(final TableViewer viewer, final TableInputWrapper wrapper)
 	{
 		super(viewer);
-		this.items = items;
+		this.wrapper = wrapper;
 	}
 
 	@Override
@@ -34,27 +35,29 @@ public class StringColumnEditor extends EditingSupport
 		return new TextCellEditor(parent);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Object getValue(Object element)
 	{
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 			return "";
 		final int index = ((Integer)element).intValue();
-		return items.get(index);
+		return ((List<String>)wrapper.getItems()).get(index);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void setValue(Object element, Object value)
 	{
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 		{
-			items.add(value.toString());
+			((List<String>)wrapper.getItems()).add(value.toString());
 			getViewer().refresh();
 			return;
 		}
 		// else
 		final int index = ((Integer)element).intValue();
-		items.set(index, value.toString());
+		((List<String>)wrapper.getItems()).set(index, value.toString());
 		getViewer().refresh(element);
 	}
 }

@@ -14,13 +14,14 @@ import org.eclipse.swt.widgets.Table;
  */
 public class StringMultiColumnsEditor extends EditingSupport {
 
-	final private List<String[]> items;
+	final private TableInputWrapper wrapper;
 	final private int columnNo;
 	final private int numOfColumns;
 	
-	public StringMultiColumnsEditor(ColumnViewer viewer, List<String[]> items, int numOfColumns, int columnNo) {
+	public StringMultiColumnsEditor(final ColumnViewer viewer, final TableInputWrapper wrapper,
+			final int numOfColumns, final int columnNo) {
 		super(viewer);
-		this.items = items;
+		this.wrapper = wrapper;
 		this.columnNo = columnNo;
 		this.numOfColumns = numOfColumns;
 	}
@@ -36,15 +37,17 @@ public class StringMultiColumnsEditor extends EditingSupport {
 		return new TextCellEditor(parent);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Object getValue(Object element) {
 		
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 			return "";
 		final int index = ((Integer)element).intValue();
-		return items.get(index)[columnNo];		
+		return ((List<String[]>)wrapper.getItems()).get(index)[columnNo];		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void setValue(Object element, Object value) {
 		String[] rowData;
@@ -53,15 +56,15 @@ public class StringMultiColumnsEditor extends EditingSupport {
 			rowData = new String[numOfColumns];
 			Arrays.fill(rowData, "");
 			rowData[columnNo] = value.toString();
-			items.add(rowData);
+			((List<String[]>)wrapper.getItems()).add(rowData);
 			getViewer().refresh();
 			return;
 		}
 		// else
 		final int index = ((Integer)element).intValue();
-		rowData = items.get(index);
+		rowData = ((List<String[]>)wrapper.getItems()).get(index);
 		rowData[columnNo] = value.toString();
-		items.set(index, rowData);
+		((List<String[]>)wrapper.getItems()).set(index, rowData);
 		getViewer().refresh(element);
 	}
 

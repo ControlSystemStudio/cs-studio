@@ -18,7 +18,8 @@ public class StringMultiColumnsLabelProvider extends CellLabelProvider {
 	 * @param tableViewer
 	 * @param editable whether this column is editable
 	 */
-	public StringMultiColumnsLabelProvider(final TableViewer tableViewer, final boolean editable) {
+	public StringMultiColumnsLabelProvider(final TableViewer tableViewer, 
+			final boolean editable) {
 		super();
 		this.tableViewer = tableViewer;
 		this.editable = editable;
@@ -27,7 +28,7 @@ public class StringMultiColumnsLabelProvider extends CellLabelProvider {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(ViewerCell cell) {
-		final List<String[]> items = (List<String[]>) tableViewer.getInput();
+		final List<String[]> items = (List<String[]>)((TableInputWrapper) tableViewer.getInput()).getItems();
 		final int index = ((Integer) cell.getElement()).intValue();
 		//if this is the extra row
 		if (index < 0)
