@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JAAS Authentication UI
+Bundle-SymbolicName: org.csstudio.platform.jaasAuthentication.ui;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.jaasauthentication.ui.Activator
+Bundle-Vendor: SNS
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.platform.ui,
+ org.csstudio.platform.jaasAuthentication,
+ org.csstudio.apputil.ui
+Bundle-ActivationPolicy: lazy
+Import-Package: org.csstudio.sns.ldapauthorization
