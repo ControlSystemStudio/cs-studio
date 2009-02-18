@@ -32,10 +32,14 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import org.apache.log4j.Logger;
+import org.csstudio.platform.internal.jassauthentication.preference.ConfigurationFromPreferences;
+import org.csstudio.platform.internal.jassauthentication.preference.JAASPreferenceModel;
+import org.csstudio.platform.internal.jassauthentication.preference.PreferencesHelper;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.securestore.SecureStore;
 import org.csstudio.platform.security.Credentials;
@@ -43,8 +47,7 @@ import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.ILoginModule;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 
 /**
  * Performs user login via JAAS.
@@ -55,10 +58,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 @SuppressWarnings("nls")
 public class JaasLoginModule implements ILoginModule {
-	/** Preference key that selects one of the entries in the JAAS config file.
-	 *  @see #CONFIG_FILE
-	 */
-	private static final String JAAS_CONFIG = "jaasconfig";
 
 	/**
 	 * The key for the property of the User object which stores the JAAS
@@ -82,15 +81,24 @@ public class JaasLoginModule implements ILoginModule {
 	 */
 	public User login(final ILoginCallbackHandler handler) {
 		// Determine which JAAS configuration entry to use
-		final IPreferencesService service = Platform.getPreferencesService();
-		final String contextName = service.getString(Activator.PLUGIN_ID, 
-				JAAS_CONFIG, null, null);
+		//final IPreferencesService service = Platform.getPreferencesService();
+		//final String contextName = service.getString(Activator.PLUGIN_ID, 
+		//		JAAS_CONFIG, null, null);
+		String contextName;
+		if(PreferencesHelper.getConfigSource().equals(JAASPreferenceModel.SOURCE_FILE)) {
+			contextName = PreferencesHelper.getConfigFileEntry();			
+			setConfigFileProperty();
+		} else {
+			contextName = "From_Preference_Page"; //$NON-NLS-1$
+			Configuration.setConfiguration(new ConfigurationFromPreferences());			
+		}
+		
         final Logger logger = CentralLogger.getInstance().getLogger(this);
         if (logger.isDebugEnabled())
             logger.debug("Using JAAS config '" + contextName + "'");
 	
 		final CredentialsCallbackHandler ch = new CredentialsCallbackHandler();
-		setConfigFileProperty();
+		
 		LoginContext loginCtx = null;  
 		User user = null;
 		boolean loggedIn = false;
