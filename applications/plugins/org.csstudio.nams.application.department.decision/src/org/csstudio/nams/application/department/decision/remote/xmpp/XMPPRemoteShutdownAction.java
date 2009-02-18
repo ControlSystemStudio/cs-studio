@@ -64,8 +64,11 @@ public class XMPPRemoteShutdownAction implements IAction {
 				"((Map)param).containsKey(\"authorisation\")");
 
 		final String value = paramMap.get("authorisation").toString();
-		final String[] valueParts = value.split("=");
+		// Not necessary  
+		//final String[] valueParts = value.split("=");
 
+		/*
+		 * This does not work.
 		if (valueParts.length == 2) {
 			if (XMPPLoginCallbackHandler.USER.equals(valueParts[0])) {
 				if (XMPPLoginCallbackHandler.PASSWORD.equals(valueParts[1])) {
@@ -77,9 +80,22 @@ public class XMPPRemoteShutdownAction implements IAction {
 				}
 			}
 		}
-
+        */
+		
+		if(XMPPLoginCallbackHandler.ADMIN_PASSWORD.equals(value))
+		{
+            XMPPRemoteShutdownAction.thingToBeStopped
+                    .stopRemotely(XMPPRemoteShutdownAction.logger);
+            
+            XMPPRemoteShutdownAction.logger.logInfoMessage(this,
+                    XMPPRemoteShutdownAction.ACTION_LOGIN_SUCCEDED);
+            
+            return XMPPRemoteShutdownAction.ACTION_LOGIN_SUCCEDED;
+		}
+		
 		XMPPRemoteShutdownAction.logger.logWarningMessage(this,
 				XMPPRemoteShutdownAction.ACTION_LOGIN_FAILED);
+		
 		return XMPPRemoteShutdownAction.ACTION_LOGIN_FAILED;
 	}
 

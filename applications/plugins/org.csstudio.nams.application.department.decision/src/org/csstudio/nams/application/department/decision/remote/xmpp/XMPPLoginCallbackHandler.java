@@ -11,6 +11,7 @@ public class XMPPLoginCallbackHandler implements ILoginCallbackHandler {
 
 	static final String LOGIN_FAILED = "ERROR: [3] - Possible hacking attempt: XMPP-remote-login: Authorization failed! (no details avail)";
 	static final String PASSWORD = "ams";
+    static final String ADMIN_PASSWORD = "admin4AMS";
 	static final String USER = "ams-department-decision";
 	private static final String CREDENTIALS_VIA_XMPP_REQUESTED_MESSAGE = "Credentials via XMPP requested";
 	private static Logger logger;

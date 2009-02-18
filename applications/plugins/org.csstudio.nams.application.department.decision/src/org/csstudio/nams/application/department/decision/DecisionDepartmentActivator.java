@@ -908,5 +908,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
     public synchronized void stopRemotely(Logger logger)
     {
         _continueWorking = false;
+        
+        this.notifyAll();
     };
 }
