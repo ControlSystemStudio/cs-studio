@@ -24,6 +24,7 @@ package org.csstudio.platform.ui.dialogs;
 
 import org.csstudio.platform.ui.composites.ResourceSelectionGroup;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -31,15 +32,19 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 
 /**
  * This class represents a Dialog to choose a file in the workspace.
  * 
  * @author Kai Meyer, Joerg Rathlev
  */
-public final class ResourceSelectionDialog extends Dialog {
+public final class ResourceSelectionDialog extends Dialog implements Listener {
 	/**
 	 * The message to display, or <code>null</code> if none.
 	 */
@@ -59,6 +64,8 @@ public final class ResourceSelectionDialog extends Dialog {
 	 * The path of the selected resource.
 	 */
 	private IPath _path;
+
+    private Text _resourcePathText;
 
 	/**
 	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
@@ -129,11 +136,15 @@ public final class ResourceSelectionDialog extends Dialog {
 		boolean showNewContainerActions = (_fileExtensions == null 
 				|| _fileExtensions.length == 0);
 		
-		_resourceSelectionGroup = new ResourceSelectionGroup(composite, null,
+		_resourceSelectionGroup = new ResourceSelectionGroup(composite, this,
 				_fileExtensions, showNewContainerActions);
-		if (_path != null) {
-			_resourceSelectionGroup.setSelectedResource(_path);
-		}
+		new Label(composite, SWT.NONE).setText("Resource Path:");
+		_resourcePathText = new Text(composite, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
+        _resourcePathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        if (_path != null && !_path.isEmpty()) {
+            _resourcePathText.setText(_path.toString());
+            _resourceSelectionGroup.setSelectedResource(_path);
+        }
 		return composite;
 	}
 
@@ -142,7 +153,9 @@ public final class ResourceSelectionDialog extends Dialog {
 	 */
 	@Override
 	protected void okPressed() {
-		_path = _resourceSelectionGroup.getFullPath();
+//      _path = _resourceSelectionGroup.getFullPath();
+        _path = new Path(_resourcePathText.getText());
+
 		super.okPressed();
 	}
 
@@ -155,4 +168,9 @@ public final class ResourceSelectionDialog extends Dialog {
 	public IPath getSelectedResource() {
 		return _path;
 	}
+
+    public void handleEvent(Event event) {
+        ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
+        _resourcePathText.setText(widget.getFullPath().toString());
+    }
 }
