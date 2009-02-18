@@ -30,8 +30,8 @@ public final class AddInstanceAction extends AbstractOutlineAction {
 	protected Command createCommand(IElement selection) {
 		Command result = null;
 
-		PrototypeSelectionDialog rsd = new PrototypeSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Available Prototypes:",
-				getProject(), selection instanceof IContainer ? (IContainer) selection : null);
+		PrototypeSelectionDialog rsd = new PrototypeSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+				"Available Prototypes:", getProject(), selection instanceof IContainer ? (IContainer) selection : null);
 
 		if (rsd.open() == Window.OK) {
 			IPrototype prototype = (IPrototype) rsd.getSelection();
@@ -42,7 +42,8 @@ public final class AddInstanceAction extends AbstractOutlineAction {
 				result = new AddInstanceCommand((IFolder) selection, instance);
 			} else if (selection instanceof IContainer) {
 				if (ModelValidationUtil.causesTransitiveLoop((IContainer) selection, prototype)) {
-					MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "ERROR", "RECURSION");
+					MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error",
+							"An instance of the selected prototype cannot be inserted because this would cause a transitive relationship.");
 				} else {
 					result = new AddInstanceCommand((IContainer) selection, instance);
 				}
