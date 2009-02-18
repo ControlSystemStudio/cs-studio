@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
+import org.csstudio.dct.metamodel.PromptGroup;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
@@ -49,19 +50,21 @@ public final class BaseRecord implements IRecord {
 
 		if (recordDefinition != null) {
 			for (IFieldDefinition fd : recordDefinition.getFieldDefinitions()) {
-				// determine default value
-				String defaultValue = "";
 
-				if (fd.getInitial() != null && fd.getInitial().length() > 0) {
-					defaultValue = fd.getInitial();
-				} else {
-					if (fd.getMenu() != null && fd.getMenu().getChoices() != null && fd.getMenu().getChoices().size() > 0) {
-						defaultValue = fd.getMenu().getChoices().get(0).getDescription();
+				if (fd.getPromptGroup()!=null&&PromptGroup.UNDEFINED!=fd.getPromptGroup()) {
+					// determine default value
+					String defaultValue = "";
+
+					if (fd.getInitial() != null && fd.getInitial().length() > 0) {
+						defaultValue = fd.getInitial();
+					} else {
+						if (fd.getMenu() != null && fd.getMenu().getChoices() != null && fd.getMenu().getChoices().size() > 0) {
+							defaultValue = fd.getMenu().getChoices().get(0).getDescription();
+						}
 					}
+
+					fields.put(fd.getName(), defaultValue);
 				}
-
-				fields.put(fd.getName(), defaultValue);
-
 			}
 		}
 	}

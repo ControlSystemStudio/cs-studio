@@ -17,22 +17,7 @@ import org.csstudio.dct.util.ResolutionUtil;
  */
 public final class SimpleDbFileExporter implements IExporter {
 	private static final String NEWLINE = "\r\n";
-	private boolean renderEmptyFields = false;
 
-
-	public SimpleDbFileExporter() {
-		this(true);
-	}
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param renderEmptyFields
-	 *            flag that indicates whether empty fields should be rendered
-	 */
-	public SimpleDbFileExporter(boolean renderEmptyFields) {
-		this.renderEmptyFields = renderEmptyFields;
-	}
 
 	/**
 	 *{@inheritDoc}
@@ -57,7 +42,7 @@ public final class SimpleDbFileExporter implements IExporter {
 		for (String key : fields.keySet()) {
 			String v = fields.get(key) != null ? fields.get(key) : "";
 	
-			if (("".equals(v) && renderEmptyFields) || !"".equals(v)) {
+			if (!v.equals(record.getDefaultFields().get(key))) {
 				sb.append("   field(");
 				sb.append(key);
 				sb.append(", \"");

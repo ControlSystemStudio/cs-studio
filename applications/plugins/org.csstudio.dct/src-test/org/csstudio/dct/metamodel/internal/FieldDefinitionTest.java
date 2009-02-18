@@ -6,6 +6,7 @@ package org.csstudio.dct.metamodel.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.csstudio.dct.metamodel.PromptGroup;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -117,7 +118,7 @@ public final class FieldDefinitionTest {
 	@Test
 	public void testGetSetPromptGroup() {
 		assertNull(fieldDefinition.getPromptGroup());
-		String promptgroup = "GUI_COMMON";
+		PromptGroup promptgroup = PromptGroup.BITS2;
 		fieldDefinition.setPromptGroup(promptgroup);
 		assertEquals(promptgroup, fieldDefinition.getPromptGroup());
 	}

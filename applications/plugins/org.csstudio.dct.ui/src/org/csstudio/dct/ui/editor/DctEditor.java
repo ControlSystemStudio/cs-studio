@@ -78,6 +78,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	private StackLayout stackLayout;
 	private Composite contentPanel;
 	private StyledText dbFilePreviewText;
+	private ExporterDescriptor exporterDescriptor;
 
 	/**
 	 * Constructor.
@@ -164,28 +165,25 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		Composite c = new Composite(composite, SWT.NONE);
 		c.setLayoutData(LayoutUtil.createGridData());
 		c.setLayout(new FillLayout());
-		
+
 		Label label = new Label(c, SWT.NONE);
 		label.setText("Choose Format:");
 		ComboViewer viewer = new ComboViewer(new CCombo(c, SWT.READ_ONLY | SWT.BORDER));
 		viewer.getCCombo().setEditable(false);
 		viewer.getCCombo().setVisibleItemCount(20);
 		viewer.setContentProvider(new ArrayContentProvider());
-		viewer.setLabelProvider(new LabelProvider()) ;
+		viewer.setLabelProvider(new LabelProvider());
 		viewer.setInput(Extensions.lookupExporterExtensions().toArray());
-		
-		viewer.addSelectionChangedListener(new ISelectionChangedListener(){
+
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection  sel = (IStructuredSelection) event.getSelection();
+				IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 				ExporterDescriptor descriptor = (ExporterDescriptor) sel.getFirstElement();
-				
-				if(descriptor!=null) {
-					dbFilePreviewText.setText(descriptor.getExporter().export(getProject()));
-				}
+				exporterDescriptor = descriptor;
+				updatePreview();
 			}
 		});
-		
-		
+
 		dbFilePreviewText = new StyledText(composite, SWT.H_SCROLL | SWT.V_SCROLL);
 		dbFilePreviewText.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 		dbFilePreviewText.setEditable(false);
@@ -193,6 +191,16 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 		int index = addPage(composite);
 		setPageText(index, "Preview DB-File");
+	}
+
+	/**
+	 * Updates the preview of the db file.
+	 */
+	private void updatePreview() {
+		if (exporterDescriptor != null) {
+			dbFilePreviewText.setText(exporterDescriptor.getExporter().export(getProject()));
+		}
+
 	}
 
 	/**
@@ -226,6 +234,13 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		editor.doSaveAs();
 		setPageText(0, editor.getTitle());
 		setInput(editor.getEditorInput());
+	}
+
+	@Override
+	protected void pageChange(int newPageIndex) {
+		if (newPageIndex == 1) {
+			updatePreview();
+		}
 	}
 
 	/**
@@ -322,9 +337,11 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 */
 	public void commandStackChanged(EventObject event) {
 		firePropertyChange(PROP_DIRTY);
-		// FIXME: Auskommentieren, wenn Markierung nach jeder Änderung gewünscht
-		// und performant genug!!
-		 markErrors();
+		markErrors();
+
+		if (getActivePage() == 1) {
+			updatePreview();
+		}
 	}
 
 	private void markErrors() {

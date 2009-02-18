@@ -3,6 +3,7 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.dct.metamodel.PromptGroup;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
@@ -12,10 +13,17 @@ import org.csstudio.dct.util.CompareUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -23,6 +31,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * Editing component for {@link IRecord}.
@@ -32,7 +41,9 @@ import org.eclipse.swt.widgets.ExpandItem;
  */
 public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	private ConvenienceTableWrapper recordFieldTable;
-
+	private boolean hideDefaults = false;
+	private PromptGroup promptGroup = PromptGroup.ALL;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -57,20 +68,42 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
 		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(300));
 
-		// .. filter button
 		Composite buttons = new Composite(composite, SWT.None);
-		buttons.setLayout(new FillLayout());
+		buttons.setLayout(LayoutUtil.createGridLayout(3,0, 5, 5));
 
+		// .. promptgroup filter combo
+		Label l = new Label(buttons, SWT.NONE);
+		l.setText("Group:");
+		l.setLayoutData(LayoutUtil.createGridData());
+		ComboViewer promptGroupCombo = new ComboViewer(new CCombo(buttons, SWT.READ_ONLY | SWT.BORDER));
+		promptGroupCombo.getControl().setLayoutData(LayoutUtil.createGridData());
+		promptGroupCombo.setContentProvider(new ArrayContentProvider());
+		promptGroupCombo.setLabelProvider(new LabelProvider() {
+			@Override
+			public String getText(Object element) {
+				PromptGroup group = (PromptGroup) element;
+				return group.getDescription();
+			}
+		});
+		promptGroupCombo.setInput(PromptGroup.values());
+		promptGroupCombo.setSelection(new StructuredSelection(PromptGroup.ALL));
+
+		promptGroupCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				promptGroup = (PromptGroup) ((IStructuredSelection)event.getSelection()).getFirstElement();
+				refreshFilter();
+			}
+		});
+		
+		// .. filter button
 		final Button hideDefaultsButton = new Button(buttons, SWT.CHECK);
+		hideDefaultsButton.setLayoutData(LayoutUtil.createGridData());
 		hideDefaultsButton.setText("Hide Defaults");
 		hideDefaultsButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				if (hideDefaultsButton.getSelection()) {
-					recordFieldTable.getViewer().setFilters(new ViewerFilter[] { new HideDefaultsFilter() });
-				} else {
-					recordFieldTable.getViewer().setFilters(new ViewerFilter[0]);
-				}
+				hideDefaults = hideDefaultsButton.getSelection();
+				refreshFilter();
 			}
 		});
 
@@ -153,23 +186,55 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		return result;
 	}
-	
+
+	protected void refreshFilter() {
+		recordFieldTable.getViewer().setFilters(new ViewerFilter[] { new HideDefaultsFilter(hideDefaults), new PromptGroupFilter(promptGroup) });
+	}
+
 	private abstract class AbstractFilter extends ViewerFilter {
 		@Override
 		public final boolean select(Viewer viewer, Object parentElement, Object element) {
 			RecordFieldTableRowAdapter row = (RecordFieldTableRowAdapter) element;
 			return doSelect(row.getDelegate(), row.getFieldKey());
 		}
-		
+
 		protected abstract boolean doSelect(IRecord record, String field);
+	}
+
+
+	private final class PromptGroupFilter extends AbstractFilter {
+		private PromptGroup promptGroup;
+
+		public PromptGroupFilter(PromptGroup promptGroup) {
+			this.promptGroup = promptGroup;
+		}
+
+		@Override
+		protected boolean doSelect(IRecord record, String field) {
+			if (promptGroup!=null && promptGroup!=PromptGroup.ALL) {
+				return record.getRecordDefinition().getFieldDefinitions(field).getPromptGroup()==promptGroup;
+			} else {
+				return true;
+			}
+		}
 	}
 	
 	private final class HideDefaultsFilter extends AbstractFilter {
+		private boolean active;
+
+		public HideDefaultsFilter(boolean active) {
+			this.active = active;
+		}
+
 		@Override
 		protected boolean doSelect(IRecord record, String field) {
-			String finalValue = record.getFinalFields().get(field);
-			String defaultValue = record.getDefaultFields().get(field);
-			return !CompareUtil.equals(finalValue, defaultValue);
+			if (active) {
+				String finalValue = record.getFinalFields().get(field);
+				String defaultValue = record.getDefaultFields().get(field);
+				return !CompareUtil.equals(finalValue, defaultValue);
+			} else {
+				return true;
+			}
 		}
 	}
 }

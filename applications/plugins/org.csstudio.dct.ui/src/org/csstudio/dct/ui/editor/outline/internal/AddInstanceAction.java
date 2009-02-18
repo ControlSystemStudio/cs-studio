@@ -9,7 +9,9 @@ import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.commands.AddInstanceCommand;
 import org.csstudio.dct.model.internal.Instance;
+import org.csstudio.dct.util.ModelValidationUtil;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 
@@ -28,18 +30,22 @@ public final class AddInstanceAction extends AbstractOutlineAction {
 	protected Command createCommand(IElement selection) {
 		Command result = null;
 
-		PrototypeSelectionDialog rsd = new PrototypeSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "LOS",
-				getProject());
+		PrototypeSelectionDialog rsd = new PrototypeSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Available Prototypes:",
+				getProject(), selection instanceof IContainer ? (IContainer) selection : null);
 
 		if (rsd.open() == Window.OK) {
 			IPrototype prototype = (IPrototype) rsd.getSelection();
 
 			IInstance instance = new Instance(prototype, UUID.randomUUID());
-			
+
 			if (selection instanceof IFolder) {
 				result = new AddInstanceCommand((IFolder) selection, instance);
 			} else if (selection instanceof IContainer) {
-				result = new AddInstanceCommand((IContainer) selection, instance);
+				if (ModelValidationUtil.causesTransitiveLoop((IContainer) selection, prototype)) {
+					MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "ERROR", "RECURSION");
+				} else {
+					result = new AddInstanceCommand((IContainer) selection, instance);
+				}
 			}
 		}
 

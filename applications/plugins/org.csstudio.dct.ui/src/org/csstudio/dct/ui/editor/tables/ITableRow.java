@@ -108,4 +108,11 @@ public interface ITableRow extends Comparable<ITableRow> {
 	 */
 	Image getImage(int column);
 
+	/**
+	 * Returns a tool tip for this row.
+	 * 
+	 * @return a tool tip
+	 */
+	String getTooltip();
+
 }

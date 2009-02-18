@@ -2,6 +2,7 @@ package org.csstudio.dct.metamodel.internal;
 
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IMenuDefinition;
+import org.csstudio.dct.metamodel.PromptGroup;
 
 /**
  * Standard implementation of {@link IFieldDefinition}.
@@ -15,7 +16,7 @@ public final class FieldDefinition implements IFieldDefinition {
 	private String interest;
 	private String name;
 	private String prompt;
-	private String promptGroup;
+	private PromptGroup promptGroup;
 	private String size;
 	private String special;
 	private String type;
@@ -131,7 +132,7 @@ public final class FieldDefinition implements IFieldDefinition {
 	/**
 	 *{@inheritDoc}
 	 */
-	public String getPromptGroup() {
+	public PromptGroup getPromptGroup() {
 		return promptGroup;
 	}
 
@@ -141,7 +142,7 @@ public final class FieldDefinition implements IFieldDefinition {
 	 * @param promptGroup
 	 *            the prompt group
 	 */
-	public void setPromptGroup(String promptGroup) {
+	public void setPromptGroup(PromptGroup promptGroup) {
 		this.promptGroup = promptGroup;
 	}
 

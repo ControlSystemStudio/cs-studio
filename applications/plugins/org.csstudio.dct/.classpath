@@ -14,7 +14,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar" sourcepath="org.csstudio.dctsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.0.jar" sourcepath="org.csstudio.dctsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.1.1.jar" sourcepath="org.csstudio.dctsrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/VisualDCT.jar" sourcepath="lib/VisualDCT-src-2.5.1271.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/org.csstudio.platform.libs.jmock/lib/easymock.jar"/>
 	<classpathentry kind="lib" path="/org.csstudio.platform.libs.jmock/lib/easymockclassextension.jar"/>

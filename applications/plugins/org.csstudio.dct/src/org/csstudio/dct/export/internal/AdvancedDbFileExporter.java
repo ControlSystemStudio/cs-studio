@@ -24,7 +24,7 @@ public final class AdvancedDbFileExporter implements IExporter {
 	public AdvancedDbFileExporter() {
 		this(false);
 	}
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -39,12 +39,12 @@ public final class AdvancedDbFileExporter implements IExporter {
 	 *{@inheritDoc}
 	 */
 	public String render(IRecord record) {
-	
+
 		StringBuffer sb = new StringBuffer();
-		
+
 		// output hierarchy comment
-		sb.append("#"+createHierarchyComment(record.getContainer())+" > " + AliasResolutionUtil.getNameFromHierarchy(record)+ NEWLINE);
-		
+		sb.append("#" + createHierarchyComment(record.getContainer()) + " > " + AliasResolutionUtil.getNameFromHierarchy(record) + NEWLINE);
+
 		// ouput record
 		sb.append("record(");
 		sb.append(record.getType());
@@ -54,54 +54,58 @@ public final class AdvancedDbFileExporter implements IExporter {
 		} catch (AliasResolutionException e) {
 			sb.append("<" + e.getMessage() + ">");
 		}
-	
+
 		sb.append("\") {");
 		sb.append(NEWLINE);
-	
+
 		Map<String, String> fields = ResolutionUtil.resolveFields(record);
-	
+
 		for (String key : fields.keySet()) {
 			String v = fields.get(key) != null ? fields.get(key) : "";
-	
-			if (("".equals(v) && renderEmptyFields) || !"".equals(v)) {
-				sb.append("   field(");
-				sb.append(key);
-				sb.append(", \"");
-				sb.append(v);
-	
-				sb.append("\")");
-				sb.append(NEWLINE);
+
+			if (!v.equals(record.getDefaultFields().get(key))) {
+
+				if (("".equals(v) && renderEmptyFields) || !"".equals(v)) {
+					sb.append("   field(");
+					sb.append(key);
+					sb.append(", \"");
+					sb.append(v);
+
+					sb.append("\")");
+					sb.append(NEWLINE);
+				}
 			}
 		}
-	
+
 		sb.append("}");
-	
+
 		return sb.toString();
 	}
 
 	public String export(IProject project) {
 		StringBuffer sb = new StringBuffer();
-		for (IRecord r :project.getFinalRecords()) {
+		for (IRecord r : project.getFinalRecords()) {
 			sb.append(render(r));
 			sb.append("\r\n\r\n");
 		}
 		return sb.toString();
 	}
-	
+
 	private String createHierarchyComment(IFolder folder) {
-		if(folder!=null) {
-			String name  =  AliasResolutionUtil.getNameFromHierarchy(folder);
-			return createHierarchyComment(folder.getParentFolder()) +  " > " + name;
+		if (folder != null) {
+			String name = AliasResolutionUtil.getNameFromHierarchy(folder);
+			return createHierarchyComment(folder.getParentFolder()) + " > " + name;
 		} else {
 			return "";
 		}
 	}
+
 	private String createHierarchyComment(IContainer container) {
-		if(container!=null) {
-			String name  =  AliasResolutionUtil.getNameFromHierarchy(container);
-			if(container.getContainer()!=null) {
+		if (container != null) {
+			String name = AliasResolutionUtil.getNameFromHierarchy(container);
+			if (container.getContainer() != null) {
 				return createHierarchyComment(container.getContainer()) + " > " + name;
-			} else if(container.getParentFolder()!=null) {
+			} else if (container.getParentFolder() != null) {
 				return createHierarchyComment(container.getParentFolder()) + " > " + name;
 			} else {
 				return name;

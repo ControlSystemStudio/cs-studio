@@ -22,9 +22,11 @@
 
 package org.csstudio.dct.ui.editor.outline.internal;
 
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
+import org.csstudio.dct.util.ModelValidationUtil;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -43,8 +45,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
- * Selection dialog that displays only the prototypes that are contained in a
- * project.
+ * Selection dialog that displays the prototypes of a project.
  * 
  * @author Sven Wende
  * 
@@ -57,6 +58,8 @@ public final class PrototypeSelectionDialog extends Dialog {
 	private IProject project;
 
 	private TreeViewer treeViewer;
+
+	private IContainer selectedContainer;
 
 	/**
 	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
@@ -72,12 +75,15 @@ public final class PrototypeSelectionDialog extends Dialog {
 	 *            the dialog message, or <code>null</code> if none
 	 * @param project
 	 *            the project
+	 * @param selectedContainer
+	 *            the current selected container
 	 */
-	public PrototypeSelectionDialog(final Shell parentShell, final String dialogMessage, final IProject project) {
+	public PrototypeSelectionDialog(final Shell parentShell, final String dialogMessage, final IProject project, IContainer selectedContainer) {
 		super(parentShell);
 		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
 		message = dialogMessage;
 		this.project = project;
+		this.selectedContainer = selectedContainer;
 	}
 
 	/**
@@ -113,7 +119,20 @@ public final class PrototypeSelectionDialog extends Dialog {
 		treeViewer.addFilter(new ViewerFilter() {
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				return element instanceof IPrototype || element instanceof IFolder;
+				boolean result = false;
+
+				if (element instanceof IPrototype) {
+					if (selectedContainer != null) {
+						// filter prototype that would cause a transitive loop
+						result = !ModelValidationUtil.causesTransitiveLoop(selectedContainer, (IPrototype) element);
+					} else {
+						result = true;
+					}
+				} else if (element instanceof IFolder) {
+					result = true;
+				}
+
+				return result;
 			}
 		});
 		treeViewer.setInput(project);
@@ -131,6 +150,7 @@ public final class PrototypeSelectionDialog extends Dialog {
 
 	/**
 	 * Returns the selected prototype.
+	 * 
 	 * @return the selected prototype
 	 */
 	public IPrototype getSelection() {

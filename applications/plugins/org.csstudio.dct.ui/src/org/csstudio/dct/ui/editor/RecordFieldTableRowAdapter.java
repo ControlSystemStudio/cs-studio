@@ -65,7 +65,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected String doGetKey(IRecord delegate) {
+	protected String doGetKey(IRecord record) {
 		return fieldKey;
 	}
 
@@ -73,9 +73,8 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected String doGetKeyDescription(IRecord delegate) {
-		// TODO: Maybe deliver field description from DBD-Files.
-		return fieldKey;
+	protected String doGetKeyDescription(IRecord record) {
+		return record.getRecordDefinition().getFieldDefinitions(fieldKey).getPrompt();
 	}
 
 	/**

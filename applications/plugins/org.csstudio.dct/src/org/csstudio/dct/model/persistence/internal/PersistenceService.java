@@ -3,10 +3,14 @@ package org.csstudio.dct.model.persistence.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
 
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
+import org.csstudio.dct.metamodel.PromptGroup;
 import org.csstudio.dct.metamodel.internal.Choice;
 import org.csstudio.dct.metamodel.internal.DatabaseDefinition;
 import org.csstudio.dct.metamodel.internal.FieldDefinition;
@@ -158,6 +162,9 @@ public final class PersistenceService implements IPersistenceService {
 
 				FieldDefinition fieldDefinition = new FieldDefinition(fieldName, DBDResolver.getFieldType(fieldData.getField_type()));
 
+				// .. prompt group
+				fieldDefinition.setPromptGroup(PromptGroup.findByType(fieldData.getGUI_type()));
+				
 				// .. prompt
 				fieldDefinition.setPrompt(fieldData.getPrompt_value());
 
@@ -170,9 +177,8 @@ public final class PersistenceService implements IPersistenceService {
 					if (menuData != null) {
 						MenuDefinition menuDefinition = new MenuDefinition(menuName);
 
-						for (String choiceId : (Set<String>) menuData.getChoices().keySet()) {
-							String description = menuData.getChoices().get(choiceId).toString();
-							menuDefinition.addChoice(new Choice(choiceId, description));
+						for(Choice c : menuData.getChoicesForCssDct()) {
+							menuDefinition.addChoice(c);
 						}
 
 						fieldDefinition.setMenuDefinition(menuDefinition);

@@ -67,6 +67,13 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	/**
 	 *{@inheritDoc}
 	 */
+	public final String getTooltip() {
+		return doGetKeyDescription(delegate);
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
 	public final String getDisplayValue(int column) {
 		String result = null;
 

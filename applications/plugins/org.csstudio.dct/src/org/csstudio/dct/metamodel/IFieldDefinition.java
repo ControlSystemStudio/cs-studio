@@ -33,7 +33,7 @@ public interface IFieldDefinition {
 	 * 
 	 * @return the prompt group
 	 */
-	String getPromptGroup();
+	PromptGroup getPromptGroup();
 
 	/**
 	 * Returns the interest.
