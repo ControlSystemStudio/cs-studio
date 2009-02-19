@@ -53,22 +53,30 @@ public class JMSConnectionFactory
     
     /** Add a listener that is notified about JMS connection issues
      *  to a connection.
+     *  <p>
+     *  The implementation depends on the underlying API.
+     *  What works for ActiveMQ might not be available for
+     *  other implementations, in which case the listener
+     *  might never get called.
+     *  
      *  @param connection Connection to monitor
      *  @param listener JMSConnectionListener to notify
      */
     public static void addListener(final Connection connection,
             final JMSConnectionListener listener)
     {
-        final org.apache.activemq.ActiveMQConnection amq_connection =
-            (org.apache.activemq.ActiveMQConnection) connection;
+        final ActiveMQConnection amq_connection =
+                                               (ActiveMQConnection) connection;
         amq_connection.addTransportListener(new TransportListener()
         {
-            public void onCommand(Object arg0)
+            public void onCommand(Object cmd)
             {
                 // Ignore
+                // Looks like one could track almost every send/receive
+                // in here
             }
 
-            public void onException(IOException arg0)
+            public void onException(IOException ex)
             {
                 // Ignore
             }
@@ -80,7 +88,7 @@ public class JMSConnectionFactory
 
             public void transportResumed()
             {
-                listener.linkUp();
+                listener.linkUp(amq_connection.getTransport().getRemoteAddress());
             }
         });
     }
