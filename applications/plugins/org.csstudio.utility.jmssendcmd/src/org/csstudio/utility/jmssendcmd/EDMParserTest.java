@@ -13,7 +13,7 @@ public class EDMParserTest extends TestCase
 {
     @Test
     /** Various tests to confirm the EDM input string was parsed correctly */
-    public void testEDMParser() throws Exception
+    public void testEDMParser() throws Throwable
     {
         //  EDMParser parser =new EDMParser("user=\"nypaver\" host=\"ics-srv02\"  dsp=\"localhost:14.0\" name=\"test\" old=\"11.000000\" new=\"12.000000\"");      
         final EDMParser parser = new EDMParser("user=\"nypaver\" host=\"ics-srv02\" ssh=\"::ffff:160.91.234.112 56165 ::ffff:160.91.230.38 22\" unknown_extra_stuff=\"ignored\" dsp=\"localhost:14.0\" name=\"test\" old=\"11.000000\" new=\"12.000000\"");      
@@ -38,7 +38,7 @@ public class EDMParserTest extends TestCase
             new EDMParser("host=\"ics-srv02\" ssh=\"::ffff:160.91.234.112 56165 ::ffff:160.91.230.38 22\" dsp=\"localhost:14.0\" name=\"test\" old=\"11.000000\" new=\"12.000000\"");      
             fail("Expected parse error");
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             assertEquals("user entry cannot be NULL", ex.getMessage());
         }
@@ -56,7 +56,7 @@ public class EDMParserTest extends TestCase
         {
             new EDMParser("");
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             ex.printStackTrace();
         }
@@ -64,7 +64,7 @@ public class EDMParserTest extends TestCase
         {
             new EDMParser("host=");
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             ex.printStackTrace();
         }

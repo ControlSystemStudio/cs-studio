@@ -104,9 +104,10 @@ public class JMSSender implements ExceptionListener
                 map.setString(JMSLogEDMMessage.PVVALUE, parser.getValue());
                 map.setString(JMSLogEDMMessage.OLDPVVALUE, parser.getOriginalValue());
             }
-            catch (Exception ex)
+            catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex.getMessage());
+                CentralLogger.getInstance().getLogger(this).error(
+                        "EDM message '" + text + "' error: " + ex.getMessage());
             }
         }
         else

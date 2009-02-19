@@ -27,9 +27,9 @@ public class EDMParser
    
   /** Parse the input EDM string.
    *  @param edm_log_line
-   *  @throws Exception on parse error (missing user, ...)
+   *  @throws Throwable on parse error (incomplete options, missing user, ...)
    */
-   public EDMParser(String edm_log_line) throws Exception
+   public EDMParser(String edm_log_line) throws Throwable
    {
       int space = 0;
       String option = "";
