@@ -27,7 +27,8 @@ public class ConfigurationFromPreferences extends Configuration {
 	}
 
 	@Override
-	public void refresh() {
-		super.refresh();
+	public void refresh()
+	{
+	    // NOP
 	}
 }
