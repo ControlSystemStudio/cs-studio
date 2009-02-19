@@ -96,9 +96,9 @@ public class JAASPreferencePage extends PreferencePage implements
 		
 	}
 
-	@Override
-	public void init(IWorkbench workbench) {
-		
+	public void init(IWorkbench workbench)
+	{
+	    // NOP
 	}
 	
 	/**
