@@ -8,18 +8,18 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Table;
 
-/** Editor for table with string list
+/** Editor for table with List<String>
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
 public class StringColumnEditor extends EditingSupport
 {
-	final private TableInputWrapper wrapper;
+	final private TableViewer table_viewer;
 
-	public StringColumnEditor(final TableViewer viewer, final TableInputWrapper wrapper)
+    public StringColumnEditor(final TableViewer viewer)
 	{
 		super(viewer);
-		this.wrapper = wrapper;
+		this.table_viewer = viewer;
 	}
 
 	@Override
@@ -35,29 +35,29 @@ public class StringColumnEditor extends EditingSupport
 		return new TextCellEditor(parent);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Object getValue(Object element)
 	{
 		if (element == StringTableContentProvider.ADD_ELEMENT)
-			return "";
+			return ""; //$NON-NLS-1$
 		final int index = ((Integer)element).intValue();
-		return ((List<String>)wrapper.getItems()).get(index);
+		final List<String> items = (List<String>) table_viewer.getInput();
+		return items.get(index);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void setValue(Object element, Object value)
 	{
+        final List<String> items = (List<String>) table_viewer.getInput();
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 		{
-			((List<String>)wrapper.getItems()).add(value.toString());
+			items.add(value.toString());
 			getViewer().refresh();
 			return;
 		}
 		// else
 		final int index = ((Integer)element).intValue();
-		((List<String>)wrapper.getItems()).set(index, value.toString());
+		items.set(index, value.toString());
 		getViewer().refresh(element);
 	}
 }

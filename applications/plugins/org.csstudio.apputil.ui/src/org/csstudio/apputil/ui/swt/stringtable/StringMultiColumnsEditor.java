@@ -4,24 +4,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Table;
 
-/** Editor for table with multiple columns
+/** Editor for table with multiple columns (List<String[]>)
+
  *  @author Xihui Chen
  */
 public class StringMultiColumnsEditor extends EditingSupport {
-
-	final private TableInputWrapper wrapper;
+    final private TableViewer table_viewer;
 	final private int columnNo;
 	final private int numOfColumns;
 	
-	public StringMultiColumnsEditor(final ColumnViewer viewer, final TableInputWrapper wrapper,
+	public StringMultiColumnsEditor(final TableViewer viewer,
 			final int numOfColumns, final int columnNo) {
 		super(viewer);
-		this.wrapper = wrapper;
+		this.table_viewer = viewer;
 		this.columnNo = columnNo;
 		this.numOfColumns = numOfColumns;
 	}
@@ -38,34 +38,35 @@ public class StringMultiColumnsEditor extends EditingSupport {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+    @Override
 	protected Object getValue(Object element) {
 		
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 			return "";
 		final int index = ((Integer)element).intValue();
-		return ((List<String[]>)wrapper.getItems()).get(index)[columnNo];		
+		final List<String[]> items = (List<String[]>) table_viewer.getInput();
+		return items.get(index)[columnNo];		
 	}
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	@Override
 	protected void setValue(Object element, Object value) {
+        final List<String[]> items = (List<String[]>) table_viewer.getInput();
 		String[] rowData;
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 		{
 			rowData = new String[numOfColumns];
-			Arrays.fill(rowData, "");
+			Arrays.fill(rowData, ""); //$NON-NLS-1$
 			rowData[columnNo] = value.toString();
-			((List<String[]>)wrapper.getItems()).add(rowData);
+			items.add(rowData);
 			getViewer().refresh();
 			return;
 		}
 		// else
 		final int index = ((Integer)element).intValue();
-		rowData = ((List<String[]>)wrapper.getItems()).get(index);
+		rowData = items.get(index);
 		rowData[columnNo] = value.toString();
-		((List<String[]>)wrapper.getItems()).set(index, rowData);
+		items.set(index, rowData);
 		getViewer().refresh(element);
 	}
-
 }

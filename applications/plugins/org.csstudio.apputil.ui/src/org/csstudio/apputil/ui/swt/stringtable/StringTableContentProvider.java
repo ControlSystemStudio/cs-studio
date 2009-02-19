@@ -1,31 +1,34 @@
 package org.csstudio.apputil.ui.swt.stringtable;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-/** Content provider for list of strings.
+/** Content provider for List of String or String[].
  *  <p>
  *  Will provide Integer index values which allow the label provider
- *  and editor to access the correct elements in the string list.
- * @author Kay Kasemir, Xihui Chen
- *
+ *  and editor to access the correct elements in the List.
+ *  @param <T> String or String[]
+ *  @author Kay Kasemir, Xihui Chen
  */
-public class StringTableContentProvider implements IStructuredContentProvider
+public class StringTableContentProvider<T> implements IStructuredContentProvider
 {
 	/** Magic number for the final 'add' element */
 	final public static Integer ADD_ELEMENT = new Integer(-1);
-	private TableInputWrapper wrapper;
+	private List<T> items;
 
 	/** {@inheritDoc} */
-	public void inputChanged(final Viewer viewer, final Object old, final Object new_input)
+	@SuppressWarnings("unchecked")
+    public void inputChanged(final Viewer viewer, final Object old, final Object new_input)
 	{
-		wrapper = (TableInputWrapper) new_input;
+		items = (List<T>) new_input;
 	}
 
 	/** {@inheritDoc} */
 	public Object[] getElements(Object arg0)
 	{
-		int N = wrapper.getItems().size();
+		int N = items.size();
 		final Integer result[] = new Integer[N+1];
 		for (int i=0; i<N; ++i)
 			result[i] = i;

@@ -22,19 +22,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 
-/** Editor for table (list) of strings,
+/** Editor for table (list) of String or String[] entries,
  *  allows up/down ordering, add and delete
  *  @author Kay Kasemir, Xihui Chen
  */
 public class StringTableEditor extends Composite
 {
-	private static final String DELETE = "delete";
-	private static final String DOWN = "down";
-	private static final String UP = "up";
-	private static final String EDIT = "edit";
+	private static final String DELETE = "delete"; //$NON-NLS-1$
+	private static final String DOWN = "down"; //$NON-NLS-1$
+	private static final String UP = "up"; //$NON-NLS-1$
+	private static final String EDIT = "edit"; //$NON-NLS-1$
 	private final TableViewer tableViewer;
 	private final static ImageRegistry images = new ImageRegistry();
-	private final TableInputWrapper tableInputWrapper = new TableInputWrapper();
 	private Button editButton;
 	private Button upButton;
 	private Button downButton;
@@ -42,10 +41,10 @@ public class StringTableEditor extends Composite
 	
 	static {
 		// Buttons: edit/up/down/delete		
-		images.put(EDIT, Activator.getImageDescriptor("icons/edit.gif"));
-		images.put(UP, Activator.getImageDescriptor("icons/up.gif"));
-		images.put(DOWN, Activator.getImageDescriptor("icons/down.gif"));
-		images.put(DELETE, Activator.getImageDescriptor("icons/delete.gif"));
+		images.put(EDIT, Activator.getImageDescriptor("icons/edit.gif")); //$NON-NLS-1$
+		images.put(UP, Activator.getImageDescriptor("icons/up.gif")); //$NON-NLS-1$
+		images.put(DOWN, Activator.getImageDescriptor("icons/down.gif")); //$NON-NLS-1$
+		images.put(DELETE, Activator.getImageDescriptor("icons/delete.gif")); //$NON-NLS-1$
 	}
 	
 	/** Creates an editable table.  The size of headers array implies the number of columns. 
@@ -63,7 +62,6 @@ public class StringTableEditor extends Composite
 			final int[] columnsMinWidth) 
 	{
 		super(parent, 0);
-		tableInputWrapper.setItems(items);
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = headers.length;
 		setLayout(layout);
@@ -85,12 +83,12 @@ public class StringTableEditor extends Composite
 			col.setLabelProvider(new StringMultiColumnsLabelProvider(tableViewer, editable[i]));
 			//col.setLabelProvider(new StringColumnLabelProvider(tableViwer));
 			if(editable[i]) {
-				col.setEditingSupport(new StringMultiColumnsEditor(tableViewer, tableInputWrapper,
+				col.setEditingSupport(new StringMultiColumnsEditor(tableViewer,
 						layout.numColumns, i));	
 			}
 		}
-		tableViewer.setContentProvider(new StringTableContentProvider());
-		tableViewer.setInput(tableInputWrapper);
+		tableViewer.setContentProvider(new StringTableContentProvider<String[]>());
+		tableViewer.setInput(items);
 		new AutoSizeControlListener(table);		
 		editButton = createEditButton(table, layout.numColumns, rowEditDialog);
 		upButton = createUpButton();
@@ -105,8 +103,6 @@ public class StringTableEditor extends Composite
 				setButtonsEnable();
 			}
 		});
-		
-		
 	}
 	
 	/** Initialize
@@ -119,7 +115,6 @@ public class StringTableEditor extends Composite
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		setLayout(layout);
-		tableInputWrapper.setItems(items);
 		// Edit-able List
 		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION |
 								SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -132,9 +127,9 @@ public class StringTableEditor extends Composite
 		final TableViewerColumn col = 
 			AutoSizeColumn.make(tableViewer, "Value", 200, 100, false);
 		col.setLabelProvider(new StringColumnLabelProvider(tableViewer));
-		col.setEditingSupport(new StringColumnEditor(tableViewer, tableInputWrapper));
-		tableViewer.setContentProvider(new StringTableContentProvider());
-		tableViewer.setInput(tableInputWrapper);
+		col.setEditingSupport(new StringColumnEditor(tableViewer));
+		tableViewer.setContentProvider(new StringTableContentProvider<String>());
+		tableViewer.setInput(items);
 		new AutoSizeControlListener(table);
 		
 		upButton = createUpButton();
@@ -150,6 +145,16 @@ public class StringTableEditor extends Composite
 			}
 		});
 	}
+	
+	/** Update the input to the table.
+	 *  @param new_items New items. Must be either List of String or String[],
+	 *               and type must match whatever was used to construct
+	 *               the StringTableEditor.
+	 */
+    public void updateInput(List<?> new_items)
+	{
+	    tableViewer.setInput(new_items);
+    }
 
 	/** Refresh the editor after the list of items was changed */
 	public void refresh()
@@ -169,7 +174,7 @@ public class StringTableEditor extends Composite
 			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				final List<String[]> items = (List<String[]>) tableInputWrapper.getItems();
+				final List<String[]> items = (List<String[]>) tableViewer.getInput();
 				final Integer index = (Integer)
 					((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
 				
@@ -197,7 +202,6 @@ public class StringTableEditor extends Composite
 		return edit;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private Button createUpButton() {
 		final Button up = new Button(this, SWT.PUSH);
 		up.setImage(images.get(UP));
@@ -207,9 +211,10 @@ public class StringTableEditor extends Composite
 		up.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
+		    @SuppressWarnings("unchecked")
 			public void widgetSelected(SelectionEvent e)
 			{
-				final List items = tableInputWrapper.getItems();
+				final List items = (List)tableViewer.getInput();
 				final Integer index = (Integer)
 				((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
 				if (index == StringTableContentProvider.ADD_ELEMENT  ||
@@ -225,7 +230,6 @@ public class StringTableEditor extends Composite
 		return up;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private Button createDownButton() {
 		final Button down = new Button(this, SWT.PUSH);
 		down.setImage(images.get(DOWN));
@@ -234,10 +238,11 @@ public class StringTableEditor extends Composite
 		down.setEnabled(false);
 		down.addSelectionListener(new SelectionAdapter()
 		{
+		    @SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{	
-				final List items = tableInputWrapper.getItems();
+				final List items = (List) tableViewer.getInput();
 				final Integer index = (Integer)
 				((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
 				if (index == StringTableContentProvider.ADD_ELEMENT  ||
@@ -252,7 +257,6 @@ public class StringTableEditor extends Composite
 		return down;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private Button createDeleteButton() {
 		final Button delete = new Button(this, SWT.PUSH);
 		delete.setImage(images.get(DELETE));
@@ -261,10 +265,11 @@ public class StringTableEditor extends Composite
 		delete.setEnabled(false);
 		delete.addSelectionListener(new SelectionAdapter()
 		{
+		    @SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{	
-				final List items = tableInputWrapper.getItems();
+                final List items = (List) tableViewer.getInput();
 				final Object sel[] =
 				 ((IStructuredSelection) tableViewer.getSelection()).toArray();
 				int adjust = 0;
@@ -281,11 +286,6 @@ public class StringTableEditor extends Composite
 			}
 		});
 		return delete;
-	}
-	
-	public void updateInput(List<?> items) {
-		tableInputWrapper.setItems(items);
-		tableViewer.refresh();
 	}
 	
 	@Override
@@ -309,7 +309,6 @@ public class StringTableEditor extends Composite
 		downButton.setEnabled(count == 1);
 		deleteButton.setEnabled(count > 0);
 	}
-	
 }	
 	
 

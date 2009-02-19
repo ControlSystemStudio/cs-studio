@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** main() routine for testing the string table editor as an SWT app.
+ *  Icons will be missing because of missing bundle support.
  *  @author Kay Kasemir
  */
 public class StringTableEditorTest

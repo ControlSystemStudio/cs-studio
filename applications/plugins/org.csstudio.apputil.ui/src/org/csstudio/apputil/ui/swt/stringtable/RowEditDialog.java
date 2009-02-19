@@ -1,8 +1,6 @@
 package org.csstudio.apputil.ui.swt.stringtable;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 /**The RowEditDialog is the abstract superclass of dialogs

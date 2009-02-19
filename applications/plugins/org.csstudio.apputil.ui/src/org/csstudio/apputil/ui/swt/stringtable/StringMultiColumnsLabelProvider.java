@@ -28,7 +28,7 @@ public class StringMultiColumnsLabelProvider extends CellLabelProvider {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(ViewerCell cell) {
-		final List<String[]> items = (List<String[]>)((TableInputWrapper) tableViewer.getInput()).getItems();
+		final List<String[]> items = (List<String[]>)tableViewer.getInput();
 		final int index = ((Integer) cell.getElement()).intValue();
 		//if this is the extra row
 		if (index < 0)
