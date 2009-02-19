@@ -1,7 +1,7 @@
-package org.csstudio.platform.workspace.actions;
+package org.csstudio.platform.ui.internal.actions;
 
+import org.csstudio.platform.ui.dialogs.WorkspaceDialog;
 import org.csstudio.platform.workspace.RelaunchConstants;
-import org.csstudio.platform.workspace.WorkspaceDialog;
 import org.csstudio.platform.workspace.WorkspaceInfo;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;

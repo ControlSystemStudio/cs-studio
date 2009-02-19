@@ -1,26 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.platform.workspace.filemenu"
-            label="FileActions"
-            visible="true">
-         <action
-               class="org.csstudio.platform.workspace.actions.RestartAction"
-               id="org.csstudio.platform.workspace.actions.restart"
-               label="%restart"
-               menubarPath="file/fileEnd"
-               style="push"
-               tooltip="%restart_tt"/>
-         <action
-               class="org.csstudio.platform.workspace.actions.SwitchWorkspaceAction"
-               id="org.csstudio.platform.workspace.actions.openworkspace"
-               label="%switch"
-               menubarPath="file/fileEnd"
-               style="push"
-               tooltip="%switch_tt"/>
-      </actionSet>
-   </extension>
 </plugin>

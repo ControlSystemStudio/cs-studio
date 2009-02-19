@@ -1,8 +1,10 @@
-package org.csstudio.platform.workspace;
+package org.csstudio.platform.ui.dialogs;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.csstudio.platform.workspace.Messages;
+import org.csstudio.platform.workspace.WorkspaceInfo;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.TitleAreaDialog;

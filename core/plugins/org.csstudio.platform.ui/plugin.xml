@@ -98,7 +98,7 @@
                icon="icons/switch_user.png"
                id="org.csstudio.platform.ui.LoginAction"
                label="%menuLogin"
-               menubarPath="file/fileEnd"
+               menubarPath="file/css_login"
                style="push"
                toolbarPath="user/css_login">
             <enablement>
@@ -130,6 +130,27 @@
                style="push"
                toolbarPath="file/fileEnd"
                tooltip="%menuOpenExplorer"> 
+         </action>
+      </actionSet>
+      <actionSet
+            id="org.csstudio.platform.workspace.filemenu"
+            label="FileActions"
+            visible="true">
+         <action
+               class="org.csstudio.platform.ui.internal.actions.RestartAction"
+               id="org.csstudio.platform.ui.internal.actions.restart"
+               label="%restart"
+               menubarPath="file/workspace"
+               style="push"
+               tooltip="%restart_tt">
+         </action>
+         <action
+               class="org.csstudio.platform.ui.internal.actions.SwitchWorkspaceAction"
+               id="org.csstudio.platform.ui.internal.actions.openworkspace"
+               label="%switch"
+               menubarPath="file/workspace"
+               style="push"
+               tooltip="%switch_tt">
          </action>
       </actionSet>
    </extension>

@@ -1,4 +1,4 @@
-package org.csstudio.platform.workspace.actions;
+package org.csstudio.platform.ui.internal.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

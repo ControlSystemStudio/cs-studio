@@ -9,9 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.service.datalocation.Location;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.service.prefs.Preferences;
 
 /** Information about a workspace selection: Current, history, ...
@@ -80,18 +78,19 @@ public class WorkspaceInfo
     @SuppressWarnings("nls")
     private void readPersistedData()
     {
-        final IPreferenceStore store = new ScopedPreferenceStore(
-                new ConfigurationScope(), PREF_QUALIFIER);
+    	final Preferences node = new ConfigurationScope().getNode(PREF_QUALIFIER);
+    //    final IPreferenceStore store = new ScopedPreferenceStore(
+    //            new ConfigurationScope(), PREF_QUALIFIER);
         
         // Get value for show_dialog.
-        final String dlg_info = store.getString(SHOW_DIALOG);
+        final String dlg_info = node.get(SHOW_DIALOG, "true");
         // We use a default of true if nothing was specified.
         // Only use false when we specifically find "false" in the store.
         show_dialog = ! "false".equals(dlg_info);
 
         // Get recent workspaces
         recent_workspaces.clear();
-        final String recent = store.getString(RECENT_WORKSPACES);
+        final String recent = node.get(RECENT_WORKSPACES, "");
         // Decode the workspaces
         final StringTokenizer tokenizer =
             new StringTokenizer(recent, WORKSPACE_SEPARATOR);
