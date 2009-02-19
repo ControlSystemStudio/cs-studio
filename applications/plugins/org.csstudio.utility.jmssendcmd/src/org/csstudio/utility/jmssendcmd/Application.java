@@ -22,7 +22,7 @@ public class Application implements IApplication
     private static final String DEFAULT_APP = "JMSSender";
     private String application;
     private String type;
-   private boolean edm_mode;
+    private boolean edm_mode;
     
     /** @see IApplication */
     public Object start(IApplicationContext context) throws Exception
@@ -72,13 +72,18 @@ public class Application implements IApplication
             return IApplication.EXIT_OK;
         }
         
-        System.out.println("URL        : " + url.get());
-        System.out.println("Topic      : " + topic.get());
-        System.out.println("Type       : " + type.get());
-        System.out.println("Application: " + app.get());
         this.type = type.get();
         application = app.get();
         this.edm_mode = edm_mode.get();
+
+        // Show basic info unless in 'EDM' mode
+        if (! this.edm_mode)
+        {
+            System.out.println("URL        : " + url.get());
+            System.out.println("Topic      : " + topic.get());
+            System.out.println("Type       : " + type.get());
+            System.out.println("Application: " + app.get());
+        }
         try
         {
             final JMSSender sender = new JMSSender(url.get(), jms_user.get(),
@@ -106,10 +111,13 @@ public class Application implements IApplication
             new BufferedReader(new InputStreamReader(System.in));
         try
         {
-            System.out.println("Enter message lines. Ctrl-D to exit.");
+            // Prompt unless in EDM mode
+            if (!edm_mode)
+                System.out.println("Enter message lines. Ctrl-D to exit.");
             while (true)
             {
-                System.out.print(">");
+                if (!edm_mode)
+                    System.out.print(">");
                 final String text = in.readLine();
                 if (text == null)
                     break;

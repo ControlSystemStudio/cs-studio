@@ -1,11 +1,10 @@
 package org.csstudio.utility.jmssendcmd;
 
-import org.csstudio.platform.logging.CentralLogger;
-
 /** Parse the input EDM string.
  *  @author Delphy Armstrong
+ *  @author Kay Kasemir (used Exception)
  */
-
+@SuppressWarnings("nls")
 public class EDMParser
 {
    /** Current value */
@@ -25,20 +24,17 @@ public class EDMParser
    private String ssh;
    /** option for the display value */
    private String dsp;
-   /** parsed string error flag */
-   private boolean error;
    
   /** Parse the input EDM string.
-   *  
-   * @param edm_log_line
+   *  @param edm_log_line
+   *  @throws Exception on parse error (missing user, ...)
    */
-   public EDMParser(String edm_log_line)
+   public EDMParser(String edm_log_line) throws Exception
    {
       int space = 0;
       String option = "";
       String optionStr = "";
       boolean done=false;
-      error=false;
       while(!done)
       {
          final int posn = edm_log_line.indexOf("=");
@@ -106,53 +102,23 @@ public class EDMParser
             ssh.indexOf(' ')!=ssh.lastIndexOf(' '))
            host=ssh.substring(ssh.indexOf("f:")+2, ssh.indexOf(' '));
          else 
-         {
-            CentralLogger.getInstance().getLogger(this).debug(
-                  "ssh entry has an INVALID format. " + ssh);
-            error=true;
-            return;
-         }
+             throw new Exception("ssh entry has an INVALID format. " + ssh);
       }
       /**
        * If an error exists in the entries for user, host, value or pv name
        * set the error flag to true and return;
        */
       if(user==null)
-      {
-         CentralLogger.getInstance().getLogger(this).debug(
-               "user entry cannot be NULL");
-         error=true;
-         return;
-      }
+          throw new Exception("user entry cannot be NULL");
       if(host==null)
-      {
-         CentralLogger.getInstance().getLogger(this).debug(
-               "host entry cannot be NULL");
-         error=true;
-         return;
-      }
+          throw new Exception("host entry cannot be NULL");
       if(value==null)
-      {
-         CentralLogger.getInstance().getLogger(this).debug(
-               "value entry cannot be NULL");
-         error=true;
-         return;
-      }
+          throw new Exception("value entry cannot be NULL");
       if(name==null)
-      {
-         CentralLogger.getInstance().getLogger(this).debug(
-               "pv name entry cannot be NULL");
-         error=true;
-         return;
-      }
+          throw new Exception("pv name entry cannot be NULL");
    }
    
-   boolean hasError()
-   {
-      return error;
-   }
-   
-   String getUser()
+   public String getUser()
    {
       return user;
    }
@@ -191,5 +157,4 @@ public class EDMParser
    {
       return dsp;
    }
-   
 }

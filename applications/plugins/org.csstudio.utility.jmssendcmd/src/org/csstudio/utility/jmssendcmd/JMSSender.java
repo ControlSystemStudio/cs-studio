@@ -11,6 +11,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
@@ -77,34 +78,36 @@ public class JMSSender implements ExceptionListener
      *  @param type Message TYPE
      *  @param application Message APPLICATION
      *  @param text Message TEXT
-    * @param edm_mode 
+     *  @param edm_mode 
      *  @throws Exception on error
      */
     public void send(final String type, final String application,
             final String text, boolean edm_mode) throws Exception
     {
        final MapMessage map = session.createMapMessage();
-/**
- * If the type is "put", it is an EDM option.  Different options are added to 
- * the map to reflect the input EDM string.
- */
-        if(edm_mode)
+       /**
+        * If the type is "put", it is an EDM option.  Different options are added to 
+        * the map to reflect the input EDM string.
+        */
+        if (edm_mode)
         {
-           EDMParser parser = new EDMParser(text);
-           /**
-            * If the parsed EDM input string has an error, return.
-            * Otherwise fill the MapMessage with the input EDM values.
-            */
-           if(parser.hasError()) return;
-           map.setString(JMSLogMessage.TYPE, type);
-           map.setString(JMSLogMessage.APPLICATION_ID, application);
-           map.setString(JMSLogMessage.HOST, parser.getHost());
-           map.setString(JMSLogMessage.USER, parser.getUser());
-           map.setString(JMSLogMessage.NAME, parser.getPVName());
-           map.setString(JMSLogMessage.TEXT, parser.getPVText());
-           map.setString(JMSLogEDMMessage.PVVALUE, parser.getValue());
-           map.setString(JMSLogEDMMessage.OLDPVVALUE, parser.getOriginalValue());
-
+            try
+            {
+                final EDMParser parser = new EDMParser(text);
+                // Fill the MapMessage with the input EDM values.
+                map.setString(JMSLogMessage.TYPE, type);
+                map.setString(JMSLogMessage.APPLICATION_ID, application);
+                map.setString(JMSLogMessage.HOST, parser.getHost());
+                map.setString(JMSLogMessage.USER, parser.getUser());
+                map.setString(JMSLogMessage.NAME, parser.getPVName());
+                map.setString(JMSLogMessage.TEXT, parser.getPVText());
+                map.setString(JMSLogEDMMessage.PVVALUE, parser.getValue());
+                map.setString(JMSLogEDMMessage.OLDPVVALUE, parser.getOriginalValue());
+            }
+            catch (Exception ex)
+            {
+                CentralLogger.getInstance().getLogger(this).error(ex.getMessage());
+            }
         }
         else
         {
@@ -131,13 +134,13 @@ public class JMSSender implements ExceptionListener
         }
         catch (Exception ex)
         {
-           System.err.println("Error: " + ex.getMessage());
+           CentralLogger.getInstance().getLogger(this).error(ex.getMessage());
         }
     }
     
     /** @see ExceptionListener */
     public void onException(final JMSException ex)
     {
-        ex.printStackTrace();
+        CentralLogger.getInstance().getLogger(this).error(ex.getMessage());
     }
 }
