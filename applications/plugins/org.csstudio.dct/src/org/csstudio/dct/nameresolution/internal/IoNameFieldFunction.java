@@ -1,8 +1,8 @@
 package org.csstudio.dct.nameresolution.internal;
 
+import org.csstudio.dct.IoNameService;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.IFieldFunction;
-import org.csstudio.platform.IoNameService;
 
 /**
  * Implementation for the ioname() function.
@@ -27,7 +27,7 @@ public final class IoNameFieldFunction implements IFieldFunction {
 	 *{@inheritDoc}
 	 */
 	public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
-		String result = ioNameService.getIoName(parameters[0], fieldName);
+		String result = ioNameService.getEpicsAddress(parameters[0], fieldName);
 		return result;
 	}
 

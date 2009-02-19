@@ -1,4 +1,4 @@
-package org.csstudio.platform;
+package org.csstudio.dct;
 
 import java.util.List;
 

@@ -1,7 +1,8 @@
-package org.csstudio.platform;
+package org.csstudio.dct;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Dummy implementation of {@link IoNameService}.

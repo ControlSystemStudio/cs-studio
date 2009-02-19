@@ -10,11 +10,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.dct.DctActivator;
+import org.csstudio.dct.DummyIoNameService;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.IFieldFunctionService;
 import org.csstudio.dct.util.AliasResolutionException;
-import org.csstudio.platform.DummyIoNameService;
 import org.csstudio.platform.util.StringUtil;
 
 /**

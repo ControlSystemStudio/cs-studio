@@ -4,8 +4,6 @@ import org.csstudio.dct.model.persistence.IPersistenceService;
 import org.csstudio.dct.model.persistence.internal.PersistenceService;
 import org.csstudio.dct.nameresolution.IFieldFunctionService;
 import org.csstudio.dct.nameresolution.internal.FieldFunctionService;
-import org.csstudio.platform.DummyIoNameService;
-import org.csstudio.platform.IoNameService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
