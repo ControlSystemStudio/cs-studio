@@ -26,4 +26,8 @@ public class ConfigurationFromPreferences extends Configuration {
 		return configEntryList.toArray(new AppConfigurationEntry[configEntryList.size()]);
 	}
 
+	@Override
+	public void refresh() {
+		super.refresh();
+	}
 }
