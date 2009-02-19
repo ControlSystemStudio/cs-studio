@@ -20,8 +20,7 @@ public class StartupHelper {
 	private String username = null;
 	private String password = null;
 	private Boolean show_Workspace = false;
-	private Boolean show_Login = false;	
-	
+	private Boolean show_Login = false;		
 	private String productName;
 	
 	/**Constructor
@@ -54,6 +53,23 @@ public class StartupHelper {
 	    if (productName == null)
 	        productName = "CSS"; //$NON-NLS-1$
 	}	
+	
+	/**set show_Workspace
+	 * @param show_Workspace the show_Workspace to set
+	 */
+	public void setShow_Workspace(Boolean show_Workspace) {
+		this.show_Workspace = show_Workspace;
+	}
+
+
+
+	/**set show_Login
+	 * @param show_Login the show_Login to set
+	 */
+	public void setShow_Login(Boolean show_Login) {
+		this.show_Login = show_Login;
+	}
+
 	
 	public boolean openStartupDialog(){
 		if(username == null) {

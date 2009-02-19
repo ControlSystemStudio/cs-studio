@@ -34,10 +34,17 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
-    /**
-     * Group ID of user toolbar
+	private static final String MENU_WORKSPACE = "workspace";
+
+	/**
+     * Menu and cool bar ID of switch user
      */
-    private static final String CSS_Toolbar_USER = "user"; //$NON-NLS-1$
+    private static final String MENU_TOOLBAR_LOGIN = "css_login";
+
+	/**
+     * Group ID of switch user and logout toolbar
+     */
+    private static final String TOOLBAR_USER = "user"; //$NON-NLS-1$
 
 	/** ID of CSS SNS Menu */
     private static final String CSS_MENU_WEB = "web"; //$NON-NLS-1$
@@ -200,6 +207,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_file.add(new Separator());
         menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
         menu_file.add(new Separator());
+        menu_file.add(new GroupMarker(MENU_WORKSPACE));
+        menu_file.add(new Separator());
+        menu_file.add(new GroupMarker(MENU_TOOLBAR_LOGIN));
         menu_file.add(logout);
         menu_file.add(quit);
         menubar.add(menu_file);
@@ -288,14 +298,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         IToolBarManager file_bar = new ToolBarManager();
         IToolBarManager user_bar = new ToolBarManager();   
         coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
-        coolbar.add(new ToolBarContributionItem(user_bar, CSS_Toolbar_USER));
+        coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
         
         file_bar.add(create_new);
         file_bar.add(save);       
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
         file_bar.add(new Separator());
         
-        user_bar.add(new CoolItemGroupMarker("css_login"));
+        user_bar.add(new CoolItemGroupMarker(MENU_TOOLBAR_LOGIN));
         user_bar.add(logout);
        
     }

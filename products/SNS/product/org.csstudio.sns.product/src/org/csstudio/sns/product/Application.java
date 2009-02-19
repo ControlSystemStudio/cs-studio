@@ -339,19 +339,24 @@ public class Application implements IApplication
         
         while (true)
         {
+        	startupHelper.setShow_Login(show_Login);
+        	startupHelper.setShow_Workspace(show_Workspace);
+        	
             if (show_Workspace || show_Login)
             {                
                 if (! startupHelper.openStartupDialog())
-                    return false; // cancelled
+                    return false; // canceled
                 
-                //get username and password from startup dialog
+                //get user name and password from startup dialog
                 if(show_Login) {
                 	username = startupHelper.getUserName();
                 	password = startupHelper.getPassword();
                 }
             }
-            // In case of errors, we will have to ask...
+            // In case of errors, we will have to ask the workspace,
+            // but don't bother to ask user name and password again.
             show_Workspace = true;
+            show_Login = false;
 
             try
             {

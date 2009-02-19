@@ -108,6 +108,8 @@ public class StartupDialog extends TitleAreaDialog {
     /** Combo with selected and recent workspaces */
     private Combo workspaces;
 
+	private Button show_dialog;
+
     /** Constructor
      *  @param parent Parent shell or <code>null</code>
      *  
@@ -310,8 +312,12 @@ public class StartupDialog extends TitleAreaDialog {
 				defaultPassword = this._passwordText.getText();
 			}
 		}		
-		if(showWorkspace && !checkWorkspace())
-			return;
+		if(showWorkspace) {
+			if(!checkWorkspace())
+				return;
+			else if (with_show_again_option)
+				info.setShowDialog(show_dialog.getSelection());
+		}
 		super.okPressed();
 	}
 	
@@ -348,7 +354,7 @@ public class StartupDialog extends TitleAreaDialog {
     /** Add 'show dialog?' button */
     private void createShowDialogButton(Composite composite)
     {
-        final Button show_dialog = new Button(composite, SWT.CHECK);
+        show_dialog = new Button(composite, SWT.CHECK);
         show_dialog.setText(Messages.Workspace_AskAgain);
         show_dialog.setToolTipText(Messages.Workspace_AskAgainTT);
         show_dialog.setSelection(true);
@@ -356,14 +362,6 @@ public class StartupDialog extends TitleAreaDialog {
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.LEFT;
         show_dialog.setLayoutData(gd);
-        show_dialog.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                info.setShowDialog(show_dialog.getSelection());
-            }
-        });
     }
     
     /** Prompt for workspace.
@@ -376,6 +374,10 @@ public class StartupDialog extends TitleAreaDialog {
         return true;
     }
     
+    /**
+     * check if there is error in workspace input
+     * @return true if there is no error
+     */
     protected boolean checkWorkspace()
     {
         final String workspace = workspaces.getText().trim();
