@@ -40,6 +40,7 @@ public class SecureStorage {
 	public static String retrieveSecureStorage(String qualifier, String key) {
     	try {
     		File file = new File(Platform.getInstallLocation().getURL().toString(), "secure_storage");
+    		file = new File(file.toString().replaceAll("file:\\\\", ""));
     		if(file.exists()) {
 	        	URL url = file.toURI().toURL();    	
 	        	ISecurePreferences root = SecurePreferencesFactory.open(url, null);
