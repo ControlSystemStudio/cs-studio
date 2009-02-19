@@ -43,4 +43,30 @@ public class EDMParserTest extends TestCase
             assertEquals("user entry cannot be NULL", ex.getMessage());
         }
     }
+
+    @Test
+    /** Check handling of bad input
+     *  These give StringIndexOutOfBoundsException because the parser
+     *  isn't bullet-proof.
+     *  For now ignored because it works with the 'real' EDM input.
+     */
+    public void testBadInput()
+    {
+        try
+        {
+            new EDMParser("");
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        try
+        {
+            new EDMParser("host=");
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 }
