@@ -759,7 +759,14 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		DecisionDepartmentActivator.logger.logInfoMessage(this,
 				"Interrupting working thread...");
-		this._receiverThread.interrupt();
+		
+		/*
+		 * An dieser Stelle ist _receiverThread IMMER null.
+		 */
+		if(this._receiverThread != null)
+		{
+		    this._receiverThread.interrupt();
+		}
 	}
 
 	/**
@@ -907,8 +914,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
     public synchronized void stopRemotely(Logger logger)
     {
-        _continueWorking = false;
-        
-        this.notifyAll();
-    };
+        this.stop();
+    }
 }
