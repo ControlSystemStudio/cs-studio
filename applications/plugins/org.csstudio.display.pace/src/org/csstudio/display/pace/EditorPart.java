@@ -139,6 +139,26 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                         String password, String title, String body)
                         throws Exception
                 {
+                    // TODO Think "transaction"
+                    // Both the logbook entry and the PV updates can fail
+                    // for some reason.
+                    // The whole elog-and-pv-update should be handled
+                    // as a transaction that either succeeds or fails
+                    // as a whole.
+                    //
+                    // Cannot make elog entry?
+                    // Show error, don't write PVs.
+                    // This case is currently OK!
+                    //
+                    // Not OK:
+                    // Make elog entry, then at least one PV 'write'
+                    // fails.
+                    // Now what?
+                    // Remove the elog entry? Can't.
+                    // Restore PVs that did write OK with old value?
+                    // What if that fails, too?
+                    // For now we only show an error message.
+                    // Add elog entry about failure?
                     final ILogbook logbook = getLogbook_factory()
                         .connect(logbook_name, user, password);
                     try

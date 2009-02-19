@@ -98,6 +98,8 @@ public class InstanceLabelProvider extends CellLabelProvider
              gui_cell.setBackground(null);
          // Highlight read-only cells with "inactive" background, usually
          // a light grey
+         // TODO also mark cells where     !cell.isPVWriteAllowed()
+         // as read-only or maybe in yet another color
          if (cell.isReadOnly())
          {
              final Display display = Display.getCurrent();
