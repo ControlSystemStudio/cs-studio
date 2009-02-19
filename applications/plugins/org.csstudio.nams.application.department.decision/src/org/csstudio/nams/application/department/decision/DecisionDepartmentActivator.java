@@ -760,13 +760,14 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		DecisionDepartmentActivator.logger.logInfoMessage(this,
 				"Interrupting working thread...");
 
-        Thread.currentThread().interrupt();
-
 		/*
 		 * An dieser Stelle ist _receiverThread IMMER null.
 		 * 
 		 */
 		this._receiverThread.interrupt();
+		
+		// ... und so funtioniert es auch nicht:
+        // Thread.currentThread().interrupt();
 	}
 
 	/**
