@@ -18,11 +18,12 @@ import javax.jms.Topic;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
+import org.csstudio.platform.utility.jms.JMSConnectionListener;
 
 /** Data model for the JMS Monitor
  *  @author Kay Kasemir
  */
-public class Model implements ExceptionListener, MessageListener
+public class Model implements ExceptionListener, MessageListener, JMSConnectionListener
 {
     final private String topic_names;
     private volatile Connection connection = null;
@@ -46,7 +47,8 @@ public class Model implements ExceptionListener, MessageListener
     
     private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
-
+    
+    private volatile String server_name = Messages.Disconnected;
 
     /** Initialize
      *  @param url JMS server URL
@@ -86,7 +88,6 @@ public class Model implements ExceptionListener, MessageListener
                 }
             }
         };
-        messages.add(ReceivedMessage.createErrorMessage("not connected"));
         final Thread thread = new Thread(connector, "JMSMonitorConnector");
         thread.setDaemon(true);
         thread.start();
@@ -102,6 +103,7 @@ public class Model implements ExceptionListener, MessageListener
     	throws Exception
     {
         connection = JMSConnectionFactory.connect(url, user, password);
+        JMSConnectionFactory.addListener(connection, this);
         connection.setExceptionListener(this);
         connection.start();
         session = connection.createSession(/* transacted */ false,
@@ -161,6 +163,12 @@ public class Model implements ExceptionListener, MessageListener
         listeners.add(listener);
     }
 
+    /** @return name of JMS server */
+    public String getServerName()
+    {
+        return server_name;
+    }
+    
     /** @return Array of received messages */
     public ReceivedMessage[] getMessages()
     {
@@ -176,6 +184,20 @@ public class Model implements ExceptionListener, MessageListener
     public void clear()
     {
         messages.clear();
+        fireModelChanged();
+    }
+
+    /** @see JMSConnectionListener */
+    public void linkDown()
+    {
+        server_name = Messages.Disconnected;
+        fireModelChanged();
+    }
+
+    /** @see JMSConnectionListener */
+    public void linkUp(final String server)
+    {
+        this.server_name = server;
         fireModelChanged();
     }
 

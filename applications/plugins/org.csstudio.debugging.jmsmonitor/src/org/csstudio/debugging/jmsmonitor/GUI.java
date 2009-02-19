@@ -44,6 +44,8 @@ public class GUI implements ModelListener
 
     private Button clear;
 
+    private Label server_name;
+
     /** Initialize
      *  @param url JMS server URL
      *  @param user JMS user name or <code>null</code>
@@ -119,6 +121,15 @@ public class GUI implements ModelListener
         clear.setText(Messages.Clear);
         clear.setToolTipText(Messages.ClearTT);
         clear.setLayoutData(new GridData());
+        
+        // Server: ____server_name____
+        l = new Label(parent, 0);
+        l.setText(Messages.Server);
+        l.setLayoutData(new GridData());
+
+        server_name = new Label(parent, 0);
+        server_name.setText(Messages.Disconnected);
+        server_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
         
         // Message table
         table_viewer = new TableViewer(parent,
@@ -202,7 +213,7 @@ public class GUI implements ModelListener
                 return;
             model = new Model(url, user, password, topic_name);
             modelChanged(model);
-            model.addListener(GUI.this);
+            model.addListener(this);
         }
         catch (Exception ex)
         {
@@ -234,8 +245,9 @@ public class GUI implements ModelListener
         {
             public void run()
             {
-                if (table_viewer.getTable().isDisposed())
+                if (server_name.isDisposed())
                     return;
+                server_name.setText(model.getServerName());
                 table_viewer.setInput(model.getMessages());
             }
         });

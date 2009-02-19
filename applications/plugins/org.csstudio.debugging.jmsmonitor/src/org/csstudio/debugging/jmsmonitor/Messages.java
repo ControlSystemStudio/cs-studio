@@ -10,6 +10,7 @@ public class Messages extends NLS
     public static String ContentColumn;
     public static String DateColumn;
     public static String DetailDialogTitle;
+    public static String Disconnected;
     public static String ErrorMessage;
     public static String ErrorNoTopic;
     public static String ErrorNoURL;
@@ -19,8 +20,7 @@ public class Messages extends NLS
     public static String Preferences_JMS_USER;
     public static String Preferences_JMS_PASSWORD;
     public static String Property;
-    public static String SeparatorValue;
-    public static String SeperatorType;
+    public static String Server;
     public static String ShowProperties;
     public static String Topic_TT;
     public static String TopicLabel;
@@ -29,6 +29,7 @@ public class Messages extends NLS
     public static String URLLabelFmt;
     public static String UnknownType;
     public static String Value;
+
     static
     {
         // initialize resource bundle
