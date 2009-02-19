@@ -15,8 +15,8 @@ public class SNSPasswordProvider extends PasswordProvider {
 	@Override
 	public PBEKeySpec getPassword(IPreferencesContainer container,
 			int passwordType) {	
-		
-		String installLoc = Platform.getInstallLocation().getURL().toString();
+		//the master password cannot include spaces
+		String installLoc = Platform.getInstallLocation().getURL().toString().replaceAll("\\s", "");
 		return new PBEKeySpec(installLoc.toCharArray());
 	}
 
