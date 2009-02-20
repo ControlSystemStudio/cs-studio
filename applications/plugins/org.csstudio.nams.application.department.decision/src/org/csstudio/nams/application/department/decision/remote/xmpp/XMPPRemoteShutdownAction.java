@@ -60,10 +60,10 @@ public class XMPPRemoteShutdownAction implements IAction {
 		Contract.requireNotNull("param", param);
 		Contract.require(param instanceof Map, "param instanceof Map");
 		final Map<Object, Object> paramMap = this.castToMap(param);
-		Contract.require(paramMap.containsKey("authorisation"),
-				"((Map)param).containsKey(\"authorisation\")");
+		Contract.require(paramMap.containsKey("Password"),
+				"((Map)param).containsKey(\"Password\")");
 
-		final String value = paramMap.get("authorisation").toString();
+		final String value = paramMap.get("Password").toString();
 		// Not necessary  
 		//final String[] valueParts = value.split("=");
 
