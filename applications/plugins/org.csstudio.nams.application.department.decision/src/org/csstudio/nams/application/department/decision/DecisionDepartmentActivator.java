@@ -321,9 +321,11 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * 
 	 * @see IApplication#start(IApplicationContext)
 	 */
-	public Object start(final IApplicationContext context) {
-
-		// Initialize state for normal run
+	public Object start(final IApplicationContext context)
+	{
+        XMPPRemoteShutdownAction.staticInject(this);
+        
+        // Initialize state for normal run
 
 		// just to make it possible to stop while start up (will be reset
 		// later):
@@ -733,8 +735,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.staticInject(DecisionDepartmentActivator.logger);
 		XMPPRemoteShutdownAction
 				.staticInject(DecisionDepartmentActivator.logger);
-        XMPPRemoteShutdownAction
-                .staticInject(this);
 
 		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
 				+ DecisionDepartmentActivator.PLUGIN_ID
@@ -760,14 +760,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		DecisionDepartmentActivator.logger.logInfoMessage(this,
 				"Interrupting working thread...");
 
-		/*
-		 * An dieser Stelle ist _receiverThread IMMER null.
-		 * 
-		 */
 		this._receiverThread.interrupt();
-		
-		// ... und so funtioniert es auch nicht:
-        // Thread.currentThread().interrupt();
 	}
 
 	/**
