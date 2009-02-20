@@ -13,4 +13,3 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.jaasAuthentication,
  org.csstudio.apputil.ui
 Bundle-ActivationPolicy: lazy
-Import-Package: org.csstudio.sns.ldapauthorization
