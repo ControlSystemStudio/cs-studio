@@ -96,7 +96,8 @@ public class EngineConfigImportApp implements IApplication
             // Delete existing config?
             if (delete_config.get())
             {
-                deleteEngine(rdb_url.get(), engine_name.get());
+                deleteEngine(rdb_url.get(), user.get(), password.get(),
+                             engine_name.get());
                 return IApplication.EXIT_OK;
             }
 
@@ -144,12 +145,17 @@ public class EngineConfigImportApp implements IApplication
         return IApplication.EXIT_OK;
     }
 
-    /** Delete existing engine config */
+    /** Delete existing engine config 
+     *  @param rdb_url
+     *  @param user 
+     *  @param password
+     *  @param engine_name
+     */
     @SuppressWarnings("nls")
-    private void deleteEngine(final String rdb_url,
-            final String engine_name) throws Exception
+    private void deleteEngine(final String rdb_url,  final String user,
+            final String password, final String engine_name) throws Exception
     {
-        final RDBArchiveImpl archive = new RDBArchiveImpl(rdb_url, null, null);
+        final RDBArchiveImpl archive = new RDBArchiveImpl(rdb_url, user, password);
         try
         {
             final SampleEngineHelper engines =
