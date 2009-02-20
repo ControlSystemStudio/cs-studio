@@ -117,6 +117,9 @@ public class PreferencesHelper
     		result.append('|');
     		result.append(je.getModuleControlFlag());
     		for(String[] optionTuple : je.getModuleOptionsList()) {
+    			//don't save the value whose option name is invalid 
+    			if(optionTuple[0].trim().equals(""))
+    				continue;
     			result.append('|');
     			result.append(optionTuple[0] + "=" + "\"" + optionTuple[1] + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     		}

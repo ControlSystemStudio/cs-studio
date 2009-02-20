@@ -107,20 +107,19 @@ public class JaasLoginModule implements ILoginModule {
 		while (!loggedIn) {
 			// The LoginContext cannot be reused if a call to its login()
 			// method failed. This is why a new LoginContext instance is
-			// created in every iteration through this loop.
-			try {
-				loginCtx = new LoginContext(contextName, ch);
-			} catch (LoginException e) {
-                logger.error("Login error: cannot create a JAAS LoginContext. Using anonymously.", e);
-				return null;
-			}
-			
+			// created in every iteration through this loop.			
 			ch.credentials = handler.getCredentials();
 			if (ch.credentials != null) {
 				//Anonymous login
 				if(ch.credentials == Credentials.ANONYMOUS) {
 					loggedIn = true;
-				} else {	//real login			
+				} else {	//real login
+					try {
+							loginCtx = new LoginContext(contextName, ch);
+						} catch (LoginException e) {
+							logger.error("Login error: cannot create a JAAS LoginContext. Using anonymously.", e);
+							return null;
+						}			
 					try {
 						loginCtx.login();  // this will call back to get the credentials
 						final Subject subject = loginCtx.getSubject();
