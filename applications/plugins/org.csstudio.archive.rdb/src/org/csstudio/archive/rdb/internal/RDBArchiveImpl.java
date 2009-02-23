@@ -110,7 +110,7 @@ public class RDBArchiveImpl extends RDBArchive
     {
         // Create new connection
         CentralLogger.getInstance().getLogger(this).debug("Connecting to '" + url + "'");
-        rdb = RDBUtil.connect(url, user, password);
+        rdb = RDBUtil.connect(url, user, password, false);
         sql = new SQL(rdb.getDialect());
         channels = new ChannelCache(this);
         severities = new SeverityCache(rdb, sql);
