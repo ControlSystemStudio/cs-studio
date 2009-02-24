@@ -9,10 +9,10 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class RDBArchivePreferences
 {
-    private static final String URL = "url";
-    private static final String SCHEMA = "schema";
-    private static final String USER = "user";
-    private static final String PASSWORD = "password";
+    public static final String URL = "url";
+    public static final String SCHEMA = "schema";
+    public static final String USER = "user";
+    public static final String PASSWORD = "password";
 
     /** @return URL of RDB archive server */
     public static String getURL()
