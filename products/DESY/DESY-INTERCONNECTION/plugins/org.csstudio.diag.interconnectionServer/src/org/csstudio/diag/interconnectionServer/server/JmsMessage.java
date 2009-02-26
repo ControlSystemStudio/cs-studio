@@ -81,7 +81,7 @@ public class JmsMessage {
 		return thisMessage;
 	}
 	
-	public void sendMessage ( int messageType, String type, String name, String value, String severity, String status, String host, String facility, String text, String howTo) {
+	public void sendMessage ( int messageType, String type, String name, String value, String severity, String status, String host, String facility, String text) {
 		
 		String jmsContext = null;
 		Session session = null;
@@ -101,31 +101,31 @@ public class JmsMessage {
 		int jmsTimeToLiveLogsInt = Integer.parseInt(jmsTimeToLiveLogs);
 		int jmsTimeToLivePutLogsInt = Integer.parseInt(jmsTimeToLivePutLogs);
 		
-		if ( messageType == JMS_MESSAGE_TYPE_ALARM) {
-			/*
-			 * get JMS alarm connection from InterconnectionServer class
-			 */
-			session = InterconnectionServer.getInstance().getAlarmSession();
-			jmsContext = PreferenceProperties.JMS_ALARM_CONTEXT;
-			jmsTimeToLive = jmsTimeToLiveAlarmsInt;
-		} else if ( messageType == JMS_MESSAGE_TYPE_LOG) {
-			/*
-			 * get JMS alarm connection from InterconnectionServer class
-			 */
-			session = InterconnectionServer.getInstance().getLogSession();
-			jmsContext = PreferenceProperties.JMS_LOG_CONTEXT;
-			jmsTimeToLive = jmsTimeToLiveLogsInt;
-		} else if ( messageType == JMS_MESSAGE_TYPE_PUT_LOG) {
-			/*
-			 * get JMS alarm connection from InterconnectionServer class
-			 */
-			session = InterconnectionServer.getInstance().getPutLogSession();
-			jmsContext = PreferenceProperties.JMS_PUT_LOG_CONTEXT;
-			jmsTimeToLive = jmsTimeToLivePutLogsInt;
-		}
-		
 		try {
 
+			if ( messageType == JMS_MESSAGE_TYPE_ALARM) {
+				/*
+				 * get JMS alarm connection from InterconnectionServer class
+				 */
+				session = InterconnectionServer.getInstance().createJmsSession();
+				jmsContext = PreferenceProperties.JMS_ALARM_CONTEXT;
+				jmsTimeToLive = jmsTimeToLiveAlarmsInt;
+			} else if ( messageType == JMS_MESSAGE_TYPE_LOG) {
+				/*
+				 * get JMS alarm connection from InterconnectionServer class
+				 */
+				session = InterconnectionServer.getInstance().createJmsSession();
+				jmsContext = PreferenceProperties.JMS_LOG_CONTEXT;
+				jmsTimeToLive = jmsTimeToLiveLogsInt;
+			} else if ( messageType == JMS_MESSAGE_TYPE_PUT_LOG) {
+				/*
+				 * get JMS alarm connection from InterconnectionServer class
+				 */
+				session = InterconnectionServer.getInstance().createJmsSession();
+				jmsContext = PreferenceProperties.JMS_PUT_LOG_CONTEXT;
+				jmsTimeToLive = jmsTimeToLivePutLogsInt;
+			}
+		
 	        // Create the destination (Topic or Queue)
 			Destination destination = session.createTopic( jmsContext);
 
@@ -134,7 +134,7 @@ public class JmsMessage {
 	    	sender.setDeliveryMode( DeliveryMode.PERSISTENT);
 	    	sender.setTimeToLive( jmsTimeToLive);
 
-	    	MapMessage message = prepareMessage( session.createMapMessage(), type, name, value, severity, status, host, facility, text, howTo);
+	    	MapMessage message = prepareMessage( session.createMapMessage(), type, name, value, severity, status, host, facility, text);
 
 			sender.send(message);
 			
@@ -146,17 +146,24 @@ public class JmsMessage {
         {
 			InterconnectionServer.getInstance().checkSendMessageErrorCount();
 			CentralLogger.getInstance().debug(this,"IocChangeState : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+        } finally {
+        	if (session != null) {
+        		try {
+					session.close();
+				} catch (JMSException e) {
+					CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
+				}
+        	}
         }
 	}
 	
-	public MapMessage prepareMessage ( MapMessage message, String type, String name, String value, String severity, String status, String host, String facility, String text, String howTo) {
+	private MapMessage prepareMessage ( MapMessage message, String type, String name, String value, String severity, String status, String host, String facility, String text) {
 		/*
 		 * typical entries:
 		 * type = ioc-alarm
 		 * name = Localhost:logicalIocName:connectState
 		 * value = NOT_CONNECTED
 		 * severity = MAJOR
-		 * howto = ??
 		 * 
 		 * local entries:
 		 * EVENTTIME
@@ -192,9 +199,6 @@ public class JmsMessage {
 			} // else not set
 			if ( text != null) {
 				message.setString( "TEXT", text);
-			} // else not set
-			if ( howTo != null) {
-				message.setString( "HOWTO", howTo );
 			} // else not set
 			
 			//

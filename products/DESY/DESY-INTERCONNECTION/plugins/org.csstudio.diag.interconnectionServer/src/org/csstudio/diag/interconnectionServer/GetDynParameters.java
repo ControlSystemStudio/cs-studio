@@ -24,7 +24,7 @@ package org.csstudio.diag.interconnectionServer;
 
 import org.csstudio.diag.interconnectionServer.server.AlarmSimulator;
 import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
-import org.csstudio.diag.interconnectionServer.server.Statistic;
+import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
 
@@ -34,13 +34,16 @@ public class GetDynParameters  implements IAction {
 		if ((param != null) && (param.toString().equals("IOC"))) {
 //			String[] iocs = {"IOC1", "IOC2", "IOC3"};
 //			return iocs;
-			return Statistic.getInstance().getNodeNameArrayWithLogicalName();
+			return IocConnectionManager.getInstance().getNodeNameArrayWithLogicalName();
 		}
 		if ((param != null) && (param.toString().equals("Command"))) {
 			return PreferenceProperties.COMMAND_LIST;
 		}
 		if ((param != null) && (param.toString().equals("Simulator"))) {
 			return AlarmSimulator.commandList;
+		}
+		if ((param != null) && (param.toString().equals("Duration (seconds)"))) {
+			return new String[] {"60", "300", "600"};
 		}
 		return null;
 	}

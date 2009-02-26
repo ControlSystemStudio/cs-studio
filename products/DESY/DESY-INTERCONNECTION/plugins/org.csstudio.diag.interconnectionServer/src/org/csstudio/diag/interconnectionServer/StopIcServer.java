@@ -34,21 +34,17 @@ public class StopIcServer implements IAction {
 		/*
 		 * stop IC-Server
 		 */
+		InterconnectionServerApplication.SHUTDOWN = true;
 		boolean result = InterconnectionServer.getInstance().stopIcServer();
 		try {
 			/*
 			 * wait for IC-Server to greacefully stop
 			 */
+			// TODO: why is the wait necessary?
 			this.wait(5000); //wait 5 sec
 		} catch (Exception e) {
-			// TODO: handle exception
 			// nothing to do we want to stop anyhow
-		}		
-		/*
-		 * stop here - nicely
-		 */
-		// System.exit(0);
-		InterconnectionServerApplication.SHUTDOWN = true;
+		}
 		return "" + result;
 	}
 

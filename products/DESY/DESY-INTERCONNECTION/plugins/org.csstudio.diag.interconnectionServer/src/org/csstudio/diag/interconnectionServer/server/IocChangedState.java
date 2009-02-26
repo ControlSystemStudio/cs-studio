@@ -31,20 +31,16 @@ import org.csstudio.platform.logging.CentralLogger;
  *
  */
 public class IocChangedState extends Thread{
-	private String iocName = "unknown Name";
 	private String ldapIocName = "unknown Name";
 	private String logicalIocName = "unknown logical Name";
-	private String iocIpAddress = "unknown IP Address";
 	private boolean isRunning = true;
-	private String statisticId= null;
+	private IocConnection iocConnection;
 	
-	IocChangedState ( String statisticId, String iocName, String iocIpAddress, String logicalIocName, String ldapIocName, boolean isRunning) {
+	IocChangedState(IocConnection connection, boolean isRunning) {
+		this.iocConnection = connection;
+		this.logicalIocName = connection.getLogicalIocName();
+		this.ldapIocName = connection.getLdapIocName();
 		this.isRunning = isRunning;
-		this.iocName = iocName;
-		this.ldapIocName = ldapIocName;
-		this.iocIpAddress = iocIpAddress;
-		this.logicalIocName = logicalIocName;
-		this.statisticId = statisticId;
 		
 		this.start();
 	}
@@ -52,63 +48,31 @@ public class IocChangedState extends Thread{
 	public void run() {
 		
 		String localHostName = InterconnectionServer.getInstance().getLocalHostName();
-
-		// increment statistic counter
 		
 		InterconnectionServer.getInstance().getNumberOfIocFailoverCollector().incrementCount();
 		
 		CentralLogger.getInstance().debug(this,"IocChangedState: logical IOC name: " + logicalIocName); 
-		/*
-		 * depending on the running state ...
-		 */
 		
 		if ( isRunning()) {
 			/*
 			 * IOC back online
 			 */
 			CentralLogger.getInstance().warn(this, "InterconnectionServer: Host: " + logicalIocName + " connected again - waiting for alarm updates");
-			/*
-			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "CONNECTED" SEVERITY: "NO_ALARM"
-			 */
-//			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-//					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
-//					localHostName + ":" + logicalIocName + ":connectState",	// name
-//					localHostName, 											// value
-//					JmsMessage.SEVERITY_NO_ALARM, 							// severity
-//					"CONNECTED", 											// status
-//					logicalIocName, 										// host
-//					null, 													// facility
-//					"virtual channel", 								// text
-//					null);													// howTo
-			/*
-			 * second message without localHostName
-			 */
 			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
-					logicalIocName + ":connectState",	// name
-					localHostName, 											// value
-					JmsMessage.SEVERITY_NO_ALARM, 							// severity
-					"CONNECTED", 											// status
-					logicalIocName, 										// host
-					null, 													// facility
-					"virtual channel", 								// text
-					null);	
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
+					logicalIocName + ":connectState",		// name
+					localHostName, 							// value
+					JmsMessage.SEVERITY_NO_ALARM, 			// severity
+					"CONNECTED", 							// status
+					logicalIocName, 						// host
+					null, 									// facility
+					"virtual channel");
 			/*
 			 * do NOT set the connect state for records in LDAP!
 			 * This is handled if the select state changes -> get all alarm states from the IOC
 			 * 
 			 * not necessary: setAllRecordsToConnected ( logicalIocName);
 			 */
-			
-			// TODO: something like this is necessary here... MCL
-			
-//			if ( ! statisticContent.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
-//				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-//				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
-//			} else {
-//				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
-//			}
-			
 		} else if ( !InterconnectionServer.getInstance().isQuit()){
 			/*
 			 * set channels in LDAP to disconnected
@@ -119,45 +83,29 @@ public class IocChangedState extends Thread{
 			 */
 			
 			CentralLogger.getInstance().warn(this, "InterconnectionServer: All channels set to <disConnected> mode for Host: " + logicalIocName);
+			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
+					logicalIocName + ":connectState",		// name
+					localHostName, 							// value
+					JmsMessage.SEVERITY_MAJOR, 				// severity
+					"DISCONNECTED", 						// status
+					logicalIocName, 						// host
+					null, 									// facility
+					"virtual channel");
 			/*
-			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "NOT_CONNECTED" SEVERITY: "MAJOR"
-			 */
-//			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-//					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
-//					localHostName + ":" + logicalIocName + ":connectState",	// name
-//					localHostName, 											// value
-//					JmsMessage.SEVERITY_MAJOR, 								// severity
-//					"DISCONNECTED", 										// status
-//					logicalIocName, 										// host
-//					null, 													// facility
-//					"virtual channel", 								// text
-//					null);		
-			/*
-			 * second message without localHostName
+			 * for sure we are not selected any more
+			 * 
+			 * XXX: Why does this use a different name than the other messages?
 			 */
 			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
-					logicalIocName + ":connectState",						// name
-					localHostName, 											// value
-					JmsMessage.SEVERITY_MAJOR, 								// severity
-					"DISCONNECTED", 										// status
-					logicalIocName, 										// host
-					null, 													// facility
-					"virtual channel", 								// text
-					null);		
-			/*
-			 * for sure we are not selected any more 
-			 */
-			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-					localHostName + ":" + logicalIocName + ":selectState",				// name
-					localHostName, 														// value
-					JmsMessage.SEVERITY_MINOR, 											// severity
-					"NOT-SELECTED", 													// status
-					logicalIocName, 													// host
-					null, 																// facility
-					"virtual channel", 													// text
-					null);
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
+					localHostName + ":" + logicalIocName + ":selectState",	// name
+					localHostName, 							// value
+					JmsMessage.SEVERITY_MINOR, 				// severity
+					"NOT-SELECTED", 						// status
+					logicalIocName, 						// host
+					null, 									// facility
+					"virtual channel");
 			/*
 			 * set changes in LDAP and generate JMS Alarm message
 			 */
@@ -166,15 +114,9 @@ public class IocChangedState extends Thread{
 			 * remember that we've set this IOC to disconnected!
 			 * one the IOC is back online - and we are selected - -> get all alarms from the IOC
 			 */
-			Statistic.getInstance().getContentObject( this.statisticId).setDidWeSetAllChannelToDisconnect(true);
-			
+			iocConnection.setDidWeSetAllChannelToDisconnect(true);
 		}
-		
 	}
-	
-	
-	
-
 	
 	public boolean isRunning() {
 		return isRunning;

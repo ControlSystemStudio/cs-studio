@@ -21,12 +21,8 @@ package org.csstudio.diag.interconnectionServer.server;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 
-import org.csstudio.diag.interconnectionServer.server.Statistic.StatisticContent;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -47,7 +43,7 @@ public class BeaconWatchdog extends Thread{
 	
 	public void run() {
 		
-		while ( isRunning()) {
+		while ( isRunning) {
 			
 			checkBeaconTimeout();
 			
@@ -72,55 +68,41 @@ public class BeaconWatchdog extends Thread{
 	 */
 	private void checkBeaconTimeout () {
 		
-		Enumeration connections = Statistic.getInstance().connectionList.elements();
+		Enumeration connections = IocConnectionManager.getInstance().connectionList.elements();
 		 while (connections.hasMoreElements()) {
-			 StatisticContent thisContent = (StatisticContent)connections.nextElement();
-			 //CentralLogger.getInstance().debug(this,"checking : " + thisContent.getStatisticId() + " " + thisContent.getCurrentConnectState() + " " + thisContent.getCurrentSelectState());
-			 
-			 if ( thisContent.gregorianTimeDifferenceFromNow( thisContent.getTimeLastBeaconReceived()) > PreferenceProperties.BEACON_TIMEOUT) {
+			IocConnection connection = (IocConnection)connections.nextElement();
+			if (connection.isTimeoutError()) {
 				 
 				 /*
 				  * if we come here the first time...
 				  */
-				 if ( thisContent.getConnectState()) {
+				 if ( connection.getConnectState()) {
 					 /*
 					  * ok we're disconnected - remember
 					  */
-					 thisContent.setConnectState( false);	// not connected
+					 connection.setConnectState( false);	// not connected
 					 
 					 /*
 					  * send log message
 					  */
-					 CentralLogger.getInstance().warn(this, "InterconnectionServer: Beacon timeout for Host: " + thisContent.host + "|" + thisContent.logicalIocName);
+					 CentralLogger.getInstance().warn(this, "InterconnectionServer: Beacon timeout for Host: " + connection.getHost() + "|" + connection.getLogicalIocName());
 					 /*
 					  * do the changed state stuff in a new thread
 					  * ... but only if this InterconnectionServer is the selected one (from IOC point of view)
 					  */
-					  if ( thisContent.isSelectState()) {
+					  if ( connection.isSelectState()) {
 						  CentralLogger.getInstance().warn(this, "InterconnectionServer: trigger IOC timeout actions");
-						  new IocChangedState (thisContent.getStatisticId(), thisContent.getHost(), thisContent.getIpAddress(), thisContent.getLogicalIocName(), thisContent.getLdapIocName(), false);
+						  new IocChangedState (connection, false);
 					  }
 					  
 					  /*
 					   * change also the select state - the IOC can't tell us any more ...
 					   */
-					  thisContent.setSelectState( false);	// not selected
-					  thisContent.setGetAllAlarmsOnSelectChange(true);	// the next time we get connected
-					  
-//					 System.out.println("---------- Client disconnected ---------------");
-//					 System.out.println("Host:" +  thisContent.host + "  Port: " + thisContent.port +"\n");
-//					 System.out.println("Last beacon: " +  dateToString( thisContent.getTimeLastBeaconReceived()) + " Actual time: " + dateToString(new GregorianCalendar()));
+					  connection.setSelectState( false);	// not selected
+					  connection.setGetAllAlarmsOnSelectChange(true);	// the next time we get connected
 				 }
-			 }
+			}
 		 }
-	}
-	
-	/**
-	 * 
-	 * @return isRunning.
-	 */
-	public boolean isRunning() {
-		return isRunning;
 	}
 	
 	/**
@@ -130,23 +112,4 @@ public class BeaconWatchdog extends Thread{
 	public void setRunning(boolean isRunning) {
 		this.isRunning = isRunning;
 	}
-	
-	/**
-	 * 
-	 * @param gregorsDate
-	 * @return Date string in the form: yyyy-MM-dd HH:mm:ss.S
-	 */
-	public String dateToString ( GregorianCalendar gregorsDate) {
-		
-		//
-		// convert Gregorian date into string
-		//
-		//TODO: use other time format - actually : DD-MM-YYYY
-		Date d = gregorsDate.getTime();
-		SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.S" );
-	    //DateFormat df = DateFormat.getDateInstance();
-	    return df.format(d);
-	}
-
 }
-

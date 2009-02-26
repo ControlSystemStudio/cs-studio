@@ -21,7 +21,7 @@ package org.csstudio.diag.interconnectionServer;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import org.csstudio.diag.interconnectionServer.server.Statistic;
+import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 import org.csstudio.platform.statistic.CollectorSupervisor;
 
@@ -31,7 +31,7 @@ public class GetStatisticInformation implements IAction {
 		String result = null;
 		result = "----------- RESULT -----------\n";
 		result += CollectorSupervisor.getInstance().getCollectionAsString();
-		result += Statistic.getInstance().getStatisticAsString();
+		result += IocConnectionManager.getInstance().getStatisticAsString();
 		return result;
 	}
 

@@ -29,6 +29,7 @@ import java.net.InetAddress;
 import java.util.GregorianCalendar;
 
 import org.csstudio.diag.interconnectionServer.Activator;
+import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
@@ -45,11 +46,11 @@ public class SendCommandToIoc implements Runnable {
 	private String hostName = "locahost";
 	private int port = 0;
 	private String command = "NONE";
-	private volatile String statisticId = "NONE";
 	private int id = 0;
 	private static String IOC_NOT_REACHABLE = "IOC_NOT_REACHABLE";
 	private int statusMessageDelay = 0;
 	private boolean retry = false;
+	private IocConnection iocConnection;
 	
 	/**
 	 * Send a command to the IOC in an independent thread from command thread pool.
@@ -58,151 +59,93 @@ public class SendCommandToIoc implements Runnable {
 	 * @param command One of the supported commands.
 	 */
 	public SendCommandToIoc ( String hostName, int port, String command) {
-		
+
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
 		this.hostName = hostName;
-//		/*
-//    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
-//    	 * in any case: be prepared!
-//    	 */
-//    	if ( hostName.contains("|")) {
-//    		System.out.println ("SendCommandToIoc(1): hostname contains >|< ! hostname = " + hostName);
-//    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
-//		}
-		/*
-		 * TODO:
-		 * the following check does NOT work if we implement Runnable!
-		 * -> the method start() is NOT available! 
-		 */
-		
 		this.port = port;
 		this.command = command;
-		this.statisticId = this.hostName + ":" + Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		if ( (this.hostName == null || this.statisticId == null ) || (this.hostName.equals("") || this.statisticId.equals("") ))  {
-			CentralLogger.getInstance().fatal(this, "Wrong StatiscitcID or HostName! ID: " + this.statisticId + "Host: " + hostName);
-			// do NOT start!
-		} else {
-			/*
-			 * not available!
-			 * this.start();
-			 */
+		
+		// XXX: This has to use the data port from the preferences because that
+		// is (hopefully) the port from which the IOC sends messages and under
+		// which it is stored in the IocConnectionManager. This should be
+		// refactored and the IocConnection object passed to this object instead
+		// of this object having to search in in this way. 
+		int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
+				PreferenceConstants.DATA_PORT_NUMBER, "", null));
+		iocConnection = IocConnectionManager.getInstance().getIocConnection(hostName, dataPort);
+		
+		if (this.hostName == null || this.hostName.equals(""))  {
+			// FIXME: This is not sufficient for error handling. The command
+			// will still be runnable! Throw an exception instead.
+			CentralLogger.getInstance().fatal(this, "Wrong HostName! Host: " + hostName);
 		}
 	}
 	
 	/**
 	 * Send a command to the IOC in an independent thread from command thread pool.
-	 * @param statisticId To distinguish individual IOC connection parameter
-	 * @param command The command to be sent
-	 */
-	public SendCommandToIoc ( String statisticId, String command) {
-		
-		this.id = InterconnectionServer.getInstance().getSendCommandId();
-		this.hostName = Statistic.getInstance().getContentObject(statisticId).getHost();
-//		/*
-//    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
-//    	 * in any case: be prepared!
-//    	 */
-//    	if ( hostName.contains("|")) {
-//    		System.out.println ("SendCommandToIoc(2): hostname contains >|< ! hostname = " + hostName);
-//    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
-//		}
-		
-		/*
-		 * TODO:
-		 * the following check does NOT work if we implement Runnable!
-		 * -> the method start() is NOT available! 
-		 */
-		this.port = Statistic.getInstance().getContentObject(statisticId).getPort();
-		this.command = command;
-		this.statisticId = statisticId;
-		if ( (this.hostName == null || this.statisticId == null ) || (this.hostName.equals("") || this.statisticId.equals("") ))  {
-			CentralLogger.getInstance().fatal(this, "Wrong StatiscitcID or HostName! ID: " + this.statisticId + "Host: " + hostName);
-			// do NOT start!
-		} else {
-			/*
-			 * not available!
-			 * this.start();
-			 */
-		}
-	}
-	/**
-	 * Send a command to the IOC in an independent thread from command thread pool.
-	 * @param statisticId To distinguish individual IOC connection parameter
+	 * @param connection the IOC connection
 	 * @param command The command to be sent
 	 * @param retry TRUE if it's a retry
 	 */
-	public SendCommandToIoc ( String statisticId, String command, boolean retry) {
-		
+	public SendCommandToIoc (IocConnection connection, String command, boolean retry) {
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
-		this.hostName = Statistic.getInstance().getContentObject(statisticId).getHost();
 		this.retry = retry;
-
-		this.port = Statistic.getInstance().getContentObject(statisticId).getPort();
 		this.command = command;
-		this.statisticId = statisticId;
+
+		this.hostName = connection.getHost();
+		this.port = connection.getPort();
+		this.iocConnection = connection;
 	}
 	
 	public void run() {
-		
-		/*
-		 * 
-		 */
 		byte[] preparedMessage = null; 
 		byte[] buffer	=  new byte[1024];
 		DatagramSocket socket = null;
 		DatagramPacket packet = null;
 		String answer = null;
 		String answerMessage = null;
-        
-        preparedMessage = prepareMessage ( command, id);
-        
-        /*
-         * in case we have to send the 'get all alarms' to the IOC
-         * give us some time for the IOC to send the 'real' alarms first
-         * wait some time and send the status messages afterwards
-         */
-        
-        if ( (this.command != null) && this.command.equals(PreferenceProperties.COMMAND_SEND_ALL_ALARMS)) {
-        	
-        	if ( (Engine.getInstance().getWriteVector().size() >=0) && (100*Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS)) {
-    			statusMessageDelay = 100*Engine.getInstance().getWriteVector().size() + (int)((new GregorianCalendar().getTimeInMillis())%10000);
-    		} else {
-    			statusMessageDelay = PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS + (int)((new GregorianCalendar().getTimeInMillis())%10000);	// ~ 5 minutes + random
-    		}
+		
+		preparedMessage = prepareMessage ( command, id);
+		
+		/*
+		 * in case we have to send the 'get all alarms' to the IOC
+		 * give us some time for the IOC to send the 'real' alarms first
+		 * wait some time and send the status messages afterwards
+		 */
+		
+		if ( (this.command != null) && this.command.equals(PreferenceProperties.COMMAND_SEND_ALL_ALARMS)) {
+			
+			if ( (Engine.getInstance().getWriteVector().size() >=0) && (100*Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS)) {
+				statusMessageDelay = 100*Engine.getInstance().getWriteVector().size() + (int)((new GregorianCalendar().getTimeInMillis())%10000);
+			} else {
+				statusMessageDelay = PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS + (int)((new GregorianCalendar().getTimeInMillis())%10000);	// ~ 5 minutes + random
+			}
 
-        	CentralLogger.getInstance().info(this, "Waiting " + statusMessageDelay + " until sending " + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
-        	try {
+			CentralLogger.getInstance().info(this, "Waiting " + statusMessageDelay + " until sending " + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+			try {
 				Thread.sleep( statusMessageDelay);
 			} catch (InterruptedException e) {
-				// TODO: handle exception
 			}
-			/*
-			 * never execute this command
-			 */
-//        	return;
-        }
+		}
 
-        try
-        {
-        	socket = new DatagramSocket( );	// do NOT specify the port
-            
-            DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, InetAddress.getByName( hostName), PreferenceProperties.COMMAND_PORT_NUMBER);
-            
-            socket.send(newPacket);
-            
-            
+		try
+		{
+			socket = new DatagramSocket( );	// do NOT specify the port
+			
+			DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, InetAddress.getByName( hostName), PreferenceProperties.COMMAND_PORT_NUMBER);
+			
+			CentralLogger.getInstance().debug(this, "Sending packet to host: " + hostName + "; packet: " + new String(preparedMessage));
+			socket.send(newPacket);
+			
 			try {
 				/*
-	        	 * set timeout period to TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND seconds
-	        	 */
+				 * set timeout period to TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND seconds
+				 */
 				socket.setSoTimeout( PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND);
 
 				packet = new DatagramPacket(buffer, buffer.length);
 				socket.receive(packet);
 			} catch (InterruptedIOException ioe) {
-				// TODO: handle exception
-				// ioe.printStackTrace();
 				/*
 				 * error handling:
 				 * set answer message and use normal handling of state
@@ -214,29 +157,30 @@ public class SendCommandToIoc implements Runnable {
 				 */
 				if ( this.retry) {
 					CentralLogger.getInstance().warn(this, "Retry-Timeout (" + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND + ") mS  sending command: " + command + " to IOC: " + 
-							Statistic.getInstance().getContentObject(statisticId).getLogicalIocName());
+							iocConnection.getLogicalIocName());
 				} else {
 					CentralLogger.getInstance().info(this, "Timeout (" + PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND + ") mS  sending command: " + command + " to IOC: " + 
-							Statistic.getInstance().getContentObject(statisticId).getLogicalIocName());
+							iocConnection.getLogicalIocName());
 				}
 
 				/*
 				 * retry to send the command just ONCE!
 				 */
 				if (!this.retry) {
-					SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( this.statisticId, this.command, true);
-    				InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
-    				CentralLogger.getInstance().info(this, "Retry to send command: " + command + " to IOC: " + 
-    						Statistic.getInstance().getContentObject(statisticId).getLogicalIocName());
+					SendCommandToIoc sendCommandToIoc = new SendCommandToIoc(iocConnection, this.command, true);
+					InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+					CentralLogger.getInstance().info(this, "Retry to send command: " + command + " to IOC: " + 
+							iocConnection.getLogicalIocName());
 				}
 			}
 			
 			if ( answerMessage == null) {
 				/*
-	             * check answer
-	             * for now we only check for the string 'DONE'
-	             */
+				 * check answer
+				 * for now we only check for the string 'DONE'
+				 */
 				answerMessage = new String(packet.getData(), 0, packet.getLength());
+				CentralLogger.getInstance().debug(this, "Received answer from host: " + hostName + "; packet: " + answerMessage);
 				
 				/*
 				 * check whether this message contains the mandatory string: REPLY
@@ -249,185 +193,176 @@ public class SendCommandToIoc implements Runnable {
 				}
 			}
 			
-			
-			
-			//System.out.println ("IOC: " + hostName + " is " + answer);
-			
-            if ( TagList.getInstance().getReplyType(answer) == TagList.REPLY_TYPE_DONE) {
-            	/*
-            	 * nothing to do
-            	 */
-            	CentralLogger.getInstance().info(this, "Command accepted by IOC: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")" + " command: " + command);
-            } else if (TagList.getInstance().getReplyType(answer) == TagList.REPLY_TYPE_SELECTED) {
-            	/*
-            	 * did the select state change?
-            	 */
-            	if (!Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
-        			//remember we're selected
-        			Statistic.getInstance().getContentObject(statisticId).setSelectState(true);
-        			//create log message
-        			CentralLogger.getInstance().warn(this, "IOC SELECTED this InterConnectionServer: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
-        			/*
-            		 * OK - we are selected - so:
-            		 * just in case we previously set the channel to disconnected - we'll have to update all alarm states
-            		 * -> trigger the IOC to send all alarms!
-            		 */
-            		if ( Statistic.getInstance().getContentObject(statisticId).isDidWeSetAllChannelToDisconnect()) {
-            			/*
-            			 * yes - did set all channel to disconnect
-            			 * we'll have to get all alarm-states from the IOC
-            			 */
-            			SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-            			InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
-            			Statistic.getInstance().getContentObject(statisticId).setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
-            			Statistic.getInstance().getContentObject(statisticId).setDidWeSetAllChannelToDisconnect(false);
-        				CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
-            		}
-        			/*
-        			 * send JMS message - we are selected
-        			 */
-        			/*
-        			 * get host name of interconnection server
-        			 */
-        			String localHostName = null;
-        			try {
-        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-        				localHostName = localMachine.getHostName();
-        			}
-        			catch (java.net.UnknownHostException uhe) { 
-        			}
-        			String selectMessage = "SELECTED";
-        			if ( Statistic.getInstance().getContentObject(statisticId).wasPreviousBeaconWithinThreeBeaconTimeouts()) {
-        				selectMessage = "SELECTED - switch over";
-        			}
-        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
-        					localHostName, 														// value
-        					JmsMessage.SEVERITY_NO_ALARM, 										// severity
-        					selectMessage, 														// status
-        					hostName, 															// host
-        					null, 																// facility
-        					"virtual channel", 											// text
-        					null);	
-        			// send command to IOC - get ALL alarm states
-        			
-        			/*
-        			 * if we received beacons within the last three beacon timeout periods we 'probably' did not loose any messages
-        			 * this is a switch over from one IC-Server to another and thus
-        			 * we DO NOT have to ask for an update on all alarms! 
-        			 * 
-        			 * Else if:
-        			 * - wasPreviousBeaconWithinThreeBeaconTimeouts is FALSE  (enough is the new beacon type is used)
-        			 * - or (areWeConnectedLongerThenThreeBeaconTimeouts is FALSE) AND (isGetAllAlarmsOnSelectChange() is TRUE)
-        			 * ==> take action -> send all alarms from IOC
-        			 */
-        			if ( (! Statistic.getInstance().getContentObject(statisticId).wasPreviousBeaconWithinThreeBeaconTimeouts()) ||
-        					(! Statistic.getInstance().getContentObject(statisticId).areWeConnectedLongerThenThreeBeaconTimeouts() &&
-        							Statistic.getInstance().getContentObject(statisticId).isGetAllAlarmsOnSelectChange()) )  {
-        				SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-        				InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
-        				Statistic.getInstance().getContentObject(statisticId).setGetAllAlarmsOnSelectChange(false); // one time is enough
-        				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
-        			} else {
-        				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
-        			}
-        		}           	
-            } else if (TagList.getInstance().getReplyType(answer) == TagList.REPLY_TYPE_NOT_SELECTED) {
-            	/*
-        		 * we are not selected any more
-        		 * in case we were selected before - we'll have to create a JMS message
-        		 */
-            	
-        		if ( Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
-        			//create log message
-        			CentralLogger.getInstance().warn(this, "IOC DE-selected this InterConnectionServer: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
-        			/*
-        			 * send JMS message - we are NOT selected
-        			 */
-        			/*
-        			 * get host name of interconnection server
-        			 */
-        			String localHostName = null;
-        			try {
-        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-        				localHostName = localMachine.getHostName();
-        			}
-        			catch (java.net.UnknownHostException uhe) { 
-        			}
-        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
-        					localHostName, 														// value
-        					JmsMessage.SEVERITY_MINOR, 											// severity
-        					"NOT-SELECTED", 													// status
-        					hostName, 															// host
-        					null, 																// facility
-        					"virtual channel", 											// text
-        					null);	
-        		}
-        		//remember we're not selected any more
-    			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);
-    			
-            } else if ( (answerMessage != null) && answerMessage.equals(IOC_NOT_REACHABLE)) {
-            	/*
-        		 * we cannot reach the IOC
-        		 * in case we were selected before - we'll have to create a JMS message
-        		 */
-            	
-        		if ( Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
-        			//create log message
-        			CentralLogger.getInstance().warn(this, "IOC not reachable by this InterConnectionServer: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
-        			/*
-        			 * send JMS message - we are NOT selected
-        			 */
-        			/*
-        			 * get host name of interconnection server
-        			 */
-        			String localHostName = null;
-        			try {
-        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-        				localHostName = localMachine.getHostName();
-        			}
-        			catch (java.net.UnknownHostException uhe) { 
-        			}
-        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
-        					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
-        					localHostName, 														// value
-        					JmsMessage.SEVERITY_MINOR, 											// severity
-        					"NOT-SELECTED", 													// status
-        					hostName, 															// host
-        					null, 																// facility
-        					"virtual channel", 											// text
-        					null);	
-        		}
-        		//remember we're not selected any more
-    			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);
-            } else {
-            	CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")" + " command: " + command + " answer: " + answer);
-            }
-
-        }
-        catch ( /* UnknownHostException is a */ IOException e )
-        {
-          e.printStackTrace();
-        }
-        finally
-        {
-          if ( socket != null )
-        	  socket.close(); 
-        } 
-		
+			if ( TagList.getReplyType(answer) == TagList.REPLY_TYPE_DONE) {
+				CentralLogger.getInstance().info(this, "Command accepted by IOC: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")" + " command: " + command);
+			} else if (TagList.getReplyType(answer) == TagList.REPLY_TYPE_SELECTED) {
+				/*
+				 * did the select state change?
+				 */
+				if (!iocConnection.isSelectState()) {
+					//remember we're selected
+					iocConnection.setSelectState(true);
+					//create log message
+					CentralLogger.getInstance().warn(this, "IOC SELECTED this InterConnectionServer: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+					/*
+					 * OK - we are selected - so:
+					 * just in case we previously set the channel to disconnected - we'll have to update all alarm states
+					 * -> trigger the IOC to send all alarms!
+					 */
+					if (iocConnection.isDidWeSetAllChannelToDisconnect()) {
+						/*
+						 * yes - did set all channel to disconnect
+						 * we'll have to get all alarm-states from the IOC
+						 */
+						SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+						iocConnection.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
+						iocConnection.setDidWeSetAllChannelToDisconnect(false);
+						CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+					}
+					/*
+					 * send JMS message - we are selected
+					 */
+					/*
+					 * get host name of interconnection server
+					 */
+					String localHostName = null;
+					try {
+						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+						localHostName = localMachine.getHostName();
+					}
+					catch (java.net.UnknownHostException uhe) { 
+					}
+					String selectMessage = "SELECTED";
+					if (iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
+						selectMessage = "SELECTED - switch over";
+					}
+					JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name
+							localHostName, 														// value
+							JmsMessage.SEVERITY_NO_ALARM, 										// severity
+							selectMessage, 														// status
+							hostName, 															// host
+							null, 																// facility
+							"virtual channel");	
+					// send command to IOC - get ALL alarm states
+					
+					/*
+					 * if we received beacons within the last three beacon timeout periods we 'probably' did not loose any messages
+					 * this is a switch over from one IC-Server to another and thus
+					 * we DO NOT have to ask for an update on all alarms! 
+					 * 
+					 * Else if:
+					 * - wasPreviousBeaconWithinThreeBeaconTimeouts is FALSE  (enough is the new beacon type is used)
+					 * - or (areWeConnectedLongerThenThreeBeaconTimeouts is FALSE) AND (isGetAllAlarmsOnSelectChange() is TRUE)
+					 * ==> take action -> send all alarms from IOC
+					 */
+					if ( (!iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) ||
+							(!iocConnection.areWeConnectedLongerThenThreeBeaconTimeouts() &&
+									iocConnection.isGetAllAlarmsOnSelectChange()) )  {
+						SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+						iocConnection.setGetAllAlarmsOnSelectChange(false); // one time is enough
+						CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
+					} else {
+						CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
+					}
+				}           	
+			} else if (TagList.getReplyType(answer) == TagList.REPLY_TYPE_NOT_SELECTED) {
+				/*
+				 * we are not selected any more
+				 * in case we were selected before - we'll have to create a JMS message
+				 */
+				
+				if (iocConnection.isSelectState()) {
+					//create log message
+					CentralLogger.getInstance().warn(this, "IOC DE-selected this InterConnectionServer: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+					/*
+					 * send JMS message - we are NOT selected
+					 */
+					/*
+					 * get host name of interconnection server
+					 */
+					String localHostName = null;
+					try {
+						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+						localHostName = localMachine.getHostName();
+					}
+					catch (java.net.UnknownHostException uhe) { 
+					}
+					JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name
+							localHostName, 														// value
+							JmsMessage.SEVERITY_MINOR, 											// severity
+							"NOT-SELECTED", 													// status
+							hostName, 															// host
+							null, 																// facility
+							"virtual channel");	
+					}
+					//remember we're not selected any more
+					iocConnection.setSelectState(false);
+			} else if ( (answerMessage != null) && answerMessage.equals(IOC_NOT_REACHABLE)) {
+				/*
+				 * we cannot reach the IOC
+				 * in case we were selected before - we'll have to create a JMS message
+				 */
+				
+				if (iocConnection.isSelectState()) {
+					//create log message
+					CentralLogger.getInstance().warn(this, "IOC not reachable by this InterConnectionServer: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
+					/*
+					 * send JMS message - we are NOT selected
+					 */
+					/*
+					 * get host name of interconnection server
+					 */
+					String localHostName = null;
+					try {
+						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+						localHostName = localMachine.getHostName();
+					}
+					catch (java.net.UnknownHostException uhe) { 
+					}
+					JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name
+							localHostName, 														// value
+							JmsMessage.SEVERITY_MINOR, 											// severity
+							"NOT-SELECTED", 													// status
+							hostName, 															// host
+							null, 																// facility
+							"virtual channel");	
+				}
+				//remember we're not selected any more
+				iocConnection.setSelectState(false);
+			} else {
+				/*
+				 * FIXME: The execution also goes here if the REPLY is "ok",
+				 * which means that the server didn't have to do anything
+				 * because it already was in the requested state. In that case,
+				 * a different log message should be generated.
+				 */
+				CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + iocConnection.getLogicalIocName() + " (" + hostName+ ")" + " command: " + command + " answer: " + answer);
+			}
+		}
+		catch ( /* UnknownHostException is a */ IOException e )
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if ( socket != null )
+				socket.close(); 
+		}
 	}
 	
-	public byte[] prepareMessage ( String command, int id) {
+	private byte[] prepareMessage ( String command, int id) {
 		String message = null;
 		
 		message = "COMMAND=" + command + ";" + "ID=" + id + ";";
 		message = message + "\0";
-        
-        return message.getBytes();
+		return message.getBytes();
 	}
-
 }

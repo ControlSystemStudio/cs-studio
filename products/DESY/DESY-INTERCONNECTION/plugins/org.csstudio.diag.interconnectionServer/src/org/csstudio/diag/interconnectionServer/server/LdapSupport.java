@@ -316,7 +316,6 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 				status, 															// status
 				logicalIocName, 													// host
 				null, 																// facility
-				"alarm set by IC-Server", 											// text
-				null);																// howTo
+				"alarm set by IC-Server");																// howTo
 	}
 }

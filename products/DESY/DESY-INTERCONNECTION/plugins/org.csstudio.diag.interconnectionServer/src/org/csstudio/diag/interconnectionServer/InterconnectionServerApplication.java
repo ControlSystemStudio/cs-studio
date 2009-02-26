@@ -36,7 +36,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public final class InterconnectionServerApplication implements IApplication {
 
-	// FIXME: This is currently set from the outside by the RestartIcServer
+	// XXX: This is currently set from the outside by the RestartIcServer
 	// and StopIcServer actions. That's not good.
 	public static boolean SHUTDOWN = false;
 
@@ -44,8 +44,7 @@ public final class InterconnectionServerApplication implements IApplication {
 	 * {@inheritDoc}
 	 */
 	public Object start(IApplicationContext context) throws Exception {
-		System.out.println("start IcServer");
-		CentralLogger.getInstance().info(this, "start IcServer");
+		CentralLogger.getInstance().info(this, "Starting Interconnection Server");
 
 		runStartupServices();
 

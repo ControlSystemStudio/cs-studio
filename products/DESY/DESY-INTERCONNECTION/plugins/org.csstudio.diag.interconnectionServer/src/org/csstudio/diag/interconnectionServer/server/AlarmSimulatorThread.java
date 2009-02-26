@@ -33,7 +33,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class AlarmSimulatorThread extends Thread{
 
-	private int	scanTime = 1000;
+	private int	scanTime = 100;
 	private boolean isRunning = true;
 	private static String channelPrefix = "AlarmSimulator";
 	
@@ -113,8 +113,7 @@ public class AlarmSimulatorThread extends Thread{
 					"SIMULATED", 											// status
 					localHostName, 											// host
 					"Alarm-Simulator", 										// facility
-					"virtual channel", 										// text
-					null);	
+					"virtual channel");	
 			/*
 			 * counter10 handling
 			 */
@@ -138,8 +137,7 @@ public class AlarmSimulatorThread extends Thread{
 						"SIMULATED", 											// status
 						localHostName, 											// host
 						"Alarm-Simulator", 										// facility
-						"virtual channel", 										// text
-						null);
+						"virtual channel");
 			}
 			
 			/*
@@ -165,8 +163,7 @@ public class AlarmSimulatorThread extends Thread{
 						"SIMULATED", 											// status
 						localHostName, 											// host
 						"Alarm-Simulator", 										// facility
-						"virtual channel", 										// text
-						null);
+						"virtual channel");
 			}
 			
 			/*
@@ -192,8 +189,7 @@ public class AlarmSimulatorThread extends Thread{
 						"SIMULATED", 											// status
 						localHostName, 											// host
 						"Alarm-Simulator", 										// facility
-						"virtual channel", 										// text
-						null);
+						"virtual channel");
 			}
 			
 		}

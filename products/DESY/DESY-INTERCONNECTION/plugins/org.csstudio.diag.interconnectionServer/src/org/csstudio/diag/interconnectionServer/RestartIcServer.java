@@ -34,6 +34,7 @@ public class RestartIcServer implements IAction {
 		/*
 		 * stop IC-Server
 		 */
+		InterconnectionServerApplication.SHUTDOWN = false;
 		boolean result = InterconnectionServer.getInstance().stopIcServer();
 		try {
 			/*
@@ -41,14 +42,8 @@ public class RestartIcServer implements IAction {
 			 */
 			this.wait(5000); //wait 5 sec
 		} catch (Exception e) {
-			// TODO: handle exception
 			// nothing to do we want to stop anyhow
-		}		
-		/*
-		 * stop here - nicely
-		 */
-		// System.exit(0);
-		InterconnectionServerApplication.SHUTDOWN = false;
+		}
 		return "" + result;
 	}
 

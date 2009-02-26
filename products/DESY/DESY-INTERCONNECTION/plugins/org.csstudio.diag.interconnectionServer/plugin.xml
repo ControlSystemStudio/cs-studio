@@ -57,12 +57,26 @@
             class="org.csstudio.diag.interconnectionServer.StopIcServer"
             id="org.csstudio.diag.interconnectionServer.StopIcServer"
             name="Stop IC-Server"/>
+      <simpleAction
+            class="org.csstudio.diag.interconnectionServer.RestartIcServer"
+            id="org.csstudio.diag.interconnectionServer.RestartIcServer"
+            name="Restart IC-Server"
+            visible="true">
+      </simpleAction>
       <dynamicValuesAction
             class="org.csstudio.diag.interconnectionServer.ActivateAlarmSimulator"
             id="org.csstudio.diag.interconnectionServer.ActivateAlarmSimulator"
             loaderActionId="org.csstudio.diag.interconnectionServer.getDynParameters"
             name="ActivateAlarmSimulator"
             parameters="Simulator">
+      </dynamicValuesAction>
+      <dynamicValuesAction
+            class="org.csstudio.diag.interconnectionServer.ScheduleDowntime"
+            id="org.csstudio.diag.interconnectionServer.scheduleDowntimeAction"
+            loaderActionId="org.csstudio.diag.interconnectionServer.getDynParameters"
+            name="Schedule Downtime"
+            parameters="IOC,Duration (seconds)"
+            visible="true">
       </dynamicValuesAction>
    </extension>
    <extension

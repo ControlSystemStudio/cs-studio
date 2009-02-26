@@ -25,15 +25,10 @@ package org.csstudio.diag.interconnectionServer.server;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -43,46 +38,37 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
-import org.csstudio.platform.statistic.CollectorSupervisor;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * This version uses <code>DatagramSockets</code> instead of Sockets.
- * @author  Markus Moeller 
- * @version 1.0.1
- *
+ * Receives messages from IOCs and creates {@link ClientRequest}s to handle
+ * them. Also sets up the JMS connections and makes them available for other
+ * classes.
+ * 
+ * @author Matthias Clausen, Markus Moeller, Joerg Rathlev
  */
-
 public class InterconnectionServer
 {
     private static InterconnectionServer		thisServer = null;
     private DatagramSocket              serverSocket    = null; 
-    private Session                     alarmSession, logSession, putLogSession	        	= null;
-    private Connection                  alarmConnection, logConnection, putLogConnection    = null;
-	private Destination                 putLogDestination = null;
+    private Connection                  jmsConnection = null;
 	private int							sendMessageErrorCount	= 0;
-	public int 							successfullJmsSentCountdown = PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN;
 	private	volatile boolean         	quit        = false;
 	private int messageCounter = 0;
 	private String						localHostName = "defaultLocalHost";
 	private BeaconWatchdog				beaconWatchdog = null;
+	private int numberOfJmsServerFailover = -1;
     
     public final String NAME    = "IcServer";
-    public final String VERSION = " 1.1.2";
-    public final String BUILD   = " - BUILD 26.06.2008";
     
-    //set in constructor from xml preferences
     private int sendCommandId;			// PreferenceProperties.SENT_START_ID
     
     // Thread Executor
@@ -93,193 +79,49 @@ public class InterconnectionServer
     private Collector	clientRequestTheadCollector = null;
     private Collector	numberOfMessagesCollector = null;
     private Collector	numberOfIocFailoverCollector = null;
-	
+    
     /**
-     * Indicates while-loop is running
+     * This latch is counted down when the main method of this server exits.
+     * This allows another thread to await the termination of the server.
      */
-    private volatile boolean running;
-    
-    
-    synchronized public boolean setupConnections ( )
-    {
-    	Hashtable<String, String>   properties      = null;
-    	Context                     alarmContext, logContext, putLogContext      	   	= null;
-    	ConnectionFactory           alarmFactory, logFactory, putLogFactory        		= null;
-        int							errorContNamingException = 0;
-        ActiveMQConnectionFactory connectionFactory = null;
-        boolean activeMqIsActive = false;
-        
-        //
-        // remember how often we came here
-        //
-        Statistic.getInstance().incrementNumberOfJmsServerFailover();
-        
-        IPreferencesService prefs = Platform.getPreferencesService();
-	    String jmsContextFactory = prefs.getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.JMS_CONTEXT_FACTORY, "", null);  
-	    String primaryJmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.PRIMARY_JMS_URL, "", null);
-	    String connectionClientId = prefs.getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.CONNECTION_CLIENT_ID, "", null);  
-        properties = new Hashtable<String, String>();
-        
-        properties.put(Context.INITIAL_CONTEXT_FACTORY, jmsContextFactory);
-    	if ( (jmsContextFactory) != null && jmsContextFactory.toUpperCase().equals("ACTIVEMQ")) {
-    		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
-    		activeMqIsActive = true;
-    		CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
-//        		System.out.println( "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
-    	} else {
-    		properties.put(Context.PROVIDER_URL, primaryJmsUrl);
-    		CentralLogger.getInstance().info(this, "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
-//        		System.out.println( "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
-    	}
-
-        //
-        // setup ALARM connection
-        //
-        try
-        {
-        	// Create a Connection
-        	if ( activeMqIsActive) {
-        		/*
-        		 * using ActiveMQ
-        		 */
-                this.alarmConnection = connectionFactory.createConnection();
-                this.alarmConnection.setClientID(connectionClientId + "Alarm-" + getLocalHostName());
-                this.alarmConnection.start();
-        	} else {
-        		/*
-        		 * using standard JMS
-        		 */
-        		alarmContext     = new InitialContext(properties);            
-                alarmFactory     = (ConnectionFactory)alarmContext.lookup("ConnectionFactory");
-                this.alarmConnection  = alarmFactory.createConnection();
-                this.alarmConnection.start();
-        	}
-        	
-        	setAlarmSession(alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE)); // TODO: CLIENT_ACKNOWLEDGE??
-            
-        }
-        catch(NamingException ne)
-        {
-        	CentralLogger.getInstance().warn( this, NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
-            //System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
-            errorContNamingException++;
-        }
-        
-        catch(JMSException jmse)
-        {
-        	CentralLogger.getInstance().warn( this, NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
-            //System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
-        }
-        
-        //
-        // setup LOG connection
-        //
-        try
-        {
-        	// Create a Connection
-        	if ( activeMqIsActive) {
-        		/*
-        		 * using ActiveMQ
-        		 */
-        		this.logConnection = connectionFactory.createConnection();
-        		this.logConnection.setClientID(connectionClientId + "Log-" + getLocalHostName());
-        		this.logConnection.start();
-        	} else {
-        		/*
-        		 * using standard JMS
-        		 */
-        		logContext     = new InitialContext(properties);            
-                logFactory     = (ConnectionFactory)logContext.lookup("ConnectionFactory");
-                this.logConnection  = logFactory.createConnection();
-                this.logConnection.start();
-        	}
-        	setLogSession(logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE)); // TODO: CLIENT_ACKNOWLEDGE??
-
-        }
-        
-        catch(NamingException ne)
-        {
-        	CentralLogger.getInstance().warn( this, NAME + " create JMS " + PreferenceProperties.JMS_LOG_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
-        	// System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_LOG_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
-            errorContNamingException++;
-        }
-
-        catch(JMSException jmse)
-        {
-            System.out.println(NAME + " create JMS " + PreferenceProperties.JMS_LOG_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
-        }
-        
-        //
-        // setup PUT-LOG connection
-        //
-        try
-        {
-        	// Create a Connection
-        	if ( activeMqIsActive) {
-        		/*
-        		 * using ActiveMQ
-        		 */
-        		this.putLogConnection = connectionFactory.createConnection();
-        		this.putLogConnection.setClientID(connectionClientId + "PutLog-" + getLocalHostName());
-        		this.putLogConnection.start();
-        	} else {
-        		/*
-        		 * using standard JMS
-        		 */
-        		putLogContext     = new InitialContext(properties);            
-                putLogFactory     = (ConnectionFactory)putLogContext.lookup("ConnectionFactory");
-                this.putLogConnection  = putLogFactory.createConnection();
-                this.putLogConnection.start();
-        	}
-        	setPutLogSession(putLogConnection.createSession(false, Session.AUTO_ACKNOWLEDGE)); // TODO: CLIENT_ACKNOWLEDGE??
-
-        }
-
-        catch(NamingException ne)
-        {
-            System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_PUT_LOG_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
-            errorContNamingException++;
-        }
-        catch(JMSException jmse)
-        {
-            System.out.println(NAME + " create JMS " + PreferenceProperties.JMS_PUT_LOG_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
-        }
-        
-        //
-        // return succes
-        //
-        if ( errorContNamingException == 0) {
-        	return true;
-        } else {
-        	return false;
-        }
+    private final CountDownLatch exitSignal = new CountDownLatch(1);
+	
+	/**
+	 * Creates the JMS connections.
+	 * 
+	 * @return <code>true</code> if successful, <code>false</code> otherwise.
+	 * @throws JMSException
+	 *             if an error occurs.
+	 */
+	synchronized private void createJmsConnections() throws JMSException
+	{
+		// remember how often we came here
+		numberOfJmsServerFailover++;
+		
+		IPreferencesService prefs = Platform.getPreferencesService();
+		String jmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
+				PreferenceConstants.PRIMARY_JMS_URL, "", null);
+		
+		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(jmsUrl);
+		CentralLogger.getInstance().info(this, "Connecting to ActiveMQ server: " + jmsUrl);
+			
+		jmsConnection = connectionFactory.createConnection();
+		jmsConnection.start();
 	}
     
-    public void cleanupJms () {
+	/**
+	 * Closes the JMS connections.
+	 */
+	private void closeJmsConnections () {
 		try {
-			/*
-			 * disconnect from JMS
-			 */
-			this.alarmSession.close();
-			this.alarmConnection.close();
-			
-			this.logSession.close();
-			this.logConnection.close();
-			
-			this.putLogSession.close();
-			this.putLogConnection.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			// TODO: handle exception
-		}    	
-    	
-    }
+			jmsConnection.close();
+		} catch (JMSException e) {
+			CentralLogger.getInstance().error(this, "Error while closing JMS connection", e);
+		}
+	}
     
     private void disconnectFromIocs() {
-    	String[] listOfNodes = Statistic.getInstance().getNodeNameArray();
+    	String[] listOfNodes = IocConnectionManager.getInstance().getNodeNameArray();
     	
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
@@ -293,38 +135,66 @@ public class InterconnectionServer
     		getCommandExecutor().execute(sendCommandToIoc);
     	}
     }
-    
-    public boolean stopIcServer () {
-    	boolean success = true;
-    	CentralLogger.getInstance().warn(this, "Atempt to stop InterconnectionServer");
-    	/*
-    	 * exit main loop
-    	 */
-    	// FIXME: this doesn't work if the main loop does not receive any
-    	// datagrams because it blocks on the socket, so the main loop never
-    	// reaches the point where it will notice that the quit flag is set.
-    	setQuit(true);
-    	
-    	while(this.running) {
-//    		Thread.yield();
-//    		try {
-//				Thread.sleep( 1000);	// wait until 
-//			} catch (InterruptedException e) {
-//				// TODO: handle exception
-//			}
-    	}
-    	
-    	return success;
+
+	/**
+	 * Returns whether all IOCs are currently in the state "not selected".
+	 * 
+	 * @return <code>true</code> if all IOCs are in state not selected,
+	 *         <code>false</code> if at least one IOC is selected.
+	 */
+    private boolean allIocsNotSelected() {
+    	for (IocConnection conn : IocConnectionManager.getInstance().connectionList.values()) {
+			if (conn.isSelectState()) {
+				return false;
+			}
+		}
+    	return true;
     }
     
-    public void restartJms () {
+    public boolean stopIcServer () {
+    	CentralLogger.getInstance().info(this, "Stopping IC-Server");
+    	
     	/*
-    	 * 
+    	 * Disconnect from all IOCs.
     	 */
-    	CentralLogger.getInstance().warn(this, "InterconnectionServer: Restart JMS connections! ");
     	disconnectFromIocs();
-    	cleanupJms();
-    	setupConnections();
+
+    	/*
+    	 *  Wait until all IOCs are in state "not selected" (max 30 seconds).
+    	 *  
+    	 *  XXX: This does not prevent the IOCs from re-selecting this server
+    	 *  while it is in the process of shutting down.
+    	 */
+    	long waitingSince = System.currentTimeMillis();
+    	while (!allIocsNotSelected()
+    			&& (System.currentTimeMillis() - waitingSince) < 30000) {
+    		try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// ignore
+			}
+    	}
+    	
+    	/*
+    	 * Exit the main loop. This is done by setting the 'quit' flag to true
+    	 * and by closing the server socket so that, if the socket is currently
+    	 * blocked in a receive call, it stops immediately instead of blocking
+    	 * until the next packet arrives. (Note: this is not an "unclean" way
+    	 * of closing the socket, this is a documented way of doing it.)
+    	 */
+    	quit = true;
+    	serverSocket.close();
+    	
+    	/*
+    	 *  Wait until the executMe() method has exited.
+    	 */
+    	try {
+			exitSignal.await();
+		} catch (InterruptedException e) {
+			// ignore
+		}
+		
+		return true;
     }
     
     private InterconnectionServer() {
@@ -332,98 +202,40 @@ public class InterconnectionServer
 	    sendCommandId = prefService.getInt(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.SENT_START_ID, 0, null);  
 
+	    this.localHostName = "localHost-ND";
+		try {
+			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+			this.localHostName = localMachine.getHostName();
+		}
+		catch (java.net.UnknownHostException uhe) { 
+		}
     }
     
-    public static InterconnectionServer getInstance() {
-		//
-		// get an instance of our sigleton
-		//
+	// TODO: this doesn't really have to be a singleton. The application
+	// should simply create only a single instance, but it would improve
+	// testability if this were simply a normal class.
+    public static synchronized InterconnectionServer getInstance() {
 		if ( thisServer == null) {
-			synchronized (InterconnectionServer.class) {
-				if (thisServer == null) {
-					thisServer = new InterconnectionServer();
-				}
-			}
+			thisServer = new InterconnectionServer();
 		}
 		return thisServer;
 	}
     
-    public int executeMe()
+    public void executeMe()
     {
         DatagramPacket  packet      = null;
         ClientRequest   newClient   = null;
-        int             result      = 0;
         byte 			buffer[]	= null;
-        boolean receiveEnabled = true;
 
-        /*
-         * if not started from 'getInstance' ...
-         */
+        setupStatisticCollectors();
         
-        if ( thisServer == null) {
-			synchronized (InterconnectionServer.class) {
-				if (thisServer == null) {
-					thisServer = this;
-				}
-			}
-		}
-        
-        /*
-		 * get host name of interconnection server
-		 */
-		setLocalHostName("localHost-ND");
-		try {
-			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-			setLocalHostName( localMachine.getHostName());
-		}
-		catch (java.net.UnknownHostException uhe) { 
-		}
-        
-        /*
-         * set up collectors (statistic)
-         */
-        jmsMessageWriteCollector = new Collector();
-        jmsMessageWriteCollector.setApplication("IC-Server-" + getLocalHostName());
-        jmsMessageWriteCollector.setDescriptor("Time to write JMS message");
-        jmsMessageWriteCollector.setContinuousPrint(false);
-        jmsMessageWriteCollector.setContinuousPrintCount(1000.0);
-        jmsMessageWriteCollector.getAlarmHandler().setDeadband(5.0);
-        jmsMessageWriteCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);	// 500ms
-        jmsMessageWriteCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
-        /*
-         * set up collectors (statistic)
-         */
-        clientRequestTheadCollector = new Collector();
-        clientRequestTheadCollector.setApplication("IC-Server-" + getLocalHostName());
-        clientRequestTheadCollector.setDescriptor("Number of Client request Threads");
-        clientRequestTheadCollector.setContinuousPrint(false);
-        clientRequestTheadCollector.setContinuousPrintCount(1000.0);
-        clientRequestTheadCollector.getAlarmHandler().setDeadband(5.0);
-        clientRequestTheadCollector.getAlarmHandler().setHighAbsoluteLimit( PreferenceProperties.CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT);	// 500ms
-        clientRequestTheadCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
-        clientRequestTheadCollector.setHardLimit( PreferenceProperties.MAX_NUMBER_OF_CLIENT_THREADS);
-        /*
-         * set up collectors (statistic)
-         */
-        numberOfMessagesCollector = new Collector();
-        numberOfMessagesCollector.setApplication("IC-Server-" + getLocalHostName());
-        numberOfMessagesCollector.setDescriptor("Number of Messages received");
-        /*
-         * set up collectors (statistic)
-         */
-        numberOfIocFailoverCollector = new Collector();
-        numberOfIocFailoverCollector.setApplication("IC-Server-" + getLocalHostName());
-        numberOfIocFailoverCollector.setDescriptor("Number of IOC failover");
-        
-        if ( ! setupConnections()){
-        	//
-        	// try alternate JMS server (only once here...)
-        	//
-        	setupConnections();
+        try {
+        	createJmsConnections();
+        } catch (JMSException e) {
+        	CentralLogger.getInstance().fatal(this, "Could not connect to JMS servers", e);
+        	return;
         }
         
-//        System.out.println("\n" + NAME + VERSION + BUILD + "\nInternal Name: " + instanceName);
-
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String dataPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.DATA_PORT_NUMBER, "", null);  
@@ -437,6 +249,7 @@ public class InterconnectionServer
 	    		PreferenceConstants.BEACON_TIMEOUT, "", null); 
 	    int beaconTimeoutI = Integer.parseInt(beaconTimeout);
 	    this.beaconWatchdog = new BeaconWatchdog(beaconTimeoutI);  // mS
+	    
 		/*
 		 * do we want to write out message indicators?
 		 */
@@ -454,8 +267,8 @@ public class InterconnectionServer
 	    		PreferenceConstants.NUMBER_OF_READ_THREADS, "", null); 
 	    int numberofReadThreads = Integer.parseInt(numberofReadThreadsS);
 	    
-	    this.setExecutor( Executors.newFixedThreadPool(numberofReadThreads));
-	    CentralLogger.getInstance().info( this, "IC-Server create Read Thread Pool with " + numberofReadThreads + " threads"); 
+	    this.executor = Executors.newFixedThreadPool(numberofReadThreads);
+	    CentralLogger.getInstance().info(this, "IC-Server create Read Thread Pool with " + numberofReadThreads + " threads"); 
 	    
 		//
 		// create command thread pool using the Executor Service
@@ -464,28 +277,23 @@ public class InterconnectionServer
 	    		PreferenceConstants.NUMBER_OF_COMMAND_THREADS, "", null); 
 	    int numberofCommandThreads = Integer.parseInt(numberofCommandThreadsS);
 	    
-	    this.setCommandExecutor( Executors.newFixedThreadPool(numberofCommandThreads));
-	    CentralLogger.getInstance().info( this, "IC-Server create Command Thread Pool with " + numberofCommandThreads + " threads"); 
+	    this.commandExecutor = Executors.newFixedThreadPool(numberofCommandThreads);
+	    CentralLogger.getInstance().info(this, "IC-Server create Command Thread Pool with " + numberofCommandThreads + " threads"); 
 		
 		
         try
         {
             serverSocket = new DatagramSocket( dataPortNum );
-            //TODO: create message - successfully up and running
         }
         catch(IOException ioe)
         {
-        	System.out.println(NAME + VERSION + " ** ERROR ** : Socket konnte nicht initialisiert werden. Port: " + dataPortNum);
-        	System.out.println("\n" + NAME + VERSION + " *** EXCEPTION *** : " + ioe.getMessage());
+        	System.out.println(NAME + " ** ERROR ** : Socket konnte nicht initialisiert werden. Port: " + dataPortNum);
+        	System.out.println("\n" + NAME + " *** EXCEPTION *** : " + ioe.getMessage());
             
-            return -1;
+            return;
         }
     
-        // TODO: Abbruchbedingung einfügen
-        //       z.B. Receiver für Queue COMMAND einfügen
-        
-        running = true;
-        
+        CentralLogger.getInstance().info(this, "IC-Server starting to receive messages.");
         while(!isQuit())
         {
         	/*
@@ -496,149 +304,148 @@ public class InterconnectionServer
         		System.out.println ("100 messages complete");
         	}
         	
-        	/*
-        	 * check for the number of existing threads
-        	 * do not create new threads
-        	 * - send disconnect message to all currently connected IOCs (once)
-        	 * - wait one second
-        	 * - try again
-        	 */
-        	if ( clientRequestTheadCollector.getActualValue().getValue() > clientRequestTheadCollector.getHardLimit()) {
-        		
-        		if ( receiveEnabled) {
-        			CentralLogger.getInstance().warn( this, "Maximum number of client threads (" + clientRequestTheadCollector.getHardLimit() + ") reached - STOP creating new threads");
-        			/*
-        			 * send command to IOC's: I want to disconnect!
-        			 */
-        			disconnectFromIocs();
-            		/*
-            		 * print out overview of current statistic information
-            		 */
-            		System.out.println(CollectorSupervisor.getInstance().getCollectionAsString());
-            		receiveEnabled = false;
-        		}
-        		/*
-        		 * wait - otherwise we run in an undefinite loop
-        		 */
-            	try {
-               		Thread.sleep(1000);
-               	}
-               	catch (InterruptedException  e) {
-               		e.printStackTrace();
-               	}
-        	} else {
-        		try
-                {
-        			/*
-        			 * always a 'fresh' buffer!
-        			 * buffer can be overwritten if a new message arrives before we've copied the contents!!!
-        			 */
-        			buffer	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
-                    packet = new DatagramPacket( buffer, buffer.length);
+    		try
+            {
+    			/*
+    			 * always a 'fresh' buffer!
+    			 * buffer can be overwritten if a new message arrives before we've copied the contents!!!
+    			 */
+    			buffer	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
+                packet = new DatagramPacket( buffer, buffer.length);
 
-                    serverSocket.receive(packet);
-                    
-                    /*
-                     * unpack the packet here!
-                     * if we do this way down in the thread - it might be overwritten!!
-                     */
-                    
-                    String packetData = new String(packet.getData(), 0, packet.getLength());
-                    
-                    /* 
-                     * 
-                    newClient = new ClientRequest( this, serverSocket, packet, alarmSession, alarmDestination, alarmSender, 
-                    		logSession, logDestination, logSender, putLogSession, putLogDestination, putLogSender);
-                    		*/
-                    newClient = new ClientRequest( this, packetData, serverSocket, packet, alarmConnection, logConnection, putLogConnection);
-                    
-                    /*
-                     * execute runnable by thread pool executor
-                     */
-                    this.getExecutor().execute(newClient);
-                    
-                    /*
-                     * now watchdog within thread pool
-                     */
-                    // new ClientWatchdog ( newClient, PreferenceProperties.CLIENT_REQUEST_THREAD_TIMEOUT);
-                    
-                    // increment statistics
-                    numberOfMessagesCollector.incrementCount();
-                }
-                catch(IOException ioe)
-                {
-                    System.out.println("\n" + NAME + VERSION + " *** IOException *** : " + ioe.getMessage());         
-                }
-        		receiveEnabled = true;
-        	}
+                serverSocket.receive(packet);
+                
+                /*
+                 * unpack the packet here!
+                 * if we do this way down in the thread - it might be overwritten!!
+                 */
+                
+                String packetData = new String(packet.getData(), 0, packet.getLength());
+                
+                CentralLogger.getInstance().debug(this, "Received packet: " + packetData);
+                
+                newClient = new ClientRequest( this, packetData, serverSocket,
+                		packet.getAddress(), packet.getPort(), packet.getLength());
+                
+                /*
+                 * execute runnable by thread pool executor
+                 */
+                this.executor.execute(newClient);
+                
+                // increment statistics
+                numberOfMessagesCollector.incrementCount();
+            }
+            catch(IOException ioe) {
+            	/*
+            	 * If the quit flag is set, the exception occurs because the
+            	 * socket was closed. That's ok. Otherwise, it is an actual
+            	 * error and must be handled.
+            	 */
+            	if (!isQuit()) {
+            		// TODO: is this error handling good enough?
+            		CentralLogger.getInstance().error(this, "IO Error in main loop", ioe);
+            	}
+            }
         }
-        
-        CentralLogger.getInstance().warn( this, "InterconnectionServer: leaving main loop - to STOP");
+        CentralLogger.getInstance().debug( this, "InterconnectionServer: leaving main loop - to STOP");
 
-        CentralLogger.getInstance().warn( this, "InterconnectionServer: waiting for client threads to stop");
-        /**
-         * wait until all client threads are stopped
-         * all? - well leave a mismatch of 10
-         */
-        while( getClientRequestTheadCollector().getActualValue().getValue() > 10) Thread.yield();
+		if (!serverSocket.isClosed()) {
+			serverSocket.close();
+		}
 
-        CentralLogger.getInstance().warn( this, "InterconnectionServer: all but " + getClientRequestTheadCollector().getActualValue().getValue() + "  clients threads stopped, closing connections...");
-        
-    	disconnectFromIocs();
-    	cleanupJms();
-//    	TODO
+        // shutdown beacon watchdog
+    	this.beaconWatchdog.setRunning(false);
+
+    	closeJmsConnections();
     	Engine.getInstance().setRunning( false); // - gracefully stop LDAP engine
     	
-    	// shutdown thread pool
-    	this.getExecutor().shutdownNow();
-    	this.getCommandExecutor().shutdownNow();
+    	// shutdown thread pools
+    	executor.shutdown();
+    	commandExecutor.shutdown();
+
+    	boolean cleanShutdown;
+    	try {
+			cleanShutdown = executor.awaitTermination(30, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			cleanShutdown = false;
+		}
+		if (!cleanShutdown) {
+			CentralLogger.getInstance().warn(this, "Not all ClientRequests were finished!");
+		}
+		
+    	try {
+			cleanShutdown = commandExecutor.awaitTermination(30, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			cleanShutdown = false;
+		}
+		if (!cleanShutdown) {
+			CentralLogger.getInstance().warn(this, "Not all Commands were finished!");
+		}
     	
-    	// shutdown beacon watchdog
-    	this.beaconWatchdog.setRunning(false);
-    	
-        serverSocket.close();
+    	CentralLogger.getInstance().info(this, "InterconnectionServer: finally Stopped");
         
-        /*
-    	 * send message
-    	 * inform IOC's to disconnect
-    	 * stop JMS connections
-    	 */
-        
-    	CentralLogger.getInstance().warn(this, "InterconnectionServer: finally Stopped");
-        
-        this.running = false;
-        return result;
+        exitSignal.countDown();
+        return;
     }
+
+	/**
+	 * 
+	 */
+	private void setupStatisticCollectors() {
+		jmsMessageWriteCollector = new Collector();
+        jmsMessageWriteCollector.setApplication("IC-Server-" + getLocalHostName());
+        jmsMessageWriteCollector.setDescriptor("Time to write JMS message");
+        jmsMessageWriteCollector.setContinuousPrint(false);
+        jmsMessageWriteCollector.setContinuousPrintCount(1000.0);
+        jmsMessageWriteCollector.getAlarmHandler().setDeadband(5.0);
+        jmsMessageWriteCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);	// 500ms
+        jmsMessageWriteCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+
+        /*
+         * TODO: the clientRequestTheadCollector was used to limit the number of
+         * concurrently running client threads. The server now uses a fixed size
+         * thread pool, so this is not really useful anymore. Remove?
+         */
+        clientRequestTheadCollector = new Collector();
+        clientRequestTheadCollector.setApplication("IC-Server-" + getLocalHostName());
+        clientRequestTheadCollector.setDescriptor("Number of Client request Threads");
+        clientRequestTheadCollector.setContinuousPrint(false);
+        clientRequestTheadCollector.setContinuousPrintCount(1000.0);
+        clientRequestTheadCollector.getAlarmHandler().setDeadband(5.0);
+        clientRequestTheadCollector.getAlarmHandler().setHighAbsoluteLimit( PreferenceProperties.CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT);	// 500ms
+        clientRequestTheadCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+        clientRequestTheadCollector.setHardLimit( PreferenceProperties.MAX_NUMBER_OF_CLIENT_THREADS);
+
+        numberOfMessagesCollector = new Collector();
+        numberOfMessagesCollector.setApplication("IC-Server-" + getLocalHostName());
+        numberOfMessagesCollector.setDescriptor("Number of Messages received");
+
+        numberOfIocFailoverCollector = new Collector();
+        numberOfIocFailoverCollector.setApplication("IC-Server-" + getLocalHostName());
+        numberOfIocFailoverCollector.setDescriptor("Number of IOC failover");
+	}
     
+    // TODO: not only checks but also reconnects! Should be renamed.
     public void checkSendMessageErrorCount () {
-    	//
-    	// if sendMessageErrorCount 
-    	//
     	this.sendMessageErrorCount++;
-    	if ( this.sendMessageErrorCount > 
-    	Statistic.getInstance().getNumberOfJmsServerFailover()*PreferenceProperties.ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER) {
-    		//
-    		// try another JMS server
-    		//
-    		// wait for ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER
-    		//
-    		// increase waiting time proportional to the number of failovers ( getNumberOfJmsServerFailover())
-    		//
-    		
-    		/*
-    		 * cleanup JMS connections
-    		 */
-    		cleanupJms();
-    		/*
-    		 * set up new connection
-    		 */
-    		setupConnections();
-    		
+		// wait for ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER
+		// increase waiting time proportional to the number of failovers (getNumberOfJmsServerFailover())
+    	if (this.sendMessageErrorCount > 
+    			numberOfJmsServerFailover * PreferenceProperties.ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER) {
+    		closeJmsConnections();
+    		try {
+				createJmsConnections();
+			} catch (JMSException e) {
+				/*
+				 * XXX: This error should be handled better. (It was not handled
+				 * at all in the old version.)
+				 */
+				CentralLogger.getInstance().error(this, "Failed to open JMS connection", e);
+			}
     	}
     }
     
-    
-    public boolean sendLogMessage ( MapMessage message) {
+    public boolean sendLogMessage(MapMessage message, Session session) {
     	boolean status = true;
     	
         IPreferencesService prefs = Platform.getPreferencesService();
@@ -647,15 +454,13 @@ public class InterconnectionServer
 	    int jmsTimeToLiveLogsInt = Integer.parseInt(jmsTimeToLiveLogs);
     	
     	try{
-    		Destination logDestination = getLogSession().createTopic( PreferenceProperties.JMS_LOG_CONTEXT);
+    		Destination logDestination = session.createTopic( PreferenceProperties.JMS_LOG_CONTEXT);
 
             // Create a MessageProducer from the Session to the Topic or Queue
-        	MessageProducer logSender = getLogSession().createProducer( logDestination);
+        	MessageProducer logSender = session.createProducer( logDestination);
         	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
         	logSender.setTimeToLive( jmsTimeToLiveLogsInt);
 
-	        //message = logSession.createMapMessage();
-	        //message = jmsLogMessageNewClientConnected( statisticId);
         	logSender.send(message);
         	logSender.close();
 			return status;
@@ -667,267 +472,43 @@ public class InterconnectionServer
 	        return status;
 	    }
 	}
-    
-    public MapMessage prepareTypedJmsMessage ( MapMessage message, Vector<TagValuePairs> tagValuePairs, TagValuePairs type) {
-		// first the type information
-		try {
-			TagValuePairs localPair;
-			message.setString(type.getTag(), type.getValue());
-			for (Enumeration el=tagValuePairs.elements(); el.hasMoreElements(); ) {
-				localPair = (TagValuePairs)el.nextElement();
-				message.setString(localPair.getTag(), localPair.getValue());
-			}
-		}
-	    catch(JMSException jmse)
-	    {
-	    	// TODO: make it a log message
-	        System.out.println("ClientRequest : prepareJmsMessage : *** EXCEPTION *** : " + jmse.getMessage());
-	    }  
-		return message;
-	}
 	
-	public MapMessage prepareJmsMessage ( MapMessage message, Vector<TagValuePairs> tagValuePairs) {
-		// first the type information
-		try {
-			TagValuePairs localPair;
-			for (Enumeration el=tagValuePairs.elements(); el.hasMoreElements(); ) {
-				localPair = (TagValuePairs)el.nextElement();
-				message.setString(localPair.getTag(), localPair.getValue());
-			}
-		}
-	    catch(JMSException jmse)
-	    {
-	    	// TODO: make it a log message
-	        System.out.println("ClientRequest : prepareJmsMessage : *** EXCEPTION *** : " + jmse.getMessage());
-	    }  
-		return message;
-	}
-	
-	public Vector jmsLogMessageNewClientConnected ( String statisticId) {
-		// first the type information
-		Vector <TagValuePairs> result = new Vector<TagValuePairs>();
-		
-		TagValuePairs newTagValuePair =  new TagValuePairs ( "TYPE", "SysLog");
-		result.add(newTagValuePair);
-		Calendar gregorsDate = new GregorianCalendar();
-		Date d = gregorsDate.getTime();
-		SimpleDateFormat df = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT );			
-		newTagValuePair =  new TagValuePairs ( "EVENTTIME", df.format(d));
-		result.add(newTagValuePair);
-		newTagValuePair =  new TagValuePairs ( "TEXT", "new log client connected");
-		result.add(newTagValuePair);
-		newTagValuePair =  new TagValuePairs ( "HOST", statisticId);
-		result.add(newTagValuePair);
-		newTagValuePair =  new TagValuePairs ( "STATUS", "on");
-		result.add(newTagValuePair);
-		newTagValuePair =  new TagValuePairs ( "SEVERITY", "NO_ALARM");
-		result.add(newTagValuePair);
-		//TODO: add ioc-NAME
-		//newTagValuePair =  new TagValuePairs ( "NAME", getIocNameFromIpAddress(statisticId));
-		//result.add(newTagValuePair);
-		
-		return result;
-	}
-	
-	public Vector jmsLogMessageLostClientConnection ( String statisticId) {
-		// first the type information
-		Vector <TagValuePairs >result = null;
-		
-		TagValuePairs newTagValuePair =  new TagValuePairs ( "TYPE", "SysLog");
-		result.add(newTagValuePair);
-		Calendar gregorsDate = new GregorianCalendar();
-		Date d = gregorsDate.getTime();
-		SimpleDateFormat df = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT );			
-		newTagValuePair =  new TagValuePairs ( "EVENTTIME", df.format(d));
-		result.add(newTagValuePair);
-		newTagValuePair =  new TagValuePairs ( "TEXT", "lost client connection");
-		result.add(newTagValuePair);
-		newTagValuePair =  new TagValuePairs ( "HOST", statisticId);
-		result.add(newTagValuePair);
-		newTagValuePair =  new TagValuePairs ( "STATUS", "off");
-		result.add(newTagValuePair);
-		
-		return result;
-	}
-	
-	
-	
-	public class TagValuePairs {
-		//
-		// define properties
-		//
-		String tag	= null;
-		String value = null;
-		
-		public TagValuePairs () {
-			
-		}
-		
-		public TagValuePairs ( String tag, String value) {
-			this.tag = tag;
-			this.value = value;
-		}
-		
-		public void setTag ( String tag) {
-			this.tag = tag;
-		}
-		public String getTag () {
-			return this.tag;
-		}
-		public void setValue ( String value) {
-			this.value = value;
-		}
-		public String getValue () {
-			return this.value;
-		}
-	}
-
-
-
 	public Collector getJmsMessageWriteCollector() {
 		return jmsMessageWriteCollector;
-	}
-
-	public void setJmsMessageWriteCollector(Collector jmsMessageWriteCollector) {
-		this.jmsMessageWriteCollector = jmsMessageWriteCollector;
 	}
 
 	public Collector getClientRequestTheadCollector() {
 		return clientRequestTheadCollector;
 	}
 
-	public void setClientRequestTheadCollector(Collector clientRequestTheadCollector) {
-		this.clientRequestTheadCollector = clientRequestTheadCollector;
-	}
-
-	public int getSendCommandId() {
+	public synchronized int getSendCommandId() {
 		return sendCommandId++;
-	}
-
-	public void setSendCommandId(int sendCommandId) {
-		this.sendCommandId = sendCommandId;
-	}
-
-	public int getSuccessfullJmsSentCountdown() {
-		return successfullJmsSentCountdown;
-	}
-
-	synchronized void setSuccessfullJmsSentCountdown(int successfullJmsSentCountdown) {
-		this.successfullJmsSentCountdown = successfullJmsSentCountdown;
-	}
-	
-	public void setSuccessfullJmsSentCountdown(boolean success) {
-		/*
-		 * countdown is set to i.e. 50 (PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN)
-		 * decrement for every unsuccessful transaction
-		 * increment back to 50 if successfull
-		 * 
-		 * if 0 is reached: restart JMS connections
-		 */
-		int countdown = 0;
-		if ( success) {
-			setSuccessfullJmsSentCountdown( PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN );
-		} else {
-			countdown = getSuccessfullJmsSentCountdown();
-			if ( countdown-- < 0) {
-				restartJms();
-				setSuccessfullJmsSentCountdown( PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN );
-			} else {
-				setSuccessfullJmsSentCountdown(countdown); 
-			}
-		}
 	}
 
 	public boolean isQuit() {
 		return quit;
 	}
 
-	public void setQuit(boolean quit) {
-		this.quit = quit;
-	}
-
-	public Connection getAlarmConnection() {
-		return this.alarmConnection;
-	}
-
-	public Connection getLogConnection() {
-		return this.logConnection;
-	}
-
-	public Connection getPutLogConnection() {
-		return this.putLogConnection;
-	}
-
-	public Collector getNumberOfMessagesCollector() {
-		return numberOfMessagesCollector;
-	}
-
-	public void setNumberOfMessagesCollector(Collector numberOfMessagesCollector) {
-		this.numberOfMessagesCollector = numberOfMessagesCollector;
-	}
-
 	public Collector getNumberOfIocFailoverCollector() {
 		return numberOfIocFailoverCollector;
 	}
 
-	public void setNumberOfIocFailoverCollector(
-			Collector numberOfIocFailoverCollector) {
-		this.numberOfIocFailoverCollector = numberOfIocFailoverCollector;
-	}
-
-	public ExecutorService getExecutor() {
-		return executor;
-	}
-
-	public void setExecutor(ExecutorService executor) {
-		this.executor = executor;
-	}
-
-	public Destination getPutLogDestination() {
-		return putLogDestination;
-	}
-
-	public void setPutLogDestination(Destination putLogDestination) {
-		this.putLogDestination = putLogDestination;
-	}
-
-	public Session getAlarmSession() {
-		return alarmSession;
-	}
-
-	public void setAlarmSession(Session alarmSession) {
-		this.alarmSession = alarmSession;
-	}
-
-	public Session getLogSession() {
-		return logSession;
-	}
-
-	public void setLogSession(Session logSession) {
-		this.logSession = logSession;
-	}
-
-	public Session getPutLogSession() {
-		return putLogSession;
-	}
-
-	public void setPutLogSession(Session putLogSession) {
-		this.putLogSession = putLogSession;
+	/**
+	 * Creates a new JMS session.
+	 * 
+	 * @return the session.
+	 * @throws JMSException
+	 *             if an error occurs.
+	 */
+	public Session createJmsSession() throws JMSException {
+		return jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}
 
 	public String getLocalHostName() {
 		return localHostName;
 	}
 
-	public void setLocalHostName(String localHostName) {
-		this.localHostName = localHostName;
-	}
-
 	public ExecutorService getCommandExecutor() {
 		return commandExecutor;
-	}
-
-	public void setCommandExecutor(ExecutorService commandExecutor) {
-		this.commandExecutor = commandExecutor;
 	}
 }
