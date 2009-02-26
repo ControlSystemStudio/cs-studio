@@ -2,6 +2,7 @@ package org.csstudio.diag.rack.gui;
 
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.diag.rack.model.RackModel;
 import org.csstudio.diag.rack.model.RackModelListener;
 import org.eclipse.jface.viewers.TableViewer;
@@ -52,6 +53,7 @@ public class GUI implements RackModelListener
 	final Color empty_color = display.getSystemColor (SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	final Color device_color = display.getSystemColor (SWT.COLOR_DARK_GRAY);
 	private int rackHeight;
+
 
     public GUI(Composite shell, final RackModel control)
     {
@@ -164,21 +166,27 @@ public class GUI implements RackModelListener
     /** Create the Right sash: Rack Device Table and Rack Profile */
     private void createBottomSash(final SashForm form)
     { 
-        Composite profileContainer = new Composite(form, SWT.NULL);
-     
+        //with rack height varying the height of the canvas has to adjust.
+        //15 pts for each U high and an extra 125.
+    	final int canvasHeight = rackHeight*15+125;
+    	final int canvasWidth = 500;
+
+    	final Composite scroll = ScrolledContainerHelper.create(form,canvasWidth,canvasHeight);
+    	scroll.setLayout(new FillLayout());
+    	
+    	Composite profileContainer = new Composite(scroll, SWT.NULL);
+        
     	Button slotPosButton = new Button (profileContainer, SWT.PUSH);
     	this.slotPosButton = slotPosButton;
     	slotPosButton.setBounds (320, 30, 100, 32);
     	slotPosButton.setText ("See Rack Back");
 
+     	
         final Canvas paintCanvas = new Canvas(profileContainer, SWT.NONE);
         this.paintCanvas = paintCanvas;
         profileContainer.getBounds();
-        //with rack height varying the height of the canvas has to adjust.
-        //15 pts for each U high and an extra 125.
-        paintCanvas.setBounds(0,0,600,rackHeight*15+125);
-        
-        
+        paintCanvas.setBounds(0,0,canvasWidth,canvasHeight);
+       
         // Create a paint handler for the canvas
        
         paintCanvas.addPaintListener(new PaintListener() {
