@@ -166,6 +166,60 @@ public class Messages extends NLS {
 
     public static String StartEnd_StartTime_TT;
 
+	public static String ViewArchive_10;
+
+	public static String ViewArchive_11;
+
+	public static String ViewArchive_12;
+
+	public static String ViewArchive_13;
+
+	public static String ViewArchive_14;
+
+	public static String ViewArchive_15;
+
+	public static String ViewArchive_16;
+
+	public static String ViewArchive_17;
+
+	public static String ViewArchive_18;
+
+	public static String ViewArchive_19;
+
+	public static String ViewArchive_20;
+
+	public static String ViewArchive_21;
+
+	public static String ViewArchive_22;
+
+	public static String ViewArchive_23;
+
+	public static String ViewArchive_24;
+
+	public static String ViewArchive_25;
+
+	public static String ViewArchive_26;
+
+	public static String ViewArchive_27;
+
+	public static String ViewArchive_28;
+
+	public static String ViewArchive_6;
+
+	public static String ViewArchive_7;
+
+	public static String ViewArchive_8;
+
+	public static String ViewArchive_9;
+
+	public static String ViewArchive_deleteButton;
+
+	public static String ViewArchive_fromTime;
+
+	public static String ViewArchive_messagesGroup;
+
+	public static String ViewArchive_toTime;
+
 	/**
 	 * The localzation messages ressource bundle.
 	 */

@@ -81,12 +81,12 @@ public class ViewLog extends ViewPart implements MessageListener {
 	 */
 	private Action _showPropertyViewAction;
 
-	private JmsConnector _jmsConnector;
-
 	/**
 	 * The ID of the property view.
 	 */
 	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+
+	private JmsConnectJob _connectJob;
 
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -188,9 +188,9 @@ public class ViewLog extends ViewPart implements MessageListener {
 
 		String[] topicList = topic.split(","); //$NON-NLS-1$
 		IConnectionMonitor connectionMonitor = new ConnectionMonitor();
-		JmsConnectJob connectJob = new JmsConnectJob(topicList, primURL,
+		_connectJob = new JmsConnectJob(topicList, primURL,
 				secURL, this, connectionMonitor);
-		_jmsConnector = connectJob.startJmsConnection();
+		_connectJob.startJmsConnection();
 	}
 
 	public void setFocus() {
@@ -223,10 +223,11 @@ public class ViewLog extends ViewPart implements MessageListener {
 
 	public void dispose() {
 		saveColumn();
-		super.dispose();
-		_jmsConnector.disconnect();
+		_tableViewer = null;
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.removePropertyChangeListener(cl);
+		.removePropertyChangeListener(cl);
+		_connectJob.get_jmsConnector().disconnect();
+		super.dispose();
 	}
 
 	/**

@@ -82,6 +82,12 @@ public class JMSAlarmMessageListTest {
 		Assert.assertEquals(true, checkForAlarm("NAME", "MAJOR", false,
 				false, messageList, "CONNECTED"));
 		
+		addJMSMessage("NAME", "MAJOR", "event", false, null, messageList);
+		addJMSMessage("NAME_NEU", "MINOR", "status", false, null, messageList);
+		Assert.assertEquals(1, messageList.getJMSMessageList().size());
+		addJMSMessage("NAME_NEU", "MINOR", "status", false, null, messageList, "DISCONNECTED");
+		Assert.assertEquals(1, messageList.getJMSMessageList().size());
+		messageList.clearList();
 	}
 	
 	

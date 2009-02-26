@@ -86,8 +86,8 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			if (newMessage.getString("TYPE").equalsIgnoreCase("status")) {
 				if (equalMessageInTable == true) {
 					updateMessageInTableForDisconnected(newMessage);
-					return;
 				}
+				return;
 			}
 			// is there an old message from same pv
 			// (deleteOrGrayOutEqualMessages == true) -> display new message
@@ -118,6 +118,9 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 */
 	private void updateMessageInTableForDisconnected(MapMessage newMessage)
 			throws JMSException {
+		if(newMessage.getString("STATUS") == null) {
+			return;
+		}
 		JMSMessage messageToRemove = null;
 		for (JMSMessage message : JMSMessages) {
 			String currentInList = message.getProperty("NAME");

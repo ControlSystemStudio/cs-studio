@@ -136,7 +136,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	// private GregorianCalendar _to;
 	// private ArrayList<FilterItem> _filterSettings;
 
-	private AccessDBJob _dbReader = new AccessDBJob("DBReader");
+	private AccessDBJob _dbReader = new AccessDBJob("DBReader"); //$NON-NLS-1$
 
 	/**
 	 * The Show Property View action.
@@ -148,9 +148,9 @@ public class ViewArchive extends ViewPart implements Observer {
 	/**
 	 * The ID of the property view.
 	 */
-	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
 
-	private static final String SECURITY_ID = "alarmAdministration";
+	private static final String SECURITY_ID = "alarmAdministration"; //$NON-NLS-1$
 
 	public ViewArchive() {
 		super();
@@ -193,29 +193,25 @@ public class ViewArchive extends ViewPart implements Observer {
 		createFlexButton(buttons);
 		createSearchButton(buttons);
 
-		Group from = new Group(comp, SWT.LINE_SOLID);
-		from.setText(Messages.getString("LogViewArchive_from")); //$NON-NLS-1$
+		Group period = new Group(comp, SWT.LINE_SOLID);
+		period.setText(Messages.getString("LogViewArchive_from")); //$NON-NLS-1$
 		gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
-		gd.minimumHeight = 60;
-		gd.minimumWidth = 150;
-		from.setLayoutData(gd);
-		from.setLayout(new GridLayout(1, true));
+		gd.minimumHeight = 80;
+		gd.minimumWidth = 180;
+		period.setLayoutData(gd);
+		period.setLayout(new GridLayout(2, false));
 
-		_timeFrom = new Text(from, SWT.SINGLE);
+		new Label(period,SWT.NONE).setText(Messages.ViewArchive_fromTime);
+		
+		_timeFrom = new Text(period, SWT.SINGLE);
 		_timeFrom.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
 
 		_timeFrom.setEditable(false);
 		_timeFrom.setText("                            "); //$NON-NLS-1$
-		Group to = new Group(comp, SWT.LINE_SOLID);
-		to.setText(Messages.getString("LogViewArchive_to")); //$NON-NLS-1$
-		gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
-		gd.minimumHeight = 60;
-		gd.minimumWidth = 150;
-		to.setLayoutData(gd);
-		to.setLayout(new GridLayout(1, true));
 
-		_timeTo = new Text(to, SWT.SINGLE);
+		new Label(period,SWT.NONE).setText(Messages.ViewArchive_toTime);
+		_timeTo = new Text(period, SWT.SINGLE);
 		_timeTo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
 				1));
 		_timeTo.setEditable(false);
@@ -226,31 +222,27 @@ public class ViewArchive extends ViewPart implements Observer {
 		count.setLayout(new GridLayout(1, true));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd.minimumHeight = 60;
-		gd.minimumWidth = 75;
+		gd.minimumWidth = 40;
 		count.setLayoutData(gd);
 
-		Group exportButtons = new Group(comp, SWT.LINE_SOLID);
-		exportButtons.setText("Export Messages"); //$NON-NLS-1$
-		exportButtons.setLayout(new GridLayout(1, true));
+		Group messageButtons = new Group(comp, SWT.LINE_SOLID);
+		messageButtons.setText(Messages.ViewArchive_messagesGroup); 
+		GridLayout layout = new GridLayout(1, true);
+		messageButtons.setLayout(layout);
 		gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
 		gd.minimumHeight = 60;
 		gd.minimumWidth = 60;
-		exportButtons.setLayoutData(gd);
-		createExportButton(exportButtons);
+		messageButtons.setLayoutData(gd);
+		createExportButton(messageButtons);
 		
 		if (_canExecute) {
-			Group deleteButtons = new Group(comp, SWT.LINE_SOLID);
-			deleteButtons.setText("Delete Messages"); //$NON-NLS-1$
-			deleteButtons.setLayout(new GridLayout(1, true));
-			gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
-			gd.minimumHeight = 60;
-			gd.minimumWidth = 60;
-			deleteButtons.setLayoutData(gd);
-			createDeleteButton(deleteButtons);
+			layout.numColumns = 2;
+			gd.minimumWidth = 120;
+			createDeleteButton(messageButtons);
 		}
 
 		_countLabel = new Label(count, SWT.RIGHT);
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
 		_countLabel.setLayoutData(gd);
 		_countLabel.setText("0"); //$NON-NLS-1$
 
@@ -283,9 +275,9 @@ public class ViewArchive extends ViewPart implements Observer {
 	private void createDeleteButton(Composite comp) {
 		Button delete = new Button(comp, SWT.PUSH);
 		delete
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
 						1));
-		delete.setText("Delete");
+		delete.setText(Messages.ViewArchive_deleteButton);
 
 		delete.addSelectionListener(new SelectionAdapter() {
 
@@ -313,9 +305,9 @@ public class ViewArchive extends ViewPart implements Observer {
 	private void createExportButton(Composite comp) {
 		Button export = new Button(comp, SWT.PUSH);
 		export
-		.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+		.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
 				1));
-		export.setText("Export *.xls");
+		export.setText(Messages.ViewArchive_6);
 		
 		export.addSelectionListener(new SelectionAdapter() {
 			
@@ -327,12 +319,12 @@ public class ViewArchive extends ViewPart implements Observer {
 				FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SAVE);
 
 				// Set the text
-				fileDialog.setText("Save File");
+				fileDialog.setText(Messages.ViewArchive_7);
 				// Set filter on .txt files
-				fileDialog.setFilterExtensions(new String[] { "*.xls" });
+				fileDialog.setFilterExtensions(new String[] { Messages.ViewArchive_8 });
 				// Put in a readable name for the filter
 				fileDialog
-						.setFilterNames(new String[] { "Excel 97-2003 format(*.xls)" });
+						.setFilterNames(new String[] { Messages.ViewArchive_9 });
 
 				// Open Dialog and save result of selection
 				String selected = fileDialog.open();
@@ -359,13 +351,13 @@ public class ViewArchive extends ViewPart implements Observer {
 				try {
 					getSite().getPage().showView(PROPERTY_VIEW_ID);
 				} catch (PartInitException e) {
-					MessageDialog.openError(getSite().getShell(), "Alarm Tree",
+					MessageDialog.openError(getSite().getShell(), Messages.ViewArchive_10,
 							e.getMessage());
 				}
 			}
 		};
-		_showPropertyViewAction.setText("Properties");
-		_showPropertyViewAction.setToolTipText("Show property view");
+		_showPropertyViewAction.setText(Messages.ViewArchive_11);
+		_showPropertyViewAction.setToolTipText(Messages.ViewArchive_12);
 
 		IViewRegistry viewRegistry = getSite().getWorkbenchWindow()
 				.getWorkbench().getViewRegistry();
@@ -392,7 +384,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	 */
 	private void create24hButton(final Composite comp) {
 		Button b24hSearch = new Button(comp, SWT.PUSH);
-		b24hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+		b24hSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true,
 				1, 1));
 		b24hSearch.setText(Messages.getString("LogViewArchive_day")); //$NON-NLS-1$
 
@@ -418,7 +410,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	 */
 	private void create72hButton(final Composite comp) {
 		Button b72hSearch = new Button(comp, SWT.PUSH);
-		b72hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+		b72hSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true,
 				1, 1));
 		b72hSearch.setText(Messages.getString("LogViewArchive_3days")); //$NON-NLS-1$
 
@@ -442,7 +434,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	 */
 	private void createWeekButton(final Composite comp) {
 		Button b168hSearch = new Button(comp, SWT.PUSH);
-		b168hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+		b168hSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true,
 				1, 1));
 		b168hSearch.setText(Messages.getString("LogViewArchive_week")); //$NON-NLS-1$
 
@@ -467,7 +459,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	 */
 	private void createFlexButton(final Composite comp) {
 		Button bFlexSearch = new Button(comp, SWT.PUSH);
-		bFlexSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+		bFlexSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true,
 				1, 1));
 		bFlexSearch.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
 
@@ -512,7 +504,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	 */
 	private void createSearchButton(final Composite comp) {
 		Button bSearch = new Button(comp, SWT.PUSH);
-		bSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+		bSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
 				1));
 		bSearch.setText(Messages.getString("LogViewArchive_expert")); //$NON-NLS-1$
 
@@ -562,7 +554,7 @@ public class ViewArchive extends ViewPart implements Observer {
 		_from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
 		showNewTime(_from, _to);
 		ArrayList<FilterItem> _filterSettings = new ArrayList<FilterItem>();
-		_filterSettings.add(new FilterItem("name", pv.getName(), "END"));
+		_filterSettings.add(new FilterItem(Messages.ViewArchive_13, pv.getName(), Messages.ViewArchive_14));
 		_filter = new Filter(_filterSettings, _from, _to);
 		callDBReadJob();
 	}
@@ -570,7 +562,7 @@ public class ViewArchive extends ViewPart implements Observer {
 	private void callDBReadJob() {
 		showNewTime(_filter.getFrom(), _filter.getTo());
 		_dbReader.setReadProperties(ViewArchive.this._dbAnswer, _filter.copy());
-		_countLabel.setText("*");
+		_countLabel.setText(Messages.ViewArchive_15);
 		_jmsLogTableViewer.getTable().setEnabled(false);
 		_dbReader.setAccessType(AccessDBJob.DBAccessType.READ_MESSAGES);
 		_dbReader.schedule();
@@ -672,8 +664,7 @@ public class ViewArchive extends ViewPart implements Observer {
 					if (_dbAnswer.is_maxSize()) {
 						_countLabel.setBackground(Display.getCurrent()
 								.getSystemColor(SWT.COLOR_RED));
-						_countLabel.setText(Integer.toString(size)
-								+ "(maximum)");
+						_countLabel.setText(Messages.ViewArchive_16 + Integer.toString(size));
 					} else {
 						_countLabel.setText(Integer.toString(size));
 						_countLabel.setBackground(Display.getCurrent()
@@ -699,17 +690,17 @@ public class ViewArchive extends ViewPart implements Observer {
 					MessageBox messageBox = new MessageBox(Display.getDefault()
 							.getActiveShell(), SWT.OK | SWT.CANCEL
 							| SWT.ICON_WARNING);
-					messageBox.setText("Confirmation");
-					messageBox.setMessage("Ca. "
+					messageBox.setText(Messages.ViewArchive_17);
+					messageBox.setMessage(Messages.ViewArchive_18
 							+ Math.abs(_dbAnswer.get_msgNumberToDelete() / 11)
-							+ " will be deleted from the data base."
-							+ System.getProperty("line.separator")
-							+ "(Deleting one message can take up to 1 second)");
+							+ Messages.ViewArchive_19
+							+ System.getProperty(Messages.ViewArchive_20)
+							+ Messages.ViewArchive_21);
 					int buttonID = messageBox.open();
 					switch (buttonID) {
 					case SWT.OK:
 						CentralLogger.getInstance().debug(this,
-								"delete operation confirmed by the user.");
+								Messages.ViewArchive_22);
 						_dbReader.setReadProperties(ViewArchive.this._dbAnswer,
 								_filter.copy());
 						_dbReader
@@ -718,7 +709,7 @@ public class ViewArchive extends ViewPart implements Observer {
 						break;
 					case SWT.CANCEL:
 						CentralLogger.getInstance().debug(this,
-								"delete operation canceld by user.");
+								Messages.ViewArchive_23);
 						break;
 					}
 				}
@@ -726,19 +717,19 @@ public class ViewArchive extends ViewPart implements Observer {
 				if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.DELETE_RESULT) {
 					MessageBox messageBox = new MessageBox(Display.getDefault()
 							.getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
-					messageBox.setText("Deleted");
-					messageBox.setMessage("Messages are deleted");
+					messageBox.setText(Messages.ViewArchive_24);
+					messageBox.setMessage(Messages.ViewArchive_25);
 					messageBox.open();
 				}
 				
 				if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.EXPORT_RESULT) {
 					MessageBox messageBox = new MessageBox(Display.getDefault()
 							.getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
-					messageBox.setText("Export");
+					messageBox.setText(Messages.ViewArchive_26);
 					if (_dbAnswer.is_maxSize()) {
-						messageBox.setMessage("Export is completed. (Maximum size of messages are exceeded!)");
+						messageBox.setMessage(Messages.ViewArchive_27);
 					} else {
-						messageBox.setMessage("Export is completed");
+						messageBox.setMessage(Messages.ViewArchive_28);
 					}
 					messageBox.open();
 				}
