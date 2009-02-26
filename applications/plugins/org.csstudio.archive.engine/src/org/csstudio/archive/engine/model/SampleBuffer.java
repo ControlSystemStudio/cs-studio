@@ -36,7 +36,7 @@ public class SampleBuffer
     
     /** Logger for overrun messages */
     final private static ThrottledLogger overrun_msg =
-        new ThrottledLogger(Level.ERROR, "log_overrun"); //$NON-NLS-1$
+        new ThrottledLogger(Level.WARN, "log_overrun"); //$NON-NLS-1$
     
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
