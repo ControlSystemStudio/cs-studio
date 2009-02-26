@@ -110,6 +110,10 @@ public final class Console {
 		};
 
 		_stream = _console.newMessageStream();
+		
+		// Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
+		_console.setWaterMarks(80000, 100000);
+		
 		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
 		consolePlugin.getConsoleManager().addConsoles(
 				new IConsole[] { _console });
