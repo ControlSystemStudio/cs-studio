@@ -86,7 +86,7 @@ public class JMSSender implements ExceptionListener
     {
        final MapMessage map = session.createMapMessage();
        /**
-        * If the type is "put", it is an EDM option.  Different options are added to 
+        * If the type is "write", it is an EDM option.  Different options are added to 
         * the map to reflect the input EDM string.
         */
         if (edm_mode)
