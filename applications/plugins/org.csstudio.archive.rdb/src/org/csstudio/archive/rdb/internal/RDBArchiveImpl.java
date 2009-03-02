@@ -87,6 +87,13 @@ public class RDBArchiveImpl extends RDBArchive
     private RetentionHelper retentions = null;
 
     private SampleMode sample_modes[] = null;
+    
+    /** Enable debugging of batch submission */
+    final public boolean debug_batch = true;
+    
+    /** Local copy of batched samples, used to display batch errors */
+    private ArrayList<String> batched_samples = 
+        debug_batch ? new ArrayList<String>() : null;
 	
 	/** Connect to RDB.
 	 *  @param url URL
@@ -125,6 +132,9 @@ public class RDBArchiveImpl extends RDBArchive
             stmt.execute("ALTER SESSION SET events " +
                          "'10046 trace name context forever, level 12'");
         }
+        // In case of a re-connect after error, forget samples that caused error
+        if (debug_batch)
+            batched_samples.clear();
     }
 
     /** {@inheritDoc} */
@@ -370,6 +380,8 @@ public class RDBArchiveImpl extends RDBArchive
             final String txt = sample.format();
             batchTextSamples(channel, stamp, severity, status, txt);
         }
+        if (debug_batch)
+            batched_samples.add(channel.getName() + " = " + sample.toString());
 	}
 
 	/** Write the meta data of the sample, and update the channel's info. */
@@ -513,50 +525,67 @@ public class RDBArchiveImpl extends RDBArchive
     @Override
 	public void commitBatch() throws Exception
 	{
-        if (batched_double_inserts > 0)
+        try
         {
-            try
+            if (batched_double_inserts > 0)
             {
-                checkBatchExecution(insert_double_sample);
+                try
+                {
+                    checkBatchExecution(insert_double_sample);
+                }
+                finally
+                {
+                    batched_double_inserts = 0;
+                }
             }
-            finally
+            if (batched_long_inserts > 0)
             {
-                batched_double_inserts = 0;
+                try
+                {
+                    checkBatchExecution(insert_long_sample);
+                }
+                finally
+                {
+                    batched_long_inserts = 0;
+                }
+            }
+            if (batched_txt_inserts > 0)
+            {
+                try
+                {
+                    checkBatchExecution(insert_txt_sample);
+                }
+                finally
+                {
+                	batched_txt_inserts = 0;
+                }
+            }
+            if (batched_double_array_inserts > 0)
+            {
+                try
+                {
+                    checkBatchExecution(insert_double_array_sample);
+                }
+                finally
+                {
+                    batched_double_array_inserts = 0;
+                }
             }
         }
-        if (batched_long_inserts > 0)
+        catch (Exception ex)
         {
-            try
+            if (debug_batch)
             {
-                checkBatchExecution(insert_long_sample);
+                System.out.println("Error in one of these samples");
+                for (String sample : batched_samples)
+                {
+                    System.out.println(sample);
+                }
             }
-            finally
-            {
-                batched_long_inserts = 0;
-            }
+            throw ex;
         }
-        if (batched_txt_inserts > 0)
-        {
-            try
-            {
-                checkBatchExecution(insert_txt_sample);
-            }
-            finally
-            {
-            	batched_txt_inserts = 0;
-            }
-        }
-        if (batched_double_array_inserts > 0)
-        {
-            try
-            {
-                checkBatchExecution(insert_double_array_sample);
-            }
-            finally
-            {
-                batched_double_array_inserts = 0;
-            }
-        }
+        if (debug_batch)
+            batched_samples.clear();
 	}
 
 	/** Submit and clear the batch, or roll back on error */
@@ -564,11 +593,15 @@ public class RDBArchiveImpl extends RDBArchive
     {
         try
         {   // Try to perform the inserts
+            // In principle this could return update counts for
+            // each batched insert, but Oracle 10g and 11g just throw
+            // an exception
             insert.executeBatch();
             rdb.getConnection().commit();
         }
         catch (final SQLException ex)
-        {   // On failure, roll back.
+        {
+            // On failure, roll back.
             // With Oracle 10g, the BatchUpdateException doesn't
             // indicate which of the batched commands faulted...
             insert.clearBatch();
