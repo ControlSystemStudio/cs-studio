@@ -30,4 +30,5 @@ public class PreferenceConstants {
 	public static final String QUEUE = "message queue"; //$NON-NLS-1$
 	public static final String JMS_URL_PRIMARY = "jmsUrlPrimary";
 	public static final String JMS_URL_SECONDARY = "jmsUrlSecondary";
+	public static final String SENDER_BROKER_URL = "senderBrokerURL";
 }

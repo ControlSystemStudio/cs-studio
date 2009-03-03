@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JMS Utility Plug-in
-Bundle-SymbolicName: org.csstudio.platform.utility.jms
+Bundle-SymbolicName: org.csstudio.platform.utility.jms;singleton:=true
 Bundle-Version: 1.1.2
 Bundle-Activator: org.csstudio.platform.utility.jms.Activator
 Require-Bundle: org.junit4,
@@ -9,5 +9,7 @@ Require-Bundle: org.junit4,
  org.eclipse.core.runtime
 Export-Package: org.csstudio.platform.utility.jms,
  org.csstudio.platform.utility.jms.asyncreceiver,
- org.csstudio.platform.utility.jms.preferences
+ org.csstudio.platform.utility.jms.preferences,
+ org.csstudio.platform.utility.jms.sharedconnection
 Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy

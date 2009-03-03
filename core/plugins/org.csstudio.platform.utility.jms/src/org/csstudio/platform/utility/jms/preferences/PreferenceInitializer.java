@@ -31,13 +31,13 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IEclipsePreferences prefs = new DefaultScope().getNode(JmsPlugin.PLUGIN_ID);
 
-//		IPreferenceStore store = JmsPlugin.getDefault().getPreferenceStore();
 		prefs.put(PreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "LOG"); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "LOG"); //$NON-NLS-1$
 		
+		prefs.put(PreferenceConstants.SENDER_BROKER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
 	}
 
 }

@@ -1,5 +1,7 @@
 package org.csstudio.platform.utility.jms;
 
+import org.csstudio.platform.utility.jms.sharedconnection.ActiveMQSharedSenderConnectionService;
+import org.csstudio.platform.utility.jms.sharedconnection.IJmsSharedSenderConnectionService;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -27,6 +29,11 @@ public class Activator extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		
+		context.registerService(
+				IJmsSharedSenderConnectionService.class.getName(),
+				new ActiveMQSharedSenderConnectionService(), null);
+		System.out.println("Service registered!");
 	}
 
 	/*
