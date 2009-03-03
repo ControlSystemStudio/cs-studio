@@ -132,49 +132,49 @@ public final class FieldFunctionService implements IFieldFunctionService {
      * 
      * @throws AliasResolutionException
      */
-    private static String doResolveVariablesRecursively(final String input,
-            final List<String> markerList, final boolean isAlias, final Map<String, String> aliases)
-            throws AliasResolutionException {
+	private static String doResolveVariablesRecursively(final String input, final List<String> markerList, final boolean isAlias,
+			final Map<String, String> aliases) throws AliasResolutionException {
 
-        String result = "";
+		String result = "";
 
-        // .. special treatment if we are resolving an alias
-        if (isAlias) {
-            if (!aliases.containsKey(input)) {
-                throw new AliasResolutionException("Variable \"" + input + "\" cannot be resolved.");
-            } else {
-                if (markerList.contains(input)) {
-                    throw new AliasResolutionException("Variable \"" + input
-                            + "\" contains an endless loop.");
-                } else {
-                    result = aliases.get(input);
-                    markerList.add(input);
-                }
-            }
-        } else {
-            result = input;
-        }
+		// .. special treatment if we are resolving an alias
+		if (isAlias) {
+			if (!aliases.containsKey(input)) {
+				throw new AliasResolutionException("Variable \"" + input + "\" cannot be resolved.");
+			} else {
+				if (markerList.contains(input)) {
+					throw new AliasResolutionException("Variable \"" + input + "\" contains an endless loop.");
+				} else {
+					result = aliases.get(input);
+					markerList.add(input);
+				}
+			}
+		} else {
+			result = input;
+		}
 
-        // .. find all variables that needs to be replaced by real values
-        Matcher matcher = FIND_VARIABLES_PATTERN.matcher(result);
+		// .. find all variables that needs to be replaced by real values
+		if (result != null) {
+			Matcher matcher = FIND_VARIABLES_PATTERN.matcher(result);
 
-        while (matcher.find()) {
-            String alias = matcher.group(1);
+			while (matcher.find()) {
+				String alias = matcher.group(1);
 
-            // .. recursively resolve the alias itself
-            String resolvedAlias = doResolveVariablesRecursively(alias, markerList, true, aliases);
-            assert resolvedAlias != null;
-            markerList.clear();
+				// .. recursively resolve the alias itself
+				String resolvedAlias = doResolveVariablesRecursively(alias, markerList, true, aliases);
+				assert resolvedAlias != null;
+				markerList.clear();
 
-            // .. replace all occurences of the alias in the initial string
-            Matcher matcher2 = createSearchPattern(alias).matcher(result);
-            result = matcher2.replaceAll(resolvedAlias);
+				// .. replace all occurences of the alias in the initial string
+				Matcher matcher2 = createSearchPattern(alias).matcher(result);
+				result = matcher2.replaceAll(resolvedAlias);
 
-            matcher = FIND_VARIABLES_PATTERN.matcher(result);
-        }
-
-        return result;
-    }
+				matcher = FIND_VARIABLES_PATTERN.matcher(result);
+			}
+		}
+		
+		return result!=null?result:"";
+	}
 
     /**
      * Generates a regular expression which is used to replace aliases in arbitrary texts.

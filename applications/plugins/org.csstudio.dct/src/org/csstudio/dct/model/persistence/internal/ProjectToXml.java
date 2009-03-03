@@ -151,7 +151,7 @@ public final class ProjectToXml {
 		for (Parameter p : prototype.getParameters()) {
 			Element pElement = new Element("parameter");
 			pElement.setAttribute("name", p.getName());
-			pElement.setAttribute("value", p.getDefaultValue());
+			pElement.setAttribute("value", p.getDefaultValue()!=null?p.getDefaultValue():"");
 			prototypeXmlElement.addContent(pElement);
 		}
 

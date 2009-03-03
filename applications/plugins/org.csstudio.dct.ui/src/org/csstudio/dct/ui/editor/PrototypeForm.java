@@ -226,7 +226,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 
 		if (dialog.open() == InputDialog.OK) {
 			// .. add the parameter
-			Parameter parameter = new Parameter(dialog.getValue(), null);
+			Parameter parameter = new Parameter(dialog.getValue(), "");
 			Command cmd = new AddParameterCommand(getInput(), parameter);
 			getCommandStack().execute(cmd);
 
