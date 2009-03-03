@@ -38,7 +38,7 @@ public final class InterconnectionServerApplication implements IApplication {
 
 	// XXX: This is currently set from the outside by the RestartIcServer
 	// and StopIcServer actions. That's not good.
-	public static boolean SHUTDOWN = false;
+	public static boolean SHUTDOWN = true;
 
 	/**
 	 * {@inheritDoc}
