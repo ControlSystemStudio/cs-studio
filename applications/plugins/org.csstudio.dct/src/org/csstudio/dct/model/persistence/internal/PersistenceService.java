@@ -90,7 +90,7 @@ public final class PersistenceService implements IPersistenceService {
 			if (result == null) {
 				IFile workspaceFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
 
-				if (workspaceFile != null) {
+				if (workspaceFile != null && workspaceFile.getLocation()!=null) {
 					result = doLoadDatabaseDefinition(workspaceFile.getLocation().toOSString());
 				}
 			}
