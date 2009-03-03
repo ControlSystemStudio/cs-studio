@@ -49,24 +49,11 @@ public final class FieldFunctionService implements IFieldFunctionService {
         functions = new HashMap<String, IFieldFunction>();
 
         // register default the functions
-        // FIXME: 2009-01-14: swende: Maybe turn this to an extension point.
         registerFunction("forwardlink", new ForwardLinkFieldFunction());
         registerFunction("datalink", new DataLinkFieldFunction());
-        // XXX: 2009-02-19 eine erste dirty implementierung der Service Nutzung
-        // registerFunction("ioname", new IoNameFieldFunction(new DummyIoNameService()));
-        IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configurationElementsFor = extensionRegistry
-                .getConfigurationElementsFor(DctActivator.PLUGIN_ID + ".ioNameService");
-        if (configurationElementsFor.length == 1) {
-            IoNameService ioNameService = null;
-            try {
-                ioNameService = (IoNameService) configurationElementsFor[0]
-                        .createExecutableExtension("class"); //$NON-NLS-1$
-                registerFunction("ioname", new IoNameFieldFunction(ioNameService));
-            } catch (CoreException e) {
-                e.printStackTrace();
-            }
-        }
+
+        // IoNameService-Extension auslesen (FIXME: besser als OSGI-Dienst?)
+        registerFunction("ioname", new IoNameFieldFunction());
     }
 
     /**

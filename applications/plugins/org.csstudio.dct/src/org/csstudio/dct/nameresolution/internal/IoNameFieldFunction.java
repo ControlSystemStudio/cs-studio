@@ -1,8 +1,13 @@
 package org.csstudio.dct.nameresolution.internal;
 
+import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.IoNameService;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.IFieldFunction;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * Implementation for the ioname() function.
@@ -11,7 +16,6 @@ import org.csstudio.dct.nameresolution.IFieldFunction;
  * 
  */
 public final class IoNameFieldFunction implements IFieldFunction {
-	private IoNameService ioNameService;
 
 	/**
 	 * Constructor.
@@ -19,16 +23,36 @@ public final class IoNameFieldFunction implements IFieldFunction {
 	 * @param ioNameService
 	 *            an IO name service
 	 */
-	public IoNameFieldFunction(IoNameService ioNameService) {
-		this.ioNameService = ioNameService;
+	public IoNameFieldFunction() {
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
 	public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
-		String result = ioNameService.getEpicsAddress(parameters[0], fieldName);
-		return result;
+		IoNameService service = resolveNameService();
+		
+		if(service==null) {
+			throw new IllegalArgumentException("name service not available");
+		}else {
+			return service.getEpicsAddress(parameters[0], fieldName);
+		}
 	}
 
+	private IoNameService resolveNameService() {
+		IoNameService service = null;
+
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		IConfigurationElement[] configurationElementsFor = extensionRegistry.getConfigurationElementsFor(DctActivator.PLUGIN_ID
+				+ ".ioNameService");
+		if (configurationElementsFor.length == 1) {
+			try {
+				service = (IoNameService) configurationElementsFor[0].createExecutableExtension("class"); //$NON-NLS-1$
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return service;
+	}
 }
