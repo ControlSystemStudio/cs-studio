@@ -22,11 +22,8 @@
 
 package org.csstudio.platform.internal.utility.jms.sharedconnection;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.platform.utility.jms.Activator;
 import org.csstudio.platform.utility.jms.preferences.PreferenceConstants;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
@@ -34,53 +31,36 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * Implementation of {@link IJmsSharedSenderConnectionService} which provides
- * a shared ActiveMQ connection. The settings for the connection are read from
- * the preferences of the JMS Utility plug-in.
+ * Service which manages a shared connection for sending JMS messages. The
+ * settings for the connection are read from the preferences of the JMS Utility
+ * plug-in.
  * 
  * @author Joerg Rathlev
  */
-public class ActiveMQSharedSenderConnectionService
-		implements IJmsSharedSenderConnectionService {
+public class SharedSenderConnectionService {
 	
-	private Connection _connection;
+	private MonitorableSharedConnection _connection;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public ISharedConnectionHandle sharedConnection() throws JMSException {
 		createSharedConnectionIfNecessary();
-		return new SharedConnectionHandle(_connection);
+		return _connection.createHandle();
 	}
 
 	/**
 	 * Creates and starts the shared connection if it has not been created yet.
-	 * 
-	 * @throws JMSException
-	 *             if the connection could not be created or started due to some
-	 *             interal error.
 	 */
-	private synchronized void createSharedConnectionIfNecessary()
-			throws JMSException {
+	private synchronized void createSharedConnectionIfNecessary() {
 		if (_connection == null) {
 			IPreferencesService prefs = Platform.getPreferencesService();
 			String jmsUrl = prefs.getString(Activator.PLUGIN_ID,
-					PreferenceConstants.SENDER_BROKER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000",
+					PreferenceConstants.SENDER_BROKER_URL,
+					// FIXME: the preference initializer does not seem to work
+					"failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000",
 					null);
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(jmsUrl);
-			try {
-				_connection = connectionFactory.createConnection();
-				_connection.start();
-			} catch (JMSException e) {
-				if (_connection != null) {
-					try {
-						_connection.close();
-					} finally {
-						_connection = null;
-					}
-				}
-				throw e; // rethrow
-			}
+			_connection = new MonitorableSharedConnection(jmsUrl);
 		}
 	}
 }

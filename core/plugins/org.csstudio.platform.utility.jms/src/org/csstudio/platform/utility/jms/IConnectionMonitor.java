@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -20,48 +20,23 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.internal.utility.jms.sharedconnection;
-
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Session;
-
-import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
+package org.csstudio.platform.utility.jms;
 
 /**
- * Provides access to an underlying shared JMS connection.
+ * Monitors a JMS connection.
  * 
  * @author Joerg Rathlev
  */
-public class SharedConnectionHandle implements ISharedConnectionHandle {
+public interface IConnectionMonitor {
+
+	/**
+	 * Called when the connection to the messaging system is established.
+	 */
+	void onConnected();
 	
-	private Connection _connection;
-	
 	/**
-	 * Creates a new <code>SharedConnectionHandle</code>.
-	 * 
-	 * @param connection the connection this object provides access to.
+	 * Called when the connection to the messaging system is closed or
+	 * interrupted.
 	 */
-	SharedConnectionHandle(Connection connection) {
-		_connection = connection;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Session createSession(boolean transacted, int acknowledgeMode)
-			throws JMSException {
-		return _connection.createSession(transacted, acknowledgeMode);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void release() {
-		// Closing the shared connection is not supported by the current
-		// implementation.
-		
-		// TODO: implement closing a shared connection when it is no longer used
-	}
-
+	void onDisconnected();
 }

@@ -2,6 +2,7 @@ package org.csstudio.platform.utility.jms.asyncreceiver;
 
 import javax.jms.MessageListener;
 
+import org.csstudio.platform.utility.jms.IConnectionMonitor;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

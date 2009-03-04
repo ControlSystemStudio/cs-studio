@@ -22,6 +22,6 @@
 
 /**
  * Shared JMS Connection Services Package. This package provides services for
- * using a single, shared connection for all JMS applications in a CSS instance.
+ * using shared connections for all JMS applications in a CSS instance.
  */
 package org.csstudio.platform.utility.jms.sharedconnection;

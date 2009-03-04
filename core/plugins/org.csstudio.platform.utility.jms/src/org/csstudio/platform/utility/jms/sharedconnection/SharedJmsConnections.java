@@ -24,8 +24,7 @@ package org.csstudio.platform.utility.jms.sharedconnection;
 
 import javax.jms.JMSException;
 
-import org.csstudio.platform.internal.utility.jms.sharedconnection.ActiveMQSharedSenderConnectionService;
-import org.csstudio.platform.internal.utility.jms.sharedconnection.IJmsSharedSenderConnectionService;
+import org.csstudio.platform.internal.utility.jms.sharedconnection.SharedSenderConnectionService;
 
 /**
  * Utility class for using the Shared JMS Connection Services.
@@ -34,8 +33,8 @@ import org.csstudio.platform.internal.utility.jms.sharedconnection.IJmsSharedSen
  */
 public final class SharedJmsConnections {
 	
-	private static final IJmsSharedSenderConnectionService 
-			senderConnectionService = new ActiveMQSharedSenderConnectionService();
+	private static final SharedSenderConnectionService 
+			senderConnectionService = new SharedSenderConnectionService();
 
 	// Private constructor to prevent instantiation.
 	private SharedJmsConnections() {
