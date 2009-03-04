@@ -20,8 +20,35 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+package org.csstudio.platform.internal.utility.jms.sharedconnection;
+
+import javax.jms.JMSException;
+
+import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
+
 /**
- * Shared JMS Connection Services Package. This package provides services for
- * using a single, shared connection for all JMS applications in a CSS instance.
+ * Service which provides a shared JMS connection for sending JMS messages.
+ * 
+ * @author Joerg Rathlev
  */
-package org.csstudio.platform.utility.jms.sharedconnection;
+public interface IJmsSharedSenderConnectionService {
+	
+	/*
+	 * TODO: This interface could in the future be moved into an exported
+	 * package and used to publish the Shared Connection Service as an OSGi
+	 * service.
+	 */
+
+	/**
+	 * Returns a handle to the shared JMS connection for sending JMS messages.
+	 * If the shared connection has not been created yet, this method will
+	 * create and start the connection before it returns.
+	 * 
+	 * @return a handle to the shared JMS connection for sending JMS messages.
+	 * @throws JMSException
+	 *             if the shared connection could not be created or started due
+	 *             to an internal error.
+	 */
+	ISharedConnectionHandle sharedConnection() throws JMSException;
+
+}

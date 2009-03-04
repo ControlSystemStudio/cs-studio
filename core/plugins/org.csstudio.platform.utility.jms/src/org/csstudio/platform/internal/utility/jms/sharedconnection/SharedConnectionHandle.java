@@ -20,27 +20,48 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.utility.jms.sharedconnection;
+package org.csstudio.platform.internal.utility.jms.sharedconnection;
 
+import javax.jms.Connection;
 import javax.jms.JMSException;
+import javax.jms.Session;
+
+import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 
 /**
- * Service which provides a shared JMS connection for sending JMS messages.
+ * Provides access to an underlying shared JMS connection.
  * 
  * @author Joerg Rathlev
  */
-public interface IJmsSharedSenderConnectionService {
+public class SharedConnectionHandle implements ISharedConnectionHandle {
+	
+	private Connection _connection;
+	
+	/**
+	 * Creates a new <code>SharedConnectionHandle</code>.
+	 * 
+	 * @param connection the connection this object provides access to.
+	 */
+	SharedConnectionHandle(Connection connection) {
+		_connection = connection;
+	}
 
 	/**
-	 * Returns a handle to the shared JMS connection for sending JMS messages.
-	 * If the shared connection has not been created yet, this method will
-	 * create and start the connection before it returns.
-	 * 
-	 * @return a handle to the shared JMS connection for sending JMS messages.
-	 * @throws JMSException
-	 *             if the shared connection could not be created or started due
-	 *             to an internal error.
+	 * {@inheritDoc}
 	 */
-	ISharedConnectionHandle sharedConnection() throws JMSException;
+	public Session createSession(boolean transacted, int acknowledgeMode)
+			throws JMSException {
+		return _connection.createSession(transacted, acknowledgeMode);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void release() {
+		// Closing the shared connection is not supported by the current
+		// implementation.
+		
+		// TODO: implement closing a shared connection when it is no longer used
+	}
 
 }

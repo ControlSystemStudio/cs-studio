@@ -22,51 +22,37 @@
 
 package org.csstudio.platform.utility.jms.sharedconnection;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.Session;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.csstudio.platform.utility.jms.Activator;
-import org.csstudio.platform.utility.jms.preferences.PreferenceConstants;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.csstudio.platform.internal.utility.jms.sharedconnection.ActiveMQSharedSenderConnectionService;
+import org.csstudio.platform.internal.utility.jms.sharedconnection.IJmsSharedSenderConnectionService;
 
 /**
- * Provides access to an underlying shared JMS connection.
+ * Utility class for using the Shared JMS Connection Services.
  * 
  * @author Joerg Rathlev
  */
-public class SharedConnectionHandle implements ISharedConnectionHandle {
+public final class SharedJmsConnections {
 	
-	private Connection _connection;
-	
+	private static final IJmsSharedSenderConnectionService 
+			senderConnectionService = new ActiveMQSharedSenderConnectionService();
+
+	// Private constructor to prevent instantiation.
+	private SharedJmsConnections() {
+	}
+
 	/**
-	 * Creates a new <code>SharedConnectionHandle</code>.
+	 * Returns a handle to a shared JMS connection for sending JMS messages. If
+	 * the shared connection has not been created yet, this method will create
+	 * and start the connection before it returns.
 	 * 
-	 * @param connection the connection this object provides access to.
+	 * @return a handle to a shared JMS connection for sending JMS messages.
+	 * @throws JMSException
+	 *             if the shared connection could not be created or started due
+	 *             to an internal error.
 	 */
-	SharedConnectionHandle(Connection connection) {
-		_connection = connection;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Session createSession(boolean transacted, int acknowledgeMode)
+	public static ISharedConnectionHandle sharedSenderConnection()
 			throws JMSException {
-		return _connection.createSession(transacted, acknowledgeMode);
+		return senderConnectionService.sharedConnection();
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void release() {
-		// Closing the shared connection is not supported by the current
-		// implementation.
-		
-		// TODO: implement closing a shared connection when it is no longer used
-	}
-
 }

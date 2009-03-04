@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.utility.jms.sharedconnection;
+package org.csstudio.platform.internal.utility.jms.sharedconnection;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -29,6 +29,7 @@ import javax.jms.JMSException;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.platform.utility.jms.Activator;
 import org.csstudio.platform.utility.jms.preferences.PreferenceConstants;
+import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
