@@ -38,6 +38,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "LOG"); //$NON-NLS-1$
 		
 		prefs.put(PreferenceConstants.SENDER_BROKER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.RECEIVER_BROKER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000"); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.RECEIVER_BROKER_URL_2, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
 	}
 
 }

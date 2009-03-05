@@ -39,28 +39,30 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class SharedSenderConnectionService {
 	
-	private MonitorableSharedConnection _connection;
-
+	private final MonitorableSharedConnection _connection;
+	
 	/**
-	 * {@inheritDoc}
+	 * Creates the service.
 	 */
-	public ISharedConnectionHandle sharedConnection() throws JMSException {
-		createSharedConnectionIfNecessary();
-		return _connection.createHandle();
+	public SharedSenderConnectionService() {
+		IPreferencesService prefs = Platform.getPreferencesService();
+		String jmsUrl = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.SENDER_BROKER_URL,
+				// FIXME: the preference initializer does not seem to work
+				"failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000",
+				null);
+		_connection = new MonitorableSharedConnection(jmsUrl);
 	}
 
 	/**
-	 * Creates and starts the shared connection if it has not been created yet.
+	 * Returns a handle to the shared connection.
+	 * 
+	 * @return a handle to the shared connection.
+	 * @throws JMSException
+	 *             if the underlying shared connection could not be created or
+	 *             started due to an internal error.
 	 */
-	private synchronized void createSharedConnectionIfNecessary() {
-		if (_connection == null) {
-			IPreferencesService prefs = Platform.getPreferencesService();
-			String jmsUrl = prefs.getString(Activator.PLUGIN_ID,
-					PreferenceConstants.SENDER_BROKER_URL,
-					// FIXME: the preference initializer does not seem to work
-					"failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000",
-					null);
-			_connection = new MonitorableSharedConnection(jmsUrl);
-		}
+	public ISharedConnectionHandle sharedConnection() throws JMSException {
+		return _connection.createHandle();
 	}
 }

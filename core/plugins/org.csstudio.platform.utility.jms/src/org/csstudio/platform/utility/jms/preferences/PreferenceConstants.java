@@ -31,4 +31,6 @@ public class PreferenceConstants {
 	public static final String JMS_URL_PRIMARY = "jmsUrlPrimary";
 	public static final String JMS_URL_SECONDARY = "jmsUrlSecondary";
 	public static final String SENDER_BROKER_URL = "senderBrokerURL";
+	public static final String RECEIVER_BROKER_URL_1 = "receiverBrokerURL1";
+	public static final String RECEIVER_BROKER_URL_2 = "receiverBrokerURL2";
 }

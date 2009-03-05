@@ -20,60 +20,76 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.utility.jms.sharedconnection;
+package org.csstudio.platform.internal.utility.jms.sharedconnection;
 
 import javax.jms.JMSException;
 import javax.jms.MessageListener;
 
-import org.csstudio.platform.internal.utility.jms.sharedconnection.SharedReceiverConnectionService;
-import org.csstudio.platform.internal.utility.jms.sharedconnection.SharedSenderConnectionService;
+import org.csstudio.platform.utility.jms.Activator;
+import org.csstudio.platform.utility.jms.preferences.PreferenceConstants;
+import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
+import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * Utility class for using the Shared JMS Connection Services.
+ * Service which manages shared connections for receiving JMS messages. The
+ * settings for the connection are read from the preferences of the JMS Utility
+ * plug-in.
  * 
  * @author Joerg Rathlev
  */
-public final class SharedJmsConnections {
+public class SharedReceiverConnectionService {
 	
-	private static final SharedSenderConnectionService 
-			senderConnectionService = new SharedSenderConnectionService();
-	private static final SharedReceiverConnectionService
-			receiverConnectionService = new SharedReceiverConnectionService();
-
-	// Private constructor to prevent instantiation.
-	private SharedJmsConnections() {
-	}
-
-	/**
-	 * Returns a handle to a shared JMS connection for sending JMS messages. If
-	 * the shared connection has not been created yet, this method will create
-	 * and start the connection before it returns.
-	 * 
-	 * @return a handle to a shared JMS connection for sending JMS messages.
-	 * @throws JMSException
-	 *             if the shared connection could not be created or started due
-	 *             to an internal error.
+	/*
+	 * The current implementation is hard-coded to use two connections.
+	 * TODO: implement 1..n connections.
 	 */
-	public static ISharedConnectionHandle sharedSenderConnection()
-			throws JMSException {
-		return senderConnectionService.sharedConnection();
-	}
+	
+	private final MonitorableSharedConnection _connection1;
+	private final MonitorableSharedConnection _connection2;
 	
 	/**
-	 * Returns handles to the shared JMS connections for receiving JMS messages.
-	 * If the shared connections have not been created yet, this method will
-	 * create and start the connections before it returns.
+	 * Creates the service.
+	 */
+	public SharedReceiverConnectionService() {
+		IPreferencesService prefs = Platform.getPreferencesService();
+		String jmsUrl1 = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.RECEIVER_BROKER_URL_1,
+				// FIXME: the preference initializer does not seem to work
+				"failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000",
+				null);
+		String jmsUrl2 = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.RECEIVER_BROKER_URL_2,
+				// FIXME: the preference initializer does not seem to work
+				"failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000",
+				null);
+		_connection1 = new MonitorableSharedConnection(jmsUrl1);
+		_connection2 = new MonitorableSharedConnection(jmsUrl2);
+	}
+
+	/**
+	 * Returns handles to the shared connections.
 	 * 
 	 * @return handles to the shared connections.
 	 * @throws JMSException
 	 *             if one of the underlying shared connections could not be
 	 *             created or started due to an internal error.
 	 */
-	public static ISharedConnectionHandle[] sharedReceiverConnections()
-			throws JMSException {
-		return receiverConnectionService.sharedConnections();
+	public ISharedConnectionHandle[] sharedConnections() throws JMSException {
+		ISharedConnectionHandle[] result = new ISharedConnectionHandle[2];
+		result[0] = _connection1.createHandle();
+		try {
+			result[1] = _connection2.createHandle();
+		} catch (JMSException e) {
+			// An exception occured when trying to create the second connection.
+			// Clean up the first connection, then rethrow the exception.
+			result[0].release();
+			throw e;
+		}
+		return result;
 	}
-	
+
 	/**
 	 * Starts a message listener that will listen on the shared receiver
 	 * connections.
@@ -92,13 +108,13 @@ public final class SharedJmsConnections {
 	 * @throws JMSException
 	 *             if an internal error occured in the underlying JMS provider.
 	 */
-	public static IMessageListenerSession startMessageListener(
+	public IMessageListenerSession startSharedConnectionMessageListener(
 			MessageListener listener, String[] topics, int acknowledgeMode)
 			throws JMSException {
-		if (listener == null || topics == null || topics.length == 0) {
-			throw new IllegalArgumentException();
-		}
-		return receiverConnectionService.startSharedConnectionMessageListener(
-				listener, topics, acknowledgeMode);
+		return MultiConnectionReceiver.createListenerSession(
+				sharedConnections(), listener, topics, acknowledgeMode);
+		// TODO: The shared connection handles used by the listener session are
+		// never released. That should be changed.
 	}
+
 }

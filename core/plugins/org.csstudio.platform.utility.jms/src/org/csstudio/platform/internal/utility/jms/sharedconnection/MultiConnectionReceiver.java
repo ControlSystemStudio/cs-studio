@@ -29,15 +29,22 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import org.csstudio.platform.utility.jms.IConnectionMonitor;
+import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 
 /**
- * Message receiver which connects a {@link MessageListener} to multiple JMS
- * brokers using shared connections.
+ * Connects a {@link MessageListener} to multiple JMS brokers using shared
+ * connections.
  * 
  * @author Joerg Rathlev
  */
-class MultiConnectionReceiver {
+class MultiConnectionReceiver implements IMessageListenerSession {
+	
+	/*
+	 * Implementation note: this class was designed to be used only through
+	 * the IMessageListenerSession interface. Its only public methods are
+	 * methods defined by that interface.
+	 */
 	
 	private final ISharedConnectionHandle[] _connections;
 	private final Session[] _sessions;
@@ -62,7 +69,7 @@ class MultiConnectionReceiver {
 	 *            <code>Session.CLIENT_ACKNOWLEDGE</code>, and
 	 *            <code>Session.DUPS_OK_ACKNOWLEDGE</code>.
 	 */
-	MultiConnectionReceiver(ISharedConnectionHandle[] connections,
+	private MultiConnectionReceiver(ISharedConnectionHandle[] connections,
 			MessageListener listener, String[] topics, int acknowledgeMode) {
 		_connections = new ISharedConnectionHandle[connections.length];
 		System.arraycopy(connections, 0, _connections, 0, _connections.length);
@@ -72,11 +79,43 @@ class MultiConnectionReceiver {
 		System.arraycopy(topics, 0, _topics, 0, _topics.length);
 		_acknowledgeMode = acknowledgeMode;
 		_monitorSupport = new ConnectionMonitorSupport();
-		startMonitoringConnections();
 	}
 
 	/**
-	 * Creates a new listener session and starts listening.
+	 * Connects a listener to one or more shared JMS connections. The listener
+	 * will already be started when this method returns.
+	 * 
+	 * @param connections
+	 *            the shared connections from which the listener will receive
+	 *            messages.
+	 * @param listener
+	 *            the listener.
+	 * @param topics
+	 *            the topics to listen on.
+	 * @param acknowledgeMode
+	 *            the acknowledgement mode for the JMS sessions. Legal values
+	 *            are <code>Session.AUTO_ACKNOWLEDGE</code>,
+	 *            <code>Session.CLIENT_ACKNOWLEDGE</code>, and
+	 *            <code>Session.DUPS_OK_ACKNOWLEDGE</code>.
+	 * 
+	 * @return An <code>IMessageListenerSession</code> which can be used to
+	 *         control the listener session.
+	 * @throws JMSException
+	 *             if an internal error occured in the underlying JMS provider.
+	 */
+	static IMessageListenerSession createListenerSession(
+			ISharedConnectionHandle[] connections, MessageListener listener,
+			String[] topics, int acknowledgeMode) throws JMSException {
+		MultiConnectionReceiver mcr = new MultiConnectionReceiver(connections,
+				listener, topics, acknowledgeMode);
+		mcr.startMonitoringConnections();
+		mcr.startListening();
+		return mcr;
+	}
+
+	/**
+	 * Creates the sessions with the underlying JMS connections and starts
+	 * listening.
 	 * 
 	 * @throws JMSException
 	 *             if one of the sessions could not be created or one of the
@@ -84,7 +123,7 @@ class MultiConnectionReceiver {
 	 *             message listener could not be assigned to one of the message
 	 *             consumers due to an internal error.
 	 */
-	void start() throws JMSException {
+	private void startListening() throws JMSException {
 		try {
 			for (int i = 0; i < _connections.length; i++) {
 				_sessions[i] =
@@ -132,7 +171,7 @@ class MultiConnectionReceiver {
 	 * Closes this receiver. The receiver cannot be restarted after it was
 	 * closed.
 	 */
-	void close() {
+	public void close() {
 		for (int i = 0; i < _sessions.length; i++) {
 			try {
 				_sessions[i].close();
@@ -144,6 +183,27 @@ class MultiConnectionReceiver {
 				_sessions[i] = null;
 			}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void addMonitor(IConnectionMonitor monitor) {
+		_monitorSupport.addMonitor(monitor);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeMonitor(IConnectionMonitor monitor) {
+		_monitorSupport.removeMonitor(monitor);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isActive() {
+		return _allConnectionsActive;
 	}
 	
 	/**
