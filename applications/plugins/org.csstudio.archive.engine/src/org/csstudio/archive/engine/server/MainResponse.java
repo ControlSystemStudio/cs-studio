@@ -1,5 +1,7 @@
 package org.csstudio.archive.engine.server;
 
+import java.net.InetAddress;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,9 +25,24 @@ class MainResponse extends AbstractResponse
     /** Bytes in a MegaByte */
     final static double MB = 1024.0*1024.0;
 
+    private static String host = null;
+    
     MainResponse(final EngineModel model)
     {
         super(model);
+    
+        if (host == null)
+        {
+            try
+            {
+                final InetAddress localhost = InetAddress.getLocalHost();
+                host = localhost.getHostName();
+            }
+            catch (Exception ex)
+            {
+                host = "localhost";
+            }
+        }
     }
     
     @Override
@@ -36,6 +53,8 @@ class MainResponse extends AbstractResponse
         html.openTable(2, new String[] { "Summary" });
         
         html.tableLine(new String[] { Messages.HTTP_Description, model.getName() });
+        
+        html.tableLine(new String[] { Messages.HTTP_Host, host + ":" + req.getLocalPort() });
         
         html.tableLine(new String[] { Messages.HTTP_State, model.getState().name() });
         final ITimestamp start = model.getStartTime();

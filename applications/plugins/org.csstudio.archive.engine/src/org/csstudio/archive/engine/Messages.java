@@ -22,6 +22,7 @@ public class Messages
     final public static String HTTP_EnablingChannel = "Enabling Channel";
     final public static String HTTP_Group = "Group";
     final public static String HTTP_GroupCount = "Groups";
+    final public static String HTTP_Host = "HTTP Server";
     final public static String HTTP_Idletime = "Idle Time";
     final public static String HTTP_InternalState = "Internal State";
     final public static String HTTP_LastArchivedValue = "Last Archived Value";
