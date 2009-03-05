@@ -48,8 +48,9 @@ class MonitorableSharedConnection {
 
 	/**
 	 * Creates a new monitorable connection to the specified broker URI. The
-	 * connection is not started automatically. Call the
-	 * {@link #connectAndStart()} method to connect and start this connection.
+	 * connection is not started by the constructor. It is started automatically
+	 * as soon as the first handle to this shared connection is requested by
+	 * calling the {@link #createHandle()} method.
 	 * 
 	 * @param brokerURI
 	 *            the broker URI.
