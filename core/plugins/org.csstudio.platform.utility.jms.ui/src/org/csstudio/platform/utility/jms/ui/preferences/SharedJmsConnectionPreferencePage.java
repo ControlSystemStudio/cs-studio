@@ -32,33 +32,22 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
- * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
- * subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
- * save, restore and apply itself.
- * <p>
- * This page is used to modify preferences only. They
- * are stored in the preference store that belongs to
- * the main plug-in class. That way, preferences can
- * be accessed directly via the preference store.
+ * Preference page for configuring the shared JMS connection services.
  */
-
-public class JMSPreferencePage
+public class SharedJmsConnectionPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	private ScopedPreferenceStore _prefStore;
 	
-	public JMSPreferencePage() {
+	public SharedJmsConnectionPreferencePage() {
 		super(GRID);
 
 		_prefStore = new ScopedPreferenceStore(new InstanceScope(),
 				Activator.getDefault().getBundle().getSymbolicName());
-		
 		setPreferenceStore(_prefStore);
-//		setPreferenceStore(JmsPlugin.getDefault().getPreferenceStore());
+		
+		setDescription(Messages.SharedJmsConnectionPreferencePage_Description);
 	}
 	
 	/**
@@ -68,19 +57,20 @@ public class JMSPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(
-				new StringFieldEditor(PreferenceConstants.INITIAL_CONTEXT_FACTORY, Messages.JMSPreferencePage_CONTEXT_FACTORY, getFieldEditorParent()));
-		addField(
-			new StringFieldEditor(PreferenceConstants.URL, Messages.JMSPreferencePage_PROVIDER_URL, getFieldEditorParent()));
-		addField(
-				new StringFieldEditor(PreferenceConstants.QUEUE, Messages.JMSPreferencePage_QUEUE_NAME, getFieldEditorParent()));
-		
+		addField(new StringFieldEditor(PreferenceConstants.SENDER_BROKER_URL,
+				Messages.SharedJmsConnectionPreferencePage_SenderUrlLabel,
+				getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.RECEIVER_BROKER_URL_1,
+				Messages.SharedJmsConnectionPreferencePage_ReceiverUrl1Label,
+				getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.RECEIVER_BROKER_URL_2,
+				Messages.SharedJmsConnectionPreferencePage_ReceiverUrl2Label,
+				getFieldEditorParent()));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	/**
+	 * {@inheritDoc}
 	 */
 	public void init(IWorkbench workbench) {
 	}
-	
 }

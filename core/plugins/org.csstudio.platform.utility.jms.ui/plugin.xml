@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.platform.utility.jms.ui.preferences.SharedJmsConnectionPreferencePage"
+            id="org.csstudio.platform.utility.jms.ui.sharedJmsPreferencePage"
+            name="%preferencePage.name"/>
+   </extension>
+
+</plugin>

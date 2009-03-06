@@ -29,13 +29,15 @@ import org.eclipse.osgi.util.NLS;
  * @author Alexander Will
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.csstudio.platform.libs.jms.ui.internal.localization.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.csstudio.platform.utility.jms.ui.internal.localization.messages"; //$NON-NLS-1$
 
-	public static String JMSPreferencePage_CONTEXT_FACTORY;
+	public static String SharedJmsConnectionPreferencePage_Description;
 
-	public static String JMSPreferencePage_PROVIDER_URL;
+	public static String SharedJmsConnectionPreferencePage_ReceiverUrl1Label;
 
-	public static String JMSPreferencePage_QUEUE_NAME;
+	public static String SharedJmsConnectionPreferencePage_ReceiverUrl2Label;
+
+	public static String SharedJmsConnectionPreferencePage_SenderUrlLabel;
 	
 	static {
 		// initialize resource bundle
