@@ -15,6 +15,7 @@ public class Messages extends NLS
 
     public static String InstanceLabelProvider_OrigAppendix;
     public static String InstanceLabelProvider_PVValueFormat;
+    public static String InstanceLabelProvider_PVChangeFormat;
     public static String InstanceLabelProvider_ReadOnlyAppendix;
     public static String RestoreCell;
     public static String RestoreCell_TT;
@@ -30,6 +31,8 @@ public class Messages extends NLS
     public static String SetValue_Title;
     public static String SetValue_TT;
     public static String SystemColumn;
+    public static String AdmInfoColumn;
+    public static String RadInfoColumn;
     public static String UnknownValue;
     
     static

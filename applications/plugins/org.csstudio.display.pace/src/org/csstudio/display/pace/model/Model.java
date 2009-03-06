@@ -161,6 +161,14 @@ public class Model
         for (Instance instance : instances)
             for (int c = 0; c < getColumnCount(); c++)
                 instance.getCell(c).start();
+        
+        for (Instance instance : instances)
+           for (int c = 0; c < getColumnCount(); c++)
+              if(instance.getCell(c).hasComments())
+              {
+                instance.getCell(c).name_pv.start();
+                instance.getCell(c).date_pv.start();
+              }
     }
 
     /** Stop the PV connections of all cells in model */
@@ -169,6 +177,14 @@ public class Model
         for (Instance instance : instances)
             for (int c = 0; c < getColumnCount(); c++)
                 instance.getCell(c).stop();
+        
+        for (Instance instance : instances)
+           for (int c = 0; c < getColumnCount(); c++)
+              if(instance.getCell(c).hasComments())
+              {
+                instance.getCell(c).name_pv.stop();
+                instance.getCell(c).date_pv.stop();
+              }
     }
 
     /** Save values entered by user to the PVs.

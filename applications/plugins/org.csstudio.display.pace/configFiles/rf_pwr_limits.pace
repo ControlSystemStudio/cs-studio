@@ -10,26 +10,55 @@
      <name>PwrLmtAdm</name>
      <access>rw</access>
      <pv>${S}_HPRF:Cav${N}:PwrLmtAdm</pv>
+     <name_pv>${S}_HPRF:Cav${N}:PwrLmtAdmName</name_pv>
+     <date_pv>${S}_HPRF:Cav${N}:PwrLmtAdmTSStr</date_pv>
+   </column>
+   <column>
+     <name>PwrLmtAdmTxt</name>
+     <access>rw</access>
+     <pv>${S}_HPRF:Cav${N}:PwrLmtAdmTxt</pv>
    </column>
    <column>
      <name>PwrLmtRad</name>
      <access>rw</access>
      <pv>${S}_HPRF:Cav${N}:PwrLmtRad</pv>
+     <name_pv>${S}_HPRF:Cav${N}:PwrLmtRadName</name_pv>
+     <date_pv>${S}_HPRF:Cav${N}:PwrLmtRadTSStr</date_pv>
+   </column>
+   <column>
+     <name>PwrLmtRadTxt</name>
+     <access>rw</access>
+     <pv>${S}_HPRF:Cav${N}:PwrLmtRadTxt</pv>
    </column>
    <column>
      <name>DutyLmt</name>
      <access>ro</access>
      <pv>${S}_HPRF:Cav${N}:DutyLmt</pv>
+ 
    </column>
     <column>
      <name>DutyLmtAdm</name>
      <access>rw</access>
      <pv>${S}_HPRF:Cav${N}:DutyLmtAdm</pv>
+     <name_pv>${S}_HPRF:Cav${N}:DutyLmtAdmName</name_pv>
+     <date_pv>${S}_HPRF:Cav${N}:DutyLmtAdmTSStr</date_pv>
    </column>  
+   <column>
+     <name>DutyLmtAdmTxt</name>
+     <access>rw</access>
+     <pv>${S}_HPRF:Cav${N}:DutyLmtAdmTxt</pv>
+   </column>
    <column>
      <name>DutyLmtRad</name>
      <access>rw</access>
      <pv>${S}_HPRF:Cav${N}:DutyLmtRad</pv>
+     <name_pv>${S}_HPRF:Cav${N}:DutyLmtRadName</name_pv>
+     <date_pv>${S}_HPRF:Cav${N}:DutyLmtRadTSStr</date_pv>
+   </column>
+  <column>
+     <name>DutyLmtRadTxt</name>
+     <access>rw</access>
+     <pv>${S}_HPRF:Cav${N}:DutyLmtRadTxt</pv>
    </column>
 </columns>
 

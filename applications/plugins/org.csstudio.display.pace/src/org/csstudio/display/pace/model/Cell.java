@@ -32,6 +32,8 @@ public class Cell implements PVListener, IProcessVariable
     /** Value that the user entered. */
     private volatile String user_value = null;
     
+    public SubCell name_pv, date_pv;
+    
     /** Initialize
      *  @param instance Instance (row) that holds this cell
      *                  and provides the macro substitutions for the cell
@@ -47,6 +49,13 @@ public class Cell implements PVListener, IProcessVariable
         final String pv_name = Macro.apply(instance.getMacros(), column.getPvWithMacros());
         this.pv = PVFactory.createPV(pv_name);
         pv.addListener(this);
+        if(hasComments())
+        {
+           column.name_pv=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
+           this.name_pv = new SubCell(instance, column, column.name_pv, this);
+           column.date_pv=Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
+           this.date_pv = new SubCell(instance, column, column.date_pv, this);
+        }
     }
 
     /** @return Instance (row) that contains this cell */
@@ -65,6 +74,12 @@ public class Cell implements PVListener, IProcessVariable
     public boolean isReadOnly()
     {
         return column.isReadonly();
+    }
+    
+    /** @return <code>true</code> for hasComments cell */
+    public boolean hasComments()
+    {
+        return column.hasComments();
     }
     
     /** Even though a cell may be configured as writable,

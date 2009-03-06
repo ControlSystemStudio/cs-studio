@@ -2,6 +2,7 @@ package org.csstudio.display.pace.gui;
 
 import org.csstudio.display.pace.Messages;
 import org.csstudio.display.pace.model.Cell;
+import org.csstudio.display.pace.model.Column;
 import org.csstudio.display.pace.model.Instance;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -61,11 +62,20 @@ public class InstanceLabelProvider extends CellLabelProvider
          // Creating basic PV name, value tooltip
          String tip = NLS.bind(Messages.InstanceLabelProvider_PVValueFormat,
                                cell.getName(), cell.getValue());
-         // Extend to show 'edited' or 'read-only' state
+        // System.out.println(tip);
+
+         // Extend to show 'edited', 'hasComments' or 'read-only' state
          if (cell.isEdited())
              tip = tip + Messages.InstanceLabelProvider_OrigAppendix + cell.getCurrentValue();
          if (cell.isReadOnly() || !cell.isPVWriteAllowed())
              tip = tip + Messages.InstanceLabelProvider_ReadOnlyAppendix;
+         if (cell.hasComments())
+         {
+            final String changeTip = NLS.bind(Messages.InstanceLabelProvider_PVChangeFormat,
+                    cell.name_pv.getPvValue(), cell.date_pv.getPvValue());
+            tip = tip + changeTip;
+           // System.out.println(tip);
+         }
          return tip;
      }
 
