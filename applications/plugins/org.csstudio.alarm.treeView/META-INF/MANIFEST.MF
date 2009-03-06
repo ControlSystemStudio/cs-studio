@@ -15,3 +15,5 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.ldap
 Eclipse-LazyStart: true
 Bundle-Vendor: DESY
+Import-Package: org.csstudio.platform.utility.jms,
+ org.csstudio.platform.utility.jms.sharedconnection

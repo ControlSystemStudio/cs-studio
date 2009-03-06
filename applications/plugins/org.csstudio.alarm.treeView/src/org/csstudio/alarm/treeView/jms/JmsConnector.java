@@ -25,11 +25,16 @@ package org.csstudio.alarm.treeView.jms;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.jms.JMSException;
+import javax.jms.Session;
+
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.csstudio.platform.utility.jms.IConnectionMonitor;
+import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
+import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -51,29 +56,21 @@ public final class JmsConnector {
 	private AlarmMessageListener _listener;
 	
 	/**
-	 * The connection monitors attached to this connector.
+	 * The listener session used to listen to the JMS messages.
 	 */
-	private List<IConnectionMonitor> _connectionMonitors;
+	private IMessageListenerSession _listenerSession;
 	
 	/**
-	 * The JMS connections held by this connector.
+	 * The connection monitors.
 	 */
-	private JmsConnection[] _connections;
-	
-	/**
-	 * Whether this connector is connected, that is, whether all of its
-	 * underlying JMS connections are connected.
-	 */
-	private boolean _connected;
+	private List<IConnectionMonitor> _monitors;
 	
 	/**
 	 * Creates a new JMS connector.
 	 */
 	public JmsConnector() {
 		_listener = new AlarmMessageListener();
-		_connectionMonitors = new CopyOnWriteArrayList<IConnectionMonitor>();
-		_connections = new JmsConnection[2];
-		_connected = false;
+		_monitors = new CopyOnWriteArrayList<IConnectionMonitor>();
 	}
 	
 	/**
@@ -99,7 +96,10 @@ public final class JmsConnector {
 	 *            the connection monitor.
 	 */
 	public void addConnectionMonitor(final IConnectionMonitor monitor) {
-		_connectionMonitors.add(monitor);
+		_monitors.add(monitor);
+		if (_listenerSession != null) {
+			_listenerSession.addMonitor(monitor);
+		}
 	}
 
 	/**
@@ -109,84 +109,42 @@ public final class JmsConnector {
 	 *            the connection monitor.
 	 */
 	public void removeConnectionMonitor(final IConnectionMonitor monitor) {
-		_connectionMonitors.remove(monitor);
-	}
-	
-	/**
-	 * Notifies the connection monitors that the connection was established.
-	 */
-	private void fireConnectedEvent() {
-		for (IConnectionMonitor monitor : _connectionMonitors) {
-			monitor.onConnected();
+		_monitors.remove(monitor);
+		if (_listenerSession != null) {
+			_listenerSession.removeMonitor(monitor);
 		}
-	}
-	
-	/**
-	 * Notifies the connection monitors that the connection was closed or
-	 * interrupted.
-	 */
-	private void fireDisconnectedEvent() {
-		for (IConnectionMonitor monitor : _connectionMonitors) {
-			monitor.onDisconnected();
-		}
-	}
-	
-	/**
-	 * Called by the connection of this connector when their connection state
-	 * changes. Updates the connection state of this connector and notifies the
-	 * connection monitors if the state has changed.
-	 */
-	void onConnectionStateChanged() {
-		boolean connectedNow = true;
-		for (JmsConnection connection : _connections) {
-			connectedNow &= (connection != null ? connection.isConnected() : false);
-		}
-		
-		// If this connector was connected but is not connected now, or if it
-		// was not connected but is connected now, fire the appropriate event.
-		if (_connected && !connectedNow) {
-			_log.debug(this, "Connection state changed to disconnected.");
-			fireDisconnectedEvent();
-		} else if (!_connected && connectedNow) {
-			_log.debug(this, "Connection state changed to connected.");
-			fireConnectedEvent();
-		}
-		_connected = connectedNow;
 	}
 
 	/**
-	 * Connects to the JMS servers. This method blocks until the connection to
-	 * both servers is established.
+	 * Connects to the JMS servers. This method blocks until the connection is
+	 * established.
 	 * 
-	 * @param monitor
-	 *            a progress monitor. Connecting to the first and second JMS
-	 *            server are reported as subtasks to the monitor.
 	 * @throws JmsConnectionException
 	 *             if the connection could not be established.
 	 */
-	public void connect(final IProgressMonitor monitor) throws JmsConnectionException {
+	public void connect() throws JmsConnectionException {
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String[] topics = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
 				PreferenceConstants.JMS_TOPICS, "", null).split(",");
-		String url1 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_URL_PRIMARY, "", null);
-		String url2 = prefs.getString(AlarmTreePlugin.PLUGIN_ID, PreferenceConstants.JMS_URL_SECONDARY, "", null);
 		
-		_connections[0] = new JmsConnection(this, url1, topics, _listener);
 		try {
-			_connections[0].start();
-		} catch (JmsConnectionException e) {
-			_log.error(this, "Could not establish JMS connection to first broker.", e);
-			throw e;
-		}
-		
-		_connections[1] = new JmsConnection(this, url2, topics, _listener);
-		try {
-			_connections[1].start();
-		} catch (JmsConnectionException e) {
-			_log.error(this, "Could not establish JMS connection to second broker.", e);
-			// Close the first connection before rethrowing.
-			_connections[0].close();
-			throw e;
+			_listenerSession = SharedJmsConnections.startMessageListener(
+					_listener, topics, Session.AUTO_ACKNOWLEDGE);
+			
+			// If there already are listeners registered at this connector,
+			// these listeners are now added to the listener session and, if the
+			// session is active, their onConnected method is called.
+			for (IConnectionMonitor monitor : _monitors) {
+				_listenerSession.addMonitor(monitor);
+				if (_listenerSession.isActive()) {
+					monitor.onConnected();
+				}
+			}
+		} catch (JMSException e) {
+			_log.error(this,
+					"Could not create listener session using the shared JMS connections");
+			throw new JmsConnectionException(
+					"Could not create listener session using the shared JMS connections", e);
 		}
 	}
 	
@@ -195,12 +153,7 @@ public final class JmsConnector {
 	 */
 	public void disconnect() {
 		_log.debug(this, "Closing JMS connections.");
-		for (int i = 0; i < 2; i++) {
-			if (_connections[i] != null) {
-				_connections[i].close();
-				_connections[i] = null;
-			}
-		}
+		_listenerSession.close();
 		_listener.stop();
 	}
 

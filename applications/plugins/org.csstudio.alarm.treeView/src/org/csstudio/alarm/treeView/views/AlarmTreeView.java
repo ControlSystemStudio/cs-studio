@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.jms.IConnectionMonitor;
 import org.csstudio.alarm.treeView.jms.JmsConnectionException;
 import org.csstudio.alarm.treeView.jms.JmsConnector;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
@@ -46,6 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
 import org.csstudio.platform.ui.util.EditorUtil;
+import org.csstudio.platform.utility.jms.IConnectionMonitor;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -517,7 +517,7 @@ public class AlarmTreeView extends ViewPart {
 				_connectionMonitor = new AlarmTreeConnectionMonitor();
 				_jmsConnector.addConnectionMonitor(_connectionMonitor);
 				try {
-					_jmsConnector.connect(monitor);
+					_jmsConnector.connect();
 				} catch (JmsConnectionException e) {
 					throw new RuntimeException("Could not connect to JMS brokers.", e);
 				}
