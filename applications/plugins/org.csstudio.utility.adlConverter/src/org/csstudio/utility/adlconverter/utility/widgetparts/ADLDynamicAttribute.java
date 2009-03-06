@@ -99,7 +99,7 @@ public class ADLDynamicAttribute extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlDynamicAttribute) throws WrongADLFormatException {
 
-        assert !adlDynamicAttribute.isType("\"dynamic attribute\"") : Messages.ADLDynamicAttribute_AssertError_Begin+adlDynamicAttribute.getType()+Messages.ADLDynamicAttribute_AssertError_End; //$NON-NLS-1$
+        assert adlDynamicAttribute.isType("dynamic attribute") : Messages.ADLDynamicAttribute_AssertError_Begin+adlDynamicAttribute.getType()+Messages.ADLDynamicAttribute_AssertError_End; //$NON-NLS-1$
 
         for (ADLWidget adlWidget : adlDynamicAttribute.getObjects()) {
             if(adlWidget.getType().equals("attr")){

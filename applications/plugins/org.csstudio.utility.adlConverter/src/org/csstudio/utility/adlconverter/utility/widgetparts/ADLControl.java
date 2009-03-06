@@ -89,7 +89,7 @@ public class ADLControl extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlControl) throws WrongADLFormatException {
 
-        assert !adlControl.isType("control") : Messages.ADLControl_AssertError_Begin+adlControl.getType()+Messages.ADLControl_AssertError_End; //$NON-NLS-1$
+        assert adlControl.isType("control") : Messages.ADLControl_AssertError_Begin+adlControl.getType()+Messages.ADLControl_AssertError_End; //$NON-NLS-1$
 
         for (FileLine parameter : adlControl.getBody()) {
             if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$

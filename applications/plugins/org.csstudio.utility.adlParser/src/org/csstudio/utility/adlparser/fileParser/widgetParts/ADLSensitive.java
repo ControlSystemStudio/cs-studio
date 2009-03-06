@@ -99,7 +99,7 @@ public class ADLSensitive extends WidgetPart {
      */
     @Override
     final void parseWidgetPart(final ADLWidget sensitive) throws WrongADLFormatException {
-        assert !sensitive.isType("sensitive") :  Messages.ADLSensitive_AssertError_Begin+sensitive.getType()+Messages.ADLSensitive_AssertError_End; //$NON-NLS-1$
+        assert sensitive.isType("sensitive") :  Messages.ADLSensitive_AssertError_Begin+sensitive.getType()+Messages.ADLSensitive_AssertError_End; //$NON-NLS-1$
 
         for (FileLine fileLine : sensitive.getBody()) {
             String parameter = fileLine.getLine();

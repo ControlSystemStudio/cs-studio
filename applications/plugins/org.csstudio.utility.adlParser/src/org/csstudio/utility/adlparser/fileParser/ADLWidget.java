@@ -120,7 +120,8 @@ public class ADLWidget {
      * @return if true when the Widget type = checkType
      */
     public final boolean isType(final String checkType){
-        return getType().equals(checkType.toLowerCase());
+        boolean equals = getType().equals(checkType.toLowerCase());
+        return equals;
     }
     /**
      * 

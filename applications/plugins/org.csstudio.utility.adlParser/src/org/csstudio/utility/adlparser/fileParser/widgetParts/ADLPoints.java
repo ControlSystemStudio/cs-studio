@@ -68,7 +68,7 @@ public class ADLPoints extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlPoints) throws WrongADLFormatException {
 
-        assert !adlPoints.isType("points") : Messages.ADLPoints_AssertError_Begin+adlPoints.getType()+Messages.ADLPoints_AssertError_End; //$NON-NLS-1$
+        assert adlPoints.isType("points") : Messages.ADLPoints_AssertError_Begin+adlPoints.getType()+Messages.ADLPoints_AssertError_End; //$NON-NLS-1$
         
         _pointsList = new PointList(adlPoints.getBody().size());
         for (FileLine  fileLine : adlPoints.getBody()) {

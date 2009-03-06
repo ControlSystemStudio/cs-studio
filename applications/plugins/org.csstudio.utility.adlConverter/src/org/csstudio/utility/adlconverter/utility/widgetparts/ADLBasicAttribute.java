@@ -76,7 +76,7 @@ public class ADLBasicAttribute extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
-        assert !adlBasicAttribute.isType("\"basic attribute\"") : Messages.ADLBasicAttribute_AssertError_Begin+adlBasicAttribute.getType()+Messages.ADLBasicAttribute_AssertError_End; //$NON-NLS-1$
+        assert adlBasicAttribute.isType("basic attribute") : Messages.ADLBasicAttribute_AssertError_Begin+adlBasicAttribute.getType()+Messages.ADLBasicAttribute_AssertError_End; //$NON-NLS-1$
         for (ADLWidget adlWidget : adlBasicAttribute.getObjects()) {
             if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {

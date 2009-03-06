@@ -144,6 +144,7 @@ public class Label extends Widget {
         }else if(label.isType("Text")){ //$NON-NLS-1$
             _widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
         }
+        _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
     }
 
     /**

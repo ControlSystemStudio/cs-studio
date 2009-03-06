@@ -72,7 +72,7 @@ public class ADLObject extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlObject) throws WrongADLFormatException {
-        assert !adlObject.isType("object") : Messages.ADLObject_AssertError_Begin+adlObject.getType()+Messages.ADLObject_AssertError_End; //$NON-NLS-1$
+        assert adlObject.isType("object") : Messages.ADLObject_AssertError_Begin+adlObject.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlObject; //$NON-NLS-1$
         for (FileLine fileLine : adlObject.getBody()) {
             String parameter = fileLine.getLine();
             if(parameter.trim().startsWith("//")){ //$NON-NLS-1$

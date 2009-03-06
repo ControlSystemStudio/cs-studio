@@ -83,7 +83,7 @@ public final class ADLHelper {
      */
     public static void setColorMap(final ADLWidget colorMap) throws WrongADLFormatException {
 
-        assert !colorMap.isType("\"color map\"") : Messages.ADLHelper_AssertError_Begin + colorMap.getType() + Messages.ADLHelper_AssertError_End; //$NON-NLS-1$
+        assert colorMap.isType("color map") : Messages.ADLHelper_AssertError_Begin + colorMap.getType() + Messages.ADLHelper_AssertError_End; //$NON-NLS-1$
 
         String[] anz = colorMap.getBody().get(0).getLine()
                 .replaceAll("\\{", "").trim().toLowerCase().split("="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -264,7 +264,7 @@ public final class ADLHelper {
         if (chan.length > 2) { //$NON-NLS-1$
             postfix = "." + chan[chan.length - 1]; //$NON-NLS-1$
         }
-        assert chan.length > 3 : "Test Chan"; //$NON-NLS-1$
+//        assert chan.length > 3 : "Length =<3 is "+chan.length; //$NON-NLS-1$
         return postfix;
     }
 

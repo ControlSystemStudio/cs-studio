@@ -94,7 +94,7 @@ public class ADLMenuItem extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget menuItem) throws WrongADLFormatException {
-        assert !menuItem.isType("menuItem") :  Messages.ADLMenuItem_AssertError_Begin+menuItem.getType()+Messages.ADLMenuItem_AssertError_End; //$NON-NLS-1$
+        assert menuItem.isType("menuItem") :  Messages.ADLMenuItem_AssertError_Begin+menuItem.getType()+Messages.ADLMenuItem_AssertError_End; //$NON-NLS-1$
 
         for (FileLine fileLine : menuItem.getBody()) {
             String parameter = fileLine.getLine();

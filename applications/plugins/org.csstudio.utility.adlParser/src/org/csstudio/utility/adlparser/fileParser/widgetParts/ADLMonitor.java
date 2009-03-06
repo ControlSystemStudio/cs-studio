@@ -82,7 +82,7 @@ public class ADLMonitor extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget monitor) throws WrongADLFormatException {
-        assert !monitor.isType("monitor") : Messages.ADLMonitor_assertError_Begin+monitor.getType()+Messages.ADLMonitor_assertError_End; //$NON-NLS-1$
+        assert monitor.isType("monitor") : Messages.ADLMonitor_assertError_Begin+monitor.getType()+Messages.ADLMonitor_assertError_End; //$NON-NLS-1$
 
         for (FileLine fileLine : monitor.getBody()) {
             String parameter = fileLine.getLine();
