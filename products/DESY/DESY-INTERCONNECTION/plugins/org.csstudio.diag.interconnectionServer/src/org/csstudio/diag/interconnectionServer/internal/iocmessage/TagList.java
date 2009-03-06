@@ -144,6 +144,11 @@ public final class TagList {
 	 */
 	public static final int IOC_SYSTEM_MESSAGE = 14;
 	
+	/**
+	 * Message type for SNL log messages.
+	 */
+	public static final int SNL_LOG_MESSAGE = 15;
+	
 	public static final int REPLY_TYPE_DONE = 1;
 	public static final int REPLY_TYPE_OK = 2;
 	public static final int REPLY_TYPE_ERROR = 3;
@@ -187,6 +192,7 @@ public final class TagList {
 		messageTypes.put("unknown", 			UNKNOWN_MESSAGE);
 		messageTypes.put("putLog", 				PUT_LOG_MESSAGE); // not yet
 		messageTypes.put("TCom", 				TEST_COMMAND);
+		messageTypes.put("snlLog", 				SNL_LOG_MESSAGE);
 	}
 	
 	private static void fillReplyTypes() {

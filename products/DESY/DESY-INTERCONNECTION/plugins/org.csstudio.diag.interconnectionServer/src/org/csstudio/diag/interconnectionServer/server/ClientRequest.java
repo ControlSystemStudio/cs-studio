@@ -318,6 +318,7 @@ public class ClientRequest implements Runnable
 
         		break;
         		
+        	case TagList.SNL_LOG_MESSAGE:  // TODO send SNL log to its own topic
         	case TagList.SYSTEM_LOG_MESSAGE:
         	case TagList.APPLICATION_LOG_MESSAGE:
         		
@@ -633,7 +634,7 @@ public class ClientRequest implements Runnable
         		try {
                     // Create the destination (Topic or Queue)
         			session = icServer.createJmsSession();
-        			Destination putLogDestination = session.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+        			Destination putLogDestination = session.createTopic(PreferenceProperties.JMS_PUT_LOG_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
                 	MessageProducer putLogSender = session.createProducer( putLogDestination);

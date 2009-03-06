@@ -30,8 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -39,11 +37,12 @@ import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
+import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -59,7 +58,6 @@ public class InterconnectionServer
 {
     private static InterconnectionServer		thisServer = null;
     private DatagramSocket              serverSocket    = null; 
-    private Connection                  jmsConnection = null;
 	private int							sendMessageErrorCount	= 0;
 	private	volatile boolean         	quit        = false;
 	private int messageCounter = 0;
@@ -80,6 +78,8 @@ public class InterconnectionServer
     private Collector	numberOfMessagesCollector = null;
     private Collector	numberOfIocFailoverCollector = null;
     
+    private ISharedConnectionHandle _sharedSenderConnection;
+    
     /**
      * This latch is counted down when the main method of this server exits.
      * This allows another thread to await the termination of the server.
@@ -98,26 +98,14 @@ public class InterconnectionServer
 		// remember how often we came here
 		numberOfJmsServerFailover++;
 		
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String jmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
-				PreferenceConstants.PRIMARY_JMS_URL, "", null);
-		
-		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(jmsUrl);
-		CentralLogger.getInstance().info(this, "Connecting to ActiveMQ server: " + jmsUrl);
-			
-		jmsConnection = connectionFactory.createConnection();
-		jmsConnection.start();
+		_sharedSenderConnection = SharedJmsConnections.sharedSenderConnection();
 	}
     
 	/**
 	 * Closes the JMS connections.
 	 */
 	private void closeJmsConnections () {
-		try {
-			jmsConnection.close();
-		} catch (JMSException e) {
-			CentralLogger.getInstance().error(this, "Error while closing JMS connection", e);
-		}
+		_sharedSenderConnection.release();
 	}
     
     private void disconnectFromIocs() {
@@ -501,7 +489,7 @@ public class InterconnectionServer
 	 *             if an error occurs.
 	 */
 	public Session createJmsSession() throws JMSException {
-		return jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		return _sharedSenderConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}
 
 	public String getLocalHostName() {
