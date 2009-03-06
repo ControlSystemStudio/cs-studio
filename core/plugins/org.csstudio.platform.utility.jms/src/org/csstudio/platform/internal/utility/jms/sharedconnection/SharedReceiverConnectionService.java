@@ -56,14 +56,10 @@ public class SharedReceiverConnectionService {
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String jmsUrl1 = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.RECEIVER_BROKER_URL_1,
-				// FIXME: the preference initializer does not seem to work
-				"failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000",
-				null);
+				"", null);
 		String jmsUrl2 = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.RECEIVER_BROKER_URL_2,
-				// FIXME: the preference initializer does not seem to work
-				"failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000",
-				null);
+				"", null);
 		_connection1 = new MonitorableSharedConnection(jmsUrl1);
 		_connection2 = new MonitorableSharedConnection(jmsUrl2);
 	}
