@@ -36,7 +36,7 @@ import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.utility.jms.asyncreceiver.IConnectionMonitor;
+import org.csstudio.platform.utility.jms.IConnectionMonitor;
 import org.csstudio.platform.utility.jms.asyncreceiver.JmsConnectJob;
 import org.csstudio.platform.utility.jms.asyncreceiver.JmsConnector;
 import org.eclipse.jface.action.Action;

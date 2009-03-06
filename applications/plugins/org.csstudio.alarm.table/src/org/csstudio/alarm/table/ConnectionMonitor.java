@@ -1,6 +1,6 @@
 package org.csstudio.alarm.table;
 
-import org.csstudio.platform.utility.jms.asyncreceiver.IConnectionMonitor;
+import org.csstudio.platform.utility.jms.IConnectionMonitor;
 
 public class ConnectionMonitor implements IConnectionMonitor {
 
