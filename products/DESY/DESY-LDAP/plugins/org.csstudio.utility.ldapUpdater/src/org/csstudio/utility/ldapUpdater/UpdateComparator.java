@@ -51,7 +51,7 @@ public class UpdateComparator {
 							Attributes afe = attributesForEntry("epicsRecord", "eren", recordName);
 							try {
 								directory.bind(f.toString(), null, afe); // = Record schreiben
-								CentralLogger.getInstance().info( this," Record geschrieben: \"" + ioc.getName()+ " - " + recordName + "\"");
+								CentralLogger.getInstance().info( this," Record written: \"" + ioc.getName()+ " - " + recordName + "\"");
 								ioc.set_mustWriteIOCToHistory(true);
 								error_found=false;
 							} catch (NamingException e) {
@@ -121,7 +121,7 @@ public class UpdateComparator {
 								try {
 										directory2.bind(f2.toString(), null, afe2); // = ioc records schreiben
 										CentralLogger.getInstance().info(this,
-												"Record geschrieben!" + ioc.getName() + " - " + recordName2);
+												"Record written!" + ioc.getName() + " - " + recordName2);
 										error_found=false;
 								} catch (NamingException e) {
 									// TODO Auto-generated catch block

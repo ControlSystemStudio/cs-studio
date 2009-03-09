@@ -8,22 +8,21 @@ import org.csstudio.utility.ldapUpdater.IOC;
 
 public class DataModel {
 	private boolean _ready=false;
-
+    private int _serror;
+    	
 	/**
 	 * historyMap is a hash map won from the long file history.dat
 	 */
-    private HashMap<String, Long> _historyMap;
-    
+    private HashMap<String, Long> _historyMap;   
     private ArrayList<String> ldapList;
-    private ArrayList<String> _ldapRecordNames;
-    
+    private ArrayList<String> _ldapRecordNames;   
     private List<IOC> _iocList;
-
-    
     private List<String> _BootedIocNames;
     private List<String> _NewIocNames = new ArrayList<String>();
     private List<String> _ObsoleteIocNames;
-    
+ 
+//	Getters and Setters :
+	    
 	public List<String> getBootedIocNames() {
 		return _BootedIocNames;
 	}
@@ -87,5 +86,12 @@ public class DataModel {
 	public ArrayList<String> getLdapRecordNames() {
 		return _ldapRecordNames;
 	}
-	
+
+	public int getSerror() {
+		return _serror;
+	}
+
+	public void setSerror(int serror) {
+		_serror = serror;
+	}
 }
