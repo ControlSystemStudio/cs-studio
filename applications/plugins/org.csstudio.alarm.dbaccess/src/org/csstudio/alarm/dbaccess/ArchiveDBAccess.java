@@ -144,9 +144,6 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		_maxAnswerSize = -1;
 		ArrayList<ResultSet> result = queryDatabase(settings, from, to);
 		Set<String> messageIdsToDelete = readMessageIdFromResult(result);
-		for (String string : messageIdsToDelete) {
-			System.out.println(string);
-		}
 		try {
 			deleteFromDB(messageIdsToDelete);
 		} catch (SQLException e) {
