@@ -23,6 +23,11 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
+/**
+ * 
+ * @author Markus Moeller
+ * @deprecated
+ */
 public class SimpleStatistic
 {
     private static SimpleStatistic instance;
