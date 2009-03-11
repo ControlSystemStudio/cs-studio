@@ -37,6 +37,7 @@ import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
 import org.csstudio.alarm.jms2ora.util.SimpleStatistic;
+import org.csstudio.platform.statistic.Collector;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
@@ -92,6 +93,18 @@ public class MessageProcessor extends Thread implements MessageListener
     /** A very simple statistic class */
     private SimpleStatistic statistic = null;
     
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private Collector receivedMessages = null;
+    
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private Collector emptyMessages = null;
+
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private Collector discardedMessages = null;
+
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private Collector storedMessages = null;
+
     /** The logger */
     private Logger logger = null;
     
@@ -159,6 +172,30 @@ public class MessageProcessor extends Thread implements MessageListener
         contentCreator = new MessageContentCreator(url, user, password);
         
         statistic = SimpleStatistic.getInstance();
+        
+        receivedMessages = new Collector();
+        receivedMessages.setApplication("Jms2Ora");
+        receivedMessages.setDescriptor("Received messages");
+        receivedMessages.setContinuousPrint(false);
+        receivedMessages.setContinuousPrintCount(1000.0);
+        
+        emptyMessages = new Collector();
+        emptyMessages.setApplication("Jms2Ora");
+        emptyMessages.setDescriptor("Filtered messages");
+        emptyMessages.setContinuousPrint(false);
+        emptyMessages.setContinuousPrintCount(1000.0);
+        
+        discardedMessages = new Collector();
+        discardedMessages.setApplication("Jms2Ora");
+        discardedMessages.setDescriptor("Discarded messages");
+        discardedMessages.setContinuousPrint(false);
+        discardedMessages.setContinuousPrintCount(1000.0);
+        
+        storedMessages = new Collector();
+        storedMessages.setApplication("Jms2Ora");
+        storedMessages.setDescriptor("Stored messages");
+        storedMessages.setContinuousPrint(false);
+        storedMessages.setContinuousPrintCount(1000.0);
         
         if(config.containsKey("provider.url") && config.containsKey("topic.names"))
         {
@@ -249,15 +286,18 @@ public class MessageProcessor extends Thread implements MessageListener
                         if(result == PM_RETURN_DISCARD)
                         {
                             statistic.incrementNumberOfDiscardedMessages();
+                            discardedMessages.incrementValue();
                         }
                         else if(result == this.PM_RETURN_EMPTY)
                         {
                             statistic.incrementNumberOfEmptyMessages();
+                            emptyMessages.incrementValue();
                         }
                     }
                     else
                     {
                         statistic.incrementNumberOfStoredMessages();
+                        storedMessages.incrementValue();
                         logger.debug(infoText[result]);
                     }
                 }
@@ -348,6 +388,7 @@ public class MessageProcessor extends Thread implements MessageListener
             content = contentCreator.convertMapMessage((MapMessage)message);
             messages.add(content);
             statistic.incrementNumberOfReceivedMessages();
+            receivedMessages.incrementValue();
 
             synchronized(this)
             {
