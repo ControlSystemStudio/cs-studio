@@ -3,9 +3,9 @@ package org.csstudio.platform.internal.jassauthentication.preference;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.apputil.text.StringSplitter;
 import org.csstudio.platform.internal.jaasauthentication.Activator;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -65,14 +65,14 @@ public class PreferencesHelper
     	String[] configEntryStringArray = null;
     	try {
 			configEntryStringArray = 
-				StringSplitter.splitIgnoreInQuotes(prefString, ';', false);
+				StringUtil.splitIgnoreInQuotes(prefString, ';', false);
 		} catch (Exception e) {
 			CentralLogger.getInstance().error(PreferencesHelper.class, e);
 			return null;
 		}
 		for(String entryString : configEntryStringArray) {
 			try {
-				String[] entryElements = StringSplitter.splitIgnoreInQuotes(
+				String[] entryElements = StringUtil.splitIgnoreInQuotes(
 						entryString, '|', false);
 				JAASConfigurationEntry configEntry = new JAASConfigurationEntry();
 				configEntry.setLoginModuleName(entryElements[0]);
@@ -95,7 +95,7 @@ public class PreferencesHelper
     private static List<String[]> parseOptions(String[] options) throws Exception {
     	List<String[]> result = new ArrayList<String[]>();
     	for(String option : options) {
-			String[] optionTuple = StringSplitter.splitIgnoreInQuotes(option, '=', true);
+			String[] optionTuple = StringUtil.splitIgnoreInQuotes(option, '=', true);
 			result.add(optionTuple);
     	}
     	return result;    	
