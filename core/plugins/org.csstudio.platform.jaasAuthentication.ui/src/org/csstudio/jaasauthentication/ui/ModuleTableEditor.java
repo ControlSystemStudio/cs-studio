@@ -3,10 +3,10 @@ package org.csstudio.jaasauthentication.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
-import org.csstudio.apputil.ui.swt.stringtable.StringTableEditor;
 import org.csstudio.platform.internal.jassauthentication.preference.JAASPreferenceModel;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
