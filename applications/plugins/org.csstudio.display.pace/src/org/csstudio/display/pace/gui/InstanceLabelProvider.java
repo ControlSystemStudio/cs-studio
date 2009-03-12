@@ -2,8 +2,8 @@ package org.csstudio.display.pace.gui;
 
 import org.csstudio.display.pace.Messages;
 import org.csstudio.display.pace.model.Cell;
-import org.csstudio.display.pace.model.Column;
 import org.csstudio.display.pace.model.Instance;
+import org.csstudio.platform.data.ValueUtil;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osgi.util.NLS;
@@ -69,12 +69,18 @@ public class InstanceLabelProvider extends CellLabelProvider
              tip = tip + Messages.InstanceLabelProvider_OrigAppendix + cell.getCurrentValue();
          if (cell.isReadOnly() || !cell.isPVWriteAllowed())
              tip = tip + Messages.InstanceLabelProvider_ReadOnlyAppendix;
+         // If the cell has comments, add the person who made the change and the
+         // date of the change to the tool-tip.
          if (cell.hasComments())
          {
-            final String changeTip = NLS.bind(Messages.InstanceLabelProvider_PVChangeFormat,
-                    cell.name_pv.getPvValue(), cell.date_pv.getPvValue());
+            final String changeTip = NLS.bind(Messages.InstanceLabelProvider_PVCommentTipFormat,
+                  new Object[]
+                  {
+                     ValueUtil.getString(cell.name_pv.getValue()),
+                     ValueUtil.getString(cell.date_pv.getValue()),
+                     ValueUtil.getString(cell.comment_pv.getValue())
+                  });
             tip = tip + changeTip;
-           // System.out.println(tip);
          }
          return tip;
      }

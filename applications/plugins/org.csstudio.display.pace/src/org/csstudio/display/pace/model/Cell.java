@@ -32,7 +32,11 @@ public class Cell implements PVListener, IProcessVariable
     /** Value that the user entered. */
     private volatile String user_value = null;
     
-    public SubCell name_pv, date_pv;
+    final boolean areComments;
+    
+    // Cell information for the name of the person who made the change and
+    // the date of the change, if the primary cell has comments.
+    public PV name_pv, date_pv, comment_pv;
     
     /** Initialize
      *  @param instance Instance (row) that holds this cell
@@ -46,16 +50,31 @@ public class Cell implements PVListener, IProcessVariable
     {
         this.instance = instance;
         this.column = column;
-        final String pv_name = Macro.apply(instance.getMacros(), column.getPvWithMacros());
+        String pv_name = Macro.apply(instance.getMacros(), column.getPvWithMacros());
+
+        //  Create pvs and add listeners
         this.pv = PVFactory.createPV(pv_name);
         pv.addListener(this);
-        if(hasComments())
-        {
-           column.name_pv=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
-           this.name_pv = new SubCell(instance, column, column.name_pv, this);
-           column.date_pv=Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
-           this.date_pv = new SubCell(instance, column, column.date_pv, this);
-        }
+        pv_name=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
+        this.name_pv = PVFactory.createPV(pv_name);
+        name_pv.addListener(this);
+        pv_name=Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
+        this.date_pv = PVFactory.createPV(pv_name);
+        date_pv.addListener(this);
+        pv_name=Macro.apply(instance.getMacros(), column.getCommentPvWithMacros());
+        this.comment_pv = PVFactory.createPV(pv_name);
+        comment_pv.addListener(this);
+        if(this.comment_pv.getName().length()>0)
+           instance.getModel().CmtMacroStr.add(instance.getModel().CmtMacroStr.size(),
+                 comment_pv.getName());
+
+        // if the name_pv, comment_pv or date_pv were found in the XML file
+        // set the hasComments flag to true, otherwise false.
+        if(name_pv.getName().length()>0 || date_pv.getName().length()>0 ||
+              comment_pv.getName().length()>0)
+           this.areComments=true;
+        else
+           this.areComments=false;
     }
 
     /** @return Instance (row) that contains this cell */
@@ -79,7 +98,7 @@ public class Cell implements PVListener, IProcessVariable
     /** @return <code>true</code> for hasComments cell */
     public boolean hasComments()
     {
-        return column.hasComments();
+        return areComments;
     }
     
     /** Even though a cell may be configured as writable,
@@ -213,4 +232,5 @@ public class Cell implements PVListener, IProcessVariable
     {
         return "Cell " + pv.getName() + " = " + getValue();
     }
+    
 }

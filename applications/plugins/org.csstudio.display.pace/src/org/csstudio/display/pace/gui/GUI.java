@@ -277,6 +277,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                     return;
                 }
                 selected_cell = instance.getCell(col_idx-1);
+ 
                 // Update selection listeners about newly selected cells
                 for (ISelectionChangedListener listener : listeners)
                     listener.selectionChanged(new SelectionChangedEvent(GUI.this, getSelection()));
@@ -295,7 +296,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         manager.addMenuListener(this);
         final Table table = table_viewer.getTable();
         table.setMenu(manager.createContextMenu(table));
-        // Allow extensions to add to the context menu
+        // Allow CSS extensions to add to the context menu
         if (site != null)
             site.registerContextMenu(manager, this);
     }
@@ -323,6 +324,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         // Anything selected at all?
         if (selected_cell == null)
             return null;
+
         return getSelectedCells(selected_cell.getColumn());
     }
     

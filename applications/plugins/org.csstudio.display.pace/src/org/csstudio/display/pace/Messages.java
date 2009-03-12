@@ -15,7 +15,7 @@ public class Messages extends NLS
 
     public static String InstanceLabelProvider_OrigAppendix;
     public static String InstanceLabelProvider_PVValueFormat;
-    public static String InstanceLabelProvider_PVChangeFormat;
+    public static String InstanceLabelProvider_PVCommentTipFormat;
     public static String InstanceLabelProvider_ReadOnlyAppendix;
     public static String RestoreCell;
     public static String RestoreCell_TT;
@@ -23,6 +23,7 @@ public class Messages extends NLS
     public static String SaveInto;
     public static String SaveMessage;
     public static String SavePVInfoFmt;
+    public static String SaveCommentInfoFmt;
     public static String SaveTitle;
     public static String SetColumnValue_Msg;
     public static String SetValue;

@@ -12,6 +12,7 @@
      <pv>${S}_HPRF:Cav${N}:PwrLmtAdm</pv>
      <name_pv>${S}_HPRF:Cav${N}:PwrLmtAdmName</name_pv>
      <date_pv>${S}_HPRF:Cav${N}:PwrLmtAdmTSStr</date_pv>
+     <comment_pv>${S}_HPRF:Cav${N}:PwrLmtAdmTxt</comment_pv>
    </column>
    <column>
      <name>PwrLmtAdmTxt</name>
@@ -24,6 +25,7 @@
      <pv>${S}_HPRF:Cav${N}:PwrLmtRad</pv>
      <name_pv>${S}_HPRF:Cav${N}:PwrLmtRadName</name_pv>
      <date_pv>${S}_HPRF:Cav${N}:PwrLmtRadTSStr</date_pv>
+     <comment_pv>${S}_HPRF:Cav${N}:PwrLmtRadTxt</comment_pv>
    </column>
    <column>
      <name>PwrLmtRadTxt</name>
@@ -34,7 +36,6 @@
      <name>DutyLmt</name>
      <access>ro</access>
      <pv>${S}_HPRF:Cav${N}:DutyLmt</pv>
- 
    </column>
     <column>
      <name>DutyLmtAdm</name>
@@ -42,6 +43,7 @@
      <pv>${S}_HPRF:Cav${N}:DutyLmtAdm</pv>
      <name_pv>${S}_HPRF:Cav${N}:DutyLmtAdmName</name_pv>
      <date_pv>${S}_HPRF:Cav${N}:DutyLmtAdmTSStr</date_pv>
+     <comment_pv>${S}_HPRF:Cav${N}:DutyLmtAdmTxt</comment_pv>
    </column>  
    <column>
      <name>DutyLmtAdmTxt</name>
@@ -54,6 +56,7 @@
      <pv>${S}_HPRF:Cav${N}:DutyLmtRad</pv>
      <name_pv>${S}_HPRF:Cav${N}:DutyLmtRadName</name_pv>
      <date_pv>${S}_HPRF:Cav${N}:DutyLmtRadTSStr</date_pv>
+     <comment_pv>${S}_HPRF:Cav${N}:DutyLmtRadTxt</comment_pv>
    </column>
   <column>
      <name>DutyLmtRadTxt</name>

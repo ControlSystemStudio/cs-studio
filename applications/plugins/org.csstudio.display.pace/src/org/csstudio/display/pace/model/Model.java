@@ -36,6 +36,8 @@ public class Model
     /** Instances, rows with cells */
     final private ArrayList<Instance> instances = new ArrayList<Instance>();
     
+    final ArrayList<String> CmtMacroStr = new ArrayList<String>();
+    
     /** Listener to be notified of model changes */
     final private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
@@ -109,6 +111,26 @@ public class Model
         listeners.remove(listener);
     }
     
+    /** @param comment cell to add */
+    public void addComment(final String pvStr)
+    {
+       CmtMacroStr.add(pvStr);
+    }
+
+    /** @param comment cell to add */
+    public boolean isComment(final String pvStr)
+    {
+       for (Instance instance : instances)
+          for (int c = 0; c < getColumnCount(); c++)
+             for (String MacroStr : CmtMacroStr)
+                if(MacroStr.equals(pvStr)){
+                   System.out.println(pvStr);
+                   return true;
+                }
+      return false;
+    }
+
+    
     /** @return Overall title of the Model */
     public String getTitle()
     {
@@ -160,15 +182,17 @@ public class Model
     {
         for (Instance instance : instances)
             for (int c = 0; c < getColumnCount(); c++)
-                instance.getCell(c).start();
-        
-        for (Instance instance : instances)
-           for (int c = 0; c < getColumnCount(); c++)
-              if(instance.getCell(c).hasComments())
-              {
-                instance.getCell(c).name_pv.start();
-                instance.getCell(c).date_pv.start();
-              }
+            {
+               instance.getCell(c).start();
+      // If the cell has a comment start the pvs containing the name of
+      // the person making the change and the date of the change.
+               if(instance.getCell(c).hasComments())
+               {
+                  instance.getCell(c).name_pv.start();
+                  instance.getCell(c).date_pv.start();
+                  instance.getCell(c).comment_pv.start();
+               }
+            }
     }
 
     /** Stop the PV connections of all cells in model */
@@ -176,15 +200,17 @@ public class Model
     {
         for (Instance instance : instances)
             for (int c = 0; c < getColumnCount(); c++)
+            {
                 instance.getCell(c).stop();
-        
-        for (Instance instance : instances)
-           for (int c = 0; c < getColumnCount(); c++)
-              if(instance.getCell(c).hasComments())
-              {
-                instance.getCell(c).name_pv.stop();
-                instance.getCell(c).date_pv.stop();
-              }
+         // If the cell has a comment stop the pvs containing the name of
+         // the person making the change and the date of the change.
+                if(instance.getCell(c).hasComments())
+                {
+                  instance.getCell(c).name_pv.stop();
+                  instance.getCell(c).date_pv.stop();
+                  instance.getCell(c).comment_pv.stop();
+                }
+            }
     }
 
     /** Save values entered by user to the PVs.

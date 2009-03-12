@@ -23,9 +23,7 @@ public class Column
     final boolean readonly;
     final String namePv_with_macros;
     final String datePv_with_macros;
-    String name_pv;
-    String date_pv;
-    final boolean hasComments;
+    final String commentPv_with_macros;
 
     /** Parse and create Column from DOM
      *  @param col_node DOM node for column info
@@ -42,12 +40,15 @@ public class Column
             throw new Exception("Missing column name");
         if (pv_pattern.length() <= 0)
             throw new Exception("Missing PV name pattern");
+        // Look in the XML file to see if the column has comment, name and/or 
+        // date pvs.
         String name_pv = DOMHelper.getSubelementString(col_node, "name_pv");
         String date_pv = DOMHelper.getSubelementString(col_node, "date_pv");
+        String comment_pv = DOMHelper.getSubelementString(col_node, "comment_pv");
         // When access=="ro", make read-only. Otherwise, including no access
         // info, use read/write
         return new Column(name, pv_pattern, "ro".equalsIgnoreCase(access), 
-              name_pv, date_pv);
+              name_pv, date_pv, comment_pv);
     }
 
     /** Initialize Column
@@ -56,18 +57,15 @@ public class Column
      *  @param readonly read-only column?
      */
     public Column(final String name, final String pv_with_macros,
-            final boolean readonly, final String name_pv, final String date_pv)
+            final boolean readonly, final String name_pv, final String date_pv,
+            final String comment_pv)
     {
         this.name = name;
         this.pv_with_macros = pv_with_macros;
         this.readonly = readonly;
-        if(name_pv.length()<=0 && date_pv.length()<=0)
-           this.hasComments=false;
-        else
-           this.hasComments=true;
-
         this.namePv_with_macros = name_pv;
         this.datePv_with_macros = date_pv;
+        this.commentPv_with_macros = comment_pv;
     }
 
     /** @return Column name/title */
@@ -75,43 +73,14 @@ public class Column
     {
         return name;
     }
+ 
 
-    /** @return name of the person making the change */
-    public String getNamePvWithMacros()
-    {
-        return namePv_with_macros;
-    }
-    
-    /** @return name of the person making the change */
-    public String getNamePv()
-    {
-        return name_pv;
-    }
-    
-    /** @return date/time the change was made */
-    public String getDatePvWithMacros()
-    {
-        return datePv_with_macros;
-    }
-    
-    /** @return date/time the change was made */
-    public String getDatePv()
-    {
-        return date_pv;
-    }
-    
     /** @return <code>true</code> for read-only column */
     public boolean isReadonly()
     {
         return readonly;
     }
     
-    /** @return <code>true</code> for has_comments column */
-    public boolean hasComments()
-    {
-        return hasComments;
-    }
-
     /** @return Name of the PV with unexpanded macros */
     protected String getPvWithMacros()
     {
@@ -126,4 +95,22 @@ public class Column
                (readonly ? " (read-only)" : "");
     }
 
+    /** @return macro string of the pv for the name of the person making the change */
+    public String getNamePvWithMacros()
+    {
+        return namePv_with_macros;
+    }
+    
+    /** @return macro string of the pv for the comment made with the change*/
+    public String getCommentPvWithMacros()
+    {
+        return commentPv_with_macros;
+    }
+    
+    /** @return macro string of the pv for the date/time the change was made */
+    public String getDatePvWithMacros()
+    {
+        return datePv_with_macros;
+    }
+    
 }

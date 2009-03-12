@@ -7,6 +7,7 @@ import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.csstudio.logbook.ILogbook;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -108,12 +109,13 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         body.append(Messages.SaveInto);
         for (int i=0; i<model.getInstanceCount(); ++i)
         {
-            final Instance instance = model.getInstance(i);
+            Instance instance = model.getInstance(i);
             // Check every cell in each instance (row) to see if they have been 
             // edited.  If they have add them to the elog message.
+            Cell cell = null;
             for (int c=0; c<model.getColumnCount(); ++c)
             {
-                final Cell cell = instance.getCell(c);
+                cell = instance.getCell(c);
                 if (!cell.isEdited())
                     continue;
                 body.append(NLS.bind(Messages.SavePVInfoFmt,
@@ -123,7 +125,31 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                                         cell.getCurrentValue(),
                                         cell.getUserValue()
                                      }));
-            }
+            if(cell.hasComments())
+            {
+               String cellName = cell.comment_pv.getName();
+           
+               for (int j=0; j<model.getInstanceCount(); ++j)
+               {
+                   instance = model.getInstance(j);
+                   for (int d=0; d<model.getColumnCount(); ++d)
+                   {
+                      cell = instance.getCell(d);
+                      if (!cell.isEdited())
+                          continue;
+                     if(cellName.equals(cell.getName()))
+                     {
+       //            System.out.println("found " + cellName);
+                   body.append(NLS.bind(Messages.SaveCommentInfoFmt,
+                         new Object[]
+                         {
+                               cell.getUserValue()
+                         }));
+                     }
+                  }
+                }
+              }
+           }
         }
         // Display ELog entry dialog
         final Shell shell = getSite().getShell();
