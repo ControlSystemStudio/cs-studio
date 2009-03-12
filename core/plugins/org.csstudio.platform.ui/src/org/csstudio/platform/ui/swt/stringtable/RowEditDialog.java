@@ -1,5 +1,6 @@
 package org.csstudio.platform.ui.swt.stringtable;
 
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Shell;
 
@@ -33,6 +34,6 @@ public abstract class RowEditDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Edit Row Data");		
+		newShell.setText(Messages.RowEditDialog_ShellTitle);
 	}
 }

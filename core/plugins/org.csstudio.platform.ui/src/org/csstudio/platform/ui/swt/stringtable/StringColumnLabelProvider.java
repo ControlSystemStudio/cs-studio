@@ -2,6 +2,7 @@ package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.List;
 
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -29,7 +30,7 @@ class StringColumnLabelProvider extends CellLabelProvider
 		final List<String> items = (List<String>)viewer.getInput();
 		final int index = ((Integer)cell.getElement()).intValue();
 		if (index < 0)
-			cell.setText("<Add>");
+			cell.setText(Messages.StringTableEditor_AddRowText);
 		else
 			cell.setText(items.get(index));
 	}

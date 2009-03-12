@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.swt.AutoSizeColumn;
 import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -125,7 +126,7 @@ public class StringTableEditor extends Composite
 		table.setHeaderVisible(false);
 		// Create edit-able column
 		final TableViewerColumn col = 
-			AutoSizeColumn.make(tableViewer, "Value", 200, 100, false);
+			AutoSizeColumn.make(tableViewer, Messages.StringTableEditor_DefaultColumnHeader, 200, 100, false);
 		col.setLabelProvider(new StringColumnLabelProvider(tableViewer));
 		col.setEditingSupport(new StringColumnEditor(tableViewer));
 		tableViewer.setContentProvider(new StringTableContentProvider<String>());
@@ -167,7 +168,7 @@ public class StringTableEditor extends Composite
 	{
 		final Button edit = new Button(this, SWT.PUSH);
 		edit.setImage(images.get(EDIT));
-		edit.setToolTipText("Edit the selected item");
+		edit.setToolTipText(Messages.StringTableEditor_EditToolTip);
 		edit.setLayoutData(new GridData());
 		edit.setEnabled(false);
 		edit.addSelectionListener(new SelectionAdapter() {
@@ -180,7 +181,7 @@ public class StringTableEditor extends Composite
 				
 				if(index == StringTableContentProvider.ADD_ELEMENT) {
 					String[] emptyData = new String[numColumns];
-					Arrays.fill(emptyData, "");
+					Arrays.fill(emptyData, ""); //$NON-NLS-1$
 					rowEditDialog.setRowData(emptyData);					
 				}else
 					rowEditDialog.setRowData(items.get(index));
@@ -205,7 +206,7 @@ public class StringTableEditor extends Composite
 	private Button createUpButton() {
 		final Button up = new Button(this, SWT.PUSH);
 		up.setImage(images.get(UP));
-		up.setToolTipText("Move selected items up");
+		up.setToolTipText(Messages.StringTableEditor_MoveUpToolTip);
 		up.setLayoutData(new GridData());
 		up.setEnabled(false);
 		up.addSelectionListener(new SelectionAdapter()
@@ -233,7 +234,7 @@ public class StringTableEditor extends Composite
 	private Button createDownButton() {
 		final Button down = new Button(this, SWT.PUSH);
 		down.setImage(images.get(DOWN));
-		down.setToolTipText("Move selected items down");
+		down.setToolTipText(Messages.StringTableEditor_MoveDownToolTip);
 		down.setLayoutData(new GridData());
 		down.setEnabled(false);
 		down.addSelectionListener(new SelectionAdapter()
@@ -260,7 +261,7 @@ public class StringTableEditor extends Composite
 	private Button createDeleteButton() {
 		final Button delete = new Button(this, SWT.PUSH);
 		delete.setImage(images.get(DELETE));
-		delete.setToolTipText("Delete selected items");
+		delete.setToolTipText(Messages.StringTableEditor_DeleteToolTip);
 		delete.setLayoutData(new GridData());
 		delete.setEnabled(false);
 		delete.addSelectionListener(new SelectionAdapter()

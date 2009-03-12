@@ -162,7 +162,19 @@ public final class Messages extends NLS {
     public static String SaveAsDialog_OVERWRITE_QUESTION;
     public static String SaveAsDialog_QUESTION;
 
-    public static String ContainerSelectionGroup_TITLE;
+	public static String StringTableEditor_AddRowText;
+
+	public static String StringTableEditor_DefaultColumnHeader;
+
+	public static String StringTableEditor_DeleteToolTip;
+
+	public static String StringTableEditor_EditToolTip;
+
+    public static String StringTableEditor_MoveDownToolTip;
+
+	public static String StringTableEditor_MoveUpToolTip;
+
+	public static String ContainerSelectionGroup_TITLE;
 
     public static String ResourceAndContainerGroup_PROBLEM_EMPTY;
     public static String ResourceAndContainerGroup_PROBLEM_DOES_NOT_EXIST;
@@ -170,6 +182,8 @@ public final class Messages extends NLS {
     public static String ResourceAndContainerGroup_PROBLEM_FILE_ALREADY_EXISTS;
     public static String ResourceAndContainerGroup_PROBLEM_EMPTY_NAME;
     public static String ResourceAndContainerGroup_PROBLEM_INVALID_FILE_NAME;
+
+	public static String RowEditDialog_ShellTitle;
 
     public static String DeleteResourceAction_QUESTION_TITLE;
     public static String DeleteResourceAction_QUESTION_MESSAGE;

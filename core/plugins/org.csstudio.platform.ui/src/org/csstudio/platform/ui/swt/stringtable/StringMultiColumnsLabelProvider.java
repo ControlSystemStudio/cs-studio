@@ -2,6 +2,7 @@ package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.List;
 
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -33,7 +34,7 @@ class StringMultiColumnsLabelProvider extends CellLabelProvider {
 		//if this is the extra row
 		if (index < 0)
 			if(editable)
-				cell.setText("<Add>");
+				cell.setText(Messages.StringTableEditor_AddRowText);
 			else
 				cell.setText("");
 		//if not
