@@ -9,6 +9,7 @@ import org.eclipse.jface.action.Action;
  *  that uses an AutoSizeControlListener.
  *  @author Kay Kasemir
  *  @see AutoSizeControlListener
+ *  @deprecated use {@link org.csstudio.platform.ui.swt.AutoSizeColumnAction} instead.
  */
 public class AutoSizeColumnAction extends Action
 {

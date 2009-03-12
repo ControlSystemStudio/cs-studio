@@ -1,4 +1,4 @@
-package org.csstudio.apputil.ui.swt;
+package org.csstudio.platform.ui.swt;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.TableColumn;
 /** Helper for auto-sizing columns.
  *  @see AutoSizeControlListener
  *  @author Kay Kasemir
- *  @deprecated use {@link org.csstudio.platform.ui.swt.AutoSizeColumn} instead.
  */
 public class AutoSizeColumn
 {

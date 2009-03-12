@@ -1,4 +1,4 @@
-package org.csstudio.apputil.ui.swt.stringtable;
+package org.csstudio.platform.ui.swt.stringtable;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Shell;
@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Shell;
 /**The RowEditDialog is the abstract superclass of dialogs
  * that are used to edit a row of items in a table  
  * @author Xihui Chen
- * @deprecated use {@link org.csstudio.platform.ui.swt.stringtable.RowEditDialog} instead.
  */
 public abstract class RowEditDialog extends Dialog {
 

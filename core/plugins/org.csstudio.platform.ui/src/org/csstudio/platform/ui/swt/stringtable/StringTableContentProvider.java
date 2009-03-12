@@ -1,4 +1,4 @@
-package org.csstudio.apputil.ui.swt.stringtable;
+package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.List;
 
@@ -11,9 +11,8 @@ import org.eclipse.jface.viewers.Viewer;
  *  and editor to access the correct elements in the List.
  *  @param <T> String or String[]
  *  @author Kay Kasemir, Xihui Chen
- *  @deprecated use {@link org.csstudio.platform.ui.swt.stringtable.StringTableContentProvider} instead.
  */
-public class StringTableContentProvider<T> implements IStructuredContentProvider
+class StringTableContentProvider<T> implements IStructuredContentProvider
 {
 	/** Magic number for the final 'add' element */
 	final public static Integer ADD_ELEMENT = new Integer(-1);

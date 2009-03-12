@@ -1,4 +1,4 @@
-package org.csstudio.apputil.ui.swt.stringtable;
+package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.List;
 
@@ -11,9 +11,8 @@ import org.eclipse.swt.widgets.Table;
 /** Editor for table with List<String>
  *  @author Kay Kasemir
  *  @author Xihui Chen
- *  @deprecated use {@link org.csstudio.platform.ui.swt.stringtable.StringColumnEditor} instead.
  */
-public class StringColumnEditor extends EditingSupport
+class StringColumnEditor extends EditingSupport
 {
 	final private TableViewer table_viewer;
 
@@ -42,14 +41,17 @@ public class StringColumnEditor extends EditingSupport
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 			return ""; //$NON-NLS-1$
 		final int index = ((Integer)element).intValue();
-		final List<String> items = (List<String>) table_viewer.getInput();
+		
+		@SuppressWarnings("unchecked") final List<String> items =
+				(List<String>) table_viewer.getInput();
 		return items.get(index);
 	}
 
 	@Override
 	protected void setValue(Object element, Object value)
 	{
-        final List<String> items = (List<String>) table_viewer.getInput();
+		@SuppressWarnings("unchecked") final List<String> items =
+				(List<String>) table_viewer.getInput();
 		if (element == StringTableContentProvider.ADD_ELEMENT)
 		{
 			items.add(value.toString());

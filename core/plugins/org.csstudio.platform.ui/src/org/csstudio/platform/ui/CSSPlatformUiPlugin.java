@@ -25,8 +25,10 @@ import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
@@ -118,4 +120,17 @@ public class CSSPlatformUiPlugin extends AbstractCssUiPlugin {
 	public final String getPluginId() {
 		return ID;
 	}
+
+	/**
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path.
+	 * 
+	 * @param path
+	 *            The path
+	 * @return an image descriptor.
+	 */
+    public static ImageDescriptor getImageDescriptor(final String path)
+    {
+        return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
+    }
 }

@@ -1,11 +1,11 @@
-package org.csstudio.apputil.ui.swt.stringtable;
+package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.apputil.ui.Activator;
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Table;
 /** Editor for table (list) of String or String[] entries,
  *  allows up/down ordering, add and delete
  *  @author Kay Kasemir, Xihui Chen
- *  @deprecated use {@link org.csstudio.platform.ui.swt.stringtable.StringTableEditor} instead.
  */
 public class StringTableEditor extends Composite
 {
@@ -42,10 +41,10 @@ public class StringTableEditor extends Composite
 	
 	static {
 		// Buttons: edit/up/down/delete		
-		images.put(EDIT, Activator.getImageDescriptor("icons/edit.gif")); //$NON-NLS-1$
-		images.put(UP, Activator.getImageDescriptor("icons/up.gif")); //$NON-NLS-1$
-		images.put(DOWN, Activator.getImageDescriptor("icons/down.gif")); //$NON-NLS-1$
-		images.put(DELETE, Activator.getImageDescriptor("icons/delete.gif")); //$NON-NLS-1$
+		images.put(EDIT, CSSPlatformUiPlugin.getImageDescriptor("icons/edit.gif")); //$NON-NLS-1$
+		images.put(UP, CSSPlatformUiPlugin.getImageDescriptor("icons/up.gif")); //$NON-NLS-1$
+		images.put(DOWN, CSSPlatformUiPlugin.getImageDescriptor("icons/down.gif")); //$NON-NLS-1$
+		images.put(DELETE, CSSPlatformUiPlugin.getImageDescriptor("icons/delete.gif")); //$NON-NLS-1$
 	}
 	
 	/** Creates an editable table.  The size of headers array implies the number of columns. 
@@ -91,7 +90,7 @@ public class StringTableEditor extends Composite
 		tableViewer.setContentProvider(new StringTableContentProvider<String[]>());
 		tableViewer.setInput(items);
 		new AutoSizeControlListener(table);		
-		editButton = createEditButton(table, layout.numColumns, rowEditDialog);
+		editButton = createEditButton(layout.numColumns, rowEditDialog);
 		upButton = createUpButton();
 		downButton = createDownButton();
 		deleteButton = createDeleteButton();		
@@ -163,8 +162,8 @@ public class StringTableEditor extends Composite
 		tableViewer.refresh();
 	}
 	
-	private Button createEditButton(final Table table, 
-			final int numColumns, final RowEditDialog rowEditDialog) 
+	private Button createEditButton(final int numColumns, 
+			final RowEditDialog rowEditDialog) 
 	{
 		final Button edit = new Button(this, SWT.PUSH);
 		edit.setImage(images.get(EDIT));

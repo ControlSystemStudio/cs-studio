@@ -1,11 +1,10 @@
-package org.csstudio.apputil.ui.swt;
+package org.csstudio.platform.ui.swt;
 
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -26,7 +25,6 @@ import org.eclipse.swt.widgets.TableColumn;
  *  one initial resizing.
  *  
  *  @author Kay Kasemir
- *  @deprecated use {@link org.csstudio.platform.ui.swt.AutoSizeControlListener} instead.
  */
 public class AutoSizeControlListener
 	extends ControlAdapter implements DisposeListener
@@ -37,17 +35,6 @@ public class AutoSizeControlListener
 	private boolean autosize = false;
 	/** Flag to remember initial run to allow one Auto-size on initial run */
     private boolean initial_run = true;
-
-    /** Constructor.
-     *  @param container Typically the Parent of the table. No longer used!
-     *  @param table The table to resize automatically
-     *  @deprecated Use <code>AutoSizeControlListener(final Table table)</code
-     *              instead
-     */
-    public AutoSizeControlListener(final Composite container, final Table table)
-	{
-	    this(table, false);
-	}
 
     /** Constructor.
      *  @param table The table to resize automatically

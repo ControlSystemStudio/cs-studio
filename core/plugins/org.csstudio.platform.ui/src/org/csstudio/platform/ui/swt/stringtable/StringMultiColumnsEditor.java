@@ -1,4 +1,4 @@
-package org.csstudio.apputil.ui.swt.stringtable;
+package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,9 +12,8 @@ import org.eclipse.swt.widgets.Table;
 /** Editor for table with multiple columns (List<String[]>)
 
  *  @author Xihui Chen
- *  @deprecated use {@link org.csstudio.platform.ui.swt.stringtable.StringMultiColumnsEditor} instead.
  */
-public class StringMultiColumnsEditor extends EditingSupport {
+class StringMultiColumnsEditor extends EditingSupport {
     final private TableViewer table_viewer;
 	final private int columnNo;
 	final private int numOfColumns;

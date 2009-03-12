@@ -131,6 +131,8 @@ public final class Messages extends NLS {
     public static String AuthenticationPreferencePage_PAGE_TITLE;
     public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP;
 
+	public static String AutoSizeColumnAction_Text;
+
     public static String CssWorkbenchAdvisor_WINDOW_TITLE;
 
     public static String LocalePreferencePage_PAGE_TITLE;

@@ -1,4 +1,4 @@
-package org.csstudio.apputil.ui.swt.stringtable;
+package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.List;
 
@@ -9,9 +9,8 @@ import org.eclipse.jface.viewers.ViewerCell;
 /** Label provider that transforms Integer index into list
  *  into the string to display.
  *  @author Kay Kasemir
- *  @deprecated use {@link org.csstudio.platform.ui.swt.stringtable.StringColumnLabelProvider} instead.
  */
-public class StringColumnLabelProvider extends CellLabelProvider
+class StringColumnLabelProvider extends CellLabelProvider
 {
 	final private TableViewer viewer;
 

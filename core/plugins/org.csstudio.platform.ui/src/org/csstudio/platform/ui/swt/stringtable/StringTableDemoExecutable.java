@@ -1,4 +1,4 @@
-package org.csstudio.apputil.ui.swt.stringtable;
+package org.csstudio.platform.ui.swt.stringtable;
 
 import java.util.ArrayList;
 
@@ -9,9 +9,8 @@ import org.eclipse.swt.widgets.Shell;
 /** main() routine for testing the string table editor as an SWT app.
  *  Icons will be missing because of missing bundle support.
  *  @author Kay Kasemir
- *  @deprecated replaced by {@link org.csstudio.platform.ui.swt.stringtable.StringTableDemoExecutable}.
  */
-public class StringTableEditorTest
+public class StringTableDemoExecutable
 {
     private static boolean run = true;
     
