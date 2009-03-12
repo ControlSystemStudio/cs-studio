@@ -27,6 +27,7 @@ import org.csstudio.platform.logging.CentralLoggerTest;
 import org.csstudio.platform.logging.JMSLogThreadTest;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactoryTest;
 import org.csstudio.platform.simpledal.ConnectionStateTest;
+import org.csstudio.platform.util.StringUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -45,7 +46,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	CentralLoggerTest.class, ArchiveDataSourceFactoryTest.class,
 	ValueTest.class, AbstractProcessVariableNameParserTest.class,
 	DALPropertyFactoriesProviderTest.class,
-	ProcessVariableAdressFactoryTest.class, DoubleValueTest.class })
+	ProcessVariableAdressFactoryTest.class, DoubleValueTest.class,
+	StringUtilTest.class})
 public class AllTests {
     // This is just a declarative suite definition without any code definitions.
 }
