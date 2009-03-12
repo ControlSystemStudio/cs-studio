@@ -7,7 +7,6 @@ import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.csstudio.logbook.ILogbook;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -116,8 +115,13 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             for (int c=0; c<model.getColumnCount(); ++c)
             {
                 cell = instance.getCell(c);
+
                 if (!cell.isEdited())
                     continue;
+                // If the cell is a comment that has already been logged with the limit change,
+                // don't log it again.
+                if(cell.beenLogged)
+                   continue;
                 body.append(NLS.bind(Messages.SavePVInfoFmt,
                                      new Object[]
                                      {
@@ -125,25 +129,29 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                                         cell.getCurrentValue(),
                                         cell.getUserValue()
                                      }));
+            // If the cell has comments, find the comment pv and log it's changed
+            // value with the limit change log report.  Set the comment pv's 
+            // beenLogged to true so it won't be logged again as a single log entry.
             if(cell.hasComments())
             {
                String cellName = cell.comment_pv.getName();
-           
+               Cell cellB = null;
+               Instance instanceB = null;
                for (int j=0; j<model.getInstanceCount(); ++j)
                {
-                   instance = model.getInstance(j);
+                   instanceB = model.getInstance(j);
                    for (int d=0; d<model.getColumnCount(); ++d)
                    {
-                      cell = instance.getCell(d);
-                      if (!cell.isEdited())
+                      cellB = instanceB.getCell(d);
+                      if (!cellB.isEdited())
                           continue;
-                     if(cellName.equals(cell.getName()))
+                     if(cellName.equals(cellB.getName()))
                      {
-       //            System.out.println("found " + cellName);
+                        cellB.beenLogged=true;
                    body.append(NLS.bind(Messages.SaveCommentInfoFmt,
                          new Object[]
                          {
-                               cell.getUserValue()
+                               cellB.getUserValue()
                          }));
                      }
                   }

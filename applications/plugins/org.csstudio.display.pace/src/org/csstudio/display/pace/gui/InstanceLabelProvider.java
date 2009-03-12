@@ -62,15 +62,14 @@ public class InstanceLabelProvider extends CellLabelProvider
          // Creating basic PV name, value tooltip
          String tip = NLS.bind(Messages.InstanceLabelProvider_PVValueFormat,
                                cell.getName(), cell.getValue());
-        // System.out.println(tip);
 
          // Extend to show 'edited', 'hasComments' or 'read-only' state
          if (cell.isEdited())
              tip = tip + Messages.InstanceLabelProvider_OrigAppendix + cell.getCurrentValue();
          if (cell.isReadOnly() || !cell.isPVWriteAllowed())
              tip = tip + Messages.InstanceLabelProvider_ReadOnlyAppendix;
-         // If the cell has comments, add the person who made the change and the
-         // date of the change to the tool-tip.
+         // If the cell has comments, add the person who made the change, the
+         // date of the change and the comment to the tool-tip.
          if (cell.hasComments())
          {
             final String changeTip = NLS.bind(Messages.InstanceLabelProvider_PVCommentTipFormat,

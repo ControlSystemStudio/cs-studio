@@ -32,8 +32,9 @@ public class Cell implements PVListener, IProcessVariable
     /** Value that the user entered. */
     private volatile String user_value = null;
     
-    final boolean areComments;
-    
+    /** If comment has already been logged with the limit value */
+    public boolean beenLogged = false;
+        
     // Cell information for the name of the person who made the change and
     // the date of the change, if the primary cell has comments.
     public PV name_pv, date_pv, comment_pv;
@@ -58,23 +59,14 @@ public class Cell implements PVListener, IProcessVariable
         pv_name=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
         this.name_pv = PVFactory.createPV(pv_name);
         name_pv.addListener(this);
+        
+        // Create the comment pvs and listeners, if they are defined in the XML file
         pv_name=Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
         this.date_pv = PVFactory.createPV(pv_name);
         date_pv.addListener(this);
         pv_name=Macro.apply(instance.getMacros(), column.getCommentPvWithMacros());
         this.comment_pv = PVFactory.createPV(pv_name);
         comment_pv.addListener(this);
-        if(this.comment_pv.getName().length()>0)
-           instance.getModel().CmtMacroStr.add(instance.getModel().CmtMacroStr.size(),
-                 comment_pv.getName());
-
-        // if the name_pv, comment_pv or date_pv were found in the XML file
-        // set the hasComments flag to true, otherwise false.
-        if(name_pv.getName().length()>0 || date_pv.getName().length()>0 ||
-              comment_pv.getName().length()>0)
-           this.areComments=true;
-        else
-           this.areComments=false;
     }
 
     /** @return Instance (row) that contains this cell */
@@ -95,10 +87,12 @@ public class Cell implements PVListener, IProcessVariable
         return column.isReadonly();
     }
     
-    /** @return <code>true</code> for hasComments cell */
+    // @return <code>true</code> if the name_pv, comment_pv or date_pv were found,
+    // in the XML file, otherwise false.
     public boolean hasComments()
     {
-        return areComments;
+        return (name_pv.getName().length()>0 || date_pv.getName().length()>0 ||
+              comment_pv.getName().length()>0);
     }
     
     /** Even though a cell may be configured as writable,
@@ -170,6 +164,8 @@ public class Cell implements PVListener, IProcessVariable
         if (!isEdited())
             return;
         pv.setValue(user_value);
+        // When the value is save, put the beenLogged flag back to false.
+        beenLogged = false;
     }
 
     /** @return <code>true</code> if user entered a value */
@@ -182,12 +178,18 @@ public class Cell implements PVListener, IProcessVariable
     public void start() throws Exception
     {
         pv.start();
+        if(name_pv!=null) name_pv.start();
+        if(date_pv!=null) date_pv.start();
+        if(comment_pv!=null) comment_pv.start();
     }
 
     /** Stop the PV connection */
     public void stop()
     {
         pv.stop();
+        if(name_pv!=null) name_pv.stop();
+        if(date_pv!=null) date_pv.stop();
+        if(comment_pv!=null) comment_pv.stop();
     }
 
     // PVListener
@@ -202,6 +204,12 @@ public class Cell implements PVListener, IProcessVariable
     {
         current_value = ValueUtil.getString(pv.getValue());
         instance.getModel().fireCellUpdate(this);
+    }
+    
+    // Set the beenLogged flag.
+    public void setLoggedFlag(final boolean flg)
+    {
+        beenLogged = flg;
     }
 
     // IProcessVariable
