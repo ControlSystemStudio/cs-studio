@@ -2,46 +2,27 @@
 <html>
 <head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-<title>SDS Dynamic Attributs</title>
+<title>Log Table</title>
 </head>
 <body>
-<h1>Dynamisation of properties</h1>
-<p align="justify">Properties that are dynamic are marked with a rack-wheel (
-<img src="./../image/SDS_DynamicSymbol.png" />
-). To edit the dynamic behaviour of a widget property right click on the
-appropriate one in the property view and select 'Configure Dynamic
-Aspects'.</p>
-<img src="./../image/SDS_PropertyContextMenu.png" hspace="50"/>
+<h1>Log Table</h1>
+<img src="./../image/LogTable.png" />
+<p align="justify">Log Table receives messages from the JMS Servers and displays all
+types of messages (log, alarm, system, ...) ordered by the time stamp.</p>
 <br>
-<p align="justify">The simplest way of dynamisation is to show the current value of a
-process variable in the display. The Rule is 'Direct Connection' (see
-the example in the screenshot).
-</p>
-<img src="./../image/SDS_DynamicsWizard.png" hspace="50"/>
-<br>
-<br>
-<h2>Rules</h2>
-<p align="justify">In the top part of the Window 'Dynamics Wizard' is a list of all
-available rules. There are two kinds of rules. The 'Java Rules' marked
-with
-<img src="./../image/SDS_IconJavaRule.png" />
-are implemented as a java class. They are integrated in SDS and it is
-necessary to edit the source code of the plugins to add new rules. The
-'ECMS Script Rule' or 'Java Script Rule' marked with
-<img src="./../image/SDS_IconScriptRule.png" />
-are located in the CSS workspace in the folder 'SDS Script Rules'. To
-add a new rule you have to store the java script file in the folder and
-it is available for the properties.</p>
-<h3>Rule Filter</h3>
-<p align="justify">The selection of rules in the list depends on the type of property. The
-return type of the rule has to match the property type. In the first
-line of the rule the return type is set. It is possible to use all Java
-types as return types.</p>
-<h2>Parameter</h2>
-<p align="justify">The lower section holds the list of input and output channels that the
-rule defines. In the value field you can use the alias names that are
-defined in the widget or display instead of the process variable name.
-It is marked by the symbol '$' at the beginning and end of the String.</p>
+<h2>Context Menu</h2>
+<img src="./../image/LogTableContextMenu.png" />
+<p align="justify">The context menu pops up by right click over a message / table row:</p>
+<img src="./../image/ContextIconShowProperties.png"/> Shows all properties of the selected message 
+in a table in an external view.<br>
+<img src="./../image/ContextIconShowProperties.png"/> Sends all properties of the selected message 
+via e-mail.<br>
+<img src="./../image/ContextIconDelete.png"/> Delete selected message from the log view.<br>
+<img src="./../image/ContextIconDelete.png"/> Delete all messages from the log view.<br>
+<img src="./../image/ContextMenuClipboard.png"/> Copy value of property NAME to the windows clip board.<br>
+<img src="./../image/ContextMenuCSS.png"/> Call other applications / plug-ins available in 
+the current CSS installation that can deal with process variables. This option is only reasonable
+if the property NAME of the selected message is a process variable.<br>
 <br>
 <br>
 <br>
