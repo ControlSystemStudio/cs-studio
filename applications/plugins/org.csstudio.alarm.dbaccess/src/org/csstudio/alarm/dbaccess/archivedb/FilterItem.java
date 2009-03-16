@@ -48,7 +48,7 @@ public class FilterItem {
 	public FilterItem() {
 	}
 
-	public String get_property() {
+	public String getProperty() {
 		return _property.toUpperCase();
 	}
 
@@ -56,7 +56,7 @@ public class FilterItem {
 		this._property = _property;
 	}
 
-	public String get_value() {
+	public String getValue() {
 		return _value;
 	}
 
@@ -64,7 +64,7 @@ public class FilterItem {
 		this._value = _value;
 	}
 
-	public String get_relation() {
+	public String getRelation() {
 		return _relation;
 	}
 

@@ -105,9 +105,9 @@ public class SQLBuilder {
 		Set<String> propertiesInMessageTable = getPropertiesInMessageTable();
 
 		for (FilterItem item : currentFilterSettingList) {
-			if (propertiesInMessageTable.contains(item.get_property())) {
+			if (propertiesInMessageTable.contains(item.getProperty())) {
 				simpleConditionPart = simpleConditionPart + "and m."
-						+ item.get_property() + " = ? ";
+						+ item.getProperty() + " = ? ";
 				item.set_property("inMessage");
 			} else {
 				subqueryConditionPart = subqueryConditionPart

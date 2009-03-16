@@ -301,37 +301,37 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		if (getMessages != null) {
 			// set filterItems with property in message table first
 			for (FilterItem filterSetting : currentFilterSettingList) {
-				if (filterSetting.get_property().equalsIgnoreCase("inMessage")) {
+				if (filterSetting.getProperty().equalsIgnoreCase("inMessage")) {
 					parameterIndex++;
 					getMessages.setString(parameterIndex, filterSetting
-							.get_value());
+							.getValue());
 					CentralLogger.getInstance().debug(
 							this,
 							"DB query, filter Property: "
-									+ filterSetting.get_property()
-									+ "  Value: " + filterSetting.get_value()
+									+ filterSetting.getProperty()
+									+ "  Value: " + filterSetting.getValue()
 									+ "  Relation: "
-									+ filterSetting.get_relation());
+									+ filterSetting.getRelation());
 				}
 			}
 			// set filterItems with property in message_content table
 			for (FilterItem filterSetting : currentFilterSettingList) {
-				if (!filterSetting.get_property().equalsIgnoreCase("inMessage")) {
+				if (!filterSetting.getProperty().equalsIgnoreCase("inMessage")) {
 					parameterIndex++;
-					String propertyName = filterSetting.get_property();
+					String propertyName = filterSetting.getProperty();
 					getMessages.setString(parameterIndex,
 							MessagePropertyTypeContent.getPropertyIDMapping()
 									.get(propertyName));
 					parameterIndex++;
 					getMessages.setString(parameterIndex, filterSetting
-							.get_value());
+							.getValue());
 					CentralLogger.getInstance().debug(
 							this,
 							"DB query, filter Property: "
-									+ filterSetting.get_property()
-									+ "  Value: " + filterSetting.get_value()
+									+ filterSetting.getProperty()
+									+ "  Value: " + filterSetting.getValue()
 									+ "  Relation: "
-									+ filterSetting.get_relation());
+									+ filterSetting.getRelation());
 				}
 			}
 		}
@@ -472,7 +472,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		for (FilterItem setting : filter) {
 			if (association.equalsIgnoreCase("AND")) {
 				if (filterSettingsAndAssociated != null) {
-					association = setting.get_relation();
+					association = setting.getRelation();
 					filterSettingsAndAssociated.add(setting);
 				} else {
 					CentralLogger.getInstance().error(this,
@@ -482,7 +482,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			}
 			if (association.equalsIgnoreCase("OR")) {
 				separatedFilterSettings.add(filterSettingsAndAssociated);
-				association = setting.get_relation();
+				association = setting.getRelation();
 				filterSettingsAndAssociated = new ArrayList<FilterItem>();
 				filterSettingsAndAssociated.add(setting);
 				continue;
@@ -490,7 +490,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			if (association.equalsIgnoreCase("BEGIN")) {
 				filterSettingsAndAssociated = new ArrayList<FilterItem>();
 				filterSettingsAndAssociated.add(setting);
-				association = setting.get_relation();
+				association = setting.getRelation();
 				continue;
 			}
 

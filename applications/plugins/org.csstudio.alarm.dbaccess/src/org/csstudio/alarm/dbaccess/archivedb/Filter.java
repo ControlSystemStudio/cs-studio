@@ -97,8 +97,8 @@ public class Filter {
 		ArrayList<FilterItem> newFilterItems = new ArrayList<FilterItem>();
 		if (this.filterItems != null) {
 			for (FilterItem filterItem : this.getFilterItems()) {
-				FilterItem f = new FilterItem(filterItem.get_property(),
-						filterItem.get_value(), filterItem.get_relation());
+				FilterItem f = new FilterItem(filterItem.getProperty(),
+						filterItem.getValue(), filterItem.getRelation());
 				newFilterItems.add(f);
 			}
 		} else {
