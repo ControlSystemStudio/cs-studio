@@ -127,6 +127,8 @@ public class ViewArchive extends ViewPart implements Observer {
 	/** The count of results. */
 	private Label _countLabel;
 
+	private ArrayList<FilterItem> _filterSettings;
+
 	/**
 	 * Current settings of the filter that they are available to delete the
 	 * displayed messages.
@@ -510,7 +512,7 @@ public class ViewArchive extends ViewPart implements Observer {
 
 		bSearch.addSelectionListener(new SelectionAdapter() {
 
-			public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
 				if (_fromTime == null) {
 					ITimestamp now = TimestampFactory.now();
 					_fromTime = TimestampFactory.createTimestamp(now.seconds()
@@ -522,7 +524,7 @@ public class ViewArchive extends ViewPart implements Observer {
 				}
 
 				ExpertSearchDialog dlg = new ExpertSearchDialog(_parentShell,
-						_fromTime, _toTime);
+						_fromTime, _toTime, _filterSettings);
 
 				GregorianCalendar _to = new GregorianCalendar();
 				GregorianCalendar _from = (GregorianCalendar) _to.clone();
@@ -538,7 +540,7 @@ public class ViewArchive extends ViewPart implements Observer {
 						_from.setTimeInMillis((long) high * 1000);
 						_to.setTimeInMillis((long) low * 1000);
 					}
-					ArrayList<FilterItem> _filterSettings = dlg
+					_filterSettings = dlg
 							.get_filterConditions();
 					_filter = new Filter(_filterSettings, _from, _to);
 					callDBReadJob();
