@@ -1,5 +1,6 @@
 package org.csstudio.diag.epics.pvtree;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 import org.eclipse.ui.IWorkbench;
@@ -27,7 +28,8 @@ public class PVpopupAction extends ProcessVariablePopupAction
         }
         catch (Exception e)
         {
-            Plugin.getLogger().error("Cannot open PVTreeView" , e); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this)
+                .error("Cannot open PVTreeView" , e); //$NON-NLS-1$
         }
     }
 }

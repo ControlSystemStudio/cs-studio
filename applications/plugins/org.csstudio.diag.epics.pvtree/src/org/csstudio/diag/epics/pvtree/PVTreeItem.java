@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -26,57 +27,6 @@ import org.eclipse.swt.widgets.Display;
  */
 class PVTreeItem extends PlatformObject implements IProcessVariable
 {
-    /** sub record type */
-    private static final String SUB = "sub"; //$NON-NLS-1$
-
-    /** genSub record type */
-    private static final String GENSUB = "genSub"; //$NON-NLS-1$
-
-    /** calc record type */
-    private static final String CALC = "calc"; //$NON-NLS-1$
-
-    /** seq record type */
-    private static final String SEQ = "seq"; //$NON-NLS-1$
-
-    // NOTE: Keep the type names in these arrays alphabetical,
-    //       just in case we later want to use binary search!
-    @SuppressWarnings("nls")
-    private static final String input_types[] =
-    {
-        "aai",
-        "ai",
-        "bi",
-        "compress",
-        "longin",
-        "mbbi",
-        "mbbiDirect",
-        "mbboDirect",
-        "stringin",
-        "subArray",
-        "waveform",
-    };
-    @SuppressWarnings("nls")
-    private static final String output_types[] =
-    {
-        "aao",
-        "ao",
-        "bo",
-        "fanout",
-        "longout",
-        "mbbo",
-        "stringout",
-    };    
-    // TODO: Handle "event", "histogram", "permissive", "sel", "state"?
-   
-    /** INP field */
-    private static final String INP = "INP"; //$NON-NLS-1$
-
-    /** SELN field */
-    private static final String SELN = "SELN"; //$NON-NLS-1$
-
-    /** DOL field */
-    private static final String DOL = "DOL"; //$NON-NLS-1$
-
    /** The model to which this whole tree belongs. */
     private final PVTreeModel model;
 
@@ -125,7 +75,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                Plugin.getLogger().error("pvValueUpdate", e);
+                CentralLogger.getInstance().getLogger(this)
+                    .error("pvValueUpdate", e);
             }
         }
     };
@@ -148,13 +99,19 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                Plugin.getLogger().error("pvValueUpdate", e); //$NON-NLS-1$
+                CentralLogger.getInstance().getLogger(this)
+                    .error("pvValueUpdate", e); //$NON-NLS-1$
             }
         }
     };
     
+    /** Array of fields to read for this record type.
+     *  Fields are removed as they are read, so in the end this
+     *  array will be empty
+     */
+    final private ArrayList<String> links_to_read = new ArrayList<String>();
+
     /** Used to read the links of this pv. */
-    private int input_index;
     private PV link_pv = null;
     private String link_value;
     private PVListener link_pv_listener = new PVListener()
@@ -179,11 +136,12 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                     if (i > 0)
                         link_value = link_value.substring(0, i);
                 }
-                updateInput();
+                updateLink();
             }
             catch (Exception e)
             {
-                Plugin.getLogger().error("pvValueUpdate", e); //$NON-NLS-1$
+                CentralLogger.getInstance().getLogger(this)
+                    .error("pvValueUpdate", e); //$NON-NLS-1$
             }
         }
     };
@@ -209,19 +167,20 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         this.type = null;
         
         // In case this is "record.field", get the record name.
-        int sep = pv_name.lastIndexOf('.');
+        final int sep = pv_name.lastIndexOf('.');
         if (sep > 0)
             record_name = pv_name.substring(0, sep);
         else
             record_name = pv_name;
 
-        Plugin.getLogger().debug("New Tree item '" + pv_name
-                    + "', record name '" + record_name + "'");
+        CentralLogger.getInstance().getLogger(this).debug(
+                "New Tree item '" + pv_name //$NON-NLS-1$
+                + "', record name '" + record_name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         // Avoid loops.
         // If the model already contains an entry with this name,
         // we simply display this new item, but we won't
         // follow its input links.
-        PVTreeItem other = model.findPV(pv_name);
+        final PVTreeItem other = model.findPV(pv_name);
         
         // Now add this one, otherwise the previous call would have found 'this'.
         if (parent != null)
@@ -245,13 +204,15 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            Plugin.getLogger().error("PV creation error", e); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this)
+                .error("PV creation error", e); //$NON-NLS-1$
         }
         // Get type from 'other', previously used PV or via CA
         if (other != null)
         {
             type = other.type;
-            Plugin.getLogger().debug("Known item, not traversing inputs (again)"); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this)
+                .debug("Known item, not traversing inputs (again)"); //$NON-NLS-1$
         }
         else
         {
@@ -263,7 +224,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                Plugin.getLogger().error("PV creation error", e); //$NON-NLS-1$
+                CentralLogger.getInstance().getLogger(this)
+                    .error("PV creation error", e); //$NON-NLS-1$
             }
         }
     }
@@ -294,7 +256,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Plugin.getLogger().error("Cannot create PV '" + name + "'", ex);
+            CentralLogger.getInstance().getLogger(this)
+                .error("Cannot create PV '" + name + "'", ex);
         }
         return null;
     }
@@ -385,7 +348,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         return b.toString();
     }
 
-    /** Thread-save handling of the 'value' update. */
+    /** Thread-safe handling of the 'value' update. */
     private void updateValue()
     {
         Display.getDefault().asyncExec(new Runnable()
@@ -397,11 +360,12 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         });
     }
 
-    /** Thread-save handling of the 'type' update. */
+    /** Thread-safe handling of the 'type' update. */
     @SuppressWarnings("nls")
     private void updateType()
     {
-        Plugin.getLogger().debug(pv_name + " received type '" + type + "'");
+        CentralLogger.getInstance().getLogger(this)
+            .debug(pv_name + " received type '" + type + "'");
         Display.getDefault().asyncExec(new Runnable()
         {
             public void run()
@@ -414,60 +378,31 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                 // Display the received type of this record.
                 model.itemChanged(PVTreeItem.this);
                 
-                if (isCalcType(type))
-                    // Read the sub, calc or calcout's first input
-                    getCalcInput(0);
-                else
-                {   // read INP?
-                    for (String typ : input_types)
-                        if (type.equals(typ))
-                        {
-                            getLink(record_name + "." + INP);
-                            return;
-                        }
-                    // read DOL?
-                    for (String typ : output_types)
-                        if (type.equals(typ))
-                        {
-                            getLink(record_name + "." + DOL);
-                            return;
-                        }
-                    if (type.equals(SEQ))
-                    {
-                        getLink(record_name + "." + SELN);
-                        return;
-                    }
-                    // Give up
-                    Plugin.getLogger().error("Unknown record type '" + type + "'");
+                links_to_read.clear();
+                links_to_read.addAll(model.getFieldInfo().get(type));
+
+                if (links_to_read.size() <= 0)
+                {
+                    CentralLogger.getInstance().getLogger(this)
+                        .error("Unknown record type '" + type + "'");
+                    return;
                 }
+                getNextLink();
             }
         });
     }
     
-    /** @return <code>true</code> if record type is like a calc record,
-     *          i.e. has INPA, INPB, ... INPL.
-     */
-    private boolean isCalcType(final String type)
-    {
-        return type.equals(SUB)
-            || type.equals(GENSUB)
-            || type.startsWith(CALC);
-    }
-    
-    /** Helper for reading a calc record's input link. */
+    /** Helper for reading next link from links_to_read. */
     @SuppressWarnings("nls")
-    private void getCalcInput(int i)
+    private void getNextLink()
     {
-        input_index = i;
-        String link_name = record_name +
-                ".INP" + Character.toString((char)('A' + input_index));
-        getLink(link_name);
-    }
-
-    /** Helper for reading any link by PV name. */
-    private void getLink(String link_name)
-    {
+        // Probably superflous, but can't hurt
         disposeLinkPV();
+        // Any more links to read?
+        if (links_to_read.size() <= 0)
+            return;
+        final String field = links_to_read.get(0);
+        final String link_name = record_name + "." + field;
         try
         {
             link_pv = createPV(link_name);
@@ -476,45 +411,44 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            Plugin.getLogger().error("PV creation error", e); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this)
+                .error("PV creation error", e);
         }
     }
 
-    /** Thread-save handling of the 'input_value' update. */
+    /** Thread-safe handling of the 'link_pv' update. */
     @SuppressWarnings("nls")
-    private void updateInput()
+    private void updateLink()
     {
-        Plugin.getLogger().debug(link_pv.getName() + " received '" + link_value + "'");
+        CentralLogger.getInstance().getLogger(this)
+            .debug(link_pv.getName() + " received '" + link_value + "'");
         Display.getDefault().asyncExec(new Runnable()
         {
             public void run()
             {
                 if (link_pv == null)
                 {
-                    Plugin.getLogger().debug(pv_name + " already disposed");
+                    CentralLogger.getInstance().getLogger(this)
+                        .debug(pv_name + " already disposed");
                     return;
                 }
-                final boolean is_output = link_pv.getName().endsWith(DOL);
                 disposeLinkPV();
-                final boolean is_calc = isCalcType(type);
-                final boolean is_seq = type.equals(SEQ);
-                String info;
-                if (is_output)
-                    info = DOL;
-                else if (is_calc)
-                    info = INP + Character.toString((char)('A' + input_index));
-                else if (is_seq)
-                    info = SELN;
-                else
-                    info = INP;
+
+                // Remove field for which we received update from
+                // list of links to read
+                if (links_to_read.size() <= 0)
+                {
+                    CentralLogger.getInstance().getLogger(this)
+                        .debug(link_pv.getName() + " update without active link?");
+                    return;
+                }
+                final String field = links_to_read.remove(0);
                 if (link_value.length() > 0)
                 {
-                    new PVTreeItem(model, PVTreeItem.this, info, link_value);
+                    new PVTreeItem(model, PVTreeItem.this, field, link_value);
                     model.itemChanged(PVTreeItem.this);
                 }
-                // TODO Reads inputs up to INPL. How many are there really?
-                if (is_calc && input_index < 11) // get INPB...INPL
-                    getCalcInput(input_index + 1);
+                getNextLink();
             }
         });
     }

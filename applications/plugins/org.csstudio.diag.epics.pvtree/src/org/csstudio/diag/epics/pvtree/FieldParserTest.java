@@ -10,17 +10,21 @@ import org.junit.Test;
 /** JUnit test of FieldParser
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class FieldParserTest
 {
-	@Test
+    @Test
 	public void testFieldParser() throws Exception
 	{
 		final HashMap<String, List<String>> rec_fields =
-			FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK )");
+			FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )");
 		assertNull(rec_fields.get("quirk"));
-		List<String> fields = rec_fields.get("ao");
+		final List<String> fields = rec_fields.get("ao");
 		assertNotNull(fields);
-		assertEquals(3, fields.size());
+		assertEquals(4, fields.size());
+        assertEquals("DOL", fields.get(0));
+        assertEquals("SIML", fields.get(1));
 		assertEquals("FLNK", fields.get(2));
+        assertEquals("SCAN", fields.get(3));
 	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 /** Helper for parsing the rec type/field settings.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class FieldParser
 {
 	/** Parse preference string like
@@ -17,7 +18,7 @@ public class FieldParser
 	 * @return HashMap od record types to list of field names
 	 * @throws Exception on parse error
 	 */
-	public static HashMap<String, List<String>> parse(final String field_configuration) throws Exception
+    public static HashMap<String, List<String>> parse(final String field_configuration) throws Exception
 	{
 		final HashMap<String, List<String>> rec_fields =
 			new HashMap<String, List<String>>();

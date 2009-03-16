@@ -48,10 +48,27 @@ Note how the color-coding indicates severities.
 
 <h2>Limitations</h2>
 This tool uses the EPICS network protocol, Channel Access, to read PVs.
-Since there is no way to query EPICS V3 IOCs for their database information,
-the knowledge of record types as well as their input links is hard-coded
-into the application. It will not handle record types outside of EPICS 'base',
-and it might not even fully handle all record types inside EPICS 'base'.
+There is no way to query EPICS V3 IOCs for their database information
+to determine the available "input" links.
+<p>
+The knowledge of which links to follow for each record type is therefore
+configured into the EPICS PV Tree application.
+
+It can be changed via an Eclipse preference setting, refer to the
+source code
+<pre>
+org.csstudio.diag.epics.pvtree/fields
+</pre>
+which has to contain the list of records and fields to trace as 'links'
+for each record in the following format:
+<pre>
+record_type (field1, field2) ; record_type (...)
+</pre>
+Example:
+<pre>
+aai(INP);ai(INP);ao(DOL);bo(DOL);calc(INPA,INPB,INPC,INPD,INPE,INPF,INPG,INPH,INPI,INPJ,INPK,INPL)
+</pre>
+ 
 
 </body>
 </html>

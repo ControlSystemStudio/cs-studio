@@ -9,7 +9,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -108,7 +110,16 @@ public class PVTreeView extends ViewPart
 
         viewer = new TreeViewer(tree);
         drillDownAdapter = new DrillDownAdapter(viewer);
-        model = new PVTreeModel(viewer);
+        try
+        {
+            model = new PVTreeModel(viewer);
+        }
+        catch (Throwable ex)
+        {
+            MessageDialog.openError(parent.getShell(), "Error", //$NON-NLS-1$
+                    NLS.bind("Initialization error: {0}", ex.getMessage())); //$NON-NLS-1$
+            return;
+        }
         viewer.setContentProvider(model);
         viewer.setLabelProvider(new PVTreeLabelProvider());
         viewer.setInput(getViewSite());

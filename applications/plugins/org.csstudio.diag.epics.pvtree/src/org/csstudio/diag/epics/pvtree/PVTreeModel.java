@@ -3,6 +3,10 @@
  */
 package org.csstudio.diag.epics.pvtree;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -10,8 +14,9 @@ import org.eclipse.jface.viewers.Viewer;
 
 /** The PV Tree Model
  *  <p>
- *  This model currently has the TreeViewer as its single listener,
- *  so there is no full setup with listener interface, listener list etc.
+ *  Unfortunately, this is not a generic model of the PV Tree data.
+ *  It is tightly coupled to the TreeViewer, acting as the content provider,
+ *  and directly updating/refreshing the tree GUI.
  *  <p>
  *  Note that most of the logic is actually inside the PVTreeItem.
  *  @see PVTreeItem
@@ -20,15 +25,28 @@ import org.eclipse.jface.viewers.Viewer;
 class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 {
     /** The view to which we are connected. */
-    private final TreeViewer viewer;
+    final private TreeViewer viewer;
 
     private PVTreeItem root;
+
+    final private HashMap<String, List<String>> field_info;
     
-    /** @param view */
-    PVTreeModel(final TreeViewer viewer)
+    /** @param view 
+     *  @throws Exception on error in preferences
+     */
+    PVTreeModel(final TreeViewer viewer) throws Exception
     {
         this.viewer = viewer;
+        field_info = Preferences.getFieldInfo();
         root = null;
+    }
+
+    /** @return Field info for all record types
+     *  @see FieldParser
+     */
+    HashMap<String, List<String>> getFieldInfo()
+    {
+        return field_info;
     }
     
     /** Re-initialize the model with a new root PV. */
@@ -78,7 +96,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     {
         if (root != null)
         {
-            Plugin.getLogger().debug("PVTreeModel disposed"); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this)
+                .debug("PVTreeModel disposed"); //$NON-NLS-1$
             root.dispose();
             root = null;
         }
@@ -126,7 +145,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         viewer.update(item, null);
     }
 
-    /** Used by item to fresh the tree from the item on down. */
+    /** Used by item to refresh the tree from the item on down. */
     public void itemChanged(final PVTreeItem item)
     {
         if (viewer.getTree().isDisposed())
