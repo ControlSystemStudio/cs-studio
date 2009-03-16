@@ -29,7 +29,7 @@ Names can be entered in various ways:
 </ul>
     
 <h2>Examples</h2>
-The first screenshot shows an analog input (ai) record, which reads its
+The first screen-shot shows an analog input (ai) record, which reads its
 input (INP) directly from a device support module that happens to understand
 the input description "adm606m....". 
 <p>
@@ -37,7 +37,7 @@ the input description "adm606m....".
 <img src=screenshot1.png>
 </center>
 
-The second screenshot shows a more interesting hierarchy:
+The second screen-shot shows a more interesting hierarchy:
 A binary input record (bi) reads from a calculation (calc), whose first input
 (INPA) reads from an mbbi which in turn reads from another calc and so on.
 Note how the color-coding indicates severities.
@@ -52,23 +52,11 @@ There is no way to query EPICS V3 IOCs for their database information
 to determine the available "input" links.
 <p>
 The knowledge of which links to follow for each record type is therefore
-configured into the EPICS PV Tree application.
-
-It can be changed via an Eclipse preference setting, refer to the
-source code
-<pre>
-org.csstudio.diag.epics.pvtree/fields
-</pre>
-which has to contain the list of records and fields to trace as 'links'
-for each record in the following format:
-<pre>
-record_type (field1, field2) ; record_type (...)
-</pre>
-Example:
-<pre>
-aai(INP);ai(INP);ao(DOL);bo(DOL);calc(INPA,INPB,INPC,INPD,INPE,INPF,INPG,INPH,INPI,INPJ,INPK,INPL)
-</pre>
- 
+configured into the EPICS PV Tree application. It is at this time not
+configurable by end users, but people with access to the
+source code can determine the syntax from the preferences.ini file
+and override in the CSS plugin_customization.ini for site-specific
+settings.
 
 </body>
 </html>
