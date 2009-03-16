@@ -75,9 +75,9 @@ public class InstanceLabelProvider extends CellLabelProvider
             final String changeTip = NLS.bind(Messages.InstanceLabelProvider_PVCommentTipFormat,
                   new Object[]
                   {
-                     ValueUtil.getString(cell.name_pv.getValue()),
-                     ValueUtil.getString(cell.date_pv.getValue()),
-                     ValueUtil.getString(cell.comment_pv.getValue())
+                     ValueUtil.getString(cell.name_pv().getValue()),
+                     ValueUtil.getString(cell.date_pv().getValue()),
+                     ValueUtil.getString(cell.comment_pv().getValue())
                   });
             tip = tip + changeTip;
          }

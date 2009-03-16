@@ -37,7 +37,7 @@ public class Cell implements PVListener, IProcessVariable
         
     // Cell information for the name of the person who made the change and
     // the date of the change, if the primary cell has comments.
-    public PV name_pv, date_pv, comment_pv;
+    private PV name_pv, date_pv, comment_pv;
     
     /** Initialize
      *  @param instance Instance (row) that holds this cell
@@ -102,6 +102,27 @@ public class Cell implements PVListener, IProcessVariable
     public boolean isPVWriteAllowed()
     {
         return pv.isWriteAllowed();
+    }
+    
+    /** @return comment PV or <code>null</code>
+     */
+    public PV comment_pv()
+    { 
+       return this.comment_pv;
+    }
+    
+    /** @return user name PV or <code>null</code>
+     */
+    public PV name_pv()
+    { 
+       return this.name_pv;
+    }
+    
+    /** @return user name PV or <code>null</code>
+     */
+    public PV date_pv()
+    { 
+       return this.date_pv;
     }
     
     /** If the user entered a value, that's it.

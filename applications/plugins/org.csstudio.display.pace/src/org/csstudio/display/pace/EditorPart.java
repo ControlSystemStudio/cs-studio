@@ -124,7 +124,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             // beenLogged to true so it won't be logged again as a single log entry.
             if(cell.hasComments())
             {
-               String cellName = cell.comment_pv.getName();
+               String cellName = cell.comment_pv().getName();
                Cell cellB = null;
                Instance instanceB = null;
                for (int j=0; j<model.getInstanceCount(); ++j)
@@ -174,7 +174,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             // value with the limit change log report.  .
             if(cell.hasComments())
             {
-               String cellName = cell.comment_pv.getName();
+               String cellName = cell.comment_pv().getName();
                Cell cellB = null;
                Instance instanceB = null;
                for (int j=0; j<model.getInstanceCount(); ++j)
