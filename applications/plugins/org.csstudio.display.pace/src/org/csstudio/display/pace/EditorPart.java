@@ -106,6 +106,47 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         // Create info text that lists changed values
         final StringBuilder body = new StringBuilder();
         body.append(Messages.SaveInto);
+        
+        // Mark all comment pv's as logged.
+        for (int i=0; i<model.getInstanceCount(); ++i)
+        {
+            Instance instance = model.getInstance(i);
+ 
+            Cell cell = null;
+            for (int c=0; c<model.getColumnCount(); ++c)
+            {
+                cell = instance.getCell(c);
+
+                if (!cell.isEdited())
+                    continue;
+
+            // If the cell has comments, find the comment pv and set the comment pv's 
+            // beenLogged to true so it won't be logged again as a single log entry.
+            if(cell.hasComments())
+            {
+               String cellName = cell.comment_pv.getName();
+               Cell cellB = null;
+               Instance instanceB = null;
+               for (int j=0; j<model.getInstanceCount(); ++j)
+               {
+                   instanceB = model.getInstance(j);
+                   for (int d=0; d<model.getColumnCount(); ++d)
+                   {
+                      cellB = instanceB.getCell(d);
+                      if (!cellB.isEdited())
+                          continue;
+
+                      // Set the comment pv's beenLogged flag to true so it won't 
+                      // be logged again as a single log entry.                     
+                     if(cellName.equals(cellB.getName()))
+                     {
+                        cellB.markAsLogged();
+                     }
+                  }
+                }
+              }
+           }
+        }
         for (int i=0; i<model.getInstanceCount(); ++i)
         {
             Instance instance = model.getInstance(i);
@@ -120,7 +161,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                     continue;
                 // If the cell is a comment that has already been logged with the limit change,
                 // don't log it again.
-                if(cell.beenLogged)
+                if(cell.beenLogged())
                    continue;
                 body.append(NLS.bind(Messages.SavePVInfoFmt,
                                      new Object[]
@@ -130,8 +171,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                                         cell.getUserValue()
                                      }));
             // If the cell has comments, find the comment pv and log it's changed
-            // value with the limit change log report.  Set the comment pv's 
-            // beenLogged to true so it won't be logged again as a single log entry.
+            // value with the limit change log report.  .
             if(cell.hasComments())
             {
                String cellName = cell.comment_pv.getName();
@@ -147,7 +187,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                           continue;
                      if(cellName.equals(cellB.getName()))
                      {
-                        cellB.beenLogged=true;
+                        cellB.markAsLogged();
                    body.append(NLS.bind(Messages.SaveCommentInfoFmt,
                          new Object[]
                          {

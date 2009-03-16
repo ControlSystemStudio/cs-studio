@@ -33,7 +33,7 @@ public class Cell implements PVListener, IProcessVariable
     private volatile String user_value = null;
     
     /** If comment has already been logged with the limit value */
-    public boolean beenLogged = false;
+    private boolean beenLogged = false;
         
     // Cell information for the name of the person who made the change and
     // the date of the change, if the primary cell has comments.
@@ -178,18 +178,18 @@ public class Cell implements PVListener, IProcessVariable
     public void start() throws Exception
     {
         pv.start();
-        if(name_pv!=null) name_pv.start();
-        if(date_pv!=null) date_pv.start();
-        if(comment_pv!=null) comment_pv.start();
+        if(name_pv!=null && name_pv.getName().length()>0) name_pv.start();
+        if(date_pv!=null && date_pv.getName().length()>0) date_pv.start();
+        if(comment_pv!=null && comment_pv.getName().length()>0) comment_pv.start();
     }
 
     /** Stop the PV connection */
     public void stop()
     {
         pv.stop();
-        if(name_pv!=null) name_pv.stop();
-        if(date_pv!=null) date_pv.stop();
-        if(comment_pv!=null) comment_pv.stop();
+        if(name_pv!=null && name_pv.getName().length()>0) name_pv.stop();
+        if(date_pv!=null && date_pv.getName().length()>0) date_pv.stop();
+        if(comment_pv!=null && comment_pv.getName().length()>0) comment_pv.stop();
     }
 
     // PVListener
@@ -207,9 +207,16 @@ public class Cell implements PVListener, IProcessVariable
     }
     
     // Set the beenLogged flag.
-    public void setLoggedFlag(final boolean flg)
+    /** @return true if Cell changes have already been logged */
+    public boolean beenLogged()
     {
-        beenLogged = flg;
+       return this.beenLogged;
+    }
+ 
+    /** Mark Cell changes as already logged */
+    public void markAsLogged()
+    {
+       beenLogged = true;
     }
 
     // IProcessVariable
