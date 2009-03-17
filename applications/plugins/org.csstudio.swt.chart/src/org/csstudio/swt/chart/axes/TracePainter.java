@@ -20,9 +20,13 @@ import org.eclipse.swt.graphics.RGB;
  * 
  *  @author Blaz Lipuscek 
  *  @author Kay Kasemir
+ *  @author Xihu Chen found the 'alpha' support for transparency
  */
 public class TracePainter
 {
+    /** Use transparency as supported by 'advanced graphics' ? */
+    final private boolean use_alpha =  true;
+
     private int marker_type=0;
 
     private int marker_size=10;
@@ -157,9 +161,18 @@ public class TracePainter
                 y0 = xaxis.getRegion().y;
                 if (area)
                 {
-                    gc.setBackground(lighter);
-                    fillArea(gc, pos, min, max);
-                    gc.setBackground(old_back);
+                    if (use_alpha)
+                    {
+                        gc.setAlpha((int) (255*saturation));
+                        fillArea(gc, pos, min, max);
+                        gc.setAlpha(255);
+                    }                        
+                    else
+                    {
+                        gc.setBackground(lighter);
+                        fillArea(gc, pos, min, max);
+                        gc.setBackground(old_back);
+                    }
                 }
                 else
                 {
@@ -180,9 +193,18 @@ public class TracePainter
         // Draw what might have accumulated when reaching last sample
         if (area)
         {
-            gc.setBackground(lighter);
-            fillArea(gc, pos, min, max);
-            gc.setBackground(old_back);
+            if (use_alpha)
+            {
+                gc.setAlpha((int) (255*saturation));
+                fillArea(gc, pos, min, max);
+                gc.setAlpha(255);
+            }                        
+            else
+            {
+                gc.setBackground(lighter);
+                fillArea(gc, pos, min, max);
+                gc.setBackground(old_back);
+            }
         }
         else
         {
