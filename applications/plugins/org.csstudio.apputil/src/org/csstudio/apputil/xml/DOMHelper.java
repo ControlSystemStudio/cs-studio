@@ -164,7 +164,7 @@ public class DOMHelper
      *  
      *  @param element Element where to start looking. May be null.
      *  @param element_name Name of sub-element to locate.
-     *  @param default_value Default value is neither "true" nor "false".
+     *  @param default_value Default to use if tag's value is neither "true" nor "false".
      *  
      *  @return Returns <code>true</code> if sub-element was "true",
      *          <code>false</code> if it was "false", otherwise the default.
