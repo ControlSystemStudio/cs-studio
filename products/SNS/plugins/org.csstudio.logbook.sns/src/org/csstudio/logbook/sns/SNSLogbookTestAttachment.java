@@ -39,7 +39,7 @@ public class SNSLogbookTestAttachment
         
         String text = "abcdefghijklm";        
         for(int i=0;i<4011;i++)
-           text=text.concat(" a");
+           text=text.concat(" "+i);
         
         ILogbook logbook =
             new SNSLogbookFactory().connect(URL, LOGBOOK, user, password);
