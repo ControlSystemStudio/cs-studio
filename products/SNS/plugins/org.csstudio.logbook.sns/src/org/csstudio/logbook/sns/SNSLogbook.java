@@ -83,12 +83,23 @@ public class SNSLogbook implements ILogbook
          */
         else
         {
-           String fname = "/tmp/logbook.txt";
-           File logFile = new File(fname);
-           logFile.createNewFile();
-           setContents(logFile, text);
+           // Get name for snapshot file
+           final File tmp_file;
+           try
+           {
+               tmp_file = 
+                   File.createTempFile("Logbook", ".txt");
+           }
+           catch (Exception ex)
+           {
+               final String error = "Cannot create tmp. file:\n" + ex.getMessage(); //$NON-NLS-1$
+               return;
+           }
+           final String fname = tmp_file.getAbsolutePath();
+           
+           setContents(tmp_file, text);
            addFileToElog(fname, title, "See Attachment");
-           logFile.deleteOnExit();
+           tmp_file.deleteOnExit();
         }
     }
     
