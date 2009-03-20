@@ -48,7 +48,7 @@ public class SNSLogbookTestAttachment
         try
         {
             String title = "Test Entry";
-            logbook.createEntry(title, text, null);
+           // logbook.createEntry(title, text, null);
     
             if (image.trim().length() > 0)
             {

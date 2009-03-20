@@ -49,14 +49,13 @@ public class SNSLogbook implements ILogbook
             throws Exception
     {
        /** If the input imageName is null - meaning there's no image to attach
-        *  and the test is not too large for an elog entry, create one.
+        *  and the text is not too large for an elog entry, create one.
         */
         if (imageName == null && text.length()<4000)
         {
             final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
                     + "(?, ?, ?, ?, ?)";
             final String category = "";
-
             // create an sql call for the elog
             final CallableStatement statement = rdb.getConnection().prepareCall(mysql);
             try
@@ -81,68 +80,34 @@ public class SNSLogbook implements ILogbook
         /** Copy the text to a text file and create and elog entry with
          *  this text file as an attachment.
          */
-        else
+        else if (imageName != null && text.length()>=4000)
         {
            // Get name for snapshot file
-           final File tmp_file;
-           try
-           {
-               tmp_file = 
-                   File.createTempFile("Logbook", ".txt");
-           }
-           catch (Exception ex)
-           {
-               final String error = "Cannot create tmp. file:\n" + ex.getMessage(); //$NON-NLS-1$
-               return;
-           }
+           final File tmp_file = File.createTempFile("Logbook", ".txt");
            final String fname = tmp_file.getAbsolutePath();
            
            setContents(tmp_file, text);
            addFileToElog(fname, title, "See Attachment");
            tmp_file.deleteOnExit();
+           if(imageName!=null)
+              addFileToElog(imageName, imageName, "Image found");
         }
     }
     
-    private void addFileToElog(String fname, String title, String text)
+    private void addFileToElog(String fname, String title, String text) throws Exception
     {
        final int ndx = fname.lastIndexOf(".");
        final String extension = fname.substring(ndx+1);
        String fileType = "";
-       long fileTypeID = -1;
-        try
-        {
-           fileTypeID=fetchImageTypes( extension );
-           if(fileTypeID>=0) fileType = "I";
-        }
-        catch(SQLException e)
-        {
-           e.toString();
-        }
-      catch (Exception e)
-      {
-         e.toString();
-      }
+       long fileTypeID = fetchImageTypes( extension );
+       if(fileTypeID>=0) fileType = "I";
       if(fileTypeID==-1)
       {
-         try
-         {
             fileTypeID=fetchAttachmentTypes( extension );
             if(fileTypeID>=0) fileType = "A";
-         }
-         catch(SQLException e)
-         {
-            e.toString();
-         }
-       catch (Exception e)
-       {
-          e.toString();
-       }
       }
       if(fileTypeID < 0)
-      {
-         System.out.println(extension + " is an invalid file type.");
-         return;
-      }
+         throw new Exception(extension + " is an invalid file type.");
        final File inputFile = new File(fname);
        final int file_size = (int) inputFile.length();
        FileInputStream input_stream = null;
@@ -152,9 +117,11 @@ public class SNSLogbook implements ILogbook
       }
       catch (FileNotFoundException e1)
       {
-         e1.getMessage();
+         System.out.println("Could not find " + fname);
+         return;
       }
-       CallableStatement statement = null;
+
+      CallableStatement statement = null;
        try
        {
            final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
@@ -170,34 +137,20 @@ public class SNSLogbook implements ILogbook
            statement.setBinaryStream(8, input_stream, file_size);
            statement.executeQuery();
        }
-      catch (SQLException e)
-      {
-         e.getMessage();
-      }
-      catch (Exception e)
-      {
-         e.getMessage();
-      }
- 
-           if (statement != null)
-            try
-            {
+       finally
+       {
+          if (statement != null)
                statement.close();
-            }
-            catch (SQLException e)
-            {
-               e.getMessage();
-            }
             if (input_stream != null)
-           try
-         {
-            input_stream.close();
+            try
+             {
+                input_stream.close();
+             }
+             catch (IOException e)
+             {
+                // Ignore
+             }      
          }
-         catch (IOException e)
-         {
-            e.getMessage();
-         }
-
     }
     
     /**
