@@ -20,7 +20,7 @@ public class Messages extends NLS
     public static String RestoreCell;
     public static String RestoreCell_TT;
     public static String SaveError;
-    public static String SaveInto;
+    public static String SaveIntro;
     public static String SaveMessage;
     public static String SavePVInfoFmt;
     public static String SaveCommentInfoFmt;
@@ -32,8 +32,6 @@ public class Messages extends NLS
     public static String SetValue_Title;
     public static String SetValue_TT;
     public static String SystemColumn;
-    public static String AdmInfoColumn;
-    public static String RadInfoColumn;
     public static String UnknownValue;
     
     static
