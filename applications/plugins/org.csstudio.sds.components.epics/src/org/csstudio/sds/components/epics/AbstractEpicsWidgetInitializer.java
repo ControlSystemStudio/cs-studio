@@ -8,7 +8,6 @@ import org.csstudio.sds.cosyrules.color.Alarm;
 import org.csstudio.sds.cosyrules.color.AlarmBorder;
 import org.csstudio.sds.cosyrules.color.AlarmBorderWidth;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
 

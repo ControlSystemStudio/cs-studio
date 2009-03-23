@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.eclipse.swt.graphics.RGB;
 
