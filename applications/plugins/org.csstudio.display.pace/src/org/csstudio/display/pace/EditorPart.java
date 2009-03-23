@@ -1,5 +1,7 @@
 package org.csstudio.display.pace;
 
+import java.util.HashMap;
+
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.display.pace.gui.GUI;
 import org.csstudio.display.pace.model.Cell;
@@ -96,72 +98,66 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         return is_dirty;
     }
     
-    /** "Save" means create elog entry about changes, then write user values
-     *   to PVs.
-     *   @see org.eclipse.ui.part.EditorPart#doSave(IProgressMonitor)
+    /** Create the 'body', the main text of the ELog entry which
+     *  lists all the changes.
+     *  @return ELog text
      */
-    @Override
-    public void doSave(final IProgressMonitor monitor)
+    private String createElogText()
     {
-        // Create info text that lists changed values
-        final StringBuilder body = new StringBuilder();
-        body.append(Messages.SaveInto);
+        final StringBuilder body = new StringBuilder(Messages.SaveIntro);
         
-        // Mark all comment pv's as logged.
+        // While changes to most cells are meant to be logged,
+        // some cells' "main" PV might actually be the "comment" meta-PV
+        // of another cell.
+        // In that case, the comment should be logged with the "main" cell,
+        // and the individual logging of the comment cell should be suppressed.
+        
+        // Map of 'main' cells to 'comment' cells
+        final HashMap<Cell, Cell> comment_cell_map = new HashMap<Cell, Cell>();
+
+        // Locate secondary comment cells
         for (int i=0; i<model.getInstanceCount(); ++i)
         {
-            Instance instance = model.getInstance(i);
- 
-            Cell cell = null;
+            final Instance instance = model.getInstance(i);
             for (int c=0; c<model.getColumnCount(); ++c)
             {
-                cell = instance.getCell(c);
-
-                if (!cell.isEdited())
+                final Cell main_cell = instance.getCell(c);
+                if (!main_cell.isEdited()  ||  !main_cell.hasMetaInformation())
                     continue;
-
-            // If the cell has comments, find the comment pv and set the comment pv's 
-            // beenLogged to true so it won't be logged again as a single log entry.
-            if(cell.hasComments())
-            {
-               String cellName = cell.comment_pv().getName();
-               Cell cellB = null;
-               Instance instanceB = null;
-               for (int j=0; j<model.getInstanceCount(); ++j)
-               {
-                   instanceB = model.getInstance(j);
-                   for (int d=0; d<model.getColumnCount(); ++d)
-                   {
-                      cellB = instanceB.getCell(d);
-                      if (!cellB.isEdited())
-                          continue;
-
-                      // Set the comment pv's beenLogged flag to true so it won't 
-                      // be logged again as a single log entry.                     
-                     if(cellName.equals(cellB.getName()))
-                     {
-                        cellB.markAsLogged();
-                     }
-                  }
+                // Look for possible 'comment' cell for main_cell
+                final String comment_pv_name = main_cell.getCommentPVName();
+                boolean found_comment = false;
+                for (int j=0; j<model.getInstanceCount() && !found_comment; ++j)
+                {
+                    final Instance search_instance = model.getInstance(j);
+                    for (int d=0; d<model.getColumnCount(); ++d)
+                    {
+                        final Cell search_cell = search_instance.getCell(d);
+                        if (search_cell.getName().equals(comment_pv_name))
+                        {
+                            comment_cell_map.put(main_cell, search_cell);
+                            found_comment = true;
+                            break;
+                        }
+                    }
                 }
-              }
-           }
+            }
         }
+
+        // Loop over all cells to log changes
         for (int i=0; i<model.getInstanceCount(); ++i)
         {
-            Instance instance = model.getInstance(i);
+            final Instance instance = model.getInstance(i);
             // Check every cell in each instance (row) to see if they have been 
             // edited.  If they have add them to the elog message.
-            Cell cell = null;
             for (int c=0; c<model.getColumnCount(); ++c)
             {
-                cell = instance.getCell(c);
-
+                final Cell cell = instance.getCell(c);
                 if (!cell.isEdited())
                     continue;
-                // If the cell is a comment that has already been logged with the limit change,
-                // don't log it again.
-                if(cell.beenLogged())
+                // Skip comment cells which will be logged when handling
+                // the associated "main" cell
+                if (comment_cell_map.containsValue(cell))
                    continue;
                 body.append(NLS.bind(Messages.SavePVInfoFmt,
                                      new Object[]
@@ -170,35 +166,25 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                                         cell.getCurrentValue(),
                                         cell.getUserValue()
                                      }));
-            // If the cell has comments, find the comment pv and log it's changed
-            // value with the limit change log report.  .
-            if(cell.hasComments())
-            {
-               String cellName = cell.comment_pv().getName();
-               Cell cellB = null;
-               Instance instanceB = null;
-               for (int j=0; j<model.getInstanceCount(); ++j)
-               {
-                   instanceB = model.getInstance(j);
-                   for (int d=0; d<model.getColumnCount(); ++d)
-                   {
-                      cellB = instanceB.getCell(d);
-                      if (!cellB.isEdited())
-                          continue;
-                     if(cellName.equals(cellB.getName()))
-                     {
-                        cellB.markAsLogged();
-                   body.append(NLS.bind(Messages.SaveCommentInfoFmt,
-                         new Object[]
-                         {
-                               cellB.getUserValue()
-                         }));
-                     }
-                  }
-                }
-              }
-           }
+                // If the cell has comments, find the comment pv and log it's changed
+                // value with the limit change log report.
+                final Cell comment_cell = comment_cell_map.get(cell);
+                if (comment_cell != null)
+                    body.append(NLS.bind(Messages.SaveCommentInfoFmt,
+                                         comment_cell.getValue()));
+            }
         }
+        return body.toString();
+    }
+
+    /** "Save" means create elog entry about changes, then write user values
+     *   to PVs.
+     *   @see org.eclipse.ui.part.EditorPart#doSave(IProgressMonitor)
+     */
+    @Override
+    public void doSave(final IProgressMonitor monitor)
+    {
+        final String body = createElogText();
         // Display ELog entry dialog
         final Shell shell = getSite().getShell();
         try
@@ -246,7 +232,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                     // Exceptions in here are caught by ELog dialog
                     // and will be displayed there
                     // (maybe not in the most obvious way...)
-                    model.saveUserValues();
+                    model.saveUserValues(user);
                 }
             };
             dialog.open();

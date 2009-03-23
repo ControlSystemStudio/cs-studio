@@ -3,7 +3,6 @@ package org.csstudio.display.pace.gui;
 import org.csstudio.display.pace.Messages;
 import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Instance;
-import org.csstudio.platform.data.ValueUtil;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osgi.util.NLS;
@@ -63,23 +62,24 @@ public class InstanceLabelProvider extends CellLabelProvider
          String tip = NLS.bind(Messages.InstanceLabelProvider_PVValueFormat,
                                cell.getName(), cell.getValue());
 
-         // Extend to show 'edited', 'hasComments' or 'read-only' state
+         // Extend if 'edited'
          if (cell.isEdited())
              tip = tip + Messages.InstanceLabelProvider_OrigAppendix + cell.getCurrentValue();
+         // Extend if 'read-only'
          if (cell.isReadOnly() || !cell.isPVWriteAllowed())
              tip = tip + Messages.InstanceLabelProvider_ReadOnlyAppendix;
-         // If the cell has comments, add the person who made the change, the
-         // date of the change and the comment to the tool-tip.
-         if (cell.hasComments())
+         // If the cell has meta information, add the person who made the change,
+         // the date of the change and the comment to the tool-tip.
+         if (cell.hasMetaInformation())
          {
-            final String changeTip = NLS.bind(Messages.InstanceLabelProvider_PVCommentTipFormat,
+            final String meta = NLS.bind(Messages.InstanceLabelProvider_PVCommentTipFormat,
                   new Object[]
                   {
-                     ValueUtil.getString(cell.name_pv().getValue()),
-                     ValueUtil.getString(cell.date_pv().getValue()),
-                     ValueUtil.getString(cell.comment_pv().getValue())
+                        cell.getLastUser(),
+                        cell.getLastDate(),
+                        cell.getLastComment()
                   });
-            tip = tip + changeTip;
+            tip = tip + meta;
          }
          return tip;
      }
@@ -112,10 +112,11 @@ public class InstanceLabelProvider extends CellLabelProvider
          else
              gui_cell.setBackground(null);
          // Highlight read-only cells with "inactive" background, usually
-         // a light grey
-         // TODO also mark cells where     !cell.isPVWriteAllowed()
-         // as read-only or maybe in yet another color
-         if (cell.isReadOnly())
+         // a light grey.
+         // This includes both cells configured to be read-only
+         // and those which are meant to be writable, but PV doesn't allow it,
+         // for example because of Channel Access security
+         if (cell.isReadOnly() || !cell.isPVWriteAllowed())
          {
              final Display display = Display.getCurrent();
              gui_cell.setBackground(display.getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));

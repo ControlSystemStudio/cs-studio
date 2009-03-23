@@ -1,6 +1,11 @@
 package org.csstudio.display.pace.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.csstudio.display.pace.Messages;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
@@ -8,9 +13,14 @@ import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 
 /** One cell in the model.
+ *  <p>
  *  Knows about the Instance and Column where this cell resides,
  *  connects to a PV, holds the most recent value of the PV
- *  as well as an optional user value that overrides the PV's value
+ *  as well as an optional user value that overrides the PV's value.
+ *  <p>
+ *  In addition, a cell might have "meta PVs" that contain the name
+ *  of the user, date, and a comment regarding the last change
+ *  of the "main" PV.
  *  
  *  @author Kay Kasemir
  *  @author Delphy Nypaver Armstrong
@@ -19,6 +29,10 @@ import org.csstudio.utility.pv.PVListener;
  */
 public class Cell implements PVListener, IProcessVariable
 {
+    /** Date format used for updating the last_date_pv */
+    final private static DateFormat date_format =
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
+
     final private Instance instance;
 
     final private Column column;
@@ -32,12 +46,11 @@ public class Cell implements PVListener, IProcessVariable
     /** Value that the user entered. */
     private volatile String user_value = null;
     
-    /** If comment has already been logged with the limit value */
-    private boolean beenLogged = false;
-        
-    // Cell information for the name of the person who made the change and
-    // the date of the change, if the primary cell has comments.
-    private PV name_pv, date_pv, comment_pv;
+    /** Optional PVs for the name of the person who made the last change,
+     *  the date of the change, and a comment.
+     *  Either may be <code>null</code>
+     */
+    private PV last_name_pv, last_date_pv, last_comment_pv;
     
     /** Initialize
      *  @param instance Instance (row) that holds this cell
@@ -53,20 +66,29 @@ public class Cell implements PVListener, IProcessVariable
         this.column = column;
         String pv_name = Macro.apply(instance.getMacros(), column.getPvWithMacros());
 
-        //  Create pvs and add listeners
+        //  Create the main PV and add listener
         this.pv = PVFactory.createPV(pv_name);
         pv.addListener(this);
+
+        // Create the optional comment pvs.
+        // No listener. Their value is fetched on demand.
         pv_name=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
-        this.name_pv = PVFactory.createPV(pv_name);
-        name_pv.addListener(this);
+        if (pv_name.length() <= 0)
+            last_name_pv = null;
+        else
+            last_name_pv = PVFactory.createPV(pv_name);
         
-        // Create the comment pvs and listeners, if they are defined in the XML file
-        pv_name=Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
-        this.date_pv = PVFactory.createPV(pv_name);
-        date_pv.addListener(this);
-        pv_name=Macro.apply(instance.getMacros(), column.getCommentPvWithMacros());
-        this.comment_pv = PVFactory.createPV(pv_name);
-        comment_pv.addListener(this);
+        pv_name = Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
+        if (pv_name.length() <= 0)
+            last_date_pv = null;
+        else
+            last_date_pv = PVFactory.createPV(pv_name);
+        
+        pv_name = Macro.apply(instance.getMacros(), column.getCommentPvWithMacros());
+        if (pv_name.length() <= 0)
+            last_comment_pv = null;
+        else
+            last_comment_pv = PVFactory.createPV(pv_name);
     }
 
     /** @return Instance (row) that contains this cell */
@@ -87,14 +109,6 @@ public class Cell implements PVListener, IProcessVariable
         return column.isReadonly();
     }
     
-    // @return <code>true</code> if the name_pv, comment_pv or date_pv were found,
-    // in the XML file, otherwise false.
-    public boolean hasComments()
-    {
-        return (name_pv.getName().length()>0 || date_pv.getName().length()>0 ||
-              comment_pv.getName().length()>0);
-    }
-    
     /** Even though a cell may be configured as writable,
      *  the underlying PV might still prohibit write access. 
      *  @return <code>true</code> for PVs that can be written.
@@ -103,28 +117,7 @@ public class Cell implements PVListener, IProcessVariable
     {
         return pv.isWriteAllowed();
     }
-    
-    /** @return comment PV or <code>null</code>
-     */
-    public PV comment_pv()
-    { 
-       return this.comment_pv;
-    }
-    
-    /** @return user name PV or <code>null</code>
-     */
-    public PV name_pv()
-    { 
-       return this.name_pv;
-    }
-    
-    /** @return user name PV or <code>null</code>
-     */
-    public PV date_pv()
-    { 
-       return this.date_pv;
-    }
-    
+
     /** If the user entered a value, that's it.
      *  Otherwise it's the PV's value, or UNKNOWN
      *  if we have nothing.
@@ -178,15 +171,19 @@ public class Cell implements PVListener, IProcessVariable
     }
     
     /** Save value entered by user to PV
+     *  @param user_name Name of the user to be logged for cells with
+     *                   a last user meta PV
      *  @throws Exception on error
      */
-    public void saveUserValue() throws Exception
+    public void saveUserValue(final String user_name) throws Exception
     {
         if (!isEdited())
             return;
         pv.setValue(user_value);
-        // When the value is save, put the beenLogged flag back to false.
-        beenLogged = false;
+        if (last_name_pv != null)
+            last_name_pv.setValue(user_name);
+        if (last_date_pv != null)
+            last_date_pv.setValue(date_format.format(new Date()));
     }
 
     /** @return <code>true</code> if user entered a value */
@@ -195,22 +192,73 @@ public class Cell implements PVListener, IProcessVariable
         return user_value != null;
     }
 
+
+    /** @return <code>true</code> if the cell has meta information about
+     *  the last change
+     *  @see #getLastComment()
+     *  @see #getLastDate()
+     *  @see #getLastUser()
+     */
+    public boolean hasMetaInformation()
+    {
+        return last_name_pv != null || last_date_pv != null ||
+              last_comment_pv != null;
+    }
+    
+    /** @return User name for last change to the main PV */
+    public String getLastUser()
+    { 
+        return getOptionalValue(last_name_pv);
+    }
+    
+    /** @return Date of last change to the main PV */
+    public String getLastDate()
+    { 
+        return getOptionalValue(last_date_pv);
+    }
+    
+    /** @return Comment for last change to the main PV */
+    public String getLastComment()
+    { 
+        return getOptionalValue(last_comment_pv);
+    }
+    
+    /** Get value of optional PV
+     *  @param optional_pv PV to check, may be <code>null</code>
+     *  @return Last value, never <code>null</code>
+     */
+    private String getOptionalValue(final PV optional_pv)
+    {
+        if (optional_pv == null)
+            return Messages.UnknownValue;
+        final IValue value = optional_pv.getValue();
+        if (value == null)
+            return Messages.UnknownValue;
+        return ValueUtil.getString(value);
+    }
+
     /** Start the PV connection */
     public void start() throws Exception
     {
         pv.start();
-        if(name_pv!=null && name_pv.getName().length()>0) name_pv.start();
-        if(date_pv!=null && date_pv.getName().length()>0) date_pv.start();
-        if(comment_pv!=null && comment_pv.getName().length()>0) comment_pv.start();
+        if (last_name_pv != null)
+            last_name_pv.start();
+        if (last_date_pv != null)
+            last_date_pv.start();
+        if (last_comment_pv != null)
+            last_comment_pv.start();
     }
 
     /** Stop the PV connection */
     public void stop()
     {
+        if (last_comment_pv != null)
+            last_comment_pv.stop();
+        if (last_date_pv != null)
+            last_date_pv.stop();
+        if (last_name_pv != null)
+            last_name_pv.stop();
         pv.stop();
-        if(name_pv!=null && name_pv.getName().length()>0) name_pv.stop();
-        if(date_pv!=null && date_pv.getName().length()>0) date_pv.stop();
-        if(comment_pv!=null && comment_pv.getName().length()>0) comment_pv.stop();
     }
 
     // PVListener
@@ -226,19 +274,6 @@ public class Cell implements PVListener, IProcessVariable
         current_value = ValueUtil.getString(pv.getValue());
         instance.getModel().fireCellUpdate(this);
     }
-    
-    // Set the beenLogged flag.
-    /** @return true if Cell changes have already been logged */
-    public boolean beenLogged()
-    {
-       return this.beenLogged;
-    }
- 
-    /** Mark Cell changes as already logged */
-    public void markAsLogged()
-    {
-       beenLogged = true;
-    }
 
     // IProcessVariable
     @SuppressWarnings("unchecked")
@@ -253,6 +288,14 @@ public class Cell implements PVListener, IProcessVariable
     public String getName()
     {
         return pv.getName();
+    }
+
+    /** @return Name of comment PV or "" */
+    public String getCommentPVName()
+    {
+        if (last_comment_pv == null)
+            return ""; //$NON-NLS-1$
+        return last_comment_pv.getName();
     }
 
     // IProcessVariable

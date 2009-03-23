@@ -42,9 +42,9 @@ public class Column
             throw new Exception("Missing PV name pattern");
         // Look in the XML file to see if the column has comment, name and/or 
         // date pvs.
-        String name_pv = DOMHelper.getSubelementString(col_node, "name_pv");
-        String date_pv = DOMHelper.getSubelementString(col_node, "date_pv");
-        String comment_pv = DOMHelper.getSubelementString(col_node, "comment_pv");
+        final String name_pv = DOMHelper.getSubelementString(col_node, "name_pv");
+        final String date_pv = DOMHelper.getSubelementString(col_node, "date_pv");
+        final String comment_pv = DOMHelper.getSubelementString(col_node, "comment_pv");
         // When access=="ro", make read-only. Otherwise, including no access
         // info, use read/write
         return new Column(name, pv_pattern, "ro".equalsIgnoreCase(access), 
@@ -95,22 +95,21 @@ public class Column
                (readonly ? " (read-only)" : "");
     }
 
-    /** @return macro string of the pv for the name of the person making the change */
+    /** @return macro string of the pv for the name of the person making the change or "" */
     public String getNamePvWithMacros()
     {
         return namePv_with_macros;
     }
     
-    /** @return macro string of the pv for the comment made with the change*/
+    /** @return macro string of the pv for the comment made with the change or "" */
     public String getCommentPvWithMacros()
     {
         return commentPv_with_macros;
     }
     
-    /** @return macro string of the pv for the date/time the change was made */
+    /** @return macro string of the pv for the date/time the change was made or "" */
     public String getDatePvWithMacros()
     {
         return datePv_with_macros;
     }
-    
 }

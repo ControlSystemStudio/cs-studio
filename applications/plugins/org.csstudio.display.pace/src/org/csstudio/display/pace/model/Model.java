@@ -173,15 +173,24 @@ public class Model
 
     /** Save values entered by user to the PVs.
      *  Any cells with 'user' values meant to replace
-     *  the original PV value gets written to the PV.
+     *  the original PV value get written to the PV.
+     *  @param user_name Name of the user to be logged for cells with
+     *                   a last user meta PV
      *  @throws Exception on error writing to the PV
      */
-    public void saveUserValues() throws Exception
+    public void saveUserValues(final String user_name) throws Exception
     {
         for (Instance instance : instances)
         {
             for (int c = 0; c < getColumnCount(); c++)
-                instance.getCell(c).saveUserValue();
+                instance.getCell(c).saveUserValue(user_name);
+        }
+        // If there was no exception, we assume the 'save' worked
+        // and we can clear the model
+        for (Instance instance : instances)
+        {
+            for (int c = 0; c < getColumnCount(); c++)
+                instance.getCell(c).clearUserValue();
         }
     }
 
