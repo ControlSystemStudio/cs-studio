@@ -293,4 +293,45 @@ public final class CustomMediaFactory {
 		}
 		return _imageCache.get(imageDescriptor);
 	}
+    /** the color for light blue */
+    final static public RGB COLOR_LIGHT_BLUE = new RGB(153, 186, 243);
+
+    /** the color for blue */
+    final static public RGB COLOR_BLUE = new RGB(0, 0, 255);
+
+    /** the color for white */
+    final static public RGB COLOR_WHITE = new RGB(255, 255, 255);
+
+    /** the color for gray */
+    final static public RGB COLOR_GRAY = new RGB(200, 200, 200);
+
+    /** the color for dark gray */
+    final static public RGB COLOR_DARK_GRAY = new RGB(150, 150, 150);
+
+    /** the color for black */
+    final static public RGB COLOR_BLACK = new RGB(0, 0, 0);
+    
+    /** the color for red */
+    final static public RGB COLOR_RED = new RGB(255, 0, 0);
+    
+    /** the color for green */
+    final static public RGB COLOR_GREEN= new RGB(0, 255, 0);
+    
+    /** the color for yellow */
+    final static public RGB COLOR_YELLOW= new RGB(255, 255, 0);
+    
+    /** the color for pink */
+    final static public RGB COLOR_PINK= new RGB(255, 0, 255);
+    
+     /** the color for cyan */
+    final static public RGB COLOR_CYAN= new RGB(0, 255, 255);
+    
+    /** the color for orange */
+    final static public RGB COLOR_ORANGE= new RGB(255, 128, 0);
+    
+    /** the font for Arial in height of 9 */
+	final static public FontData FONT_ARIAL = new FontData("Arial", 9, SWT.NONE);
+	
+    /** the font for Tahoma in height of 9 */
+	final static public FontData FONT_TAHOMA = new FontData("Tahoma", 9, SWT.NONE);
 }
