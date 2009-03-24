@@ -134,6 +134,13 @@
             name="Thumb Wheel"
             typeId="org.csstudio.sds.components.ThumbWheel">
       </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.ThermometerModelFactory"
+            description="Thermometer"
+            icon="icons/Thermo.gif"
+            name="Thermometer"
+            typeId="org.csstudio.sds.components.Thermometer">
+      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">
