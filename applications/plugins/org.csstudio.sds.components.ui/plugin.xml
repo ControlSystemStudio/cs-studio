@@ -49,6 +49,10 @@
            class="org.csstudio.sds.components.ui.internal.editparts.ThumbWheelEditPart"
            typeId="org.csstudio.sds.components.ThumbWheel">
      </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.ThermometerEditPart"
+           typeId="org.csstudio.sds.components.Thermometer">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
