@@ -53,7 +53,6 @@ public class SNLPreferenceListener implements IPropertyChangeListener {
 
 			constant.setRGBValue(new_rgb);
 			constant.setSwtFontStyleCode(new_styleCode);
-			System.out.println("Trigger Refreshing");
 			UIEvent.TEXT_ATTRIBUTE_CHANGED.triggerEvent();
 		}
 	}
@@ -91,43 +90,5 @@ public class SNLPreferenceListener implements IPropertyChangeListener {
 		}
 		return style;
 	}
-
-	/*
-	 * Object newValue = event.getNewValue();
-	 * 
-	 * if ("color".equals(valueToSet)) { /*- Cause of the stupidity of the
-	 * eclipse team, we will receive string values from the initializer by
-	 * pressing "restore defaults" but RGB by pushing "Apply" ;-)
-	 * 
-	 * RGB color; if (newValue instanceof RGB) { color = (RGB) newValue; } else {
-	 * String newValueAsString = (String) newValue;
-	 * System.out.println(".propertyChange() " + newValueAsString); if
-	 * (newValueAsString != null && newValueAsString.trim().length() > 0) {
-	 * color = StringConverter .asRGB(newValueAsString); } else { return; } }
-	 * constant.setRGBValue(color);
-	 * UIEvent.TEXT_ATTRIBUTE_CHANGED.triggerEvent(); } else if
-	 * ("bold".equals(valueToSet)) { boolean bold; if (newValue instanceof
-	 * Boolean) { bold = ((Boolean) newValue).booleanValue(); } else { String
-	 * newValueAsString = (String) newValue;
-	 * 
-	 * if (newValueAsString != null && newValueAsString.trim().length() > 0) {
-	 * bold = StringConverter .asBoolean(newValueAsString); } else { return; } }
-	 * int swtFontStyleCode = constant .getSwtFontStyleCode(); if (bold) {
-	 * swtFontStyleCode = swtFontStyleCode | SWT.BOLD; } else { swtFontStyleCode =
-	 * swtFontStyleCode ^ SWT.BOLD; }
-	 * constant.setSwtFontStyleCode(swtFontStyleCode);
-	 * UIEvent.TEXT_ATTRIBUTE_CHANGED.triggerEvent(); } else if
-	 * ("italic".equals(valueToSet)) { boolean italic; if (newValue instanceof
-	 * Boolean) { italic = ((Boolean) newValue) .booleanValue(); } else { String
-	 * newValueAsString = (String) newValue;
-	 * 
-	 * if (newValueAsString != null && newValueAsString.trim().length() > 0) {
-	 * italic = StringConverter .asBoolean(newValueAsString); } else { return; } }
-	 * int swtFontStyleCode = constant .getSwtFontStyleCode(); if (italic) {
-	 * swtFontStyleCode = swtFontStyleCode | SWT.ITALIC; } else {
-	 * swtFontStyleCode = swtFontStyleCode ^ SWT.ITALIC; }
-	 * constant.setSwtFontStyleCode(swtFontStyleCode);
-	 * UIEvent.TEXT_ATTRIBUTE_CHANGED.triggerEvent(); }
-	 */
 
 }

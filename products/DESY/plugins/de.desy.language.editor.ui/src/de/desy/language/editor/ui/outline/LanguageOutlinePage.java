@@ -73,7 +73,6 @@ public class LanguageOutlinePage extends ContentOutlinePage implements
 					LanguageOutlinePage.this.getTreeViewer().setInput(
 							LanguageOutlinePage.this._rootNode);
 					LanguageOutlinePage.this.getTreeViewer().expandToLevel(2);
-					System.out.println("LanguageOutlinePage.refreshViewer(): async-run(): update!");
 				}
 			}
 		});

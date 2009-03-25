@@ -123,15 +123,12 @@ public class SNLFilePage extends WizardNewFileCreationPage {
 		// Since the file resource was created, open it for editing
 		// if requested by the user
 		try {
-			// if (openFileCheckbox.getSelection()) {
 			final IWorkbenchWindow dwindow = this.workbench
 					.getActiveWorkbenchWindow();
 			final IWorkbenchPage page = dwindow.getActivePage();
 			if (page != null) {
 				IDE.openEditor(page, newFile, true);
 			}
-			System.out.println("Creating a source file.");
-			// }
 		} catch (final PartInitException e) {
 			e.printStackTrace();
 			return false;

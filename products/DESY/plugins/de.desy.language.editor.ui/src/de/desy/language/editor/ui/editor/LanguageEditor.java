@@ -540,10 +540,6 @@ public abstract class LanguageEditor extends TextEditor {
 	 */
 	@Override
 	protected final void initializeEditor() {
-		System.out.println("LanguageEditor.initializeEditor()");
-		// this.setDocumentProvider(Activator.getDefault()
-		// .getDocumentProvider());
-
 		this._uiListener = new UIEventListener() {
 			public void eventOccourred() {
 				LanguageEditor.this.refresh();
@@ -616,9 +612,6 @@ public abstract class LanguageEditor extends TextEditor {
 							document.get(), sourceRessource, progressMonitor);
 
 					if (LanguageEditor.this._outlinePage != null) {
-						System.out
-								.println("LanguageEditor.refreshParsedTree(): current root node: "
-										+ this._rootNode);
 						LanguageEditor.this._outlinePage
 								.setEditorInput(LanguageEditor.this._rootNode);
 					}
@@ -674,10 +667,6 @@ public abstract class LanguageEditor extends TextEditor {
 						}
 
 					}
-					// }
-					// };
-					// // Display.getCurrent().asyncExec(parserJob);
-					// parserJob.run();
 				}
 			}
 		}

@@ -259,7 +259,6 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
 
 		this.newProject = this.createSNLProject(description, newProjectHandle,
 				monitor, "SNL");
-		System.out.println("Creating a SNLDT project.");
 		return this.newProject;
 
 	}

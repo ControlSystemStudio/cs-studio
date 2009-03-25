@@ -166,13 +166,10 @@ public class SNLEditor extends LanguageEditor {
 				stdOutBuffer.append((char) c);
 			}
 			String stdOutResult = stdOutBuffer.toString();
-			System.out.println("STDOUT:\n" + stdOutResult);
 			StringBuffer stdErrBuffer = new StringBuffer();
 			while ((c = stdErr.read()) != -1) {
 				stdErrBuffer.append((char) c);
 			}
-			String stdErrResult = stdErrBuffer.toString();
-			System.out.println("STDERR:" + stdErrResult);
 			if (result != 0) {
 				Pattern pattern = Pattern
 						.compile("(syntax error: line no. )([\\d]*)([^\\n]*)(\\n)([\\S\\s]*)");

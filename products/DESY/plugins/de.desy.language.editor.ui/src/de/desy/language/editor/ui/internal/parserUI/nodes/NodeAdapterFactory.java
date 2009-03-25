@@ -14,7 +14,6 @@ public class NodeAdapterFactory implements IAdapterFactory {
 		assert adaptableObject instanceof RootNode : "adaptableObject instanceof RootNode"; //$NON-NLS-1$
 		
 		final RootNode adaptedNode = (RootNode) adaptableObject;
-		System.out.println("NodeAdapterFactory.getAdapter()");
 		return new WorkbenchAdapter() {
 			@Override
 			public String getLabel(final Object object) {
