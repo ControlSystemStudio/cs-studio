@@ -141,6 +141,13 @@
             name="Thermometer"
             typeId="org.csstudio.sds.components.Thermometer">
       </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.TankModelFactory"
+            description="Tank"
+            icon="icons/Tank.gif"
+            name="Tank"
+            typeId="org.csstudio.sds.components.Tank">
+      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">

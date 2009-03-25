@@ -38,7 +38,7 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
-				ThermoFigureTest testFigure = new ThermoFigureTest(scaleBounds);
+				TankFigureTest testFigure = new TankFigureTest(scaleBounds);
 				
 				parent.add(testFigure,testFigureBounds);
 				lws.paint(event.gc);
@@ -54,6 +54,28 @@ public class WidgetFigureTest {
 	        display.sleep();
 	    }
 	}
+}
+
+
+class TankFigureTest extends Figure {
+	
+	public TankFigureTest(Rectangle bounds) {
+
+		RefreshableTankFigure tank = new RefreshableTankFigure();		
+		tank.setBounds(bounds);
+		tank.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+				CustomMediaFactory.COLOR_WHITE));
+		tank.setValue(50);		
+		tank.setFillColor(CustomMediaFactory.COLOR_BLUE);
+		tank.setFillBackgroundColor(CustomMediaFactory.COLOR_GRAY);
+		tank.setForegroundColor(CustomMediaFactory.getInstance().getColor(
+				CustomMediaFactory.COLOR_BLACK));
+		tank.setTransparent(true);	
+		tank.setHihiLevel(90);
+		add(tank);
+		
+	}
+
 }
 
 class ThermoFigureTest extends Figure {
