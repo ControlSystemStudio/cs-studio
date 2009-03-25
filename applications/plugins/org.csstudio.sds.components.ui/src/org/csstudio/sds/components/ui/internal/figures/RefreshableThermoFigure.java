@@ -21,6 +21,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * A Thermometer figure
+ * @author Xihui Chen
+ *
+ */
 public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {	
 
 	private Color fillColor;

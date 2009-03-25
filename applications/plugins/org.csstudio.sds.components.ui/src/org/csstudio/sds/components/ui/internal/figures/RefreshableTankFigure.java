@@ -18,6 +18,11 @@ import org.eclipse.swt.graphics.Pattern;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * A tank figure
+ * @author Xihui Chen
+ *
+ */
 public class RefreshableTankFigure extends AbstractScaledWidgetFigure {	
 
 	private Color fillColor;
@@ -43,9 +48,7 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 		marker.putMarkerElement("HI", hiLevel, CustomMediaFactory.COLOR_ORANGE);
 		marker.putMarkerElement("HIHI", hihiLevel, CustomMediaFactory.COLOR_RED);	
 
-		tank = new Tank();
-
-		
+		tank = new Tank();		
 		setLayoutManager(new TankLayout());
 		
 		add(scale, TankLayout.SCALE);
@@ -102,12 +105,7 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 	public void setFillColor(RGB fillColor) {
 		this.fillColor = CustomMediaFactory.getInstance().getColor(fillColor);
 	}
-
 	
-	
-
-
-
 	/**
 	 * @param fillBackgroundColor the fillBackgroundColor to set
 	 */
@@ -132,7 +130,7 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 		}
 		@Override
 		protected void fillShape(Graphics graphics) {
-			System.out.println(bounds.width);
+			
 			int fill_corner = DEFAULT_CORNER;
 			//If this is more close to 1/2, more light the tank will be.
 			double intersectFactor = 11d/20d;
@@ -213,15 +211,8 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 					bounds.height - (valuePosition - bounds.y)),
 					fill_corner, fill_corner);
 				graphics.setForegroundColor(outlineColor);
-			}
-			
-			
-			
+			}			
 		}		
-		public Dimension getCorner() {
-			return corner;
-		}
-	
 	}
 	
 		
