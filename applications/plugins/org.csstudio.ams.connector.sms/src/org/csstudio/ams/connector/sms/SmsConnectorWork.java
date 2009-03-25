@@ -42,6 +42,7 @@ import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.internal.SampleService;
+import org.csstudio.ams.connector.sms.service.JmsSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -321,7 +322,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         int modemCount = 1;
         
         boolean result = false;
-        
+
+        IPreferenceStore store = SmsConnectorPlugin.getDefault().getPreferenceStore();
+
         try
         {
             if (sTest != 0)
@@ -337,8 +340,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             // strModel     - gsmDeviceModel: "GS64", "M1306B", "6310i", ..., ""
             // strSimPin        - SimCard Pin-Number: "1234", ...
             ////////////////////////////////////////////////////////////////////////
-            IPreferenceStore store = SmsConnectorPlugin.getDefault().getPreferenceStore();
-            
             try
             {
                 readWaitingPeriod = Long.parseLong(store.getString(SampleService.P_MODEM_READ_WAITING_PERIOD));
@@ -436,9 +437,29 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 Log.log(this, Log.INFO, "service started");
             }
         }
-        catch (Exception e)
+        catch(Exception e)
         {
             Log.log(this, Log.FATAL, "could not init modem", e);
+            
+            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+            if(sender.isConnected())
+            {
+                if(sender.sendMessage("alarm", "SmsConnectorWork: Cannot init modem [" + e.getMessage() + "]", "MAJOR") == false)
+                {
+                    Log.log(this, Log.ERROR, "Cannot send alarm message.");
+                }
+                else
+                {
+                    Log.log(this, Log.INFO, "Alarm message sent.");
+                }
+            }
+            else
+            {
+                Log.log(this, Log.WARN, "Alarm message sender is NOT connected.");
+            }
+            
+            sender.closeAll();
+            sender = null;
             
             result = false;
         }
@@ -549,7 +570,28 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         catch(Exception e)
         {
             Log.log(this, Log.FATAL, "could not init internal Jms", e);
+            
+            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+            if(sender.isConnected())
+            {
+                if(sender.sendMessage("alarm", "SmsConnectorWork: Cannot init internal Jms [" + e.getMessage() + "]", "MAJOR") == false)
+                {
+                    Log.log(this, Log.ERROR, "Cannot send alarm message.");
+                }
+                else
+                {
+                    Log.log(this, Log.INFO, "Alarm message sent.");
+                }
+            }
+            else
+            {
+                Log.log(this, Log.WARN, "Alarm message sender is NOT connected.");
+            }
+            
+            sender.closeAll();
+            sender = null;
         }
+        
         return false;
     }
 
