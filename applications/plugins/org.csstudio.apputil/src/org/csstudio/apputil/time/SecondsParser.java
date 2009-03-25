@@ -72,14 +72,20 @@ public class SecondsParser
         final boolean negative = seconds < 0;
         if (negative)
             seconds = -seconds;
-        // Convert to hours, minutes, seconds
-    	final int hours = (int) (seconds / SECS_PER_HOUR);
-    	seconds -= hours * SECS_PER_HOUR;
-    	final int minutes = (int) (seconds / SECS_PER_MINUTE);
-    	seconds -= minutes * SECS_PER_MINUTE;
-    	// Format as string
-    	final String result = String.format("%02d:%02d:%02d", //$NON-NLS-1$
-    			                           hours, minutes, (int) seconds);
+        final String result;
+        if (seconds < 1.0)
+            result = String.format("00:00:0%.3f", seconds); //$NON-NLS-1$
+        else
+        {
+            // Convert to hours, minutes, seconds
+        	final int hours = (int) (seconds / SECS_PER_HOUR);
+        	seconds -= hours * SECS_PER_HOUR;
+        	final int minutes = (int) (seconds / SECS_PER_MINUTE);
+        	seconds -= minutes * SECS_PER_MINUTE;
+        	// Format as string
+        	result = String.format("%02d:%02d:%02d", //$NON-NLS-1$
+        	                       hours, minutes, (int) seconds);
+        }
     	if (negative)
     	    return "-" + result; //$NON-NLS-1$
     	return result;
