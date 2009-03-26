@@ -16,6 +16,7 @@ public class Messages extends NLS
     public static String ErrorNoURL;
     public static String ErrorType;
     public static String JMSMonitorPrefs;
+    public static String MessageDestination;
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_USER;
     public static String Preferences_JMS_PASSWORD;

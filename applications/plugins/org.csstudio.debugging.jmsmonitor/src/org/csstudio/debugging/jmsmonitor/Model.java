@@ -233,6 +233,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
         final Enumeration<String> names = message.getMapNames();
         final ArrayList<MessageProperty> content =
             new ArrayList<MessageProperty>();
+        content.add(new MessageProperty(Messages.MessageDestination, message.getJMSDestination().toString()));
         String type = Messages.UnknownType;
         while (names.hasMoreElements())
         {
@@ -260,6 +261,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     {
         final ArrayList<MessageProperty> content =
             new ArrayList<MessageProperty>();
+        content.add(new MessageProperty(Messages.MessageDestination, message.getJMSDestination().toString()));
         content.add(new MessageProperty("TextMessage", message.getText())); //$NON-NLS-1$
         final ReceivedMessage entry = new ReceivedMessage("TEXT", content); //$NON-NLS-1$
         // Add to end of list
