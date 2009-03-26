@@ -38,8 +38,8 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
-				TankFigureTest testFigure = new TankFigureTest(scaleBounds);
-				
+				XSliderFigureTest testFigure = new XSliderFigureTest(scaleBounds);
+				//TankFigureTest testFigure = new TankFigureTest(scaleBounds);
 				parent.add(testFigure,testFigureBounds);
 				lws.paint(event.gc);
 				
@@ -57,6 +57,32 @@ public class WidgetFigureTest {
 }
 
 
+class XSliderFigureTest extends Figure {
+	
+	public XSliderFigureTest(Rectangle bounds) {
+
+		ScaledSliderFigure slider = new ScaledSliderFigure();		
+		slider.setBounds(bounds);
+		slider.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+				CustomMediaFactory.COLOR_WHITE));
+		slider.setMaximum(1000);
+		slider.setMinimum(0);
+		slider.setValue(50);		
+		slider.setFillColor(CustomMediaFactory.COLOR_RED);
+		slider.setFillBackgroundColor(CustomMediaFactory.COLOR_GRAY);
+		slider.setForegroundColor(CustomMediaFactory.getInstance().getColor(
+				CustomMediaFactory.COLOR_BLACK));
+		slider.setTransparent(true);	
+		slider.setHihiLevel(90);
+		slider.setLogScale(true);
+		//slider.setHorizontal(true);
+		add(slider);
+		
+	}
+
+}
+
+
 class TankFigureTest extends Figure {
 	
 	public TankFigureTest(Rectangle bounds) {
@@ -67,7 +93,7 @@ class TankFigureTest extends Figure {
 				CustomMediaFactory.COLOR_WHITE));
 		tank.setValue(50);		
 		tank.setFillColor(CustomMediaFactory.COLOR_BLUE);
-		tank.setFillBackgroundColor(CustomMediaFactory.COLOR_GRAY);
+		tank.setFillBackgroundColor(CustomMediaFactory.COLOR_RED);
 		tank.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_BLACK));
 		tank.setTransparent(true);	

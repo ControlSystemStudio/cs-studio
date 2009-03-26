@@ -66,7 +66,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	 * @param value the value to set
 	 */
 	public void setValue(final double value) {
-		this.value = value;
+		this.value = 
+			Math.max(scale.getRange().lower, Math.min(scale.getRange().upper, value));
 	}
 	
 	
@@ -76,6 +77,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	public void setMinimum(final double minimum) {
 		this.minimum = minimum;
 		scale.setRange(new Range(minimum, scale.getRange().upper));
+		//value = Math.max(scale.getRange().lower, value); 
 		scale.revalidate();
 		
 	}
@@ -86,6 +88,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	public void setMaximum(final double maximum) {
 		this.maximum = maximum;
 		scale.setRange(new Range(scale.getRange().lower, maximum));
+		//value = Math.min(scale.getRange().upper, value);
 		scale.revalidate();
 	}
 

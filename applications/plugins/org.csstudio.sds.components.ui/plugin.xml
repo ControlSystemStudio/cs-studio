@@ -57,6 +57,10 @@
            class="org.csstudio.sds.components.ui.internal.editparts.TankEditPart"
            typeId="org.csstudio.sds.components.Tank">
      </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.ScaledSliderEditPart"
+           typeId="org.csstudio.sds.components.ScaledSlider">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

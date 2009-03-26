@@ -148,6 +148,13 @@
             name="Tank"
             typeId="org.csstudio.sds.components.Tank">
       </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.ScaledSliderModelFactory"
+            description="Scaled Slider"
+            icon="icons/ScaledSlider.gif"
+            name="Scaled Slider"
+            typeId="org.csstudio.sds.components.ScaledSlider">
+      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">
