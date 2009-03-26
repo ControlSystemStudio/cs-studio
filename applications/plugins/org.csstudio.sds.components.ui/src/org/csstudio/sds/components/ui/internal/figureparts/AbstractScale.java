@@ -37,13 +37,13 @@ public abstract class AbstractScale extends Figure{
 	public static final double DEFAULT_MIN = 0d;
 
 
-	public static final String DEFAULT_ENGINEERING_FORMAT = "0.#####E0";
+	public static final String DEFAULT_ENGINEERING_FORMAT = "0.####E0";
 
 
 	/**
 	 * the digits limit to be displayed in engineering format
 	 */
-	private static final int ENGINEERING_LIMIT = 5;
+	private static final int ENGINEERING_LIMIT = 4;
 
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd\nHH:mm:ss";    	
     
@@ -61,8 +61,7 @@ public abstract class AbstractScale extends Figure{
     public static final int MIN_GRID_STEP_HINT = 6;
     
     /** the default label format */
-    private static final String DEFAULT_DECIMAL_FORMAT = "############.###########";
-    
+    private String default_decimal_format = "############.##";    
 	
     /** the state if the axis scale is log scale */
     private boolean logScaleEnabled = false;
@@ -83,7 +82,7 @@ public abstract class AbstractScale extends Figure{
       * so all the inner parameters could be recalculated before the next paint*/
     private boolean dirty = true;
 
-	private boolean dateEnabled = false;
+    private boolean dateEnabled = false;
     
     private boolean scaleLineVisible = true;
 
@@ -104,7 +103,7 @@ public abstract class AbstractScale extends Figure{
         	
             if (isDateEnabled()) {
               	if (formatPattern == null || formatPattern.equals("")
-            			|| formatPattern.equals(DEFAULT_DECIMAL_FORMAT)
+            			|| formatPattern.equals(default_decimal_format)
             			|| formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {            		
             		formatPattern =  DEFAULT_DATE_FORMAT;                            
 	                if (timeUnit == Calendar.MILLISECOND) {
@@ -127,15 +126,15 @@ public abstract class AbstractScale extends Figure{
             }
             
             if (formatPattern == null || formatPattern.equals("")) {            	
-            	formatPattern = DEFAULT_DECIMAL_FORMAT;            	
+            	formatPattern = default_decimal_format;            	
             }       
-            if(formatPattern.equals(DEFAULT_DECIMAL_FORMAT) || 
+            if(formatPattern.equals(default_decimal_format) || 
             		formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {
             	if((max != 0 && Math.abs(Math.log10(Math.abs(max))) >= ENGINEERING_LIMIT)
             		|| (min !=0 && Math.abs(Math.log10(Math.abs(min))) >= ENGINEERING_LIMIT))
                     formatPattern = DEFAULT_ENGINEERING_FORMAT;
             	else
-            		formatPattern = DEFAULT_DECIMAL_FORMAT;
+            		formatPattern = default_decimal_format;
             }                     
             return new DecimalFormat(formatPattern).format(obj);
    }
@@ -312,6 +311,21 @@ public abstract class AbstractScale extends Figure{
             min = range.lower;
             max = range.upper;
             
+            //calculate the default decimal format
+            if(formatPattern == default_decimal_format) {
+            	 if(Math.abs(max-min) > 0.1)
+	            	default_decimal_format = "############.##";
+	             else {
+	            	default_decimal_format = "##.##";
+		            double mantissa = Math.abs(max-min);   
+		            while (mantissa < 1) {
+		                mantissa *= 10.0;
+		                default_decimal_format += "#"; 
+		            }
+	             }
+            	 formatPattern = default_decimal_format;
+            }
+
             setDirty(true);
 	    }
 
