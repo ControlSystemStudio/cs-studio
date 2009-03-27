@@ -573,7 +573,6 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 			return d;
 		}
 	
-		@Override
 		public void layout(IFigure container) {
 			if(horizontal)
 				horizontalLayout(container);

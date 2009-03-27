@@ -31,7 +31,6 @@ public class WidgetFigureTest {
 		lws.setContents(parent);
 		 
 		shell.addListener(SWT.Paint, new Listener() {
-			@Override
 			public void handleEvent(Event event) {
 				parent.removeAll();
 				Rectangle testFigureBounds = new Rectangle(0,

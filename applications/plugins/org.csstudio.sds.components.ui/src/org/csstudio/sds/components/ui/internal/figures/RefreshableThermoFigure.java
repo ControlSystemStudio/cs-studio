@@ -353,7 +353,6 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 			return d;
 		}
 	
-		@Override
 		public void layout(IFigure container) {
 			Rectangle area = container.getClientArea();		
 			if(bulb != null && bulb.isVisible()) {

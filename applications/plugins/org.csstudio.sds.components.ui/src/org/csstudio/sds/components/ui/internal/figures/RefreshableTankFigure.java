@@ -246,7 +246,6 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 			return d;
 		}
 	
-		@Override
 		public void layout(IFigure container) {
 			Rectangle area = container.getClientArea();		
 			
