@@ -180,39 +180,41 @@ abstract public class RDBUtil
 	 *  valid after network errors or RDB timeouts by checking
 	 *  the validity of the connection and re-connecting if
 	 *  necessary.
-	 *  It will <u>not</u> re-open a connection that was
-	 *  specifically closed by calling <code>close()</code>
-	 *  because that would indicate a logical error in the code.
-	 *  @return SQL connection
-	 *  @throws Exception when necessary re-connection fails or
-	 *          when called on a closed connection
+	 *  <p>
+	 *  It cannot really distinguish between a connection that
+	 *  was closed on purpose, or one that happens to be closed
+	 *  because of a previous network error that caused this
+	 *  very routine to close the connection and then attempt
+	 *  a re-connect - which failed and left the connection as null.
+	 *  
+	 *  @return SQL connection. In auto-reconnect mode this should never be
+	 *          <code>null</code>: Either a valid connection or an exception.
+	 *  @throws Exception when necessary re-connection fails
 	 */
 	public Connection getConnection() throws Exception
 	{
-	    if(autoReconnect) {
-			if (connection.isClosed())
-		        throw new Exception("Connection " + url + " was closed");
-	        if (!isConnected())
-	        {
-	            Activator.getLogger().debug(
-	                    "Connection Lost! Reconnect to " + url);
+	    if (autoReconnect)
+	    {
+	        if (connection != null && isConnected())
+	            return connection; // All OK
+            Activator.getLogger().info("Connection Lost! Reconnect to " + url);
+	        if (connection != null)
 	            close();
-	            connection = do_connect(url, user, password);
-	            connection.setAutoCommit(false);
-	            test_query = connection.prepareStatement(getConnectionTestQuery());
-	        }
+            connection = do_connect(url, user, password);
+            connection.setAutoCommit(false);
+            test_query = connection.prepareStatement(getConnectionTestQuery());
 	    }
         return connection;
-        
 	}
 
 	/** Close the RDB connection. */
 	public void close()
 	{
 		Activator.getLogger().debug("RDBUtil closes " + url);
-		
 		try
-		{	if(autoReconnect) {
+		{
+		    if (autoReconnect)
+		    {
 		    	test_query.close();
 		    	test_query = null;
 			}
