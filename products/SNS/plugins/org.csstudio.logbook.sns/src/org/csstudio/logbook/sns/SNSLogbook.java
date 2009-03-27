@@ -42,21 +42,30 @@ public class SNSLogbook implements ILogbook
      *  @throws Exception on error
      */
     public SNSLogbook(final RDBUtil rdb, final String user,
-            final String logbook) throws Exception
+            final String logbook) throws Exception, SQLException
     {
         this.rdb = rdb;
         this.logbook = logbook;
         badge_number = getBadgeNumber(user);
+        /* The maximum allowed size of logbook text entry */
         MAX_TEXT_SIZE = getContentLength();
     }
 
-    /** Create the Elog entry */
+    /** Create the Elog entry 
+     * 
+     *  @param String title   title of the elog entry
+     *  @param String text    user entered text for the elog entry
+     *  @param String imageName  name of the image to attach or null if no image
+     *  @throws Exception
+     *  @throws SQLException
+     */
     @SuppressWarnings("nls")
     public void createEntry(String title, String text, String imageName)
-            throws Exception
+            throws SQLException, Exception
     {
        /** If the input imageName is null - meaning there's no image to attach
-        *  and the text is not too large for an elog entry, create one.
+        *  and the text is not too large for an elog entry, create an average elog 
+        *  entry.
         */
 
         if (imageName == null && text!=null && text.length()<MAX_TEXT_SIZE)
@@ -82,40 +91,50 @@ public class SNSLogbook implements ILogbook
             return;
         }
         
-        String info = "";
-        if(text!=null && text.length()>=MAX_TEXT_SIZE)
-           info = "Input text exceeds " + MAX_TEXT_SIZE + " characters, see attachment.";
-        else
-           info = "Image attached.";
-
-        // Get the Entry ID for the attachment/image.
+        // If text is made into an attachment due to size restraints, replace the
+        // text that is now an attachment with text to explain why there is an
+        // attachment
+   final String info = "Input text exceeds " + MAX_TEXT_SIZE + " characters, see attachment.";
+ 
+        // Get the Entry ID from the RDB for the attachment/image.
         final int entry_id =  getEntryID(title, info);
 
-        /** Add text and image to the elog. */
+        // If an image was input add the image to the elog. 
         if(imageName != null)
         {   
            addFileToElog(imageName, "I", entry_id);
         }
-        /** Copy the text to a text file and create and elog entry with
-         *  this text file as an attachment.
-         */
+        // Copy the oversized text entry to a text file and create and elog entry with
+        //  this text file as an attachment.
         if(text!=null && text.length()>=MAX_TEXT_SIZE)
         {
-           // Get name for snapshot file
+           // Get a name for the created text file
            final File tmp_file = File.createTempFile("Logbook", ".txt");
            final String fname = tmp_file.getAbsolutePath();
            
+           // Store the oversized text entry in the text file
            setContents(tmp_file, text);
+           // Add the text attachment to the elog
            addFileToElog(fname, "A", entry_id);
            tmp_file.deleteOnExit();
         }
     }
-    
-    private int getEntryID(String title, String text) throws Exception
+
+    /** There will be multiple attachments, so ask the RDB for an entry id to
+     *  be used to keep all the attachments for this elog entry together.
+     * 
+     *  @param String title   title of the elog entry
+     *  @param String text    explanatory text for the elog entry
+     *  @param String imageName  name of the image to attach or null if no image
+     *  @throws Exception
+     *  @throws SQLException
+     */
+
+    private int getEntryID(String title, String text) throws SQLException, Exception
     {
        int entry_id=-1;
    
-      // Initiate the multi-file sql by retrieving the entry_id
+      // Initiate the multi-file sql and retrieve the entry_id
       CallableStatement statement = null;
        try
        {
@@ -139,35 +158,41 @@ public class SNSLogbook implements ILogbook
        return entry_id;
     }
     
-    private void addFileToElog(String fname, String fileType, int entry_id) throws Exception
+    /** Determine the type of attachment, based on file extension, and add it
+     *  to the elog entry with the entry_id.
+     * 
+     *  @param String title   title of the elog entry
+     *  @param String text    explanatory text for the elog entry
+     *  @param String imageName  name of the image to attach or null if no image
+     *  @throws Exception
+     *  @throws SQLException
+     */
+    
+    private void addFileToElog(String fname, String fileType, int entry_id) throws SQLException, Exception
     {
  
        final File inputFile = new File(fname);
        final int file_size = (int) inputFile.length();
-       FileInputStream input_stream = null;
-       try
-       {
-          input_stream = new FileInputStream(inputFile);
-       }
-       catch (FileNotFoundException e1)
-       {
-          System.out.println("Could not find " + fname);
-          return;
-       }
+ 
       CallableStatement statement = null;
+      // Get the file extension
       final int ndx = fname.lastIndexOf(".");
       final String extension = fname.substring(ndx+1);
       long fileTypeID = -1;
 
+      // Ask the RDB for the fileTypeID, based on whether an image or text is to be
+      // attached.
       if(fileType.equalsIgnoreCase("I")) 
          fileTypeID = fetchImageTypes( extension );
       else {
          fileTypeID = fetchAttachmentTypes( extension );
       }
 
+      // Create a Blob to store the attachment in.
       BLOB blob = BLOB.createTemporary(rdb.getConnection(), true, BLOB.DURATION_SESSION);
        try
        {
+          // Initiate the sql to add attachments to the elog
            final String mysql = "call logbook.logbook_pkg.add_entry_attachment"
                        + "(?, ?, ?, ?, ?)";
            statement = rdb.getConnection().prepareCall(mysql);
@@ -175,8 +200,24 @@ public class SNSLogbook implements ILogbook
            statement.setString(2, fileType);    
            statement.setString(3, fname);
            statement.setLong(4, fileTypeID);
+           
+           // Send the image to the sql.
            if(fileType.equals("I"))
+           {
+             FileInputStream input_stream = null;
+              try
+              {
+                 input_stream = new FileInputStream(inputFile);
+              }
+              catch (FileNotFoundException e1)
+              {
+                 System.out.println("Could not find " + fname);
+                 return;
+              }
               statement.setBinaryStream(5, input_stream, file_size);
+              input_stream.close();
+           }
+           // Send the text attachment to the sql
            else
            {
               String BlobContent = readFileAsString(fname);
@@ -187,16 +228,6 @@ public class SNSLogbook implements ILogbook
        }
        finally
        {
-          if (input_stream != null)
-          try
-          {
-            input_stream.close();
-          }
-          catch (IOException e)
-          {
-             // Ignore
-          }  
-          
           if (statement != null)
               statement.close();
        }
@@ -242,10 +273,14 @@ public class SNSLogbook implements ILogbook
 
     
     /** Get the badge number for the user in the connection dictionary
+     * 
+     *  @param user   user id of person logging in.
      *  @return the badge number for the specified user or a default
+     *  @throws Exception
+     *  @throws SQLException
      */
     @SuppressWarnings("nls")
-    private String getBadgeNumber(final String user) throws Exception
+    private String getBadgeNumber(final String user) throws Exception, SQLException
     {
         final PreparedStatement statement = rdb.getConnection()
         .prepareStatement("select bn from OPER.EMPLOYEE_V where user_id=?");
@@ -276,8 +311,11 @@ public class SNSLogbook implements ILogbook
     }
     
     /** Fetch the available image types. 
-    * @throws Exception 
-    * @throws SQLException */
+    * @param image_type  the extension of the input image file.
+    * @throws SQLException
+    * @throws Exception
+    * @return image_type_id from the RDB, -1 if not found
+    */
     private long fetchImageTypes( String image_type ) throws SQLException, Exception  {
        final Statement statement = rdb.getConnection().createStatement();
        try {
@@ -298,7 +336,12 @@ public class SNSLogbook implements ILogbook
     }
     
     
-    /** Fetch the available attachment types. */
+    /** Fetch the available attachment types.
+    * @param attachment_type  the extension of the input attachment file.
+    * @throws SQLException
+    * @throws Exception
+    * @return attachment_type_id from the RDB, -1 if not found
+    */
     private long fetchAttachmentTypes( String attachment_type ) throws SQLException, Exception  {
        final Statement statement = rdb.getConnection().createStatement();
        try {
@@ -318,25 +361,33 @@ public class SNSLogbook implements ILogbook
       return -1;
     }
     
-  /** @param filePath the name of the file to open. 
-   */ 
+    /** Read the input attachment file as a text file.
+     * @param filePath   the name of the file to read
+     * @throws IOException
+     * @return the file contents as a string
+     */
    private static String readFileAsString(String filePath) throws java.io.IOException{
        BufferedReader reader = new BufferedReader(
                new FileReader(filePath));
        File file = new File(filePath);
+       // Get the size of the input file for buffer sizes
        int size = (int)file.length();
        StringBuffer fileData = new StringBuffer(size);
        char[] buf = new char[size];
        int numRead=0;
+       // Read each character in the file and store it in a String
        while((numRead=reader.read(buf)) != -1){
            String readData = String.valueOf(buf, 0, numRead);
            fileData.append(readData);
-           buf = new char[size];
        }
        reader.close();
        return fileData.toString();
    }
 
+   /** Query the RDB for the specified Content length.
+    * @throws Exception
+    * @return Content length specified in the RDB
+    */
    public int getContentLength() throws Exception    
    {     
       final ResultSet tables = rdb.getConnection().getMetaData().getColumns(null, "LOGBOOK", 
