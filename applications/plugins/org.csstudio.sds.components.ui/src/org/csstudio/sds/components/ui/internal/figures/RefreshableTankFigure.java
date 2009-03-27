@@ -122,7 +122,8 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 	}
 
 	class Tank extends RoundedRectangle {			
-		
+		private final Color EFFECT3D_OUTLINE_COLOR = CustomMediaFactory.getInstance().getColor(
+				new RGB(160, 160, 160));
 		private static final int DEFAULT_CORNER = 15;
 		public Tank() {
 			super();
@@ -144,10 +145,7 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 			corner.width = fill_corner;
 			graphics.setAntialias(SWT.ON);			
 			int valuePosition = scale.getValuePosition(value, false);
-			if(effect3D) {
-			
-				
-				//int rightLength = bounds.width * 3/4;
+			if(effect3D) {				
 				graphics.setBackgroundColor(WHITE_COLOR);
 				super.fillShape(graphics);
 				//fill background
@@ -199,7 +197,7 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 				
 				leftGradientPattern.dispose();
 				rightGradientPattern.dispose();
-				
+				graphics.setForegroundColor(EFFECT3D_OUTLINE_COLOR);
 				
 			}else {
 				graphics.setBackgroundColor(fillBackgroundColor);

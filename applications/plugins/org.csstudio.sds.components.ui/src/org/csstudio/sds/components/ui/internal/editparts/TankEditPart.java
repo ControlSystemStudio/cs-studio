@@ -63,7 +63,7 @@ public final class TankEditPart extends AbstractScaledWidgetEditPart {
 		};
 		setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
 		
-		//show bulb
+		//effect 3D
 		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
