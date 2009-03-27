@@ -29,6 +29,7 @@ public final class ThermometerEditPart extends AbstractScaledWidgetEditPart {
 		thermometer.setFahrenheit(model.isFahrenheit());
 		thermometer.setShowBulb(model.isShowBulb());	
 		thermometer.setFillBackgroundColor(model.getFillbackgroundColor());
+		thermometer.setEffect3D(model.isEffect3D());
 		return thermometer;
 
 	}
@@ -88,6 +89,17 @@ public final class ThermometerEditPart extends AbstractScaledWidgetEditPart {
 		};
 		setPropertyChangeHandler(ThermometerModel.PROP_FAHRENHEIT, fahrenheitHandler);
 		
+		//effect 3D
+		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableThermoFigure thermo = (RefreshableThermoFigure) refreshableFigure;
+				thermo.setEffect3D((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ThermometerModel.PROP_EFFECT3D, effect3DHandler);	
 		
 	}
 

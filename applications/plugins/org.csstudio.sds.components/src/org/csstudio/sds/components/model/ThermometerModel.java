@@ -19,8 +19,11 @@ public class ThermometerModel extends AbstractScaledWidgetModel{
 	public static final String PROP_SHOW_BULB = "showBulb"; //$NON-NLS-1$
 	
 	/** The ID of the fahrenheit property. */	
-	public static final String PROP_FAHRENHEIT = "fahrenheit"; //$NON-NLS-1$	
-
+	public static final String PROP_FAHRENHEIT = "fahrenheit"; //$NON-NLS-1$
+	
+	/** The ID of the effect 3D property. */
+	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
+	
 	/**
 	 * The ID of the fillbackground-Color property.
 	 */
@@ -39,7 +42,7 @@ public class ThermometerModel extends AbstractScaledWidgetModel{
 	/**
 	 * The default value of the fillbackground color property. 
 	 */
-	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(255,255,255);
+	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(210,210,210);
 	
 	/**
 	 * The ID of this widget model.
@@ -65,6 +68,9 @@ public class ThermometerModel extends AbstractScaledWidgetModel{
 		
 		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",
 				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
+		
+		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
+				WidgetPropertyCategory.Display, true));	
 		
 	}
 	
@@ -106,7 +112,12 @@ public class ThermometerModel extends AbstractScaledWidgetModel{
 		return (Boolean) getProperty(PROP_FAHRENHEIT).getPropertyValue();	
 	}	
 
-	
+	/**
+	 * @return true if the widget would be painted with 3D effect, false otherwise
+	 */
+	public boolean isEffect3D() {
+		return (Boolean) getProperty(PROP_EFFECT3D).getPropertyValue();
+	}
 	
 	/**
 	 * Gets the RGB for fillbackground.

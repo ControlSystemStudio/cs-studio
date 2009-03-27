@@ -19,7 +19,9 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Pattern;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A Thermometer figure
@@ -38,6 +40,13 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 	private Bulb bulb;
 	private Label unit;
 	
+	private boolean effect3D = true;
+	
+	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_WHITE);
+	
+	
+
 	public RefreshableThermoFigure() {
 		
 		scale = new LinearScale();
@@ -118,7 +127,6 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 		this.contrastFillColor = CustomMediaFactory.getInstance().getColor(
 				new RGB(red, green, blue));
 	}
-
 	
 	
 	/**
@@ -147,12 +155,20 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 				fillBackgroundColor);
 	}
 
+	/**
+	 * @param effect3D the effect3D to set
+	 */
+	public void setEffect3D(boolean effect3D) {
+		this.effect3D = effect3D;
+	}
+	
 	class Pipe extends RoundedRectangle {		
 		
 		
-		public static final int FILL_CORNER = 3;
+		public final static int FILL_CORNER = 3;
 		public final static int PIPE_WIDTH = 15;
-		
+		private final Color EFFECT3D_PIPE_COLOR = CustomMediaFactory.getInstance().getColor(
+				new RGB(160, 160, 160));
 		public Pipe() {
 			super();
 			setOutline(true);
@@ -161,16 +177,50 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 		protected void fillShape(Graphics graphics) {
 			corner.height =PIPE_WIDTH/2;
 			corner.width = PIPE_WIDTH/2;
+			graphics.setForegroundColor(outlineColor);
 			graphics.setBackgroundColor(fillBackgroundColor);
-			super.fillShape(graphics);
+			
 			int valuePosition = scale.getValuePosition(value, false);
-			graphics.setBackgroundColor(fillColor);
-			graphics.fillRoundRectangle(new Rectangle(bounds.x + lineWidth, 
+			if(effect3D){
+				graphics.setForegroundColor(EFFECT3D_PIPE_COLOR);
+				//fill back
+				super.fillShape(graphics);
+				Pattern backPattern = new Pattern(Display.getCurrent(), 
+						bounds.x, bounds.y, bounds.x+bounds.width, bounds.y, 
+						WHITE_COLOR,255, fillBackgroundColor, 0);
+				graphics.setBackgroundPattern(backPattern);
+				super.fillShape(graphics);
+				backPattern.dispose();
+				
+				//fill value
+				graphics.setBackgroundColor(fillColor);
+				graphics.fillRoundRectangle(new Rectangle(bounds.x + lineWidth, 
+						valuePosition,
+						bounds.width - 2* lineWidth, 
+						bounds.height - (valuePosition - bounds.y)),
+						FILL_CORNER, FILL_CORNER);		
+				backPattern = new Pattern(Display.getCurrent(), 
+						bounds.x, bounds.y, bounds.x+bounds.width, bounds.y, 
+						WHITE_COLOR,255, fillColor, 0);
+				graphics.setBackgroundPattern(backPattern);
+				graphics.fillRoundRectangle(new Rectangle(bounds.x + lineWidth, 
+						valuePosition,
+						bounds.width - 2* lineWidth, 
+						bounds.height - (valuePosition - bounds.y)),
+						FILL_CORNER, FILL_CORNER);
+				backPattern.dispose();			
+			} else {
+				super.fillShape(graphics);
+				graphics.setBackgroundColor(fillColor);
+				graphics.fillRoundRectangle(new Rectangle(bounds.x + lineWidth, 
 					valuePosition,
 					bounds.width - 2* lineWidth, 
 					bounds.height - (valuePosition - bounds.y)),
 					FILL_CORNER, FILL_CORNER);
-			graphics.setForegroundColor(outlineColor);
+			}
+			
+			
+			
 		}
 		
 		@Override
@@ -187,6 +237,8 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 	class Bulb extends Ellipse {
 		
 		public final static int MAX_DIAMETER = 45;
+		private final Color EFFECT3D_BULB_COLOR = CustomMediaFactory.getInstance().getColor(
+				new RGB(140, 140, 140));
 		public Bulb() {
 			super();
 			setOutline(true);
@@ -195,30 +247,68 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 		@Override
 		protected void fillShape(Graphics graphics) {
 			graphics.setAntialias(SWT.ON);
-			graphics.setBackgroundColor(fillColor);
-			super.fillShape(graphics);
+			if(effect3D){
+				graphics.setBackgroundColor(fillColor);
+				super.fillShape(graphics);
+				int l = (int) ((bounds.width - lineWidth)*0.293/2);
+
+				Pattern backPattern = new Pattern(Display.getCurrent(), 
+					bounds.x + lineWidth, bounds.y + lineWidth, 
+					bounds.x+bounds.width - l, bounds.y+bounds.height- l,
+					WHITE_COLOR,255, fillColor, 0);			
+				graphics.setBackgroundPattern(backPattern);
+				super.fillShape(graphics);
+				backPattern.dispose();
+			}else{
+				graphics.setBackgroundColor(fillColor);				
+				super.fillShape(graphics);
+			}			
 
 			NumberFormat format = NumberFormat.getInstance();
 			format.setMaximumFractionDigits(2);
 			String valueString = format.format(value);
 			Dimension valueSize = 
 				FigureUtilities.getTextExtents(valueString, getFont());
-			if(valueSize.width < bounds.width) {
+			if(valueSize.width < bounds.width) {				
 				graphics.setForegroundColor(contrastFillColor);
 				graphics.drawText(valueString, new Point(
 						bounds.x + bounds.width/2 - valueSize.width/2,
-						bounds.y + bounds.height/2 - valueSize.height/2));
-			}
-			graphics.setForegroundColor(outlineColor);
+						bounds.y + bounds.height/2 - valueSize.height/2));				
+			}			
 		}
 		
 		@Override
 		protected void outlineShape(Graphics graphics) {
-			super.outlineShape(graphics);
-			graphics.setBackgroundColor(fillColor);
-			graphics.fillRoundRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
+			if(effect3D)
+				graphics.setForegroundColor(EFFECT3D_BULB_COLOR);
+			else
+				graphics.setForegroundColor(outlineColor);
+			super.outlineShape(graphics);			
+			//draw a small rectangle to hide the joint  
+			if(effect3D) {
+				graphics.setBackgroundColor(fillColor);
+				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
 					scale.getValuePosition(scale.getRange().lower, false),
-					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, ((LinearScale) scale).getMargin()), Pipe.FILL_CORNER, Pipe.FILL_CORNER);
+					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
+				Pattern backPattern = new Pattern(Display.getCurrent(), 
+					pipe.getBounds().x, scale.getValuePosition(scale.getRange().lower, false),
+					pipe.getBounds().x + Pipe.PIPE_WIDTH,
+					scale.getValuePosition(scale.getRange().lower, false),
+					WHITE_COLOR,255, fillColor, 0);					
+				graphics.setBackgroundPattern(backPattern);
+				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
+					scale.getValuePosition(scale.getRange().lower, false),
+					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
+				backPattern.dispose();
+		
+			}else{
+				graphics.setBackgroundColor(fillColor);
+				graphics.fillRoundRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
+						scale.getValuePosition(scale.getRange().lower, false),
+						Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, ((LinearScale) scale).getMargin()),
+						Pipe.FILL_CORNER, Pipe.FILL_CORNER);			
+			}
+				
 		}
 	}
 	
