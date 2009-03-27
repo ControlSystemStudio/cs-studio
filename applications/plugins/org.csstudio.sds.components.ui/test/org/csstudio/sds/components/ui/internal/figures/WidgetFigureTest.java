@@ -38,8 +38,10 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
-				XSliderFigureTest testFigure = new XSliderFigureTest(scaleBounds);
+				
+				//XSliderFigureTest testFigure = new XSliderFigureTest(scaleBounds);
 				//TankFigureTest testFigure = new TankFigureTest(scaleBounds);
+				ThermoFigureTest testFigure = new ThermoFigureTest(scaleBounds);
 				parent.add(testFigure,testFigureBounds);
 				lws.paint(event.gc);
 				
@@ -75,6 +77,7 @@ class XSliderFigureTest extends Figure {
 		slider.setTransparent(true);	
 		slider.setHihiLevel(90);
 		slider.setLogScale(true);
+		slider.setEffect3D(true);
 		//slider.setHorizontal(true);
 		add(slider);
 		
