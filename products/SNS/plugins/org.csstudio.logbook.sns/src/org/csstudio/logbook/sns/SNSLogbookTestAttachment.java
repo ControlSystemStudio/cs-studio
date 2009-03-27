@@ -19,7 +19,7 @@ import org.junit.Test;
 public class SNSLogbookTestAttachment
 {
     private static final String URL =
-        "jdbc:oracle:thin:@//snsdb1.sns.ornl.gov:1521/prod";
+        "jdbc:oracle:thin:@snsdev3.sns.ornl.gov:1521:devl";
     private static final String LOGBOOK = "Scratch Pad";
 
     @Test
@@ -47,13 +47,15 @@ public class SNSLogbookTestAttachment
 
         try
         {
-            String title = "Test Entry";
-           // logbook.createEntry(title, text, null);
-    
-            if (image.trim().length() > 0)
+ 
+            if (image!=null && image.trim().length() > 0)
             {
-                title = "Another Test Entry";
-                logbook.createEntry(title, text, image);
+                logbook.createEntry("Test Entry", text, image);
+            }
+            else
+            {
+               String title = "Another Test Entry";
+               logbook.createEntry(title, text, null);
             }
         }
         finally
