@@ -34,7 +34,7 @@ public class SNSLogbook implements ILogbook
     final private RDBUtil rdb;
     final private String logbook;
     final String badge_number;
-    byte[] b = null;
+    
     /** Constructor
      *  @param rdb RDB connection
      *  @param user User (for which we'll try to get the badge number)
