@@ -36,14 +36,10 @@ public class ScaledSliderModel extends AbstractScaledWidgetModel{
 	/** The default value of the width property. */
 	private static final int DEFAULT_WIDTH = 100;
 	
-	/**
-	 * The default value of the fillbackground color property. 
-	 */
-	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(192, 192, 192);
+	/** The default value of the fillbackground color property. */
+	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(200, 200, 200);
 	
-	/**
-	 * The default value of the thumb color property. 
-	 */
+	/** The default value of the thumb color property. */
 	private static final RGB DEFAULT_THUMB_COLOR = new RGB(172, 172, 172);
 	/**
 	 * The ID of this widget model.

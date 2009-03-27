@@ -337,21 +337,21 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 			int valuePosition = scale.getValuePosition(value, false);
 			if(effect3D) {				
 				//fill background
-				graphics.setBackgroundColor(WHITE_COLOR);
+				graphics.setBackgroundColor(fillBackgroundColor);
 				super.fillShape(graphics);
 				Pattern backGroundPattern; 
 				if(horizontal)
 					backGroundPattern= new Pattern(Display.getCurrent(),
 						bounds.x, bounds.y,
 						bounds.x, bounds.y + bounds.height,
-						WHITE_COLOR, 0,
-						fillBackgroundColor, 255);
+						WHITE_COLOR, 255,
+						fillBackgroundColor, 0);
 				else
 					backGroundPattern= new Pattern(Display.getCurrent(),
 						bounds.x, bounds.y,
 						bounds.x + bounds.width, bounds.y,
-						WHITE_COLOR, 0,
-						fillBackgroundColor, 255);
+						WHITE_COLOR, 255,
+						fillBackgroundColor, 0);
 				graphics.setBackgroundPattern(backGroundPattern);
 				super.fillShape(graphics);				
 				backGroundPattern.dispose();
@@ -361,16 +361,16 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 					backGroundPattern = new Pattern(Display.getCurrent(),
 						bounds.x, bounds.y,
 						bounds.x, bounds.y + bounds.height,
-						WHITE_COLOR, 0,
-						fillColor, 255);
+						WHITE_COLOR, 255,
+						fillColor, 0);
 				else
 					backGroundPattern = new Pattern(Display.getCurrent(),
 						bounds.x, bounds.y,
 						bounds.x + bounds.width, bounds.y,
-						WHITE_COLOR, 0,
-						fillColor, 255);
+						WHITE_COLOR, 255,
+						fillColor, 0);
 				
-				graphics.setBackgroundColor(WHITE_COLOR);
+				graphics.setBackgroundColor(fillColor);
 				if(horizontal){
 					int fillWidth = valuePosition - bounds.x;				
 					graphics.fillRectangle(new Rectangle(bounds.x,
@@ -385,8 +385,7 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 					graphics.setBackgroundPattern(backGroundPattern);
 					graphics.fillRectangle(new Rectangle(bounds.x,
 						valuePosition, bounds.width, fillHeight));
-				}
-				
+				}		
 				
 				backGroundPattern.dispose();
 				
