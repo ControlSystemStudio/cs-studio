@@ -495,7 +495,7 @@ public class LinearScaleTickLabels extends Figure {
         return tickLabelPositions;
     }
 
- 
+    @Override
     protected void paintClientArea(Graphics graphics) {
     	graphics.translate(bounds.x, bounds.y);
     	if (scale.isHorizontal()) {

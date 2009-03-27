@@ -3,7 +3,6 @@ package org.csstudio.sds.components.ui.internal.figureparts;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.FigureUtilities;
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
@@ -244,22 +243,15 @@ public class LinearScale extends AbstractScale {
       				area.y,
       				LinearScaleTickMarks.MAJOR_TICK_LENGTH,
       				area.height));  
-      	}
-      	
-    	
-    }
- 
-    @Override
-	protected void paintFigure(Graphics graphics) {
-    	updateTick();
-		super.paintFigure(graphics);
-	}
+      	}    	
+    } 
 
     @Override
     public void setBounds(Rectangle rect) {
-    	super.setBounds(rect);   
     	if(!bounds.equals(rect))
     		setDirty(true);
+    	super.setBounds(rect);   
+    	
     }
     /*
      * @see IAxisTick#setFont(Font)
@@ -296,7 +288,6 @@ public class LinearScale extends AbstractScale {
      */
     public void updateTick() {
     	if(isDirty()){
-	    	System.out.println("update tick");
 	    	length = isHorizontal() ? 
 	    			getClientArea().width: getClientArea().height;    		
 	    	if(length > 2*getMargin())

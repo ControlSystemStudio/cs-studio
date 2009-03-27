@@ -1,7 +1,9 @@
 package org.csstudio.sds.components.ui.internal.figureparts;
 
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -30,8 +33,8 @@ public class LinearScaledMarker extends Figure {
 	private String[] labels;
 	
 	private double[] markerValues;	
-	
-	private RGB[] markerColors;
+	private Dimension[] markerLabelDimensions;	
+	private List<Color> markerColorsList = new ArrayList<Color>();
 	
 	private LinearScale scale;
 	
@@ -44,6 +47,8 @@ public class LinearScaledMarker extends Figure {
 	private int tickLabelMaxLength;
 	
 	private boolean dirty = true;
+
+	private int[] markerPositions;
 	
 	private final static int TICK_LENGTH = 10;
 	private final static int TICK_LINE_WIDTH = 2;
@@ -89,74 +94,66 @@ public class LinearScaledMarker extends Figure {
 		dirty =true;
 	}	
 	
-	
 	@Override
-	protected void paintFigure(Graphics graphics) {
+	protected void paintClientArea(Graphics graphics) {	
 		//use relative coordinate
 		graphics.translate(bounds.x, bounds.y);
 		updateTick();
-		drawMarkerTick(graphics);
-		super.paintFigure(graphics);
+		drawMarkerTick(graphics);		
+		super.paintClientArea(graphics);
 	}
 	
 	private void drawMarkerTick(Graphics graphics) {
-		graphics.pushState();
 		graphics.setLineWidth(TICK_LINE_WIDTH);
 		if(scale.isHorizontal()) {
 			if(makerLablesPosition == LabelSide.Primary) {
 				int i = 0;
-				for(int markerPos : getMarkerPositions()) {
-					graphics.setForegroundColor(
-							CustomMediaFactory.getInstance().getColor(markerColors[i]));
+				for(int markerPos : markerPositions) {
+					graphics.setForegroundColor(markerColorsList.get(i));
 					graphics.drawLine(markerPos, 0, markerPos, TICK_LENGTH);
 					//draw labels
 					if(isMarkerLableVisible()) {
 						graphics.drawText(labels[i], 
-								markerPos-FigureUtilities.getTextExtents(labels[i], getFont()).width/2, 
+								markerPos-markerLabelDimensions[i].width/2, 
 								TICK_LENGTH + GAP_BTW_MARK_LABEL);
 					}					
 					i++;
 				}
 			} else {
 				int i = 0;
-				for(int markerPos : getMarkerPositions()) {
-					graphics.setForegroundColor(
-							CustomMediaFactory.getInstance().getColor(markerColors[i]));
-					graphics.drawLine(markerPos, getClientArea().height, 
-							markerPos, getClientArea().height - TICK_LENGTH);
+				for(int markerPos : markerPositions) {
+					graphics.setForegroundColor(markerColorsList.get(i));
+					graphics.drawLine(markerPos, bounds.height, 
+							markerPos, bounds.height - TICK_LENGTH);
 					//draw labels
 					if(isMarkerLableVisible()) {
 						graphics.drawText(labels[i], 
-								markerPos-FigureUtilities.getTextExtents(labels[i], getFont()).width/2, 
-								getClientArea().height - TICK_LENGTH - GAP_BTW_MARK_LABEL
-								- FigureUtilities.getTextExtents(labels[i], getFont()).height);
+								markerPos-markerLabelDimensions[i].width/2, 
+								bounds.height - TICK_LENGTH - GAP_BTW_MARK_LABEL
+								- markerLabelDimensions[i].height);
 					}
 					i++;
 				}
 			}		
 		} else {
 			if(makerLablesPosition == LabelSide.Primary) {
-				int i = 0;
-				for(int markerPos : getMarkerPositions()) {
-					graphics.setForegroundColor(
-							CustomMediaFactory.getInstance().getColor(markerColors[i]));
-					graphics.drawLine(getClientArea().width, markerPos, 
-							getClientArea().width - TICK_LENGTH, markerPos);
+				
+				for(int i = 0; i < markerPositions.length; i++) {
+					graphics.setForegroundColor(markerColorsList.get(i));
+					graphics.drawLine(bounds.width, markerPositions[i], 
+							bounds.width - TICK_LENGTH, markerPositions[i]);
 					//draw labels
 					if(isMarkerLableVisible()) {
 						graphics.drawText(labels[i], 
-								getClientArea().width - TICK_LENGTH - GAP_BTW_MARK_LABEL
-								- FigureUtilities.getTextExtents(labels[i], getFont()).width,
-								markerPos-FigureUtilities.getTextExtents(labels[i], getFont()).height/2
-								);
-					}
-					i++;
+								bounds.width - TICK_LENGTH - GAP_BTW_MARK_LABEL
+								- markerLabelDimensions[i].width,
+								markerPositions[i] - markerLabelDimensions[i].height/2);
+					}					
 				}
 			} else {
 				int i = 0;
-				for(int markerPos : getMarkerPositions()) {
-					graphics.setForegroundColor(
-							CustomMediaFactory.getInstance().getColor(markerColors[i]));
+				for(int markerPos : markerPositions) {
+					graphics.setForegroundColor(markerColorsList.get(i));
 					graphics.drawLine(0, markerPos, 
 							TICK_LENGTH, markerPos);
 					
@@ -164,27 +161,15 @@ public class LinearScaledMarker extends Figure {
 					if(isMarkerLableVisible()) {
 						graphics.drawText(labels[i], 
 								TICK_LENGTH + GAP_BTW_MARK_LABEL,
-								markerPos-FigureUtilities.getTextExtents(labels[i], getFont()).height/2
+								markerPos-markerLabelDimensions[i].height/2
 								);
-					}
-					
+					}					
 					i++;
 				}
 			}
-		}
-		graphics.popState();
-			
-	}
+		}			
+	}	
 	
-	private int[] getMarkerPositions(){
-		int[] markerPositions = new int[markerValues.length];
-		int i=0;
-		for(double value : markerValues) {
-			markerPositions[i] = scale.getValuePosition(value, true);
-			i++;
-		}
-		return markerPositions;		
-	}
 	/**
      * Updates the tick, recalculate all inner parameters
      */
@@ -232,13 +217,18 @@ public class LinearScaledMarker extends Figure {
 	 */
 	public void updateMarkerElments() {
 		labels = new String[markersMap.size()];
-		markerColors = new RGB[markersMap.size()];
+		markerColorsList.clear();
 		markerValues = new double[markersMap.size()];
+		markerLabelDimensions = new Dimension[markersMap.size()];
+		markerPositions = new int[markerValues.length];
 		int i = 0;
 		for(String label : markersMap.keySet()) {
 			labels[i] = label;
 			markerValues[i] = markersMap.get(label).value;
-			markerColors[i] = markersMap.get(label).color;
+			markerPositions[i] = scale.getValuePosition(markerValues[i], true);
+			markerLabelDimensions[i] = FigureUtilities.getTextExtents(label, getFont());
+			markerColorsList.add(
+					CustomMediaFactory.getInstance().getColor(markersMap.get(label).color));
 			i++;
 		}
 	}
