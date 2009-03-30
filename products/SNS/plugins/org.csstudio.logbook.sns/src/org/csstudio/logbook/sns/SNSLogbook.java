@@ -86,13 +86,13 @@ public class SNSLogbook implements ILogbook
             // Store the oversized text entry in the text file
             setContents(tmp_file, text);
             // Add the text attachment to the elog
-            addFileToElog(fname, "A", entry_id);
+            addFileToElog(fname, "A", entry_id, text);
             tmp_file.deleteOnExit();
         }
 
         // If an image was input add the image to the elog. 
         if (imageName != null)
-           addFileToElog(imageName, "I", entry_id);
+           addFileToElog(imageName, "I", entry_id, text);
     }
 
     /** Create basic ELog entry with title and text, obtaining entry ID
@@ -129,14 +129,15 @@ public class SNSLogbook implements ILogbook
     /** Determine the type of attachment, based on file extension, and add it
      *  to the elog entry with the entry_id.
      * 
-     *  @param String title   title of the elog entry
+     *  @param String fname   input filename, either an image or a text file
+     *  @param String fileType   "I" for image file, "A" for text file
+     *  @param int entry_id   Entry ID from RDB
      *  @param String text    explanatory text for the elog entry
-     *  @param String imageName  name of the image to attach or null if no image
      *  @throws Exception
      *  @throws SQLException
      */
     
-    private void addFileToElog(String fname, String fileType, int entry_id) throws SQLException, Exception
+    private void addFileToElog(String fname, String fileType, int entry_id, String text) throws SQLException, Exception
     {
  
        final File inputFile = new File(fname);
@@ -179,9 +180,7 @@ public class SNSLogbook implements ILogbook
            // Send the text attachment to the sql
            else
            {
-              final String BlobContent = readFileAsString(fname);
-              // blob.setBytes( 1L, text.getBytes() );
-              blob.setBytes( 1L, BlobContent.getBytes() );
+              blob.setBytes( 1L, text.getBytes() );
               statement.setBlob(5, blob);
            }
            statement.executeQuery();
@@ -335,29 +334,6 @@ public class SNSLogbook implements ILogbook
       return -1;
     }
     
-    /** Read the input attachment file as a text file.
-     * @param filePath   the name of the file to read
-     * @throws IOException
-     * @return the file contents as a string
-     */
-   private static String readFileAsString(String filePath) throws java.io.IOException{
-       final BufferedReader reader = new BufferedReader(
-               new FileReader(filePath));
-       final File file = new File(filePath);
-       // Get the size of the input file for buffer sizes
-       final int size = (int)file.length();
-       final StringBuffer fileData = new StringBuffer(size);
-       final char[] buf = new char[size];
-       int numRead=0;
-       // Read each character in the file and store it in a String
-       while((numRead=reader.read(buf)) != -1){
-           final String readData = String.valueOf(buf, 0, numRead);
-           fileData.append(readData);
-       }
-       reader.close();
-       return fileData.toString();
-   }
-
    /** Query the RDB for the specified Content length.
     * @throws Exception
     * @return Content length specified in the RDB
