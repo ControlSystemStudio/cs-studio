@@ -63,74 +63,46 @@ public class SNSLogbook implements ILogbook
     public void createEntry(String title, String text, String imageName)
             throws Exception
     {
-       /** If the input imageName is null - meaning there's no image to attach
-        *  and the text is not too large for an elog entry, create an average elog 
-        *  entry.
-        */
-
-        if (imageName == null && text!=null && text.length()<MAX_TEXT_SIZE)
-        {
-            final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
-                    + "(?, ?, ?, ?, ?)";
-            final String category = "";
-            // create an sql call for the elog
-            final CallableStatement statement = rdb.getConnection().prepareCall(mysql);
-            try
-            {
-                statement.setString(1, badge_number);
-                statement.setString(2, logbook);
-                statement.setString(3, title);
-                statement.setString(4, category);
-                statement.setString(5, text);
-                statement.executeQuery();
-            }
-            finally
-            {
-                statement.close();
-            }
-            return;
-        }
+        final int entry_id; // Entry ID from RDB
         
-        // If text is made into an attachment due to size restraints, replace the
-        // text that is now an attachment with text to explain why there is an
-        // attachment
-   final String info = "Input text exceeds " + MAX_TEXT_SIZE + " characters, see attachment.";
- 
-        // Get the Entry ID from the RDB for the attachment/image.
-        final int entry_id =  getEntryID(title, info);
+        if (text.length() < MAX_TEXT_SIZE)
+        {
+            // Short text goes into entry
+            entry_id = createBasicEntry(title, text);
+        }
+        else
+        {
+            // If text is made into an attachment due to size restraints, replace the
+            // text that is now an attachment with text to explain why there is an
+            // attachment
+            final String info = "Input text exceeds " + MAX_TEXT_SIZE +
+                                " characters, see attachment.";
+            entry_id = createBasicEntry(title, info);
+
+            // Get a name for the created text file
+            final File tmp_file = File.createTempFile("Logbook", ".txt");
+            final String fname = tmp_file.getAbsolutePath();
+            
+            // Store the oversized text entry in the text file
+            setContents(tmp_file, text);
+            // Add the text attachment to the elog
+            addFileToElog(fname, "A", entry_id);
+            tmp_file.deleteOnExit();
+        }
 
         // If an image was input add the image to the elog. 
-        if(imageName != null)
-        {   
+        if (imageName != null)
            addFileToElog(imageName, "I", entry_id);
-        }
-        // Copy the oversized text entry to a text file and create and elog entry with
-        //  this text file as an attachment.
-        if(text!=null && text.length()>=MAX_TEXT_SIZE)
-        {
-           // Get a name for the created text file
-           final File tmp_file = File.createTempFile("Logbook", ".txt");
-           final String fname = tmp_file.getAbsolutePath();
-           
-           // Store the oversized text entry in the text file
-           setContents(tmp_file, text);
-           // Add the text attachment to the elog
-           addFileToElog(fname, "A", entry_id);
-           tmp_file.deleteOnExit();
-        }
     }
 
-    /** There will be multiple attachments, so ask the RDB for an entry id to
-     *  be used to keep all the attachments for this elog entry together.
+    /** Create basic ELog entry with title and text, obtaining entry ID
+     *  which would allow addition of attachments.
      * 
      *  @param String title   title of the elog entry
-     *  @param String text    explanatory text for the elog entry
-     *  @param String imageName  name of the image to attach or null if no image
-     *  @throws Exception
-     *  @throws SQLException
+     *  @param String text    text for the elog entry
+     *  @throws Exception on error
      */
-
-    private int getEntryID(String title, String text) throws Exception
+    private int createBasicEntry(final String title, final String text) throws Exception
     {
       // Initiate the multi-file sql and retrieve the entry_id
        final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
