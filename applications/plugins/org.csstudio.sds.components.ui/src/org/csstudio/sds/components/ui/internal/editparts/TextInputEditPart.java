@@ -171,7 +171,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
 		text.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
-				if (e.keyCode == SWT.CR) {
+				if (e.keyCode == SWT.CR||e.keyCode == SWT.KEYPAD_CR) {
 					DirectEditCommand cmd = new DirectEditCommand(text
 							.getText());
 					cmd.execute();
