@@ -20,7 +20,9 @@ import org.junit.Test;
 public class SNSLogbookTestAttachment
 {
     private static final String URL =
-        "jdbc:oracle:thin:@snsdev3.sns.ornl.gov:1521:devl";
+       "jdbc:oracle:thin:@//snsdb1.sns.ornl.gov:1521/prod";
+//       "jdbc:oracle:thin:@snsdev3.sns.ornl.gov:1521:devl";
+    
     private static final String LOGBOOK = "Scratch Pad";
 
     @Test
