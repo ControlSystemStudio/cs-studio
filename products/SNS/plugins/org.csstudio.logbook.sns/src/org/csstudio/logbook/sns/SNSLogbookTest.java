@@ -13,6 +13,7 @@ import org.junit.Test;
  *  Application code should use org.csstudio.logbook.LogbookFactory
  *  and not directly access a specific implementation like SNS...
  *  
+ *  @author Delphy Nypaver
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -20,6 +21,8 @@ public class SNSLogbookTest
 {
     private static final String URL =
         "jdbc:oracle:thin:@//snsdb1.sns.ornl.gov:1521/prod";
+//  "jdbc:oracle:thin:@snsdev3.sns.ornl.gov:1521:devl";
+
     private static final String LOGBOOK = "Scratch Pad";
 
     @Test
@@ -37,21 +40,27 @@ public class SNSLogbookTest
         System.out.print("Image File: ");
         final String image = command_line.readLine();
 
-        ILogbook logbook =
+        final String short_text = "This is a test entry";
+        // Create a very large text string to force an attachment
+        String long_text = "abcdefghijklm";        
+        for(int i=0;i<4011;i++)
+           long_text=long_text.concat(" "+i);
+
+        final ILogbook logbook =
             new SNSLogbookFactory().connect(URL, LOGBOOK, user, password);
         assertNotNull(logbook);
 
         try
         {
-            String title = "Test Entry";
-            final String text = "This is a test entry";
-            logbook.createEntry(title, text, null);
-    
+            String title = "Test Entry (short)";
+            logbook.createEntry(title, short_text, null);
             if (image.trim().length() > 0)
-            {
-                title = "Another Test Entry";
-                logbook.createEntry(title, text, image);
-            }
+                logbook.createEntry("Image " + title, short_text, image);
+    
+            title = "Test Entry (long)";
+            logbook.createEntry(title, long_text, null);
+            if (image.trim().length() > 0)
+                logbook.createEntry("Image " + title, long_text, image);
         }
         finally
         {
