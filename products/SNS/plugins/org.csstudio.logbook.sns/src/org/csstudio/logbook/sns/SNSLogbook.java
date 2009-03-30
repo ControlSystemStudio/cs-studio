@@ -34,7 +34,7 @@ public class SNSLogbook implements ILogbook
     final private RDBUtil rdb;
     final private String logbook;
     final String badge_number;
-    
+
     /** Constructor
      *  @param rdb RDB connection
      *  @param user User (for which we'll try to get the badge number)
@@ -42,7 +42,7 @@ public class SNSLogbook implements ILogbook
      *  @throws Exception on error
      */
     public SNSLogbook(final RDBUtil rdb, final String user,
-            final String logbook) throws Exception, SQLException
+            final String logbook) throws Exception
     {
         this.rdb = rdb;
         this.logbook = logbook;
@@ -61,7 +61,7 @@ public class SNSLogbook implements ILogbook
      */
     @SuppressWarnings("nls")
     public void createEntry(String title, String text, String imageName)
-            throws SQLException, Exception
+            throws Exception
     {
        /** If the input imageName is null - meaning there's no image to attach
         *  and the text is not too large for an elog entry, create an average elog 
@@ -130,17 +130,14 @@ public class SNSLogbook implements ILogbook
      *  @throws SQLException
      */
 
-    private int getEntryID(String title, String text) throws SQLException, Exception
+    private int getEntryID(String title, String text) throws Exception
     {
-       int entry_id=-1;
-   
       // Initiate the multi-file sql and retrieve the entry_id
-      CallableStatement statement = null;
+       final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
+          + "(?, ?, ?, ?, ?, ?)";
+       final CallableStatement statement = rdb.getConnection().prepareCall(mysql);
        try
        {
-           final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
-                       + "(?, ?, ?, ?, ?, ?)";
-           statement = rdb.getConnection().prepareCall(mysql);
            statement.setString(1, badge_number);
            statement.setString(2, logbook);
            statement.setString(3, title);
@@ -148,14 +145,13 @@ public class SNSLogbook implements ILogbook
            statement.setString(5, text);
            statement.registerOutParameter(6, OracleTypes.NUMBER);
            statement.executeQuery();
-           entry_id = Integer.parseInt(statement.getString(6));
+           final int entry_id = Integer.parseInt(statement.getString(6));
+           return entry_id;
        }
        finally
        {
-          if (statement != null)
-               statement.close();
+          statement.close();
        }
-       return entry_id;
     }
     
     /** Determine the type of attachment, based on file extension, and add it
@@ -174,28 +170,20 @@ public class SNSLogbook implements ILogbook
        final File inputFile = new File(fname);
        final int file_size = (int) inputFile.length();
  
-      CallableStatement statement = null;
       // Get the file extension
       final int ndx = fname.lastIndexOf(".");
       final String extension = fname.substring(ndx+1);
-      long fileTypeID = -1;
-
-      // Ask the RDB for the fileTypeID, based on whether an image or text is to be
-      // attached.
-      if(fileType.equalsIgnoreCase("I")) 
-         fileTypeID = fetchImageTypes( extension );
-      else {
-         fileTypeID = fetchAttachmentTypes( extension );
-      }
+      final long fileTypeID = getFileTypeId(fileType, extension);
 
       // Create a Blob to store the attachment in.
-      BLOB blob = BLOB.createTemporary(rdb.getConnection(), true, BLOB.DURATION_SESSION);
+      final BLOB blob = BLOB.createTemporary(rdb.getConnection(), true, BLOB.DURATION_SESSION);
+    
+          // Initiate the sql to add attachments to the elog
+       final String mysql = "call logbook.logbook_pkg.add_entry_attachment"
+                       + "(?, ?, ?, ?, ?)";
+       final CallableStatement statement = rdb.getConnection().prepareCall(mysql);
        try
        {
-          // Initiate the sql to add attachments to the elog
-           final String mysql = "call logbook.logbook_pkg.add_entry_attachment"
-                       + "(?, ?, ?, ?, ?)";
-           statement = rdb.getConnection().prepareCall(mysql);
            statement.setInt(1, entry_id);
            statement.setString(2, fileType);    
            statement.setString(3, fname);
@@ -204,23 +192,23 @@ public class SNSLogbook implements ILogbook
            // Send the image to the sql.
            if(fileType.equals("I"))
            {
-             FileInputStream input_stream = null;
               try
               {
-                 input_stream = new FileInputStream(inputFile);
+                 final FileInputStream input_stream = new FileInputStream(inputFile);
+                 statement.setBinaryStream(5, input_stream, file_size);
+                 input_stream.close();
               }
               catch (FileNotFoundException e1)
               {
                  System.out.println("Could not find " + fname);
                  return;
               }
-              statement.setBinaryStream(5, input_stream, file_size);
-              input_stream.close();
            }
            // Send the text attachment to the sql
            else
            {
-              String BlobContent = readFileAsString(fname);
+              final String BlobContent = readFileAsString(fname);
+              // blob.setBytes( 1L, text.getBytes() );
               blob.setBytes( 1L, BlobContent.getBytes() );
               statement.setBlob(5, blob);
            }
@@ -228,11 +216,25 @@ public class SNSLogbook implements ILogbook
        }
        finally
        {
-          if (statement != null)
-              statement.close();
+           statement.close();
        }
- 
  }
+    
+    /**
+     * Ask the RDB for the fileTypeID, based on whether an image or text is to be
+     * attached and the file extension.
+     *  
+     * @param fileType    an "I" for image, "A" for attachment.
+     * @param extension   extension of file to be attached
+     * 
+     */
+    long getFileTypeId(String fileType, String extension) throws Exception
+    {
+       if(fileType.equalsIgnoreCase("I")) 
+           return fetchImageTypes( extension );
+       else
+           return fetchAttachmentTypes( extension );
+    }
 
     /**
      * Change the contents of text file in its entirety, overwriting any
@@ -261,7 +263,7 @@ public class SNSLogbook implements ILogbook
        }
 
        //use buffering
-       Writer output = new BufferedWriter(new FileWriter(aFile));
+       final Writer output = new BufferedWriter(new FileWriter(aFile));
        try {
          //FileWriter always assumes default encoding is OK!
          output.write( aContents );
@@ -322,8 +324,8 @@ public class SNSLogbook implements ILogbook
           final ResultSet result = statement.executeQuery( "select * from LOGBOOK.IMAGE_TYPE" );
                     
           while ( result.next() ) {
-             long ID = result.getLong( "image_type_id" );
-             String extension = result.getString( "file_extension" );
+             final long ID = result.getLong( "image_type_id" );
+             final String extension = result.getString( "file_extension" );
              if(image_type.equalsIgnoreCase(extension))
                 return ID;
           }
@@ -349,7 +351,7 @@ public class SNSLogbook implements ILogbook
                     
           while ( result.next() ) {
              long ID = result.getLong( "attachment_type_id" );
-             String extension = result.getString( "file_extension" );
+             final String extension = result.getString( "file_extension" );
              if(attachment_type.equalsIgnoreCase(extension))
                 return ID;
           }
@@ -367,17 +369,17 @@ public class SNSLogbook implements ILogbook
      * @return the file contents as a string
      */
    private static String readFileAsString(String filePath) throws java.io.IOException{
-       BufferedReader reader = new BufferedReader(
+       final BufferedReader reader = new BufferedReader(
                new FileReader(filePath));
-       File file = new File(filePath);
+       final File file = new File(filePath);
        // Get the size of the input file for buffer sizes
-       int size = (int)file.length();
-       StringBuffer fileData = new StringBuffer(size);
-       char[] buf = new char[size];
+       final int size = (int)file.length();
+       final StringBuffer fileData = new StringBuffer(size);
+       final char[] buf = new char[size];
        int numRead=0;
        // Read each character in the file and store it in a String
        while((numRead=reader.read(buf)) != -1){
-           String readData = String.valueOf(buf, 0, numRead);
+           final String readData = String.valueOf(buf, 0, numRead);
            fileData.append(readData);
        }
        reader.close();
