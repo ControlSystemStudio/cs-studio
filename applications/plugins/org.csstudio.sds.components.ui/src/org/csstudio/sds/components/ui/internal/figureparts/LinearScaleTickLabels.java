@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -36,61 +34,25 @@ public class LinearScaleTickLabels extends Figure {
     
     /** the maximum height of tick labels */
     private int tickLabelMaxHeight;
-
-
-
-    /** the possible tick steps */
-    private Map<Integer, Integer[]> possibleTickSteps;
     
     private LinearScale scale;
-    
-    
 
     /**
      * Constructor.
      * 
-     * @param chart
-     *            the chart
-     * @param style
-     *            the style
-     * @param lscale
+     * @param linearScale
      *            the scale
      */
-    protected LinearScaleTickLabels(LinearScale axisTick) {
+    protected LinearScaleTickLabels(LinearScale linearScale) {
     	
-    	this.scale = axisTick;
+    	this.scale = linearScale;
         tickLabelValues = new ArrayList<Double>();
         tickLabels = new ArrayList<String>();
         tickLabelPositions = new ArrayList<Integer>();
         tickVisibilities = new ArrayList<Boolean>();
 
-        initializePossibleTickSteps();
-
-        setFont(scale.getFont());
-        setForegroundColor(scale.getForegroundColor());
-    }
-
-    /**
-     * Initialized the possible tick steps.
-     */
-    private void initializePossibleTickSteps() {
-        final Integer[] milliseconds = { 1, 2, 5, 10, 20, 50, 100, 200, 500,
-                999 };
-        final Integer[] seconds = { 1, 2, 5, 10, 15, 20, 30, 59 };
-        final Integer[] minutes = { 1, 2, 3, 5, 10, 15, 20, 30, 59 };
-        final Integer[] hours = { 1, 2, 3, 4, 6, 12, 22 };
-        final Integer[] dates = { 1, 7, 14, 28 };
-        final Integer[] months = { 1, 2, 3, 4, 6, 11 };
-        final Integer[] years = { 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000 };
-
-        possibleTickSteps = new HashMap<Integer, Integer[]>();
-        possibleTickSteps.put(Calendar.MILLISECOND, milliseconds);
-        possibleTickSteps.put(Calendar.SECOND, seconds);
-        possibleTickSteps.put(Calendar.MINUTE, minutes);
-        possibleTickSteps.put(Calendar.HOUR_OF_DAY, hours);
-        possibleTickSteps.put(Calendar.DATE, dates);
-        possibleTickSteps.put(Calendar.MONTH, months);
-        possibleTickSteps.put(Calendar.YEAR, years);
+        setFont(this.scale.getFont());
+        setForegroundColor(this.scale.getForegroundColor());
     }
 
     /**
@@ -413,6 +375,10 @@ public class LinearScaleTickLabels extends Figure {
      * @return rounded value.
      */
     private BigDecimal getGridStep(int lengthInPixels, double min, double max) {
+    	if((int) scale.getMajorGridStep() != 0) {
+    		return new BigDecimal(scale.getMajorGridStep());
+    	}
+    	
         if (lengthInPixels <= 0) {
             lengthInPixels = 1;
         }

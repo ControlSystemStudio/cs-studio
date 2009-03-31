@@ -58,13 +58,6 @@ public class LinearScale extends AbstractScale {
     
     /**
      * Constructor.
-     * 
-     * @param chart
-     *            the chart
-     * @param style
-     *            the style
-     * @param scale
-     *            the scale
      */
     public LinearScale() {      
     	
@@ -158,7 +151,7 @@ public class LinearScale extends AbstractScale {
 	}
 
     /**
-	 * Get the relative position of the value. 
+	 * Get the position of the value based on scale. 
 	 * @param value the value to find its position. It would be coerced to the range of scale.
 	 * @param relative return the position relative to the left/bottom bound of the scale if true. 
 	 * If false, return the absolute position which has the scale bounds counted.
