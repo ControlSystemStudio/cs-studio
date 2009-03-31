@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Script Plug-in
+Bundle-SymbolicName: org.csstudio.sds.language.script;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.sds.language.script.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ de.desy.language.editor.core,
+ de.desy.language.libraries,
+ org.eclipse.core.resources,
+ org.junit4
+Eclipse-LazyStart: true
+Export-Package: org.csstudio.sds.language.script.codeElements,
+ org.csstudio.sds.language.script.parser,
+ org.csstudio.sds.language.script.parser.nodes

@@ -235,6 +235,10 @@ public abstract class LanguageEditor extends TextEditor {
 		}
 	}
 
+	public Node getRootNode() {
+		return _rootNode;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -468,8 +472,6 @@ public abstract class LanguageEditor extends TextEditor {
 	@Override
 	public Object getAdapter(final Class adapter) {
 		if (IContentOutlinePage.class.equals(adapter)) {
-			System.out
-					.println("LanguageEditor.getAdapter(): get content outline page");
 			if (this._outlinePage == null) {
 				this._outlinePage = new LanguageOutlinePage(
 						new HighlightingListener() {
@@ -587,6 +589,10 @@ public abstract class LanguageEditor extends TextEditor {
 			}
 		}
 	}
+	
+	protected void determineAdditionalErrors() {
+		
+	}
 
 	/**
 	 * Refreshes the outline view.
@@ -660,6 +666,7 @@ public abstract class LanguageEditor extends TextEditor {
 											lineNumber);
 								}
 							}
+							this.determineAdditionalErrors();
 						} catch (final CoreException e) {
 							// do nothing
 						} catch (final BadLocationException e) {
