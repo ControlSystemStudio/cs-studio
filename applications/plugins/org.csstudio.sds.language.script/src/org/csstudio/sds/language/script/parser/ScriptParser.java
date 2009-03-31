@@ -56,7 +56,7 @@ public class ScriptParser extends AbstractLanguageParser {
 					if (isSubNode(function, variable)) {
 						function.addChild(variable);
 						if (variable.isPredefined()) {
-							variable.addWarning("'"+variable.getSourceIdentifier()+"' must be a global variable");
+							variable.addWarning("'"+variable.getSourceIdentifier()+"' should be a global variable for rules");
 						}
 						globalVariables.remove(variable);
 					}
@@ -147,35 +147,33 @@ public class ScriptParser extends AbstractLanguageParser {
 	
 	private void checkPredefinedVariables(Node parentNode, List<VariableNode> variables) {
 		Contract.requireNotNull("variables", variables);
-		int requiredVariableCount = 0;
 		List<String> errors = new ArrayList<String>(PredefinedVariables.values().length);
 		List<String> warnings = new ArrayList<String>();
 		boolean returnVariableFound = false;
 		
 		for (PredefinedVariables predefVar : PredefinedVariables.values()) {
-			if (!predefVar.isOptional()) {
-				requiredVariableCount++;
-				boolean found = false;
-				for (VariableNode node : variables) {
-					if (predefVar.getElementName().equals(node.getSourceIdentifier())) {
-						found = true;
-						if (PredefinedVariables.RETURNS.equals(predefVar)) {
-							returnVariableFound = true;
-						}
-						break;
+			boolean found = false;
+			for (VariableNode node : variables) {
+				if (predefVar.getElementName().equals(node.getSourceIdentifier())) {
+					found = true;
+					if (PredefinedVariables.RETURNS.equals(predefVar)) {
+						returnVariableFound = true;
 					}
+					break;
 				}
-				if (!found) {
+			}
+			if (!found) {
+				if (predefVar.isOptional()) {
+					StringBuffer messageBuffer = new StringBuffer("Missing variable declaration for '");
+					messageBuffer.append(predefVar.getElementName());
+					messageBuffer.append("'");
+					warnings.add(messageBuffer.toString());
+				} else {
 					StringBuffer messageBuffer = new StringBuffer("Missing variable declaration for '");
 					messageBuffer.append(predefVar.getElementName());
 					messageBuffer.append("'");
 					errors.add(messageBuffer.toString());
 				}
-			} else if (predefVar.equals(PredefinedVariables.PARAMETERTYPES)) {
-				StringBuffer messageBuffer = new StringBuffer("Missing variable declaration for '");
-				messageBuffer.append(predefVar.getElementName());
-				messageBuffer.append("'");
-				warnings.add(messageBuffer.toString());
 			}
 		}
 		if (returnVariableFound) {
