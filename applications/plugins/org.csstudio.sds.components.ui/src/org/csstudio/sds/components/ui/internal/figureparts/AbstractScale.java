@@ -90,6 +90,8 @@ public abstract class AbstractScale extends Figure{
     private int majorTickMarkStepHint = 50;
     
     private boolean minorTicksVisible= true;
+    
+    private double majorGridStep = 0;
 
 	
 	/**
@@ -364,13 +366,19 @@ public abstract class AbstractScale extends Figure{
      */
     public abstract void updateTick();
 
-    /**
-	 * Get the relative position of the value. 
-	 * @param value the value to find its position. It would be coerced to the range of scale.
-	 * @param relative return the position relative to the left/bottom bound of the scale if true. 
-	 * If false, return the absolute position which has the scale bounds counted.
-	 * @return position in pixels
-	 */    
-	public abstract int getValuePosition(double value, boolean relative);
-	
+	/**
+	 * @param majorGridStep the majorGridStep to set
+	 */
+	public void setMajorGridStep(double majorGridStep) {
+		this.majorGridStep = majorGridStep;
+		setDirty(true);
+	}
+
+	/**
+	 * @return the majorGridStep
+	 */
+	public double getMajorGridStep() {
+		return majorGridStep;
+	}
+ 
 }
