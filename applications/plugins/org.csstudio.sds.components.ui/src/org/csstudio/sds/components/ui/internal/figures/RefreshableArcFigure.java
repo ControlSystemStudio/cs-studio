@@ -74,7 +74,7 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
      * Fills the arc.
      */
     protected void fillShape(Graphics gfx) {
-        // Fix HR: The background over paint the fillArc.
+        // Fix HR: The background paint over the fillArc.
         // (The fillShape paint first then the outlineShape).
         filled = true;
         if (transparent == false) {
