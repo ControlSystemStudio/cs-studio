@@ -81,7 +81,6 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
             gfx.setBackgroundColor(getBackgroundColor());
             gfx.fillRectangle(getBounds());
         }
-
         gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(fill_color));
         gfx.fillArc(getBounds()
                 .getCropped(new Insets(lineWidth / 2 + lineWidth % 2 + border_width)), start_angle,
@@ -92,7 +91,7 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
      * Draws the arc.
      */
     protected void outlineShape(Graphics gfx) {
-        if (!filled == false && transparent == false) {
+        if (filled == false && transparent == false) {
             gfx.setBackgroundColor(getBackgroundColor());
             gfx.fillRectangle(getBounds());
         }
