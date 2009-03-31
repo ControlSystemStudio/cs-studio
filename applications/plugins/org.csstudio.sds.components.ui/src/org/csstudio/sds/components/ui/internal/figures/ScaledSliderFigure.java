@@ -334,7 +334,7 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 		protected void fillShape(Graphics graphics) {		
 			
 			graphics.setAntialias(SWT.ON);			
-			int valuePosition = scale.getValuePosition(value, false);
+			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
 			if(effect3D) {				
 				//fill background
 				graphics.setBackgroundColor(fillBackgroundColor);

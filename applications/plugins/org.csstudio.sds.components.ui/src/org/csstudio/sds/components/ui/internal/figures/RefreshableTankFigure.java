@@ -144,7 +144,7 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 			corner.height = fill_corner;
 			corner.width = fill_corner;
 			graphics.setAntialias(SWT.ON);			
-			int valuePosition = scale.getValuePosition(value, false);
+			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
 			if(effect3D) {				
 				graphics.setBackgroundColor(WHITE_COLOR);
 				super.fillShape(graphics);

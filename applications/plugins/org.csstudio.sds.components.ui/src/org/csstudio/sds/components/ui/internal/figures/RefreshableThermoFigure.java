@@ -180,7 +180,7 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 			graphics.setForegroundColor(outlineColor);
 			graphics.setBackgroundColor(fillBackgroundColor);
 			
-			int valuePosition = scale.getValuePosition(value, false);
+			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
 			if(effect3D){
 				graphics.setForegroundColor(EFFECT3D_PIPE_COLOR);
 				//fill back
@@ -288,23 +288,23 @@ public class RefreshableThermoFigure extends AbstractScaledWidgetFigure {
 			if(effect3D) {
 				graphics.setBackgroundColor(fillColor);
 				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-					scale.getValuePosition(scale.getRange().lower, false),
+					((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
 					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
 				Pattern backPattern = new Pattern(Display.getCurrent(), 
-					pipe.getBounds().x, scale.getValuePosition(scale.getRange().lower, false),
+					pipe.getBounds().x, ((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
 					pipe.getBounds().x + Pipe.PIPE_WIDTH,
-					scale.getValuePosition(scale.getRange().lower, false),
+					((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
 					WHITE_COLOR,255, fillColor, 0);					
 				graphics.setBackgroundPattern(backPattern);
 				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-					scale.getValuePosition(scale.getRange().lower, false),
+					((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
 					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
 				backPattern.dispose();
 		
 			}else{
 				graphics.setBackgroundColor(fillColor);
 				graphics.fillRoundRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-						scale.getValuePosition(scale.getRange().lower, false),
+						((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
 						Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, ((LinearScale) scale).getMargin()),
 						Pipe.FILL_CORNER, Pipe.FILL_CORNER);			
 			}
