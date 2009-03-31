@@ -1,6 +1,11 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import java.util.Calendar;
+
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.components.ui.internal.figureparts.Range;
+import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
+import org.csstudio.sds.components.ui.internal.figureparts.AbstractScale.LabelSide;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.XYLayout;
@@ -37,10 +42,10 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
-				
+				RoundScaleTest testFigure = new RoundScaleTest(scaleBounds);
 				//XSliderFigureTest testFigure = new XSliderFigureTest(scaleBounds);
 				//TankFigureTest testFigure = new TankFigureTest(scaleBounds);
-				ThermoFigureTest testFigure = new ThermoFigureTest(scaleBounds);
+				//ThermoFigureTest testFigure = new ThermoFigureTest(scaleBounds);
 				parent.add(testFigure,testFigureBounds);
 				lws.paint(event.gc);
 				
@@ -56,6 +61,32 @@ public class WidgetFigureTest {
 	    }
 	}
 }
+
+
+
+class RoundScaleTest extends Figure {
+	
+	public RoundScaleTest(Rectangle bounds) {
+
+		RoundScale scale = new RoundScale();		
+		
+		scale.setRange(new Range(0 + 5 * 3600000d, 12*3600000d+ 5 * 3600000d));
+		scale.setBounds(bounds);
+		//scale.setTimeUnit(Calendar.MINUTE);
+		scale.setFormatPattern("H");
+		scale.setMajorGridStep(3600000);
+		scale.setTickLableSide(LabelSide.Secondary);
+		//scale.setLogScale(true);
+		scale.setDateEnabled(true);
+		scale.setStartAngle(90);
+		scale.setEndAngle(90.00000001);
+		//scale.setScaleLineVisible(false);
+
+		add(scale);
+		
+	}
+}
+
 
 
 class XSliderFigureTest extends Figure {
@@ -81,7 +112,6 @@ class XSliderFigureTest extends Figure {
 		add(slider);
 		
 	}
-
 }
 
 
