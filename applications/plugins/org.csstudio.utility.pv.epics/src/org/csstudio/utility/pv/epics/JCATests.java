@@ -3,6 +3,7 @@ package org.csstudio.utility.pv.epics;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_TIME_Double;
 import gov.aps.jca.event.MonitorEvent;
@@ -24,10 +25,10 @@ public class JCATests
 {
     private static final String PV_NAME = "RFQ_Vac:Pump3:Pressure";
     private static final String ADDR_LIST = "160.91.230.38";
-    private static final int TESTRUNS = 10;
+    private static final int TESTRUNS = 10000;
 
     /** Set <code>true</code> to check for cleanup error. */
-    private static final boolean CLEANUP = true;
+    private static final boolean CLEANUP = false;
     private static JCALibrary jca = null;
     private static Context jca_context = null;
     
@@ -59,13 +60,14 @@ public class JCATests
                         value.getDoubleValue()[0]);
             }
         };
-        channel.addMonitor(DBRType.TIME_DOUBLE, 1, 1, monitor);        
+        final Monitor subscription = channel.addMonitor(DBRType.TIME_DOUBLE, 1, 1, monitor);        
         jca_context.flushIO();
 
         // Run
-        Thread.sleep(3 * 1000);
+        Thread.sleep(2 * 1000);
 
         // Cleanup. More or less
+        subscription.clear();
         channel.destroy();
 
         // With jca-2.3.0, built against EPICS base R3.14.7,
@@ -92,7 +94,7 @@ public class JCATests
         final double total = Runtime.getRuntime().totalMemory() / MB;
         final double max = Runtime.getRuntime().maxMemory() / MB;
         
-        System.out.format("%s == Alarm Server Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+        System.out.format("%s == JVM Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
                 format.format(new Date()), max, free, 100.0*free/max, total, 100.0*total/max);
     }
 
@@ -100,7 +102,6 @@ public class JCATests
     {
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", ADDR_LIST);
         System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list", "true");
-        
         
         for (int i=0; i<TESTRUNS; ++i)
         {
