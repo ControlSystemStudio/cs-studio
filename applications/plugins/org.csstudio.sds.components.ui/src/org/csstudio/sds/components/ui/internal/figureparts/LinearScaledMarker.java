@@ -13,6 +13,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -60,13 +61,40 @@ public class LinearScaledMarker extends Figure {
 		setFont(CustomMediaFactory.getInstance().getFont(CustomMediaFactory.FONT_TAHOMA));
 	}
 	
+	
+	/**
+	 * If the marker exists, set its value.
+	 * @param label the label of the marker element, it must be unique. 
+	 * @param value the value to be set
+	 */
+	public void setMarkerElementValue(String label, double value) {
+		if(markersMap.containsKey(label)) {
+			markersMap.get(label).value = value;
+			dirty =true;
+		}			
+	}
+	
+	
+	/**
+	 * If the marker exists, set its color.
+	 * @param label the label of the marker element, it must be unique. 
+	 * @param color the color to be set
+	 */
+	public void setMarkerElementColor(String label, RGB color) {
+		if(markersMap.containsKey(label)) {
+			markersMap.get(label).color = color;
+			dirty =true;
+		}			
+	}
+	
+	
 	/**
 	 * Add (if the marker does not exist) or change a marker element.
 	 * @param label the label of the marker element, it must be unique. 
 	 * @param value the value of the marker element
 	 * @param color the color of the marker element
 	 */
-	public void putMarkerElement(String label, double value, RGB color) {
+	public void addMarkerElement(String label, double value, RGB color) {
 		if(markersMap.containsKey(label)) {
 			markersMap.get(label).value = value;
 			markersMap.get(label).color = color;
@@ -80,12 +108,11 @@ public class LinearScaledMarker extends Figure {
 	 * @param label the label of the marker element, it must be unique. 
 	 * @param value the value of the marker element
 	 */
-	public void putMarkerElement(String label, double value) {
+	public void addMarkerElement(String label, double value) {
 		if(markersMap.containsKey(label))
 			markersMap.get(label).value = value;
 		else
-			markersMap.put(label, new MarkerProperties(value, DEFAULT_MARKER_COLOR));
-		
+			markersMap.put(label, new MarkerProperties(value, DEFAULT_MARKER_COLOR));		
 		dirty =true;
 	}
 	
@@ -169,6 +196,12 @@ public class LinearScaledMarker extends Figure {
 			}
 		}			
 	}	
+	
+	@Override
+	public void setBounds(Rectangle rect) {
+		super.setBounds(rect);
+		dirty = true;
+	}
 	
 	/**
      * Updates the tick, recalculate all inner parameters
