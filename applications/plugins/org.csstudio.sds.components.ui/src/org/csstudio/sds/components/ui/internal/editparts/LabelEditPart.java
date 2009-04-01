@@ -23,18 +23,33 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Map;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.LabelModel;
+import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
+import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * EditPart controller for the label widget.
@@ -43,6 +58,18 @@ import org.eclipse.swt.graphics.FontData;
  * 
  */
 public final class LabelEditPart extends AbstractWidgetEditPart {
+    
+    /**
+     * The actual figure will be surrounded with a small frame that can be used to drag the figure
+     * around (even if the cell editor is activated).
+     */
+    private static final int FRAME_WIDTH = 1;
+
+    /**
+     * The input field will be slightly brighter than the actual figure so it can be easily
+     * recognized.
+     */
+    private static final int INPUT_FIELD_BRIGHTNESS = 10;
 
 	private NumberFormat numberFormat = NumberFormat.getInstance();
 	
@@ -293,4 +320,103 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 
 		registerValueChangeHandlers();
 	}
+	
+     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void performRequest(final Request req) {
+        Object type = req.getType();
+
+        // entering a value is only allowed in run mode and when the widget is
+        // enabled
+        if (type != null
+                && (type.equals(RequestConstants.REQ_OPEN) || type
+                        .equals(RequestConstants.REQ_DIRECT_EDIT)) ) {
+            if (getExecutionMode() == ExecutionMode.RUN_MODE&& getCastedModel().isEnabled()) {
+                super.performRequest(req);
+            } else if(getExecutionMode() == ExecutionMode.EDIT_MODE){
+                performEditTextValue();
+            }
+        }
+        
+    }
+	
+    private void performEditTextValue() {
+        CellEditor cellEditor = createCellEditor2();
+        locateCellEditor(cellEditor);
+        cellEditor.activate();
+        cellEditor.setFocus();
+    }
+
+    private CellEditor createCellEditor2() {
+        final CellEditor result = new TextCellEditor((Composite) getViewer().getControl());
+
+        // init cell editor...
+        String currentValue = "N/A"; //$NON-NLS-1$
+        WidgetProperty inputTextProperty = getWidgetModel().getProperty(
+                LabelModel.PROP_TEXTVALUE);
+
+        if (inputTextProperty != null) {
+            currentValue = inputTextProperty.getPropertyValue().toString();
+        }
+
+        result.setValue(currentValue);
+        final Text text = (Text) result.getControl();
+        // input text
+        text.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+                    getWidgetModel().setPropertyValue(LabelModel.PROP_TEXTVALUE,text.getText());
+                } else if (e.keyCode == SWT.ESC) {
+                    result.deactivate();
+                }
+            }
+
+        });
+        // get the chosen font
+        FontData fontData = (FontData) getWidgetModel().getProperty(LabelModel.PROP_FONT)
+                .getPropertyValue();
+        Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
+
+        // get the chosen foreground color
+        Color foregroundColor = CustomMediaFactory.getInstance().getColor(
+                getWidgetModel().getForegroundColor());
+
+        // get the chosen background color
+      RGB backgroundRgb = getWidgetModel().getBackgroundColor();
+
+      int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
+      int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
+      int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
+
+      Color backgroundColor = CustomMediaFactory.getInstance()
+              .getColor(new RGB(red, green, blue));
+
+        text.setForeground(foregroundColor);
+        text.setBackground(backgroundColor);
+        text.setFont(font);
+        text.selectAll();
+        
+        return result;
+    }
+    /**
+     * Locate the given cell editor .
+     * 
+     * @param cellEditor
+     *            A cell editor.
+     */
+    private void locateCellEditor(final CellEditor cellEditor) {
+        Rectangle rect = LabelEditPart.this.figure.getBounds().getCopy();
+        rect.x = rect.x + FRAME_WIDTH;
+        rect.y = rect.y + FRAME_WIDTH;
+        rect.height = rect.height - (FRAME_WIDTH * 1);
+        rect.width = rect.width - (FRAME_WIDTH * 1);
+        getFigure().translateToAbsolute(rect);
+
+        cellEditor.getControl().setBounds(rect.x, rect.y, rect.width, rect.height);
+        cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
+        cellEditor.getControl().setVisible(true);
+    }
 }
