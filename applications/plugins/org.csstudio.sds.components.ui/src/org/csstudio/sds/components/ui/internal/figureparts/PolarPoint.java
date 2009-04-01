@@ -17,8 +17,8 @@ public class PolarPoint {
 	public double theta;	
 	
 	/**
-	 * @param r
-	 * @param theta
+	 * @param r The radial coordinate 
+	 * @param theta The angular coordinate in radians
 	 */
 	public PolarPoint(int r, double theta) {
 		this.r = r;
