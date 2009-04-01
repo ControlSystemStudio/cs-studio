@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class RefreshableTankFigure extends AbstractScaledWidgetFigure {	
+public class RefreshableTankFigure extends AbstractLinearMarkedFigure {	
 
 	private Color fillColor;
 	private Color fillBackgroundColor;
@@ -32,21 +32,13 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 			CustomMediaFactory.COLOR_WHITE); 
 	private boolean effect3D = true;
 	
-	private LinearScaledMarker marker;
 	private Tank tank;
 	
-	public RefreshableTankFigure() {
-		
-		scale = new LinearScale();
+	public RefreshableTankFigure() {		
+		super();		
 		((LinearScale) scale).setOrientation(Orientation.VERTICAL);
 		scale.setScaleLineVisible(false);
-		scale.setForegroundColor(outlineColor);
-	
-		marker = new LinearScaledMarker((LinearScale) scale);	
-		marker.putMarkerElement("LOLO", loloLevel, CustomMediaFactory.COLOR_RED);
-		marker.putMarkerElement("LO", loLevel, CustomMediaFactory.COLOR_ORANGE);
-		marker.putMarkerElement("HI", hiLevel, CustomMediaFactory.COLOR_ORANGE);
-		marker.putMarkerElement("HIHI", hihiLevel, CustomMediaFactory.COLOR_RED);	
+		scale.setForegroundColor(outlineColor);			
 
 		tank = new Tank();		
 		setLayoutManager(new TankLayout());
@@ -54,7 +46,6 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 		add(scale, TankLayout.SCALE);
 		add(marker, TankLayout.MARKERS);
 		add(tank, TankLayout.TANK);
-
 	  
 	}
 	
@@ -67,38 +58,8 @@ public class RefreshableTankFigure extends AbstractScaledWidgetFigure {
 	public void setForegroundColor(Color fg) {
 		super.setForegroundColor(fg);
 		outlineColor = fg;
-	}
-	
-	@Override
-	public void setShowMarkers(boolean showMarkers) {		
-		super.setShowMarkers(showMarkers);
-		marker.setVisible(showMarkers);	
-	}
-	
-	@Override
-	public void setLoloLevel(double loloLevel) {
-		super.setLoloLevel(loloLevel);
-		marker.putMarkerElement("LOLO", loloLevel);
-	}
-	
-	@Override
-	public void setLoLevel(double loLevel) {
-		super.setLoLevel(loLevel);
-		marker.putMarkerElement("LO", loLevel);
-	}
-	
-	@Override
-	public void setHiLevel(double hiLevel) {
-		super.setHiLevel(hiLevel);
-		marker.putMarkerElement("HI", hiLevel);
-	}
-	
-	@Override
-	public void setHihiLevel(double hihiLevel) {
-		super.setHihiLevel(hihiLevel);
-		marker.putMarkerElement("HIHI", hihiLevel);
-	}
-	
+	}	
+
 	/**
 	 * @param fillColor the fillColor to set
 	 */

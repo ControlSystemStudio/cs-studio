@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  * 
  */
-public final class TankEditPart extends AbstractScaledWidgetEditPart {
+public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}

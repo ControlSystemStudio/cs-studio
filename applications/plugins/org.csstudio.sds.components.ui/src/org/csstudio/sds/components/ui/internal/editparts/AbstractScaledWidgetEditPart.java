@@ -26,7 +26,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 	 * @param model
 	 *            the model.
 	 */
-	protected final void initializeCommonFigureProperties(
+	protected void initializeCommonFigureProperties(
 			final AbstractScaledWidgetFigure figure, final AbstractScaledWidgetModel model) {
 		
 		figure.setValue(model.getValue());
@@ -35,12 +35,8 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 		figure.setLogScale(model.isLogScaleEnabled());
 		figure.setShowScale(model.isShowScale());
 		figure.setShowMinorTicks(model.isShowMinorTicks());
-		figure.setShowMarkers(model.isShowMarkers());
-		figure.setLoloLevel(model.getLoloLevel());
-		figure.setLoLevel(model.getLoLevel());
-		figure.setHiLevel(model.getHiLevel());
-		figure.setHihiLevel(model.getHihiLevel());
 		figure.setTransparent(model.isTransparent());
+		
 		
 	}	
 	
@@ -50,7 +46,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 	 * of subclasses, which can call this method in their implementation of
 	 * {@link #registerPropertyChangeHandlers()}.
 	 */
-	protected final void registerCommonPropertyChangeHandlers() {
+	protected void registerCommonPropertyChangeHandlers() {
 		// value
 		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -111,18 +107,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_SCALE, showScaleHandler);
 		
-		//showMarkers
-		IWidgetPropertyChangeHandler showMarkersHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setShowMarkers((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_MARKERS, showMarkersHandler);
-		
+	
 		//showMinorTicks
 		IWidgetPropertyChangeHandler showMinorTicksHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -134,54 +119,6 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_MINOR_TICKS, showMinorTicksHandler);
-		
-		//LoLo Level
-		IWidgetPropertyChangeHandler loloHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setLoloLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_LOLO_LEVEL, loloHandler);
-
-		//Lo Level
-		IWidgetPropertyChangeHandler loHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setLoLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_LO_LEVEL, loHandler);
-		
-		//Hi Level
-		IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setHiLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_HI_LEVEL, hiHandler);
-		
-		//HiHi Level
-		IWidgetPropertyChangeHandler hihiHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setHihiLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_HIHI_LEVEL, hihiHandler);
 		
 		//Transparent
 		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {

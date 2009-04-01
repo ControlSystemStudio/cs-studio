@@ -39,8 +39,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class ScaledSliderFigure extends AbstractScaledWidgetFigure {	
-
+public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	
 	private Color fillColor;
 	private Color fillBackgroundColor;
@@ -63,7 +62,6 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 	/** The alpha (0 is transparency and 255 is opaque) for disabled paint */
 	private static final int DISABLED_ALPHA = 100;	
 	
-	private LinearScaledMarker marker;
 	private Track track;
 	private Thumb thumb;
 	private AlphaLabel label;
@@ -76,16 +74,10 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 	
 	public ScaledSliderFigure() {
 		
-		scale = new LinearScale();
+		super();
 		scale.setScaleLineVisible(false);
 		scale.setForegroundColor(outlineColor);
 		scale.setTickLableSide(LabelSide.Secondary);
-	
-		marker = new LinearScaledMarker((LinearScale) scale);	
-		marker.putMarkerElement("LOLO", loloLevel, CustomMediaFactory.COLOR_RED);
-		marker.putMarkerElement("LO", loLevel, CustomMediaFactory.COLOR_ORANGE);
-		marker.putMarkerElement("HI", hiLevel, CustomMediaFactory.COLOR_ORANGE);
-		marker.putMarkerElement("HIHI", hihiLevel, CustomMediaFactory.COLOR_RED);	
 		
 		if(horizontal) {
 			((LinearScale)scale).setOrientation(Orientation.HORIZONTAL);
@@ -169,36 +161,6 @@ public class ScaledSliderFigure extends AbstractScaledWidgetFigure {
 	public void setForegroundColor(Color fg) {
 		super.setForegroundColor(fg);
 		outlineColor = fg;
-	}
-	
-	@Override
-	public void setShowMarkers(boolean showMarkers) {		
-		super.setShowMarkers(showMarkers);
-		marker.setVisible(showMarkers);	
-	}
-	
-	@Override
-	public void setLoloLevel(double loloLevel) {
-		super.setLoloLevel(loloLevel);
-		marker.putMarkerElement("LOLO", loloLevel);
-	}
-	
-	@Override
-	public void setLoLevel(double loLevel) {
-		super.setLoLevel(loLevel);
-		marker.putMarkerElement("LO", loLevel);
-	}
-	
-	@Override
-	public void setHiLevel(double hiLevel) {
-		super.setHiLevel(hiLevel);
-		marker.putMarkerElement("HI", hiLevel);
-	}
-	
-	@Override
-	public void setHihiLevel(double hihiLevel) {
-		super.setHihiLevel(hihiLevel);
-		marker.putMarkerElement("HIHI", hihiLevel);
 	}
 	
 	/**

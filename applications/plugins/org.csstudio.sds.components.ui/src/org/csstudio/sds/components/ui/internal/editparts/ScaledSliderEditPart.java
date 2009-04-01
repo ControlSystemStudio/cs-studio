@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  * 
  */
-public final class ScaledSliderEditPart extends AbstractScaledWidgetEditPart {
+public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}

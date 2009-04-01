@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
 import org.csstudio.sds.components.ui.internal.figureparts.AbstractScale;
+import org.csstudio.sds.components.ui.internal.figureparts.LinearScale;
 import org.csstudio.sds.components.ui.internal.figureparts.Range;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
@@ -31,20 +32,11 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	
 	protected boolean showMinorTicks;
 	
-	protected boolean showMarkers;
-	
 	protected boolean showScale;
 	
-	protected boolean logScale;
+	protected boolean logScale;	
 	
-	protected double loloLevel;
-	
-	protected double loLevel;
-	
-	protected double hiLevel;
-	
-	protected double hihiLevel;
-	
+
 	/** A border adapter, which covers all border handlings. */
 	private IBorderEquippedWidget _borderAdapter;
 	
@@ -100,13 +92,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		scale.setMinorTicksVisible(showMinorTicks);
 	}
 
-	/**
-	 * @param showMarkers the showMarkers to set
-	 */
-	public void setShowMarkers(final boolean showMarkers) {
-		this.showMarkers = showMarkers;
-	}
-
+	
 	/**
 	 * @param showScale the showScale to set
 	 */
@@ -123,36 +109,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		scale.setLogScale(logScale);
 		scale.setRange(new Range(minimum, maximum));
 		scale.revalidate();
-	}
+	}	
 
-	/**
-	 * @param loloLevel the loloLevel to set
-	 */
-	public void setLoloLevel(final double loloLevel) {
-		this.loloLevel = loloLevel;
-	}
-
-	/**
-	 * @param loLevel the loLevel to set
-	 */
-	public void setLoLevel(final double loLevel) {
-		this.loLevel = loLevel;
-	}
-
-	/**
-	 * @param hiLevel the hiLevel to set
-	 */
-	public void setHiLevel(final double hiLevel) {
-		this.hiLevel = hiLevel;
-	}
-
-	/**
-	 * @param hihiLevel the hihiLevel to set
-	 */
-	public void setHihiLevel(final double hihiLevel) {
-		this.hihiLevel = hihiLevel;
-	}
-	
 	/**
 	 * Sets, if this widget should have a transparent background.
 	 * @param transparent

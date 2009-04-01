@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  * 
  */
-public final class ThermometerEditPart extends AbstractScaledWidgetEditPart {
+public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}
