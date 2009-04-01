@@ -23,6 +23,7 @@
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
@@ -71,6 +72,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	public ArcModel () {
 		setWidth(50);
 		setHeight(50);
+		this.setPropertyValue(PROP_BORDER_STYLE, BorderStyleEnum.SHAPE.getIndex());
 	}
 	/**
 	 * {@inheritDoc}
