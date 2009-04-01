@@ -20,8 +20,11 @@ public class RoundScaleTickMarks extends Figure {
 	/** the scale */
     private RoundScale scale;
 
-    /** the line width */
-    protected static final int LINE_WIDTH = 1;
+    /** the line width for major ticks */
+    protected static final int MAJOR_LINE_WIDTH = 2;
+    
+    /** the line width for minor ticks */
+    protected static final int MINOR_LINE_WIDTH = 1;
 
     /** the major tick length */
     public static final int MAJOR_TICK_LENGTH = 10;
@@ -82,11 +85,17 @@ public class RoundScaleTickMarks extends Figure {
         	ArrayList<Boolean> tickLabelVisibilities = 
         		scale.getScaleTickLabels().getTickVisibilities();        	
         	for (int i = 0; i < tickLabelPositions.size(); i++) {        	
-                int tickLength =0;
-                if(tickLabelVisibilities.get(i))
+                int tickLength;
+                int lineWidth;
+                if(tickLabelVisibilities.get(i)) {
+                	lineWidth = MAJOR_LINE_WIDTH;
                 	tickLength = MAJOR_TICK_LENGTH;
-                else
+                }                	
+                else {
+                	lineWidth = MINOR_LINE_WIDTH;
                 	tickLength = MINOR_TICK_LENGTH;
+                }
+                	
                 
                 double theta = tickLabelPositions.get(i);            
                 Point startP = new PolarPoint(r, theta).toRelativePoint(scale.getBounds());
@@ -97,7 +106,7 @@ public class RoundScaleTickMarks extends Figure {
                 else
                 	endP = new PolarPoint(
                 			r - tickLength, theta).toRelativePoint(scale.getBounds());
-                     
+                graphics.setLineWidth(lineWidth);    
                 graphics.drawLine(startP, endP);
         	}
         } else {
@@ -111,8 +120,10 @@ public class RoundScaleTickMarks extends Figure {
                 else
                 	endP = new PolarPoint(
                 			r - MAJOR_TICK_LENGTH, theta).toRelativePoint(scale.getBounds());
-                     
-                graphics.drawLine(startP, endP);      
+                graphics.setLineWidth(MAJOR_LINE_WIDTH);     
+                graphics.drawLine(startP, endP);
+                
+                graphics.setLineWidth(MINOR_LINE_WIDTH);
                 if(scale.isMinorTicksVisible()){
                 	if(i>0) {
                 		for(int j =1; j<MINOR_TICK_NUM; j++) {
