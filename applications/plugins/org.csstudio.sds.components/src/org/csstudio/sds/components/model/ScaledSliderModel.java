@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.RGB;
  * This class defines a scaled slider widget model.
  * @author Xihui Chen
  */
-public class ScaledSliderModel extends AbstractScaledWidgetModel{	
+public class ScaledSliderModel extends AbstractMarkedWidgetModel{	
 	
 	/** The ID of the fill color property. */
 	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
@@ -67,7 +67,10 @@ public class ScaledSliderModel extends AbstractScaledWidgetModel{
 				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
 		
 		addProperty(PROP_THUMB_COLOR, new ColorProperty("Thumb Color",
-				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));		
+				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));	
+		
+		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
+		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));
 	}	
 
 	@Override

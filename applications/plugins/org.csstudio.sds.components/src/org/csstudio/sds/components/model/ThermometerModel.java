@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.RGB;
  * This class defines a thermometer widget model.
  * @author Xihui Chen
  */
-public class ThermometerModel extends AbstractScaledWidgetModel{	
+public class ThermometerModel extends AbstractMarkedWidgetModel{	
 	
 	/** The ID of the fill color property. */
 	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
@@ -71,6 +71,9 @@ public class ThermometerModel extends AbstractScaledWidgetModel{
 		
 		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
 				WidgetPropertyCategory.Display, true));	
+		
+		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
+		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));
 		
 	}
 	

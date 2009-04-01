@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.RGB;
  * This class defines a tank widget model.
  * @author Xihui Chen
  */
-public class TankModel extends AbstractScaledWidgetModel{	
+public class TankModel extends AbstractMarkedWidgetModel{	
 	
 	/** The ID of the fill color property. */
 	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
@@ -61,6 +61,8 @@ public class TankModel extends AbstractScaledWidgetModel{
 		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",
 				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
 		
+		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
+		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));		
 	}
 	
 	/**

@@ -6,11 +6,9 @@ import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.components.internal.localization.Messages;
 
-
 /**
  * This class defines a common widget model for any widget 
- * which has one scale and standard markers. 
- * Standard markers are comprised of LOLO, LO, HI, HIHI. 
+ * which has a scale. 
  * @author Xihui Chen
  */
 public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
@@ -32,25 +30,10 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	public static final String PROP_SHOW_MINOR_TICKS = "showMinorTicks"; //$NON-NLS-1$
 	
 	/** The ID of the show minor ticks property. */
-	public static final String PROP_SHOW_MARKERS = "showMarkers"; //$NON-NLS-1$
-	
-	/** The ID of the show minor ticks property. */
 	public static final String PROP_SHOW_SCALE = "showScale"; //$NON-NLS-1$
 	
 	/** The ID of the log scale property. */
 	public static final String PROP_LOG_SCALE = "logScale"; //$NON-NLS-1$	
-	
-	/** The ID of the lolo level property.*/
-	public static final String PROP_LOLO_LEVEL = "loloLevel"; //$NON-NLS-1$
-	
-	/** The ID of the lo level property. */
-	public static final String PROP_LO_LEVEL = "loLevel"; //$NON-NLS-1$
-	
-	/** The ID of the hi level property. */
-	public static final String PROP_HI_LEVEL = "hiLevel"; //$NON-NLS-1$
-	
-	/** The ID of the hihi level property. */
-	public static final String PROP_HIHI_LEVEL = "hihiLevel"; //$NON-NLS-1$		
 	
 	/** The default value of the value property. */
 	private static final double DEFAULT_VALUE = 50;	
@@ -59,10 +42,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	private static final double DEFAULT_MIN = 0;
 	
 	/** The default value of the maximum property. */
-	private static final double DEFAULT_MAX = 100;	
-	
-	/** The default value of the levels property. */
-	private static final double[] DEFAULT_LEVELS = new double[]{10, 20, 80, 90};	
+	private static final double DEFAULT_MAX = 100;		
 
 	@Override
 	protected void configureProperties() {
@@ -82,23 +62,11 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_MINOR_TICKS, new BooleanProperty("Show Minor Ticks", 
 				WidgetPropertyCategory.Display, true));		
 		
-		addProperty(PROP_SHOW_MARKERS, new BooleanProperty("Show Markers", 
-				WidgetPropertyCategory.Display, true));	
-		
 		addProperty(PROP_SHOW_SCALE, new BooleanProperty("Show Scale", 
 				WidgetPropertyCategory.Display, true));		
 		
 		addProperty(PROP_LOG_SCALE, new BooleanProperty("Log Scale", 
 				WidgetPropertyCategory.Display, false));
-		
-		addProperty(PROP_LOLO_LEVEL, new DoubleProperty("Level LOLO", 
-				WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
-		addProperty(PROP_LO_LEVEL, new DoubleProperty("Level LO", 
-				WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[1]));
-		addProperty(PROP_HI_LEVEL, new DoubleProperty("Level HI", 
-				WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[2]));
-		addProperty(PROP_HIHI_LEVEL, new DoubleProperty("Level HIHI", 
-				WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[3]));
 		
 	}
 	
@@ -125,43 +93,9 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 		return (Double) getProperty(PROP_MAX).getPropertyValue();
 	}
 
-	/**
-	 * Gets the lolo level for this model.
-	 * @return double
-	 * 				The lolo level
-	 */
-	public double getLoloLevel() {
-		return (Double) getProperty(PROP_LOLO_LEVEL).getPropertyValue();
-	}
 	
-	/**
-	 * Gets the lo level for this model.
-	 * @return double
-	 * 				The lo level
-	 */
-	public double getLoLevel() {
-		return (Double) getProperty(PROP_LO_LEVEL).getPropertyValue();
-	}
 	
-	/**
-	 * Gets the hi level for this model.
-	 * @return double
-	 * 				The hi level
-	 */
-	public double getHiLevel() {
-		return (Double) getProperty(PROP_HI_LEVEL).getPropertyValue();
-	}
 	
-	/**
-	 * Gets the minimum value for this model.
-	 * @return double
-	 * 				The minimum value
-	 */
-	public double getHihiLevel() {
-		return (Double) getProperty(PROP_HIHI_LEVEL).getPropertyValue();
-	}
-	
-
 	/**
 	 * @return true if the minor ticks should be shown, false otherwise
 	 */
@@ -169,14 +103,6 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 		return (Boolean) getProperty(PROP_SHOW_MINOR_TICKS).getPropertyValue();
 	}
 	
-	/**
-	 * @return true if the minor ticks should be shown, false otherwise
-	 */
-	public boolean isShowMarkers() {
-		return (Boolean) getProperty(PROP_SHOW_MARKERS).getPropertyValue();
-	}
-
-
 	/**
 	 * @return true if the scale should be shown, false otherwise
 	 */
@@ -200,5 +126,5 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	public boolean isTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
-
+	
 }
