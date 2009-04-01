@@ -5,12 +5,17 @@ import java.util.Calendar;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figureparts.Range;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
+import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp;
 import org.csstudio.sds.components.ui.internal.figureparts.AbstractScale.LabelSide;
+import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp.Threshold;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Pattern;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -42,6 +47,7 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
+				//AnyTest testFigure = new AnyTest(scaleBounds);				
 				RoundScaleTest testFigure = new RoundScaleTest(scaleBounds);
 				//XSliderFigureTest testFigure = new XSliderFigureTest(scaleBounds);
 				//TankFigureTest testFigure = new TankFigureTest(scaleBounds);
@@ -64,24 +70,85 @@ public class WidgetFigureTest {
 
 
 
+
+class AnyTest extends Figure {
+	
+	public AnyTest(Rectangle bounds) {		
+		ArcTest arc = new ArcTest();
+		arc.setBounds(bounds);
+		add(arc);
+	}	
+}
+
+class ArcTest extends Figure {
+	
+	public ArcTest() {		
+	}
+	
+	
+	@Override
+	protected void paintFigure(Graphics graphics) {
+		Color yellow = new Color(Display.getCurrent(), 255,255,0);
+		Color red = new Color(Display.getCurrent(), 255,0,0);
+
+		// TODO Auto-generated method stub
+		super.paintFigure(graphics);
+		graphics.fillArc(bounds, 0, 20);
+		graphics.setAntialias(SWT.ON);
+	    graphics.setLineWidth(20);
+	    //graphics.drawRectangle(bounds);
+	    Pattern pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y, 
+	    		bounds.x + bounds.width, bounds.y + bounds.height, yellow, red);
+	    graphics.setForegroundPattern(pattern);
+	    graphics.drawArc(new Rectangle(bounds.x +10, bounds.y+10, 
+	    		bounds.width -20, bounds.height -20), 315, 27);
+	    graphics.setForegroundColor(new Color(Display.getCurrent(), 255, 0, 0));
+	    graphics.setLineWidth(1);
+	    //graphics.drawRectangle(bounds);
+	   // graphics.drawArc(bounds, 180, 90);
+	}
+	@Override
+	protected void paintClientArea(Graphics graphics) {
+		// TODO Auto-generated method stub
+		super.paintClientArea(graphics);
+		
+	}
+}
+
+
 class RoundScaleTest extends Figure {
 	
 	public RoundScaleTest(Rectangle bounds) {
 
 		RoundScale scale = new RoundScale();		
-		
-		scale.setRange(new Range(0 + 5 * 3600000d, 12*3600000d+ 5 * 3600000d));
+		//scale.setStartAngle(135);
+		//scale.setEndAngle(45);
+		//scale.setRange(new Range(0, 12*3600000d+ 5 * 3600000d));
 		scale.setBounds(bounds);
 		//scale.setTimeUnit(Calendar.MINUTE);
-		scale.setFormatPattern("H");
-		scale.setMajorGridStep(3600000);
-		scale.setTickLableSide(LabelSide.Secondary);
+		//scale.setFormatPattern("H");
+		//scale.setMajorGridStep(3600d);
+		//scale.setTickLableSide(LabelSide.Secondary);
 		//scale.setLogScale(true);
-		scale.setDateEnabled(true);
-		scale.setStartAngle(90);
-		scale.setEndAngle(90.00000001);
+		//scale.setDateEnabled(true);
+		//scale.setStartAngle(90);
+		//scale.setEndAngle(90.00000001);
 		//scale.setScaleLineVisible(false);
-
+					
+		
+		RoundScaledRamp ramp = new RoundScaledRamp(scale);				
+		Rectangle rect = new Rectangle(bounds);
+		//rect.shrink(100, 100);
+		ramp.setBounds(rect);
+		//ramp.setThresholdVisibility(Threshold.LO, false);
+		//ramp.setThresholdVisibility(Threshold.HI, false);
+		//ramp.setThresholdVisibility(Threshold.HIHI, false);
+		//ramp.setThresholdVisibility(Threshold.LOLO, false);
+		//ramp.setThresholdValue(Threshold.LO, 100);
+		//ramp.setThresholdValue(Threshold.LOLO, 50);
+		ramp.setGradient(false);
+		add(ramp);	
+		//scale.setVisible(false);
 		add(scale);
 		
 	}
