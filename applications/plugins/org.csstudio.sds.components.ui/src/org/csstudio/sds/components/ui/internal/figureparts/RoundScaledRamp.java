@@ -12,10 +12,20 @@ import org.eclipse.swt.graphics.Pattern;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * A ramp looks like a colorful donut, which is used to indicate the alarm limit, hihi, hi, lo or lolo.
+ * The ramp is based on a round scale which is in the same polar coordinate system as the ramp.
+ * The ramp could be used for any round scale based widgets, such as meter, gauge and knob etc.
+ * @author Xihui Chen
+ *
+ */
 public class RoundScaledRamp extends Figure {
 
 	private static final int OVERLAP_DEGREE = 2;
 
+	/**
+	 * The alarm thereshold for a PV, includs HIHI, HI, LO or LOLO. 
+	 */
 	public enum Threshold{
 		HIHI, 
 		HI,
@@ -25,21 +35,23 @@ public class RoundScaledRamp extends Figure {
 	
 	private RoundScale scale;
 	private ThresholdMarker lolo = new ThresholdMarker(10, CustomMediaFactory.COLOR_RED, true);
-	private ThresholdMarker lo = new ThresholdMarker(25, CustomMediaFactory.COLOR_YELLOW, true);
-	private ThresholdMarker hi = new ThresholdMarker(75, CustomMediaFactory.COLOR_YELLOW, true);
+	private ThresholdMarker lo = new ThresholdMarker(25, CustomMediaFactory.COLOR_ORANGE, true);
+	private ThresholdMarker hi = new ThresholdMarker(75, CustomMediaFactory.COLOR_ORANGE, true);
 	private ThresholdMarker hihi = new ThresholdMarker(90, CustomMediaFactory.COLOR_RED, true);
 	
 	//the middle value in the normal range, for internal use only
 	private ThresholdMarker normal = new ThresholdMarker(50, CustomMediaFactory.COLOR_GREEN, true);
-	private ThresholdMarker min = new ThresholdMarker(0, CustomMediaFactory.COLOR_RED, true);	
-	private ThresholdMarker max = new ThresholdMarker(100, CustomMediaFactory.COLOR_RED, true);
+	private ThresholdMarker min = new ThresholdMarker(0, null, true);	
+	private ThresholdMarker max = new ThresholdMarker(100, null, true);
 	private int rampWidth = 20;
 	private boolean gradient = true;
 	
 	private boolean dirty = true;
 	
-
-	
+	/**
+	 * Constructor
+	 * @param scale the round scale
+	 */
 	public RoundScaledRamp(RoundScale scale) {
 		this.scale = scale;
 	}
@@ -62,6 +74,9 @@ public class RoundScaledRamp extends Figure {
 		return size;
     }
     
+    /**
+     * update the the position for each threshold, and other parameters related to the positions.  
+     */
     private void updateThresholdPosition(){
     	if(dirty){      	
     		//get normal value
@@ -130,10 +145,7 @@ public class RoundScaledRamp extends Figure {
     					bounds.width/2, (hihi.absolutePosition - OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     			hihi.leftPoint = new PolarPoint(
     					bounds.width/2, (hihi.absolutePosition + OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
-    		}    			
-    		
-
-    	
+    		}    	
     		setDirty(false);
     	}
     	
@@ -281,30 +293,23 @@ public class RoundScaledRamp extends Figure {
     				hihi.relativePosition - max.relativePosition + overlap);
     	}
     	
-    	
-    	
-    	
-    	
-    	
     	graphics.popState();    	
     	graphics.fillOval(bounds.x + rampWidth, bounds.y + rampWidth, 
     			bounds.width-2*rampWidth,bounds.height - 2*rampWidth);
     	
-    	super.paintClientArea(graphics);
-    	
+    	super.paintClientArea(graphics);    	
     }
     
 	
 	
-	
 	/**
-	 * @return the scale
+	 * @return the round scale for this ramp
 	 */
 	public RoundScale getScale() {
 		return scale;
 	}
 	/**
-	 * @param scale the scale to set
+	 * @param scale the round scale to set
 	 */
 	public void setScale(RoundScale scale) {
 		this.scale = scale;
@@ -326,6 +331,7 @@ public class RoundScaledRamp extends Figure {
 	
 	
 	/**
+	 * If gradient is true, the color will be displayed in gradient style
 	 * @param gradient the gradient to set
 	 */
 	public void setGradient(boolean gradient) {
@@ -410,33 +416,30 @@ public class RoundScaledRamp extends Figure {
 	/**
 	 * @param dirty the dirty to set
 	 */
-	public void setDirty(boolean dirty) {
+	private void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
 
+	/**
+	 * Hold the properties for each threshold.
+	 * @author Xihui Chen
+	 */
 	class ThresholdMarker {	
 		
 		private double value;		
 		private Color color;		
 		private boolean visible;
-		/**
-		 * Its  absolute degree position on the scale
-		 */
+		
+		/** Its  absolute degree position on the scale */
 		private int absolutePosition;
 		
-		/**
-		 * Its relative degree position on the scale
-		 */
+		/** Its relative degree position on the scale */
 		private int relativePosition;
 		
-		/**
-		 * The right overlap point. Only used for gradient
-		 */
+		/** The right overlap point. Only used for gradient */
 		private Point rightPoint;
 		
-		/**
-		 * The left overlap point. Only used for gradient
-		 */
+		/** The left overlap point. Only used for gradient */
 		private Point leftPoint;
 		
 		/**
@@ -446,7 +449,8 @@ public class RoundScaledRamp extends Figure {
 		 */
 		public ThresholdMarker(double value, RGB color, boolean visible) {
 			this.value = value;
-			this.color = CustomMediaFactory.getInstance().getColor(color);
+			if(color != null)
+				this.color = CustomMediaFactory.getInstance().getColor(color);
 			this.visible = visible;
 		}
 
