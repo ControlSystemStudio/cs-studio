@@ -52,19 +52,21 @@ public class JCATests
         {
             public void monitorChanged(MonitorEvent event)
             {
-                final DBR_TIME_Double value = (DBR_TIME_Double) event.getDBR();
-                final Channel source = (Channel)event.getSource();
-                System.out.format("%s: %s %f\n",
-                        source.getName(),
-                        value.getTimeStamp().toMMDDYY(),
-                        value.getDoubleValue()[0]);
+//                final DBR_TIME_Double value = (DBR_TIME_Double) event.getDBR();
+//                final Channel source = (Channel)event.getSource();
+//                System.out.format("%s: %s %f\n",
+//                        source.getName(),
+//                        value.getTimeStamp().toMMDDYY(),
+//                        value.getDoubleValue()[0]);
             }
         };
+        // When _not_ adding (and later clearing) a monitor, all was fine
+        // over time.
         final Monitor subscription = channel.addMonitor(DBRType.TIME_DOUBLE, 1, 1, monitor);        
         jca_context.flushIO();
 
         // Run
-        Thread.sleep(2 * 1000);
+        Thread.sleep(1 * 1000);
 
         // Cleanup. More or less
         subscription.clear();
@@ -87,15 +89,15 @@ public class JCATests
         }
     }
 
-    private static void dumpMeminfo()
+    private static void dumpMeminfo(final int run)
     {
         final double MB = 1024.0*1024.0;
         final double free = Runtime.getRuntime().freeMemory() / MB;
         final double total = Runtime.getRuntime().totalMemory() / MB;
         final double max = Runtime.getRuntime().maxMemory() / MB;
         
-        System.out.format("%s == JVM Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
-                format.format(new Date()), max, free, 100.0*free/max, total, 100.0*total/max);
+        System.out.format("%s = Run %d = JVM Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+                format.format(new Date()), run, max, free, 100.0*free/max, total, 100.0*total/max);
     }
 
     public static void main(String[] args) throws Exception
@@ -106,7 +108,7 @@ public class JCATests
         for (int i=0; i<TESTRUNS; ++i)
         {
             JCATests.run(PV_NAME);
-            dumpMeminfo();
+            dumpMeminfo(i);
         }
     }
 }
