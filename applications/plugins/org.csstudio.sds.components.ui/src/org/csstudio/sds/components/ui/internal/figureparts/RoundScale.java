@@ -128,12 +128,14 @@ public class RoundScale extends AbstractScale {
 
 	
     /**
-	 * Get the position of the value in radians. Which is the angular coordinate in the polar 
-	 * coordinate system, whose pole(the origin) is the center of the bounds.   
+	 * Get the position of the value in degrees. Which is the angular coordinate in the polar 
+	 * coordinate system, whose pole(the origin) is the center of the bounds, whose polar axis 
+	 * is from left to right on horizontal if relative is false.    
 	 * @param value the value to find its position. It would be coerced to the range of scale.
-	 * @return position in radians
+	 * @param relative the polar axs would be counterclockwisely rotated to the endAngle if true.
+	 * @return position in degrees
 	 */
-	public double getValuePosition(double value) {
+	public double getValuePosition(double value, boolean relative) {
 		//coerce to range
 		double min = getRange().lower;
         double max = getRange().upper;
@@ -150,11 +152,14 @@ public class RoundScale extends AbstractScale {
 		else			
 			valuePosition = startAngle - ((value - min)/(max-min)*lengthInDegrees);
 		
-		//convert to radians
-		valuePosition = valuePosition * Math.PI / 180.0;
+		//counterclockwisely rotate the axis to endAngle
+		if(relative)
+			valuePosition  -= endAngle;
+		
+		if(valuePosition < 0)
+			valuePosition += 360;
 		
 		return valuePosition;
-			
 	}
 
     @Override
