@@ -26,10 +26,18 @@ import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.CompoundBorder;
+import org.eclipse.draw2d.FocusBorder;
+import org.eclipse.draw2d.FrameBorder;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -79,7 +87,7 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
         filled = true;
         if (transparent == false) {
             gfx.setBackgroundColor(getBackgroundColor());
-            gfx.fillRectangle(getBounds());
+            gfx.fillOval(getBounds().getCropped(new Insets(border_width/2)));
         }
         gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(fill_color));
         gfx.fillArc(getBounds()
@@ -93,12 +101,14 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
     protected void outlineShape(Graphics gfx) {
         if (filled == false && transparent == false) {
             gfx.setBackgroundColor(getBackgroundColor());
-            gfx.fillRectangle(getBounds());
+            gfx.fillOval(getBounds().getCropped(new Insets(border_width/2)));
         }
         if (lineWidth > 0) {
             gfx.setLineWidth(lineWidth);
+            gfx.setLineCap(SWT.CAP_FLAT);
+            gfx.setLineJoin(SWT.JOIN_MITER);
             gfx.drawArc(getBounds().getCropped(
-                    new Insets(lineWidth / 2 + lineWidth % 2 + border_width)), start_angle, angle);
+                    new Insets(lineWidth / 2 - lineWidth % 2 + border_width)), start_angle, angle);
         }
         filled = false;
     }
@@ -122,7 +132,9 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
     public void setBorderWidth(final int newval) {
         border_width = newval;
         if (newval > 0) {
-            setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),
+//            setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),
+//                    border_width));
+            setBorder(new ArcBorder(CustomMediaFactory.getInstance().getColor(border_color),
                     border_width));
         } else {
             setBorder(null);
@@ -136,8 +148,10 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
     public void setBorderColor(final RGB newval) {
         border_color = newval;
         if (border_width > 0) {
-            setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),
+            setBorder(new ArcBorder(CustomMediaFactory.getInstance().getColor(border_color),
                     border_width));
+            // setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),
+            // border_width));
         } else {
             setBorder(null);
         }
@@ -183,5 +197,30 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
             return _borderAdapter;
         }
         return null;
+    }
+
+    private final class ArcBorder extends AbstractBorder {
+
+        private final Color _borderColor;
+        private final int _borderWidth;
+
+        public ArcBorder(Color borderColor, int borderWidth) {
+            _borderColor = borderColor;
+            _borderWidth = borderWidth;
+        }
+
+        public Insets getInsets(IFigure arg0) {
+            return new Insets(_borderWidth);
+        }
+
+        public void paint(IFigure arg0, Graphics gfx, Insets arg2) {
+            gfx.setBackgroundColor(_borderColor);
+            gfx.setForegroundColor(_borderColor);
+            gfx.setLineWidth(_borderWidth);
+            Rectangle bounds2 = new Rectangle(getBounds().x+_borderWidth/2,getBounds().y+_borderWidth/2,getBounds().width-_borderWidth,getBounds().height-_borderWidth);
+            gfx.drawOval(bounds2);
+
+        }
+
     }
 }
