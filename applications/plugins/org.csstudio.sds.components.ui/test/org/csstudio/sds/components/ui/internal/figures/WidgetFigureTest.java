@@ -16,6 +16,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Pattern;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -47,8 +48,9 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
+				GaugeTest testFigure = new GaugeTest(scaleBounds);
 				//AnyTest testFigure = new AnyTest(scaleBounds);				
-				RoundScaleTest testFigure = new RoundScaleTest(scaleBounds);
+				//RoundScaleTest testFigure = new RoundScaleTest(scaleBounds);
 				//XSliderFigureTest testFigure = new XSliderFigureTest(scaleBounds);
 				//TankFigureTest testFigure = new TankFigureTest(scaleBounds);
 				//ThermoFigureTest testFigure = new ThermoFigureTest(scaleBounds);
@@ -65,6 +67,30 @@ public class WidgetFigureTest {
 	      if (!display.readAndDispatch())
 	        display.sleep();
 	    }
+	}
+}
+
+
+
+
+class GaugeTest extends Figure {
+	
+	public GaugeTest(Rectangle bounds) {
+
+		RefreshableGaugeFigure gauge = new RefreshableGaugeFigure();	
+		gauge.setNeedleColor(CustomMediaFactory.COLOR_RED);
+		gauge.setValue(34.28);
+		gauge.setMaximum(100);
+		gauge.setBounds(bounds);		
+		gauge.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+				new RGB(127,127,127)));
+		//		new RGB(142,180,227)));
+
+		///gauge.setEffect3D(false);
+		gauge.setMaximum(60);
+		gauge.setGradient(false);
+		gauge.setForegroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE));
+		add(gauge);		
 	}
 }
 
