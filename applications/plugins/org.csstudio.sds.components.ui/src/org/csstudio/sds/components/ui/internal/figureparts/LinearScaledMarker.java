@@ -61,6 +61,12 @@ public class LinearScaledMarker extends Figure {
 		setFont(CustomMediaFactory.getInstance().getFont(CustomMediaFactory.FONT_TAHOMA));
 	}
 	
+	/**
+	 * @param dirty the dirty to set
+	 */
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
 	
 	/**
 	 * If the marker exists, set its value.
@@ -199,8 +205,10 @@ public class LinearScaledMarker extends Figure {
 	
 	@Override
 	public void setBounds(Rectangle rect) {
+		if(!bounds.equals(rect))
+			dirty = true;
 		super.setBounds(rect);
-		dirty = true;
+		
 	}
 	
 	/**

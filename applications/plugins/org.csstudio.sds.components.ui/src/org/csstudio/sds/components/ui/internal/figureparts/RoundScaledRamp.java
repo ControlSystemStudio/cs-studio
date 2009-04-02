@@ -57,7 +57,7 @@ public class RoundScaledRamp extends Figure {
 	}
 	
     @Override
-    public void setBounds(Rectangle rect) {
+    public void setBounds(Rectangle rect) {    
     	if(!bounds.equals(rect))
     		setDirty(true);    	
     	//get the square in the rect
@@ -78,7 +78,7 @@ public class RoundScaledRamp extends Figure {
      * update the the position for each threshold, and other parameters related to the positions.  
      */
     private void updateThresholdPosition(){
-    	if(dirty){      	
+    	if(dirty){   
     		//get normal value
     		double lowLimit;
     		double upLimit;
@@ -150,7 +150,11 @@ public class RoundScaledRamp extends Figure {
     	}
     	
     }
-    
+    @Override
+    protected void layout() {
+    	updateThresholdPosition();
+    	super.layout();
+    }
     @Override
     protected void paintClientArea(Graphics graphics) {
     	updateThresholdPosition();
@@ -243,10 +247,10 @@ public class RoundScaledRamp extends Figure {
     		
     	if(rightMarkerVisible)
     		graphics.fillArc(bounds, rightMarker.absolutePosition, 
-    				normal.relativePosition - rightMarker.relativePosition + overlap);
+    				normal.relativePosition - rightMarker.relativePosition + overlap + 1);
     	else
     		graphics.fillArc(bounds, max.absolutePosition, 
-    				normal.relativePosition - max.relativePosition);
+    				normal.relativePosition - max.relativePosition +1);
     	
     	if(gradient && rightMarkerVisible)
     		pattern.dispose();
@@ -336,6 +340,7 @@ public class RoundScaledRamp extends Figure {
 	 */
 	public void setGradient(boolean gradient) {
 		this.gradient = gradient;
+		setDirty(true);
 	}
 	
 	/**
@@ -416,7 +421,7 @@ public class RoundScaledRamp extends Figure {
 	/**
 	 * @param dirty the dirty to set
 	 */
-	private void setDirty(boolean dirty) {
+	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
 
