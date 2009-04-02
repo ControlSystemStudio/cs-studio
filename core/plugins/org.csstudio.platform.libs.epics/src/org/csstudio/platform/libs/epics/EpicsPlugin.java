@@ -66,7 +66,7 @@ public class EpicsPlugin extends Plugin
         {
             return mask;
         }
-    };
+    }
 
     private MonitorMask monitor_mask = MonitorMask.VALUE;
 	
