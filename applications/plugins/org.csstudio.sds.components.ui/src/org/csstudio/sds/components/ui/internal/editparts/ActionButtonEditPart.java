@@ -141,7 +141,6 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				// don't do anything.
 				if (getExecutionMode() != ExecutionMode.RUN_MODE
 						|| !figure.getModel().isArmed()) {
-				    performEditTextValue();
 					return;
 				}
 				
@@ -295,9 +294,13 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	            public void keyPressed(final KeyEvent e) {
 	                if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
 	                    getWidgetModel().setPropertyValue(ActionButtonModel.PROP_LABEL,text.getText());
+	                    result.deactivate();
+	                    result.dispose();
 	                } else if (e.keyCode == SWT.ESC) {
 	                    result.deactivate();
+	                    result.dispose();
 	                }
+	                
 	            }
 
 	        });
