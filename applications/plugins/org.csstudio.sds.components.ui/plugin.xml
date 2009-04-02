@@ -61,6 +61,10 @@
            class="org.csstudio.sds.components.ui.internal.editparts.ScaledSliderEditPart"
            typeId="org.csstudio.sds.components.ScaledSlider">
      </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.GaugeEditPart"
+           typeId="org.csstudio.sds.components.Gauge">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
