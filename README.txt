@@ -19,17 +19,16 @@ src/core/gov/aps/jca/jni/JNI.cpp, line 1112
   delete ((MonitorID*)monitorID);
   
 A caj-1.1.5b.jar is built from included sources.
-Sources were changed to turn debug="on".
+build.xml was changed to turn debug="on".
 
 Both CAJ and JCA seem to work on:
-Mac OS X 10.5 PPC
 Mac OS X 10.5 Intel
 RedHat Enterprise Linux client 5.2 (32-bit x86)
 Microsoft Windows XP Professional SP 2
 
 * Basic Build Instructions
 Set EPICS_BASE_RELEASE,  env.EPICS_EXTENSIONS, then:
-  cd some_place
+  cd to where org.csstudio.platform.libs.epics is located
   tar vzxf org.csstudio.platform.libs.epics/lib/jca-2.3.2.tgz
   cd jca-2.3.2
   ant
@@ -41,28 +40,29 @@ This creates two items of interest:
    lib/<OS>/<CPU> subdir.
 
 * Mac OS X binary
+Created on Intel OS X 10.5.6 with EPICS base R3.14.9
+
 The 'ant' build ends like this:
-  g++ -L/Kram/epics/R3.14.8.2/base/lib/darwin-ppc -lca -lCom -framework JavaVM \
-   -arch ppc -dynamiclib -Wl,-single_module \
-    -o /Kram/Eclipse/Workbench/jca-2.3.1/O.darwin-ppc/libjca.jnilib \
-    /Kram/Eclipse/Workbench/jca-2.3.1/O.darwin-ppc/JNI.o
+  g++ -L/Kram/epics/R3.14.9/base/lib/darwin-x86 -lca -lCom -framework JavaVM \
+   -arch i386 -dynamiclib -Wl,-single_module \
+   -o /Kram/Eclipse/Workspace/jca-2.3.2/O.darwin-x86/libjca.jnilib \
+   /Kram/Eclipse/Workspace/jca-2.3.2/O.darwin-x86/JNI.o
 
 ... which resulted in a shared library with further shared lib dependencies:
-otool -L O.darwin-ppc/libjca.jnilib 
-O.darwin-ppc/libjca.jnilib:
-        /Kram/epics/R3.14.8.2/base/lib/darwin-ppc/libca.3.14.8.dylib ...
-        /Kram/epics/R3.14.8.2/base/lib/darwin-ppc/libCom.3.14.8.dylib ...
+otool -L O.darwin-x86/libjca.jnilib 
+O.darwin-x86/libjca.jnilib:
+    ...
+    /Kram/epics/R3.14.9/base/lib/darwin-x86/libca.3.14.9.dylib ..
+    /Kram/epics/R3.14.9/base/lib/darwin-x86/libCom.3.14.9.dylib ...
+    ...
 
 Manually issuing the following command creates a JCA JNI lib with only
 "system" dependencies, no remaining EPICS shared lib dependecies:
 
-g++ -framework JavaVM -arch ppc -dynamiclib -Wl,-single_module \
-    -o /Kram/Eclipse/Workbench/jca-2.3.1/O.darwin-ppc/libjca.jnilib \
-     /Kram/Eclipse/Workbench/jca-2.3.1/O.darwin-ppc/JNI.o \
-     /Kram/epics/R3.14.8.2/base/lib/darwin-ppc/libCom.a \
-     /Kram/epics/R3.14.8.2/base/lib/darwin-ppc/libca.a 
-     
-Similar for Intel x86 macs where ppc turns into x86.
+LIB=/Kram/epics/R3.14.9/base/lib/darwin-x86
+g++ -framework JavaVM -arch i386 -dynamiclib -Wl,-single_module -o O.darwin-x86/libjca.jnilib \
+    O.darwin-x86/JNI.o $LIB/libCom.a $LIB/libca.a 
+
 
 * Linux X86 binary
 Created on Red Hat Enterprise Linux AS release 4 (Nahant Update 4)
