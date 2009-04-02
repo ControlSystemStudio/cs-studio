@@ -137,4 +137,22 @@ public class AbstractLinearMarkedFigure extends AbstractMarkedWidgetFigure {
 		super.setHihiColor(color);	
 		marker.setMarkerElementColor(HIHI, color);
 	}
+	
+	@Override
+	public void setMaximum(double maximum) {
+		super.setMaximum(maximum);
+		marker.setDirty(true);
+	}
+	
+	@Override
+	public void setMinimum(double minimum) {
+		super.setMinimum(minimum);
+		marker.setDirty(true);
+	}
+	
+	@Override
+	public void setLogScale(boolean logScale) {
+		super.setLogScale(logScale);
+		marker.setDirty(true);
+	}
 }
