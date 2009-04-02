@@ -13,10 +13,12 @@ jca-2.3.1.jar was built from the jca-2.3.1 sources with the following changes:
 - JNITargetArch.java checks for Mac OS X handled osarch="ppc" and "x86",
   but latest Intel Macs seem to report "i386", which is now handled as well.
   
-A caj-1.1.5.jar is included and used, but without sources because
-the CAS support in there is currently not fully funded.
-
-caj-1.1.3 jar is included with sources, but not actually used.
+jca-2.3.2.jar was built from the jca-2.3.2 sources with the following changes:
+src/core/gov/aps/jca/jni/JNI.cpp, line 1112
+  // KUK, Mar 31 2009: Leaked memory from ....addMonitor()
+  delete ((MonitorID*)monitorID);
+  
+A caj-1.1.5b.jar is built from included sources.
 Sources were changed to turn debug="on".
 
 Both CAJ and JCA seem to work on:
@@ -25,18 +27,18 @@ Mac OS X 10.5 Intel
 RedHat Enterprise Linux client 5.2 (32-bit x86)
 Microsoft Windows XP Professional SP 2
 
-
 * Basic Build Instructions
 Set EPICS_BASE_RELEASE,  env.EPICS_EXTENSIONS, then:
   cd some_place
-  tar vzxf org.csstudio.platform.libs.epics/lib/jca-2.3.1.tgz
-  cd jca-2.3.1
+  tar vzxf org.csstudio.platform.libs.epics/lib/jca-2.3.2.tgz
+  cd jca-2.3.2
   ant
   
 This creates two items of interest:
-1) Java library O.core/jca.jar
+1) Java library O.core/jca.jar, copy to jca-2.3.2.jar in plugin's lib subdir
 2) OS-specific JNI lib like O.linux-x86/libjca.so, which typically
-   should be re-linked as described below.
+   should be re-linked as described below and then placed into the corresponding
+   lib/<OS>/<CPU> subdir.
 
 * Mac OS X binary
 The 'ant' build ends like this:
@@ -75,3 +77,16 @@ LIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH
 g++ -shared -lpthread -lreadline  -lncurses -lm -lrt -Wl,-rpath,. -o libjca.so JNI.o $LIB/libca.a $LIB/libCom.a
 # Check:
 readelf -d libjca.so 
+
+
+
+* Building CAJ
+cd to directory that contains jca-2.3.2
+tar vzxf org.csstudio.platform.libs.epics/lib/caj-1.1.5b-src.tar.gz 
+cd caj-1.1.5b
+# Maybe edit build.xml, adjust this section:
+   <path id="build.classpath">
+        <pathelement location="../org.csstudio.platform.libs.epics/lib/jca-2.3.2.jar"/>
+   </path>
+ant
+cp target/caj.jar ../org.csstudio.platform.libs.epics/lib/caj-1.1.5b.jar
