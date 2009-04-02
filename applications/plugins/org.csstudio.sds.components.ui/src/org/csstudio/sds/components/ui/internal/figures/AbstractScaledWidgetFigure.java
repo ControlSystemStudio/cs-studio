@@ -2,7 +2,6 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
 import org.csstudio.sds.components.ui.internal.figureparts.AbstractScale;
-import org.csstudio.sds.components.ui.internal.figureparts.LinearScale;
 import org.csstudio.sds.components.ui.internal.figureparts.Range;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
@@ -40,7 +39,10 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	/** A border adapter, which covers all border handlings. */
 	private IBorderEquippedWidget _borderAdapter;
 	
-	
+	@Override
+	public boolean isOpaque() {
+		return false;
+	}
 	/**
 	 * {@inheritDoc}
 	 */
