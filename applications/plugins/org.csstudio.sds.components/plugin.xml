@@ -155,6 +155,13 @@
             name="Scaled Slider"
             typeId="org.csstudio.sds.components.ScaledSlider">
       </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.GaugeModelFactory"
+            description="Gauge"
+            icon="icons/gauge.gif"
+            name="Scaled Slider"
+            typeId="org.csstudio.sds.components.Gauge">
+      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">
