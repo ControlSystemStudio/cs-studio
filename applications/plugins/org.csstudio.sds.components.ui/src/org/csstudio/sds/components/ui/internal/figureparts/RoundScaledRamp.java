@@ -150,11 +150,7 @@ public class RoundScaledRamp extends Figure {
     	}
     	
     }
-    @Override
-    protected void layout() {
-    	updateThresholdPosition();
-    	super.layout();
-    }
+
     @Override
     protected void paintClientArea(Graphics graphics) {
     	updateThresholdPosition();
