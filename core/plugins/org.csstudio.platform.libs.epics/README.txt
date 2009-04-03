@@ -10,9 +10,8 @@ that uses the original EPICS libraries via JNI.
 .. is a pure Java implementation of the JCA API.
 
 Both CAJ and JCA seem to work on:
-Mac OS X 10.5 Intel
-RedHat Enterprise Linux client 5.2 (32-bit x86)
-Microsoft Windows XP Professional SP 2
+Mac OS X 10.5 Intel, Java 1.5 but not 1.6
+RedHat Enterprise Linux client 5.3 (32-bit x86)
 
 * Specific build instructions
 
@@ -38,7 +37,8 @@ This creates two items of interest:
    lib/<OS>/<CPU> subdir.
 
 - Mac OS X binary -
-Created on Intel OS X 10.5.6 with EPICS base R3.14.9
+Created on Intel OS X 10.5.6 with EPICS base R3.14.9 (with epicsExit.c fix),
+java 1.5.0_16.
 
 The 'ant' build ends like this:
   g++ -L/Kram/epics/R3.14.9/base/lib/darwin-x86 -lca -lCom -framework JavaVM \
@@ -57,10 +57,10 @@ O.darwin-x86/libjca.jnilib:
 Manually issuing the following command creates a JCA JNI lib with only
 "system" dependencies, no remaining EPICS shared lib dependecies:
 
-LIB=/Kram/epics/R3.14.9/base/lib/darwin-x86
+LIB=$EPICS_BASE_RELEASE/lib/$EPICS_HOST_ARCH
 g++ -framework JavaVM -arch i386 -dynamiclib -Wl,-single_module -o O.darwin-x86/libjca.jnilib \
     O.darwin-x86/JNI.o $LIB/libCom.a $LIB/libca.a 
-
+cp O.darwin-x86/libjca.jnilib ../org.csstudio.platform.libs.epics/lib/macosx/x86/libjca.jnilib
 
 - Linux X86 binary -
 Created on Red Hat Enterprise Linux AS release 4 (Nahant Update 6)
