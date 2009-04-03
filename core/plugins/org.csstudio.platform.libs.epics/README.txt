@@ -37,7 +37,7 @@ This creates two items of interest:
    should be re-linked as described below and then placed into the corresponding
    lib/<OS>/<CPU> subdir.
 
-Mac OS X binary
+- Mac OS X binary -
 Created on Intel OS X 10.5.6 with EPICS base R3.14.9
 
 The 'ant' build ends like this:
@@ -62,21 +62,22 @@ g++ -framework JavaVM -arch i386 -dynamiclib -Wl,-single_module -o O.darwin-x86/
     O.darwin-x86/JNI.o $LIB/libCom.a $LIB/libca.a 
 
 
-Linux X86 binary
-Created on Red Hat Enterprise Linux AS release 4 (Nahant Update 4)
-Linux 2.6.9-42.EL,
-g++ (GCC) 3.4.6 20060404 (Red Hat 3.4.6-3)
+- Linux X86 binary -
+Created on Red Hat Enterprise Linux AS release 4 (Nahant Update 6)
+2.6.9-67.0.7.ELsmp 
+g++ (GCC) 3.4.6 20060404 (Red Hat 3.4.6-9)
+with EPICS base R3.14.9 (with epicsExit.c fix),
+JDK 1.5.0_09.
 
-Similar to the OS X binary, the JNI lib was created without
-further dependencies on a shared EPICS base libraries:
+Similar to the OS X binary, the JNI lib was linked without
+further dependencies on shared EPICS base libraries:
 
 cd O.linux-x86
-LIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH
+LIB=$EPICS_BASE_RELEASE/lib/$EPICS_HOST_ARCH
 g++ -shared -lpthread -lreadline  -lncurses -lm -lrt -Wl,-rpath,. -o libjca.so JNI.o $LIB/libca.a $LIB/libCom.a
 # Check:
 readelf -d libjca.so 
-
-
+cp libjca.so ../../org.csstudio.platform.libs.epics/lib/linux/x86
   
 caj-1.1.5b.jar
 --------------
@@ -92,7 +93,6 @@ cd caj-1.1.5b
    </path>
 ant
 cp target/caj.jar ../org.csstudio.platform.libs.epics/lib/caj-1.1.5b.jar
-
 
 
 
