@@ -162,6 +162,13 @@
             name="Gauge"
             typeId="org.csstudio.sds.components.Gauge">
       </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.XMeterModelFactory"
+            description="Express Meter"
+            icon="icons/XMeter.gif"
+            name="Express Meter"
+            typeId="org.csstudio.sds.components.XMeter">
+      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">
