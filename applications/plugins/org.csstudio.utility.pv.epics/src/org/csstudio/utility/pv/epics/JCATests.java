@@ -25,7 +25,11 @@ public class JCATests
 {
     private static final String PV_NAME = "RFQ_Vac:Pump3:Pressure";
     private static final String ADDR_LIST = "160.91.230.38";
-    private static final int TESTRUNS = 10000;
+    
+    // Small number of test runs allows to check for "12 blocks" in valgrind output
+    // to locate blocks lost in every run of the loop.
+    // Bit number allows longer test.
+    private static final int TESTRUNS = 12;
 
     /** Set <code>true</code> to check for cleanup error. */
     private static final boolean CLEANUP = false;
@@ -34,6 +38,8 @@ public class JCATests
     
     final private static DateFormat format =
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    
+    private static int values = 0;
     
     /** Monitor given PV for some time. */
     static private void run(final String pv_name) throws Exception
@@ -52,6 +58,7 @@ public class JCATests
         {
             public void monitorChanged(MonitorEvent event)
             {
+            	++values;
 //                final DBR_TIME_Double value = (DBR_TIME_Double) event.getDBR();
 //                final Channel source = (Channel)event.getSource();
 //                System.out.format("%s: %s %f\n",
@@ -96,19 +103,28 @@ public class JCATests
         final double total = Runtime.getRuntime().totalMemory() / MB;
         final double max = Runtime.getRuntime().maxMemory() / MB;
         
-        System.out.format("%s = Run %d = JVM Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
-                format.format(new Date()), run, max, free, 100.0*free/max, total, 100.0*total/max);
+        System.out.format("%s = Run %d = %d values = JVM Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+                format.format(new Date()), run, values, max, free, 100.0*free/max, total, 100.0*total/max);
     }
 
     public static void main(String[] args) throws Exception
     {
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", ADDR_LIST);
         System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list", "true");
-        
-        for (int i=0; i<TESTRUNS; ++i)
+     
+        try
         {
-            JCATests.run(PV_NAME);
-            dumpMeminfo(i);
+	        for (int i=0; i<TESTRUNS; ++i)
+	        {
+	        	values = 0;
+	            JCATests.run(PV_NAME);
+	            dumpMeminfo(i);
+	            Runtime.getRuntime().gc();
+	        }
+        }
+        catch (Throwable ex)
+        {
+        	ex.printStackTrace();
         }
     }
 }
