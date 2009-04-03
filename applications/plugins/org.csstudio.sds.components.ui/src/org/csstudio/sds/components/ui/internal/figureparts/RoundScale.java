@@ -136,6 +136,7 @@ public class RoundScale extends AbstractScale {
 	 * @return position in degrees
 	 */
 	public double getValuePosition(double value, boolean relative) {
+		updateTick();
 		//coerce to range
 		double min = getRange().lower;
         double max = getRange().upper;
@@ -235,11 +236,11 @@ public class RoundScale extends AbstractScale {
     			lengthInDegrees = startAngle - endAngle;
     			lengthInPixels =(int) (2*Math.PI*radius*((startAngle-endAngle)/360));
     		}    	
-	    	tickLabels.update(lengthInDegrees, lengthInPixels);    
+	    	tickLabels.update(lengthInDegrees, lengthInPixels); 
 	    	
-	    	
+	    	setDirty(false);
     	}
-    	setDirty(false);
+    	
     }
 	
 	/**

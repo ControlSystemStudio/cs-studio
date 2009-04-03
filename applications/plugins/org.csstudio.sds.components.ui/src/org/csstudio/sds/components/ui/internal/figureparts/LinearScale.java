@@ -158,6 +158,7 @@ public class LinearScale extends AbstractScale {
 	 * @return position in pixels
 	 */
 	public int getValuePosition(double value, boolean relative) {
+		updateTick();
 		//coerce to range
 		double min = getRange().lower;
         double max = getRange().upper;
@@ -284,19 +285,11 @@ public class LinearScale extends AbstractScale {
 	    	length = isHorizontal() ? 
 	    			getClientArea().width: getClientArea().height;    		
 	    	if(length > 2*getMargin())
-	    		tickLabels.update(length-2*getMargin());    	
-    	}
-    	setDirty(false);
-    }
-	
-	/**
-     * Updates the tick layout.
-     
-    protected void updateLayoutData() {
-        axisTickLabels.updateLayoutData();
-        axisTickMarks.updateLayoutData();
-    }
-     */
+	    		tickLabels.update(length-2*getMargin());    
+	    	setDirty(false);
+    	}    	
+    }	
+
 	
 	@Override
 	protected boolean useLocalCoordinates() {
