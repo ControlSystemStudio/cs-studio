@@ -65,6 +65,10 @@
            class="org.csstudio.sds.components.ui.internal.editparts.GaugeEditPart"
            typeId="org.csstudio.sds.components.Gauge">
      </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.XMeterEditPart"
+           typeId="org.csstudio.sds.components.XMeter">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
