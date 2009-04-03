@@ -35,9 +35,7 @@ public class WidgetFigureTest {
 	public static void main(String[] args) {
 		final Shell shell = new Shell();
 		final LightweightSystem lws = new LightweightSystem(shell);
-		final Figure parent = new Figure();
-		parent.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-				 CustomMediaFactory.COLOR_WHITE));
+		final Figure parent = new Figure();		
 		parent.setLayoutManager(new XYLayout());
 		lws.setContents(parent);
 		 
@@ -48,7 +46,8 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
-				GaugeTest testFigure = new GaugeTest(scaleBounds);
+				XMeterTest testFigure = new XMeterTest(scaleBounds);
+				//GaugeTest testFigure = new GaugeTest(scaleBounds);
 				//AnyTest testFigure = new AnyTest(scaleBounds);				
 				//RoundScaleTest testFigure = new RoundScaleTest(scaleBounds);
 				//XSliderFigureTest testFigure = new XSliderFigureTest(scaleBounds);
@@ -67,6 +66,29 @@ public class WidgetFigureTest {
 	      if (!display.readAndDispatch())
 	        display.sleep();
 	    }
+	}
+}
+
+
+
+class XMeterTest extends Figure {
+	
+	public XMeterTest(Rectangle bounds) {
+
+		RefreshableXMeterFigure xMeter = new RefreshableXMeterFigure();	
+		xMeter.setNeedleColor(CustomMediaFactory.COLOR_RED);
+		xMeter.setValue(65);
+		//xMeter.setNeedleColor(CustomMediaFactory.COLOR_BLUE);
+		xMeter.setMaximum(100);
+		xMeter.setBounds(bounds);		
+		xMeter.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+				new RGB(255,255,255)));
+		//		new RGB(142,180,227)));
+
+		//xMeter.setEffect3D(false);
+		//xMeter.setGradient(false);
+		//xMeter.setForegroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE));
+		add(xMeter);		
 	}
 }
 
