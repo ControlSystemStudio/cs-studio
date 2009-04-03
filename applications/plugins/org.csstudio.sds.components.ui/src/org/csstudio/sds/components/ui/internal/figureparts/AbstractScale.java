@@ -179,7 +179,7 @@ public abstract class AbstractScale extends Figure{
 	/**
 	 * @return the dirty
 	 */
-	protected boolean isDirty() {
+	public boolean isDirty() {
 		return dirty;
 	}
 
