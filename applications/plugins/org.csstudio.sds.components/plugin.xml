@@ -159,7 +159,7 @@
             class="org.csstudio.sds.components.internal.model.GaugeModelFactory"
             description="Gauge"
             icon="icons/gauge.gif"
-            name="Scaled Slider"
+            name="Gauge"
             typeId="org.csstudio.sds.components.Gauge">
       </widgetModelFactory>
    </extension>
