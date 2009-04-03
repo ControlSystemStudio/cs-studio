@@ -1,34 +1,32 @@
 This plugin provides EPICS ChannelAccess libraries,
-and initializes their settings from Eclipse preferences.
+initializing their settings from Eclipse preferences.
+For GUI Applications, consider adding org.csstudio.platform.libs.epics.ui.
 
-For GUI Applications, consider adding
-org.csstudio.platform.libs.epics.ui.
+* JCA
+.. is the basic Java Channel Access API, including an implementation
+that uses the original EPICS libraries via JNI.
 
-jca-2.3.1.jar was built from the jca-2.3.1 sources with the following changes:
-- Updated ThreadSafeContext.java. Based on findings by Tom Pelaia and
-  Kay Kasemir, the pause() call in the run() loop was replaced by a blocking
-  queue. The original implementation would be quite slow on fast CPUs(!)
-  because the code would sit in pause() instead of handling requests.
-  Now it wakes immediately when new requests arrive.
-- JNITargetArch.java checks for Mac OS X handled osarch="ppc" and "x86",
-  but latest Intel Macs seem to report "i386", which is now handled as well.
-  
-jca-2.3.2.jar was built from the jca-2.3.2 sources with the following changes:
-src/core/gov/aps/jca/jni/JNI.cpp, line 1112
-  // KUK, Mar 31 2009: Leaked memory from ....addMonitor()
-  delete ((MonitorID*)monitorID);
-  
-A caj-1.1.5b.jar is built from included sources.
-build.xml was changed to turn debug="on".
+* CAJ
+.. is a pure Java implementation of the JCA API.
 
 Both CAJ and JCA seem to work on:
 Mac OS X 10.5 Intel
 RedHat Enterprise Linux client 5.2 (32-bit x86)
 Microsoft Windows XP Professional SP 2
 
-* Basic Build Instructions
-Set EPICS_BASE_RELEASE,  env.EPICS_EXTENSIONS, then:
-  cd to where org.csstudio.platform.libs.epics is located
+* Specific build instructions
+
+jca-2.3.2.jar
+-------------
+Built from jca-2.3.2 sources with the following changes:
+src/core/gov/aps/jca/jni/JNI.cpp, line 1112
+  // KUK, Mar 31 2009: Leaked memory from ....addMonitor()
+  delete ((MonitorID*)monitorID);
+
+Set EPICS_BASE_RELEASE, HOST_ARCH, EPICS_HOST_ARCH as required to build
+EPICS base.
+
+  cd where-org.csstudio.platform.libs.epics-is-located
   tar vzxf org.csstudio.platform.libs.epics/lib/jca-2.3.2.tgz
   cd jca-2.3.2
   ant
@@ -39,7 +37,7 @@ This creates two items of interest:
    should be re-linked as described below and then placed into the corresponding
    lib/<OS>/<CPU> subdir.
 
-* Mac OS X binary
+Mac OS X binary
 Created on Intel OS X 10.5.6 with EPICS base R3.14.9
 
 The 'ant' build ends like this:
@@ -64,7 +62,7 @@ g++ -framework JavaVM -arch i386 -dynamiclib -Wl,-single_module -o O.darwin-x86/
     O.darwin-x86/JNI.o $LIB/libCom.a $LIB/libca.a 
 
 
-* Linux X86 binary
+Linux X86 binary
 Created on Red Hat Enterprise Linux AS release 4 (Nahant Update 4)
 Linux 2.6.9-42.EL,
 g++ (GCC) 3.4.6 20060404 (Red Hat 3.4.6-3)
@@ -79,8 +77,12 @@ g++ -shared -lpthread -lreadline  -lncurses -lm -lrt -Wl,-rpath,. -o libjca.so J
 readelf -d libjca.so 
 
 
+  
+caj-1.1.5b.jar
+--------------
+Built from included sources, where
+build.xml was changed to turn debug="on".
 
-* Building CAJ
 cd to directory that contains jca-2.3.2
 tar vzxf org.csstudio.platform.libs.epics/lib/caj-1.1.5b-src.tar.gz 
 cd caj-1.1.5b
@@ -90,3 +92,18 @@ cd caj-1.1.5b
    </path>
 ant
 cp target/caj.jar ../org.csstudio.platform.libs.epics/lib/caj-1.1.5b.jar
+
+
+
+
+
+Older stuff:
+jca-2.3.1.jar was built from the jca-2.3.1 sources with the following changes:
+- Updated ThreadSafeContext.java. Based on findings by Tom Pelaia and
+  Kay Kasemir, the pause() call in the run() loop was replaced by a blocking
+  queue. The original implementation would be quite slow on fast CPUs(!)
+  because the code would sit in pause() instead of handling requests.
+  Now it wakes immediately when new requests arrive.
+- JNITargetArch.java checks for Mac OS X handled osarch="ppc" and "x86",
+  but latest Intel Macs seem to report "i386", which is now handled as well.
+  
