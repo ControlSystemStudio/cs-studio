@@ -17,7 +17,20 @@ import java.util.Date;
  *  <p>
  *  Must set LD_LIBRARY_PATH to locate JCA lib,
  *  since this is running outside of a plugin.
+ *  <p>
+ *  Can be run from the command line within the plugin directory
+ *  like this:
+ *  
+ *  OS X:
+ *  DYLD_LIBRARY_PATH=../org.csstudio.platform.libs.epics/lib/macosx/x86 \
+ *  java -classpath ../org.csstudio.platform.libs.epics/lib/jca-2.3.2.jar:bin \
+ *   org.csstudio.utility.pv.epics.JCATests
  *
+ *  Linux:
+ *  LD_LIBRARY_PATH=../org.csstudio.platform.libs.epics/lib/linux/x86 \
+ *  java -classpath ../org.csstudio.platform.libs.epics/lib/jca-2.3.2.jar:bin \
+ *   org.csstudio.utility.pv.epics.JCATests
+ * 
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -29,7 +42,7 @@ public class JCATests
     // Small number of test runs allows to check for "12 blocks" in valgrind output
     // to locate blocks lost in every run of the loop.
     // Bit number allows longer test.
-    private static final int TESTRUNS = 12;
+    private static final int TESTRUNS = 50000;
 
     /** Set <code>true</code> to check for cleanup error. */
     private static final boolean CLEANUP = false;
