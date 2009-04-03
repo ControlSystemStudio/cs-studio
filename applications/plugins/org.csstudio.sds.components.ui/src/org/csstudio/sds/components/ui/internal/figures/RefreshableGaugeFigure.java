@@ -256,7 +256,6 @@ public class RefreshableGaugeFigure extends AbstractRoundRampedFigure {
 		}
 
 
-		@Override
 		public void layout(IFigure container) {
 			Rectangle area = container.getClientArea();
 			
