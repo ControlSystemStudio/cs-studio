@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Font;
  */
 public class RoundScale extends AbstractScale {
 	
-	public static final int SPACE_BTW_MARK_LABEL = 3;
+	public static final int SPACE_BTW_MARK_LABEL = 1;
     
     
     /** the scale tick labels */
@@ -295,7 +295,15 @@ public class RoundScale extends AbstractScale {
 	/**
 	 * @return the radius
 	 */
-	public int getRadius() {
+	public int getRadius() {			
+		return radius;
+	}
+	
+	/**
+	 * @return the inner radius for a primary tick label side scale.  
+	 */
+	public int getInnerRadius() {		
+		updateTick();
 		return radius;
 	}
 }

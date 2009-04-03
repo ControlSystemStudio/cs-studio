@@ -27,7 +27,7 @@ public class RoundScaleTickMarks extends Figure {
     protected static final int MINOR_LINE_WIDTH = 1;
 
     /** the major tick length */
-    public static final int MAJOR_TICK_LENGTH = 10;
+    public static final int MAJOR_TICK_LENGTH = 8;
     /** the minor tick length */
     public static final int MINOR_TICK_LENGTH = 5;
 
