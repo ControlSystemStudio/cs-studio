@@ -265,10 +265,10 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	}
 	
 	class Track extends RectangleFigure {		
-		public static final int TRACK_BREADTH = 8;
+		public static final int TRACK_BREADTH = 6;
 		public Track() {
 			super();
-			setOutline(true);
+			setOutline(false);
 			setForegroundColor(GRAY_COLOR);
 			Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
 			setCursor(handCursor);
@@ -297,7 +297,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			
 			graphics.setAntialias(SWT.ON);			
 			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
-			if(effect3D) {				
+			if(effect3D) {		
+				setOutline(false);
 				//fill background
 				graphics.setBackgroundColor(fillBackgroundColor);
 				super.fillShape(graphics);
@@ -315,7 +316,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 						WHITE_COLOR, 255,
 						fillBackgroundColor, 0);
 				graphics.setBackgroundPattern(backGroundPattern);
-				super.fillShape(graphics);				
+				super.fillShape(graphics);
+				graphics.setForegroundColor(fillBackgroundColor);
+				outlineShape(graphics);
 				backGroundPattern.dispose();
 				
 				//fill value
@@ -333,6 +336,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 						fillColor, 0);
 				
 				graphics.setBackgroundColor(fillColor);
+				graphics.setForegroundColor(fillColor);
 				if(horizontal){
 					int fillWidth = valuePosition - bounds.x;				
 					graphics.fillRectangle(new Rectangle(bounds.x,
@@ -340,6 +344,13 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					graphics.setBackgroundPattern(backGroundPattern);
 					graphics.fillRectangle(new Rectangle(bounds.x,
 						bounds.y, fillWidth, bounds.height));
+					
+					graphics.drawRectangle(new Rectangle(bounds.x + lineWidth / 2,
+						bounds.y + lineWidth / 2, 
+						fillWidth - Math.max(1, lineWidth),
+						bounds.height - Math.max(1, lineWidth)));
+					
+					
 				}else {
 					int fillHeight = bounds.height - (valuePosition - bounds.y) - getLineWidth();				
 					graphics.fillRectangle(new Rectangle(bounds.x,
@@ -347,12 +358,20 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					graphics.setBackgroundPattern(backGroundPattern);
 					graphics.fillRectangle(new Rectangle(bounds.x,
 						valuePosition, bounds.width, fillHeight));
+					
+					graphics.drawRectangle(new Rectangle(bounds.x + lineWidth / 2,
+						valuePosition+ lineWidth / 2, 
+						bounds.width- Math.max(1, lineWidth),
+						fillHeight - Math.max(1, lineWidth)));
 				}		
 				
 				backGroundPattern.dispose();
 				
 				
+				
+				
 			}else {
+				setOutline(true);
 				graphics.setBackgroundColor(fillBackgroundColor);
 				super.fillShape(graphics);				
 				graphics.setBackgroundColor(fillColor);
