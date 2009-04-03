@@ -296,16 +296,25 @@ public class RoundScaleTickLabels extends Figure {
     private void updateTickLabelMaxOutLength() {
        	int minLeft = 0;
     	int maxRight =0;
+    	int minUp = 0;
+    	int maxDown =0;
     	int i=0;
     	for(Rectangle rect : tickLabelAreas) {
     		if (rect.x < minLeft)
     			minLeft = rect.x;
     		if(rect.x + rect.width > maxRight)
     			maxRight = rect.x + rect.width;
+    		if(rect.y < minUp )
+    			minUp = rect.y;
+    		if(rect.y + rect.height > maxDown)
+    			maxDown = rect.y + rect.height;    		
     		i++;
     	}
     	
-    	tickLabelMaxOutLength = Math.max(maxRight - scale.getBounds().width, -minLeft);
+    	tickLabelMaxOutLength = Math.max(
+    			Math.max(maxRight - scale.getBounds().width, -minLeft),
+    			Math.max(maxDown - scale.getBounds().height, -minUp));
+    	
     }
 
     /**
