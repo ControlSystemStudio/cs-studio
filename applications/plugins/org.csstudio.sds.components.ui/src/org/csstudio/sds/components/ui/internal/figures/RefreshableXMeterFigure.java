@@ -165,7 +165,6 @@ public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
 		}
 
 
-		@Override
 		public void layout(IFigure container) {
 			Rectangle area = container.getClientArea();	
 			// calculate a virtual area
