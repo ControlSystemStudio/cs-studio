@@ -2,8 +2,8 @@ package org.csstudio.display.pace.gui;
 
 import java.util.ArrayList;
 
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.display.pace.Messages;
 import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Column;

@@ -1,7 +1,7 @@
 package org.csstudio.diag.rack.gui;
 
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.diag.rack.model.RackModel;
 import org.csstudio.diag.rack.model.RackModelListener;
@@ -150,7 +150,7 @@ public class GUI implements RackModelListener
         AutoSizeColumn.make(device_table_widget, "Begin", 40, 10);
         AutoSizeColumn.make(device_table_widget, "End", 40, 10);
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(DeviceContents, device_table_widget);
+        new AutoSizeControlListener(device_table_widget);
 
         // TableViewer interface the plain device_table_widget
         // to our "model":

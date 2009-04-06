@@ -1,7 +1,7 @@
 package org.csstudio.diag.pvutil.gui;
 
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.diag.pvutil.model.PVUtilModel;
 import org.csstudio.diag.pvutil.model.PVUtilListener;
 import org.eclipse.jface.viewers.ListViewer;
@@ -166,7 +166,7 @@ public class GUI implements PVUtilListener
         AutoSizeColumn.make(device_table_widget, "Process Variable", 200, 100);
         AutoSizeColumn.make(device_table_widget, "Info", 210, 50);
         // Configure table to auto-size the columns
-        new AutoSizeControlListener(container, device_table_widget);
+        new AutoSizeControlListener(device_table_widget);
 
         // TableViewer interface the plain device_table_widget
         // to our "model":
