@@ -271,17 +271,19 @@ public class InterconnectionServer
 		
         try
         {
-            serverSocket = new DatagramSocket( dataPortNum );
+        	CentralLogger.getInstance().info(this, "IC-Server trying to initialize UDP socket. Port: " + dataPortNum);
+        	serverSocket = new DatagramSocket( dataPortNum );
         }
         catch(IOException ioe)
         {
-        	System.out.println(NAME + " ** ERROR ** : Socket konnte nicht initialisiert werden. Port: " + dataPortNum);
+        	System.out.println(NAME + " ** ERROR ** : Could not initialize UDP socket. Port: " + dataPortNum);
         	System.out.println("\n" + NAME + " *** EXCEPTION *** : " + ioe.getMessage());
+        	CentralLogger.getInstance().info(this, "IC-Server Could not initialize UDP socket. Port: " + dataPortNum);
             
             return;
         }
     
-        CentralLogger.getInstance().info(this, "IC-Server starting to receive messages.");
+        CentralLogger.getInstance().info(this, "IC-Server starting to receive messages from Port: " + dataPortNum);
         while(!isQuit())
         {
         	/*
