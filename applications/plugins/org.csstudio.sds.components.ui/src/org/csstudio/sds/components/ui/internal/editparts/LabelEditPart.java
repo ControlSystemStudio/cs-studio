@@ -141,7 +141,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(LabelModel.PROP_PRECISION, precisionHandler);
 		// aliases
 		IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
-			@SuppressWarnings("unchecked")
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
@@ -152,7 +151,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(LabelModel.PROP_ALIASES, aliasHandler);
 		// primary pv
 		IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
-			@SuppressWarnings("unchecked")
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
