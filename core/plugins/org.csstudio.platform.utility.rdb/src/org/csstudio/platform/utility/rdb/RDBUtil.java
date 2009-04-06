@@ -214,17 +214,18 @@ abstract public class RDBUtil
 		try
 		{
 		    if (autoReconnect)
-		    {
 		    	test_query.close();
-		    	test_query = null;
-			}
 			connection.close();
-			connection = null;
 		}
 		catch (SQLException ex)
 		{
 			//simply discard this exception since in most cases,
 			//this method is called due to connection lost.
+		}
+		finally
+		{
+            test_query = null;
+            connection = null;
 		}
 	}
 
