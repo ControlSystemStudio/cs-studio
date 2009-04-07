@@ -41,10 +41,10 @@ public class RoundScale extends AbstractScale {
     /** The estimated donut width which is used calculate the radius. */
     private int estimatedDonutWidth;
     
-    /** the start angle of the scale, which is the angle position of minimum */
+    /** the start angle of the scale in degrees, which is the angle position of minimum */
     private double startAngle = 225;
         
-    /** the end angle of the scale, which is the angle position of maximum.
+    /** the end angle of the scale in degrees, which is the angle position of maximum.
      * The end angle is in the clockwise of startAngle. */
     private double endAngle = 315;
     
@@ -153,7 +153,7 @@ public class RoundScale extends AbstractScale {
 		else			
 			valuePosition = startAngle - ((value - min)/(max-min)*lengthInDegrees);
 		
-		//counterclockwisely rotate the axis to endAngle
+		//rotate the axis to endAngle
 		if(relative)
 			valuePosition  -= endAngle;
 		
