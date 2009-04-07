@@ -11,7 +11,12 @@ that uses the original EPICS libraries via JNI.
 
 Both CAJ and JCA seem to work on:
 Mac OS X 10.5 Intel, Java 1.5 but not 1.6
-RedHat Enterprise Linux client 5.3 (32-bit x86)
+RedHat Enterprise Linux client 5.3 and WS release 4 (32-bit x86)
+
+Not updated at this time:
+Win32,
+Mac OS PPC,
+Linux x86_64
 
 * Specific build instructions
 
