@@ -2,6 +2,7 @@ package org.csstudio.platform.security;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -50,16 +51,28 @@ public class SecureStorage
     	try
     	{
             final URL url = getStorageURL();
-            // This code went through several iterations:
             // Check if the file exists.
-            // URL should start with "file:...", but then unclear:
-            // File.separator could be '/' or '\',
-            // there could be spaces in the path.
-            // From the basic API, URL.toURI() gives an URI and File(URI ...)
-            // is a matching constructor, but unclear if it really works
-            // out in all cases on all operating systems.
-            final File file = new File(url.toURI());
-    		if (file.exists())
+            // This code went through several iterations because of issues
+            // with URL, URI and File, see also
+            // http://weblogs.java.net/blog/kohsuke/archive/2007/04/how_to_convert.html
+            File file;
+            try
+            {
+                // In principle, the API is clear: URL -> URI, then use the
+                // matching File(URI) constructor.
+                // The URL may contain spaces as '%20', and this converts
+                // them to plain spaces.
+                // But it fails with URLs like
+                // "file:///c:/Some Path/Some File"
+                file = new File(url.toURI());
+            }
+            catch (URISyntaxException e)
+            {   
+                // ... in which case using the 'Path' (stuff after "file:")
+                // works out:
+                file = new File(url.getPath());
+            }
+            if (file.exists())
     		{
 	        	final ISecurePreferences root = SecurePreferencesFactory.open(url, null);
 	    		if (root != null)
