@@ -12,7 +12,8 @@ import org.eclipse.equinox.security.storage.provider.PasswordProvider;
  *  @author Xihui Chen
  */
 public class SNSPasswordProvider extends PasswordProvider {
-	@Override
+	@SuppressWarnings("nls")
+    @Override
 	public PBEKeySpec getPassword(IPreferencesContainer container,
 			int passwordType) {	
 		//the master password cannot include spaces
