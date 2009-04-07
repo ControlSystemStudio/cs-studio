@@ -3,6 +3,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.Calendar;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.components.ui.internal.figureparts.Bulb;
 import org.csstudio.sds.components.ui.internal.figureparts.Range;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp;
@@ -46,7 +47,10 @@ public class WidgetFigureTest {
 						0, shell.getBounds().width, shell.getBounds().height);
 				Rectangle scaleBounds = new Rectangle(10,
 						10, shell.getBounds().width-50, shell.getBounds().height-50);
-				XMeterTest testFigure = new XMeterTest(scaleBounds);
+				
+				KnobTest testFigure = new KnobTest(scaleBounds);
+				//BulbTest testFigure = new BulbTest(scaleBounds);
+				//XMeterTest testFigure = new XMeterTest(scaleBounds);				
 				//GaugeTest testFigure = new GaugeTest(scaleBounds);
 				//AnyTest testFigure = new AnyTest(scaleBounds);				
 				//RoundScaleTest testFigure = new RoundScaleTest(scaleBounds);
@@ -66,6 +70,52 @@ public class WidgetFigureTest {
 	      if (!display.readAndDispatch())
 	        display.sleep();
 	    }
+	}
+}
+
+
+
+
+class KnobTest extends Figure {
+	
+	public KnobTest(Rectangle bounds) {
+
+		KnobFigure knob = new KnobFigure();	
+		//knob.setBulbColor(CustomMediaFactory.COLOR_GREEN);
+		knob.setValue(10);
+		knob.setMaximum(100);
+		knob.setBounds(bounds);		
+		//knob.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+		//		new RGB(127,127,127)));
+		//		new RGB(142,180,227)));
+
+		//knob.setEffect3D(false);
+		//	knob.setMaximum(60);
+		//knob.setGradient(false);
+		//knob.setLogScale(true);
+		knob.setThumbColor(new RGB(127, 127, 127));
+		knob.setForegroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK));
+		add(knob);		
+	}
+}
+
+
+class BulbTest extends Figure {
+	
+	public BulbTest(Rectangle bounds) {
+
+		Bulb bulb = new Bulb();	
+		bulb.setBounds(bounds);		
+		bulb.setBulbColor(CustomMediaFactory.COLOR_GRAY);
+		add(bulb);		
+	}
+	
+	@Override
+	protected void paintFigure(Graphics graphics) {
+		graphics.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+				CustomMediaFactory.COLOR_GRAY));
+		//graphics.fillRectangle(bounds);
+		super.paintFigure(graphics);
 	}
 }
 

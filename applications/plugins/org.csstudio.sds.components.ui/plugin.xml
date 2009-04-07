@@ -69,6 +69,10 @@
            class="org.csstudio.sds.components.ui.internal.editparts.XMeterEditPart"
            typeId="org.csstudio.sds.components.XMeter">
      </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.KnobEditPart"
+           typeId="org.csstudio.sds.components.Knob">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

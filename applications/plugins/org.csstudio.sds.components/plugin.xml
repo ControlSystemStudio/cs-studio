@@ -151,7 +151,7 @@
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.ScaledSliderModelFactory"
             description="Scaled Slider"
-            icon="icons/ScaledSlider.gif"
+            icon="icons/scaled_slider.gif"
             name="Scaled Slider"
             typeId="org.csstudio.sds.components.ScaledSlider">
       </widgetModelFactory>
@@ -168,6 +168,13 @@
             icon="icons/XMeter.gif"
             name="Express Meter"
             typeId="org.csstudio.sds.components.XMeter">
+      </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.KnobModelFactory"
+            description="Knob"
+            icon="icons/knob.gif"
+            name="Knob"
+            typeId="org.csstudio.sds.components.Knob">
       </widgetModelFactory>
    </extension>
    <extension
