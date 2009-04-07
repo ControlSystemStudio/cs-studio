@@ -3,6 +3,12 @@ package org.csstudio.sds.components.ui.internal.figureparts;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
+/**
+ * A polar point in a standard polar coordinates system.
+ * 
+ * @author Xihui Chen
+ *
+ */
 public class PolarPoint {
 	
 	/**
@@ -71,4 +77,38 @@ public class PolarPoint {
 	}
 	
 	
+	/**
+	 * convert a point to polar point
+	 * @param pole the pole of the polar coordinate system.
+	 * @param point the point to be converted
+	 * @return the corresponding polar point.
+	 */
+	public static PolarPoint point2PolarPoint(Point pole, Point point) {
+		int x = point.x - pole.x;
+		int y = point.y - pole.y;
+		
+		double r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		
+		double theta = Math.acos((double)x/r);
+		if(y >0)
+			theta = 2*Math.PI - theta;
+		return new PolarPoint((int) r, theta);
+	}
+	
+	/**rotate the x axis of the polar coordinate system to the axisDirection
+	 * @param axisDirection the direction of the new axis
+	 * @param inRadians true if the axisDirection is in radians, false if in degrees.
+	 */
+	public void rotateAxis(double axisDirection, boolean inRadians) {
+		if(!inRadians)
+			axisDirection = axisDirection * Math.PI/180.0;
+		theta -= axisDirection;
+		if(theta < 0) 
+			theta += 2*Math.PI;
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + r + ", " + theta * 180.0/Math.PI + ")";
+	}
 }
