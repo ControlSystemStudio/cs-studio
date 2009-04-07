@@ -175,6 +175,7 @@ public class EpicsPlugin extends Plugin
                 prefs.getString(ID, PreferenceConstants.MONITOR, "VALUE", null));
 	        
 	        // Set the 'CAJ' and 'JNI' copies of the settings
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.use_pure_java", Boolean.toString(use_pure_java));
 	        final String addr_list =
 	            prefs.getString(ID, PreferenceConstants.ADDR_LIST, null, null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
