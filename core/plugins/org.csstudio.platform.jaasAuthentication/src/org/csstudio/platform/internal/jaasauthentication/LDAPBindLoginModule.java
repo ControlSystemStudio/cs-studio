@@ -124,8 +124,8 @@ public class LDAPBindLoginModule implements LoginModule
         // Check user against password to verify that it's indeed
         // the claimed user
         if (debug)
-            System.out.println("LDAPBindLoginModule: '" + user_pw[0] + "', '" +
-                    user_pw[1] + "'");
+            System.out.println("LDAPBindLoginModule: '" + user_pw[0] +
+                    "', password with " + user_pw[1].length() + " characters");
         if (authenticate(user_pw[0], user_pw[1]))
         {
             user = user_pw[0];
