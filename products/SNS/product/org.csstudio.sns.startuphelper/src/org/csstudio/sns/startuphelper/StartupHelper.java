@@ -71,29 +71,26 @@ public class StartupHelper {
 	}
 
 	
-	public boolean openStartupDialog(){
+	@SuppressWarnings("nls")
+    public boolean openStartupDialog(){
 		if(username == null) {
 			username = WorkspaceIndependentStore.readLastLoginUser();
-			password = ""; //$NON-NLS-1$
+			password = "";
 		}
 		
-		String bullet = ""; //$NON-NLS-1$
-		if(show_Login && show_Workspace)
-			bullet = String.valueOf((char)7);
-		
-		String title="", message=""; //$NON-NLS-1$ //$NON-NLS-2$
+		String title="", message="";
 		if(show_Login) {
 			title += Messages.StartupHelper_Login;
-			message += bullet + Messages.StartupHelper_LoginTip;
+			message += Messages.StartupHelper_LoginTip;
 		}
 		if(show_Workspace) {			
 						
-			if(!title.equals("")) //$NON-NLS-1$
+			if(!title.equals(""))
 				title += Messages.StartupHelper_And;
-			if(!message.equals("")) //$NON-NLS-1$
-				message += "\n"; //$NON-NLS-1$
+			if(!message.equals(""))
+				message += "\n";
 			title += Messages.StartupHelper_SelectWorkspace;
-			message += bullet + NLS.bind(
+			message += NLS.bind(
 					Messages.StartupHelper_SelectWorkspaceTip,
 					productName);			
 		}
@@ -108,7 +105,6 @@ public class StartupHelper {
 			this.password = startupDialog.getPassword();
 		}
 		return true;
-		
 	}
 	
 	/**
