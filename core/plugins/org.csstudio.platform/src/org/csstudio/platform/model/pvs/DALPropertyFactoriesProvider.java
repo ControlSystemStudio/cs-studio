@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.dal.CssApplicationContext;
+import org.csstudio.platform.CSSPlatformPlugin;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.spi.DefaultPropertyFactoryService;
 import org.epics.css.dal.spi.LinkPolicy;
@@ -91,6 +94,17 @@ public final class DALPropertyFactoriesProvider {
 			PropertyFactory result = _propertyFactories.get(controlSystem);
 
 			if (result == null) {
+				
+				final IPreferencesService prefs = Platform.getPreferencesService();
+	            if (prefs.getBoolean("org.csstudio.platform.libs.epics", "use_pure_java", true, null)) {
+					_applicationContext.getConfiguration().setProperty("EPICSPlug.use_jni", "false");
+	            } else {
+					_applicationContext.getConfiguration().setProperty("EPICSPlug.use_jni", "true");
+	            }
+	            
+	            //System.out.println(_applicationContext.getConfiguration());
+
+				
 				result = DefaultPropertyFactoryService
 						.getPropertyFactoryService().getPropertyFactory(
 								_applicationContext,
