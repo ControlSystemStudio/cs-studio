@@ -269,6 +269,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 						Exception error = event.getResponse().getError();
 						String errorMsg = error != null ? error.getMessage() : "Unknown Error!";
 						listener.errorOccured(errorMsg);
+
+						printDebugInfo("AGET-ERROR : " + error +"  (" + event.getResponse().toString() + ")");
 					}
 
 					public void responseReceived(ResponseEvent event) {
@@ -281,6 +283,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 
 				};
 
+				printDebugInfo("GET ASYNC");
+				
 				_dalProperty.getAsynchronous(responseListener);
 			} else {
 				listener.errorOccured("Internal error. No connection available.");
@@ -302,6 +306,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		Object result = null;
 		// ... try to read the value
 		if (_dalProperty != null) {
+			printDebugInfo("GET SYNC");
 			result = _dalProperty.getValue();
 		}
 
@@ -481,7 +486,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 						String errorMsg = error != null ? error.getMessage() : "Unknown Error!";
 						listener.errorOccured(errorMsg);
 
-						printDebugInfo("AGET-ERROR: " + error);
+						printDebugInfo("AGET-ERROR ["+characteristicId+"] : " + error +"  (" + event.getResponse().toString() + ")");
 					}
 
 					public void responseReceived(ResponseEvent event) {
@@ -493,6 +498,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 					}
 
 				};
+
+				printDebugInfo("GET ASYNC ["+characteristicId+"]");
 
 				_dalProperty.getCharacteristicAsynchronously(characteristicId, responseListener);
 			} else {
@@ -515,6 +522,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		if (_dalProperty != null) {
 			waitTillConnected(3000);
 
+			printDebugInfo("GET SYNC ["+characteristicId+"]");
+			
 			result = EpicsUtil.getCharacteristic(characteristicId, _dalProperty, getValueType());
 		}
 
