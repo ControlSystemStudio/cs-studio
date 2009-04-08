@@ -186,7 +186,10 @@ public class LDAPBindLoginModule implements LoginModule
         catch (NamingException ex)
         {
             if (debug)
-                System.out.println("Bind failed: " + ex.getMessage());
+            {
+                System.out.println("Bind failed:");
+                ex.printStackTrace();
+            }
             return false;
         }
     }
