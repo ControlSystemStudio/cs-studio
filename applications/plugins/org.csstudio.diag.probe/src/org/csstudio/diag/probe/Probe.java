@@ -281,7 +281,7 @@ public class Probe extends ViewPart implements PVListener
     /** Construct GUI. */
     private void createGUI(final Composite parent)
     {
-        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
+        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         final FormLayout layout = new FormLayout();
         parent.setLayout(layout);
 
