@@ -32,11 +32,11 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
+import org.csstudio.alarm.jms2ora.util.Hostname;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
 import org.csstudio.alarm.jms2ora.util.MessageReceiver;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.alarm.jms2ora.util.SimpleStatistic;
 import org.csstudio.platform.statistic.Collector;
 
 /**
@@ -89,10 +89,7 @@ public class MessageProcessor extends Thread implements MessageListener
     
     /** Reads and holds the configuration stored in the confid file */
     private PropertiesConfiguration config = null;
-    
-    /** A very simple statistic class */
-    private SimpleStatistic statistic = null;
-    
+        
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector receivedMessages = null;
     
@@ -125,8 +122,8 @@ public class MessageProcessor extends Thread implements MessageListener
     
     private Jms2OraApplication parent = null;
     
-    private final String version = " 2.2.1";
-    private final String build = " - BUILD 2009-01-13 08:15";
+    private final String version = " 2.2.2";
+    private final String build = " - BUILD 2009-04-09 09:00";
     private final String application = "Jms2Ora";
 
     /** Time to sleep in ms */
@@ -171,8 +168,6 @@ public class MessageProcessor extends Thread implements MessageListener
         // IMPORTANT: Do not let it use the database layer created above
         contentCreator = new MessageContentCreator(url, user, password);
         
-        statistic = SimpleStatistic.getInstance();
-        
         receivedMessages = new Collector();
         receivedMessages.setApplication("Jms2Ora");
         receivedMessages.setDescriptor("Received messages");
@@ -214,13 +209,15 @@ public class MessageProcessor extends Thread implements MessageListener
             
             receivers = new MessageReceiver[urlList.length];
             
+            String hostName = Hostname.getInstance().getHostname();
+            
             for(int i = 0;i < urlList.length;i++)
             {
                 try
                 {
                     receivers[i] = new MessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
                     
-                    receivers[i].startListener(this, application);
+                    receivers[i].startListener(this, application + "@" + hostName + "_" + this.hashCode());
                     
                     initialized = true;
                 }
@@ -285,24 +282,22 @@ public class MessageProcessor extends Thread implements MessageListener
                         logger.info(infoText[result]);
                         if(result == PM_RETURN_DISCARD)
                         {
-                            statistic.incrementNumberOfDiscardedMessages();
                             discardedMessages.incrementValue();
                         }
                         else if(result == this.PM_RETURN_EMPTY)
                         {
-                            statistic.incrementNumberOfEmptyMessages();
                             emptyMessages.incrementValue();
                         }
                     }
                     else
                     {
-                        statistic.incrementNumberOfStoredMessages();
                         storedMessages.incrementValue();
                         logger.debug(infoText[result]);
                     }
                 }
                 
-                logger.debug(statistic.toString());
+                // logger.debug(statistic.toString());
+                logger.debug(createStatisticString());
                 
                 // IMPORTANT: Refresh the current state, otherwise Jms2Ora will restart if many messages
                 // are stored in the queue and state switching does not happen while storing all
@@ -387,7 +382,6 @@ public class MessageProcessor extends Thread implements MessageListener
         {
             content = contentCreator.convertMapMessage((MapMessage)message);
             messages.add(content);
-            statistic.incrementNumberOfReceivedMessages();
             receivedMessages.incrementValue();
 
             synchronized(this)
@@ -503,5 +497,19 @@ public class MessageProcessor extends Thread implements MessageListener
         running = false;
         
         this.notify();
+    }
+    
+    public String createStatisticString()
+    {
+        StringBuffer result = new StringBuffer();
+        
+        result.append("Statistic:\n\n");
+        result.append("Received Messages:  " + receivedMessages.getActualValue().getValue() + "\n");
+        result.append("Stored Messages:    " + storedMessages.getActualValue().getValue() + "\n");
+        result.append("Discarded Messages: " + discardedMessages.getActualValue().getValue() + "\n");
+        result.append("Filtered Messages:     " + emptyMessages.getActualValue().getValue() + "\n");
+        
+        return result.toString();
+
     }
 }

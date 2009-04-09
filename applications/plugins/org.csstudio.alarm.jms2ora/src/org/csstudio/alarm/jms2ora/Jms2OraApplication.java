@@ -52,7 +52,7 @@ public class Jms2OraApplication implements IApplication
     private SynchObject sync = null;
     
     /** Name of the folder that holds the stored message content */
-    private final String objectDir = ".\\var\\";
+    private final String objectDir = "./var/";
 
     /** Last state */
     private int lastState = 0;

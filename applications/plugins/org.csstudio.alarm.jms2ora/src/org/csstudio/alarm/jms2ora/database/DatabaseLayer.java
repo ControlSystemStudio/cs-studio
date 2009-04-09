@@ -61,11 +61,11 @@ public class DatabaseLayer
     /** Database password */
     private String password = null;
     
-    /** True if the folder 'var\columns' exists. This folder holds the stored message object content. */
+    /** True if the folder 'var/columns' exists. This folder holds the stored message object content. */
     private boolean existsObjectFolder = false;
 
     /** Name of the folder that holds the stored message content */
-    private final String objectDir = ".\\var\\columns\\";
+    private final String objectDir = "./var/columns/";
 
     /**
      *  Contains the names of the columns of the table MESSAGE. The key is the name of column and the value

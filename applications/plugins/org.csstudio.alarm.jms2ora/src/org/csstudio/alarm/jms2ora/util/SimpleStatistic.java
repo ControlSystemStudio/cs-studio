@@ -102,7 +102,7 @@ public class SimpleStatistic
         result.append("Received Messages:  " + numberOfReceivedMessages + "\n");
         result.append("Stored Messages:    " + numberOfStoredMessages + "\n");
         result.append("Discarded Messages: " + numberOfDiscardedMessages + "\n");
-        result.append("Empty Messages:     " + numberOfEmptyMessages + "\n");
+        result.append("Filtered Messages:     " + numberOfEmptyMessages + "\n");
         
         return result.toString();
     }
