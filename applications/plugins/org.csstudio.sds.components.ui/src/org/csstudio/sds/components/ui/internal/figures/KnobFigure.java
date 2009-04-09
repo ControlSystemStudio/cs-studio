@@ -222,7 +222,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 				Point pole;
 				public void mousePressed(MouseEvent me) {
 					armed = true;
-					pole = KnobFigure.this.getBounds().getCenter();										
+					pole = scale.getBounds().getCenter();										
 					startPP = PolarPoint.point2PolarPoint(pole, bounds.getCenter());
 					//rotate axis to endAngle
 					startPP.rotateAxis(((RoundScale)scale).getEndAngle(), false);
