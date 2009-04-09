@@ -118,7 +118,7 @@ org.csstudio.trends.databrowser/archives=- All -|1|xnds://ics-srv-web2.sns.ornl.
 # User/password may be empty, they can be specified in the URL.
 org.csstudio.archive.rdb/schema=chan_arch
 org.csstudio.archive.rdb/user=sns_reports
-org.csstudio.archive.rdb/password=SetViaPreferenceGUI
+org.csstudio.archive.rdb/password=sns
 
 # Authentication
 org.csstudio.platform.jaasAuthentication/jaas_config_source=File
