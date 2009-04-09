@@ -334,7 +334,8 @@ public class Application implements IApplication
         	username = WorkspaceIndependentStore.readLastLoginUser();
         
         //initialize startupHelper
-        StartupHelper startupHelper = new StartupHelper(null, workspace_info, 
+        StartupHelper startupHelper = new StartupHelper(null,
+                force_prompt, workspace_info, 
         		username, password, show_Login, show_Workspace);
         
         while (true)

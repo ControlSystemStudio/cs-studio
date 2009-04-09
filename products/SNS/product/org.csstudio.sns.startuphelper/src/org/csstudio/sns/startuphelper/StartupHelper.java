@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StartupHelper {
-	
 	private Shell shell = null;
+    private boolean force_prompt;
 	private WorkspaceInfo workspace_info = null;
 	private String username = null;
 	private String password = null;
@@ -26,6 +26,7 @@ public class StartupHelper {
 	/**Constructor
 	 * @param shell
 	 *            the parent shell.
+	 * @param force_prompt Force a workspace prompt, no "use as default" option
 	 * @param workspace_info WorkspaceInfo
 	 * @param userName
 	 *            the initial user name.
@@ -35,12 +36,13 @@ public class StartupHelper {
      * @param show_Workspace show workspace section?
 	 */
 	public StartupHelper(final Shell shell,
-			final WorkspaceInfo workspace_info,
+			final boolean force_prompt, final WorkspaceInfo workspace_info,
 			final String userName,
 			final String password,
 			final Boolean show_Login,
 			final Boolean show_Workspace) {
 		this.shell = shell;
+		this.force_prompt = force_prompt;
 		this.workspace_info = workspace_info;
 		this.username = userName;
 		this.password = password;
@@ -96,7 +98,7 @@ public class StartupHelper {
 		}
 		
 		StartupDialog startupDialog = new StartupDialog(shell, title, message, username, password,
-				workspace_info, true, show_Login, show_Workspace);
+				workspace_info, !force_prompt, show_Login, show_Workspace);
 		if(!startupDialog.prompt())
 			return false; // in case of cancel selected
 		
