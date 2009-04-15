@@ -76,7 +76,7 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	}
 	
 	/**
-	 * @return true if the widget is in horizontal orientation, false otherwise
+	 * @return true if the ramp is gradient, false otherwise
 	 */
 	public boolean isRampGradient() {
 		return (Boolean) getProperty(PROP_RAMP_GRADIENT).getPropertyValue();

@@ -29,7 +29,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
 	
 	/** The default value of the default knob color property. */
-	private static final RGB DEFAULT_KNOB_COLOR = new RGB(243,243,243);
+	private static final RGB DEFAULT_KNOB_COLOR = new RGB(150,150,150);
 	
 	/** The default value of the height property. */	
 	private static final int DEFAULT_HEIGHT = 173;
@@ -102,5 +102,12 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 */
 	public RGB getThumbColor() {
 		return (RGB) getProperty(PROP_THUMB_COLOR).getPropertyValue();
+	}
+	
+	/**
+	 * @return true if the ramp is gradient, false otherwise
+	 */
+	public boolean isRampGradient() {
+		return (Boolean) getProperty(PROP_RAMP_GRADIENT).getPropertyValue();
 	}
 }
