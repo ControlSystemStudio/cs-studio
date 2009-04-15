@@ -5,7 +5,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
-import java.awt.RadialGradientPaint;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
@@ -125,15 +124,15 @@ public class Bulb extends Figure {
 	        g2.fillOval(0, 0, getWidth() - 1, getHeight() - 1);
 	      
 	        // Adds oval specular highlight at the top left
-	        p = new RadialGradientPaint(new Point2D.Double(getWidth() / 2.0,
-	                getHeight() / 2.0), getWidth() / 2f,
-	                new Point2D.Double(getWidth() / 2 *(1-Math.cos(Math.PI/4.0)*4.0/5.0),  getWidth() / 2 *(1-Math.cos(Math.PI/4.0)*4.0/5.0)),
-	                new float[] { 0.0f, 1.0f },
-	                new Color[] { new Color(1.0f, 1.0f, 1.0f, 0.8f),
-	                    new Color(bulbColor.red, bulbColor.green, bulbColor.blue, 0) },
-	                RadialGradientPaint.CycleMethod.NO_CYCLE);
-	        g2.setPaint(p);
-	        g2.fillOval(0, 0, getWidth() - 1, getHeight() - 1);
+//	        p = new RadialGradientPaint(new Point2D.Double(getWidth() / 2.0,
+//	                getHeight() / 2.0), getWidth() / 2f,
+//	                new Point2D.Double(getWidth() / 2 *(1-Math.cos(Math.PI/4.0)*4.0/5.0),  getWidth() / 2 *(1-Math.cos(Math.PI/4.0)*4.0/5.0)),
+//	                new float[] { 0.0f, 1.0f },
+//	                new Color[] { new Color(1.0f, 1.0f, 1.0f, 0.8f),
+//	                    new Color(bulbColor.red, bulbColor.green, bulbColor.blue, 0) },
+//	                RadialGradientPaint.CycleMethod.NO_CYCLE);
+//	        g2.setPaint(p);
+//	        g2.fillOval(0, 0, getWidth() - 1, getHeight() - 1);
 	        
 	        // Restores the previous state
 	        g2.setPaint(oldPaint);
