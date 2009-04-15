@@ -70,7 +70,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		super();
 		transparent = true;
 		scale.setScaleLineVisible(false);
-		ramp.setRampWidth(10);
+		ramp.setRampWidth(12);
 		
 		valueLabel = new Label();
 		valueLabel.setText("20.00");
@@ -303,7 +303,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 
 	class KnobLayout extends AbstractLayout {
 		
-		private static final int GAP_BTW_BULB_SCALE = 3;
+		private static final int GAP_BTW_BULB_SCALE = 4;
 		
 		/** Used as a constraint for the scale. */
 		public static final String SCALE = "scale";   //$NON-NLS-1$
@@ -366,8 +366,8 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 			
 			if(scale != null && ramp != null && ramp.isVisible()) {
 				Rectangle rampBounds = area.getCopy();
-				ramp.setBounds(rampBounds.shrink(area.width/2 - scale.getInnerRadius() - ramp.getRampWidth()+1,
-						area.height/2 - scale.getInnerRadius() - ramp.getRampWidth()+1));
+				ramp.setBounds(rampBounds.shrink(area.width/2 - scale.getInnerRadius() - ramp.getRampWidth()+2,
+						area.height/2 - scale.getInnerRadius() - ramp.getRampWidth()+2));
 			}
 			
 			if(valueLabel != null && valueLabel.isVisible()) {
