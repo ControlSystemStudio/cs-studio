@@ -21,13 +21,13 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
@@ -41,22 +41,23 @@ import org.eclipse.swt.SWT;
  */
 public final class RefreshablePolylineFigure extends Polyline implements
 		IAdaptable, HandleBounds {
-	
+
 	/**
 	 * The fill grade (0 - 100%).
 	 */
 	private double _fill = 100.0;
-	
+
 	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-	
+
 	/**
 	 * The line styles.
 	 */
-	private final int[] _lineStyles = new int[] {SWT.LINE_SOLID, SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT};
-	
+	private final int[] _lineStyles = new int[] { SWT.LINE_SOLID,
+			SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT };
+
 	/**
 	 * Constructor.
 	 */
@@ -64,29 +65,36 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void outlineShape(final Graphics graphics) {
 		Rectangle figureBounds = getBounds();
-		
+
 		PointList points = getPoints();
 		
 		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-		Rectangle clip = new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height);
-		graphics.pushState();
-		graphics.clipRect(clip);
-		graphics.setForegroundColor(getForegroundColor());
-		graphics.drawPolyline(points);
-		clip = new Rectangle(figureBounds.x+newW, figureBounds.y, figureBounds.width-newW, figureBounds.height);
-		graphics.popState();
-		graphics.pushState();
-		graphics.clipRect(clip);
-		graphics.setForegroundColor(getBackgroundColor());
-		graphics.drawPolyline(points);
-		graphics.popState();
+		if (newW >= figureBounds.width) {
+			graphics.setForegroundColor(getForegroundColor());
+			graphics.drawPolyline(points);
+		} else {
+			Rectangle clip = new Rectangle(figureBounds.x, figureBounds.y,
+					newW, figureBounds.height);
+			graphics.pushState();
+			graphics.clipRect(clip);
+			graphics.setForegroundColor(getForegroundColor());
+			graphics.drawPolyline(points);
+			clip = new Rectangle(figureBounds.x + newW, figureBounds.y,
+					figureBounds.width - newW, figureBounds.height);
+			graphics.popState();
+			graphics.pushState();
+			graphics.clipRect(clip);
+			graphics.setForegroundColor(getBackgroundColor());
+			graphics.drawPolyline(points);
+			graphics.popState();
+		}
 	}
 
 	/**
@@ -98,7 +106,22 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		invalidate();
 		fireFigureMoved();
 		repaint();
-		super.setBounds(rect);
+		int correctedWidth = rect.width + getLineWidth();
+		int correctedHeight = rect.height + getLineWidth();
+		Rectangle correctedRectangle = new Rectangle(rect.x, rect.y, correctedWidth, correctedHeight);
+		super.setBounds(correctedRectangle);
+	}
+	
+	@Override
+	public void setSize(final int w, final int h) {
+		int correctedWidth = w + getLineWidth();
+		int correctedHeight = h + getLineWidth();
+		super.setSize(correctedWidth, correctedHeight);
+	}
+	
+	@Override
+	public void setLocation(Point p) {
+		super.setLocation(p);
 	}
 
 	/**
@@ -116,7 +139,6 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	public Rectangle getHandleBounds() {
 		return getPoints().getBounds();
 	}
-	
 
 	/**
 	 * Sets the fill grade.
@@ -136,23 +158,23 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	public double getFill() {
 		return _fill;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void setLineStyle(final int lineStyle) {
-		if (lineStyle>=0 && lineStyle<_lineStyles.length) {
+		if (lineStyle >= 0 && lineStyle < _lineStyles.length) {
 			super.setLineStyle(_lineStyles[lineStyle]);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
-			if(_borderAdapter==null) {
+			if (_borderAdapter == null) {
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;

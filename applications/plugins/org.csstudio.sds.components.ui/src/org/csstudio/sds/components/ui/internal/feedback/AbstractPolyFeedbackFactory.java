@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.sds.components.model.AbstractPolyModel;
+import org.csstudio.sds.components.model.PolylineModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
 import org.eclipse.draw2d.IFigure;
@@ -207,6 +208,14 @@ abstract class AbstractPolyFeedbackFactory implements
 			final AbstractWidgetModel model,
 			final ChangeBoundsRequest request, final Rectangle targetBounds) {
 		assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
+	
+		Rectangle correctedBounds = targetBounds;
+		if (model instanceof PolylineModel) {
+			PolylineModel polyline = (PolylineModel) model;
+			int correctedX = targetBounds.x + (polyline.getLineWidth() / 2);
+			int correctedY = targetBounds.y + (polyline.getLineWidth() / 2);
+			correctedBounds = new Rectangle(correctedX, correctedY, targetBounds.width, targetBounds.height);
+		}
 
 		AbstractPolyModel abstractPolyElement = (AbstractPolyModel) model;
 
@@ -224,7 +233,7 @@ abstract class AbstractPolyFeedbackFactory implements
 
 		// the points are viewer relative and need to be translated to the
 		// specified bounds, to reflect zoom level, scrollbar occurence etc.
-		points = PointListHelper.scaleTo(points, targetBounds);
+		points = PointListHelper.scaleTo(points, correctedBounds);
 
 		return new ChangePolyPointsCommand(abstractPolyElement, points);
 	}
