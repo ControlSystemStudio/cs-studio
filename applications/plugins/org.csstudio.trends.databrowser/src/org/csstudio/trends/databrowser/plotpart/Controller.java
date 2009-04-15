@@ -94,7 +94,7 @@ public class Controller implements ArchiveFetchJobListener
                     try
                     {
                     	model.setTimeSpecifications(scroll_start_specification,
-                    			RelativeTime.NOW);
+                    			RelativeTime.NOW, true);
                     }
                     finally
                     {
@@ -232,15 +232,14 @@ public class Controller implements ArchiveFetchJobListener
                 {   // Set relative start/end times
                     setScrollStart(range);
                     model.setTimeSpecifications(scroll_start_specification,
-                                                RelativeTime.NOW);
-                    model.enableScroll(true);
+                                                RelativeTime.NOW, true);
                 }
                 else
                 {   // Set absolute start/end times
                     final ITimestamp start = TimestampFactory.fromDouble(x0);
                     final ITimestamp end = TimestampFactory.fromDouble(x1);
-                    model.setTimeSpecifications(start.toString(), end.toString());
-                    model.enableScroll(false);
+                    model.setTimeSpecifications(start.toString(), end.toString(),
+                                                false);
                 }
             }
             catch (Exception ex)

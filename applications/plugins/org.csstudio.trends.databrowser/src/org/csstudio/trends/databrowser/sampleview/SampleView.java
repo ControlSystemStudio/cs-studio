@@ -1,8 +1,8 @@
 package org.csstudio.trends.databrowser.sampleview;
 
 import org.apache.log4j.Logger;
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDragSource;
 import org.csstudio.trends.databrowser.model.IModelItem;

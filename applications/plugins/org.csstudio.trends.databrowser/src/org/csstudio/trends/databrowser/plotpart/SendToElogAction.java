@@ -38,6 +38,7 @@ public class SendToElogAction extends SendToElogActionHelper
             tmp_file = 
                 File.createTempFile(org.csstudio.trends.databrowser.Messages.DataBrowser,
                         ImageFileName.ending);
+            tmp_file.deleteOnExit();
         }
         catch (Exception ex)
         {
@@ -97,16 +98,6 @@ public class SendToElogAction extends SendToElogActionHelper
             MessageDialog.openError(shell, Messages.ErrorMessageTitle,
                     NLS.bind("Cannot create snapshot in {0}:\n{1}", //$NON-NLS-1$
                             filename, ex.getMessage()));
-        }
-        
-        // Remove snapshot file
-        try
-        {
-            tmp_file.delete();
-        }
-        catch (Exception ex)
-        {
-            // NOP
         }
     }
 }

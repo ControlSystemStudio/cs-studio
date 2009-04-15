@@ -2,8 +2,9 @@ package org.csstudio.trends.databrowser.archiveview;
 
 import java.util.ArrayList;
 
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.apputil.text.RegExHelper;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveServer;

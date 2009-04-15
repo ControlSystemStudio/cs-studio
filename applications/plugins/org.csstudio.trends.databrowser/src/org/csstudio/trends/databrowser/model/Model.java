@@ -212,13 +212,19 @@ public class Model
      *  <p>
      *  Also updates the current start and end time with
      *  values computed from the specs "right now".
+     *  
+     *  @param start_specification Absolute or relative start time
+     *  @param end_specification   .. end time
+     *  @param scroll Enable or disable scrolling?
+     *  
      *  @see org.csstudio.apputil.time.StartEndTimeParser
      *  @see #getStartSpecification()
      *  @see #setTimeRange(ITimestamp, ITimestamp)
      *  @exception Exception on parse error of specs.
      */
-    public void setTimeSpecifications(String start_specification,
-                                      String end_specification) 
+    public void setTimeSpecifications(final String start_specification,
+                                      final String end_specification,
+                                      final boolean scroll) 
         throws Exception
     {
         start_end_times =
@@ -232,6 +238,7 @@ public class Model
                 new StartEndTimeParser(FALLBACK_START_TIME,
                                        RelativeTime.NOW);
         // In case of parse errors, we won't reach this point
+        this.scroll = scroll;
         // fireTimeSpecificationsChanged, fireTimeRangeChanged
         for (ModelListener l : listeners)
         {
@@ -240,7 +247,25 @@ public class Model
         }
     }
     
-    /** Get the start specification that is held 'permamently' when
+    /** Set a new start and end time specification,
+     *  enabling scrolling when end time matches 'now'
+     *  <p>
+     *  
+     *  @param start_specification Absolute or relative start time
+     *  @param end_specification   .. end time
+     *  
+     *  @see #setTimeSpecifications(String, String, boolean)
+     */
+    public void setTimeSpecifications(final String start_specification,
+                                      final String end_specification) 
+        throws Exception
+    {
+        final boolean scroll = end_specification.equalsIgnoreCase(RelativeTime.NOW);
+        setTimeSpecifications(start_specification, end_specification, scroll);
+    }
+
+    
+    /** Get the start specification that is held 'permanently' when
      *  the model is saved and re-loaded.
      *  <p>
      *  When the specifications are initially loaded or later changed,

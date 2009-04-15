@@ -159,8 +159,6 @@ public class BrowserUI extends Composite
                 addCurrentZoomToUndoStack(Messages.TimeConfig_TT);
                 try
                 {
-                    // If we request some_start ... 'now',
-                    // assume we want to scroll from then on.
                     model.setTimeSpecifications(dlg.getStartSpecification(),
                                                 dlg.getEndSpecification());
                 }
@@ -236,8 +234,12 @@ public class BrowserUI extends Composite
         }
         if (undo_stack.size() <= 0)
             undo.setEnabled(false);
-        // Restore the settings stored in the zoom_state: Y Axes
-        final int N = zoom_state.getYAxisInfoCount();
+        // Restore the settings stored in the zoom_state.
+        // First Y Axes.
+        // Since we stored the state of all Y axes, the axes count
+        // might have changed, so only restore what still makes sense
+        final int N = Math.min(zoom_state.getYAxisInfoCount(),
+                               i_chart.getChart().getNumYAxes());
         for (int i=0; i<N; ++i)
         {
             i_chart.getChart().getYAxis(i).setValueRange(
@@ -248,13 +250,12 @@ public class BrowserUI extends Composite
         try
         {
             model.setTimeSpecifications(zoom_state.getStartSpecification(),
-                    zoom_state.getEndSpecification());
+                                        zoom_state.getEndSpecification(),
+                                        zoom_state.wasScrolling());
         }
         catch (Exception ex)
         {
             Plugin.getLogger().error(ex);
         }
-        if (zoom_state.wasScrolling() != model.isScrollEnabled())
-            model.enableScroll(zoom_state.wasScrolling());
     }    
 }

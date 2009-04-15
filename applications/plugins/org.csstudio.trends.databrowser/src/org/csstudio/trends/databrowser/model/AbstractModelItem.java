@@ -257,15 +257,13 @@ public abstract class AbstractModelItem
     /** @see IModelItem#setAxisLow(double) */
     final public void setAxisLow(final double limit)
     {   
-        axis_low = limit;
-        model.setAxisLimits(axis_index, axis_low, axis_high);
+        model.setAxisLimits(axis_index, limit, axis_high);
     }
 
     /** @see IModelItem#setAxisHigh(double) */
     final public void setAxisHigh(final double limit)
     {   
-        axis_high = limit;
-        model.setAxisLimits(axis_index, axis_low, axis_high);
+        model.setAxisLimits(axis_index, axis_low, limit);
     }
 
     /** Set axis limits, but don't inform model.

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;

@@ -1,8 +1,8 @@
 package org.csstudio.trends.databrowser.configview;
 
 import org.csstudio.apputil.time.RelativeTime;
-import org.csstudio.apputil.ui.swt.AutoSizeColumn;
-import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.platform.model.IArchiveDataSource;
@@ -517,7 +517,7 @@ public class ConfigView extends PlotAwareView
         l.setText(Messages.Formula_Label);
         l.setLayoutData(new GridData());
         
-        formula_txt = new Text(formula_box, SWT.READ_ONLY);
+        formula_txt = new Text(formula_box, SWT.READ_ONLY | SWT.BORDER);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -568,7 +568,7 @@ public class ConfigView extends PlotAwareView
         l.setText(Messages.ScanPeriodSecs + ":"); //$NON-NLS-1$
         gd = new GridData();
         l.setLayoutData(gd);
-        scan_period_text = new Text(parent, SWT.LEFT);
+        scan_period_text = new Text(parent, SWT.BORDER);
         scan_period_text.setToolTipText(Messages.EnterSecs);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
@@ -580,7 +580,7 @@ public class ConfigView extends PlotAwareView
         l.setText(Messages.UpdatePeriodSecs + colon);
         gd = new GridData();
         l.setLayoutData(gd);
-        update_period_text = new Text(parent, SWT.LEFT);
+        update_period_text = new Text(parent, SWT.BORDER);
         update_period_text.setToolTipText(Messages.EnterSecs);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
@@ -592,7 +592,7 @@ public class ConfigView extends PlotAwareView
         l.setText(Messages.BufferSize + colon);
         gd = new GridData();
         l.setLayoutData(gd);
-        ring_size_text = new Text(parent, SWT.LEFT);
+        ring_size_text = new Text(parent, SWT.BORDER);
         ring_size_text.setToolTipText(Messages.EnterCount);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
@@ -796,7 +796,7 @@ public class ConfigView extends PlotAwareView
         gd = new GridData();
         l.setLayoutData(gd);
 
-        start_specification = new Text(parent, SWT.LEFT);
+        start_specification = new Text(parent, SWT.BORDER);
         start_specification.setToolTipText(Messages.StartTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -815,7 +815,7 @@ public class ConfigView extends PlotAwareView
         gd = new GridData();
         l.setLayoutData(gd);
 
-        end_specification = new Text(parent, SWT.LEFT);
+        end_specification = new Text(parent, SWT.BORDER);
         end_specification.setToolTipText(Messages.EndTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -1063,7 +1063,8 @@ public class ConfigView extends PlotAwareView
             return;
         try
         {
-            model.setTimeSpecifications(start_specification.getText(), end_specification.getText());
+            model.setTimeSpecifications(start_specification.getText(),
+                                        end_specification.getText());
             start_end_info.setText(model.getStartTime()
                                    + " ... " + //$NON-NLS-1$
                                    model.getEndTime());
