@@ -31,7 +31,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.setEffect3D(model.isEffect3D());	
 		knob.setThumbColor(model.getThumbColor());
 		knob.setValueLabelVisibility(model.isShowValueLabel());
-		
+		knob.setGradient(model.isRampGradient());
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
