@@ -217,20 +217,20 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 */
 	private void deleteFromDB(Set<String> messageIdsToDelete) throws SQLException {
 		_databaseConnection = DBConnection.getInstance().getConnection();
+		//Delete from table 'message_content'
+		PreparedStatement deleteFromMessageContent = _databaseConnection
+		.prepareStatement("delete from message_content mc where mc.message_id = ?");
+		for (String msgID : messageIdsToDelete) {
+			deleteFromMessageContent.setString(1, msgID);
+			deleteFromMessageContent.execute();
+		}
+
 		//Delete from table 'message'
 		PreparedStatement deleteFromMessage = _databaseConnection
 				.prepareStatement("delete from message m where m.id = ?");
 		for (String msgID : messageIdsToDelete) {
 			deleteFromMessage.setString(1, msgID);
 			deleteFromMessage.execute();
-		}
-		
-		//Delete from table 'message_content'
-		PreparedStatement deleteFromMessageContent = _databaseConnection
-				.prepareStatement("delete from message_content mc where mc.message_id = ?");
-		for (String msgID : messageIdsToDelete) {
-			deleteFromMessageContent.setString(1, msgID);
-			deleteFromMessageContent.execute();
 		}
 	}
 
