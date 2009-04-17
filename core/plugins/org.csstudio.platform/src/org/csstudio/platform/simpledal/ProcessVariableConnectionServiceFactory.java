@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.simpledal;
 
+
 import org.csstudio.platform.internal.simpledal.ConnectorFactory;
 import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
 
@@ -28,7 +29,7 @@ import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService
  * Factory of
  * {@link IProcessVariableConnectionService ProcessVariableConnectionService}s,
  * 
- * @author C1 WPS / KM, MZ
+ * @author C1 WPS / KM, MZ, Xihui Chen
  */
 public class ProcessVariableConnectionServiceFactory {
 
@@ -41,8 +42,9 @@ public class ProcessVariableConnectionServiceFactory {
 	 * 
 	 * @return the singleton instance of this factory
 	 */
-	public static ProcessVariableConnectionServiceFactory getDefault() {
-		if (ProcessVariableConnectionServiceFactory.sharedInstance == null) {
+	public static synchronized ProcessVariableConnectionServiceFactory getDefault() {	
+	
+		if (ProcessVariableConnectionServiceFactory.sharedInstance == null) {		
 			ProcessVariableConnectionServiceFactory.sharedInstance = new ProcessVariableConnectionServiceFactory();
 		}
 		return ProcessVariableConnectionServiceFactory.sharedInstance;
@@ -74,11 +76,10 @@ public class ProcessVariableConnectionServiceFactory {
 		return getMainProcessVariableConnectionService();
 	}
 
-	private IProcessVariableConnectionService getMainProcessVariableConnectionService() {
-		if (_mainProcessVariableConnectionService == null) {
-			_mainProcessVariableConnectionService = new ProcessVariableConnectionService(new ConnectorFactory());
-		}
-
+	private synchronized IProcessVariableConnectionService getMainProcessVariableConnectionService() {
+			if (_mainProcessVariableConnectionService == null) {
+				_mainProcessVariableConnectionService = new ProcessVariableConnectionService(new ConnectorFactory());
+			}
 		return _mainProcessVariableConnectionService;
 	}
 
