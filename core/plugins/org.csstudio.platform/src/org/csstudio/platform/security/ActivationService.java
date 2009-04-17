@@ -47,7 +47,7 @@ public final class ActivationService implements IUserManagementListener,
 	/**
 	 * A HashMap which contains a ActivateableList under an ID.
 	 */
-	private final Map<String, ActivateableList> _actvivatesMap;
+	private final Map<String, ActivateableList> _activatesMap;
 
 	/**
 	 * The singleton instance of this class.
@@ -59,7 +59,7 @@ public final class ActivationService implements IUserManagementListener,
 	 * UserManagementListener and RightsManagementListener
 	 */
 	private ActivationService() {
-		_actvivatesMap = new HashMap<String, ActivateableList>();
+		_activatesMap = new HashMap<String, ActivateableList>();
 		SecurityFacade.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 	}
@@ -151,8 +151,8 @@ public final class ActivationService implements IUserManagementListener,
 			throw new NullPointerException("IActivationAdapter was null");
 		}
 		if (id != null) {
-			if (_actvivatesMap.containsKey(id)) {
-				ActivateableList liste = _actvivatesMap.get(id);
+			if (_activatesMap.containsKey(id)) {
+				ActivateableList liste = _activatesMap.get(id);
 				if (!liste.contains(object)) {
 					liste.addObject(object, adapter);
 					adapter.activate(object, SecurityFacade.getInstance()
@@ -161,7 +161,7 @@ public final class ActivationService implements IUserManagementListener,
 			} else {
 				ActivateableList liste = new ActivateableList(defaultRight);
 				liste.addObject(object, adapter);
-				_actvivatesMap.put(id, liste);
+				_activatesMap.put(id, liste);
 				adapter.activate(object, SecurityFacade.getInstance()
 						.canExecute(id));
 			}	
@@ -178,10 +178,10 @@ public final class ActivationService implements IUserManagementListener,
 	 * @return True if the object could be unregistered; false otherwise
 	 */
 	public boolean unregisterObject(final String id, final Object object) {
-		if (_actvivatesMap.containsKey(id)) {
-			boolean bool = _actvivatesMap.get(id).removeObject(object);
-			if (_actvivatesMap.get(id).isEmpty()) {
-				_actvivatesMap.remove(id);
+		if (_activatesMap.containsKey(id)) {
+			boolean bool = _activatesMap.get(id).removeObject(object);
+			if (_activatesMap.get(id).isEmpty()) {
+				_activatesMap.remove(id);
 			}
 			return bool;
 		} else {
@@ -198,12 +198,12 @@ public final class ActivationService implements IUserManagementListener,
 	 */
 	public boolean unregisterObject(final Object object) {
 		boolean bool = false;
-		String[] keys = _actvivatesMap.keySet().toArray(new String[0]);
+		String[] keys = _activatesMap.keySet().toArray(new String[0]);
 		for (int i = 0; i < keys.length; i++) {
-			ActivateableList liste = _actvivatesMap.get(keys[i]);
+			ActivateableList liste = _activatesMap.get(keys[i]);
 			if (liste.removeObject(object)) {
 				if (liste.isEmpty()) {
-					_actvivatesMap.remove(keys[i]);
+					_activatesMap.remove(keys[i]);
 				}
 				bool = true;
 			}
@@ -219,7 +219,7 @@ public final class ActivationService implements IUserManagementListener,
 	public void dispose() {
 		SecurityFacade.getInstance().removeUserManagementListener(this);
 		RightsManagementService.getInstance().removeListener(this);
-		_actvivatesMap.clear();
+		_activatesMap.clear();
 		_instance = null;
 	}
 
@@ -227,10 +227,10 @@ public final class ActivationService implements IUserManagementListener,
 	 * Checks all registered objects if they should be activated or deactivated.
 	 */
 	private void doRefreshState() {
-		String[] keys = _actvivatesMap.keySet().toArray(new String[0]);
+		String[] keys = _activatesMap.keySet().toArray(new String[0]);
 		for (int i = 0; i < keys.length; i++) {
-			for (int j = 0; j < _actvivatesMap.get(keys[i]).size(); j++) {
-				ActivateableList liste = _actvivatesMap.get(keys[i]);
+			for (int j = 0; j < _activatesMap.get(keys[i]).size(); j++) {
+				ActivateableList liste = _activatesMap.get(keys[i]);
 				liste.activate(j, SecurityFacade.getInstance().canExecute(
 						keys[i]));
 			}

@@ -192,7 +192,7 @@ public final class SecurityFacade {
 	
 	/**
 	 * get the currently registered LoginCallbackHandler
-	 * @param handler the handler.
+	 * @return the handler.
 	 */
 	public ILoginCallbackHandler getRegisteredLoginCallbackHandler() {
 		return _loginCallbackHandler;
@@ -200,7 +200,7 @@ public final class SecurityFacade {
 
 	/**
 	 * Checks if the current user has the permission referenced by the given ID.
-	 * This method will return <code>true</code> if no rights are configured
+	 * This method will return <code>false</code> if no rights are configured
 	 * for the given action, i.e. by default, the action can be executed by all
 	 * non-anonymous users.
 	 * 
@@ -210,7 +210,7 @@ public final class SecurityFacade {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean canExecute(final String id) {
-		return canExecute(id, _context, true);
+		return canExecute(id, _context, false);
 	}
 	
 	/**
