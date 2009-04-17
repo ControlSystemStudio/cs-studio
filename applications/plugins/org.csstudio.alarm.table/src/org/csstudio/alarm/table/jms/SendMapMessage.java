@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.jms;
+package org.csstudio.alarm.table.jms;
 
 import java.util.Hashtable;
 import java.util.Timer;
@@ -34,27 +34,27 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-
+import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
+import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
 
 public class SendMapMessage {
-    
+
 	private static SendMapMessage _instance;
-	Hashtable<String, String>   properties  = null;
-    Context                     context     = null;
-    ConnectionFactory           factory     = null;
-    Connection                  connection  = null;
-    Session                     session     = null;
-    MessageProducer             sender      = null;
-    Destination                 destination = null;
-    MapMessage                  message     = null;
+	Hashtable<String, String> properties = null;
+	Context context = null;
+	ConnectionFactory factory = null;
+	Connection connection = null;
+	Session session = null;
+	MessageProducer sender = null;
+	Destination destination = null;
+	MapMessage message = null;
 	private CloseJMSConnectionTimerTask _timerTask;
 	private Timer _timer = new Timer();
+	private ISharedConnectionHandle _senderConnection;
 
-    
 	private SendMapMessage() {
 		super();
 	}
@@ -66,65 +66,58 @@ public class SendMapMessage {
 		return _instance;
 	}
 
-    public void startSender(boolean acknowledge) throws Exception {
-        properties = new Hashtable<String, String>();
-        properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-        		JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY));
-        properties.put(Context.PROVIDER_URL, 
-        		JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.SENDER_URL));
-        context = new InitialContext(properties);
-        factory = (ConnectionFactory) context.lookup("ConnectionFactory");
-        connection = factory.createConnection();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+	public void startSender(boolean acknowledge) throws Exception {
+		_senderConnection = SharedJmsConnections.sharedSenderConnection();
+		session = _senderConnection.createSession(false,
+				Session.AUTO_ACKNOWLEDGE);
 
-        if(acknowledge == false) {
-        	destination = (Destination) session.createTopic(JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE));
-        } else {
-        	destination = (Destination) session.createTopic("ACK");
-        }
-        connection.start();
-        sender = session.createProducer(destination);
-        sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+		if (acknowledge == false) {
+			destination = (Destination) session.createTopic(JmsLogsPlugin
+					.getDefault().getPluginPreferences().getString(
+							AlarmViewerPreferenceConstants.QUEUE));
+		} else {
+			destination = (Destination) session.createTopic("ACK");
+		}
+		connection.start();
+		sender = session.createProducer(destination);
+		sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 	}
-	
-	public void stopSender() throws Exception{
+
+	public void stopSender() throws Exception {
 		sender.close();
 		session.close();
-		connection.stop();
-		connection.close();
-		properties  = null;
-		context     = null;
-		factory     = null;
-		connection  = null;
-		session     = null;
-		sender      = null;
+		_senderConnection.release();
+		session = null;
+		sender = null;
 		destination = null;
-		message     = null;		
+		message = null;
 	}
-	
-	public MapMessage getSessionMessageObject() throws Exception{
+
+	public MapMessage getSessionMessageObject() throws Exception {
 		if (session == null) {
-			CentralLogger.getInstance().debug(this, "Start Sender, start timer task");
+			CentralLogger.getInstance().debug(this,
+					"Start Sender, start timer task");
 			startSender(true);
-	        _timerTask = new CloseJMSConnectionTimerTask(this);
-	        _timer.schedule(_timerTask, 1000, 1000);
-		}	
+			_timerTask = new CloseJMSConnectionTimerTask(this);
+			_timer.schedule(_timerTask, 1000, 1000);
+		}
 		_timerTask.set_lastDBAcccessInMillisec(System.currentTimeMillis());
 		CentralLogger.getInstance().debug(this, "Create mapMessage");
-		if(message != null) {
+		if (message != null) {
 			message.clearBody();
 		} else {
 			message = session.createMapMessage();
 		}
 		return message;
 	}
-	
-	public void sendMessage() throws Exception{
+
+	public void sendMessage() throws Exception {
 		if (session == null) {
-			CentralLogger.getInstance().debug(this, "Start Sender, start timer task");
+			CentralLogger.getInstance().debug(this,
+					"Start Sender, start timer task");
 			startSender(true);
-	        _timerTask = new CloseJMSConnectionTimerTask(this);
-	        _timer.schedule(_timerTask, 1000, 1000);
+			_timerTask = new CloseJMSConnectionTimerTask(this);
+			_timer.schedule(_timerTask, 1000, 1000);
 		}
 		_timerTask.set_lastDBAcccessInMillisec(System.currentTimeMillis());
 		CentralLogger.getInstance().debug(this, "Send the JMS message");

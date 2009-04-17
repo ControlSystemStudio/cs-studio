@@ -91,7 +91,7 @@ public class ViewAlarm extends ViewLog {
 	@Override
 	public void createPartControl(Composite parent) {
 		boolean canExecute = SecurityFacade.getInstance().canExecute(
-				SECURITY_ID, false);
+				SECURITY_ID, true);
 
 		// in alarm table the 'ack' column must be the first one!
 		String preferenceColumnString = JmsLogsPlugin.getDefault()

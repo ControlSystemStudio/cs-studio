@@ -114,7 +114,7 @@ public class JMSLogTableViewer extends TableViewer {
 //		int value = dialog.open();
 
 		final boolean canExecute = SecurityFacade.getInstance().canExecute(
-				SECURITY_ID, false);
+				SECURITY_ID, true);
 		this.tableType = tableType;
 		columnWidth = new int[colNames.length];
 		columnHeader = colNames;

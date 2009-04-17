@@ -26,9 +26,11 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
@@ -37,8 +39,8 @@ import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.IConnectionMonitor;
-import org.csstudio.platform.utility.jms.asyncreceiver.JmsConnectJob;
-import org.csstudio.platform.utility.jms.asyncreceiver.JmsConnector;
+import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
+import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -86,7 +88,8 @@ public class ViewLog extends ViewPart implements MessageListener {
 	 */
 	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
 
-	private JmsConnectJob _connectJob;
+
+	private ISharedConnectionHandle[] _sharedReceiverConnections;
 
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -188,9 +191,13 @@ public class ViewLog extends ViewPart implements MessageListener {
 
 		String[] topicList = topic.split(","); //$NON-NLS-1$
 		IConnectionMonitor connectionMonitor = new ConnectionMonitor();
-		_connectJob = new JmsConnectJob(topicList, primURL,
-				secURL, this, connectionMonitor);
-		_connectJob.startJmsConnection();
+		
+		try {
+		SharedJmsConnections.startMessageListener(this, topicList, 
+				Session.AUTO_ACKNOWLEDGE);
+		} catch (JMSException e) {
+			CentralLogger.getInstance().error(this, "JMS Connection error: " + e.getMessage());
+		}
 	}
 
 	public void setFocus() {
@@ -226,7 +233,6 @@ public class ViewLog extends ViewPart implements MessageListener {
 		_tableViewer = null;
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 		.removePropertyChangeListener(cl);
-		_connectJob.get_jmsConnector().disconnect();
 		super.dispose();
 	}
 
