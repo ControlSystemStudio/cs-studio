@@ -29,6 +29,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	
 	protected double maximum;
 	
+	protected double majorTickMarkStepHint;
+	
 	protected boolean showMinorTicks;
 	
 	protected boolean showScale;
@@ -83,6 +85,16 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		this.maximum = maximum;
 		scale.setRange(new Range(scale.getRange().lower, maximum));
 		//value = Math.min(scale.getRange().upper, value);
+		scale.revalidate();
+	}
+	
+	
+	/**
+	 * @param majorTickMarkStepHint the majorTickMarkStepHint to set
+	 */
+	public void setMajorTickMarkStepHint(double majorTickMarkStepHint) {
+		this.majorTickMarkStepHint = majorTickMarkStepHint;
+		scale.setMajorTickMarkStepHint((int) majorTickMarkStepHint);
 		scale.revalidate();
 	}
 

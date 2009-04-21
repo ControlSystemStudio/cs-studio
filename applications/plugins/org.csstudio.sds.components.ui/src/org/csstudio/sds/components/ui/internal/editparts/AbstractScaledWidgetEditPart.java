@@ -32,6 +32,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 		figure.setValue(model.getValue());
 		figure.setMinimum(model.getMinimum());
 		figure.setMaximum(model.getMaximum());
+		figure.setMajorTickMarkStepHint(model.getMajorTickStepHint());
 		figure.setLogScale(model.isLogScaleEnabled());
 		figure.setShowScale(model.isShowScale());
 		figure.setShowMinorTicks(model.isShowMinorTicks());
@@ -82,6 +83,20 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAX, maximumHandler);
+		
+		//major tick step hint
+		IWidgetPropertyChangeHandler majorTickHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setMajorTickMarkStepHint((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAJOR_TICK_STEP_HINT, majorTickHandler);
+	
+		
 		
 		//logScale
 		IWidgetPropertyChangeHandler logScaleHandler = new IWidgetPropertyChangeHandler() {

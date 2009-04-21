@@ -26,6 +26,9 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	/** The ID of the maximum property. */
 	public static final String PROP_MAX = "maximum"; //$NON-NLS-1$		
 	
+	/** The ID of the major tick step hint property. */
+	public static final String PROP_MAJOR_TICK_STEP_HINT = "majorTickStepHint"; //$NON-NLS-1$		
+	
 	/** The ID of the show minor ticks property. */
 	public static final String PROP_SHOW_MINOR_TICKS = "showMinorTicks"; //$NON-NLS-1$
 	
@@ -42,7 +45,10 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	private static final double DEFAULT_MIN = 0;
 	
 	/** The default value of the maximum property. */
-	private static final double DEFAULT_MAX = 100;		
+	private static final double DEFAULT_MAX = 100;	
+	
+		/** The default value of the major tick step hint property. */
+	private static final double DEFAULT_MAJOR_TICK_STEP_HINT = 50;	
 
 	@Override
 	protected void configureProperties() {
@@ -58,6 +64,9 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 		
 		addProperty(PROP_MAX, new DoubleProperty("Maximum", 
 				WidgetPropertyCategory.Behaviour,DEFAULT_MAX));			
+		
+		addProperty(PROP_MAJOR_TICK_STEP_HINT, new DoubleProperty("Major Tick Step Hint", 
+				WidgetPropertyCategory.Display,DEFAULT_MAJOR_TICK_STEP_HINT));			
 		
 		addProperty(PROP_SHOW_MINOR_TICKS, new BooleanProperty("Show Minor Ticks", 
 				WidgetPropertyCategory.Display, true));		
@@ -93,7 +102,13 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 		return (Double) getProperty(PROP_MAX).getPropertyValue();
 	}
 
-	
+	/**
+	 * @return the major tick step hint value
+	 */
+	public Double getMajorTickStepHint() {
+		return (Double) getProperty(PROP_MAJOR_TICK_STEP_HINT).getPropertyValue();
+	}
+
 	
 	
 	/**

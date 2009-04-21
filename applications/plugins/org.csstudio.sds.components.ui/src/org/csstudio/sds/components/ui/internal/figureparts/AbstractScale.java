@@ -57,9 +57,6 @@ public abstract class AbstractScale extends Figure{
     /** the default maximum value of log scale range */
     public final static double DEFAULT_LOG_SCALE_MAX = 100d;
     
-    /** the minimum grid step hint */
-    public static final int MIN_GRID_STEP_HINT = 6;
-    
     /** the default label format */
     private String default_decimal_format = "############.##";    
 	
@@ -87,7 +84,7 @@ public abstract class AbstractScale extends Figure{
     private boolean scaleLineVisible = true;
 
 	/** the pixels hint for major tick mark step */
-    private int majorTickMarkStepHint = 50;
+    private int majorTickMarkStepHint = 30;
     
     private boolean minorTicksVisible= true;
     
@@ -276,6 +273,7 @@ public abstract class AbstractScale extends Figure{
 	 */
 	public void setMajorTickMarkStepHint(int majorTickMarkStepHint) {
 		this.majorTickMarkStepHint = majorTickMarkStepHint;
+		setDirty(true);
 	}
 
 	/**

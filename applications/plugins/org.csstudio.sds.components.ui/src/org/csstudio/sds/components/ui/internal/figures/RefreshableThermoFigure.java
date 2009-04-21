@@ -199,7 +199,7 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 	
 	class Bulb extends Ellipse {
 		
-		public final static int MAX_DIAMETER = 45;
+		public final static int MAX_DIAMETER = 40;
 		private final Color EFFECT3D_BULB_COLOR = CustomMediaFactory.getInstance().getColor(
 				new RGB(140, 140, 140));
 		public Bulb() {
