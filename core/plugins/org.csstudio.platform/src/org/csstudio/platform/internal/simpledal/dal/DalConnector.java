@@ -492,8 +492,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 					public void responseReceived(ResponseEvent event) {
 						Object value = event.getResponse().getValue();
 						Timestamp timestamp = event.getResponse().getTimestamp();
-						listener.valueChanged(ConverterUtil.convert(value, valueType), timestamp);
-
+						listener.valueChanged(value, timestamp);
+						//listener.valueChanged(ConverterUtil.convert(value, valueType), timestamp);
 						printDebugInfo("AGET-RETURN: " + valueType + " " + value);
 					}
 
