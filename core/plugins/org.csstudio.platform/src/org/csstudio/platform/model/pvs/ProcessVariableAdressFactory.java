@@ -69,7 +69,7 @@ public class ProcessVariableAdressFactory {
 
     }
 
-    public static ProcessVariableAdressFactory getInstance() {
+    public static synchronized ProcessVariableAdressFactory getInstance() {
         if (_instance == null) {
             _instance = new ProcessVariableAdressFactory();
         }
