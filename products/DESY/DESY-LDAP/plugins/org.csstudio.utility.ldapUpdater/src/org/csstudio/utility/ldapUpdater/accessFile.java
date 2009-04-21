@@ -44,9 +44,9 @@ public class accessFile {
             }
         }
         else {
-            for (String file : list) {
+            for (String file : list) {	//	macht diese loop einen sinn ???           
                 if(checkFileAge(file)){
-                    
+                	
                 }
             }
         }
@@ -121,21 +121,5 @@ public class accessFile {
 //	    CentralLogger.getInstance().info(this, file+" "+f.format(date));
     	return  file.exists();
     }
-    
-/*
-    private boolean checkFileAge(final String fileName) {
-    	File file = new File ("Y:/directoryServer/"+fileName);
-    	try {
-    		Date date = new Date (file.lastModified());
-			SimpleDateFormat f = new SimpleDateFormat();
-			System.out.println(file+" "+ f.format(date));
-		} catch ( FileNotFoundException e ) {
-			e.printStackTrace();
-		} catch ( IOException  e ) {
-			e.printStackTrace();
-		}
-		return file.exists();
-	}
-*/
     
 }

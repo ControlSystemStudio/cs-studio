@@ -28,11 +28,9 @@
  * should be startable via xmpp, prompt asking for IOCname.
  */
 
-
 package org.csstudio.utility.ldapUpdater;
 
 // import Entry;
-
 
 /*
 
@@ -49,21 +47,21 @@ import java.util.Formatter;
 // import java.awt.FileDialog;
 // import java.awt.peer.FileDialogPeer;
 // import java.text.SimpleDateFormat;
-import java.io.File;
-import java.util.ArrayList;
+//import java.io.File;
+//import java.util.ArrayList;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
+//import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldapUpdater.model.DataModel;
 // import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
-import org.csstudio.utility.namespace.utility.ControlSystemItem;
+//import org.csstudio.utility.namespace.utility.ControlSystemItem;
 //import org.eclipse.core.runtime.Platform;
 // import org.eclipse.core.runtime.preferences.IPreferencesService;
 // import org.eclipse.equinox.app.IApplication;
 // import org.eclipse.equinox.app.IApplicationContext;
 import org.csstudio.utility.ldapUpdater.myDateTimeString;
 
-import com.sun.jndi.toolkit.dir.DirSearch;
+// import com.sun.jndi.toolkit.dir.DirSearch;
 
 // import Test;
 
@@ -80,10 +78,10 @@ public class LdapUpdater {
 	private static LdapUpdater _instance; 
 	
 	private DataModel _model;
-    private ErgebnisListe _ergebnis;
-    private boolean _ready = false;
-    private boolean _ldapReadDone = false;
-	private ArrayList<ControlSystemItem> _al;
+//	private ErgebnisListe _ergebnis;
+//	private boolean _ready = false;
+//	private boolean _ldapReadDone = false;
+//	private ArrayList<ControlSystemItem> _al;
 	public boolean busy=false;
 	
 	public static LdapUpdater getInstance() {
@@ -100,14 +98,17 @@ public class LdapUpdater {
 	}
 
 	public final void start() throws Exception {
+       
 		if ( busy ) {
 			return;
 		}
-		busy=true;
-        CentralLogger.getInstance().info(this, "start" );
-    	long startTime = System.currentTimeMillis();
+        
         long endTime=0L;
-        long deltaTime;
+        long deltaTime; 
+        busy=true;
+        CentralLogger.getInstance().info(this, "start" );
+        long startTime = System.currentTimeMillis();
+   	
         myDateTimeString dateTimeString = new myDateTimeString();
         String now= dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", startTime);
 
@@ -141,8 +142,8 @@ public class LdapUpdater {
 
         updComp.compareLDAPWithIOC();
          
-        endTime = System.currentTimeMillis();
-        deltaTime = endTime - startTime;
+		endTime = System.currentTimeMillis();
+		deltaTime = endTime - startTime;
         now = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", endTime);
         CentralLogger.getInstance().info(this, "end" + " at " + now + "  ( " + endTime + " )" );
         CentralLogger.getInstance().info(this, "time used : " + deltaTime/1000.  + " s" );

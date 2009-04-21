@@ -80,6 +80,9 @@ public class IocListReader {
 	 */
 	public final void readIocList() {
 //		dirlist();
+//       ^         gives ERROR : Null Pointer Exception while try to start run
+//					wenn der drive U:\ nicht auf "vxBoot on krynfs" gemappt ist.
+		
 		List<IOC> result = new ArrayList<IOC>();
 		BufferedReader fr = null;
 		try {

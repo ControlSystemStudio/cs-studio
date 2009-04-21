@@ -32,18 +32,17 @@ public class UpdateComparator {
 
 	public void compareLDAPWithIOC() {
 		int ind = 0;
-		Boolean _recordsWritten=false;
 		Boolean error_found=true;
 		for (IOC ioc : _model.getIocList()) {
+			// todo : auf NEUE history einträge filtern 
 			if (_model.getHistoryMap().get(ioc.getName()) != null) {
 				List<String> recordNames = ioc.getIocRecordNames();
 				for (String recordName : recordNames) {
 					ind = (recordName.indexOf("+")) + (recordName.indexOf("/"));
-					if (ind < 0) {
+//					if (ind < 0) {
+					if (ind <= 0) {
 						InLdap inLdap = new InLdap();
-						_recordsWritten=false;
 						if (!inLdap.existRecord(ioc, recordName)) {
-							// System.out.println(recordName);
 							DirContext directory = Engine.getInstance().getLdapDirContext();
 							Formatter f = new Formatter();
  							f.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
@@ -55,22 +54,18 @@ public class UpdateComparator {
 								ioc.set_mustWriteIOCToHistory(true);
 								error_found=false;
 							} catch (NamingException e) {
-								// TODO Auto-generated catch block
-//								e.printStackTrace();
 								CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc.getName() + " " + recordName);
 								error_found=true;
 							}
-//							ioc.set_mustWriteIOCToHistory(true);
 						}
 					}
 				}
-				if ( _recordsWritten ) {AppendLineToHistfile(ioc.getName()); }
-			} else {
+			}
+			if (_model.getHistoryMap().get(ioc.getName()) == null) {
 				_model.getNewIocNames().add(ioc.getName());
-//				System.out.println(ioc + " added to NewIocNames, try to write this IOC data to LDAP completely");
 		        CentralLogger.getInstance().info(this, ioc + " added to NewIocNames, try to write this IOC data to LDAP completely");
-//				System.out.println();
-				// ^ hier kommt das programm vorbei,
+
+		        // ^ hier kommt das programm vorbei,
 				// wenn der IOC in iocListFile (=IOCpathes) steht und
 				// wenn der IOC NICHT in der history-liste steht.
 				// -------------------------------------------------------------------------
@@ -83,7 +78,7 @@ public class UpdateComparator {
 				Attributes afe = attributesForEntry("epicsController", "econ", ioc.getName());
 				try {
 					directory.bind(f.toString(), null, afe); // = iocNamen schreiben
-					CentralLogger.getInstance().info(this, "iocName geschrieben : " + ioc);
+					CentralLogger.getInstance().info(this, "iocName written to LDAP : " + ioc);
 					error_found=false;
 				} catch (NamingException e) {
 					// TODO Auto-generated catch block
@@ -102,30 +97,25 @@ public class UpdateComparator {
 				// das ist dann fast der gleiche mechanismus wie bei den record-namen, nur der LDAP-level ist ein anderer.
 				
 				// -------------------------------------------------------------------------
-				// dann alle recordNames dieses IOC in LDAP anlegen
+				// dann alle recordNames dieses IOC in LDAP anlegen:
 				if  (!error_found) {
-
 					List<String> recordNames2 = ioc.getIocRecordNames();
 					for (String recordName2 : recordNames2) {
-						ind = (recordName2.indexOf("+"))
-						+ (recordName2.indexOf("/"));
-						if (ind < 0) {
+						ind = (recordName2.indexOf("+")) + (recordName2.indexOf("/"));
+						if (ind <= 0) {
 							InLdap inLdap = new InLdap();
 							if (!inLdap.existRecord(ioc, recordName2)) {
-								// System.out.println(recordName2);
 								DirContext directory2 = Engine.getInstance().getLdapDirContext();
 								Formatter f2 = new Formatter();
 								f2.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
 												recordName2, ioc.getName(), ioc.getGroup());
 								Attributes afe2 = attributesForEntry("epicsRecord","eren", recordName2);
 								try {
-										directory2.bind(f2.toString(), null, afe2); // = ioc records schreiben
-										CentralLogger.getInstance().info(this,
-												"Record written!" + ioc.getName() + " - " + recordName2);
+									directory2.bind(f2.toString(), null, afe2); // = ioc records schreiben
+									CentralLogger.getInstance().info(this,
+										"Record written!" + ioc.getName() + " - " + recordName2);
 										error_found=false;
 								} catch (NamingException e) {
-									// TODO Auto-generated catch block
-//									e.printStackTrace();
 									CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc.getName() + " " + recordName2);
 									error_found=true;
 								}
@@ -170,8 +160,8 @@ public class UpdateComparator {
 		try {
 			FileWriter fw = new FileWriter(
 					_prefs.getString(Activator.getDefault().getPluginId(),
-		    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null) + "history.dat", true);
-			long now = System.currentTimeMillis();
+		    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null) + "history.dat", true);	
+			long now = System.currentTimeMillis();			
 			myDateTimeString dateTimeString = new myDateTimeString();
 			String ymd_hms = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", now);
 			now = now / 1000; // now is now in seconds

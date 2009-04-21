@@ -21,7 +21,9 @@ public class myDateTimeString {
 	 * @author valett
 	 *
 	 */
-		  public String getDateTimeString(final String dateform, final String timeform, final long millis) {
+
+	
+		public String getDateTimeString(final String dateform, final String timeform, final long millis) {
 			  String result = "";
 		    	    
 			  if ( dateform.length() != 0 ) {
