@@ -39,7 +39,7 @@ class DoubleSequenceConverter implements IValueTypeConverter<double[]> {
 	/**
 	 * {@inheritDoc}
 	 */
-	public double[] convert(Object value) {
+	public double[] convert(Object value) throws NumberFormatException {
 		double[] result = new double[0];
 		if (value != null) {
 			if (value instanceof double[]) {

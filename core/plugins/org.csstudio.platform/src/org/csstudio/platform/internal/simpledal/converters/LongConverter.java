@@ -35,7 +35,7 @@ class LongConverter implements IValueTypeConverter<Long> {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Long convert(Object value) {
+	public Long convert(Object value) throws NumberFormatException {
 		Long result = 0l;
 
 		if (value != null) {
@@ -46,9 +46,9 @@ class LongConverter implements IValueTypeConverter<Long> {
 				result = n.longValue();
 			} else {
 				try {
-					result = Long.valueOf(value.toString());
+					result = Long.parseLong(value.toString());
 				} catch (NumberFormatException e) {
-					result = 0l;
+	                    result = Long.parseLong(value.toString(),16);
 				}
 			}
 		}

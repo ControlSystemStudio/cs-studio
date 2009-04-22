@@ -66,7 +66,12 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 		Runnable r = new Runnable() {
 			public void run() {
 				Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
-				listener.valueChanged(ConverterUtil.convert(value, getValueType()), new Timestamp());
+				try {
+				    Object convert = ConverterUtil.convert(value, getValueType());
+				    listener.valueChanged(convert, new Timestamp());
+				}catch(NumberFormatException nfe) {
+				    
+				}
 			}
 		};
 

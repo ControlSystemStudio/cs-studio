@@ -321,7 +321,15 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		waitTillConnected(3000);
 
 		if (_dalProperty != null && _dalProperty.isSettable()) {
-			_dalProperty.setAsynchronous(ConverterUtil.convert(value, getValueType()), new ResponseListener() {
+		    Object convertedValue;
+		    try {
+		        convertedValue = ConverterUtil.convert(value, getValueType());
+		    }catch (NumberFormatException nfe) {
+		        //  Do nothing! Is a invalid value format!
+                CentralLogger.getInstance().warn(this, "Invalid value format. ("+value+") is not set to "+getName());
+		        return;
+		    }
+		    _dalProperty.setAsynchronous(convertedValue, new ResponseListener() {
 
 				public void responseReceived(ResponseEvent event) {
 					if (listener != null) {
@@ -355,7 +363,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 			try {
 				_dalProperty.setValue(ConverterUtil.convert(value, getValueType()));
 				success = true;
-			} catch (DataExchangeException e) {
+			} catch (NumberFormatException nfe) {
+			    CentralLogger.getInstance().warn(this, "Invalid value format. ("+value+") is not set to"+getName());
+            }catch (DataExchangeException e) {
 				CentralLogger.getInstance().error(null, e);
 			}
 		} else {
@@ -494,7 +504,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 						Timestamp timestamp = event.getResponse().getTimestamp();
 						listener.valueChanged(value, timestamp);
 						//listener.valueChanged(ConverterUtil.convert(value, valueType), timestamp);
+
 						printDebugInfo("AGET-RETURN: " + valueType + " " + value);
+
 					}
 
 				};

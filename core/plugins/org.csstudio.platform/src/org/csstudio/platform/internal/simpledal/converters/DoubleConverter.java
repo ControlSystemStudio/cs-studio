@@ -35,9 +35,9 @@ class DoubleConverter implements IValueTypeConverter<Double> {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Double convert(Object value) {
+	public Double convert(Object value) throws NumberFormatException {
 		Double result = 0.0;
-
+//	    System.out.println("Converter"+value);
 		if (value != null) {
 			if (value instanceof Double) {
 				result = (Double) value;
@@ -48,7 +48,13 @@ class DoubleConverter implements IValueTypeConverter<Double> {
 				try {
 					result = Double.valueOf(value.toString());
 				} catch (NumberFormatException e) {
-					result = 0.0;
+				    try {
+				        // if Exp
+	                    result = new Double(Long.parseLong(value.toString()));
+	                } catch (NumberFormatException ex) {
+	                        // if Hex
+                        result = new Double(Long.parseLong(value.toString(),16));
+	                }
 				}
 			}
 		}
