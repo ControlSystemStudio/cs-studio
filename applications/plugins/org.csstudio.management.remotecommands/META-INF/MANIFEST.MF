@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Remote Management Command Service Plug-in
+Bundle-SymbolicName: org.csstudio.management.remotecommands;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.management.internal.remotecommands.Activator
+Bundle-Vendor: DESY
+Require-Bundle: org.eclipse.core.runtime,
+ org.remotercp.login;bundle-version="[1.0.0,2.0.0)",
+ org.remotercp.common;bundle-version="[1.0.0,2.0.0)",
+ org.remotercp.ecf;bundle-version="[1.0.0,2.0.0)",
+ org.remotercp.util;bundle-version="[1.0.0,2.0.0)"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Import-Package: org.csstudio.platform,
+ org.csstudio.platform.management;version="[1.0.0,2.0.0)"

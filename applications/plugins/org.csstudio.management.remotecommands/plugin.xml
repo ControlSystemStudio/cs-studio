@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.remotercp.remoteService">
+      <remoteService
+            class="org.csstudio.management.internal.remotecommands.ManagementCommandServiceLauncher"
+            id="org.csstudio.management.remotecommands.ManagementCommandService">
+      </remoteService>
+   </extension>
+
+</plugin>
