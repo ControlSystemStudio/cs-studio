@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.IAuthorizationProvider;
-import org.csstudio.platform.security.Right;
+import org.csstudio.platform.security.IRight;
 import org.csstudio.platform.security.RightSet;
 import org.csstudio.platform.security.User;
 import org.eclipse.core.runtime.CoreException;
@@ -84,7 +84,7 @@ public final class RightsManagementService {
 
 	/**
 	 * Checks if the given user has the rights to perform the action with the
-	 * given id. This method will return <code>true</code> if no rights are
+	 * given id. This method will return <code>false</code> if no rights are
 	 * configured for the given action, i.e. by default, all actions can be
 	 * executed by all non-anonymous users.
 	 * 
@@ -96,7 +96,7 @@ public final class RightsManagementService {
 	 *         action, <code>false</code> otherwise.
 	 */
 	public boolean hasRights(final User user, final String id) {
-		return hasRights(user, id, true);
+		return hasRights(user, id, false);
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public final class RightsManagementService {
 				// executing the action. The rights configured for the action
 				// are interpreted as independently permitting its execution,
 				// i.e. the user needs at least one of those rights.
-				for (Right r : actionRights) {
+				for (IRight r : actionRights) {
 					if (userRights.hasRight(r)) {
 						return true;
 					}

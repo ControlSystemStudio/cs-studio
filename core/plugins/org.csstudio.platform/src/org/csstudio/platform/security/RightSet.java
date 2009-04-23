@@ -31,7 +31,7 @@ import java.util.List;
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class RightSet implements Iterable<Right> {
+public class RightSet implements Iterable<IRight> {
 
 	/**
 	 * The name of this <code>RightSet</code>.
@@ -41,7 +41,7 @@ public class RightSet implements Iterable<Right> {
 	/**
 	 * The <code>Rights</code> that belong to this <code>RightSet</code>.
 	 */
-	private List<Right> _rights = new ArrayList<Right>();
+	private List<IRight> _rights = new ArrayList<IRight>();
 
 	/**
 	 * Standard cnstructor.
@@ -59,7 +59,7 @@ public class RightSet implements Iterable<Right> {
 	 * @param right
 	 *            The <code>Right</code> to add.
 	 */
-	public final void addRight(final Right right) {
+	public final void addRight(final IRight right) {
 		if (right != null) {
 			_rights.add(right);
 		}
@@ -71,7 +71,7 @@ public class RightSet implements Iterable<Right> {
 	 * @param right
 	 *            The <code>Right</code> to delete.
 	 */
-	public final void deleteRight(final Right right) {
+	public final void deleteRight(final IRight right) {
 		_rights.remove(right);
 	}
 
@@ -80,8 +80,8 @@ public class RightSet implements Iterable<Right> {
 	 * 
 	 * @return All <code>Rights</code> of this <code>RightSet</code>
 	 */
-	public final List<Right> getRights() {
-		return new ArrayList<Right>(_rights);
+	public final List<IRight> getRights() {
+		return new ArrayList<IRight>(_rights);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class RightSet implements Iterable<Right> {
 	 * @return True, if this <code>RightSet</code> contains the
 	 *         <code>Right</code>.
 	 */
-	public final boolean hasRight(final Right right) {
+	public final boolean hasRight(final IRight right) {
 		return _rights.contains(right);
 	}
 	
@@ -127,7 +127,7 @@ public class RightSet implements Iterable<Right> {
 		return text;
 	}
 
-	public Iterator<Right> iterator() {
+	public Iterator<IRight> iterator() {
 		return _rights.iterator();
 	}
 

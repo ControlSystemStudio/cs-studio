@@ -26,9 +26,9 @@ import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.csstudio.platform.security.ActivationService;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
@@ -66,9 +66,12 @@ public abstract class AbstractUserDependentAction extends Action implements
     /**
      *  The enabled state of the action regardless the authorization
      */
-    private boolean enabledWithoutAuthorization = true;
+    private boolean enabledWithoutAuthorization = false;
     
-
+    /**
+	 * The enable flag.
+	 */
+	private boolean _enable = true;
 
 	/**
 	 * Registers this action as UserManagementListener and
@@ -88,6 +91,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 		
 		SecurityFacade.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
+		ActivationService.getInstance().registerWidget(_rightId, null, this, new EnableActionAdapter());
 		updateState();
 	}
 	
@@ -108,7 +112,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	/**
 	 * Constructor. Registers this action as UserManagementListener and
 	 * RightsManagementListener. 
-	 * @param rightId
+	 * @param rightID
 	 *            ID of the right necessary to execute this action.
 	 * @param defaultPermission
 	 *            whether this action should be permitted if no rights are
@@ -126,7 +130,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 * RightsManagementListener. 
 	 * @param text
 	 * 			  the string used as the text for the action, or null if there is no text
-	 * @param rightId
+	 * @param rightID
 	 *            ID of the right necessary to execute this action.
 	 * @param defaultPermission
 	 *            whether this action should be permitted if no rights are
@@ -147,7 +151,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 * @param image
 	 *            the action's image, or <code>null</code> if there is no
 	 *            image	 * 			  
-	 * @param rightId
+	 * @param rightID
 	 *            ID of the right necessary to execute this action.
 	 * @param defaultPermission
 	 *            whether this action should be permitted if no rights are
@@ -160,7 +164,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 		init(rightID,defaultPermission);		
 	}
 
-/**
+	/**
 	 * Constructor. Registers this action as UserManagementListener and
 	 * RightsManagementListener. 
 	 * @param text
@@ -170,7 +174,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 *            <code>AS_CHECK_BOX</code>, <code>AS_DROP_DOWN_MENU</code>,
 	 *            <code>AS_RADIO_BUTTON</code>, and
 	 *            <code>AS_UNSPECIFIED</code>. 			  
-	 * @param rightId
+	 * @param rightID
 	 *            ID of the right necessary to execute this action.
 	 * @param defaultPermission
 	 *            whether this action should be permitted if no rights are
@@ -181,6 +185,15 @@ public abstract class AbstractUserDependentAction extends Action implements
 			final boolean defaultPermission) {
 		super(text,style);
 		init(rightID,defaultPermission);		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setEnabled(final boolean enabled) {
+		_enable = enabled;
+		updateState();
 	}
 	
 	/**
@@ -207,8 +220,8 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 * Updates the enabled state depending on user permission.
 	 */
 	protected void updateState() {
-		if(enabledWithoutAuthorization)
-			setEnabled(SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission));
+		boolean enableState = _enable && (enabledWithoutAuthorization || SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission));
+		super.setEnabled(enableState);
 	}
 
 	/**
@@ -230,7 +243,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	protected abstract void doWork();
 
 	/**
-	 * @see org.csstudio.platform.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(org.csstudio.platform.internal.usermanagement.AbstractUserManagementEvent)
+	 * @see org.csstudio.platform.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(org.csstudio.platform.internal.usermanagement.UserManagementEvent)
 	 * @param event
 	 *            the UserManagementEvent to handle
 	 */
@@ -239,7 +252,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	}
 
 	/**
-	 * @see org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.platform.internal.rightsmanagement.AbstractRightsManagementEvent)
+	 * @see org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent)
 	 * @param event
 	 *            the RightsManagementEvent to handle
 	 */
@@ -254,7 +267,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	@Override
 	protected final void finalize() throws Throwable {
 		super.finalize();
-		// TODO: to be checked by Kai and Torsten
+		ActivationService.getInstance().unregisterObject(getRightId(), this);
 		SecurityFacade.getInstance().removeUserManagementListener(this);
 		RightsManagementService.getInstance().removeListener(this);
 	}

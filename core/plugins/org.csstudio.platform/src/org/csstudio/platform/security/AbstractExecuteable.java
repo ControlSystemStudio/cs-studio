@@ -27,7 +27,7 @@ import org.csstudio.platform.internal.usermanagement.LoginContext;
  * Abstract super class for executables. An executable encapsulates code that
  * should only be executed, if the currently logged in user has the right to do
  * so. An executable must be equipped with an abstract right ID that will be
- * exposed to the system admistrator to configure which users can perform which
+ * exposed to the system administrator to configure which users can perform which
  * executables.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende

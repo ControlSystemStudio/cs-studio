@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Control;
 public class VisibleControlAdapter implements IActivationAdapter {
 
 	/**
-	 * @see testrcp.widgetmanagement.adapter.IActivationAdapter#activate(java.lang.Object, boolean)
+	 * @see IActivationAdapter#activate(java.lang.Object, boolean)
 	 * @param o The Control-Object
 	 * @param activate The value for the activation
 	 */

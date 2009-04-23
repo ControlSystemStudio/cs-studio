@@ -22,85 +22,10 @@
 package org.csstudio.platform.security;
 
 /**
- * Defines a right for the CSS core security system.<br>
- * A CSS right consists of:
- * <ul>
- * <li>A site specific role ("MANAGER", for example).
- * <li>A site specific group ("CRYO", for example).
- * </ul>
+ * Interface for a right for the CSS core security system.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class Right implements IRight {
-
-	/**
-	 * The user role.
-	 */
-	private String _role;
-
-	/**
-	 * The user group.
-	 */
-	private String _group;
-
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param role
-	 *            The role.
-	 * @param group
-	 *            The group.
-	 */
-	public Right(final String role, final String group) {
-		_role = role;
-		_group = group;
-	}
-
-	/**
-	 * Returns the group.
-	 * 
-	 * @return The group
-	 */
-	public final String getGroup() {
-		return _group;
-	}
-
-	/**
-	 * Returns the role.
-	 * 
-	 * @return The role
-	 */
-	public final String getRole() {
-		return _role;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final boolean equals(final Object o) {
-		if (o instanceof Right) {
-			Right right = (Right) o;
-			return _role.equalsIgnoreCase(right.getRole())
-					&& _group.equalsIgnoreCase(right.getGroup());
-		}
-		return super.equals(o);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final int hashCode() {
-		return super.hashCode();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String toString() {
-		return "(" + _role + "," + _group + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
+public interface IRight {
 
 }
