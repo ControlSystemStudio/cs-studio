@@ -101,7 +101,7 @@ public final class CustomMediaFactory {
 	 * 
 	 * @return The shared instance of this class.
 	 */
-	public static CustomMediaFactory getInstance() {
+	public static synchronized CustomMediaFactory getInstance() {
 		if (_instance == null) {
 			_instance = new CustomMediaFactory();
 		}
