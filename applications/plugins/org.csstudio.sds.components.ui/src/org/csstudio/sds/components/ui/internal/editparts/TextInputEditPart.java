@@ -250,36 +250,10 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
                             TextInputModel.PROP_VALUE_TYPE);
                     if (property.getPropertyValue() instanceof Integer) {
                         TextTypeEnum propertyValue = TextTypeEnum.values()[property.getPropertyValue()];
-                        try {
-                            switch (propertyValue) {
-                                case HEX:
-                                    Long.parseLong(text.getText(), 16);
-                                    break;
-                                case EXP:
-//                                    Double.parseDouble(text.getText());
-                                case DOUBLE:
-                                    // Erlaubte Zeichen: + - digi .
-                                    Double.parseDouble(text.getText());
-                                    
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }catch (NumberFormatException nfe) {
-                            System.out.println("MessageBox1!");
+                         if(!propertyValue.isValidFormat(text.getText())){
                             InvalidFormatDialog dialog = new InvalidFormatDialog(Display.getCurrent().getActiveShell());
                             dialog.setText(text.getText());
                             dialog.open();
-                            System.out.println("MessageBox2!");
-//                            String text2 = text.getText();
-//                            IconAndMessageDialog box = new MessageDialog(Display.getCurrent().getActiveShell(),"Title", null, text2, MessageDialog.WARNING,new String[] {"Ok"},0);
-//                            box.open();
-//                            MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.OK|SWT.MODELESS);
-//                            messageBox.setMessage("Hallo!"+text2);
-//                            if(messageBox.open()==SWT.OK) {
-//                                TextInputEditPart.this.createCellEditor().setValue(text2);
-//                            }
-//                            
                             CentralLogger.getInstance().warn(this, "Invalid value format: "+text.getText());
                             return ;
                         }
@@ -308,27 +282,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
                         TextInputModel.PROP_VALUE_TYPE);
                 if (property.getPropertyValue() instanceof Integer) {
                     TextTypeEnum propertyValue = TextTypeEnum.values()[property.getPropertyValue()];
-                    if (e.character == SWT.CR || e.character == SWT.KEYPAD_CR
-                            || e.character == SWT.DEL || e.character == SWT.BS
-                            || ((e.start == 0) && (e.character == '-'))) {
-                        return;
-                    }
-                    e.doit = false;
-                    Pattern pattern;
-                    switch (propertyValue) {
-                        case HEX:
-                            pattern = Pattern.compile("\\p{XDigit}*");
-                            e.doit |= pattern.matcher(e.text).matches();
-                            return;
-                        case EXP:
-                        case DOUBLE:
-                            pattern = Pattern.compile("[\\.0-9eE-]*");
-                            e.doit |= pattern.matcher(e.text).matches();
-                            return;
-                        default:
-                            e.doit = true;
-                            return;
-                    }
+                    e.doit = propertyValue.isValidChars(e.text, e.start);
                 }
                 
             }
