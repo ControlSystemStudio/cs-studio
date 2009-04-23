@@ -54,7 +54,7 @@ import org.epics.css.dal.Timestamp;
  * removes those references from its internal list. This way {@link IProcessVariableValueListener}s
  * don´t have to be removed from the connector explicitly.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Xihui Chen
  * 
  */
 @SuppressWarnings("unchecked")
@@ -68,6 +68,22 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
      */
     private Object _latestValue;
 
+	/**
+	 * The latest received severity value.
+	 */
+	private Object _latestSeverityValue;
+	
+	/**
+	 * The latest received status value.
+	 */
+	private Object _latestStatusValue;
+	
+	/**
+	 * The latest received timestamp value.
+	 */
+	private Object _latestTimeStampValue;
+	
+    
     /**
      * The latest received connection state.
      */
@@ -198,22 +214,32 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
             _weakListenerReferences.add(new ListenerReference(characteristicId, listener));
         }
 
-        //
-        if (characteristicId != null) {
-            getCharacteristicAsynchronously(characteristicId, getValueType(), listener);
-            // try {
-            // Object initial = EpicsUtil.getCharacteristic(characteristic,
-            // _dalProperty, null);
-            // listener.valueChanged(initial, new Timestamp());
-            // } catch (DataExchangeException e) {
-            // e.printStackTrace();
-            // }
-        }
-
-        // send initial connection state,
-        if (_latestConnectionState != null) {
-            listener.connectionStateChanged(_latestConnectionState);
-        }
+     // send initial connection state,
+		if (_latestConnectionState != null) {
+			listener.connectionStateChanged(_latestConnectionState);
+		}
+		
+		
+		if (characteristicId != null) {
+			//send initial condition characteristics value
+			if(characteristicId.equals("severity") && _latestSeverityValue != null) {
+				listener.valueChanged(_latestSeverityValue, null);			
+			}else if (characteristicId.equals("status") && _latestSeverityValue != null) {
+				listener.valueChanged(_latestStatusValue, null);		
+			}else if (characteristicId.equals("timestamp") && _latestSeverityValue != null) {
+				listener.valueChanged(_latestTimeStampValue, null);		
+			}else 
+				getCharacteristicAsynchronously(characteristicId, getValueType(),
+					listener);
+			
+			// try {
+			// Object initial = EpicsUtil.getCharacteristic(characteristic,
+			// _dalProperty, null);
+			// listener.valueChanged(initial, new Timestamp());
+			// } catch (DataExchangeException e) {
+			// e.printStackTrace();
+			// }
+		}
 
         // send initial value
         if (_latestValue != null && characteristicId == null) {
@@ -603,6 +629,15 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     protected final void doForwardCharacteristic(final Object characteristicValue,
             final Timestamp timestamp, final String characteristicId) {
         if (characteristicValue != null && characteristicId != null) {
+        	
+        	// memorize the latest condition value
+			if(characteristicId.equals("severity"))
+				_latestSeverityValue = characteristicValue;
+			if(characteristicId.equals("status"))
+				_latestStatusValue = characteristicValue;
+			if(characteristicId.equals("timestamp"))
+				_latestTimeStampValue = characteristicValue;
+        	
             execute(new IInternalRunnable() {
                 public void doRun(IProcessVariableValueListener valueListener, String cId) {
                     // forward the value only, if the current listener is
