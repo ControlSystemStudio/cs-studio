@@ -39,7 +39,6 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.PointList;

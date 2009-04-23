@@ -52,18 +52,17 @@ import org.eclipse.swt.SWT;
  * @version $Revision$
  * 
  */
-public final class SimpleSliderFigure extends Panel implements
-		IAdaptable {
+public final class SimpleSliderFigure extends Panel implements IAdaptable {
 	/**
 	 * Listeners that react on slider events.
 	 */
 	private List<ISliderListener> _sliderListeners;
-	
+
 	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-	
+
 	/**
 	 * The scroll bar figure.
 	 */
@@ -151,7 +150,7 @@ public final class SimpleSliderFigure extends Panel implements
 		_valueLabel = new Label();
 		add(_valueLabel, BorderLayout.TOP);
 		_valueLabel.setVisible(_showValueAsText);
-		
+
 		_scrollBar = createScrollbarFigure();
 		add(_scrollBar, BorderLayout.CENTER);
 
@@ -173,7 +172,9 @@ public final class SimpleSliderFigure extends Panel implements
 		bar.setBackgroundColor(ColorConstants.blue);
 		Ellipse thumb = new Ellipse();
 		thumb.setSize(new Dimension(40, 40));
-		thumb.setFont(CustomMediaFactory.getInstance().getDefaultFont(SWT.BOLD));
+		thumb
+				.setFont(CustomMediaFactory.getInstance().getDefaultFont(
+						SWT.BOLD));
 		thumb.setBackgroundColor(ColorConstants.red);
 
 		thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.RIDGED));
@@ -225,8 +226,9 @@ public final class SimpleSliderFigure extends Panel implements
 
 	/**
 	 * Sets if the current value should also be shown as text.
+	 * 
 	 * @param showValueAsText
-	 * 		True if the value should be shown as text, false otherwise
+	 *            True if the value should be shown as text, false otherwise
 	 */
 	public void setShowValueAsText(final boolean showValueAsText) {
 		_showValueAsText = showValueAsText;
@@ -259,32 +261,35 @@ public final class SimpleSliderFigure extends Panel implements
 	 * Refreshes the scroolbar.
 	 */
 	private void updateScrollbar() {
-		_min = (int) (_originalMin * _scrollbarPrecision);
-		_max = (int) (_originalMax * _scrollbarPrecision);
-		_scrollBar.setMinimum(_min);
-		CentralLogger.getInstance().debug(this, "Scrollbar minimum set to: " + _min);
-		_scrollBar.setMaximum(_max + _sliderWide);
-		CentralLogger.getInstance().debug(this, "Scrollbar maximum set to: " + _max);
+		if (isEnabled()) {
+			_min = (int) (_originalMin * _scrollbarPrecision);
+			_max = (int) (_originalMax * _scrollbarPrecision);
+			_scrollBar.setMinimum(_min);
+			CentralLogger.getInstance().debug(this,
+					"Scrollbar minimum set to: " + _min);
+			_scrollBar.setMaximum(_max + _sliderWide);
+			CentralLogger.getInstance().debug(this,
+					"Scrollbar maximum set to: " + _max);
 
-		_currentValue = (int) (_originalVal * _scrollbarPrecision);
+			_currentValue = (int) (_originalVal * _scrollbarPrecision);
 
-		int settedValue = _currentValue; 
-		// update scrollbar
-		if (_currentValue < _min) {
-			// current value is out of the sliders range -> disable the slider
-			// 07.01.08 the slider shouldn't be disabled any more
-			//_scrollBar.setEnabled(false);
-			//_scrollBar.setValue(_currentValue);
-			settedValue = _min;
-		} else if (_currentValue > _max) {
-			settedValue = _max;
+			int settedValue = _currentValue;
+			// update scrollbar
+			if (_currentValue < _min) {
+				// current value is out of the sliders range -> disable the
+				// slider
+				// 07.01.08 the slider shouldn't be disabled any more
+				// _scrollBar.setEnabled(false);
+				// _scrollBar.setValue(_currentValue);
+				settedValue = _min;
+			} else if (_currentValue > _max) {
+				settedValue = _max;
+			}
+			_scrollBar.setValue(settedValue);
+			CentralLogger.getInstance().debug(this,
+					"Scrollbar value set to: " + settedValue);
+			_scrollBar.invalidate();
 		}
-//		_scrollBar.setEnabled(true);
-		_scrollBar.setValue(settedValue);
-		CentralLogger.getInstance().debug(this, "Scrollbar value set to: " + settedValue);
-		_scrollBar.invalidate();
-
-		//_scrollBar.setValue(_currentValue);
 	}
 
 	/**
@@ -327,8 +332,9 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	private void setScrollbarPrecision(final int precision) {
 
-		CentralLogger.getInstance().debug(this, "precision set to " + precision);
-		
+		CentralLogger.getInstance()
+				.debug(this, "precision set to " + precision);
+
 		// double min = this.getDoubleFor(_min);
 		// double max = this.getDoubleFor(_max);
 		int minWide = _sliderWide / _scrollbarPrecision;
@@ -405,7 +411,7 @@ public final class SimpleSliderFigure extends Panel implements
 		// string to a BigDecimal in order to get its scale.
 		BigDecimal bd = new BigDecimal(Double.toString(value));
 		int scale = bd.scale();
-		
+
 		// The value is constrained to 0..3 to prevent precisions that get too
 		// large.
 		CentralLogger.getInstance().debug(this, "scale=" + scale);
@@ -474,11 +480,13 @@ public final class SimpleSliderFigure extends Panel implements
 	 * Updates the value labels text.
 	 */
 	private void updateValueText() {
-		// update the value label text
-		NumberFormat format = NumberFormat.getInstance();
-		format.setMaximumFractionDigits(_decimalPlaces);
-		_valueLabel
-				.setText("" + format.format(_originalVal) + " [MAN: " + format.format(_originalManVal) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if (isEnabled()) {
+			// update the value label text
+			NumberFormat format = NumberFormat.getInstance();
+			format.setMaximumFractionDigits(_decimalPlaces);
+			_valueLabel
+					.setText("" + format.format(_originalVal) + " [MAN: " + format.format(_originalManVal) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 	}
 
 	/**
@@ -509,7 +517,7 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	public void randomNoiseRefresh() {
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -522,6 +530,7 @@ public final class SimpleSliderFigure extends Panel implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if (_borderAdapter == null) {
