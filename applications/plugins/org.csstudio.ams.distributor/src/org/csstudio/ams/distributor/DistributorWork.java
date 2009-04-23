@@ -1031,9 +1031,15 @@ public class DistributorWork extends Thread implements AmsConstants {
 			throws Exception // INCLUDING - AMSException
 	{
 		String text = fa.getMessage();
-		if (text == null)
+		if(text == null)
+		{
 			text = filter.getDefaultMessage();
-
+			if(text == null)
+			{
+			    text = "";
+			}
+		}
+		
 		String placeHolder = new String("$");
 		int len = placeHolder.length();
 		StringBuffer sbText = new StringBuffer(text);
@@ -1498,7 +1504,7 @@ public class DistributorWork extends Thread implements AmsConstants {
                     .log(Log.INFO,
                             "DistributorWork.logHistorySend() topicObj!=null");
             history.setUserRef(topicObj.getID());
-            history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld f�r Topic vorhanden, kl�ren ob DB erweitert werden soll!? */
+            history.setUserName(topicObj.getHumanReadableName()); /*- TODO Kein Feld für Topic vorhanden, klären ob DB erweitert werden soll!? */
             history.setDestType("jms topic");
             history.setDestAdress(topicObj.getTopicName());
         }
