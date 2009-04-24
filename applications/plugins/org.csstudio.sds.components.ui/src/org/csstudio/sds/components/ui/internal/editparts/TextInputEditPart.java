@@ -282,7 +282,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
                         TextInputModel.PROP_VALUE_TYPE);
                 if (property.getPropertyValue() instanceof Integer) {
                     TextTypeEnum propertyValue = TextTypeEnum.values()[property.getPropertyValue()];
-                    e.doit = propertyValue.isValidChars(e.text, e.start);
+                    e.doit = propertyValue.isValidChars(e.character, e.text, e.start);
                 }
                 
             }
