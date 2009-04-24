@@ -48,12 +48,12 @@ class DoubleConverter implements IValueTypeConverter<Double> {
 				try {
 					result = Double.valueOf(value.toString());
 				} catch (NumberFormatException e) {
-				    try {
+	                if(value.toString().matches("[-+]?0[xX].*")) {
+	                    // if Hex
+	                    result = new Double(Long.parseLong(value.toString().replaceFirst("(\\+)?0[xX]", ""),16));
+	                }else {
 				        // if Exp
 	                    result = new Double(Long.parseLong(value.toString()));
-	                } catch (NumberFormatException ex) {
-	                        // if Hex
-                        result = new Double(Long.parseLong(value.toString(),16));
 	                }
 				}
 			}

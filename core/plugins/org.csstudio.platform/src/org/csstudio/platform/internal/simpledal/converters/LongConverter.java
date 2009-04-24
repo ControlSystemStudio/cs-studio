@@ -45,11 +45,12 @@ class LongConverter implements IValueTypeConverter<Long> {
 				Number n = (Number) value;
 				result = n.longValue();
 			} else {
-				try {
-					result = Long.parseLong(value.toString());
-				} catch (NumberFormatException e) {
-	                    result = Long.parseLong(value.toString(),16);
-				}
+			    if(value.toString().matches("[-+]?0[xX].*")) {
+			        result = Long.parseLong(value.toString().replaceFirst("(\\+)?0[xX]", ""),16);
+			    }else {
+			        // TODO: discuss behavior for values in Exp format. 
+			        result = Long.parseLong(value.toString());
+			    }
 			}
 		}
 		assert result != null;
