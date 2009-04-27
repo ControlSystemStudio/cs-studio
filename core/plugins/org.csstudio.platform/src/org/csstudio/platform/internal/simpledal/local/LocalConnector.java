@@ -24,6 +24,7 @@ package org.csstudio.platform.internal.simpledal.local;
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.internal.simpledal.AbstractConnector;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
@@ -67,10 +68,9 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 			public void run() {
 				Object value = LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).getValue();
 				try {
-				    Object convert = ConverterUtil.convert(value, getValueType());
-				    listener.valueChanged(convert, new Timestamp());
+				    listener.valueChanged(ConverterUtil.convert(value, getValueType()), new Timestamp());
 				}catch(NumberFormatException nfe) {
-				    
+				    CentralLogger.getInstance().warn(this, nfe);
 				}
 			}
 		};

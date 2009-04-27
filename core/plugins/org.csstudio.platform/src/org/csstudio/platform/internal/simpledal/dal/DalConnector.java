@@ -98,20 +98,30 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	public void conditionChange(DynamicValueEvent event) {
 		// translate a condition change to certain characteristics listeners
 		// might be registered for
-		DynamicValueCondition condition = event.getCondition();
-
-		// ... characteristic "timestamp"
-		doForwardCharacteristic(condition.getTimestamp(), event.getTimestamp(), CharacteristicInfo.C_TIMESTAMP_INFO.getName());
-
-		// ... characteristic "status"
-		doForwardCharacteristic(EpicsUtil.extratStatus(condition), event.getTimestamp(), CharacteristicInfo.C_STATUS_INFO.getName());
-
-		// ... characteristic "severity"
-		doForwardCharacteristic(EpicsUtil.toEPICSFlavorSeverity(condition), event.getTimestamp(), CharacteristicInfo.C_SEVERITY_INFO.getName());
+		processConditionChange(event.getCondition(), event.getTimestamp());
 
 		// ... request initial values, when the condition changes to "normal"
 		if (event.getCondition().isNormal()) {
 			requestAndForwardInitialValues();
+		}
+	}
+
+	@Override
+	protected void sendInitialValuesForNewListener(String characteristicId, IProcessVariableValueListener listener) {
+		super.sendInitialValuesForNewListener(characteristicId, listener);
+		processConditionChange(_dalProperty.getCondition(), _dalProperty.getLatestValueUpdateTimestamp());
+	}
+
+	private void processConditionChange(DynamicValueCondition condition, Timestamp timestamp) {
+		if (condition != null) {
+			// ... characteristic "timestamp"
+			doForwardCharacteristic(condition.getTimestamp(), timestamp, CharacteristicInfo.C_TIMESTAMP_INFO.getName());
+
+			// ... characteristic "status"
+			doForwardCharacteristic(EpicsUtil.extratStatus(condition), timestamp, CharacteristicInfo.C_STATUS_INFO.getName());
+
+			// ... characteristic "severity"
+			doForwardCharacteristic(EpicsUtil.toEPICSFlavorSeverity(condition), timestamp, CharacteristicInfo.C_SEVERITY_INFO.getName());
 		}
 	}
 
@@ -270,7 +280,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 						String errorMsg = error != null ? error.getMessage() : "Unknown Error!";
 						listener.errorOccured(errorMsg);
 
-						printDebugInfo("AGET-ERROR : " + error +"  (" + event.getResponse().toString() + ")");
+						printDebugInfo("AGET-ERROR : " + error + "  (" + event.getResponse().toString() + ")");
 					}
 
 					public void responseReceived(ResponseEvent event) {
@@ -284,7 +294,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 				};
 
 				printDebugInfo("GET ASYNC");
-				
+
 				_dalProperty.getAsynchronous(responseListener);
 			} else {
 				listener.errorOccured("Internal error. No connection available.");
@@ -321,30 +331,32 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		waitTillConnected(3000);
 
 		if (_dalProperty != null && _dalProperty.isSettable()) {
-		    Object convertedValue;
-		    try {
-		        convertedValue = ConverterUtil.convert(value, getValueType());
-		    }catch (NumberFormatException nfe) {
-		        //  Do nothing! Is a invalid value format!
-                CentralLogger.getInstance().warn(this, "Invalid value format. ("+value+") is not set to "+getName());
-		        return;
-		    }
-		    _dalProperty.setAsynchronous(convertedValue, new ResponseListener() {
+			Object convertedValue;
+			try {
+				convertedValue = ConverterUtil.convert(value, getValueType());
 
-				public void responseReceived(ResponseEvent event) {
-					if (listener != null) {
-						listener.success();
-					}
-					CentralLogger.getInstance().debug(null, event.getResponse().toString());
-				}
+				_dalProperty.setAsynchronous(convertedValue, new ResponseListener() {
 
-				public void responseError(ResponseEvent event) {
-					if (listener != null) {
-						listener.error(event.getResponse().getError());
+					public void responseReceived(ResponseEvent event) {
+						if (listener != null) {
+							listener.success();
+						}
+						CentralLogger.getInstance().debug(null, event.getResponse().toString());
 					}
-					CentralLogger.getInstance().error(null, event.getResponse().getError());
-				}
-			});
+
+					public void responseError(ResponseEvent event) {
+						if (listener != null) {
+							listener.error(event.getResponse().getError());
+						}
+						CentralLogger.getInstance().error(null, event.getResponse().getError());
+					}
+				});
+
+			} catch (NumberFormatException nfe) {
+				// Do nothing! Is a invalid value format!
+				CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to " + getName());
+				return;
+			}
 		} else {
 			throw new Exception("Property " + _dalProperty.getUniqueName() + " is not settable");
 		}
@@ -364,8 +376,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 				_dalProperty.setValue(ConverterUtil.convert(value, getValueType()));
 				success = true;
 			} catch (NumberFormatException nfe) {
-			    CentralLogger.getInstance().warn(this, "Invalid value format. ("+value+") is not set to"+getName());
-            }catch (DataExchangeException e) {
+				CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to" + getName());
+			} catch (DataExchangeException e) {
 				CentralLogger.getInstance().error(null, e);
 			}
 		} else {
@@ -443,8 +455,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 				 * 
 				 * property.getAsynchronous(null);
 				 * 
-				 * while (e == property.getLatestResponse()) { Thread.sleep(1); } }
-				 * catch (DataExchangeException e) { e.printStackTrace(); }
+				 * while (e == property.getLatestResponse()) { Thread.sleep(1);
+				 * } } catch (DataExchangeException e) { e.printStackTrace(); }
 				 * catch (InterruptedException e) { e.printStackTrace(); }
 				 */
 				// **** Workarround (Remove, when DAL is fixed)************>
@@ -496,14 +508,15 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 						String errorMsg = error != null ? error.getMessage() : "Unknown Error!";
 						listener.errorOccured(errorMsg);
 
-						printDebugInfo("AGET-ERROR ["+characteristicId+"] : " + error +"  (" + event.getResponse().toString() + ")");
+						printDebugInfo("AGET-ERROR [" + characteristicId + "] : " + error + "  (" + event.getResponse().toString() + ")");
 					}
 
 					public void responseReceived(ResponseEvent event) {
 						Object value = event.getResponse().getValue();
 						Timestamp timestamp = event.getResponse().getTimestamp();
 						listener.valueChanged(value, timestamp);
-						//listener.valueChanged(ConverterUtil.convert(value, valueType), timestamp);
+						// listener.valueChanged(ConverterUtil.convert(value,
+						// valueType), timestamp);
 
 						printDebugInfo("AGET-RETURN: " + valueType + " " + value);
 
@@ -511,7 +524,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 
 				};
 
-				printDebugInfo("GET ASYNC ["+characteristicId+"]");
+				printDebugInfo("GET ASYNC [" + characteristicId + "]");
 
 				_dalProperty.getCharacteristicAsynchronously(characteristicId, responseListener);
 			} else {
@@ -534,9 +547,16 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		if (_dalProperty != null) {
 			waitTillConnected(3000);
 
-			printDebugInfo("GET SYNC ["+characteristicId+"]");
-			
-			result = EpicsUtil.getCharacteristic(characteristicId, _dalProperty, getValueType());
+			if (characteristicId.equals(CharacteristicInfo.C_SEVERITY_INFO.getName())) {
+				result = EpicsUtil.toEPICSFlavorSeverity(_dalProperty.getCondition());
+			} else if (characteristicId.equals(CharacteristicInfo.C_STATUS_INFO.getName())) {
+				result = EpicsUtil.extratStatus(_dalProperty.getCondition());
+			} else if (characteristicId.equals(CharacteristicInfo.C_TIMESTAMP_INFO.getName())) {
+				result = _dalProperty.getCondition().getTimestamp();
+			} else {
+				Object tmp = _dalProperty.getCharacteristic(characteristicId);
+				result = valueType != null ? ConverterUtil.convert(tmp, valueType) : tmp;
+			}
 		}
 
 		return result;

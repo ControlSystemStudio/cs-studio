@@ -78,39 +78,6 @@ public class EpicsUtil {
 	}
 
 	/**
-	 * Returns characteristic while properly converting values and
-	 * characteristic names
-	 * 
-	 * @param charName
-	 *            characteristic name
-	 * @param property
-	 *            DAL property
-	 * @param valueType
-	 *            SDS value type
-	 * @return characteristic while properly converting values and
-	 *         characteristic names
-	 * @throws DataExchangeException
-	 */
-	public static final Object getCharacteristic(String charName, DynamicValueProperty property, ValueType valueType)
-			throws DataExchangeException {
-		if (charName.equals(CharacteristicInfo.C_SEVERITY_INFO.getName())) {
-			return EpicsUtil.toEPICSFlavorSeverity(property.getCondition());
-		}
-		if (charName.equals(CharacteristicInfo.C_STATUS_INFO.getName())) {
-			return EpicsUtil.extratStatus(property.getCondition());
-		}
-		if (charName.equals(CharacteristicInfo.C_TIMESTAMP_INFO.getName())) {
-			return property.getCondition().getTimestamp();
-		}
-		Object value = property.getCharacteristic(charName);
-		if (valueType != null) {
-			return ConverterUtil.convert(value, valueType);
-		}
-		return value;
-
-	}
-
-	/**
 	 * Returns EPICS favored status string for DAL condition.
 	 * 
 	 * @param cond

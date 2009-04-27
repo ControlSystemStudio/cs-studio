@@ -39,6 +39,8 @@ import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.eclipse.core.runtime.Platform;
+
+//FIXME: swende: 28.04.2009: Dont´t reference any DAL specific classes in this class
 import org.epics.css.dal.Timestamp;
 
 /**
@@ -68,27 +70,11 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
      */
     private Object _latestValue;
 
-	/**
-	 * The latest received severity value.
-	 */
-	private Object _latestSeverityValue;
-	
-	/**
-	 * The latest received status value.
-	 */
-	private Object _latestStatusValue;
-	
-	/**
-	 * The latest received timestamp value.
-	 */
-	private Object _latestTimeStampValue;
-	
-    
     /**
      * The latest received connection state.
      */
     private ConnectionState _latestConnectionState = ConnectionState.INITIAL;
-
+    
     /**
      * The process variable pointer for the channel this connector is connected to.
      */
@@ -213,34 +199,17 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
         synchronized (_weakListenerReferences) {
             _weakListenerReferences.add(new ListenerReference(characteristicId, listener));
         }
+        
+        sendInitialValuesForNewListener(characteristicId, listener);
+    }
 
-     // send initial connection state,
+    protected void sendInitialValuesForNewListener(String characteristicId,
+            IProcessVariableValueListener listener) {
+        // send initial connection state
 		if (_latestConnectionState != null) {
 			listener.connectionStateChanged(_latestConnectionState);
 		}
 		
-		
-		if (characteristicId != null) {
-			//send initial condition characteristics value
-			if(characteristicId.equals("severity") && _latestSeverityValue != null) {
-				listener.valueChanged(_latestSeverityValue, null);			
-			}else if (characteristicId.equals("status") && _latestSeverityValue != null) {
-				listener.valueChanged(_latestStatusValue, null);		
-			}else if (characteristicId.equals("timestamp") && _latestSeverityValue != null) {
-				listener.valueChanged(_latestTimeStampValue, null);		
-			}else 
-				getCharacteristicAsynchronously(characteristicId, getValueType(),
-					listener);
-			
-			// try {
-			// Object initial = EpicsUtil.getCharacteristic(characteristic,
-			// _dalProperty, null);
-			// listener.valueChanged(initial, new Timestamp());
-			// } catch (DataExchangeException e) {
-			// e.printStackTrace();
-			// }
-		}
-
         // send initial value
         if (_latestValue != null && characteristicId == null) {
             listener.valueChanged(_latestValue, null);
@@ -251,7 +220,6 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
             listener.errorOccured(_latestError);
         }
     }
-
     /**
      * Removes the specified value listener. This is optional - a connector does reference its
      * listeners weak by design. This way connectors that are no longer referenced outside of the
@@ -396,7 +364,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
         Object value = doGetCharacteristicSynchronously(characteristicId, valueType);
 
-        E result = value != null ? (E) ConverterUtil.convert(value, valueType) : null;
+        E result = value != null ? (E) value : null;
 
         return result;
     }
@@ -630,14 +598,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
             final Timestamp timestamp, final String characteristicId) {
         if (characteristicValue != null && characteristicId != null) {
         	
-        	// memorize the latest condition value
-			if(characteristicId.equals("severity"))
-				_latestSeverityValue = characteristicValue;
-			if(characteristicId.equals("status"))
-				_latestStatusValue = characteristicValue;
-			if(characteristicId.equals("timestamp"))
-				_latestTimeStampValue = characteristicValue;
-        	
+			// forward the value
             execute(new IInternalRunnable() {
                 public void doRun(IProcessVariableValueListener valueListener, String cId) {
                     // forward the value only, if the current listener is
