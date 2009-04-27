@@ -100,7 +100,9 @@ public class SampleService
 
 	public static final String P_JMS_AMS_TOPIC_COMMAND = "org.csstudio.ams.preferences.jmsAmsTopicCommand";
 	public static final String P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END = "org.csstudio.ams.preferences.jmsAmsTSubCmdFmrReloadEnd";	
-	
+
+	public static final String P_JMS_AMS_TOPIC_MONITOR = "org.csstudio.ams.preferences.jmsAmsTopicMonitor";
+
 	/**
 	 * The only one instance of this service.
 	 */

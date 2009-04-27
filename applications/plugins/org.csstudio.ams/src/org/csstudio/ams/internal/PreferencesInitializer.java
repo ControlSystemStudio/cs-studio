@@ -161,5 +161,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 
         node.put(SampleService.P_JMS_AMS_TOPIC_COMMAND, "COMMAND");
         node.put(SampleService.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END, "SUB_AMS_CMD_FMR_RELOAD_END");
+        
+        node.put(SampleService.P_JMS_AMS_TOPIC_MONITOR, "T_AMS_SYSTEM_MONITOR");
     }
 }

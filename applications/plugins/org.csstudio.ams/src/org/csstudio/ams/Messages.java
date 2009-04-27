@@ -99,6 +99,7 @@ public class Messages extends NLS
 	public static String P_JMS_AMS_TOPIC_COMMAND;
 	public static String P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END;
 
+    public static String P_JMS_AMS_TOPIC_MONITOR;
 	
 	public static String FilterConditionStringUI_lblKeyValue;
 	public static String FilterConditionStringUI_lblKeyValueType;

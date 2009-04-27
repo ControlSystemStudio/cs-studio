@@ -30,7 +30,6 @@ import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -39,7 +38,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
 import org.csstudio.ams.Activator;
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.PasswordEditor;
@@ -290,6 +288,11 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 				Messages.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END, c0));
 		
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
+
+	    addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_MONITOR,
+	            Messages.P_JMS_AMS_TOPIC_MONITOR, c0));
+
+	    new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
 		adjustGridLayout(); 
 	}
