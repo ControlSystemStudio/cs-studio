@@ -96,7 +96,7 @@ public class SendToElogAction extends SendToElogActionHelper
         catch (Exception ex)
         {
             MessageDialog.openError(shell, Messages.ErrorMessageTitle,
-                    NLS.bind("Cannot create snapshot in {0}:\n{1}", //$NON-NLS-1$
+                    NLS.bind("Cannot create ELog entry for file {0}:\n{1}", //$NON-NLS-1$
                             filename, ex.getMessage()));
         }
     }
