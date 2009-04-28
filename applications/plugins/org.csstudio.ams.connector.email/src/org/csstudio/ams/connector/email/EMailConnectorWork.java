@@ -53,7 +53,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
     // private Connection                  amsConnection       = null;
     // private javax.jms.Session           amsSession          = null;
     
-    // CHANGED BY: Markus M�ller, 28.06.2007
+    // CHANGED BY: Markus Möller, 28.06.2007
     // private TopicSubscriber             amsSubscriberEmail  = null;
     // private MessageConsumer             amsSubscriberEmail  = null;
     
