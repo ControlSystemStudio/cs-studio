@@ -64,6 +64,7 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.platform.statistic.Collector;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
@@ -309,8 +310,11 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	private StandardAblagekorb<Vorgangsmappe> ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice;
 
 	private Producer extCommandProducer;
+	
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private Collector ackMessages = null;
 
-	/**
+    /**
 	 * Indicating that application is in restart process caused bz syunchr.
 	 * request.
 	 */
@@ -325,6 +329,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	{
         XMPPRemoteShutdownAction.staticInject(this);
         
+        ackMessages = new Collector();
+        ackMessages.setApplication("AmsDecisionDepartment");
+        ackMessages.setDescriptor("NOT acknowleged messages");
+        ackMessages.setContinuousPrint(false);
+        ackMessages.setContinuousPrintCount(1000.0);
+
         // Initialize state for normal run
 
 		// just to make it possible to stop while start up (will be reset
@@ -832,12 +842,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		while (this._continueWorking) {
 			try {
 				final NAMSMessage message = consumersConsumer.receiveMessage();
+                ackMessages.incrementValue();
 				try {
 					DecisionDepartmentActivator.logger.logInfoMessage(this,
 							"Decision department recieves a message to handle: "
 									+ message.toString());
 					if (message.enthaeltAlarmnachricht()) {
-						try {
+					    try {
 							eingangskorb.ablegen(new Vorgangsmappe(
 									Vorgangsmappenkennung.createNew(/**
 																	 * TODO Host
@@ -887,7 +898,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				} finally {
 					try {
 						message.acknowledge();
+						ackMessages.decrementValue();
 					} catch (final MessagingException e) {
+                        ackMessages.incrementValue();
 						DecisionDepartmentActivator.logger.logWarningMessage(
 								this, "unable to ackknowlwedge message: "
 										+ message.toString(), e);
