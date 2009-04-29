@@ -35,5 +35,6 @@ Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.wizards,
  org.csstudio.platform.ui.workbench
 Bundle-Activator: org.csstudio.platform.ui.CSSPlatformUiPlugin
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/jdom.jar
 Bundle-ActivationPolicy: lazy

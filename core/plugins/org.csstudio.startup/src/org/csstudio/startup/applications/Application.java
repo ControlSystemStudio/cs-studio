@@ -36,9 +36,12 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.login.ui.ChatLoginWizardDialog;
 
 /**
  * The RCP application for the Control System Studio.
@@ -91,6 +94,12 @@ public class Application implements IApplication {
 			for(ServiceProxy proxy : lowPriorityProxy) {
 				// TODO: add thread creation code here!
 				proxy.run();
+			}
+			
+			ChatLoginWizardDialog wizardDialog = new ChatLoginWizardDialog();
+			if (wizardDialog.open() == Window.OK) {
+				// start remote services
+				ServiceLauncher.startRemoteServices();
 			}
 
 			returnCode = PlatformUI.createAndRunWorkbench(display,

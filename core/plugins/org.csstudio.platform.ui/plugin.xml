@@ -177,6 +177,12 @@
          id="org.csstudio.platform.ui.page1"
          name="Onsite Subnets">
    </page>
+   <page
+         category="org.csstudio.platform.ui.css.applications.configuration"
+         class="org.csstudio.platform.ui.internal.statisticview.PreferencePage"
+         id="org.csstudio.platform.ui.StatisticViewPreferencePage"
+         name="Statistic View">
+   </page>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
@@ -206,6 +212,15 @@
             icon="icons/connections.png"
             id="org.csstudio.platform.ui.ConnectionStateView"
             name="%connectorView">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio"
+            class="org.csstudio.platform.ui.internal.statisticview.StatisticView"
+            icon="icons/StatisticViewer.png"
+            id="org.csstudio.platform.ui.StatisticView"
+            name="Statistic"
+            restorable="false">
       </view>
    </extension>
    <extension
@@ -382,5 +397,18 @@
            class="org.csstudio.platform.ui.internal.actions.ShowAuthorizationIds"
            commandId="org.csstudio.platform.ui.commands.showAuthorizationIds">
      </handler>
+  </extension>
+  <extension
+        point="org.csstudio.platform.managementCommandResultReceivers">
+     <receiver
+           class="org.csstudio.platform.ui.internal.statisticview.StatisticReceiver"
+           resultType="org.csstudio.platform.statistic.XmlStatistic">
+     </receiver>
+  </extension>
+  <extension
+        point="org.eclipse.core.runtime.preferences">
+     <initializer
+           class="org.csstudio.platform.ui.internal.statisticview.PreferenceInitializer">
+     </initializer>
   </extension>
 </plugin>

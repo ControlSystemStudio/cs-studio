@@ -9,7 +9,9 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.eclipse.core.runtime,
  org.junit4,
- org.eclipse.ui.intro
+ org.eclipse.ui.intro,
+ org.remotercp.login;bundle-version="[1.0.0,2.0.0)",
+ org.remotercp.common;bundle-version="[1.0.0,2.0.0)"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.startup,
  org.csstudio.startup.applications

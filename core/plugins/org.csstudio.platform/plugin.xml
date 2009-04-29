@@ -6,6 +6,8 @@
    <extension-point id="authorizationProvider" name="Authorization Provider" schema="schema/authorizationProvider.exsd"/>
    <extension-point id="startupListener" name="Startup Listener" schema="schema/startupListener.exsd"/>
    <extension-point id="authorizationId" name="Authorization Id" schema="schema/authorizationId.exsd"/>
+   <extension-point id="managementCommands" name="Management Commands" schema="schema/managementCommands.exsd"/>
+   <extension-point id="managementCommandResultReceivers" name="Receivers for Management Command Results" schema="schema/managementCommandResultReceivers.exsd"/>
 <!--
    <extension
          point="de.desy.css.core.logManagers">
@@ -72,6 +74,14 @@
             description="Administration of alarm configuration and database."
             id="alarmAdministration">
       </id>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.platform.internal.statistic.GetStatisticsManagementCommand"
+            id="org.csstudio.platform.statistic.GetStatisticCommand"
+            label="Get Statistics">
+      </command>
    </extension>
 
 

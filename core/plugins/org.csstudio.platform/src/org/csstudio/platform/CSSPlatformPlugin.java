@@ -27,7 +27,9 @@ import java.io.OutputStream;
 import java.util.Collection;
 
 import org.csstudio.platform.internal.PluginCustomizationExporter;
+import org.csstudio.platform.internal.management.ManagementServiceImpl;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.management.IManagementCommandService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -71,6 +73,8 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	protected final void doStart(final BundleContext context) throws Exception {
 		applySystemPropertyDefaults();
 		offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
+		context.registerService(IManagementCommandService.class.getName(),
+				new ManagementServiceImpl(), null);
 	}
 
 	/**
