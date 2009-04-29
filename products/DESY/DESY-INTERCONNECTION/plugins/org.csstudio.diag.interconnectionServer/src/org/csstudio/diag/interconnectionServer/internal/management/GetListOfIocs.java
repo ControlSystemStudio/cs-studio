@@ -20,54 +20,34 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.diag.interconnectionServer;
+package org.csstudio.diag.interconnectionServer.internal.management;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
-import org.csstudio.diag.interconnectionServer.server.IocConnection;
 import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
-import org.csstudio.platform.libs.dcf.actions.IAction;
-import org.eclipse.core.runtime.Platform;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
- * Remote management action which schedules a downtime for all IOCs. This is
- * a temporary solution for testing purposes.
+ * Management command to get the list of IOCs connected to the Interconnection
+ * Server.
  * 
  * @author Joerg Rathlev
  */
-public class ScheduleDowntime implements IAction {
+public class GetListOfIocs implements IManagementCommand {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object run(Object param) {
-		if (!(param instanceof Map)) {
-			return null;
+	public CommandResult execute(CommandParameters parameters) {
+		String[] names = IocConnectionManager.getInstance().getNodeNameStatusArray();
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < names.length; i++) {
+			if (i != 0) {
+				builder.append("\n");
+			}
+			builder.append(names[i]);
 		}
-		
-		@SuppressWarnings("unchecked")
-		Map<String, String> params = (Map<String, String>) param;
-		String iocName = params.get("IOC");
-		
-		if (iocName.contains("|")) {
-			iocName = iocName.substring(0, iocName.indexOf('|'));
-		}
-		if (iocName.length() == 0) {
-			return "Invalid IOC";
-		}
-		
-		int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
-				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		IocConnection iocConnection = IocConnectionManager.getInstance().getIocConnection(iocName, dataPort);
-		
-		String durationParam = params.get("Duration (seconds)");
-		long duration = Long.parseLong(durationParam);
-		
-		iocConnection.scheduleDowntime(duration, TimeUnit.SECONDS);
-		
-		return "Downtime successfully scheduled.";
+		return CommandResult.createMessageResult(builder.toString());
 	}
 
 }

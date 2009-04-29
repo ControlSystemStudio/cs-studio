@@ -36,12 +36,12 @@ import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
 
 /**
- * The thread which actually is sending the command.
+ * The runnable which actually is sending the command.
  * 
  * @author Matthias Clausen
  *
  */
-public class SendCommandToIoc implements Runnable {
+public class IocCommandSender implements Runnable {
 	
 	private String hostName = "locahost";
 	private int port = 0;
@@ -58,7 +58,7 @@ public class SendCommandToIoc implements Runnable {
 	 * @param port Port to be used.
 	 * @param command One of the supported commands.
 	 */
-	public SendCommandToIoc ( String hostName, int port, String command) {
+	public IocCommandSender ( String hostName, int port, String command) {
 
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
 		this.hostName = hostName;
@@ -87,7 +87,7 @@ public class SendCommandToIoc implements Runnable {
 	 * @param command The command to be sent
 	 * @param retry TRUE if it's a retry
 	 */
-	public SendCommandToIoc (IocConnection connection, String command, boolean retry) {
+	public IocCommandSender (IocConnection connection, String command, boolean retry) {
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
 		this.retry = retry;
 		this.command = command;
@@ -167,7 +167,7 @@ public class SendCommandToIoc implements Runnable {
 				 * retry to send the command just ONCE!
 				 */
 				if (!this.retry) {
-					SendCommandToIoc sendCommandToIoc = new SendCommandToIoc(iocConnection, this.command, true);
+					IocCommandSender sendCommandToIoc = new IocCommandSender(iocConnection, this.command, true);
 					InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 					CentralLogger.getInstance().info(this, "Retry to send command: " + command + " to IOC: " + 
 							iocConnection.getLogicalIocName());
@@ -214,7 +214,7 @@ public class SendCommandToIoc implements Runnable {
 						 * yes - did set all channel to disconnect
 						 * we'll have to get all alarm-states from the IOC
 						 */
-						SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+						IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
 						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 						iocConnection.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
 						iocConnection.setDidWeSetAllChannelToDisconnect(false);
@@ -261,7 +261,7 @@ public class SendCommandToIoc implements Runnable {
 					if ( (!iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) ||
 							(!iocConnection.areWeConnectedLongerThenThreeBeaconTimeouts() &&
 									iocConnection.isGetAllAlarmsOnSelectChange()) )  {
-						SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+						IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
 						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 						iocConnection.setGetAllAlarmsOnSelectChange(false); // one time is enough
 						CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");

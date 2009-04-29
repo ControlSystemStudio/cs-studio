@@ -1,4 +1,3 @@
-package org.csstudio.diag.interconnectionServer;
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,33 +18,27 @@ package org.csstudio.diag.interconnectionServer;
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */ 
+ */
 
+package org.csstudio.diag.interconnectionServer.internal.management;
+
+import org.csstudio.diag.interconnectionServer.InterconnectionServerApplication;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
-public class StopIcServer implements IAction {
+/**
+ * Management command which restarts the Interconnection Server.
+ * 
+ * @author Joerg Rathlev
+ */
+public class RestartIcServer implements IManagementCommand {
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
-	 */
-	public Object run(Object param) {
-		/*
-		 * stop IC-Server
-		 */
-		InterconnectionServerApplication.SHUTDOWN = true;
-		boolean result = InterconnectionServer.getInstance().stopIcServer();
-		try {
-			/*
-			 * wait for IC-Server to greacefully stop
-			 */
-			// TODO: why is the wait necessary?
-			this.wait(5000); //wait 5 sec
-		} catch (Exception e) {
-			// nothing to do we want to stop anyhow
-		}
-		return "" + result;
+	public CommandResult execute(CommandParameters parameters) {
+		InterconnectionServerApplication.SHUTDOWN = false;
+		InterconnectionServer.getInstance().stopIcServer();
+		return CommandResult.createSuccessResult();
 	}
 
 }

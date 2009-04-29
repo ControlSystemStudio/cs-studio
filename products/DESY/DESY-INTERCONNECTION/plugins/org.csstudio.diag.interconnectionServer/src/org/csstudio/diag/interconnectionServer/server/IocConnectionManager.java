@@ -103,21 +103,16 @@ public class IocConnectionManager {
 		String nodeNames = null;
 		boolean first = true;
 
-		try {
-			// just in case no enum is possible
-			Enumeration connections = this.connectionList.elements();
-			while (connections.hasMoreElements()) {
-				IocConnection thisContent = (IocConnection) connections
-						.nextElement();
-				if (first) {
-					nodeNames = thisContent.getHost() + ",";
-				} else {
-					nodeNames += thisContent.getHost() + ",";
-				}
-				first = false;
+		Enumeration connections = this.connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection thisContent = (IocConnection) connections
+					.nextElement();
+			if (first) {
+				nodeNames = thisContent.getHost() + ",";
+			} else {
+				nodeNames += thisContent.getHost() + ",";
 			}
-		} catch (Exception e) {
-			nodeNames = "NONE";
+			first = false;
 		}
 		return nodeNames;
 
@@ -127,16 +122,11 @@ public class IocConnectionManager {
 		List<String> nodeNames = new ArrayList<String>();
 		boolean first = true;
 
-		try {
-			// just in case no enum is possible
-			Enumeration connections = this.connectionList.elements();
-			while (connections.hasMoreElements()) {
-				IocConnection thisContent = (IocConnection) connections
-						.nextElement();
-				nodeNames.add(thisContent.getHost());
-			}
-		} catch (Exception e) {
-			nodeNames.add("NONE");
+		Enumeration connections = this.connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection thisContent = (IocConnection) connections
+					.nextElement();
+			nodeNames.add(thisContent.getHost());
 		}
 		return nodeNames.toArray(new String[0]);
 
@@ -146,17 +136,13 @@ public class IocConnectionManager {
 		List<String> nodeNames = new ArrayList<String>();
 		boolean first = true;
 
-		try {
-			// just in case no enum is possible
-			Enumeration connections = this.connectionList.elements();
-			while (connections.hasMoreElements()) {
-				IocConnection thisContent = (IocConnection) connections
-						.nextElement();
-				nodeNames.add(thisContent.getHost() + "|"
-						+ thisContent.getLogicalIocName());
-			}
-		} catch (Exception e) {
-			nodeNames.add("NONE");
+		// just in case no enum is possible
+		Enumeration connections = this.connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection thisContent = (IocConnection) connections
+					.nextElement();
+			nodeNames.add(thisContent.getHost() + "|"
+					+ thisContent.getLogicalIocName());
 		}
 		return nodeNames.toArray(new String[0]);
 
@@ -166,19 +152,15 @@ public class IocConnectionManager {
 		List<String> nodeNames = new ArrayList<String>();
 		boolean first = true;
 
-		try {
-			// just in case no enum is possible
-			Enumeration connections = this.connectionList.elements();
-			while (connections.hasMoreElements()) {
-				IocConnection thisContent = (IocConnection) connections
-						.nextElement();
-				nodeNames.add(thisContent.getHost() + " | "
-						+ thisContent.getLogicalIocName() + "  "
-						+ thisContent.getCurrentConnectState() + "  "
-						+ thisContent.getCurrentSelectState());
-			}
-		} catch (Exception e) {
-			nodeNames.add("NONE");
+		// just in case no enum is possible
+		Enumeration connections = this.connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection thisContent = (IocConnection) connections
+					.nextElement();
+			nodeNames.add(thisContent.getHost() + " | "
+					+ thisContent.getLogicalIocName() + "  "
+					+ thisContent.getCurrentConnectState() + "  "
+					+ thisContent.getCurrentSelectState());
 		}
 		return nodeNames.toArray(new String[0]);
 

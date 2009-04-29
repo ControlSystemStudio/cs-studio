@@ -28,6 +28,9 @@ import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * The application class for the interconnection server.
@@ -46,8 +49,10 @@ public final class InterconnectionServerApplication implements IApplication {
 	public Object start(IApplicationContext context) throws Exception {
 		CentralLogger.getInstance().info(this, "Starting Interconnection Server");
 
-		runStartupServices();
-
+//		runStartupServices();
+		HeadlessConnection.connect("icserver-alarm", "icserver", "krykxmpp.desy.de", ECFConstants.XMPP);
+		Thread.sleep(10000); // to solve service discovery problem
+		ServiceLauncher.startRemoteServices();
 		context.applicationRunning();
 		InterconnectionServer ics = InterconnectionServer.getInstance();
 		ics.executeMe();

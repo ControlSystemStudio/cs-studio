@@ -22,66 +22,97 @@
       </product>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.diag.interconnectionServer.LoginCallbackHandler1"
-            id="org.csstudio.diag.interconnectionServer.loginHandler1"
-            name="org.csstudio.diag.interconnectionServer.loginHandler1"/>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <simpleAction
-            class="org.csstudio.diag.interconnectionServer.GetListOfClients"
-            id="org.csstudio.diag.interconnectionServer.getListOfClients"
-            name="Get List Of Clients"/>
-      <simpleAction
-            class="org.csstudio.diag.interconnectionServer.GetStatisticInformation"
-            id="org.csstudio.diag.interconnectionServer.getStatisticInformation"
-            name="GetStatisticInformation"/>
-      <parametrizedAction
-            class="org.csstudio.diag.interconnectionServer.ExecuteRemoteCommand"
-            id="org.csstudio.diag.interconnectionServer.executeRemoteCommand"
-            name="Execute Remote Command"
-            parameters="param1,param2"/>
-      <dynamicValuesAction
-            class="org.csstudio.diag.interconnectionServer.ExecuteRemoteCommandDyn"
-            id="org.csstudio.diag.interconnectionServer.ExecuteRemoteCommandDyn"
-            loaderActionId="org.csstudio.diag.interconnectionServer.getDynParameters"
-            name="Execute Remote Command Dyn"
-            parameters="Command,IOC"/>
-      <simpleAction
-            class="org.csstudio.diag.interconnectionServer.GetDynParameters"
-            id="org.csstudio.diag.interconnectionServer.getDynParameters"
-            name="GetDynParameters"/>
-      <simpleAction
-            class="org.csstudio.diag.interconnectionServer.StopIcServer"
-            id="org.csstudio.diag.interconnectionServer.StopIcServer"
-            name="Stop IC-Server"/>
-      <simpleAction
-            class="org.csstudio.diag.interconnectionServer.RestartIcServer"
-            id="org.csstudio.diag.interconnectionServer.RestartIcServer"
-            name="Restart IC-Server"
-            visible="true">
-      </simpleAction>
-      <dynamicValuesAction
-            class="org.csstudio.diag.interconnectionServer.ActivateAlarmSimulator"
-            id="org.csstudio.diag.interconnectionServer.ActivateAlarmSimulator"
-            loaderActionId="org.csstudio.diag.interconnectionServer.getDynParameters"
-            name="ActivateAlarmSimulator"
-            parameters="Simulator">
-      </dynamicValuesAction>
-      <dynamicValuesAction
-            class="org.csstudio.diag.interconnectionServer.ScheduleDowntime"
-            id="org.csstudio.diag.interconnectionServer.scheduleDowntimeAction"
-            loaderActionId="org.csstudio.diag.interconnectionServer.getDynParameters"
-            name="Schedule Downtime"
-            parameters="IOC,Duration (seconds)"
-            visible="true">
-      </dynamicValuesAction>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.diag.interconnectionServer.preferences.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.GetListOfIocs"
+            id="org.csstudio.diag.interconnectionServer.management.GetListOfIocs"
+            label="Get List of IOCs">
+      </command>
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.SendCommandToIoc"
+            id="org.csstudio.diag.interconnectionServer.management.SendCommandToIoc"
+            label="Send Command to IOC">
+         <dynamicEnumerationParameter
+               class="org.csstudio.diag.interconnectionServer.internal.management.IocEnumeration"
+               id="ioc"
+               label="IOC">
+         </dynamicEnumerationParameter>
+         <enumerationParameter
+               id="command"
+               label="Command">
+            <enumerationValue
+                  label="Take Over"
+                  value="takeOver">
+            </enumerationValue>
+            <enumerationValue
+                  label="Disconnect"
+                  value="disconnect">
+            </enumerationValue>
+            <enumerationValue
+                  label="Send Alarm"
+                  value="sendAlarm">
+            </enumerationValue>
+            <enumerationValue
+                  label="Send All Alarms"
+                  value="sendAllAlarms">
+            </enumerationValue>
+            <enumerationValue
+                  label="Send Status"
+                  value="sendStatus">
+            </enumerationValue>
+         </enumerationParameter>
+      </command>
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.ScheduleDowntime"
+            id="org.csstudio.diag.interconnectionServer.management.ScheduleDowntime"
+            label="Schedule IOC Downtime">
+         <dynamicEnumerationParameter
+               class="org.csstudio.diag.interconnectionServer.internal.management.IocEnumeration"
+               id="ioc"
+               label="IOC">
+         </dynamicEnumerationParameter>
+         <integerParameter
+               id="duration"
+               label="Duration (seconds)"
+               minimum="60">
+         </integerParameter>
+      </command>
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.StopIcServer"
+            id="org.csstudio.diag.interconnectionServer.management.StopServer"
+            label="Stop Server">
+      </command>
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.RestartIcServer"
+            id="org.csstudio.diag.interconnectionServer.management.RestartServer"
+            label="Restart Server">
+      </command>
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.StartStopAlarmSimulator"
+            id="org.csstudio.diag.interconnectionServer.management.StartStopAlarmSimulator"
+            label="Start/Stop Alarm Simulator">
+         <enumerationParameter
+               id="action"
+               label="Action">
+            <enumerationValue
+                  label="Start"
+                  value="START">
+            </enumerationValue>
+            <enumerationValue
+                  label="Stop"
+                  value="STOP">
+            </enumerationValue>
+         </enumerationParameter>
+      </command>
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.GetIocStatistics"
+            id="org.csstudio.diag.interconnectionServer.management.GetStatisticInformation"
+            label="Get IOC Statistics">
+      </command>
    </extension>
 
 </plugin>

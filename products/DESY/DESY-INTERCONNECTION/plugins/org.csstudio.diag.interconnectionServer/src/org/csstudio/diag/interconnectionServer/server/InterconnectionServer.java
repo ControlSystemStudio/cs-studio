@@ -119,7 +119,7 @@ public class InterconnectionServer
 
     	for ( int i=0; i<listOfNodes.length; i++ ) {
     		CentralLogger.getInstance().warn(this, "InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
-    		SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( listOfNodes[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
+    		IocCommandSender sendCommandToIoc = new IocCommandSender( listOfNodes[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
     		getCommandExecutor().execute(sendCommandToIoc);
     	}
     }

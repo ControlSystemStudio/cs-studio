@@ -1,4 +1,3 @@
-package org.csstudio.diag.interconnectionServer;
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,15 +18,30 @@ package org.csstudio.diag.interconnectionServer;
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */ 
+
+package org.csstudio.diag.interconnectionServer.internal.management;
+
+import org.csstudio.diag.interconnectionServer.InterconnectionServerApplication;
+import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
+
+/**
+ * Management command which stops the Interconnection Server.
+ * 
+ * @author Joerg Rathlev
  */
+public class StopIcServer implements IManagementCommand {
 
-import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
-import org.csstudio.platform.libs.dcf.actions.IAction;
-
-public class GetListOfClients implements IAction {
-
-	public Object run(Object param) {
-		return IocConnectionManager.getInstance().getNodeNameStatusArray();
+	/**
+	 * {@inheritDoc}
+	 */
+	public CommandResult execute(CommandParameters parameters) {
+		InterconnectionServerApplication.SHUTDOWN = true;
+		InterconnectionServer.getInstance().stopIcServer();
+		return CommandResult.createSuccessResult();
 	}
 
 }

@@ -400,7 +400,7 @@ public class ClientRequest implements Runnable
         			 * send the command to the command port configured in the
         			 * preferences.
         			 */
-        			SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
     				icServer.getCommandExecutor().execute(sendCommandToIoc);
     				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
     				statisticContent.setDidWeSetAllChannelToDisconnect(false);
@@ -442,7 +442,7 @@ public class ClientRequest implements Runnable
 	        			 * send the command to the command port configured in the
 	        			 * preferences.
         				 */
-        				SendCommandToIoc sendCommandToIoc = new SendCommandToIoc( hostName, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        				IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         				icServer.getCommandExecutor().execute(sendCommandToIoc);
         				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
         				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
