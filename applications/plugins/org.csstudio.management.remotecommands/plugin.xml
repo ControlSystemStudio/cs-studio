@@ -5,7 +5,7 @@
          point="org.remotercp.remoteService">
       <remoteService
             class="org.csstudio.management.internal.remotecommands.ManagementCommandServiceLauncher"
-            id="org.csstudio.management.remotecommands.ManagementCommandService">
+            id="org.csstudio.management.remotecommands.ManagementCommandLauncher">
       </remoteService>
    </extension>
 

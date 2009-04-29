@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.management.internal.remotecommands.Activator
 Bundle-Vendor: DESY
 Require-Bundle: org.eclipse.core.runtime,
- org.remotercp.login;bundle-version="[1.0.0,2.0.0)",
  org.remotercp.common;bundle-version="[1.0.0,2.0.0)",
  org.remotercp.ecf;bundle-version="[1.0.0,2.0.0)",
  org.remotercp.util;bundle-version="[1.0.0,2.0.0)"
