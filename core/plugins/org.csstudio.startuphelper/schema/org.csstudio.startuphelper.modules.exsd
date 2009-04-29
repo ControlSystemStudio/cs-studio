@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.csstudio.startuphelper" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.csstudio.startuphelper" id="org.csstudio.startuphelper.modules" name="org.csstudio.startuphelper.modules"/>
+      </appinfo>
+      <documentation>
+         This extension point enables adding additional features to the startup procedures. It provides the entry point which can be configured how certain aspects of the start up procedure will be dealt with during the startup plug-in initialization.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="locale" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="login" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="project" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="services" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="shutdown" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="startupParameters" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="workspace" minOccurs="0" maxOccurs="unbounded"/>
+            <sequence>
+               <element ref="workbench" minOccurs="0" maxOccurs="1"/>
+            </sequence>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="locale">
+      <annotation>
+         <documentation>
+            This extension point defines how the locale settings should be applied to the product. The settings can be gathered from anywhere the user desires and applied to only particular or all part of the application. The details are defined only by the implementation of the LocaleSettingsExtPoint interface.
+Use this extension point by those products which require specific locale settings. If this extension point is not defined, the default settings will be used first time they are required.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Default implementation can be found in org.csstudio.startup.extensions.impl.DefaultLocaleSettingsExtPoint. It uses system&apos;s default locale according to the CSSPlatformPlugin default bundle.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.LocaleSettingsExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="login">
+      <annotation>
+         <documentation>
+            The extension point defines how the user should login to the application. On start of this extension point the implementation should provide the neccessary input dialogs for the user to login or use some other ways to login if the login is required at all.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Default implementation of this extension point is defined by the org.csstudio.startup.extensions.impl.DefaultLoginPromptExtPoint which uses the org.csstudio.platform.security plugin to login to the application.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.LoginPromptExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="project">
+      <annotation>
+         <documentation>
+            The project extension point defines which project should be opened when the application starts and how they should be opened.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  There is no default implementation of this interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.ProjectExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="services">
+      <annotation>
+         <documentation>
+            The services extension defines which services should be started at application startup. In general, this extension defines which ServiceProxies should be started and how should their priority be taken into account.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The default implementation can be found in org.csstudio.startup.extensions.impl.DefaultServicesStartupExtPoint and it loads all the ServiceProxies and starts them according to the priority: high priority first, the rest later.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.ServicesStartupExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="shutdown">
+      <annotation>
+         <documentation>
+            Shutdown extension point defines the procedures which will be carried out when the application closes.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  There is no default implementation of this procedure.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.ShutDownExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="startupParameters">
+      <annotation>
+         <documentation>
+            Startup parameters reads the jvm, program and other types of parameters that are required by the application.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Default implementation can be found in org.csstudio.startup.extensions.impl.DefaultStartupParametersExtPoint. It loads all the system properties together with the program arguments. The program arguments are dissected and each argument which has a &apos;=&apos; sign in its definition is treated as key-value pair. If there is no &apos;=&apos; sign in the argument, the argument is still stored in the parameters and its value is Boolean.TRUE.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.StartupParametersExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="workbench">
+      <annotation>
+         <documentation>
+            The extension defines the action taken during the workbench lifecycle.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Default implementation can be found in org.csstudio.startup.extensions.impl.DefaultWorkbenchExtPoint. It runs the workbench using the CssWorkbenchAdvisor and transforms the exit code according to the system properties (for the details see als org.csstudio.startup.extensions.impl.RelaunchConstants).
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.WorkbenchExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="workspace">
+      <annotation>
+         <documentation>
+            The workspace extension point takes care of loading the workspace to be used by the application. It should allow user to select/define a workspace or select one using the startup parameters etc.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  There is no default implementation of this extension point
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.startup.extensions.WorkspaceExtPoint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         For the API information see javadoc of this plug-in (org.csstudio.startup.extensions).
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         For default implementation see package org.csstudio.startup.extension.impl.
+      </documentation>
+   </annotation>
+
+
+</schema>
