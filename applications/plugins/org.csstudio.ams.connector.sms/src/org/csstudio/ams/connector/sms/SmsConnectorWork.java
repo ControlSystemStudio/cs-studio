@@ -30,11 +30,8 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-// import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-// import javax.jms.Topic;
-// import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -43,9 +40,9 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.internal.SampleService;
 import org.csstudio.ams.connector.sms.service.JmsSender;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.slf4j.LoggerFactory;
 import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;
 import org.smslib.Message.MessageEncodings;
@@ -398,8 +395,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 strSimPin[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "SimPin");
                 strSimPin[i] = (strSimPin[i] == null) ? "" : strSimPin[i];
             }
-                        
-            modemService = new Service(CentralLogger.getInstance().getLogger(this));
+            
+            modemService = new Service();
             
             for(int i = 0;i < modemCount;i++)
             {
