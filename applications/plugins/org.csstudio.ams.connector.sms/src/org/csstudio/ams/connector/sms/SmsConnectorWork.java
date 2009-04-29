@@ -23,6 +23,8 @@
  
 package org.csstudio.ams.connector.sms;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import javax.jms.Connection;
@@ -79,7 +81,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     private long readWaitingPeriod;
     
     /** This class contains all modem ids (names) */
-    private ModemNames modemNames;
+    private ModemInformation modemNames;
     
     private short sTest = 0; // 0 - normal behavior, other - for test
     private boolean bStop = false;
@@ -93,13 +95,16 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     public static final String MANAGE_REPLY_TOPIC = "T_AMS_CON_MANAGE_REPLY";
     public static final String MANAGE_REPLY_TOPIC_SUB = "T_AMS_TSUB_CON_MANAGE_REPLY";
     
+    /** Text for the test SMS */
+    public static final String SMS_TEST_TEXT = "[MODEMTEST{$DATE,$GATEWAYID}]";
+    
     public SmsConnectorWork(SmsConnectorStart scs)
     {
         // Set the "parent" object
         this.scs = scs;
         smsContainer = new SmsContainer();
         readWaitingPeriod = 0;
-        modemNames = new ModemNames();
+        modemNames = new ModemInformation();
     }
     
     public void run()
@@ -670,7 +675,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     @SuppressWarnings("unused")
     private boolean sendCheckMessage()
     {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        OutboundMessage msg = null;
         String name = null;
+        String text = null;
+        
         boolean success = false;
         
         for(int i = 0;i < modemNames.getModemCount();i++)
@@ -678,7 +687,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             name = modemNames.getModemName(i);
             if(name != null)
             {
+                // TODO:
+                text = SMS_TEST_TEXT;
+                text = text.replaceAll("\\$DATE", dateFormat.format(Calendar.getInstance().getTime()));
+                text = text.replaceAll("\\$GATEWAYID", name);
                 
+                msg = new OutboundMessage();
+                //modemService.send
             }
         }
         

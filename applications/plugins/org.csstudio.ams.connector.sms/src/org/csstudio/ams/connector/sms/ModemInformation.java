@@ -29,11 +29,11 @@ import java.util.Vector;
  * @author Markus Moeller
  *
  */
-public class ModemNames
+public class ModemInformation
 {
     private Vector<String> modemNames;
     
-    public ModemNames()
+    public ModemInformation()
     {
         modemNames = new Vector<String>();
     }
