@@ -42,7 +42,6 @@ import org.csstudio.ams.connector.sms.internal.SampleService;
 import org.csstudio.ams.connector.sms.service.JmsSender;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.slf4j.LoggerFactory;
 import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;
 import org.smslib.Message.MessageEncodings;
@@ -79,6 +78,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     /** Reading period (in ms) for the modem */
     private long readWaitingPeriod;
     
+    /** This class contains all modem ids (names) */
+    private ModemNames modemNames;
+    
     private short sTest = 0; // 0 - normal behavior, other - for test
     private boolean bStop = false;
     private boolean bStoppedClean = false;
@@ -97,6 +99,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         this.scs = scs;
         smsContainer = new SmsContainer();
         readWaitingPeriod = 0;
+        modemNames = new ModemNames();
     }
     
     public void run()
@@ -315,6 +318,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         String[] strManufac = null;
         String[] strModel = null;
         String[] strSimPin = null;
+        String m = null;
         int[] iBaudRate = null;
         int modemCount = 1;
         
@@ -407,14 +411,15 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             + strManufac[i] + ","
                             + strModel[i] + ")");
                     // modemService = new CSoftwareService(strComPort, iBaudRate, strManufac, strModel);
-    
-                    SerialModemGateway modem = new SerialModemGateway("modem." + strComPort[i].toLowerCase(), strComPort[i], iBaudRate[i], strManufac[i], strModel[i]);
+                    m = "modem." + strComPort[i].toLowerCase();
+                    SerialModemGateway modem = new SerialModemGateway(m , strComPort[i], iBaudRate[i], strManufac[i], strModel[i]);
                     modem.setInbound(true);
                     modem.setOutbound(true);
                     modem.setSimPin(strSimPin[i]);
                     // modem.setOutboundNotification(outboundNotification);
                     modemService.addGateway(modem);
-    
+                    modemNames.addModemName(m);
+                    
                     sleep(2000);
                 }
                 else
@@ -662,6 +667,25 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         return iErr;
     }
     
+    @SuppressWarnings("unused")
+    private boolean sendCheckMessage()
+    {
+        String name = null;
+        boolean success = false;
+        
+        for(int i = 0;i < modemNames.getModemCount();i++)
+        {
+            name = modemNames.getModemName(i);
+            if(name != null)
+            {
+                
+            }
+        }
+        
+        return success;
+    }
+    
+    @SuppressWarnings("unused")
     private int sendSmsMsg(Message message) throws Exception
     {
         if (!(message instanceof MapMessage))
