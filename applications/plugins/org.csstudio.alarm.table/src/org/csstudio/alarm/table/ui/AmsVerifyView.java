@@ -231,9 +231,9 @@ public class AmsVerifyView extends LogView {
 			mapMessage.setString("TEXT", textPropertyValue); //$NON-NLS-1$
 
 			JmsLogsPlugin
-					.logInfo(user.getUsername() + " verify Ams system with "
+					.logInfo("Verify Ams system with "
 							+ textPropertyValue); //$NON-NLS-2$
-			sender.sendMessage();
+			sender.sendMessage("ALARM");
 		} catch (JMSException e) {
 			CentralLogger.getInstance().error(this, "JMS error: " + e.toString());
 		} catch (Exception e) {

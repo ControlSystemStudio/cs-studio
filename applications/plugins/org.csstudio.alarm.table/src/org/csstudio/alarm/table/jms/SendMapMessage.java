@@ -94,11 +94,11 @@ public class SendMapMessage {
 		return message;
 	}
 
-	public void sendMessage() throws Exception {
+	public void sendMessage(String topic) throws Exception {
 		if (session == null) {
 			CentralLogger.getInstance().debug(this,
 					"Start Sender, start timer task");
-			startSender("ALARM");
+			startSender(topic);
 			_timerTask = new CloseJMSConnectionTimerTask(this);
 			_timer.schedule(_timerTask, 1000, 1000);
 		}

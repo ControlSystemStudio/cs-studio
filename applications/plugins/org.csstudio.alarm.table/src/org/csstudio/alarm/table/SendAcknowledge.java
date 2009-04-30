@@ -158,7 +158,7 @@ public class SendAcknowledge extends Job {
 						.logInfo(user.getUsername() + " send Ack message, MsgName: "
 								+ message.getName()
 								+ " MsgTime: " + message.getProperty("EVENTTIME")); //$NON-NLS-2$
-				sender.sendMessage();
+				sender.sendMessage("ACK");
 			}
 		} catch (Exception e) {
 			JmsLogsPlugin.logException("ACK not set", e);
