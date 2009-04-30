@@ -40,7 +40,7 @@ public class AmsVerifyViewPreferenceInitializer extends
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
-		store.setDefault(LogViewPreferenceConstants.P_STRING, "ACK" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
+		store.setDefault(LogViewPreferenceConstants.P_STRING, 
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
