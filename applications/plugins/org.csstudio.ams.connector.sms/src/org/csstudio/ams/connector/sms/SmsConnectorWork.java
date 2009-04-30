@@ -785,11 +785,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             amsPublisherCheck = amsSenderSession.createProducer(topic);
             mapMessage = amsSenderSession.createMapMessage();
             mapMessage.setString("TYPE", "event");
-            mapMessage.setString("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
+            mapMessage.setString("EVENTTIME", eventTime);
             mapMessage.setString("TEXT", ((success) ? "OK" : "ERROR"));
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
             mapMessage.setString("APPLICATION-ID", "SmsConnector");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
+            
+            amsPublisherCheck.send(mapMessage);
         }
         catch(JMSException jmse)
         {
