@@ -749,7 +749,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         
                         do
                         {
-                            Thread.sleep(10000);
+                            Thread.sleep(readWaitingPeriod);
 
                             inMsg = modemService.readMessages(MessageClasses.ALL, name);
                             for(InboundMessage im : inMsg)
