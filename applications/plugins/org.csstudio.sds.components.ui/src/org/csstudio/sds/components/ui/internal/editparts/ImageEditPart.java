@@ -21,21 +21,24 @@
  */
  package org.csstudio.sds.components.ui.internal.editparts;
 
+
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
-
+import org.eclipse.draw2d.geometry.Dimension;
 import org.csstudio.sds.components.model.ImageModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableImageFigure;
 
 /**
  * EditPart controller for the image widget.
  * 
- * @author jbercic
+ * @author jbercic, Xihui Chen
  * 
  */
 public final class ImageEditPart extends AbstractWidgetEditPart {
+
+	
 
 	/**
 	 * Returns the casted model. This is just for convenience.
@@ -61,10 +64,17 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		figure.setLeftCrop(model.getLeftCrop());
 		figure.setRightCrop(model.getRightCrop());
 		figure.setStretch(model.getStretch());
-		
+		figure.setAutoSize(model.isAutoSize());
+		figure.setStopAnimation(model.isStopAnimation());
 		return figure;
 	}
 	
+	@Override
+	public void activate() {
+		super.activate();
+		if(((ImageModel)getModel()).isVisible() && !((ImageModel)getModel()).isStopAnimation())
+			((RefreshableImageFigure) getFigure()).startAnimation();
+	}
 	/**
 	 * Register change handlers for the four crop properties.
 	 */
@@ -74,7 +84,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
-				imageFigure.setTopCrop((Integer)newValue);
+				imageFigure.setTopCrop((Integer)newValue);				
+				autoSizeWidget(imageFigure);
 				return true;
 			}
 		};
@@ -85,7 +96,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
-				imageFigure.setBottomCrop((Integer)newValue);
+				imageFigure.setBottomCrop((Integer)newValue);			
+				autoSizeWidget(imageFigure);
 				return true;
 			}
 		};
@@ -97,6 +109,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
 				imageFigure.setLeftCrop((Integer)newValue);
+				autoSizeWidget(imageFigure);
 				return true;
 			}
 		};
@@ -107,7 +120,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
-				imageFigure.setRightCrop((Integer)newValue);
+				imageFigure.setRightCrop((Integer)newValue);	
+				autoSizeWidget(imageFigure);
 				return true;
 			}
 		};
@@ -125,8 +139,11 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
 				imageFigure.setFilePath((IPath)newValue);
+				autoSizeWidget(imageFigure);
 				return true;
 			}
+
+			
 		};
 		setPropertyChangeHandler(ImageModel.PROP_FILENAME, handle);
 		
@@ -136,10 +153,38 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
 				imageFigure.setStretch((Boolean)newValue);
+				autoSizeWidget(imageFigure);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_STRETCH, handle);
+	
+		// changes to the autosize property
+		handle = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue,
+					final IFigure figure) {
+				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
+				imageFigure.setAutoSize((Boolean)newValue);
+				ImageModel model = (ImageModel)getModel();
+				Dimension d = imageFigure.getAutoSizedDimension();
+				if((Boolean) newValue && !model.getStretch() && d != null) 
+					model.setSize(d.width, d.height);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ImageModel.PROP_AUTOSIZE, handle);
+		
+		
+		// changes to the stop animation property
+		handle = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue,
+					final IFigure figure) {
+				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
+				imageFigure.setStopAnimation((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ImageModel.PROP_STOP_ANIMATION, handle);
 		
 		// changes to the border width property
 		handle = new IWidgetPropertyChangeHandler() {
@@ -147,6 +192,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
 				imageFigure.resizeImage();
+				autoSizeWidget(imageFigure);
 				return true;
 			}
 		};
@@ -159,6 +205,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
 				imageFigure.resizeImage();
+				autoSizeWidget(imageFigure);
 				return true;
 			}
 		};
@@ -167,4 +214,22 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		
 		registerCropPropertyHandlers();
 	}
+	
+	
+	
+	@Override
+	public void deactivate() {
+		super.deactivate();
+		((RefreshableImageFigure) getFigure()).stopAnimation();
+		((RefreshableImageFigure) getFigure()).dispose();
+	}
+	
+	private void autoSizeWidget(RefreshableImageFigure imageFigure) {
+		ImageModel model = (ImageModel)getModel();
+		imageFigure.setAutoSize(model.isAutoSize());
+		Dimension d = imageFigure.getAutoSizedDimension();
+		if(model.isAutoSize() && !model.getStretch() && d != null) 
+			model.setSize(d.width, d.height);
+	}
+	
 }

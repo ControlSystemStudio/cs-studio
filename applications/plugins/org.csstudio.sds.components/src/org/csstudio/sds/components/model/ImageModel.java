@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.Path;
 /**
  * An image widget model.
  * 
- * @author jbercic
+ * @author jbercic, Xihui Chen
  * 
  */
 public final class ImageModel extends AbstractWidgetModel {
@@ -66,6 +66,16 @@ public final class ImageModel extends AbstractWidgetModel {
 	 */
 	public static final String PROP_STRETCH = "stretch";	
 	/**
+	 * The ID of the <i>autosize</i> property.
+	 */
+	public static final String PROP_AUTOSIZE= "autosize";	
+	
+	/**
+	 * The ID of the <i>stop animation</i> property.
+	 */
+	public static final String PROP_STOP_ANIMATION= "stopanimation";	
+	
+	/**
 	 * The default value for the file extensions.
 	 */
 	private static final String[] FILE_EXTENSIONS = new String[] {"*", "jpg", "jpeg", "gif", "bmp", "png"};
@@ -95,7 +105,11 @@ public final class ImageModel extends AbstractWidgetModel {
 		addProperty(PROP_RIGHTCROP, new IntegerProperty("Crop Right",
 				WidgetPropertyCategory.Image,0));
 		addProperty(PROP_STRETCH, new BooleanProperty("Stretch to Fit",
+				WidgetPropertyCategory.Image,false));
+		addProperty(PROP_AUTOSIZE, new BooleanProperty("Auto Size",
 				WidgetPropertyCategory.Image,true));
+		addProperty(PROP_STOP_ANIMATION, new BooleanProperty("Stop Animation",
+				WidgetPropertyCategory.Image,false));
 	}
 	
 	/**
@@ -156,5 +170,19 @@ public final class ImageModel extends AbstractWidgetModel {
 	 */
 	public boolean getStretch() {
 		return (Boolean) getProperty(PROP_STRETCH).getPropertyValue();
+	}
+	
+	/**
+	 *  @return True if the widget should be auto sized according the image size.
+	 */
+	public boolean isAutoSize() {
+		return (Boolean) getProperty(PROP_AUTOSIZE).getPropertyValue();
+	}
+	
+	/**
+	 *  @return True if the animation is stopped.
+	 */
+	public boolean isStopAnimation() {
+		return (Boolean) getProperty(PROP_STOP_ANIMATION).getPropertyValue();
 	}
 }
