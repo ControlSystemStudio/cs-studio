@@ -120,7 +120,7 @@ public class SendAcknowledge extends Job {
 				java.util.Date currentDate = new java.util.Date();
 				String time = sdf.format(currentDate);
 
-				MapMessage mapMessage = sender.getSessionMessageObject();
+				MapMessage mapMessage = sender.getSessionMessageObject("ACK");
 				HashMap<String, String> hm = message.getHashMap();
 				Iterator<String> it = hm.keySet().iterator();
 

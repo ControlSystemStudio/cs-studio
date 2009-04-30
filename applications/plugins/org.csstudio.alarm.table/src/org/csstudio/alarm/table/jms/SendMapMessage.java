@@ -57,11 +57,11 @@ public class SendMapMessage {
 		return _instance;
 	}
 
-	public void startSender() throws Exception {
+	public void startSender(String topic) throws Exception {
 		_senderConnection = SharedJmsConnections.sharedSenderConnection();
 		session = _senderConnection.createSession(false,
 				Session.AUTO_ACKNOWLEDGE);
-		destination = (Destination) session.createTopic("ACK");
+		destination = (Destination) session.createTopic(topic);
 		sender = session.createProducer(destination);
 		sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 	}
@@ -76,11 +76,11 @@ public class SendMapMessage {
 		message = null;
 	}
 
-	public MapMessage getSessionMessageObject() throws Exception {
+	public MapMessage getSessionMessageObject(String topic) throws Exception {
 		if (session == null) {
 			CentralLogger.getInstance().debug(this,
 					"Start Sender, start timer task");
-			startSender();
+			startSender(topic);
 			_timerTask = new CloseJMSConnectionTimerTask(this);
 			_timer.schedule(_timerTask, 1000, 1000);
 		}
@@ -98,7 +98,7 @@ public class SendMapMessage {
 		if (session == null) {
 			CentralLogger.getInstance().debug(this,
 					"Start Sender, start timer task");
-			startSender();
+			startSender("ALARM");
 			_timerTask = new CloseJMSConnectionTimerTask(this);
 			_timer.schedule(_timerTask, 1000, 1000);
 		}

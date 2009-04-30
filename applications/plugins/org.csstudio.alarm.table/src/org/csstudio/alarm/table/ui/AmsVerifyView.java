@@ -210,7 +210,7 @@ public class AmsVerifyView extends LogView {
 			java.util.Date currentDate = new java.util.Date();
 			String time = sdf.format(currentDate);
 
-			MapMessage mapMessage = sender.getSessionMessageObject();
+			MapMessage mapMessage = sender.getSessionMessageObject("ALARM");
 			
 			//Add username and host to acknowledge message.
 			User user = SecurityFacade.getInstance().getCurrentUser();
