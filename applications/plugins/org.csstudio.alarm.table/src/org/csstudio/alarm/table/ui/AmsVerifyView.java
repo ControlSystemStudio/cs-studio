@@ -229,6 +229,7 @@ public class AmsVerifyView extends LogView {
 
 			mapMessage.setString("EVENTTIME", time); //$NON-NLS-1$
 			mapMessage.setString("TEXT", textPropertyValue); //$NON-NLS-1$
+			mapMessage.setString("NAME", "AMSCOMMONTEST"); //$NON-NLS-1$
 
 			JmsLogsPlugin
 					.logInfo("Verify Ams system with "
