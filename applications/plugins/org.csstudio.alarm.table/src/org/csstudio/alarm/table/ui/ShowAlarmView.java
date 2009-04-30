@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,24 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.preferences;
 
-/**
- * Constant definitions for plug-in preferences
- */
-public class AlarmViewerPreferenceConstants {
+package org.csstudio.alarm.table.ui;
 
-	public static final String P_STRINGAlarm = "Alarm.column_names";//$NON-NLS-1$
-	public static final String MAX = Messages.getString("AlarmViewerPreferenceConstants.rows.max"); //$NON-NLS-1$
-	public static final String REMOVE = Messages.getString("AlarmViewerPreferenceConstants.rows.min"); //$NON-NLS-1$
-	public static final String INITIAL_PRIMARY_CONTEXT_FACTORY = "Alarm.context_factory.primary "; //$NON-NLS-1$
-	public static final String PRIMARY_URL = "Alarm.provider_url.primary "; //$NON-NLS-1$
-	public static final String INITIAL_SECONDARY_CONTEXT_FACTORY = "Alarm.context_factory.secondary"; //$NON-NLS-1$
-	public static final String SECONDARY_URL = "Alarm.provider_url.secondary"; //$NON-NLS-1$
-	public static final String QUEUE = "Alarm.message_queue"; //$NON-NLS-1$
-    public static final String SENDER_URL = "Alarm.sender_url"; //$NON-NLS-1$
-    public static final String LOG_ALARM_SOUND_FILE = "Alarm.log_alarm_sound_file"; //$NON-NLS-1$
-    
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
+public class ShowAlarmView implements IWorkbenchWindowActionDelegate {
 
+	private static Integer _instance = 0;
+
+	public void dispose() {
+	}
+
+	public void init(IWorkbenchWindow window) {
+	}
+
+	public void run(IAction action) {
+		{
+			try {
+				IWorkbench workbench = PlatformUI.getWorkbench();
+				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				page.showView(AlarmView.ID, _instance.toString(),
+						IWorkbenchPage.VIEW_ACTIVATE);
+				_instance++;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+	}
 }

@@ -24,7 +24,6 @@ public class JMSAlarmMessageListTest {
 	public void testRemoveMessages() throws JMSException {
 		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
 				.split(";"));
-		messageList.setSound(false);
 		String eventtimeMajor = createAndIncrementDate();
 		String eventtimeMinor = createAndIncrementDate();
 		for(int i = 0; i < 5; i++) {
@@ -56,7 +55,6 @@ public class JMSAlarmMessageListTest {
 	public void testAddStatusDisconnected() throws JMSException {
 		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
 				.split(";"));
-		messageList.setSound(false);
 		addJMSMessage("NAME", "MAJOR", "event", false, null, messageList);
 		addJMSMessage("NAME", "MINOR", "event", false, null, messageList);
 		Assert.assertEquals(2, messageList.getJMSMessageList().size());
@@ -95,7 +93,6 @@ public class JMSAlarmMessageListTest {
 	public void testSimpleMessageSequence() throws JMSException {
 		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
 				.split(";"));
-		messageList.setSound(false);
 		addJMSMessage("NAME", "MINOR", "event", false, null, messageList);
 		addJMSMessage("NAME", "MINOR", "event", false, null, messageList);
 		Assert.assertEquals(1, messageList.getJMSMessageList().size());
@@ -126,7 +123,6 @@ public class JMSAlarmMessageListTest {
 		// property TYPE = null
 		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
 				.split(";"));
-		messageList.setSound(false);
 		addJMSMessage("NAME", "MAJOR", null, false, null, messageList);
 		Assert.assertEquals(0, messageList.getJMSMessageList().size());
 

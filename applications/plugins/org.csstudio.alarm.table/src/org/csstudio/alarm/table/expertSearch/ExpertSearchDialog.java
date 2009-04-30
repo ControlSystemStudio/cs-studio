@@ -30,7 +30,7 @@ import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
-import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
+import org.csstudio.alarm.table.preferences.ArchiveViewPreferenceConstants;
 import org.csstudio.apputil.time.AbsoluteTimeParser;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.StartEndTimeParser;
@@ -418,7 +418,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         filter.setLayout(glLeft);
         ComboViewer title = new ComboViewer(filter, SWT.SINGLE | SWT.READ_ONLY);
         String[] test = JmsLogsPlugin.getDefault().getPluginPreferences().getString(
-                LogArchiveViewerPreferenceConstants.P_STRINGArch).split(";"); //$NON-NLS-1$
+                ArchiveViewPreferenceConstants.P_STRINGArch).split(";"); //$NON-NLS-1$
         title.add(_msgTypes);
         int index = 0;
         if (type != null) {

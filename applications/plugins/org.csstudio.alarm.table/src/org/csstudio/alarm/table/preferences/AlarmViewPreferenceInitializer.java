@@ -28,19 +28,20 @@ import org.eclipse.jface.preference.IPreferenceStore;
 /**
  * Class used to initialize default preference values.
  */
-public class AlarmViewerPreferenceInitializer extends
+public class AlarmViewPreferenceInitializer extends
 		AbstractPreferenceInitializer {
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	 * @seeorg.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
+	 * initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
 
-		store.setDefault(AlarmViewerPreferenceConstants.P_STRINGAlarm,
+		store.setDefault(AlarmViewPreferenceConstants.P_STRINGAlarm,
 				"TYPE,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 						"EVENTTIME,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 						"NAME,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
@@ -59,31 +60,10 @@ public class AlarmViewerPreferenceInitializer extends
 						"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 						"DESTINATION" //$NON-NLS-1$
 		);
-		store.setDefault(AlarmViewerPreferenceConstants.MAX, 200);
-		store.setDefault(AlarmViewerPreferenceConstants.REMOVE, 10);
-		store.setDefault(
-				AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY,
-				"org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store
-				.setDefault(
-						AlarmViewerPreferenceConstants.PRIMARY_URL,
-						"failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		store
-				.setDefault(
-						AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY,
-						"org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store
-				.setDefault(
-						AlarmViewerPreferenceConstants.SECONDARY_URL,
-						"failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		store.setDefault(AlarmViewerPreferenceConstants.QUEUE, "ALARM,ACK"); //$NON-NLS-1$
-		store
-				.setDefault(
-						AlarmViewerPreferenceConstants.SENDER_URL,
-						"failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		store
-		.setDefault(
-				AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE,
+		store.setDefault(AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE,
 				"..\\beep.mp3"); //$NON-NLS-1$	
+		store
+		.setDefault(AlarmViewPreferenceConstants.TOPIC_SET,
+				"?ALARM,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$
 	}
 }

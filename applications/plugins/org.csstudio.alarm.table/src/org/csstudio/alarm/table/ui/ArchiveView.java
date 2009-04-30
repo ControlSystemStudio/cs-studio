@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.table;
+package org.csstudio.alarm.table.ui;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -35,13 +35,15 @@ import java.util.Observer;
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
+import org.csstudio.alarm.table.ColumnPropertyChangeListener;
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
-import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.csstudio.alarm.table.preferences.ArchiveViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.readDB.AccessDBJob;
 import org.csstudio.alarm.table.readDB.DBAnswer;
 import org.csstudio.apputil.time.StartEndTimeParser;
@@ -84,10 +86,10 @@ import org.eclipse.ui.views.IViewRegistry;
  * @version $Revision$
  * @since 19.07.2007
  */
-public class ViewArchive extends ViewPart implements Observer {
+public class ArchiveView extends ViewPart implements Observer {
 
 	/** The Id of this Object. */
-	public static final String ID = ViewArchive.class.getName();
+	public static final String ID = ArchiveView.class.getName();
 
 	/** The Parent Shell. */
 	private Shell _parentShell = null;
@@ -154,7 +156,7 @@ public class ViewArchive extends ViewPart implements Observer {
 
 	private static final String SECURITY_ID = "alarmAdministration"; //$NON-NLS-1$
 
-	public ViewArchive() {
+	public ArchiveView() {
 		super();
 		_dbAnswer = new DBAnswer();
 		_dbAnswer.addObserver(this);
@@ -168,7 +170,7 @@ public class ViewArchive extends ViewPart implements Observer {
 		_disp = parent.getDisplay();
 
 		_columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
+				.getString(ArchiveViewPreferenceConstants.P_STRINGArch)
 				.split(";"); //$NON-NLS-1$
 		_jmsMessageList = new JMSMessageList(_columnNames);
 
@@ -261,7 +263,7 @@ public class ViewArchive extends ViewPart implements Observer {
 		parent.pack();
 
 		_columnPropertyChangeListener = new ColumnPropertyChangeListener(
-				LogArchiveViewerPreferenceConstants.P_STRINGArch,
+				ArchiveViewPreferenceConstants.P_STRINGArch,
 				_jmsLogTableViewer);
 
 		JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -289,7 +291,7 @@ public class ViewArchive extends ViewPart implements Observer {
 			 * messages even if the table shows just a subset!!
 			 */
 			public void widgetSelected(final SelectionEvent e) {
-				_dbReader.setReadProperties(ViewArchive.this._dbAnswer, _filter
+				_dbReader.setReadProperties(ArchiveView.this._dbAnswer, _filter
 						.copy());
 				_dbReader
 						.setAccessType(AccessDBJob.DBAccessType.READ_MSG_NUMBER_TO_DELETE);
@@ -333,7 +335,7 @@ public class ViewArchive extends ViewPart implements Observer {
 
 				File path = new File(selected);
 				
-				_dbReader.setReadProperties(ViewArchive.this._dbAnswer, _filter
+				_dbReader.setReadProperties(ArchiveView.this._dbAnswer, _filter
 						.copy(), path, _columnNames);
 				_dbReader
 				.setAccessType(AccessDBJob.DBAccessType.EXPORT);
@@ -563,7 +565,7 @@ public class ViewArchive extends ViewPart implements Observer {
 
 	private void callDBReadJob() {
 		showNewTime(_filter.getFrom(), _filter.getTo());
-		_dbReader.setReadProperties(ViewArchive.this._dbAnswer, _filter.copy());
+		_dbReader.setReadProperties(ArchiveView.this._dbAnswer, _filter.copy());
 		_countLabel.setText(Messages.ViewArchive_15);
 		_jmsLogTableViewer.getTable().setEnabled(false);
 		_dbReader.setAccessType(AccessDBJob.DBAccessType.READ_MESSAGES);
@@ -584,13 +586,13 @@ public class ViewArchive extends ViewPart implements Observer {
 							.getDefault()
 							.getPreferenceStore()
 							.getString(
-									LogArchiveViewerPreferenceConstants.DATE_FORMAT));
+									ArchiveViewPreferenceConstants.DATE_FORMAT));
 		} catch (Exception e) {
 			sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore()
 					.getDefaultString(
-							LogArchiveViewerPreferenceConstants.DATE_FORMAT));
+							ArchiveViewPreferenceConstants.DATE_FORMAT));
 			JmsLogsPlugin.getDefault().getPreferenceStore().setToDefault(
-					LogArchiveViewerPreferenceConstants.DATE_FORMAT);
+					ArchiveViewPreferenceConstants.DATE_FORMAT);
 		}
 		_timeFrom.setText(sdf.format(from.getTime()));
 		_fromTime = TimestampFactory.fromCalendar(from);
@@ -634,7 +636,7 @@ public class ViewArchive extends ViewPart implements Observer {
 		int[] width = _jmsLogTableViewer.getColumnWidth();
 		String newPreferenceColumnString = ""; //$NON-NLS-1$
 		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
+				.getString(ArchiveViewPreferenceConstants.P_STRINGArch)
 				.split(";"); //$NON-NLS-1$
 		if (width.length != columns.length) {
 			return;
@@ -647,7 +649,7 @@ public class ViewArchive extends ViewPart implements Observer {
 				newPreferenceColumnString.length() - 1);
 		IPreferenceStore store = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
-		store.setValue(LogArchiveViewerPreferenceConstants.P_STRINGArch,
+		store.setValue(ArchiveViewPreferenceConstants.P_STRINGArch,
 				newPreferenceColumnString);
 		if (store.needsSaving()) {
 			JmsLogsPlugin.getDefault().savePluginPreferences();
@@ -678,7 +680,7 @@ public class ViewArchive extends ViewPart implements Observer {
 					} else {
 						String[] propertyNames = JmsLogsPlugin.getDefault()
 								.getPluginPreferences().getString(
-										LogViewerPreferenceConstants.P_STRING)
+										LogViewPreferenceConstants.P_STRING)
 								.split(";"); //$NON-NLS-1$
 
 						JMSMessage jmsMessage = new JMSMessage(propertyNames);
@@ -703,7 +705,7 @@ public class ViewArchive extends ViewPart implements Observer {
 					case SWT.OK:
 						CentralLogger.getInstance().debug(this,
 								Messages.ViewArchive_22);
-						_dbReader.setReadProperties(ViewArchive.this._dbAnswer,
+						_dbReader.setReadProperties(ArchiveView.this._dbAnswer,
 								_filter.copy());
 						_dbReader
 								.setAccessType(AccessDBJob.DBAccessType.DELETE);

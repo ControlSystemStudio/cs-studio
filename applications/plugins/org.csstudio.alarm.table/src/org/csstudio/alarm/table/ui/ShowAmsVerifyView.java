@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,38 +19,38 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table;
 
-import org.csstudio.alarm.table.ui.ArchiveView;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
+package org.csstudio.alarm.table.ui;
+
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
-/** Handle activation of archive view the object contrib. context menu.
- *  @author Jan Hatje
- */
-public class ArchivePopupAction extends ProcessVariablePopupAction {
+public class ShowAmsVerifyView implements IWorkbenchWindowActionDelegate {
 
-	/** @see org.csstudio.data.exchange.ProcessVariablePopupAction#handlePVs(]) */
-	@Override
-	public void handlePVs(IProcessVariable[] pv_names)
-	    {
-	        if (pv_names.length < 1)
-	            return;
-	        IWorkbench workbench = PlatformUI.getWorkbench();
-	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	        IWorkbenchPage page = window.getActivePage();
-	        try
-	        {
-	            ArchiveView view = (ArchiveView) page.showView(ArchiveView.ID);
-	            view.readDBFromExternalCall(pv_names[0]);
-	        }
-	        catch (Exception e)
-	        {
-//	            Plugin.logException("Cannot open PVTreeView" , e);
-	        }
-	 }
+	public void dispose() {
+	}
+
+	public void init(IWorkbenchWindow window) {
+	}
+
+	public void run(IAction action) {
+		{
+			try {
+				IWorkbench workbench = PlatformUI.getWorkbench();
+				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				page.showView(AmsVerifyView.ID);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+	}
 }

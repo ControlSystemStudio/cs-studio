@@ -217,7 +217,7 @@ public class TableLabelProvider extends LabelProvider implements
 	 * registered to the Property listener and must change the columnName
 	 * Array in the LabelProvider, too!
 	 * 
-	 * @param columnNames
+	 * @param _columnNames
 	 */
 	public void setColumnNames(String[] columnNames) {
 		this.columnNames = columnNames;

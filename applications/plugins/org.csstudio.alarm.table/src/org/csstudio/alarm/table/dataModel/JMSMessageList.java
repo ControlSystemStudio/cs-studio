@@ -57,11 +57,6 @@ public class JMSMessageList {
 	 */
 	private String[] propertyNames;
 
-	/**
-	 * Switch alarm sound for MAJOR alarm messages on/off.
-	 */
-	protected boolean alarmSound = true;
-
 	public JMSMessageList(String[] propNames) {
 		propertyNames = propNames;
 	}
@@ -200,10 +195,6 @@ public class JMSMessageList {
 
 	public void clearList() {
 		JMSMessages.clear();
-	}
-
-	public void setSound(boolean sound) {
-		this.alarmSound = sound;
 	}
 
 	/**

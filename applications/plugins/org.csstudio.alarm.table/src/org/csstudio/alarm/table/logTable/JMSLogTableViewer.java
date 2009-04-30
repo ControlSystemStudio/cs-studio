@@ -191,7 +191,7 @@ public class JMSLogTableViewer extends TableViewer {
 
 			} else
 				tableColumn.setWidth(100);
-			// colName = columnNames[i];
+			// colName = _columnNames[i];
 			tableColumn.addSelectionListener(new SelectionAdapter() {
 
 				private String cName = colName;

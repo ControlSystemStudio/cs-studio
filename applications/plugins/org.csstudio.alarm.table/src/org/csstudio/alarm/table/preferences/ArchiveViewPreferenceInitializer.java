@@ -29,7 +29,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 /**
  * Class used to initialize default preference values.
  */
-public class LogArchiveViewerPreferenceInitializer extends AbstractPreferenceInitializer {
+public class ArchiveViewPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +38,7 @@ public class LogArchiveViewerPreferenceInitializer extends AbstractPreferenceIni
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(LogArchiveViewerPreferenceConstants.P_STRINGArch,
+		store.setDefault(ArchiveViewPreferenceConstants.P_STRINGArch,
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
@@ -56,9 +56,9 @@ public class LogArchiveViewerPreferenceInitializer extends AbstractPreferenceIni
 				"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"DESTINATION" //$NON-NLS-1$
 		);
-        store.setDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.SSS"); //$NON-NLS-1$
-		store.setDefault(LogArchiveViewerPreferenceConstants.MAX_ANSWER_SIZE,"500"); //$NON-NLS-1$
-		store.setDefault(LogArchiveViewerPreferenceConstants.MAX_ANSWER_SIZE_EXPORT,"5000"); //$NON-NLS-1$
+        store.setDefault(ArchiveViewPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.SSS"); //$NON-NLS-1$
+		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE,"500"); //$NON-NLS-1$
+		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE_EXPORT,"5000"); //$NON-NLS-1$
 	}
 
 }

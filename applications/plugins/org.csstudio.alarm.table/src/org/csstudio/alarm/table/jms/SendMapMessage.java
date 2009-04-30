@@ -24,18 +24,12 @@ package org.csstudio.alarm.table.jms;
 import java.util.Hashtable;
 import java.util.Timer;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 
-import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
@@ -44,9 +38,6 @@ public class SendMapMessage {
 
 	private static SendMapMessage _instance;
 	Hashtable<String, String> properties = null;
-	Context context = null;
-	ConnectionFactory factory = null;
-	Connection connection = null;
 	Session session = null;
 	MessageProducer sender = null;
 	Destination destination = null;
@@ -66,19 +57,11 @@ public class SendMapMessage {
 		return _instance;
 	}
 
-	public void startSender(boolean acknowledge) throws Exception {
+	public void startSender() throws Exception {
 		_senderConnection = SharedJmsConnections.sharedSenderConnection();
 		session = _senderConnection.createSession(false,
 				Session.AUTO_ACKNOWLEDGE);
-
-		if (acknowledge == false) {
-			destination = (Destination) session.createTopic(JmsLogsPlugin
-					.getDefault().getPluginPreferences().getString(
-							AlarmViewerPreferenceConstants.QUEUE));
-		} else {
-			destination = (Destination) session.createTopic("ACK");
-		}
-		connection.start();
+		destination = (Destination) session.createTopic("ACK");
 		sender = session.createProducer(destination);
 		sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 	}
@@ -97,7 +80,7 @@ public class SendMapMessage {
 		if (session == null) {
 			CentralLogger.getInstance().debug(this,
 					"Start Sender, start timer task");
-			startSender(true);
+			startSender();
 			_timerTask = new CloseJMSConnectionTimerTask(this);
 			_timer.schedule(_timerTask, 1000, 1000);
 		}
@@ -115,7 +98,7 @@ public class SendMapMessage {
 		if (session == null) {
 			CentralLogger.getInstance().debug(this,
 					"Start Sender, start timer task");
-			startSender(true);
+			startSender();
 			_timerTask = new CloseJMSConnectionTimerTask(this);
 			_timer.schedule(_timerTask, 1000, 1000);
 		}
@@ -123,5 +106,4 @@ public class SendMapMessage {
 		CentralLogger.getInstance().debug(this, "Send the JMS message");
 		sender.send(message);
 	}
-
 }

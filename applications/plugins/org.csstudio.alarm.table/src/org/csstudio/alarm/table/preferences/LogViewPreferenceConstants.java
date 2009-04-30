@@ -24,12 +24,12 @@
 /**
  * Constant definitions for plug-in preferences
  */
-public class LogArchiveViewerPreferenceConstants {
+public class LogViewPreferenceConstants {
 
-	public static final String P_STRINGArch = "column names arch";
-	public static final String DATE_FORMAT = "date format";
-	public static final String MAX_ANSWER_SIZE = "maximum answer size";
-	public static final String MAX_ANSWER_SIZE_EXPORT = "maximum answer size export";
-
-
+	public static final String P_STRING = "Log.column_names";//$NON-NLS-1$
+	public static final String MAX = Messages.getString("LogViewPreferenceConstants.rows.max"); //$NON-NLS-1$
+	public static final String REMOVE = Messages.getString("LogViewPreferenceConstants.rows.min"); //$NON-NLS-1$
+	//Sets of JMS topics to be monitored. List separated with
+	//';'. The optional name for the menu is separated with '?'.
+	public static final String TOPIC_SET = "Log.topic_set";
 }

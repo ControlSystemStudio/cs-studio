@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.table;
+package org.csstudio.alarm.table.ui;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -30,38 +30,31 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
+public class ShowLogView implements IWorkbenchWindowActionDelegate {
 
-public class ShowLogArchive implements IWorkbenchWindowActionDelegate {
+	private static Integer _instance = 0;
 
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void run(IAction action) {
 		{
-		    try
-		    {
-		        IWorkbench workbench = PlatformUI.getWorkbench();
-		        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		        IWorkbenchPage page = window.getActivePage();
-		        page.showView(ViewArchive.ID);
-		    }
-		    catch (Exception e)
-		    {
-		        e.printStackTrace();
-		    }
+			try {
+				IWorkbench workbench = PlatformUI.getWorkbench();
+				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				page.showView(LogView.ID, _instance.toString(),
+						IWorkbenchPage.VIEW_ACTIVATE);
+				_instance++;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
 	}
-
 }

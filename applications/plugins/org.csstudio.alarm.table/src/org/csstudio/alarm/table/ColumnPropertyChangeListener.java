@@ -23,7 +23,7 @@
 package org.csstudio.alarm.table;
 
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
-import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
+import org.csstudio.alarm.table.preferences.ArchiveViewPreferenceConstants;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
@@ -53,19 +53,19 @@ public class ColumnPropertyChangeListener implements IPropertyChangeListener {
 	}
 	
 	/**
-	 * Get new columnNames-String from preference page,
+	 * Get new _columnNames-String from preference page,
 	 * set new order, add new columns, delete old columns.
 	 */
 	public void propertyChange(PropertyChangeEvent event) {
 		
 //		JmsLogsPlugin.logInfo("Column settings changed");
 //
-//		String [] columnNames = JmsLogsPlugin
+//		String [] _columnNames = JmsLogsPlugin
 //				.getDefault()
 //				.getPluginPreferences()
 //				.getString(p_string)
 //				.split(";"); //$NON-NLS-1$
-////		jlv.setColumnNames(columnNames);
+////		jlv.setColumnNames(_columnNames);
 //
 //		Table t = jlv.getTable();
 //		TableColumn[] tc = t.getColumns();
@@ -74,7 +74,7 @@ public class ColumnPropertyChangeListener implements IPropertyChangeListener {
 //			column.dispose();
 //		}
 //		
-//		for (String columnName : columnNames) {
+//		for (String columnName : _columnNames) {
 //			TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
 //			tableColumn.setText(columnName);
 //			tableColumn.setWidth(100);
@@ -82,7 +82,7 @@ public class ColumnPropertyChangeListener implements IPropertyChangeListener {
 //		
 //	
 //		
-////		int diff = columnNames.length - tc.length;
+////		int diff = _columnNames.length - tc.length;
 ////
 ////		if (diff > 0) {
 ////			for (int i = 0; i < diff; i++) {
@@ -99,7 +99,7 @@ public class ColumnPropertyChangeListener implements IPropertyChangeListener {
 ////		tc = t.getColumns();
 ////
 ////		for (int i = 0; i < tc.length; i++) {
-////			tc[i].setText(columnNames[i]);
+////			tc[i].setText(_columnNames[i]);
 ////		}
 //		jlv.refresh(true);
 

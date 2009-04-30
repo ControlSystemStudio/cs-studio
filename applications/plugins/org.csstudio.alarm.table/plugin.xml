@@ -9,10 +9,10 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.alarm.table.ViewArchive"
+            class="org.csstudio.alarm.table.ui.ArchiveView"
             icon="icons/archiveTable.png"
-            id="org.csstudio.alarm.table.ViewArchive"
-            name="JMS Log archive viewer"/>
+            id="org.csstudio.alarm.table.ui.ArchiveView"
+            name="Log Archive Viewer"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -21,11 +21,12 @@
             id="org.csstudio">
       </category>
       <view
+            allowMultiple="true"
             category="org.csstudio"
-            class="org.csstudio.alarm.table.ViewLog"
+            class="org.csstudio.alarm.table.ui.LogView"
             icon="icons/logTable.png"
-            id="org.csstudio.alarm.table.ViewLog"
-            name="JMS Log viewer"/>
+            id="org.csstudio.alarm.table.ui.LogView"
+            name="Log Viewer"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -34,11 +35,25 @@
             id="org.csstudio">
       </category>
       <view
+            allowMultiple="true"
             category="org.csstudio"
-            class="org.csstudio.alarm.table.ViewAlarm"
+            class="org.csstudio.alarm.table.ui.AlarmView"
             icon="icons/alarmTable.png"
-            id="org.csstudio.alarm.table.ViewAlarm"
-            name="JMS Alarm viewer"/>
+            id="org.csstudio.alarm.table.ui.AlarmView"
+            name="Alarm Viewer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+	  <view
+            category="org.csstudio"
+            class="org.csstudio.alarm.table.ui.AmsVerifyView"
+            icon="icons/logTable.png"
+            id="org.csstudio.alarm.table.ui.AmsVerifyView"
+            name="AMS Verifier"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -51,25 +66,30 @@
             class="org.csstudio.alarm.table.PropertiesView"
             icon="icons/logTable.png"
             id="org.csstudio.alarm.table.PropertiesView"
-            name="JMS properties viewer"/>
+            name="Message properties Viewer"/>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="de.desy.css.jmsLogs.page3"
-            class="org.csstudio.alarm.table.preferences.LogViewerPreferencePage"
+            class="org.csstudio.alarm.table.preferences.LogViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.JmsLogsPreferencePage"
             name="Jms Log viewer"/>
       <page
             category="de.desy.css.jmsLogs.page3"
-            class="org.csstudio.alarm.table.preferences.AlarmViewerPreferencePage"
+            class="org.csstudio.alarm.table.preferences.AlarmViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.AlarmViewerPreferencePage"
             name="JMS Alarm viewer"/>
       <page
             category="de.desy.css.jmsLogs.page3"
-            class="org.csstudio.alarm.table.preferences.LogArchiveViewerPreferencePage"
+            class="org.csstudio.alarm.table.preferences.ArchiveViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.LogArchiveViewerPreferencePage"
             name="JMS Log archive viewer"/>
+      <page
+            category="de.desy.css.jmsLogs.page3"
+            class="org.csstudio.alarm.table.preferences.AmsVerifyViewPreferencePage"
+            id="de.desy.css.jmsLogs.preferences.AmsVerifyViewerPreferencePage"
+            name="AMS Verifier"/>
       <page
             category="org.csstudio.platform.ui.css.applications.alarm"
             class="org.csstudio.alarm.table.preferences.JmsLogPreferencePage"
@@ -78,10 +98,11 @@
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.alarm.table.preferences.LogViewerPreferenceInitializer"/>
-      <initializer class="org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.LogViewPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.ArchiveViewPreferenceInitializer"/>
       <initializer class="org.csstudio.alarm.table.preferences.JmsLogPreferenceInitializer"/>
-      <initializer class="org.csstudio.alarm.table.preferences.AlarmViewerPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.AlarmViewPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.AmsVerifyViewPreferenceInitializer"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -91,25 +112,33 @@
             label="CSS Action Set"
             visible="true">
          <action
-               class="org.csstudio.alarm.table.ShowLogArchive"
+               class="org.csstudio.alarm.table.ui.ShowArchiveView"
                icon="icons/archiveTable.png"
-               id="de.desy.css.jmsLogs.ShowViewArchiveAction"
+               id="org.csstudio.alarm.table.ui.ShowArchiveView"
                label="JMSLogsArchive"
                menubarPath="css/alarm/"
                style="push"
                tooltip="Show JMS Log archive"/>
          <action
-               class="org.csstudio.alarm.table.ShowLog"
+               class="org.csstudio.alarm.table.ui.ShowLogView"
                icon="icons/logTable.png"
-               id="de.desy.css.jmsLogs.ShowViewLogAction"
+               id="org.csstudio.alarm.table.ui.ShowLogView"
                label="JMSLogs"
                menubarPath="css/diag/"
                style="push"
                tooltip="Show JMS Log"/>
          <action
-               class="org.csstudio.alarm.table.ShowAlarms"
+               class="org.csstudio.alarm.table.ui.ShowAmsVerifyView"
+               icon="icons/logTable.png"
+               id="org.csstudio.alarm.table.ui.ShowAmsVerifyView"
+               label="AMS Verifier"
+               menubarPath="css/diag/"
+               style="push"
+               tooltip="Show AMS Verifier"/>
+         <action
+               class="org.csstudio.alarm.table.ui.ShowAlarmView"
                icon="icons/alarmTable.png"
-               id="de.desy.css.jmsLogs.ShowViewAlarmAction"
+               id="org.csstudio.alarm.table.ui.ShowAlarmView"
                label="JMSAlarmLog"
                menubarPath="css/alarm/"
                style="push"
@@ -162,7 +191,4 @@
          </adapter>
       </factory>
    </extension>
-
-   
-
 </plugin>

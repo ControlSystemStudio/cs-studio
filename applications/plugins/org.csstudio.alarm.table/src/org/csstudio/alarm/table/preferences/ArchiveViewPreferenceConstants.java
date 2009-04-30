@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,49 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+ package org.csstudio.alarm.table.preferences;
 
-package org.csstudio.alarm.table;
+/**
+ * Constant definitions for plug-in preferences
+ */
+public class ArchiveViewPreferenceConstants {
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PlatformUI;
+	public static final String P_STRINGArch = "column names arch";
+	public static final String DATE_FORMAT = "date format";
+	public static final String MAX_ANSWER_SIZE = "maximum answer size";
+	public static final String MAX_ANSWER_SIZE_EXPORT = "maximum answer size export";
 
-
-public class ShowLog implements IWorkbenchWindowActionDelegate {
-
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void run(IAction action) {
-		{
-		    try
-		    {
-		        IWorkbench workbench = PlatformUI.getWorkbench();
-		        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		        IWorkbenchPage page = window.getActivePage();
-		        page.showView(ViewLog.ID);
-		    }
-		    catch (Exception e)
-		    {
-		        e.printStackTrace();
-		    }
-		}
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
-	}
 
 }

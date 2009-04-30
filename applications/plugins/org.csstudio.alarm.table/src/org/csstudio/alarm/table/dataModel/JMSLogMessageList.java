@@ -27,10 +27,8 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableItem;
 
 public class JMSLogMessageList extends JMSMessageList {
 
@@ -74,7 +72,7 @@ public class JMSLogMessageList extends JMSMessageList {
 	private void limitMessageListSize() {
 		String maximumRowNumber = JmsLogsPlugin.getDefault()
 				.getPluginPreferences().getString(
-						LogViewerPreferenceConstants.MAX);
+						LogViewPreferenceConstants.MAX);
 		int maxRowNumber;
 		try {
 			maxRowNumber = Integer.parseInt(maximumRowNumber);

@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,49 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+ package org.csstudio.alarm.table.preferences;
 
-package org.csstudio.alarm.table;
+/**
+ * Constant definitions for plug-in preferences
+ */
+public class AlarmViewPreferenceConstants {
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PlatformUI;
-
-
-public class ShowAlarms implements IWorkbenchWindowActionDelegate {
-
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void run(IAction action) {
-		{
-		    try
-		    {
-		        IWorkbench workbench = PlatformUI.getWorkbench();
-		        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		        IWorkbenchPage page = window.getActivePage();
-		        page.showView(ViewAlarm.ID);
-		    }
-		    catch (Exception e)
-		    {
-		        e.printStackTrace();
-		    }
-		}
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
-	}
-
+	public static final String P_STRINGAlarm = "Alarm.column_names";//$NON-NLS-1$
+    public static final String LOG_ALARM_SOUND_FILE = "Alarm.log_alarm_sound_file"; //$NON-NLS-1$
+	//Sets of JMS topics to be monitored. List separated with
+	//';'. The optional name for the menu is separated with '?'.
+	public static final String TOPIC_SET = "Alarm.topic_set";
 }

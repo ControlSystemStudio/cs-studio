@@ -29,14 +29,8 @@ import java.util.Vector;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import javazoom.jl.player.Player;
-
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.RemoveAcknowledgedMessagesTask;
-import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
-import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * List of alarm messages for alarm table. The class includes also the logic in
@@ -49,9 +43,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 
 	/** number of alarm status changes in the message with the same pv name. */
 	private int alarmStatusChanges = 0;
-	private static Player _mp3Player;
 
-	private RemoveAcknowledgedMessagesTask _removeMessageTask;
 	private Vector<JMSMessage> _messagesToRemove = new Vector<JMSMessage>();
 
 	public JMSAlarmMessageList(String[] propNames) {
@@ -67,9 +59,6 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			throws JMSException {
 		if (checkValidity(newMessage)) {
 			Iterator iterator = changeListeners.iterator();
-			if (alarmSound) {
-				playAlarmSound(newMessage);
-			}
 			// An acknowledge message was received.
 			if (newMessage.getString("ACK") != null && newMessage.getString("ACK").toUpperCase().equals("TRUE")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				JMSMessage jmsm = setAcknowledge(newMessage);
@@ -154,24 +143,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		}
 	}
 
-	/**
-	 * Plays a mp3 file set in the preferences if a alarm message with severity
-	 * MAJOR is received.
-	 * 
-	 * @param newMessage
-	 */
-	private void playAlarmSound(MapMessage newMessage) throws JMSException {
-		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MAJOR")) {
-			String mp3Path = JmsLogsPlugin
-					.getDefault()
-					.getPluginPreferences()
-					.getString(
-							AlarmViewerPreferenceConstants.LOG_ALARM_SOUND_FILE);
-			if ((mp3Path != null) && (!mp3Path.equals(""))) {
-				Functions.playMp3(mp3Path);
-			}
-		}
-	}
+
 
 	/**
 	 * Check if the new message is valid alarm message
@@ -206,7 +178,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		JMSMessage newJMSMessage = null;
 		CentralLogger.getInstance().info(
 				this,
-				"ViewAlarm Ack message received, MsgName: "
+				"AlarmView Ack message received, MsgName: "
 						+ newMessage.getString("NAME") + " MsgTime: "
 						+ newMessage.getString("EVENTTIME"));
 		for (JMSMessage message : JMSMessages) {

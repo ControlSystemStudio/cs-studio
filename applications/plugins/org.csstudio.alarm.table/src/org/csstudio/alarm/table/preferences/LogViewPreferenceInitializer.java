@@ -19,28 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.preferences;
+package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
-
 
 /**
  * Class used to initialize default preference values.
  */
-public class LogViewerPreferenceInitializer extends AbstractPreferenceInitializer {
+public class LogViewPreferenceInitializer extends
+		AbstractPreferenceInitializer {
 
 	/*
 	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	 * 
+	 * @seeorg.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
+	 * initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(LogViewerPreferenceConstants.P_STRING,
-				"ACK" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
+		IPreferenceStore store = JmsLogsPlugin.getDefault()
+				.getPreferenceStore();
+		store.setDefault(LogViewPreferenceConstants.P_STRING, "ACK" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
@@ -59,13 +59,9 @@ public class LogViewerPreferenceInitializer extends AbstractPreferenceInitialize
 				"DESTINATION" //$NON-NLS-1$
 		);
 
-		store.setDefault(LogViewerPreferenceConstants.MAX, 200);
-		store.setDefault(LogViewerPreferenceConstants.REMOVE, 10);
-		store.setDefault(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.PRIMARY_URL, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.SECONDARY_URL, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.QUEUE, "LOG,ALARM,PUT_LOG,ACK"); //$NON-NLS-1$
-}
-
+		store.setDefault(LogViewPreferenceConstants.MAX, 200);
+		store
+				.setDefault(LogViewPreferenceConstants.TOPIC_SET,
+						"?LOG,ALARM,PUT_LOG,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$
+	}
 }
