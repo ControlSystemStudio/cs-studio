@@ -563,7 +563,6 @@ public final class RefreshableImageFigure extends Figure implements IAdaptable {
 									lastUpdateTime = currentTime;
 									int ms = originalImageDataArray[animationIndex].delayTime * 10;
 									animationIndex = (animationIndex + 1) % originalImageDataArray.length;
-									System.out.println(animationIndex);
 									if (ms < 20) ms += 30;
 									if (ms < 30) ms += 10;
 									interval_ms = ms;								
