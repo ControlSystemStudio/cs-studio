@@ -22,10 +22,15 @@
 
 package org.csstudio.management.internal.xmpplogindialog;
 
+import org.csstudio.platform.securestore.SecureStore;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 import org.remotercp.login.ui.ChatLoginWizardDialog;
 
 /**
@@ -36,20 +41,121 @@ import org.remotercp.login.ui.ChatLoginWizardDialog;
  * @author Joerg Rathlev
  */
 public class StartupXmppLogin implements IStartupServiceListener {
+	
+	private String _xmppServer;
+
+	/**
+	 * Thrown if a login attempt fails.
+	 */
+	private static final class LoginFailedException extends Exception {
+		private static final long serialVersionUID = 1L;
+		
+		LoginFailedException(Throwable cause) {
+			super(cause);
+		}
+	}
+
+	/**
+	 * Runnable which performs the actual XMPP login.
+	 */
+	private static final class XmppLoginProcess implements Runnable {
+		
+		private final String _server;
+
+		/**
+		 * Creates a new login process.
+		 * 
+		 * @param server
+		 *            the server to connect to.
+		 */
+		XmppLoginProcess(String server) {
+			_server = server;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		public void run() {
+			if (!tryLoginWithSecureStore()) {
+				loginWithDialog();
+			}
+		}
+
+		/**
+		 * Tries to login the user on the XMPP server based on the username
+		 * and password found in the Secure Store.
+		 * 
+		 * @return <code>true</code> if the login was successful,
+		 *         <code>false</code> otherwise.
+		 */
+		private boolean tryLoginWithSecureStore() {
+			SecureStore store = SecureStore.getInstance();
+			try {
+				String username = (String) store.getObject("xmpp.username");
+				String password = (String) store.getObject("xmpp.password");
+				if (username != null && password != null) {
+					login(username, password);
+					return true;
+				}
+			} catch (LoginFailedException e) {
+				// Don't do anything (simply return false, below)
+			}
+			return false;
+		}
+
+		/**
+		 * Shows a login dialog to the user and then tries to login the user
+		 * based on the information he entered in the dialog.
+		 */
+		private void loginWithDialog() {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					ChatLoginWizardDialog wizardDialog = new ChatLoginWizardDialog();
+					if (wizardDialog.open() == Window.OK) {
+						// start remote services
+						ServiceLauncher.startRemoteServices();
+					}
+				}
+			});
+		}
+
+		/**
+		 * Logs in the given user with the given password.
+		 * 
+		 * @param username
+		 *            the username.
+		 * @param password
+		 *            the password.
+		 * @throws LoginFailedException
+		 *             if the login fails.
+		 */
+		private void login(String username, String password)
+				throws LoginFailedException {
+			try {
+				HeadlessConnection.connect(username, password, _server,
+						ECFConstants.XMPP);
+			} catch (Exception e) {
+				throw new LoginFailedException(e);
+			}
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void run() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				ChatLoginWizardDialog wizardDialog = new ChatLoginWizardDialog();
-				if (wizardDialog.open() == Window.OK) {
-					// start remote services
-					ServiceLauncher.startRemoteServices();
-				}
-			}
-		});
+		readPreferences();
+		Runnable xmppLogin = new XmppLoginProcess(_xmppServer);
+		new Thread(xmppLogin, "XMPP Login").start();
+	}
+
+	/**
+	 * Reads the login settings from the prefereces.
+	 */
+	private void readPreferences() {
+		IPreferencesService prefs = Platform.getPreferencesService();
+		_xmppServer = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de", null);
 	}
 
 }

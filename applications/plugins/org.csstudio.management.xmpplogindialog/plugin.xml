@@ -9,5 +9,20 @@
             isHighPriority="False">
       </startupService>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.management.internal.xmpplogindialog.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.management.internal.xmpplogindialog.PreferencePage"
+            id="org.csstudio.management.xmpplogindialog.PreferencePage"
+            name="Remote Management Login">
+      </page>
+   </extension>
 
 </plugin>
