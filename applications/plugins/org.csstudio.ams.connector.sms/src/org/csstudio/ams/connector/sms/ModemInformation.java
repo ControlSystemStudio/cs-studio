@@ -23,6 +23,7 @@
 
 package org.csstudio.ams.connector.sms;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -32,10 +33,12 @@ import java.util.Vector;
 public class ModemInformation
 {
     private Vector<String> modemNames;
-    
+    private HashMap<String, String> modemNumber;
+     
     public ModemInformation()
     {
         modemNames = new Vector<String>();
+        modemNumber = new HashMap<String, String>();
     }
     
     public int getModemCount()
@@ -63,8 +66,34 @@ public class ModemInformation
         return result;
     }
     
-    public void addModemName(String name)
+    public void addModemName(String name, String phoneNumber)
     {
-        modemNames.add(name);
+        if((name != null) && (phoneNumber != null))
+        {
+            if((name.length() > 0) && (phoneNumber.length() > 0))
+            {
+                if(modemNames.add(name))
+                {
+                    modemNumber.put(name, phoneNumber);
+                }
+            }
+        }
+    }
+    
+    public String getPhoneNumber(String name)
+    {
+        String result = null;
+        
+        if(modemNames.contains(name))
+        {
+            result = modemNumber.get(name);
+        }
+        
+        return result;
+    }
+    
+    public boolean containsModemName(String name)
+    {
+        return modemNames.contains(name);
     }
 }

@@ -36,18 +36,21 @@ public class Messages extends NLS
 	public static String P_MODEM1_COMBAUDRATE;
 	public static String P_MODEM1_MANUFACTURE;
 	public static String P_MODEM1_MODEL;
+    public static String P_MODEM1_NUMBER;
 	public static String P_MODEM1_SIMPIM;
 	
     public static String P_MODEM2_COMPORT;
     public static String P_MODEM2_COMBAUDRATE;
     public static String P_MODEM2_MANUFACTURE;
     public static String P_MODEM2_MODEL;
+    public static String P_MODEM2_NUMBER;
     public static String P_MODEM2_SIMPIM;
 
     public static String P_MODEM3_COMPORT;
     public static String P_MODEM3_COMBAUDRATE;
     public static String P_MODEM3_MANUFACTURE;
     public static String P_MODEM3_MODEL;
+    public static String P_MODEM3_NUMBER;
     public static String P_MODEM3_SIMPIM;
 
     public static String P_MODEM_READ_WAITING_PERIOD;

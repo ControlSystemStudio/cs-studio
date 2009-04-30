@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -31,48 +31,65 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.log4j.Logger;
 
 /**
  * @author Markus Moeller
+ * @version 1.1
  *
  */
 public class JmsSender
 {
-    private Logger logger;
-    private ActiveMQConnectionFactory factory = null;
+    private Hashtable<String, String> properties = null;
+    private Context context = null;
+    private ConnectionFactory factory = null;
     private Connection connection  = null;
     private Session session = null;
     private Destination dest = null;
     private MessageProducer sender = null;
+    private Logger logger;
     private String clientId;
     private String jmsUrl;
     private String jmsTopic;
+    private boolean connected;
     
     public JmsSender(String clientid, String url, String topic)
     {
-        logger = Logger.getLogger(JmsSender.class);
         clientId = clientid;
         jmsUrl = url;
         jmsTopic = topic;
-               
+        logger = Logger.getLogger(JmsSender.class);
+        connected = false;
+        properties = new Hashtable<String, String>();
+        
+        // Set the properties for the context
+        properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        properties.put(Context.PROVIDER_URL, jmsUrl);
+                
         try
-        {           
+        {
+            // Create a context
+            context = new InitialContext(properties);
+           
             // Create a connection factory
-            factory = new ActiveMQConnectionFactory(jmsUrl);
+            factory = (ConnectionFactory)context.lookup("ConnectionFactory");
             
             // Create a connection
             connection = factory.createConnection();
             
             // Set client id
-            connection.setClientID("ServerConnector" + clientId + "@" + Environment.getInstance().getHostName());
+            connection.setClientID(clientId + "@" + Environment.getInstance().getHostName());
             
             // Start the connection
             connection.start();
@@ -84,20 +101,34 @@ public class JmsSender
             
             // Create a message producer
             sender = session.createProducer(dest);
+            
+            connected = true;
+        }
+        catch(NamingException ne)
+        {
+            connected = false;
+            logger.error(" *** NamingException *** : " + ne.getMessage());
+            closeAll();
         }
         catch(JMSException jmse)
         {
-            logger.fatal("*** JMSException *** : " + jmse.getMessage());
+            connected = false;
+            logger.error(" *** JMSException *** : " + jmse.getMessage());
             closeAll();
         }       
     }
-    
+        
     public boolean sendMessage(String type, String messageText, String severity)
     {
-        return sendMessage(type, messageText, severity, null);
+        return sendMessage(type, null, messageText, severity, null);
     }
     
-    public boolean sendMessage(String type, String messageText, String severity, String destination)
+    public boolean sendMessage(String type, String name, String messageText, String severity)
+    {
+        return sendMessage(type, name, messageText, severity, null);
+    }
+
+    public boolean sendMessage(String type, String name, String messageText, String severity, String destination)
     {
         MapMessage message = null;        
         boolean result = false;
@@ -112,7 +143,7 @@ public class JmsSender
                 message.setString("TEXT", messageText);
                 message.setString("USER", Environment.getInstance().getUserName());
                 message.setString("HOST", Environment.getInstance().getHostName());
-                message.setString("APPLICATION-ID", "AmsSmsConnector");
+                message.setString("APPLICATION-ID", clientId);
                 
                 if(severity != null)
                 {
@@ -124,23 +155,30 @@ public class JmsSender
                     message.setString("DESTINATION", destination);
                 }
                 
+                if(name != null)
+                {
+                    message.setString("NAME", name);
+                }
+                
                 // Send the message
                 sender.send(message, DeliveryMode.PERSISTENT, 1, 0);
                 
                 // Clean up
                 clearMessage(message);
                 message = null;
-                                
+                
+                logger.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
+                
                 result = true;
             }
             else
             {
-                logger.error("JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
+                logger.warn(" JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
             }
         }
         catch(JMSException jmse)
         {
-            logger.error("JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
+            logger.error(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
             
             return false;
         }
@@ -165,18 +203,18 @@ public class JmsSender
                 clearMessage(message);
                 message = null;
                 
-                logger.debug("JmsSender.sendMessage(): *** JMS DONE ***.");
+                logger.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
                 
                 result = true;
             }
             else
             {
-                logger.error("JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
+                logger.warn(" JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
             }
         }
         catch(JMSException jmse)
         {
-            logger.error("JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
+            logger.error(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
             
             return false;
         }
@@ -210,7 +248,7 @@ public class JmsSender
                         //       Use only valid names
                         message.setString(name, messages[i].getValue(name));
                     }
-                                                      
+                    
                     // Send the message
                     sender.send(message, DeliveryMode.PERSISTENT, 1, 0);
                     
@@ -220,17 +258,17 @@ public class JmsSender
                 }
                 else
                 {
-                    logger.error("JmsSender.sendMessage(): MapMessage object was not created.");
+                    logger.warn(" JmsSender.sendMessage(): MapMessage object was not created.");
                 }
             }
             
-            logger.debug("JmsSender.sendMessage(): *** JMS DONE ***.");
+            logger.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
         }
         catch(JMSException jmse)
         {
-            logger.error("JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());            
+            logger.error(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());            
         }
-        
+
         return result;
     }
 
@@ -300,13 +338,24 @@ public class JmsSender
         if(connection!=null){try{connection.stop();}catch(Exception e){}}
         if(connection!=null){try{connection.close();}catch(Exception e){}connection=null;}
         factory = null;
+        if(context!=null){try{context.close();}catch(Exception e){}context=null;}
+        if(properties != null)
+        {
+            properties.clear();
+            properties = null;
+        }
     }
     
     public boolean isConnected()
     {
-        return (connection != null);
+        return connected;
     }
     
+    public boolean isNotConnected()
+    {
+        return !connected;
+    }
+
     /**
      * Creates date and time for the JMS message.
      * 
@@ -314,7 +363,7 @@ public class JmsSender
      */
     private String createTimeString()
     {
-        SimpleDateFormat format = new SimpleDateFormat(Property.AMS_DATE_FORMAT);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
         return format.format(GregorianCalendar.getInstance().getTime());
     }

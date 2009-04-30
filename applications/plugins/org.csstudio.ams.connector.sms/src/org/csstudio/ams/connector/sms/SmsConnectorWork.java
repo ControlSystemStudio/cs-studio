@@ -27,6 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -34,6 +37,7 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
+import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -81,7 +85,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     private long readWaitingPeriod;
     
     /** This class contains all modem ids (names) */
-    private ModemInformation modemNames;
+    private ModemInformation modemInfo;
     
     private short sTest = 0; // 0 - normal behavior, other - for test
     private boolean bStop = false;
@@ -104,7 +108,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         this.scs = scs;
         smsContainer = new SmsContainer();
         readWaitingPeriod = 0;
-        modemNames = new ModemInformation();
+        modemInfo = new ModemInformation();
     }
     
     public void run()
@@ -323,6 +327,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         String[] strManufac = null;
         String[] strModel = null;
         String[] strSimPin = null;
+        String[] strPhoneNumber = null;
         String m = null;
         int[] iBaudRate = null;
         int modemCount = 1;
@@ -377,6 +382,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             strManufac = new String[modemCount];
             strModel = new String[modemCount];
             strSimPin = new String[modemCount];
+            strPhoneNumber = new String[modemCount];
             iBaudRate = new int[modemCount];
             
             // TODO: Better error handling and value checks
@@ -403,6 +409,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
                 strSimPin[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "SimPin");
                 strSimPin[i] = (strSimPin[i] == null) ? "" : strSimPin[i];
+
+                strPhoneNumber[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "Number");
+                strPhoneNumber[i] = (strPhoneNumber[i] == null) ? "" : strPhoneNumber[i];
             }
             
             modemService = new Service();
@@ -423,7 +432,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     modem.setSimPin(strSimPin[i]);
                     // modem.setOutboundNotification(outboundNotification);
                     modemService.addGateway(modem);
-                    modemNames.addModemName(m);
+                    modemInfo.addModemName(m, strPhoneNumber[i]);
                     
                     sleep(2000);
                 }
@@ -655,15 +664,40 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             if(sms != null)
             {
                 Log.log(this, Log.DEBUG, "SMS: " + sms.toString());
-                if((sms.getType() == Sms.Type.OUT) && (sms.getState() != Sms.State.SENT))
+
+                // Check if we have a 'start modem test' message.
+                if(sms.getMessage().startsWith("MODEM_CHECK"))
                 {
-                    if(sendSms(sms))
+                    Pattern pattern = null;
+                    String r = null;
+                            
+                    pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}");
+                    Matcher m = pattern.matcher(sms.getMessage());
+                    if(m.find())
                     {
-                        smsContainer.removeSms(sms);
+                        r = m.group();
+                        if(doModemTest(r))
+                        {
+                            Log.log(this, Log.INFO, "Modem test DONE.");
+                        }
+                        else
+                        {
+                            Log.log(this, Log.WARN, "Modem test FAILED.");
+                        }
                     }
-                    else
+                }
+                else // A normal SMS to send
+                {
+                    if((sms.getType() == Sms.Type.OUT) && (sms.getState() != Sms.State.SENT))
                     {
-                        iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
+                        if(sendSms(sms))
+                        {
+                            smsContainer.removeSms(sms);
+                        }
+                        else
+                        {
+                            iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
+                        }
                     }
                 }
             }
@@ -672,29 +706,99 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         return iErr;
     }
     
-    @SuppressWarnings("unused")
-    private boolean sendCheckMessage()
+    private boolean doModemTest(String eventTime)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        OutboundMessage msg = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        OutboundMessage outMsg = null;
+        InboundMessage[] inMsg = null;
+        Topic topic = null;
+        MessageProducer amsPublisherCheck = null;
+        MapMessage mapMessage = null;
         String name = null;
+        String number = null;
         String text = null;
-        
+        String topicName = null;
+        long endTime = 0;
+        long currentTime = 0;
+        int checkedModems = 0;
         boolean success = false;
+
+        Log.log(this, Log.INFO, "Starting modem check.");
         
-        for(int i = 0;i < modemNames.getModemCount();i++)
+        for(int i = 0;i < modemInfo.getModemCount();i++)
         {
-            name = modemNames.getModemName(i);
+            name = modemInfo.getModemName(i);
             if(name != null)
             {
-                // TODO:
+                number = modemInfo.getPhoneNumber(name);
                 text = SMS_TEST_TEXT;
                 text = text.replaceAll("\\$DATE", dateFormat.format(Calendar.getInstance().getTime()));
                 text = text.replaceAll("\\$GATEWAYID", name);
                 
-                msg = new OutboundMessage();
-                //modemService.send
+                outMsg = new OutboundMessage(number, text);
+                outMsg.setEncoding(MessageEncodings.ENC7BIT);
+                outMsg.setStatusReport(false);
+                outMsg.setValidityPeriod(8);
+                
+                try
+                {
+                    if(modemService.sendMessage(outMsg, name))
+                    {
+                        // Try for 2 minutes
+                        endTime = System.currentTimeMillis() + 120000;
+                        
+                        do
+                        {
+                            Thread.sleep(10000);
+
+                            inMsg = modemService.readMessages(MessageClasses.ALL, name);
+                            for(InboundMessage im : inMsg)
+                            {
+                                if(im.getText().compareTo(text) == 0)
+                                {
+                                    Log.log(this, Log.INFO, "Modem check was successful for " + name + ".");
+                                    modemService.deleteMessage(im);
+                                    checkedModems++;
+                                    break;
+                                }
+                            }
+                            
+                            success = (checkedModems == modemInfo.getModemCount());
+                            currentTime = System.currentTimeMillis();
+                        }
+                        while((currentTime <= endTime) && !success);
+                    }
+                }
+                catch(Exception e)
+                {
+                    Log.log(this, Log.ERROR, "Modem check was NOT successful for " + name + ".");
+                }
             }
+        }
+        
+        IPreferenceStore storeAct = org.csstudio.ams.Activator.getDefault().getPreferenceStore();
+        topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_MONITOR);
+
+        try
+        {
+            topic = amsSenderSession.createTopic(topicName);
+            amsPublisherCheck = amsSenderSession.createProducer(topic);
+            mapMessage = amsSenderSession.createMapMessage();
+            mapMessage.setString("TYPE", "event");
+            mapMessage.setString("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
+            mapMessage.setString("TEXT", ((success) ? "OK" : "ERROR"));
+            mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
+            mapMessage.setString("APPLICATION-ID", "SmsConnector");
+            mapMessage.setString("DESTINATION", "AmsSystemMonitor");
+        }
+        catch(JMSException jmse)
+        {
+            Log.log(this, Log.ERROR, "Answer message could NOT be sent.");
+        }
+        finally
+        {
+            if(amsPublisherCheck!=null){try{amsPublisherCheck.close();}catch(JMSException e){}amsPublisherCheck=null;}
+            topic = null;
         }
         
         return success;

@@ -81,6 +81,8 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 				Messages.P_MODEM1_MANUFACTURE, getFieldEditorParent()));
 		addField(new StringFieldEditor(SampleService.P_MODEM1_MODEL,
 				Messages.P_MODEM1_MODEL, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM1_NUMBER,
+                Messages.P_MODEM1_NUMBER, getFieldEditorParent()));
 		addField(new PasswordEditor(SampleService.P_MODEM1_SIMPIM,
 				Messages.P_MODEM1_SIMPIM, getFieldEditorParent()));
 
@@ -94,6 +96,8 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
                 Messages.P_MODEM2_MANUFACTURE, getFieldEditorParent()));
         addField(new StringFieldEditor(SampleService.P_MODEM2_MODEL,
                 Messages.P_MODEM2_MODEL, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM2_NUMBER,
+                Messages.P_MODEM2_NUMBER, getFieldEditorParent()));
         addField(new PasswordEditor(SampleService.P_MODEM2_SIMPIM,
                 Messages.P_MODEM2_SIMPIM, getFieldEditorParent()));
 
@@ -107,6 +111,8 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
                 Messages.P_MODEM3_MANUFACTURE, getFieldEditorParent()));
         addField(new StringFieldEditor(SampleService.P_MODEM3_MODEL,
                 Messages.P_MODEM3_MODEL, getFieldEditorParent()));
+        addField(new StringFieldEditor(SampleService.P_MODEM3_NUMBER,
+                Messages.P_MODEM3_NUMBER, getFieldEditorParent()));
         addField(new PasswordEditor(SampleService.P_MODEM3_SIMPIM,
                 Messages.P_MODEM3_SIMPIM, getFieldEditorParent()));
 
