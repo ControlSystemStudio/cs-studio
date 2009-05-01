@@ -3,6 +3,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
+import org.csstudio.sds.model.properties.DoubleProperty;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -26,6 +27,11 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	
 	/** The ID of the thumb Color property. */
 	public static final String PROP_THUMB_COLOR = "thumbColor"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the increment property.
+	 */
+	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
 	
 	/** The default value of the default fill color property. */
 	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
@@ -69,8 +75,13 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 		addProperty(PROP_THUMB_COLOR, new ColorProperty("Thumb Color",
 				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));	
 		
+		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
+				WidgetPropertyCategory.Behaviour, 1.0));
+		
 		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));
+		
+		
 	}	
 
 	@Override
@@ -113,5 +124,14 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	 */
 	public RGB getThumbColor() {
 		return (RGB) getProperty(PROP_THUMB_COLOR).getPropertyValue();
+	}
+	
+	/**
+	 * Return the increment value.
+	 * 
+	 * @return The increment value.
+	 */
+	public double getIncrement() {
+		return (Double) getProperty(PROP_INCREMENT).getPropertyValue();
 	}
 }

@@ -32,6 +32,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.setThumbColor(model.getThumbColor());
 		knob.setValueLabelVisibility(model.isShowValueLabel());
 		knob.setGradient(model.isRampGradient());
+		knob.setIncrement(model.getIncrement());
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
@@ -125,6 +126,18 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_ENABLED, enableHandler);	
+		
+		//increment
+		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				KnobFigure knob = (KnobFigure) refreshableFigure;
+				knob.setIncrement((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(KnobModel.PROP_INCREMENT, incrementHandler);
 		
 	}
 

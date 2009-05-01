@@ -65,6 +65,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	private Track track;
 	private Thumb thumb;
 	private AlphaLabel label;
+	
+	private double increment = 1;
 
 	/**
 	 * Listeners that react on slider events.
@@ -147,6 +149,13 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		
 	}
 	
+	/**
+	 * @param increment the increment to set
+	 */
+	public void setIncrement(double increment) {
+		this.increment = increment;
+	}
+
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		super.paintClientArea(graphics);
@@ -281,15 +290,22 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					else
 						start.y = start.y + thumb.getBounds().height/2;
 			
-					Dimension difference = me.getLocation().getDifference(start);
+					Dimension difference = me.getLocation().getDifference(start);					
 					
-					setValue(value + calcValueChange(difference, value));
-					fireManualValueChange(value);
-					ScaledSliderFigure.this.revalidate();
-					ScaledSliderFigure.this.repaint();
+					double valueChange = calcValueChange(difference, value);
+					
+					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
+						if(increment > 0)							
+							setValue(value + increment * Math.round(valueChange/increment));
+						else							
+							setValue(value + valueChange);
+						
+						fireManualValueChange(value);
+						ScaledSliderFigure.this.revalidate();
+						ScaledSliderFigure.this.repaint();
+					}
 				}				
 			});
-			
 		}	
 	
 		@Override
@@ -406,7 +422,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		implements MouseListener {
 			private static final int LABEL_MARGIN = 3;
 			protected Point start;
-				protected double oldValue;
+				
 				protected boolean armed;				
 				
 				private void setLabel() {
@@ -431,7 +447,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				public void mousePressed(MouseEvent me) {
 					armed = true;
 					start = me.getLocation();					
-					oldValue = value;
 					setLabel();					
 					me.consume();
 				}
@@ -439,12 +454,24 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				public void mouseDragged(MouseEvent me) {
 					if (!armed) 
 						return;
-					Dimension difference = me.getLocation().getDifference(start);											
-					setValue(oldValue + calcValueChange(difference, oldValue));					
-					fireManualValueChange(value);
-					ScaledSliderFigure.this.revalidate();
-					ScaledSliderFigure.this.repaint();
-					setLabel();
+					Dimension difference = me.getLocation().getDifference(start);
+					double valueChange = calcValueChange(difference, value);
+					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
+						if(increment > 0)
+							setValue(value + increment * Math.round(valueChange/increment));		
+						else 
+							setValue(value + valueChange);
+						
+						double valuePosition = 
+								((LinearScale)scale).getValuePosition(value, false);
+						start = new Point(
+									horizontal? valuePosition: 0, 
+									horizontal ? 0 : valuePosition);						
+						fireManualValueChange(value);						
+						ScaledSliderFigure.this.layout();
+						ScaledSliderFigure.this.repaint();
+						setLabel();		
+					}
 					me.consume();
 				}
 
@@ -518,6 +545,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	class XSliderLayout extends AbstractLayout {
 		
 		private static final int GAP_BTW_THUMB_SCALE = 5;
+		private static final int ADDITIONAL_MARGIN = 3;
+		
 		/** Used as a constraint for the scale. */
 		public static final String SCALE = "scale";   //$NON-NLS-1$
 		/** Used as a constraint for the pipe indicator. */
@@ -563,8 +592,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		
 		
 		private void horizontalLayout(IFigure container) {
-			Rectangle area = container.getClientArea();		
-			
+			Rectangle area = container.getClientArea().getCopy();		
+			area.x += ADDITIONAL_MARGIN;
+			area.width -= 2*ADDITIONAL_MARGIN;
 			Dimension scaleSize = new Dimension(0, 0);
 			Dimension markerSize = new Dimension(0, 0);
 			

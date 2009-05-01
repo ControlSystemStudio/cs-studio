@@ -53,6 +53,10 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	
 	private boolean effect3D = true;
 	
+	private double increment = 1;
+	
+	private boolean manualSetValue = false;
+	
 	private Thumb thumb;
 	
 	private Bulb bulb;
@@ -116,11 +120,17 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	
 	@Override
 	public void setValue(double value) {
-		super.setValue(value);
-		valueLabel.setText(scale.format(value));			
+		super.setValue(value);		
+		valueLabel.setText(scale.format(manualSetValue? this.value : value));
+		manualSetValue = false;
 	}
 	
-	
+	/**
+	 * @param increment the increment to set
+	 */
+	public void setIncrement(double increment) {
+		this.increment = increment;
+	}
 	
 	@Override
 	protected void paintClientArea(Graphics graphics) {
@@ -216,7 +226,6 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		extends MouseMotionListener.Stub
 		implements MouseListener {
 			private PolarPoint startPP;
-			protected double oldValue;
 			protected double oldValuePosition;
 			protected boolean armed;				
 				Point pole;
@@ -227,9 +236,9 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 					//rotate axis to endAngle
 					startPP.rotateAxis(((RoundScale)scale).getEndAngle(), false);
 					
-					oldValue = value;
+					
 					oldValuePosition = ((RoundScale)scale).getValuePosition(
-							oldValue, true);
+							value, true);
 					me.consume();
 				}
 				
@@ -242,6 +251,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 					//rotate axis to endAngle
 					currentPP.rotateAxis(((RoundScale)scale).getEndAngle(), false);
 					
+					//coerce currentPP to min or max
 					if(currentPP.theta * 180.0/Math.PI > (((RoundScale)scale).getLengthInDegrees())) {
 						if(Math.abs(((RoundScale)scale).getValuePosition(value, true)-
 							(((RoundScale)scale).getLengthInDegrees())) < ((RoundScale)scale).getLengthInDegrees()/2.0)
@@ -251,13 +261,21 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 					}
 						
 					double difference = currentPP.theta * 180.0/Math.PI - oldValuePosition;	
-					double currentValue = oldValue + calcValueChange(difference, oldValue);				
-					setValue(currentValue);
-					
-					fireManualValueChange(value);
-					KnobFigure.this.revalidate();
-					KnobFigure.this.repaint();					
-					me.consume();
+					double valueChange = calcValueChange(difference, value);
+					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
+						manualSetValue = true;
+						if(increment > 0)
+							setValue(value + increment * Math.round(valueChange/increment));		
+						else 
+							setValue(value + valueChange);
+											
+						oldValuePosition = ((RoundScale)scale).getValuePosition(
+							value, true);						
+						fireManualValueChange(value);
+						KnobFigure.this.revalidate();
+						KnobFigure.this.repaint();					
+					}
+					me.consume();					
 				}
 				
 				public void mouseReleased(MouseEvent me) {

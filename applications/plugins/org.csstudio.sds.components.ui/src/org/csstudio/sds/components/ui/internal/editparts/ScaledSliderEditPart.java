@@ -31,7 +31,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		slider.setFillBackgroundColor(model.getFillbackgroundColor());
 		slider.setThumbColor(model.getThumbColor());
 		slider.setHorizontal(model.isHorizontal());
-		
+		slider.setIncrement(model.getIncrement());
 		slider.addSliderListener(new ScaledSliderFigure.IScaledSliderListener() {
 			public void sliderValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
@@ -139,7 +139,16 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		setPropertyChangeHandler(ScaledSliderModel.PROP_ENABLED, enableHandler);	
 		
 		
-		
+		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
+				slider.setIncrement((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ScaledSliderModel.PROP_INCREMENT, incrementHandler);
 		
 	}
 

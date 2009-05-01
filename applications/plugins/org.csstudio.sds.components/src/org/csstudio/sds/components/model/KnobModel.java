@@ -3,6 +3,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
+import org.csstudio.sds.model.properties.DoubleProperty;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -27,6 +28,11 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	
 	/** The ID of the Ramp Gradient. */
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the increment property.
+	 */
+	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
 	
 	/** The default value of the default knob color property. */
 	private static final RGB DEFAULT_KNOB_COLOR = new RGB(150,150,150);
@@ -66,6 +72,9 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 		
 		addProperty(PROP_RAMP_GRADIENT, new BooleanProperty("Ramp Gradient", 
 				WidgetPropertyCategory.Display, true));	
+		
+		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
+				WidgetPropertyCategory.Behaviour, 1.0));
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
 	}	
@@ -109,5 +118,15 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 */
 	public boolean isRampGradient() {
 		return (Boolean) getProperty(PROP_RAMP_GRADIENT).getPropertyValue();
+	}
+	
+	
+	/**
+	 * Return the increment value.
+	 * 
+	 * @return The increment value.
+	 */
+	public double getIncrement() {
+		return (Double) getProperty(PROP_INCREMENT).getPropertyValue();
 	}
 }
