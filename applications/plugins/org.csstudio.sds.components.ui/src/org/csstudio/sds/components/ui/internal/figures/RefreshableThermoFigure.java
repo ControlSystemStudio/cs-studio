@@ -41,6 +41,11 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 	
 	private boolean effect3D = true;
 	
+	/**
+	 * the value be set before coerced, which is used for displaying on bulb
+	 */
+	private double rawValue = 50;
+	
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);
 	
@@ -123,6 +128,12 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 	 */
 	public void setEffect3D(boolean effect3D) {
 		this.effect3D = effect3D;
+	}
+	
+	@Override
+	public void setValue(double value) {
+		super.setValue(value);
+		rawValue = value;
 	}
 	
 	class Pipe extends RoundedRectangle {		
@@ -229,7 +240,7 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 
 			NumberFormat format = NumberFormat.getInstance();
 			format.setMaximumFractionDigits(2);
-			String valueString = format.format(value);
+			String valueString = format.format(rawValue);
 			Dimension valueSize = 
 				FigureUtilities.getTextExtents(valueString, getFont());
 			if(valueSize.width < bounds.width) {				
