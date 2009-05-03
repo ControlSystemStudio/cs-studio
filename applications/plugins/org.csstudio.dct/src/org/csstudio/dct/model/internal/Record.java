@@ -20,14 +20,17 @@ import org.csstudio.dct.util.CompareUtil;
  * @author Sven Wende
  */
 public final class Record extends AbstractPropertyContainer implements IRecord {
-
+	private static final long serialVersionUID = -909182136862019398L;
 	private String type;
 	private String epicsName;
-	private IRecord parentRecord;
-	private IContainer container;
 	private Map<String, String> fields = new HashMap<String, String>();
-	private List<IRecord> inheritingRecords = new ArrayList<IRecord>();
+	private transient IRecord parentRecord;
+	private transient IContainer container;
+	private transient List<IRecord> inheritingRecords = new ArrayList<IRecord>();
 
+	public Record() {
+	}
+	
 	/**
 	 * Constructor.
 	 * 
@@ -89,6 +92,8 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 		fields.put(key, value);
 	}
 
+
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -103,6 +108,13 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 		fields.remove(key);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setFields(Map<String, String> fields) {
+		this.fields = fields;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

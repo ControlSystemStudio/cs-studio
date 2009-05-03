@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
@@ -65,7 +66,7 @@ public final class SearchVisitor implements IVisitor {
 	 *            the id of the target element
 	 * @return an element with the specified id or null
 	 */
-	public IElement search(Project project, UUID id) {
+	public IElement search(IProject project, UUID id) {
 		assert project != null;
 		assert id != null;
 

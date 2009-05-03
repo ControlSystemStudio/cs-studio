@@ -17,8 +17,13 @@ import org.csstudio.dct.model.IVisitor;
  * @author Sven Wende
  */
 public final class Prototype extends AbstractContainer implements IPrototype {
+	private static final long serialVersionUID = 2845048590453820494L;
+	
 	private List<Parameter> parameters;
 
+	public Prototype() {
+	}
+	
 	/**
 	 * Constructor.
 	 * @param name the name

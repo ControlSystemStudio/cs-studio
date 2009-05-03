@@ -14,7 +14,11 @@ import org.csstudio.dct.model.IPropertyContainer;
  */
 public abstract class AbstractPropertyContainer extends AbstractElement implements IPropertyContainer {
 
+	private static final long serialVersionUID = 6872019128384162503L;
 	private Map<String, String> properties;
+
+	public AbstractPropertyContainer() {
+	}
 
 	/**
 	 * Constructor.

@@ -1,14 +1,17 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
+import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 
@@ -24,23 +27,31 @@ public final class AddRecordAction extends AbstractOutlineAction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Command createCommand(IElement selection) {
+	protected Command createCommand(List<IElement> selection) {
+		assert selection != null;
+		assert selection.size() == 1;
+		assert selection.get(0) instanceof IRecordContainer;
+
 		Command command = null;
 
-		RecordTypeSelectionDialog rsd = new RecordTypeSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Please select the record type:",
-				getProject().getDatabaseDefinition().getRecordDefinitions());
+		RecordTypeSelectionDialog rsd = new RecordTypeSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+				"Please select the record type:", getProject().getDatabaseDefinition().getRecordDefinitions());
 
-		if (selection instanceof IRecordContainer) {
-			if (rsd.open() == Window.OK) {
-				IRecordDefinition rd = rsd.getSelection();
+		if (rsd.open() == Window.OK) {
+			IRecordDefinition rd = rsd.getSelection();
 
-				if (rd != null) {
-					command = new AddRecordCommand((IContainer) selection, RecordFactory.createRecord(getProject(), rd.getType(),
-							"new record", UUID.randomUUID()));
-				}
+			if (rd != null) {
+				command = new AddRecordCommand((IContainer) selection.get(0), RecordFactory.createRecord(getProject(), rd.getType(), "new record", UUID
+						.randomUUID()));
 			}
 		}
+		
 		return command;
+	}
+	
+	@Override
+	protected void afterSelectionChanged(List<IElement> selection, IAction action) {
+		action.setEnabled(getProject().getDatabaseDefinition()!=null);
 	}
 
 }

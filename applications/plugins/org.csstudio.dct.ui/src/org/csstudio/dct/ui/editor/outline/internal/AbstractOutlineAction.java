@@ -1,5 +1,9 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.commands.ISelectAfterExecution;
@@ -21,7 +25,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
  * 
  */
 public abstract class AbstractOutlineAction implements IViewActionDelegate {
-	private IElement selectedElement;
+	private List<IElement> selectedElements;
 	private ContentOutline outlineView;
 
 	/**
@@ -35,7 +39,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 	 * {@inheritDoc}
 	 */
 	public final void run(IAction action) {
-		Command command = createCommand(selectedElement);
+		Command command = createCommand(selectedElements);
 		execute(command);
 
 		// select new elements if necessary
@@ -51,18 +55,25 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public final void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 
-			Object s = ssel.getFirstElement();
+			selectedElements = new ArrayList<IElement>();
 
-			if (s instanceof IElement) {
-				selectedElement = (IElement) s;
-			} else {
-				selectedElement = null;
+			Iterator<Object> it = ssel.iterator();
+
+			while (it.hasNext()) {
+				Object s = it.next();
+
+				if (s instanceof IElement) {
+					selectedElements.add((IElement) s);
+				}
 			}
 		}
+
+		afterSelectionChanged(selectedElements, action);
 	}
 
 	/**
@@ -74,7 +85,20 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 	 * 
 	 * @return a command which does the real action
 	 */
-	protected abstract Command createCommand(IElement selection);
+	protected abstract Command createCommand(List<IElement> selection);
+
+	/**
+	 * Hook for subclasses to manipulate the action state based on the current
+	 * selection.
+	 * 
+	 * @param selection
+	 *            the current selection
+	 * @param action
+	 *            the action
+	 * 
+	 */
+	protected void afterSelectionChanged(List<IElement> selection, IAction action) {
+	}
 
 	/**
 	 * Returns the {@link IProject} that is currently displayed in the outline.

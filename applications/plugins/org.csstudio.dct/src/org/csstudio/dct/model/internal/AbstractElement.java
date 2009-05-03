@@ -1,5 +1,6 @@
 package org.csstudio.dct.model.internal;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IElement;
@@ -13,9 +14,14 @@ import org.eclipse.core.runtime.Platform;
  * @author Sven Wende
  * 
  */
-public abstract class AbstractElement implements IElement, IAdaptable {
+public abstract class AbstractElement implements IElement, IAdaptable, Serializable {
+	private static final long serialVersionUID = 6033398826670082191L;
+	
 	private String name;
 	private UUID id;
+
+	public AbstractElement() {
+	}
 
 	/**
 	 * Constructor.

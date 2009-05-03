@@ -1,5 +1,7 @@
 package org.csstudio.dct.model.internal;
 
+import java.io.Serializable;
+
 import org.csstudio.dct.util.CompareUtil;
 
 /**
@@ -7,7 +9,8 @@ import org.csstudio.dct.util.CompareUtil;
  * 
  * @author Sven Wende
  */
-public final class Parameter {
+public final class Parameter implements Serializable {
+	private static final long serialVersionUID = 5417684183030531306L;
 	private String name;
 	private String defaultValue;
 

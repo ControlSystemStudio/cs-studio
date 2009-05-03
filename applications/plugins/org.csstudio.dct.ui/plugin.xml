@@ -112,6 +112,22 @@
                </objectClass>
             </enablement>
          </action>
+         <action
+               class="org.csstudio.dct.ui.editor.outline.internal.CopyElementAction"
+               enablesFor="+"
+               icon="icons/copy.png"
+               id="CopyElementAction"
+               label="Copy"
+               menubarPath="add.ext">
+         </action>
+         <action
+               class="org.csstudio.dct.ui.editor.outline.internal.PasteElementAction"
+               enablesFor="1"
+               icon="icons/paste.png"
+               id="PasteElementAction"
+               label="Paste"
+               menubarPath="add.ext">
+         </action>
       </viewerContribution>
    </extension>
    <extension

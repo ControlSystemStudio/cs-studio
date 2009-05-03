@@ -1,5 +1,8 @@
 package org.csstudio.dct.ui.editor;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -34,6 +37,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -47,8 +52,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -183,6 +194,42 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 				updatePreview();
 			}
 		});
+
+		Button saveToFileButton = new Button(c, SWT.NONE);
+		saveToFileButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent event) {
+				if (exporterDescriptor != null) {
+					FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell());
+					String path = dialog.open();
+
+					if (path != null) {
+						try {
+							File file = new File(path);
+
+							if (!file.exists()) {
+								file.createNewFile();
+							}
+
+							if (file.canWrite()) {
+								FileWriter writer = new FileWriter(file);
+								writer.write(exporterDescriptor.getExporter().export(getProject()));
+								writer.close();
+							}
+
+							file = null;
+						} catch (IOException e) {
+							MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Export not possible", e.getMessage());
+						}
+					}
+
+				}
+			}
+		});
+		
+//		saveToFileButton.setLayoutData(LayoutUtil.createGridData());
+		saveToFileButton.setText("Save To File");
+		
 
 		dbFilePreviewText = new StyledText(composite, SWT.H_SCROLL | SWT.V_SCROLL);
 		dbFilePreviewText.setLayoutData(LayoutUtil.createGridDataForFillingCell());

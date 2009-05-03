@@ -1,5 +1,7 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
+import java.util.List;
+
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.commands.AddFolderCommand;
@@ -20,10 +22,14 @@ public final class AddFolderAction extends AbstractOutlineAction {
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected Command createCommand(IElement selection) {
+	protected Command createCommand(List<IElement> selection) {
+		assert selection!=null;
+		assert selection.size()==1;
+		assert selection.get(0) instanceof IFolder;
+		
 		Command result = null;
 
-		if (selection instanceof IFolder) {
+		if (selection.size()==1 && selection.get(0) instanceof IFolder) {
 			InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Folder Name",
 					"Please enter a name for the new folder:", "", new IInputValidator() {
 						public String isValid(String newText) {
@@ -33,7 +39,7 @@ public final class AddFolderAction extends AbstractOutlineAction {
 
 			if (dialog.open() == InputDialog.OK) {
 				String name = dialog.getValue();
-				result = new AddFolderCommand((IFolder) selection, name);
+				result = new AddFolderCommand((IFolder) selection.get(0), name);
 			}
 		}
 

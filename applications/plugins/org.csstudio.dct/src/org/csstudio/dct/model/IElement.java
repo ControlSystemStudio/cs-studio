@@ -1,5 +1,6 @@
 package org.csstudio.dct.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -8,7 +9,7 @@ import java.util.UUID;
  * @author Sven Wende
  * 
  */
-public interface IElement {
+public interface IElement extends Serializable {
 
 	/**
 	 * Returns the id for this model element. The id is globally unique.

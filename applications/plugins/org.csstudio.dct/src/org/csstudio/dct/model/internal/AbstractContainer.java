@@ -36,13 +36,13 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	/**
 	 * The folder, this contain resides in. May be null.
 	 */
-	private IFolder folder;
+	private transient IFolder folder;
 
 	/**
 	 * All containers (instances or prototypes) that inherit from this
 	 * container.
 	 */
-	private Set<IContainer> dependentContainers = new HashSet<IContainer>();
+	private transient Set<IContainer> dependentContainers = new HashSet<IContainer>();
 
 	/**
 	 * Contained instances.
@@ -54,6 +54,12 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	 */
 	private List<IRecord> records = new ArrayList<IRecord>();
 
+	public AbstractContainer() {
+		dependentContainers = new HashSet<IContainer>();
+		instances = new ArrayList<IInstance>();
+		records = new ArrayList<IRecord>();
+	}
+	
 	/**
 	 * Constructor.
 	 * 
