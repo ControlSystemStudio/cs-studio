@@ -35,8 +35,6 @@ public class LinearScaleTickLabels extends Figure {
     /** the maximum height of tick labels */
     private int tickLabelMaxHeight;
     
-    private double gridStepInValue;
-    
     private int gridStepInPixel;
     
     private LinearScale scale;
@@ -172,8 +170,7 @@ public class LinearScaleTickLabels extends Figure {
         double min = scale.getRange().lower;
         double max = scale.getRange().upper;
         BigDecimal gridStepBigDecimal = getGridStep(length, min, max);
-        gridStepInValue = gridStepBigDecimal.doubleValue();
-        gridStepInPixel = (int) (length * gridStepInValue/(max - min));
+        gridStepInPixel = (int) (length * gridStepBigDecimal.doubleValue()/(max - min));
         updateTickLabelForLinearScale(length, gridStepBigDecimal);
     }
 
@@ -579,14 +576,7 @@ public class LinearScaleTickLabels extends Figure {
 	public ArrayList<Boolean> getTickVisibilities() {
 		return tickVisibilities;
 	}
-
-	/**
-	 * @return the gridStep
-	 */
-	public double getGridStepInValue() {
-		return gridStepInValue;
-	}
-
+	
 	/**
 	 * @return the gridStepInPixel
 	 */
