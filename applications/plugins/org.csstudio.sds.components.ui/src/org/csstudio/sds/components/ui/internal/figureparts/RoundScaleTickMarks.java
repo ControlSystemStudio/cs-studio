@@ -30,9 +30,11 @@ public class RoundScaleTickMarks extends Figure {
     public static final int MAJOR_TICK_LENGTH = 8;
     /** the minor tick length */
     public static final int MINOR_TICK_LENGTH = 5;
-
-    /** the minor tick number */
-    public static final int MINOR_TICK_NUM = 5;
+    
+    private double minorGridStepInRadians;
+    
+    private int minorTicksNumber;
+    
     /**
      * Constructor.
      * 
@@ -48,6 +50,7 @@ public class RoundScaleTickMarks extends Figure {
         this.scale = scale;
 
         setForegroundColor(scale.getForegroundColor());
+        this.scale.setMinorTickMarkStepHint(6);
     }
 
    protected void paintClientArea(Graphics graphics) {
@@ -59,8 +62,36 @@ public class RoundScaleTickMarks extends Figure {
  
        }
    
-    
+	/**
+	 * update the parameters for minor ticks
+	 */
+	public void updateMinorTickParas() {
+		if(scale.isDateEnabled()) {
+			minorTicksNumber = 6;
+			minorGridStepInRadians = scale.getScaleTickLabels().getGridStepInRadians()/6.0;
+			return;
+		}
+			
+		if(scale.getScaleTickLabels().getGridStepInRadians()/5 >=
+			scale.convertPixelToRadians(scale.getMinorTickMarkStepHint())){
+			minorTicksNumber = 5;
+			minorGridStepInRadians = scale.getScaleTickLabels().getGridStepInRadians()/5.0;
+			return;
+		}			
+		if(scale.getScaleTickLabels().getGridStepInRadians()/4 >= 
+			scale.convertPixelToRadians(scale.getMinorTickMarkStepHint())){
+			minorTicksNumber = 4;
+			minorGridStepInRadians = scale.getScaleTickLabels().getGridStepInRadians()/4.0;
+			return;
+		}
+		
+		minorTicksNumber = 2;
+		minorGridStepInRadians = scale.getScaleTickLabels().getGridStepInRadians()/2.0;
+		return;
+	} 
 
+   
+   
     /**
      * Draw the X tick marks.
      * 
@@ -77,6 +108,9 @@ public class RoundScaleTickMarks extends Figure {
      */
     private void drawTickMarks(Graphics graphics, ArrayList<Double> tickLabelPositions) {
 
+    	updateMinorTickParas();
+    	//add gap to avoid overlap
+    	double minRadians = scale.convertPixelToRadians(2);
         // draw tick marks
         graphics.setLineStyle(SWT.LINE_SOLID);
         int r = scale.getRadius();
@@ -123,24 +157,36 @@ public class RoundScaleTickMarks extends Figure {
                 graphics.setLineWidth(MAJOR_LINE_WIDTH);     
                 graphics.drawLine(startP, endP);
                 
+                //draw minor ticks for linear scale
                 graphics.setLineWidth(MINOR_LINE_WIDTH);
                 if(scale.isMinorTicksVisible()){
                 	if(i>0) {
-                		for(int j =1; j<MINOR_TICK_NUM; j++) {
-                			double t =tickLabelPositions.get(i-1) +
-                				(tickLabelPositions.get(i) - tickLabelPositions.get(i-1))*j/MINOR_TICK_NUM;
-                			Point minorStartP = new PolarPoint(
-                						r, t).toRelativePoint(scale.getBounds());
-                			Point minorEndP;
-                			if(scale.getTickLablesSide() == LabelSide.Primary)	
-                				 minorEndP =  new PolarPoint(
-                						r + MINOR_TICK_LENGTH, t).toRelativePoint(scale.getBounds());
-                			else
-                				 minorEndP =  new PolarPoint(
-                						r - MINOR_TICK_LENGTH, t).toRelativePoint(scale.getBounds());     			
-                			graphics.drawLine(minorStartP, minorEndP);
                 		
-                		}                		
+                		//draw the first grid step which is start from min value
+                		//draw the first grid step which is start from min value
+                		if(i == 1 && (tickLabelPositions.get(0) - tickLabelPositions.get(1))
+                				< scale.getScaleTickLabels().getGridStepInRadians()){
+                			double t = tickLabelPositions.get(1);
+                			while((tickLabelPositions.get(0) - t) > minorGridStepInRadians + minRadians) {
+                				t = t + minorGridStepInRadians;
+                				drawMinorTick(graphics, r, t);	
+                			}
+                		} //draw the last grid step which is end to max value
+                		else if(i == tickLabelPositions.size()-1 && 
+                				(tickLabelPositions.get(i-1) - tickLabelPositions.get(i))
+                				< scale.getScaleTickLabels().getGridStepInRadians()){
+                			double t = tickLabelPositions.get(i-1);                			
+                			while((t - tickLabelPositions.get(i)) > minorGridStepInRadians + minRadians) {
+                				t = t - minorGridStepInRadians;
+                				drawMinorTick(graphics, r, t);	
+                			}
+                		}else{ // draw regular steps
+	                		for(int j =1; j<minorTicksNumber; j++) {
+	                			double t =tickLabelPositions.get(i-1) +
+	                				(tickLabelPositions.get(i) - tickLabelPositions.get(i-1))*j/minorTicksNumber;
+	                			drawMinorTick(graphics, r, t);	                		
+	                		}
+                		}
                 	}
                 }                
         	 }        
@@ -156,6 +202,19 @@ public class RoundScaleTickMarks extends Figure {
         }
         
     }
+
+	private void drawMinorTick(Graphics graphics, int r, double t) {
+		Point minorStartP = new PolarPoint(
+					r, t).toRelativePoint(scale.getBounds());
+		Point minorEndP;
+		if(scale.getTickLablesSide() == LabelSide.Primary)	
+			 minorEndP =  new PolarPoint(
+					r + MINOR_TICK_LENGTH, t).toRelativePoint(scale.getBounds());
+		else
+			 minorEndP =  new PolarPoint(
+					r - MINOR_TICK_LENGTH, t).toRelativePoint(scale.getBounds());     			
+		graphics.drawLine(minorStartP, minorEndP);
+	}
 
     
 

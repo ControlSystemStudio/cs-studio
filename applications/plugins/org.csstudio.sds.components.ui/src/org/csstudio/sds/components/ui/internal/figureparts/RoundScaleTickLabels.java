@@ -36,7 +36,7 @@ public class RoundScaleTickLabels extends Figure {
     /** the maximum height of tick labels */
     private int tickLabelMaxOutLength;
 
-
+    private double gridStepInRadians;    
     
     private RoundScale scale;  
     
@@ -111,6 +111,18 @@ public class RoundScaleTickLabels extends Figure {
             firstPosition = MIN.subtract(MIN.remainder(tickStep)).add(tickStep);
         }
 
+        //add min
+        if(MIN.compareTo(firstPosition) == -1 ) {
+        	tickLabelValues.add(min);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) MIN.doubleValue());
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(MIN.doubleValue()));
+            }
+        	tickLabelPositions.add(scale.getStartAngle()*Math.PI/180);        	
+        }
+        
         for (int i = digitMin; i <= digitMax; i++) {
             for (BigDecimal j = firstPosition; j.doubleValue() <= pow(10, i)
                     .doubleValue(); j = j.add(tickStep)) {
@@ -135,6 +147,18 @@ public class RoundScaleTickLabels extends Figure {
             tickStep = tickStep.multiply(pow(10, 1));
             firstPosition = tickStep.add(pow(10, i));
         }
+        
+        //add max
+        if(max > tickLabelValues.get(tickLabelValues.size()-1)) {
+        	tickLabelValues.add(max);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) max);
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(max));
+            }
+        	tickLabelPositions.add(scale.getEndAngle()*Math.PI/180);
+        }
     }
     
     /**
@@ -149,6 +173,7 @@ public class RoundScaleTickLabels extends Figure {
         double min = scale.getRange().lower;
         double max = scale.getRange().upper;
         BigDecimal tickStep = getGridStep(lengthInPixels, min, max);
+        gridStepInRadians = lengthInDegrees*(Math.PI/180)*tickStep.doubleValue()/(max-min);
 
         final BigDecimal MIN = new BigDecimal(new Double(min).toString());
         BigDecimal firstPosition;
@@ -163,6 +188,18 @@ public class RoundScaleTickLabels extends Figure {
             firstPosition = MIN.subtract(MIN.remainder(tickStep)).add(tickStep);
         }
 
+        //add min
+        if(MIN.compareTo(firstPosition) == -1 ) {
+        	tickLabelValues.add(min);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) MIN.doubleValue());
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(MIN.doubleValue()));
+            }
+        	tickLabelPositions.add(scale.getStartAngle()*Math.PI/180);        	
+        }
+        
         for (BigDecimal b = firstPosition; b.doubleValue() <= max; b = b
                 .add(tickStep)) {
             if (scale.isDateEnabled()) {
@@ -177,6 +214,18 @@ public class RoundScaleTickLabels extends Figure {
                     / (max - min) * lengthInDegrees);
             tickLabelPosition = tickLabelPosition * Math.PI/180;
             tickLabelPositions.add(tickLabelPosition);
+        }
+        
+        //add max
+        if(max > tickLabelValues.get(tickLabelValues.size()-1)) {
+        	tickLabelValues.add(max);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) max);
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(max));
+            }
+        	tickLabelPositions.add((scale.getStartAngle()- lengthInDegrees)*Math.PI/180);
         }
     }
 
@@ -231,7 +280,8 @@ public class RoundScaleTickLabels extends Figure {
             boolean hasSpaceToDraw = true;
             if (i != 0) {
             	if(i != (tickLabelPositions.size()-1))
-            		hasSpaceToDraw = hasSpaceToDraw(previousArea, tickLabelAreas.get(i));
+            		hasSpaceToDraw = hasSpaceToDraw(previousArea, tickLabelAreas.get(i)) &&
+            			hasSpaceToDraw(tickLabelAreas.get(i), tickLabelAreas.get(tickLabelPositions.size()-1));
             	else
             		hasSpaceToDraw = hasSpaceToDraw(previousArea, tickLabelAreas.get(i)) &&
             					hasSpaceToDraw(tickLabelAreas.get(0), tickLabelAreas.get(i));
@@ -240,16 +290,18 @@ public class RoundScaleTickLabels extends Figure {
 
             // check if the same tick label is repeated
             String currentLabel = tickLabels.get(i);
-            boolean isRepeatSameTick = currentLabel.equals(previousLabel);
+            boolean isRepeatSameTickAndNotEnd = currentLabel.equals(previousLabel)&&
+        		(i!=0 && i!=tickLabelPositions.size()-1);
             previousLabel = currentLabel;
 
             // check if the tick label value is major
-            boolean isMajorTick = true;
+            boolean isMajorTickOrEnd = true;
             if (scale.isLogScaleEnabled()) {
-                isMajorTick = isMajorTick(tickLabelValues.get(i));
+                isMajorTickOrEnd = isMajorTick(tickLabelValues.get(i))
+                	|| i==0 || i==tickLabelPositions.size()-1;
             }
 
-            if (!hasSpaceToDraw || isRepeatSameTick || !isMajorTick) {
+            if (!hasSpaceToDraw || isRepeatSameTickAndNotEnd || !isMajorTickOrEnd) {
                 tickVisibilities.set(i, Boolean.FALSE);
             } else {
                 previousArea = tickLabelAreas.get(i);
@@ -475,6 +527,13 @@ public class RoundScaleTickLabels extends Figure {
 	 */
 	public ArrayList<Boolean> getTickVisibilities() {
 		return tickVisibilities;
+	}
+
+	/**
+	 * @return the gridStepInPixel
+	 */
+	public double getGridStepInRadians() {
+		return gridStepInRadians;
 	}
 
 }

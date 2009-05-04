@@ -88,6 +88,15 @@ public class RoundScale extends AbstractScale {
 	public double getLengthInDegrees() {
 		return lengthInDegrees;
 	}
+	
+	/**@param pixels the pixels to be converted
+	 * @return the corresponding length in radians
+	 */
+	public double convertPixelToRadians(int pixels) {
+		return lengthInDegrees * (Math.PI/180) * pixels / lengthInPixels;
+	}
+
+	
 
     /**
      * @return the estimated donut width, which is used to calculate the radius
