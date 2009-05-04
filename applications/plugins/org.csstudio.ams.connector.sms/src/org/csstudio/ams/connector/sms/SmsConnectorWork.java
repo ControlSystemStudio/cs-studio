@@ -744,8 +744,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 {
                     if(modemService.sendMessage(outMsg, name))
                     {
-                        // Try for 2 minutes
-                        endTime = System.currentTimeMillis() + 120000;
+                        // Try for 1 minute
+                        endTime = System.currentTimeMillis() + 60000;
                         
                         do
                         {
