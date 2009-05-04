@@ -83,7 +83,6 @@ class KnobTest extends Figure {
 		KnobFigure knob = new KnobFigure();	
 		//knob.setBulbColor(CustomMediaFactory.COLOR_GREEN);
 		knob.setValue(10);
-		knob.setMaximum(100);
 		knob.setBounds(bounds);		
 		//knob.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 		//		new RGB(127,127,127)));
@@ -129,7 +128,6 @@ class XMeterTest extends Figure {
 		xMeter.setNeedleColor(CustomMediaFactory.COLOR_RED);
 		xMeter.setValue(65);
 		//xMeter.setNeedleColor(CustomMediaFactory.COLOR_BLUE);
-		xMeter.setMaximum(100);
 		xMeter.setBounds(bounds);		
 		xMeter.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 				new RGB(255,255,255)));
@@ -152,14 +150,12 @@ class GaugeTest extends Figure {
 		RefreshableGaugeFigure gauge = new RefreshableGaugeFigure();	
 		gauge.setNeedleColor(CustomMediaFactory.COLOR_RED);
 		gauge.setValue(34.28);
-		gauge.setMaximum(100);
 		gauge.setBounds(bounds);		
 		gauge.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 				new RGB(127,127,127)));
 		//		new RGB(142,180,227)));
 
 		///gauge.setEffect3D(false);
-		gauge.setMaximum(60);
 		gauge.setGradient(false);
 		gauge.setForegroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE));
 		add(gauge);		
@@ -262,8 +258,6 @@ class XSliderFigureTest extends Figure {
 		slider.setBounds(bounds);
 		slider.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_WHITE));
-		slider.setMaximum(1000);
-		slider.setMinimum(0);
 		slider.setValue(50);		
 		slider.setFillColor(CustomMediaFactory.COLOR_RED);
 		slider.setFillBackgroundColor(CustomMediaFactory.COLOR_GRAY);
