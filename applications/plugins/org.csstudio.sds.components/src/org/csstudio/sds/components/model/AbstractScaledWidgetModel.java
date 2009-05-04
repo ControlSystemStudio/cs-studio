@@ -66,7 +66,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour,DEFAULT_MAX));			
 		
 		addProperty(PROP_MAJOR_TICK_STEP_HINT, new DoubleProperty("Major Tick Step Hint", 
-				WidgetPropertyCategory.Display,DEFAULT_MAJOR_TICK_STEP_HINT));			
+				WidgetPropertyCategory.Display,DEFAULT_MAJOR_TICK_STEP_HINT, 1, 1000));			
 		
 		addProperty(PROP_SHOW_MINOR_TICKS, new BooleanProperty("Show Minor Ticks", 
 				WidgetPropertyCategory.Display, true));		
