@@ -29,7 +29,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -714,6 +713,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         Topic topic = null;
         MessageProducer amsPublisherCheck = null;
         MapMessage mapMessage = null;
+        Object waitObject = null;
         String name = null;
         String number = null;
         String text = null;
@@ -740,6 +740,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 outMsg.setStatusReport(false);
                 outMsg.setValidityPeriod(8);
                 
+                waitObject = new Object();
+                
                 try
                 {
                     if(modemService.sendMessage(outMsg, name))
@@ -749,7 +751,14 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         
                         do
                         {
-                            Thread.sleep(readWaitingPeriod);
+                            synchronized(waitObject)
+                            {
+                                try
+                                {
+                                    waitObject.wait(readWaitingPeriod);
+                                }
+                                catch(InterruptedException ie) {}
+                            }
 
                             inMsg = modemService.readMessages(MessageClasses.ALL, name);
                             for(InboundMessage im : inMsg)
@@ -763,17 +772,24 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                                 }
                             }
                             
-                            success = (checkedModems == modemInfo.getModemCount());
                             currentTime = System.currentTimeMillis();
                         }
-                        while((currentTime <= endTime) && !success);
+                        while(currentTime <= endTime);
+                    }
+                    else
+                    {
+                        Log.log(this, Log.WARN, "Could not send SMS test message.");
+                        break;
                     }
                 }
                 catch(Exception e)
                 {
                     Log.log(this, Log.ERROR, "Modem check was NOT successful for " + name + ".");
+                    break;
                 }
             }
+            
+            success = (checkedModems == modemInfo.getModemCount());
         }
         
         IPreferenceStore storeAct = org.csstudio.ams.Activator.getDefault().getPreferenceStore();
