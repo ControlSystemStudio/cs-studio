@@ -139,14 +139,8 @@ public class AbstractLinearMarkedFigure extends AbstractMarkedWidgetFigure {
 	}
 	
 	@Override
-	public void setMaximum(double maximum) {
-		super.setMaximum(maximum);
-		marker.setDirty(true);
-	}
-	
-	@Override
-	public void setMinimum(double minimum) {
-		super.setMinimum(minimum);
+	public void setRange(double min, double max) {
+		super.setRange(min, max);
 		marker.setDirty(true);
 	}
 	

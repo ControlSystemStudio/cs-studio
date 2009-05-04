@@ -111,14 +111,8 @@ public class AbstractRoundRampedFigure extends AbstractMarkedWidgetFigure {
 	}
 	
 	@Override
-	public void setMaximum(double maximum) {
-		super.setMaximum(maximum);
-		ramp.setDirty(true);
-	}
-	
-	@Override
-	public void setMinimum(double minimum) {
-		super.setMinimum(minimum);
+	public void setRange(double min, double max) {
+		super.setRange(min, max);
 		ramp.setDirty(true);
 	}
 	

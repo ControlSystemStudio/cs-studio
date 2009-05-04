@@ -67,27 +67,19 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	}
 	
 	
-	/**
-	 * @param minimum the minimum to set
-	 */
-	public void setMinimum(final double minimum) {
-		this.minimum = minimum;
-		scale.setRange(new Range(minimum, scale.getRange().upper));
-		//value = Math.max(scale.getRange().lower, value); 
-		scale.revalidate();
-		
-	}
-
-	/**
-	 * @param maximum the maximum to set
-	 */
-	public void setMaximum(final double maximum) {
-		this.maximum = maximum;
-		scale.setRange(new Range(scale.getRange().lower, maximum));
-		//value = Math.min(scale.getRange().upper, value);
-		scale.revalidate();
-	}
 	
+	
+	/**
+	 * set the range of the scale
+	 * @param min
+	 * @param max
+	 */
+	public void setRange(final double min, final double max) {
+		this.minimum = min;
+		this.maximum = max;
+		scale.setRange(new Range(min, max));
+		scale.revalidate();
+	}
 	
 	/**
 	 * @param majorTickMarkStepHint the majorTickMarkStepHint to set

@@ -29,13 +29,12 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 	protected void initializeCommonFigureProperties(
 			final AbstractScaledWidgetFigure figure, final AbstractScaledWidgetModel model) {
 		
+		figure.setRange(model.getMinimum(), model.getMaximum());
 		figure.setValue(model.getValue());
-		figure.setMinimum(model.getMinimum());
-		figure.setMaximum(model.getMaximum());
 		figure.setMajorTickMarkStepHint(model.getMajorTickStepHint());
 		figure.setLogScale(model.isLogScaleEnabled());
 		figure.setShowScale(model.isShowScale());
-		figure.setShowMinorTicks(model.isShowMinorTicks());
+		figure.setShowMinorTicks(model.isShowMinorTicks());	
 		figure.setTransparent(model.isTransparent());
 		
 		
@@ -66,7 +65,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setMinimum((Double) newValue);
+				figure.setRange((Double) newValue, ((AbstractScaledWidgetModel)getModel()).getMaximum());
 				return true;
 			}
 		};
@@ -78,7 +77,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setMaximum((Double) newValue);
+				figure.setRange(((AbstractScaledWidgetModel)getModel()).getMinimum(), (Double) newValue);
 				return true;
 			}
 		};
