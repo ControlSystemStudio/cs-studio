@@ -86,6 +86,9 @@ public abstract class AbstractScale extends Figure{
 	/** the pixels hint for major tick mark step */
     private int majorTickMarkStepHint = 30;
     
+    /** the pixels hint for minor tick mark step */
+    private int minorTickMarkStepHint = 4;
+    
     private boolean minorTicksVisible= true;
     
     private double majorGridStep = 0;
@@ -312,7 +315,7 @@ public abstract class AbstractScale extends Figure{
             max = range.upper;
             
             //calculate the default decimal format
-            if(formatPattern == default_decimal_format) {
+            if(formatPattern ==null || formatPattern == default_decimal_format) {
             	 if(Math.abs(max-min) > 0.1)
 	            	default_decimal_format = "############.##";
 	             else {
@@ -377,6 +380,20 @@ public abstract class AbstractScale extends Figure{
 	 */
 	public double getMajorGridStep() {
 		return majorGridStep;
+	}
+
+	/**
+	 * @param minorTickMarkStepHint the minorTickMarkStepHint to set
+	 */
+	public void setMinorTickMarkStepHint(int minorTickMarkStepHint) {
+		this.minorTickMarkStepHint = minorTickMarkStepHint;
+	}
+
+	/**
+	 * @return the minorTickMarkStepHint
+	 */
+	public int getMinorTickMarkStepHint() {
+		return minorTickMarkStepHint;
 	}
  
 }

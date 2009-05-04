@@ -35,6 +35,10 @@ public class LinearScaleTickLabels extends Figure {
     /** the maximum height of tick labels */
     private int tickLabelMaxHeight;
     
+    private double gridStepInValue;
+    
+    private int gridStepInPixel;
+    
     private LinearScale scale;
 
     /**
@@ -106,7 +110,19 @@ public class LinearScaleTickLabels extends Figure {
         } else {
             firstPosition = MIN.subtract(MIN.remainder(tickStep)).add(tickStep);
         }
-
+        
+      //add min
+        if(MIN.compareTo(firstPosition) == -1 ) {
+        	tickLabelValues.add(min);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) MIN.doubleValue());
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(MIN.doubleValue()));
+            }
+        	tickLabelPositions.add(scale.getMargin());        	
+        }
+       
         for (int i = digitMin; i <= digitMax; i++) {
             for (BigDecimal j = firstPosition; j.doubleValue() <= pow(10, i)
                     .doubleValue(); j = j.add(tickStep)) {
@@ -126,10 +142,23 @@ public class LinearScaleTickLabels extends Figure {
                         .log10(min))
                         / (Math.log10(max) - Math.log10(min)) * length)
                         + scale.getMargin();
-                tickLabelPositions.add(tickLabelPosition);
+                tickLabelPositions.add(tickLabelPosition);               
             }
             tickStep = tickStep.multiply(pow(10, 1));
             firstPosition = tickStep.add(pow(10, i));
+            
+        }
+        
+        //add max
+        if(max > tickLabelValues.get(tickLabelValues.size()-1)) {
+        	tickLabelValues.add(max);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) max);
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(max));
+            }
+        	tickLabelPositions.add(scale.getMargin() + length);
         }
     }
 
@@ -142,7 +171,10 @@ public class LinearScaleTickLabels extends Figure {
     private void updateTickLabelForLinearScale(int length) {
         double min = scale.getRange().lower;
         double max = scale.getRange().upper;
-        updateTickLabelForLinearScale(length, getGridStep(length, min, max));
+        BigDecimal gridStepBigDecimal = getGridStep(length, min, max);
+        gridStepInValue = gridStepBigDecimal.doubleValue();
+        gridStepInPixel = (int) (length * gridStepInValue/(max - min));
+        updateTickLabelForLinearScale(length, gridStepBigDecimal);
     }
 
     /**
@@ -178,7 +210,19 @@ public class LinearScaleTickLabels extends Figure {
                 firstPosition = zeroOclock;
             }
         }
-
+        
+        //add min
+        if(MIN.compareTo(firstPosition) == -1 ) {
+        	tickLabelValues.add(min);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) MIN.doubleValue());
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(MIN.doubleValue()));
+            }
+        	tickLabelPositions.add(scale.getMargin());        	
+        }
+        	
         for (BigDecimal b = firstPosition; b.doubleValue() <= max; b = b
                 .add(tickStep)) {
             if (scale.isDateEnabled()) {
@@ -194,6 +238,19 @@ public class LinearScaleTickLabels extends Figure {
                     //- LINE_WIDTH;
             tickLabelPositions.add(tickLabelPosition);
         }
+        
+        //add max
+        if(max > tickLabelValues.get(tickLabelValues.size()-1)) {
+        	tickLabelValues.add(max);
+        	if (scale.isDateEnabled()) {
+                Date date = new Date((long) max);
+                tickLabels.add(scale.format(date));
+            } else {
+                tickLabels.add(scale.format(max));
+            }
+        	tickLabelPositions.add(scale.getMargin() + length);
+        }
+        	
     }
 
     /**
@@ -220,63 +277,30 @@ public class LinearScaleTickLabels extends Figure {
             boolean hasSpaceToDraw = true;
             if (i != 0) {
                 hasSpaceToDraw = hasSpaceToDraw(previousPosition,
-                        tickLabelPositions.get(i), tickLabels.get(i));
+                        tickLabelPositions.get(i), previousLabel, tickLabels.get(i));
             }
 
             // check if the same tick label is repeated
             String currentLabel = tickLabels.get(i);
-            boolean isRepeatSameTick = currentLabel.equals(previousLabel);
-            previousLabel = currentLabel;
-
+            boolean isRepeatSameTickAndNotEnd = currentLabel.equals(previousLabel) &&
+            	(i!=0 && i!=tickLabelPositions.size()-1);
+            
             // check if the tick label value is major
-            boolean isMajorTick = true;
+            boolean isMajorTickOrEnd = true;
             if (scale.isLogScaleEnabled()) {
-                isMajorTick = isMajorTick(tickLabelValues.get(i));
+                isMajorTickOrEnd = isMajorTick(tickLabelValues.get(i)) 
+                	|| i==0 || i==tickLabelPositions.size()-1;
             }
 
-            if (!hasSpaceToDraw || isRepeatSameTick || !isMajorTick) {
+            if (!hasSpaceToDraw || isRepeatSameTickAndNotEnd || !isMajorTickOrEnd) {
                 tickVisibilities.set(i, Boolean.FALSE);
             } else {
                 previousPosition = tickLabelPositions.get(i);
+                previousLabel = currentLabel;
             }
         }
     }
 
-
-
-    /**
-     * Formats the given object.
-     * 
-     * @param obj
-     *            the object
-     * @return the formatted string
-     */
-    /*
-    private String format(Object obj) {
-        if (format == null) {
-            if (scale.isDateEnabled()) {
-                String dateFormat = "yyyyy.MMMMM.dd";
-                if (timeUnit == Calendar.MILLISECOND) {
-                    dateFormat = "HH:mm:ss.SSS";
-                } else if (timeUnit == Calendar.SECOND) {
-                    dateFormat = "HH:mm:ss";
-                } else if (timeUnit == Calendar.MINUTE) {
-                    dateFormat = "HH:mm";
-                } else if (timeUnit == Calendar.HOUR_OF_DAY) {
-                    dateFormat = "dd HH:mm";
-                } else if (timeUnit == Calendar.DATE) {
-                    dateFormat = "MMMMM d";
-                } else if (timeUnit == Calendar.MONTH) {
-                    dateFormat = "yyyy MMMMM";
-                } else if (timeUnit == Calendar.YEAR) {
-                    dateFormat = "yyyy";
-                }
-                return new SimpleDateFormat(dateFormat).format(obj);
-            }
-            return new DecimalFormat(DEFAULT_DECIMAL_FORMAT).format(obj);
-        }
-        return format.format(obj);
-    }*/
 
     /**
      * Checks if the tick label is major (...,0.01,0.1,1,10,100,...).
@@ -304,16 +328,31 @@ public class LinearScaleTickLabels extends Figure {
      *            the previously drawn tick label position.
      * @param tickLabelPosition
      *            the tick label position.
+     *  @param previousTickLabel
+     *            the prevoius tick label.          
      * @param tickLabel
      *            the tick label text
      * @return true if there is a space to draw tick label
      */
     private boolean hasSpaceToDraw(int previousPosition, int tickLabelPosition,
-            String tickLabel) {
-        Dimension p = FigureUtilities.getTextExtents(tickLabel, scale.getFont());
+            String previousTickLabel, String tickLabel) {
+        Dimension tickLabelSize = FigureUtilities.getTextExtents(tickLabel, scale.getFont());
+        Dimension previousTickLabelSize = FigureUtilities.getTextExtents(previousTickLabel, scale.getFont());
         int interval = tickLabelPosition - previousPosition;
-        int textLength = scale.isHorizontal() ? p.width : p.height;
-        return interval > textLength;
+        int textLength = (int) (scale.isHorizontal() ? (tickLabelSize.width/2.0 + previousTickLabelSize.width/2.0)  
+        		: tickLabelSize.height);
+        boolean noLapOnPrevoius = interval > textLength;
+       
+        boolean noLapOnEnd = true;
+        if(tickLabelPosition != tickLabelPositions.get(tickLabelPositions.size() - 1)){
+        	Dimension endTickLabelSize = FigureUtilities.getTextExtents(
+        		tickLabels.get(tickLabels.size()-1), scale.getFont());
+        	interval = tickLabelPositions.get(tickLabelPositions.size() - 1) - tickLabelPosition;
+        	textLength = (int) (scale.isHorizontal() ? (tickLabelSize.width/2.0 + endTickLabelSize.width/2.0)
+        			: tickLabelSize.height);
+        	noLapOnEnd = interval > textLength;
+        }       
+        return noLapOnPrevoius && noLapOnEnd;        
     }
 
     /**
@@ -539,6 +578,20 @@ public class LinearScaleTickLabels extends Figure {
 	 */
 	public ArrayList<Boolean> getTickVisibilities() {
 		return tickVisibilities;
+	}
+
+	/**
+	 * @return the gridStep
+	 */
+	public double getGridStepInValue() {
+		return gridStepInValue;
+	}
+
+	/**
+	 * @return the gridStepInPixel
+	 */
+	public int getGridStepInPixel() {
+		return gridStepInPixel;
 	}
 
 }
