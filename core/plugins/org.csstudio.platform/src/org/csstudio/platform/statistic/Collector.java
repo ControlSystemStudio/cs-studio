@@ -137,7 +137,7 @@ public class Collector {
 			highestValue.setInfo(info);
 		}
 		setMeanValueAbsolute(getTotalSum()/getCount());
-		if ( getCount() > 1) {
+		if ( (getMeanValuerelative() != null) && (getCount() > 1)) {
 			/*
 			 * avoid devide by zero
 			 */
@@ -261,7 +261,7 @@ public String getCollectorStatusAsXml () {
 		return count;
 	}
 
-	public void setCount(Double count) {
+	synchronized public void setCount(Double count) {
 		this.count = count;
 	}
 
