@@ -5,6 +5,7 @@
    <extension
          point="org.csstudio.sds.widgetModelFactories">
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.MeterModelFactory"
             description="Creates a meter control."
             icon="icons/meter.gif"
@@ -17,6 +18,7 @@
             name="Label"
             typeId="org.csstudio.sds.components.Label"/>
       <widgetModelFactory
+            category="Shapes"
             class="org.csstudio.sds.components.internal.model.ArcModelFactory"
             description="Creates an arc."
             icon="icons/arc.gif"
@@ -29,12 +31,14 @@
             name="Image"
             typeId="org.csstudio.sds.components.Image"/>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.SwitchModelFactory"
             description="Creates a switch."
             icon="icons/switch.gif"
             name="Switch"
             typeId="org.csstudio.sds.components.Switch"/>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.MenuButtonModelFactory"
             description="MenuButton (like Combo Box)"
             icon="icons/menubutton.gif"
@@ -47,42 +51,49 @@
    <extension
          point="org.csstudio.sds.widgetModelFactories">
       <widgetModelFactory
+            category="Shapes"
             class="org.csstudio.sds.components.internal.model.RectangleModelFactory"
             description="Rectangle"
             icon="icons/rectangle.gif"
             name="Rectangle"
             typeId="org.csstudio.sds.components.Rectangle"/>
       <widgetModelFactory
+            category="Shapes"
             class="org.csstudio.sds.components.internal.model.EllipseModelFactory"
             description="Ellipse"
             icon="icons/ellipse.gif"
             name="Ellipse"
             typeId="org.csstudio.sds.components.Ellipse"/>
       <widgetModelFactory
+            category="Shapes"
             class="org.csstudio.sds.components.internal.model.PolygonModelFactory"
             description="Polygon"
             icon="icons/polygon.gif"
             name="Polygon"
             typeId="org.csstudio.sds.components.Polygon"/>
       <widgetModelFactory
+            category="Shapes"
             class="org.csstudio.sds.components.internal.model.PolylineModelFactory"
             description="Polyline"
             icon="icons/polyline.gif"
             name="Polyline"
             typeId="org.csstudio.sds.components.Polyline"/>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.TextInputModelFactory"
             description="Text Input"
             icon="icons/text.gif"
             name="Text Input"
             typeId="org.csstudio.sds.components.Textinput"/>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.SimpleSliderModelFactory"
             description="Simple Slider"
             icon="icons/slider.gif"
             name="Simple Slider"
             typeId="org.csstudio.sds.components.SimpleSlider"/>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.AdvancedSliderModelFactory"
             description="Advanced Slider"
             icon="icons/advancedslider.gif"
@@ -95,18 +106,21 @@
             name="Waveform"
             typeId="org.csstudio.sds.components.Waveform"/>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.BargraphModelFactory"
             description="Bargraph"
             icon="icons/bargraph.gif"
             name="Bargraph"
             typeId="org.csstudio.sds.components.Bargraph"/>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.ActionButtonModelFactory"
             description="Action Button"
             icon="icons/actionbutton.gif"
             name="Action Button"
             typeId="org.csstudio.sds.components.ActionButton"/>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.TimerModelFactory"
             description="A Timer widget"
             icon="icons/timer.gif"
@@ -114,6 +128,7 @@
             typeId="org.csstudio.sds.components.Timer">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.StripChartModelFactory"
             description="Plots values over time"
             icon="icons/waveform.gif"
@@ -121,6 +136,7 @@
             typeId="org.csstudio.sds.components.StripChart">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.SixteenBinaryBarModelFactory"
             description="Displays lower 16 bits of an integer"
             icon="icons/sixteenbar.gif"
@@ -128,6 +144,7 @@
             typeId="org.csstudio.sds.components.SixteenBinaryBar">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.ThumbWheelModelFactory"
             description="The thumb wheel"
             icon="icons/thumbwheel.gif"
@@ -135,6 +152,7 @@
             typeId="org.csstudio.sds.components.ThumbWheel">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.ThermometerModelFactory"
             description="Thermometer"
             icon="icons/Thermo.gif"
@@ -142,6 +160,7 @@
             typeId="org.csstudio.sds.components.Thermometer">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.TankModelFactory"
             description="Tank"
             icon="icons/Tank.gif"
@@ -149,6 +168,7 @@
             typeId="org.csstudio.sds.components.Tank">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.ScaledSliderModelFactory"
             description="Scaled Slider"
             icon="icons/scaled_slider.gif"
@@ -156,6 +176,7 @@
             typeId="org.csstudio.sds.components.ScaledSlider">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.GaugeModelFactory"
             description="Gauge"
             icon="icons/gauge.gif"
@@ -163,6 +184,7 @@
             typeId="org.csstudio.sds.components.Gauge">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Monitors"
             class="org.csstudio.sds.components.internal.model.XMeterModelFactory"
             description="Express Meter"
             icon="icons/XMeter.gif"
@@ -170,6 +192,7 @@
             typeId="org.csstudio.sds.components.XMeter">
       </widgetModelFactory>
       <widgetModelFactory
+            category="Controls"
             class="org.csstudio.sds.components.internal.model.KnobModelFactory"
             description="Knob"
             icon="icons/knob.gif"
