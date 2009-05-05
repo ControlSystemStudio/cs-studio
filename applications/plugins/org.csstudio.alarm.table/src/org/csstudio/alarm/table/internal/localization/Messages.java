@@ -72,11 +72,25 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+	public static String AlarmView_acknowledgeAllDropDown;
+
+	public static String AlarmView_acknowledgeButton;
+
+	public static String AlarmView_acknowledgeTitle;
+
+	public static String AlarmView_soundButtonDisable;
+
+	public static String AlarmView_soundButtonEnable;
+
+	public static String AlarmView_soundButtonTitle;
+
 	public static String AlarmViewerPreferencePage_column;
 
 	public static String AlarmViewerPreferencePage_columnNamesMessageKeys;
 
 	public static String AlarmViewerPreferencePage_enterColumnName;
+
+	public static String AmsVerifyView_AmsActionsPruefen;
 
 	public static String column;
 
@@ -117,6 +131,14 @@ public class Messages extends NLS {
 	public static String LogArchiveViewerPreferencePage_javaDateFormat;
 
 	public static String LogArchiveViewerPreferencePage_newColumnName;
+
+	public static String LogView_monitoredJmsTopics;
+
+	public static String LogView_properties;
+
+	public static String LogView_propertiesToolTip;
+
+	public static String LogView_runningSince;
 
 	public static String LogViewArchive_3days;
 

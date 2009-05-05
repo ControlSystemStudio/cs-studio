@@ -32,6 +32,7 @@ import javax.jms.MapMessage;
 import org.csstudio.alarm.table.ColumnPropertyChangeListener;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
@@ -69,7 +70,7 @@ public class AmsVerifyView extends LogView {
 
 	public static final String ID = AmsVerifyView.class.getName();
 
-	private String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	private String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"; //$NON-NLS-1$
 	
 	/**
 	 * Creates the view for the alarm log table.
@@ -140,19 +141,19 @@ public class AmsVerifyView extends LogView {
 		Group verifyItemGroup = new Group(logTableManagementComposite,
 				SWT.NONE);
 
-		verifyItemGroup.setText("Verify AMS Actions");
+		verifyItemGroup.setText(Messages.AmsVerifyView_AmsActionsPruefen);
 
 		RowLayout layout = new RowLayout();
 		verifyItemGroup.setLayout(layout);
 
 		Button verify1Button = new Button(verifyItemGroup, SWT.PUSH);
 		verify1Button.setLayoutData(new RowData(60, 21));
-		verify1Button.setText("SMS");
+		verify1Button.setText("SMS"); //$NON-NLS-1$
 
 		verify1Button.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#MODEMTEST#");
+				sendVerifyMessage("#MODEMTEST#"); //$NON-NLS-1$
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -161,12 +162,12 @@ public class AmsVerifyView extends LogView {
 
 		Button verify2Button = new Button(verifyItemGroup, SWT.PUSH);
 		verify2Button.setLayoutData(new RowData(60, 21));
-		verify2Button.setText("Voice Mail");
+		verify2Button.setText("Voice Mail"); //$NON-NLS-1$
 		
 		verify2Button.addSelectionListener(new SelectionListener() {
 			
 			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#VOICEMAILTEST#");
+				sendVerifyMessage("#VOICEMAILTEST#"); //$NON-NLS-1$
 			}
 			
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -175,12 +176,12 @@ public class AmsVerifyView extends LogView {
 
 		Button verify3Button = new Button(verifyItemGroup, SWT.PUSH);
 		verify3Button.setLayoutData(new RowData(60, 21));
-		verify3Button.setText("E-Mail");
+		verify3Button.setText("E-Mail"); //$NON-NLS-1$
 		
 		verify3Button.addSelectionListener(new SelectionListener() {
 			
 			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#MAILTEST#");
+				sendVerifyMessage("#MAILTEST#"); //$NON-NLS-1$
 			}
 			
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -189,12 +190,12 @@ public class AmsVerifyView extends LogView {
 		
 		Button verify4Button = new Button(verifyItemGroup, SWT.PUSH);
 		verify4Button.setLayoutData(new RowData(60, 21));
-		verify4Button.setText("JMS Topic");
+		verify4Button.setText("JMS Topic"); //$NON-NLS-1$
 		
 		verify4Button.addSelectionListener(new SelectionListener() {
 			
 			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#JMSCONNECTORTEST#");
+				sendVerifyMessage("#JMSCONNECTORTEST#"); //$NON-NLS-1$
 			}
 			
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -210,35 +211,35 @@ public class AmsVerifyView extends LogView {
 			java.util.Date currentDate = new java.util.Date();
 			String time = sdf.format(currentDate);
 
-			MapMessage mapMessage = sender.getSessionMessageObject("ALARM");
+			MapMessage mapMessage = sender.getSessionMessageObject("ALARM"); //$NON-NLS-1$
 			
 			//Add username and host to acknowledge message.
 			User user = SecurityFacade.getInstance().getCurrentUser();
 			if (user != null) {
-				mapMessage.setString("USER", user.getUsername());
+				mapMessage.setString("USER", user.getUsername()); //$NON-NLS-1$
 			} else {
-				mapMessage.setString("USER", "NULL");
+				mapMessage.setString("USER", "NULL"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			String host = CSSPlatformInfo.getInstance()
 					.getQualifiedHostname();
 			if (host != null) {
-				mapMessage.setString("HOST", host);
+				mapMessage.setString("HOST", host); //$NON-NLS-1$
 			} else {
-				mapMessage.setString("HOST", "NULL");
+				mapMessage.setString("HOST", "NULL"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			mapMessage.setString("EVENTTIME", time); //$NON-NLS-1$
 			mapMessage.setString("TEXT", textPropertyValue); //$NON-NLS-1$
-			mapMessage.setString("NAME", "AMSCOMMONTEST"); //$NON-NLS-1$
+			mapMessage.setString("NAME", "AMSCOMMONTEST"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			JmsLogsPlugin
-					.logInfo("Verify Ams system with "
+					.logInfo("Verify Ams system with " //$NON-NLS-1$
 							+ textPropertyValue); //$NON-NLS-2$
-			sender.sendMessage("ALARM");
+			sender.sendMessage("ALARM"); //$NON-NLS-1$
 		} catch (JMSException e) {
-			CentralLogger.getInstance().error(this, "JMS error: " + e.toString());
+			CentralLogger.getInstance().error(this, "JMS error: " + e.toString()); //$NON-NLS-1$
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, "Send message error: " + e.toString());
+			CentralLogger.getInstance().error(this, "Send message error: " + e.toString()); //$NON-NLS-1$
 		}
 }
 

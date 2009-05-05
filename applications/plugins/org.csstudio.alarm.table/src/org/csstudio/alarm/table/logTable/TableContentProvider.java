@@ -29,6 +29,7 @@ import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TableItem;
 
 /**
  * @author jhatje
@@ -100,9 +101,38 @@ public class TableContentProvider implements IJMSMessageViewer,
 	}
 
 	public void updateJMSMessage(final JMSMessage jmsm) {
+		// if (element instanceof JMSMessage) {
+		// JMSMessage message = (JMSMessage) element;
+		// if (widget instanceof TableItem) {
+		// final TableItem item = (TableItem) widget;
+		// if (message.getProperty("ACK").equalsIgnoreCase("TRUE")) {
+		// item.setChecked(true);
+		// } else {
+		// item.setChecked(false);
+		// }
+		// }
+		// }
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
+					int i = 0;
+					TableItem[] items = tableViewer.getTable().getItems();
+					for (TableItem tableItem : items) {
+						Object data = tableItem.getData();
+						if (data instanceof JMSMessage) {
+							JMSMessage jmsmsg = (JMSMessage) data;
+							System.out.println(jmsmsg.getProperty("NAME")
+									+ " ; " + jmsmsg.getProperty("EVENTTIME"));
+						}
+						TableItem directTableItem = tableViewer.getTable().getItem(i);
+						Object data2 = directTableItem.getData();
+						if (data2 instanceof JMSMessage) {
+							JMSMessage jmsm = (JMSMessage) data2;
+							System.out.println(jmsm.getProperty("NAME")
+									+ " ; " + jmsm.getProperty("EVENTTIME"));
+						}
+						i++;
+					}
 					tableViewer.update(jmsm, null);
 				} catch (Exception e) {
 					e.printStackTrace();

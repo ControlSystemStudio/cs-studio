@@ -26,11 +26,7 @@ import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -76,10 +72,6 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 				return temp;
 			}
 		});
-		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
-		g1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-		addField(new StringFieldEditor(LogViewPreferenceConstants.MAX,
-				LogViewPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
 		addField(new PreferenceTableEditor(
 				LogViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
 				getFieldEditorParent()));

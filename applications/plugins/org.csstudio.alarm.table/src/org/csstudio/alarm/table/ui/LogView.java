@@ -31,6 +31,7 @@ import org.csstudio.alarm.table.ColumnPropertyChangeListener;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
@@ -84,7 +85,7 @@ public class LogView extends ViewPart {
 	/**
 	 * The ID of the property view.
 	 */
-	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
 
 	/**
 	 * List of topic sets and names from preferences. Displayed in combo box.
@@ -158,16 +159,16 @@ public class LogView extends ViewPart {
 	 */
 	void readPreferenceTopics(String topics) {
 		_topicListAndName = new HashMap<String, String>();
-		String[] topicSetsAndNames = topics.split(";");
+		String[] topicSetsAndNames = topics.split(";"); //$NON-NLS-1$
 		for (String topicSet : topicSetsAndNames) {
-			String[] topicSetItems = topicSet.split("\\?");
+			String[] topicSetItems = topicSet.split("\\?"); //$NON-NLS-1$
 			//preference string for topic set is invalid -> next one
 			if (topicSetItems.length < 3) {
 				continue;
 			}
 			_topicListAndName.put(topicSetItems[2], topicSetItems[1]);
 			if ((_defaultTopicSet == null)
-					|| (topicSetItems[0].equals("default"))
+					|| (topicSetItems[0].equals("default")) //$NON-NLS-1$
 					|| (_defaultTopicSet.equals(topicSetItems[1]))) {
 				_defaultTopicSet = topicSetItems[1];
 			}
@@ -184,13 +185,13 @@ public class LogView extends ViewPart {
 		Group runningSinceGroup = new Group(logTableManagementComposite,
 				SWT.NONE);
 
-		runningSinceGroup.setText("Running since");
+		runningSinceGroup.setText(Messages.LogView_runningSince);
 
 		RowLayout layout = new RowLayout();
 		runningSinceGroup.setLayout(layout);
 
 		GregorianCalendar currentTime = new GregorianCalendar(TimeZone
-				.getTimeZone("ECT"));
+				.getTimeZone("ECT")); //$NON-NLS-1$
 		SimpleDateFormat formater = new SimpleDateFormat();
 		Label runningSinceLabel = new Label(runningSinceGroup, SWT.CENTER);
 		runningSinceLabel.setLayoutData(new RowData(90, 21));
@@ -207,7 +208,7 @@ public class LogView extends ViewPart {
 		Group jmsTopicItemsGroup = new Group(logTableManagementComposite,
 				SWT.NONE);
 
-		jmsTopicItemsGroup.setText("Monitored JMS topics");
+		jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
 
 		RowLayout layout = new RowLayout();
 		layout.type = SWT.HORIZONTAL;
@@ -247,13 +248,13 @@ public class LogView extends ViewPart {
 				try {
 					getSite().getPage().showView(PROPERTY_VIEW_ID);
 				} catch (PartInitException e) {
-					MessageDialog.openError(getSite().getShell(), "Alarm Tree",
+					MessageDialog.openError(getSite().getShell(), "Alarm Tree", //$NON-NLS-1$
 							e.getMessage());
 				}
 			}
 		};
-		_showPropertyViewAction.setText("Properties");
-		_showPropertyViewAction.setToolTipText("Show property view");
+		_showPropertyViewAction.setText(Messages.LogView_properties);
+		_showPropertyViewAction.setToolTipText(Messages.LogView_propertiesToolTip);
 
 		IViewRegistry viewRegistry = getSite().getWorkbenchWindow()
 				.getWorkbench().getViewRegistry();
@@ -281,13 +282,13 @@ public class LogView extends ViewPart {
 		if (memento == null) {
 			return;
 		}
-			_defaultTopicSet = memento.getString("previousTopicSet");
+			_defaultTopicSet = memento.getString("previousTopicSet"); //$NON-NLS-1$
 		if (_defaultTopicSet == null) {
 			CentralLogger.getInstance().debug(this,
-					"No topic set from previous session");
+					"No topic set from previous session"); //$NON-NLS-1$
 		} else {
 			CentralLogger.getInstance().debug(this,
-					"Get topic set from previous session: " + _defaultTopicSet);
+					"Get topic set from previous session: " + _defaultTopicSet); //$NON-NLS-1$
 		}
 	}
 
@@ -295,7 +296,7 @@ public class LogView extends ViewPart {
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		if ((memento != null) && (_defaultTopicSet != null)) {
-			memento.putString("previousTopicSet", _defaultTopicSet);
+			memento.putString("previousTopicSet", _defaultTopicSet); //$NON-NLS-1$
 		}
 	}
 

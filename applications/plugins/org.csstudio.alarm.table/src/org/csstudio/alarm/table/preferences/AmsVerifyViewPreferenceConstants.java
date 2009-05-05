@@ -27,8 +27,6 @@
 public class AmsVerifyViewPreferenceConstants {
 
 	public static final String P_STRING = "Log.column_names";//$NON-NLS-1$
-	public static final String MAX = Messages.getString("LogViewPreferenceConstants.rows.max"); //$NON-NLS-1$
-	public static final String REMOVE = Messages.getString("LogViewPreferenceConstants.rows.min"); //$NON-NLS-1$
 	//Sets of JMS topics to be monitored. List separated with
 	//';'. The optional name for the menu is separated with '?'.
 	public static final String TOPIC_SET = "Log.topic_set";

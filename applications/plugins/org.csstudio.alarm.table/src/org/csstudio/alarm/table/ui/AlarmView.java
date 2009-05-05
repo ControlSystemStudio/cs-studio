@@ -30,6 +30,7 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
@@ -64,7 +65,7 @@ public class AlarmView extends LogView {
 
 	public static final String ID = AlarmView.class.getName();
 
-	private static final String SECURITY_ID = "operating";
+	private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
 	private Button soundEnableButton;
 
@@ -142,17 +143,17 @@ public class AlarmView extends LogView {
 		Group acknowledgeItemGroup = new Group(logTableManagementComposite,
 				SWT.NONE);
 
-		acknowledgeItemGroup.setText("Acknowledge alarm messages");
+		acknowledgeItemGroup.setText(Messages.AlarmView_acknowledgeTitle);
 
 		RowLayout layout = new RowLayout();
 		acknowledgeItemGroup.setLayout(layout);
 
 		Button ackButton = new Button(acknowledgeItemGroup, SWT.PUSH);
 		ackButton.setLayoutData(new RowData(60, 21));
-		ackButton.setText("Ack");
+		ackButton.setText(Messages.AlarmView_acknowledgeButton);
 		ackButton.setEnabled(canExecute);
 		final Combo ackCombo = new Combo(acknowledgeItemGroup, SWT.SINGLE);
-		ackCombo.add("ALL");
+		ackCombo.add(Messages.AlarmView_acknowledgeAllDropDown);
 		IPreferenceStore prefs = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
 		if (prefs.getString(JmsLogPreferenceConstants.VALUE0).trim().length() > 0)
@@ -197,9 +198,9 @@ public class AlarmView extends LogView {
 						// ComboBox selection for all messages or for a special
 						// severity
 						if (ackCombo.getItem(ackCombo.getSelectionIndex())
-								.equals(message.getProperty("SEVERITY"))
+								.equals(message.getProperty("SEVERITY")) //$NON-NLS-1$
 								|| (ackCombo.getItem(ackCombo
-										.getSelectionIndex()).equals("ALL"))) {
+										.getSelectionIndex()).equals(Messages.AlarmView_acknowledgeAllDropDown))) {
 							// add the message only if it is not yet
 							// acknowledged.
 							if (message.isAcknowledged() == false) {
@@ -208,7 +209,7 @@ public class AlarmView extends LogView {
 						}
 
 					} else {
-						JmsLogsPlugin.logInfo("unknown item type in table");
+						JmsLogsPlugin.logInfo("unknown item type in table"); //$NON-NLS-1$
 					}
 
 				}
@@ -226,7 +227,7 @@ public class AlarmView extends LogView {
 		Group soundButtonGroup = new Group(logTableManagementComposite,
 				SWT.NONE);
 
-		soundButtonGroup.setText("Alarm sound");
+		soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
 
 		RowLayout layout = new RowLayout();
 		soundButtonGroup.setLayout(layout);
@@ -234,9 +235,9 @@ public class AlarmView extends LogView {
 		soundEnableButton = new Button(soundButtonGroup, SWT.PUSH);
 		soundEnableButton.setLayoutData(new RowData(60, 21));
 		if (Functions.is_sound()) {
-			soundEnableButton.setText("Disable");
+			soundEnableButton.setText(Messages.AlarmView_soundButtonDisable);
 		} else {
-			soundEnableButton.setText("Enable");
+			soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
 		}
 
 		soundEnableButton.addSelectionListener(new SelectionListener() {
@@ -244,11 +245,11 @@ public class AlarmView extends LogView {
 				if (Functions.is_sound()) {
 					Functions.set_sound(false);
 					((JmsAlarmMessageReceiver) _jmsMessageReceiver).setPlayAlarmSound(false);
-					AlarmView.this.soundEnableButton.setText("Enable");
+					AlarmView.this.soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
 				} else {
 					Functions.set_sound(true);
 					((JmsAlarmMessageReceiver) _jmsMessageReceiver).setPlayAlarmSound(true);
-					AlarmView.this.soundEnableButton.setText("Disable");
+					AlarmView.this.soundEnableButton.setText(Messages.AlarmView_soundButtonDisable);
 				}
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {
