@@ -683,6 +683,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         {
                             Log.log(this, Log.WARN, "Modem test FAILED.");
                         }
+                        
+                        smsContainer.removeSms(sms);
                     }
                 }
                 else // A normal SMS to send
@@ -744,6 +746,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 
                 try
                 {
+                    Log.log(this, Log.INFO, "Sending to modem '" + name + "': " + text);
                     if(modemService.sendMessage(outMsg, name))
                     {
                         // Try for 1 minute
@@ -763,18 +766,22 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             inMsg = modemService.readMessages(MessageClasses.ALL, name);
                             for(InboundMessage im : inMsg)
                             {
+                                Log.log(this, Log.INFO, "Received text: " + im.getText());
                                 if(im.getText().compareTo(text) == 0)
                                 {
                                     Log.log(this, Log.INFO, "Modem check was successful for " + name + ".");
                                     modemService.deleteMessage(im);
                                     checkedModems++;
+                                    success = true;
                                     break;
                                 }
                             }
                             
                             currentTime = System.currentTimeMillis();
                         }
-                        while(currentTime <= endTime);
+                        while(!success && (currentTime <= endTime));
+                        
+                        success = false;
                     }
                     else
                     {
@@ -787,11 +794,14 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     Log.log(this, Log.ERROR, "Modem check was NOT successful for " + name + ".");
                     break;
                 }
-            }
+            } // if
             
-            success = (checkedModems == modemInfo.getModemCount());
-        }
+        } // for
         
+        Log.log(this, Log.INFO, "Number of checked modems: " + checkedModems);
+        Log.log(this, Log.INFO, "Number of modems:         " + modemInfo.getModemCount());
+        success = (checkedModems == modemInfo.getModemCount());
+
         IPreferenceStore storeAct = org.csstudio.ams.Activator.getDefault().getPreferenceStore();
         topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_MONITOR);
 
