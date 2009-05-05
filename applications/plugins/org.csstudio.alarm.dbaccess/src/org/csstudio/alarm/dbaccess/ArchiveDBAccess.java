@@ -95,7 +95,8 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		CentralLogger.getInstance().debug(this,
 				"from time: " + from + ", to time: " + to);
 		_maxAnswerSize = maxAnswerSize;
-		CentralLogger.getInstance().debug(this, "set maxAnswerSize to " + _maxAnswerSize);
+		CentralLogger.getInstance().debug(this,
+				"set maxAnswerSize to " + _maxAnswerSize);
 		ArrayList<ResultSet> dbResult = queryDatabase(filterSetting, from, to);
 		ArrayList<HashMap<String, String>> messageList = processResult(dbResult);
 		return messageList;
@@ -105,7 +106,8 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 * Export log messages from the DB into an excel file.
 	 */
 	public String exportLogMessages(Calendar from, Calendar to,
-			ArrayList<FilterItem> filterSetting, int maxAnswerSize, File path, String[] columnNames) {
+			ArrayList<FilterItem> filterSetting, int maxAnswerSize, File path,
+			String[] columnNames) {
 		String exportResult = "Export completed";
 		_maxAnswerSize = maxAnswerSize;
 		ArrayList<ResultSet> dbResult = queryDatabase(filterSetting, from, to);
@@ -148,7 +150,8 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			deleteFromDB(messageIdsToDelete);
 		} catch (SQLException e) {
 			operationResult = "DB Exception. Delete operation canceled.";
-			CentralLogger.getInstance().error(this, "Delete operation error " + e.getMessage());
+			CentralLogger.getInstance().error(this,
+					"Delete operation error " + e.getMessage());
 		}
 		return operationResult;
 	}
@@ -210,28 +213,54 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 
 	/**
 	 * Delete messages with message_ids stored in 'messageIdsToDelete' from
-	 * tables 'message' and 'message_content'.
+	 * tables 'message' and 'message_content'. Shrink table to release database
+	 * memory.
 	 * 
 	 * @param messageIdsToDelete
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	private void deleteFromDB(Set<String> messageIdsToDelete) throws SQLException {
+	private void deleteFromDB(Set<String> messageIdsToDelete)
+			throws SQLException {
 		_databaseConnection = DBConnection.getInstance().getConnection();
-		//Delete from table 'message_content'
+		// Delete from table 'message_content'
 		PreparedStatement deleteFromMessageContent = _databaseConnection
-		.prepareStatement("delete from message_content mc where mc.message_id = ?");
+				.prepareStatement("delete from message_content mc where mc.message_id = ?");
 		for (String msgID : messageIdsToDelete) {
 			deleteFromMessageContent.setString(1, msgID);
 			deleteFromMessageContent.execute();
 		}
 
-		//Delete from table 'message'
+		CentralLogger.getInstance().debug(this,
+				"Messages from table message_content deleted.");
+
+		// Delete from table 'message'
 		PreparedStatement deleteFromMessage = _databaseConnection
 				.prepareStatement("delete from message m where m.id = ?");
 		for (String msgID : messageIdsToDelete) {
 			deleteFromMessage.setString(1, msgID);
 			deleteFromMessage.execute();
 		}
+
+		CentralLogger.getInstance().debug(this,
+				"Messages from table message deleted.");
+
+		// These statements to release the table space after deletion is
+		// recommended by Desy Oracle service.
+		PreparedStatement enableRowMovement = _databaseConnection
+				.prepareStatement("ALTER TABLE message_content ENABLE ROW MOVEMENT");
+
+		PreparedStatement shrinkTable = _databaseConnection
+				.prepareStatement("ALTER TABLE message_content SHRINK SPACE");
+
+		enableRowMovement.execute();
+
+		shrinkTable.execute();
+
+		CentralLogger
+				.getInstance()
+				.info(
+						this,
+						"Messages from table message_content and message deleted and table space released.");
 	}
 
 	/**
@@ -260,7 +289,8 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			String maxRownum = Integer.toString(_maxAnswerSize * 15);
 			_sqlBuilder = new SQLBuilder();
 			_sqlBuilder.setRownum(maxRownum);
-			CentralLogger.getInstance().debug(this, "set maxRowNum to " + maxRownum);
+			CentralLogger.getInstance().debug(this,
+					"set maxRowNum to " + maxRownum);
 			for (ArrayList<FilterItem> currentFilterSettingList : separatedFilterSettings) {
 				String statement = _sqlBuilder
 						.generateSQL(currentFilterSettingList);
@@ -308,9 +338,8 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 					CentralLogger.getInstance().debug(
 							this,
 							"DB query, filter Property: "
-									+ filterSetting.getProperty()
-									+ "  Value: " + filterSetting.getValue()
-									+ "  Relation: "
+									+ filterSetting.getProperty() + "  Value: "
+									+ filterSetting.getValue() + "  Relation: "
 									+ filterSetting.getRelation());
 				}
 			}
@@ -328,9 +357,8 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 					CentralLogger.getInstance().debug(
 							this,
 							"DB query, filter Property: "
-									+ filterSetting.getProperty()
-									+ "  Value: " + filterSetting.getValue()
-									+ "  Relation: "
+									+ filterSetting.getProperty() + "  Value: "
+									+ filterSetting.getValue() + "  Relation: "
 									+ filterSetting.getRelation());
 				}
 			}
@@ -358,8 +386,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 *            for AND relations)
 	 * @return
 	 */
-	ArrayList<HashMap<String, String>> processResult(
-			List<ResultSet> results) {
+	ArrayList<HashMap<String, String>> processResult(List<ResultSet> results) {
 
 		// number of rows in all result sets (to check for max row num.
 		int currentRowNum = 1;
@@ -422,10 +449,9 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return messageResultList;
 	}
 
-    protected Map<String, String> getIDPropertyMapping() {
-        return MessagePropertyTypeContent
-        		.getIDPropertyMapping();
-    }
+	protected Map<String, String> getIDPropertyMapping() {
+		return MessagePropertyTypeContent.getIDPropertyMapping();
+	}
 
 	/**
 	 * Create from Calendar a date of type String in the format of the SQL
@@ -535,6 +561,5 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 					"Can not close DB connection", e);
 		}
 	}
-
 
 }
