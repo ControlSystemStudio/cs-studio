@@ -1,7 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.KnobModel;
-import org.csstudio.sds.components.model.ScaledSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.KnobFigure;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
@@ -36,7 +35,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					model.getProperty(ScaledSliderModel.PROP_VALUE)
+					model.getProperty(KnobModel.PROP_VALUE)
 							.setManualValue(newValue);					
 			}
 		});		
