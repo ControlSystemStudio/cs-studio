@@ -1505,37 +1505,5 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         {
             Log.log(this, Log.FATAL, e);
         }
-    }
-   
-    public void abortModem()
-    {
-        // String result = null;
-        
-        Log.log(Log.INFO, "Try to abort modem connection.");
-        
-        /*
-        try
-        {
-            result = modemService.sendCustomCmd("+++");
-            
-            Log.log(Log.INFO, "+++ " + result.trim());
-            
-            result = modemService.sendCustomCmd("AT*E2RESET=?\r");
-            
-            Log.log(Log.INFO, "AT*E2RESET=? " + result.trim());
-            
-            result = modemService.sendCustomCmd("AT*E2RESET\r");
-            
-            Log.log(Log.INFO, "AT*E2RESET" + result.trim());
-        }
-        catch(Exception e)
-        {
-            Log.log(Log.ERROR, e);
-        }
-        */
-        
-        modemService = null;
-        
-        Log.log(Log.INFO, "Leaving abortModem()");
-    }
+    }  
 }

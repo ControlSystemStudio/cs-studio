@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libs/smslib-3.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-api-1.5.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-log4j12-1.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/smslib-3.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-net-1.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/mail.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
