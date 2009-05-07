@@ -813,6 +813,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             mapMessage.setString("TYPE", "event");
             mapMessage.setString("EVENTTIME", eventTime);
             mapMessage.setString("TEXT", ((success) ? "OK" : "ERROR"));
+            mapMessage.setString("SEVERITY", ((success) ? "INFO" : "ERROR"));
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
             mapMessage.setString("APPLICATION-ID", "SmsConnector");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
