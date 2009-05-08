@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.jms.Connection;
@@ -715,17 +716,21 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         Topic topic = null;
         MessageProducer amsPublisherCheck = null;
         MapMessage mapMessage = null;
+        Vector<String> badModem = null;
         Object waitObject = null;
         String name = null;
         String number = null;
         String text = null;
         String topicName = null;
+        String severity = null;
         long endTime = 0;
         long currentTime = 0;
         int checkedModems = 0;
         boolean success = false;
 
         Log.log(this, Log.INFO, "Starting modem check.");
+        
+        badModem = new Vector<String>();
         
         for(int i = 0;i < modemInfo.getModemCount();i++)
         {
@@ -786,16 +791,21 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     else
                     {
                         Log.log(this, Log.WARN, "Could not send SMS test message.");
-                        break;
+                        if(badModem.contains(name) == false)
+                        {
+                            badModem.add(name);
+                        }
                     }
                 }
                 catch(Exception e)
                 {
                     Log.log(this, Log.ERROR, "Modem check was NOT successful for " + name + ".");
-                    break;
+                    if(badModem.contains(name) == false)
+                    {
+                        badModem.add(name);
+                    }
                 }
             } // if
-            
         } // for
         
         Log.log(this, Log.INFO, "Number of checked modems: " + checkedModems);
@@ -804,7 +814,27 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
         IPreferenceStore storeAct = org.csstudio.ams.Activator.getDefault().getPreferenceStore();
         topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_MONITOR);
-
+        
+        if(checkedModems == modemInfo.getModemCount())
+        {
+            severity = "INFO";
+            text = "OK: Modems are working fine.";            
+        }
+        else if((checkedModems > 0) && (checkedModems < modemInfo.getModemCount()))
+        {
+            severity = "WARN";
+            text = "WARN: " + (modemInfo.getModemCount() - checkedModems) + " modems are not working properly: ";
+            for(String s : badModem)
+            {
+                text = text + s + " ";
+            }
+        }
+        else if(checkedModems == 0)
+        {
+            severity = "ERROR";
+            text = "ERROR: No modem is working.";
+        }
+        
         try
         {
             topic = amsSenderSession.createTopic(topicName);
@@ -812,8 +842,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             mapMessage = amsSenderSession.createMapMessage();
             mapMessage.setString("TYPE", "event");
             mapMessage.setString("EVENTTIME", eventTime);
-            mapMessage.setString("TEXT", ((success) ? "OK" : "ERROR"));
-            mapMessage.setString("SEVERITY", ((success) ? "INFO" : "ERROR"));
+            mapMessage.setString("TEXT", text);
+            mapMessage.setString("SEVERITY", severity);
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
             mapMessage.setString("APPLICATION-ID", "SmsConnector");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
