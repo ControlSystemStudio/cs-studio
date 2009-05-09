@@ -732,6 +732,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         badModem = new Vector<String>();
         
+        // TODO: Senden und Empfangen der Test-SMS getrennt behandeln.
         for(int i = 0;i < modemInfo.getModemCount();i++)
         {
             name = modemInfo.getModemName(i);
@@ -859,6 +860,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             if(amsPublisherCheck!=null){try{amsPublisherCheck.close();}catch(JMSException e){}amsPublisherCheck=null;}
             topic = null;
         }
+        
+        badModem.clear();
+        badModem = null;
         
         return success;
     }
