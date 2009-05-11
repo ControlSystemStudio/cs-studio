@@ -768,7 +768,8 @@ public class Probe extends ViewPart implements PVListener
             {
                 public void run()
                 {
-                    lbl_status.setText(text);
+                    if (! lbl_status.isDisposed())
+                        lbl_status.setText(text);
                 }
             });
         }
