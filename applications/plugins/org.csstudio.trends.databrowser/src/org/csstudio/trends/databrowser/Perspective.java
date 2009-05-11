@@ -15,7 +15,7 @@ public class Perspective implements IPerspectiveFactory
 {
     public static final String ID = Perspective.class.getName();
     final private static String ID_SNS_PV_UTIL = 
-        "org.csstudio.sns.pvutil.view.PVUtilView"; //$NON-NLS-1$
+        "org.csstudio.diag.pvutil.view.PVUtilView"; //$NON-NLS-1$
     
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
