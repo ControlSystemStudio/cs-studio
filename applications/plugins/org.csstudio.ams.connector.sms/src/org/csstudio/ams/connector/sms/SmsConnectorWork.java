@@ -826,6 +826,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         String text = null;
         String topicName = null;
         String severity = null;
+        String value = null;
         long endTime = 0;
         long currentTime = 0;
         int checkedModems = 0;
@@ -927,11 +928,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         if(checkedModems == modemInfo.getModemCount())
         {
             severity = "NO_ALARM";
+            value = "OK";
             text = "Modems are working fine.";            
         }
         else if((checkedModems > 0) && (checkedModems < modemInfo.getModemCount()))
         {
             severity = "MINOR";
+            value = "WARN";
             text = (modemInfo.getModemCount() - checkedModems) + " modems are not working properly: ";
             for(String s : badModem)
             {
@@ -941,6 +944,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         else if(checkedModems == 0)
         {
             severity = "MAJOR";
+            value = "ERROR";
             text = "No modem is working.";
         }
         
@@ -953,6 +957,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             mapMessage.setString("EVENTTIME", eventTime);
             mapMessage.setString("TEXT", text);
             mapMessage.setString("SEVERITY", severity);
+            mapMessage.setString("VALUE", value);
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
             mapMessage.setString("APPLICATION-ID", "SmsConnector");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
