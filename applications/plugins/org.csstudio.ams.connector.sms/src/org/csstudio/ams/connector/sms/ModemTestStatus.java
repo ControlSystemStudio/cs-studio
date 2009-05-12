@@ -157,7 +157,7 @@ public class ModemTestStatus
     
     public String[] getBadModems()
     {
-        String[] result = null;
+        String[] result = new String[badModem.size()];
         
         result = badModem.toArray(result);
         

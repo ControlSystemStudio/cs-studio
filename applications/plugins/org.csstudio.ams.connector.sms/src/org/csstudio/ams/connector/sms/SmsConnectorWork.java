@@ -1220,7 +1220,15 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             {
                 // Read up to number of messages, read other SMS at the next run.
                 // Read out all messages in linked list
-                modemService.readMessages(msgList, MessageClasses.ALL /*, limit*/);        
+                try
+                {
+                    modemService.readMessages(msgList, MessageClasses.ALL /*, limit*/);
+                }
+                catch(NumberFormatException nfe)
+                {
+                    // Sometimes we get this exception, if the PDU contains invalid characters
+                    Log.log(this, Log.FATAL, "[*** NumberFormatException ***]: " + nfe.getMessage());
+                }
             }
         }
         catch(Exception e)
