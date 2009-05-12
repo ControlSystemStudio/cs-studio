@@ -64,7 +64,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the ToggelButton property.
 	 */
-	public static final String PROP_TOGGLE_BUTTON= "toggelButton"; //$NON-NLS-1$
+	public static final String PROP_TOGGLE_BUTTON= "toggleButton"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of this widget model.
@@ -117,7 +117,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, 0, -1, Integer.MAX_VALUE));
 		addProperty(PROP_ACTION_PRESSED_INDEX, new IntegerProperty("Action Index (pressed)",
 				WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE));
-		addProperty(PROP_TOGGLE_BUTTON, new BooleanProperty("Toggel Button",
+		addProperty(PROP_TOGGLE_BUTTON, new BooleanProperty("Toggle Button",
 		        WidgetPropertyCategory.Behaviour,DEFAULT_TOGGLE_BUTTON));
 	}
 	
