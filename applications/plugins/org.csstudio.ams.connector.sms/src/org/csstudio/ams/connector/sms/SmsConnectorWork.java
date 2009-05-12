@@ -767,12 +767,12 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         }
         else
         {
-            sendTestAnswer(testStatus.getAnswerEventTime(), "ERROR: No modem could send the test SMS.", "ERROR");
+            sendTestAnswer(testStatus.getAnswerEventTime(), "No modem could send the test SMS.", "MAJOR", "ERROR");
             testStatus.reset();
         }
     }
     
-    private void sendTestAnswer(String eventTime, String text, String severity)
+    private void sendTestAnswer(String eventTime, String text, String severity, String value)
     {
         Topic topic = null;
         MessageProducer amsPublisherCheck = null;
@@ -791,6 +791,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             mapMessage.setString("EVENTTIME", eventTime);
             mapMessage.setString("TEXT", text);
             mapMessage.setString("SEVERITY", severity);
+            mapMessage.setString("VALUE", value);
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
             mapMessage.setString("APPLICATION-ID", "SmsConnector");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
@@ -925,13 +926,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         if(checkedModems == modemInfo.getModemCount())
         {
-            severity = "INFO";
-            text = "OK: Modems are working fine.";            
+            severity = "NO_ALARM";
+            text = "Modems are working fine.";            
         }
         else if((checkedModems > 0) && (checkedModems < modemInfo.getModemCount()))
         {
-            severity = "WARN";
-            text = "WARN: " + (modemInfo.getModemCount() - checkedModems) + " modems are not working properly: ";
+            severity = "MINOR";
+            text = (modemInfo.getModemCount() - checkedModems) + " modems are not working properly: ";
             for(String s : badModem)
             {
                 text = text + s + " ";
@@ -939,8 +940,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         }
         else if(checkedModems == 0)
         {
-            severity = "ERROR";
-            text = "ERROR: No modem is working.";
+            severity = "MAJOR";
+            text = "No modem is working.";
         }
         
         try
@@ -1315,7 +1316,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             if(testStatus.getBadModemCount() == 0)
                             {
                                 Log.log(this, Log.INFO, "OK: All modems are working fine.");
-                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "OK: All modems are working fine.", "INFO");
+                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are working fine.", "NO_ALARM", "OK");
                             }
                             else
                             {
@@ -1326,7 +1327,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                                 }
                                 
                                 Log.log(this, Log.INFO, "WARN: Modems, not working properly: " + list);
-                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "WARN: Modems, not working properly: " + list, "WARN");
+                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
                             }
                             
                             testStatus.reset();
@@ -1338,7 +1339,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         if(testStatus.getBadModemCount() == modemInfo.getModemCount())
                         {
                             Log.log(this, Log.INFO, "ERROR: All modems are not working properly.");
-                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "ERROR: All modems are not working properly.", "ERROR");
+                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are not working properly.", "MAJOR", "ERROR");
                         }
                         else
                         {
@@ -1349,7 +1350,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             }
                             
                             Log.log(this, Log.INFO, "WARN: Modems, not working properly: " + list);
-                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "WARN: Modems, not working properly: " + list, "WARN");
+                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
                         }
                         
                         testStatus.reset();
