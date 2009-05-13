@@ -1315,7 +1315,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     
                     if(testStatus.isTimeOut() == false)
                     {
+                        Log.log(this, Log.INFO, "Gateways waiting for answer: " + testStatus.getGatewayCount());
                         testStatus.checkAndRemove(text);
+                        Log.log(this, Log.INFO, "Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
                         if((testStatus.getGatewayCount() == 0))
                         {
                             if(testStatus.getBadModemCount() == 0)
