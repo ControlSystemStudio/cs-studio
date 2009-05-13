@@ -27,17 +27,22 @@ public class ValuesRequest
 	final private int how;
     final private Object parms[];
 
+    /** Quality to use for received samples unless automatic_quality */
     final private IValue.Quality quality;
 
-	// Possible 'type' IDs for the received values.
+	/** Determine quality automatically based on received sample?
+     *  With min/max: interpolated? 
+     */
+    private boolean automatic_quality = false;
+    
+    // Possible 'type' IDs for the received values.
 	final private static int TYPE_STRING = 0;
     final private static int TYPE_ENUM = 1;
     final private static int TYPE_INT = 2;
     final private static int TYPE_DOUBLE = 3;
-	
-	// The result of the query
+
+    // The result of the query
 	private ArchiveValues archived_samples[];
-    private boolean min_max_avg_request;
 
 	/** Constructor for new value request.
 	 *  <p>
@@ -57,20 +62,36 @@ public class ValuesRequest
 	        throws Exception
 	{
         final String req_type = server.getRequestTypes()[how];
-        min_max_avg_request = req_type.equals(ArchiveServer.GET_AVERAGE);
+        
         // Check parms
-        if (min_max_avg_request)
+        if (req_type.equals(ArchiveServer.GET_AVERAGE))
         {
             quality = IValue.Quality.Interpolated;
-            if (! (parms.length == 1  &&  parms[0] instanceof Double))
-                throw new Exception("Expected 'Double delta' for GET_AVERAGE");
-            // We got the Double as per javadoc for the request type,
-            // but the server actually only handles int...
-            final double secs = ((Double)parms[0]).doubleValue();
-            parms = new Object[] { new Integer((int)secs) };
+            if (server.getVersion() < 1)
+            {
+                // GET_AVERAGE for old server: Plot-binning
+                if (! (parms.length == 1  &&  parms[0] instanceof Double))
+                    throw new Exception("Expected 'count' for " + req_type);
+                how = server.getRequestCode("plot-binning");
+                // Uses bin count, so convert average interval back into bins
+                final double interval = ((Double)parms[0]).doubleValue();
+                final int bins = (int) ((end.toDouble() - start.toDouble()) / interval);
+                parms = new Object[] { new Integer(bins) };
+            }
+            else
+            {
+                // GET_AVERAGE for new server: Min/max/average
+                if (! (parms.length == 1  &&  parms[0] instanceof Double))
+                    throw new Exception("Expected 'Double delta' for GET_AVERAGE");
+                // We got the Double interval as per javadoc for the request type,
+                // but the server actually only handles int...
+                final double secs = ((Double)parms[0]).doubleValue();
+                parms = new Object[] { new Integer((int)secs) };
+                automatic_quality = true;
+            }
         }
         else
-        {   // All others (for now) use 'Integer count'
+        {   // All others use 'Integer count'
             if (! (parms.length == 1  &&  parms[0] instanceof Integer))
                 throw new Exception("Expected 'Integer count' for " + req_type);
 
@@ -234,7 +255,7 @@ public class ValuesRequest
                 {   // Was this from a min/max/avg request?
                     // Yes: Then we ran into a raw value.
                     // No: Then it's whatever quality we expected in general
-                    IValue.Quality q = min_max_avg_request ?
+                    final IValue.Quality q = automatic_quality ?
                                         IValue.Quality.Original : quality;
                     samples[si] = ValueFactory.createDoubleValue(
                                     time, sevr, stat, (INumericMetaData)meta,
