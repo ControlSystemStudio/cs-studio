@@ -31,6 +31,7 @@ import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.ColumnPropertyChangeListener;
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
@@ -91,7 +92,7 @@ public class AmsVerifyView extends LogView {
 		_columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
 
 		// create the table model
-		_messageList = new JMSMessageList(_columnNames);
+		_messageList = new JMSLogMessageList(_columnNames);
 
 		readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(AmsVerifyViewPreferenceConstants.TOPIC_SET)); //$NON-NLS-1$
