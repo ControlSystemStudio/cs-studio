@@ -1342,7 +1342,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     }
                     else
                     {
+                        Log.log(this, Log.INFO, "Remaining gateways: " + testStatus.getGatewayCount());
+                        Log.log(this, Log.INFO, "Bad gateways before moving: " + testStatus.getBadModemCount());
                         testStatus.moveGatewayIdToBadModems();
+                        Log.log(this, Log.INFO, "Remaining gateways after moving: " + testStatus.getGatewayCount());
+                        Log.log(this, Log.INFO, "Bad gateways after moving: " + testStatus.getBadModemCount());
                         if(testStatus.getBadModemCount() == modemInfo.getModemCount())
                         {
                             Log.log(this, Log.ERROR, "All modems are not working properly.");
