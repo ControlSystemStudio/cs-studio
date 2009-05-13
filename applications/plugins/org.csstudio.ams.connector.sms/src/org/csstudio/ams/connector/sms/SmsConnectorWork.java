@@ -1320,7 +1320,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         {
                             if(testStatus.getBadModemCount() == 0)
                             {
-                                Log.log(this, Log.INFO, "OK: All modems are working fine.");
+                                Log.log(this, Log.INFO, "All modems are working fine.");
                                 this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are working fine.", "NO_ALARM", "OK");
                             }
                             else
@@ -1331,7 +1331,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                                     list = list + name + " ";
                                 }
                                 
-                                Log.log(this, Log.INFO, "WARN: Modems, not working properly: " + list);
+                                Log.log(this, Log.WARN, "Modems, not working properly: " + list);
                                 this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
                             }
                             
@@ -1343,7 +1343,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         testStatus.moveGatewayIdToBadModems();
                         if(testStatus.getBadModemCount() == modemInfo.getModemCount())
                         {
-                            Log.log(this, Log.INFO, "ERROR: All modems are not working properly.");
+                            Log.log(this, Log.ERROR, "All modems are not working properly.");
                             this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are not working properly.", "MAJOR", "ERROR");
                         }
                         else
