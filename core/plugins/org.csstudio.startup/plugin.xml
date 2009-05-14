@@ -23,11 +23,11 @@
       </product>
    </extension>
    <extension
-         id="application"
+   		 id="application"
          name="CSS Core"
          point="org.eclipse.core.runtime.applications">
       <application>
-         <run class="org.csstudio.startup.applications.Application"/>
+         <run class="org.csstudio.startuphelper.application.Application"/>
       </application>
    </extension>
    <extension
@@ -43,8 +43,8 @@
    <extension
          point="org.eclipse.ui.intro.config">
       <config
-            content="/intro/welcomepage.xml"
-            id="org.csstudio.startup.intro.config"
+            content="intro/welcomepage.xml"
+            id="org.csstudio.startup.introConfigId"
             introId="org.csstudio.startup.intro">
          <presentation
                home-page-id="root"
@@ -53,5 +53,20 @@
          </presentation>
       </config>
    </extension>
-
+	
+   <extension
+         point="org.csstudio.startuphelper.modules">
+      <locale
+            class="org.csstudio.startuphelper.extensions.impl.DefaultLocaleSettingsExtPoint">
+      </locale>
+      <login
+            class="org.csstudio.startuphelper.extensions.impl.DefaultLoginPromptExtPoint">
+      </login>
+      <services
+            class="org.csstudio.startuphelper.extensions.impl.DefaultServicesStartupExtPoint">
+      </services>
+      <workbench
+            class="org.csstudio.startuphelper.extensions.impl.DefaultWorkbenchExtPoint">
+      </workbench>
+   </extension>
 </plugin>
