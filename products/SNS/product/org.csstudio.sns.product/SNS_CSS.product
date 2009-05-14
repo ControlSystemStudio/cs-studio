@@ -6,7 +6,7 @@
    <aboutInfo>
       <image path="/org.csstudio.sns.product/icons/about.gif"/>
       <text>
-         %aboutText
+         Control System Studio (CSS) is a combinedeffort of several parties, including- DESY (Hamburg, Germany)- SNS (Oak Ridge, TN).It provides a collection of control systemtools in a common environment, basedon Eclipse.See http://ics-web.sns.ornl.gov/css
       </text>
    </aboutInfo>
 
