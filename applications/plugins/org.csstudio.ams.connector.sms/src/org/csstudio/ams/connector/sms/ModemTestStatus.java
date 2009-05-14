@@ -31,11 +31,22 @@ import java.util.Vector;
  */
 public class ModemTestStatus
 {
+    /** Vector object that contains the names of all available modems */
     private Vector<String> gateway;
+    
+    /** Vector object that contains the names of all modems that have caused an error */
     private Vector<String> badModem;
+    
+    /** Time and date used as text for the check SMS */ 
     private String timeStamp;
+    
+    /** Content of property EVENTTIME of the JMS message that causes the modem test */ 
     private String answerEventTime;
+
+    /** End time of the test */
     private long timeOut;
+    
+    /** Flag that indicates whether or not the current test is active */
     private boolean active;
     
     public static final String SMS_TEST_TEXT = "[MODEMTEST{$DATE,$GATEWAYID}]";

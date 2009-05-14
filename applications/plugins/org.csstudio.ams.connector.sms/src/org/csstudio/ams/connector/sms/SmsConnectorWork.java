@@ -1342,6 +1342,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     }
                     else
                     {
+                        Log.log(this, Log.WARN, "Current test timed out.");
                         Log.log(this, Log.INFO, "Remaining gateways: " + testStatus.getGatewayCount());
                         Log.log(this, Log.INFO, "Bad gateways before moving: " + testStatus.getBadModemCount());
                         testStatus.moveGatewayIdToBadModems();
@@ -1349,8 +1350,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         Log.log(this, Log.INFO, "Bad gateways after moving: " + testStatus.getBadModemCount());
                         if(testStatus.getBadModemCount() == modemInfo.getModemCount())
                         {
-                            Log.log(this, Log.ERROR, "All modems are not working properly.");
-                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are not working properly.", "MAJOR", "ERROR");
+                            Log.log(this, Log.ERROR, "No modem is working properly.");
+                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "No modem is working properly.", "MAJOR", "ERROR");
                         }
                         else
                         {
@@ -1360,10 +1361,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                                 list = list + name + " ";
                             }
                             
-                            Log.log(this, Log.INFO, "WARN: Modems, not working properly: " + list);
+                            Log.log(this, Log.WARN, "Modems, not working properly: " + list);
                             this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
                         }
                         
+                        Log.log(this, Log.INFO, "Reset current test.");
                         testStatus.reset();
                     }
                 }
