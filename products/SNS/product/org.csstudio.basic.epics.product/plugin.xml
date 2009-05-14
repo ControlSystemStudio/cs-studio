@@ -25,15 +25,15 @@
          </property>
          <property
                name="startupForegroundColor"
-               value="0378EE">
+               value="0064C6">
          </property>
          <property
                name="startupMessageRect"
-               value="7,180,445,20">
+               value="7,190,445,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,200,445,15">
+               value="5,210,445,15">
          </property>
          <property
                name="preferenceCustomization"
@@ -45,7 +45,7 @@
          </property>
          <property
                name="aboutText"
-               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN).&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based\non Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css">
+               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN).&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css">
          </property>
          <property
                name="windowImages"
@@ -57,19 +57,20 @@
          point="org.eclipse.ui.intro">
       <intro
             class="org.eclipse.ui.intro.config.CustomizableIntroPart"
-            id="org.csstudio.basic.product.intro">
+            icon="icons/css16.gif"
+            id="org.csstudio.basic.epics.product.intro">
       </intro>
       <introProductBinding
-            introId="org.csstudio.basic.product.intro"
-            productId="org.csstudio.basic.product.product">
+            introId="org.csstudio.basic.epics.product.intro"
+            productId="org.csstudio.basic.epics.product.product">
       </introProductBinding>
    </extension>
    <extension
          point="org.eclipse.ui.intro.config">
       <config
-            content="intro/intro.xml"
-            id="org.csstudio.basic.product.introConfigId"
-            introId="org.csstudio.basic.product.intro">
+            content="/intro/intro.xml"
+            id="org.csstudio.basic.epics.product.introConfigId"
+            introId="org.csstudio.basic.epics.product.intro">
          <presentation home-page-id="root">
             <implementation kind="html"/>
          </presentation>

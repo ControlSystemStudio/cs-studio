@@ -12,7 +12,7 @@ effort of several parties, including
 - SNS (Oak Ridge, TN).
 
 It provides a collection of control system
-tools in a common environment, based\non Eclipse.
+tools in a common environment, basedon Eclipse.
 
 See http://ics-web.sns.ornl.gov/css
       </text>
@@ -30,9 +30,9 @@ See http://ics-web.sns.ornl.gov/css
 
    <splash
       location="org.csstudio.basic.epics.product"
-      startupProgressRect="5,200,445,15"
-      startupMessageRect="7,180,445,20"
-      startupForegroundColor="0378EE" />
+      startupProgressRect="5,210,445,15"
+      startupMessageRect="7,190,445,20"
+      startupForegroundColor="0064C6" />
    <launcher name="css">
       <linux icon="/org.csstudio.basic.epics.product/icons/css48.xpm"/>
       <macosx icon="/org.csstudio.basic.epics.product/icons/css.icns"/>
