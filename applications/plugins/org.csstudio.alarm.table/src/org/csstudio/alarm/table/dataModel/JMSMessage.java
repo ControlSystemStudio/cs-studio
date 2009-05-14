@@ -39,239 +39,239 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class JMSMessage extends PlatformObject implements IProcessVariable {
 
-	/**
-	 * The properties of the message.
-	 */
-	private HashMap<String, String> messageProperties = new HashMap<String, String>();
+    /**
+     * The properties of the message.
+     */
+    private HashMap<String, String> messageProperties = new HashMap<String, String>();
 
-	/**
-	 * for alarm table: false->no other message with the same pv name and an
-	 * other severity is in the table. true->another OLDER message with same pv
-	 * an other severity is in the table and the label provider change the color
-	 * to gray.
-	 */
-	private boolean _backgroundColorGray = false;
+    /**
+     * for alarm table: false->no other message with the same pv name and an
+     * other severity is in the table. true->another OLDER message with same pv
+     * an other severity is in the table and the label provider change the color
+     * to gray.
+     */
+    private boolean _backgroundColorGray = false;
 
-	/**
-	 * is this message already acknowledged?
-	 */
-	private boolean _acknowledged = false;
+    /**
+     * is this message already acknowledged?
+     */
+    private boolean _acknowledged = false;
 
-	/**
-	 * How many times has this pv changed the alarm status
-	 */
-	private int _alarmChangeCount = 0;
+    /**
+     * How many times has this pv changed the alarm status
+     */
+    private int _alarmChangeCount = 0;
 
-	/**
-	 * Default constructor
-	 */
-	public JMSMessage() {
-		super();
-	}
-	
-	/**
-	 * Constructor with initial message properties of the table columns.
-	 */
-	public JMSMessage(String[] propNames) {
-		super();
-		for (int i = 0; i < propNames.length; i++) {
-			messageProperties.put(propNames[i].split(",")[0], ""); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-	}
+    /**
+     * Default constructor
+     */
+    public JMSMessage() {
+        super();
+    }
 
-	/**
-	 * Set value of a message property
-	 * 
-	 * @param property
-	 * @param value
-	 */
-	public void setProperty(String property, String value) {
-		if (messageProperties.containsKey(property)) {
-			messageProperties.put(property, value);
-		}
-	}
+    /**
+     * Constructor with initial message properties of the table columns.
+     */
+    public JMSMessage(String[] propNames) {
+        super();
+        for (int i = 0; i < propNames.length; i++) {
+            messageProperties.put(propNames[i].split(",")[0], ""); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
 
-	/**
-	 * Returns value of the requested property
-	 * 
-	 * @param property
-	 * @return
-	 */
-	public String getProperty(String property) {
+    /**
+     * Set value of a message property
+     * 
+     * @param property
+     * @param value
+     */
+    public void setProperty(String property, String value) {
+        if (messageProperties.containsKey(property)) {
+            messageProperties.put(property, value);
+        }
+    }
 
-		// if the table asks for the severity we return the severity value
-		// set in the preferences
-		if (property.equals("SEVERITY")) { //$NON-NLS-1$
-			if (messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
-				return findSeverityValue();
-			}
-		}
+    /**
+     * Returns value of the requested property
+     * 
+     * @param property
+     * @return
+     */
+    public String getProperty(String property) {
 
-		// to get the severity key (the 'real' severity get from the map
-		// message)
-		// we have to ask for 'SEVERITY_KEY'
-		if (property.equals("SEVERITY_KEY")) { //$NON-NLS-1$
-			if (messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
-				return messageProperties.get("SEVERITY"); //$NON-NLS-1$
-			}
-		}
+        // if the table asks for the severity we return the severity value
+        // set in the preferences
+        if (property.equals("SEVERITY")) { //$NON-NLS-1$
+            if (messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
+                return findSeverityValue();
+            }
+        }
 
-		// all other properties
-		if (messageProperties.containsKey(property)) {
-			String s = messageProperties.get(property);
-			if (s != null) {
-				return s;
-			} else {
-				return ""; //$NON-NLS-1$
-			}
-		} else {
-			return ""; //$NON-NLS-1$
-		}
-	}
+        // to get the severity key (the 'real' severity get from the map
+        // message)
+        // we have to ask for 'SEVERITY_KEY'
+        if (property.equals("SEVERITY_KEY")) { //$NON-NLS-1$
+            if (messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
+                return messageProperties.get("SEVERITY"); //$NON-NLS-1$
+            }
+        }
 
-	/**
-	 * returns the severity value for the severity key of this message.
-	 * 
-	 * @return
-	 */
-	private String findSeverityValue() {
+        // all other properties
+        if (messageProperties.containsKey(property)) {
+            String s = messageProperties.get(property);
+            if (s != null) {
+                return s;
+            } else {
+                return ""; //$NON-NLS-1$
+            }
+        } else {
+            return ""; //$NON-NLS-1$
+        }
+    }
 
-		String severityKey = messageProperties.get("SEVERITY");//$NON-NLS-1$
-		if (severityKey.equals("")) {
-			return "";
-		}
-		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
-				.getPreferenceStore();
+    /**
+     * returns the severity value for the severity key of this message.
+     * 
+     * @return
+     */
+    private String findSeverityValue() {
 
-		if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 0"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 1"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 2"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 3"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 4"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 5"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 6"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 7"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 8"); //$NON-NLS-1$
-		}
-		if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
-			return preferenceStore.getString("value 9"); //$NON-NLS-1$
-		}
+        String severityKey = messageProperties.get("SEVERITY");//$NON-NLS-1$
+        if (severityKey.equals("")) {
+            return "";
+        }
+        IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
+                .getPreferenceStore();
 
-		return "invalid severity";
-	}
+        if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 0"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 1"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 2"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 3"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 4"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 5"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 6"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 7"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 8"); //$NON-NLS-1$
+        }
+        if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
+            return preferenceStore.getString("value 9"); //$NON-NLS-1$
+        }
 
-	/**
-	 * Returns the number of the severity. The number represents the level of
-	 * the severity.
-	 * 
-	 * @return
-	 */
-	public int getSeverityNumber() {
-		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
-				.getPreferenceStore();
-		String severityKey = messageProperties.get("SEVERITY"); //$NON-NLS-1$
+        return "invalid severity";
+    }
 
-		if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
-			return 0;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
-			return 1;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
-			return 2;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
-			return 3;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
-			return 4;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
-			return 5;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
-			return 6;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
-			return 7;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
-			return 8;
-		}
-		if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
-			return 9;
-		}
+    /**
+     * Returns the number of the severity. The number represents the level of
+     * the severity.
+     * 
+     * @return
+     */
+    public int getSeverityNumber() {
+        IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
+                .getPreferenceStore();
+        String severityKey = messageProperties.get("SEVERITY"); //$NON-NLS-1$
 
-		return -1;
+        if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
+            return 0;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
+            return 1;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
+            return 2;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
+            return 3;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
+            return 4;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
+            return 5;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
+            return 6;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
+            return 7;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
+            return 8;
+        }
+        if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
+            return 9;
+        }
 
-	}
+        return -1;
 
-	public String getName() {
-		return messageProperties.get("NAME"); //$NON-NLS-1$
-	}
+    }
 
-	public String getTypeId() {
-		return null;
-	}
+    public String getName() {
+        return messageProperties.get("NAME"); //$NON-NLS-1$
+    }
 
-	public boolean isBackgroundColorGray() {
-		return _backgroundColorGray;
-	}
+    public String getTypeId() {
+        return null;
+    }
 
-	public void setBackgroundColorGray(boolean backgroundColorGray) {
-		this._backgroundColorGray = backgroundColorGray;
-	}
+    public boolean isBackgroundColorGray() {
+        return _backgroundColorGray;
+    }
 
-	public HashMap<String, String> getHashMap() {
-		return messageProperties;
-	}
+    public void setBackgroundColorGray(boolean backgroundColorGray) {
+        this._backgroundColorGray = backgroundColorGray;
+    }
 
-	public int get_alarmChangeCount() {
-		return _alarmChangeCount;
-	}
+    public HashMap<String, String> getHashMap() {
+        return messageProperties;
+    }
 
-	public void set_alarmChangeCount(int changeCount) {
-		_alarmChangeCount = changeCount;
-	}
+    public int get_alarmChangeCount() {
+        return _alarmChangeCount;
+    }
 
-	public boolean isAcknowledged() {
-		return _acknowledged;
-	}
-	
-	public void setAcknowledged(boolean ack) {
-		this._acknowledged = ack;
-	}
-	
-	/**
-	 * @return deep copy of the JMSMessage.
-	 */
-	public JMSMessage copy() {
-		JMSMessage newMessage = new JMSMessage();
-		Set<String> properties = messageProperties.keySet();
-		for (String entry : properties) {
-			String value = messageProperties.get(entry);
-			newMessage.messageProperties.put(entry, value);
-		}
-		newMessage._acknowledged = this._acknowledged;
-		newMessage._alarmChangeCount = this._alarmChangeCount;
-		newMessage._backgroundColorGray = this._backgroundColorGray;
-		return newMessage;
-	}
+    public void set_alarmChangeCount(int changeCount) {
+        _alarmChangeCount = changeCount;
+    }
+
+    public boolean isAcknowledged() {
+        return _acknowledged;
+    }
+
+    public void setAcknowledged(boolean ack) {
+        this._acknowledged = ack;
+    }
+
+    /**
+     * @return deep copy of the JMSMessage.
+     */
+    public JMSMessage copy() {
+        JMSMessage newMessage = new JMSMessage();
+        Set<String> properties = messageProperties.keySet();
+        for (String entry : properties) {
+            String value = messageProperties.get(entry);
+            newMessage.messageProperties.put(entry, value);
+        }
+        newMessage._acknowledged = this._acknowledged;
+        newMessage._alarmChangeCount = this._alarmChangeCount;
+        newMessage._backgroundColorGray = this._backgroundColorGray;
+        return newMessage;
+    }
 }

@@ -51,7 +51,7 @@
 	  <view
             category="org.csstudio"
             class="org.csstudio.alarm.table.ui.AmsVerifyView"
-            icon="icons/logTable.png"
+            icon="icons/verifyTable.png"
             id="org.csstudio.alarm.table.ui.AmsVerifyView"
             name="AMS Verifier"/>
    </extension>
@@ -129,7 +129,7 @@
                tooltip="Show JMS Log"/>
          <action
                class="org.csstudio.alarm.table.ui.ShowAmsVerifyView"
-               icon="icons/logTable.png"
+               icon="icons/verifyTable.png"
                id="org.csstudio.alarm.table.ui.ShowAmsVerifyView"
                label="AMS Verifier"
                menubarPath="css/diag/"

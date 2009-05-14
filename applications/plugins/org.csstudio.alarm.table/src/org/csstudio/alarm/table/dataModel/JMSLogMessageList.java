@@ -32,8 +32,11 @@ import org.csstudio.platform.logging.CentralLogger;
 
 public class JMSLogMessageList extends JMSMessageList {
 
-	public JMSLogMessageList(String[] propNames) {
+	private final Integer _maximumNumberOfMessages;
+
+    public JMSLogMessageList(String[] propNames, Integer maximumNumberOfMessages) {
 		super(propNames);
+        _maximumNumberOfMessages = maximumNumberOfMessages;
 	}
 
 	/**
@@ -70,16 +73,7 @@ public class JMSLogMessageList extends JMSMessageList {
 	 * oldest messages
 	 */
 	private void limitMessageListSize() {
-		String maximumRowNumber = JmsLogsPlugin.getDefault()
-				.getPluginPreferences().getString(
-						LogViewPreferenceConstants.MAX);
-		int maxRowNumber;
-		try {
-			maxRowNumber = Integer.parseInt(maximumRowNumber);
-		} catch (NumberFormatException e) {
-			maxRowNumber = 100;
-		}
-		while (JMSMessages.size() > maxRowNumber) {
+		while (JMSMessages.size() > _maximumNumberOfMessages) {
 			if (JMSMessages.get(0) != null) {
 				removeJMSMessage(JMSMessages.get(0));
 			}

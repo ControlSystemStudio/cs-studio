@@ -77,6 +77,7 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 
 			public String createList(String[] items) {
 				String temp = ""; //$NON-NLS-1$
+				
 				for (int i = 0; i < items.length; i++) {
 					temp = temp + items[i] + ";"; //$NON-NLS-1$
 				}

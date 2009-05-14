@@ -25,19 +25,20 @@ package org.csstudio.alarm.table.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.table.ColumnPropertyChangeListener;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
-import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
+import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -49,11 +50,10 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IActionBars;
 
 /**
- * Add to the base class {@link LogView}: - the acknowledge button and combo box
- * - the send method for jms acknowledge messages.
+ * Add to the base class {@link LogView}: acknowledge button and combo box,
+ * send method for jms acknowledge messages.
  * 
  * @see LogView
  * @author jhatje
@@ -79,23 +79,21 @@ public class AlarmView extends LogView {
 		boolean canExecute = SecurityFacade.getInstance().canExecute(
 				SECURITY_ID, true);
 
-		// in alarm table the 'ack' column must be the first one!
+        //Read column names and JMS topic settings from preferences
+		//Add to the column string from preferences at first position 'ACK', because
+		//the first column in alarm table is always 'ACK.
 		String preferenceColumnString = JmsLogsPlugin.getDefault()
 				.getPluginPreferences().getString(
 						AlarmViewPreferenceConstants.P_STRINGAlarm);
-
 		preferenceColumnString = "ACK,25;" + preferenceColumnString; //$NON-NLS-1$
-
-		// read the column names from the preference page
-		_columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
-
-		// create the table model
-		_messageList = new JMSAlarmMessageList(_columnNames);
-
+		String[] _columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
 		readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(AlarmViewPreferenceConstants.TOPIC_SET)); //$NON-NLS-1$
-
-
+		        .getString(AlarmViewPreferenceConstants.TOPIC_SET)); //$NON-NLS-1$
+		
+        //Initialize JMS message list
+		_messageList = new JMSAlarmMessageList(_columnNames);
+		
+		//Create UI
 		GridLayout grid = new GridLayout();
 		grid.numColumns = 1;
 		parent.setLayout(grid);
@@ -107,30 +105,31 @@ public class AlarmView extends LogView {
 		logTableManagementComposite.setLayout(layout);
 
 		addJmsTopicItems(logTableManagementComposite);
-
 		addAcknowledgeItems(canExecute, logTableManagementComposite);
-
 		addSoundButton(logTableManagementComposite);
-
 		addRunningSinceGroup(logTableManagementComposite);
 
-		// create jface table viewer with paramter 2 for alarm table version
-		_tableViewer = new JMSLogTableViewer(parent, getSite(), _columnNames,
-				_messageList, 2, SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
+        //setup message table with context menu etc.
+        _tableViewer = new TableViewer(parent, SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
 
-		_tableViewer.setAlarmSorting(true);
-		makeActions();
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalToolBar(bars.getToolBarManager());
-		getSite().setSelectionProvider(_tableViewer);
+        _messageTable = new AlarmMessageTable(_tableViewer, _columnNames,
+                _messageList);
 
+        _messageTable.makeContextMenu(getSite());
+        
+        _columnMapping = new ColumnWidthPreferenceMapping(_tableViewer);
+        
+        getSite().setSelectionProvider(_tableViewer);
+
+        makeActions();
+        
 		parent.pack();
 
-		_propertyChangeListener = new ColumnPropertyChangeListener(
-				AlarmViewPreferenceConstants.P_STRINGAlarm, _tableViewer);
-
-		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.addPropertyChangeListener(_propertyChangeListener);
+//		_propertyChangeListener = new ColumnPropertyChangeListener(
+//				AlarmViewPreferenceConstants.P_STRINGAlarm, _tableViewer);
+//
+//		JmsLogsPlugin.getDefault().getPluginPreferences()
+//				.addPropertyChangeListener(_propertyChangeListener);
 
 		_jmsMessageReceiver = new JmsAlarmMessageReceiver(_messageList);
 
@@ -256,36 +255,16 @@ public class AlarmView extends LogView {
 			}
 		});
 	}
-
-	public void saveColumn() {
-		/**
-		 * When dispose store width for each column, except the first one (ACK).
-		 */
-		int[] width = _tableViewer.getColumnWidth();
-		String newPreferenceColumnString = ""; //$NON-NLS-1$
-		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(AlarmViewPreferenceConstants.P_STRINGAlarm).split(
-						";"); //$NON-NLS-1$
-		/**
-		 * The "+1" is need for the column Ack. The column Ack is not at the
-		 * preferences and the ackcolumn is ever the first column.
-		 */
-		if (width.length != columns.length + 1) {
-			return;
-		}
-		for (int i = 0; i < columns.length; i++) {
-			/** +width[i+1]: see above */
-			newPreferenceColumnString = newPreferenceColumnString
-					.concat(columns[i].split(",")[0] + "," + width[i + 1] + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
-		newPreferenceColumnString = newPreferenceColumnString.substring(0,
-				newPreferenceColumnString.length() - 1);
-		IPreferenceStore store = JmsLogsPlugin.getDefault()
-				.getPreferenceStore();
-		store.setValue(AlarmViewPreferenceConstants.P_STRINGAlarm,
-				newPreferenceColumnString);
-		if (store.needsSaving()) {
-			JmsLogsPlugin.getDefault().savePluginPreferences();
-		}
-	}
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+        _columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRINGAlarm);
+        _messageTable = null;
+        // JmsLogsPlugin.getDefault().getPluginPreferences()
+        // .removePropertyChangeListener(_propertyChangeListener);
+        super.dispose();
+    }
 }

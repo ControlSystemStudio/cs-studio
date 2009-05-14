@@ -23,29 +23,22 @@
 package org.csstudio.alarm.table.ui;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.csstudio.alarm.table.ColumnPropertyChangeListener;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.jms.SendMapMessage;
-import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
-import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.AmsVerifyViewPreferenceConstants;
+import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
-import org.csstudio.utility.ldap.engine.Engine;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -55,11 +48,10 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.IActionBars;
 
 /**
- * View to verify functionality of AMS. Add to {@link LogView} 
- * some buttons to send test messages.
+ * View to verify functionality of AMS. Add to {@link LogView} some buttons to
+ * send test messages.
  * 
  * @see LogView
  * @author jhatje
@@ -69,211 +61,182 @@ import org.eclipse.ui.IActionBars;
  */
 public class AmsVerifyView extends LogView {
 
-	public static final String ID = AmsVerifyView.class.getName();
+    public static final String ID = AmsVerifyView.class.getName();
 
-	private String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"; //$NON-NLS-1$
-	
-	/**
-	 * Creates the view for the alarm log table.
-	 * 
-	 * @param parent
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
+    private String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"; //$NON-NLS-1$
 
-		// in alarm table the 'ack' column must be the first one!
-		String preferenceColumnString = JmsLogsPlugin.getDefault()
-				.getPluginPreferences().getString(
-						AmsVerifyViewPreferenceConstants.P_STRING);
+    /**
+     * Creates the view for the alarm log table.
+     * 
+     * @param parent
+     */
+    @Override
+    public void createPartControl(Composite parent) {
 
-		preferenceColumnString = "ACK,25;" + preferenceColumnString; //$NON-NLS-1$
+        // in alarm table the 'ack' column must be the first one!
+        String[] _columnNames = JmsLogsPlugin.getDefault()
+                .getPluginPreferences().getString(
+                        AmsVerifyViewPreferenceConstants.P_STRING).split(";");
+        readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
+                .getString(AmsVerifyViewPreferenceConstants.TOPIC_SET));
 
-		// read the column names from the preference page
-		_columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
+        // create the table model
+        _messageList = new JMSLogMessageList(_columnNames, 100);
 
-		// create the table model
-		_messageList = new JMSLogMessageList(_columnNames);
+        GridLayout grid = new GridLayout();
+        grid.numColumns = 1;
+        parent.setLayout(grid);
+        Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
 
-		readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(AmsVerifyViewPreferenceConstants.TOPIC_SET)); //$NON-NLS-1$
+        RowLayout layout = new RowLayout();
+        layout.type = SWT.HORIZONTAL;
+        layout.spacing = 15;
+        logTableManagementComposite.setLayout(layout);
 
+        addJmsTopicItems(logTableManagementComposite);
+        addVerifyItems(logTableManagementComposite);
+        addRunningSinceGroup(logTableManagementComposite);
 
-		GridLayout grid = new GridLayout();
-		grid.numColumns = 1;
-		parent.setLayout(grid);
-		Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
+        // setup message table with context menu etc.
+        _tableViewer = new TableViewer(parent, SWT.MULTI | SWT.FULL_SELECTION);
 
-		RowLayout layout = new RowLayout();
-		layout.type = SWT.HORIZONTAL;
-		layout.spacing = 15;
-		logTableManagementComposite.setLayout(layout);
+        _messageTable = new MessageTable(_tableViewer, _columnNames,
+                _messageList);
+        _messageTable.makeContextMenu(getSite());
 
-		addJmsTopicItems(logTableManagementComposite);
+        _columnMapping = new ColumnWidthPreferenceMapping(_tableViewer);
 
-		addVerifyItems(logTableManagementComposite);
+        getSite().setSelectionProvider(_tableViewer);
 
-		addRunningSinceGroup(logTableManagementComposite);
+        makeActions();
 
-		// create jface table viewer with paramter 1 for log table version
-		_tableViewer = new JMSLogTableViewer(parent, getSite(), _columnNames,
-				_messageList, 1, SWT.MULTI | SWT.FULL_SELECTION);
+//        
+//        // create jface table viewer with paramter 1 for log table version
+//        _tableViewer = new JMSLogTableViewer(parent, getSite(), _columnNames,
+//                _messageList, 1, SWT.MULTI | SWT.FULL_SELECTION);
+//
+//        _tableViewer.setAlarmSorting(false);
+//        makeActions();
+//        IActionBars bars = getViewSite().getActionBars();
+//        fillLocalToolBar(bars.getToolBarManager());
+//        getSite().setSelectionProvider(_tableViewer);
+//
+//        parent.pack();
+//
+//        _propertyChangeListener = new ColumnPropertyChangeListener(
+//                AmsVerifyViewPreferenceConstants.P_STRING, _tableViewer);
+//
+//        JmsLogsPlugin.getDefault().getPluginPreferences()
+//                .addPropertyChangeListener(_propertyChangeListener);
+//
+        _jmsMessageReceiver = new JmsMessageReceiver(_messageList);
 
-		_tableViewer.setAlarmSorting(false);
-		makeActions();
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalToolBar(bars.getToolBarManager());
-		getSite().setSelectionProvider(_tableViewer);
+        _jmsMessageReceiver.initializeJMSConnection(_defaultTopicSet);
+    }
 
-		parent.pack();
+    private void addVerifyItems(Composite logTableManagementComposite) {
 
-		_propertyChangeListener = new ColumnPropertyChangeListener(
-				AmsVerifyViewPreferenceConstants.P_STRING, _tableViewer);
+        Group verifyItemGroup = new Group(logTableManagementComposite, SWT.NONE);
 
-		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.addPropertyChangeListener(_propertyChangeListener);
+        verifyItemGroup.setText(Messages.AmsVerifyView_AmsActionsPruefen);
 
-		_jmsMessageReceiver = new JmsMessageReceiver(_messageList);
+        RowLayout layout = new RowLayout();
+        verifyItemGroup.setLayout(layout);
 
-		_jmsMessageReceiver.initializeJMSConnection(_defaultTopicSet);
-	}
+        Button verify1Button = new Button(verifyItemGroup, SWT.PUSH);
+        verify1Button.setLayoutData(new RowData(60, 21));
+        verify1Button.setText("SMS"); //$NON-NLS-1$
 
-	private void addVerifyItems(Composite logTableManagementComposite) {
+        verify1Button.addSelectionListener(new SelectionListener() {
 
-		Group verifyItemGroup = new Group(logTableManagementComposite,
-				SWT.NONE);
+            public void widgetSelected(SelectionEvent e) {
+                sendVerifyMessage("#MODEMTEST#"); //$NON-NLS-1$
+            }
 
-		verifyItemGroup.setText(Messages.AmsVerifyView_AmsActionsPruefen);
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
 
-		RowLayout layout = new RowLayout();
-		verifyItemGroup.setLayout(layout);
+        Button verify2Button = new Button(verifyItemGroup, SWT.PUSH);
+        verify2Button.setLayoutData(new RowData(60, 21));
+        verify2Button.setText("Voice Mail"); //$NON-NLS-1$
 
-		Button verify1Button = new Button(verifyItemGroup, SWT.PUSH);
-		verify1Button.setLayoutData(new RowData(60, 21));
-		verify1Button.setText("SMS"); //$NON-NLS-1$
+        verify2Button.addSelectionListener(new SelectionListener() {
 
-		verify1Button.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+                sendVerifyMessage("#VOICEMAILTEST#"); //$NON-NLS-1$
+            }
 
-			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#MODEMTEST#"); //$NON-NLS-1$
-			}
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
+        Button verify3Button = new Button(verifyItemGroup, SWT.PUSH);
+        verify3Button.setLayoutData(new RowData(60, 21));
+        verify3Button.setText("E-Mail"); //$NON-NLS-1$
 
-		Button verify2Button = new Button(verifyItemGroup, SWT.PUSH);
-		verify2Button.setLayoutData(new RowData(60, 21));
-		verify2Button.setText("Voice Mail"); //$NON-NLS-1$
-		
-		verify2Button.addSelectionListener(new SelectionListener() {
-			
-			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#VOICEMAILTEST#"); //$NON-NLS-1$
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
+        verify3Button.addSelectionListener(new SelectionListener() {
 
-		Button verify3Button = new Button(verifyItemGroup, SWT.PUSH);
-		verify3Button.setLayoutData(new RowData(60, 21));
-		verify3Button.setText("E-Mail"); //$NON-NLS-1$
-		
-		verify3Button.addSelectionListener(new SelectionListener() {
-			
-			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#MAILTEST#"); //$NON-NLS-1$
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-		
-		Button verify4Button = new Button(verifyItemGroup, SWT.PUSH);
-		verify4Button.setLayoutData(new RowData(60, 21));
-		verify4Button.setText("JMS Topic"); //$NON-NLS-1$
-		
-		verify4Button.addSelectionListener(new SelectionListener() {
-			
-			public void widgetSelected(SelectionEvent e) {
-				sendVerifyMessage("#JMSCONNECTORTEST#"); //$NON-NLS-1$
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-	}
+            public void widgetSelected(SelectionEvent e) {
+                sendVerifyMessage("#MAILTEST#"); //$NON-NLS-1$
+            }
 
-	private void sendVerifyMessage(String textPropertyValue) {
-		try {
-			SendMapMessage sender = SendMapMessage.getInstance();
-			
-			SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
-			java.util.Date currentDate = new java.util.Date();
-			String time = sdf.format(currentDate);
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
 
-			MapMessage mapMessage = sender.getSessionMessageObject("ALARM"); //$NON-NLS-1$
-			
-			//Add username and host to acknowledge message.
-			User user = SecurityFacade.getInstance().getCurrentUser();
-			if (user != null) {
-				mapMessage.setString("USER", user.getUsername()); //$NON-NLS-1$
-			} else {
-				mapMessage.setString("USER", "NULL"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-			String host = CSSPlatformInfo.getInstance()
-					.getQualifiedHostname();
-			if (host != null) {
-				mapMessage.setString("HOST", host); //$NON-NLS-1$
-			} else {
-				mapMessage.setString("HOST", "NULL"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
+        Button verify4Button = new Button(verifyItemGroup, SWT.PUSH);
+        verify4Button.setLayoutData(new RowData(60, 21));
+        verify4Button.setText("JMS Topic"); //$NON-NLS-1$
 
-			mapMessage.setString("EVENTTIME", time); //$NON-NLS-1$
-			mapMessage.setString("TEXT", textPropertyValue); //$NON-NLS-1$
-			mapMessage.setString("NAME", "AMSCOMMONTEST"); //$NON-NLS-1$ //$NON-NLS-2$
+        verify4Button.addSelectionListener(new SelectionListener() {
 
-			JmsLogsPlugin
-					.logInfo("Verify Ams system with " //$NON-NLS-1$
-							+ textPropertyValue); //$NON-NLS-2$
-			sender.sendMessage("ALARM"); //$NON-NLS-1$
-		} catch (JMSException e) {
-			CentralLogger.getInstance().error(this, "JMS error: " + e.toString()); //$NON-NLS-1$
-		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, "Send message error: " + e.toString()); //$NON-NLS-1$
-		}
-}
+            public void widgetSelected(SelectionEvent e) {
+                sendVerifyMessage("#JMSCONNECTORTEST#"); //$NON-NLS-1$
+            }
 
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+    }
 
-	public void saveColumn() {
-		/**
-		 * When dispose store width for each column, except the first one (ACK).
-		 */
-		int[] width = _tableViewer.getColumnWidth();
-		String newPreferenceColumnString = ""; //$NON-NLS-1$
-		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(AlarmViewPreferenceConstants.P_STRINGAlarm).split(
-						";"); //$NON-NLS-1$
-		/**
-		 * The "+1" is need for the column Ack. The column Ack is not at the
-		 * preferences and the ackcolumn is ever the first column.
-		 */
-		if (width.length != columns.length + 1) {
-			return;
-		}
-		for (int i = 0; i < columns.length; i++) {
-			/** +width[i+1]: see above */
-			newPreferenceColumnString = newPreferenceColumnString
-					.concat(columns[i].split(",")[0] + "," + width[i + 1] + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
-		newPreferenceColumnString = newPreferenceColumnString.substring(0,
-				newPreferenceColumnString.length() - 1);
-		IPreferenceStore store = JmsLogsPlugin.getDefault()
-				.getPreferenceStore();
-		store.setValue(AlarmViewPreferenceConstants.P_STRINGAlarm,
-				newPreferenceColumnString);
-		if (store.needsSaving()) {
-			JmsLogsPlugin.getDefault().savePluginPreferences();
-		}
-	}
+    private void sendVerifyMessage(String textPropertyValue) {
+        try {
+            SendMapMessage sender = SendMapMessage.getInstance();
+
+            SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
+            java.util.Date currentDate = new java.util.Date();
+            String time = sdf.format(currentDate);
+
+            MapMessage mapMessage = sender.getSessionMessageObject("ALARM"); //$NON-NLS-1$
+
+            // Add username and host to acknowledge message.
+            User user = SecurityFacade.getInstance().getCurrentUser();
+            if (user != null) {
+                mapMessage.setString("USER", user.getUsername()); //$NON-NLS-1$
+            } else {
+                mapMessage.setString("USER", "NULL"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            String host = CSSPlatformInfo.getInstance().getQualifiedHostname();
+            if (host != null) {
+                mapMessage.setString("HOST", host); //$NON-NLS-1$
+            } else {
+                mapMessage.setString("HOST", "NULL"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+            mapMessage.setString("EVENTTIME", time); //$NON-NLS-1$
+            mapMessage.setString("TEXT", textPropertyValue); //$NON-NLS-1$
+            mapMessage.setString("NAME", "AMSCOMMONTEST"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            JmsLogsPlugin.logInfo("Verify Ams system with " //$NON-NLS-1$
+                    + textPropertyValue); //$NON-NLS-2$
+            sender.sendMessage("ALARM"); //$NON-NLS-1$
+        } catch (JMSException e) {
+            CentralLogger.getInstance().error(this,
+                    "JMS error: " + e.toString()); //$NON-NLS-1$
+        } catch (Exception e) {
+            CentralLogger.getInstance().error(this,
+                    "Send message error: " + e.toString()); //$NON-NLS-1$
+        }
+    }
 }

@@ -43,79 +43,88 @@ import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
  */
 public class JmsMessageReceiver implements MessageListener {
 
-	/**
-	 * List of messages displayed in the table.
-	 */
-	JMSMessageList _messageList;
+    /**
+     * List of messages displayed in the table.
+     */
+    JMSMessageList _messageList;
 
-	/**
-	 * JMS Session for the listener
-	 */
-	IMessageListenerSession _listenerSession;
+    /**
+     * JMS Session for the listener
+     */
+    IMessageListenerSession _listenerSession;
 
-	public JmsMessageReceiver(JMSMessageList messageList) {
-		this._messageList = messageList;
-	}
+    public JmsMessageReceiver(JMSMessageList messageList) {
+        this._messageList = messageList;
+    }
 
-	/**
-	 * A new message is received. Add it to the model.
-	 */
-	public void onMessage(final Message message) {
-		if (message == null) {
-			JmsLogsPlugin.logError("Message == null");
-		}
-		try {
-			if (message instanceof TextMessage) {
-				JmsLogsPlugin.logError("received message is not a map message");
-			} else if (message instanceof MapMessage) {
-				final MapMessage mm = (MapMessage) message;
-				_messageList.addJMSMessage(mm);
-				CentralLogger.getInstance().debug(this, "received map message");
-			} else {
-				JmsLogsPlugin.logError("received message is an unknown type");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			JmsLogsPlugin.logException("JMS error: ", e); //$NON-NLS-1$
-		}
-	}
+    /**
+     * A new message is received. Add it to the model.
+     */
+    public void onMessage(final Message message) {
+        if (message == null) {
+            JmsLogsPlugin.logError("Message == null");
+        }
+        try {
+            if (message instanceof TextMessage) {
+                JmsLogsPlugin.logError("received message is not a map message");
+            } else if (message instanceof MapMessage) {
+                final MapMessage mm = (MapMessage) message;
+                _messageList.addJMSMessage(mm);
+                CentralLogger.getInstance().debug(this, "received map message");
+            } else {
+                JmsLogsPlugin.logError("received message is an unknown type");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JmsLogsPlugin.logException("JMS error: ", e); //$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * Start jms message listener. If there is a previous session active (the
-	 * user has edited the topics) it will be closed and a new session is
-	 * created.
-	 * 
-	 * @param _deafultTopicSet
-	 *            JMS topics to be monitored
-	 */
-	public void initializeJMSConnection(String defaultTopicSet) {
-		String[] topicList = null;
-		if ((defaultTopicSet == null) || (defaultTopicSet.length() == 0)) {
-			CentralLogger.getInstance().error(this,
-					"Could not initialize JMS Listener. JMS topics == NULL!");
-		} else {
-			topicList = defaultTopicSet.split(",");
-		}
-		try {
-			if ((_listenerSession != null) && (_listenerSession.isActive())) {
-				_listenerSession.close();
-				_listenerSession = null;
-			}
-			_listenerSession = SharedJmsConnections.startMessageListener(this,
-					topicList, Session.AUTO_ACKNOWLEDGE);
-			CentralLogger.getInstance()
-					.info(
-							this,
-							"Initialize JMS connection with topics: "
-									+ defaultTopicSet);
-		} catch (JMSException e) {
-			CentralLogger.getInstance().error(this,
-					"JMS Connection error: " + e.getMessage());
-		} catch (IllegalArgumentException e) {
-			CentralLogger.getInstance().error(
-					this,
-					"JMS Connection error, invalid arguments: "
-							+ e.getMessage());
-		}
-	}
+    /**
+     * Start jms message listener. If there is a previous session active (the
+     * user has edited the topics) it will be closed and a new session is
+     * created.
+     * 
+     * @param _deafultTopicSet
+     *            JMS topics to be monitored
+     */
+    public void initializeJMSConnection(String defaultTopicSet) {
+        String[] topicList = null;
+        if ((defaultTopicSet == null) || (defaultTopicSet.length() == 0)) {
+            CentralLogger.getInstance().error(this,
+                    "Could not initialize JMS Listener. JMS topics == NULL!");
+        } else {
+            topicList = defaultTopicSet.split(",");
+        }
+        try {
+            if ((_listenerSession != null) && (_listenerSession.isActive())) {
+                _listenerSession.close();
+                _listenerSession = null;
+            }
+            _listenerSession = SharedJmsConnections.startMessageListener(this,
+                    topicList, Session.AUTO_ACKNOWLEDGE);
+            CentralLogger.getInstance()
+                    .info(
+                            this,
+                            "Initialize JMS connection with topics: "
+                                    + defaultTopicSet);
+        } catch (JMSException e) {
+            CentralLogger.getInstance().error(this,
+                    "JMS Connection error: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            CentralLogger.getInstance().error(
+                    this,
+                    "JMS Connection error, invalid arguments: "
+                            + e.getMessage());
+        }
+    }
+
+    /**
+     * Stop the jms connection.
+     */
+    public void stopJMSConnection() {
+        if (_listenerSession != null) {
+            _listenerSession.close();
+        }
+    }
 }
