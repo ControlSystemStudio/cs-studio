@@ -11,7 +11,7 @@ public class LogbookFactory
 {
     /** Get a logbook factory
      *  @return ILogbookFactory interface
-     *  @throws Exception on error
+     *  @throws Exception when finding anything but exactly one ELog implementation 
      */
     @SuppressWarnings("nls")
     public static ILogbookFactory getInstance() throws Exception
