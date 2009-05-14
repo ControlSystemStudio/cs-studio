@@ -25,6 +25,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Properties;
 
 import org.csstudio.platform.internal.PluginCustomizationExporter;
 import org.csstudio.platform.internal.management.ManagementServiceImpl;
@@ -73,8 +76,11 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	protected final void doStart(final BundleContext context) throws Exception {
 		applySystemPropertyDefaults();
 		offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
+		
+		Dictionary<String, String> dict = new Hashtable<String, String>();
+		dict.put("org.csstudio.management.remoteservice", "true");
 		context.registerService(IManagementCommandService.class.getName(),
-				new ManagementServiceImpl(), null);
+				new ManagementServiceImpl(), dict);
 	}
 
 	/**
