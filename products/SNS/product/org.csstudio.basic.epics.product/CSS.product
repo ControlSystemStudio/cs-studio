@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.4"?>
+
+<product name="CSS (EPICS)" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="1.0.0" useFeatures="false">
+
+   <aboutInfo>
+      <image path="/org.csstudio.basic.epics.product/icons/about.gif"/>
+      <text>
+         Control System Studio (CSS) is a combined
+effort of several parties, including
+- DESY (Hamburg, Germany)
+- SNS (Oak Ridge, TN).
+
+It provides a collection of control system
+tools in a common environment, based\non Eclipse.
+
+See http://ics-web.sns.ornl.gov/css
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgs>-Xmx256m</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/org.csstudio.startuphelper/resources/icons/css16x16.gif" i32="/org.csstudio.startuphelper/resources/icons/css32x32.gif" i48="/org.csstudio.startuphelper/resources/icons/css48x48.gif" i64="/org.csstudio.startuphelper/resources/icons/css64x64.gif" i128="/org.csstudio.startuphelper/resources/icons/css128x128.gif"/>
+
+   <splash
+      location="org.csstudio.basic.epics.product"
+      startupProgressRect="5,200,445,15"
+      startupMessageRect="7,180,445,20"
+      startupForegroundColor="0378EE" />
+   <launcher name="css">
+      <linux icon="/org.csstudio.basic.epics.product/icons/css48.xpm"/>
+      <macosx icon="/org.csstudio.basic.epics.product/icons/css.icns"/>
+      <solaris/>
+      <win useIco="true">
+         <ico path="/org.csstudio.basic.epics.product/icons/css.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+   <intro introId="org.csstudio.basic.epics.product.intro"/>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.apputil.ui"/>
+      <plugin id="org.csstudio.archive"/>
+      <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.archive.rdbclient"/>
+      <plugin id="org.csstudio.basic.epics.product"/>
+      <plugin id="org.csstudio.diag.epics.pvtree"/>
+      <plugin id="org.csstudio.display.pvtable"/>
+      <plugin id="org.csstudio.logbook"/>
+      <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.libs.dal"/>
+      <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jmock"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.ui"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.platform.workspace"/>
+      <plugin id="org.csstudio.sds"/>
+      <plugin id="org.csstudio.sds.components"/>
+      <plugin id="org.csstudio.sds.components.epics"/>
+      <plugin id="org.csstudio.sds.components.ui"/>
+      <plugin id="org.csstudio.sds.samples"/>
+      <plugin id="org.csstudio.sds.settings.desy"/>
+      <plugin id="org.csstudio.sds.ui"/>
+      <plugin id="org.csstudio.startuphelper"/>
+      <plugin id="org.csstudio.swt.chart"/>
+      <plugin id="org.csstudio.trends.databrowser"/>
+      <plugin id="org.csstudio.utility.clock"/>
+      <plugin id="org.csstudio.utility.eliza"/>
+      <plugin id="org.csstudio.utility.pv"/>
+      <plugin id="org.csstudio.utility.pv.epics"/>
+      <plugin id="org.csstudio.utility.sysmon"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filebuffers"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.net"/>
+      <plugin id="org.eclipse.core.net.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.net.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
+      <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.draw2d"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.gef"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.swt.motif.aix.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.motif.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.wpf.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.carbon" fragment="true"/>
+      <plugin id="org.eclipse.ui.cheatsheets"/>
+      <plugin id="org.eclipse.ui.console"/>
+      <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.ide"/>
+      <plugin id="org.eclipse.ui.intro"/>
+      <plugin id="org.eclipse.ui.navigator"/>
+      <plugin id="org.eclipse.ui.navigator.resources"/>
+      <plugin id="org.eclipse.ui.views"/>
+      <plugin id="org.eclipse.ui.views.properties.tabbed"/>
+      <plugin id="org.eclipse.ui.win32" fragment="true"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.ui.workbench.texteditor"/>
+      <plugin id="org.eclipse.update.configurator"/>
+      <plugin id="org.eclipse.update.core"/>
+      <plugin id="org.eclipse.update.core.linux" fragment="true"/>
+      <plugin id="org.eclipse.update.core.win32" fragment="true"/>
+      <plugin id="org.eclipse.update.ui"/>
+      <plugin id="org.junit4"/>
+   </plugins>
+
+</product>

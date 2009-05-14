@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="org.csstudio.basic.epics.application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.startuphelper.application.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.basic.epics.application"
+            name="CSS (EPICS)">
+         <property
+               name="appName"
+               value="CSS (EPICS)">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="0378EE">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,180,445,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,200,445,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/about.gif">
+         </property>
+         <property
+               name="aboutText"
+               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN).&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based\non Eclipse.&#x0A;&#x0A;See http://ics-web.sns.ornl.gov/css">
+         </property>
+         <property
+               name="windowImages"
+               value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.csstudio.basic.product.intro">
+      </intro>
+      <introProductBinding
+            introId="org.csstudio.basic.product.intro"
+            productId="org.csstudio.basic.product.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            content="intro/intro.xml"
+            id="org.csstudio.basic.product.introConfigId"
+            introId="org.csstudio.basic.product.intro">
+         <presentation home-page-id="root">
+            <implementation kind="html"/>
+         </presentation>
+      </config>
+   </extension>
+</plugin>
