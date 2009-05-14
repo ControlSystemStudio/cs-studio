@@ -20,6 +20,10 @@ See http://ics-web.sns.ornl.gov/css
    </aboutInfo>
 
    <configIni use="default">
+      <linux>/org.csstudio.basic.epics.product/configs/config.ini</linux>
+      <macosx>/org.csstudio.basic.epics.product/configs/config.ini</macosx>
+      <solaris>/org.csstudio.basic.epics.product/configs/config.ini</solaris>
+      <win32>/org.csstudio.basic.epics.product/configs/config.ini</win32>
    </configIni>
 
    <launcherArgs>
