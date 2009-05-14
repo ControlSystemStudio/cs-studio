@@ -15,6 +15,7 @@ import org.csstudio.utility.eliza.ElizaParse;
 
 public class ElizaApplet extends Applet
 {
+    private static final long serialVersionUID = 1L;
 
     int w, h;
 
