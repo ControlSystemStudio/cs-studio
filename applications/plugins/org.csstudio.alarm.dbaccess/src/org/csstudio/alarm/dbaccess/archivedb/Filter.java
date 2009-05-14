@@ -28,14 +28,23 @@ public class Filter {
 	 */
 	private GregorianCalendar to;
 
+	/**
+	 * Maximum number of messages for the database request.
+	 */
+    private int _maximumMessageNumber;
+
 	public Filter(ArrayList<FilterItem> filterItems, GregorianCalendar from,
 			GregorianCalendar to) {
-		super();
-		this.filterItems = filterItems;
-		this.from = from;
-		this.to = to;
+		this(filterItems, from, to, 5000);
 	}
 
+	public Filter(ArrayList<FilterItem> filterItems, GregorianCalendar from,
+	        GregorianCalendar to, int maxMsgSize) {
+	    this.filterItems = filterItems;
+	    this.from = from;
+	    this.to = to;
+	    this._maximumMessageNumber = maxMsgSize;
+	}
 	public GregorianCalendar getTo() {
 		return to;
 	}
@@ -104,6 +113,14 @@ public class Filter {
 		} else {
 			newFilterItems = null;
 		}
-		return new Filter(newFilterItems, newFrom, newTo);
+		return new Filter(newFilterItems, newFrom, newTo, _maximumMessageNumber);
 	}
+
+    public int getMaximumMessageSize() {
+        return _maximumMessageNumber;
+    }
+
+    public void setMaximumMessageNumber(int messageNumber) {
+        _maximumMessageNumber = messageNumber;
+    }
 }
