@@ -12,7 +12,8 @@ effort of several parties, including
 - SNS (Oak Ridge, TN).
 
 It provides a collection of control system
-tools in a common environment, basedon Eclipse.
+tools in a common environment, based
+on Eclipse.
 
 See http://ics-web.sns.ornl.gov/css
       </text>
@@ -118,7 +119,9 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.http.jetty"/>
       <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
       <plugin id="org.eclipse.equinox.jsp.jasper"/>
       <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
       <plugin id="org.eclipse.equinox.preferences"/>
@@ -149,6 +152,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.eclipse.swt.wpf.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.browser"/>
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.cheatsheets"/>
       <plugin id="org.eclipse.ui.console"/>
@@ -168,6 +172,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.junit4"/>
+      <plugin id="org.mortbay.jetty"/>
    </plugins>
 
 </product>
