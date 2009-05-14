@@ -2,6 +2,7 @@ package org.csstudio.sns.product;
 
 import java.util.ArrayList;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.csstudio.platform.ui.internal.actions.LogoutAction;
@@ -145,26 +146,26 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     {
         // SNS Actions
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String weblinks = prefs.getString(PluginActivator.ID, "weblinks", null, null);
-        PluginActivator.getLogger().debug("Web links: " + weblinks);
+        final String weblinks = prefs.getString(Activator.PLUGIN_ID, "weblinks", null, null);
+        CentralLogger.getInstance().getLogger(this).debug("Web links: " + weblinks);
         if (weblinks == null)
             return;
         final String[] link_prefs = weblinks.split("[ \t]+");
         for (String pref : link_prefs)
         {
-            final String descriptor = prefs.getString(PluginActivator.ID, pref, null, null);
+            final String descriptor = prefs.getString(Activator.PLUGIN_ID, pref, null, null);
             if (descriptor == null)
                 continue;
             final String[] link = descriptor.split("\\|");
             if (link.length != 2)
             {
-                PluginActivator.getLogger().warn("Web link '" + pref
+                CentralLogger.getInstance().getLogger(this).warn("Web link '" + pref
                         + " doesn't follow the LABEL|URL pattern");
                 continue;
             }
             final String label = link[0];
             final String url = link[1];
-            PluginActivator.getLogger().debug("Web link " + pref
+            CentralLogger.getInstance().getLogger(this).debug("Web link " + pref
                     + " = " + label + " (" + url + ")");
             web_actions.add(new OpenWebBrowserAction(window, label, url));
         }
@@ -277,8 +278,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     {
         final MenuManager menu_help =
             new MenuManager(Messages.Menu_Help, IWorkbenchActionConstants.M_HELP);
-        menu_help.add(intro);
-        menu_help.add(new Separator());
+       	menu_help.add(intro);
+       	menu_help.add(new Separator());
         menu_help.add(help);
         menu_help.add(cheat);
         menu_help.add(new Separator());

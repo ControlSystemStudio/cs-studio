@@ -2,6 +2,7 @@ package org.csstudio.sns.product;
 
 import java.net.URL;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -44,7 +45,7 @@ public class OpenWebBrowserAction extends Action
         }
         catch (Exception ex)
         {
-            PluginActivator.getLogger().error("No browser", ex);
+            CentralLogger.getInstance().getLogger(this).error("No browser", ex);
         }
     }
 }

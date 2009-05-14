@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-
    <extension
          point="org.eclipse.core.runtime.applications"
          id="application"
 		 name="SNS CSS">
       <application>
          <run
-               class="org.csstudio.sns.product.Application">
+               class="org.csstudio.startuphelper.application.Application">
          </run>
       </application>
    </extension>
@@ -29,7 +28,7 @@
             name="SNS CSS">
          <property
                name="windowImages"
-               value="icons/perspective.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css128.gif"/>
+               value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif"/>
          <property
                name="aboutImage"
                value="icons/about.gif"/>
@@ -75,10 +74,17 @@
             id="org.csstudio.sns.product.introConfigId"
             introId="org.csstudio.sns.product.intro">
          <presentation home-page-id="root">
-            <implementation
-                  kind="html"
-                  />
+            <implementation kind="html"/>
          </presentation>
       </config>
+   </extension>
+
+   <extension point="org.csstudio.startuphelper.modules">
+      <project class="org.csstudio.sns.product.extpoint.ProjectExtPointImpl"/>
+      <startupParameters class="org.csstudio.sns.product.extpoint.StartupParametersExtPointImpl"/>
+      <workspace class="org.csstudio.sns.product.extpoint.WorkspacePromptExtPointImpl"/>
+      <workbench
+            class="org.csstudio.sns.product.extpoint.WorkbenchExtPointImpl">
+      </workbench>
    </extension>
 </plugin>
