@@ -13,6 +13,7 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.display.pace.messages"; //$NON-NLS-1$
 
+    public static String ConfirmChangesFmt;
     public static String InstanceLabelProvider_OrigAppendix;
     public static String InstanceLabelProvider_PVValueFormat;
     public static String InstanceLabelProvider_PVCommentTipFormat;
@@ -20,6 +21,7 @@ public class Messages extends NLS
     public static String RestoreCell;
     public static String RestoreCell_TT;
     public static String SaveError;
+    public static String SaveErrorFmt;
     public static String SaveIntro;
     public static String SaveMessage;
     public static String SavePVInfoFmt;

@@ -9,6 +9,7 @@ import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.csstudio.logbook.ILogbook;
+import org.csstudio.logbook.LogbookFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -184,14 +185,39 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     @Override
     public void doSave(final IProgressMonitor monitor)
     {
-        final String body = createElogText();
+        final String changes = createElogText();
         // Display ELog entry dialog
         final Shell shell = getSite().getShell();
+        
+        // Ideally, we actually have ELog support.
+        // But for sites without that, it displays a simple confirmation
+        // dialog
+        try
+        {
+            LogbookFactory.getInstance();
+        }
+        catch (Exception ex)
+        {
+            final String message = NLS.bind(Messages.ConfirmChangesFmt, changes);
+            if (!MessageDialog.openConfirm(shell, Messages.SaveTitle, message))
+                return;
+            try
+            {
+                model.saveUserValues(System.getenv("user.name")); //$NON-NLS-1$
+            }
+            catch (Exception save_ex)
+            {
+                MessageDialog.openError(shell, Messages.SaveError,
+                        NLS.bind(Messages.SaveErrorFmt, save_ex.getMessage()));
+            }
+            return;
+        }
+        // "Normal" case with ELog support
         try
         {
             final ElogDialog dialog = new ElogDialog(shell,
                     Messages.SaveTitle, Messages.SaveMessage,
-                    body.toString(), null)
+                    changes.toString(), null)
             {
                 // Perform ELog entry, then save changed values
                 @Override
@@ -239,7 +265,8 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(shell, Messages.SaveError, ex.getMessage());
+            MessageDialog.openError(shell, Messages.SaveError,
+                    NLS.bind(Messages.SaveErrorFmt, ex.getMessage()));
         }
     }
 
