@@ -1,17 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Startup Plug-in
+Bundle-Name: Base plugin for common startup
 Bundle-SymbolicName: org.csstudio.startuphelper;singleton:=true
-Bundle-Version: 1.1.1
-Bundle-Activator: org.csstudio.startuphelper.Activator
+Bundle-Version: 1.1.2
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.ui,
  org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
-Export-Package: org.csstudio.startuphelper,
- org.csstudio.startuphelper.application,
+Export-Package: org.csstudio.startuphelper.application,
  org.csstudio.startuphelper.extensions,
  org.csstudio.startuphelper.extensions.impl
-Bundle-Vendor: Desy
+Bundle-Vendor: DESY/SNS/Cosylab

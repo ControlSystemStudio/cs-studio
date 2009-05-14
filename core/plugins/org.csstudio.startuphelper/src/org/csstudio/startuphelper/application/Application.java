@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
-import org.csstudio.startuphelper.Activator;
 import org.csstudio.startuphelper.extensions.CSSStartupExtensionPoint;
 import org.csstudio.startuphelper.extensions.LocaleSettingsExtPoint;
 import org.csstudio.startuphelper.extensions.LoginExtPoint;
@@ -67,6 +67,7 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  */
+@SuppressWarnings("nls")
 public class Application implements IApplication {
 
 	/** Is the list of all parameters read at start-up and any other parameters
@@ -82,14 +83,30 @@ public class Application implements IApplication {
 		//create the display 
 		final Display display = PlatformUI.createDisplay();
 		if (display == null) {
-			Activator.getLogger().error("No display"); //$NON-NLS-1$
+			CentralLogger.getInstance().getLogger(this).error("No display"); //$NON-NLS-1$
 			return EXIT_OK;
 		}
 
-		try {
+		try
+		{
 			return startApplication(context, display);
-		} finally {
-			display.close();
+		}
+		finally
+		{
+		    try
+		    {
+		        display.close();
+		    }
+		    catch (Throwable ex)
+		    {
+		        // On OS X, when using Command-Q to quit, we can get a
+		        // "Widget is disposed" error.
+		        // With the menu File/Exit that doesn't happen, only Cmd-Q.
+		        // It's probably not a problem, and catching it here means
+		        // the rest of the shutdown still works OK.
+		        // Log it? Ignore it? Print it?
+		        ex.printStackTrace();
+		    }
 		}
 	}
 	
@@ -278,10 +295,10 @@ public class Application implements IApplication {
 	 * 
 	 * @return potential exit code (null if everything is ok)
 	 */
-	protected Object promptForWorkspace(Display display, IApplicationContext context) throws Exception {
+    protected Object promptForWorkspace(Display display, IApplicationContext context) throws Exception {
 		WorkspaceExtPoint[] points = getExtensionPoints(WorkspaceExtPoint.class, WorkspaceExtPoint.NAME);
 		if (points.length > 1) {
-			Activator.getLogger().error("Cannot have more than one WorkspacePrompt extension point");
+		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one WorkspacePrompt extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -357,7 +374,7 @@ public class Application implements IApplication {
 	protected Object beforeWorkbenchStart(Display display, IApplicationContext context) throws Exception {
 		WorkbenchExtPoint[] points = getExtensionPoints(WorkbenchExtPoint.class, WorkbenchExtPoint.NAME);
 		if (points.length > 1) {
-			Activator.getLogger().error("Cannot have more than one RunWorkbench extension point");
+		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -386,7 +403,7 @@ public class Application implements IApplication {
 	protected Object startWorkbench(Display display, IApplicationContext context) throws Exception {
 		WorkbenchExtPoint[] points = getExtensionPoints(WorkbenchExtPoint.class, WorkbenchExtPoint.NAME);
 		if (points.length > 1) {
-			Activator.getLogger().error("Cannot have more than one RunWorkbench extension point");
+		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -426,7 +443,7 @@ public class Application implements IApplication {
 	protected Object afterWorkbenchStart(Display display, IApplicationContext context) throws Exception {
 		WorkbenchExtPoint[] points = getExtensionPoints(WorkbenchExtPoint.class, WorkbenchExtPoint.NAME);
 		if (points.length > 1) {
-			Activator.getLogger().error("Cannot have more than one RunWorkbench extension point");
+		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -520,7 +537,7 @@ public class Application implements IApplication {
 					list.add((T)o);
 				}
 			} catch (Exception ex) {
-				Activator.getLogger().error("Error loading " + name + " extension points.", ex);
+			    CentralLogger.getInstance().getLogger(this).error("Error loading " + name + " extension points.", ex);
 			}
 		}
 		T[] array = (T[])Array.newInstance(type, list.size());
@@ -535,7 +552,7 @@ public class Application implements IApplication {
 	 * @param t the exception that occurred during execution (could be null) 
 	 */
 	protected void errorExecutingExtensionPoint(String name, Throwable t) {
-		Activator.getLogger().error("Error executing " + name
+	    CentralLogger.getInstance().getLogger(this).error("Error executing " + name
 				+ " extension point.", t);
 	}
 }
