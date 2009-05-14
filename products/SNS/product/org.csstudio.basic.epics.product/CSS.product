@@ -65,6 +65,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive"/>
+      <plugin id="org.csstudio.archive.channelarchiver"/>
       <plugin id="org.csstudio.archive.rdb"/>
       <plugin id="org.csstudio.archive.rdbclient"/>
       <plugin id="org.csstudio.basic.epics.product"/>
