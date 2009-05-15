@@ -45,6 +45,7 @@ import org.csstudio.ams.Activator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.internal.SampleService;
+import org.csstudio.ams.connector.sms.service.Environment;
 import org.csstudio.ams.connector.sms.service.JmsSender;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -794,6 +795,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             mapMessage.setString("TEXT", text);
             mapMessage.setString("SEVERITY", severity);
             mapMessage.setString("VALUE", value);
+            mapMessage.setString("HOST", Environment.getInstance().getHostName());
+            mapMessage.setString("USER", Environment.getInstance().getUserName());
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
             mapMessage.setString("APPLICATION-ID", "SmsConnector");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
