@@ -1,12 +1,12 @@
 package de.desy.language.snl.ui.preferences;
 
-
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
@@ -29,11 +29,15 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 
 	@Override
 	protected void createFieldEditors() {
-		Group groupOfLocationElement = new Group(getFieldEditorParent(), SWT.NONE);
+		Group groupOfLocationElement = new Group(getFieldEditorParent(),
+				SWT.NONE);
 		groupOfLocationElement.setText("Location of EPICS SNL compiler");
-		groupOfLocationElement.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_LOCATION_POST_FIX, "", groupOfLocationElement));
-		
+		groupOfLocationElement.setLayoutData(new GridData(
+				GridData.FILL_HORIZONTAL));
+		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.SNC_LOCATION_POST_FIX, "",
+				groupOfLocationElement));
+
 		/*-
 		 * <pre>
 		 * SNC Version 2.0.11: Fri Jan 18 15:18:15 2008
@@ -53,24 +57,29 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		 *  snc +a -c vacuum.st
 		 * </pre>
 		 */
-		
-		Group groupOfCompilerOptions = new Group(getFieldEditorParent(), SWT.NONE);
+
+		Group groupOfCompilerOptions = new Group(getFieldEditorParent(),
+				SWT.NONE);
 		groupOfCompilerOptions.setText("EPICS SNL compiler options");
-		groupOfCompilerOptions.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		Label compilerOptionsDescritption = new Label(groupOfCompilerOptions, SWT.WRAP);
+		groupOfCompilerOptions.setLayoutData(new GridData(
+				GridData.FILL_HORIZONTAL));
+		Label compilerOptionsDescritption = new Label(groupOfCompilerOptions,
+				SWT.WRAP);
 		GridData gridData = new GridData();
-		gridData.widthHint=500;
+		gridData.widthHint = 500;
 		compilerOptionsDescritption.setLayoutData(gridData);
-		compilerOptionsDescritption.setText("The options selected below will be added to the command line. Not selected options will not be present at the command line; default may depends on the compiler version.");
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_ASYNCHRONOUS_PVGET_POST_FIX, "+a - do asynchronous pvGet", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_DONT_WAIT_FOR_CONNECTIONS_POST_FIX, "-c - don't wait for all connects", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_TURN_ON_DEBUG_RUNTIME_OPTION_POST_FIX, "+d - turn on debug run-time option", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_DONT_USE_NEW_EVENT_FLAG_MODE_POST_FIX, "-e - don't use new event flag mode", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_SUPRESS_LINE_NUMBERING_POST_FIX, "-l - suppress line numbering", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_GENERATE_MAIN_PROGRAM_POST_FIX, "+m - generate main program", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_DONT_REGISTER_COMMANDS_OR_PROGRAM_POST_FIX, "-i - don't register commands/programs", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_MAKE_REENTRANT_AT_RUN_TIME_POST_FIX, "+r - make reentrant at run-time", groupOfCompilerOptions));
-		this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID + PreferenceConstants.SNC_OPTIONS_SUPRESS_COMPILER_WARNINGS_POST_FIX, "-w - suppress compiler warnings", groupOfCompilerOptions));
+		compilerOptionsDescritption
+				.setText("The options selected below will be added to the command line. Not selected options will not be present at the command line; default may depends on the compiler version.");
+		createCompilerOptionEditors(groupOfCompilerOptions);
+	}
+
+	private void createCompilerOptionEditors(Composite parent) {
+		for (CompilerOptionPreferenceConstants copc : CompilerOptionPreferenceConstants
+				.values()) {
+			this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
+					+ copc.getPreferenceStoreId(), copc.getOption() + " - "
+					+ copc.getDescription(), parent));
+		}
 	}
 
 	@Override
@@ -78,7 +87,7 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		final int numColumns = 1;
 		((GridLayout) this.getFieldEditorParent().getLayout()).numColumns = numColumns;
 	}
-	
+
 	public void init(final IWorkbench workbench) {
 		// do nothing
 	}

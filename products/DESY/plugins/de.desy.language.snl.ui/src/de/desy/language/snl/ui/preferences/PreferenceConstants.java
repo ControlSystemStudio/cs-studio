@@ -31,54 +31,11 @@ enum PreferenceConstants {
 	 * SNC location / directory.
 	 */
 	SNC_LOCATION_POST_FIX(".compiler.location"),
-
+	
 	/**
-	 * SNC compiler option +a - do asynchronous pvGet.
+	 * C Compiler location / directory.
 	 */
-	SNC_OPTIONS_ASYNCHRONOUS_PVGET_POST_FIX(".compiler.options.plus-a"),
-
-	/**
-	 * SNC compiler option -i - don't register commands/programs
-	 */
-	SNC_OPTIONS_DONT_REGISTER_COMMANDS_OR_PROGRAM_POST_FIX(
-			".compiler.options.minus-i"),
-
-	/**
-	 * SNC compiler option -e - don't use new event flag mode
-	 */
-	SNC_OPTIONS_DONT_USE_NEW_EVENT_FLAG_MODE_POST_FIX(
-			".compiler.options.minus-e"),
-
-	/**
-	 * SNC compiler option -c - don't wait for all connects
-	 */
-	SNC_OPTIONS_DONT_WAIT_FOR_CONNECTIONS_POST_FIX(".compiler.options.minus-c"),
-
-	/**
-	 * SNC compiler option +m - generate main program
-	 */
-	SNC_OPTIONS_GENERATE_MAIN_PROGRAM_POST_FIX(".compiler.options.plus-m"),
-
-	/**
-	 * SNC compiler option +r - make reentrant at run-time
-	 */
-	SNC_OPTIONS_MAKE_REENTRANT_AT_RUN_TIME_POST_FIX(".compiler.options.plus-r"),
-
-	/**
-	 * SNC compiler option -w - suppress compiler warnings
-	 */
-	SNC_OPTIONS_SUPRESS_COMPILER_WARNINGS_POST_FIX(".compiler.options.minus-w"),
-
-	/**
-	 * SNC compiler option -l - suppress line numbering
-	 */
-	SNC_OPTIONS_SUPRESS_LINE_NUMBERING_POST_FIX(".compiler.options.minus-l"),
-
-	/**
-	 * SNC compiler option +d - turn on debug run-time option
-	 */
-	SNC_OPTIONS_TURN_ON_DEBUG_RUNTIME_OPTION_POST_FIX(
-			".compiler.options.plus-d"),
+	C_COMPILER_LOCATION_POST_FIX(".c_compiler.location"),
 
 	/**
 	 * Post-fix for the strike-through-style constant to be added to the type

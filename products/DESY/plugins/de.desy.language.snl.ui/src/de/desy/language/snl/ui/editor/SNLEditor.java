@@ -24,13 +24,18 @@
 package de.desy.language.snl.ui.editor;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -46,6 +51,7 @@ import de.desy.language.editor.ui.editor.LanguageEditor;
 import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
 import de.desy.language.snl.parser.SNLParser;
 import de.desy.language.snl.ui.RuleProvider;
+import de.desy.language.snl.ui.SNLUiActivator;
 import de.desy.language.snl.ui.preferences.CompilerOptionsService;
 
 /**
@@ -106,57 +112,64 @@ public class SNLEditor extends LanguageEditor {
 	@Override
 	protected void doHandleSourceModifiedAndSaved(
 			final IProgressMonitor progressMonitor) {
-		File compilerPath = CompilerOptionsService.defaultInstance()
-				.getCompilerPath();
+		IPreferenceStore preferenceStore = SNLUiActivator.getDefault().getPreferenceStore();
+		CompilerOptionsService compilerOptionsService = new CompilerOptionsService(preferenceStore);		
+		
+		File snCompilerPath = compilerOptionsService.getSNCompilerPath();
 
-		try {
-			IFile sourceRessource = ((FileEditorInput) getEditorInput())
-					.getFile();
+		IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
 
-			if (compilerPath == null || !compilerPath.exists()) {
-				IMarker errorMarker = sourceRessource
-						.createMarker(IMarker.PROBLEM);
+		if (snCompilerPath == null || !snCompilerPath.exists()) {
+			IMarker errorMarker;
+			String message = "No compiler preferences present. Please update your preferences in category SNL / Compiler!";
+			try {
+				errorMarker = sourceRessource.createMarker(IMarker.PROBLEM);
 				errorMarker.setAttribute(IMarker.SEVERITY,
 						IMarker.SEVERITY_ERROR);
-				errorMarker
-						.setAttribute(
-								IMarker.MESSAGE,
-								"No compiler preferences present. Please update your preferences in category SNL / Compiler!");
-				return;
+				errorMarker.setAttribute(IMarker.MESSAGE, message);
+			} catch (CoreException e) {
+				e.printStackTrace();
+				showCompileFailMessage(message);
 			}
-
-			File source = sourceRessource.getLocation().toFile();
-			String fullQualifiedSourceFileName = source.getAbsolutePath();
-
-			File parentPathOfSourcesParent = source.getParentFile()
-					.getParentFile();
-			String sourceFileName = source.getName();
-
-			String fullQualifiedTargetSourceName = parentPathOfSourcesParent
-					.getAbsolutePath()
-					+ File.separator
-					+ "generated-c"
-					+ File.separator
-					+ sourceFileName + ".c";
-
-			File targetSourceFile = new File(fullQualifiedTargetSourceName);
-			if (targetSourceFile.exists()) {
-				System.out
-						.println("File deleted? " + targetSourceFile.delete());
-			} else {
-				System.out.println("No old source "
-						+ targetSourceFile.getAbsolutePath());
+		} else {
+			File cFile = compileToC(sourceRessource, snCompilerPath, compilerOptionsService);
+			if (cFile != null && cFile.exists()) {
+				File cCompilerPath = compilerOptionsService.getCCompilerPath(); 
+				compileToO(cFile, cCompilerPath);
 			}
+		}
+	}
 
-			String sncCommand = compilerPath.getAbsolutePath() + File.separator
-					+ "snc";
-			ProcessBuilder processBuilder = new ProcessBuilder(sncCommand,
-					"-o ", fullQualifiedTargetSourceName,
-					fullQualifiedSourceFileName);
-			processBuilder.redirectErrorStream(true);
+	private void compileToO(File file, File compilerPath) {
+		// TODO Auto-generated method stub
+	}
 
-			Process sncProcess;
-			sncProcess = processBuilder.start();
+	private File compileToC(IFile sourceRessource, File compilerPath, CompilerOptionsService compilerOptionsService) {
+		assert sourceRessource != null : "sourceRessource != null";
+		assert compilerPath != null : "compilerPath != null";
+
+		File source = sourceRessource.getLocation().toFile();
+
+		String fullQualifiedSourceFileName = source.getAbsolutePath();
+		File rootDirectory = getRootDirectory(source);
+		String sourceFileName = source.getName();
+
+		String fullQualifiedTargetSourceName = rootDirectory.getAbsolutePath()
+				+ File.separator + "generated-c" + File.separator
+				+ sourceFileName + ".c";
+
+		File targetSourceFile = new File(fullQualifiedTargetSourceName);
+		if (targetSourceFile.exists()) {
+			boolean deleted = targetSourceFile.delete();
+			System.out.println("File deleted? " + deleted);
+		} else {
+			System.out.println("No old source "
+					+ targetSourceFile.getAbsolutePath());
+		}
+
+		try {
+			Process sncProcess = createProcess(compilerPath,
+					fullQualifiedSourceFileName, fullQualifiedTargetSourceName, compilerOptionsService);
 			InputStream stdOut = sncProcess.getInputStream();
 			InputStream stdErr = sncProcess.getErrorStream();
 			int result = sncProcess.waitFor();
@@ -171,27 +184,65 @@ public class SNLEditor extends LanguageEditor {
 				stdErrBuffer.append((char) c);
 			}
 			if (result != 0) {
-				Pattern pattern = Pattern
-						.compile("(syntax error: line no. )([\\d]*)([^\\n]*)(\\n)([\\S\\s]*)");
-				Matcher resultMatcher = pattern.matcher(stdOutResult);
-				resultMatcher.find();
-
-				IMarker errorMarker = sourceRessource
-						.createMarker(IMarker.PROBLEM);
-				errorMarker.setAttribute(IMarker.SEVERITY,
-						IMarker.SEVERITY_ERROR);
-				errorMarker.setAttribute(IMarker.LINE_NUMBER, Integer
-						.parseInt(resultMatcher.group(2).trim()));
-				errorMarker.setAttribute(IMarker.MESSAGE, resultMatcher
-						.group(5).trim());
-				// showCompilerFailMessage("Compiler-error:\n" + stdOutResult
-				// + "\n" + stdErrResult);
+				targetSourceFile = null;
+				createErrorMarker(sourceRessource, stdOutResult);
 			}
 		} catch (Exception ex) {
+			targetSourceFile = null;
 			ex.printStackTrace();
 			String message = ex.getMessage();
-			showCompilerFailMessage(message);
+			showCompileFailMessage(message);
 		}
+		return targetSourceFile;
+	}
+
+	private void createErrorMarker(IFile sourceRessource, String stdOutResult) {
+		Pattern pattern = Pattern
+				.compile("(syntax error: line no. )([\\d]*)([^\\n]*)(\\n)([\\S\\s]*)");
+		Matcher resultMatcher = pattern.matcher(stdOutResult);
+		resultMatcher.find();
+		String message = resultMatcher.group(5).trim();
+
+		IMarker errorMarker;
+		try {
+			errorMarker = sourceRessource.createMarker(IMarker.PROBLEM);
+			errorMarker.setAttribute(IMarker.SEVERITY,
+					IMarker.SEVERITY_ERROR);
+			errorMarker.setAttribute(IMarker.LINE_NUMBER, Integer
+					.parseInt(resultMatcher.group(2).trim()));
+			errorMarker.setAttribute(IMarker.MESSAGE, message);
+		} catch (CoreException e) {
+			e.printStackTrace();
+			showCompileFailMessage(e.getMessage() + "\n" + message);
+		}
+	}
+
+	private Process createProcess(File compilerPath,
+			String fullQualifiedSourceFileName,
+			String fullQualifiedTargetSourceName, 
+			CompilerOptionsService compilerOptionsService) throws IOException {
+		String sncCommand = compilerPath.getAbsolutePath() + File.separator
+				+ "snc";
+		
+		List<String> compilerOptions = compilerOptionsService.getCompilerOptions();
+		
+		List<String> command = new ArrayList<String>();
+		command.add(sncCommand);
+		command.addAll(compilerOptions);
+		command.add("-o ");
+		command.add(fullQualifiedTargetSourceName);
+		command.add(fullQualifiedSourceFileName);
+		
+		ProcessBuilder processBuilder = new ProcessBuilder(command);
+		processBuilder.redirectErrorStream(true);
+
+		Process sncProcess = processBuilder.start();
+		return sncProcess;
+	}
+
+	private File getRootDirectory(File source) {
+		File parentFile = source.getParentFile();
+		return parentFile.getParentFile();
 	}
 
 	/**
@@ -200,7 +251,7 @@ public class SNLEditor extends LanguageEditor {
 	 * @param message
 	 *            The message to be shown in the {@link MessageBox}
 	 */
-	private void showCompilerFailMessage(String message) {
+	private void showCompileFailMessage(String message) {
 		MessageBox messageBox = new MessageBox(Display.getCurrent()
 				.getActiveShell(), SWT.ERROR_FAILED_EXEC);
 		messageBox.setText("Compilation fails!");
