@@ -80,6 +80,23 @@ public class ModemInformation
         }
     }
     
+    public String[] getModemNames()
+    {
+        String[] result = null;
+        
+        if(modemNames.size() > 0)
+        {
+            result = new String[modemNames.size()];
+            result = modemNames.toArray(result);
+        }
+        else
+        {
+            result = new String[1];
+        }
+        
+        return result;
+    }
+    
     public String getPhoneNumber(String name)
     {
         String result = null;

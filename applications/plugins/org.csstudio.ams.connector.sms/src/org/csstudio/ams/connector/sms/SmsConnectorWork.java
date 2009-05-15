@@ -449,7 +449,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             result = true;
             
             Log.log(this, Log.INFO, "Modem(s) are initialized");
-
+            
+            modemService.setGatewayStatusNotification(new GatewayStatusNotification(modemInfo.getModemNames()));
+            
             if(result == true)
             {
                 Log.log(this, Log.INFO, "Try to start service");
