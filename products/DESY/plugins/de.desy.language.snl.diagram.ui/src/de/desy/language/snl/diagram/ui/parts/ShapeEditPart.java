@@ -284,4 +284,5 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 		((GraphicalEditPart) getParent()).setLayoutConstraint(this,
 				getFigure(), bounds);
 	}
+	
 }

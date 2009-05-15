@@ -32,7 +32,7 @@ public class StateModel extends SNLModel {
 	}
 
 	public String toString() {
-		return "State " + hashCode();
+		return "State '" + _stateNode.getSourceIdentifier() + "'";
 	}
 
 	public StateNode getStateNode() {

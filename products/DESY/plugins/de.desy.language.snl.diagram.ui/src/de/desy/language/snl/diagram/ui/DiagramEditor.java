@@ -10,9 +10,6 @@
  *******************************************************************************/
 package de.desy.language.snl.diagram.ui;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.EventObject;
 
 import org.eclipse.core.resources.IFile;
@@ -113,12 +110,6 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	public void commandStackChanged(EventObject event) {
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 		super.commandStackChanged(event);
-	}
-
-	private void createOutputStream(OutputStream os) throws IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(os);
-		oos.writeObject(getModel());
-		oos.close();
 	}
 
 	/*
@@ -266,12 +257,6 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		if (PALETTE_MODEL == null)
 			PALETTE_MODEL = ShapesEditorPaletteFactory.createPalette();
 		return PALETTE_MODEL;
-	}
-
-	private void handleLoadException(Exception e) {
-		System.err.println("** Load failed. Using default model. **");
-		e.printStackTrace();
-		diagram = new SNLDiagram();
 	}
 
 	/**
