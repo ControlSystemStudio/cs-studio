@@ -1339,10 +1339,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                                     list = list + name + " ";
                                 }
                                 
-                                Log.log(this, Log.WARN, "Modems, not working properly: " + list);
+                                Log.log(this, Log.WARN, "Modems not working properly: " + list);
                                 this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
                             }
                             
+                            Log.log(this, Log.INFO, "Reset current test.");
                             testStatus.reset();
                         }
                     }
