@@ -729,6 +729,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         testStatus.setTimeStamp(timeStamp);
         testStatus.setAnswerEventTime(eventTime);
         
+        Log.log(this, Log.INFO, "Number of modems to test: " + modemInfo.getModemCount());
         for(int i = 0;i < modemInfo.getModemCount();i++)
         {
             name = modemInfo.getModemName(i);
