@@ -67,12 +67,18 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  */
-@SuppressWarnings("nls")
 public class Application implements IApplication {
 
-	/** Is the list of all parameters read at start-up and any other parameters
+	/** The list of all parameters read at start-up and any other parameters
 	 * which were created later on during the execution of this application */
 	protected Map<String, Object> parameters;
+	
+	/** The map of all loaded extension points. When an extension point is requested
+	 * this map is first search for the particular type of extension point. If found
+	 * it is returned otherwise the extension points are loaded using the eclipse
+	 * loaded (@see {@link #getExtensionPoints(Class, String)}).*/
+	protected HashMap<Class<? extends CSSStartupExtensionPoint>, CSSStartupExtensionPoint[]> configurationElements;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -86,14 +92,16 @@ public class Application implements IApplication {
 			CentralLogger.getInstance().getLogger(this).error("No display"); //$NON-NLS-1$
 			return EXIT_OK;
 		}
-
-		try
+		
+		configurationElements = new HashMap<Class<? extends CSSStartupExtensionPoint>, CSSStartupExtensionPoint[]>(8);
+		
+		try 
 		{
 			return startApplication(context, display);
 		}
-		finally
+		finally 
 		{
-		    try
+			try
 		    {
 		        display.close();
 		    }
@@ -107,6 +115,7 @@ public class Application implements IApplication {
 		        // Log it? Ignore it? Print it?
 		        ex.printStackTrace();
 		    }
+			display.close();
 		}
 	}
 	
@@ -295,10 +304,10 @@ public class Application implements IApplication {
 	 * 
 	 * @return potential exit code (null if everything is ok)
 	 */
-    protected Object promptForWorkspace(Display display, IApplicationContext context) throws Exception {
+	protected Object promptForWorkspace(Display display, IApplicationContext context) throws Exception {
 		WorkspaceExtPoint[] points = getExtensionPoints(WorkspaceExtPoint.class, WorkspaceExtPoint.NAME);
 		if (points.length > 1) {
-		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one WorkspacePrompt extension point");
+			 CentralLogger.getInstance().getLogger(this).error("Cannot have more than one WorkspacePrompt extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -374,7 +383,7 @@ public class Application implements IApplication {
 	protected Object beforeWorkbenchStart(Display display, IApplicationContext context) throws Exception {
 		WorkbenchExtPoint[] points = getExtensionPoints(WorkbenchExtPoint.class, WorkbenchExtPoint.NAME);
 		if (points.length > 1) {
-		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
+			 CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -403,7 +412,7 @@ public class Application implements IApplication {
 	protected Object startWorkbench(Display display, IApplicationContext context) throws Exception {
 		WorkbenchExtPoint[] points = getExtensionPoints(WorkbenchExtPoint.class, WorkbenchExtPoint.NAME);
 		if (points.length > 1) {
-		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
+			 CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -443,7 +452,7 @@ public class Application implements IApplication {
 	protected Object afterWorkbenchStart(Display display, IApplicationContext context) throws Exception {
 		WorkbenchExtPoint[] points = getExtensionPoints(WorkbenchExtPoint.class, WorkbenchExtPoint.NAME);
 		if (points.length > 1) {
-		    CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
+			 CentralLogger.getInstance().getLogger(this).error("Cannot have more than one RunWorkbench extension point");
 			return IApplication.EXIT_OK;
 		}
 		if (points.length == 0) {
@@ -528,6 +537,8 @@ public class Application implements IApplication {
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T extends CSSStartupExtensionPoint> T[] getExtensionPoints(Class<T> type, String name) {
+		CSSStartupExtensionPoint[] points = configurationElements.get(type);
+		if (points != null) return (T[])points;
 		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(CSSStartupExtensionPoint.NAME);
 		ArrayList<T> list = new ArrayList<T>();
 		for (IConfigurationElement e : config) {
@@ -537,10 +548,11 @@ public class Application implements IApplication {
 					list.add((T)o);
 				}
 			} catch (Exception ex) {
-			    CentralLogger.getInstance().getLogger(this).error("Error loading " + name + " extension points.", ex);
+				 CentralLogger.getInstance().getLogger(this).error("Error loading " + name + " extension points.", ex);
 			}
 		}
 		T[] array = (T[])Array.newInstance(type, list.size());
+		configurationElements.put(type, array);
 		return list.toArray(array);
 	}
 	
@@ -552,7 +564,7 @@ public class Application implements IApplication {
 	 * @param t the exception that occurred during execution (could be null) 
 	 */
 	protected void errorExecutingExtensionPoint(String name, Throwable t) {
-	    CentralLogger.getInstance().getLogger(this).error("Error executing " + name
+		 CentralLogger.getInstance().getLogger(this).error("Error executing " + name
 				+ " extension point.", t);
 	}
 }
