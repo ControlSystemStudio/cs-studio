@@ -21,6 +21,11 @@ enum PreferenceConstants {
 	 * Post-fix of preference id for epics base location.
 	 */
 	EPICS_BASE_LOCATION_POST_FIX(".epics.base-location"),
+	
+	/**
+	 * Post-fix of preference id for epics seq location.
+	 */
+	EPICS_SEQ_LOCATION_POST_FIX(".epics.seq-location"),
 
 	/**
 	 * Post-fix for the italic-style constant to be added to the type id.

@@ -112,6 +112,7 @@
                id="de.desy.language.snl.ui.RefreshAction"
                label="Refresh Highlighting"
                menubarPath="edit/additions"
+               style="push"
                toolbarPath="edit/additions">
          </action>
       </editorContribution>
@@ -120,6 +121,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="de.desy.language.snl.ui.Perspective"
+            icon="icons/new_snl_file_wizard.gif"
             id="de.desy.language.snl.ui.SNLDEvelopment"
             name="SNL Development">
       </perspective>

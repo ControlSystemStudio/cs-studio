@@ -8,7 +8,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import de.desy.language.snl.ui.SNLUiActivator;
 
-public class CompilerOptionsService {
+public class CompilerOptionsService implements ICompilerOptionsService {
 
 	private final IPreferenceStore _preferenceStore;
 
@@ -16,46 +16,23 @@ public class CompilerOptionsService {
 		_preferenceStore = preferenceStore;
 	}
 
-	/**
-	 * Returns the compiler path (directory) stored in the preference store if
-	 * exists, null otherwise.
-	 * 
-	 * @return The Path as a File-instance or null if no valid path is avail.
+	/* (non-Javadoc)
+	 * @see de.desy.language.snl.ui.preferences.ICompilerOptionsService#getSNCompilerPath()
 	 */
 	public File getSNCompilerPath() {
-		File result = null;
-		String pathToSNC = _preferenceStore
-				.getString(
-						SNLUiActivator.PLUGIN_ID
-								+ PreferenceConstants.SNC_LOCATION_POST_FIX);
-
-		if (pathToSNC != null && pathToSNC.trim().length() > 0) {
-			result = new File(pathToSNC);
-			if (!result.isDirectory()) {
-				result = null;
-			}
-		}
-
-		return result;
+		return getFolder(PreferenceConstants.SNC_LOCATION_POST_FIX);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.desy.language.snl.ui.preferences.ICompilerOptionsService#getCCompilerPath()
+	 */
 	public File getCCompilerPath() {
-		File result = null;
-		String pathToSNC = _preferenceStore
-				.getString(
-						SNLUiActivator.PLUGIN_ID
-								+ PreferenceConstants.C_COMPILER_LOCATION_POST_FIX);
-
-		if (pathToSNC != null && pathToSNC.trim().length() > 0) {
-			result = new File(pathToSNC);
-			if (!result.isDirectory()) {
-				result = null;
-			}
-		}
-
-		return result;
+		return getFolder(PreferenceConstants.C_COMPILER_LOCATION_POST_FIX);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.desy.language.snl.ui.preferences.ICompilerOptionsService#getCompilerOptions()
+	 */
 	public List<String> getCompilerOptions() {
 		List<String> result = new ArrayList<String>();
 		
@@ -67,6 +44,31 @@ public class CompilerOptionsService {
 			}
 		}
 		
+		return result;
+	}
+
+	public File getEpicsFolder() {
+		return getFolder(PreferenceConstants.EPICS_BASE_LOCATION_POST_FIX);
+	}
+
+	public File getSeqFolder() {
+		return getFolder(PreferenceConstants.EPICS_SEQ_LOCATION_POST_FIX);
+	}
+	
+	private File getFolder(PreferenceConstants constantId) {
+		File result = null;
+		String pathToEpics = _preferenceStore
+				.getString(
+						SNLUiActivator.PLUGIN_ID
+								+ constantId);
+
+		if (pathToEpics != null && pathToEpics.trim().length() > 0) {
+			result = new File(pathToEpics);
+			if (!result.isDirectory()) {
+				result = null;
+			}
+		}
+
 		return result;
 	}
 }

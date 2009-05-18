@@ -37,6 +37,15 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
 				+ PreferenceConstants.SNC_LOCATION_POST_FIX, "",
 				groupOfLocationElement));
+		
+		Group cCompilerGroup = new Group(getFieldEditorParent(),
+				SWT.NONE);
+		cCompilerGroup.setText("Location of GCC");
+		cCompilerGroup.setLayoutData(new GridData(
+				GridData.FILL_HORIZONTAL));
+		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.C_COMPILER_LOCATION_POST_FIX, "",
+				cCompilerGroup));
 
 		/*-
 		 * <pre>
