@@ -165,6 +165,16 @@ public class ConnectorMessageManager
     }
 
     /**
+     * Retrieves the head of the queue(next message).
+     * 
+     * @return
+     */
+    public Message getTopMessage()
+    {
+        return msgQueue.poll();
+    }
+    
+    /**
      * Waits for a message. 
      * 
      * @return

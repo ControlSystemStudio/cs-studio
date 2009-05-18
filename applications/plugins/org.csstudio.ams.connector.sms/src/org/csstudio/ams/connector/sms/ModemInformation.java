@@ -57,7 +57,7 @@ public class ModemInformation
         
         if(!modemNames.isEmpty())
         {
-            if((index >=0) && (index < modemNames.size()))
+            if((index >= 0) && (index < modemNames.size()))
             {
                 result = modemNames.elementAt(index);
             }
