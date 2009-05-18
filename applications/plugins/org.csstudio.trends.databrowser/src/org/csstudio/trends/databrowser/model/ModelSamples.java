@@ -9,7 +9,6 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.swt.chart.ChartSample;
-import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
 
 /** Samples of a model item, combination of archived and live samples,

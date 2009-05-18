@@ -32,7 +32,6 @@ import java.util.GregorianCalendar;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;

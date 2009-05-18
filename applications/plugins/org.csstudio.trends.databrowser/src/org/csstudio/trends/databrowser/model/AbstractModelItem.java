@@ -4,7 +4,6 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.swt.chart.TraceType;
