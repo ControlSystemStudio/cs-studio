@@ -102,41 +102,6 @@
       </factory>
    </extension>
    <extension
-         id="sampleBuilder"
-         name="Sample Project Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
-         <run
-               class="de.desy.language.snl.ui.test.builder.SampleBuilder">
-         </run>
-      </builder>
-   </extension>
-   <extension
-         id="snlNature"
-         name="SNL Project Nature 2"
-         point="org.eclipse.core.resources.natures">
-      <builder
-            id="sampleBuilder">
-      </builder>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="de.desy.language.snl.ui.contribution1"
-            nameFilter="*"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="de.desy.language.snl.ui.test.builder.ToggleNatureAction"
-               enablesFor="+"
-               id="de.desy.language.snl.ui.addRemoveNatureAction"
-               label="Add/Remove Sample Nature"
-               menubarPath="additions">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
             id="de.desy.language.snl.ui.SNLEditorContribution"
@@ -150,6 +115,14 @@
                toolbarPath="edit/additions">
          </action>
       </editorContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.desy.language.snl.ui.Perspective"
+            id="de.desy.language.snl.ui.SNLDEvelopment"
+            name="SNL Development">
+      </perspective>
    </extension>
 
 </plugin>
