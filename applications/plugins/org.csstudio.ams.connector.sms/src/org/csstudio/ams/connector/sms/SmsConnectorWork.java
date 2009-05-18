@@ -683,14 +683,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     if(m.find())
                     {
                         r = m.group();
-//                        if(doModemTest(r))
-//                        {
-//                            Log.log(this, Log.INFO, "Modem test DONE.");
-//                        }
-//                        else
-//                        {
-//                            Log.log(this, Log.WARN, "Modem test FAILED.");
-//                        }
                         
                         if(testStatus.isActive() == false)
                         {
@@ -735,7 +727,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         timeStamp = dateFormat.format(Calendar.getInstance().getTime());
         
-        //testStatus.reset();
+        testStatus.reset();
         testStatus.setTimeStamp(timeStamp);
         testStatus.setAnswerEventTime(eventTime);
         
