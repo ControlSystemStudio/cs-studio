@@ -5,7 +5,6 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 public class Perspective implements IPerspectiveFactory {
 
-	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		layout.setEditorAreaVisible(true);
 		layout.addView(IPageLayout.ID_RES_NAV, IPageLayout.LEFT, 0.30f, IPageLayout.ID_EDITOR_AREA);
