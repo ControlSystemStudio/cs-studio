@@ -691,7 +691,16 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 //                        {
 //                            Log.log(this, Log.WARN, "Modem test FAILED.");
 //                        }
-                        sendModemTestSms(r);
+                        
+                        if(testStatus.isActive() == false)
+                        {
+                            sendModemTestSms(r);
+                        }
+                        else
+                        {
+                            Log.log(this, Log.WARN, "A modem check is still active. Ignoring the new modem check.");
+                        }
+                        
                         smsContainer.removeSms(sms);
                     }
                 }
@@ -726,7 +735,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         timeStamp = dateFormat.format(Calendar.getInstance().getTime());
         
-        testStatus.reset();
+        //testStatus.reset();
         testStatus.setTimeStamp(timeStamp);
         testStatus.setAnswerEventTime(eventTime);
         
