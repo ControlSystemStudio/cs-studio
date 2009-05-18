@@ -115,7 +115,6 @@ public class Application implements IApplication {
 		        // Log it? Ignore it? Print it?
 		        ex.printStackTrace();
 		    }
-			display.close();
 		}
 	}
 	
