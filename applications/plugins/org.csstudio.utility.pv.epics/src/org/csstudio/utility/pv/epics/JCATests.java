@@ -5,7 +5,6 @@ import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBRType;
-import gov.aps.jca.dbr.DBR_TIME_Double;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
 
