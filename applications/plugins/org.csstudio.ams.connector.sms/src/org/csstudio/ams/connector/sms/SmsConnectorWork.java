@@ -86,7 +86,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     private long readWaitingPeriod;
     
     /** This class contains all modem ids (names) */
-    private ModemInformation modemInfo;
+    private ModemInfoContainer modemInfo;
     
     /** Status information of the current modem test */
     private ModemTestStatus testStatus;
@@ -112,7 +112,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         this.scs = scs;
         smsContainer = new SmsContainer();
         readWaitingPeriod = 0;
-        modemInfo = new ModemInformation();
+        modemInfo = new ModemInfoContainer();
         testStatus = new ModemTestStatus();
     }
     
@@ -725,7 +725,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         String timeStamp = null;
         
         timeStamp = dateFormat.format(Calendar.getInstance().getTime());
-
+        
+        testStatus.reset();
         testStatus.setTimeStamp(timeStamp);
         testStatus.setAnswerEventTime(eventTime);
         
