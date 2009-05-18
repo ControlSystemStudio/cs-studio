@@ -33,6 +33,15 @@
             priority="normal">
       </content-type>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.display"
+            class="org.csstudio.display.pace.gui.PreferencePage"
+            id="org.csstudio.display.pace.preferences"
+            name="PACE">
+      </page>
+   </extension>
 </plugin>
 
 

@@ -261,6 +261,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                     model.saveUserValues(user);
                 }
             };
+            dialog.setDefaultLogbook(Preferences.getDefaultLogbook());
             dialog.open();
         }
         catch (Exception ex)
