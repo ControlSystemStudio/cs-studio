@@ -70,12 +70,15 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.csstudio.archive.rdbclient"/>
       <plugin id="org.csstudio.basic.epics.product"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
+      <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.display.pace"/>
       <plugin id="org.csstudio.display.pvtable"/>
       <plugin id="org.csstudio.logbook"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
+      <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
@@ -136,6 +139,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.gef"/>
       <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.appserver"/>
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.help.webapp"/>
@@ -177,6 +181,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.eclipse.update.core.linux" fragment="true"/>
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
+      <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.mortbay.jetty"/>
    </plugins>
