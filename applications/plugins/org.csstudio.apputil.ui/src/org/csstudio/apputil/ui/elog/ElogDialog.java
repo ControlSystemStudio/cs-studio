@@ -29,6 +29,7 @@ abstract public class ElogDialog extends TitleAreaDialog
     final private ILogbookFactory logbook_factory;
     final private String message, initial_title, initial_body, image_filename;
     final private String[] logbooks;
+    private String default_logbook;
 
     private Text user, password, title, body;
     private Combo logbook;
@@ -53,6 +54,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         this.initial_title = initial_title;
         this.initial_body = initial_body;
         this.logbooks = logbook_factory.getLogbooks();
+        this.default_logbook = logbook_factory.getDefaultLogbook();
         this.image_filename = image_filename;
 
         // Try to allow resize, because the 'text' section could
@@ -60,6 +62,29 @@ abstract public class ElogDialog extends TitleAreaDialog
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
+    /** Set default logbook.
+     *  <p>
+     *  Initially, the dialog will use the default suggested by
+     *  the Logbook implementation.
+     *  This method can switch a a default that the application code
+     *  that opens the dialog might prefer.
+     *  <p>
+     *  Has no effect if the suggested logbook is not on the list
+     *  of available logbooks.  
+     *  @param new_default_logbook New default logbook.
+     */
+    public void setDefaultLogbook(final String new_default_logbook)
+    {
+        for (String logbook : logbooks)
+        {
+            if (logbook.equalsIgnoreCase(new_default_logbook))
+            {
+                this.default_logbook = new_default_logbook;
+                return;
+            }
+        }
+    }
+
     /** @return Logbook Factory */
     protected ILogbookFactory getLogbook_factory()
     {
@@ -149,7 +174,7 @@ abstract public class ElogDialog extends TitleAreaDialog
             logbook.setLayoutData(gd);
             
             logbook.setItems(logbooks);
-            logbook.setText(logbook_factory.getDefaultLogbook());
+            logbook.setText(default_logbook);
         }
         
         // New Row
