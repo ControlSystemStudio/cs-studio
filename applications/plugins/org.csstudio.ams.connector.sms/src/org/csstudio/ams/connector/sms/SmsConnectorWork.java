@@ -684,12 +684,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     {
                         r = m.group();
                         
-                        if(testStatus.isActive() == false)
+                        if(testStatus.isActive() == false || testStatus.isTimeOut())
                         {
                             sendModemTestSms(r);
                         }
                         else
                         {
+                            
                             Log.log(this, Log.WARN, "A modem check is still active. Ignoring the new modem check.");
                         }
                         
