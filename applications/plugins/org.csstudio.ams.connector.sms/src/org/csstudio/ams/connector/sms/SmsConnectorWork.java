@@ -1376,29 +1376,20 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             Log.log(this, Log.INFO, "Reset current test.");
                             testStatus.reset();
                         }
-                        
-                        if(!deleteMessage((InboundMessage)msgList.get(i)))
-                        {
-                            return SmsConnectorStart.STAT_ERR_MODEM;
-                        }
-                        
-                        continue;
                     }
-                }
-            }
-            else
-            {
-                if(testStatus.isTestAnswer(text))
-                {
-                    if(!deleteMessage((InboundMessage)msgList.get(i)))
-                    {
-                        return SmsConnectorStart.STAT_ERR_MODEM;
-                    }
-                    
-                    continue;
                 }
             }
 
+            if(testStatus.isTestAnswer(text))
+            {
+                if(!deleteMessage((InboundMessage)msgList.get(i)))
+                {
+                    return SmsConnectorStart.STAT_ERR_MODEM;
+                }
+                
+                continue;
+            }
+            
 //            if(testStatus.isTestAnswer(text))
 //            {
 //                Log.log(this, Log.INFO, "Self test SMS");
