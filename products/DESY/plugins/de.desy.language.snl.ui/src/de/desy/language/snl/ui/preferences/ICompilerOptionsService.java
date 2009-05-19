@@ -1,6 +1,5 @@
 package de.desy.language.snl.ui.preferences;
 
-import java.io.File;
 import java.util.List;
 
 public interface ICompilerOptionsService {
@@ -11,14 +10,14 @@ public interface ICompilerOptionsService {
 	 * 
 	 * @return The Path as a File-instance or null if no valid path is avail.
 	 */
-	public abstract File getSNCompilerPath();
+	public abstract String getSNCompilerPath();
 
-	public abstract File getCCompilerPath();
+	public abstract String getCCompilerPath();
 	
-	public abstract File getEpicsFolder();
+	public abstract String getEpicsFolder();
 
-	public abstract File getSeqFolder();
+	public abstract String getSeqFolder();
 	
-	public abstract List<String> getCompilerOptions();
+	public abstract List<String> getCCompilerOptions();
 
 }

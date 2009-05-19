@@ -6,51 +6,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
-
-import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
 
 public class OCompilationHelper {
 
 	private static final String TARGET_FOLDER = "bin";
 	private static final String TARGET_FILE_EXTENSION = ".o";
 
-	public void compileFile(ICompilerOptionsService compilerOptionsService,
-			IFile sourceRessource, File cFile) {
-		File cCompilerPath = compilerOptionsService.getCCompilerPath();
-		File epicsFolder = compilerOptionsService.getEpicsFolder();
-		File seqFolder = compilerOptionsService.getSeqFolder();
-		if (cCompilerPath == null || !cCompilerPath.exists()
-				&& epicsFolder == null || !epicsFolder.exists()
-				&& seqFolder == null || !seqFolder.exists()) {
-			IMarker errorMarker;
-			String message = "No compiler preferences present. Please update your preferences in category SNL / Compiler!";
-			try {
-				errorMarker = sourceRessource.createMarker(IMarker.PROBLEM);
-				errorMarker.setAttribute(IMarker.SEVERITY,
-						IMarker.SEVERITY_ERROR);
-				errorMarker.setAttribute(IMarker.MESSAGE, message);
-			} catch (CoreException e) {
-				e.printStackTrace();
-				showCompileFailMessage(message);
-			}
-		} else {
-			compileToO(cFile, cCompilerPath, epicsFolder, seqFolder,
-					compilerOptionsService);
-		}
-	}
-
-	void compileToO(File source, File compilerFolder, File epicsFolder,
-			File seqFolder, ICompilerOptionsService compilerOptionsService) {
+	public boolean compileToO(File source, String compilerFolder, String epicsFolder,
+			String seqFolder) {
 		assert source != null : "source != null";
 		assert compilerFolder != null : "compilerPath != null";
 		assert epicsFolder != null : "epicsFolder != null";
 		assert seqFolder != null : "seqFolder != null";
+		
+		boolean success = true;
 
 		String fullQualifiedSourceFileName = source.getAbsolutePath();
 		File rootDirectory = getRootDirectory(source);
@@ -64,9 +36,8 @@ public class OCompilationHelper {
 
 		try {
 			Process sncProcess = createProcess(
-					compilerFolder.getAbsolutePath(), epicsFolder
-							.getAbsolutePath(), seqFolder.getAbsolutePath(),
-					fullQualifiedSourceFileName, fullQualifiedTargetSourceName, compilerOptionsService);
+					compilerFolder, epicsFolder, seqFolder,
+					fullQualifiedSourceFileName, fullQualifiedTargetSourceName);
 			InputStream stdOut = sncProcess.getInputStream();
 			InputStream stdErr = sncProcess.getErrorStream();
 			int result = sncProcess.waitFor();
@@ -82,23 +53,20 @@ public class OCompilationHelper {
 			}
 			String stdErrResult = stdErrBuffer.toString();
 			if (result != 0) {
-				createErrorMessage(stdOutResult + "\n" + stdErrResult);
+				success = false;
+				showCompileFailMessage(stdOutResult + "\n" + stdErrResult);
 			}
 		} catch (Exception ex) {
+			success = false;
 			ex.printStackTrace();
 			String message = ex.getMessage();
 			showCompileFailMessage(message);
 		}
+		return success;
 	}
 
-	void createErrorMessage(String stdOutResult) {
-		String message = stdOutResult;
-		showCompileFailMessage(message);
-	}
-
-	Process createProcess(String compilerPath, String epicsPath,
-			String seqPath, String fullQualifiedSourceFileName, String fullQualifiedTargetFileName,
-			ICompilerOptionsService compilerOptionsService) throws IOException {
+	private Process createProcess(String compilerPath, String epicsPath,
+			String seqPath, String fullQualifiedSourceFileName, String fullQualifiedTargetFileName) throws IOException {
 		String cCommand = compilerPath + File.separator + "gcc";
 
 		List<String> command = new ArrayList<String>();
@@ -135,7 +103,7 @@ public class OCompilationHelper {
 		return sncProcess;
 	}
 
-	File getRootDirectory(File source) {
+	private File getRootDirectory(File source) {
 		File parentFile = source.getParentFile();
 		return parentFile.getParentFile();
 	}

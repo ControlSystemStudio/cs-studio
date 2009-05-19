@@ -33,10 +33,10 @@ public class CompileAction implements IEditorActionDelegate {
 	}
 
 	public void run(IAction action) {
-		if (_service != null && _snCompilerPath != null
-				&& _sourceRessource != null) {
-			_helper.compileFile(_service, _sourceRessource);
-		}
+//		if (_service != null && _snCompilerPath != null
+//				&& _sourceRessource != null) {
+//			_helper.compileFile(_service, _sourceRessource);
+//		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {

@@ -15,37 +15,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
-
 public class CCompilationHelper {
-	
+
 	private static final String TARGET_FILE_EXTENSION = ".c";
 	private static final String TARGET_FOLDER = "generated-c";
 
-	public File compileFile(ICompilerOptionsService compilerOptionsService, IFile sourceRessource) {
-		File result = null;
-		File snCompilerPath = compilerOptionsService.getSNCompilerPath();
-		if (snCompilerPath == null || !snCompilerPath.exists()) {
-			IMarker errorMarker;
-			String message = "No compiler preferences present. Please update your preferences in category SNL / Compiler!";
-			try {
-				errorMarker = sourceRessource.createMarker(IMarker.PROBLEM);
-				errorMarker.setAttribute(IMarker.SEVERITY,
-						IMarker.SEVERITY_ERROR);
-				errorMarker.setAttribute(IMarker.MESSAGE, message);
-			} catch (CoreException e) {
-				e.printStackTrace();
-				showCompileFailMessage(message);
-			}
-		} else {
-			result = compileToC(sourceRessource, snCompilerPath, compilerOptionsService);
-		}
-		return result;
-	}
-	
-	File compileToC(IFile sourceRessource, File compilerFolder, ICompilerOptionsService compilerOptionsService) {
+	public File compileToC(IFile sourceRessource, String compilerFolder,
+			List<String> compilerOptions) {
 		assert sourceRessource != null : "sourceRessource != null";
-		assert compilerFolder != null : "compilerPath != null";
+		assert compilerFolder != null : "compilerFolder != null";
+		assert compilerOptions != null : "compilerOptions != null";
 
 		File source = sourceRessource.getLocation().toFile();
 
@@ -59,18 +38,10 @@ public class CCompilationHelper {
 				+ File.separator + TARGET_FOLDER + File.separator
 				+ sourceFileName + TARGET_FILE_EXTENSION;
 
-		File targetSourceFile = new File(fullQualifiedTargetSourceName);
-		if (targetSourceFile.exists()) {
-			boolean deleted = targetSourceFile.delete();
-			System.out.println("File deleted? " + deleted);
-		} else {
-			System.out.println("No old source "
-					+ targetSourceFile.getAbsolutePath());
-		}
-
 		try {
-			Process sncProcess = createProcess(compilerFolder.getAbsolutePath(),
-					fullQualifiedSourceFileName, fullQualifiedTargetSourceName, compilerOptionsService);
+			Process sncProcess = createProcess(compilerFolder,
+					fullQualifiedSourceFileName, fullQualifiedTargetSourceName,
+					compilerOptions);
 			InputStream stdOut = sncProcess.getInputStream();
 			InputStream stdErr = sncProcess.getErrorStream();
 			int result = sncProcess.waitFor();
@@ -85,14 +56,16 @@ public class CCompilationHelper {
 				stdErrBuffer.append((char) c);
 			}
 			if (result != 0) {
-				targetSourceFile = null;
 				createErrorMarker(sourceRessource, stdOutResult);
 			}
 		} catch (Exception ex) {
-			targetSourceFile = null;
 			ex.printStackTrace();
 			String message = ex.getMessage();
 			showCompileFailMessage(message);
+		}
+		File targetSourceFile = new File(fullQualifiedTargetSourceName);
+		if (!targetSourceFile.exists()) {
+			targetSourceFile = null;
 		}
 		return targetSourceFile;
 	}
@@ -106,8 +79,7 @@ public class CCompilationHelper {
 
 		try {
 			IMarker errorMarker = sourceRessource.createMarker(IMarker.PROBLEM);
-			errorMarker.setAttribute(IMarker.SEVERITY,
-					IMarker.SEVERITY_ERROR);
+			errorMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			errorMarker.setAttribute(IMarker.LINE_NUMBER, Integer
 					.parseInt(resultMatcher.group(2).trim()));
 			errorMarker.setAttribute(IMarker.MESSAGE, message);
@@ -119,23 +91,20 @@ public class CCompilationHelper {
 
 	Process createProcess(String compilerPath,
 			String fullQualifiedSourceFileName,
-			String fullQualifiedTargetSourceName, 
-			ICompilerOptionsService compilerOptionsService) throws IOException {
-		String sncCommand = compilerPath + File.separator
-				+ "snc";
-		
-		List<String> compilerOptions = compilerOptionsService.getCompilerOptions();
-		
+			String fullQualifiedTargetSourceName, List<String> compilerOptions)
+			throws IOException {
+		String sncCommand = compilerPath + File.separator + "snc";
+
 		List<String> command = new ArrayList<String>();
 		command.add(sncCommand);
 		command.addAll(compilerOptions);
 		command.add("-o ");
 		command.add(fullQualifiedTargetSourceName);
 		command.add(fullQualifiedSourceFileName);
-		
+
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.redirectErrorStream(true);
-		
+
 		Process sncProcess = processBuilder.start();
 		return sncProcess;
 	}
@@ -144,7 +113,7 @@ public class CCompilationHelper {
 		File parentFile = source.getParentFile();
 		return parentFile.getParentFile();
 	}
-	
+
 	/**
 	 * Shows the given message in a new {@link MessageBox}.
 	 * 
@@ -155,8 +124,7 @@ public class CCompilationHelper {
 		MessageBox messageBox = new MessageBox(Display.getCurrent()
 				.getActiveShell(), SWT.ERROR_FAILED_EXEC);
 		messageBox.setText("Compilation fails!");
-		messageBox.setMessage("The compilations fails!\nReason: "
-				+ message);
+		messageBox.setMessage("The compilations fails!\nReason: " + message);
 		messageBox.open();
 	}
 
