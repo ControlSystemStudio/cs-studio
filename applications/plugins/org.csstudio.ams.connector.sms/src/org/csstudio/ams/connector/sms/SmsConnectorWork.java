@@ -770,7 +770,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         if(testStatus.getGatewayCount() > 0)
         {
             testStatus.setActive(true);
-            testStatus.setTimeOut(System.currentTimeMillis() + 90000); // 1.5 min
+            testStatus.setTimeOut(System.currentTimeMillis() + 120000); // 2 minutes
         }
         else
         {
@@ -1312,21 +1312,48 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         + "' originator/date/smscRef = " 
                         + smsMsg.getOriginator() + "/" + smsMsg.getDate() + "/" + smsMsg.getMpRefNo());
 
-            
-            if(testStatus.isTestAnswer(text))
+
+            // Have a look at the current check status
+            if(testStatus.isActive())
             {
-                Log.log(this, Log.INFO, "Self test SMS");
-                //TODO:
-                // Handle incoming test SMS
-                if(testStatus.isActive())
+                Log.log(this, Log.INFO, "Self test is active");
+                
+                if(testStatus.isTimeOut())
                 {
-                    Log.log(this, Log.INFO, "Self test is active");
-                    
-                    if(testStatus.isTimeOut() == false)
+                    Log.log(this, Log.WARN, "Current test timed out.");
+                    Log.log(this, Log.DEBUG, "Remaining gateways: " + testStatus.getGatewayCount());
+                    Log.log(this, Log.DEBUG, "Bad gateways before moving: " + testStatus.getBadModemCount());
+                    testStatus.moveGatewayIdToBadModems();
+                    Log.log(this, Log.DEBUG, "Remaining gateways after moving: " + testStatus.getGatewayCount());
+                    Log.log(this, Log.DEBUG, "Bad gateways after moving: " + testStatus.getBadModemCount());
+                    if(testStatus.getBadModemCount() == modemInfo.getModemCount())
                     {
-                        Log.log(this, Log.INFO, "Gateways waiting for answer: " + testStatus.getGatewayCount());
+                        Log.log(this, Log.ERROR, "No modem is working properly.");
+                        this.sendTestAnswer(testStatus.getAnswerEventTime(), "No modem is working properly.", "MAJOR", "ERROR");
+                    }
+                    else
+                    {
+                        String list = "";
+                        for(String name : testStatus.getBadModems())
+                        {
+                            list = list + name + " ";
+                        }
+                        
+                        Log.log(this, Log.WARN, "Modems not working properly: " + list);
+                        this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems not working properly: " + list, "MINOR", "WARN");
+                    }
+                    
+                    Log.log(this, Log.INFO, "Reset current test.");
+                    testStatus.reset();
+                }
+                else
+                {
+                    if(testStatus.isTestAnswer(text))
+                    {
+                        Log.log(this, Log.INFO, "Self test SMS");
+                        Log.log(this, Log.DEBUG, "Gateways waiting for answer: " + testStatus.getGatewayCount());
                         testStatus.checkAndRemove(text);
-                        Log.log(this, Log.INFO, "Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
+                        Log.log(this, Log.DEBUG, "Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
                         if((testStatus.getGatewayCount() == 0))
                         {
                             if(testStatus.getBadModemCount() == 0)
@@ -1349,44 +1376,103 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             Log.log(this, Log.INFO, "Reset current test.");
                             testStatus.reset();
                         }
-                    }
-                    else
-                    {
-                        Log.log(this, Log.WARN, "Current test timed out.");
-                        Log.log(this, Log.INFO, "Remaining gateways: " + testStatus.getGatewayCount());
-                        Log.log(this, Log.INFO, "Bad gateways before moving: " + testStatus.getBadModemCount());
-                        testStatus.moveGatewayIdToBadModems();
-                        Log.log(this, Log.INFO, "Remaining gateways after moving: " + testStatus.getGatewayCount());
-                        Log.log(this, Log.INFO, "Bad gateways after moving: " + testStatus.getBadModemCount());
-                        if(testStatus.getBadModemCount() == modemInfo.getModemCount())
+                        
+                        if(!deleteMessage((InboundMessage)msgList.get(i)))
                         {
-                            Log.log(this, Log.ERROR, "No modem is working properly.");
-                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "No modem is working properly.", "MAJOR", "ERROR");
-                        }
-                        else
-                        {
-                            String list = "";
-                            for(String name : testStatus.getBadModems())
-                            {
-                                list = list + name + " ";
-                            }
-                            
-                            Log.log(this, Log.WARN, "Modems, not working properly: " + list);
-                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
+                            return SmsConnectorStart.STAT_ERR_MODEM;
                         }
                         
-                        Log.log(this, Log.INFO, "Reset current test.");
-                        testStatus.reset();
+                        continue;
                     }
                 }
-                
-                if(!deleteMessage((InboundMessage)msgList.get(i)))
-                {
-                    return SmsConnectorStart.STAT_ERR_MODEM;
-                }
-                
-                continue;
             }
+            else
+            {
+                if(testStatus.isTestAnswer(text))
+                {
+                    if(!deleteMessage((InboundMessage)msgList.get(i)))
+                    {
+                        return SmsConnectorStart.STAT_ERR_MODEM;
+                    }
+                    
+                    continue;
+                }
+            }
+
+//            if(testStatus.isTestAnswer(text))
+//            {
+//                Log.log(this, Log.INFO, "Self test SMS");
+//                //TODO:
+//                // Handle incoming test SMS
+//                if(testStatus.isActive())
+//                {
+//                    Log.log(this, Log.INFO, "Self test is active");
+//                    
+//                    if(testStatus.isTimeOut() == false)
+//                    {
+//                        Log.log(this, Log.INFO, "Gateways waiting for answer: " + testStatus.getGatewayCount());
+//                        testStatus.checkAndRemove(text);
+//                        Log.log(this, Log.INFO, "Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
+//                        if((testStatus.getGatewayCount() == 0))
+//                        {
+//                            if(testStatus.getBadModemCount() == 0)
+//                            {
+//                                Log.log(this, Log.INFO, "All modems are working fine.");
+//                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are working fine.", "NO_ALARM", "OK");
+//                            }
+//                            else
+//                            {
+//                                String list = "";
+//                                for(String name : testStatus.getBadModems())
+//                                {
+//                                    list = list + name + " ";
+//                                }
+//                                
+//                                Log.log(this, Log.WARN, "Modems not working properly: " + list);
+//                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
+//                            }
+//                            
+//                            Log.log(this, Log.INFO, "Reset current test.");
+//                            testStatus.reset();
+//                        }
+//                    }
+//                    else
+//                    {
+//                        Log.log(this, Log.WARN, "Current test timed out.");
+//                        Log.log(this, Log.INFO, "Remaining gateways: " + testStatus.getGatewayCount());
+//                        Log.log(this, Log.INFO, "Bad gateways before moving: " + testStatus.getBadModemCount());
+//                        testStatus.moveGatewayIdToBadModems();
+//                        Log.log(this, Log.INFO, "Remaining gateways after moving: " + testStatus.getGatewayCount());
+//                        Log.log(this, Log.INFO, "Bad gateways after moving: " + testStatus.getBadModemCount());
+//                        if(testStatus.getBadModemCount() == modemInfo.getModemCount())
+//                        {
+//                            Log.log(this, Log.ERROR, "No modem is working properly.");
+//                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "No modem is working properly.", "MAJOR", "ERROR");
+//                        }
+//                        else
+//                        {
+//                            String list = "";
+//                            for(String name : testStatus.getBadModems())
+//                            {
+//                                list = list + name + " ";
+//                            }
+//                            
+//                            Log.log(this, Log.WARN, "Modems, not working properly: " + list);
+//                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
+//                        }
+//                        
+//                        Log.log(this, Log.INFO, "Reset current test.");
+//                        testStatus.reset();
+//                    }
+//                }
+//                
+//                if(!deleteMessage((InboundMessage)msgList.get(i)))
+//                {
+//                    return SmsConnectorStart.STAT_ERR_MODEM;
+//                }
+//                
+//                continue;
+//            }
             
             // Reply_Message-Format: "<ChainIdAndPos>*<ConfirmCode>"
             // Example: "12345001*123"
