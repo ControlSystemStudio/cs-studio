@@ -255,13 +255,35 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
         // enableRowMovement.execute();
         //
         // shrinkTable.execute();
-//        PreparedStatement shrinkMessageContentTable = _databaseConnection
-//                .prepareStatement("ALTER TABLE message_content SHRINK SPACE COMPACT");
-//        PreparedStatement shrinkMessageTable = _databaseConnection
-//                .prepareStatement("ALTER TABLE message SHRINK SPACE COMPACT");
-//
-//        shrinkMessageContentTable.execute();
-//        shrinkMessageTable.execute();
+        PreparedStatement enableRowMovement = _databaseConnection
+                .prepareStatement("ALTER TABLE message_content ENABLE ROW MOVEMENT");
+        PreparedStatement shrinkMessageContentTable = _databaseConnection
+                .prepareStatement("ALTER TABLE message_content SHRINK SPACE COMPACT");
+        PreparedStatement disableRowMovement = _databaseConnection
+        .prepareStatement("ALTER TABLE message_content DISABLE ROW MOVEMENT");
+
+        enableRowMovement.execute();
+        shrinkMessageContentTable.execute();
+        disableRowMovement.execute();
+        
+        if(disableRowMovement!=null){try{disableRowMovement.close();}catch(Exception e){}disableRowMovement=null;}
+        if(shrinkMessageContentTable!=null){try{shrinkMessageContentTable.close();}catch(Exception e){}shrinkMessageContentTable=null;}
+        if(enableRowMovement!=null){try{enableRowMovement.close();}catch(Exception e){}enableRowMovement=null;}
+        
+        enableRowMovement = _databaseConnection
+                .prepareStatement("ALTER TABLE message ENABLE ROW MOVEMENT");
+        PreparedStatement shrinkMessageTable = _databaseConnection
+                .prepareStatement("ALTER TABLE message SHRINK SPACE COMPACT");
+        disableRowMovement = _databaseConnection
+                .prepareStatement("ALTER TABLE message DISABLE ROW MOVEMENT");
+        
+        enableRowMovement.execute();
+        shrinkMessageTable.execute();
+        disableRowMovement.execute();
+        
+        if(disableRowMovement!=null){try{disableRowMovement.close();}catch(Exception e){}disableRowMovement=null;}
+        if(shrinkMessageTable!=null){try{shrinkMessageTable.close();}catch(Exception e){}shrinkMessageTable=null;}
+        if(enableRowMovement!=null){try{enableRowMovement.close();}catch(Exception e){}enableRowMovement=null;}
 
         CentralLogger
                 .getInstance()
