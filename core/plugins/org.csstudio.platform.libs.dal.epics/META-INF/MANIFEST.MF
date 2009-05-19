@@ -8,10 +8,10 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.junit,
  org.csstudio.platform.libs.dal,
- org.csstudio.platform.libs.epics
+ org.csstudio.platform.libs.epics;visibility:=reexport,
+ org.csstudio.platform
 Eclipse-LazyStart: true
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
-Bundle-ClassPath: .,
- lib/css-dal-epics-0.7.4.jar
+Bundle-ClassPath: .
 Export-Package: org.csstudio.platform.libs.dal.epics,
  org.epics.css.dal.epics
