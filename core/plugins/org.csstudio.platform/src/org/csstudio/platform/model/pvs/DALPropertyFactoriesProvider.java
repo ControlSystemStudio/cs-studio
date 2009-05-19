@@ -63,7 +63,8 @@ public final class DALPropertyFactoriesProvider {
 		_applicationContext = new CssApplicationContext("CSS"); //$NON-NLS-1$
 	}
 
-	/**
+
+    /**
 	 * Gets the singleton instance.
 	 * 
 	 * @return the singleton instance
@@ -95,16 +96,6 @@ public final class DALPropertyFactoriesProvider {
 
 			if (result == null) {
 				
-				final IPreferencesService prefs = Platform.getPreferencesService();
-	            if (prefs.getBoolean("org.csstudio.platform.libs.epics", "use_pure_java", true, null)) {
-					_applicationContext.getConfiguration().setProperty("EPICSPlug.use_jni", "true");
-	            } else {
-					_applicationContext.getConfiguration().setProperty("EPICSPlug.use_jni", "false");
-	            }
-	            
-	            //System.out.println(_applicationContext.getConfiguration());
-
-				
 				result = DefaultPropertyFactoryService
 						.getPropertyFactoryService().getPropertyFactory(
 								_applicationContext,
@@ -116,5 +107,16 @@ public final class DALPropertyFactoriesProvider {
 
 			return result;
 		}
+	}
+
+	
+	/**
+	 * Returns the {@link AbstractApplicationContext} to set properties
+	 * from DAL plugs to the configuration.
+	 * 
+	 * @return ApplicationContext
+	 */
+	public AbstractApplicationContext getApplicationContext() {
+	    return _applicationContext;
 	}
 }
