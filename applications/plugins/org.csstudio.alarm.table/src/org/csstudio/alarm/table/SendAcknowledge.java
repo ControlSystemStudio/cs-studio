@@ -53,128 +53,130 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class SendAcknowledge extends Job {
 
-	List<JMSMessage> messagesToSend;
-	private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+    List<JMSMessage> messagesToSend;
+    private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
-	/**
-	 * @param msg
-	 *            JMSMessage to acknowledge
-	 */
-	private SendAcknowledge(List<JMSMessage> msg) {
-		super("Send Ack"); //$NON-NLS-1$
-		messagesToSend = msg;
-	}
+    /**
+     * @param msg
+     *            JMSMessage to acknowledge
+     */
+    private SendAcknowledge(List<JMSMessage> msg) {
+        super("Send Ack"); //$NON-NLS-1$
+        messagesToSend = msg;
+    }
 
-	/**
-	 * Creates a new job for sending acknowledgements from a collection of
-	 * messages to send. For each message to send, the collection must contain a
-	 * map of properties for that message.
-	 * 
-	 * @param messages
-	 *            the collection of messages to send.
-	 * @return the <code>SendAcknowledge</code> job.
-	 */
-	public static SendAcknowledge newFromProperties(
-			Collection<Map<String, String>> messages) {
-		List<JMSMessage> messagesToSend = new ArrayList<JMSMessage>(messages
-				.size());
-		for (Map<String, String> map : messages) {
-			Set<String> keys = map.keySet();
-			String[] keyArray = keys.toArray(new String[0]);
-			JMSMessage jmsMsg = new JMSMessage(keyArray);
-			for (String key : keys) {
-				jmsMsg.setProperty(key, map.get(key));
-			}
-			messagesToSend.add(jmsMsg);
-		}
-		return new SendAcknowledge(messagesToSend);
-	}
+    /**
+     * Creates a new job for sending acknowledgements from a collection of
+     * messages to send. For each message to send, the collection must contain a
+     * map of properties for that message.
+     * 
+     * @param messages
+     *            the collection of messages to send.
+     * @return the <code>SendAcknowledge</code> job.
+     */
+    public static SendAcknowledge newFromProperties(
+            Collection<Map<String, String>> messages) {
+        List<JMSMessage> messagesToSend = new ArrayList<JMSMessage>(messages
+                .size());
+        for (Map<String, String> map : messages) {
+            Set<String> keys = map.keySet();
+            String[] keyArray = keys.toArray(new String[0]);
+            JMSMessage jmsMsg = new JMSMessage(keyArray);
+            for (String key : keys) {
+                jmsMsg.setProperty(key, map.get(key));
+            }
+            messagesToSend.add(jmsMsg);
+        }
+        return new SendAcknowledge(messagesToSend);
+    }
 
-	/**
-	 * Creates a new job for sending acknowledgements from a List of
-	 * {@link JMSMessage} to send.
-	 * 
-	 * @param messages
-	 *            the List of JMSMessage to send.
-	 * @return the <code>SendAcknowledge</code> job.
-	 */
-	public static SendAcknowledge newFromJMSMessage(List<JMSMessage> messages) {
-		return new SendAcknowledge(messages);
-	}
+    /**
+     * Creates a new job for sending acknowledgements from a List of
+     * {@link JMSMessage} to send.
+     * 
+     * @param messages
+     *            the List of JMSMessage to send.
+     * @return the <code>SendAcknowledge</code> job.
+     */
+    public static SendAcknowledge newFromJMSMessage(List<JMSMessage> messages) {
+        return new SendAcknowledge(messages);
+    }
 
-	/**
-	 * Sends for the list of JMSMessages an acknowledge message to the jms- and
-	 * ldap server.
-	 * 
-	 */
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+    /**
+     * Sends for the list of JMSMessages an acknowledge message to the jms- and
+     * ldap server.
+     * 
+     */
+    @Override
+    protected IStatus run(IProgressMonitor monitor) {
 
-		SendMapMessage sender = SendMapMessage.getInstance();
-		try {
-			// sender.startSender(true);
+        SendMapMessage sender = SendMapMessage.getInstance();
+        try {
+            // sender.startSender(true);
 
-			for (JMSMessage message : messagesToSend) {
+            for (JMSMessage message : messagesToSend) {
 
-				SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
-				java.util.Date currentDate = new java.util.Date();
-				String time = sdf.format(currentDate);
+                SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
+                java.util.Date currentDate = new java.util.Date();
+                String time = sdf.format(currentDate);
 
-				MapMessage mapMessage = sender.getSessionMessageObject("ACK");
-				HashMap<String, String> hm = message.getHashMap();
-				Iterator<String> it = hm.keySet().iterator();
+                MapMessage mapMessage = sender.getSessionMessageObject("ACK");
+                HashMap<String, String> hm = message.getHashMap();
+                Iterator<String> it = hm.keySet().iterator();
 
-				while (it.hasNext()) {
-					String key = it.next();
-					String value = hm.get(key);
-					mapMessage.setString(key, value);
-				}
-				
-				//Add username and host to acknowledge message.
-				User user = SecurityFacade.getInstance().getCurrentUser();
-				if (user != null) {
-					mapMessage.setString("USER", user.getUsername());
-				} else {
-					mapMessage.setString("USER", "NULL");
-				}
-				String host = CSSPlatformInfo.getInstance()
-						.getQualifiedHostname();
-				if (host != null) {
-					mapMessage.setString("HOST", host);
-				} else {
-					mapMessage.setString("HOST", "NULL");
-				}
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = hm.get(key);
+                    mapMessage.setString(key, value);
+                }
 
-				mapMessage.setString("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
-				mapMessage.setString("ACK_TIME", time); //$NON-NLS-1$
+                // Add username and host to acknowledge message.
+                User user = SecurityFacade.getInstance().getCurrentUser();
+                if (user != null) {
+                    mapMessage.setString("USER", user.getUsername());
+                } else {
+                    mapMessage.setString("USER", "NULL");
+                }
+                String host = CSSPlatformInfo.getInstance()
+                        .getQualifiedHostname();
+                if (host != null) {
+                    mapMessage.setString("HOST", host);
+                } else {
+                    mapMessage.setString("HOST", "NULL");
+                }
 
-				// Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn",
-				// message.getName(), "ack"); epicsAlarmHighUnAckn
-				Engine.getInstance().addLdapWriteRequest(
-						"epicsAlarmAcknTimeStamp", message.getName(), time);
-				Engine.getInstance().addLdapWriteRequest(
-						"epicsAlarmHighUnAckn", message.getName(), "");
-				JmsLogsPlugin
-						.logInfo(user.getUsername() + " send Ack message, MsgName: "
-								+ message.getName()
-								+ " MsgTime: " + message.getProperty("EVENTTIME")); //$NON-NLS-2$
-				sender.sendMessage("ACK");
-			}
-		} catch (Exception e) {
-			JmsLogsPlugin.logException("ACK not set", e);
-			return Status.CANCEL_STATUS;
-		} finally {
-			try {
-				// sender.stopSender();
-				System.out.println("stop sender!!!"); //$NON-NLS-1$
-			} catch (Exception e) {
-				JmsLogsPlugin.logException("JMS Error", e);
-			}
-			// sender = null;
+                mapMessage.setString("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
+                mapMessage.setString("ACK_TIME", time); //$NON-NLS-1$
 
-		}
+                // Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn",
+                // message.getName(), "ack"); epicsAlarmHighUnAckn
+                Engine.getInstance().addLdapWriteRequest(
+                        "epicsAlarmAcknTimeStamp", message.getName(), time);
+                Engine.getInstance().addLdapWriteRequest(
+                        "epicsAlarmHighUnAckn", message.getName(), "");
+                if ((user != null) && (message != null)) {
+                    JmsLogsPlugin.logInfo(user.getUsername()
+                            + " send Ack message, MsgName: "
+                            + message.getName()
+                            + " MsgTime: " + message.getProperty("EVENTTIME")); //$NON-NLS-2$
+                }
+                sender.sendMessage("ACK");
+            }
+        } catch (Exception e) {
+            JmsLogsPlugin.logException("ACK not set", e);
+            return Status.CANCEL_STATUS;
+        } finally {
+            try {
+                // sender.stopSender();
+                System.out.println("stop sender!!!"); //$NON-NLS-1$
+            } catch (Exception e) {
+                JmsLogsPlugin.logException("JMS Error", e);
+            }
+            // sender = null;
 
-		return Status.OK_STATUS;
-	}
+        }
+
+        return Status.OK_STATUS;
+    }
 
 }
