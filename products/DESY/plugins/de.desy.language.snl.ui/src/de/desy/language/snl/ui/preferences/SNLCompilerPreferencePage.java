@@ -1,8 +1,8 @@
 package de.desy.language.snl.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -34,8 +34,8 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		groupOfLocationElement.setText("Location of EPICS SNL compiler");
 		groupOfLocationElement.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
-		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
-				+ PreferenceConstants.SNC_LOCATION_POST_FIX, "",
+		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.SNC_LOCATION_POST_FIX, "", true, 
 				groupOfLocationElement));
 		
 		Group cCompilerGroup = new Group(getFieldEditorParent(),
@@ -43,8 +43,8 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		cCompilerGroup.setText("Location of GCC");
 		cCompilerGroup.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
-		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
-				+ PreferenceConstants.C_COMPILER_LOCATION_POST_FIX, "",
+		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.C_COMPILER_LOCATION_POST_FIX, "", true, 
 				cCompilerGroup));
 
 		/*-
