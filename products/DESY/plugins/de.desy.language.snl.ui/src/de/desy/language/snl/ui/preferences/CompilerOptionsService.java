@@ -74,7 +74,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 
 		if (result != null && result.trim().length() > 0) {
 			File file = new File(result);
-			if (!file.isDirectory()) {
+			if (!file.exists()) {
 				result = null;
 			}
 		} else {

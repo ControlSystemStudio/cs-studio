@@ -32,6 +32,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
 import de.desy.language.snl.nature.SNLNature;
+import de.desy.language.snl.ui.SNLEditorConstants;
 import de.desy.language.snl.ui.SNLUiActivator;
 
 public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
@@ -294,11 +295,11 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
 						projectHandle.create(description,
 								new SubProgressMonitor(monitor, 1));
 						projectHandle.open(monitor);
-						this.createFolder(projectHandle, "source", monitor);
+						this.createFolder(projectHandle, SNLEditorConstants.SOURCE_FOLDER.getValue(), monitor);
 						this
-								.createFolder(projectHandle, "generated-c",
+								.createFolder(projectHandle, SNLEditorConstants.GENERATED_C_FOLDER.getValue(),
 										monitor);
-						this.createFolder(projectHandle, "bin", monitor);
+						this.createFolder(projectHandle, SNLEditorConstants.BIN_FOLDER.getValue(), monitor);
 					}
 
 					if (monitor.isCanceled()) {

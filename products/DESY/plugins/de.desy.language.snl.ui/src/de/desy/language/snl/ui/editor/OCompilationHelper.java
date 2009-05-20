@@ -15,7 +15,7 @@ public class OCompilationHelper {
 	private static final String TARGET_FOLDER = "bin";
 	private static final String TARGET_FILE_EXTENSION = ".o";
 
-	public boolean compileToO(File source, String compilerFolder, String epicsFolder,
+	public boolean compileToO(String source, String rootPath, String compilerFolder, String epicsFolder,
 			String seqFolder) {
 		assert source != null : "source != null";
 		assert compilerFolder != null : "compilerPath != null";
@@ -23,21 +23,20 @@ public class OCompilationHelper {
 		assert seqFolder != null : "seqFolder != null";
 		
 		boolean success = true;
+		
+		String sourceFileName = source;
+		int lastIndexOfDot = sourceFileName.lastIndexOf('.');
+		int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
+		sourceFileName = sourceFileName.substring(lastIndexOfSlash, lastIndexOfDot);
 
-		String fullQualifiedSourceFileName = source.getAbsolutePath();
-		File rootDirectory = getRootDirectory(source);
-		String sourceFileName = source.getName();
-		int lastIndexOf = sourceFileName.lastIndexOf('.');
-		sourceFileName = sourceFileName.substring(0, lastIndexOf);
-
-		String fullQualifiedTargetSourceName = rootDirectory.getAbsolutePath()
+		String fullQualifiedTargetSourceName = rootPath
 				+ File.separator + TARGET_FOLDER + File.separator
 				+ sourceFileName + TARGET_FILE_EXTENSION;
 
 		try {
 			Process sncProcess = createProcess(
 					compilerFolder, epicsFolder, seqFolder,
-					fullQualifiedSourceFileName, fullQualifiedTargetSourceName);
+					source, fullQualifiedTargetSourceName);
 			InputStream stdOut = sncProcess.getInputStream();
 			InputStream stdErr = sncProcess.getErrorStream();
 			int result = sncProcess.waitFor();
@@ -67,10 +66,9 @@ public class OCompilationHelper {
 
 	private Process createProcess(String compilerPath, String epicsPath,
 			String seqPath, String fullQualifiedSourceFileName, String fullQualifiedTargetFileName) throws IOException {
-		String cCommand = compilerPath + File.separator + "gcc";
 
 		List<String> command = new ArrayList<String>();
-		command.add(cCommand);
+		command.add(compilerPath);
 		command.add("-c");
 		command.add("-o");
 		command.add(fullQualifiedTargetFileName);
@@ -93,19 +91,11 @@ public class OCompilationHelper {
 		command.add("-I" + epicsPath + "/include");
 		command.add(fullQualifiedSourceFileName);
 		
-		System.out.println("OCompilationHelper.createProcess()");
-		System.out.println(command);
-
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.redirectErrorStream(true);
 
 		Process sncProcess = processBuilder.start();
 		return sncProcess;
-	}
-
-	private File getRootDirectory(File source) {
-		File parentFile = source.getParentFile();
-		return parentFile.getParentFile();
 	}
 
 	/**
