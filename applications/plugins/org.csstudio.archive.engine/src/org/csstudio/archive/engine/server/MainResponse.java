@@ -52,6 +52,8 @@ class MainResponse extends AbstractResponse
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_MainTitle);
         html.openTable(2, new String[] { "Summary" });
         
+        html.tableLine(new String[] { Messages.HTTP_Version, EngineModel.VERSION });
+
         html.tableLine(new String[] { Messages.HTTP_Description, model.getName() });
         
         html.tableLine(new String[] { Messages.HTTP_Host, host + ":" + req.getLocalPort() });

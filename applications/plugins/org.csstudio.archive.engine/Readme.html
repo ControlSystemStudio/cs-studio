@@ -1,9 +1,9 @@
 <h1>Archive Engine</h1>
 
-Prototype of non-GUI RDB archive engine.
+Sampling Engine for BEAUTY.
 
 <ul>
-<li>See plugin org.csstudio.archive.rdb for RDB setup.
+<li>See plug-in org.csstudio.archive.rdb for RDB setup.
 <li>ArchiveEngine.product is the actual product.
     Run with -? for command-line options.
 <li>webroot is used by engine's HTTPD
@@ -15,3 +15,15 @@ Run as background job:
 export DISPLAY="";
 nohup ArchiveEngine ... >log 2>&1 &
 </code>
+
+<h2>Versions</h2>
+
+1.0.0 - 2009/05/20
+Consistently set this version info
+as printed on startup,
+defined in EngineModel.VERSION,
+and also matches the version of
+the org.csstudio.archive.engine plug-in.
+
+Before this date, those showed different
+numbers.

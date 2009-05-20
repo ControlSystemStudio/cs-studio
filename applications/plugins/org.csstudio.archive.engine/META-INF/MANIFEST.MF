@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Engine Plug-in
 Bundle-SymbolicName: org.csstudio.archive.engine;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.archive.engine.Activator
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.eclipse.core.runtime,
