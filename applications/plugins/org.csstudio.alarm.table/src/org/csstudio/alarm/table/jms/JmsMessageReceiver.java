@@ -68,13 +68,13 @@ public class JmsMessageReceiver implements MessageListener {
             if (message instanceof TextMessage) {
                 JmsLogsPlugin.logError("received message is not a map message");
             } else if (message instanceof MapMessage) {
+                final MapMessage mm = (MapMessage) message;
                 CentralLogger.getInstance().debug(
                         this,
                         "Received map message: EVENTTIME: "
-                                + message.getStringProperty("EVENTTIME")
-                                + " NAME: " + message.getStringProperty("NAME")
-                                + " ACK: " + message.getStringProperty("ACK"));
-                final MapMessage mm = (MapMessage) message;
+                                + mm.getString("EVENTTIME")
+                                + " NAME: " + mm.getString("NAME")
+                                + " ACK: " + mm.getString("ACK"));
                 _messageList.addJMSMessage(mm);
             } else {
                 JmsLogsPlugin.logError("received message is an unknown type");
