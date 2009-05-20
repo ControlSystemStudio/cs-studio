@@ -156,8 +156,6 @@ class MainResponse extends AbstractResponse
                           used_mem, max_mem, perc_mem)
         });
         
-        html.tableLine(new String[] { Messages.HTTP_Version, EngineModel.VERSION });
-
         html.closeTable();
         
         html.close();
