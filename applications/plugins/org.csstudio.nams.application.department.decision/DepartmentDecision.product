@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="Decision Department" id="org.csstudio.nams.application.department.decision.decisionDepartment" application="org.csstudio.nams.application.department.decision.application" useFeatures="false">
+<product name="AmsDepartmentDecision" id="org.csstudio.nams.application.department.decision.DepartmentDecision" application="org.csstudio.nams.application.department.decision.application" useFeatures="false">
 
    <configIni use="default">
    </configIni>
@@ -15,7 +15,7 @@
 
    <windowImages/>
 
-   <launcher name="AmsDecisionDepartment">
+   <launcher name="AmsDepartmentDecision">
       <solaris/>
       <win useIco="false">
          <bmp/>

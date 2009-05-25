@@ -29,11 +29,11 @@
       </parametrizedAction>
    </extension>
    <extension
-         id="decisionDepartment"
+         id="DepartmentDecision"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.nams.application.department.decision.application"
-            name="Decision Department">
+            name="DepartmentDecisionProduct">
          <property
                name="appName"
                value="Decision Department">
