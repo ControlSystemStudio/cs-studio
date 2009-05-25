@@ -45,6 +45,12 @@ public class ApplicationCompilerConfiguration extends
 		result.add("-lca");
 		result.add("-lCom");
 		return result;
+	
+		
+	
+	
+	
+	
 	}
 
 	@Override

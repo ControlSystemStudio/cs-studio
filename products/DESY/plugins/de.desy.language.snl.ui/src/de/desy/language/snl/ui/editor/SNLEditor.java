@@ -27,9 +27,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
@@ -43,12 +46,13 @@ import de.desy.language.editor.ui.editor.LanguageEditor;
 import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
 import de.desy.language.snl.parser.SNLParser;
 import de.desy.language.snl.ui.RuleProvider;
+import de.desy.language.snl.ui.SNLEditorConstants;
 import de.desy.language.snl.ui.SNLUiActivator;
 import de.desy.language.snl.ui.editor.compilerconfiguration.AbstractCompilerConfiguration;
 import de.desy.language.snl.ui.editor.compilerconfiguration.ApplicationCompilerConfiguration;
+import de.desy.language.snl.ui.editor.compilerconfiguration.CCompilerConfiguration;
 import de.desy.language.snl.ui.editor.compilerconfiguration.PreCompilerConfiguration;
 import de.desy.language.snl.ui.editor.compilerconfiguration.SNCompilerConfiguration;
-import de.desy.language.snl.ui.editor.compilerconfiguration.CCompilerConfiguration;
 import de.desy.language.snl.ui.preferences.CompilerOptionsService;
 import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
 
@@ -128,9 +132,15 @@ public class SNLEditor extends LanguageEditor {
 		IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
 
 		// We want the base directory (the project of the *.st file)
-		IContainer baseDirectory = sourceRessource.getParent().getParent();
+		IProject baseDirectory = sourceRessource.getProject();
 		String basePath = baseDirectory.getLocation().toFile()
 				.getAbsolutePath();
+		
+		try {
+			checkDirectories(baseDirectory);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 
 		String sourceFileName = sourceRessource.getName();
 		int lastIndexOfDot = sourceFileName.lastIndexOf('.');
@@ -177,6 +187,18 @@ public class SNLEditor extends LanguageEditor {
 		} else {
 			_errorManager.createErrorFeedback("No Preferences set!", "SNL preferences are not valid", 
 					configurationErrors);
+		}
+	}
+
+	private void checkDirectories(IProject baseDirectory) throws CoreException {
+		IFolder folder = baseDirectory.getFolder(SNLEditorConstants.GENERATED_FOLDER.getValue());
+		if ( ! folder.exists()) {
+			folder.create(true, true, new NullProgressMonitor());
+		}
+		
+		folder = baseDirectory.getFolder(SNLEditorConstants.BIN_FOLDER.getValue());
+		if ( ! folder.exists()) {
+			folder.create(true, true, new NullProgressMonitor());
 		}
 	}
 

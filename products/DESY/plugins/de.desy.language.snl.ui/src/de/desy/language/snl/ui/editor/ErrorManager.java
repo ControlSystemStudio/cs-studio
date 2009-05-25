@@ -15,13 +15,13 @@ import org.eclipse.swt.widgets.Shell;
 import de.desy.language.snl.ui.SNLUiActivator;
 
 public class ErrorManager {
-	
+
 	private Shell _shell;
 
 	public void setShell(Shell shell) {
 		_shell = shell;
 	}
-	
+
 	public void markErrors(IFile source, int lineNumber, String errorMessage) {
 		try {
 			IMarker errorMarker = source.createMarker(IMarker.PROBLEM);
@@ -31,28 +31,33 @@ public class ErrorManager {
 		} catch (CoreException e) {
 			e.printStackTrace();
 			List<String> errorList = new ArrayList<String>();
-			errorList.add(errorMessage + " (in line: "+lineNumber+")");
+			errorList.add(errorMessage + " (in line: " + lineNumber + ")");
 			createErrorFeedback("Error during compilation", "", errorList);
 		}
 	}
-	
+
 	/**
 	 * Shows the given message in a new {@link MessageBox}.
 	 * 
 	 * @param message
 	 *            The message to be shown in the {@link MessageBox}
 	 */
-	public void createErrorFeedback(String dialogTitle, String message, List<String> messages) {
+	public void createErrorFeedback(String dialogTitle, String message,
+			List<String> messages) {
 		StringBuffer buffer = new StringBuffer();
 		for (String error : messages) {
-			buffer.append("\t- ");
-			buffer.append(error);
-			buffer.append("\n");
+			if (error != null && error.trim().length() > 0) {
+				buffer.append("\t- ");
+				buffer.append(error);
+				buffer.append("\n");
+			}
 		}
 		Exception exception = new Exception(buffer.toString());
-		IStatus status = new Status(IStatus.ERROR, SNLUiActivator.PLUGIN_ID, message, exception);
-		
-		ErrorDialog.openError(_shell, "Compilation fails!", dialogTitle, status);
+		IStatus status = new Status(IStatus.ERROR, SNLUiActivator.PLUGIN_ID,
+				message, exception);
+
+		ErrorDialog
+				.openError(_shell, "Compilation fails!", dialogTitle, status);
 	}
 
 }
