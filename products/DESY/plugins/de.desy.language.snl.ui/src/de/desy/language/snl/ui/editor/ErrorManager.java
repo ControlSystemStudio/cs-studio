@@ -6,9 +6,13 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.SWT;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+
+import de.desy.language.snl.ui.SNLUiActivator;
 
 public class ErrorManager {
 	
@@ -28,7 +32,7 @@ public class ErrorManager {
 			e.printStackTrace();
 			List<String> errorList = new ArrayList<String>();
 			errorList.add(errorMessage + " (in line: "+lineNumber+")");
-			createErrorFeedback("Compilation fails", errorList);
+			createErrorFeedback("Error during compilation", "", errorList);
 		}
 	}
 	
@@ -38,19 +42,17 @@ public class ErrorManager {
 	 * @param message
 	 *            The message to be shown in the {@link MessageBox}
 	 */
-	public void createErrorFeedback(String dialogTitle, List<String> messages) {
-		MessageBox messageBox = new MessageBox(_shell,
-				SWT.ERROR_FAILED_EXEC);
-		messageBox.setText(dialogTitle);
-		StringBuffer buffer = new StringBuffer(
-				"The compilations fails!\nReason(s):\n");
+	public void createErrorFeedback(String dialogTitle, String message, List<String> messages) {
+		StringBuffer buffer = new StringBuffer();
 		for (String error : messages) {
 			buffer.append("\t- ");
 			buffer.append(error);
 			buffer.append("\n");
 		}
-		messageBox.setMessage(buffer.toString());
-		messageBox.open();
+		Exception exception = new Exception(buffer.toString());
+		IStatus status = new Status(IStatus.ERROR, SNLUiActivator.PLUGIN_ID, message, exception);
+		
+		ErrorDialog.openError(_shell, "Compilation fails!", dialogTitle, status);
 	}
 
 }

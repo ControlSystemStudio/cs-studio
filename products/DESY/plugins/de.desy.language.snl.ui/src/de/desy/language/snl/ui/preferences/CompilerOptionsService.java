@@ -37,6 +37,17 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 	public String getCCompilerPath() {
 		return getFolder(PreferenceConstants.C_COMPILER_LOCATION_POST_FIX);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.desy.language.snl.ui.preferences.ICompilerOptionsService#getCCompilerPath
+	 * ()
+	 */
+	public String getGCompilerPath() {
+		return getFolder(PreferenceConstants.G_COMPILER_LOCATION_POST_FIX);
+	}
 
 	/*
 	 * (non-Javadoc)

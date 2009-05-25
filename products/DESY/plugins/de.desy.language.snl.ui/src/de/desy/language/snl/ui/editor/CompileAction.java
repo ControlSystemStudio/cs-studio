@@ -18,17 +18,17 @@ public class CompileAction implements IEditorActionDelegate {
 	private IFile _sourceRessource;
 	private CompilerOptionsService _service;
 	private File _snCompilerPath;
-	private CCompilationHelper _helper;
+//	private CCompilationHelper _helper;
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		if (targetEditor != null) {
 			IEditorInput editorInput = targetEditor.getEditorInput();
-			_helper = new CCompilationHelper();
-			if (editorInput instanceof FileEditorInput) {
-				_sourceRessource = ((FileEditorInput) editorInput).getFile();
-				_service = new CompilerOptionsService(SNLUiActivator
-						.getDefault().getPreferenceStore());
-			}
+//			_helper = new CCompilationHelper();
+//			if (editorInput instanceof FileEditorInput) {
+//				_sourceRessource = ((FileEditorInput) editorInput).getFile();
+//				_service = new CompilerOptionsService(SNLUiActivator
+//						.getDefault().getPreferenceStore());
+//			}
 		}
 	}
 

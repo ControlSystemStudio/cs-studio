@@ -14,6 +14,8 @@ public interface ICompilerOptionsService {
 
 	public abstract String getCCompilerPath();
 	
+	public abstract String getGCompilerPath();
+	
 	public abstract String getEpicsFolder();
 
 	public abstract String getSeqFolder();

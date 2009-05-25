@@ -43,8 +43,12 @@ import de.desy.language.editor.ui.editor.LanguageEditor;
 import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
 import de.desy.language.snl.parser.SNLParser;
 import de.desy.language.snl.ui.RuleProvider;
-import de.desy.language.snl.ui.SNLEditorConstants;
 import de.desy.language.snl.ui.SNLUiActivator;
+import de.desy.language.snl.ui.editor.compilerconfiguration.AbstractCompilerConfiguration;
+import de.desy.language.snl.ui.editor.compilerconfiguration.ApplicationCompilerConfiguration;
+import de.desy.language.snl.ui.editor.compilerconfiguration.PreCompilerConfiguration;
+import de.desy.language.snl.ui.editor.compilerconfiguration.SNCompilerConfiguration;
+import de.desy.language.snl.ui.editor.compilerconfiguration.CCompilerConfiguration;
 import de.desy.language.snl.ui.preferences.CompilerOptionsService;
 import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
 
@@ -57,14 +61,9 @@ import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
  */
 public class SNLEditor extends LanguageEditor {
 
-	private CCompilationHelper _ccompilationHelper;
-	private OCompilationHelper _ocompilationHelper;
 	private ErrorManager _errorManager;
 
 	public SNLEditor() {
-		_ccompilationHelper = new CCompilationHelper();
-		_ocompilationHelper = new OCompilationHelper();
-		
 		_errorManager = new ErrorManager();
 	}
 
@@ -118,53 +117,74 @@ public class SNLEditor extends LanguageEditor {
 	@Override
 	protected void doHandleSourceModifiedAndSaved(
 			final IProgressMonitor progressMonitor) {
-		
+
 		_errorManager.setShell(this.getEditorSite().getShell());
-		
+
 		IPreferenceStore preferenceStore = SNLUiActivator.getDefault()
 				.getPreferenceStore();
 		ICompilerOptionsService service = new CompilerOptionsService(
 				preferenceStore);
 
 		IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
-		
+
 		// We want the base directory (the project of the *.st file)
 		IContainer baseDirectory = sourceRessource.getParent().getParent();
-		String basePath = baseDirectory.getLocation().toFile().getAbsolutePath();
+		String basePath = baseDirectory.getLocation().toFile()
+				.getAbsolutePath();
+
+		String sourceFileName = sourceRessource.getName();
+		int lastIndexOfDot = sourceFileName.lastIndexOf('.');
+		int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
+		sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1,
+				lastIndexOfDot);
 
 		List<String> configurationErrors = checkPreferenceConfiguration(service);
 
-		String sourceFileName = sourceRessource.getLocation().toString();
+		GenericCompilationHelper compiler = new GenericCompilationHelper();
+
 		if (configurationErrors.isEmpty()) {
-			ErrorUnit error = _ccompilationHelper.compileToC(sourceFileName, basePath,
-					service.getSNCompilerPath(), service.getCCompilerOptions());
-			
-			
-			int lastIndexOfDot = sourceFileName.lastIndexOf('.');
-			int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
-			sourceFileName = sourceFileName.substring(lastIndexOfSlash+1, lastIndexOfDot);
-			
-			String fullQualifiedTargetSourceName = basePath
-				+ File.separator + SNLEditorConstants.GENERATED_C_FOLDER.getValue() + File.separator
-				+ sourceFileName + SNLEditorConstants.C_FILE_EXTENSION.getValue();
-			
-			if (error == null) {
-				_ocompilationHelper.compileToO(fullQualifiedTargetSourceName, basePath, service
-						.getCCompilerPath(), service.getEpicsFolder(), service
-						.getSeqFolder());
-			} else {
-				if (error.hasLineNumber()) {
-					_errorManager.markErrors(sourceRessource, error.getLineNumber(), error.getMessage());
-				} else {
-					List<String> errorList = new ArrayList<String>();
-					errorList.add(error.getMessage());
-					_errorManager.createErrorFeedback("Compilation fails!", errorList);
+			List<AbstractCompilerConfiguration> configurations = new ArrayList<AbstractCompilerConfiguration>();
+			configurations.add(new PreCompilerConfiguration(service));
+			configurations.add(new SNCompilerConfiguration(service));
+			configurations.add(new CCompilerConfiguration(service));
+			configurations.add(new ApplicationCompilerConfiguration(service));
+
+			for (AbstractCompilerConfiguration configuration : configurations) {
+				String sourceFile = createFullFileName(basePath, configuration
+						.getSourceFolder(), sourceFileName, configuration
+						.getSourceFileExtension());
+				String targetFile = createFullFileName(basePath, configuration
+						.getTargetFolder(), sourceFileName, configuration
+						.getTargetFileExtension());
+
+				ErrorUnit errorUnit = compiler.compile(configuration
+								.getCompilerParameter(sourceFile, targetFile), configuration
+								.getErrorPattern());
+
+				if (errorUnit != null) {
+					if (errorUnit.hasLineNumber()) {
+						_errorManager.markErrors(sourceRessource, errorUnit
+								.getLineNumber(), errorUnit.getMessage());
+					} else {
+						List<String> errorList = new ArrayList<String>();
+						errorList.add(errorUnit.getDetails());
+						_errorManager.createErrorFeedback("Compilation fails!", errorUnit.getMessage(), 
+								errorList);
+					}
+					break;
 				}
 			}
 		} else {
-			_errorManager.createErrorFeedback("No Preferences set!", configurationErrors);
+			_errorManager.createErrorFeedback("No Preferences set!", "SNL preferences are not valid", 
+					configurationErrors);
 		}
+	}
 
+	private String createFullFileName(String basePath, String folder,
+			String fileName, String fileExtension) {
+		String fullQualifiedSourceName = basePath + File.separator + folder
+				+ File.separator + fileName + fileExtension;
+		return fullQualifiedSourceName;
 	}
 
 	private List<String> checkPreferenceConfiguration(
@@ -181,6 +201,12 @@ public class SNLEditor extends LanguageEditor {
 		if (cCompilerPath == null || cCompilerPath.trim().length() < 1) {
 			errorMessages
 					.add("The location of the C-Compiler is not specified.");
+		}
+		
+		String gCompilerPath = compilerOptionsService.getGCompilerPath();
+		if (gCompilerPath == null || gCompilerPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the G++-Compiler is not specified.");
 		}
 
 		String epicsPath = compilerOptionsService.getEpicsFolder();

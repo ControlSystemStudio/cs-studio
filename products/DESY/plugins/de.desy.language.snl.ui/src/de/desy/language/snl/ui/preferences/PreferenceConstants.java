@@ -41,6 +41,11 @@ enum PreferenceConstants {
 	 * C Compiler location / directory.
 	 */
 	C_COMPILER_LOCATION_POST_FIX(".c_compiler.location"),
+	
+	/**
+	 * Application Compiler location / directory.
+	 */
+	G_COMPILER_LOCATION_POST_FIX(".g_compiler.location"),
 
 	/**
 	 * Post-fix for the strike-through-style constant to be added to the type
