@@ -19,55 +19,61 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.ams.connector.voicemail.actions;
-
-import java.util.Map;
-
-import org.csstudio.ams.Messages;
-import org.csstudio.ams.connector.voicemail.VoicemailConnectorStart;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+package org.csstudio.ams.connector.voicemail.isdn;
 
 /**
  * @author Markus Moeller
- * 
+ *
  */
-public class VoicemalConnectorStopAction implements IAction
+public class CallRequest
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
-     */
-    public Object run(Object param)
+    private String text;
+    private String telephoneNumber;
+    private int chainIdAndPos;
+    private int textType;
+    private long waitUntil;
+
+    public CallRequest(String text, String telephoneNumber, int chainIdAndPos, int textType, long waitUntil)
     {
-        String password = null;
-
-        if(!(param instanceof Map))
+        this.text = text;
+        this.telephoneNumber = telephoneNumber;
+        this.chainIdAndPos = chainIdAndPos;
+        this.textType = textType;
+        this.waitUntil = waitUntil;
+    }
+    
+    public CallRequest(String text, String telephoneNumber, String chainIdAndPos, String textType, String waitUntil)
+    {
+        this.text = text;
+        this.telephoneNumber = telephoneNumber;
+        
+        try
         {
-            return "ERROR: [1] - Parameter not available.";
+            this.chainIdAndPos = Integer.parseInt(chainIdAndPos);
         }
-
-        Map<?, ?> map = (Map<?, ?>) param;
+        catch(NumberFormatException nfe)
+        {
+            this.chainIdAndPos = 0;
+        }
+        
+        try
+        {
+            this.textType = Integer.parseInt(textType);
+        }
+        catch(NumberFormatException nfe)
+        {
+            this.textType = 0;
+        }
 
         try
         {
-            password = (String) map.get("Password");
-
-            if (password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
-            {
-                return "ERROR: [2] - Invalid password";
-            }
+            this.waitUntil = Long.parseLong(waitUntil);
         }
-        catch(Exception e)
+        catch(NumberFormatException nfe)
         {
-            return e.getMessage();
+            this.waitUntil = 0L;
         }
-
-        VoicemailConnectorStart.getInstance().setShutdown();
-
-        return "OK: [0] - VoicemailConnectorStart is stopping now...";
     }
 }

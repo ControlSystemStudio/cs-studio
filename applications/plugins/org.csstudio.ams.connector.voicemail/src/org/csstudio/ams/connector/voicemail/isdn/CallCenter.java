@@ -23,6 +23,8 @@
 
 package org.csstudio.ams.connector.voicemail.isdn;
 
+import java.util.Date;
+
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -58,9 +60,10 @@ public class CallCenter
         }
     }
     
-    public void makeCall(String telephoneNumber, String message, String textType) throws CallCenterException
+    public void makeCall(String telephoneNumber, String message, String textType, String chainIdAndPos, String waitUntil) throws CallCenterException
     {
-        CallInfo callInfo = null;
+        CallInfo callInfo;
+        long waitTime = 0;
         int type;
         int callCount = 0;
         
@@ -74,6 +77,28 @@ public class CallCenter
             logger.warn(this, "Text type is invalid: " + textType);
             throw new CallCenterException("Text type is invalid: " + textType);
         }
+
+        if(waitUntil != null)
+        {
+            if(waitUntil.trim().length() > 0)
+            {
+                try
+                {
+                    waitTime = Long.parseLong(waitUntil);
+                }
+                catch(NumberFormatException nfe)
+                {
+                    waitTime = 0;
+                    logger.warn(this, "Wait time is invalid: " + waitUntil);
+                    
+                    // Throw only an exception if the alarm needs to be confirmed
+                    if(CallCenter.TextType.TEXTTYPE_ALARM_WCONFIRM.ordinal() == type)
+                    {
+                        throw new CallCenterException("Waiting time for alarm with confirmation is invalid: " + waitUntil);
+                    }
+                }
+            }
+        }
         
         switch(type)
         {
@@ -83,6 +108,7 @@ public class CallCenter
                 {
                     do
                     {
+                        callInfo = null;
                         callInfo = caller.makeCallWithoutReply(telephoneNumber, message);
                         callCount++;
                     }
@@ -96,12 +122,31 @@ public class CallCenter
                 break;
                 
             case 2: // TEXTTYPE_ALARM_WCONFIRM
+
+                try
+                {
+                    do
+                    {
+                        callInfo = null;
+                        callInfo = caller.makeCallWithReply(telephoneNumber, message, chainIdAndPos);
+                        callCount++;
+                    }
+                    while((!callInfo.isSuccess()) && (System.currentTimeMillis() < waitTime));
+                }
+                catch(CapiCallerException cce)
+                {
+                    throw new CallCenterException(cce);
+                }
+                
+                logger.debug(this, "Confirmation code: " + callInfo.getConfirmationCode());
+               
+                break;
+                
             case 3: // TEXTTYPE_ALARMCONFIRM_OK
             case 4: // TEXTTYPE_ALARMCONFIRM_NOK
             case 5: // TEXTTYPE_STATUSCHANGE_OK
             case 6: // TEXTTYPE_STATUSCHANGE_NOK                
         }
-
     }
     
     public enum TextType

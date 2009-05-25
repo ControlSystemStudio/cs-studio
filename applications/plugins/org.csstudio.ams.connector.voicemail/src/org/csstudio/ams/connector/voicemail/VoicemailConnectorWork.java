@@ -44,7 +44,7 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.voicemail.internal.SampleService;
 import org.csstudio.ams.connector.voicemail.isdn.CallCenter;
 import org.csstudio.ams.connector.voicemail.isdn.CallCenterException;
-import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
+import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class VoicemailConnectorWork extends Thread implements AmsConstants
@@ -161,21 +161,22 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                         iErr = VoicemailConnectorStart.STAT_ERR_JMSCON;
                     }
                     
+                    /*
                     if (message != null)
                     {
                         iErr = sendVmMsg(message);
                     }
+                    */
                     
                     //TODO: TEST
-                    /*
                     if (message != null)
                     {
                         Log.log(this, Log.DEBUG, "Message received: " + message.toString());
                         iErr = sendIsdnMsg(message);
                         Log.log(this, Log.DEBUG, "Message sent: " + iErr);
                     }
-                    */
                     
+                    /*
                     if (iErr != VoicemailConnectorStart.STAT_ERR_JMSCON)
                     {
                         while(!fifo.empty())
@@ -197,6 +198,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                         // read max. limit vm, other in the next run
                         iErr = readVmMsg(null);
                     }
+                    */
                     
                     //TODO: TEST
                     /*
@@ -523,12 +525,13 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         MapMessage msg = (MapMessage) message;
         String text = msg.getString(MSGPROP_RECEIVERTEXT);
         String recNo = msg.getString(MSGPROP_RECEIVERADDR);
-        // String chainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
+        String chainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
         String textType = msg.getString(MSGPROP_TEXTTYPE);
+        String waitUntil = msg.getString(MSGPROP_GROUP_WAIT_TIME);
         
         try
         {
-            callCenter.makeCall(recNo, text, textType);
+            callCenter.makeCall(recNo, text, textType, chainIdAndPos, waitUntil);
         }
         catch(CallCenterException cce)
         {
