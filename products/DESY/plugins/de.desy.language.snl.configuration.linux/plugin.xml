@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.desy.language.snl.TargetConfigurationProvider">
+      <TargetConfigurationProvider
+            class="de.desy.language.snl.configuration.linux.LinuxTargetConfigurationProvider"
+            description="Full SNL configuration"
+            id="de.desy.language.snl.configuration.linux.TargetConfigurationProvider"
+            platform="Linux">
+      </TargetConfigurationProvider>
+   </extension>
+
+</plugin>

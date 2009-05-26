@@ -9,7 +9,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.desy.language.snl.ui.SNLUiActivator;
+import de.desy.language.snl.SNLCoreActivator;
+import de.desy.language.snl.configurationservice.PreferenceConstants;
 
 /**
  * A preference page to set the colors and the font-styles for highlighting.
@@ -20,7 +21,7 @@ public class SNLEPICSPreferencePage extends FieldEditorPreferencePage implements
 	public SNLEPICSPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 		this.setMessage("Specifies compiler location and options.");
-		this.setPreferenceStore(SNLUiActivator.getDefault()
+		this.setPreferenceStore(SNLCoreActivator.getDefault()
 				.getPreferenceStore());
 	}
 
@@ -32,7 +33,7 @@ public class SNLEPICSPreferencePage extends FieldEditorPreferencePage implements
 				.setText("Location of the EPICS environment (BASE-path)");
 		groupOfLocationElement.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
-		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
+		this.addField(new DirectoryFieldEditor(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
 				+ PreferenceConstants.EPICS_BASE_LOCATION_POST_FIX, "",
 				groupOfLocationElement));
 		
@@ -42,7 +43,7 @@ public class SNLEPICSPreferencePage extends FieldEditorPreferencePage implements
 				.setText("Location of \"seq\" folder in the EPICS environment");
 		seqGroup.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
-		this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
+		this.addField(new DirectoryFieldEditor(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
 				+ PreferenceConstants.EPICS_SEQ_LOCATION_POST_FIX, "",
 				seqGroup));
 	}

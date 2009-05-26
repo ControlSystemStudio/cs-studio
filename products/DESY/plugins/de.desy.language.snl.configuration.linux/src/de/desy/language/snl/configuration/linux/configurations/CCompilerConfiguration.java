@@ -1,11 +1,12 @@
-package de.desy.language.snl.ui.editor.compilerconfiguration;
+package de.desy.language.snl.configuration.linux.configurations;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import de.desy.language.snl.ui.SNLEditorConstants;
-import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
+import de.desy.language.snl.SNLConstants;
+import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
+import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
 
 public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 	
@@ -61,28 +62,28 @@ public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 	 * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getSourceFolder()
 	 */
 	public String getSourceFolder() {
-		return SNLEditorConstants.GENERATED_FOLDER.getValue();
+		return SNLConstants.GENERATED_FOLDER.getValue();
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getTargetFolder()
 	 */
 	public String getTargetFolder() {
-		return SNLEditorConstants.BIN_FOLDER.getValue();
+		return SNLConstants.BIN_FOLDER.getValue();
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getSourceFileExtension()
 	 */
 	public String getSourceFileExtension() {
-		return SNLEditorConstants.C_FILE_EXTENSION.getValue();
+		return SNLConstants.C_FILE_EXTENSION.getValue();
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getTargetFileExtension()
 	 */
 	public String getTargetFileExtension() {
-		return SNLEditorConstants.O_FILE_EXTENSION.getValue();
+		return SNLConstants.O_FILE_EXTENSION.getValue();
 	}
 
 }

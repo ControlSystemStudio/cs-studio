@@ -1,4 +1,4 @@
-package de.desy.language.snl.ui.editor;
+package de.desy.language.snl.compilerconfiguration;
 
 public class ErrorUnit {
 	

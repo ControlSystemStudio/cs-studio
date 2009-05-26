@@ -7,7 +7,7 @@ import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.swt.SWT;
 
-import de.desy.language.snl.ui.SNLUiActivator;
+import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.ui.rules.SNLCodeElementTextAttributeConstants;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
@@ -15,7 +15,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	@Override
 	public void initializeDefaultPreferences() {
 		final IEclipsePreferences node = new DefaultScope()
-				.getNode(SNLUiActivator.PLUGIN_ID);
+				.getNode(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId());
 		for (final SNLCodeElementTextAttributeConstants constant : SNLCodeElementTextAttributeConstants
 				.values()) {
 			final String value = StringConverter.asString(constant.getRGB());

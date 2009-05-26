@@ -1,11 +1,13 @@
-package de.desy.language.snl.ui.preferences;
+package de.desy.language.snl.configurationservice;
 
 /**
  * Constants used in the preference pages of SNL-development tools.
  * 
  * All constants are post-fixes to be a suffix of the plug-in Id.
  */
-enum PreferenceConstants {
+public enum PreferenceConstants {
+	
+	PREFERENCE_PRE_FIX("de.desy.language.snl"),
 
 	/**
 	 * Post-fix for the bold-style constant to be added to the type id.
@@ -56,7 +58,12 @@ enum PreferenceConstants {
 	/**
 	 * Post-fix for the underline-style constant to be added to the type id.
 	 */
-	UNDERLINE_POST_FIX(".underline");
+	UNDERLINE_POST_FIX(".underline"),
+	
+	/**
+	 * Post-fix for the target platform constant to be added to the type id.
+	 */
+	TARGET_PLATFORM(".targetplatform");
 
 	/**
 	 * Id used in the preference store.

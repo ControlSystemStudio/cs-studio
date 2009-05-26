@@ -1,11 +1,12 @@
-package de.desy.language.snl.ui.editor.compilerconfiguration;
+package de.desy.language.snl.configuration.linux.configurations;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import de.desy.language.snl.ui.SNLEditorConstants;
-import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
+import de.desy.language.snl.SNLConstants;
+import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
+import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
 
 /*
  * Original compiler command
@@ -45,12 +46,6 @@ public class ApplicationCompilerConfiguration extends
 		result.add("-lca");
 		result.add("-lCom");
 		return result;
-	
-		
-	
-	
-	
-	
 	}
 
 	@Override
@@ -65,22 +60,22 @@ public class ApplicationCompilerConfiguration extends
 
 	@Override
 	public String getSourceFileExtension() {
-		return SNLEditorConstants.O_FILE_EXTENSION.getValue();
+		return SNLConstants.O_FILE_EXTENSION.getValue();
 	}
 
 	@Override
 	public String getSourceFolder() {
-		return SNLEditorConstants.BIN_FOLDER.getValue();
+		return SNLConstants.BIN_FOLDER.getValue();
 	}
 
 	@Override
 	public String getTargetFileExtension() {
-		return SNLEditorConstants.APPLICATION_FILE_EXTENSION.getValue();
+		return SNLConstants.APPLICATION_FILE_EXTENSION.getValue();
 	}
 
 	@Override
 	public String getTargetFolder() {
-		return SNLEditorConstants.BIN_FOLDER.getValue();
+		return SNLConstants.BIN_FOLDER.getValue();
 	}
 
 }

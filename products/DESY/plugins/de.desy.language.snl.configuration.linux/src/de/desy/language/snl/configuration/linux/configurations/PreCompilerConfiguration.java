@@ -1,11 +1,12 @@
-package de.desy.language.snl.ui.editor.compilerconfiguration;
+package de.desy.language.snl.configuration.linux.configurations;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import de.desy.language.snl.ui.SNLEditorConstants;
-import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
+import de.desy.language.snl.SNLConstants;
+import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
+import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
 /*
  * Original compiler command:
  * /usr/bin/gcc -x c -E   -D_POSIX_C_SOURCE=199506L -D_POSIX_THREADS -D_XOPEN_SOURCE=500
@@ -54,22 +55,22 @@ public class PreCompilerConfiguration extends AbstractCompilerConfiguration {
 
 	@Override
 	public String getSourceFileExtension() {
-		return SNLEditorConstants.ST_FILE_EXTENSION.getValue();
+		return SNLConstants.ST_FILE_EXTENSION.getValue();
 	}
 
 	@Override
 	public String getSourceFolder() {
-		return SNLEditorConstants.SOURCE_FOLDER.getValue();
+		return SNLConstants.SOURCE_FOLDER.getValue();
 	}
 
 	@Override
 	public String getTargetFileExtension() {
-		return SNLEditorConstants.I_FILE_EXTENSION.getValue();
+		return SNLConstants.I_FILE_EXTENSION.getValue();
 	}
 
 	@Override
 	public String getTargetFolder() {
-		return SNLEditorConstants.GENERATED_FOLDER.getValue();
+		return SNLConstants.GENERATED_FOLDER.getValue();
 	}
 
 }

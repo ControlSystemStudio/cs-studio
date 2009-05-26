@@ -1,6 +1,6 @@
-package de.desy.language.snl.ui;
+package de.desy.language.snl;
 
-public enum SNLEditorConstants {
+public enum SNLConstants {
 	
 	SOURCE_FOLDER("source"),
 	GENERATED_FOLDER("generated"),
@@ -13,7 +13,7 @@ public enum SNLEditorConstants {
 	
 	private final String _value;
 
-	private SNLEditorConstants(String value) {
+	private SNLConstants(String value) {
 		_value = value;
 	}
 

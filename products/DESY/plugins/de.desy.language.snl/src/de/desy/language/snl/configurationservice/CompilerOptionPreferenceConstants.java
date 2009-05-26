@@ -1,4 +1,4 @@
-package de.desy.language.snl.ui.preferences;
+package de.desy.language.snl.configurationservice;
 
 public enum CompilerOptionPreferenceConstants {
 	

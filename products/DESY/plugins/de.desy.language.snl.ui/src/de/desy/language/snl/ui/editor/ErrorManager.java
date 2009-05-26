@@ -43,9 +43,15 @@ public class ErrorManager {
 	 *            The message to be shown in the {@link MessageBox}
 	 */
 	public void createErrorFeedback(String dialogTitle, String message,
-			List<String> messages) {
+			List<String> details) {
+		assert details != null : "details != null";
+		assert dialogTitle != null : "dialogTitle != null";
+		assert dialogTitle.trim().length() != 0 : "dialogTitle.trim().length() != 0";
+		assert message != null : "message != null";
+		assert message.trim().length() != 0 : "message.trim().length() != 0";
+		
 		StringBuffer buffer = new StringBuffer();
-		for (String error : messages) {
+		for (String error : details) {
 			if (error != null && error.trim().length() > 0) {
 				buffer.append("\t- ");
 				buffer.append(error);

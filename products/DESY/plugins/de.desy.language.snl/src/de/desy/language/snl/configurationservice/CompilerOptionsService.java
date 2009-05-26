@@ -1,4 +1,4 @@
-package de.desy.language.snl.ui.preferences;
+package de.desy.language.snl.configurationservice;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import de.desy.language.snl.ui.SNLUiActivator;
+import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
 
 public class CompilerOptionsService implements ICompilerOptionsService {
 
@@ -61,7 +61,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 		for (CompilerOptionPreferenceConstants copc : CompilerOptionPreferenceConstants
 				.values()) {
 			boolean checked = _preferenceStore
-					.getBoolean(SNLUiActivator.PLUGIN_ID
+					.getBoolean(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
 							+ copc.getPreferenceStoreId());
 			if (checked) {
 				result.add(copc.getOption());
@@ -80,7 +80,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 	}
 
 	private String getFolder(PreferenceConstants constantId) {
-		String result = _preferenceStore.getString(SNLUiActivator.PLUGIN_ID
+		String result = _preferenceStore.getString(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId() 
 				+ constantId);
 
 		if (result != null && result.trim().length() > 0) {

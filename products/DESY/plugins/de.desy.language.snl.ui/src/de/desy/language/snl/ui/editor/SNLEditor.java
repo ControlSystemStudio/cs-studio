@@ -32,29 +32,31 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.ui.editor.LanguageEditor;
 import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
+import de.desy.language.snl.SNLConstants;
+import de.desy.language.snl.SNLCoreActivator;
+import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
+import de.desy.language.snl.compilerconfiguration.AbstractTargetConfigurationProvider;
+import de.desy.language.snl.compilerconfiguration.ErrorUnit;
+import de.desy.language.snl.compilerconfiguration.GenericCompilationHelper;
+import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
+import de.desy.language.snl.configurationservice.CompilerOptionsService;
+import de.desy.language.snl.configurationservice.ConfigurationService;
+import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.parser.SNLParser;
 import de.desy.language.snl.ui.RuleProvider;
-import de.desy.language.snl.ui.SNLEditorConstants;
-import de.desy.language.snl.ui.SNLUiActivator;
-import de.desy.language.snl.ui.editor.compilerconfiguration.AbstractCompilerConfiguration;
-import de.desy.language.snl.ui.editor.compilerconfiguration.ApplicationCompilerConfiguration;
-import de.desy.language.snl.ui.editor.compilerconfiguration.CCompilerConfiguration;
-import de.desy.language.snl.ui.editor.compilerconfiguration.PreCompilerConfiguration;
-import de.desy.language.snl.ui.editor.compilerconfiguration.SNCompilerConfiguration;
-import de.desy.language.snl.ui.preferences.CompilerOptionsService;
-import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
 
 /**
  * This class provides a SNL specific {@link TextEditor}.
@@ -124,82 +126,114 @@ public class SNLEditor extends LanguageEditor {
 
 		_errorManager.setShell(this.getEditorSite().getShell());
 
-		IPreferenceStore preferenceStore = SNLUiActivator.getDefault()
+		IPreferenceStore preferenceStore = SNLCoreActivator.getDefault()
 				.getPreferenceStore();
-		ICompilerOptionsService service = new CompilerOptionsService(
-				preferenceStore);
 
-		IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
-
-		// We want the base directory (the project of the *.st file)
-		IProject baseDirectory = sourceRessource.getProject();
-		String basePath = baseDirectory.getLocation().toFile()
-				.getAbsolutePath();
-		
-		try {
-			checkDirectories(baseDirectory);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-
-		String sourceFileName = sourceRessource.getName();
-		int lastIndexOfDot = sourceFileName.lastIndexOf('.');
-		int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
-		sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1,
-				lastIndexOfDot);
-
-		List<String> configurationErrors = checkPreferenceConfiguration(service);
-
-		GenericCompilationHelper compiler = new GenericCompilationHelper();
-
-		if (configurationErrors.isEmpty()) {
-			List<AbstractCompilerConfiguration> configurations = new ArrayList<AbstractCompilerConfiguration>();
-			configurations.add(new PreCompilerConfiguration(service));
-			configurations.add(new SNCompilerConfiguration(service));
-			configurations.add(new CCompilerConfiguration(service));
-			configurations.add(new ApplicationCompilerConfiguration(service));
-
-			for (AbstractCompilerConfiguration configuration : configurations) {
-				String sourceFile = createFullFileName(basePath, configuration
-						.getSourceFolder(), sourceFileName, configuration
-						.getSourceFileExtension());
-				String targetFile = createFullFileName(basePath, configuration
-						.getTargetFolder(), sourceFileName, configuration
-						.getTargetFileExtension());
-
-				ErrorUnit errorUnit = compiler.compile(configuration
-								.getCompilerParameter(sourceFile, targetFile), configuration
-								.getErrorPattern());
-
-				if (errorUnit != null) {
-					if (errorUnit.hasLineNumber()) {
-						_errorManager.markErrors(sourceRessource, errorUnit
-								.getLineNumber(), errorUnit.getMessage());
-					} else {
-						List<String> errorList = new ArrayList<String>();
-						errorList.add(errorUnit.getDetails());
-						_errorManager.createErrorFeedback("Compilation fails!", errorUnit.getMessage(), 
-								errorList);
-					}
-					break;
-				}
-			}
+		String targetPlatform = preferenceStore
+				.getString(PreferenceConstants.PREFERENCE_PRE_FIX
+						.getPreferenceStoreId()
+						+ PreferenceConstants.TARGET_PLATFORM);
+		if (targetPlatform == null || targetPlatform.trim().length() < 1 || targetPlatform.equals("none")) {
+			MessageBox box = new MessageBox(this.getSite().getShell(), SWT.ICON_INFORMATION);
+			box.setText("No compiler configuration selected");
+			box.setMessage("No files generated.\nChoose a compiler configuration in the preferences.");
+			box.open();
 		} else {
-			_errorManager.createErrorFeedback("No Preferences set!", "SNL preferences are not valid", 
-					configurationErrors);
+			//TODO Refactore
+			ICompilerOptionsService service = new CompilerOptionsService(
+					preferenceStore);
+
+			IFile sourceRessource = ((FileEditorInput) getEditorInput())
+					.getFile();
+
+			// We want the base directory (the project of the *.st file)
+			IProject baseDirectory = sourceRessource.getProject();
+			String basePath = baseDirectory.getLocation().toFile()
+					.getAbsolutePath();
+
+			List<String> errors = checkDirectories(baseDirectory,
+					progressMonitor);
+			if (errors.isEmpty()) {
+				String sourceFileName = sourceRessource.getName();
+				int lastIndexOfDot = sourceFileName.lastIndexOf('.');
+				int lastIndexOfSlash = sourceFileName
+						.lastIndexOf(File.separator);
+				sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1,
+						lastIndexOfDot);
+
+				List<String> configurationErrors = checkPreferenceConfiguration(service);
+
+				GenericCompilationHelper compiler = new GenericCompilationHelper();
+
+				if (configurationErrors.isEmpty()) {
+					AbstractTargetConfigurationProvider provider = ConfigurationService.getInstance().getProvider(targetPlatform);
+					List<AbstractCompilerConfiguration> configurations = provider.getConfigurations();
+
+					for (AbstractCompilerConfiguration configuration : configurations) {
+						String sourceFile = createFullFileName(basePath,
+								configuration.getSourceFolder(),
+								sourceFileName, configuration
+										.getSourceFileExtension());
+						String targetFile = createFullFileName(basePath,
+								configuration.getTargetFolder(),
+								sourceFileName, configuration
+										.getTargetFileExtension());
+
+						ErrorUnit errorUnit = compiler.compile(configuration
+								.getCompilerParameter(sourceFile, targetFile),
+								configuration.getErrorPattern());
+
+						if (errorUnit != null) {
+							if (errorUnit.hasLineNumber()) {
+								_errorManager.markErrors(sourceRessource,
+										errorUnit.getLineNumber(), errorUnit
+												.getMessage());
+							} else {
+								List<String> errorList = new ArrayList<String>();
+								errorList.add(errorUnit.getDetails());
+								_errorManager.createErrorFeedback(
+										"Compilation fails!", errorUnit
+												.getMessage(), errorList);
+							}
+							break;
+						}
+					}
+				} else {
+					_errorManager.createErrorFeedback("No Preferences set!",
+							"SNL preferences are not valid",
+							configurationErrors);
+				}
+			} else {
+				_errorManager.createErrorFeedback("Compilation fails!",
+						"Can't create target folders", new ArrayList<String>());
+			}
 		}
 	}
 
-	private void checkDirectories(IProject baseDirectory) throws CoreException {
-		IFolder folder = baseDirectory.getFolder(SNLEditorConstants.GENERATED_FOLDER.getValue());
-		if ( ! folder.exists()) {
-			folder.create(true, true, new NullProgressMonitor());
+	private List<String> checkDirectories(IProject baseDirectory,
+			IProgressMonitor monitor) {
+		List<String> result = new ArrayList<String>();
+		IFolder folder = baseDirectory.getFolder(SNLConstants.GENERATED_FOLDER
+				.getValue());
+		if (!folder.exists()) {
+			try {
+				folder.create(true, true, monitor);
+			} catch (CoreException e) {
+				result.add("Not able to create "
+						+ SNLConstants.GENERATED_FOLDER.getValue() + " folder");
+			}
 		}
-		
-		folder = baseDirectory.getFolder(SNLEditorConstants.BIN_FOLDER.getValue());
-		if ( ! folder.exists()) {
-			folder.create(true, true, new NullProgressMonitor());
+
+		folder = baseDirectory.getFolder(SNLConstants.BIN_FOLDER.getValue());
+		if (!folder.exists()) {
+			try {
+				folder.create(true, true, monitor);
+			} catch (CoreException e) {
+				result.add("Not able to create "
+						+ SNLConstants.BIN_FOLDER.getValue() + " folder");
+			}
 		}
+		return result;
 	}
 
 	private String createFullFileName(String basePath, String folder,
@@ -224,7 +258,7 @@ public class SNLEditor extends LanguageEditor {
 			errorMessages
 					.add("The location of the C-Compiler is not specified.");
 		}
-		
+
 		String gCompilerPath = compilerOptionsService.getGCompilerPath();
 		if (gCompilerPath == null || gCompilerPath.trim().length() < 1) {
 			errorMessages

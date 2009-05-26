@@ -9,6 +9,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 
 import de.desy.language.editor.ui.eventing.UIEvent;
+import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.ui.rules.SNLCodeElementTextAttributeConstants;
 
 /**

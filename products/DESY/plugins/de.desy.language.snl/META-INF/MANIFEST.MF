@@ -8,10 +8,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  de.desy.language.libraries,
  de.desy.language.editor.core,
- org.junit4
+ org.junit4,
+ org.eclipse.jface;bundle-version="3.4.2";visibility:=reexport,
+ org.eclipse.ui;bundle-version="3.4.2"
 Eclipse-LazyStart: true
 Export-Package: de.desy.language.snl,
  de.desy.language.snl.codeElements,
+ de.desy.language.snl.compilerconfiguration,
+ de.desy.language.snl.configurationservice,
  de.desy.language.snl.nature,
  de.desy.language.snl.parser,
  de.desy.language.snl.parser.nodes,

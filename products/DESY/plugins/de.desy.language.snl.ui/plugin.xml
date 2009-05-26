@@ -110,10 +110,20 @@
                class="de.desy.language.snl.ui.editor.RefreshAction"
                icon="icons/nav_refresh.gif"
                id="de.desy.language.snl.ui.RefreshAction"
-               label="Refresh Highlighting"
+               label="&amp;Refresh Highlighting"
                menubarPath="edit/additions"
                style="push"
                toolbarPath="edit/additions">
+         </action>
+         <action
+               class="de.desy.language.snl.ui.editor.CompileAction"
+               icon="icons/new_snl_file_wizard.gif"
+               id="de.desy.language.snl.ui.CompileAction"
+               label="&amp;Compile"
+               menubarPath="edit/additions"
+               style="push"
+               toolbarPath="edit/additions"
+               tooltip="Compiles the .st file">
          </action>
       </editorContribution>
    </extension>

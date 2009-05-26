@@ -1,9 +1,7 @@
-package de.desy.language.snl.ui.editor.compilerconfiguration;
+package de.desy.language.snl.compilerconfiguration;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
-import de.desy.language.snl.ui.preferences.ICompilerOptionsService;
 
 public abstract class AbstractCompilerConfiguration {
 	

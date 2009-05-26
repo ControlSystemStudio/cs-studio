@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="de.desy.language.snl.TargetConfigurationProvider" name="TargetConfigurationProvider" schema="schema/de.desy.language.snl.TargetConfigurationProvider.exsd"/>
    <extension
          id="de.desy.language.snl.nature.SNLNature"
          name="State Notation Languages Nature"
