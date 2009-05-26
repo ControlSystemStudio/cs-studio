@@ -86,6 +86,31 @@
             schemaId="schema.epics"
             widgetTypeId="org.csstudio.sds.components.StripChart">
       </widgetModelInitializer>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.GaugeInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Gauge">
+      </widgetModelInitializer>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.KnobInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Knob">
+      </widgetModelInitializer>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.ScaledSliderInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.ScaledSlider">
+      </widgetModelInitializer>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.TankInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Tank">
+      </widgetModelInitializer>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.ThermometerInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="org.csstudio.sds.components.Thermometer">
+      </widgetModelInitializer>
    </extension>
       <extension
          point="org.csstudio.sds.widgetModelInitializers">
