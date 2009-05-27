@@ -77,8 +77,8 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 		applySystemPropertyDefaults();
 		offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
 		
-		Dictionary<String, String> dict = new Hashtable<String, String>();
-		dict.put("org.csstudio.management.remoteservice", "true");
+		Dictionary<String, Object> dict = new Hashtable<String, Object>();
+		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
 		context.registerService(IManagementCommandService.class.getName(),
 				new ManagementServiceImpl(), dict);
 	}
