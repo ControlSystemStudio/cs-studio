@@ -140,6 +140,7 @@ public class Application implements IApplication
             boolean run = true;
             while (run)
             {
+                logger.info("Reading configuration '" + engine_name + "'");
                 try
                 {
                     model.readConfig(engine_name, port);
