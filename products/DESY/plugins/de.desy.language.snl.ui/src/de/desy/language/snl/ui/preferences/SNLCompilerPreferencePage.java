@@ -12,9 +12,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.desy.language.snl.SNLCoreActivator;
 import de.desy.language.snl.configurationservice.CompilerOptionPreferenceConstants;
 import de.desy.language.snl.configurationservice.PreferenceConstants;
+import de.desy.language.snl.ui.SNLUiActivator;
 
 /**
  * A preference page to set the colors and the font-styles for highlighting.
@@ -25,7 +25,7 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 	public SNLCompilerPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 		this.setMessage("Specifies compiler location and options.");
-		this.setPreferenceStore(SNLCoreActivator.getDefault()
+		this.setPreferenceStore(SNLUiActivator.getDefault()
 				.getPreferenceStore());
 	}
 
@@ -36,7 +36,7 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		cCompilerGroup.setText("Location of GCC");
 		cCompilerGroup.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
-		this.addField(new FileFieldEditor(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
+		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
 				+ PreferenceConstants.C_COMPILER_LOCATION_POST_FIX, "", true, 
 				cCompilerGroup));
 		
@@ -45,7 +45,7 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		applicationCompilerGroup.setText("Location of G++");
 		applicationCompilerGroup.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
-		this.addField(new FileFieldEditor(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
+		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
 				+ PreferenceConstants.G_COMPILER_LOCATION_POST_FIX, "", true, 
 				applicationCompilerGroup));
 		
@@ -54,7 +54,7 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 		groupOfLocationElement.setText("Location of EPICS SNL compiler");
 		groupOfLocationElement.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
-		this.addField(new FileFieldEditor(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
+		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
 				+ PreferenceConstants.SNC_LOCATION_POST_FIX, "", true, 
 				groupOfLocationElement));
 
@@ -96,7 +96,7 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 	private void createCompilerOptionEditors(Composite parent) {
 		for (CompilerOptionPreferenceConstants copc : CompilerOptionPreferenceConstants
 				.values()) {
-			this.addField(new BooleanFieldEditor(PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
+			this.addField(new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
 					+ copc.getPreferenceStoreId(), copc.getOption() + " - "
 					+ copc.getDescription(), parent));
 		}

@@ -10,22 +10,22 @@ import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.desy.language.snl.SNLCoreActivator;
 import de.desy.language.snl.configurationservice.ConfigurationService;
 import de.desy.language.snl.configurationservice.PreferenceConstants;
+import de.desy.language.snl.ui.SNLUiActivator;
 
 public class SNLPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
 	public SNLPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
-		this.setPreferenceStore(SNLCoreActivator.getDefault()
+		this.setPreferenceStore(SNLUiActivator.getDefault()
 				.getPreferenceStore());
 	}
 
 	@Override
 	protected void createFieldEditors() {
-		String preferenceID = PreferenceConstants.PREFERENCE_PRE_FIX.getPreferenceStoreId()
+		String preferenceID = SNLUiActivator.PLUGIN_ID
 				+ PreferenceConstants.TARGET_PLATFORM;
 		String[][] labelAndValues = createLabelAndValues();
 		FieldEditor editor = new RadioGroupFieldEditor(preferenceID,

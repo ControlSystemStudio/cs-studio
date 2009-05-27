@@ -46,17 +46,16 @@ import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.ui.editor.LanguageEditor;
 import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
 import de.desy.language.snl.SNLConstants;
-import de.desy.language.snl.SNLCoreActivator;
 import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
 import de.desy.language.snl.compilerconfiguration.AbstractTargetConfigurationProvider;
 import de.desy.language.snl.compilerconfiguration.ErrorUnit;
 import de.desy.language.snl.compilerconfiguration.GenericCompilationHelper;
 import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
-import de.desy.language.snl.configurationservice.CompilerOptionsService;
 import de.desy.language.snl.configurationservice.ConfigurationService;
 import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.parser.SNLParser;
 import de.desy.language.snl.ui.RuleProvider;
+import de.desy.language.snl.ui.SNLUiActivator;
 
 /**
  * This class provides a SNL specific {@link TextEditor}.
@@ -126,12 +125,11 @@ public class SNLEditor extends LanguageEditor {
 
 		_errorManager.setShell(this.getEditorSite().getShell());
 
-		IPreferenceStore preferenceStore = SNLCoreActivator.getDefault()
+		IPreferenceStore preferenceStore = SNLUiActivator.getDefault()
 				.getPreferenceStore();
 
 		String targetPlatform = preferenceStore
-				.getString(PreferenceConstants.PREFERENCE_PRE_FIX
-						.getPreferenceStoreId()
+				.getString(SNLUiActivator.PLUGIN_ID
 						+ PreferenceConstants.TARGET_PLATFORM);
 		if (targetPlatform == null || targetPlatform.trim().length() < 1 || targetPlatform.equals("none")) {
 			MessageBox box = new MessageBox(this.getSite().getShell(), SWT.ICON_INFORMATION);
@@ -167,7 +165,7 @@ public class SNLEditor extends LanguageEditor {
 
 				if (configurationErrors.isEmpty()) {
 					AbstractTargetConfigurationProvider provider = ConfigurationService.getInstance().getProvider(targetPlatform);
-					List<AbstractCompilerConfiguration> configurations = provider.getConfigurations();
+					List<AbstractCompilerConfiguration> configurations = provider.getConfigurations(service);
 
 					for (AbstractCompilerConfiguration configuration : configurations) {
 						String sourceFile = createFullFileName(basePath,

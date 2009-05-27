@@ -8,8 +8,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-import de.desy.language.snl.SNLCoreActivator;
 import de.desy.language.snl.compilerconfiguration.AbstractTargetConfigurationProvider;
+import de.desy.language.snl.internal.SNLCoreActivator;
 
 public class ConfigurationService {
 	

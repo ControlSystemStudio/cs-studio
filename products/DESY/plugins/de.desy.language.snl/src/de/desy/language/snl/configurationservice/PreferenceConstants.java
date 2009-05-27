@@ -7,8 +7,6 @@ package de.desy.language.snl.configurationservice;
  */
 public enum PreferenceConstants {
 	
-	PREFERENCE_PRE_FIX("de.desy.language.snl"),
-
 	/**
 	 * Post-fix for the bold-style constant to be added to the type id.
 	 */

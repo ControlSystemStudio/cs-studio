@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.desy.language.snl.SNLCoreActivator;
 import de.desy.language.snl.configurationservice.PreferenceConstants;
+import de.desy.language.snl.ui.SNLUiActivator;
 import de.desy.language.snl.ui.rules.SNLCodeElementTextAttributeConstants;
 
 /**
@@ -27,7 +27,7 @@ public class SNLHighlightingPreferencePage extends FieldEditorPreferencePage
 	public SNLHighlightingPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 		this.setMessage("Set colors and font-styles for highlighting");
-		this.setPreferenceStore(SNLCoreActivator.getDefault()
+		this.setPreferenceStore(SNLUiActivator.getDefault()
 				.getPreferenceStore());
 	}
 

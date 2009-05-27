@@ -23,6 +23,6 @@ public abstract class AbstractTargetConfigurationProvider {
 		return _platform;
 	}
 	
-	public abstract List<AbstractCompilerConfiguration> getConfigurations();
+	public abstract List<AbstractCompilerConfiguration> getConfigurations(ICompilerOptionsService service);
 
 }
