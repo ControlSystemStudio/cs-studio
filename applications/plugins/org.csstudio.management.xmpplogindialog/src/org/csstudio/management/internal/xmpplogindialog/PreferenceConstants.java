@@ -33,5 +33,15 @@ final class PreferenceConstants {
 	 * Preference constant for the XMPP Server preference.
 	 */
 	final static String XMPP_SERVER = "xmppServer";
+	
+	/**
+	 * Preference constant for the anonymous login username preference.
+	 */
+	final static String ANONYMOUS_LOGIN_USER = "anonUser";
+	
+	/**
+	 * Preference constant for the anonymous login password preference.
+	 */
+	final static String ANONYMOUS_LOGIN_PASSWORD = "anonPassword";
 
 }

@@ -40,6 +40,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
 		prefs.put(PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de");
+		prefs.put(PreferenceConstants.ANONYMOUS_LOGIN_USER, "anonymous");
+		prefs.put(PreferenceConstants.ANONYMOUS_LOGIN_PASSWORD, "anonymous");
 	}
 
 }

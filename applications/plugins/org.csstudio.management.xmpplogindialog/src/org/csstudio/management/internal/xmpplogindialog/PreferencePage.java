@@ -24,6 +24,9 @@ package org.csstudio.management.internal.xmpplogindialog;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -50,6 +53,15 @@ public class PreferencePage extends FieldEditorPreferencePage
 	protected void createFieldEditors() {
 		addField(new StringFieldEditor(PreferenceConstants.XMPP_SERVER,
 				"XMPP Server:", getFieldEditorParent()));
+		
+		Label anonLoginLabel = new Label(getFieldEditorParent(), SWT.None);
+		anonLoginLabel.setText("\nUsername and password for anonymous login:");
+		anonLoginLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+		
+		addField(new StringFieldEditor(PreferenceConstants.ANONYMOUS_LOGIN_USER,
+				"Username:", getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.ANONYMOUS_LOGIN_PASSWORD,
+				"Password:", getFieldEditorParent()));
 	}
 
 	/**

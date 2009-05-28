@@ -23,15 +23,17 @@
 package org.csstudio.management.internal.xmpplogindialog;
 
 import org.csstudio.platform.securestore.SecureStore;
+import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
 import org.remotercp.ecf.ECFConstants;
 import org.remotercp.login.connection.HeadlessConnection;
-import org.remotercp.login.ui.ChatLoginWizardDialog;
 
 /**
  * Performs a user login on the XMPP server during CSS startup. If no username
@@ -45,20 +47,13 @@ public class StartupXmppLogin implements IStartupServiceListener {
 	private String _xmppServer;
 
 	/**
-	 * Thrown if a login attempt fails.
-	 */
-	private static final class LoginFailedException extends Exception {
-		private static final long serialVersionUID = 1L;
-		
-		LoginFailedException(Throwable cause) {
-			super(cause);
-		}
-	}
-
-	/**
 	 * Runnable which performs the actual XMPP login.
 	 */
 	private static final class XmppLoginProcess implements Runnable {
+		
+		// Keys for the objects in the secure store
+		private static final String SECURE_STORE_USERNAME = "xmpp.username";
+		private static final String SECURE_STORE_PASSWORD = "xmpp.password";
 		
 		private final String _server;
 
@@ -73,7 +68,9 @@ public class StartupXmppLogin implements IStartupServiceListener {
 		}
 		
 		/**
-		 * {@inheritDoc}
+		 * Tries to log in the user based on the data found in the Secure Store.
+		 * If the user cannot be logged in based on the Secure Store, a login
+		 * dialog is displayed.
 		 */
 		public void run() {
 			if (!tryLoginWithSecureStore()) {
@@ -90,15 +87,10 @@ public class StartupXmppLogin implements IStartupServiceListener {
 		 */
 		private boolean tryLoginWithSecureStore() {
 			SecureStore store = SecureStore.getInstance();
-			try {
-				String username = (String) store.getObject("xmpp.username");
-				String password = (String) store.getObject("xmpp.password");
-				if (username != null && password != null) {
-					login(username, password);
-					return true;
-				}
-			} catch (LoginFailedException e) {
-				// Don't do anything (simply return false, below)
+			String username = (String) store.getObject(SECURE_STORE_USERNAME);
+			String password = (String) store.getObject(SECURE_STORE_PASSWORD);
+			if (username != null && password != null) {
+				return tryLogin(username, password);
 			}
 			return false;
 		}
@@ -108,34 +100,129 @@ public class StartupXmppLogin implements IStartupServiceListener {
 		 * based on the information he entered in the dialog.
 		 */
 		private void loginWithDialog() {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					ChatLoginWizardDialog wizardDialog = new ChatLoginWizardDialog();
-					if (wizardDialog.open() == Window.OK) {
-						// start remote services
-						ServiceLauncher.startRemoteServices();
+			boolean finished = false;
+			do {
+				Credentials credentials = showLoginDialog();
+				if (credentials == null) {
+					// the user cancelled the login
+					finished = true;
+				} else if (credentials == Credentials.ANONYMOUS) {
+					finished = tryAnonymousLogin();
+					if (!finished) {
+						showLoginErrorMessage();
 					}
+				} else {
+					finished = tryLogin(credentials);
+					if (finished) {
+						writeToSecureStore(credentials);
+					} else {
+						showLoginErrorMessage();
+					}
+				}
+			} while (!finished);
+		}
+
+		/**
+		 * Tries to log in anonymously using the username and password set in
+		 * the preferences for anonymous login.
+		 * 
+		 * @return <code>true</code> if the login succeeded, <code>false</code>
+		 *         otherwise.
+		 */
+		private boolean tryAnonymousLogin() {
+			IPreferencesService prefs = Platform.getPreferencesService();
+			String username = prefs.getString(Activator.PLUGIN_ID,
+					PreferenceConstants.ANONYMOUS_LOGIN_USER, null, null);
+			String password = prefs.getString(Activator.PLUGIN_ID,
+					PreferenceConstants.ANONYMOUS_LOGIN_PASSWORD, null, null);
+			if (username != null && password != null) {
+				return tryLogin(username, password);
+			}
+			return false;
+		}
+
+		/**
+		 * Writes the specified credentials into the secure store as the
+		 * username and password for the XMPP login.
+		 * 
+		 * @param credentials
+		 *            the credentials.
+		 */
+		private void writeToSecureStore(Credentials credentials) {
+			SecureStore store = SecureStore.getInstance();
+			store.setObject(SECURE_STORE_USERNAME, credentials.getUsername());
+			store.setObject(SECURE_STORE_PASSWORD, credentials.getPassword());
+		}
+
+		/**
+		 * Displays a login dialog in the UI thread and returns the credentials
+		 * that the user entered in the dialog.
+		 * 
+		 * @return the credentials entered by the user. Returns
+		 *         <code>null</code> if the user cancelled the dialog.
+		 */
+		private Credentials showLoginDialog() {
+			// One-element array for communication with the UI thread.
+			final Credentials[] credentials = new Credentials[1];
+			
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					LoginDialog dialog = new LoginDialog(null, "ECF/XMPP Login",
+							"Please enter your username and password for the XMPP server.",
+							null);
+					if (dialog.open() == Window.OK) {
+						credentials[0] = dialog.getLoginCredentials();
+					}
+				}
+			});
+			
+			// Return the credentials that the UI thread wrote into the array.
+			return credentials[0];
+		}
+		
+		/**
+		 * Displays an error message to the user to inform the user that the
+		 * login failed.
+		 */
+		private void showLoginErrorMessage() {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openError(null, "ECF/XMPP Login",
+							"Login failed. Please try again.");
 				}
 			});
 		}
 
 		/**
-		 * Logs in the given user with the given password.
+		 * Tries to log in the user with the specified credentials.
+		 * 
+		 * @param credentials
+		 *            the credentials.
+		 * @return <code>true</code> if the login succeeded, <code>false</code>
+		 *         otherwise.
+		 */
+		private boolean tryLogin(Credentials credentials) {
+			return tryLogin(credentials.getUsername(), credentials.getPassword());
+		}
+
+		/**
+		 * Tries to log in the user with the specified username and password.
 		 * 
 		 * @param username
 		 *            the username.
 		 * @param password
 		 *            the password.
-		 * @throws LoginFailedException
-		 *             if the login fails.
+		 * @return <code>true</code> if the login succeeded, <code>false</code>
+		 *         otherwise.
 		 */
-		private void login(String username, String password)
-				throws LoginFailedException {
+		private boolean tryLogin(String username, String password) {
 			try {
 				HeadlessConnection.connect(username, password, _server,
 						ECFConstants.XMPP);
+				ServiceLauncher.startRemoteServices();
+				return true;
 			} catch (Exception e) {
-				throw new LoginFailedException(e);
+				return false;
 			}
 		}
 	}
