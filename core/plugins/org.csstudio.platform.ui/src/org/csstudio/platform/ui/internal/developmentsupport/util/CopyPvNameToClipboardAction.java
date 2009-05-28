@@ -30,30 +30,34 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Copies the name of the selected process variable to the clipboard. This
- * action is similar to {@link PrintPvsAction}, but works on single selections
- * of objects of type {@link IProcessVariable}. Because this action only works
- * on a single variable, it copies its name directly into the clipboard instead
+ * Copies the names of the selected process variables to the clipboard. This
+ * action is similar to {@link PrintPvsAction}, but directly copies the
+ * selected PVs into the clipboard instead
  * of displaying a dialog box like <code>PrintPvsAction</code>.
  * 
  * @author Joerg Rathlev
- * 
+ * @author Kay Kasemir
  */
-public class CopyPvNameToClipboardAction extends ProcessVariablePopupAction {
-
+public class CopyPvNameToClipboardAction extends ProcessVariablePopupAction
+{
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void handlePVs(IProcessVariable[] pv_names) {
-		if (pv_names.length != 1) {
-			return;
-		}
-		
-		String pvName = pv_names[0].getName();
-		Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
-				.getDisplay());
-		clipboard.setContents(new String[] { pvName },
+	public void handlePVs(final IProcessVariable[] pv_names)
+	{
+	    // Create string with "PV" or "PV1, PV2, PV3"
+	    final StringBuilder pvs = new StringBuilder();
+	    for (IProcessVariable pv : pv_names)
+        {
+	        if (pvs.length() > 0)
+	            pvs.append(", "); //$NON-NLS-1$
+            pvs.append(pv.getName());
+        }
+	    // Copy as text to clipboard
+	    final Clipboard clipboard = new Clipboard(
+	                PlatformUI.getWorkbench().getDisplay());
+		clipboard.setContents(new String[] { pvs.toString() },
 				new Transfer[] { TextTransfer.getInstance() });
 	}
 
