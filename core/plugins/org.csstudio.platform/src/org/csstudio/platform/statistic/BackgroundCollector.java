@@ -36,6 +36,9 @@ public class BackgroundCollector {
 	private Collector	memoryUsedSystem	= null;
 	private Collector	memoryUsedApplication	= null;
 	private Collector	memoryAvailableApplication	= null;
+    private String applicationName;
+	
+	
 	
 	public BackgroundCollector () {
         /*
@@ -43,6 +46,15 @@ public class BackgroundCollector {
          *  and run with 10 sec timeout
          */
         new BackgroundCollectorThread( 10000);	
+        
+        try {
+            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            applicationName = "CSS-Core " + localMachine.getHostName();
+        }
+        catch (java.net.UnknownHostException uhe) { 
+        }
+
+
 	}
 	
 	
@@ -62,7 +74,7 @@ public class BackgroundCollector {
 		if (cpuUsedApplication == null) {
 	        // CPU used by Application
 	        cpuUsedApplication = new Collector();
-	        cpuUsedApplication.setApplication("CSS-Core");
+	        cpuUsedApplication.setApplication(applicationName);
 	        cpuUsedApplication.setDescriptor("CPU used by Application");
 	        cpuUsedApplication.getAlarmHandler().setDeadband(10.0);
 	        cpuUsedApplication.getAlarmHandler().setHighAbsoluteLimit(50.0);	// 90% CPU
@@ -82,7 +94,7 @@ public class BackgroundCollector {
 		if (_cpuUsedSystem == null) {
 			// CPU used by System
 	        _cpuUsedSystem = new Collector();
-	        _cpuUsedSystem.setApplication("CSS-Core");
+	        _cpuUsedSystem.setApplication(applicationName);
 	        _cpuUsedSystem.setDescriptor("CPU used by System");
 	        _cpuUsedSystem.getAlarmHandler().setDeadband(10.0);
 	        _cpuUsedSystem.getAlarmHandler().setHighAbsoluteLimit(90.0);	// 90% CPU
@@ -102,7 +114,7 @@ public class BackgroundCollector {
 		if ( memoryUsedApplication == null ) {
 	        // Memory used by Application
 	        memoryUsedApplication = new Collector();
-	        memoryUsedApplication.setApplication("CSS-Core");
+	        memoryUsedApplication.setApplication(applicationName);
 	        memoryUsedApplication.setDescriptor("Memory allocated by Application");
 	        memoryUsedApplication.getAlarmHandler().setDeadband(10.0);
 	        memoryUsedApplication.getAlarmHandler().setHighAbsoluteLimit(200.0);	// 200 MB
@@ -122,7 +134,7 @@ public class BackgroundCollector {
 		if (memoryUsedSystem == null) {
 	        // Memory used by System
 	        memoryUsedSystem = new Collector();
-	        memoryUsedSystem.setApplication("CSS-Core");
+	        memoryUsedSystem.setApplication(applicationName);
 	        memoryUsedSystem.setDescriptor("max Memory available");
 	        memoryUsedSystem.getAlarmHandler().setDeadband(10.0);
 	        memoryUsedSystem.getAlarmHandler().setHighAbsoluteLimit(100000.0);	// biig number -> no alarm
@@ -142,7 +154,7 @@ public class BackgroundCollector {
 		if (memoryAvailableApplication == null) {
 			// Memory available for Application
 	        memoryAvailableApplication = new Collector();
-	        memoryAvailableApplication.setApplication("CSS-Core");
+	        memoryAvailableApplication.setApplication(applicationName);
 	        memoryAvailableApplication.setDescriptor("Memory free for Application");
 	        memoryAvailableApplication.getAlarmHandler().setDeadband(10.0);
 	        memoryAvailableApplication.getAlarmHandler().setHighAbsoluteLimit(100000.0);	// biig number -> no alarm
