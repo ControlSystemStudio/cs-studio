@@ -231,14 +231,16 @@ public class IocConnection {
 		if (timeBetweenLastAnd3rdToLastBeacon > 3 * PreferenceProperties.BEACON_TIMEOUT) {
 			CentralLogger.getInstance().info(
 					this,
-					"Previous beacon timeout: "
+					getLogicalIocName()
+							+ ": Previous beacon timeout: "
 							+ timeBetweenLastAnd3rdToLastBeacon
 							+ " [ms]");
 			return false;
 		} else {
 			CentralLogger.getInstance().info(
 					this,
-					"Previous beacon within timeout period: "
+					getLogicalIocName()
+							+ ": Previous beacon within timeout period: "
 							+ timeBetweenLastAnd3rdToLastBeacon
 							+ " [ms] < " + 3
 							* PreferenceProperties.BEACON_TIMEOUT);

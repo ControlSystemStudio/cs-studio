@@ -28,6 +28,17 @@ package org.csstudio.diag.interconnectionServer.server;
  * @author Joerg Rathlev
  */
 class ReplySender {
+	/*
+	 * TODO
+	 * For compatibility reasons the message sender on the IOC side 
+	 * now accepts STATUS and REPLY - but ONLY the NEW version!
+	 * For the OLD version on the IOC side we still need to send STATUS!
+	 * As soon ans the IOCs all get loaded with the new software version 0.4.2
+	 * we can switch from STATUS to REPLY - as planned before
+	 */
+	
+//	private static final String replyTagName = "REPLY";
+	private static final String replyTagName = "STATUS";
 	
 	private ReplySender() {
 	}
@@ -86,7 +97,7 @@ class ReplySender {
 	 */
 	private static String prepareSuccessReply(int id) {
 		// TODO replace hard coded strings
-		return "ID=" + id + ";REPLY=Ok;";
+		return "ID=" + id + ";" + replyTagName + "=Ok;";
 	}
 	
 	/**
@@ -98,6 +109,6 @@ class ReplySender {
 	 */
 	private static String prepareErrorReply(int id) {
 		// TODO replace hard coded strings
-		return "ID=" + id + ";REPLY=Error;";
+		return "ID=" + id + ";" + replyTagName + "=Error;";
 	}
 }
