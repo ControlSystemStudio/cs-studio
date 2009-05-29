@@ -14,6 +14,12 @@ import org.eclipse.swt.widgets.Shell;
 
 import de.desy.language.snl.ui.SNLUiActivator;
 
+/**
+ * A Manger for errors occurred during compilation.
+ * 
+ * @author Kai Meyer (C1 WPS)
+ * 
+ */
 public class ErrorManager {
 
 	private Shell _shell;

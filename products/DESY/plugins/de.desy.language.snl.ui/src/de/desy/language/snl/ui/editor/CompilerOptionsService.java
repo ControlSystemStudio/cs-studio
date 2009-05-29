@@ -11,52 +11,52 @@ import de.desy.language.snl.configurationservice.CompilerOptionPreferenceConstan
 import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.ui.SNLUiActivator;
 
+/**
+ * Service to get the compiler options from the preference store.
+ * 
+ * @author Kai Meyer (C1 WPS)
+ * 
+ */
 public class CompilerOptionsService implements ICompilerOptionsService {
 
+	/**
+	 * The store of the preferences.
+	 */
 	private final IPreferenceStore _preferenceStore;
 
-	public CompilerOptionsService(IPreferenceStore preferenceStore) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param preferenceStore
+	 *            The store of the preferences.
+	 */
+	public CompilerOptionsService(final IPreferenceStore preferenceStore) {
 		_preferenceStore = preferenceStore;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.desy.language.snl.ui.preferences.ICompilerOptionsService#getSNCompilerPath
-	 * ()
+	/**
+	 * {@inheritDoc}
 	 */
 	public String getSNCompilerPath() {
 		return getFolder(PreferenceConstants.SNC_LOCATION_POST_FIX);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.desy.language.snl.ui.preferences.ICompilerOptionsService#getCCompilerPath
-	 * ()
+	/**
+	 * {@inheritDoc}
 	 */
 	public String getCCompilerPath() {
 		return getFolder(PreferenceConstants.C_COMPILER_LOCATION_POST_FIX);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.desy.language.snl.ui.preferences.ICompilerOptionsService#getCCompilerPath
-	 * ()
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public String getGCompilerPath() {
 		return getFolder(PreferenceConstants.G_COMPILER_LOCATION_POST_FIX);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seede.desy.language.snl.ui.preferences.ICompilerOptionsService#
-	 * getCompilerOptions()
+	/**
+	 * {@inheritDoc}
 	 */
 	public List<String> getCCompilerOptions() {
 		List<String> result = new ArrayList<String>();
@@ -74,14 +74,23 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getEpicsFolder() {
 		return getFolder(PreferenceConstants.EPICS_BASE_LOCATION_POST_FIX);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getSeqFolder() {
 		return getFolder(PreferenceConstants.EPICS_SEQ_LOCATION_POST_FIX);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	private String getFolder(PreferenceConstants constantId) {
 		String result = _preferenceStore.getString(SNLUiActivator.PLUGIN_ID
 				+ constantId);
