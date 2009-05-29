@@ -50,8 +50,8 @@ import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
 import de.desy.language.snl.compilerconfiguration.AbstractTargetConfigurationProvider;
 import de.desy.language.snl.compilerconfiguration.ErrorUnit;
 import de.desy.language.snl.compilerconfiguration.GenericCompilationHelper;
-import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
 import de.desy.language.snl.configurationservice.ConfigurationService;
+import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.parser.SNLParser;
 import de.desy.language.snl.ui.RuleProvider;
@@ -67,9 +67,13 @@ import de.desy.language.snl.ui.SNLUiActivator;
 public class SNLEditor extends LanguageEditor {
 
 	private ErrorManager _errorManager;
+	private IPreferenceStore _preferenceStore;
+	private ICompilerOptionsService _compilerOptionService;
 
 	public SNLEditor() {
 		_errorManager = new ErrorManager();
+		_preferenceStore = SNLUiActivator.getDefault().getPreferenceStore();
+		_compilerOptionService = new CompilerOptionsService(_preferenceStore);
 	}
 
 	/**
@@ -122,88 +126,127 @@ public class SNLEditor extends LanguageEditor {
 	@Override
 	protected void doHandleSourceModifiedAndSaved(
 			final IProgressMonitor progressMonitor) {
+		if (!_errorManager.isShellSet()) {
+			_errorManager.setShell(this.getEditorSite().getShell());
+		}
+		if (_compilerOptionService.getSaveAndCompile()) {
+			compileFile(progressMonitor);
+		}
+	}
 
-		_errorManager.setShell(this.getEditorSite().getShell());
-
-		IPreferenceStore preferenceStore = SNLUiActivator.getDefault()
-				.getPreferenceStore();
-
-		String targetPlatform = preferenceStore
+	public void compileFile(final IProgressMonitor progressMonitor) {
+		String targetPlatform = _preferenceStore
 				.getString(SNLUiActivator.PLUGIN_ID
 						+ PreferenceConstants.TARGET_PLATFORM);
-		if (targetPlatform == null || targetPlatform.trim().length() < 1 || targetPlatform.equals("none")) {
-			MessageBox box = new MessageBox(this.getSite().getShell(), SWT.ICON_INFORMATION);
-			box.setText("No compiler configuration selected");
-			box.setMessage("No files generated.\nChoose a compiler configuration in the preferences.");
-			box.open();
-		} else {
-			//TODO Refactore
-			ICompilerOptionsService service = new CompilerOptionsService(
-					preferenceStore);
+		IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
+		IProject baseDirectory = sourceRessource.getProject();
+		
+		ErrorUnit errorUnit = checkEnvironmentConfiguration(baseDirectory,
+				progressMonitor, targetPlatform);
 
-			IFile sourceRessource = ((FileEditorInput) getEditorInput())
-					.getFile();
+		if (errorUnit == null) {
+			if (targetPlatform.equals("none")) {
+				MessageBox box = new MessageBox(this.getSite().getShell(),
+						SWT.ICON_INFORMATION);
+				box.setText("No compiler configuration selected");
+				box.setMessage("No files generated.\nChoose a compiler configuration in the preferences.");
+				box.open();
+			} else {
+				// We want the base directory (the project of the *.st file)
+				String basePath = baseDirectory.getLocation().toFile()
+						.getAbsolutePath();
 
-			// We want the base directory (the project of the *.st file)
-			IProject baseDirectory = sourceRessource.getProject();
-			String basePath = baseDirectory.getLocation().toFile()
-					.getAbsolutePath();
-
-			List<String> errors = checkDirectories(baseDirectory,
-					progressMonitor);
-			if (errors.isEmpty()) {
-				String sourceFileName = sourceRessource.getName();
-				int lastIndexOfDot = sourceFileName.lastIndexOf('.');
-				int lastIndexOfSlash = sourceFileName
-						.lastIndexOf(File.separator);
-				sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1,
-						lastIndexOfDot);
-
-				List<String> configurationErrors = checkPreferenceConfiguration(service);
+				String sourceFileName = extractFileName(sourceRessource);
 
 				GenericCompilationHelper compiler = new GenericCompilationHelper();
 
-				if (configurationErrors.isEmpty()) {
-					AbstractTargetConfigurationProvider provider = ConfigurationService.getInstance().getProvider(targetPlatform);
-					List<AbstractCompilerConfiguration> configurations = provider.getConfigurations(service);
-
-					for (AbstractCompilerConfiguration configuration : configurations) {
-						String sourceFile = createFullFileName(basePath,
-								configuration.getSourceFolder(),
-								sourceFileName, configuration
-										.getSourceFileExtension());
-						String targetFile = createFullFileName(basePath,
-								configuration.getTargetFolder(),
-								sourceFileName, configuration
-										.getTargetFileExtension());
-
-						ErrorUnit errorUnit = compiler.compile(configuration
-								.getCompilerParameter(sourceFile, targetFile),
-								configuration.getErrorPattern());
-
-						if (errorUnit != null) {
-							if (errorUnit.hasLineNumber()) {
-								_errorManager.markErrors(sourceRessource,
-										errorUnit.getLineNumber(), errorUnit
-												.getMessage());
-							} else {
-								List<String> errorList = new ArrayList<String>();
-								errorList.add(errorUnit.getDetails());
-								_errorManager.createErrorFeedback(
-										"Compilation fails!", errorUnit
-												.getMessage(), errorList);
-							}
-							break;
-						}
-					}
-				} else {
-					_errorManager.createErrorFeedback("No Preferences set!",
-							"SNL preferences are not valid",
-							configurationErrors);
+				invokeCompilers(targetPlatform, sourceRessource, basePath,
+						sourceFileName, compiler);
+				if (!_compilerOptionService.getKeepGeneratedFiles()) {
+					deleteFilesInGeneratedFolder(baseDirectory, progressMonitor);
 				}
-			} else {
-				_errorManager.createErrorFeedback("Compilation fails!",
-						"Can't create target folders", new ArrayList<String>());
+			}
+		} else {
+			_errorManager.createErrorFeedback("Compilation aborted!", errorUnit
+					.getMessage(), errorUnit.getDetails());
+		}
+	}
+
+	private ErrorUnit checkEnvironmentConfiguration(IProject baseDirectory,
+			IProgressMonitor progressMonitor, String targetPlatform) {
+		ErrorUnit error = null;
+		List<String> errorMessages = new ArrayList<String>();
+
+		errorMessages
+				.addAll(checkPreferenceConfiguration(_compilerOptionService));
+		errorMessages.addAll(checkDirectories(baseDirectory, progressMonitor));
+		if (targetPlatform == null || targetPlatform.trim().length() < 1) {
+			String errorDetail = "Target Platform not valid";
+			errorMessages.add(errorDetail);
+		}
+		if (!errorMessages.isEmpty()) {
+			error = new ErrorUnit("Compilation could not be initialized",
+					errorMessages);
+		}
+
+		return error;
+	}
+
+	private String extractFileName(IFile sourceRessource) {
+		String sourceFileName = sourceRessource.getName();
+		int lastIndexOfDot = sourceFileName.lastIndexOf('.');
+		int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
+		sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1,
+				lastIndexOfDot);
+		return sourceFileName;
+	}
+
+	private void invokeCompilers(String targetPlatform, IFile sourceRessource,
+			String basePath, String sourceFileName,
+			GenericCompilationHelper compiler) {
+		AbstractTargetConfigurationProvider provider = ConfigurationService
+				.getInstance().getProvider(targetPlatform);
+		List<AbstractCompilerConfiguration> configurations = provider
+				.getConfigurations(_compilerOptionService);
+
+		ErrorUnit errorUnit;
+		for (AbstractCompilerConfiguration configuration : configurations) {
+			String sourceFile = createFullFileName(basePath, configuration
+					.getSourceFolder(), sourceFileName, configuration
+					.getSourceFileExtension());
+			String targetFile = createFullFileName(basePath, configuration
+					.getTargetFolder(), sourceFileName, configuration
+					.getTargetFileExtension());
+
+			errorUnit = compiler.compile(configuration.getCompilerParameter(
+					sourceFile, targetFile), configuration.getErrorPattern());
+
+			if (errorUnit != null) {
+				if (errorUnit.hasLineNumber()) {
+					_errorManager.markError(sourceRessource, errorUnit
+							.getLineNumber(), errorUnit.getMessage());
+				} else {
+					_errorManager.createErrorFeedback("Compilation fails!",
+							errorUnit.getMessage(), errorUnit.getDetails());
+				}
+				break;
+			}
+		}
+	}
+
+	private void deleteFilesInGeneratedFolder(IProject project,
+			IProgressMonitor progressMonitor) {
+		IFolder folder = project.getFolder(SNLConstants.GENERATED_FOLDER
+				.getValue());
+		if (folder.exists()) {
+			try {
+				folder.delete(true, progressMonitor);
+			} catch (CoreException e) {
+				e.printStackTrace();
+				ArrayList<String> details = new ArrayList<String>();
+				details.add(e.getMessage());
+				_errorManager.createErrorFeedback("Deletion failed",
+						"Could not delete generated files folder", details);
 			}
 		}
 	}
@@ -257,7 +300,7 @@ public class SNLEditor extends LanguageEditor {
 					.add("The location of the C-Compiler is not specified.");
 		}
 
-		String gCompilerPath = compilerOptionsService.getGCompilerPath();
+		String gCompilerPath = compilerOptionsService.getPreCompilerPath();
 		if (gCompilerPath == null || gCompilerPath.trim().length() < 1) {
 			errorMessages
 					.add("The location of the G++-Compiler is not specified.");

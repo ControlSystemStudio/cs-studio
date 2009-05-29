@@ -1,16 +1,18 @@
 package de.desy.language.snl.compilerconfiguration;
 
+import java.util.List;
+
 public class ErrorUnit {
 	
 	private final String _message;
 	private final Integer _lineNumber;
-	private final String _details;
+	private final List<String> _details;
 	
-	public ErrorUnit(String message, String details) {
+	public ErrorUnit(String message, List<String> details) {
 		this(message, null, details);
 	}
 
-	public ErrorUnit(String message, Integer lineNumber, String details) {
+	public ErrorUnit(String message, Integer lineNumber, List<String> details) {
 		assert message != null : "message != null";
 		assert details != null : "details != null";
 		
@@ -23,7 +25,7 @@ public class ErrorUnit {
 		return _message;
 	}
 	
-	public String getDetails() {
+	public List<String> getDetails() {
 		return _details;
 	}
 

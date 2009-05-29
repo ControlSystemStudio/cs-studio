@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import de.desy.language.snl.SNLConstants;
 import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
-import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
+import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 /*
  * Original compiler command:
  * /usr/bin/gcc -x c -E   -D_POSIX_C_SOURCE=199506L -D_POSIX_THREADS -D_XOPEN_SOURCE=500
@@ -44,8 +44,8 @@ public class PreCompilerConfiguration extends AbstractCompilerConfiguration {
 	}
 
 	@Override
-	public String getCompilerPath() {
-		return getCompilerOptionService().getCCompilerPath();
+	protected String getCompilerPath() {
+		return getCompilerOptionService().getPreCompilerPath();
 	}
 
 	@Override

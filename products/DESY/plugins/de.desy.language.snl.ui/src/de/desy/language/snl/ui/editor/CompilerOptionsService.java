@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
 import de.desy.language.snl.configurationservice.CompilerOptionPreferenceConstants;
+import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.ui.SNLUiActivator;
 
@@ -51,8 +51,15 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getGCompilerPath() {
-		return getFolder(PreferenceConstants.G_COMPILER_LOCATION_POST_FIX);
+	public String getPreCompilerPath() {
+		return getFolder(PreferenceConstants.PRE_COMPILER_LOCATION_POST_FIX);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getApplicationCompilerPath() {
+		return getFolder(PreferenceConstants.APPLICATION_COMPILER_POST_FIX);
 	}
 
 	/**
@@ -105,5 +112,15 @@ public class CompilerOptionsService implements ICompilerOptionsService {
 		}
 
 		return result;
+	}
+
+	public boolean getKeepGeneratedFiles() {
+		return _preferenceStore.getBoolean(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.KEEP_GENERATED_FILES_POST_FIX);
+	}
+
+	public boolean getSaveAndCompile() {
+		return _preferenceStore.getBoolean(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.SAVE_AND_COMPILE_POST_FIX);
 	}
 }

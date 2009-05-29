@@ -2,6 +2,7 @@ package de.desy.language.snl.compilerconfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +33,9 @@ public class GenericCompilationHelper {
 				error = createErrorUnit(errorPattern, stdOutResult, stdErrBuffer.toString());
 			}
 		} catch (Exception ex) {
-			error = new ErrorUnit("Can't invoke compiler", ex.getMessage());
+			List<String> errorList = new ArrayList<String>();
+			errorList.add(ex.getMessage());
+			error = new ErrorUnit("Can't invoke compiler", errorList);
 			ex.printStackTrace();
 		}
 		return error;
@@ -48,13 +51,17 @@ public class GenericCompilationHelper {
 				message = rawMessage.substring(0, lineBreak);
 				details = rawMessage.substring(lineBreak+1) + "\n" +rawDetails;
 			}
-			error = new ErrorUnit(message, details);
+			List<String> errorList = new ArrayList<String>();
+			errorList.add(details);
+			error = new ErrorUnit(message, errorList);
 		} else {
 			Matcher resultMatcher = errorPattern.matcher(rawMessage);
 			resultMatcher.find();
 			String clearedMessage = resultMatcher.group(5).trim();
 			int lineNumber = Integer.parseInt(resultMatcher.group(2).trim());
-			error = new ErrorUnit(clearedMessage, lineNumber, rawDetails);
+			List<String> errorList = new ArrayList<String>();
+			errorList.add(rawDetails);
+			error = new ErrorUnit(clearedMessage, lineNumber, errorList);
 		}
 		return error;
 	}

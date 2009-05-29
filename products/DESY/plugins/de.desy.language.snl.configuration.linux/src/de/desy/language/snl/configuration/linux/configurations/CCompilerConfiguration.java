@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import de.desy.language.snl.SNLConstants;
 import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
-import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
+import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 
 public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 	
@@ -54,7 +54,7 @@ public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 	/* (non-Javadoc)
 	 * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getCompilerPath()
 	 */
-	public String getCompilerPath() {
+	protected String getCompilerPath() {
 		return getCompilerOptionService().getCCompilerPath();
 	}
 	

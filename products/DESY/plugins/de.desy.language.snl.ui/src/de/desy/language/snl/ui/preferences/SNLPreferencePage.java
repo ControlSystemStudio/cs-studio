@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -31,6 +32,16 @@ public class SNLPreferencePage extends FieldEditorPreferencePage implements
 		FieldEditor editor = new RadioGroupFieldEditor(preferenceID,
 				"Choose target platform", 1, labelAndValues,
 				getFieldEditorParent(), true);
+		addField(editor);
+
+		editor = new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.SAVE_AND_COMPILE_POST_FIX,
+				"Start compilation after saving", getFieldEditorParent());
+		addField(editor);
+		
+		editor = new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.KEEP_GENERATED_FILES_POST_FIX,
+				"Keep temporarz compilation results", getFieldEditorParent());
 		addField(editor);
 	}
 

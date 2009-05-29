@@ -33,20 +33,28 @@ public class SNLCompilerPreferencePage extends FieldEditorPreferencePage
 	protected void createFieldEditors() {
 		Group cCompilerGroup = new Group(getFieldEditorParent(),
 				SWT.NONE);
-		cCompilerGroup.setText("Location of GCC");
+		cCompilerGroup.setText("Location of C Compiler");
 		cCompilerGroup.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
 		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
 				+ PreferenceConstants.C_COMPILER_LOCATION_POST_FIX, "", true, 
 				cCompilerGroup));
 		
+		Group preCompilerGroup = new Group(getFieldEditorParent(),
+				SWT.NONE);
+		preCompilerGroup.setText("Location of Precompiler");
+		preCompilerGroup.setLayoutData(new GridData(
+				GridData.FILL_HORIZONTAL));
+		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
+				+ PreferenceConstants.PRE_COMPILER_LOCATION_POST_FIX, "", true, 
+				preCompilerGroup));
 		Group applicationCompilerGroup = new Group(getFieldEditorParent(),
 				SWT.NONE);
-		applicationCompilerGroup.setText("Location of G++");
+		applicationCompilerGroup.setText("Location of Application Compiler");
 		applicationCompilerGroup.setLayoutData(new GridData(
 				GridData.FILL_HORIZONTAL));
 		this.addField(new FileFieldEditor(SNLUiActivator.PLUGIN_ID
-				+ PreferenceConstants.G_COMPILER_LOCATION_POST_FIX, "", true, 
+				+ PreferenceConstants.APPLICATION_COMPILER_POST_FIX, "", true, 
 				applicationCompilerGroup));
 		
 		Group groupOfLocationElement = new Group(getFieldEditorParent(),

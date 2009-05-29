@@ -44,7 +44,7 @@ public class CompileAction implements IEditorActionDelegate {
 				box.open();
 			} else {
 				_editor
-						.doHandleSourceModifiedAndSaved(new NullProgressMonitor());
+						.compileFile(new NullProgressMonitor());
 			}
 		}
 	}

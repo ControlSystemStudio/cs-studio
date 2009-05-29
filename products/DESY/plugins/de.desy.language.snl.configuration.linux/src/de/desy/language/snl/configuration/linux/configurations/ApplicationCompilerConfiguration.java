@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import de.desy.language.snl.SNLConstants;
 import de.desy.language.snl.compilerconfiguration.AbstractCompilerConfiguration;
-import de.desy.language.snl.compilerconfiguration.ICompilerOptionsService;
+import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 
 /*
  * Original compiler command
@@ -49,8 +49,8 @@ public class ApplicationCompilerConfiguration extends
 	}
 
 	@Override
-	public String getCompilerPath() {
-		return getCompilerOptionService().getGCompilerPath();
+	protected String getCompilerPath() {
+		return getCompilerOptionService().getApplicationCompilerPath();
 	}
 
 	@Override

@@ -296,7 +296,6 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
 								new SubProgressMonitor(monitor, 1));
 						projectHandle.open(monitor);
 						this.createFolder(projectHandle, SNLConstants.SOURCE_FOLDER.getValue(), monitor);
-						this.createFolder(projectHandle, SNLConstants.GENERATED_FOLDER.getValue(), monitor);
 						this.createFolder(projectHandle, SNLConstants.BIN_FOLDER.getValue(), monitor);
 					}
 

@@ -43,9 +43,14 @@ public enum PreferenceConstants {
 	C_COMPILER_LOCATION_POST_FIX(".c_compiler.location"),
 	
 	/**
+	 * Pre Compiler location / directory.
+	 */
+	PRE_COMPILER_LOCATION_POST_FIX(".pre_compiler.location"),
+	
+	/**
 	 * Application Compiler location / directory.
 	 */
-	G_COMPILER_LOCATION_POST_FIX(".g_compiler.location"),
+	APPLICATION_COMPILER_POST_FIX(".application_compiler.location"),
 
 	/**
 	 * Post-fix for the strike-through-style constant to be added to the type
@@ -61,7 +66,17 @@ public enum PreferenceConstants {
 	/**
 	 * Post-fix for the target platform constant to be added to the type id.
 	 */
-	TARGET_PLATFORM(".targetplatform");
+	TARGET_PLATFORM(".targetplatform"),
+	
+	/**
+	 * Post-fix for the option enable compilation after save.
+	 */
+	SAVE_AND_COMPILE_POST_FIX(".saveAndCompile"),
+	
+	/**
+	 * Post-fix for the option to keep generated files.
+	 */
+	KEEP_GENERATED_FILES_POST_FIX(".keepGeneratedFiles");
 
 	/**
 	 * Id used in the preference store.
