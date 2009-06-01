@@ -432,7 +432,16 @@ public class LinearScaleTickLabels extends Figure {
         
         if(scale.isDateEnabled()) {
         	//by default, make the least step to be minutes
-        	long timeStep = 60000l;       		
+        	
+        	long timeStep;
+        	if(max - min < 60000) // < 1 min, step = 1 sec
+        		timeStep= 1000l;
+        	else if (max -min < 43200000) // < 12 hour, step = 1 min
+        		timeStep = 60000l;
+        	else if (max - min < 604800000) // < 7 days, step = 1 hour
+        		timeStep = 3600000l;
+        	else 
+        		timeStep = 86400000l;
         		
         	if (scale.getTimeUnit() == Calendar.SECOND) {
         		timeStep = 1000l;
