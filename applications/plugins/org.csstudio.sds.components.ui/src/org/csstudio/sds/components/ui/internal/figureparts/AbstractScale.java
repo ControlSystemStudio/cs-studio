@@ -269,6 +269,7 @@ public abstract class AbstractScale extends Figure{
         logScaleEnabled = enabled;
         
         setDirty(true);
+		revalidate();
     }
 
 	/**
@@ -277,6 +278,7 @@ public abstract class AbstractScale extends Figure{
 	public void setMajorTickMarkStepHint(int majorTickMarkStepHint) {
 		this.majorTickMarkStepHint = majorTickMarkStepHint;
 		setDirty(true);
+		revalidate();
 	}
 
 	/**
@@ -287,6 +289,10 @@ public abstract class AbstractScale extends Figure{
 	}
 
 
+	public void setRange(double min, double max){
+		setRange(new Range(min, max));
+	}
+	
 	/** set the scale range */
 	 public void setRange(Range range) {
 	        if (range == null) {
@@ -330,6 +336,7 @@ public abstract class AbstractScale extends Figure{
             }
 
             setDirty(true);
+            revalidate();
 	    }
 
 
@@ -359,7 +366,6 @@ public abstract class AbstractScale extends Figure{
 	public void setTimeUnit(int timeUnit) {
 		this.timeUnit = timeUnit;
         setDirty(true);
-
 	}
 
 	/**
