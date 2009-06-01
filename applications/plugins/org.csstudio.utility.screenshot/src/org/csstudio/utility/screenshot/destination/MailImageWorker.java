@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -45,6 +44,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.dialog.MailSenderDialog;
@@ -79,6 +79,7 @@ public class MailImageWorker implements IImageWorker
         InternetAddress carbonCopy = null;
         InternetAddress[] addressTo = null;
         BufferedImage bufferedImage = null;
+        String workspaceLocation = null;
         String imageFilename = "capture.jpg";
         
         if(image == null)
@@ -86,6 +87,21 @@ public class MailImageWorker implements IImageWorker
             MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.NO_IMAGE"));
         
             return;
+        }
+        
+        // Retrieve the location of the workspace directory
+        try
+        {
+            workspaceLocation = Platform.getLocation().toPortableString();
+            if(workspaceLocation.endsWith("/") == false)
+            {
+                workspaceLocation = workspaceLocation + "/";
+            }
+        }
+        catch(IllegalStateException ise)
+        {
+            CentralLogger.getInstance().warn(this, "Workspace location could not be found. Using working directory '.'");
+            workspaceLocation = "./";
         }
         
         bufferedImage = convertToBufferedImage(image.getImageData());
@@ -99,7 +115,7 @@ public class MailImageWorker implements IImageWorker
             try
             {
                 // ImageIO.write(bufferedImage, "jpg", new File(ScreenshotPlugin.getInstalledFilePath("/") + imageFilename));
-                ImageIO.write(bufferedImage, "jpg", new File(Platform.getLocation().toOSString() + "/" + imageFilename));
+                ImageIO.write(bufferedImage, "jpg", new File(workspaceLocation + imageFilename));
                 Properties props = new Properties();
                 
                 props.put("mail.smtp.host", ScreenshotPlugin.getDefault().getPluginPreferences().getString(ScreenshotPreferenceConstants.MAIL_SERVER));
@@ -122,7 +138,7 @@ public class MailImageWorker implements IImageWorker
                 text.setHeader("Content-Type" , text.getContentType()); 
     
                 // DataSource source = new FileDataSource(ScreenshotPlugin.getInstalledFilePath("/") + imageFilename);
-                DataSource source = new FileDataSource(Platform.getLocation().toOSString() + "/" + imageFilename);
+                DataSource source = new FileDataSource(workspaceLocation + imageFilename);
                 bild.setDataHandler(new DataHandler(source));
                 bild.setFileName("Screenshot.jpg");
                 

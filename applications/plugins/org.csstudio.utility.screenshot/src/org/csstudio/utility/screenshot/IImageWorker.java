@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Interface for the extension point of the screenshot plugin.
  * 
- * @author  Markus Möller
+ * @author  Markus MÃ¶ller
  * @version 1.0
  * 
  */
