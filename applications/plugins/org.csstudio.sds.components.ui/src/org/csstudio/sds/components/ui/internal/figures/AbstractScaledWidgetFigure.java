@@ -66,9 +66,6 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 			Math.max(scale.getRange().lower, Math.min(scale.getRange().upper, value));
 	}
 	
-	
-	
-	
 	/**
 	 * set the range of the scale
 	 * @param min
@@ -78,7 +75,6 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		this.minimum = min;
 		this.maximum = max;
 		scale.setRange(new Range(min, max));
-		scale.revalidate();
 	}
 	
 	/**
@@ -87,7 +83,6 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	public void setMajorTickMarkStepHint(double majorTickMarkStepHint) {
 		this.majorTickMarkStepHint = majorTickMarkStepHint;
 		scale.setMajorTickMarkStepHint((int) majorTickMarkStepHint);
-		scale.revalidate();
 	}
 
 	/**
@@ -114,7 +109,6 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		this.logScale = logScale;
 		scale.setLogScale(logScale);
 		scale.setRange(new Range(minimum, maximum));
-		scale.revalidate();
 	}	
 
 	/**
