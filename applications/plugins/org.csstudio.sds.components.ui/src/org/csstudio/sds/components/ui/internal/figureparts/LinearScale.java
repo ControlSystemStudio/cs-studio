@@ -162,12 +162,13 @@ public class LinearScale extends AbstractScale {
 		//coerce to range
 		double min = getRange().lower;
         double max = getRange().upper;
-		value = value < min ? min : (value > max ? max : value);
+		//value = value < min ? min : (value > max ? max : value);
 		int pixelsToStart =0;
 		if(isLogScaleEnabled()){
 			if(value <=0)
-				throw new IllegalArgumentException(
-						"Invalid value: value must be greater than 0");
+				value = min;
+			//	throw new IllegalArgumentException(
+			//			"Invalid value: value must be greater than 0");
 			pixelsToStart = (int) ((Math.log10(value) - Math.log10(min))/
 							(Math.log10(max) - Math.log10(min)) * (length - 2*margin)) + margin;
 		}else			
@@ -263,8 +264,9 @@ public class LinearScale extends AbstractScale {
      * @see IAxisTick#setForeground(Color)
      */
     public void setForegroundColor(Color color) {
-        tickMarks.setForegroundColor(color);
+    	tickMarks.setForegroundColor(color);
         tickLabels.setForegroundColor(color);
+    	super.setForegroundColor(color);        
     }
 	
 	/**
