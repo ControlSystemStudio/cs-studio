@@ -44,13 +44,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.csstudio.utility.screenshot.desy.dialog.LogbookSenderDialog;
 import org.csstudio.utility.screenshot.desy.internal.localization.LogbookSenderMessages;
 import org.csstudio.utility.screenshot.preference.ScreenshotPreferenceConstants;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -59,7 +59,6 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
-
 
 public class ImageProcessor implements IImageWorker
 {
@@ -76,9 +75,26 @@ public class ImageProcessor implements IImageWorker
         InternetAddress[] addressTo = null;
         BufferedImage bufferedImage = null;
         String imageFilename = "capture.jpg";
+        String workspaceLocation = null;
+        
+        // Retrieve the location of the workspace directory
+        try
+        {
+            workspaceLocation = Platform.getLocation().toPortableString();
+            if(workspaceLocation.endsWith("/") == false)
+            {
+                workspaceLocation = workspaceLocation + "/";
+            }
+        }
+        catch(IllegalStateException ise)
+        {
+            CentralLogger.getInstance().warn(this, "Workspace location could not be found. Using working directory '.'");
+            workspaceLocation = "./";
+        }
+
         // IPath p = ResourcesPlugin.getWorkspace().getRoot().getProjectRelativePath();
-        IPath p = Platform.getLocation();
-        String path = p.toOSString() + "/";
+        // IPath p = Platform.getLocation();
+        // String path = p.toOSString() + "/";
         
         if(image == null)
         {
@@ -97,7 +113,7 @@ public class ImageProcessor implements IImageWorker
         {
             try
             {
-                ImageIO.write(bufferedImage, "jpg", new File(path + imageFilename));
+                ImageIO.write(bufferedImage, "jpg", new File(workspaceLocation + imageFilename));
                 
                 Properties props = new Properties();
                 
@@ -120,7 +136,7 @@ public class ImageProcessor implements IImageWorker
                 text.setHeader("MIME-Version" , "1.0");
                 text.setHeader("Content-Type" , text.getContentType());
     
-                DataSource source = new FileDataSource(path + imageFilename);
+                DataSource source = new FileDataSource(workspaceLocation + imageFilename);
                 bild.setDataHandler(new DataHandler(source));
                 bild.setFileName("Screenshot.jpg");
                 
