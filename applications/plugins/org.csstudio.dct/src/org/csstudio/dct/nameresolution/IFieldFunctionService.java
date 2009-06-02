@@ -1,5 +1,6 @@
 package org.csstudio.dct.nameresolution;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,4 +50,11 @@ public interface IFieldFunctionService {
 	 * @return the final String
 	 */
 	String evaluate(String source, IRecord record, String fieldName) throws Exception;
+
+	/**
+	 * Returns extension descriptors for all registered field functions.
+	 * 
+	 * @return extension descriptors for all registered field functions
+	 */
+	List<FieldFunctionExtension> getFieldFunctionExtensions();
 }

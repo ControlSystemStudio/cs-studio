@@ -16,6 +16,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform,
  org.csstudio.platform.ui,
  org.eclipse.gef,
- org.csstudio.dct;bundle-version="1.0.0"
+ org.csstudio.dct;bundle-version="1.0.0",
+ org.junit
 
 

@@ -1,6 +1,9 @@
 package org.csstudio.dct.nameresolution;
 
+import java.util.List;
+
 import org.csstudio.dct.model.IRecord;
+import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Represents function that can be used in a record field. Functions are
@@ -28,4 +31,6 @@ public interface IFieldFunction {
 	 * @return the final String 
 	 */
 	String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception;
+	
+	List<IContentProposal> getParameterProposal (int parameter, IRecord record);
 }

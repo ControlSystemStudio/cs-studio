@@ -1,16 +1,15 @@
 package org.csstudio.dct.nameresolution.internal;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.RecordFinder;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.dct.util.ResolutionUtil;
 import org.eclipse.jface.fieldassist.IContentProposal;
+
+import bsh.Interpreter;
 
 /**
  * Implementation for the forwardlink() function.
@@ -18,7 +17,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
  * @author Sven Wende
  * 
  */
-public final class ForwardLinkFieldFunction implements IFieldFunction {
+public final class EvalFieldFunction  implements IFieldFunction {
 
 	/**
 	 *{@inheritDoc}
@@ -34,18 +33,15 @@ public final class ForwardLinkFieldFunction implements IFieldFunction {
 			result = "No Record found";
 		}
 
-		return result;
+
+		Interpreter i = new Interpreter();  // Construct an interpreter
+
+		i.eval("bar = "+parameters[0]);             
+		return ""+i.get("bar");
 	}
 
 	public List<IContentProposal> getParameterProposal(int parameter, IRecord record) {
-		List<IContentProposal> result = new ArrayList<IContentProposal>();
-
-		for (IRecord r : record.getContainer().getRecords()) {
-			result.add(new FieldFunctionContentProposal(AliasResolutionUtil.getNameFromHierarchy(r), AliasResolutionUtil
-					.getEpicsNameFromHierarchy(r), AliasResolutionUtil.getEpicsNameFromHierarchy(r) + " Description", 0));
-
-		}
-
-		return result;
+		return Collections.EMPTY_LIST;
 	}
+	
 }

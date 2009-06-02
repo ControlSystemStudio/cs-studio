@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="exporters" name="exporters" schema="schema/exporters.exsd"/>
    <extension-point id="ioNameService" name="IO Name Service" schema="schema/ioNameService.exsd"/>
+   <extension-point id="fieldfunctions" name="fieldfunctions" schema="schema/fieldfunctions.exsd"/>
    <extension
          point="org.csstudio.dct.exporters">
       <exporter
@@ -23,6 +24,33 @@
             icon="icons/db-file-exporter.png"
             id="recordNameExporter">
       </exporter>
+   </extension>
+   <extension
+         point="org.csstudio.dct.fieldfunctions">
+      <fieldfunction
+            class="org.csstudio.dct.nameresolution.internal.EvalFieldFunction"
+            description="Function. Evaluates the given expression."
+            name="eval"
+            signature="eval(&lt;expression&gt;)">
+      </fieldfunction>
+      <fieldfunction
+            class="org.csstudio.dct.nameresolution.internal.IoNameFieldFunction"
+            description="Function. Resolves the IO name of a device."
+            name="ioname"
+            signature="ioname(&lt;record&gt;)">
+      </fieldfunction>
+      <fieldfunction
+            class="org.csstudio.dct.nameresolution.internal.ForwardLinkFieldFunction"
+            description="Function. Creates a forward link."
+            name="forwardlink"
+            signature="forwardlink(&lt;target&gt;)">
+      </fieldfunction>
+      <fieldfunction
+            class="org.csstudio.dct.nameresolution.internal.DataLinkFieldFunction"
+            description="Function. Creates a data link."
+            name="datalink"
+            signature="datalink(&lt;target&gt;, [field]?, [NPP], [NMS])">
+      </fieldfunction>
    </extension>
 
 </plugin>

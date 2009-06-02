@@ -1,5 +1,8 @@
 package org.csstudio.dct.nameresolution.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.IoNameService;
 import org.csstudio.dct.model.IRecord;
@@ -8,6 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
  * Implementation for the ioname() function.
@@ -54,5 +58,9 @@ public final class IoNameFieldFunction implements IFieldFunction {
 		}
 
 		return service;
+	}
+	
+	public List<IContentProposal> getParameterProposal(int parameter, IRecord record) {
+		return Collections.EMPTY_LIST;
 	}
 }

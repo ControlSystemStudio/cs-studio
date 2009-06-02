@@ -8,8 +8,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Record;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.util.AliasResolutionException;
+import org.eclipse.jface.fieldassist.IContentProposal;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -204,4 +207,9 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
 
 		return sb.toString();
 	}
+
+	public List<IContentProposal> getParameterProposal(int parameter, IRecord record) {
+		return Collections.EMPTY_LIST;
+	}
+
 }

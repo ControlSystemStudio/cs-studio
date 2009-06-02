@@ -23,6 +23,10 @@ public final class DctActivator extends AbstractUIPlugin {
 	public static final String EXTPOINT_EXPORTERS = PLUGIN_ID
 			+ ".exporters"; //$NON-NLS-1$
 
+	public static final String EXTPOINT_FIELDFUNCTIONS = PLUGIN_ID
+	+ ".fieldfunctions"; //$NON-NLS-1$
+
+	
 	// The shared instance
 	private static DctActivator plugin;
 
