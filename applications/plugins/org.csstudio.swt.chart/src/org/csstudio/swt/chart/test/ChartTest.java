@@ -1,5 +1,6 @@
 package org.csstudio.swt.chart.test;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import org.csstudio.platform.data.TimestampFactory;
@@ -9,8 +10,6 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartListener;
-import org.csstudio.swt.chart.ChartSample;
-import org.csstudio.swt.chart.ChartSampleSequenceContainer;
 import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.TraceType;
@@ -39,11 +38,62 @@ import org.eclipse.swt.widgets.Shell;
 @SuppressWarnings("nls")
 public class ChartTest
 {
+    /** Flags for chart */
     private static final int chart_flags = Chart.USE_TRACE_NAMES
                                             | Chart.TIME_CHART;
+    
+    /** Demo scrolling? */
+    private static final boolean scroll = true;
+
+    /** Millisec period of scroll */
+    private static final int SCROLL_MS = 100;
 
     private Chart chart;
     private ListViewer list_viewer;
+
+    final private ArrayList<ChartSampleSequenceDemo> trace_data =
+        new ArrayList<ChartSampleSequenceDemo>();
+
+    final private Runnable sample_adder = new Runnable()
+    {
+        public void run()
+        {
+            if (chart.isDisposed())
+                return;
+            final Display display = chart.getDisplay();
+            
+            // Add a sample to each trace
+            double start = Double.MAX_VALUE;
+            double end = 0.0;
+            synchronized (trace_data)
+            {
+                for (ChartSampleSequenceDemo seq : trace_data)
+                {
+                    seq.add();
+                    final double first_x = seq.get(0).getX();
+                    if (start > first_x)
+                        start = first_x;
+                    final double last_x = seq.get(seq.size()-1).getX();
+                    if (end < last_x)
+                        end = last_x;
+                }
+            }
+            
+            // Trigger redraw
+            if (scroll)
+            {
+                // Scroll so that the last 60 seconds roll by
+                if (end - start > 60.0)
+                    start = end - 60.0;
+                chart.getXAxis().setValueRange(start, end);
+            }
+            else
+                chart.redrawTraces();
+            
+            // Schedule next update
+            display.timerExec(SCROLL_MS, sample_adder);
+        }
+    };
 
     private void run()
     {
@@ -107,6 +157,9 @@ public class ChartTest
         };
 
         shell.open();
+        
+        display.timerExec(SCROLL_MS, sample_adder);
+        
         // Message loop left to the application
         while (!shell.isDisposed())
             if (!display.readAndDispatch())
@@ -197,39 +250,15 @@ public class ChartTest
     private YAxis addDemoTrace(final String name, YAxis yaxis)
     {
         // Create new sample sequence
-        final ChartSampleSequenceContainer seq = new ChartSampleSequenceContainer();
+        final double phase = 2.0 * Math.PI * Math.random();
+        final double x0 = ((chart_flags & Chart.TIME_CHART) != 0)
+                        ? TimestampFactory.now().toDouble()
+                        : 0.0;
         final int N = 100;
-        final double twopi = 2.0 * Math.PI;
-        final double phase = twopi * Math.random();
-        final double shift = 100 + 10.0*Math.random();
-        final double x0 = TimestampFactory.now().toDouble();
+        final ChartSampleSequenceDemo seq = new ChartSampleSequenceDemo(x0, phase, N);
         for (int i=0; i<=N; ++i)
         {
-            double x;
-            if ((chart_flags & Chart.TIME_CHART) != 0)
-                x = x0 + 10*i;
-            else
-                x = 0.1*i;
-
-            // 5% annotation, rest actual samples
-            if (Math.random() > 0.95  ||  i==N)
-                seq.add(ChartSample.Type.Point, x, Double.NEGATIVE_INFINITY, "Comment");
-            else
-            {
-                final double y = shift +
-                    50*(0.1*Math.random() + Math.sin(twopi*0.01*i + phase));
-                final String info = null;
-                // Some raw samples, rest min/max/average
-                if (Math.random() > 0.5)
-                    seq.add(ChartSample.Type.Normal, x, y, info);
-                else
-                {   
-                    final double noise = 0.05;
-                    final double y_min = y - y*noise*Math.random();
-                    final double y_max = y + y*noise*Math.random();
-                    seq.add(ChartSample.Type.Normal, x, y, y_min, y_max, info);
-                }
-            }
+            seq.add();
         }
         // Create new trace, using new or given Y axis
         if (yaxis == null)
@@ -250,6 +279,11 @@ public class ChartTest
         // Add to chart
         chart.addTrace(name, seq, color, 0, axis_index,
                        TraceType.Area);
+        synchronized (trace_data)
+        {
+            trace_data.add(seq);
+        }
+        chart.stagger();
         return yaxis;
     }
 
