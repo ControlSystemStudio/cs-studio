@@ -87,8 +87,8 @@ public class LinearScaleTickLabels extends Figure {
      *            the length of scale
      */
     private void updateTickLabelForLogScale(int length) {
-        double min = scale.getRange().lower;
-        double max = scale.getRange().upper;
+        double min = scale.getRange().getLower();
+        double max = scale.getRange().getUpper();
         if(min <= 0 || max <= 0)
         	throw new IllegalArgumentException(
         			"the range for log scale must be in positive range");
@@ -167,8 +167,8 @@ public class LinearScaleTickLabels extends Figure {
      *            scale tick length (without margin)
      */
     private void updateTickLabelForLinearScale(int length) {
-        double min = scale.getRange().lower;
-        double max = scale.getRange().upper;
+        double min = scale.getRange().getLower();
+        double max = scale.getRange().getUpper();
         BigDecimal gridStepBigDecimal = getGridStep(length, min, max);
         gridStepInPixel = (int) (length * gridStepBigDecimal.doubleValue()/(max - min));
         updateTickLabelForLinearScale(length, gridStepBigDecimal);
@@ -183,8 +183,8 @@ public class LinearScaleTickLabels extends Figure {
      *            the tick step
      */
     private void updateTickLabelForLinearScale(int length, BigDecimal tickStep) {
-        double min = scale.getRange().lower;
-        double max = scale.getRange().upper;
+        double min = scale.getRange().getLower();
+        double max = scale.getRange().getUpper();
 
         final BigDecimal MIN = new BigDecimal(new Double(min).toString());
         BigDecimal firstPosition;

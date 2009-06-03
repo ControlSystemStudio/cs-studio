@@ -87,14 +87,14 @@ public class RoundScaledRamp extends Figure {
     		else if(lolo.visible)
     			lowLimit = lolo.value;
     		else
-    			lowLimit = scale.getRange().lower;
+    			lowLimit = scale.getRange().getLower();
     		
     		if(hi.visible)
     			upLimit = hi.value;
     		else if(hihi.visible)
     			upLimit = hihi.value;
     		else
-    			upLimit = scale.getRange().upper;
+    			upLimit = scale.getRange().getUpper();
     		
     		//update normal
     		normal.value = (lowLimit + upLimit)/2;   	
@@ -106,8 +106,8 @@ public class RoundScaledRamp extends Figure {
     					bounds.width/2, (normal.absolutePosition + OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);    	
     		
     		//update min, max
-    		min.value = scale.getRange().lower;
-    		max.value = scale.getRange().upper;
+    		min.value = scale.getRange().getLower();
+    		max.value = scale.getRange().getUpper();
     		min.absolutePosition = (int) scale.getValuePosition(min.value, false);
     		min.relativePosition = (int) scale.getValuePosition(min.value, true);
     		max.absolutePosition = (int) scale.getValuePosition(max.value, false);

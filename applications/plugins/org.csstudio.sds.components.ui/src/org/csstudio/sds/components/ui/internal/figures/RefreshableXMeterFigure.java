@@ -171,9 +171,9 @@ public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
 			
 			if(scale != null && scale.isDirty())
 				M = Math.max(FigureUtilities.getTextWidth(
-						scale.format(scale.getRange().lower), scale.getFont()),
+						scale.format(scale.getRange().getLower()), scale.getFont()),
 						FigureUtilities.getTextWidth(
-						scale.format(scale.getRange().lower), scale.getFont()))/2;
+						scale.format(scale.getRange().getLower()), scale.getFont()))/2;
 			
 			int h = area.height;
 			int w = area.width;			

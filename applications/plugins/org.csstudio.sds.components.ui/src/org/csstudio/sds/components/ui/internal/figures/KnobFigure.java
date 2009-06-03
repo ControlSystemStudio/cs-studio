@@ -179,13 +179,13 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		double dragRange = ((RoundScale)scale).getLengthInDegrees();
 		if(scale.isLogScaleEnabled()) {						
 				double c = dragRange/(
-						Math.log10(scale.getRange().upper) - 
-						Math.log10(scale.getRange().lower));
+						Math.log10(scale.getRange().getUpper()) - 
+						Math.log10(scale.getRange().getLower()));
 				
 					change = oldValue * (Math.pow(10, -difference/c) - 1);
 		} else {			
 			
-				change = -(scale.getRange().upper - scale.getRange().lower)
+				change = -(scale.getRange().getUpper() - scale.getRange().getLower())
 						* difference / dragRange;
 		}
 		return change;

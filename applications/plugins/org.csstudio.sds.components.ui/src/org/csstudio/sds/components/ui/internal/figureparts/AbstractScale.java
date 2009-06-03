@@ -295,30 +295,34 @@ public abstract class AbstractScale extends Figure{
 	
 	/** set the scale range */
 	 public void setRange(Range range) {
+		 
+		 double lower = range.getLower();
+		 double upper = range.getUpper();
+		 
 	        if (range == null) {
 	            SWT.error(SWT.ERROR_NULL_ARGUMENT);
 	            return; // to suppress warnings...
 	        }
 
-	        if (Double.isNaN(range.lower) || Double.isNaN(range.upper)
-	                || range.lower > range.upper) {
+	        if (Double.isNaN(lower) || Double.isNaN(upper)
+	                || lower > upper) {
 	            throw new IllegalArgumentException("Illegal range: " + range);
 	        }
 
-	        if (min == range.lower && max == range.upper) {
+	        if (min == lower && max == upper) {
 	            return;
 	        }
 
-            if (range.lower == range.upper) {
-                range.upper = range.lower +1;
+            if (lower == upper) {
+                upper = lower +1;
             }
 
-            if (logScaleEnabled && range.lower <= 0) {
-            	range.lower = DEFAULT_LOG_SCALE_MIN;
+            if (logScaleEnabled && lower <= 0) {
+            	lower = DEFAULT_LOG_SCALE_MIN;
 	        }
 
-            min = range.lower;
-            max = range.upper;
+            min = lower;
+            max = upper;
             
             //calculate the default decimal format
             if(formatPattern ==null || formatPattern == default_decimal_format) {

@@ -262,23 +262,23 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 			if(effect3D) {
 				graphics.setBackgroundColor(fillColor);
 				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-					((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
+					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
 				Pattern backPattern = new Pattern(Display.getCurrent(), 
-					pipe.getBounds().x, ((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
+					pipe.getBounds().x, ((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 					pipe.getBounds().x + Pipe.PIPE_WIDTH,
-					((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
+					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 					WHITE_COLOR,255, fillColor, 0);					
 				graphics.setBackgroundPattern(backPattern);
 				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-					((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
+					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
 				backPattern.dispose();
 		
 			}else{
 				graphics.setBackgroundColor(fillColor);
 				graphics.fillRoundRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-						((LinearScale) scale).getValuePosition(scale.getRange().lower, false),
+						((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 						Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, ((LinearScale) scale).getMargin()),
 						Pipe.FILL_CORNER, Pipe.FILL_CORNER);			
 			}
@@ -369,7 +369,7 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 				pipeSize = pipe.getPreferredSize(-1, scale.getTickLength());
 				pipe.setBounds(new Rectangle(
 						area.x + area.width/2 -  Pipe.PIPE_WIDTH/2,
-						scale.getValuePosition(scale.getRange().upper, false) - pipe.getCorner().height,
+						scale.getValuePosition(scale.getRange().getUpper(), false) - pipe.getCorner().height,
 						pipeSize.width,
 						pipeSize.height));
 			}	

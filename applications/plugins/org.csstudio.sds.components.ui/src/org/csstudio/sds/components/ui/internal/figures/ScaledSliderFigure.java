@@ -239,18 +239,18 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		double dragRange = ((LinearScale)scale).getTickLength();
 		if(scale.isLogScaleEnabled()) {						
 				double c = dragRange/(
-						Math.log10(scale.getRange().upper) - 
-						Math.log10(scale.getRange().lower));
+						Math.log10(scale.getRange().getUpper()) - 
+						Math.log10(scale.getRange().getLower()));
 				if(horizontal)
 					change = oldValue * (Math.pow(10, difference.width/c) - 1);
 				else
 					change = oldValue * (Math.pow(10, -difference.height/c) - 1);
 		} else {			
 			if(horizontal)						
-				change = (scale.getRange().upper - scale.getRange().lower)
+				change = (scale.getRange().getUpper() - scale.getRange().getLower())
 						* difference.width / dragRange;						
 			else
-				change = -(scale.getRange().upper - scale.getRange().lower)
+				change = -(scale.getRange().getUpper() - scale.getRange().getLower())
 						* difference.height / dragRange;
 		}
 		return change;
@@ -614,7 +614,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			
 			if(track != null) {
 				track.setBounds(new Rectangle(	
-						scale.getValuePosition(scale.getRange().lower, false) - track.getLineWidth(),
+						scale.getValuePosition(scale.getRange().getLower(), false) - track.getLineWidth(),
 						area.y + area.height/2 - Track.TRACK_BREADTH/2,
 						scale.getTickLength()+ 2*track.getLineWidth(),
 						Track.TRACK_BREADTH));
@@ -652,7 +652,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			if(track != null) {
 				track.setBounds(new Rectangle(
 						area.x + area.width/2 - Track.TRACK_BREADTH/2,
-						scale.getValuePosition(scale.getRange().upper, false) - track.getLineWidth(),
+						scale.getValuePosition(scale.getRange().getUpper(), false) - track.getLineWidth(),
 						Track.TRACK_BREADTH,
 						scale.getTickLength()+ 2*track.getLineWidth()));
 			}

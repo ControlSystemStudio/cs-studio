@@ -89,8 +89,8 @@ public class RoundScaleTickLabels extends Figure {
      *            scale length in degrees 
      */
     private void updateTickLabelForLogScale(double lengthInDegrees) {
-        double min = scale.getRange().lower;
-        double max = scale.getRange().upper;
+        double min = scale.getRange().getLower();
+        double max = scale.getRange().getUpper();
         if(min <= 0 || max <= 0)
         	throw new IllegalArgumentException(
         			"the range for log scale must be in positive range");
@@ -170,8 +170,8 @@ public class RoundScaleTickLabels extends Figure {
      * 			  scale length in pixels      
      */
     private void updateTickLabelForLinearScale(double lengthInDegrees, int lengthInPixels) {
-        double min = scale.getRange().lower;
-        double max = scale.getRange().upper;
+        double min = scale.getRange().getLower();
+        double max = scale.getRange().getUpper();
         BigDecimal tickStep = getGridStep(lengthInPixels, min, max);
         gridStepInRadians = lengthInDegrees*(Math.PI/180)*tickStep.doubleValue()/(max-min);
 

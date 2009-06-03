@@ -6,10 +6,10 @@ package org.csstudio.sds.components.ui.internal.figureparts;
 public class Range {
 
     /** the lower value of range */
-    public double lower;
+    private double lower;
 
     /** the upper value of range */
-    public double upper;
+    private double upper;
 
     /**
      * Constructor.
@@ -64,4 +64,18 @@ public class Range {
     public String toString() {
         return "lower=" + lower + ", upper=" + upper;
     }
+
+	/**
+	 * @return the lower
+	 */
+	public double getLower() {
+		return lower;
+	}
+
+	/**
+	 * @return the upper
+	 */
+	public double getUpper() {
+		return upper;
+	}
 }

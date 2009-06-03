@@ -72,12 +72,12 @@ public class LinearScale extends AbstractScale {
 	private void calcMargin() {
 		if(isHorizontal()) {			
 			margin = (int) Math.ceil(Math.max(FigureUtilities.getTextExtents(
-					format(getRange().lower),getFont()).width, 
-					FigureUtilities.getTextExtents(format(getRange().upper), getFont()).width)/2.0);
+					format(getRange().getLower()),getFont()).width, 
+					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).width)/2.0);
 		}else
 			margin = (int) Math.ceil(Math.max(FigureUtilities.getTextExtents(
-					format(getRange().lower), getFont()).height, 
-					FigureUtilities.getTextExtents(format(getRange().upper), getFont()).height)/2.0);;
+					format(getRange().getLower()), getFont()).height, 
+					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).height)/2.0);;
 	}
 	
 	/**
@@ -160,8 +160,8 @@ public class LinearScale extends AbstractScale {
 	public int getValuePosition(double value, boolean relative) {
 		updateTick();
 		//coerce to range
-		double min = getRange().lower;
-        double max = getRange().upper;
+		double min = getRange().getLower();
+        double max = getRange().getUpper();
 		//value = value < min ? min : (value > max ? max : value);
 		int pixelsToStart =0;
 		if(isLogScaleEnabled()){

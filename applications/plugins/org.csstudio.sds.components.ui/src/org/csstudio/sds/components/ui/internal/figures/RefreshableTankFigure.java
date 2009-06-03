@@ -228,7 +228,7 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
 			if(tank != null) {
 				tank.setBounds(new Rectangle(
 						area.x + scaleSize.width,
-						scale.getValuePosition(scale.getRange().upper, false) - tank.getLineWidth(),
+						scale.getValuePosition(scale.getRange().getUpper(), false) - tank.getLineWidth(),
 						area.width - scaleSize.width - markerSize.width,
 						scale.getTickLength()+ 2*tank.getLineWidth()));
 			}	
