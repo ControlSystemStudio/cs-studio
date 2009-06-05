@@ -33,8 +33,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextViewerExtension5;
-import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
@@ -43,11 +41,9 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
-import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.IVerticalRuler;
-import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -178,20 +174,40 @@ public abstract class LanguageEditor extends TextEditor {
 	 * Creates a language editor from the scope of concreting class.
 	 */
 	protected LanguageEditor() {
-		this.setRangeIndicator(new Annotation(false));
-	}
+		this.setSourceViewerConfiguration(new TextSourceViewerConfiguration() {
+			@Override
+			public String getConfiguredDocumentPartitioning(
+					final ISourceViewer sourceViewer) {
+				final String documentPartitioning = LanguageEditor.this
+						.doGetPartitioningId();
+				if (documentPartitioning == null) {
+					return super
+							.getConfiguredDocumentPartitioning(sourceViewer);
+				}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void adjustHighlightRange(final int offset, final int length) {
-		final ISourceViewer viewer = this.getSourceViewer();
-		if (viewer instanceof ITextViewerExtension5) {
-			final ITextViewerExtension5 extension = (ITextViewerExtension5) viewer;
-			extension.exposeModelRange(new Region(offset, length));
-		}
-		this.getSourceViewer().setSelectedRange(offset, length);
+				return documentPartitioning;
+			}
+
+			@Override
+			public IPresentationReconciler getPresentationReconciler(
+					final ISourceViewer sourceViewer) {
+				final PresentationReconciler result = new PresentationReconciler();
+
+				final String documentPartitioning = LanguageEditor.this
+						.doGetPartitioningId();
+				if (documentPartitioning != null) {
+					result.setDocumentPartitioning(documentPartitioning);
+				}
+
+				result.setDamager(LanguageEditor.this.getPresentationDamager(),
+						IDocument.DEFAULT_CONTENT_TYPE);
+				result.setRepairer(LanguageEditor.this
+						.getPresentationRepairer(),
+						IDocument.DEFAULT_CONTENT_TYPE);
+
+				return result;
+			}
+		});
 	}
 
 	/**
@@ -237,24 +253,6 @@ public abstract class LanguageEditor extends TextEditor {
 
 	public Node getRootNode() {
 		return _rootNode;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final ISourceViewer createSourceViewer(final Composite parent,
-			final IVerticalRuler ruler, final int styles) {
-		this.fAnnotationAccess = this.createAnnotationAccess();
-		this.fOverviewRuler = this.createOverviewRuler(this.getSharedColors());
-
-		final ISourceViewer viewer = new ProjectionViewer(parent, ruler, this
-				.getOverviewRuler(), this.isOverviewRulerVisible(), styles);
-
-		// decoration support must have been created and configured up to here
-		this.getSourceViewerDecorationSupport(viewer);
-
-		return viewer;
 	}
 
 	/**
@@ -423,41 +421,6 @@ public abstract class LanguageEditor extends TextEditor {
 			throws CoreException {
 		this._codeScanner = this.doGetTokenScanner(this
 				.getRuleProviderForHighlighting());
-
-		this.setSourceViewerConfiguration(new TextSourceViewerConfiguration() {
-			@Override
-			public String getConfiguredDocumentPartitioning(
-					final ISourceViewer sourceViewer) {
-				final String documentPartitioning = LanguageEditor.this
-						.doGetPartitioningId();
-				if (documentPartitioning == null) {
-					return super
-							.getConfiguredDocumentPartitioning(sourceViewer);
-				}
-
-				return documentPartitioning;
-			}
-
-			@Override
-			public IPresentationReconciler getPresentationReconciler(
-					final ISourceViewer sourceViewer) {
-				final PresentationReconciler result = new PresentationReconciler();
-
-				final String documentPartitioning = LanguageEditor.this
-						.doGetPartitioningId();
-				if (documentPartitioning != null) {
-					result.setDocumentPartitioning(documentPartitioning);
-				}
-
-				result.setDamager(LanguageEditor.this.getPresentationDamager(),
-						IDocument.DEFAULT_CONTENT_TYPE);
-				result.setRepairer(LanguageEditor.this
-						.getPresentationRepairer(),
-						IDocument.DEFAULT_CONTENT_TYPE);
-
-				return result;
-			}
-		});
 		super.doSetInput(input);
 
 		this.doHandleDoSetInputHasBeenCalled(input);
@@ -542,6 +505,7 @@ public abstract class LanguageEditor extends TextEditor {
 	 */
 	@Override
 	protected final void initializeEditor() {
+		super.initializeEditor();
 		this._uiListener = new UIEventListener() {
 			public void eventOccourred() {
 				LanguageEditor.this.refresh();
@@ -687,5 +651,10 @@ public abstract class LanguageEditor extends TextEditor {
 			final boolean moveCursor) {
 		super.setHighlightRange(offset, length, moveCursor);
 		this.getSourceViewer().setSelectedRange(offset, length);
+	}
+	
+	@Override
+	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+		super.handlePreferenceStoreChanged(event);
 	}
 }
