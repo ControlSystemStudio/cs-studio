@@ -7,6 +7,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
  * Action to trigger the compilation of the *.st file displayed in the SNL
@@ -15,7 +17,7 @@ import org.eclipse.ui.IEditorPart;
  * @author Kai Meyer (C1 WPS)
  * 
  */
-public class CompileAction implements IEditorActionDelegate {
+public class CompileAction implements IEditorActionDelegate, IWorkbenchWindowActionDelegate {
 
 	private SNLEditor _editor;
 
@@ -54,6 +56,14 @@ public class CompileAction implements IEditorActionDelegate {
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		// nothing to do
+	}
+
+	public void dispose() {
+		
+	}
+
+	public void init(IWorkbenchWindow window) {
+		
 	}
 
 }

@@ -176,17 +176,18 @@ public class SNLEditor extends LanguageEditor {
 			IProgressMonitor progressMonitor, String targetPlatform) {
 		ErrorUnit error = null;
 		List<String> errorMessages = new ArrayList<String>();
-
-		errorMessages
-				.addAll(checkPreferenceConfiguration(_compilerOptionService));
-		errorMessages.addAll(checkDirectories(baseDirectory, progressMonitor));
 		if (targetPlatform == null || targetPlatform.trim().length() < 1) {
 			String errorDetail = "Target Platform not valid";
 			errorMessages.add(errorDetail);
 		}
-		if (!errorMessages.isEmpty()) {
-			error = new ErrorUnit("Compilation could not be initialized",
-					errorMessages);
+		if ( ! targetPlatform.equals("none")) {
+			errorMessages
+			.addAll(checkPreferenceConfiguration(_compilerOptionService));
+			errorMessages.addAll(checkDirectories(baseDirectory, progressMonitor));
+			if (!errorMessages.isEmpty()) {
+				error = new ErrorUnit("Compilation could not be initialized",
+						errorMessages);
+			}
 		}
 
 		return error;
@@ -319,6 +320,11 @@ public class SNLEditor extends LanguageEditor {
 		}
 
 		return errorMessages;
+	}
+	
+	@Override
+	protected void createActions() {
+		super.createActions();
 	}
 
 }

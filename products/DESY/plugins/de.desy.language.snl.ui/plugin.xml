@@ -117,6 +117,7 @@
          </action>
          <action
                class="de.desy.language.snl.ui.editor.CompileAction"
+               definitionId="de.desy.language.snl.ui.CompileST"
                icon="icons/new_snl_file_wizard.gif"
                id="de.desy.language.snl.ui.CompileAction"
                label="&amp;Compile"
@@ -135,6 +136,24 @@
             id="de.desy.language.snl.ui.SNLDEvelopment"
             name="SNL Development">
       </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            defaultHandler="de.desy.language.snl.ui.editor.CompileCommandHandler"
+            id="de.desy.language.snl.ui.CompileST"
+            name="Compile *.st">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="de.desy.language.snl.ui.CompileST"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+C">
+      </key>
    </extension>
 
 </plugin>
