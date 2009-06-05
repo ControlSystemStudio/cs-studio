@@ -126,15 +126,16 @@ public class SNLEditor extends LanguageEditor {
 	@Override
 	protected void doHandleSourceModifiedAndSaved(
 			final IProgressMonitor progressMonitor) {
-		if (!_errorManager.isShellSet()) {
-			_errorManager.setShell(this.getEditorSite().getShell());
-		}
 		if (_compilerOptionService.getSaveAndCompile()) {
 			compileFile(progressMonitor);
 		}
 	}
 
 	public void compileFile(final IProgressMonitor progressMonitor) {
+		if (!_errorManager.isShellSet()) {
+			_errorManager.setShell(this.getEditorSite().getShell());
+		}
+		
 		String targetPlatform = _preferenceStore
 				.getString(SNLUiActivator.PLUGIN_ID
 						+ PreferenceConstants.TARGET_PLATFORM);
@@ -320,11 +321,6 @@ public class SNLEditor extends LanguageEditor {
 		}
 
 		return errorMessages;
-	}
-	
-	@Override
-	protected void createActions() {
-		super.createActions();
 	}
 
 }

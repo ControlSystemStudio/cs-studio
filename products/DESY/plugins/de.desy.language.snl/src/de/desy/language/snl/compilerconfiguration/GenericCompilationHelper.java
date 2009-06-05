@@ -49,7 +49,10 @@ public class GenericCompilationHelper {
 			if (rawMessage.contains("\n")) {
 				int lineBreak = rawMessage.indexOf("\n");
 				message = rawMessage.substring(0, lineBreak);
-				details = rawMessage.substring(lineBreak+1) + "\n" +rawDetails;
+				String detailsPart = rawMessage.substring(lineBreak+1);
+				if (detailsPart != null && detailsPart.trim().length() > 0) {
+					details = detailsPart + "\n" +rawDetails;
+				}
 			}
 			List<String> errorList = new ArrayList<String>();
 			errorList.add(details);
