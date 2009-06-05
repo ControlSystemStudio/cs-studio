@@ -329,6 +329,9 @@ public final class CustomMediaFactory {
     /** the color for orange */
     final static public RGB COLOR_ORANGE= new RGB(255, 128, 0);
     
+     /** the color for orange */
+    final static public RGB COLOR_PURPLE= new RGB(128, 0, 255);
+    
     /** the font for Arial in height of 9 */
 	final static public FontData FONT_ARIAL = new FontData("Arial", 9, SWT.NONE);
 	
