@@ -19,9 +19,7 @@ public class AddAction extends Action
 		{
 			if (name == null  ||  name.length() < 1)
 				return ("Enter PV name");
-			if (name.matches("^[a-zA-Z0-9_:.]+$"))
-				return null;
-			return "PV contains invalid characters";
+			return null;
 		}
 	}
 
