@@ -102,6 +102,11 @@ public final class WorkbenchActionBuilder {
 	 * Action to pull up the import wizard.
 	 */
 	private IWorkbenchAction _importResourcesAction;
+	
+	/**
+	 * The print action. This action prints the content of the current editor.
+	 */
+	private IWorkbenchAction _printAction;
 
 	/**
 	 * Constructs a new action builder which contributes actions to the given
@@ -284,6 +289,8 @@ public final class WorkbenchActionBuilder {
 		menu.add(_saveAction);
 		menu.add(_saveAsAction);
 		menu.add(new Separator());
+		menu.add(_printAction);
+		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
 		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
@@ -390,6 +397,9 @@ public final class WorkbenchActionBuilder {
 		_newWizardToolbarAction = ActionFactory.NEW_WIZARD_DROP_DOWN
 				.create(_window);
 		registerGlobalAction(_newWizardToolbarAction);
+		
+		_printAction = ActionFactory.PRINT.create(_window);
+		registerGlobalAction(_printAction);
 
 		if (_window.getWorkbench().getIntroManager().hasIntro()) {
 			_introAction = ActionFactory.INTRO.create(_window);
