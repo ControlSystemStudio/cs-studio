@@ -302,10 +302,16 @@ public class SNLEditor extends LanguageEditor {
 					.add("The location of the C-Compiler is not specified.");
 		}
 
-		String gCompilerPath = compilerOptionsService.getPreCompilerPath();
-		if (gCompilerPath == null || gCompilerPath.trim().length() < 1) {
+		String preCompilerPath = compilerOptionsService.getPreCompilerPath();
+		if (preCompilerPath == null || preCompilerPath.trim().length() < 1) {
 			errorMessages
-					.add("The location of the G++-Compiler is not specified.");
+					.add("The location of the precompiler is not specified.");
+		}
+		
+		String applicationCompilerPath = compilerOptionsService.getApplicationCompilerPath();
+		if (applicationCompilerPath == null || applicationCompilerPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the application compiler is not specified.");
 		}
 
 		String epicsPath = compilerOptionsService.getEpicsFolder();
