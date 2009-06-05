@@ -152,7 +152,7 @@
             commandId="de.desy.language.snl.ui.CompileST"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+C">
+            sequence="M1+G">
       </key>
    </extension>
 

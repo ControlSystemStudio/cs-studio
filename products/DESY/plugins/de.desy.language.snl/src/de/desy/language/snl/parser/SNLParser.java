@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
+import de.desy.language.snl.parser.nodes.AllVariablesNode;
 import de.desy.language.snl.parser.nodes.AssignStatementNode;
 import de.desy.language.snl.parser.nodes.EntryNode;
 import de.desy.language.snl.parser.nodes.EventFlagNode;
@@ -124,12 +125,8 @@ public class SNLParser extends AbstractLanguageParser {
 			progressMonitor.worked(6);
 			this.findAndAddAllEventFlags(programNode, this._input);
 			progressMonitor.worked(7);
-			// final CharSequence restOfSourceToParse = this
-			// .findAndAddAllStateSets(programNode, this._input);
 			this.findAndAddAllStateSets(programNode, this._input);
 			progressMonitor.worked(8);
-			// this.findAndAddAllStates(programNode, restOfSourceToParse);
-			// progressMonitor.worked(9);
 		} else {
 			final PlaceholderNode placeholder = new PlaceholderNode(
 					"Missing: program statement");
@@ -265,8 +262,6 @@ public class SNLParser extends AbstractLanguageParser {
 
 			this.findAndAddAllStates(stateSetNode, lastFoundStatement);
 			final int lastFound = stateSetParser.getEndOffsetLastFound();
-			// result = SNLParser.replaceWithWhitespace(result,
-			// lastFoundStatement);
 			stateSetParser.findNext(result, lastFound);
 		}
 
@@ -274,7 +269,11 @@ public class SNLParser extends AbstractLanguageParser {
 	}
 
 	private void findAndAddAllVariables(final Node node, final String input) {
-		final Map<String, VariableNode> variables = new HashMap<String, VariableNode>();
+		final Map<String, VariableNode> variableMap = new HashMap<String, VariableNode>();
+		final Map<String, AssignStatementNode> assignMap = new HashMap<String, AssignStatementNode>();
+
+		AllVariablesNode variableParentNode = new AllVariablesNode();
+		node.addChild(variableParentNode);
 
 		final VariableParser variableParser = new VariableParser();
 
@@ -282,9 +281,9 @@ public class SNLParser extends AbstractLanguageParser {
 
 		while (variableParser.hasFoundElement()) {
 			final VariableNode varNode = variableParser.getLastFoundAsNode();
-			node.addChild(varNode);
+			variableParentNode.addChild(varNode);
 
-			variables.put(varNode.getSourceIdentifier(), varNode);
+			variableMap.put(varNode.getSourceIdentifier(), varNode);
 
 			final int lastEndPosition = variableParser.getEndOffsetLastFound();
 
@@ -298,12 +297,13 @@ public class SNLParser extends AbstractLanguageParser {
 		while (assignParser.hasFoundElement()) {
 			final AssignStatementNode assignNode = assignParser
 					.getLastFoundAsNode();
-			final VariableNode varNode = variables.get(assignNode
+			assignMap.put(assignNode.getSourceIdentifier(), assignNode);
+			final VariableNode varNode = variableMap.get(assignNode
 					.getSourceIdentifier());
 			if (varNode == null) {
 				assignNode.addWarning("No variable definition found for '"
 						+ assignNode.getSourceIdentifier() + "'");
-				node.addChild(assignNode);
+				variableParentNode.addChild(assignNode);
 			} else {
 				varNode.setAssignedChannel(assignNode);
 			}
@@ -320,10 +320,20 @@ public class SNLParser extends AbstractLanguageParser {
 		while (monitorParser.hasFoundElement()) {
 			final MonitorStatementNode monitorNode = monitorParser
 					.getLastFoundAsNode();
-			final VariableNode varNode = variables.get(monitorNode
+			final VariableNode varNode = variableMap.get(monitorNode
 					.getSourceIdentifier());
-			if (varNode != null) {
+			final AssignStatementNode assignNode = assignMap.get(monitorNode
+					.getSourceIdentifier());
+			if (varNode == null) {
+				monitorNode.addWarning("No variable definition found for '"
+						+ monitorNode.getSourceIdentifier() + "'");
+				variableParentNode.addChild(monitorNode);
+			} else {
 				varNode.setMonitored(monitorNode);
+			}
+			if (assignNode == null) {
+				monitorNode.addWarning("No assign statement found for '"
+						+ monitorNode.getSourceIdentifier() + "'");
 			}
 
 			final int lastEndPosition = monitorParser.getEndOffsetLastFound();

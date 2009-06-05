@@ -63,6 +63,8 @@ public class SNLNodeAdapterFactory implements IAdapterFactory {
 				this._adapterMap);
 		this.addAdapterFactoryToMap(new ExitNodeAdapterFactory(),
 				this._adapterMap);
+		this.addAdapterFactoryToMap(new AllVariablesNodeAdapterFactory(),
+				this._adapterMap);
 	}
 
 	/**

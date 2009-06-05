@@ -30,7 +30,7 @@ class VariableNodeAdapterFactory implements IAdapterFactory {
 					@Override
 					protected String getImageName(final VariableNode node) {
 						String name = "variable.gif";
-						;
+						
 						if (node.isAssigned() && node.isMonitored()) {
 							name = "variable_assigned_monitored.gif";
 						} else if (node.isAssigned() && !node.isMonitored()) {
