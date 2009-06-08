@@ -4,10 +4,18 @@
 # See init_d_... for a wrapper that switches to
 # the correct user
 #
+# Note that 'stop' doesn't work as well as it should.
+# At least on ics-srv-epics1, 2 processes get started,
+# but we only know the PID of the first, so we use the
+# web interface to stop the second, more important
+# process.
+#
 # kasemirk@ornl.gov
 
 export JAVA_HOME=/usr/local/java/jdk1.5.0_05
 PROGRAM=JMS2RDB
+# HTTP port must match JMS2RDB configuration!
+HTTP=4913
 
 DIR=/usr/local/css/$PROGRAM
 LOGFILE=$DIR/$PROGRAM.log
@@ -21,7 +29,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 case $1 in
 start)
     cd $DIR
-    nohup ./$PROGRAM $OPT >$LOGFILE 2>&1 &
+    nohup ./install/JMS2RDB/$PROGRAM $OPT >$LOGFILE 2>&1 &
     echo $! > $PIDFILE
     ;;
 stop)
@@ -35,6 +43,7 @@ stop)
     then
         kill $PID
         rm $PIDFILE
+        lynx -dump http://localhost:$HTTP/stop
     else
         echo "Cannot locate $PROGRAM under pid $PID"
     fi
