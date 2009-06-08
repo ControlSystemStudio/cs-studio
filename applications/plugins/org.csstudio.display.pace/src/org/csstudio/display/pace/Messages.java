@@ -26,7 +26,7 @@ public class Messages extends NLS
     public static String SaveError;
     public static String SaveErrorFmt;
     public static String SaveIntro;
-    public static String SaveMessage;
+    public static String ELogTitleFmt;
     public static String SavePVInfoFmt;
     public static String SaveCommentInfoFmt;
     public static String SaveTitle;

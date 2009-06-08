@@ -215,8 +215,9 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         // "Normal" case with ELog support
         try
         {
+            final String title = NLS.bind(Messages.ELogTitleFmt, model.getTitle());
             final ElogDialog dialog = new ElogDialog(shell,
-                    Messages.SaveTitle, Messages.SaveMessage,
+                    Messages.SaveTitle, title,
                     changes.toString(), null)
             {
                 // Perform ELog entry, then save changed values
