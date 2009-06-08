@@ -24,6 +24,8 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class RDBWriter
 {
 	private static final int MAX_VALUE_LENGTH = 100;
+
+    private static final int MAX_NAME_LENGTH = 80;
 	
     /** Enable statistics for Jeff Patton ? */
 	private static final boolean enable_trace = false;
@@ -39,7 +41,7 @@ public class RDBWriter
         new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
     
     /** Map of Property IDs, mapping property name to numeric ID */
-    final private HashMap<String, Integer> property_id = 
+    final private HashMap<String, Integer> properties = 
     	new HashMap<String, Integer>();
     
     /** Lazily initialized statement */
@@ -61,7 +63,7 @@ public class RDBWriter
      */
     public RDBWriter(final String url, final String schema) throws Exception
     {
-        rdb_util = RDBUtil.connect(url);
+        rdb_util = RDBUtil.connect(url, false);
         
         if (enable_trace)
         {
@@ -93,7 +95,7 @@ public class RDBWriter
     private int getPropertyType(final String property_name) throws Exception
     {
     	// First try cache
-    	final Integer int_id = property_id.get(property_name);
+    	final Integer int_id = properties.get(property_name);
     	if (int_id != null)
     		return int_id.intValue();
     	// Perform RDB query
@@ -106,7 +108,7 @@ public class RDBWriter
             if (result.next())
             {	// Add to cache
             	final int id = result.getInt(1);
-                property_id.put(property_name, new Integer(id));
+                properties.put(property_name, new Integer(id));
 				return id;
             }
         }
@@ -146,7 +148,7 @@ public class RDBWriter
     		"Inserted unkown Message Property " + property_name + " as ID "
     		+ next_id);
         // Add to cache
-    	property_id.put(property_name, new Integer(next_id));
+    	properties.put(property_name, new Integer(next_id));
 		return next_id;    
 	}
 
@@ -211,26 +213,26 @@ public class RDBWriter
         // So we have to count them up in here
         int content_id = getNextContentID();
         if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.TEXT), message.getText()))
+        		JMSLogMessage.TEXT, message.getText()))
             ++content_id;
         if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.CREATETIME),
+        		JMSLogMessage.CREATETIME,
             date_format.format(message.getCreateTime().getTime())))
             ++content_id;
         if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.CLASS), message.getClassName()))
+        		JMSLogMessage.CLASS, message.getClassName()))
             ++content_id;
         if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.FILENAME), message.getFileName()))
+        		JMSLogMessage.FILENAME, message.getFileName()))
             ++content_id;
         if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.APPLICATION_ID), message.getApplicationID()))
+        		JMSLogMessage.APPLICATION_ID, message.getApplicationID()))
             ++content_id;
         if (batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.HOST), message.getHost()))
+        		JMSLogMessage.HOST, message.getHost()))
             ++content_id;
         batchProperty(message_id, content_id, 
-        		getPropertyType(JMSLogMessage.USER), message.getUser());
+        		JMSLogMessage.USER, message.getUser());
         insert_property_statement.executeBatch();
         rdb_util.getConnection().commit();
     }
@@ -257,14 +259,13 @@ public class RDBWriter
         while (props.hasMoreElements())
         {
         	final String prop = props.nextElement();
-        	// Skip properties which are already in message table colums
+        	// Skip properties which are already in message table columns
         	if (JMSLogMessage.TYPE.equals(prop) ||
         	    JMSLogMessage.NAME.equals(prop) ||
         	    JMSLogMessage.SEVERITY.equals(prop))
         		continue;
-        	final int prop_id = getPropertyType(prop);
             if (batchProperty(message_id, content_id,
-            		prop_id, map.getString(prop)))
+                    prop, map.getString(prop)))
                 ++content_id;
         }
         insert_property_statement.executeBatch();
@@ -290,7 +291,7 @@ public class RDBWriter
      *  @throws Exception on error
      */
     private void insertMessage(final int message_id,
-    		final String type, final String name,
+    		final String type, String name,
     		final String severity) throws Exception
     {
         // Insert the main message
@@ -298,6 +299,13 @@ public class RDBWriter
         final Calendar now = Calendar.getInstance();
         insert_message_statement.setTimestamp(2, new Timestamp(now.getTimeInMillis()));
         insert_message_statement.setString(3, type);
+        // Overcome RDB limitations
+        if (name.length() > MAX_NAME_LENGTH)
+        {
+            CentralLogger.getInstance().getLogger(this).warn(
+                "Limiting NAME = '" + name + "' to " + MAX_NAME_LENGTH);
+            name = name.substring(0, MAX_NAME_LENGTH);
+        }        
         insert_message_statement.setString(4, name);
         insert_message_statement.setString(5, severity);
         final int rows = insert_message_statement.executeUpdate();
@@ -313,17 +321,24 @@ public class RDBWriter
      *  @throws Exception on error
      */
     private boolean batchProperty(final int message_id, final int content_id,
-            final int property_id, String value) throws Exception
+            final String property, String value) throws Exception
     {
         // Don't bother to insert empty properties
         if (value.length() <= 0)
             return false;
+        
+        final int property_id = getPropertyType(property);
+        
         insert_property_statement.setInt(1, content_id);
         insert_property_statement.setInt(2, message_id);
         insert_property_statement.setInt(3, property_id);
-        // Overcome Oracle limitations
+        // Overcome RDB limitations
         if (value.length() > MAX_VALUE_LENGTH)
+        {
+            CentralLogger.getInstance().getLogger(this).warn(
+                "Limiting " + property + " = '" + value + "' to " + MAX_VALUE_LENGTH);
             value = value.substring(0, MAX_VALUE_LENGTH);
+        }
         insert_property_statement.setString(4, value);
         insert_property_statement.addBatch();
         return true;
