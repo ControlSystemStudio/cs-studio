@@ -83,9 +83,14 @@ public class StartEndDialog extends Dialog
     @Override
     protected Control createDialogArea(Composite parent)
     {
-        Composite box = (Composite) super.createDialogArea(parent);
-        GridLayout layout = (GridLayout) box.getLayout();
+        final Composite area = (Composite) super.createDialogArea(parent);
+        
+        final Composite box = new Composite(area, 0);
+        box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        final GridLayout layout = new GridLayout();
         layout.numColumns = 4;
+        box.setLayout(layout);
         GridData gd;
 
         // ---- Left -----
@@ -168,7 +173,7 @@ public class StartEndDialog extends Dialog
         // Initialize GUI content
         setFromSpecifications();
         
-        return box;
+        return area;
     }
 
     /** If the dialog is closed via OK,
