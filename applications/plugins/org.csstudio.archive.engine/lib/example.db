@@ -24,6 +24,22 @@ record(calc, "fred")
    field(EGU,  "furlong")
    field(PREC, "4")
 }
+record(calc, "Ufred")
+{
+   field(SCAN, "Passive")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+record(calc, "Dfred")
+{
+   field(SCAN, "1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(DISV, "42")
+   field(DISA, "42")
+}
 record(calc, "freddy")
 {
    field(SCAN, "1 second")
