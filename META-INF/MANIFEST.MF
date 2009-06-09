@@ -39,5 +39,6 @@ Bundle-NativeCode:
  lib/win32/x86/ca.dll; lib/win32/x86/Com.dll; lib/win32/x86/jca.dll;
  osname=win32; processor=x86,
  lib/macosx/ppc/libjca.jnilib; osname="mac os x"; processor=ppc,
- lib/macosx/x86/libjca.jnilib; osname="mac os x"; processor=x86
+ lib/macosx/x86/libjca.jnilib; osname="mac os x"; processor=x86,
+ *
 Bundle-Vendor: DESY/ORNL/SLAC
