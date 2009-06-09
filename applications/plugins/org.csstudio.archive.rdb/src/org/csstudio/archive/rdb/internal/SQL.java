@@ -74,8 +74,11 @@ public class SQL
 	final public String sample_insert_int;
 	final public String sample_insert_string;
 	
-	/** Create SQL strings for the given dialect */
-	public SQL(final Dialect dialect)
+	/** Create SQL strings
+	 *  @param dialect RDB dialect
+	 *  @param use_staging Use the 'main' tables or the staging tables?
+	 */
+	public SQL(final Dialect dialect, boolean use_staging)
 	{
 		// Schema prefix for the tables
 	    String prefix = "";
@@ -85,6 +88,10 @@ public class SQL
 	        if (schema != null  &&  schema.length() > 0)
 	            prefix = schema + ".";
 	    }
+	    
+	    // Name of the sample and array_val tables
+	    final String sample = use_staging ? "sample_stage" : "sample";
+        final String array_val = use_staging ? "array_val_stage" : "array_val";
 		
 	    // 'smpl_eng' table
         smpl_eng_next_id = "SELECT MAX(eng_id) FROM " + prefix + "smpl_eng";
@@ -124,7 +131,7 @@ public class SQL
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE REGEXP_LIKE(name, ?, 'i') ORDER BY name";
 		else
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
-		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + prefix + "sample WHERE channel_id=?";
+		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + prefix + sample + " WHERE channel_id=?";
 		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE grp_id=?";
 		channel_set_grp_by_id = "UPDATE channel SET grp_id=? WHERE channel_id=?";        
         channel_clear_grp_for_engine =
@@ -169,34 +176,34 @@ public class SQL
 		if (dialect == RDBUtil.Dialect.Oracle)
 		{
 			sample_sel_initial_by_id_time =
-			"SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, ROWNUM FROM" +
+			"SELECT * FROM" +
 			"  (SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val " +
-			"   FROM " + prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
+			"   FROM " + prefix + sample + " WHERE channel_id=? AND smpl_time<=?" +
 			"   ORDER BY smpl_time DESC)" +
 			"  WHERE ROWNUM=1";
             sample_sel_by_id_start_end =
-                "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val FROM " + prefix + "sample" +
+                "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val FROM " + prefix + sample +
                 "   WHERE channel_id=?" +
                 "     AND smpl_time>? AND smpl_time<=?" +
                 "   ORDER BY smpl_time";
-            sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
+            sample_sel_array_vals = "SELECT float_val FROM " + prefix + array_val +
             " WHERE channel_id=? AND smpl_time=? ORDER BY seq_nbr";
             sample_insert_double =
-                "INSERT /*+APPEND */ INTO " + prefix + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, float_val)" +
-                "VALUES (?,?,?,?,?)";
+                "INSERT /*+APPEND */ INTO " + prefix + sample +
+                " (channel_id, smpl_time, severity_id, status_id, float_val)" +
+                " VALUES (?,?,?,?,?)";
             sample_insert_double_array_element =
-                "INSERT /*+APPEND */ INTO " + prefix + "array_val " +
-                "(channel_id, smpl_time, seq_nbr, float_val)" +
-                "VALUES (?,?,?,?)";
+                "INSERT /*+APPEND */ INTO " + prefix + array_val +
+                " (channel_id, smpl_time, seq_nbr, float_val)" +
+                " VALUES (?,?,?,?)";
             sample_insert_int =
-                "INSERT /*+APPEND */ INTO " + prefix + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, num_val)" +
-                "VALUES (?,?,?,?,?)";
+                "INSERT /*+APPEND */ INTO " + prefix + sample +
+                " (channel_id, smpl_time, severity_id, status_id, num_val)" +
+                " VALUES (?,?,?,?,?)";
             sample_insert_string =
-                "INSERT /*+APPEND */ INTO " + prefix + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, str_val)" +
-                "VALUES (?,?,?,?,?)";
+                "INSERT /*+APPEND */ INTO " + prefix + sample +
+                " (channel_id, smpl_time, severity_id, status_id, str_val)" +
+                " VALUES (?,?,?,?,?)";
 		}
 		else
 		{

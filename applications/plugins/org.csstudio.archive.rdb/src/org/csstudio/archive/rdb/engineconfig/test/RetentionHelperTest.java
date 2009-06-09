@@ -21,7 +21,7 @@ public class RetentionHelperTest
     public void test() throws Exception
     {
         final RDBUtil rdb = RDBUtil.connect(TestSetup.URL);
-        final SQL sql = new SQL(rdb.getDialect());
+        final SQL sql = new SQL(rdb.getDialect(), false);
         
         final RetentionHelper retentions = new RetentionHelper(rdb, sql);
         

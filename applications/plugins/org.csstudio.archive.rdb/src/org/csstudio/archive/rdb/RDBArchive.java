@@ -9,7 +9,9 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 abstract public class RDBArchive
 {
     /** Connect to RDB.
-     *  @param url URL
+     *  @param url URL, where "jdbc:oracle_stage:" handled like
+     *             "jdbc:oracle:" except that it switches to the "staging"
+     *             tables.
      *  @throws Exception on error
      *  @see {@link RDBUtil} for syntax of URL
      */
@@ -19,7 +21,9 @@ abstract public class RDBArchive
     }
     
     /** Connect to RDB.
-     *  @param url URL
+     *  @param url URL, where "jdbc:oracle_stage:" handled like
+     *             "jdbc:oracle:" except that it switches to the "staging"
+     *             tables.
      *  @param user RDB user (null if already in URL)
      *  @param password RDB password (null if already in URL)
      *  @throws Exception on error

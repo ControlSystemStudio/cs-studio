@@ -45,6 +45,9 @@ public class RDBArchiveImpl extends RDBArchive
     /** Database URL/user/password */
     final private String url, user, password;
     
+    /** Use the 'main' tables or the 'staging' tables? */
+    final private boolean use_staging;
+    
     /** RDB connection */
 	private RDBUtil rdb;
 	
@@ -96,16 +99,23 @@ public class RDBArchiveImpl extends RDBArchive
         debug_batch ? new ArrayList<String>() : null;
 	
 	/** Connect to RDB.
-	 *  @param url URL
+	 *  @param url URL, where "jdbc:oracle_stage:" handled like
+	 *             "jdbc:oracle:" except that it switches to the "staging"
+	 *             tables.
      *  @param user RDB user (null if already in URL)
      *  @param password RDB password (null if already in URL)
 	 *  @throws Exception on error
 	 *  @see {@link RDBUtil} for syntax of URL
 	 */
+    @SuppressWarnings("nls")
     public RDBArchiveImpl(final String url, final String user,
             final String password) throws Exception
 	{
-	    this.url = url;
+        this.use_staging = url.startsWith("jdbc:oracle_stage:");
+        if (use_staging)
+            this.url = "jdbc:oracle:" + url.substring(18);
+        else
+            this.url = url;
 	    this.user = user;
 	    this.password = password;
 	    connect();
@@ -116,9 +126,11 @@ public class RDBArchiveImpl extends RDBArchive
     private void connect() throws Exception
     {
         // Create new connection
-        CentralLogger.getInstance().getLogger(this).debug("Connecting to '" + url + "'");
+        CentralLogger.getInstance().getLogger(this).
+            debug("Connecting to '" + url + "' " +
+                  (use_staging ? "(stage)" : "(main)"));
         rdb = RDBUtil.connect(url, user, password, false);
-        sql = new SQL(rdb.getDialect());
+        sql = new SQL(rdb.getDialect(), use_staging);
         channels = new ChannelCache(this);
         severities = new SeverityCache(rdb, sql);
         stati = new StatusCache(rdb, sql);

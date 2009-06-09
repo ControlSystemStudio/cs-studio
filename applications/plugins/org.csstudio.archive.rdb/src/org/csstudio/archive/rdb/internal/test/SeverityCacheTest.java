@@ -28,7 +28,7 @@ public class SeverityCacheTest
 	public static void connect() throws Exception
 	{
 		rdb = RDBUtil.connect(TestSetup.URL);
-		sql = new SQL(rdb.getDialect());
+		sql = new SQL(rdb.getDialect(), false);
 	}
 	
 	@AfterClass
