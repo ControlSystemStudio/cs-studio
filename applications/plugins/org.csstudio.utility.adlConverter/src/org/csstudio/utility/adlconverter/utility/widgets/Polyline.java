@@ -26,12 +26,9 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.PolylineModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**

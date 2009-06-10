@@ -26,8 +26,6 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.SwitchModel;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens

@@ -24,8 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import java.util.ArrayList;
-
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -35,8 +33,6 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 

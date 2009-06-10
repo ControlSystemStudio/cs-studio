@@ -26,11 +26,8 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens

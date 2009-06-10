@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

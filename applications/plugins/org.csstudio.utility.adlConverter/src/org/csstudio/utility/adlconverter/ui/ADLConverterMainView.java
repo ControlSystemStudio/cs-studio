@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.ui;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -51,13 +52,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -105,7 +107,7 @@ public class ADLConverterMainView extends ViewPart {
     private ListViewer _avaibleFiles;
 
     /**
-     * The ADL Converter Preferences. Contain the different default path. 
+     * The ADL Converter Preferences. Contain the different default path.
      */
     private Preferences _preferences;
 
@@ -121,13 +123,13 @@ public class ADLConverterMainView extends ViewPart {
     public final void createPartControl(final Composite parent) {
         _shell = parent.getShell();
         _preferences = Activator.getDefault().getPluginPreferences();
-        WorkbenchHelpSystem.getInstance().setHelp(parent, Activator.PLUGIN_ID + ".adl_converter");
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, Activator.PLUGIN_ID + ".adl_converter");
         parent.setLayout(new GridLayout(1, true));
 
         // Source and Destination Groups
         Group sourceGroup = new Group(parent, SWT.NONE);
         sourceGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        sourceGroup.setLayout(new GridLayout(3, true));
+        sourceGroup.setLayout(new GridLayout(4, true));
         sourceGroup.setText(Messages.ADLConverterMainView_SourceGroup);
 
         Group destinationGroup = new Group(parent, SWT.NONE);
@@ -141,11 +143,13 @@ public class ADLConverterMainView extends ViewPart {
     }
 
     /**
-     * @param sourceGroup the Parent composite.
-     * @param initial The Workspace resource.
+     * @param sourceGroup
+     *            the Parent composite.
+     * @param initial
+     *            The Workspace resource.
      */
     private void generateSourceBlock(final Group sourceGroup, final IResource initial) {
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1);
         gridData.minimumWidth = 40;
 
         _avaibleFiles = new ListViewer(sourceGroup);
@@ -156,6 +160,10 @@ public class ADLConverterMainView extends ViewPart {
         openSourceButton.setLayoutData(new GridData(80, 25));
         openSourceButton.setText(Messages.ADLConverterMainView_ADLSourceFileDialogButton);
 
+        Button subFolderButton = new Button(sourceGroup, SWT.PUSH);
+        subFolderButton.setLayoutData(new GridData(80, 25));
+        subFolderButton.setText(Messages.ADLConverterMainView_ADLSourceFolderDialogButton);
+        
         Button clearSourceButton = new Button(sourceGroup, SWT.PUSH);
         clearSourceButton.setText(Messages.ADLConverterMainView_ClearButtonText);
         gridData = new GridData(80, 25);
@@ -177,16 +185,14 @@ public class ADLConverterMainView extends ViewPart {
 
             public void widgetSelected(final SelectionEvent e) {
                 FileDialog dialog = new FileDialog(_shell, SWT.MULTI);
-                dialog.setFilterNames(new String[] {
-                        Messages.ADLConverterMainView_ADLFileSourceDialogFileDes,
+                dialog.setFilterNames(new String[] { Messages.ADLConverterMainView_BothFileSourceDialogFileDes,
+                        Messages.ADLConverterMainView_ADLFileSourceDialogFileDes, Messages.ADLConverterMainView_MDPFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_AllFileSourceDialogFileDes });
-                dialog.setFilterExtensions(new String[] { "*.adl", "*.*" }); // Windows
-                // wild
-                // cards
-                // //$NON-NLS-1$
-                // //$NON-NLS-2$
-                String path = _preferences.getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
-//                path = initial.getProjectRelativePath().toOSString()
+                dialog.setFilterExtensions(new String[] { "*.adl;*.mfp", "*.adl", "*.mfp", "*.*" }); // Windows
+                // wild cards //$NON-NLS-1$ //$NON-NLS-2$
+                String path = _preferences
+                        .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
+                // path = initial.getProjectRelativePath().toOSString()
                 dialog.setFilterPath(path);
                 dialog.open();
                 path = dialog.getFilterPath();
@@ -201,6 +207,58 @@ public class ADLConverterMainView extends ViewPart {
 
         });
 
+        subFolderButton.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                DirectoryDialog dialog = new DirectoryDialog(_shell, SWT.MULTI);
+                String path = _preferences
+                        .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
+//                path = initial.getProjectRelativePath().toOSString();
+                System.out.println("Path_: "+path);
+                dialog.setFilterPath(path);
+                String open = dialog.open();
+                if(open==null) {
+                    return;
+                }
+                path = dialog.getFilterPath();
+                File file = new File(path);
+                fillFiles(file);
+                _avaibleFiles.getList().selectAll();
+                refreshexamplePathLabel();
+                checkRelativPath();               
+                _preferences.setValue(ADLConverterPreferenceConstants.P_STRING_Path_Source,path);
+            }
+
+            private void fillFiles(File file) {
+                String[] list = file.list(new FilenameFilter() {
+
+                    public boolean accept(File dir, String name) {
+                        
+                        boolean adl = false;
+                        adl |= dir.isDirectory();
+                        adl |= name.endsWith(".adl");
+                        adl |= name.endsWith(".mfp");
+                        return adl;
+                    }
+                    
+                });
+                for (String name : list) {
+                    File element = new File(file, name);
+                    if(element.isFile()) {
+                        _avaibleFiles.add(element);
+                    }else {
+                        fillFiles(element);
+                    }
+                }
+            }
+            
+        });
+        
         clearSourceButton.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(final SelectionEvent e) {
@@ -209,7 +267,7 @@ public class ADLConverterMainView extends ViewPart {
             public void widgetSelected(final SelectionEvent e) {
                 _avaibleFiles.getList().removeAll();
                 _pathPos = 0;
-//                _relativePathText.setText("");
+                // _relativePathText.setText("");
             }
 
         });
@@ -235,11 +293,21 @@ public class ADLConverterMainView extends ViewPart {
                         targetProject = initial.getProjectRelativePath().append(_targetPath);
                     }
                     try {
-                        if (!di.importDisplay(file.getAbsolutePath(), targetProject, file.getName()
-                                .replace(".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                            if (di.getStatus() == 2) {
-                                // Job is canceled.
-                                break;
+                        if (file.getName().endsWith(".adl")) {//$NON-NLS-1$ 
+                            if (!di.importDisplay(file.getAbsolutePath(), targetProject, file
+                                    .getName().replace(".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                if (di.getStatus() == 2) {
+                                    // Job is canceled.
+                                    break;
+                                }
+                            }
+                        } else if (file.getName().endsWith(".mfp")) {//$NON-NLS-1$ 
+                            if (!di.importFaceplate(file.getAbsolutePath(), targetProject, file
+                                    .getName().replace(".mfp", ".fp.css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                if (di.getStatus() == 2) {
+                                    // Job is canceled.
+                                    break;
+                                }
                             }
                         }
                     } catch (Exception e1) {
@@ -255,7 +323,8 @@ public class ADLConverterMainView extends ViewPart {
     }
 
     /**
-     * @param destinationGroup the Parent composite.
+     * @param destinationGroup
+     *            the Parent composite.
      * @param initial
      */
     private void generateDestinationBlock(final Group destinationGroup) {
@@ -266,9 +335,9 @@ public class ADLConverterMainView extends ViewPart {
         openTargetButton.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1));
         final Text pathText = new Text(destinationGroup, SWT.BORDER);
         pathText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        _targetPath= new Path(_preferences.getString(ADLConverterPreferenceConstants.P_STRING_Path_Target));
+        _targetPath = new Path(_preferences
+                .getString(ADLConverterPreferenceConstants.P_STRING_Path_Target));
         pathText.setText(_targetPath.toString());
-        
 
         // second row
         Composite relativPathComp = new Composite(destinationGroup, SWT.NONE);
@@ -291,8 +360,9 @@ public class ADLConverterMainView extends ViewPart {
                 | SWT.SEARCH);
         _relativePathText.setLayoutData(gridData);
         _relativePathText.setToolTipText("Press <-- or --> to select the path");
-        _relativePathText.setText(_preferences.getString(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target));
-        
+        _relativePathText.setText(_preferences
+                .getString(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target));
+
         _examplePathLabel = new Label(relativPathComp, SWT.NONE);
         _examplePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
@@ -322,7 +392,7 @@ public class ADLConverterMainView extends ViewPart {
         _isRelativePath.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(final SelectionEvent e) {
-                 setBackground();
+                setBackground();
             }
 
             public void widgetSelected(final SelectionEvent e) {
@@ -386,8 +456,10 @@ public class ADLConverterMainView extends ViewPart {
     }
 
     /**
-     * Extract the relative path part from example file path.  
-     * @param file the example file.
+     * Extract the relative path part from example file path.
+     * 
+     * @param file
+     *            the example file.
      * @return the relative path.
      */
     private IPath getRelativPath(final File file) {
@@ -396,7 +468,7 @@ public class ADLConverterMainView extends ViewPart {
                 .replaceFirst(apsolutPath, ""));
         return relativePath;
     }
-    
+
     /**
      * Refresh the path example label.
      */
@@ -404,14 +476,13 @@ public class ADLConverterMainView extends ViewPart {
         IPath relPath = getRelativPath((File) _avaibleFiles.getElementAt(0));
         _examplePathLabel.setText(relPath.toOSString());
     }
-    
+
     private void checkRelativPath() {
-        File path = (File)_avaibleFiles.getElementAt(0);
-        if(!path.getAbsolutePath().contains(_relativePathText.getText())){
+        File path = (File) _avaibleFiles.getElementAt(0);
+        if (!path.getAbsolutePath().contains(_relativePathText.getText())) {
             _relativePathText.setText("");
         }
     }
-
 
     /**
      * {@inheritDoc}

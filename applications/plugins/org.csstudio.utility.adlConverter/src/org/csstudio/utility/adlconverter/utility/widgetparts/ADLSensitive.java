@@ -24,8 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -34,7 +32,6 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgets.Widget;
 
 /**
  * @author hrickens

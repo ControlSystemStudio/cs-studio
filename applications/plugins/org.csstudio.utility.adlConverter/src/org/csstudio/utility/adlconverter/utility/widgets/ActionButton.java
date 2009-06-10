@@ -34,8 +34,6 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens

@@ -27,7 +27,6 @@ package org.csstudio.utility.adlconverter;
 import org.csstudio.utility.adlconverter.utility.RGBColorTest;
 
 import junit.framework.Test;
-import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 /**

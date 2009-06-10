@@ -25,7 +25,6 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -35,8 +34,6 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens

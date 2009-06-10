@@ -27,8 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.sound.sampled.Line;
-
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -67,7 +65,6 @@ public final class ParserADL {
             String line;
             int lineNumber=0;
             String storeDirtyLine=null;
-            boolean incompleteLine = false;
             int lastDirtyLine=0;
             while((line = buffRead.readLine()) != null){
                 lineNumber++;

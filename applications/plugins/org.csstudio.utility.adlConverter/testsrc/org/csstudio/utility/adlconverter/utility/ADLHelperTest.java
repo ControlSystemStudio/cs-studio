@@ -27,7 +27,6 @@ package org.csstudio.utility.adlconverter.utility;
 import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
-import org.eclipse.swt.SWT;
 import org.junit.Before;
 import org.junit.Test;
 

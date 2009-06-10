@@ -26,10 +26,7 @@ package org.csstudio.utility.adlconverter.utility;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
 import org.junit.Before;
 import org.junit.Test;
 

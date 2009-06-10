@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility;
 
-import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import org.junit.Before;

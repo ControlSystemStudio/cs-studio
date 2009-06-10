@@ -26,15 +26,12 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import java.util.ArrayList;
 
-import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.GroupingContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLChildren;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLMenuItem;
 
 /**

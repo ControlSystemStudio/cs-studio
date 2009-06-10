@@ -34,7 +34,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.csstudio.utility.adlconverter.internationalization.messages"; //$NON-NLS-1$
-    public static String ActionButton_WrongADLFormatException;
     public static String ADLBasicAttribute_AssertError_Begin;
     public static String ADLBasicAttribute_AssertError_End;
     public static String ADLBasicAttribute_WrongADLFormatException_Begin;
@@ -52,21 +51,24 @@ public class Messages extends NLS {
     public static String ADLConverterMainView_ADLFileChooserOkButton;
     public static String ADLConverterMainView_ADLFileSourceDialogFileDes;
     public static String ADLConverterMainView_ADLSourceFileDialogButton;
+    public static String ADLConverterMainView_ADLSourceFolderDialogButton;
     public static String ADLConverterMainView_AllFileSourceDialogFileDes;
+    public static String ADLConverterMainView_BothFileSourceDialogFileDes;
     public static String ADLConverterMainView_ClearButtonText;
     public static String ADLConverterMainView_ConvcertButtonText;
     public static String ADLConverterMainView_DateiName;
     public static String ADLConverterMainView_DestinationGroup;
     public static String ADLConverterMainView_DialogText;
+    public static String ADLConverterMainView_MDPFileSourceDialogFileDes;
     public static String ADLConverterMainView_SourceGroup;
-	public static String ADLConverterMainView_TargetFolderSelectionMessage;
+    public static String ADLConverterMainView_TargetFolderSelectionMessage;
     public static String ADLConverterMainView_TargetOpernButton;
-    public static String ADLDisplayImporter_ADLBackgroundLayerName;
+    public static String ADLDisplayImporter_ADLActionLayerDes;
+    public static String ADLDisplayImporter_ADLActionLayerName;
     public static String ADLDisplayImporter_ADLBackgroundLayerDes;
+    public static String ADLDisplayImporter_ADLBackgroundLayerName;
     public static String ADLDisplayImporter_ADLBargraphLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerName;
-    public static String ADLDisplayImporter_ADLActionLayerName;
-    public static String ADLDisplayImporter_ADLActionLayerDes;
     public static String ADLDisplayImporter_Dialog_Header_Directory_not_exist;
     public static String ADLDisplayImporter_Dialog_No_Button;
     public static String ADLDisplayImporter_Dialog_Yes_Button;
@@ -83,12 +85,12 @@ public class Messages extends NLS {
     public static String ADLMenuItem_AssertError_End;
     public static String ADLMenuItem_WrongADLFormatException_Begin;
     public static String ADLMenuItem_WrongADLFormatException_end;
-    public static String ADLMonitor_assertError_Begin;
-    public static String ADLMonitor_assertError_End;
     public static String ADLMonitor_WrongADLFormatException_Begin;
     public static String ADLMonitor_WrongADLFormatException_End;
     public static String ADLMonitor_WrongADLFormatException_Parameter_Begin;
     public static String ADLMonitor_WrongADLFormatException_Parameter_End;
+    public static String ADLMonitor_assertError_Begin;
+    public static String ADLMonitor_assertError_End;
     public static String ADLObject_AssertError_Begin;
     public static String ADLObject_AssertError_End;
     public static String ADLObject_WrongADLFormatException_Begin;
@@ -104,6 +106,7 @@ public class Messages extends NLS {
     public static String ADLSensitive_No_Channel_Warning;
     public static String ADLSensitive_WrongADLFormatException_Begin;
     public static String ADLSensitive_WrongADLFormatException_End;
+    public static String ActionButton_WrongADLFormatException;
     public static String Arc_WrongADLFormatException;
     public static String Bargraph_1;
     public static String Bargraph_Clrmod_Debug;
@@ -117,22 +120,22 @@ public class Messages extends NLS {
     public static String Display_WrongADLFormatException_End;
     public static String Display_WrongADLFormatException_Parameter_Begin;
     public static String Display_WrongADLFormatException_Parameter_End;
+    public static String GroupingContainer_WrongADLFormatException2;
+    public static String GroupingContainer_WrongADLFormatException;
     public static String Label_Format_Debug;
     public static String Label_WrongADLFormatException_Parameter_Begin;
     public static String Label_WrongADLFormatException_Parameter_End;
+    public static String Polygon_AssertError;
     public static String Polyline_AssertError;
-    public static String RelatedDisplay_WrongADLFormatException_Parameter_Begin;
+    public static String RGBColor_WrongADLFormatException;
     public static String RelatedDisplayItem_Parameter_Error;
     public static String RelatedDisplayItem_WrongADLFormatException_Begin;
     public static String RelatedDisplayItem_WrongADLFormatException_Middle;
-    public static String RGBColor_WrongADLFormatException;
-    public static String Polygon_AssertError;
-    public static String GroupingContainer_WrongADLFormatException;
-    public static String GroupingContainer_WrongADLFormatException2;
+    public static String RelatedDisplay_WrongADLFormatException_Parameter_Begin;
     public static String Textinput_Align_Debug;
     public static String Textinput_Format_Debug;
     public static String Textinput_WrongADLFormatException;
-    public static String Textinput_WrongADLFormatException_Parameter_Begin;
+    public static String Textinput_WrongADLFormatException_Parameter_Begin;    
         
     static {
         // initialize resource bundle

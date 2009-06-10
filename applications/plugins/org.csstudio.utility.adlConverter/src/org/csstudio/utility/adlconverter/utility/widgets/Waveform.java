@@ -29,7 +29,6 @@ import java.util.Formatter;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.WaveformModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
@@ -38,8 +37,6 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
 
 /**
  * @author hrickens
@@ -91,7 +88,6 @@ public class Waveform extends Widget {
                 // TODO: Waveform-->erase_oldest
                 CentralLogger.getInstance().info(this, "Unhandled Property: "+fileLine);
             }else if(row[0].equals("style")){ //$NON-NLS-1$
-                String style = "1"; // Line //$NON-NLS-1$
                 String value = row[1].toLowerCase();
                 boolean line = value.contains("line");
                 int dot = 2;
