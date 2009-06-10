@@ -25,6 +25,7 @@ public class InfoDialog extends Dialog
     {
         super(shell);
         this.server = server;
+        setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
     /** Create the UI elements */
