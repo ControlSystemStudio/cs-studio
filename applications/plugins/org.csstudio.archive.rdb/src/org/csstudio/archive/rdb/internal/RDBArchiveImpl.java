@@ -393,7 +393,7 @@ public class RDBArchiveImpl extends RDBArchive
             batchTextSamples(channel, stamp, severity, status, txt);
         }
         if (debug_batch)
-            batched_samples.add(channel.getName() + " = " + sample.toString());
+            batched_samples.add(channel.getName() + " = " + sample.toString()); //$NON-NLS-1$
 	}
 
 	/** Write the meta data of the sample, and update the channel's info. */
@@ -588,7 +588,7 @@ public class RDBArchiveImpl extends RDBArchive
         {
             if (debug_batch)
             {
-                System.out.println("Error in one of these samples");
+                System.out.println("Error in one of these samples"); //$NON-NLS-1$
                 for (String sample : batched_samples)
                 {
                     System.out.println(sample);
