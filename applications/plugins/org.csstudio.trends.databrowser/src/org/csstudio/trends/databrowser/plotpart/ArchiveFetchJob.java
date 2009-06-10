@@ -66,37 +66,43 @@ class ArchiveFetchJob extends Job
             {   // Invoke the possibly lengthy search.
                 final ArchiveServer server =
                     cache.getServer(archives[i].getUrl());
-                
-                String request_type;
-                Object[] request_parms;
-                final int bins = Preferences.getPlotBins();
-                if (item.getRequestType() == IPVModelItem.RequestType.RAW)
+                try
                 {
-                    request_type = ArchiveServer.GET_RAW;
-                    request_parms = new Object[] { new Integer(bins) };
+                    String request_type;
+                    Object[] request_parms;
+                    final int bins = Preferences.getPlotBins();
+                    if (item.getRequestType() == IPVModelItem.RequestType.RAW)
+                    {
+                        request_type = ArchiveServer.GET_RAW;
+                        request_parms = new Object[] { new Integer(bins) };
+                    }
+                    else
+                    {
+                        request_type = ArchiveServer.GET_AVERAGE;
+                        final double interval =
+                            (end.toDouble() - start.toDouble()) / bins;
+                        request_parms = new Object[] { new Double(interval) };
+                    }
+                    
+                    final BatchIterator batch = new BatchIterator(server,
+                                    archives[i].getKey(), item.getName(),
+                                    start, end, request_type, request_parms);
+                    IValue result[] = batch.getBatch();
+                    while (result != null)
+                    {   // Notify model of new samples.
+                        // Even when monitor.isCanceled at this point?
+                        // Yes, since we have the samples, might as well show them
+                        // before bailing out.
+                        if (result.length > 0)
+                            item.addArchiveSamples(server.getServerName(), result);
+                        if (monitor.isCanceled())
+                            break;
+                        result = batch.next();
+                    }
                 }
-                else
-                {
-                    request_type = ArchiveServer.GET_AVERAGE;
-                    final double interval =
-                        (end.toDouble() - start.toDouble()) / bins;
-                    request_parms = new Object[] { new Double(interval) };
-                }
-                
-                final BatchIterator batch = new BatchIterator(server,
-                                archives[i].getKey(), item.getName(),
-                                start, end, request_type, request_parms);
-                IValue result[] = batch.getBatch();
-                while (result != null)
-                {   // Notify model of new samples.
-                    // Even when monitor.isCanceled at this point?
-                    // Yes, since we have the samples, might as well show them
-                    // before bailing out.
-                    if (result.length > 0)
-                        item.addArchiveSamples(server.getServerName(), result);
-                    if (monitor.isCanceled())
-                        break;
-                    result = batch.next();
+                catch (Exception ex)
+                {   // Add server info to error, pass up to next try/catch
+                    throw new Exception(server.getURL() + ": " + ex.getMessage(), ex);
                 }
             }
             catch (final Exception ex)
