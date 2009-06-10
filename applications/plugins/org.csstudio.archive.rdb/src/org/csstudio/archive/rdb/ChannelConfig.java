@@ -11,6 +11,11 @@ import org.csstudio.platform.utility.rdb.StringID;
  */
 abstract public class ChannelConfig extends StringID
 {
+    /** Minimum sample period.
+     *  Must be > 0 to avoid div-0 error.
+     *  Also enforces some sampling sanity.
+     */
+    final public double MIN_SAMPLE_PERIOD = 1.0;
     protected int group_id;
     private SampleMode sample_mode;
     private double sample_period;
@@ -23,6 +28,8 @@ abstract public class ChannelConfig extends StringID
         this.group_id = group_id;
         this.sample_mode = sample_mode;
         this.sample_period = sample_period;
+        if (this.sample_period < MIN_SAMPLE_PERIOD)
+            this.sample_period = MIN_SAMPLE_PERIOD;
     }
 
     public int getGroupId()

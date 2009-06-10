@@ -89,8 +89,10 @@ public class ChannelConfigImpl extends ChannelConfig
     /** {@inheritDoc} */
     @Override
     public void setSampleMode(final SampleMode sample_mode,
-            final double period_secs) throws Exception
+            double period_secs) throws Exception
     {
+        if (period_secs < MIN_SAMPLE_PERIOD)
+            period_secs = MIN_SAMPLE_PERIOD;
         final PreparedStatement statement =
             archive.getRDB().getConnection().prepareStatement(
                         archive.getSQL().channel_set_sampling);
