@@ -28,6 +28,7 @@ public class PreferenceConstants {
 
 	public static final String XMPP_USER_NAME = "xmppUserName";
 	public static final String XMPP_PASSWORD = "xmppPassword";
+	public static final String XMPP_SERVER = "xmppServer";
 	public static final String DATA_PORT_NUMBER = "dataPortNumber";
 	public static final String COMMAND_PORT_NUMBER = "commandPortNumber";
 	public static final String BEACON_TIMEOUT = "beaconTimeout";

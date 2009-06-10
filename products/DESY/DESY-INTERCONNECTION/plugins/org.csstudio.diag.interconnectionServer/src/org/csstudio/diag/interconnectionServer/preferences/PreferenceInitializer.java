@@ -40,6 +40,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		prefs.put(PreferenceConstants.XMPP_USER_NAME, "icserver-alarm");
 		prefs.put(PreferenceConstants.XMPP_PASSWORD, "icserver");
+		prefs.put(PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de");
 		prefs.put(PreferenceConstants.DATA_PORT_NUMBER, "18324");
 		prefs.put(PreferenceConstants.COMMAND_PORT_NUMBER, "18325");
 		prefs.put(PreferenceConstants.BEACON_TIMEOUT, "20000");				//15sec -> 4.7.2008 => 20sec

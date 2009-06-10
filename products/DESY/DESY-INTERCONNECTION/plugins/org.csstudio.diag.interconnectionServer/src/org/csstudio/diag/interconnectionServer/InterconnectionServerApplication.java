@@ -22,10 +22,13 @@ package org.csstudio.diag.interconnectionServer;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
@@ -49,10 +52,9 @@ public final class InterconnectionServerApplication implements IApplication {
 	public Object start(IApplicationContext context) throws Exception {
 		CentralLogger.getInstance().info(this, "Starting Interconnection Server");
 
-//		runStartupServices();
-		HeadlessConnection.connect("icserver-alarm", "icserver", "krykxmpp.desy.de", ECFConstants.XMPP);
-		Thread.sleep(10000); // to solve service discovery problem
-		ServiceLauncher.startRemoteServices();
+		runStartupServices();
+		connectToXmppServer();		
+		
 		context.applicationRunning();
 		InterconnectionServer ics = InterconnectionServer.getInstance();
 		ics.executeMe();
@@ -62,6 +64,22 @@ public final class InterconnectionServerApplication implements IApplication {
 		} else {
 			return EXIT_RESTART;
 		}
+	}
+
+	/**
+	 * Connects to the XMPP server for remote management (ECF-based).
+	 */
+	private void connectToXmppServer() throws Exception {
+		IPreferencesService prefs = Platform.getPreferencesService();
+		String username = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
+		String password = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
+		String server = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de", null);
+		
+		HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
+		ServiceLauncher.startRemoteServices();
 	}
 
 	/**
