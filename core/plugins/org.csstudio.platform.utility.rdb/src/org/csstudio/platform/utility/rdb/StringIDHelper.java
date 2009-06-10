@@ -33,11 +33,15 @@ public class StringIDHelper
             final String name_column)
     {
         this.rdb = rdb;
-        try {
+        try
+        {
 			this.connection = rdb.getConnection();
-		} catch (Exception e) {
-			//discard the exception, simply print its stack trace
-			e.printStackTrace();
+		}
+        catch (Exception e)
+		{
+		    // OK to not have an initial connection.
+		    // Will throw exception in find() if it's
+		    // still a problem there.
 		}
         this.table = table;
         this.id_column = id_column;
