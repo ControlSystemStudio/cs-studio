@@ -49,11 +49,10 @@ class DisconnectedResponse extends AbstractResponse
                 } );
             }
         }
+        html.closeTable();
 
         if (disconnected == 0)
             html.h2("All channels are connected");            
-        
-        html.closeTable();
         
         html.close();
     }
