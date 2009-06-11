@@ -300,7 +300,9 @@ public class RDBWriter
         insert_message_statement.setTimestamp(2, new Timestamp(now.getTimeInMillis()));
         insert_message_statement.setString(3, type);
         // Overcome RDB limitations
-        if (name.length() > MAX_NAME_LENGTH)
+        if (name == null)
+            name = "";
+        else if (name.length() > MAX_NAME_LENGTH)
         {
             CentralLogger.getInstance().getLogger(this).warn(
                 "Limiting NAME = '" + name + "' to " + MAX_NAME_LENGTH);

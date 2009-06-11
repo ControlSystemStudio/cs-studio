@@ -273,6 +273,7 @@ public class LogClientThread extends Thread
                 last_error = ex.getMessage();
             }
             logger.error("Message handling error", ex);
+            ex.printStackTrace();
             synchronized (this)
             {
                 // Leave run == true, toggle a restart
