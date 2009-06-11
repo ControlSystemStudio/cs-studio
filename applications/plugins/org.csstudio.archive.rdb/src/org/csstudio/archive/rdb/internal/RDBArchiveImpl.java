@@ -30,6 +30,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
+import org.omg.CORBA.portable.ValueInputStream;
 
 /** RDB Archive access.
  *  @author Kay Kasemir
@@ -95,8 +96,10 @@ public class RDBArchiveImpl extends RDBArchive
     final public boolean debug_batch = true;
     
     /** Local copy of batched samples, used to display batch errors */
-    private ArrayList<String> batched_samples = 
-        debug_batch ? new ArrayList<String>() : null;
+    private ArrayList<ChannelConfigImpl> batched_channel = 
+        debug_batch ? new ArrayList<ChannelConfigImpl>() : null;
+    private ArrayList<IValue> batched_samples = 
+        debug_batch ? new ArrayList<IValue>() : null;
 	
 	/** Connect to RDB.
 	 *  @param url URL, where "jdbc:oracle_stage:" handled like
@@ -146,7 +149,10 @@ public class RDBArchiveImpl extends RDBArchive
         }
         // In case of a re-connect after error, forget samples that caused error
         if (debug_batch)
+        {
+            batched_channel.clear();
             batched_samples.clear();
+        }
     }
 
     /** {@inheritDoc} */
@@ -393,7 +399,10 @@ public class RDBArchiveImpl extends RDBArchive
             batchTextSamples(channel, stamp, severity, status, txt);
         }
         if (debug_batch)
-            batched_samples.add(channel.getName() + " = " + sample.toString()); //$NON-NLS-1$
+        {
+            batched_channel.add(channel);
+            batched_samples.add(sample);
+        }
 	}
 
 	/** Write the meta data of the sample, and update the channel's info. */
@@ -588,19 +597,27 @@ public class RDBArchiveImpl extends RDBArchive
         {
             if (debug_batch)
             {
-                System.out.println("Error in one of these samples"); //$NON-NLS-1$
-                for (String sample : batched_samples)
+                ex.printStackTrace();
+                System.out.println("Error in of these samples: " + ex.getMessage()); //$NON-NLS-1$
+                if (batched_samples.size() != batched_channel.size())
+                    System.out.println("Inconsistent batch history"); //$NON-NLS-1$
+                final int N = Math.min(batched_samples.size(), batched_channel.size());
+                for (int i=0; i<N; ++i)
                 {
-                    System.out.println(sample);
+                    attemptSingleInsert(batched_channel.get(i), batched_samples.get(i));
                 }
             }
-            throw ex;
+            else
+                throw ex;
         }
         if (debug_batch)
+        {
+            batched_channel.clear();
             batched_samples.clear();
+        }
 	}
 
-	/** Submit and clear the batch, or roll back on error */
+    /** Submit and clear the batch, or roll back on error */
     private void checkBatchExecution(final PreparedStatement insert) throws Exception
     {
         try
@@ -625,6 +642,90 @@ public class RDBArchiveImpl extends RDBArchive
         }
     }
     
+    /** The batched insert failed, so try to insert this channel's sample
+     *  individually, mostly to debug errors
+     *  @param channel
+     *  @param sample
+     */
+    @SuppressWarnings("nls")
+    private void attemptSingleInsert(final ChannelConfigImpl channel,
+            final IValue sample)
+    {
+        System.out.println("Individual insert of " + channel.getName() + " = " + sample.toString());
+        try
+        {
+            final Timestamp stamp = TimeWarp.getSQLTimestamp(sample.getTime());
+            final Severity severity =
+                        severities.findOrCreate(sample.getSeverity().toString());
+            final Status status = stati.findOrCreate(sample.getStatus());
+            if (sample instanceof IDoubleValue)
+            {
+                final IDoubleValue dbl = (IDoubleValue) sample;
+                if (dbl.getValues().length > 1)
+                    throw new Exception("Not checking array samples");
+                if (Double.isNaN(dbl.getValue()))
+                    throw new Exception("Not checking NaN values");
+                insert_double_sample.setInt(1, channel.getId());
+                insert_double_sample.setTimestamp(2, stamp);
+                insert_double_sample.setInt(3, severity.getId());
+                insert_double_sample.setInt(4, status.getId());
+                insert_double_sample.setDouble(5, dbl.getValue());
+                // MySQL nanosecs
+                if (rdb.getDialect() == Dialect.MySQL)
+                    insert_double_sample.setInt(6, stamp.getNanos());
+                insert_double_sample.executeUpdate();
+            }
+            else if (sample instanceof ILongValue)
+            {
+                final ILongValue num = (ILongValue) sample;
+                if (num.getValues().length > 1)
+                    throw new Exception("Not checking array samples");
+                insert_long_sample.setInt(1, channel.getId());
+                insert_long_sample.setTimestamp(2, stamp);
+                insert_long_sample.setInt(3, severity.getId());
+                insert_long_sample.setInt(4, status.getId());
+                insert_long_sample.setLong(5, num.getValue());
+                // MySQL nanosecs
+                if (rdb.getDialect() == Dialect.MySQL)
+                    insert_long_sample.setInt(6, stamp.getNanos());
+                insert_long_sample.executeUpdate();
+            }
+            else if (sample instanceof IEnumeratedValue)
+            {   // Enum handled just like (long) integer
+                final IEnumeratedValue num = (IEnumeratedValue) sample;
+                if (num.getValues().length > 1)
+                    throw new Exception("Not checking array samples");
+                insert_long_sample.setInt(1, channel.getId());
+                insert_long_sample.setTimestamp(2, stamp);
+                insert_long_sample.setInt(3, severity.getId());
+                insert_long_sample.setInt(4, status.getId());
+                insert_long_sample.setLong(5, num.getValue());
+                // MySQL nanosecs
+                if (rdb.getDialect() == Dialect.MySQL)
+                    insert_long_sample.setInt(6, stamp.getNanos());
+                insert_long_sample.executeUpdate();
+            }
+            else
+            {   // Handle string and possible other types as strings
+                final String txt = sample.format();
+                insert_txt_sample.setInt(1, channel.getId());
+                insert_txt_sample.setTimestamp(2, stamp);
+                insert_txt_sample.setInt(3, severity.getId());
+                insert_txt_sample.setInt(4, status.getId());
+                insert_txt_sample.setString(5, txt);
+                // MySQL nanosecs
+                if (rdb.getDialect() == Dialect.MySQL)
+                    insert_txt_sample.setInt(6, stamp.getNanos());
+                insert_txt_sample.executeUpdate();
+            }
+            rdb.getConnection().commit();
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Individual insert failed: " + ex.getMessage());
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public SampleEngineConfig addEngine(String name, String description,
