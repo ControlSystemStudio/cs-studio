@@ -27,7 +27,7 @@ class DisconnectedResponse extends AbstractResponse
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_DisconnectedTitle);
-        html.openTable(2, new String[] { Messages.HTTP_Channel, Messages.HTTP_Group });
+        html.openTable(1, new String[] { "#", Messages.HTTP_Channel, Messages.HTTP_Group });
 
         final int group_count = model.getGroupCount();
         int disconnected = 0;
@@ -40,12 +40,13 @@ class DisconnectedResponse extends AbstractResponse
                 final ArchiveChannel channel = group.getChannel(j);
                 if (channel.isConnected())
                     continue;
+                ++disconnected;
                 html.tableLine(new String[]
                 {
+                    Integer.toString(disconnected),
                     HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
                     HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
                 } );
-                ++disconnected;
             }
         }
 
