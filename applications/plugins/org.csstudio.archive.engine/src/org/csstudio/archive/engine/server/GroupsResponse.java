@@ -71,8 +71,7 @@ class GroupsResponse extends AbstractResponse
                 
             html.tableLine(new String[]
             {
-                "<a href=\"/group?name=" + group.getName() +
-                                            "\">" + group.getName() + "</a>",
+                HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
                 group.isEnabled()
                   ? Messages.HTTP_Enabled : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
                 Integer.toString(channel_count),

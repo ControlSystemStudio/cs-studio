@@ -49,8 +49,10 @@ public class HTMLWriter
         text("<p>");
         text("<hr width='50%' align='left'>");
         
+        text("<a href=\"/version.html\">-Version-</a> ");
         text("<a href=\"/main\">-Main-</a> ");
         text("<a href=\"/groups\">-Groups-</a> ");
+        text("<a href=\"/disconnected\">-Disconnected-</a> ");
         
         text("<address>");
         text(TimestampFactory.now().format(ITimestamp.Format.DateTimeSeconds));

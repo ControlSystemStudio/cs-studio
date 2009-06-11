@@ -17,6 +17,7 @@ public class Messages
     final public static String HTTP_Description = "Description";
     final public static String HTTP_Disabled = "Disabled";
     final public static String HTTP_Disconnected = "Disconnected";
+    final public static String HTTP_DisconnectedTitle = "Disconnected Channels";
     final public static String HTTP_Enabled = "Enabled";
     final public static String HTTP_Enablement = "Enablement";
     final public static String HTTP_EnablingChannel = "Enabling Channel";

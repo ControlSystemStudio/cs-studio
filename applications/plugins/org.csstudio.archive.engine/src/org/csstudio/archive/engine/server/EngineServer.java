@@ -35,6 +35,7 @@ public class EngineServer
         
         http.registerServlet("/main", new MainResponse(model), null, http_context);
         http.registerServlet("/groups", new GroupsResponse(model), null, http_context);
+        http.registerServlet("/disconnected", new DisconnectedResponse(model), null, http_context);
         http.registerServlet("/group", new GroupResponse(model), null, http_context);
         http.registerServlet("/channel", new ChannelResponse(model), null, http_context);
         http.registerServlet("/environment", new EnvironmentResponse(model), null, http_context);
