@@ -12,7 +12,7 @@
             class="org.csstudio.alarm.table.ui.ArchiveView"
             icon="icons/archiveTable.png"
             id="org.csstudio.alarm.table.ui.ArchiveView"
-            name="Log Archive Viewer"/>
+            name="Archive Table"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -26,7 +26,7 @@
             class="org.csstudio.alarm.table.ui.LogView"
             icon="icons/logTable.png"
             id="org.csstudio.alarm.table.ui.LogView"
-            name="Log Viewer"/>
+            name="Log Table"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -40,7 +40,7 @@
             class="org.csstudio.alarm.table.ui.AlarmView"
             icon="icons/alarmTable.png"
             id="org.csstudio.alarm.table.ui.AlarmView"
-            name="Alarm Viewer"/>
+            name="Alarm Table"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -74,17 +74,17 @@
             category="de.desy.css.jmsLogs.page3"
             class="org.csstudio.alarm.table.preferences.LogViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.JmsLogsPreferencePage"
-            name="Jms Log viewer"/>
+            name="Log Table"/>
       <page
             category="de.desy.css.jmsLogs.page3"
             class="org.csstudio.alarm.table.preferences.AlarmViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.AlarmViewerPreferencePage"
-            name="JMS Alarm viewer"/>
+            name="Alarm Table"/>
       <page
             category="de.desy.css.jmsLogs.page3"
             class="org.csstudio.alarm.table.preferences.ArchiveViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.LogArchiveViewerPreferencePage"
-            name="JMS Log archive viewer"/>
+            name="Archive Table"/>
       <page
             category="de.desy.css.jmsLogs.page3"
             class="org.csstudio.alarm.table.preferences.AmsVerifyViewPreferencePage"
@@ -94,7 +94,7 @@
             category="org.csstudio.platform.ui.css.applications.alarm"
             class="org.csstudio.alarm.table.preferences.JmsLogPreferencePage"
             id="de.desy.css.jmsLogs.page3"
-            name="JMS Logs"/>
+            name="Message Table"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -115,7 +115,7 @@
                class="org.csstudio.alarm.table.ui.ShowArchiveView"
                icon="icons/archiveTable.png"
                id="org.csstudio.alarm.table.ui.ShowArchiveView"
-               label="JMSLogsArchive"
+               label="Archive Table"
                menubarPath="css/alarm/"
                style="push"
                tooltip="Show JMS Log archive"/>
@@ -123,7 +123,7 @@
                class="org.csstudio.alarm.table.ui.ShowLogView"
                icon="icons/logTable.png"
                id="org.csstudio.alarm.table.ui.ShowLogView"
-               label="JMSLogs"
+               label="Log Table"
                menubarPath="css/diag/"
                style="push"
                tooltip="Show JMS Log"/>
@@ -139,7 +139,7 @@
                class="org.csstudio.alarm.table.ui.ShowAlarmView"
                icon="icons/alarmTable.png"
                id="org.csstudio.alarm.table.ui.ShowAlarmView"
-               label="JMSAlarmLog"
+               label="Alarm Table"
                menubarPath="css/alarm/"
                style="push"
                tooltip="Show JMS Alarms"/>
@@ -177,7 +177,7 @@
                enablesFor="1"
                icon="icons/archiveTable.png"
                id="org.csstudio.alarm.table.archivepopupAction"
-               label="Log Archive"
+               label="Archive Table"
                menubarPath="org.csstudio.popmenu/content"/>
       </objectContribution>
    </extension>

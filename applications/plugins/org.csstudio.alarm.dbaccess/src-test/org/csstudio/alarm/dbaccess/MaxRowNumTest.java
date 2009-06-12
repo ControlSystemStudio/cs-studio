@@ -27,10 +27,10 @@ public class MaxRowNumTest {
 		Calendar to = Calendar.getInstance();
 		to.set(2008, Calendar.NOVEMBER, 27, 16, 12, 0);
 
-		ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
-				.getLogMessages(from, to, null, 100);
+//		ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
+//				.getLogMessages(from, to, null, 100);
 
-		Assert.assertTrue(ArchiveDBAccess.getInstance().is_maxSize());
+//		Assert.assertTrue(ArchiveDBAccess.getInstance().is_maxSize());
 		
 //		for (HashMap<String, String> hashMap : erg) {
 //			Set<Entry<String, String>> entries = hashMap.entrySet();

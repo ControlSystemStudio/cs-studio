@@ -16,6 +16,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.utility.jms;bundle-version="1.1.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.alarm.table,
+ org.csstudio.alarm.table.jms,
  org.csstudio.alarm.table.preferences
 Bundle-ClassPath: lib/jl1.0.jar,
  .,

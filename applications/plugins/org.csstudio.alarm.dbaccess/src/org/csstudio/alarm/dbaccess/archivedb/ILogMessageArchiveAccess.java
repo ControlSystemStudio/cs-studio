@@ -22,25 +22,15 @@
 package org.csstudio.alarm.dbaccess.archivedb;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 
 public interface ILogMessageArchiveAccess {
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
-			Calendar to, ArrayList<FilterItem> settings, int maxAnswerSize);
+    public void getLogMessages(Filter filter, Result result);
 
-	public String deleteLogMessages(Calendar from, Calendar to,
-			ArrayList<FilterItem> settings);
+    public String deleteLogMessages(Filter filter);
 
-	public int countDeleteLogMessages(Calendar _from, Calendar _to,
-			ArrayList<FilterItem> settings);
+    public void countDeleteLogMessages(Filter filter, Result result);
 
-	public String exportLogMessages(Calendar _from, Calendar _to,
-			ArrayList<FilterItem> settings, int answerSize, File path,
-			String[] columnNames);
-
-	public boolean is_maxSize();
-
+    public String exportLogMessages(Filter filter, Result result, File path,
+            String[] columnNames);
 }

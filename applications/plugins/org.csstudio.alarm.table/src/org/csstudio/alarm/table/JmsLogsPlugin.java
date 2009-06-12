@@ -24,12 +24,16 @@ package org.csstudio.alarm.table;
 
 
 
+import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
+import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 
 
@@ -40,12 +44,20 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.alarm.table"; //$NON-NLS-1$
-
 	
 	//The shared instance.
 	private static JmsLogsPlugin plugin;
+
+    private IMessageTypes _messageTypes;
+
+    private ServiceReference _serviceReferenceMessageTypes;
+
+    private ServiceReference _serviceReferenceArchiveAccess;
+
+    private ILogMessageArchiveAccess _archiveAccess;
 	
-	/**
+
+    /**
 	 * The constructor.
 	 */
 	public JmsLogsPlugin() {
@@ -61,18 +73,22 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	 * This method is called upon plug-in activation
 	 */
 	public void doStart(BundleContext context) throws Exception {
-//		super.start(context);
-//		this.getWorkbench().getViewRegistry();
-//		jmsmAdapterFactory = new JMSMessageAdapterFactory();
-//		IAdapterManager mgr = Platform.getAdapterManager();
-//		mgr.registerAdapters(jmsmAdapterFactory, adaptable)
+        _serviceReferenceMessageTypes = context.getServiceReference(IMessageTypes.class.getName());
+        if (_serviceReferenceMessageTypes != null) {
+            _messageTypes = (IMessageTypes) context.getService(_serviceReferenceMessageTypes);
+        }
+        _serviceReferenceArchiveAccess = context.getServiceReference(ILogMessageArchiveAccess.class.getName());
+        if (_serviceReferenceArchiveAccess != null) {
+            _archiveAccess = (ILogMessageArchiveAccess) context.getService(_serviceReferenceArchiveAccess);
+        }
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void doStop(BundleContext context) throws Exception {
-//		super.stop(context);
+	    context.ungetService(_serviceReferenceMessageTypes);
+	    context.ungetService(_serviceReferenceArchiveAccess);
 		plugin = null;
 	}
 
@@ -119,5 +135,13 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     private void log(int type, String message, Exception e)
     {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
+    }
+
+    public IMessageTypes getMessageTypes() {
+        return _messageTypes;
+    }
+    
+    public ILogMessageArchiveAccess getArchiveAccess() {
+        return _archiveAccess;
     }
 }

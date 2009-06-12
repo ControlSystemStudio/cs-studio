@@ -57,6 +57,8 @@ public class MessageTable {
 
     TableViewer _tableViewer;
 
+    TableColumn[] _tableColumn;
+
     String[] columnHeader;
 
     String colName = null;
@@ -113,35 +115,46 @@ public class MessageTable {
                 .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
                         1));
         String[] columnName = new String[columnHeader.length];
+        _tableColumn = new TableColumn[colNames.length];
         for (int i = 0; i < columnHeader.length; i++) {
-            final TableColumn tableColumn = new TableColumn(_table, SWT.CENTER);
+            _tableColumn[i] = new TableColumn(_table, SWT.CENTER);
             String[] temp = columnHeader[i].split(",");
             colName = temp[0];
             columnName[i] = colName;
-            tableColumn.setText(temp[0]);
+            _tableColumn[i].setText(temp[0]);
             if (temp.length == 2) {
-                tableColumn.setWidth(Integer.parseInt(columnHeader[i]
+                _tableColumn[i].setWidth(Integer.parseInt(columnHeader[i]
                         .split(",")[1]));
             } else
-                tableColumn.setWidth(100);
-            // colName = _columnNames[i];
-            tableColumn.addSelectionListener(new SelectionAdapter() {
+                _tableColumn[i].setWidth(100);
+            final int j = i;
+            _tableColumn[i].addSelectionListener(new SelectionAdapter() {
 
                 private String cName = colName;
-
+                private TableColumn column = _tableColumn[j];
+                
                 public void widgetSelected(SelectionEvent e) {
+                    _table.setSortColumn(column);
                     if (cName.equals(lastSort)) {
                         sort = !sort;
                         _tableViewer.setSorter(new MessageTableColumnSorter(
                                 cName, sort));
                     } else {
+                        sort = false;
                         _tableViewer.setSorter(new MessageTableColumnSorter(
                                 cName, sort));
+                    }
+                    if (sort) {
+                        _table.setSortDirection(SWT.DOWN);
+                    } else {
+                        _table.setSortDirection(SWT.UP);
                     }
                     lastSort = cName;
                 }
             });
         }
+        
+
         return columnName;
     }
 

@@ -23,42 +23,33 @@
 package org.csstudio.alarm.table.ui;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
-import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
+import org.csstudio.alarm.dbaccess.archivedb.Result;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.database.AsynchronousDatabaseAccess;
 import org.csstudio.alarm.table.database.IDatabaseAccessListener;
-import org.csstudio.alarm.table.database.Result;
-import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.ArchiveViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
-import org.csstudio.alarm.table.readDB.AccessDBJob;
-import org.csstudio.alarm.table.readDB.DBAnswer;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.apputil.time.StartEndTimeParser;
-import org.csstudio.apputil.ui.time.StartEndDialog;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -71,20 +62,23 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
 
 /**
- * View for message read from oracel DB.
+ * View for messages read from oracel DB.
  * 
  * @author jhatje
  * @author $Author$
  * @version $Revision$
  * @since 19.07.2007
  */
-public class ArchiveView extends ViewPart implements Observer {
+public class ArchiveView extends ViewPart {
 
     /** The Id of this Object. */
     public static final String ID = ArchiveView.class.getName();
@@ -95,25 +89,8 @@ public class ArchiveView extends ViewPart implements Observer {
     /** An Array whit the name of the Columns. */
     private String[] _columnNames;
 
-    /** Textfield witch contain the "from time". */
-    private Text _timeFrom;
-    /** Textfield witch contain the "to time". */
-    private Text _timeTo;
-
-    /** The selectet "from time". */
-    private ITimestamp _fromTime;
-    /** The selectet "to time". */
-    private ITimestamp _toTime;
-
-    /**
-     * The Answer from the DB.
-     */
-    private DBAnswer _dbAnswer = null;
-
     /** The count of results. */
     private Label _countLabel;
-
-    private ArrayList<FilterItem> _filterSettings;
 
     /**
      * Current settings of the filter that they are available to delete the
@@ -121,12 +98,7 @@ public class ArchiveView extends ViewPart implements Observer {
      */
     private Filter _filter;
 
-    private AccessDBJob _dbReader = new AccessDBJob("DBReader"); //$NON-NLS-1$
-
-    /**
-     * The Show Property View action.
-     */
-    private Action _showPropertyViewAction;
+    private ArrayList<String> _filterSettingHistory = new ArrayList<String>();
 
     private boolean _canExecute = false;
 
@@ -145,14 +117,26 @@ public class ArchiveView extends ViewPart implements Observer {
 
     private AsynchronousDatabaseAccess _asyncDatabaseAccess = new AsynchronousDatabaseAccess();
 
+    private String[][] _messageProperties;
+
+    private Text _timeFromText;
+
+    private Text _timeToText;
+
     public ArchiveView() {
         super();
-        _dbAnswer = new DBAnswer();
-        _dbAnswer.addObserver(this);
+        GregorianCalendar to = (GregorianCalendar) GregorianCalendar
+                .getInstance();
+        GregorianCalendar from = (GregorianCalendar) to.clone();
+        from.set(Calendar.DAY_OF_YEAR, from.get(Calendar.DAY_OF_YEAR) - 1);
+        _filter = new Filter(from, to);
+        _messageProperties = JmsLogsPlugin.getDefault().getMessageTypes()
+                .getMsgTypes();
     }
 
     /** {@inheritDoc} */
     public final void createPartControl(final Composite parent) {
+
         _canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID,
                 false);
 
@@ -175,14 +159,16 @@ public class ArchiveView extends ViewPart implements Observer {
                 SWT.FILL, true, false, 1, 1));
         archiveTableManagementComposite.setLayout(new GridLayout(6, false));
 
-        addSearchButtons(archiveTableManagementComposite);
-        addShownPeriod(archiveTableManagementComposite);
+        addPeriodGroup(archiveTableManagementComposite);
+        addCommandButtons(archiveTableManagementComposite);
         addMessageCount(archiveTableManagementComposite);
-        addManageButtons(archiveTableManagementComposite);
+        // addManageButtons(archiveTableManagementComposite);
 
         _tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.FULL_SELECTION);
         _messageTable = new MessageTable(_tableViewer, _columnNames,
                 _jmsMessageList);
+
+        _messageTable.makeContextMenu(getSite());
 
         _columnMapping = new ColumnWidthPreferenceMapping(_tableViewer);
         // _jmsLogTableViewer.setAlarmSorting(false);
@@ -236,53 +222,159 @@ public class ArchiveView extends ViewPart implements Observer {
         _countLabel.setText("0"); //$NON-NLS-1$
     }
 
-    private void addShownPeriod(Composite archiveTableManagementComposite) {
+    private void addPeriodGroup(Composite archiveTableManagementComposite) {
         GridData gd;
-        Group shownPeriodGroup = new Group(archiveTableManagementComposite,
+        final Group periodGroup = new Group(archiveTableManagementComposite,
                 SWT.LINE_SOLID);
-        shownPeriodGroup.setText(Messages.getString("LogViewArchive_from")); //$NON-NLS-1$
+        periodGroup.setLayout(new GridLayout(4, false));
+        periodGroup.setText(Messages.getString("LogViewArchive_period")); //$NON-NLS-1$" +
         gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
-        gd.minimumHeight = 80;
-        gd.minimumWidth = 180;
-        shownPeriodGroup.setLayoutData(gd);
-        shownPeriodGroup.setLayout(new GridLayout(2, false));
+        gd.minimumHeight = 160;
+        gd.minimumWidth = 310;
+        periodGroup.setLayoutData(gd);
 
-        new Label(shownPeriodGroup, SWT.NONE)
-                .setText(Messages.ViewArchive_fromTime);
+        new Label(periodGroup, SWT.NONE).setText(Messages.ViewArchive_fromTime);
 
-        _timeFrom = new Text(shownPeriodGroup, SWT.SINGLE);
-        _timeFrom.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-                1, 1));
+        _timeFromText = new Text(periodGroup, SWT.SINGLE);
+        _timeFromText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 1, 1));
+        createFixedSearchButton(periodGroup, 24, "1 day");
+        createFixedSearchButton(periodGroup, 168, "7 day");
 
-        _timeFrom.setEditable(false);
-        _timeFrom.setText("                            "); //$NON-NLS-1$
+        _timeFromText.setText(TimestampFactory.fromCalendar(_filter.getFrom())
+                .toString());
+        new Label(periodGroup, SWT.NONE).setText(Messages.ViewArchive_toTime);
+        _timeToText = new Text(periodGroup, SWT.SINGLE);
+        _timeToText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 1, 1));
+        _timeToText.setText(TimestampFactory.fromCalendar(_filter.getTo())
+                .toString());
 
-        new Label(shownPeriodGroup, SWT.NONE)
-                .setText(Messages.ViewArchive_toTime);
-        _timeTo = new Text(shownPeriodGroup, SWT.SINGLE);
-        _timeTo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
-                1));
-        _timeTo.setEditable(false);
+        _timeFromText.addFocusListener(new DateTextFieldFocusListener());
+        _timeToText.addFocusListener(new DateTextFieldFocusListener());
+        createFixedSearchButton(periodGroup, 72, "3 day");
+        Button variableSearchButton = new Button(periodGroup, SWT.PUSH);
+        variableSearchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                true, false, 1, 1));
+        variableSearchButton.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
+
+        variableSearchButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(final SelectionEvent e) {
+                FilterSettingDialog filterSettingDialog = new FilterSettingDialog(
+                        periodGroup.getShell(), _filter, _filterSettingHistory,
+                        _messageProperties, TimestampFactory.fromCalendar(
+                                _filter.getFrom()).toString(), TimestampFactory
+                                .fromCalendar(_filter.getTo()).toString());
+                if (filterSettingDialog.open() == filterSettingDialog.OK) {
+                    String lowString = filterSettingDialog
+                            .getStartSpecification();
+                    String highString = filterSettingDialog
+                            .getEndSpecification();
+                    try {
+                        StartEndTimeParser parser = new StartEndTimeParser(
+                                lowString, highString);
+                        _filter.setFrom((GregorianCalendar) parser.getStart());
+                        _filter.setTo((GregorianCalendar) parser.getEnd());
+                        _timeFromText.setText(TimestampFactory.fromCalendar(
+                                _filter.getFrom()).toString());
+
+                        _timeToText.setText(TimestampFactory.fromCalendar(
+                                _filter.getTo()).toString());
+                        // redraw
+                        _timeFromText.getParent().getParent().redraw();
+                        _timeToText.getParent().getParent().redraw();
+                        readDatabase();
+                    } catch (Exception e1) {
+                        JmsLogsPlugin.logError("Time/Date parser error");
+                    }
+                }
+            }
+        });
     }
 
-    private void addSearchButtons(Composite archiveTableManagementComposite) {
-        Group searchButtonGroup = new Group(archiveTableManagementComposite,
-                SWT.LINE_SOLID);
-        searchButtonGroup.setText(Messages.getString("LogViewArchive_period")); //$NON-NLS-1$
-        searchButtonGroup.setLayout(new GridLayout(5, true));
-        GridData gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
-        gd.minimumHeight = 60;
-        gd.minimumWidth = 300;
-        searchButtonGroup.setLayoutData(gd);
+    private class DateTextFieldFocusListener extends FocusAdapter {
+        @Override
+        public void focusLost(FocusEvent e) {
+            try {
+                StartEndTimeParser parser = new StartEndTimeParser(_timeFromText.getText(), _timeToText.getText());
+                _filter.setFrom((GregorianCalendar) parser.getStart());
+                _filter.setTo((GregorianCalendar) parser.getEnd());
+            } catch (Exception e1) {
+                _timeFromText.setText(TimestampFactory.fromCalendar(_filter.getFrom()).toString());
+                _timeToText.setText(TimestampFactory.fromCalendar(_filter.getTo()).toString());
+                _timeFromText.getParent().getParent().redraw();
+                _timeToText.getParent().getParent().redraw();
+                JmsLogsPlugin.logError("Time/Date parser error");
+            }
+            super.focusLost(e);
+        }
+    }
+    
+    /**
+     * Create a button to search for a fixed period and add the selection
+     * listener.
+     * 
+     * @param comp
+     *            Composite for the new button
+     * @param hours
+     *            Period (hours) to search for
+     * @param buttonText
+     *            Text for the button.
+     */
+    private void createFixedSearchButton(final Composite comp, final int hours,
+            String buttonText) {
+        Button fixedSearchButton = new Button(comp, SWT.PUSH);
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+        gridData.minimumWidth = 60;
+        fixedSearchButton.setLayoutData(gridData);
+        fixedSearchButton.setText(buttonText); //$NON-NLS-1$
+        fixedSearchButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(final SelectionEvent e) {
+                GregorianCalendar to = new GregorianCalendar();
+                GregorianCalendar from = (GregorianCalendar) to.clone();
+                from.add(GregorianCalendar.HOUR_OF_DAY, (-1 * hours));
+                _filter.setFrom(from);
+                _filter.setTo(to);
+                _timeFromText.setText(TimestampFactory.fromCalendar(
+                        _filter.getFrom()).toString());
+                _timeToText.setText(TimestampFactory.fromCalendar(
+                        _filter.getTo()).toString());
+                // redraw
+                _timeFromText.getParent().getParent().redraw();
+                _timeToText.getParent().getParent().redraw();
+                readDatabase();
+            }
+        });
+    }
 
-        createFixedSearchButton(searchButtonGroup, 24, Messages
-                .getString("LogViewArchive_day"));
-        createFixedSearchButton(searchButtonGroup, 72, Messages
-                .getString("LogViewArchive_3days"));
-        createFixedSearchButton(searchButtonGroup, 168, Messages
-                .getString("LogViewArchive_week"));
-        createVariableSearchButton(searchButtonGroup);
-        createVariableFilterSearchButton(searchButtonGroup);
+    private void addCommandButtons(Composite archiveTableManagementComposite) {
+        Group commandButtonGroup = new Group(archiveTableManagementComposite,
+                SWT.LINE_SOLID);
+        commandButtonGroup.setText(Messages
+                .getString("ViewArchiveCommandGroup")); //$NON-NLS-1$
+        GridLayout layout = new GridLayout(1, true);
+        commandButtonGroup.setLayout(layout);
+        GridData gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
+        // gd.minimumHeight = 60;
+        gd.minimumWidth = 60;
+        commandButtonGroup.setLayoutData(gd);
+
+        Button fixedSearchButton = new Button(commandButtonGroup, SWT.PUSH);
+        fixedSearchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                true, true, 2, 1));
+        fixedSearchButton.setText("Start"); //$NON-NLS-1$
+        fixedSearchButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(final SelectionEvent e) {
+                readDatabase();
+            }
+        });
+        if (_canExecute) {
+            layout.numColumns = 2;
+            gd.minimumWidth = 120;
+            createDeleteButton(commandButtonGroup);
+        }
+
+        createExportButton(commandButtonGroup);
     }
 
     /**
@@ -318,9 +410,11 @@ public class ArchiveView extends ViewPart implements Observer {
      */
     private void createExportButton(Composite comp) {
         Button export = new Button(comp, SWT.PUSH);
-        export.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
-                1));
-        export.setText(Messages.ViewArchive_6);
+        GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
+                1);
+        layoutData.minimumWidth = 60;
+        export.setLayoutData(layoutData);
+        export.setText(Messages.ViewArchiveExcelExportButton);
 
         export.addSelectionListener(new SelectionAdapter() {
 
@@ -357,7 +451,7 @@ public class ArchiveView extends ViewPart implements Observer {
      * Creates the actions offered by this view.
      */
     private void makeActions() {
-        _showPropertyViewAction = new Action() {
+        Action showPropertyViewAction = new Action() {
             @Override
             public void run() {
                 try {
@@ -368,170 +462,31 @@ public class ArchiveView extends ViewPart implements Observer {
                 }
             }
         };
-        _showPropertyViewAction.setText(Messages.ViewArchive_11);
-        _showPropertyViewAction.setToolTipText(Messages.ViewArchive_12);
+        showPropertyViewAction.setText(Messages.ViewArchive_11);
+        showPropertyViewAction.setToolTipText(Messages.ViewArchive_12);
 
         IViewRegistry viewRegistry = getSite().getWorkbenchWindow()
                 .getWorkbench().getViewRegistry();
         IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
-        _showPropertyViewAction.setImageDescriptor(viewDesc
-                .getImageDescriptor());
-    }
-
-    /**
-     * Adds the tool bar actions.
-     * 
-     * @param manager
-     *            the menu manager.
-     */
-    private void fillLocalToolBar(final IToolBarManager manager) {
-        manager.add(_showPropertyViewAction);
-    }
-
-    /**
-     * Create a button to search for a fixed period and add the selection
-     * listener.
-     * 
-     * @param comp
-     *            Composite for the new button
-     * @param hours
-     *            Period (hours) to search for
-     * @param buttonText
-     *            Text for the button.
-     */
-    private void createFixedSearchButton(final Composite comp, final int hours,
-            String buttonText) {
-        Button fixedSearchButton = new Button(comp, SWT.PUSH);
-        fixedSearchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-                true, true, 1, 1));
-        fixedSearchButton.setText(buttonText); //$NON-NLS-1$
-        fixedSearchButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(final SelectionEvent e) {
-                GregorianCalendar _to = new GregorianCalendar();
-                GregorianCalendar _from = (GregorianCalendar) _to.clone();
-                _from.add(GregorianCalendar.HOUR_OF_DAY, (-1 * hours));
-                _filter = new Filter(null, _from, _to);
-                readDatabase();
-            }
-        });
-    }
-
-    /**
-     * Create a Button that open a dialog to select required period.
-     * 
-     * @param comp
-     *            the parent Composite for the Button.
-     */
-    private void createVariableSearchButton(final Composite comp) {
-        Button bFlexSearch = new Button(comp, SWT.PUSH);
-        bFlexSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                true, 1, 1));
-        bFlexSearch.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
-
-        bFlexSearch.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(final SelectionEvent e) {
-                StartEndDialog dlg;
-                if (_fromTime != null && _toTime != null) {
-                    dlg = new StartEndDialog(comp.getShell(),
-                    // dlg = new StartEndDialog(_parentShell,
-                            _fromTime.toString(), _toTime.toString());
-                } else {
-                    dlg = new StartEndDialog(comp.getShell());
-                    // dlg = new StartEndDialog(_parentShell);
-                }
-                if (dlg.open() == StartEndDialog.OK) {
-                    String lowString = dlg.getStartSpecification();
-                    String highString = dlg.getEndSpecification();
-                    try {
-                        StartEndTimeParser parser = new StartEndTimeParser(
-                                lowString, highString);
-                        GregorianCalendar _from = (GregorianCalendar) parser
-                                .getStart();
-                        _fromTime = TimestampFactory.fromCalendar(_from);
-                        GregorianCalendar _to = (GregorianCalendar) parser
-                                .getEnd();
-                        _toTime = TimestampFactory.fromCalendar(_to);
-                        _filter = new Filter(null, _from, _to);
-                        readDatabase();
-                    } catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        JmsLogsPlugin.logInfo(e1.getMessage());
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Create a Button that open a dialog to select required period and define
-     * filters.
-     * 
-     * @param comp
-     *            the parent Composite for the Button.
-     */
-    private void createVariableFilterSearchButton(final Composite comp) {
-        Button bSearch = new Button(comp, SWT.PUSH);
-        bSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
-                1));
-        bSearch.setText(Messages.getString("LogViewArchive_expert")); //$NON-NLS-1$
-
-        bSearch.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(final SelectionEvent e) {
-                if (_fromTime == null) {
-                    ITimestamp now = TimestampFactory.now();
-                    _fromTime = TimestampFactory.createTimestamp(now.seconds()
-                            - (24 * 60 * 60), now.nanoseconds()); // new
-                    // Timestamp(fromDate.getTime()/1000);
-                }
-                if (_toTime == null) {
-                    _toTime = TimestampFactory.now();
-                }
-
-                ExpertSearchDialog dlg = new ExpertSearchDialog(
-                        comp.getShell(),
-                        // ExpertSearchDialog dlg = new
-                        // ExpertSearchDialog(_parentShell,
-                        _fromTime, _toTime, _filterSettings);
-
-                GregorianCalendar _to = new GregorianCalendar();
-                GregorianCalendar _from = (GregorianCalendar) _to.clone();
-                if (dlg.open() == ExpertSearchDialog.OK) {
-                    _fromTime = dlg.getStart();
-                    _toTime = dlg.getEnd();
-                    double low = _fromTime.toDouble();
-                    double high = _toTime.toDouble();
-                    if (low < high) {
-                        _from.setTimeInMillis((long) low * 1000);
-                        _to.setTimeInMillis((long) high * 1000);
-                    } else {
-                        _from.setTimeInMillis((long) high * 1000);
-                        _to.setTimeInMillis((long) low * 1000);
-                    }
-                    _filterSettings = dlg.get_filterConditions();
-                    _filter = new Filter(_filterSettings, _from, _to);
-                    readDatabase();
-                }
-            }
-
-        });
+        showPropertyViewAction
+                .setImageDescriptor(viewDesc.getImageDescriptor());
+        IActionBars bars = getViewSite().getActionBars();
+        bars.getToolBarManager().add(showPropertyViewAction);
     }
 
     public void readDBFromExternalCall(IProcessVariable pv) {
-        GregorianCalendar _from = new GregorianCalendar();
-        GregorianCalendar _to = new GregorianCalendar();
-        _from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
-        showNewTime(_from, _to);
-        ArrayList<FilterItem> _filterSettings = new ArrayList<FilterItem>();
-        _filterSettings.add(new FilterItem(Messages.ViewArchive_13, pv
-                .getName(), Messages.ViewArchive_14));
-        _filter = new Filter(_filterSettings, _from, _to);
+        // GregorianCalendar _from = new GregorianCalendar();
+        // GregorianCalendar _to = new GregorianCalendar();
+        // _from.setTimeInMillis(_to.getTimeInMillis() - 1000 * 60 * 60 * 24);
+        _filter.clearFilter();
+        _filter.addFilterItem("NAME", pv.getName(), "END");
+        _filterSettingHistory.add(0, pv.getName());
         readDatabase();
     }
 
     private void exportMessagesFromDatabase(File path) {
         String maxAnswerSize = JmsLogsPlugin.getDefault()
-        .getPluginPreferences().getString("maximum answer size export");
+                .getPluginPreferences().getString("maximum answer size export");
         Integer maximumMessageNumber;
         try {
             maximumMessageNumber = Integer.parseInt(maxAnswerSize);
@@ -549,10 +504,11 @@ public class ArchiveView extends ViewPart implements Observer {
             public void onReadFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        MessageBox messageBox = new MessageBox(Display.getDefault()
-                                .getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
+                        MessageBox messageBox = new MessageBox(Display
+                                .getDefault().getActiveShell(), SWT.OK
+                                | SWT.ICON_INFORMATION);
                         messageBox.setText(Messages.ViewArchive_26);
-                        if (_dbAnswer.is_maxSize()) {
+                        if (result.isMaxSize()) {
                             messageBox.setMessage(Messages.ViewArchive_27);
                         } else {
                             messageBox.setMessage(Messages.ViewArchive_28);
@@ -562,8 +518,8 @@ public class ArchiveView extends ViewPart implements Observer {
                 });
             }
         };
-        _asyncDatabaseAccess.exportMessagesInFile(listener, _filter,
-                path, _columnNames);
+        _asyncDatabaseAccess.exportMessagesInFile(listener, _filter, path,
+                _columnNames);
     }
 
     private void countAndDeleteMessagesFromDatabase() {
@@ -572,9 +528,9 @@ public class ArchiveView extends ViewPart implements Observer {
             public void onMessageCountFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        MessageBox messageBox = new MessageBox(Display.getDefault()
-                                .getActiveShell(), SWT.OK | SWT.CANCEL
-                                | SWT.ICON_WARNING);
+                        MessageBox messageBox = new MessageBox(Display
+                                .getDefault().getActiveShell(), SWT.OK
+                                | SWT.CANCEL | SWT.ICON_WARNING);
                         messageBox.setText(Messages.ViewArchive_17);
                         messageBox.setMessage(Messages.ViewArchive_18
                                 + Math.abs(result.getMsgNumberToDelete() / 11)
@@ -606,8 +562,9 @@ public class ArchiveView extends ViewPart implements Observer {
             public void onDeletionFinished(Result result) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        MessageBox messageBox = new MessageBox(Display.getDefault()
-                                .getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
+                        MessageBox messageBox = new MessageBox(Display
+                                .getDefault().getActiveShell(), SWT.OK
+                                | SWT.ICON_INFORMATION);
                         messageBox.setText(Messages.ViewArchive_24);
                         messageBox.setMessage(Messages.ViewArchive_25);
                         messageBox.open();
@@ -619,8 +576,6 @@ public class ArchiveView extends ViewPart implements Observer {
     }
 
     private void readDatabase() {
-        showNewTime(_filter.getFrom(), _filter.getTo());
-
         String maxAnswerSize = JmsLogsPlugin.getDefault()
                 .getPluginPreferences().getString("maximum answer size");
         Integer maximumMessageNumber;
@@ -657,7 +612,8 @@ public class ArchiveView extends ViewPart implements Observer {
                         }
                         _tableViewer.getTable().setEnabled(true);
                         if (size > 0) {
-                            _jmsMessageList.addJMSMessageList(result.getMessagesFromDatabase());
+                            _jmsMessageList.addJMSMessageList(result
+                                    .getMessagesFromDatabase());
                         } else {
                             String[] propertyNames = JmsLogsPlugin
                                     .getDefault()
@@ -681,32 +637,46 @@ public class ArchiveView extends ViewPart implements Observer {
     }
 
     /**
-     * Set the two times from, to .
-     * 
-     * @param from
-     * @param to
+     * {@inheritDoc}
      */
-    private void showNewTime(final Calendar from, final Calendar to) {
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        try {
-            sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore()
-                    .getString(ArchiveViewPreferenceConstants.DATE_FORMAT));
-        } catch (Exception e) {
-            sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore()
-                    .getDefaultString(
-                            ArchiveViewPreferenceConstants.DATE_FORMAT));
-            JmsLogsPlugin.getDefault().getPreferenceStore().setToDefault(
-                    ArchiveViewPreferenceConstants.DATE_FORMAT);
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        if (memento == null) {
+            return;
         }
-        _timeFrom.setText(sdf.format(from.getTime()));
-        _fromTime = TimestampFactory.fromCalendar(from);
-
-        _timeTo.setText(sdf.format(to.getTime()));
-        _toTime = TimestampFactory.fromCalendar(to);
-        // redraw
-        _timeFrom.getParent().getParent().redraw();
+        String patternChain = memento.getString("filterPatterns");
+        if (patternChain == null) {
+            CentralLogger.getInstance().debug(this,
+                    "No filter patterns from previous session"); //$NON-NLS-1$
+        } else {
+            CentralLogger.getInstance().debug(this,
+                    "Get filter patterns from previous session"); //$NON-NLS-1$
+            String[] patterns = patternChain.split(";");
+            for (String pattern : patterns) {
+                _filterSettingHistory.add(pattern);
+            }
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        if ((memento != null) && (_filterSettingHistory != null)) {
+            CentralLogger.getInstance().debug(this,
+                    "Save latest filter setting history in IMemento: ");
+            StringBuffer patternChain = new StringBuffer();
+            for (String pattern : _filterSettingHistory) {
+                patternChain.append(pattern);
+                patternChain.append(";");
+            }
+            memento.putString("filterPatterns", patternChain.toString()); //$NON-NLS-1$
+        }
+    }
+    
     /** {@inheritDoc} */
     @Override
     public void setFocus() {
@@ -717,97 +687,7 @@ public class ArchiveView extends ViewPart implements Observer {
     public final void dispose() {
         super.dispose();
         _columnMapping.saveColumn(ArchiveViewPreferenceConstants.P_STRINGArch);
-        ArchiveDBAccess.getInstance().close();
         // JmsLogsPlugin.getDefault().getPluginPreferences()
         // .removePropertyChangeListener(_columnPropertyChangeListener);
-    }
-
-    public void update(Observable arg0, Object arg1) {
-        Display.getDefault().syncExec(new Runnable() {
-
-            // _disp.syncExec(new Runnable() {
-            public void run() {
-                if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.LOG_MESSAGES) {
-                    _jmsMessageList.clearList();
-                    _tableViewer.refresh();
-                    ArrayList<HashMap<String, String>> answer = _dbAnswer
-                            .getLogMessages();
-                    int size = answer.size();
-                    if (_dbAnswer.is_maxSize()) {
-                        _countLabel.setBackground(Display.getCurrent()
-                                .getSystemColor(SWT.COLOR_RED));
-                        _countLabel.setText(Messages.ViewArchive_16
-                                + Integer.toString(size));
-                    } else {
-                        _countLabel.setText(Integer.toString(size));
-                        _countLabel.setBackground(Display.getCurrent()
-                                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-                    }
-                    _tableViewer.getTable().setEnabled(true);
-                    if (size > 0) {
-                        _jmsMessageList.addJMSMessageList(answer);
-                    } else {
-                        String[] propertyNames = JmsLogsPlugin.getDefault()
-                                .getPluginPreferences().getString(
-                                        LogViewPreferenceConstants.P_STRING)
-                                .split(";"); //$NON-NLS-1$
-
-                        JMSMessage jmsMessage = new JMSMessage(propertyNames);
-                        String firstColumnName = _columnNames[0];
-                        jmsMessage.setProperty(firstColumnName,
-                                Messages.LogViewArchive_NoMessageInDB);
-                        _jmsMessageList.addJMSMessage(jmsMessage);
-                    }
-                }
-                if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.MSG_NUMBER_TO_DELETE) {
-                    MessageBox messageBox = new MessageBox(Display.getDefault()
-                            .getActiveShell(), SWT.OK | SWT.CANCEL
-                            | SWT.ICON_WARNING);
-                    messageBox.setText(Messages.ViewArchive_17);
-                    messageBox.setMessage(Messages.ViewArchive_18
-                            + Math.abs(_dbAnswer.get_msgNumberToDelete() / 11)
-                            + Messages.ViewArchive_19
-                            + System.getProperty(Messages.ViewArchive_20)
-                            + Messages.ViewArchive_21);
-                    int buttonID = messageBox.open();
-                    switch (buttonID) {
-                    case SWT.OK:
-                        CentralLogger.getInstance().debug(this,
-                                Messages.ViewArchive_22);
-                        _dbReader.setReadProperties(ArchiveView.this._dbAnswer,
-                                _filter.copy());
-                        _dbReader
-                                .setAccessType(AccessDBJob.DBAccessType.DELETE);
-                        _dbReader.schedule();
-                        break;
-                    case SWT.CANCEL:
-                        CentralLogger.getInstance().debug(this,
-                                Messages.ViewArchive_23);
-                        break;
-                    }
-                }
-
-                if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.DELETE_RESULT) {
-                    MessageBox messageBox = new MessageBox(Display.getDefault()
-                            .getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
-                    messageBox.setText(Messages.ViewArchive_24);
-                    messageBox.setMessage(Messages.ViewArchive_25);
-                    messageBox.open();
-                }
-
-                if (_dbAnswer.getDbqueryType() == DBAnswer.ResultType.EXPORT_RESULT) {
-                    MessageBox messageBox = new MessageBox(Display.getDefault()
-                            .getActiveShell(), SWT.OK | SWT.ICON_INFORMATION);
-                    messageBox.setText(Messages.ViewArchive_26);
-                    if (_dbAnswer.is_maxSize()) {
-                        messageBox.setMessage(Messages.ViewArchive_27);
-                    } else {
-                        messageBox.setMessage(Messages.ViewArchive_28);
-                    }
-                    messageBox.open();
-                }
-
-            }
-        });
     }
 }

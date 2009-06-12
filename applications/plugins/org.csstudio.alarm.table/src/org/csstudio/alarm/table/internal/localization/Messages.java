@@ -194,10 +194,6 @@ public class Messages extends NLS {
 
 	public static String ViewArchive_12;
 
-	public static String ViewArchive_13;
-
-	public static String ViewArchive_14;
-
 	public static String ViewArchive_15;
 
 	public static String ViewArchive_16;
@@ -226,7 +222,7 @@ public class Messages extends NLS {
 
 	public static String ViewArchive_28;
 
-	public static String ViewArchive_6;
+	public static String ViewArchiveExcelExportButton;
 
 	public static String ViewArchive_7;
 

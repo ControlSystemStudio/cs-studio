@@ -21,11 +21,9 @@
  */
 package org.csstudio.alarm.dbaccess;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.TimerTask;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /**
  * The TimerTask checks the period of the last dbAccess
@@ -41,24 +39,20 @@ public class CloseConnectionTimerTask extends TimerTask {
 
 	private long _lastDBAcccessInMillisec;
 	
-	private Connection _dbConnection;
+	private RDBUtil _rdbUtil;
 	
 	private long _closeThresholdInMillisec = 30 * 60 * 1000;
 	
-	public CloseConnectionTimerTask(Connection con) {
-		_dbConnection = con;
+	public CloseConnectionTimerTask(RDBUtil rdbUtil) {
+		_rdbUtil = rdbUtil;
 	}
 	
 	@Override
 	public void run() {
 		long lastConnectionPeriod = System.currentTimeMillis() - _lastDBAcccessInMillisec;
 		if (lastConnectionPeriod > _closeThresholdInMillisec) {
-			try {
-				_dbConnection.close();
+				_rdbUtil.close();
 				this.cancel();
-			} catch (SQLException e) {
-				CentralLogger.getInstance().error(this, "Close SQL Connection error " + e.getMessage());
-			}
 		}
 	}
 

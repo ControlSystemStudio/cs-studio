@@ -49,7 +49,7 @@ public class CloseJMSConnectionTimerTask extends TimerTask {
 	}
 	
 	@Override
-	public void run() {
+	public synchronized void run() {
 		long lastConnectionPeriod = System.currentTimeMillis() - _lastDBAcccessInMillisec;
 		if (lastConnectionPeriod > _closeThresholdInMillisec) {
 				try {

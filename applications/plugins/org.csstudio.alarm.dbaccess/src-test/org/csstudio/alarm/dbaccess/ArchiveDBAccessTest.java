@@ -163,19 +163,19 @@ public class ArchiveDBAccessTest {
 
 //		 ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
 //				.getLogMessages(from, to, null, fourFilterItemsBothTypes, 100);
-		ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
-				.getLogMessages(from, to, testFilterItemList, 500);
-		int erg1 = ArchiveDBAccess.getInstance()
-				.countMessagesToDelete(fourFilterItemsBothTypes, from, to);
+//		ArrayList<HashMap<String, String>> erg = ArchiveDBAccess.getInstance()
+//				.getLogMessages(from, to, testFilterItemList, 500);
+//		int erg1 = ArchiveDBAccess.getInstance()
+//				.countMessagesToDelete(fourFilterItemsBothTypes, from, to);
 
 
-		for (HashMap<String, String> hashMap : erg) {
-			Set<Entry<String, String>> entries = hashMap.entrySet();
-			for (Entry<String, String> entry : entries) {
-				System.out
-						.print(entry.getKey() + "-" + entry.getValue() + "; ");
-			}
-			System.out.println();
-		}
+//		for (HashMap<String, String> hashMap : erg) {
+//			Set<Entry<String, String>> entries = hashMap.entrySet();
+//			for (Entry<String, String> entry : entries) {
+//				System.out
+//						.print(entry.getKey() + "-" + entry.getValue() + "; ");
+//			}
+//			System.out.println();
+//		}
 	}
 }

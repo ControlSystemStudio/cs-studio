@@ -1,5 +1,7 @@
 package org.csstudio.alarm.table.database;
 
+import org.csstudio.alarm.dbaccess.archivedb.Result;
+
 
 
 public interface IDatabaseAccessListener {

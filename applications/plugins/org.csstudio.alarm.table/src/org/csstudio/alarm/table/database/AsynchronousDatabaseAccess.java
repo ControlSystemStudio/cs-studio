@@ -5,6 +5,8 @@ import java.io.File;
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
+import org.csstudio.alarm.dbaccess.archivedb.Result;
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -18,11 +20,8 @@ public class AsynchronousDatabaseAccess {
         Job readJob = new Job("Reader") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
-                result.setMessagesFromDatabase(adba.getLogMessages(newFilter
-                        .getFrom(), newFilter.getTo(), newFilter.getFilterItems(),
-                        filter.getMaximumMessageSize()));
-                result.setMaxSize(adba.is_maxSize());
+                JmsLogsPlugin.getDefault().getArchiveAccess().getLogMessages(
+                        newFilter, result);
                 listener.onReadFinished(result);
                 return Status.OK_STATUS;
             }
@@ -36,13 +35,9 @@ public class AsynchronousDatabaseAccess {
         Job exportJob = new Job("Export") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
-                result.setAccessResult(adba
-                        .exportLogMessages(newFilter.getFrom(), newFilter.getTo(),
-                                newFilter.getFilterItems(), newFilter
-                                        .getMaximumMessageSize(), filePath,
-                                columnNames));
-                result.setMaxSize(adba.is_maxSize());
+                JmsLogsPlugin.getDefault().getArchiveAccess()
+                        .exportLogMessages(newFilter, result, filePath,
+                                columnNames);
                 listener.onExportFinished(result);
                 return Status.OK_STATUS;
             }
@@ -56,9 +51,8 @@ public class AsynchronousDatabaseAccess {
         Job countJob = new Job("CountMessages") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
-                result.setMsgNumber(adba.countDeleteLogMessages(newFilter
-                        .getFrom(), newFilter.getTo(), newFilter.getFilterItems()));
+                JmsLogsPlugin.getDefault().getArchiveAccess()
+                        .countDeleteLogMessages(newFilter, result);
                 listener.onMessageCountFinished(result);
                 return Status.OK_STATUS;
             }
@@ -72,9 +66,8 @@ public class AsynchronousDatabaseAccess {
         Job deleteJob = new Job("DeleteMessages") {
             protected IStatus run(IProgressMonitor monitor) {
                 Result result = new Result();
-                ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
-                result.setAccessResult(adba.deleteLogMessages(newFilter
-                        .getFrom(), newFilter.getTo(), newFilter.getFilterItems()));
+                result.setAccessResult(JmsLogsPlugin.getDefault()
+                        .getArchiveAccess().deleteLogMessages(newFilter));
                 listener.onDeletionFinished(result);
                 return Status.OK_STATUS;
             }

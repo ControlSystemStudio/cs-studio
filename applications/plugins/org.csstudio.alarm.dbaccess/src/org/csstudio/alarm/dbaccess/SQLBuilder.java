@@ -131,9 +131,11 @@ public class SQLBuilder {
 		Statement st = null;
 		String name = null;
 		int count = 0;
+        DBConnectionHandler connectioHandler = new DBConnectionHandler();
 
 		try {
-			Connection connection = DBConnection.getInstance().getConnection();
+            Connection connection = connectioHandler.getConnection();
+
 			st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = st.executeQuery("SELECT * FROM message WHERE id = 1");
@@ -150,17 +152,18 @@ public class SQLBuilder {
 					properties.add(name);
 				}
 			}
-		} catch (SQLException sqle) {
+		} catch (Exception sqle) {
 			CentralLogger.getInstance().error(
 					this,
 					"SQLException: Cannot read table column names: "
 							+ sqle.getMessage());
 		}
-		return properties;
-	}
+        if(connectioHandler != null) {
+            connectioHandler.closeConnection();
+            connectioHandler = null;
+        }
 
-	public String getRownum() {
-		return rownum;
+		return properties;
 	}
 
 	public void setRownum(String rownum) {

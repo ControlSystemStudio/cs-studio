@@ -275,7 +275,7 @@ public class LogView extends ViewPart {
      * Creates action to call property view.
      */
     void makeActions() {
-        Action _showPropertyViewAction = new Action() {
+        Action showPropertyViewAction = new Action() {
             @Override
             public void run() {
                 try {
@@ -286,17 +286,17 @@ public class LogView extends ViewPart {
                 }
             }
         };
-        _showPropertyViewAction.setText(Messages.LogView_properties);
-        _showPropertyViewAction
+        showPropertyViewAction.setText(Messages.LogView_properties);
+        showPropertyViewAction
                 .setToolTipText(Messages.LogView_propertiesToolTip);
 
         IViewRegistry viewRegistry = getSite().getWorkbenchWindow()
                 .getWorkbench().getViewRegistry();
         IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
-        _showPropertyViewAction.setImageDescriptor(viewDesc
+        showPropertyViewAction.setImageDescriptor(viewDesc
                 .getImageDescriptor());
         IActionBars bars = getViewSite().getActionBars();
-        bars.getToolBarManager().add(_showPropertyViewAction);
+        bars.getToolBarManager().add(showPropertyViewAction);
     }
 
     /**

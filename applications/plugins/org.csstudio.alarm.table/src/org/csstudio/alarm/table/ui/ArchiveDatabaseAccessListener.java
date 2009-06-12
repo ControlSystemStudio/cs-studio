@@ -1,7 +1,7 @@
 package org.csstudio.alarm.table.ui;
 
+import org.csstudio.alarm.dbaccess.archivedb.Result;
 import org.csstudio.alarm.table.database.IDatabaseAccessListener;
-import org.csstudio.alarm.table.database.Result;
 
 public abstract class ArchiveDatabaseAccessListener implements IDatabaseAccessListener {
 
