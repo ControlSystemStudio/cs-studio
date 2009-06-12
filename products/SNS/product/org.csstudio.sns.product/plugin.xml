@@ -82,11 +82,7 @@
    <extension point="org.csstudio.startup.module">
       <startupParameters class="org.csstudio.sns.product.startupmodule.StartupParameters"/>
       <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
-      <workbench
-            class="org.csstudio.sns.product.startupmodule.Workbench">
-      </workbench>
-      <project
-            class="org.csstudio.startuphelper.module.DefaultProject">
-      </project>
+      <workbench class="org.csstudio.sns.product.startupmodule.Workbench"/>
+      <project class="org.csstudio.startuphelper.module.DefaultProject"/>
    </extension>
 </plugin>
