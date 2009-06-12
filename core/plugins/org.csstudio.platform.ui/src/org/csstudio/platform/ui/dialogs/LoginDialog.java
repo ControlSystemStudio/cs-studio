@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Text;
  * and may not work correctly if called in another thread. Future versions of
  * this class will no longer implement <code>ILoginCallbackHandler</code>.</p>
  * 
- * @author Alexander Will, Jörg Rathlev, Anže Vodovnik, Xihui Chen
+ * @author Alexander Will, Jörg Rathlev, Anže Vodovnik, Xihui Chen, Kay Kasemir
  */
 public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
 
@@ -68,6 +68,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * checkbox to show "Login as anonymous"
 	 */
 	private Button _loginAnonymous;
+	
 	/**
 	 * Checkbox for option to remember username and password.
 	 */
@@ -92,8 +93,6 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * The message displayed in the dialog.
 	 */
 	private final String _message;
-
-	
 	
 	/**
 	 * Creates a new login dialog.
@@ -145,7 +144,6 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
     	newShell.setText(_title);
     }
 	
-	
 	/**
 	 * Creates the contents of this dialog.
 	 */
@@ -182,7 +180,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		_password = new Text(contents, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
 		_password.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		
-		// remember password checkbox (invisible by default)
+		// Anonymous login checkbox
 		_loginAnonymous = new Button(contents, SWT.CHECK);
 		_loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
 		_loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
@@ -190,18 +188,18 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if(_loginAnonymous.getSelection()) {
-					_username.setText(Messages.LoginDialog_Anonymous);
-					_password.setText(""); //$NON-NLS-1$
+				    // Disable name/password when anonymous
 					_username.setEnabled(false);
 					_password.setEnabled(false);
 				} else {
-					_username.setText(_lastUser != null ? _lastUser : ""); //$NON-NLS-1$
+				    // (Re-)enable name/password entry
 					_username.setEnabled(true);
 					_password.setEnabled(true);
+					// ... and jump to name field
+					_username.setFocus();
 				}
 			}
 		});
-		
 		
 		// remember password checkbox (invisible by default)
 		_rememberLogin = new Button(contents, SWT.CHECK);
