@@ -25,9 +25,7 @@
             <element ref="shutdown" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="startupParameters" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="workspace" minOccurs="0" maxOccurs="unbounded"/>
-            <sequence>
-               <element ref="workbench" minOccurs="0" maxOccurs="1"/>
-            </sequence>
+            <element ref="workbench" minOccurs="1" maxOccurs="unbounded"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
