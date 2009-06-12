@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Text;
  * dialog merged together.
  * 
  * @author Xihui Chen
+ * @author Kay Kasemir
  */
 public class StartupDialog extends TitleAreaDialog {
 
@@ -64,24 +65,20 @@ public class StartupDialog extends TitleAreaDialog {
 	 */
 	private Text _passwordText;
 	
-	
-	
-	
 	/**
-	 * Checkbox for option to remember username and password.
+	 * Checkbox for Anonymous login
 	 */
 	private Button _loginAnonymous;
 
 	/**
-	 * The name of the default user which will be displayed in the dialog.
+	 * User name initially displayed in the dialog, then read from dialog.
 	 */
-    private String defaultUser;
+    private String user_name;
     
-
 	/**
-	 * The default password which will be displayed in the dialog.
+	 * Password initially displayed in the dialog, then read from dialog.
 	 */
-    private String defaultPassword;
+    private String password;
 
 	/**
 	 * The dialog title.
@@ -110,12 +107,6 @@ public class StartupDialog extends TitleAreaDialog {
 
 	private Button show_dialog;
 
-    /** Constructor
-     *  @param parent Parent shell or <code>null</code>
-     *  
-     */
-
-    
     /**
 	 * Creates a new login dialog.
 	 * 
@@ -141,12 +132,14 @@ public class StartupDialog extends TitleAreaDialog {
     	super(parentShell);
 		_title = title;
 		_message = message;
-		this.defaultUser = defaultUser;
-		this.defaultPassword = defaultPassword;
+		this.user_name = defaultUser;
+		this.password = defaultPassword;
 		this.info = info;
         this.with_show_again_option = with_show_again_option;
         this.showLogin = showLogin;
         this.showWorkspace = showWorkspace;
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
     /**
@@ -157,7 +150,6 @@ public class StartupDialog extends TitleAreaDialog {
     	super.configureShell(newShell);
     	newShell.setText(_title);
     }
-	
 	
 	/**
 	 * Creates the contents of this dialog.
@@ -244,8 +236,7 @@ public class StartupDialog extends TitleAreaDialog {
     }
 	
 	private void createLoginSection(Composite group) {
-		
-		GridLayout layout = new GridLayout();
+	    GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         group.setLayout(layout);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -255,19 +246,15 @@ public class StartupDialog extends TitleAreaDialog {
 		Label label = new Label(group, SWT.NONE);
 		label.setText(Messages.LoginDialog_UserName);
 		_usernameText = new Text(group, SWT.BORDER | SWT.FLAT);
-
 		_usernameText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_usernameText.setText(defaultUser != null ? defaultUser : ""); //$NON-NLS-1$
-		
 		
 		// password
 		label = new Label(group, SWT.NONE);
 		label.setText(Messages.LoginDialog_Password);
 		_passwordText = new Text(group, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
 		_passwordText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_passwordText.setText(defaultPassword != null ? defaultPassword : ""); //$NON-NLS-1$
-		
-		// remember password checkbox (invisible by default)
+
+		// Anonymous login?
 		_loginAnonymous = new Button(group, SWT.CHECK);
 		_loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
 		_loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
@@ -275,27 +262,26 @@ public class StartupDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if(_loginAnonymous.getSelection()) {
-					_usernameText.setText(Messages.LoginDialog_Anonymous);
-					_passwordText.setText(""); //$NON-NLS-1$
 					_usernameText.setEnabled(false);
 					_passwordText.setEnabled(false);
 				} else {
-					_usernameText.setText(defaultUser != null ? defaultUser : ""); //$NON-NLS-1$
-					_passwordText.setText(defaultPassword != null ? defaultPassword : ""); //$NON-NLS-1$
 					_usernameText.setEnabled(true);
 					_passwordText.setEnabled(true);
+					// Allow entry of user name right away
+		            _usernameText.setFocus();
 				}
 			}
 		});
-		
 
-		if(defaultUser!=null&&defaultUser.trim().length()>0){
-		    _passwordText.setFocus();
-		}else{
-		    _usernameText.setFocus();
-		}
-	}	
-
+		// Init. user/password  with default
+        if (user_name != null)
+            _usernameText.setText(user_name);
+        if (password != null)
+            _passwordText.setText(password);
+        
+        _loginAnonymous.setSelection(true);
+        _loginAnonymous.setFocus();
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -304,12 +290,12 @@ public class StartupDialog extends TitleAreaDialog {
 	protected final void okPressed() {
 		if(showLogin) {
 			if(_loginAnonymous.getSelection()) { // Anonymous login
-				defaultUser = null;
-				defaultPassword = "";
+				user_name = null;
+				password = "";
 			}
 			else {
-				defaultUser = this._usernameText.getText();
-				defaultPassword = this._passwordText.getText();
+				user_name = this._usernameText.getText();
+				password = this._passwordText.getText();
 			}
 		}		
 		if(showWorkspace) {
@@ -322,17 +308,17 @@ public class StartupDialog extends TitleAreaDialog {
 	}
 	
 	 /**
-	 * @return the defaultUser
+	 * @return User name entered into dialog
 	 */
 	public String getUser() {
-		return defaultUser;
+		return user_name;
 	}
 
 	/**
-	 * @return the defaultPassword
+	 * @return Password entered into dialog
 	 */
 	public String getPassword() {
-		return defaultPassword;
+		return password;
 	}
 
 	/** @return Directory name close to the currently entered workspace */
@@ -417,8 +403,4 @@ public class StartupDialog extends TitleAreaDialog {
         info.setSelectedWorkspace(workspace);
         return true;
     }
-
-
-
-    
 }
