@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.csstudio.desybeta.product</name>
+	<name>org.csstudio.startup</name>
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
-			<buildCommand>
+		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>

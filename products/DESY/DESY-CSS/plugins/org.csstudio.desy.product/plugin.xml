@@ -9,7 +9,7 @@
             name="CSS">
          <property
                name="aboutText"
-               value="Control System Studio 1.2.0 &#x0A;&#x0A;Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,&#x0A;Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.&#x0A;&#x0A;THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot; BASIS. &#x0A;WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED&#x0A;TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND&#x0A;NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE&#x0A;FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,&#x0A;TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR&#x0A;THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE&#x0A;IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR&#x0A;CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.&#x0A;NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.&#x0A;DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,&#x0A;OR MODIFICATIONS. &#x0A;THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,&#x0A;USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS&#x0A;PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT &#x0A;HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM"/>
+               value="Control System Studio 1.2.0&#x0A;&#x0A;Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,&#x0A;Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.&#x0A;&#x0A;THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot; BASIS. &#x0A;WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED&#x0A;TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND&#x0A;NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE&#x0A;FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,&#x0A;TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR&#x0A;THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE&#x0A;IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR&#x0A;CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.&#x0A;NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.&#x0A;DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,&#x0A;OR MODIFICATIONS. &#x0A;THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,&#x0A;USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS&#x0A;PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT &#x0A;HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM"/>
          <property
                name="aboutImage"
                value="resources/css64x64.gif"/>
@@ -27,7 +27,7 @@
          name="CSS Core"
          point="org.eclipse.core.runtime.applications">
       <application>
-         <run class="org.csstudio.startuphelper.application.Application"/>
+         <run class="org.csstudio.startup.application.Application"/>
       </application>
    </extension>
    <extension
@@ -55,18 +55,18 @@
    </extension>
 	
    <extension
-         point="org.csstudio.startuphelper.modules">
+         point="org.csstudio.startup.module">
       <locale
-            class="org.csstudio.startuphelper.extensions.impl.DefaultLocaleSettingsExtPoint">
+            class="org.csstudio.startuphelper.module.DefaultLocaleSettings">
       </locale>
       <login
-            class="org.csstudio.startuphelper.extensions.impl.DefaultLoginPromptExtPoint">
+            class="org.csstudio.startuphelper.module.DefaultLoginPrompt">
       </login>
       <services
-            class="org.csstudio.startuphelper.extensions.impl.DefaultServicesStartupExtPoint">
+            class="org.csstudio.startuphelper.module.DefaultServicesStartup">
       </services>
       <workbench
-            class="org.csstudio.startuphelper.extensions.impl.DefaultWorkbenchExtPoint">
+            class="org.csstudio.startuphelper.module.DefaultWorkbench">
       </workbench>
    </extension>
 </plugin>

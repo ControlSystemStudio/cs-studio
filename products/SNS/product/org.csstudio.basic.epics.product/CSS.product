@@ -27,7 +27,8 @@ See http://ics-web.sns.ornl.gov/css
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Xmx256m-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+      <vmArgs>-Xmx256m
+-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -94,6 +95,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.csstudio.sds.samples"/>
       <plugin id="org.csstudio.sds.settings.desy"/>
       <plugin id="org.csstudio.sds.ui"/>
+      <plugin id="org.csstudio.startup"/>
       <plugin id="org.csstudio.startuphelper"/>
       <plugin id="org.csstudio.swt.chart"/>
       <plugin id="org.csstudio.trends.databrowser"/>

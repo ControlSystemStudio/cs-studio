@@ -7,7 +7,7 @@
 		 name="SNS CSS">
       <application>
          <run
-               class="org.csstudio.startuphelper.application.Application">
+               class="org.csstudio.startup.application.Application">
          </run>
       </application>
    </extension>
@@ -79,12 +79,14 @@
       </config>
    </extension>
 
-   <extension point="org.csstudio.startuphelper.modules">
-      <project class="org.csstudio.sns.product.extpoint.ProjectExtPointImpl"/>
-      <startupParameters class="org.csstudio.sns.product.extpoint.StartupParametersExtPointImpl"/>
-      <workspace class="org.csstudio.sns.product.extpoint.WorkspacePromptExtPointImpl"/>
+   <extension point="org.csstudio.startup.module">
+      <startupParameters class="org.csstudio.sns.product.startupmodule.StartupParameters"/>
+      <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
       <workbench
-            class="org.csstudio.sns.product.extpoint.WorkbenchExtPointImpl">
+            class="org.csstudio.sns.product.startupmodule.Workbench">
       </workbench>
+      <project
+            class="org.csstudio.startuphelper.module.DefaultProject">
+      </project>
    </extension>
 </plugin>

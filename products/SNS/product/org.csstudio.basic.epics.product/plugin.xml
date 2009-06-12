@@ -9,7 +9,7 @@
             thread="main"
             visible="true">
          <run
-               class="org.csstudio.startuphelper.application.Application">
+               class="org.csstudio.startup.application.Application">
          </run>
       </application>
    </extension>
@@ -75,5 +75,11 @@
             <implementation kind="html"/>
          </presentation>
       </config>
+   </extension>
+   <extension
+         point="org.csstudio.startup.module">
+      <workbench
+            class="org.csstudio.startuphelper.module.DefaultWorkbench">
+      </workbench>
    </extension>
 </plugin>

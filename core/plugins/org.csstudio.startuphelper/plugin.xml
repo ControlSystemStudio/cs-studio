@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.csstudio.startuphelper.modules" name="org.csstudio.startuphelper.modules" schema="schema/org.csstudio.startuphelper.modules.exsd"/>
 </plugin>

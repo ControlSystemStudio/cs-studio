@@ -278,7 +278,10 @@ public class StartupDialog extends TitleAreaDialog {
             _usernameText.setText(user_name);
         if (password != null)
             _passwordText.setText(password);
-        
+
+        // Assume anonymous
+        _usernameText.setEnabled(false);
+        _passwordText.setEnabled(false);
         _loginAnonymous.setSelection(true);
         _loginAnonymous.setFocus();
 	}
