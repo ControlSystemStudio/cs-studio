@@ -213,7 +213,16 @@ public class WorkspaceInfo
     public String toString()
     {
         final StringBuffer buf = new StringBuffer();
-        buf.append("Current: " + current_workspace.getURL() + "\n");
+        buf.append("Workspace Info:\n");
+        // ACHTUNG(!):
+        // Calling current_workspace.getURL() on a location that is not "Set"
+        // will set it to the default, and once set, one can no longer change
+        // the location.
+        // This code only prints the URL when isSet:
+        if (current_workspace.isSet())
+            buf.append("Current: " + current_workspace.getURL() + "\n");
+        else
+            buf.append("Current: Not set, default: " + current_workspace.getDefault().toString());
         buf.append("Query for workspace: " + show_dialog + "\n");
         buf.append("Recent Workspaces:\n");
         for (String workspace : recent_workspaces)
