@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>Archive Table</title>
+</head>
+<body>
+<h1>Archive Table</h1>
+<img src="./../image/ArchiveOverview.png" />
+<p align="justify">Archive Table zeigt frühere Nachrichten aus dem Archiv. 
+Für jede Anfrage wird eine Anforderung an den Datenbank-Server geschickt. Deswegen kann
+bei komplizierten Filterbedingungen die Antwort bis zu 30 Sekunden dauern.	
+</p>
+<br>
+<h2>Requests</h2>
+<img src="./../image/ArchiveSelectButtons.png" />
+<h3>Tag, 3 Tage, Woche</h3>
+<p align="justify">Anfordern aller Nachrichten für Zeiträume 'Tag', '3 Tage' or 'Woche'.</p>
+<h3>User</h3>
+<img src="./../image/Calendar.png" />
+<p align="justify">Das Zeitfenster für die Datenbankanforderung kann manuell gesetzt werden.
+Im Kalender links kann die Startzeit ausgewählt werden. Im Kalender rechts kann die Endzeit ausgewählt werden. </p>
+<h3>Expert</h3>
+<img src="./../image/TimePeriodCondition.png" />
+<p align="justify"> Die Bedienung der Zeiteinstellung funktioniert wie 'user button'. 
+In den zusätzlichen Felden unten im Window können Filterbedingungen gesetzt werden.
+Die Drop-Down-Liste links enthält alle verfügbaren Schlüsselworte der Eigenschaften von Nachrichten.
+Im Textfeld in der Mitte steht die Zeichenkette, die im Inhalt der Nachricht vorkommen soll.
+Auf der rechten Seite stehen die Operatoren ('AND', 'OR') , mit denen die Filterbedingungen verknüpft werden.
+<br>
+Im Beispiel ist die erste Filterbedingung  'message property 'TYPE'. Sie ist auf den Wert 'event' gesetzt. Sie wird
+mit 'AND' mit der zweiten Bedingung 'message property 'HOST' verbunden, die auf den Wert 'berndTest' gesetzt ist. </p>
+<h2>Time period</h2>
+<img src="./../image/TimePeriod.png" />
+<p align="justify">Anfang und Ende der Zeitspanne der aktuellen Auswahl.</p>
+<h2>Number of result messages</h2>
+<img src="./../image/ResultNumber.png" />
+<p align="justify">Anzahl der Nachrichten in der Datenbank-Antwort. Ein roter Hintergrund und der Zusatz '(maximum)'
+zeigen an, dass weitere Einträge in der Datenbank vorhanden sind, aber nicht in der Tabelle erscheinen.
+Die maximale Anzahl von Nachrichten ist eingeschränkt, um eine bessere Performanz zu erhalten.
+Sie kann in Eigenschaften (Menu 'CSS' &rarr 'CSS-applications' &rarr 'Alarm'
+&rarr 'JMS Logs' &rarr 'JMS log archive viewer' &rarr 'Maximum number for result') gesetzt / verändert werden.</p>
+<h2>Export messages</h2>
+<img src="./../image/ExportButton.png" />
+<p align="justify">Der 'Export Button' schreibt alle aktuell ausgewählten Nachrichten im Excel-Forma in eine Datei.
+Die maximale Anzahl von Nachrichten ist eingeschränkt und kann im preferences-Menu konfiguriert werden:
+Menu 'CSS' &rarr 'CSS-applications' &rarr 'Alarm'
+&rarr 'JMS Logs' &rarr 'JMS log archive viewer' &rarr 'Maximum number for export'</p>
+<img src="./../image/DeleteButton.png" />
+<p align="justify">Lösche alle aktuell ausgewählten Nachrichten aus der Datenbank.
+ACHTUNG: Auch wenn die Tabelle nicht alle Nachrichten darstellt, werden sie aus der Datenbank gelöscht.</p>
+<h2>Context Menu</h2>
+<img src="./../image/LogTableContextMenu.png" />
+<p align="justify">Das Kontextmenu öffnet sich durch Rechtsklick auf eine Nachricht / Tabellenzeile :</p>
+<img src="./../image/ContextIconShowProperties.png"/>Zeigt alle Eigenschaften der ausgewählten Nachricht 
+in einer externen Tabellenansicht.<br>
+<img src="./../image/ContextIconShowProperties.png"/> Verschickt die Eigenschaften der ausgewählten Nachricht 
+per e-mail.<br>
+<img src="./../image/ContextIconDelete.png"/> Löscht die ausgewählte Nachricht vom log view.<br>
+<img src="./../image/ContextIconDelete.png"/> Löscht alle Nachricht vom log view.<br>
+<img src="./../image/ContextMenuClipboard.png"/> Kopiert den Wert der Eigenschaft NAME in die Windows Zwischenablage.<br>
+<img src="./../image/ContextMenuCSS.png"/> Startet weitere Anwendungen / plug-ins aus der aktuellen
+CSS-Installation, die mit Process Variablen arbeiten. Diese Option ist nur sinnvoll,
+wenn die Eigenschaft NAME der ausgewählten Nachricht eine Process-Variable ist.<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>

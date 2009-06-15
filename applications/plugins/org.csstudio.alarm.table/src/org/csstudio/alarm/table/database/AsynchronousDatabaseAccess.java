@@ -2,9 +2,7 @@ package org.csstudio.alarm.table.database;
 
 import java.io.File;
 
-import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
-import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.Result;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
