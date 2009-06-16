@@ -119,7 +119,7 @@
          <action
                class="de.desy.language.snl.ui.editor.CompileAction"
                definitionId="de.desy.language.snl.ui.CompileST"
-               icon="icons/new_snl_file_wizard.gif"
+               icon="icons/compileST.gif"
                id="de.desy.language.snl.ui.CompileAction"
                label="&amp;Compile"
                menubarPath="edit/additions"

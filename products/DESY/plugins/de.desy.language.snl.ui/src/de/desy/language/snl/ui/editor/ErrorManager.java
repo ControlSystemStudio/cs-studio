@@ -25,6 +25,12 @@ public class ErrorManager {
 	 * The {@link Shell} used for the error dialog.
 	 */
 	private Shell _shell;
+	private final String _lineSeparator;
+	
+	public ErrorManager() {
+		_lineSeparator = System.getProperty("line.separator");
+		System.out.println("Value of 'line.separator': '"+_lineSeparator+"'");
+	}
 
 	/**
 	 * Sets the shell used for the error dialog.
@@ -91,13 +97,14 @@ public class ErrorManager {
 			if (error != null && error.trim().length() > 0) {
 				buffer.append("\t- ");
 				buffer.append(error);
-				buffer.append("\n");
+				buffer.append(_lineSeparator);
 			}
 		}
 		Exception exception = new Exception(buffer.toString());
+		
 		IStatus status = new Status(IStatus.ERROR, SNLUiActivator.PLUGIN_ID,
 				message, exception);
-
+		
 		ErrorDialog
 				.openError(_shell, "Compilation fails!", dialogTitle, status);
 	}
