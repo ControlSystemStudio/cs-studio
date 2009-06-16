@@ -272,10 +272,11 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			ShortestPathConnectionRouter shortRouter = (ShortestPathConnectionRouter) connectionRouter;
 			shortRouter.setSpacing(10);
 			
-			FanRouter fanRouter = new FanRouter();
+//			FanRouter fanRouter = new FanRouter();
+			CustomFanRouter fanRouter = new CustomFanRouter();
+			
 			fanRouter.setSeparation(20);
 			fanRouter.setNextRouter(shortRouter);
-			
 			layer.setConnectionRouter(fanRouter);
 		}
 		
