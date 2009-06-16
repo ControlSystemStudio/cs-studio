@@ -5,11 +5,10 @@ import java.util.List;
 
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.IFieldFunction;
-import org.csstudio.dct.nameresolution.RecordFinder;
-import org.csstudio.dct.util.AliasResolutionUtil;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
-import bsh.Interpreter;
+import com.bestcode.mathparser.IMathParser;
+import com.bestcode.mathparser.MathParserFactory;
 
 /**
  * Implementation for the forwardlink() function.
@@ -17,31 +16,26 @@ import bsh.Interpreter;
  * @author Sven Wende
  * 
  */
-public final class EvalFieldFunction  implements IFieldFunction {
+public final class EvalFieldFunction implements IFieldFunction {
 
 	/**
 	 *{@inheritDoc}
 	 */
 	public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
-		IRecord r = RecordFinder.findRecordByPath(parameters[0], record.getContainer());
+		String result = "";
 
-		String result = null;
-
-		if (r != null) {
-			result = AliasResolutionUtil.getEpicsNameFromHierarchy(r);
-		} else {
-			result = "No Record found";
+		try {
+			IMathParser parser = MathParserFactory.create();
+			parser.setExpression(parameters[0]);
+			result = "" + parser.getValue();
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Error in mathematical expression.");
 		}
-
-
-		Interpreter i = new Interpreter();  // Construct an interpreter
-
-		i.eval("bar = "+parameters[0]);             
-		return ""+i.get("bar");
+		return result;
 	}
 
-	public List<IContentProposal> getParameterProposal(int parameter, IRecord record) {
+	public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
 		return Collections.EMPTY_LIST;
 	}
-	
+
 }

@@ -32,10 +32,14 @@ public final class DataLinkFieldFunction implements IFieldFunction {
 		if (r != null) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(AliasResolutionUtil.getEpicsNameFromHierarchy(r));
-			sb.append(" ");
-			sb.append(".");
+
 			String field = parameters[1];
-			sb.append((field != null && field.length() > 0) ? field : "VAL");
+
+			if (field != null && !field.trim().equals("")) {
+				sb.append(".");
+				sb.append(field);
+			}
+
 			sb.append(" ");
 			sb.append(parameters[2]);
 			sb.append(" ");
@@ -48,15 +52,24 @@ public final class DataLinkFieldFunction implements IFieldFunction {
 		return result;
 	}
 
-	public List<IContentProposal> getParameterProposal(int parameter, IRecord record) {
+	public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knowParameters, IRecord record) {
 		List<IContentProposal> result = new ArrayList<IContentProposal>();
 
-		CentralLogger.getInstance().info(null, "XX" + parameter);
-		switch (parameter) {
+		switch (parameterIndex) {
 		case 0:
 			for (IRecord r : record.getContainer().getRecords()) {
 				String name = AliasResolutionUtil.getNameFromHierarchy(r);
 				result.add(new FieldFunctionContentProposal(name, name, "Reference to record [" + name + "]", name.length()));
+			}
+			break;
+		case 1:
+			if (knowParameters.length > 0) {
+				IRecord r = RecordFinder.findRecordByPath(knowParameters[0], record.getContainer());
+				if (r != null) {
+					for (String f : r.getFinalFields().keySet()) {
+						result.add(new FieldFunctionContentProposal(f, f, f + " field", 3));
+					}
+				}
 			}
 			break;
 		case 2:

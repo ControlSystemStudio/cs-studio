@@ -116,16 +116,27 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
 				String name = matcher.group(1);
 				String parameters = matcher.group(2);
 
-				int param = 0;
+				List<String> knownParameters = new ArrayList<String>();
+
+				String currentParameter = "";
+
+				int currentParameterIndex = 0;
 				for (int i = 0; i < parameters.length(); i++) {
-					if (",".equals(parameters.substring(i, i + 1))) {
-						param++;
+					String s = parameters.substring(i, i + 1);
+
+					if (",".equals(s)) {
+						knownParameters.add(currentParameter.trim());
+						currentParameter = "";
+						currentParameterIndex++;
+					} else {
+						currentParameter += s;
 					}
 				}
 
 				for (FieldFunctionExtension e : extensions) {
 					if (name.equals(e.getName())) {
-						proposals.addAll(e.getFunction().getParameterProposal(param, record));
+						proposals.addAll(e.getFunction().getParameterProposal(currentParameterIndex,
+								knownParameters.toArray(new String[knownParameters.size()]), record));
 					}
 				}
 			}

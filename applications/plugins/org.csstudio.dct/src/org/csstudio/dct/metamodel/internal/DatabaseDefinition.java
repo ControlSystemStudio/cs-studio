@@ -2,6 +2,7 @@ package org.csstudio.dct.metamodel.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public final class DatabaseDefinition implements IDatabaseDefinition {
 	public DatabaseDefinition(String dbdVersion) {
 		assert dbdVersion != null;
 		this.dbdVersion = dbdVersion;
-		recordDefinitions = new HashMap<String, IRecordDefinition>();
+		recordDefinitions = new LinkedHashMap<String, IRecordDefinition>();
 	}
 
 	/**

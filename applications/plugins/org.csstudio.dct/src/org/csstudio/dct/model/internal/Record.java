@@ -2,6 +2,7 @@ package org.csstudio.dct.model.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -126,7 +127,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	 * {@inheritDoc}
 	 */
 	public Map<String, String> getFinalFields() {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new LinkedHashMap<String, String>();
 
 		Stack<IRecord> stack = getRecordStack();
 

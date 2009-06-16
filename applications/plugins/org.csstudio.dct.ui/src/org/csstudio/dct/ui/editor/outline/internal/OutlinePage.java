@@ -123,7 +123,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 			public void dragSetData(DragSourceEvent event) {
 				event.doit = true;
-				event.data = selectedElement.getName()!=null?selectedElement.getName():"a";
+				event.data = selectedElement.getName() != null ? selectedElement.getName() : "a";
 
 			}
 
@@ -193,113 +193,6 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 		});
 
-		// int operations = DND.DROP_MOVE | DND.DROP_COPY;
-		//
-		// final DragSource source = new DragSource(tree, operations);
-		// source.setTransfer(types);
-		//
-		// final TreeItem[] dragSourceItem = new TreeItem[1];
-		//
-		// source.addDragListener(new DragSourceListener() {
-		// public void dragStart(DragSourceEvent event) {
-		// TreeItem[] selection = tree.getSelection();
-		// if (selection.length > 0 && selection[0].getItemCount() == 0) {
-		// event.doit = true;
-		// dragSourceItem[0] = selection[0];
-		// } else {
-		// event.doit = false;
-		// }
-		// };
-		//
-		// public void dragSetData(DragSourceEvent event) {
-		// event.data = dragSourceItem[0].getText();
-		// }
-		//
-		// public void dragFinished(DragSourceEvent event) {
-		// if (event.detail == DND.DROP_MOVE) {
-		// dragSourceItem[0].dispose();
-		// }
-		// dragSourceItem[0] = null;
-		// }
-		// });
-		//
-		// DropTarget target = new DropTarget(tree, operations);
-		// target.setTransfer(types);
-		// target.addDropListener(new DropTargetAdapter() {
-		// public void dragOver(DropTargetEvent event) {
-		// event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL;
-		// if (event.item != null) {
-		// TreeItem item = (TreeItem) event.item;
-		// Point pt = display.map(null, tree, event.x, event.y);
-		// Rectangle bounds = item.getBounds();
-		// if (pt.y < bounds.y + bounds.height / 3) {
-		// event.feedback |= DND.FEEDBACK_INSERT_BEFORE;
-		// } else if (pt.y > bounds.y + 2 * bounds.height / 3) {
-		// event.feedback |= DND.FEEDBACK_INSERT_AFTER;
-		// } else {
-		// event.feedback |= DND.FEEDBACK_SELECT;
-		// }
-		// }
-		// }
-		//
-		// public void drop(DropTargetEvent event) {
-		// if (event.data == null) {
-		// event.detail = DND.DROP_NONE;
-		// return;
-		// }
-		// String text = (String) event.data;
-		// if (event.item == null) {
-		// TreeItem item = new TreeItem(tree, SWT.NONE);
-		// item.setText(text);
-		// } else {
-		// TreeItem item = (TreeItem) event.item;
-		// Point pt = display.map(null, tree, event.x, event.y);
-		// Rectangle bounds = item.getBounds();
-		// TreeItem parent = item.getParentItem();
-		// if (parent != null) {
-		// TreeItem[] items = parent.getItems();
-		// int index = 0;
-		// for (int i = 0; i < items.length; i++) {
-		// if (items[i] == item) {
-		// index = i;
-		// break;
-		// }
-		// }
-		// if (pt.y < bounds.y + bounds.height / 3) {
-		// TreeItem newItem = new TreeItem(parent, SWT.NONE, index);
-		// newItem.setText(text);
-		// } else if (pt.y > bounds.y + 2 * bounds.height / 3) {
-		// TreeItem newItem = new TreeItem(parent, SWT.NONE, index + 1);
-		// newItem.setText(text);
-		// } else {
-		// TreeItem newItem = new TreeItem(item, SWT.NONE);
-		// newItem.setText(text);
-		// }
-		//
-		// } else {
-		// TreeItem[] items = tree.getItems();
-		// int index = 0;
-		// for (int i = 0; i < items.length; i++) {
-		// if (items[i] == item) {
-		// index = i;
-		// break;
-		// }
-		// }
-		// if (pt.y < bounds.y + bounds.height / 3) {
-		// TreeItem newItem = new TreeItem(tree, SWT.NONE, index);
-		// newItem.setText(text);
-		// } else if (pt.y > bounds.y + 2 * bounds.height / 3) {
-		// TreeItem newItem = new TreeItem(tree, SWT.NONE, index + 1);
-		// newItem.setText(text);
-		// } else {
-		// TreeItem newItem = new TreeItem(item, SWT.NONE);
-		// newItem.setText(text);
-		// }
-		// }
-		//
-		// }
-		// }
-		// });
 	}
 
 	/**
@@ -365,5 +258,14 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 			viewer.refresh(sel.getFirstElement(), false);
 			System.out.println("XXXXXXXX" + sel.getFirstElement());
 		}
+	}
+
+	/**
+	 * Returns the tree viewer which is used to display the outline contents.
+	 * 
+	 * @return the tree viewer
+	 */
+	public TreeViewer getViewer() {
+		return viewer;
 	}
 }

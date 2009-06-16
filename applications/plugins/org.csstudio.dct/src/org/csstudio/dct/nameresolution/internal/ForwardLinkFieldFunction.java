@@ -37,7 +37,7 @@ public final class ForwardLinkFieldFunction implements IFieldFunction {
 		return result;
 	}
 
-	public List<IContentProposal> getParameterProposal(int parameter, IRecord record) {
+	public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
 		List<IContentProposal> result = new ArrayList<IContentProposal>();
 
 		for (IRecord r : record.getContainer().getRecords()) {

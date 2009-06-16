@@ -2,6 +2,7 @@ package org.csstudio.dct.metamodel.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.csstudio.dct.metamodel.IFieldDefinition;
@@ -26,7 +27,7 @@ public final class RecordDefinition implements IRecordDefinition {
 	public RecordDefinition(String type) {
 		assert type != null;
 		this.type = type;
-		fieldDefinitions = new HashMap<String, IFieldDefinition>();
+		fieldDefinitions = new LinkedHashMap<String, IFieldDefinition>();
 	}
 
 	/**
@@ -52,7 +53,6 @@ public final class RecordDefinition implements IRecordDefinition {
 		assert fieldDefinition != null;
 		fieldDefinitions.put(fieldDefinition.getName(), fieldDefinition);
 	}
-
 
 	/**
 	 * {@inheritDoc}

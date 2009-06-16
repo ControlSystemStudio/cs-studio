@@ -3,6 +3,7 @@ package org.csstudio.dct.model.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -46,7 +47,7 @@ public final class BaseRecord implements IRecord {
 	public void setRecordDefinition(IRecordDefinition recordDefinition) {
 		this.recordDefinition = recordDefinition;
 
-		fields = new HashMap<String, String>();
+		fields = new LinkedHashMap<String, String>();
 
 		if (recordDefinition != null) {
 			for (IFieldDefinition fd : recordDefinition.getFieldDefinitions()) {

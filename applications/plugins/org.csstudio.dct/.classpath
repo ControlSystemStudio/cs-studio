@@ -17,6 +17,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/org.csstudio.platform.libs.jmock/lib/easymock.jar"/>
 	<classpathentry kind="lib" path="/org.csstudio.platform.libs.jmock/lib/easymockclassextension.jar"/>
-	<classpathentry kind="lib" path="lib/bsh-core-2.0b4.jar"/>
+	<classpathentry kind="lib" path="lib/JbcParser.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

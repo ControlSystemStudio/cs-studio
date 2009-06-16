@@ -32,5 +32,5 @@ public interface IFieldFunction {
 	 */
 	String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception;
 	
-	List<IContentProposal> getParameterProposal (int parameter, IRecord record);
+	List<IContentProposal> getParameterProposal (int parameterIndex, String[] knownParameters, IRecord record);
 }

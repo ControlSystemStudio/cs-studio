@@ -42,5 +42,5 @@ Bundle-ClassPath: lib/ant.jar,
  .,
  lib/commons-beanutils-1.8.0.jar,
  lib/commons-logging-1.1.1.jar,
- lib/bsh-core-2.0b4.jar
+ lib/JbcParser.jar
 

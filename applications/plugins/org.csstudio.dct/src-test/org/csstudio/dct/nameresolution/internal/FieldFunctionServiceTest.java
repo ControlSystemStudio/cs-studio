@@ -208,7 +208,7 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
 		return sb.toString();
 	}
 
-	public List<IContentProposal> getParameterProposal(int parameter, IRecord record) {
+	public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
 		return Collections.EMPTY_LIST;
 	}
 

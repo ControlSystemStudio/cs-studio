@@ -12,6 +12,7 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -61,7 +62,10 @@ public final class ActionFilterAdapter implements IActionFilter {
 				IMarker[] markers = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
 
 				for (IMarker marker : markers) {
-					nodesWithErrors.add(UUID.fromString((String) marker.getAttribute(IMarker.LOCATION)));
+					String location = (String) marker.getAttribute(IMarker.LOCATION);
+					if (StringUtil.hasLength(location)) {
+						nodesWithErrors.add(UUID.fromString(location));
+					}
 				}
 			} catch (CoreException e) {
 				// 

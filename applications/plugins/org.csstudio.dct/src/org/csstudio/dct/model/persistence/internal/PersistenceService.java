@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -149,6 +150,7 @@ public final class PersistenceService implements IPersistenceService {
 		// .. menus
 
 		// .. records
+
 		Enumeration<String> it = data.getRecordNames();
 		while (it.hasMoreElements()) {
 			String n = it.nextElement();
@@ -157,8 +159,12 @@ public final class PersistenceService implements IPersistenceService {
 			RecordDefinition recordDefinition = new RecordDefinition(n);
 			databaseDefinition.addRecordDefinition(recordDefinition);
 
-			for (String fieldName : (Set<String>) recordData.getFields().keySet()) {
-				DBDFieldData fieldData = recordData.getDBDFieldData(fieldName);
+			Iterator<DBDFieldData> it2 = recordData.getFieldsV().iterator();
+			
+			while(it2.hasNext()) {
+				DBDFieldData fieldData = it2.next();
+				String fieldName = fieldData.getName();
+				CentralLogger.getInstance().info(null, fieldName);
 
 				FieldDefinition fieldDefinition = new FieldDefinition(fieldName, DBDResolver.getFieldType(fieldData.getField_type()));
 

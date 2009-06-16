@@ -181,5 +181,28 @@
          </enablement>
       </decorator>
    </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="css.dct.outline.actions"
+            targetID="org.eclipse.ui.views.ContentOutline">
+         <action
+               class="org.csstudio.dct.ui.editor.outline.internal.CollapseAllAction"
+               icon="icons/collapseall.gif"
+               id="org.csstudio.dct.ui.editor.outline.internal.CollapseAllAction"
+               label="Collapse All"
+               style="push"
+               toolbarPath="add.ext">
+         </action>
+         <action
+               class="org.csstudio.dct.ui.editor.outline.internal.ExpandAllAction"
+               icon="icons/expandall.gif"
+               id="org.csstudio.dct.ui.editor.outline.internal.ExpandAllAction"
+               label="Expand All"
+               style="push"
+               toolbarPath="add.ext">
+         </action>
+      </viewContribution>
+   </extension>
 
 </plugin>

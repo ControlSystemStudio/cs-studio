@@ -40,7 +40,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 		super(record);
 		this.fieldKey = fieldKey;
 	}
-
+	
 	/**
 	 * Returns the name of the field.
 	 * 
@@ -98,7 +98,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 		if (value == null || "".equals(value.toString().trim())) {
 			result = "<empty>";
 		} else {
-			if (record.isInherited()) {
+			if (!record.isAbstract()) {
 				// resolve functions and parameters
 				try {
 					result = value.toString();
@@ -188,9 +188,9 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	@Override
 	protected int doCompareTo(ITableRow row) {
 		int result = 0;
-		if (row instanceof RecordFieldTableRowAdapter) {
-			result = fieldKey.compareTo(((RecordFieldTableRowAdapter) row).fieldKey);
-		}
+//		if (row instanceof RecordFieldTableRowAdapter) {
+//			result = fieldKey.compareTo(((RecordFieldTableRowAdapter) row).fieldKey);
+//		}
 
 		return result;
 	}

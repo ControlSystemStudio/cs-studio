@@ -2,6 +2,7 @@ package org.csstudio.dct.util;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.csstudio.dct.DctActivator;
@@ -46,7 +47,7 @@ public final class ResolutionUtil {
 	}
 
 	public static Map<String, String> resolveFields(IRecord record) {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new LinkedHashMap<String, String>();
 		
 		Map<String, String> aliases = AliasResolutionUtil.getFinalAliases(record.getContainer());
 
