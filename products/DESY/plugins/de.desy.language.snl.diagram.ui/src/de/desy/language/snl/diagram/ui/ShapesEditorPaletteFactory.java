@@ -31,7 +31,6 @@ import de.desy.language.snl.diagram.model.StateSetModel;
  * Utility class that can create a GEF Palette.
  * 
  * @see #createPalette()
- * @author Elias Volanakis
  */
 final class ShapesEditorPaletteFactory {
 
@@ -54,7 +53,7 @@ final class ShapesEditorPaletteFactory {
 		componentsDrawer.add(component);
 
 		component = new CombinedTemplateCreationEntry("StateSet",
-				"Create a rectangular shape", StateSetModel.class,
+				"Create a StateSet", StateSetModel.class,
 				new SimpleFactory(StateSetModel.class), ShapesPlugin
 						.getImageDescriptor("icons/rectangle16.gif"),
 				ShapesPlugin.getImageDescriptor("icons/rectangle24.gif"));

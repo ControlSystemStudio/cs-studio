@@ -41,7 +41,8 @@ public class DiagramCreator {
 				StateNode stateNode = (StateNode) child;
 				StateModel state = new StateModel();
 				int size = stateMap.size();
-				state.setLocation(new Point(50 + size * 200, 50 + (_stateSetMap.size()-1)*100));
+				state.setLocation(new Point(50 + size * 200, 50 + (_stateSetMap
+						.size() - 1) * 100));
 				state.setStateNode(stateNode);
 				state.setSize(new Dimension(100, 50));
 				stateMap.put(stateNode.getSourceIdentifier(), state);
@@ -57,14 +58,18 @@ public class DiagramCreator {
 	private static void addWhenNodes() {
 		for (HashMap<String, StateModel> map : _stateSetMap.values()) {
 			for (StateModel stateModel : map.values()) {
-				for (Node child : stateModel.getStateNode().getChildrenNodes()) {
-					DiagramCreator.addWhenNodes(map, stateModel, child);
+				StateNode stateNode = stateModel.getStateNode();
+				if (stateNode.hasChildren()) {
+					for (Node child : stateNode.getChildrenNodes()) {
+						DiagramCreator.addWhenNodes(map, stateModel, child);
+					}
 				}
 			}
 		}
 	}
 
-	private static void addWhenNodes(HashMap<String,StateModel> map, StateModel stateModel, Node node) {
+	private static void addWhenNodes(HashMap<String, StateModel> map,
+			StateModel stateModel, Node node) {
 		if (node instanceof WhenNode) {
 			WhenNode when = (WhenNode) node;
 			String followingState = when.getFollowingState();

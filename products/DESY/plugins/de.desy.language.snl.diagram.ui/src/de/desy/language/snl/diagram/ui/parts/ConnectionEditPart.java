@@ -14,9 +14,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.MidpointLocator;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
@@ -24,9 +26,8 @@ import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 
-
-import de.desy.language.snl.diagram.model.WhenConnection;
 import de.desy.language.snl.diagram.model.ModelElement;
+import de.desy.language.snl.diagram.model.WhenConnection;
 import de.desy.language.snl.diagram.ui.commands.ConnectionDeleteCommand;
 
 /**
@@ -36,7 +37,6 @@ import de.desy.language.snl.diagram.ui.commands.ConnectionDeleteCommand;
  * be notified of property changes in the corresponding model element.
  * </p>
  * 
- * @author Elias Volanakis
  */
 class ConnectionEditPart extends AbstractConnectionEditPart implements
 		PropertyChangeListener {
@@ -77,6 +77,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
+
 		PolylineConnection connection = (PolylineConnection) super
 				.createFigure();
 		connection.setTargetDecoration(new PolygonDecoration()); // arrow at
@@ -85,6 +86,14 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 		connection.setLineStyle(getCastedModel().getLineStyle()); // line
 																	// drawing
 																	// style
+		
+		
+		Label midLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
+		
+		MidpointLocator midpointLocator = new MidpointLocator(connection, 0);
+		midpointLocator.setRelativePosition(PositionConstants.SOUTH);
+		connection.add(midLabel, midpointLocator);
+		
 		return connection;
 	}
 

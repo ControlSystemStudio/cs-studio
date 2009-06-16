@@ -16,10 +16,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.draw2d.ConnectionLayer;
+import org.eclipse.draw2d.ConnectionRouter;
+import org.eclipse.draw2d.FanRouter;
+import org.eclipse.draw2d.ShortestPathConnectionRouter;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
@@ -69,6 +74,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	private IDocumentProvider fImplicitDocumentProvider;
 	/** Palette component, holding the tools and shapes. */
 	private static PaletteRoot PALETTE_MODEL;
+	private ScalableFreeformRootEditPart _scalableFreeformRootEditPart;
 
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public DiagramEditor() {
@@ -92,7 +98,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
 		GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setEditPartFactory(new ShapesEditPartFactory());
-		viewer.setRootEditPart(new ScalableFreeformRootEditPart());
+		_scalableFreeformRootEditPart = new ScalableFreeformRootEditPart();
+		viewer.setRootEditPart(_scalableFreeformRootEditPart);
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
 
 		// configure the context menu provider
@@ -160,19 +167,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 //		try {
 //			createOutputStream(out);
 //			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-//			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, // keep
-//					// saving,
-//					// even
-//					// if
-//					// IFile
-//					// is
-//					// out
-//					// of
-//					// sync
-//					// with
-//					// the
-//					// Workspace
-//					false, // dont keep history
+//			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, 
+			// keep saving, even if IFile is out of sync with the Workspace false, don't keep history
 //					monitor); // progress monitor
 //			getCommandStack().markSaveLocation();
 //		} catch (CoreException ce) {
@@ -268,7 +264,23 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		super.initializeGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setContents(getModel()); // set the contents of this editor
-
+		
+		ConnectionLayer layer = (ConnectionLayer) _scalableFreeformRootEditPart.getLayer(LayerConstants.CONNECTION_LAYER);
+		
+		ConnectionRouter connectionRouter = layer.getConnectionRouter();
+		
+		if (connectionRouter instanceof ShortestPathConnectionRouter) {
+			ShortestPathConnectionRouter shortRouter = (ShortestPathConnectionRouter) connectionRouter;
+			shortRouter.setSpacing(10);
+			
+			FanRouter fanRouter = new FanRouter();
+			fanRouter.setSeparation(20);
+			fanRouter.setNextRouter(shortRouter);
+			
+			layer.setConnectionRouter(fanRouter);
+		}
+		
+		
 		// listen for dropped parts
 		viewer.addDropTargetListener(createTransferDropTargetListener());
 	}
