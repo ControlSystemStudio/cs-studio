@@ -47,8 +47,7 @@ public class EnumMetaDataHelper
             }
             return;
         }
-        // TODO test
-        if (meta.equals(found)) // also handles found == null
+        if (found != null && meta.equals(found))
             return;
         // Delete old entries, then insert current ones.
         delete(archive, channel);
