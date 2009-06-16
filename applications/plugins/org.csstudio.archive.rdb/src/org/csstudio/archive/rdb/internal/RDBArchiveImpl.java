@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
@@ -597,27 +598,32 @@ public class RDBArchiveImpl extends RDBArchive
         {
             if (debug_batch)
             {
-                ex.printStackTrace();
-                System.out.println("Error in of these samples: " + ex.getMessage()); //$NON-NLS-1$
-                if (batched_samples.size() != batched_channel.size())
-                    System.out.println("Inconsistent batch history"); //$NON-NLS-1$
-                final int N = Math.min(batched_samples.size(), batched_channel.size());
-                for (int i=0; i<N; ++i)
+                if (ex.getMessage().contains("unique")) //$NON-NLS-1$
                 {
-                    attemptSingleInsert(batched_channel.get(i), batched_samples.get(i));
+                    System.out.println(new Date().toString() + " Unique constraint error in these samples: " + ex.getMessage()); //$NON-NLS-1$
+                    if (batched_samples.size() != batched_channel.size())
+                        System.out.println("Inconsistent batch history"); //$NON-NLS-1$
+                    final int N = Math.min(batched_samples.size(), batched_channel.size());
+                    for (int i=0; i<N; ++i)
+                    {
+                        attemptSingleInsert(batched_channel.get(i), batched_samples.get(i));
+                    }
                 }
             }
-            else
-                throw ex;
+            throw ex;
         }
-        if (debug_batch)
+        finally
         {
-            batched_channel.clear();
-            batched_samples.clear();
+            if (debug_batch)
+            {
+                batched_channel.clear();
+                batched_samples.clear();
+            }
         }
 	}
 
     /** Submit and clear the batch, or roll back on error */
+    @SuppressWarnings("nls")
     private void checkBatchExecution(final PreparedStatement insert) throws Exception
     {
         try
@@ -628,16 +634,24 @@ public class RDBArchiveImpl extends RDBArchive
             insert.executeBatch();
             rdb.getConnection().commit();
         }
-        catch (final SQLException ex)
+        catch (final Exception ex)
         {
-            // On failure, roll back.
-            // With Oracle 10g, the BatchUpdateException doesn't
-            // indicate which of the batched commands faulted...
-            insert.clearBatch();
-            // Still: Commit what's committable.
-            // Unfortunately no way to know what failed,
-            // and no way to re-submit the 'remaining' inserts.
-            rdb.getConnection().commit();
+            try
+            {
+                // On failure, roll back.
+                // With Oracle 10g, the BatchUpdateException doesn't
+                // indicate which of the batched commands faulted...
+                insert.clearBatch();
+                // Still: Commit what's committable.
+                // Unfortunately no way to know what failed,
+                // and no way to re-submit the 'remaining' inserts.
+                rdb.getConnection().commit();
+            }
+            catch (Exception nested)
+            {
+                System.out.println("Clear batch/commit error after batch issue: "
+                        + nested.getMessage());
+            }
             throw ex;
         }
     }
