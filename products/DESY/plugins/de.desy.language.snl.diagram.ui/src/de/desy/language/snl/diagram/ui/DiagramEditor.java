@@ -65,7 +65,6 @@ import de.desy.language.snl.parser.SNLParser;
  * binding between the .shapes file extension and this editor is done in
  * plugin.xml
  * 
- * @author Elias Volanakis
  */
 public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
