@@ -205,7 +205,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
         PreparedStatement enableRowMovement = _databaseConnection
                 .prepareStatement("ALTER TABLE message_content ENABLE ROW MOVEMENT");
         PreparedStatement shrinkMessageContentTable = _databaseConnection
-                .prepareStatement("ALTER TABLE message_content SHRINK SPACE COMPACT");
+                .prepareStatement("ALTER TABLE message_content SHRINK SPACE CASCADE");
         PreparedStatement disableRowMovement = _databaseConnection
                 .prepareStatement("ALTER TABLE message_content DISABLE ROW MOVEMENT");
 
@@ -238,7 +238,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
         enableRowMovement = _databaseConnection
                 .prepareStatement("ALTER TABLE message ENABLE ROW MOVEMENT");
         PreparedStatement shrinkMessageTable = _databaseConnection
-                .prepareStatement("ALTER TABLE message SHRINK SPACE COMPACT");
+                .prepareStatement("ALTER TABLE message SHRINK SPACE CASCADE");
         disableRowMovement = _databaseConnection
                 .prepareStatement("ALTER TABLE message DISABLE ROW MOVEMENT");
 
