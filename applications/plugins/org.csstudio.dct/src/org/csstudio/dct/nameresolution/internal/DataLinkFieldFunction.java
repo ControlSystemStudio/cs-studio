@@ -67,7 +67,7 @@ public final class DataLinkFieldFunction implements IFieldFunction {
 				IRecord r = RecordFinder.findRecordByPath(knowParameters[0], record.getContainer());
 				if (r != null) {
 					for (String f : r.getFinalFields().keySet()) {
-						result.add(new FieldFunctionContentProposal(f, f, f + " field", 3));
+						result.add(new FieldFunctionContentProposal(f, f, f + " field", f.length()));
 					}
 				}
 			}
