@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.csstudio"
+            class="org.csstudio.diag.icsiocmonitor.ui.internal.IocMonitorView"
+            id="org.csstudio.diag.icsiocmonitor.ui.IocMonitorView"
+            name="ICS/IOC Monitor"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.diag.icsiocmonitor.ui.IocMonitorActionSet"
+            label="ICS/IOC Monitor"
+            visible="true">
+         <action
+               class="org.csstudio.diag.icsiocmonitor.ui.internal.ShowIocMonitor"
+               id="org.csstudio.diag.icsiocmonitor.ui.ShowIocMonitorAction"
+               label="ICS/IOC Monitor"
+               menubarPath="css/diag/"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>
