@@ -13,9 +13,9 @@ package de.desy.language.snl.diagram.ui.parts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.MidpointLocator;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
@@ -29,6 +29,7 @@ import org.eclipse.gef.requests.GroupRequest;
 import de.desy.language.snl.diagram.model.ModelElement;
 import de.desy.language.snl.diagram.model.WhenConnection;
 import de.desy.language.snl.diagram.ui.commands.ConnectionDeleteCommand;
+import de.desy.language.snl.diagram.ui.figures.MidConnectionRouteLocator;
 
 /**
  * Edit part for Connection model elements.
@@ -77,9 +78,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-
-		PolylineConnection connection = (PolylineConnection) super
-				.createFigure();
+		PolylineConnection connection = new PolylineConnection();
 		connection.setTargetDecoration(new PolygonDecoration()); // arrow at
 																	// target
 																	// endpoint
@@ -88,15 +87,15 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 																	// style
 		
 		
-		Label midLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
+		final Label midLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
 		
-		MidpointLocator midpointLocator = new MidpointLocator(connection, 0);
-		midpointLocator.setRelativePosition(PositionConstants.SOUTH);
-		connection.add(midLabel, midpointLocator);
+		ConnectionLocator locator = new MidConnectionRouteLocator(connection);
+		locator.setRelativePosition(PositionConstants.SOUTH);
+		connection.add(midLabel, locator);
 		
 		return connection;
 	}
-
+	
 	/**
 	 * Upon deactivation, detach from the model element as a property change
 	 * listener.
