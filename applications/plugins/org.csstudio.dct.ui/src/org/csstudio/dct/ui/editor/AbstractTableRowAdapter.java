@@ -79,7 +79,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 
 		switch (column) {
 		case 0:
-			result = doGetKey(delegate);
+			result = doGetKeyDescription(delegate);
 			break;
 		case 1:
 			result = doGetValueForDisplay(delegate);

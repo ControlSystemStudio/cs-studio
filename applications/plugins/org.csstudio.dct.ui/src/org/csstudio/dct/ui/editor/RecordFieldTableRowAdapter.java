@@ -3,6 +3,7 @@ package org.csstudio.dct.ui.editor;
 import java.util.Map;
 
 import org.csstudio.dct.DctActivator;
+import org.csstudio.dct.PreferenceSettings;
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IMenuDefinition;
 import org.csstudio.dct.metamodel.IRecordDefinition;
@@ -12,9 +13,11 @@ import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.platform.util.StringUtil;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
@@ -40,7 +43,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 		super(record);
 		this.fieldKey = fieldKey;
 	}
-	
+
 	/**
 	 * Returns the name of the field.
 	 * 
@@ -74,7 +77,28 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	 */
 	@Override
 	protected String doGetKeyDescription(IRecord record) {
-		return record.getRecordDefinition().getFieldDefinitions(fieldKey).getPrompt();
+		StringBuffer sb = new StringBuffer();
+		sb.append(fieldKey);
+		IFieldDefinition def = record.getRecordDefinition().getFieldDefinitions(fieldKey);
+
+		IPreferencesService prefs = Platform.getPreferencesService();
+		
+		if (def != null) {
+			if (StringUtil.hasLength(def.getPrompt()) && prefs.getBoolean(DctActivator.PLUGIN_ID,
+					PreferenceSettings.FIELD_DESCRIPTION_SHOW_DESCRIPTION.name(), false, null)) {
+				sb.append(" - ");
+				sb.append(def.getPrompt());
+			}
+			
+			if (StringUtil.hasLength(def.getInitial()) && prefs.getBoolean(DctActivator.PLUGIN_ID,
+					PreferenceSettings.FIELD_DESCRIPTION_SHOW_INITIAL_VALUE.name(), false, null)) {
+				sb.append(" [");
+				sb.append(def.getInitial());
+				sb.append("]");
+			}
+		}
+		
+		return sb.toString();
 	}
 
 	/**
@@ -188,9 +212,10 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	@Override
 	protected int doCompareTo(ITableRow row) {
 		int result = 0;
-//		if (row instanceof RecordFieldTableRowAdapter) {
-//			result = fieldKey.compareTo(((RecordFieldTableRowAdapter) row).fieldKey);
-//		}
+		// if (row instanceof RecordFieldTableRowAdapter) {
+		// result = fieldKey.compareTo(((RecordFieldTableRowAdapter)
+		// row).fieldKey);
+		// }
 
 		return result;
 	}

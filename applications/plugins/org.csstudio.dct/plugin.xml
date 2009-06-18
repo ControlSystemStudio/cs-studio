@@ -52,5 +52,11 @@
             signature="datalink(&lt;target&gt;, [field]?, [NPP], [NMS])">
       </fieldfunction>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.dct.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

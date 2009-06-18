@@ -3,6 +3,8 @@ package org.csstudio.dct.nameresolution.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.dct.DctActivator;
+import org.csstudio.dct.PreferenceSettings;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.IFieldFunction;
@@ -11,6 +13,9 @@ import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
@@ -73,14 +78,10 @@ public final class DataLinkFieldFunction implements IFieldFunction {
 			}
 			break;
 		case 2:
-			result.add(new FieldFunctionContentProposal("NMS", "NMS", "NMS Description", 3));
-			result.add(new FieldFunctionContentProposal("PP", "PP", "PP Description", 2));
-			result.add(new FieldFunctionContentProposal("CNPP", "CNPP", "CNPP Description", 4));
-			result.add(new FieldFunctionContentProposal("CPP", "CPP", "CPP Description", 3));
+			result.addAll(createProposalsFromPreferences(PreferenceSettings.DATALINK_FUNCTION_PARAMETER_3_PROPOSAL));
 			break;
 		case 3:
-			result.add(new FieldFunctionContentProposal("NMS", "NMS", "NMS Description", 3));
-			result.add(new FieldFunctionContentProposal("MS", "MS", "MS Description", 2));
+			result.addAll(createProposalsFromPreferences(PreferenceSettings.DATALINK_FUNCTION_PARAMETER_4_PROPOSAL));
 			break;
 		default:
 			break;
@@ -88,4 +89,17 @@ public final class DataLinkFieldFunction implements IFieldFunction {
 		return result;
 	}
 
+	private List<IContentProposal> createProposalsFromPreferences(PreferenceSettings key) {
+		List<IContentProposal> result = new ArrayList<IContentProposal>();
+
+		String proposals = Platform.getPreferencesService().getString(DctActivator.PLUGIN_ID, key.name(), "", null);
+
+		if (StringUtil.hasLength(proposals)) {
+			for (String p : proposals.split(",")) {
+				result.add(new FieldFunctionContentProposal(p, p, p, p.length()));
+			}
+		}
+
+		return result;
+	}
 }

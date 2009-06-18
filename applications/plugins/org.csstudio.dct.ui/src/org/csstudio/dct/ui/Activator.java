@@ -1,6 +1,13 @@
 package org.csstudio.dct.ui;
 
+import org.csstudio.dct.DctActivator;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -13,6 +20,11 @@ public final class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+
+	/**
+	 * The preference store to access the sds core preferences.
+	 */
+	private static IPreferenceStore _preferenceStore;
 
 	/**
 	 *{@inheritDoc}
@@ -39,4 +51,12 @@ public final class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public static IPreferenceStore getCorePreferenceStore() {
+		if (_preferenceStore == null) {
+			String qualifier = DctActivator.getDefault().getBundle().getSymbolicName();
+			_preferenceStore = new ScopedPreferenceStore(new InstanceScope(), qualifier);
+		}
+		return _preferenceStore;
+
+	}
 }

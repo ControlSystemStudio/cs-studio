@@ -204,5 +204,14 @@
          </action>
       </viewContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.editors"
+            class="org.csstudio.dct.ui.PreferencePage"
+            id="org.csstudio.dct.ui.PreferencePage"
+            name="DCT Preferences">
+      </page>
+   </extension>
 
 </plugin>
