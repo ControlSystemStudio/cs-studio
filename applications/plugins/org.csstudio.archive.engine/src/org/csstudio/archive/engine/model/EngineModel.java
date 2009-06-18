@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class EngineModel
 {
     /** Version code */
-    final public static String VERSION = "1.0.2b"; //$NON-NLS-1$
+    final public static String VERSION = "1.0.2c"; //$NON-NLS-1$
 
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$
@@ -239,7 +239,7 @@ public class EngineModel
                 throw new Exception(gripe + " with different sample mechanism");
         }
         else
-        {   // Create new channel
+        {   // Channel is new to this engine.
             // See if there's already a sample in the archive,
             // because we won't be able to go back-in-time before that sample.
         	IValue last_sample = null;
@@ -296,7 +296,7 @@ public class EngineModel
             // Unfortunately, we don't check inside group.start(),
             // which could have run for some time....
             if (state == State.SHUTDOWN_REQUESTED)
-            	break;
+                break;
         }
         scan_thread.start();
     }
