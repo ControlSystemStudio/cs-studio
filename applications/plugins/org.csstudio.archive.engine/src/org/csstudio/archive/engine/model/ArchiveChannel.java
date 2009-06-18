@@ -3,12 +3,14 @@ package org.csstudio.archive.engine.model;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.csstudio.archive.engine.ThrottledLogger;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -103,6 +105,10 @@ abstract public class ArchiveChannel
         this.enablement = enablement;
         this.last_archived_value = last_archived_value;
         this.buffer = new SampleBuffer(name, buffer_capacity);
+        if (last_archived_value == null)
+            CentralLogger.getInstance().getLogger(this).info(
+                    name + ": No known last value"); //$NON-NLS-1$
+        
         pv = PVFactory.createPV(name);
         pv.addListener(new PVListener()
         {
@@ -204,8 +210,19 @@ abstract public class ArchiveChannel
         addInfoToBuffer(ValueButcher.createOff());
     }
 
-    /** @return Most recent value of the channel */
-    final public String getValue()
+    /** @return Most recent value of the channel's PV */
+    final public String getCurrentValue()
+    {
+        synchronized (this)
+        {
+            if (last_archived_value == null)
+                return "null"; //$NON-NLS-1$
+            return last_archived_value.toString();
+        }
+    }
+
+    /** @return Last value written to archive */
+    final public String getLastArchivedValue()
     {
         synchronized (this)
         {
@@ -243,7 +260,7 @@ abstract public class ArchiveChannel
      *  <p>
      *  Base class remembers the <code>most_recent_value</code>,
      *  and asserts that one 'first' sample is archived.
-     *  Derived class must call <code>super()</code>.
+     *  Derived class <b>must</b> call <code>super()</code>.
      */
     @SuppressWarnings("nls")
     protected void handleNewValue(final IValue value)
@@ -296,32 +313,6 @@ abstract public class ArchiveChannel
         need_first_sample = true;
     }
 
-    /** Add given sample to buffer, performing a back-in-time check.
-     *  @param value Value to archive
-     *  @return <code>false</code> if value failed back-in-time check,
-     *          <code>true</code> if value was added.
-     */
-    final protected boolean addValueToBuffer(final IValue value)
-    {
-        synchronized (this)
-        {
-            if (last_archived_value != null &&
-                last_archived_value.getTime().isGreaterOrEqual(value.getTime()))
-            {   // Cannot use this sample.
-                // Don't bother to log, because usually this is NOT an error:
-                // We logged an initial sample, disconnected, disabled, ...,
-                // and now we got an update from the IOC which still
-                // carries the old, original time stamp of the PV,
-                // and that's back in time...
-                return false;
-            }
-            // else ...
-            last_archived_value = value;
-        }
-        addToBuffer(value);
-        return true;
-    }
-
     /** Add given info value to buffer, tweaking its time stamp if necessary
      *  @param value Value to archive 
      */
@@ -340,19 +331,43 @@ abstract public class ArchiveChannel
                 }
                 // else: value is OK as is
             }
-            last_archived_value = value;
         }
-        addToBuffer(value);
+        addValueToBuffer(value);
     }
 
-    /** Add given value to buffer, not checking the value itself,
-     *  but updating the error state.
+    /** Add given sample to buffer, performing a back-in-time check,
+     *  updating the sample buffer error state.
+     *  @param value Value to archive
+     *  @return <code>false</code> if value failed back-in-time check,
+     *          <code>true</code> if value was added.
      */
-    private void addToBuffer(final IValue value)
+    @SuppressWarnings("nls")
+    final protected boolean addValueToBuffer(final IValue value)
     {
+        synchronized (this)
+        {
+            if (last_archived_value != null &&
+                last_archived_value.getTime().isGreaterOrEqual(value.getTime()))
+            {   // Cannot use this sample because of back-in-time problem.
+                // Usually this is NOT an error:
+                // We logged an initial sample, disconnected, disabled, ...,
+                // and now we got an update from the IOC which still
+                // carries the old, original time stamp of the PV,
+                // and that's back in time...
+                final Logger log = CentralLogger.getInstance().getLogger(this);
+                if (log.isDebugEnabled())
+                    log.debug(getName() + " skips back-in-time:\n" +
+                        "last: " + last_archived_value.toString() + "\n" +
+                        "new : " + value.toString());
+                return false;
+            }
+            // else ...
+            last_archived_value = value;
+        }
         buffer.add(value);
-        if (SampleBuffer.isInErrorState()  &&  !need_write_error_sample)
+        if (SampleBuffer.isInErrorState())
             need_write_error_sample = true;
+        return true;
     }
 
     /** Determine if the channel is enabled.
