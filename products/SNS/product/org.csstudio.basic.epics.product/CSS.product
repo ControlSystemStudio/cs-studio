@@ -72,6 +72,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.csstudio.archive.rdbclient"/>
       <plugin id="org.csstudio.basic.epics.product"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
+      <plugin id="org.csstudio.diag.postanalyser"/>
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.display.pace"/>
       <plugin id="org.csstudio.display.pvtable"/>
