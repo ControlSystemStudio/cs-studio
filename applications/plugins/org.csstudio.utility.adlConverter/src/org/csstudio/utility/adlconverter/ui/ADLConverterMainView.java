@@ -303,7 +303,7 @@ public class ADLConverterMainView extends ViewPart {
                             }
                         } else if (file.getName().endsWith(".mfp")) {//$NON-NLS-1$ 
                             if (!di.importFaceplate(file.getAbsolutePath(), targetProject, file
-                                    .getName().replace(".mfp", ".fp.css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                    .getName().replace(".mfp", ".mfp.css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
                                 if (di.getStatus() == 2) {
                                     // Job is canceled.
                                     break;
