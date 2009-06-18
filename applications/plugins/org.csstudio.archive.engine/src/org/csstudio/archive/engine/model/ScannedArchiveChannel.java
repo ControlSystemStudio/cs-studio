@@ -54,7 +54,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     {
         if (! isEnabled())
             return;
-        IValue recent;
+        final IValue recent;
         synchronized (this)
         {   // Have anything?
             if (most_recent_value == null)
@@ -66,10 +66,11 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                 if (repeats < max_repeats)
                     return;
             }
-            // New value; reset repeats.
+            // New value, or exceeded repeats
             repeats = 0;
             recent = most_recent_value;
         }
+        // unlocked w/ reference to most_recent_value
         final IValue value = ValueButcher.transformTimestampToNow(recent);
         if (value == null)
             CentralLogger.getInstance().getLogger(this).error("Channel " + getName()
