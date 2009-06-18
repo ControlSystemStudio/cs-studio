@@ -21,6 +21,11 @@
  */
 package org.csstudio.alarm.table.jms;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -29,7 +34,8 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
@@ -46,14 +52,14 @@ public class JmsMessageReceiver implements MessageListener {
     /**
      * List of messages displayed in the table.
      */
-    JMSMessageList _messageList;
+    MessageList _messageList;
 
     /**
      * JMS Session for the listener
      */
     IMessageListenerSession _listenerSession;
 
-    public JmsMessageReceiver(JMSMessageList messageList) {
+    public JmsMessageReceiver(MessageList messageList) {
         this._messageList = messageList;
     }
 
@@ -75,7 +81,8 @@ public class JmsMessageReceiver implements MessageListener {
                                 + mm.getString("EVENTTIME")
                                 + " NAME: " + mm.getString("NAME")
                                 + " ACK: " + mm.getString("ACK"));
-                _messageList.addJMSMessage(mm);
+                Map<String, String> messageProperties = readMapMessageProperties(mm);
+                _messageList.addMessage(new BasicMessage(messageProperties));
             } else {
                 JmsLogsPlugin.logError("received message is an unknown type");
             }
@@ -83,6 +90,23 @@ public class JmsMessageReceiver implements MessageListener {
             e.printStackTrace();
             JmsLogsPlugin.logException("JMS error: ", e); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * Read properties from a {@link MapMessage} and put them into a Map.
+     * 
+     * @param mm
+     * @return message properties in a Map
+     * @throws JMSException 
+     */
+    private Map<String, String> readMapMessageProperties(MapMessage mm) throws JMSException {
+        Map<String, String> messageProperties = new HashMap<String, String>();
+        Enumeration<String> mapNames = mm.getMapNames();
+        while (mapNames.hasMoreElements()) {
+            String key = (String) mapNames.nextElement();
+            messageProperties.put(key.toUpperCase(), mm.getString(key));
+        }
+        return messageProperties;
     }
 
     /**

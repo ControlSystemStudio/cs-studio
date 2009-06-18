@@ -26,7 +26,7 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
@@ -41,7 +41,7 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
 
 	private boolean _playAlarmSound = true;
 
-	public JmsAlarmMessageReceiver(JMSMessageList messageList) {
+	public JmsAlarmMessageReceiver(MessageList messageList) {
 		super(messageList);
 	}
 

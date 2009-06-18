@@ -40,10 +40,10 @@ public final class MessagePropertySourceAdapterFactory implements IAdapterFactor
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Object adaptableObject,
 			final Class adapterType) {
-		if (adaptableObject instanceof JMSMessage
+		if (adaptableObject instanceof BasicMessage
 				&& adapterType == IPropertySource.class) {
-			return new JMSMessagePropertySource(
-					(JMSMessage) adaptableObject);
+			return new MessagePropertySource(
+					(BasicMessage) adaptableObject);
 		}
 		return null;
 	}

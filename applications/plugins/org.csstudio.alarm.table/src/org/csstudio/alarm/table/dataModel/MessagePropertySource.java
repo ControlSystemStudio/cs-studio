@@ -31,17 +31,17 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
- * Adapter to provide property support for {@link JMSMessage}s. 
+ * Adapter to provide property support for {@link BasicMessage}s. 
  * (According to the implementation of Joerg Rathlev.)
  *  
  * @author Jan Hatje
  */
-public class JMSMessagePropertySource implements IPropertySource2 {
+public class MessagePropertySource implements IPropertySource2 {
 
 	/**
 	 * The node for which this property source provides properties.
 	 */
-	private JMSMessage _message;
+	private BasicMessage _message;
 	
 
 	
@@ -49,7 +49,7 @@ public class JMSMessagePropertySource implements IPropertySource2 {
 	 * Creates a new property source for the given node.
 	 * @param node the node.
 	 */
-	public JMSMessagePropertySource(final JMSMessage message) {
+	public MessagePropertySource(final BasicMessage message) {
 		this._message = message;
 	}
 	

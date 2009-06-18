@@ -31,8 +31,9 @@ import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.dbaccess.archivedb.Result;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.JMSMessage;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.ArchiveMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.database.AsynchronousDatabaseAccess;
 import org.csstudio.alarm.table.database.IDatabaseAccessListener;
 import org.csstudio.alarm.table.internal.localization.Messages;
@@ -84,7 +85,7 @@ public class ArchiveView extends ViewPart {
     public static final String ID = ArchiveView.class.getName();
 
     /** The JMS message list. */
-    private JMSMessageList _jmsMessageList = null;
+    private ArchiveMessageList _jmsMessageList = null;
 
     /** An Array whit the name of the Columns. */
     private String[] _columnNames;
@@ -145,7 +146,8 @@ public class ArchiveView extends ViewPart {
         _columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
                 .getString(ArchiveViewPreferenceConstants.P_STRINGArch).split(
                         ";"); //$NON-NLS-1$
-        _jmsMessageList = new JMSMessageList(_columnNames);
+        _jmsMessageList = new ArchiveMessageList();
+//        _jmsMessageList = new ArchiveMessageList(_columnNames);
 
         // _parentShell = parent.getShell();
 
@@ -612,7 +614,7 @@ public class ArchiveView extends ViewPart {
                         }
                         _tableViewer.getTable().setEnabled(true);
                         if (size > 0) {
-                            _jmsMessageList.addJMSMessageList(result
+                            _jmsMessageList.addMessageList(result
                                     .getMessagesFromDatabase());
                         } else {
                             String[] propertyNames = JmsLogsPlugin
@@ -622,12 +624,12 @@ public class ArchiveView extends ViewPart {
                                             LogViewPreferenceConstants.P_STRING)
                                     .split(";"); //$NON-NLS-1$
 
-                            JMSMessage jmsMessage = new JMSMessage(
+                            BasicMessage jmsMessage = new BasicMessage(
                                     propertyNames);
                             String firstColumnName = _columnNames[0];
                             jmsMessage.setProperty(firstColumnName,
                                     Messages.LogViewArchive_NoMessageInDB);
-                            _jmsMessageList.addJMSMessage(jmsMessage);
+                            _jmsMessageList.addMessage(jmsMessage);
                         }
                     }
                 });

@@ -22,8 +22,7 @@ public class JMSAlarmMessageListTest {
 	// -> only one message is removed.
 	@Test
 	public void testRemoveMessages() throws JMSException {
-		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
-				.split(";"));
+		AlarmMessageList messageList = new AlarmMessageList();
 		String eventtimeMajor = createAndIncrementDate();
 		String eventtimeMinor = createAndIncrementDate();
 		for(int i = 0; i < 5; i++) {
@@ -53,8 +52,7 @@ public class JMSAlarmMessageListTest {
 
 	@Test
 	public void testAddStatusDisconnected() throws JMSException {
-		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
-				.split(";"));
+		AlarmMessageList messageList = new AlarmMessageList();
 		addJMSMessage("NAME", "MAJOR", "event", false, null, messageList);
 		addJMSMessage("NAME", "MINOR", "event", false, null, messageList);
 		Assert.assertEquals(2, messageList.getJMSMessageList().size());
@@ -91,8 +89,7 @@ public class JMSAlarmMessageListTest {
 	
 	@Test
 	public void testSimpleMessageSequence() throws JMSException {
-		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
-				.split(";"));
+		AlarmMessageList messageList = new AlarmMessageList();
 		addJMSMessage("NAME", "MINOR", "event", false, null, messageList);
 		addJMSMessage("NAME", "MINOR", "event", false, null, messageList);
 		Assert.assertEquals(1, messageList.getJMSMessageList().size());
@@ -121,8 +118,7 @@ public class JMSAlarmMessageListTest {
 	@Test
 	public void testInvalidMapMessages() throws JMSException {
 		// property TYPE = null
-		JMSAlarmMessageList messageList = new JMSAlarmMessageList(columnNames
-				.split(";"));
+		AlarmMessageList messageList = new AlarmMessageList();
 		addJMSMessage("NAME", "MAJOR", null, false, null, messageList);
 		Assert.assertEquals(0, messageList.getJMSMessageList().size());
 
@@ -134,28 +130,28 @@ public class JMSAlarmMessageListTest {
 		Assert.assertEquals(0, messageList.getJMSMessageList().size());
 
 		ActiveMQMapMessage message2 = null;
-		messageList.addJMSMessage(message2);
+//		messageList.addMessage(message2);
 		Assert.assertEquals(0, messageList.getJMSMessageList().size());
 	}
 
 	private boolean checkForAlarm(String name, String severity, boolean gray,
-			boolean acknowledged, JMSAlarmMessageList messageList) {
+			boolean acknowledged, AlarmMessageList messageList) {
 		return checkForAlarm(name, severity, gray, acknowledged, messageList, null);
 	}
 
 		
 	private boolean checkForAlarm(String name, String severity, boolean gray,
-			boolean acknowledged, JMSAlarmMessageList messageList,
+			boolean acknowledged, AlarmMessageList messageList,
 			String status) {
 		boolean isEqual = false;
-		Vector<JMSMessage> messageList2 = messageList.getJMSMessageList();
-		for (JMSMessage message : messageList2) {
+		Vector<? extends BasicMessage> messageList2 = messageList.getJMSMessageList();
+		for (BasicMessage message : messageList2) {
 			HashMap<String, String> messageHashMap = message.getHashMap();
 			if ((messageHashMap.get("NAME").equalsIgnoreCase(name))
 					&& (messageHashMap.get("SEVERITY")
-							.equalsIgnoreCase(severity))
-					&& (message.isBackgroundColorGray() == gray)
-					&& (message.isAcknowledged() == acknowledged)) {
+							.equalsIgnoreCase(severity))) {
+//					&& (message.isBackgroundColorGray() == gray)) {
+//					&& (message.isAcknowledged() == acknowledged)) {
 				isEqual = true;
 				if (status != null) {
 					if (messageHashMap.get("STATUS").equalsIgnoreCase(status)) {
@@ -178,13 +174,13 @@ public class JMSAlarmMessageListTest {
 		
 	private void addJMSMessage(String name, String severity, String type,
 			boolean acknowledged, String eventtime,
-			JMSAlarmMessageList messageList) throws JMSException {
+			AlarmMessageList messageList) throws JMSException {
 		addJMSMessage(name, severity, type, acknowledged, eventtime, messageList, null);
 	}
 		
 	private void addJMSMessage(String name, String severity, String type,
 			boolean acknowledged, String eventtime,
-			JMSAlarmMessageList messageList, String status) throws JMSException {
+			AlarmMessageList messageList, String status) throws JMSException {
 		ActiveMQMapMessage message = new ActiveMQMapMessage();
 		message.setString("TYPE", type);
 		message.setString("NAME", name);
@@ -200,6 +196,6 @@ public class JMSAlarmMessageListTest {
 		if (status != null) {
 			message.setString("STATUS", status);
 		}
-		messageList.addJMSMessage(message);
+//		messageList.addMessage(message);
 	}
 }

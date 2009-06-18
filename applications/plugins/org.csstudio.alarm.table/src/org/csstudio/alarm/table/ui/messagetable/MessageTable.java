@@ -21,7 +21,10 @@
  */
 package org.csstudio.alarm.table.ui.messagetable;
 
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -45,7 +48,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
- * Holding {@link TableViewer} that displays messages from {@link JMSMessageList}.
+ * Holding {@link TableViewer} that displays messages from {@link MessageList}.
  * Initializes table columns, set context menu and sorter.
  * 
  * @author jhatje
@@ -69,11 +72,13 @@ public class MessageTable {
 
     private boolean sort = false;
 
-    private JMSMessageList _messageList;
+    private MessageList _messageList;
 
     int[] columnWidth;
 
-    public MessageTable(TableViewer tViewer, String[] colNames, JMSMessageList j) {
+    Map<String, SelectionAdapter> _selectionListenerMap = new HashMap<String, SelectionAdapter>();
+
+    public MessageTable(TableViewer tViewer, String[] colNames, MessageList j) {
 
         _tableViewer = tViewer;
         _table = _tableViewer.getTable();
@@ -82,16 +87,15 @@ public class MessageTable {
         _table.setHeaderVisible(true);
         _table.setLinesVisible(true);
 
-        //Get back column names without width
+        // Get back column names without width
         String[] pureColumnNames = setTableColumns(colNames);
 
         _tableViewer.setContentProvider(new MessageTableContentProvider(
                 _tableViewer, _messageList));
-        _tableViewer.setLabelProvider(new MessageTableLabelProvider(pureColumnNames));
 
         _tableViewer.setInput(_messageList);
 
-        initializeMessageTable();
+        initializeMessageTable(pureColumnNames);
 
         new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
     }
@@ -101,9 +105,11 @@ public class MessageTable {
      * 
      * @param colNames
      */
-    void initializeMessageTable() {
+    void initializeMessageTable(String[] pureColumnNames) {
 
-        _tableViewer.setSorter(new MessageTableAddMessageSorter());
+        _tableViewer.setLabelProvider(new MessageTableLabelProvider(
+                pureColumnNames));
+        _tableViewer.setComparator(new MessageTableMessageSorter(_tableViewer));
 
     }
 
@@ -128,21 +134,23 @@ public class MessageTable {
             } else
                 _tableColumn[i].setWidth(100);
             final int j = i;
-            _tableColumn[i].addSelectionListener(new SelectionAdapter() {
+            SelectionAdapter columnSelectionListener = new SelectionAdapter() {
 
-                private String cName = colName;
+                public String cName = colName;
                 private TableColumn column = _tableColumn[j];
-                
+
                 public void widgetSelected(SelectionEvent e) {
                     _table.setSortColumn(column);
                     if (cName.equals(lastSort)) {
                         sort = !sort;
-                        _tableViewer.setSorter(new MessageTableColumnSorter(
-                                cName, sort));
+                        _tableViewer
+                                .setComparator(new MessageTableColumnSorter(
+                                        _tableViewer, cName, sort));
                     } else {
                         sort = false;
-                        _tableViewer.setSorter(new MessageTableColumnSorter(
-                                cName, sort));
+                        _tableViewer
+                                .setComparator(new MessageTableColumnSorter(
+                                        _tableViewer, cName, sort));
                     }
                     if (sort) {
                         _table.setSortDirection(SWT.DOWN);
@@ -151,9 +159,10 @@ public class MessageTable {
                     }
                     lastSort = cName;
                 }
-            });
+            };
+            _tableColumn[i].addSelectionListener(columnSelectionListener);
+            _selectionListenerMap.put(colName, columnSelectionListener);
         }
-        
 
         return columnName;
     }

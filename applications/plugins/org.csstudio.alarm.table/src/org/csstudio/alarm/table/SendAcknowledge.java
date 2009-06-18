@@ -33,7 +33,8 @@ import java.util.Set;
 
 import javax.jms.MapMessage;
 
-import org.csstudio.alarm.table.dataModel.JMSMessage;
+import org.csstudio.alarm.table.dataModel.AlarmMessage;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.security.SecurityFacade;
@@ -53,14 +54,14 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class SendAcknowledge extends Job {
 
-    List<JMSMessage> messagesToSend;
+    List<AlarmMessage> messagesToSend;
     private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * @param msg
      *            JMSMessage to acknowledge
      */
-    private SendAcknowledge(List<JMSMessage> msg) {
+    private SendAcknowledge(List<AlarmMessage> msg) {
         super("Send Ack"); //$NON-NLS-1$
         messagesToSend = msg;
     }
@@ -76,12 +77,12 @@ public class SendAcknowledge extends Job {
      */
     public static SendAcknowledge newFromProperties(
             Collection<Map<String, String>> messages) {
-        List<JMSMessage> messagesToSend = new ArrayList<JMSMessage>(messages
+        List<AlarmMessage> messagesToSend = new ArrayList<AlarmMessage>(messages
                 .size());
         for (Map<String, String> map : messages) {
             Set<String> keys = map.keySet();
             String[] keyArray = keys.toArray(new String[0]);
-            JMSMessage jmsMsg = new JMSMessage(keyArray);
+            AlarmMessage jmsMsg = (AlarmMessage) new BasicMessage(keyArray);
             for (String key : keys) {
                 jmsMsg.setProperty(key, map.get(key));
             }
@@ -92,13 +93,13 @@ public class SendAcknowledge extends Job {
 
     /**
      * Creates a new job for sending acknowledgements from a List of
-     * {@link JMSMessage} to send.
+     * {@link BasicMessage} to send.
      * 
      * @param messages
      *            the List of JMSMessage to send.
      * @return the <code>SendAcknowledge</code> job.
      */
-    public static SendAcknowledge newFromJMSMessage(List<JMSMessage> messages) {
+    public static SendAcknowledge newFromJMSMessage(List<AlarmMessage> messages) {
         return new SendAcknowledge(messages);
     }
 
@@ -114,7 +115,7 @@ public class SendAcknowledge extends Job {
         try {
             // sender.startSender(true);
 
-            for (JMSMessage message : messagesToSend) {
+            for (BasicMessage message : messagesToSend) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
                 java.util.Date currentDate = new java.util.Date();

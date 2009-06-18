@@ -19,29 +19,36 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- /**
+/**
  * 
  */
 package org.csstudio.alarm.table.ui.messagetable;
 
-import org.csstudio.alarm.table.dataModel.JMSMessage;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
-import org.csstudio.alarm.table.dataModel.JMSMessage;
-
+import org.eclipse.jface.viewers.ViewerComparator;
 
 /**
  * Sorter for log table viewer. Insert newest message at the top.
  * 
  * @author jhatje
  */
-public class MessageTableAddMessageSorter extends ViewerSorter {
+public class MessageTableMessageSorter extends ViewerComparator {
 
-	public int compare(Viewer viewer, Object o1, Object o2) {
+    private TableViewer _tableViewer;
 
-		JMSMessage jmsm1 = (JMSMessage) o1;
-		JMSMessage jmsm2 = (JMSMessage) o2;
-				
-		return (collator.compare(jmsm2.getProperty("EVENTTIME"), jmsm1.getProperty("EVENTTIME")));
-	}
+    public MessageTableMessageSorter(TableViewer tableViewer) {
+        super();
+        _tableViewer = tableViewer;
+    }
+
+    public int compare(Viewer viewer, Object o1, Object o2) {
+
+        BasicMessage jmsm1 = (BasicMessage) o1;
+        BasicMessage jmsm2 = (BasicMessage) o2;
+
+        return (super.compare(_tableViewer, jmsm2.getProperty("EVENTTIME"),
+                jmsm1.getProperty("EVENTTIME")));
+    }
 }

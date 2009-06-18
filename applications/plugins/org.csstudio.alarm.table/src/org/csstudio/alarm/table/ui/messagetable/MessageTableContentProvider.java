@@ -23,9 +23,9 @@
 package org.csstudio.alarm.table.ui.messagetable;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.IJMSMessageViewer;
-import org.csstudio.alarm.table.dataModel.JMSMessage;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.IMessageViewer;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -36,23 +36,24 @@ import org.eclipse.swt.widgets.TableItem;
  * @author jhatje
  * 
  */
-public class MessageTableContentProvider implements IJMSMessageViewer,
+public class MessageTableContentProvider implements IMessageViewer,
         IStructuredContentProvider {
 
     private TableViewer _tableViewer;
 
-    private JMSMessageList _messageList;
+    private MessageList _messageList;
 
-    public MessageTableContentProvider(TableViewer tv, JMSMessageList jmsml) {
+    public MessageTableContentProvider(TableViewer tv, MessageList jmsml) {
         _tableViewer = tv;
         _messageList = jmsml;
     }
 
-    public void addJMSMessage(final JMSMessage jmsm) {
+    public void addJMSMessage(final BasicMessage jmsm) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 try {
                     _tableViewer.add(jmsm);
+                    _tableViewer.refresh();
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -62,11 +63,12 @@ public class MessageTableContentProvider implements IJMSMessageViewer,
 
     }
 
-    public void addJMSMessages(final JMSMessage[] jmsm) {
+    public void addJMSMessages(final BasicMessage[] jmsm) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 try {
                     _tableViewer.add(jmsm);
+                    _tableViewer.refresh();
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -75,11 +77,12 @@ public class MessageTableContentProvider implements IJMSMessageViewer,
         });
     }
 
-    public void removeJMSMessage(final JMSMessage jmsm) {
+    public void removeJMSMessage(final BasicMessage jmsm) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 try {
                     _tableViewer.remove(jmsm);
+                    _tableViewer.refresh();
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -88,11 +91,12 @@ public class MessageTableContentProvider implements IJMSMessageViewer,
         });
     }
 
-    public void removeJMSMessage(final JMSMessage[] jmsm) {
+    public void removeJMSMessage(final BasicMessage[] jmsm) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 try {
                     _tableViewer.remove(jmsm);
+                    _tableViewer.refresh();
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -101,19 +105,23 @@ public class MessageTableContentProvider implements IJMSMessageViewer,
         });
     }
 
-    public void updateJMSMessage(final JMSMessage jmsm) {
+    public void updateJMSMessage(final BasicMessage jmsm) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 try {
+                    if (jmsm.getProperty("ACK") == null) {
+                        _tableViewer.update(jmsm, null);
+                    }
                     for (int i = 0; i < _tableViewer.getTable().getItemCount(); i++) {
                         TableItem directTableItem = _tableViewer.getTable()
                                 .getItem(i);
                         Object item = directTableItem.getData();
-                        if (item instanceof JMSMessage) {
-                            JMSMessage messageInTable = (JMSMessage) item;
+                        if (item instanceof BasicMessage) {
+                            BasicMessage messageInTable = (BasicMessage) item;
                             if ((jmsm.getProperty("NAME").equals(messageInTable.getProperty("NAME"))) && 
                                     (jmsm.getProperty("EVENTTIME").equals(messageInTable.getProperty("EVENTTIME")))) {
                                 directTableItem.setChecked(true);
+                                _tableViewer.update(item, new String[] {"ACK"});
                                 break;
                             }
                         }
@@ -132,9 +140,9 @@ public class MessageTableContentProvider implements IJMSMessageViewer,
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput != null)
-            ((JMSMessageList) newInput).addChangeListener(this);
+            ((MessageList) newInput).addChangeListener(this);
         if (oldInput != null)
-            ((JMSMessageList) oldInput).removeChangeListener(this);
+            ((MessageList) oldInput).removeChangeListener(this);
     }
 
     public Object[] getElements(Object inputElement) {

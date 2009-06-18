@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.LogMessageList;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
@@ -77,7 +77,7 @@ public class LogView extends ViewPart {
     /**
      * List of messages displayed by the table on this view.
      */
-    public JMSMessageList _messageList = null;
+    public MessageList _messageList = null;
 
     /**
      * {@link MessageTable} holding a {@link TableViewer} for messages.
@@ -137,7 +137,7 @@ public class LogView extends ViewPart {
                             " of messages in preferences");
             maximumNumberOfMessages = 200; 
         }
-        _messageList = new JMSLogMessageList(_columnNames, maximumNumberOfMessages);
+        _messageList = new LogMessageList(maximumNumberOfMessages);
 
         // Create UI
         GridLayout grid = new GridLayout();

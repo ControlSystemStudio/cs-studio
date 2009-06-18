@@ -28,7 +28,7 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
+import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.jms.SendMapMessage;
@@ -81,7 +81,7 @@ public class AmsVerifyView extends LogView {
                 .getString(AmsVerifyViewPreferenceConstants.TOPIC_SET));
 
         // create the table model
-        _messageList = new JMSLogMessageList(_columnNames, 100);
+        _messageList = new LogMessageList(100);
 
         GridLayout grid = new GridLayout();
         grid.numColumns = 1;

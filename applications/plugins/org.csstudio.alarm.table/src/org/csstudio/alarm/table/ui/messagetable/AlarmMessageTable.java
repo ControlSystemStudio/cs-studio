@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.alarm.table.SendAcknowledge;
-import org.csstudio.alarm.table.dataModel.JMSMessage;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.AlarmMessage;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 /**
  * Difference to {@link MessageTable} for log messages is the listener for
- * acknowledges by the user and the {@link AlarmMessageTableAddMessageSorter}
+ * acknowledges by the user and the {@link AlarmMessageTableMessageSorter}
  * sorter for the table.
  * 
  * @author jhatje
@@ -29,17 +34,37 @@ public class AlarmMessageTable extends MessageTable {
     private static final String SECURITY_ID = "operating";
 
     public AlarmMessageTable(TableViewer viewer, String[] colNames,
-            JMSMessageList j) {
+            MessageList j) {
         super(viewer, colNames, j);
     }
 
     @Override
-    void initializeMessageTable() {
+    void initializeMessageTable(String[] pureColumnNames) {
 
-        _tableViewer.setSorter(new AlarmMessageTableAddMessageSorter());
+        _tableViewer.setLabelProvider(new AlarmMessageTableLabelProvider(
+                pureColumnNames));
+
+        _tableViewer.setComparator(new AlarmMessageTableMessageSorter(
+                _tableViewer));
 
         final boolean canExecute = SecurityFacade.getInstance().canExecute(
                 SECURITY_ID, true);
+
+        TableColumn[] columns = _table.getColumns();
+        for (TableColumn tableColumn : columns) {
+            if (tableColumn.getText().equals("SEVERITY")) {
+                tableColumn.removeSelectionListener(_selectionListenerMap.get("SEVERITY"));
+                tableColumn.addSelectionListener(new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent e) {
+                        _tableViewer
+                                .setComparator(new AlarmMessageTableMessageSorter(
+                                        _tableViewer));
+                        return;
+                    }
+                });
+                break;
+            }
+        }
 
         _table.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -48,10 +73,10 @@ public class AlarmMessageTable extends MessageTable {
                     TableItem ti = (TableItem) event.item;
                     if (canExecute) {
                         if (ti.getChecked()) {
-                            if (ti.getData() instanceof JMSMessage) {
-                                List<JMSMessage> msgList = new ArrayList<JMSMessage>();
-                                msgList.add(((JMSMessage) event.item.getData())
-                                        .copy());
+                            if (ti.getData() instanceof BasicMessage) {
+                                List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
+                                msgList.add(((AlarmMessage) event.item
+                                        .getData()).copy(new AlarmMessage()));
                                 SendAcknowledge sendAck = SendAcknowledge
                                         .newFromJMSMessage(msgList);
                                 sendAck.schedule();

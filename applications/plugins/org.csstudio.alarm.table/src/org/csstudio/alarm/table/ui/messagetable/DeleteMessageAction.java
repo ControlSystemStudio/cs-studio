@@ -21,8 +21,8 @@
  */
 package org.csstudio.alarm.table.ui.messagetable;
 
-import org.csstudio.alarm.table.dataModel.JMSMessage;
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -42,10 +42,10 @@ import org.eclipse.ui.PlatformUI;
 public class DeleteMessageAction extends Action {
     private TableViewer _table;
 
-    private JMSMessageList _messageList;
+    private MessageList _messageList;
 
     public DeleteMessageAction(final TableViewer table,
-            final JMSMessageList msgList) {
+            final MessageList msgList) {
         _messageList = msgList;
         this._table = table;
         setText("Delete");
@@ -68,8 +68,8 @@ public class DeleteMessageAction extends Action {
     public void run() {
         TableItem[] selection = _table.getTable().getSelection();
         for (TableItem tableItem : selection) {
-            if (tableItem.getData() instanceof JMSMessage) {
-                _messageList.removeJMSMessage((JMSMessage) tableItem.getData());
+            if (tableItem.getData() instanceof BasicMessage) {
+                _messageList.removeMessage((BasicMessage) tableItem.getData());
             } else {
                 CentralLogger.getInstance().warn(this,
                         "Unknown object in selection!");

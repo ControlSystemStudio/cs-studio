@@ -27,8 +27,9 @@ import java.util.List;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
-import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
-import org.csstudio.alarm.table.dataModel.JMSMessage;
+import org.csstudio.alarm.table.dataModel.AlarmMessage;
+import org.csstudio.alarm.table.dataModel.AlarmMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
 import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
@@ -91,7 +92,8 @@ public class AlarmView extends LogView {
 		        .getString(AlarmViewPreferenceConstants.TOPIC_SET)); //$NON-NLS-1$
 		
         //Initialize JMS message list
-		_messageList = new JMSAlarmMessageList(_columnNames);
+		_messageList = new AlarmMessageList();
+//		_messageList = new AlarmMessageList(_columnNames);
 		
 		//Create UI
 		GridLayout grid = new GridLayout();
@@ -187,13 +189,13 @@ public class AlarmView extends LogView {
 			public void widgetSelected(SelectionEvent e) {
 
 				TableItem[] items = _tableViewer.getTable().getItems();
-				JMSMessage message = null;
+				AlarmMessage message = null;
 
-				List<JMSMessage> msgList = new ArrayList<JMSMessage>();
+				List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
 				for (TableItem ti : items) {
 
-					if (ti.getData() instanceof JMSMessage) {
-						message = (JMSMessage) ti.getData();
+					if (ti.getData() instanceof AlarmMessage) {
+						message = (AlarmMessage) ti.getData();
 						// ComboBox selection for all messages or for a special
 						// severity
 						if (ackCombo.getItem(ackCombo.getSelectionIndex())
@@ -203,7 +205,7 @@ public class AlarmView extends LogView {
 							// add the message only if it is not yet
 							// acknowledged.
 							if (message.isAcknowledged() == false) {
-								msgList.add(message.copy());
+								msgList.add(message.copy(new AlarmMessage()));
 							}
 						}
 

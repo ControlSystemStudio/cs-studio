@@ -21,7 +21,7 @@
  */
  package org.csstudio.alarm.table.ui.messagetable;
 
-import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -33,9 +33,9 @@ public class DeleteAllMessagesAction extends Action
 {
     private TableViewer _table;
 
-    private JMSMessageList _messageList;
+    private MessageList _messageList;
     
-	public DeleteAllMessagesAction(final TableViewer table, final JMSMessageList msgList)
+	public DeleteAllMessagesAction(final TableViewer table, final MessageList msgList)
 	{
 	    _messageList = msgList;
         this._table = table;
