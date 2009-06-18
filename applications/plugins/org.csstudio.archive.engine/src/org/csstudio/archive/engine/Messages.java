@@ -26,6 +26,7 @@ public class Messages
     final public static String HTTP_Host = "HTTP Server";
     final public static String HTTP_Idletime = "Idle Time";
     final public static String HTTP_InternalState = "Internal State";
+    final public static String HTTP_CurrentValue = "Current Value";
     final public static String HTTP_LastArchivedValue = "Last Archived Value";
     final public static String HTTP_LastWriteTime = "Last Written";
     final public static String HTTP_MainTitle = "Archive Engine";
