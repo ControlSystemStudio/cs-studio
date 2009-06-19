@@ -80,7 +80,7 @@ public interface IProject extends IElement {
 	/**
 	 * Returns the list of records that will be rendered in a db file.
 	 * 
-	 * @deprecated Convenience -> move to util
+	 * @deprecated svw: use a visitor to replace the functionality
 	 * @return the list of records that will be rendered in a db file
 	 */
 	 List<IRecord> getFinalRecords();

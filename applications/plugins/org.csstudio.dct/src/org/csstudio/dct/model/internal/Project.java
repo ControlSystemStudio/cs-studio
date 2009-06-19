@@ -12,6 +12,7 @@ import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
+import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * Represents a project. A project is the root of the hierarchy.
@@ -118,7 +119,11 @@ public final class Project extends Folder implements IProject {
 		
 		for(IFolderMember m : folder.getMembers()) {
 			if(m instanceof IRecord) {
-				result.add((IRecord)m);
+				Boolean disabled = AliasResolutionUtil.getPropertyViaHierarchy(m, "disabled");
+				
+				if(disabled!=null && !disabled) {
+					result.add((IRecord) m);
+				}
 			} else if(m instanceof IInstance) {
 				result.addAll(getFinalRecords((IInstance)m));
 			} else if(m instanceof IFolder) {
@@ -132,7 +137,13 @@ public final class Project extends Folder implements IProject {
 	private List<IRecord> getFinalRecords(IInstance instance) {
 		List<IRecord> result = new ArrayList<IRecord>();
 		
-		result.addAll(instance.getRecords());
+		for(IRecord r : instance.getRecords()) {
+			Boolean disabled = AliasResolutionUtil.getPropertyViaHierarchy(r, "disabled");
+			
+			if(disabled!=null && !disabled) {
+				result.add(r);
+			}
+		}
 
 		for(IInstance i : instance.getInstances()) {
 			result.addAll(getFinalRecords(i));
