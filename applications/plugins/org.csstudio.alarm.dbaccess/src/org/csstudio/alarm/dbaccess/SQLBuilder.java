@@ -38,7 +38,7 @@ public class SQLBuilder {
 	private String commonSQLOrderBy = " order by mc.MESSAGE_ID desc ";
 
 	private String subqueryCondition = "and mc.message_id in (select mc.MESSAGE_ID from message_content mc "
-			+ "where mc.msg_property_type_id = ? and mc.VALUE = ? " + ") ";
+			+ "where mc.msg_property_type_id = ? and mc.VALUE LIKE ? " + ") ";
 
 	/**
 	 * Build a prepared statement from the list of filter items. Analyse message
@@ -107,7 +107,7 @@ public class SQLBuilder {
 		for (FilterItem item : currentFilterSettingList) {
 			if (propertiesInMessageTable.contains(item.getProperty())) {
 				simpleConditionPart = simpleConditionPart + "and m."
-						+ item.getProperty() + " = ? ";
+						+ item.getProperty() + " LIKE ? ";
 				item.set_property("inMessage");
 			} else {
 				subqueryConditionPart = subqueryConditionPart
