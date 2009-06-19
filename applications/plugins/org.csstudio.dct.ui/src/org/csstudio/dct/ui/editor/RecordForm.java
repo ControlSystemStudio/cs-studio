@@ -3,6 +3,7 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.metamodel.PromptGroup;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.Activator;
@@ -43,7 +44,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	private ConvenienceTableWrapper recordFieldTable;
 	private boolean hideDefaults = false;
 	private PromptGroup promptGroup = PromptGroup.ALL;
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -69,7 +70,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(300));
 
 		Composite buttons = new Composite(composite, SWT.None);
-		buttons.setLayout(LayoutUtil.createGridLayout(3,0, 5, 5));
+		buttons.setLayout(LayoutUtil.createGridLayout(3, 0, 5, 5));
 
 		// .. promptgroup filter combo
 		Label l = new Label(buttons, SWT.NONE);
@@ -90,11 +91,11 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		promptGroupCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				promptGroup = (PromptGroup) ((IStructuredSelection)event.getSelection()).getFirstElement();
+				promptGroup = (PromptGroup) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				refreshFilter();
 			}
 		});
-		
+
 		// .. filter button
 		final Button hideDefaultsButton = new Button(buttons, SWT.CHECK);
 		hideDefaultsButton.setLayoutData(LayoutUtil.createGridData());
@@ -149,7 +150,9 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IRecord record) {
 		rows.add(new BeanPropertyTableRowAdapter("Type", record, "type", true));
-		rows.add(new RecordEpicsNameTableRowAdapter(record));
+		rows.add(new BeanPropertyTableRowAdapter("D", record, "disabled", true));
+		rows.add(new HierarchicalBeanPropertyTableRowAdapter("Epics Name", record, "epicsName", false));
+		rows.add(new HierarchicalBeanPropertyTableRowAdapter("Disabled", record, "disabled", false));
 	}
 
 	/**
@@ -201,7 +204,6 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		protected abstract boolean doSelect(IRecord record, String field);
 	}
 
-
 	private final class PromptGroupFilter extends AbstractFilter {
 		private PromptGroup promptGroup;
 
@@ -211,14 +213,21 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		@Override
 		protected boolean doSelect(IRecord record, String field) {
-			if (promptGroup!=null && promptGroup!=PromptGroup.ALL) {
-				return record.getRecordDefinition().getFieldDefinitions(field).getPromptGroup()==promptGroup;
+			if (promptGroup != null && promptGroup != PromptGroup.ALL) {
+				IRecordDefinition recordDefinition = record.getRecordDefinition();
+
+				if (recordDefinition != null) {
+					return recordDefinition.getFieldDefinitions(field).getPromptGroup() == promptGroup;
+				}
+				else {
+					return false;
+				}
 			} else {
 				return true;
 			}
 		}
 	}
-	
+
 	private final class HideDefaultsFilter extends AbstractFilter {
 		private boolean active;
 

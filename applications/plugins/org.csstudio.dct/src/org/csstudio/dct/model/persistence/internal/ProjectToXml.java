@@ -256,6 +256,10 @@ public final class ProjectToXml {
 		String epicsName = record.getEpicsName();
 		element.setAttribute("epicsname", (epicsName != null && epicsName.length() > 0) ? epicsName : "{inherited}");
 		
+		// DISABLED
+		Boolean disabled = record.getDisabled();
+		element.setAttribute("disabled", (disabled != null) ? disabled.toString() : "{inherited}");
+		
 		// TYPE
 		element.setAttribute("type", record.getType());
 		

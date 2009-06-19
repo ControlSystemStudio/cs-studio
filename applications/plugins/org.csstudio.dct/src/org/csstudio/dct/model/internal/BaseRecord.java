@@ -52,7 +52,7 @@ public final class BaseRecord implements IRecord {
 		if (recordDefinition != null) {
 			for (IFieldDefinition fd : recordDefinition.getFieldDefinitions()) {
 
-				if (fd.getPromptGroup()!=null&&PromptGroup.UNDEFINED!=fd.getPromptGroup()) {
+				if (fd.getPromptGroup() != null && PromptGroup.UNDEFINED != fd.getPromptGroup()) {
 					// determine default value
 					String defaultValue = "";
 
@@ -287,4 +287,10 @@ public final class BaseRecord implements IRecord {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Boolean getDisabled() {
+		return false;
+	}
 }

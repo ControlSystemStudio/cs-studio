@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.ExtensionPointUtil;
-import org.csstudio.dct.IoNameService;
+import org.csstudio.dct.ISensorIdService;
 import org.csstudio.dct.PreferenceSettings;
 import org.csstudio.dct.ServiceExtension;
 import org.csstudio.dct.model.IRecord;
@@ -16,34 +16,34 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
- * Implementation for the ioname() function.
+ * Implementation for the sensorid() function.
  * 
  * @author Sven Wende
  * 
  */
-public final class IoNameFieldFunction implements IFieldFunction {
+public final class SensorIdFieldFunction implements IFieldFunction {
 
-	private Map<String, ServiceExtension<IoNameService>> services;
+	private Map<String, ServiceExtension<ISensorIdService>> services;
 
 	/**
 	 * Constructor.
 	 */
-	public IoNameFieldFunction() {
-		services = ExtensionPointUtil.lookupNamingServiceExtensions(DctActivator.EXTPOINT_IO_NAME_SERVICE);
+	public SensorIdFieldFunction() {
+		services = ExtensionPointUtil.lookupNamingServiceExtensions(DctActivator.EXTPOINT_SENSOR_ID_SERVICES);
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
 	public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
-		IoNameService service = null;
+		ISensorIdService service = null;
 
 		if (services.isEmpty()) {
 			throw new IllegalArgumentException("no service registered");
 		} else if (services.size() == 1) {
 			service = services.values().iterator().next().getService();
 		} else {
-			String id = Platform.getPreferencesService().getString(DctActivator.PLUGIN_ID, PreferenceSettings.IO_NAME_SERVICE_ID.name(), "",
+			String id = Platform.getPreferencesService().getString(DctActivator.PLUGIN_ID, PreferenceSettings.SENSOR_ID_SERVICE_ID.name(), "",
 					null);
 
 			if (!StringUtil.hasLength(id) || !services.containsKey(id)) {
@@ -55,7 +55,7 @@ public final class IoNameFieldFunction implements IFieldFunction {
 
 		assert service != null;
 
-		return service.getEpicsAddress(parameters[0], fieldName);
+		return service.getSensorId(parameters[0], fieldName);
 	}
 
 	/**

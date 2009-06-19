@@ -1,7 +1,9 @@
 package org.csstudio.dct.model.internal;
 
+import java.util.Map;
 import java.util.UUID;
 
+import org.csstudio.dct.ExtensionPointUtil;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
 
@@ -29,7 +31,7 @@ public final class RecordFactory {
 	 *            the id for the new record
 	 * @return the record
 	 */
-	public static IRecord createRecord(IProject project, String type, String name, UUID id) {
+	public static Record createRecord(IProject project, String type, String name, UUID id) {
 		assert project != null;
 		assert type != null;
 		assert id != null;
@@ -41,8 +43,17 @@ public final class RecordFactory {
 		}
 
 		Record result = new Record(name, type, id);
+		
+		// link to record definition
 		result.setParentRecord(base);
 
+		// add properties needed for record functions
+		Map<String, String> properties = ExtensionPointUtil.getRecordAttributes();
+		
+		for(String key : properties.keySet()) {
+			result.addProperty(key, properties.get(key));
+		}
+		
 		return result;
 	}
 

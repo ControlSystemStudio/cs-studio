@@ -52,7 +52,7 @@ public final class AliasResolutionUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	static <E> E getPropertyViaHierarchy(IElement element, String propertyName) {
+	public static <E> E getPropertyViaHierarchy(IElement element, String propertyName) {
 		E result = null;
 
 		Stack<IElement> stack = getElementStack(element);

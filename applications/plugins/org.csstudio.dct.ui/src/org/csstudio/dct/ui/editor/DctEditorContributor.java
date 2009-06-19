@@ -1,12 +1,22 @@
 package org.csstudio.dct.ui.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.csstudio.dct.DctActivator;
+import org.csstudio.dct.ExtensionPointUtil;
+import org.csstudio.dct.IRecordFunction;
+import org.csstudio.dct.ServiceExtension;
+import org.csstudio.dct.model.IProject;
+import org.csstudio.dct.model.IRecord;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -23,8 +33,10 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
  * Responsible for the redirection of global actions to the active editor.
  */
 public final class DctEditorContributor extends MultiPageEditorActionBarContributor {
+	private DctEditor activeEditor;
 	private IEditorPart activeEditorPart;
-	private Action sampleAction;
+
+	private List<RecordFunctionAction> recordFunctionActions;
 
 	/**
 	 * Constructor.
@@ -32,6 +44,16 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 	public DctEditorContributor() {
 		super();
 		createActions();
+	}
+
+	private void createActions() {
+		recordFunctionActions = new ArrayList<RecordFunctionAction>();
+		Map<String, ServiceExtension<IRecordFunction>> extensions = ExtensionPointUtil
+				.lookupNamingServiceExtensions(DctActivator.EXTPOINT_RECORD_FUNCTIONS);
+
+		for (final ServiceExtension<IRecordFunction> extension : extensions.values()) {
+			recordFunctionActions.add(new RecordFunctionAction(extension));
+		}
 	}
 
 	/**
@@ -46,6 +68,20 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 	 */
 	protected IAction getAction(ITextEditor editor, String actionID) {
 		return (editor == null ? null : editor.getAction(actionID));
+	}
+
+	@Override
+	public void setActiveEditor(IEditorPart part) {
+		if (part instanceof DctEditor) {
+			activeEditor = (DctEditor) part;
+
+			for (RecordFunctionAction a : recordFunctionActions) {
+				a.setProject(activeEditor.getProject());
+			}
+		} else {
+			activeEditor = null;
+		}
+
 	}
 
 	/**
@@ -82,7 +118,38 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 	public void contributeToMenu(IMenuManager manager) {
 		IMenuManager menu = new MenuManager("Editor &Menu");
 		manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
-		menu.add(sampleAction);
+
+		// actions for record functions
+		for (Action a : recordFunctionActions) {
+			menu.add(a);
+		}
+	}
+
+	private static final class RecordFunctionAction extends Action {
+		private IProject project;
+		private ServiceExtension<IRecordFunction> extension;
+
+		public RecordFunctionAction(ServiceExtension<IRecordFunction> extension) {
+			this.extension = extension;
+			setText(extension.getName());
+			setDescription(extension.getName());
+			setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
+		}
+
+		public void setProject(IProject project) {
+			this.project = project;
+		}
+
+		@Override
+		public void run() {
+			if (project != null) {
+				IRecordFunction function = extension.getService();
+
+				for (IRecord record : project.getFinalRecords()) {
+					function.run(record, record.getFinalProperties());
+				}
+			}
+		}
 	}
 
 	/**
@@ -90,18 +157,6 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 	 */
 	public void contributeToToolBar(IToolBarManager manager) {
 		manager.add(new Separator());
-		manager.add(sampleAction);
 	}
 
-
-	private void createActions() {
-		sampleAction = new Action() {
-			public void run() {
-				MessageDialog.openInformation(null, "Ui Plug-in", "Sample Action Executed");
-			}
-		};
-		sampleAction.setText("Sample Action");
-		sampleAction.setToolTipText("Sample Action tool tip");
-		sampleAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
-	}
 }

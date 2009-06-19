@@ -132,7 +132,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		};
 	}
 
-	private Project getProject() {
+	public Project getProject() {
 		if (project == null) {
 			project = new Project("Project", UUID.randomUUID());
 			project.addMember(new Folder("Test"));

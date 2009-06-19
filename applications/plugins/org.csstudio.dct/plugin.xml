@@ -2,8 +2,10 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="exporters" name="exporters" schema="schema/exporters.exsd"/>
-   <extension-point id="ioNameService" name="IO Name Service" schema="schema/ioNameService.exsd"/>
+   <extension-point id="ionameservices" name="IO Name Services" schema="schema/ionameservices.exsd"/>
    <extension-point id="fieldfunctions" name="fieldfunctions" schema="schema/fieldfunctions.exsd"/>
+   <extension-point id="sensoridservices" name="sensoridservices" schema="schema/sensoridservices.exsd"/>
+   <extension-point id="recordfunctions" name="recordfunctions" schema="schema/recordfunctions.exsd"/>
    <extension
          point="org.csstudio.dct.exporters">
       <exporter
@@ -51,12 +53,42 @@
             name="datalink"
             signature="datalink(&lt;target&gt;, [field]?, [NPP], [NMS])">
       </fieldfunction>
+      <fieldfunction
+            class="org.csstudio.dct.nameresolution.internal.SensorIdFieldFunction"
+            description="Function. Resolves the sensor id of a device."
+            name="sensorid"
+            signature="sensorid(&lt;record&gt;)">
+      </fieldfunction>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.csstudio.dct.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.csstudio.dct.sensoridservices">
+      <sensoridservice
+            class="org.csstudio.dct.DummySensorIdService"
+            id="dummySensorIdService"
+            name="Dummy Sensor Id Service">
+      </sensoridservice>
+   </extension>
+   <extension
+         point="org.csstudio.dct.ionameservices">
+      <ionameservice
+            class="org.csstudio.dct.DummyIoNameService"
+            id="dummyIoNameService"
+            name="Dummy IO Name Service">
+      </ionameservice>
+   </extension>
+   <extension
+         point="org.csstudio.dct.recordfunctions">
+      <recordfunction
+            class="org.csstudio.dct.ArchiveRecordsFunction"
+            id="archiveRecordsFunction"
+            name="Archive Records">
+      </recordfunction>
    </extension>
 
 </plugin>

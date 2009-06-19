@@ -7,7 +7,6 @@ import java.util.List;
  * 
  * @author Sven Wende
  */
-// FIXME: swende: Provide a real implementation
 public interface IoNameService {
 	/**
 	 * Returns the Epics Address for the specified IO name.

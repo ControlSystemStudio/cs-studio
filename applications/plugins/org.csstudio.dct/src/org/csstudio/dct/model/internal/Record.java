@@ -28,10 +28,11 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	private transient IRecord parentRecord;
 	private transient IContainer container;
 	private transient List<IRecord> inheritingRecords = new ArrayList<IRecord>();
+	private Boolean disabled;
 
 	public Record() {
 	}
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -93,8 +94,6 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 		fields.put(key, value);
 	}
 
-
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,7 +114,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	public void setFields(Map<String, String> fields) {
 		this.fields = fields;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -228,6 +227,17 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	 */
 	public boolean isAbstract() {
 		return getRootContainer(getContainer()) instanceof IPrototype;
+	}
+
+	public void setDisabled(Boolean disabled) {
+		this.disabled = disabled;
+	}
+	
+	/**
+	 *{@inheritDoc}
+	 */
+	public Boolean getDisabled() {
+		return disabled;
 	}
 
 	/**
@@ -352,4 +362,5 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 		}
 		return stack;
 	}
+
 }

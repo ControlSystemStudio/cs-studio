@@ -20,13 +20,16 @@ public final class DctActivator extends AbstractUIPlugin {
 	/**
 	 * The ID of the "Exporters" extension point.
 	 */
-	public static final String EXTPOINT_EXPORTERS = PLUGIN_ID
-			+ ".exporters"; //$NON-NLS-1$
+	public static final String EXTPOINT_EXPORTERS = PLUGIN_ID + ".exporters"; //$NON-NLS-1$
 
-	public static final String EXTPOINT_FIELDFUNCTIONS = PLUGIN_ID
-	+ ".fieldfunctions"; //$NON-NLS-1$
+	public static final String EXTPOINT_FIELDFUNCTIONS = PLUGIN_ID + ".fieldfunctions"; //$NON-NLS-1$
 
-	
+	public static final String EXTPOINT_IO_NAME_SERVICE = PLUGIN_ID + ".ionameservices"; //$NON-NLS-1$
+
+	public static final String EXTPOINT_SENSOR_ID_SERVICES = PLUGIN_ID + ".sensoridservices"; //$NON-NLS-1$
+
+	public static final String EXTPOINT_RECORD_FUNCTIONS = PLUGIN_ID + ".recordfunctions"; //$NON-NLS-1$
+
 	// The shared instance
 	private static DctActivator plugin;
 

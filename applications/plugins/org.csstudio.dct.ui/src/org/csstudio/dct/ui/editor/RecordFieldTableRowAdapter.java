@@ -79,25 +79,30 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 	protected String doGetKeyDescription(IRecord record) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(fieldKey);
-		IFieldDefinition def = record.getRecordDefinition().getFieldDefinitions(fieldKey);
 
-		IPreferencesService prefs = Platform.getPreferencesService();
-		
-		if (def != null) {
-			if (StringUtil.hasLength(def.getPrompt()) && prefs.getBoolean(DctActivator.PLUGIN_ID,
-					PreferenceSettings.FIELD_DESCRIPTION_SHOW_DESCRIPTION.name(), false, null)) {
-				sb.append(" - ");
-				sb.append(def.getPrompt());
-			}
-			
-			if (StringUtil.hasLength(def.getInitial()) && prefs.getBoolean(DctActivator.PLUGIN_ID,
-					PreferenceSettings.FIELD_DESCRIPTION_SHOW_INITIAL_VALUE.name(), false, null)) {
-				sb.append(" [");
-				sb.append(def.getInitial());
-				sb.append("]");
+		IRecordDefinition recordDefinition = record.getRecordDefinition();
+
+		if (recordDefinition != null) {
+			IFieldDefinition def = recordDefinition.getFieldDefinitions(fieldKey);
+
+			IPreferencesService prefs = Platform.getPreferencesService();
+
+			if (def != null) {
+				if (StringUtil.hasLength(def.getPrompt())
+						&& prefs.getBoolean(DctActivator.PLUGIN_ID, PreferenceSettings.FIELD_DESCRIPTION_SHOW_DESCRIPTION.name(), false, null)) {
+					sb.append(" - ");
+					sb.append(def.getPrompt());
+				}
+
+				if (StringUtil.hasLength(def.getInitial())
+						&& prefs.getBoolean(DctActivator.PLUGIN_ID, PreferenceSettings.FIELD_DESCRIPTION_SHOW_INITIAL_VALUE.name(), false, null)) {
+					sb.append(" [");
+					sb.append(def.getInitial());
+					sb.append("]");
+				}
 			}
 		}
-		
+
 		return sb.toString();
 	}
 

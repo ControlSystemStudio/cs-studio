@@ -15,11 +15,12 @@ public interface IRecord extends IPropertyContainer, IElement {
 
 	/**
 	 * Returns the EPICs name from the record hierarchy.
+	 * 
 	 * @deprecated Use Util instead.
 	 * @return the EPICs name from the record hierarchy
 	 */
 	String getEpicsNameFromHierarchy();
-	
+
 	/**
 	 * Returns the parent. The parent is the super object, this record derives
 	 * from.
@@ -52,18 +53,28 @@ public interface IRecord extends IPropertyContainer, IElement {
 	boolean isAbstract();
 
 	/**
+	 * Returns true, if this record is disabled. Disabled record will not be
+	 * rendered in the DB output files.
+	 * 
+	 * @return true, if this record is disabled
+	 */
+	Boolean getDisabled();
+
+	/**
 	 * Returns the EPICS name.
 	 * 
 	 * @return the EPICS name
 	 */
 	String getEpicsName();
-	
+
 	/**
 	 * Sets the EPICS name
-	 * @param epicsName the EPICS name
+	 * 
+	 * @param epicsName
+	 *            the EPICS name
 	 */
 	void setEpicsName(String epicsName);
-	
+
 	/**
 	 * Returns the record type.
 	 * 
@@ -170,12 +181,13 @@ public interface IRecord extends IPropertyContainer, IElement {
 	Map<String, String> getFinalFields();
 
 	/**
-	 * Returns the default field values for this record as they are inherited from the database definition (dbd).
+	 * Returns the default field values for this record as they are inherited
+	 * from the database definition (dbd).
 	 * 
 	 * @return default field values
 	 */
 	Map<String, String> getDefaultFields();
-	
+
 	/**
 	 * Returns the record definition which contains the informations stored in a
 	 * database definition file.

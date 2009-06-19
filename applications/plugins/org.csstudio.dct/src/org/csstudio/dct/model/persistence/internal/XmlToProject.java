@@ -377,7 +377,7 @@ public final class XmlToProject {
 		assert xmlRecordElement.getParentElement().getAttributeValue("id") != null;
 		assert modelElements.get(UUID.fromString(xmlRecordElement.getParentElement().getAttributeValue("id"))) != null;
 
-		IRecord record = null;
+		Record record = null;
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the record
@@ -418,12 +418,14 @@ public final class XmlToProject {
 		String epicsName = xmlRecordElement.getAttributeValue("epicsname");
 		record.setEpicsName(recordName.equals("{inherited}") ? null : epicsName);
 		
+		// READ DISABLED
+		String disabled = xmlRecordElement.getAttributeValue("disabled", "{inherited}");
+		record.setDisabled(disabled.equals("{inherited}") ? null : Boolean.valueOf(disabled));
+		
 		// READ FIELD INFORMATION
 		for (Element xmlFieldElement : (List<Element>) xmlRecordElement.getChildren("field")) {
 			String name = xmlFieldElement.getAttributeValue("name");
 			String value = xmlFieldElement.getAttributeValue("value");
-
-			// TODO: Sven Wende: Typing der Felder
 			record.addField(name, value);
 		}
 

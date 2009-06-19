@@ -7,6 +7,7 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.internal.RecordFactory;
@@ -51,7 +52,8 @@ public final class AddRecordAction extends AbstractOutlineAction {
 	
 	@Override
 	protected void afterSelectionChanged(List<IElement> selection, IAction action) {
-		action.setEnabled(getProject().getDatabaseDefinition()!=null);
+		IProject project = getProject();
+		action.setEnabled(project!=null && project.getDatabaseDefinition()!=null);
 	}
 
 }

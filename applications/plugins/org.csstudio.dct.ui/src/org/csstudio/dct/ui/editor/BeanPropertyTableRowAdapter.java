@@ -1,5 +1,7 @@
 package org.csstudio.dct.ui.editor;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
@@ -76,7 +78,29 @@ public final class BeanPropertyTableRowAdapter extends AbstractTableRowAdapter<I
 		Command result = null;
 
 		if (value != null) {
-			result = new ChangeBeanPropertyCommand(delegate, property, value);
+			Object value2set = value;
+			
+			
+			try {
+				// type conversions
+				PropertyUtilsBean util = new PropertyUtilsBean();
+				Class clazz = util.getPropertyDescriptor(delegate, property).getPropertyType();
+
+				if(clazz == Boolean.class || "boolean".equalsIgnoreCase(clazz.getName())) {
+					value2set = Boolean.parseBoolean(value.toString());
+				} else if(clazz == Integer.class || "int".equalsIgnoreCase(clazz.getName())) {
+					value2set = Integer.parseInt(value.toString());
+				} else if (clazz == Double.class || "double".equalsIgnoreCase(clazz.getName())) {
+					value2set = Double.parseDouble(value.toString());
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			
+			result = new ChangeBeanPropertyCommand(delegate, property, value2set);
 		}
 
 		return result;

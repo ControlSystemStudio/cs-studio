@@ -26,7 +26,7 @@ public final class ModelAdapterFactory implements IAdapterFactory {
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		Object adapter = null;
 
-		if (adapterType == IWorkbenchAdapter.class || adapter == IWorkbenchAdapter2.class) {
+		if (adapterType == IWorkbenchAdapter.class || adapterType == IWorkbenchAdapter2.class) {
 			if (adaptableObject instanceof IProject) {
 				adapter = new ProjectWorkbenchAdapter();
 			} else if (adaptableObject instanceof IFolder) {

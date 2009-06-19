@@ -3,13 +3,10 @@ package org.csstudio.dct.model.persistence.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
+import org.csstudio.dct.ExtensionPointUtil;
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
 import org.csstudio.dct.metamodel.PromptGroup;
 import org.csstudio.dct.metamodel.internal.Choice;
@@ -19,6 +16,7 @@ import org.csstudio.dct.metamodel.internal.MenuDefinition;
 import org.csstudio.dct.metamodel.internal.RecordDefinition;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.persistence.IPersistenceService;
+import org.csstudio.dct.model.visitors.RecordFunctionPropertiesVisitor;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -69,6 +67,8 @@ public final class PersistenceService implements IPersistenceService {
 
 		Project p = xmlToProject.getProject();
 
+		p.accept(new RecordFunctionPropertiesVisitor(ExtensionPointUtil.getRecordAttributes()));
+
 		return p;
 	}
 
@@ -91,7 +91,7 @@ public final class PersistenceService implements IPersistenceService {
 			if (result == null) {
 				IFile workspaceFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
 
-				if (workspaceFile != null && workspaceFile.getLocation()!=null) {
+				if (workspaceFile != null && workspaceFile.getLocation() != null) {
 					result = doLoadDatabaseDefinition(workspaceFile.getLocation().toOSString());
 				}
 			}
@@ -160,8 +160,8 @@ public final class PersistenceService implements IPersistenceService {
 			databaseDefinition.addRecordDefinition(recordDefinition);
 
 			Iterator<DBDFieldData> it2 = recordData.getFieldsV().iterator();
-			
-			while(it2.hasNext()) {
+
+			while (it2.hasNext()) {
 				DBDFieldData fieldData = it2.next();
 				String fieldName = fieldData.getName();
 				CentralLogger.getInstance().info(null, fieldName);
@@ -170,7 +170,7 @@ public final class PersistenceService implements IPersistenceService {
 
 				// .. prompt group
 				fieldDefinition.setPromptGroup(PromptGroup.findByType(fieldData.getGUI_type()));
-				
+
 				// .. prompt
 				fieldDefinition.setPrompt(fieldData.getPrompt_value());
 
@@ -183,14 +183,14 @@ public final class PersistenceService implements IPersistenceService {
 					if (menuData != null) {
 						MenuDefinition menuDefinition = new MenuDefinition(menuName);
 
-						for(Choice c : menuData.getChoicesForCssDct()) {
+						for (Choice c : menuData.getChoicesForCssDct()) {
 							menuDefinition.addChoice(c);
 						}
 
 						fieldDefinition.setMenuDefinition(menuDefinition);
 					}
 				}
-				
+
 				// .. initial value
 				fieldDefinition.setInitial(fieldData.getInit_value());
 

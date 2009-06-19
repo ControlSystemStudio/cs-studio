@@ -107,7 +107,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
 	 * @return a background color
 	 */
 	protected RGB doGetForeground(E element) {
-		return new RGB(0, 255, 255);
+		return new RGB(0, 0, 0);
 	}
 
 	/**
