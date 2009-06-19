@@ -171,12 +171,7 @@ public class RelatedDisplayItem extends WidgetPart {
 
         // Set the Resource
         if (_name != null) {
-            if (_name.startsWith("/applic/graphic")) {
-                _name =_name.substring(15);
-            }
-            if (_name.startsWith("/graphic")) {
-                _name =_name.substring(8);
-            }
+            _name = ADLHelper.cleanFilePath(_name);
             IPath path = new Path(_path);
             if (!_name.toLowerCase().endsWith(".css-sds")) {
                 _name = _name.concat(".css-sds");

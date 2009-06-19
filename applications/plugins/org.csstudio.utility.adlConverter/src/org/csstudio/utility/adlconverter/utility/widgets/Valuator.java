@@ -80,6 +80,7 @@ public class Valuator extends Widget {
         _widget.setPropertyValue(SimpleSliderModel.PROP_VALUE, 50);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix, Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.setOutputChannel(new ParameterDescriptor("$channel$"+postfix, Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_VALUE, dynamicsDescriptor );
         _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
     }

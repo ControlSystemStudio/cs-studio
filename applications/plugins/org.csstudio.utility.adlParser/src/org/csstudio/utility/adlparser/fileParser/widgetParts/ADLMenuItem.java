@@ -35,6 +35,7 @@ import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -142,6 +143,7 @@ public class ADLMenuItem extends WidgetPart{
             // Set the Resource
             if(_path!=null){
                 IPath path = new Path(_path);
+                _command = ADLHelper.cleanFilePath(_command);
                 path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 action.getProperty(OpenDisplayActionModel.PROP_RESOURCE)
                 .setPropertyValue(path);//TODO: set the correct Path 

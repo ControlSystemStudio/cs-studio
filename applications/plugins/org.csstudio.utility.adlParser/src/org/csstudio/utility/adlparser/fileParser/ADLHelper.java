@@ -285,5 +285,18 @@ public final class ADLHelper {
         }
 
     }
+    
+    /**
+     * Some paths in adl files starts with /applic/graphic that is an error
+     * in SDS.
+     * 
+     * @param path
+     * @return
+     */
+    public static String cleanFilePath(String path) {
+        path = path.replace("/applic/graphic", "");
+        path = path.replace("/graphic", "");
+        return path;
+    }
 
 }

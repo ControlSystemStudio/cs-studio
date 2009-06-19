@@ -121,6 +121,7 @@ public class Textinput extends Widget {
 
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix,Double.class)); //$NON-NLS-1$
+        dynamicsDescriptor.setOutputChannel(new ParameterDescriptor("$channel$"+postfix,Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(TextInputModel.PROP_INPUT_TEXT, dynamicsDescriptor);
 //        <property type="sds.option" id="border.style">
 //        <option id="5" />
