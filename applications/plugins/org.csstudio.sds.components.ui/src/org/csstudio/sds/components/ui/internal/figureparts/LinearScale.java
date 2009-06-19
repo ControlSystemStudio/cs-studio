@@ -187,6 +187,41 @@ public class LinearScale extends AbstractScale {
 		}		
 	}
 
+	 /**
+	 * Get the corresponding value on the position of the scale. 
+	 * @param the position.
+	 * @param true if the position is relative to the left/bottom bound of the scale; 
+	 * False if it is the absolute position.
+	 * @return the value corresponding to the position.
+	 */
+	public double getPositionValue(int position, boolean relative) {
+		updateTick();
+		//coerce to range
+		double min = getRange().getLower();
+        double max = getRange().getUpper();
+        int pixelsToStart;
+        double value;
+        if(relative){
+        	if(isHorizontal())
+        		pixelsToStart = position;
+        	else
+        		pixelsToStart = length - position;
+        } else {
+        	if(isHorizontal())
+        		pixelsToStart = position - bounds.x;
+        	else
+        		pixelsToStart = length + bounds.y - position;
+        }
+        	
+        if(isLogScaleEnabled())
+        	value = Math.pow(10, 
+        			(pixelsToStart - margin)*(Math.log10(max)-Math.log10(min))/(length - 2*margin) + Math.log10(min));
+        else
+        	value = (pixelsToStart - margin)*(max - min)/(length - 2*margin) + min;
+        
+		return value;
+	}
+	
 
     public boolean isHorizontal() {
 		return getOrientation() == Orientation.HORIZONTAL;
