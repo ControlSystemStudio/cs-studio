@@ -23,6 +23,7 @@
 
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -249,6 +250,42 @@ public final class CustomMediaFactory {
 
 		return _imageRegistry.get(key);
 	}
+	
+	/**
+	 * Load the <code>Image</code> from the given path in the given plugin.
+	 * Usually, this is the image found via the the given plug-in
+     * relative path. But this implementation also supports a hack for testing:
+     * If no plugin is running, because for example this is an SWT-only
+     * test, the path is used as is, i.e. relative to the current
+     * directory.
+	 * 
+	 * @param plugin 
+	 * 			  The plugin that contains the requested image.
+	 * @param pluginId
+	 *            The id of the plugin.
+	 * @param relativePath
+	 *            The image's relative path to the root of the plugin.
+	 * @return The <code>Image</code> from the given path in the given plugin.
+	 */
+	public Image getImageFromPlugin(final Plugin plugin, final String pluginId,
+			final String relativePath) {
+		String key = pluginId + "." + relativePath; //$NON-NLS-1$	
+		// does image exist		
+		if (_imageRegistry.get(key) == null) {
+			if(plugin != null){					
+					ImageDescriptor descr = AbstractUIPlugin.imageDescriptorFromPlugin(
+							pluginId, relativePath);
+					_imageRegistry.put(key, descr);				
+			}else{
+				final Display display = Display.getCurrent();
+	            final Image img = new Image(display, relativePath);        
+	            _imageRegistry.put(key, ImageDescriptor.createFromImage(img));
+			}
+		}
+
+		return _imageRegistry.get(key);
+	}
+	
 
 	/**
 	 * Load the <code>ImageDescriptor</code> from the given path in the given
