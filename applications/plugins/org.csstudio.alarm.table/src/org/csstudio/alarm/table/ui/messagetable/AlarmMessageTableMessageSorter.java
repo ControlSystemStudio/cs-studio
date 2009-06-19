@@ -59,7 +59,7 @@ public class AlarmMessageTableMessageSorter extends ViewerComparator {
         if (alarmMsg2.isAcknowledged())
             acknowledgedMsg2 = 1;
         if (!acknowledgedMsg1.equals(acknowledgedMsg2))
-            return (acknowledgedMsg1 - acknowledgedMsg2);
+            return (acknowledgedMsg2 - acknowledgedMsg1);
 
         return (super.compare(_tableViewer, alarmMsg1.getProperty("EVENTTIME"),
                 alarmMsg2.getProperty("EVENTTIME")));

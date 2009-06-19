@@ -51,14 +51,18 @@ public class AlarmMessageTable extends MessageTable {
                 SECURITY_ID, true);
 
         TableColumn[] columns = _table.getColumns();
-        for (TableColumn tableColumn : columns) {
+        for (final TableColumn tableColumn : columns) {
             if (tableColumn.getText().equals("SEVERITY")) {
                 tableColumn.removeSelectionListener(_selectionListenerMap.get("SEVERITY"));
                 tableColumn.addSelectionListener(new SelectionAdapter() {
                     public void widgetSelected(SelectionEvent e) {
+                        _table.setSortColumn(tableColumn);
                         _tableViewer
                                 .setComparator(new AlarmMessageTableMessageSorter(
                                         _tableViewer));
+                        _table.setSortDirection(SWT.DOWN);
+                        //sorting sets the checked status of table items to false. So we have to reset it the previous checked status.
+                        resetCheckedStatus();
                         return;
                     }
                 });
@@ -107,6 +111,19 @@ public class AlarmMessageTable extends MessageTable {
                 }
             }
         });
-
+    }
+    
+    protected void resetCheckedStatus() {
+        TableItem[] tableItems = _table.getItems();
+        for (TableItem tableItem : tableItems) {
+            Object item = tableItem.getData();
+            if (item instanceof BasicMessage) {
+                BasicMessage messageItem = (BasicMessage) item;
+                if (messageItem.getProperty("ACK").equalsIgnoreCase("TRUE")) {
+                    tableItem.setChecked(true);
+                }
+            }
+        }
+        _tableViewer.refresh();
     }
 }

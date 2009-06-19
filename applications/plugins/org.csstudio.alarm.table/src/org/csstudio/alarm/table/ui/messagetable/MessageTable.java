@@ -24,6 +24,7 @@ package org.csstudio.alarm.table.ui.messagetable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.eclipse.jface.action.IMenuListener;
@@ -158,6 +159,8 @@ public class MessageTable {
                         _table.setSortDirection(SWT.UP);
                     }
                     lastSort = cName;
+                    //sorting sets the checked status of table items to false. So we have to reset it the previous checked status.
+                    resetCheckedStatus();
                 }
             };
             _tableColumn[i].addSelectionListener(columnSelectionListener);
@@ -167,6 +170,20 @@ public class MessageTable {
         return columnName;
     }
 
+    protected void resetCheckedStatus() {
+        TableItem[] tableItems = _table.getItems();
+        for (TableItem tableItem : tableItems) {
+            Object item = tableItem.getData();
+            if (item instanceof BasicMessage) {
+                BasicMessage messageItem = (BasicMessage) item;
+                if (messageItem.getProperty("ACK").equalsIgnoreCase("TRUE")) {
+                    tableItem.setChecked(true);
+                }
+            }
+        }
+        _tableViewer.refresh();
+    }
+    
     public void makeContextMenu(IWorkbenchPartSite site) {
         MenuManager manager = new MenuManager("#PopupMenu");
         Control contr = _tableViewer.getControl();
