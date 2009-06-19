@@ -150,7 +150,6 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	@Override
 	protected void doAddCommonRows(List<ITableRow> rows, IRecord record) {
 		rows.add(new BeanPropertyTableRowAdapter("Type", record, "type", true));
-		rows.add(new BeanPropertyTableRowAdapter("D", record, "disabled", true));
 		rows.add(new HierarchicalBeanPropertyTableRowAdapter("Epics Name", record, "epicsName", false));
 		rows.add(new HierarchicalBeanPropertyTableRowAdapter("Disabled", record, "disabled", false));
 	}
