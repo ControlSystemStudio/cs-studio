@@ -85,7 +85,6 @@ public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 
 			bos.close();
 		} catch (IOException e) {
-			e.printStackTrace();
 			CentralLogger.getInstance().debug(this, e);
 		}
 
@@ -106,7 +105,6 @@ public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 
 				return result;
 			} catch (Exception e) {
-				e.printStackTrace();
 				CentralLogger.getInstance().debug(this, e);
 				return null;
 			}

@@ -11,6 +11,7 @@ import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.AddRecordCommand;
+import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
 import org.csstudio.dct.model.commands.ChangeFieldValueCommand;
 import org.csstudio.dct.model.internal.Record;
 import org.csstudio.dct.model.internal.RecordFactory;
@@ -35,6 +36,10 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
 
 					IRecord nr = RecordFactory.createRecord(project, r.getType(), r.getName(), UUID.randomUUID());
 
+					cmd.add(new ChangeBeanPropertyCommand(nr, "epicsName", r.getEpicsName()));
+					cmd.add(new ChangeBeanPropertyCommand(nr, "disabled", r.getDisabled()));
+					cmd.add(new ChangeBeanPropertyCommand(nr, "name", r.getName()));
+					
 					cmd.add(new AddRecordCommand((IContainer) c, nr));
 
 					for (String key : r.getFields().keySet()) {
@@ -57,6 +62,9 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
 
 			Record rcopy = new Record(r.getName(), r.getType(), UUID.randomUUID());
 			rcopy.setFields(new HashMap<String, String>(r.getFields()));
+			rcopy.setDisabled(r.getDisabled());
+			rcopy.setEpicsName(r.getEpicsName());
+			rcopy.setName(r.getName());
 			copies.add(rcopy);
 		}
 
