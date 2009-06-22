@@ -13,6 +13,7 @@ package de.desy.language.snl.diagram.ui.parts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -78,7 +79,34 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		PolylineConnection connection = new PolylineConnection();
+		PolylineConnection connection = new PolylineConnection() {
+//			@Override
+//			public boolean equals(Object obj) {
+//				boolean result = false;
+//				if (obj instanceof PolylineConnection) {
+//					PolylineConnection that = (PolylineConnection)obj;
+//					
+//					IFigure thisTooltip = this.getToolTip();
+//					IFigure thatTooltip = that.getToolTip();
+//					
+//					System.out.println(".equals()");
+//					System.out.println("this.getSourceAnchor(): "+this.getSourceAnchor());
+//					System.out.println("that.getSourceAnchor(): "+that.getSourceAnchor());
+//					System.out.println("this.getTargetAnchor(): "+this.getTargetAnchor());
+//					System.out.println("that.getTargetAnchor(): "+that.getTargetAnchor());
+//					System.out.println("thisTooltip " + thisTooltip);
+//					System.out.println("thatTooltip " + thatTooltip);
+//					
+//					if (this.getSourceAnchor() != null && this.getSourceAnchor().equals(that.getSourceAnchor()) &&
+//							this.getTargetAnchor() != null && this.getTargetAnchor().equals(that.getTargetAnchor()) &&
+//							thisTooltip != null && thisTooltip.equals(thatTooltip)) {
+//						result = true;
+//					}
+//					System.out.println(".equals() "+result);
+//				}
+//				return result;
+//			}
+		};
 		connection.setTargetDecoration(new PolygonDecoration()); // arrow at
 																	// target
 																	// endpoint
@@ -88,6 +116,10 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 		
 		
 		final Label midLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
+			
+		final Label tooltipLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
+		tooltipLabel.setBackgroundColor(ColorConstants.tooltipBackground);
+		connection.setToolTip(tooltipLabel);
 		
 		ConnectionLocator locator = new MidConnectionRouteLocator(connection);
 		locator.setRelativePosition(PositionConstants.SOUTH);

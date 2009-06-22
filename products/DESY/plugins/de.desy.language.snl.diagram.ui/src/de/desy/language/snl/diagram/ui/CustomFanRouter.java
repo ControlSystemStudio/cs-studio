@@ -1,19 +1,21 @@
 package de.desy.language.snl.diagram.ui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.draw2d.AutomaticRouter;
 import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionAnchor;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 
 public class CustomFanRouter extends AutomaticRouter {
-	
+
 	private class MapKey {
 		private final ConnectionAnchor _source;
 		private final ConnectionAnchor _target;
@@ -21,7 +23,7 @@ public class CustomFanRouter extends AutomaticRouter {
 		public MapKey(ConnectionAnchor source, ConnectionAnchor target) {
 			assert source != null : "source != null";
 			assert target != null : "target != null";
-			
+
 			_source = source;
 			_target = target;
 		}
@@ -73,46 +75,69 @@ public class CustomFanRouter extends AutomaticRouter {
 		private CustomFanRouter getOuterType() {
 			return CustomFanRouter.this;
 		}
-		
+
 	}
 
 	private int _separation = 10;
 	private final Map<MapKey, List<Connection>> _connectionMap;
-	
+
 	public CustomFanRouter() {
 		_connectionMap = new HashMap<MapKey, List<Connection>>();
 	}
-	
+
 	@Override
 	public void route(Connection conn) {
+		cleanMap();
 		ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
 		ConnectionAnchor targetAnchor = conn.getTargetAnchor();
-		
-		MapKey key = new MapKey(sourceAnchor, targetAnchor);
-		MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
-		
-		if (_connectionMap.containsKey(key) || _connectionMap.containsKey(reverseKey)) {
-			List<Connection> connections = _connectionMap.get(key);
-			if (!connections.contains(conn)) {
-				connections.add(conn);
+
+		if (sourceAnchor != null && targetAnchor != null) {
+			MapKey key = new MapKey(sourceAnchor, targetAnchor);
+			MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
+
+			if (_connectionMap.containsKey(key)
+					|| _connectionMap.containsKey(reverseKey)) {
+				List<Connection> connections = _connectionMap.get(key);
+				if (!connections.contains(conn)) {
+					connections.add(conn);
+				}
+				int index = connections.indexOf(conn);
+				handleCollision(conn, index);
+			} else {
+				List<Connection> list = new LinkedList<Connection>();
+				list.add(conn);
+				List<Connection> reverseList = new LinkedList<Connection>();
+				reverseList.add(conn);
+				_connectionMap.put(key, list);
+				_connectionMap.put(reverseKey, reverseList);
 			}
-			int index = connections.indexOf(conn);
-			handleCollision(conn, index);
-		} else {
-			List<Connection> list = new LinkedList<Connection>();
-			list.add(conn);
-			List<Connection> reverseList = new LinkedList<Connection>();
-			reverseList.add(conn);
-			_connectionMap.put(key, list);
-			_connectionMap.put(reverseKey, reverseList);
 		}
-		
+
 		super.route(conn);
 	}
 	
+	
+	private void cleanMap() {
+		Set<MapKey> iterkeySet = new HashSet<MapKey>(_connectionMap.keySet());
+		for (MapKey key : iterkeySet) {
+			List<Connection> list = _connectionMap.get(key);
+			List<Connection> iterList = new ArrayList<Connection>(list);
+			for (Connection conn : iterList) {
+				ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
+				ConnectionAnchor targetAnchor = conn.getTargetAnchor();
+				if (sourceAnchor == null || targetAnchor == null) {
+					list.remove(conn);
+				}
+			}
+			if (list.isEmpty()) {
+				_connectionMap.remove(key);
+			}
+		}
+	}
+
 	@Override
 	protected void handleCollision(PointList list, int index) {
-		//nothing to do
+		// nothing to do
 	}
 
 	protected void handleCollision(Connection conn, int index) {
@@ -152,13 +177,13 @@ public class CustomFanRouter extends AutomaticRouter {
 		if (orientationRightUp) {
 			newFirstX = firstPoint.x + firstAdjacentLeg;
 			newFirstY = firstPoint.y - firstOppositeLeg;
-			
+
 			newLastX = lastPoint.x - lastAdjacentLeg;
 			newLastY = lastPoint.y + lastOppositeLeg;
 		} else {
 			newFirstX = firstPoint.x - firstAdjacentLeg;
 			newFirstY = firstPoint.y + firstOppositeLeg;
-			
+
 			newLastX = lastPoint.x + lastAdjacentLeg;
 			newLastY = lastPoint.y - lastOppositeLeg;
 		}
