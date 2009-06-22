@@ -145,12 +145,12 @@ public class Bargraph extends Widget {
 
         _widget.setPropertyValue(BargraphModel.PROP_MIN, 0.0);
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR",Double.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMin]",Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(BargraphModel.PROP_MIN, dynamicsDescriptor );
 
         _widget.setPropertyValue(BargraphModel.PROP_MAX, 10.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HOPR",Double.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMax]",Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(BargraphModel.PROP_MAX, dynamicsDescriptor );
 
         String postfix = ""; //$NON-NLS-1$
@@ -174,14 +174,14 @@ public class Bargraph extends Widget {
         _widget.setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR, ADLHelper.getRGB(getMonitor().getClr()));
         dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_foreground"); //$NON-NLS-1$
         ADLHelper.setConnectionState(dynamicsDescriptor);
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[severity]",Double.class)); //$NON-NLS-1$
         
         _widget.setDynamicsDescriptor(BargraphModel.PROP_DEFAULT_FILL_COLOR, dynamicsDescriptor);
 
         _widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR, ADLHelper.getRGB(getMonitor().getBclr()));
         dynamicsDescriptor = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
         ADLHelper.setConnectionState(dynamicsDescriptor);
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[severity]",Double.class)); //$NON-NLS-1$
         
         _widget.setDynamicsDescriptor(BargraphModel.PROP_FILLBACKGROUND_COLOR, dynamicsDescriptor);
 
@@ -203,11 +203,11 @@ public class Bargraph extends Widget {
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         String temp = id.toUpperCase();
         if(temp.equals("HI")){
-            temp="HIGH";
+            temp="[warningMin]";
         }else if(temp.equals("LO")){
-            temp="LOW";
+            temp="[warningMax]";
         }
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$."+temp,Double.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+temp,Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(id+"Level", dynamicsDescriptor ); //$NON-NLS-1$
 //      <property type="sds.color" id="loColor">
 //          <color red="255" green="100" blue="100" />
