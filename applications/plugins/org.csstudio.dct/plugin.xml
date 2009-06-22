@@ -75,14 +75,6 @@
       </sensoridservice>
    </extension>
    <extension
-         point="org.csstudio.dct.ionameservices">
-      <ionameservice
-            class="org.csstudio.dct.DummyIoNameService"
-            id="dummyIoNameService"
-            name="Dummy IO Name Service">
-      </ionameservice>
-   </extension>
-   <extension
          point="org.csstudio.dct.recordfunctions">
       <recordfunction
             class="org.csstudio.dct.ArchiveRecordsFunction"
