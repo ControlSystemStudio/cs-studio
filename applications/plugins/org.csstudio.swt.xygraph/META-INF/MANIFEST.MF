@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XYGraph Plug-in
+Bundle-SymbolicName: org.csstudio.swt.xygraph
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.swt.xygraph.Activator
+Bundle-Vendor: Xihui Chen
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.draw2d;bundle-version="3.4.2",
+ org.junit4
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.swt.xygraph.dataprovider,
+ org.csstudio.swt.xygraph.figures,
+ org.csstudio.swt.xygraph.linearscale
