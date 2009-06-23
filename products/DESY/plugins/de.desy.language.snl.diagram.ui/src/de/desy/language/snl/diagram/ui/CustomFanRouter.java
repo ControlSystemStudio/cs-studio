@@ -14,6 +14,12 @@ import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 
+/**
+ * Customized router for {@link Connection}s.
+ * 
+ * @author Kai Meyer, Sebastian Middeke (C1 WPS)
+ * 
+ */
 public class CustomFanRouter extends AutomaticRouter {
 
 	/**
@@ -37,13 +43,17 @@ public class CustomFanRouter extends AutomaticRouter {
 
 		/**
 		 * Constructor.
-		 * @param source The source {@link ConnectionAnchor}
-		 * @param target The Target {@link ConnectionAnchor}
+		 * 
+		 * @param source
+		 *            The source {@link ConnectionAnchor}
+		 * @param target
+		 *            The Target {@link ConnectionAnchor}
 		 * 
 		 * @requires source != null
 		 * @requires target != null
 		 */
-		public MapKey(ConnectionAnchor source, ConnectionAnchor target) {
+		public MapKey(final ConnectionAnchor source,
+				final ConnectionAnchor target) {
 			assert source != null : "source != null";
 			assert target != null : "target != null";
 
@@ -78,14 +88,14 @@ public class CustomFanRouter extends AutomaticRouter {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals(final Object obj) {
 			if (this == obj)
 				return true;
 			if (obj == null)
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			MapKey other = (MapKey) obj;
+			final MapKey other = (MapKey) obj;
 			if (!getOuterType().equals(other.getOuterType()))
 				return false;
 			if (_source == null) {
@@ -125,29 +135,33 @@ public class CustomFanRouter extends AutomaticRouter {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @requires conn != null
 	 */
 	@Override
-	public void route(Connection conn) {
+	public void route(final Connection conn) {
+		assert conn != null : "conn != null";
+
 		cleanMap();
-		ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
-		ConnectionAnchor targetAnchor = conn.getTargetAnchor();
+		final ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
+		final ConnectionAnchor targetAnchor = conn.getTargetAnchor();
 
 		if (sourceAnchor != null && targetAnchor != null) {
-			MapKey key = new MapKey(sourceAnchor, targetAnchor);
-			MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
+			final MapKey key = new MapKey(sourceAnchor, targetAnchor);
+			final MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
 
 			if (_connectionMap.containsKey(key)
 					|| _connectionMap.containsKey(reverseKey)) {
-				List<Connection> connections = _connectionMap.get(key);
+				final List<Connection> connections = _connectionMap.get(key);
 				if (!connections.contains(conn)) {
 					connections.add(conn);
 				}
-				int index = connections.indexOf(conn);
+				final int index = connections.indexOf(conn);
 				handleCollision(conn, index);
 			} else {
-				List<Connection> list = new LinkedList<Connection>();
+				final List<Connection> list = new LinkedList<Connection>();
 				list.add(conn);
-				List<Connection> reverseList = new LinkedList<Connection>();
+				final List<Connection> reverseList = new LinkedList<Connection>();
 				reverseList.add(conn);
 				_connectionMap.put(key, list);
 				_connectionMap.put(reverseKey, reverseList);
@@ -158,16 +172,18 @@ public class CustomFanRouter extends AutomaticRouter {
 	}
 
 	/**
-	 * Removes all {@link Connection}s with no target or source {@link ConnectionAnchor} from the {@link Map}.
+	 * Removes all {@link Connection}s with no target or source
+	 * {@link ConnectionAnchor} from the {@link Map}.
 	 */
 	private void cleanMap() {
-		Set<MapKey> iterkeySet = new HashSet<MapKey>(_connectionMap.keySet());
-		for (MapKey key : iterkeySet) {
-			List<Connection> list = _connectionMap.get(key);
-			List<Connection> iterList = new ArrayList<Connection>(list);
-			for (Connection conn : iterList) {
-				ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
-				ConnectionAnchor targetAnchor = conn.getTargetAnchor();
+		final Set<MapKey> iterkeySet = new HashSet<MapKey>(_connectionMap
+				.keySet());
+		for (final MapKey key : iterkeySet) {
+			final List<Connection> list = _connectionMap.get(key);
+			final List<Connection> iterList = new ArrayList<Connection>(list);
+			for (final Connection conn : iterList) {
+				final ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
+				final ConnectionAnchor targetAnchor = conn.getTargetAnchor();
 				if (sourceAnchor == null || targetAnchor == null) {
 					list.remove(conn);
 				}
@@ -182,19 +198,27 @@ public class CustomFanRouter extends AutomaticRouter {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void handleCollision(PointList list, int index) {
+	protected void handleCollision(final PointList list, final int index) {
 		// nothing to do
 	}
 
 	/**
 	 * Handles the re-routing of a {@link Connection}.
-	 * @param conn The {@link Connection}
-	 * @param index The index of the connection between its source and target 
+	 * 
+	 * @param conn
+	 *            The {@link Connection}
+	 * @param index
+	 *            The index of the connection between its source and target
+	 * @requires conn != null;
+	 * @requires index >= 0
 	 */
-	protected void handleCollision(Connection conn, int index) {
-		PointList list = conn.getPoints();
-		Point firstPoint = list.getFirstPoint();
-		Point lastPoint = list.getLastPoint();
+	protected void handleCollision(final Connection conn, final int index) {
+		assert conn != null : "conn != null";
+		assert index >= 0 : "index >= 0";
+
+		final PointList list = conn.getPoints();
+		final Point firstPoint = list.getFirstPoint();
+		final Point lastPoint = list.getLastPoint();
 
 		if (index != 0) {
 			list.removeAllPoints();
@@ -203,28 +227,40 @@ public class CustomFanRouter extends AutomaticRouter {
 	}
 
 	/**
-	 * Calculates the points necessary for the re-routing of the {@link Connection}.
-	 * @param firstPoint The start point of the {@link Connection}
-	 * @param lastPoint The end point of the {@link Connection}
-	 * @param index The index of the connection between its source and target
+	 * Calculates the points necessary for the re-routing of the
+	 * {@link Connection}.
+	 * 
+	 * @param firstPoint
+	 *            The start point of the {@link Connection}
+	 * @param lastPoint
+	 *            The end point of the {@link Connection}
+	 * @param index
+	 *            The index of the connection between its source and target
 	 * @return A PointList containing the calculated points
+	 * @requires firstPoint != null
+	 * @requires lastPoint != null
+	 * @requires index >= 0
 	 */
-	private PointList calculateNewPoints(Point firstPoint, Point lastPoint,
-			int index) {
+	private PointList calculateNewPoints(final Point firstPoint,
+			final Point lastPoint, final int index) {
+		assert firstPoint != null : "firstPoint != null";
+		assert lastPoint != null : "lastPoint != null";
+		assert index >= 0 : "index >= 0";
 		// orientationUp is based on the visual representation
-		boolean orientationRightUp = firstPoint.x <= lastPoint.x;
+		final boolean orientationRightUp = firstPoint.x <= lastPoint.x;
 
-		double realAngle = calculateNormalizedAngle(firstPoint, lastPoint);
-		double firstAngle = realAngle - ((Math.PI / 30) * index);
-		double lastAngle = realAngle + (Math.PI / 2) + ((Math.PI / 30) * index);
+		final double realAngle = calculateNormalizedAngle(firstPoint, lastPoint);
+		final double firstAngle = realAngle - ((Math.PI / 30) * index);
+		final double lastAngle = realAngle + (Math.PI / 2)
+				+ ((Math.PI / 30) * index);
 
-		double hypotenuse = calculateHypotenuse(_separation, index);
+		final double hypotenuse = calculateHypotenuse(_separation, index);
 
-		double firstOppositeLeg = Math.cos(firstAngle) * hypotenuse;
-		double firstAdjacentLeg = Math.sin(firstAngle) * hypotenuse;
+		final double firstOppositeLeg = Math.cos(firstAngle) * hypotenuse;
+		final double firstAdjacentLeg = Math.sin(firstAngle) * hypotenuse;
 
-		double lastOppositeLeg = Math.cos(lastAngle) * hypotenuse;
-		double lastAdjacentLeg = Math.sin(lastAngle) * hypotenuse;
+		final double lastOppositeLeg = Math.cos(lastAngle) * hypotenuse;
+		final double lastAdjacentLeg = Math.sin(lastAngle) * hypotenuse;
 
 		double newFirstX = 0;
 		double newFirstY = 0;
@@ -246,10 +282,10 @@ public class CustomFanRouter extends AutomaticRouter {
 			newLastY = lastPoint.y - lastOppositeLeg;
 		}
 
-		Point firstBendPoint = new Point(newFirstX, newFirstY);
-		Point secondBendPoint = new Point(newLastX, newLastY);
+		final Point firstBendPoint = new Point(newFirstX, newFirstY);
+		final Point secondBendPoint = new Point(newLastX, newLastY);
 
-		PointList result = new PointList();
+		final PointList result = new PointList();
 		result.addPoint(firstPoint);
 		result.addPoint(firstBendPoint);
 		result.addPoint(secondBendPoint);
@@ -260,15 +296,24 @@ public class CustomFanRouter extends AutomaticRouter {
 
 	/**
 	 * Calculates the angle of the {@link Connection}.
-	 * @param firstPoint The start point of the {@link Connection}.
-	 * @param lastPoint The end point of the {@link Connection}.
+	 * 
+	 * @param firstPoint
+	 *            The start point of the {@link Connection}.
+	 * @param lastPoint
+	 *            The end point of the {@link Connection}.
 	 * @return The angle of the {@link Connection}
+	 * @requires firstPoint != null
+	 * @requires lastPoint != null
 	 */
-	private double calculateNormalizedAngle(Point firstPoint, Point lastPoint) {
+	private double calculateNormalizedAngle(final Point firstPoint,
+			final Point lastPoint) {
+		assert firstPoint != null : "firstPoint != null";
+		assert lastPoint != null : "lastPoint != null";
+
 		double angle = 0.0;
-		double deltaX = lastPoint.x - firstPoint.x;
-		double deltaY = lastPoint.y - firstPoint.y;
-		double gradient = deltaY / deltaX;
+		final double deltaX = lastPoint.x - firstPoint.x;
+		final double deltaY = lastPoint.y - firstPoint.y;
+		final double gradient = deltaY / deltaX;
 
 		angle = Math.atan(gradient); // 0 - 2Pi
 		angle = angle + Math.PI / 4;
@@ -282,19 +327,39 @@ public class CustomFanRouter extends AutomaticRouter {
 
 	/**
 	 * Calculates the length of the first re-routing segment.
-	 * @param distance The default distance between two 
+	 * 
+	 * @param distance
+	 *            The default distance between two {@link Connection}s
 	 * @param index
-	 * @return
+	 *            The index of the {@link Connection} between its source and
+	 *            target
+	 * @return The length of the segment
+	 * @requires index >= 0
 	 */
-	private double calculateHypotenuse(int distance, int index) {
-		double result = Math.sqrt(2 * (distance * distance)) * index;
+	private double calculateHypotenuse(final int distance, final int index) {
+		assert index >= 0 : "index >= 0";
+
+		final double result = Math.sqrt(2 * (distance * distance)) * index;
 		return result;
 	}
 
-	public void setSeparation(int separation) {
+	/**
+	 * Sets the space between two {@link Connection}s.
+	 * 
+	 * @param separation
+	 * @requires separation >= 0
+	 */
+	public void setSeparation(final int separation) {
+		assert separation >= 0 : "separation >= 0";
+
 		_separation = separation;
 	}
 
+	/**
+	 * Returns the space between two {@link Connection}s.
+	 * 
+	 * @return The space.
+	 */
 	public int getSeparation() {
 		return _separation;
 	}
