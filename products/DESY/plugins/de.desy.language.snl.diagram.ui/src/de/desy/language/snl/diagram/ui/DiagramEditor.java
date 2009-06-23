@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.draw2d.BendpointConnectionRouter;
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
@@ -278,7 +279,6 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			fanRouter.setNextRouter(shortRouter);
 			layer.setConnectionRouter(fanRouter);
 		}
-		
 		
 		// listen for dropped parts
 		viewer.addDropTargetListener(createTransferDropTargetListener());

@@ -142,29 +142,37 @@ public class CustomFanRouter extends AutomaticRouter {
 	public void route(final Connection conn) {
 		assert conn != null : "conn != null";
 
+		Object routingConstraint = conn.getRoutingConstraint();
+		System.out.println("CustomFanRouter.route()");
+		System.out.println("Routing Constraint: " + routingConstraint);
+
 		cleanMap();
 		final ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
 		final ConnectionAnchor targetAnchor = conn.getTargetAnchor();
 
-		if (sourceAnchor != null && targetAnchor != null) {
-			final MapKey key = new MapKey(sourceAnchor, targetAnchor);
-			final MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
+		if (routingConstraint == null) {
 
-			if (_connectionMap.containsKey(key)
-					|| _connectionMap.containsKey(reverseKey)) {
-				final List<Connection> connections = _connectionMap.get(key);
-				if (!connections.contains(conn)) {
-					connections.add(conn);
+			if (sourceAnchor != null && targetAnchor != null) {
+				final MapKey key = new MapKey(sourceAnchor, targetAnchor);
+				final MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
+
+				if (_connectionMap.containsKey(key)
+						|| _connectionMap.containsKey(reverseKey)) {
+					final List<Connection> connections = _connectionMap
+							.get(key);
+					if (!connections.contains(conn)) {
+						connections.add(conn);
+					}
+					final int index = connections.indexOf(conn);
+					handleCollision(conn, index);
+				} else {
+					final List<Connection> list = new LinkedList<Connection>();
+					list.add(conn);
+					final List<Connection> reverseList = new LinkedList<Connection>();
+					reverseList.add(conn);
+					_connectionMap.put(key, list);
+					_connectionMap.put(reverseKey, reverseList);
 				}
-				final int index = connections.indexOf(conn);
-				handleCollision(conn, index);
-			} else {
-				final List<Connection> list = new LinkedList<Connection>();
-				list.add(conn);
-				final List<Connection> reverseList = new LinkedList<Connection>();
-				reverseList.add(conn);
-				_connectionMap.put(key, list);
-				_connectionMap.put(reverseKey, reverseList);
 			}
 		}
 
@@ -246,6 +254,7 @@ public class CustomFanRouter extends AutomaticRouter {
 		assert firstPoint != null : "firstPoint != null";
 		assert lastPoint != null : "lastPoint != null";
 		assert index >= 0 : "index >= 0";
+
 		// orientationUp is based on the visual representation
 		final boolean orientationRightUp = firstPoint.x <= lastPoint.x;
 

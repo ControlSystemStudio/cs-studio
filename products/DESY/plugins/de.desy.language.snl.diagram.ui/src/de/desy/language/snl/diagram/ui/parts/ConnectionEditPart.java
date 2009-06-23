@@ -13,16 +13,25 @@ package de.desy.language.snl.diagram.ui.parts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.draw2d.BendpointConnectionRouter;
 import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.eclipse.gef.editpolicies.BendpointEditPolicy;
+import org.eclipse.gef.requests.BendpointRequest;
 
 import de.desy.language.snl.diagram.model.ModelElement;
 import de.desy.language.snl.diagram.model.WhenConnection;
+import de.desy.language.snl.diagram.ui.command.CreateBendPointCommand;
+import de.desy.language.snl.diagram.ui.command.DeleteBendPointCommand;
+import de.desy.language.snl.diagram.ui.command.MoveBendPointCommand;
 import de.desy.language.snl.diagram.ui.figures.MidConnectionRouteLocator;
 
 /**
@@ -64,6 +73,44 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 //						return new ConnectionDeleteCommand(getCastedModel());
 //					}
 //				});
+		installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new BendpointEditPolicy() {
+		
+			@Override
+			protected Command getMoveBendpointCommand(BendpointRequest request) {
+				int index = request.getIndex();
+				Point location = request.getLocation();
+				MoveBendPointCommand moveBendPointCommand = new MoveBendPointCommand();
+				moveBendPointCommand.setIndex(index);
+				moveBendPointCommand.setLocation(location);
+				moveBendPointCommand.setConnection(getConnection());
+				
+				return moveBendPointCommand;
+			}
+		
+			@Override
+			protected Command getDeleteBendpointCommand(BendpointRequest request) {
+				int index = request.getIndex();
+				Point location = request.getLocation();
+				DeleteBendPointCommand deleteBendPointCommand = new DeleteBendPointCommand();
+				deleteBendPointCommand.setIndex(index);
+				deleteBendPointCommand.setLocation(location);
+				deleteBendPointCommand.setConnection(getConnection());
+				
+				return deleteBendPointCommand;
+			}
+		
+			@Override
+			protected Command getCreateBendpointCommand(BendpointRequest request) {
+				int index = request.getIndex();
+				Point location = request.getLocation();
+				CreateBendPointCommand createBendPointCommand = new CreateBendPointCommand();
+				createBendPointCommand.setIndex(index);
+				createBendPointCommand.setLocation(location);
+				createBendPointCommand.setConnection(getConnection());
+				
+				return createBendPointCommand;
+			}
+		});
 	}
 
 	/*
@@ -117,6 +164,8 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 		ConnectionLocator locator = new MidConnectionRouteLocator(connection);
 		locator.setRelativePosition(PositionConstants.SOUTH);
 		connection.add(midLabel, locator);
+		
+		connection.setConnectionRouter(new BendpointConnectionRouter());
 		
 		return connection;
 	}
