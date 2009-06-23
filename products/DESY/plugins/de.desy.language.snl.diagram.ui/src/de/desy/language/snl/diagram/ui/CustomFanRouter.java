@@ -16,10 +16,33 @@ import org.eclipse.draw2d.geometry.PointList;
 
 public class CustomFanRouter extends AutomaticRouter {
 
+	/**
+	 * Internal class used as keys for the map.
+	 * 
+	 * A MapKey holds the source and target {@link ConnectionAnchor} of a
+	 * {@link Connection}.
+	 * 
+	 * @author Kai Meyer (C1 WPS)
+	 * 
+	 */
 	private class MapKey {
+		/**
+		 * The source {@link ConnectionAnchor}.
+		 */
 		private final ConnectionAnchor _source;
+		/**
+		 * The target {@link ConnectionAnchor}.
+		 */
 		private final ConnectionAnchor _target;
 
+		/**
+		 * Constructor.
+		 * @param source The source {@link ConnectionAnchor}
+		 * @param target The Target {@link ConnectionAnchor}
+		 * 
+		 * @requires source != null
+		 * @requires target != null
+		 */
 		public MapKey(ConnectionAnchor source, ConnectionAnchor target) {
 			assert source != null : "source != null";
 			assert target != null : "target != null";
@@ -36,6 +59,9 @@ public class CustomFanRouter extends AutomaticRouter {
 			return _source;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -48,6 +74,9 @@ public class CustomFanRouter extends AutomaticRouter {
 			return result;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -78,13 +107,25 @@ public class CustomFanRouter extends AutomaticRouter {
 
 	}
 
+	/**
+	 * The space between two {@link Connection}s in pixel.
+	 */
 	private int _separation = 10;
+	/**
+	 * THe {@link Map} of all known {@link Connection}s.
+	 */
 	private final Map<MapKey, List<Connection>> _connectionMap;
 
+	/**
+	 * Constructor.
+	 */
 	public CustomFanRouter() {
 		_connectionMap = new HashMap<MapKey, List<Connection>>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void route(Connection conn) {
 		cleanMap();
@@ -115,8 +156,10 @@ public class CustomFanRouter extends AutomaticRouter {
 
 		super.route(conn);
 	}
-	
-	
+
+	/**
+	 * Removes all {@link Connection}s with no target or source {@link ConnectionAnchor} from the {@link Map}.
+	 */
 	private void cleanMap() {
 		Set<MapKey> iterkeySet = new HashSet<MapKey>(_connectionMap.keySet());
 		for (MapKey key : iterkeySet) {
@@ -135,11 +178,19 @@ public class CustomFanRouter extends AutomaticRouter {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void handleCollision(PointList list, int index) {
 		// nothing to do
 	}
 
+	/**
+	 * Handles the re-routing of a {@link Connection}.
+	 * @param conn The {@link Connection}
+	 * @param index The index of the connection between its source and target 
+	 */
 	protected void handleCollision(Connection conn, int index) {
 		PointList list = conn.getPoints();
 		Point firstPoint = list.getFirstPoint();
@@ -151,6 +202,13 @@ public class CustomFanRouter extends AutomaticRouter {
 		}
 	}
 
+	/**
+	 * Calculates the points necessary for the re-routing of the {@link Connection}.
+	 * @param firstPoint The start point of the {@link Connection}
+	 * @param lastPoint The end point of the {@link Connection}
+	 * @param index The index of the connection between its source and target
+	 * @return A PointList containing the calculated points
+	 */
 	private PointList calculateNewPoints(Point firstPoint, Point lastPoint,
 			int index) {
 		// orientationUp is based on the visual representation
@@ -200,6 +258,12 @@ public class CustomFanRouter extends AutomaticRouter {
 		return result;
 	}
 
+	/**
+	 * Calculates the angle of the {@link Connection}.
+	 * @param firstPoint The start point of the {@link Connection}.
+	 * @param lastPoint The end point of the {@link Connection}.
+	 * @return The angle of the {@link Connection}
+	 */
 	private double calculateNormalizedAngle(Point firstPoint, Point lastPoint) {
 		double angle = 0.0;
 		double deltaX = lastPoint.x - firstPoint.x;
@@ -216,6 +280,12 @@ public class CustomFanRouter extends AutomaticRouter {
 		return angle;
 	}
 
+	/**
+	 * Calculates the length of the first re-routing segment.
+	 * @param distance The default distance between two 
+	 * @param index
+	 * @return
+	 */
 	private double calculateHypotenuse(int distance, int index) {
 		double result = Math.sqrt(2 * (distance * distance)) * index;
 		return result;

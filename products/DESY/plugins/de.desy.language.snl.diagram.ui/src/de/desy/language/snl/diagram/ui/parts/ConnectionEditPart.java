@@ -13,23 +13,16 @@ package de.desy.language.snl.diagram.ui.parts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
-import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
-import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
-import org.eclipse.gef.requests.GroupRequest;
 
 import de.desy.language.snl.diagram.model.ModelElement;
 import de.desy.language.snl.diagram.model.WhenConnection;
-import de.desy.language.snl.diagram.ui.commands.ConnectionDeleteCommand;
 import de.desy.language.snl.diagram.ui.figures.MidConnectionRouteLocator;
 
 /**
@@ -62,15 +55,15 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 	protected void createEditPolicies() {
 		// Selection handle edit policy.
 		// Makes the connection show a feedback, when selected by the user.
-		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
-				new ConnectionEndpointEditPolicy());
+		//installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
+		//		new ConnectionEndpointEditPolicy());
 		// Allows the removal of the connection model element
-		installEditPolicy(EditPolicy.CONNECTION_ROLE,
-				new ConnectionEditPolicy() {
-					protected Command getDeleteCommand(GroupRequest request) {
-						return new ConnectionDeleteCommand(getCastedModel());
-					}
-				});
+//		installEditPolicy(EditPolicy.CONNECTION_ROLE,
+//				new ConnectionEditPolicy() {
+//					protected Command getDeleteCommand(GroupRequest request) {
+//						return new ConnectionDeleteCommand(getCastedModel());
+//					}
+//				});
 	}
 
 	/*
@@ -117,9 +110,9 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 		
 		final Label midLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
 			
-		final Label tooltipLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
-		tooltipLabel.setBackgroundColor(ColorConstants.tooltipBackground);
-		connection.setToolTip(tooltipLabel);
+//		final Label tooltipLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
+//		tooltipLabel.setBackgroundColor(ColorConstants.tooltipBackground);
+//		connection.setToolTip(tooltipLabel);
 		
 		ConnectionLocator locator = new MidConnectionRouteLocator(connection);
 		locator.setRelativePosition(PositionConstants.SOUTH);
