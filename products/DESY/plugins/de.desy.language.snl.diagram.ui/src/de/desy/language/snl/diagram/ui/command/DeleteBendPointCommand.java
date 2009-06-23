@@ -4,12 +4,12 @@ public class DeleteBendPointCommand extends AbstractBendPointCommand {
 	
 	@Override
 	public void execute() {
-		getConnection().getPoints().removePoint(getIndex());
+		getConnection().removeBendPoint(getIndex());
 	}
 	
 	@Override
 	public void undo() {
-		getConnection().getPoints().insertPoint(getLocation(), getIndex());
+		getConnection().addBendPoint(getLocation(), getIndex());
 	}
 
 }

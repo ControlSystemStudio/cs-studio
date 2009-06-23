@@ -6,17 +6,19 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Elias Volanakis - initial API and implementation
  *******************************************************************************/
 package de.desy.language.snl.diagram.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.draw2d.geometry.Point;
 
 import de.desy.language.snl.parser.nodes.WhenNode;
 
 
 /**
  * A connection between two distinct shapes.
- * 
- * @author Elias Volanakis
  */
 public class WhenConnection extends ModelElement {
 	/**
@@ -39,8 +41,9 @@ public class WhenConnection extends ModelElement {
 	private SNLModel target;
 	
 	private WhenNode _whenNode;
-
-
+	
+	private List<Point> _bendPoints;
+	
 	/**
 	 * Create a (solid) connection between two distinct shapes.
 	 * 
@@ -53,9 +56,10 @@ public class WhenConnection extends ModelElement {
 	 * @see #setLineStyle(int)
 	 */
 	public WhenConnection(SNLModel source, SNLModel target) {
+		_bendPoints = new ArrayList<Point>();
 		reconnect(source, target);
 	}
-
+	
 	public WhenNode getWhenNode() {
 		return _whenNode;
 	}
@@ -144,5 +148,25 @@ public class WhenConnection extends ModelElement {
 		this.target = newTarget;
 		reconnect();
 	}
-
+	
+	public void addBendPoint(Point bendPoint, int index) {
+		_bendPoints.add(index, bendPoint);
+		firePropertyChange("BendPoint added", null, _bendPoints);
+	}
+	
+	public void removeBendPoint(int index) {
+		_bendPoints.remove(index);
+		firePropertyChange("BendPoint removed", null, _bendPoints);
+	}
+	
+	public void moveBendPoint(int index, Point newLocation) {
+		Point point = _bendPoints.get(index);
+		point.setLocation(newLocation);
+		firePropertyChange("BendPoint moved", null, _bendPoints);
+	}
+	
+	public List<Point> getBendPoints() {
+		return _bendPoints;
+	}
+	
 }

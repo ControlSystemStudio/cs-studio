@@ -8,14 +8,14 @@ public class MoveBendPointCommand extends AbstractBendPointCommand {
 
 	@Override
 	public void execute() {
-		Point point = getConnection().getPoints().getPoint(getIndex());
+		Point point = getConnection().getBendPoints().get(getIndex());
 		_oldLocation = point.getCopy();
-		point.setLocation(getLocation());
+		getConnection().moveBendPoint(getIndex(), getLocation());
 	}
 	
 	@Override
 	public void undo() {
-		getConnection().getPoints().getPoint(getIndex()).setLocation(_oldLocation);
+		getConnection().moveBendPoint(getIndex(), _oldLocation);
 	}
 
 }

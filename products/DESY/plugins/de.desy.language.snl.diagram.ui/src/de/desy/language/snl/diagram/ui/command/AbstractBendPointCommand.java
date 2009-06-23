@@ -1,16 +1,17 @@
 package de.desy.language.snl.diagram.ui.command;
 
 import org.eclipse.draw2d.Bendpoint;
-import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.Command;
+
+import de.desy.language.snl.diagram.model.WhenConnection;
 
 public class AbstractBendPointCommand extends Command {
 	
 	private int _index;
 	private Point _location;
-	private Connection _connection;
+	private WhenConnection _connection;
 	private Bendpoint _bendPoint;
 	private Dimension _d1;
 	private Dimension _d2;
@@ -57,11 +58,11 @@ public class AbstractBendPointCommand extends Command {
 		execute();
 	}
 
-	public void setConnection(Connection connection) {
+	public void setConnectionModel(WhenConnection connection) {
 		_connection = connection;
 	}
 
-	public Connection getConnection() {
+	public WhenConnection getConnection() {
 		return _connection;
 	}
 

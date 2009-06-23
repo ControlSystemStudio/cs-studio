@@ -12,14 +12,20 @@ package de.desy.language.snl.diagram.ui.parts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.BendpointConnectionRouter;
+import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.RelativeBendpoint;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.commands.Command;
@@ -82,7 +88,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 				MoveBendPointCommand moveBendPointCommand = new MoveBendPointCommand();
 				moveBendPointCommand.setIndex(index);
 				moveBendPointCommand.setLocation(location);
-				moveBendPointCommand.setConnection(getConnection());
+				moveBendPointCommand.setConnectionModel(getCastedModel());
 				
 				return moveBendPointCommand;
 			}
@@ -94,7 +100,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 				DeleteBendPointCommand deleteBendPointCommand = new DeleteBendPointCommand();
 				deleteBendPointCommand.setIndex(index);
 				deleteBendPointCommand.setLocation(location);
-				deleteBendPointCommand.setConnection(getConnection());
+				deleteBendPointCommand.setConnectionModel(getCastedModel());
 				
 				return deleteBendPointCommand;
 			}
@@ -102,11 +108,45 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 			@Override
 			protected Command getCreateBendpointCommand(BendpointRequest request) {
 				int index = request.getIndex();
+				Connection connection = getConnection();
 				Point location = request.getLocation();
+				Point firstPoint = connection.getPoints().getFirstPoint();
+				Point lastPoint = connection.getPoints().getLastPoint();
+				
+				System.out.println("Location: "+location);
+				System.out.println("FirstPoint: "+firstPoint);
+				System.out.println("LastPoint: "+lastPoint);
+				System.out.println("Connection: "+connection.getBounds());
+				
+				connection.translateToRelative(location);
+				System.out.println("Location: "+location);
+				System.out.println("FirstPoint: "+firstPoint);
+				System.out.println("LastPoint: "+lastPoint);
+				System.out.println("Connection: "+connection.getBounds());
+				
+				connection.translateToRelative(firstPoint);
+				System.out.println("Location: "+location);
+				System.out.println("FirstPoint: "+firstPoint);
+				System.out.println("LastPoint: "+lastPoint);
+				System.out.println("Connection: "+connection.getBounds());
+				
+				connection.translateToRelative(lastPoint);
+				System.out.println("Location: "+location);
+				System.out.println("FirstPoint: "+firstPoint);
+				System.out.println("LastPoint: "+lastPoint);
+				System.out.println("Connection: "+connection.getBounds());
+				
+				Dimension dim1 = location.getDifference(firstPoint);
+				Dimension dim2 = location.getDifference(lastPoint);
+				
+				System.out.println("Dimension1: "+dim1);
+				System.out.println("Dimension2: "+dim2);
+				
 				CreateBendPointCommand createBendPointCommand = new CreateBendPointCommand();
 				createBendPointCommand.setIndex(index);
 				createBendPointCommand.setLocation(location);
-				createBendPointCommand.setConnection(getConnection());
+				createBendPointCommand.setConnectionModel(getCastedModel());
+				createBendPointCommand.setRelativeDimensions(dim1, dim2);
 				
 				return createBendPointCommand;
 			}
@@ -119,41 +159,14 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		PolylineConnection connection = new PolylineConnection() {
-//			@Override
-//			public boolean equals(Object obj) {
-//				boolean result = false;
-//				if (obj instanceof PolylineConnection) {
-//					PolylineConnection that = (PolylineConnection)obj;
-//					
-//					IFigure thisTooltip = this.getToolTip();
-//					IFigure thatTooltip = that.getToolTip();
-//					
-//					System.out.println(".equals()");
-//					System.out.println("this.getSourceAnchor(): "+this.getSourceAnchor());
-//					System.out.println("that.getSourceAnchor(): "+that.getSourceAnchor());
-//					System.out.println("this.getTargetAnchor(): "+this.getTargetAnchor());
-//					System.out.println("that.getTargetAnchor(): "+that.getTargetAnchor());
-//					System.out.println("thisTooltip " + thisTooltip);
-//					System.out.println("thatTooltip " + thatTooltip);
-//					
-//					if (this.getSourceAnchor() != null && this.getSourceAnchor().equals(that.getSourceAnchor()) &&
-//							this.getTargetAnchor() != null && this.getTargetAnchor().equals(that.getTargetAnchor()) &&
-//							thisTooltip != null && thisTooltip.equals(thatTooltip)) {
-//						result = true;
-//					}
-//					System.out.println(".equals() "+result);
-//				}
-//				return result;
-//			}
-		};
+		PolylineConnection connection = new PolylineConnection();
 		connection.setTargetDecoration(new PolygonDecoration()); // arrow at
 																	// target
 																	// endpoint
 		connection.setLineStyle(getCastedModel().getLineStyle()); // line
 																	// drawing
 																	// style
-		
+		getCastedModel().addPropertyChangeListener(this);
 		
 		final Label midLabel = new Label(getCastedModel().getWhenNode().getSourceIdentifier());
 			
@@ -168,6 +181,25 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 		connection.setConnectionRouter(new BendpointConnectionRouter());
 		
 		return connection;
+	}
+	
+	private void refreshBendPoints() {
+		List<Point> modelConstraint = getCastedModel().getBendPoints();
+		List<Point> figureConstraint = new ArrayList<Point>();
+		if (modelConstraint != null) {
+			for (Point current : modelConstraint) {
+//				RelativeBendpoint rbp = new RelativeBendpoint(getConnectionFigure());
+				AbsoluteBendpoint abp = new AbsoluteBendpoint(current);
+				figureConstraint.add(abp);
+			}
+			getConnectionFigure().setRoutingConstraint(figureConstraint);
+		}
+	}
+	
+	@Override
+	protected void refreshVisuals() {
+		super.refreshVisuals();
+		refreshBendPoints();
 	}
 	
 	/**
@@ -185,7 +217,11 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
 		return (WhenConnection) getModel();
 	}
 
-	public void propertyChange(PropertyChangeEvent arg0) {
+	public void propertyChange(PropertyChangeEvent event) {
+		System.out.println("ConnectionEditPart.propertyChange()");
+//		System.out.println("ID: "+event.getPropagationId());
+//		System.out.println("Name: "+event.getPropertyName());
+		refreshBendPoints();
 	}
 
 }

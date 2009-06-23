@@ -266,20 +266,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		
 		ConnectionLayer layer = (ConnectionLayer) _scalableFreeformRootEditPart.getLayer(LayerConstants.CONNECTION_LAYER);
 		
-		ConnectionRouter connectionRouter = layer.getConnectionRouter();
-		
-		if (connectionRouter instanceof ShortestPathConnectionRouter) {
-			ShortestPathConnectionRouter shortRouter = (ShortestPathConnectionRouter) connectionRouter;
-			shortRouter.setSpacing(10);
-			
-//			FanRouter fanRouter = new FanRouter();
-			CustomFanRouter fanRouter = new CustomFanRouter();
-			
-			fanRouter.setSeparation(20);
-			fanRouter.setNextRouter(shortRouter);
-			layer.setConnectionRouter(fanRouter);
-		}
-		
+		layer.setConnectionRouter(new BendpointConnectionRouter());
 		// listen for dropped parts
 		viewer.addDropTargetListener(createTransferDropTargetListener());
 	}
