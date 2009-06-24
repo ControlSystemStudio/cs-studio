@@ -355,14 +355,14 @@ abstract public class ArchiveChannel
                 // carries the old, original time stamp of the PV,
                 // and that's back in time...
                 final Logger log = CentralLogger.getInstance().getLogger(this);
-                if (log.isDebugEnabled())
-                    log.debug(getName() + " skips back-in-time:\n" +
+                if (log.isInfoEnabled())
+                    log.info(getName() + " skips back-in-time:\n" +
                         "last: " + last_archived_value.toString() + "\n" +
                         "new : " + value.toString());
                 return false;
             }
             // else ...
-            last_archived_value = value;
+	        last_archived_value = value;
         }
         buffer.add(value);
         if (SampleBuffer.isInErrorState())
