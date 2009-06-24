@@ -3,7 +3,6 @@ package org.csstudio.archive.rdb.internal;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Date;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.rdb.Retention;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.Severity;
@@ -31,7 +31,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.omg.CORBA.portable.ValueInputStream;
 
 /** RDB Archive access.
  *  @author Kay Kasemir
@@ -43,6 +42,8 @@ public class RDBArchiveImpl extends RDBArchive
 
     /** Severity string for <code>Double.NaN</code> samples */
     private static final String NOT_A_NUMBER_SEVERITY = "INVALID"; //$NON-NLS-1$
+
+    final private int MAX_TEXT_SAMPLE_LENGTH = RDBArchivePreferences.getMaxStringSampleLength();
 
     /** Database URL/user/password */
     final private String url, user, password;
@@ -101,8 +102,8 @@ public class RDBArchiveImpl extends RDBArchive
         debug_batch ? new ArrayList<ChannelConfigImpl>() : null;
     private ArrayList<IValue> batched_samples = 
         debug_batch ? new ArrayList<IValue>() : null;
-	
-	/** Connect to RDB.
+
+     /** Connect to RDB.
 	 *  @param url URL, where "jdbc:oracle_stage:" handled like
 	 *             "jdbc:oracle:" except that it switches to the "staging"
 	 *             tables.
@@ -518,7 +519,10 @@ public class RDBArchiveImpl extends RDBArchive
         if (insert_txt_sample == null)
             insert_txt_sample =
                 rdb.getConnection().prepareStatement(sql.sample_insert_string);
-        insert_txt_sample.setString(5, txt);
+        if (txt.length() > MAX_TEXT_SAMPLE_LENGTH )
+            insert_txt_sample.setString(5, txt.substring(0, MAX_TEXT_SAMPLE_LENGTH));
+        else
+            insert_txt_sample.setString(5, txt);
         completeAndBatchInsert(insert_txt_sample, channel, stamp, severity, status);
         ++batched_txt_inserts;
     }
