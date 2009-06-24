@@ -224,13 +224,6 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sns.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.jaasAuthentication.ui"
          download-size="0"
          install-size="0"
@@ -239,6 +232,20 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
 
    <plugin
          id="org.csstudio.startuphelper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.startup"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sns.startuphelper"
          download-size="0"
          install-size="0"
          version="0.0.0"
