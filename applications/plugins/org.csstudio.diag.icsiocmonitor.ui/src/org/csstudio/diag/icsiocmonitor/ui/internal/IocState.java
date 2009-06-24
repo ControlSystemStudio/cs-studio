@@ -22,6 +22,11 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
+
 /**
  * Represents the state of an IOC.
  * 
@@ -30,20 +35,17 @@ package org.csstudio.diag.icsiocmonitor.ui.internal;
 public class IocState {
 
 	private final String _iocName;
-	private String _selectedInterconnectionServer;
+	private Map<String, IocConnectionState> _icsConnections;
 
 	/**
 	 * Creates a new IOC state object.
 	 * 
 	 * @param iocName
 	 *            the name of the IOC.
-	 * @param selectedIcs
-	 *            the name of the selected interconnection server. Set this to
-	 *            <code>null</code> if no interconnection server is selected.
 	 */
-	public IocState(String iocName, String selectedIcs) {
+	public IocState(String iocName) {
 		_iocName = iocName;
-		_selectedInterconnectionServer = selectedIcs;
+		_icsConnections = new HashMap<String, IocConnectionState>();
 	}
 
 	/**
@@ -54,18 +56,41 @@ public class IocState {
 	}
 
 	/**
-	 * Sets the name of the selected interconnection server.
+	 * Sets the state of the connection to an interconnection server.
 	 * 
-	 * @param server the selected server.
+	 * @param server
+	 *            the interconnection server.
+	 * @param state
+	 *            the connection state.
 	 */
-	public void setSelectedInterconnectionServer(String server) {
-		_selectedInterconnectionServer = server;
+	public void setIcsConnectionState(String server, IocConnectionState state) {
+		_icsConnections.put(server, state);
 	}
 
 	/**
-	 * @return the selected interconnection server.
+	 * Returns the state of the connection to an interconnection server.
+	 * 
+	 * @param server
+	 *            the interconnection server.
+	 * @return the connection state.
+	 */
+	public IocConnectionState getIcsConnectionState(String server) {
+		IocConnectionState result = _icsConnections.get(server);
+		return result != null ? result : IocConnectionState.DISCONNECTED;
+	}
+
+	/**
+	 * Returns the selected interconnection server.
+	 * 
+	 * @return the selected interconnection server. Returns <code>null</code> if
+	 *         no interconnection server is the selected server.
 	 */
 	public String getSelectedInterconnectionServer() {
-		return _selectedInterconnectionServer;
+		for (Map.Entry<String, IocConnectionState> entry : _icsConnections.entrySet()) {
+			if (entry.getValue() == IocConnectionState.CONNECTED_SELECTED) {
+				return entry.getKey();
+			}
+		}
+		return null;
 	}
 }

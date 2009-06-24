@@ -22,8 +22,13 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.eclipse.jface.viewers.BaseLabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -49,7 +54,7 @@ public class IocMonitorView extends ViewPart {
 	 * @author Joerg Rathlev
 	 *
 	 */
-	private static class IocMonitorLabelProvider extends BaseLabelProvider
+	private class IocMonitorLabelProvider extends BaseLabelProvider
 			implements ITableLabelProvider {
 
 		/**
@@ -57,11 +62,29 @@ public class IocMonitorView extends ViewPart {
 		 */
 		public String getColumnText(Object element, int columnIndex) {
 			if (element instanceof IocState) {
+				IocState iocState = (IocState) element;
 				switch (columnIndex) {
 				case 0:
-					return ((IocState) element).getIocName();
+					return iocState.getIocName();
 				case 1:
-					return ((IocState) element).getSelectedInterconnectionServer();
+					return iocState.getSelectedInterconnectionServer();
+				default:
+					String server = _columnIndexToIcs.get(columnIndex);
+					if (server != null) {
+						IocConnectionState connectionState =
+							iocState.getIcsConnectionState(server);
+						switch (connectionState) {
+						case CONNECTED:
+							return "connected";
+						case CONNECTED_SELECTED:
+							return "connected, selected";
+						case DISCONNECTED:
+							return "disconnected";
+						default:
+							return "?";
+						}
+					}
+					return "ERROR no server associated with column";
 				}
 			}
 			return null;
@@ -71,7 +94,6 @@ public class IocMonitorView extends ViewPart {
 		 * {@inheritDoc}
 		 */
 		public Image getColumnImage(Object element, int columnIndex) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}
@@ -87,8 +109,8 @@ public class IocMonitorView extends ViewPart {
 		 * {@inheritDoc}
 		 */
 		public Object[] getElements(Object inputElement) {
-			if (inputElement instanceof IocState[]) {
-				return (Object[]) inputElement;
+			if (inputElement instanceof IocMonitor) {
+				return ((IocMonitor) inputElement).getIocStates().toArray();
 			} else {
 				return new Object[0];
 			}
@@ -111,8 +133,10 @@ public class IocMonitorView extends ViewPart {
 	static final String ID = "org.csstudio.diag.icsiocmonitor.ui.IocMonitorView";
 
 	private TableViewer _tableViewer;
-
 	private Table _table;
+	private int _fixedColumnCount;
+	private List<TableColumn> _dynamicTableColumns;
+	private Map<Integer, String> _columnIndexToIcs;
 
 	/**
 	 * {@inheritDoc}
@@ -124,32 +148,68 @@ public class IocMonitorView extends ViewPart {
 		layout.marginHeight = 0;
 		parent.setLayout(layout);
 		
-		_table = createTable(parent);
+		createTable(parent);
 		_table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		_tableViewer = new TableViewer(_table);
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
 		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
-		_tableViewer.setInput(new IocState[] {
-				new IocState("a", "1"),
-				new IocState("b", "2"),
-				new IocState("c", "3"),
-			});
+		IocMonitor iocMonitor = new IocMonitor();
+		iocMonitor.update();
+		setInput(iocMonitor);
 	}
 
 	/**
-	 * @return
+	 * Sets the input of the view.
+	 * 
+	 * @param iocMonitor
+	 *            the IOC monitor which will be used as the input.
 	 */
-	private Table createTable(Composite parent) {
-		Table table = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		TableColumn iocCol = new TableColumn(table, SWT.LEFT);
+	private void setInput(IocMonitor iocMonitor) {
+		List<String> ics = iocMonitor.getInterconnectionServers();
+		updateDynamicColumns(ics);
+		_tableViewer.setInput(iocMonitor);
+	}
+
+	/**
+	 * Creates the columns for the interconnection servers.
+	 * 
+	 * @param ics
+	 *            list of interconnection servers.
+	 */
+	private void updateDynamicColumns(List<String> ics) {
+		for (TableColumn col : _dynamicTableColumns) {
+			col.dispose();
+		}
+		
+		int i = 0;
+		for (String server : ics) {
+			TableColumn col = new TableColumn(_table, SWT.LEFT);
+			col.setText(server);
+			col.setWidth(200);
+			_dynamicTableColumns.add(col);
+			_columnIndexToIcs.put(_fixedColumnCount + i++, server);
+		}
+	}
+
+	/**
+	 * Creates the table control.
+	 */
+	private void createTable(Composite parent) {
+		_table = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		_table.setLinesVisible(true);
+		_table.setHeaderVisible(true);
+		TableColumn iocCol = new TableColumn(_table, SWT.LEFT);
 		iocCol.setText("IOC");
 		iocCol.setWidth(200);
-		TableColumn selectedIcsCol = new TableColumn(table, SWT.LEFT);
+		TableColumn selectedIcsCol = new TableColumn(_table, SWT.LEFT);
 		selectedIcsCol.setText("Selected ICS");
 		selectedIcsCol.setWidth(200);
-		return table;
+		
+		// IMPORTANT: Update this if the number of fixed columns changes!
+		_fixedColumnCount = 2;
+		
+		_dynamicTableColumns = new ArrayList<TableColumn>();
+		_columnIndexToIcs = new HashMap<Integer, String>();
 	}
 
 	/**
