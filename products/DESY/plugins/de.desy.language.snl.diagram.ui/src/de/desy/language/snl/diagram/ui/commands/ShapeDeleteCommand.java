@@ -43,7 +43,7 @@ private boolean wasRemoved;
  * @param child    the Shape to remove
  * @throws IllegalArgumentException if any parameter is null
  */
-public ShapeDeleteCommand(SNLDiagram parent, SNLModel child) {
+public ShapeDeleteCommand(final SNLDiagram parent, final SNLModel child) {
 	if (parent == null || child == null) {
 		throw new IllegalArgumentException();
 	}
@@ -56,9 +56,9 @@ public ShapeDeleteCommand(SNLDiagram parent, SNLModel child) {
  * Reconnects a List of Connections with their previous endpoints.
  * @param connections a non-null List of connections
  */
-private void addConnections(List connections) {
-	for (Iterator iter = connections.iterator(); iter.hasNext();) {
-		WhenConnection conn = (WhenConnection) iter.next();
+private void addConnections(final List connections) {
+	for (final Iterator iter = connections.iterator(); iter.hasNext();) {
+		final WhenConnection conn = (WhenConnection) iter.next();
 		conn.reconnect();
 	}
 }
@@ -66,6 +66,7 @@ private void addConnections(List connections) {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#canUndo()
  */
+@Override
 public boolean canUndo() {
 	return wasRemoved;
 }
@@ -73,6 +74,7 @@ public boolean canUndo() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#execute()
  */
+@Override
 public void execute() {
 	// store a copy of incoming & outgoing connections before proceeding 
 	sourceConnections = child.getSourceConnections();
@@ -83,6 +85,7 @@ public void execute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#redo()
  */
+@Override
 public void redo() {
 	// remove the child and disconnect its connections
 	wasRemoved = parent.removeChild(child);
@@ -96,9 +99,9 @@ public void redo() {
  * Disconnects a List of Connections from their endpoints.
  * @param connections a non-null List of connections
  */
-private void removeConnections(List connections) {
-	for (Iterator iter = connections.iterator(); iter.hasNext();) {
-		WhenConnection conn = (WhenConnection) iter.next();
+private void removeConnections(final List connections) {
+	for (final Iterator iter = connections.iterator(); iter.hasNext();) {
+		final WhenConnection conn = (WhenConnection) iter.next();
 		conn.disconnect();
 	}
 }
@@ -106,6 +109,7 @@ private void removeConnections(List connections) {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#undo()
  */
+@Override
 public void undo() {
 	// add the child and reconnect its connections
 	if (parent.addChild(child)) {

@@ -1,69 +1,73 @@
 package de.desy.language.snl.diagram.ui.command;
 
-import org.eclipse.draw2d.Bendpoint;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.Command;
 
 import de.desy.language.snl.diagram.model.WhenConnection;
 
+/**
+ * Abstract superclass for all BendPointCommands.
+ * 
+ * @author Kai Meyer, Sebastian Middeke (C1 WPS)
+ * 
+ */
 public class AbstractBendPointCommand extends Command {
-	
-	private int _index;
-	private Point _location;
-	private WhenConnection _connection;
-	private Bendpoint _bendPoint;
-	private Dimension _d1;
-	private Dimension _d2;
-	
-	public Dimension getFirstRelativeDimension() {
-		return _d1;
-	}
-	
-	public Dimension getSecaondRelativeDimension() {
-		return _d2;
-	}
-	
-	public void setRelativeDimensions(Dimension firstDimension, Dimension secondDimension) {
-		_d1 = firstDimension;
-		_d2 = secondDimension;
-	}
 
-	public void setBendPoint(Bendpoint bendPoint) {
-		_bendPoint = bendPoint;
-	}
+	/**
+	 * The model of the connection.
+	 */
+	private final WhenConnection _model;
+	/**
+	 * The location of the BendPoint.
+	 */
+	private final Point _location;
+	/**
+	 * The index of the BendPoint
+	 */
+	private final int _index;
 
-	public Bendpoint getBendPoint() {
-		return _bendPoint;
-	}
+	/**
+	 * Constructor.
+	 * 
+	 * @param model
+	 *            The model of the connection
+	 * @param location
+	 *            The location of the BendPoint
+	 * @param index
+	 *            The index of the BendPoint
+	 * @requires model != null
+	 * @requires location != null
+	 * @requires index >= 0
+	 */
+	public AbstractBendPointCommand(final WhenConnection model, final Point location,
+			final int index) {
+		assert model != null : "model != null";
+		assert location != null : "location != null";
+		assert index >= 0 : "index >= 0";
 
-	public void setLocation(Point location) {
+		_model = model;
 		_location = location;
+		_index = index;
 	}
 
 	public Point getLocation() {
 		return _location;
 	}
 
-	public void setIndex(int index) {
-		_index = index;
-	}
-
 	public int getIndex() {
 		return _index;
 	}
+
+	public WhenConnection getConnectionModel() {
+		return _model;
+	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void redo() {
 		execute();
-	}
-
-	public void setConnectionModel(WhenConnection connection) {
-		_connection = connection;
-	}
-
-	public WhenConnection getConnection() {
-		return _connection;
 	}
 
 }

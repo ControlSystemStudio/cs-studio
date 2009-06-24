@@ -27,7 +27,7 @@ import org.eclipse.gef.ui.actions.GEFActionConstants;
 class ShapesEditorContextMenuProvider extends ContextMenuProvider {
 
 /** The editor's action registry. */
-private ActionRegistry actionRegistry;
+private final ActionRegistry actionRegistry;
 	
 /**
  * Instantiate a new menu context provider for the specified EditPartViewer 
@@ -36,7 +36,7 @@ private ActionRegistry actionRegistry;
  * @param registry	the editor's action registry
  * @throws IllegalArgumentException if registry is <tt>null</tt>. 
  */
-public ShapesEditorContextMenuProvider(EditPartViewer viewer, ActionRegistry registry) {
+public ShapesEditorContextMenuProvider(final EditPartViewer viewer, final ActionRegistry registry) {
 	super(viewer);
 	if (registry == null) {
 		throw new IllegalArgumentException();
@@ -49,7 +49,8 @@ public ShapesEditorContextMenuProvider(EditPartViewer viewer, ActionRegistry reg
  * whose state is enabled, will appear in the context menu.
  * @see org.eclipse.gef.ContextMenuProvider#buildContextMenu(org.eclipse.jface.action.IMenuManager)
  */
-public void buildContextMenu(IMenuManager menu) {
+@Override
+public void buildContextMenu(final IMenuManager menu) {
 	// Add standard action groups to the menu
 	GEFActionConstants.addStandardActionGroups(menu);
 	
@@ -65,7 +66,7 @@ public void buildContextMenu(IMenuManager menu) {
 			getAction(ActionFactory.DELETE.getId()));
 }
 
-private IAction getAction(String actionId) {
+private IAction getAction(final String actionId) {
 	return actionRegistry.getAction(actionId);
 }
 

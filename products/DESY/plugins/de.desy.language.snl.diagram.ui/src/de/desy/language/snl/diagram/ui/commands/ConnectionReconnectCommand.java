@@ -46,7 +46,7 @@ import de.desy.language.snl.diagram.model.SNLModel;
 public class ConnectionReconnectCommand extends Command {
 
 /** The connection instance to reconnect. */
-private WhenConnection connection;
+private final WhenConnection connection;
 /** The new source endpoint. */
 private SNLModel newSource;
 /** The new target endpoint. */
@@ -62,7 +62,7 @@ private final SNLModel oldTarget;
  * @param conn the connection instance to reconnect (non-null)
  * @throws IllegalArgumentException if conn is null
  */
-public ConnectionReconnectCommand(WhenConnection conn) {
+public ConnectionReconnectCommand(final WhenConnection conn) {
 	if (conn == null) {
 		throw new IllegalArgumentException();
 	}
@@ -74,6 +74,7 @@ public ConnectionReconnectCommand(WhenConnection conn) {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#canExecute()
  */
+@Override
 public boolean canExecute() {
 	if (newSource != null) {
 		return checkSourceReconnection();
@@ -92,8 +93,8 @@ private boolean checkSourceReconnection() {
 		return false;
 	}
 	// return false, if the connection exists already
-	for (Iterator iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
-		WhenConnection conn = (WhenConnection) iter.next();
+	for (final Iterator iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
+		final WhenConnection conn = (WhenConnection) iter.next();
 		// return false if a newSource -> oldTarget connection exists already
 		// and it is a different instance than the connection-field
 		if (conn.getTarget().equals(oldTarget) &&  !conn.equals(connection)) {
@@ -112,8 +113,8 @@ private boolean checkTargetReconnection() {
 		return false;
 	}
 	// return false, if the connection exists already
-	for (Iterator iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
-		WhenConnection conn = (WhenConnection) iter.next();
+	for (final Iterator iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
+		final WhenConnection conn = (WhenConnection) iter.next();
 		// return false if a oldSource -> newTarget connection exists already
 		// and it is a differenct instance that the connection-field
 		if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
@@ -127,6 +128,7 @@ private boolean checkTargetReconnection() {
  * Reconnect the connection to newSource (if setNewSource(...) was invoked before)
  * or newTarget (if setNewTarget(...) was invoked before).
  */
+@Override
 public void execute() {
 	if (newSource != null) {
 		connection.reconnect(newSource, oldTarget);
@@ -149,7 +151,7 @@ public void execute() {
  * @param connectionSource a non-null Shape instance, to be used as a new source endpoint
  * @throws IllegalArgumentException if connectionSource is null
  */
-public void setNewSource(SNLModel connectionSource) {
+public void setNewSource(final SNLModel connectionSource) {
 	if (connectionSource == null) {
 		throw new IllegalArgumentException();
 	}
@@ -170,7 +172,7 @@ public void setNewSource(SNLModel connectionSource) {
  * @param connectionTarget a non-null Shape instance, to be used as a new target endpoint
  * @throws IllegalArgumentException if connectionTarget is null
  */
-public void setNewTarget(SNLModel connectionTarget) {
+public void setNewTarget(final SNLModel connectionTarget) {
 	if (connectionTarget == null) {
 		throw new IllegalArgumentException();
 	}
@@ -182,6 +184,7 @@ public void setNewTarget(SNLModel connectionTarget) {
 /**
  * Reconnect the connection to its original source and target endpoints.
  */
+@Override
 public void undo() {
 	connection.reconnect(oldSource, oldTarget);
 }

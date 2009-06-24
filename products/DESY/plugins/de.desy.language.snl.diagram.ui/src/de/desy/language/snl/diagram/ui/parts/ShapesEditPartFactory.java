@@ -27,9 +27,9 @@ public class ShapesEditPartFactory implements EditPartFactory {
  * (non-Javadoc)
  * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
  */
-public EditPart createEditPart(EditPart context, Object modelElement) {
+public EditPart createEditPart(final EditPart context, final Object modelElement) {
 	// get EditPart for model element
-	EditPart part = getPartForElement(modelElement);
+	final EditPart part = getPartForElement(modelElement);
 	// store model element in EditPart
 	part.setModel(modelElement);
 	return part;
@@ -39,7 +39,7 @@ public EditPart createEditPart(EditPart context, Object modelElement) {
  * Maps an object to an EditPart. 
  * @throws RuntimeException if no match was found (programming error)
  */
-private EditPart getPartForElement(Object modelElement) {
+private EditPart getPartForElement(final Object modelElement) {
 	if (modelElement instanceof SNLDiagram) {
 		return new DiagramEditPart();
 	}

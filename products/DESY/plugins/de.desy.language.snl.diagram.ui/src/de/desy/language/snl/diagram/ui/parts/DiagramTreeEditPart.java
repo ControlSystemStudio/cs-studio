@@ -40,13 +40,14 @@ class DiagramTreeEditPart extends AbstractTreeEditPart
  * Create a new instance of this edit part using the given model element.
  * @param model a non-null ShapesDiagram instance
  */
-DiagramTreeEditPart(SNLDiagram model) {
+DiagramTreeEditPart(final SNLDiagram model) {
 	super(model);
 }
 
 /**
  * Upon activation, attach to the model element as a property change listener.
  */
+@Override
 public void activate() {
 	if (!isActive()) {
 		super.activate();
@@ -57,6 +58,7 @@ public void activate() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.examples.shapes.parts.ShapeTreeEditPart#createEditPolicies()
  */
+@Override
 protected void createEditPolicies() {
 	// If this editpart is the root content of the viewer, then disallow removal
 	if (getParent() instanceof RootEditPart) {
@@ -67,6 +69,7 @@ protected void createEditPolicies() {
 /**
  * Upon deactivation, detach from the model element as a property change listener.
  */
+@Override
 public void deactivate() {
 	if (isActive()) {
 		super.deactivate();
@@ -83,13 +86,14 @@ private SNLDiagram getCastedModel() {
  * @param child a model element instance
  * @return the corresponding EditPart or null
  */
-private EditPart getEditPartForChild(Object child) {
+private EditPart getEditPartForChild(final Object child) {
 	return (EditPart) getViewer().getEditPartRegistry().get(child);
 }
 
 /* (non-Javadoc)
  * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
  */
+@Override
 protected List getModelChildren() {
 	return getCastedModel().getChildren(); // a list of shapes
 }
@@ -97,8 +101,8 @@ protected List getModelChildren() {
 /* (non-Javadoc)
 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 */
-public void propertyChange(PropertyChangeEvent evt) {
-	String prop = evt.getPropertyName();
+public void propertyChange(final PropertyChangeEvent evt) {
+	final String prop = evt.getPropertyName();
 	if (SNLDiagram.CHILD_ADDED_PROP.equals(prop)) {
 		// add a child to this edit part
 		// causes an additional entry to appear in the tree of the outline view

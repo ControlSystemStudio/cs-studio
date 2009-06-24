@@ -30,9 +30,10 @@ class ShapeComponentEditPolicy extends ComponentEditPolicy {
 /* (non-Javadoc)
  * @see org.eclipse.gef.editpolicies.ComponentEditPolicy#createDeleteCommand(org.eclipse.gef.requests.GroupRequest)
  */
-protected Command createDeleteCommand(GroupRequest deleteRequest) {
-	Object parent = getHost().getParent().getModel();
-	Object child = getHost().getModel();
+@Override
+protected Command createDeleteCommand(final GroupRequest deleteRequest) {
+	final Object parent = getHost().getParent().getModel();
+	final Object child = getHost().getModel();
 	if (parent instanceof SNLDiagram && child instanceof SNLModel) {
 		return new ShapeDeleteCommand((SNLDiagram) parent, (SNLModel) child);
 	}

@@ -61,6 +61,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart
 /**
  * Upon activation, attach to the model element as a property change listener.
  */
+@Override
 public void activate() {
 	if (!isActive()) {
 		super.activate();
@@ -71,6 +72,7 @@ public void activate() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
  */
+@Override
 protected void createEditPolicies() {
 	// disallows the removal of this edit part from its parent
 	installEditPolicy(EditPolicy.COMPONENT_ROLE, new RootComponentEditPolicy());
@@ -82,13 +84,14 @@ protected void createEditPolicies() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
  */
+@Override
 protected IFigure createFigure() {
-	Figure f = new FreeformLayer();
+	final Figure f = new FreeformLayer();
 	f.setBorder(new MarginBorder(3));
 	f.setLayoutManager(new FreeformLayout());
 
 	// Create the static router for the connection layer
-	ConnectionLayer connLayer = (ConnectionLayer)getLayer(LayerConstants.CONNECTION_LAYER);
+	final ConnectionLayer connLayer = (ConnectionLayer)getLayer(LayerConstants.CONNECTION_LAYER);
 	connLayer.setConnectionRouter(new ShortestPathConnectionRouter(f));
 	
 	return f;
@@ -97,6 +100,7 @@ protected IFigure createFigure() {
 /**
  * Upon deactivation, detach from the model element as a property change listener.
  */
+@Override
 public void deactivate() {
 	if (isActive()) {
 		super.deactivate();
@@ -111,6 +115,7 @@ private SNLDiagram getCastedModel() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
  */
+@Override
 protected List getModelChildren() {
 	return getCastedModel().getChildren(); // return a list of shapes
 }
@@ -118,8 +123,8 @@ protected List getModelChildren() {
 /* (non-Javadoc)
  * @see java.beans.PropertyChangeListener#propertyChange(PropertyChangeEvent)
  */
-public void propertyChange(PropertyChangeEvent evt) {
-	String prop = evt.getPropertyName();
+public void propertyChange(final PropertyChangeEvent evt) {
+	final String prop = evt.getPropertyName();
 	// these properties are fired when Shapes are added into or removed from 
 	// the ShapeDiagram instance and must cause a call of refreshChildren()
 	// to update the diagram's contents.
@@ -139,8 +144,9 @@ private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	/* (non-Javadoc)
 	 * @see ConstrainedLayoutEditPolicy#createChangeConstraintCommand(ChangeBoundsRequest, EditPart, Object)
 	 */
-	protected Command createChangeConstraintCommand(ChangeBoundsRequest request,
-			EditPart child, Object constraint) {
+	@Override
+	protected Command createChangeConstraintCommand(final ChangeBoundsRequest request,
+			final EditPart child, final Object constraint) {
 		if (child instanceof ShapeEditPart && constraint instanceof Rectangle) {
 			// return a command that can move and/or resize a Shape
 			return new ShapeSetConstraintCommand(
@@ -152,8 +158,9 @@ private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	/* (non-Javadoc)
 	 * @see ConstrainedLayoutEditPolicy#createChangeConstraintCommand(EditPart, Object)
 	 */
-	protected Command createChangeConstraintCommand(EditPart child,
-			Object constraint) {
+	@Override
+	protected Command createChangeConstraintCommand(final EditPart child,
+			final Object constraint) {
 		// not used in this example
 		return null;
 	}
@@ -161,8 +168,9 @@ private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	/* (non-Javadoc)
 	 * @see LayoutEditPolicy#getCreateCommand(CreateRequest)
 	 */
-	protected Command getCreateCommand(CreateRequest request) {
-		Object childClass = request.getNewObjectType();
+	@Override
+	protected Command getCreateCommand(final CreateRequest request) {
+		final Object childClass = request.getNewObjectType();
 		if (childClass == StateModel.class || childClass == StateSetModel.class) {
 			// return a command that can add a Shape to a ShapesDiagram 
 			return new ShapeCreateCommand((SNLModel)request.getNewObject(), 

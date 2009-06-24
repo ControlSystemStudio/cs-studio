@@ -42,7 +42,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 * @param model
 	 *            a non-null Shapes instance
 	 */
-	ShapeTreeEditPart(SNLModel model) {
+	ShapeTreeEditPart(final SNLModel model) {
 		super(model);
 	}
 
@@ -50,6 +50,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 * Upon activation, attach to the model element as a property change
 	 * listener.
 	 */
+	@Override
 	public void activate() {
 		if (!isActive()) {
 			super.activate();
@@ -62,6 +63,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#createEditPolicies()
 	 */
+	@Override
 	protected void createEditPolicies() {
 		// allow removal of the associated model element
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
@@ -72,6 +74,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 * Upon deactivation, detach from the model element as a property change
 	 * listener.
 	 */
+	@Override
 	public void deactivate() {
 		if (isActive()) {
 			super.deactivate();
@@ -88,8 +91,9 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getImage()
 	 */
+	@Override
 	protected Image getImage() {
-		String name = getCastedModel().getIconName();
+		final String name = getCastedModel().getIconName();
 		return ShapesPlugin.getImageDescriptor("icons/" + name).createImage();
 	}
 
@@ -98,6 +102,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getText()
 	 */
+	@Override
 	protected String getText() {
 		return getCastedModel().toString();
 	}
@@ -108,7 +113,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
 	 * PropertyChangeEvent)
 	 */
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {
 		refreshVisuals(); // this will cause an invocation of getImage() and
 							// getText(), see below
 	}

@@ -43,6 +43,7 @@ private CreationPage page1;
 /* (non-Javadoc)
  * @see org.eclipse.jface.wizard.IWizard#addPages()
  */
+@Override
 public void addPages() {
 	// add pages to this wizard
 	addPage(page1); 
@@ -51,7 +52,7 @@ public void addPages() {
 /* (non-Javadoc)
  * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
  */
-public void init(IWorkbench workbench, IStructuredSelection selection) {
+public void init(final IWorkbench workbench, final IStructuredSelection selection) {
 	// create pages for this wizard
 	page1 = new CreationPage(workbench, selection); 
 }
@@ -59,6 +60,7 @@ public void init(IWorkbench workbench, IStructuredSelection selection) {
 /* (non-Javadoc)
  * @see org.eclipse.jface.wizard.IWizard#performFinish()
  */
+@Override
 public boolean performFinish() {
 	return page1.finish();
 }
@@ -76,7 +78,7 @@ private class CreationPage extends WizardNewFileCreationPage {
 	 * @param selection the current object selection
 	 * @see ShapesCreationWizard#init(IWorkbench, IStructuredSelection)
 	 */
-	CreationPage(IWorkbench workbench, IStructuredSelection selection) {
+	CreationPage(final IWorkbench workbench, final IStructuredSelection selection) {
 		super("shapeCreationPage1", selection);
 		this.workbench = workbench;
 		setTitle("Create a new " + DEFAULT_EXTENSION + " file");
@@ -86,7 +88,8 @@ private class CreationPage extends WizardNewFileCreationPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
-	public void createControl(Composite parent) {
+	@Override
+	public void createControl(final Composite parent) {
 		super.createControl(parent);
 		setFileName("shapesExample" + fileCount + DEFAULT_EXTENSION);
 		setPageComplete(validatePage());
@@ -103,15 +106,15 @@ private class CreationPage extends WizardNewFileCreationPage {
 	 */
 	boolean finish() {
 		// create a new file, result != null if successful
-		IFile newFile = createNewFile();
+		final IFile newFile = createNewFile();
 		fileCount++;
 		
 		// open newly created file in the editor
-		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+		final IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 		if (newFile != null && page != null) {
 			try {
 				IDE.openEditor(page, newFile, true);
-			} catch (PartInitException e) {
+			} catch (final PartInitException e) {
 				e.printStackTrace();
 				return false;
 			}
@@ -122,16 +125,17 @@ private class CreationPage extends WizardNewFileCreationPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#getInitialContents()
 	 */
+	@Override
 	protected InputStream getInitialContents() {
 		ByteArrayInputStream bais = null;
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			final ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(createDefaultContent()); // argument must be Serializable
 			oos.flush();
 			oos.close();
 			bais = new ByteArrayInputStream(baos.toByteArray());
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			ioe.printStackTrace();
 		}
 		return bais;
@@ -151,6 +155,7 @@ private class CreationPage extends WizardNewFileCreationPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#validatePage()
 	 */
+	@Override
 	protected boolean validatePage() {
 		return super.validatePage() && validateFilename();
 	}

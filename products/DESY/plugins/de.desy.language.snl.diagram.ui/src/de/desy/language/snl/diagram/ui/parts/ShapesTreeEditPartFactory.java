@@ -27,7 +27,7 @@ public class ShapesTreeEditPartFactory implements EditPartFactory {
 /* (non-Javadoc)
  * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
  */
-public EditPart createEditPart(EditPart context, Object model) {
+public EditPart createEditPart(final EditPart context, final Object model) {
 	if (model instanceof SNLModel) {
 		return new ShapeTreeEditPart((SNLModel) model);
 	}

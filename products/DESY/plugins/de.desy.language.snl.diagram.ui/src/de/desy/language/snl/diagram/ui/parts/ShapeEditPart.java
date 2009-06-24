@@ -59,6 +59,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * Upon activation, attach to the model element as a property change
 	 * listener.
 	 */
+	@Override
 	public void activate() {
 		if (!isActive()) {
 			super.activate();
@@ -71,6 +72,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
+	@Override
 	protected void createEditPolicies() {
 		// allow removal of the associated model element
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
@@ -84,9 +86,10 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 					 * 
 					 * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCompleteCommand(org.eclipse.gef.requests.CreateConnectionRequest)
 					 */
+					@Override
 					protected Command getConnectionCompleteCommand(
-							CreateConnectionRequest request) {
-						ConnectionCreateCommand cmd = (ConnectionCreateCommand) request
+							final CreateConnectionRequest request) {
+						final ConnectionCreateCommand cmd = (ConnectionCreateCommand) request
 								.getStartCommand();
 						cmd.setTarget((SNLModel) getHost().getModel());
 						return cmd;
@@ -97,10 +100,11 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 					 * 
 					 * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCreateCommand(org.eclipse.gef.requests.CreateConnectionRequest)
 					 */
+					@Override
 					protected Command getConnectionCreateCommand(
-							CreateConnectionRequest request) {
-						SNLModel source = (SNLModel) getHost().getModel();
-						ConnectionCreateCommand cmd = new ConnectionCreateCommand(
+							final CreateConnectionRequest request) {
+						final SNLModel source = (SNLModel) getHost().getModel();
+						final ConnectionCreateCommand cmd = new ConnectionCreateCommand(
 								source);
 						request.setStartCommand(cmd);
 						return cmd;
@@ -111,12 +115,13 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 					 * 
 					 * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectSourceCommand(org.eclipse.gef.requests.ReconnectRequest)
 					 */
+					@Override
 					protected Command getReconnectSourceCommand(
-							ReconnectRequest request) {
-						WhenConnection conn = (WhenConnection) request
+							final ReconnectRequest request) {
+						final WhenConnection conn = (WhenConnection) request
 								.getConnectionEditPart().getModel();
-						SNLModel newSource = (SNLModel) getHost().getModel();
-						ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
+						final SNLModel newSource = (SNLModel) getHost().getModel();
+						final ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
 								conn);
 						cmd.setNewSource(newSource);
 						return cmd;
@@ -127,12 +132,13 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 					 * 
 					 * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectTargetCommand(org.eclipse.gef.requests.ReconnectRequest)
 					 */
+					@Override
 					protected Command getReconnectTargetCommand(
-							ReconnectRequest request) {
-						WhenConnection conn = (WhenConnection) request
+							final ReconnectRequest request) {
+						final WhenConnection conn = (WhenConnection) request
 								.getConnectionEditPart().getModel();
-						SNLModel newTarget = (SNLModel) getHost().getModel();
-						ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
+						final SNLModel newTarget = (SNLModel) getHost().getModel();
+						final ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
 								conn);
 						cmd.setNewTarget(newTarget);
 						return cmd;
@@ -145,8 +151,9 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
+	@Override
 	protected IFigure createFigure() {
-		IFigure f = createFigureForModel();
+		final IFigure f = createFigureForModel();
 		f.setOpaque(true); // non-transparent figure
 		// f.setBackgroundColor(ColorConstants.green);
 		return f;
@@ -158,10 +165,10 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 */
 	private IFigure createFigureForModel() {
 		if (getModel() instanceof StateModel) {
-			StateModel sm = (StateModel) getModel();
+			final StateModel sm = (StateModel) getModel();
 			return new StateFigure(sm.getStateNode());
 		} else if (getModel() instanceof StateSetModel) {
-			RectangleFigure rectangleFigure = new RectangleFigure();
+			final RectangleFigure rectangleFigure = new RectangleFigure();
 			rectangleFigure.setBackgroundColor(ColorConstants.green);
 			return rectangleFigure;
 		} else {
@@ -174,6 +181,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * Upon deactivation, detach from the model element as a property change
 	 * listener.
 	 */
+	@Override
 	public void deactivate() {
 		if (isActive()) {
 			super.deactivate();
@@ -204,6 +212,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelSourceConnections()
 	 */
+	@Override
 	protected List getModelSourceConnections() {
 		return getCastedModel().getSourceConnections();
 	}
@@ -213,6 +222,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelTargetConnections()
 	 */
+	@Override
 	protected List getModelTargetConnections() {
 		return getCastedModel().getTargetConnections();
 	}
@@ -223,7 +233,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
 	 */
 	public ConnectionAnchor getSourceConnectionAnchor(
-			ConnectionEditPart connection) {
+			final ConnectionEditPart connection) {
 		return getConnectionAnchor();
 	}
 
@@ -232,7 +242,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * 
 	 * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
 	 */
-	public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+	public ConnectionAnchor getSourceConnectionAnchor(final Request request) {
 		return getConnectionAnchor();
 	}
 
@@ -242,7 +252,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
 	 */
 	public ConnectionAnchor getTargetConnectionAnchor(
-			ConnectionEditPart connection) {
+			final ConnectionEditPart connection) {
 		return getConnectionAnchor();
 	}
 
@@ -251,7 +261,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * 
 	 * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
 	 */
-	public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+	public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
 		return getConnectionAnchor();
 	}
 
@@ -260,8 +270,8 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * 
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
-	public void propertyChange(PropertyChangeEvent evt) {
-		String prop = evt.getPropertyName();
+	public void propertyChange(final PropertyChangeEvent evt) {
+		final String prop = evt.getPropertyName();
 		if (SNLModel.SIZE_PROP.equals(prop)
 				|| SNLModel.LOCATION_PROP.equals(prop)) {
 			refreshVisuals();
@@ -272,6 +282,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 		}
 	}
 
+	@Override
 	protected void refreshVisuals() {
 		// notify parent container of changed position & location
 		// if this line is removed, the XYLayoutManager used by the parent
@@ -279,7 +290,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 		// (the Figure of the ShapesDiagramEditPart), will not know the bounds
 		// of this figure
 		// and will not draw it correctly.
-		Rectangle bounds = new Rectangle(getCastedModel().getLocation(),
+		final Rectangle bounds = new Rectangle(getCastedModel().getLocation(),
 				getCastedModel().getSize());
 		((GraphicalEditPart) getParent()).setLayoutConstraint(this,
 				getFigure(), bounds);

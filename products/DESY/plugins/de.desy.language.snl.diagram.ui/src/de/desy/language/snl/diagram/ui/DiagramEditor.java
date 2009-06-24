@@ -16,9 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.draw2d.BendpointConnectionRouter;
 import org.eclipse.draw2d.ConnectionLayer;
-import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
@@ -92,17 +90,18 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#configureGraphicalViewer()
 	 */
+	@Override
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
 
-		GraphicalViewer viewer = getGraphicalViewer();
+		final GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setEditPartFactory(new ShapesEditPartFactory());
 		_scalableFreeformRootEditPart = new ScalableFreeformRootEditPart();
 		viewer.setRootEditPart(_scalableFreeformRootEditPart);
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
 
 		// configure the context menu provider
-		ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
+		final ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
 				viewer, getActionRegistry());
 		viewer.setContextMenu(cmProvider);
 		getSite().registerContextMenu(cmProvider, viewer);
@@ -113,7 +112,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util.EventObject)
 	 */
-	public void commandStackChanged(EventObject event) {
+	@Override
+	public void commandStackChanged(final EventObject event) {
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 		super.commandStackChanged(event);
 	}
@@ -123,9 +123,11 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
 	 */
+	@Override
 	protected PaletteViewerProvider createPaletteViewerProvider() {
 		return new PaletteViewerProvider(getEditDomain()) {
-			protected void configurePaletteViewer(PaletteViewer viewer) {
+			@Override
+			protected void configurePaletteViewer(final PaletteViewer viewer) {
 				super.configurePaletteViewer(viewer);
 				// create a drag source listener for this palette viewer
 				// together with an appropriate transfer drop target listener,
@@ -150,7 +152,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	private TransferDropTargetListener createTransferDropTargetListener() {
 		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
-			protected CreationFactory getFactory(Object template) {
+			@Override
+			protected CreationFactory getFactory(final Object template) {
 				return new SimpleFactory((Class) template);
 			}
 		};
@@ -161,7 +164,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	public void doSave(IProgressMonitor monitor) {
+	@Override
+	public void doSave(final IProgressMonitor monitor) {
 //		ByteArrayOutputStream out = new ByteArrayOutputStream();
 //		try {
 //			createOutputStream(out);
@@ -182,6 +186,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
+	@Override
 	public void doSaveAs() {
 //		// Show a SaveAs dialog
 //		Shell shell = getSite().getWorkbenchWindow().getShell();
@@ -233,7 +238,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		return false;
 	}
 
-	public Object getAdapter(Class type) {
+	@Override
+	public Object getAdapter(final Class type) {
 		if (type == IContentOutlinePage.class)
 			return new ShapesOutlinePage(new TreeViewer());
 		return super.getAdapter(type);
@@ -248,6 +254,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
 	 */
+	@Override
 	protected PaletteRoot getPaletteRoot() {
 		if (PALETTE_MODEL == null)
 			PALETTE_MODEL = ShapesEditorPaletteFactory.createPalette();
@@ -259,14 +266,16 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#initializeGraphicalViewer()
 	 */
+	@Override
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
-		GraphicalViewer viewer = getGraphicalViewer();
+		final GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setContents(getModel()); // set the contents of this editor
+		final ConnectionLayer layer = (ConnectionLayer) _scalableFreeformRootEditPart.getLayer(LayerConstants.CONNECTION_LAYER);
 		
-		ConnectionLayer layer = (ConnectionLayer) _scalableFreeformRootEditPart.getLayer(LayerConstants.CONNECTION_LAYER);
-		
-		layer.setConnectionRouter(new BendpointConnectionRouter());
+		final ShortestPathConnectionRouter pathRouter = (ShortestPathConnectionRouter)layer.getConnectionRouter();
+		pathRouter.setSpacing(10);
+				
 		// listen for dropped parts
 		viewer.addDropTargetListener(createTransferDropTargetListener());
 	}
@@ -276,6 +285,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
 	 */
+	@Override
 	public boolean isSaveAsAllowed() {
 		return true;
 	}
@@ -285,14 +295,15 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
 	 */
-	protected void setInput(IEditorInput input) {
+	@Override
+	protected void setInput(final IEditorInput input) {
 		super.setInput(input);
 		// try {
-		IFile file = ((IFileEditorInput) input).getFile();
+		final IFile file = ((IFileEditorInput) input).getFile();
 		fImplicitDocumentProvider = new TextFileDocumentProvider();
 		try {
 			fImplicitDocumentProvider.connect(input);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
 		final IDocument document = fImplicitDocumentProvider.getDocument(input);
@@ -302,10 +313,10 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 				sourceRessource = ((FileEditorInput) getEditorInput())
 						.getFile();
 			}
-			Node rootNode = this.getLanguageParser().parse(document.get(), sourceRessource, new NullProgressMonitor());
-			diagram = DiagramCreator.createDiagram(rootNode);
+			final Node rootNode = this.getLanguageParser().parse(document.get(), sourceRessource, new NullProgressMonitor());
+			diagram = DiagramCreator.getInstance().createDiagram(rootNode);
 		} else {
-			diagram = DiagramCreator.createDefaultDiagram();
+			diagram = DiagramCreator.getInstance().createDefaultDiagram();
 		}
 		setPartName(file.getName());
 	}
@@ -326,7 +337,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		 * @throws IllegalArgumentException
 		 *             if editor is null
 		 */
-		public ShapesOutlinePage(EditPartViewer viewer) {
+		public ShapesOutlinePage(final EditPartViewer viewer) {
 			super(viewer);
 		}
 
@@ -335,14 +346,15 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		 * 
 		 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
 		 */
-		public void createControl(Composite parent) {
+		@Override
+		public void createControl(final Composite parent) {
 			// create outline viewer page
 			getViewer().createControl(parent);
 			// configure outline viewer
 			getViewer().setEditDomain(getEditDomain());
 			getViewer().setEditPartFactory(new ShapesTreeEditPartFactory());
 			// configure & add context menu to viewer
-			ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
+			final ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
 					getViewer(), getActionRegistry());
 			getViewer().setContextMenu(cmProvider);
 			getSite().registerContextMenu(
@@ -360,6 +372,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		 * 
 		 * @see org.eclipse.ui.part.IPage#dispose()
 		 */
+		@Override
 		public void dispose() {
 			// unhook outline viewer
 			getSelectionSynchronizer().removeViewer(getViewer());
@@ -372,6 +385,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		 * 
 		 * @see org.eclipse.ui.part.IPage#getControl()
 		 */
+		@Override
 		public Control getControl() {
 			return getViewer().getControl();
 		}
@@ -379,10 +393,11 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		/**
 		 * @see org.eclipse.ui.part.IPageBookViewPage#init(org.eclipse.ui.part.IPageSite)
 		 */
-		public void init(IPageSite pageSite) {
+		@Override
+		public void init(final IPageSite pageSite) {
 			super.init(pageSite);
-			ActionRegistry registry = getActionRegistry();
-			IActionBars bars = pageSite.getActionBars();
+			final ActionRegistry registry = getActionRegistry();
+			final IActionBars bars = pageSite.getActionBars();
 			String id = ActionFactory.UNDO.getId();
 			bars.setGlobalActionHandler(id, registry.getAction(id));
 			id = ActionFactory.REDO.getId();

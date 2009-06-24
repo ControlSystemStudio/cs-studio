@@ -20,6 +20,7 @@ import org.eclipse.draw2d.geometry.PointList;
  * @author Kai Meyer, Sebastian Middeke (C1 WPS)
  * 
  */
+@Deprecated
 public class CustomFanRouter extends AutomaticRouter {
 
 	/**
@@ -142,37 +143,29 @@ public class CustomFanRouter extends AutomaticRouter {
 	public void route(final Connection conn) {
 		assert conn != null : "conn != null";
 
-		Object routingConstraint = conn.getRoutingConstraint();
-		System.out.println("CustomFanRouter.route()");
-		System.out.println("Routing Constraint: " + routingConstraint);
-
 		cleanMap();
 		final ConnectionAnchor sourceAnchor = conn.getSourceAnchor();
 		final ConnectionAnchor targetAnchor = conn.getTargetAnchor();
 
-		if (routingConstraint == null) {
+		if (sourceAnchor != null && targetAnchor != null) {
+			final MapKey key = new MapKey(sourceAnchor, targetAnchor);
+			final MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
 
-			if (sourceAnchor != null && targetAnchor != null) {
-				final MapKey key = new MapKey(sourceAnchor, targetAnchor);
-				final MapKey reverseKey = new MapKey(targetAnchor, sourceAnchor);
-
-				if (_connectionMap.containsKey(key)
-						|| _connectionMap.containsKey(reverseKey)) {
-					final List<Connection> connections = _connectionMap
-							.get(key);
-					if (!connections.contains(conn)) {
-						connections.add(conn);
-					}
-					final int index = connections.indexOf(conn);
-					handleCollision(conn, index);
-				} else {
-					final List<Connection> list = new LinkedList<Connection>();
-					list.add(conn);
-					final List<Connection> reverseList = new LinkedList<Connection>();
-					reverseList.add(conn);
-					_connectionMap.put(key, list);
-					_connectionMap.put(reverseKey, reverseList);
+			if (_connectionMap.containsKey(key)
+					|| _connectionMap.containsKey(reverseKey)) {
+				final List<Connection> connections = _connectionMap.get(key);
+				if (!connections.contains(conn)) {
+					connections.add(conn);
 				}
+				final int index = connections.indexOf(conn);
+				handleCollision(conn, index);
+			} else {
+				final List<Connection> list = new LinkedList<Connection>();
+				list.add(conn);
+				final List<Connection> reverseList = new LinkedList<Connection>();
+				reverseList.add(conn);
+				_connectionMap.put(key, list);
+				_connectionMap.put(reverseKey, reverseList);
 			}
 		}
 
@@ -233,6 +226,18 @@ public class CustomFanRouter extends AutomaticRouter {
 			list.addAll(calculateNewPoints(firstPoint, lastPoint, index));
 		}
 	}
+	
+//	private void refreshBendPoints(Connection conn) {
+//		final List<Point> modelConstraint = getCastedModel().getBendPoints();
+//		final List<Bendpoint> figureConstraint = new ArrayList<Bendpoint>();
+//		if (modelConstraint != null) {
+//			for (final Point current : modelConstraint) {
+//				final AbsoluteBendpoint abp = new AbsoluteBendpoint(current);
+//				figureConstraint.add(abp);
+//			}
+//			conn.setRoutingConstraint(figureConstraint);
+//		}
+//	}
 
 	/**
 	 * Calculates the points necessary for the re-routing of the

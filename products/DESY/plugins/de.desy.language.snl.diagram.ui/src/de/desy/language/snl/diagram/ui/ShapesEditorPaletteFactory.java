@@ -43,7 +43,7 @@ final class ShapesEditorPaletteFactory {
 
 	/** Create the "Shapes" drawer. */
 	private static PaletteContainer createShapesDrawer() {
-		PaletteDrawer componentsDrawer = new PaletteDrawer("Shapes");
+		final PaletteDrawer componentsDrawer = new PaletteDrawer("Shapes");
 
 		CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
 				"State", "Create a State", StateModel.class, new SimpleFactory(
@@ -69,15 +69,15 @@ final class ShapesEditorPaletteFactory {
 	 * @return a new PaletteRoot
 	 */
 	static PaletteRoot createPalette() {
-		PaletteRoot palette = new PaletteRoot();
+		final PaletteRoot palette = new PaletteRoot();
 		palette.add(createToolsGroup(palette));
 		palette.add(createShapesDrawer());
 		return palette;
 	}
 
 	/** Create the "Tools" group. */
-	private static PaletteContainer createToolsGroup(PaletteRoot palette) {
-		PaletteGroup toolGroup = new PaletteGroup("Tools");
+	private static PaletteContainer createToolsGroup(final PaletteRoot palette) {
+		final PaletteGroup toolGroup = new PaletteGroup("Tools");
 
 		// Add a selection tool to the group
 		ToolEntry tool = new PanningSelectionToolEntry();

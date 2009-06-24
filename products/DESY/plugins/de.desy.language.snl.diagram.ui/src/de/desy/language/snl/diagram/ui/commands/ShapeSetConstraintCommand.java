@@ -41,8 +41,8 @@ private final SNLModel shape;
  * @param newBounds the new size and location
  * @throws IllegalArgumentException if any of the parameters is null
  */
-public ShapeSetConstraintCommand(SNLModel shape, ChangeBoundsRequest req, 
-		Rectangle newBounds) {
+public ShapeSetConstraintCommand(final SNLModel shape, final ChangeBoundsRequest req, 
+		final Rectangle newBounds) {
 	if (shape == null || req == null || newBounds == null) {
 		throw new IllegalArgumentException();
 	}
@@ -55,8 +55,9 @@ public ShapeSetConstraintCommand(SNLModel shape, ChangeBoundsRequest req,
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#canExecute()
  */
+@Override
 public boolean canExecute() {
-	Object type = request.getType();
+	final Object type = request.getType();
 	// make sure the Request is of a type we support:
 	return (RequestConstants.REQ_MOVE.equals(type)
 			|| RequestConstants.REQ_MOVE_CHILDREN.equals(type) 
@@ -67,6 +68,7 @@ public boolean canExecute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#execute()
  */
+@Override
 public void execute() {
 	oldBounds = new Rectangle(shape.getLocation(), shape.getSize());
 	redo();
@@ -75,6 +77,7 @@ public void execute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#redo()
  */
+@Override
 public void redo() {
 	shape.setSize(newBounds.getSize());
 	shape.setLocation(newBounds.getLocation());
@@ -83,6 +86,7 @@ public void redo() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#undo()
  */
+@Override
 public void undo() {
 	shape.setSize(oldBounds.getSize());
 	shape.setLocation(oldBounds.getLocation());

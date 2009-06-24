@@ -29,11 +29,11 @@ public class ShapeCreateCommand
 {
 	
 /** The new shape. */ 
-private SNLModel newShape;
+private final SNLModel newShape;
 /** ShapeDiagram to add to. */
 private final SNLDiagram parent;
 /** The bounds of the new Shape. */
-private Rectangle bounds;
+private final Rectangle bounds;
 
 /**
  * Create a command that will add a new Shape to a ShapesDiagram.
@@ -43,7 +43,7 @@ private Rectangle bounds;
  * @throws IllegalArgumentException if any parameter is null, or the request
  * 						  does not provide a new Shape instance
  */
-public ShapeCreateCommand(SNLModel newShape, SNLDiagram parent, Rectangle bounds) {
+public ShapeCreateCommand(final SNLModel newShape, final SNLDiagram parent, final Rectangle bounds) {
 	this.newShape = newShape;
 	this.parent = parent;
 	this.bounds = bounds;
@@ -54,6 +54,7 @@ public ShapeCreateCommand(SNLModel newShape, SNLDiagram parent, Rectangle bounds
  * Can execute if all the necessary information has been provided. 
  * @see org.eclipse.gef.commands.Command#canExecute()
  */
+@Override
 public boolean canExecute() {
 	return newShape != null && parent != null && bounds != null;
 }
@@ -61,9 +62,10 @@ public boolean canExecute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#execute()
  */
+@Override
 public void execute() {
 	newShape.setLocation(bounds.getLocation());
-	Dimension size = bounds.getSize();
+	final Dimension size = bounds.getSize();
 	if (size.width > 0 && size.height > 0)
 		newShape.setSize(size);
 	redo();
@@ -72,6 +74,7 @@ public void execute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#redo()
  */
+@Override
 public void redo() {
 	parent.addChild(newShape);
 }
@@ -79,6 +82,7 @@ public void redo() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#undo()
  */
+@Override
 public void undo() {
 	parent.removeChild(newShape);
 }

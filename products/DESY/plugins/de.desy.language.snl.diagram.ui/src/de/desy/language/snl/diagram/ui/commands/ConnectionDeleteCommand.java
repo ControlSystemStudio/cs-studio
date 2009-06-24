@@ -29,7 +29,7 @@ private final WhenConnection connection;
  * @param conn the connection instance to disconnect (non-null)
  * @throws IllegalArgumentException if conn is null
  */ 
-public ConnectionDeleteCommand(WhenConnection conn) {
+public ConnectionDeleteCommand(final WhenConnection conn) {
 	if (conn == null) {
 		throw new IllegalArgumentException();
 	}
@@ -41,6 +41,7 @@ public ConnectionDeleteCommand(WhenConnection conn) {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#execute()
  */
+@Override
 public void execute() {
 	connection.disconnect();
 }
@@ -48,6 +49,7 @@ public void execute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#undo()
  */
+@Override
 public void undo() {
 	connection.reconnect();
 }

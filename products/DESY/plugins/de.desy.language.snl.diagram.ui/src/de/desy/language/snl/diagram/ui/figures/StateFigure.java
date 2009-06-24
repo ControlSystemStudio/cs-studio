@@ -8,17 +8,17 @@ import de.desy.language.snl.parser.nodes.StateNode;
 
 public class StateFigure extends Label {
 	
-	private StateNode _state;
+	private final StateNode _state;
 
-	public StateFigure(StateNode state) {
+	public StateFigure(final StateNode state) {
 		_state = state;
 		this.setText(_state.getSourceIdentifier());
-		Label label = new Label();
+		final Label label = new Label();
 		label.setText(_state.getContent());
 		label.setBackgroundColor(ColorConstants.tooltipBackground);
 		this.setToolTip(label);
 		this.setBackgroundColor(ColorConstants.cyan);
-		LineBorder lineBorder = new LineBorder();
+		final LineBorder lineBorder = new LineBorder();
 		lineBorder.setColor(ColorConstants.black);
 		this.setBorder(lineBorder);
 	}

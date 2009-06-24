@@ -54,7 +54,7 @@ private SNLModel target;
  * @throws IllegalArgumentException if source is null
  * @see WhenConnection#setLineStyle(int)
  */
-public ConnectionCreateCommand(SNLModel source) {
+public ConnectionCreateCommand(final SNLModel source) {
 	if (source == null) {
 		throw new IllegalArgumentException();
 	}
@@ -65,14 +65,15 @@ public ConnectionCreateCommand(SNLModel source) {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#canExecute()
  */
+@Override
 public boolean canExecute() {
 	// disallow source -> source connections
 	if (source.equals(target)) {
 		return false;
 	}
 	// return false, if the source -> target connection exists already
-	for (Iterator iter = source.getSourceConnections().iterator(); iter.hasNext();) {
-		WhenConnection conn = (WhenConnection) iter.next();
+	for (final Iterator iter = source.getSourceConnections().iterator(); iter.hasNext();) {
+		final WhenConnection conn = (WhenConnection) iter.next();
 		if (conn.getTarget().equals(target)) {
 			return false;
 		}
@@ -83,6 +84,7 @@ public boolean canExecute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#execute()
  */
+@Override
 public void execute() {
 	// create a new connection between source and target
 	connection = new WhenConnection(source, target);
@@ -91,6 +93,7 @@ public void execute() {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#redo()
  */
+@Override
 public void redo() {
 	connection.reconnect();
 }
@@ -100,7 +103,7 @@ public void redo() {
  * @param target that target endpoint (a non-null Shape instance)
  * @throws IllegalArgumentException if target is null
  */
-public void setTarget(SNLModel target) {
+public void setTarget(final SNLModel target) {
 	if (target == null) {
 		throw new IllegalArgumentException();
 	}
@@ -110,6 +113,7 @@ public void setTarget(SNLModel target) {
 /* (non-Javadoc)
  * @see org.eclipse.gef.commands.Command#undo()
  */
+@Override
 public void undo() {
 	connection.disconnect();
 }
