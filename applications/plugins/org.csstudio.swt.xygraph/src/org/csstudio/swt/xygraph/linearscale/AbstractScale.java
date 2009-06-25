@@ -212,6 +212,7 @@ public abstract class AbstractScale extends Figure{
 	public void setDateEnabled(boolean dateEnabled) {
 		this.dateEnabled = dateEnabled;
         setDirty(true);
+        revalidate();
 
 	}
 
@@ -235,6 +236,7 @@ public abstract class AbstractScale extends Figure{
         this.formatPattern = formatPattern;
         autoFormat = false;
         setDirty(true);
+        revalidate();
     }
 
 	/**

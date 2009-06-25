@@ -43,6 +43,7 @@ public class Axis extends LinearScale implements IDataProviderListener{
 	private String title;
 	
 	private XYGraph xyGraph;
+	private Grid grid;
 	
 	private Font titleFont;
 	
@@ -154,7 +155,7 @@ public class Axis extends LinearScale implements IDataProviderListener{
 				Color titleColor = graphics.getForegroundColor();
 				RGB transparentRGB = new RGB(240, 240, 240);
 				if(xyGraph !=null)
-					if(xyGraph.isOpaque())
+					if(!xyGraph.isTransparent())
 						transparentRGB = xyGraph.getBackgroundColor().getRGB();	
 								
 				gc.setBackground(XYGraphMediaFactory.getInstance().getColor(transparentRGB));
@@ -421,7 +422,11 @@ public class Axis extends LinearScale implements IDataProviderListener{
 	 * @param isYAxis set true if the axis is Y-Axis; false if it is X-Axis.
 	 */
 	public void setYAxis(boolean isYAxis){
+		if(xyGraph != null)
+			xyGraph.removeAxis(this);
 		setOrientation(isYAxis ? Orientation.VERTICAL : Orientation.HORIZONTAL);
+		if(xyGraph != null)
+			xyGraph.addAxis(this);
 	}
 	
 	/**Set the axis on primary side (Bottom/Left) or secondary side (Top/Right).
@@ -475,6 +480,21 @@ public class Axis extends LinearScale implements IDataProviderListener{
 	}
 	
 	
+	/**
+	 * @param grid the grid to set
+	 */
+	public void setGrid(Grid grid) {
+		this.grid = grid;
+	}
+
+	/**
+	 * @return the grid
+	 */
+	public Grid getGrid() {
+		return grid;
+	}
+
+
 	class AxisPanner extends MouseMotionListener.Stub implements MouseListener {
 		
 		private AxisPanningCommand command;

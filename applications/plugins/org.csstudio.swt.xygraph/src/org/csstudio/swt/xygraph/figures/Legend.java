@@ -74,16 +74,17 @@ public class Legend extends RectangleFigure {
 			int hwidth = OUT_GAP + ICON_WIDTH + INNER_GAP +  
 					+ FigureUtilities.getTextExtents(trace.getName(), getFont()).width;
 			int hEnd = hPos + hwidth;
-			if(hEnd	> (bounds.x + bounds.width) && i!=0){
+			if(hEnd	> (bounds.x + bounds.width) && i>0){
 				hPos= bounds.x + INNER_GAP;
-				vPos += ICON_WIDTH + INNER_GAP;				
+				vPos += ICON_WIDTH + INNER_GAP;
+				hEnd = hPos + hwidth;
 			}	
 				
 		//	graphics.setForegroundColor(trace.getYAxis().getForegroundColor());
 		//	Rectangle rect = new Rectangle(hPos, vPos-INNER_GAP/2, hwidth - OUT_GAP,ICON_WIDTH-INNER_GAP);
 		//	graphics.fillRectangle(rect);
 		//	graphics.drawRectangle(rect);
-			drawTraceLagend(trace, graphics, hPos, vPos);
+			drawTraceLagend(trace, graphics, hPos, vPos);			
 			hPos = hEnd;
 			i++;
 		}
@@ -136,8 +137,8 @@ public class Legend extends RectangleFigure {
 			hEnd = hEnd + OUT_GAP + ICON_WIDTH + INNER_GAP +  
 					+ FigureUtilities.getTextExtents(trace.getName(), getFont()).width;
 			
-			if(hEnd	> wHint && i!=traceList.size()-1){
-				hEnd= OUT_GAP + ICON_WIDTH + INNER_GAP +  
+			if(hEnd	> wHint){
+				hEnd= INNER_GAP + OUT_GAP + ICON_WIDTH + INNER_GAP +  
 					+ FigureUtilities.getTextExtents(trace.getName(), getFont()).width;;
 				height += ICON_WIDTH + INNER_GAP;				
 			}	

@@ -233,15 +233,30 @@ class XYGraphTest extends Figure {
 			}
 		});		
 		
+		xyGraph.addTrace((new Trace("trace5", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
+				new  CircularBufferDataProvider(false))));
+		xyGraph.addTrace((new Trace("trace6", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
+				new  CircularBufferDataProvider(false))));
+		xyGraph.addTrace((new Trace("trace7", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
+				new  CircularBufferDataProvider(false))));
+		xyGraph.addTrace((new Trace("trace8", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
+				new  CircularBufferDataProvider(false))));
+		xyGraph.addTrace((new Trace("trace9", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
+				new  CircularBufferDataProvider(false))));
+		xyGraph.addTrace((new Trace("trace10sfsdfffffffffffffffffffffffffffffffffffffff", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
+				new  CircularBufferDataProvider(false))));
 		
 		updater = new Runnable(){
 			public void run() {
 				 t+=60000;
 				trace3Provider.setCurrentYData(Math.cos(updateIndex), t);
 				if((updateIndex >= 10 && updateIndex <=10.5) ||
-					(updateIndex >= 20 && updateIndex <=20.2)	)
-					trace2Provider.addSample(new Sample(t, Double.NaN));					
-				
+					(updateIndex >= 20 && updateIndex <=20.2)	){
+					trace2Provider.addSample(new Sample(t, Double.NaN));
+					//xyGraph.removeTrace(trace1);
+					//xyGraph.removeTrace(trace4);
+					running = false;
+				}
 				else{
 					Sample sampe = new Sample(t, Math.sin(updateIndex), 0.1* Math.random(),
 							0.1*Math.random(), t*0.0000001* Math.random(),t*0.0000001* Math.random());

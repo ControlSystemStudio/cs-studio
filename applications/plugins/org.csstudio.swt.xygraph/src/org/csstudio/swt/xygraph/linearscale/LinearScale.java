@@ -310,6 +310,7 @@ public class LinearScale extends AbstractScale {
 	public void setOrientation(Orientation orientation) {
 		this.orientation = orientation;
         setDirty(true);
+        revalidate();
 
 	}
 	

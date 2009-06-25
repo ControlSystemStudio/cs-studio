@@ -307,8 +307,8 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 					newXValueArray[i] = i;
 				}
 			else
-				for(int i=0; i<currentYDataArray.length; i++){
-					newXValueArray[i] = traceData.getTail().getXValue() + i;
+				for(int i=1; i<currentYDataArray.length+1; i++){
+					newXValueArray[i-1] = traceData.getTail().getXValue() + i;
 				}
 								
 		}else{

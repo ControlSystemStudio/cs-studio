@@ -14,6 +14,7 @@ import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -98,7 +99,7 @@ public class XYGraph extends Figure{
 	
 	@Override
 	public boolean isOpaque() {
-		return !transparent;
+		return false;
 	}
 	
 	@Override
@@ -312,6 +313,7 @@ public class XYGraph extends Figure{
 	 */
 	public boolean removeAxis(Axis axis){
 		remove(axis);
+		plotArea.removeGrid(axis.getGrid());
 		revalidate();
 		if(axis.isHorizontal())
 			return xAxisList.remove(axis);
@@ -339,15 +341,21 @@ public class XYGraph extends Figure{
 		}
 		plotArea.addTrace(trace);	
 		trace.setXYGraph(this);
+		revalidate();
 	}
 	
 	/**Remove a trace.
 	 * @param trace
 	 */
 	public void removeTrace(Trace trace){
-		if(legendMap.containsKey(trace.getYAxis()))
+		if(legendMap.containsKey(trace.getYAxis())){
 			legendMap.get(trace.getYAxis()).removeTrace(trace);
+			if(legendMap.get(trace.getYAxis()).getTraceList().size() <=0){
+				remove(legendMap.remove(trace.getYAxis()));				
+			}
+		}		
 		plotArea.removeTrace(trace);
+		revalidate();
 	}
 	
 	/**Add an annotation
@@ -386,13 +394,22 @@ public class XYGraph extends Figure{
 		titleLabel.setForegroundColor(titleColor);
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
+	public void paintFigure(final Graphics graphics) {		
+		if (!transparent) {
+			graphics.fillRectangle(getClientArea());
+		}
+		super.paintFigure(graphics);
+	}
+	
 	/**
 	 * @param transparent the transparent to set
 	 */
 	public void setTransparent(boolean transparent) {
 		this.transparent = transparent;
-		setOpaque(!transparent);
+		repaint();
 	}
 
 

@@ -15,6 +15,7 @@ import org.eclipse.draw2d.ButtonGroup;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.Clickable;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
@@ -116,6 +117,11 @@ public class XYGraphToolbar extends Figure {
 
 	}
 
+//	@Override
+//	public boolean isOpaque() {
+//		return true;
+//	}
+	
 	private static Image createImage(String path) {			
 		Image image = XYGraphMediaFactory.getInstance().getImageFromPlugin(Activator.getDefault(),
 				Activator.PLUGIN_ID, path);				
@@ -197,7 +203,8 @@ public class XYGraphToolbar extends Figure {
 			ImageFigure imageFigure =  new ImageFigure(zoomType.getIconImage());
 			Label tip = new Label(zoomType.getDescription());
 			final ToggleButton button = new ToggleButton(imageFigure);
-			
+			button.setBackgroundColor(ColorConstants.button);
+			button.setOpaque(true);
 			final ToggleModel model = new ToggleModel();
 			model.addChangeListener(new ChangeListener(){
 				public void handleStateChanged(ChangeEvent event) {

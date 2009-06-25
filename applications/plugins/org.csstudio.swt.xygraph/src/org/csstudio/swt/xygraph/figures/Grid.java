@@ -15,6 +15,7 @@ public class Grid extends Figure implements IAxisListener{
 	public Grid(Axis axis) {
 		axis.addListener(this);
 		this.axis = axis;
+		axis.setGrid(this);
 		
 	}
 	

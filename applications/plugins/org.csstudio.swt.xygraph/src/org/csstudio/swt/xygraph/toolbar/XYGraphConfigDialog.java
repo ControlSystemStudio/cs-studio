@@ -127,7 +127,7 @@ public class XYGraphConfigDialog extends Dialog {
 	    			SWT.FILL, SWT.FILL,true, false));
 	    	traceSelectGroup.setText("Select Trace");
 	    	traceSelectGroup.setLayout(new GridLayout(1, false));    	        
-	    	final Combo traceCombo = new Combo(traceSelectGroup, SWT.DROP_DOWN);
+	    	final Combo traceCombo = new Combo(traceSelectGroup, SWT.DROP_DOWN);	    	
 		    for(Trace trace : xyGraph.getPlotArea().getTraceList())
 		        traceCombo.add(trace.getName());	   
 		    traceCombo.select(0);
