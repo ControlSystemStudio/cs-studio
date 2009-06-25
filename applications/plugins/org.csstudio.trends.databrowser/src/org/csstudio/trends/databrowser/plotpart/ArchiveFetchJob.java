@@ -12,6 +12,7 @@ import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -20,25 +21,154 @@ import org.eclipse.swt.widgets.Shell;
 /** Eclipse background job for fetching samples from the data server.
  *  @author Kay Kasemir
  */
-class ArchiveFetchJob extends Job
+@SuppressWarnings("nls")
+class ArchiveFetchJob extends Job implements ISchedulingRule
 {
+    /** Poll period in millisecs */
+    private static final int POLL_PERIOD_MS = 1000;
+    
+    /** Shell for error messages */
     final private Shell shell;
+
+    /** Item for which to fetch samples */
     final private IPVModelItem item;
+
+    /** Start/End time */
     final private ITimestamp start, end;
+
+    /** Listener that's notified when (if) we completed OK */
     final private ArchiveFetchJobListener listener;
+    
+    /** Thread that performs the actual background work.
+     * 
+     *  Instead of directly accessing the archive, ArchiveFetchJob launches
+     *  a WorkerThread for the actual archive access, so that the Job
+     *  can then poll the progress monitor for cancellation and if 
+     *  necessary interrupt the WorkerThread which might be 'stuck'
+     *  in a long running operation. 
+     */
+    class WorkerThread extends Thread
+    {
+        private String message = "idle";
+        private volatile boolean cancelled = false;
+        private volatile boolean done = false;
+        
+        /** Construct */
+        public WorkerThread()
+        {
+            super("ArchiveFetchJobWorker");
+        }
+
+        /** @return Message that somehow indicates progress */
+        public synchronized String getMessage()
+        {
+            return message;
+        }
+
+        /** Request thread to cancel its operation */
+        public synchronized void cancel()
+        {
+            cancelled = true;
+        }
+
+        /** @return <code>true</code> when done (success, error, cancelled) */
+        public synchronized boolean isDone()
+        {
+            return done;
+        }
+        
+        /** {@inheritDoc} */
+        @Override
+        public void run()
+        {
+            final IArchiveDataSource archives[] = item.getArchiveDataSources();
+            for (int i=0; i<archives.length && !cancelled; ++i)
+            {
+                // Display "N/total", using '1' for the first sub-archive.
+                synchronized  (this)
+                {
+                    message = Messages.Fetch_Archive
+                        + "'" + archives[i].getName()
+                        + "' ("
+                        + (i+1) + "/" + archives.length + ")";
+                }
+                final ArchiveCache cache = ArchiveCache.getInstance();
+                try
+                {   // Invoke the possibly lengthy search.
+                    final ArchiveServer server =
+                        cache.getServer(archives[i].getUrl());
+                    try
+                    {
+                        String request_type;
+                        Object[] request_parms;
+                        final int bins = Preferences.getPlotBins();
+                        if (item.getRequestType() == IPVModelItem.RequestType.RAW)
+                        {
+                            request_type = ArchiveServer.GET_RAW;
+                            request_parms = new Object[] { new Integer(bins) };
+                        }
+                        else
+                        {
+                            request_type = ArchiveServer.GET_AVERAGE;
+                            final double interval =
+                                (end.toDouble() - start.toDouble()) / bins;
+                            request_parms = new Object[] { new Double(interval) };
+                        }
+                        
+                        final BatchIterator batch = new BatchIterator(server,
+                                        archives[i].getKey(), item.getName(),
+                                        start, end, request_type, request_parms);
+                        IValue result[] = batch.getBatch();
+                        while (result != null)
+                        {   // Notify model of new samples.
+                            // Even when monitor.isCanceled at this point?
+                            // Yes, since we have the samples, might as well show them
+                            // before bailing out.
+                            if (result.length > 0)
+                                item.addArchiveSamples(server.getServerName(), result);
+                            if (cancelled)
+                                break;
+                            result = batch.next();
+                        }
+                    }
+                    catch (Exception ex)
+                    {   // Add server info to error, pass up to next try/catch
+                        throw new Exception(server.getURL() + ": " + ex.getMessage(), ex);
+                    }
+                }
+                catch (final Exception ex)
+                {
+                    Plugin.getLogger().error("ArchiveFetchJob", ex);
+                    shell.getDisplay().asyncExec(new Runnable()
+                    {
+                        public void run()
+                        {
+                            MessageDialog.openError(shell, Messages.Error,
+                                    NLS.bind(Messages.ErrorFmt, ex.getMessage()));
+                        }
+                    });
+                }
+            }
+            if (!cancelled)
+                listener.fetchCompleted(ArchiveFetchJob.this);
+            done = true;
+        }
+    };
     
     /** Construct job that fetches data.
      *  @param shell Shell (for error messages)
      *  @param item Item for which to fetch samples
      *  @param start Start time
      *  @param end End time
+     *  @param listener Listener that's notified when (if) we completed OK
      */
     public ArchiveFetchJob(final Shell shell,
             final IPVModelItem item, final ITimestamp start,
             final ITimestamp end, final ArchiveFetchJobListener listener)
     {
         super(Messages.FetchDataForPV
-                + "'" + item.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                + "'" + item.getName() + "' "
+                + start.toString() + " - " + end.toString());
         this.shell = shell;
         this.item = item;
         this.start = start;
@@ -46,85 +176,78 @@ class ArchiveFetchJob extends Job
         this.listener = listener;
         // Do we need to assert that only one data fetch runs at a time?
         // setRule()...?
+        setRule(this);
     }
     
-    @SuppressWarnings("nls")
+    /** Default implementation
+     *  @see ISchedulingRule#contains(ISchedulingRule)
+     */
+    public boolean contains(ISchedulingRule rule)
+    {
+        return rule == this;
+    }
+
+    /** Force other Job that tries to get data for the same PV to wait.
+     *  <p>
+     *  Due to imperfections in the rest of the code it could happen
+     *  that we request the same data more than once.
+     *  <p>
+     *  By delaying other requests for the same PV, those subsequent jobs
+     *  for the same data will find it in the cache and thus return ASAP,
+     *  instead of trying to get the same data in parallel.
+     *  @see ISchedulingRule#isConflicting(ISchedulingRule)
+     */
+    public boolean isConflicting(ISchedulingRule rule)
+    {
+        if (rule instanceof ArchiveFetchJob)
+        {
+            final ArchiveFetchJob other = (ArchiveFetchJob) rule;
+            return other.item == this.item;
+        }
+        return rule == this;
+    }
+    
+    /** 'main' routine of the Eclipse Job:
+     *  Launches a worker, polls the monitor and worker for completion
+     *  or cancellation.
+     *  @param monitor Progress Monitor
+     */
     @Override
     protected IStatus run(final IProgressMonitor monitor)
     {
-        final IArchiveDataSource archives[] = item.getArchiveDataSources();
-        monitor.beginTask(Messages.FetchingSample, archives.length);
-        for (int i=0; i<archives.length; ++i)
+        // Start worker
+        monitor.beginTask(Messages.FetchingSample, IProgressMonitor.UNKNOWN);
+        final WorkerThread worker = new WorkerThread();
+        worker.start();
+        
+        // Poll worker and progress monitor
+        long seconds = 0;
+        while (!worker.isDone())
         {
-            // Display "N/total", using '1' for the first sub-archive.
-            monitor.subTask(Messages.Fetch_Archive
-                + "'" + archives[i].getName()
-                + "' ("
-                + (i+1) + "/" + archives.length + ")");
-            final ArchiveCache cache = ArchiveCache.getInstance();
+            monitor.subTask(worker.getMessage() + ", " + seconds + "s");
             try
-            {   // Invoke the possibly lengthy search.
-                final ArchiveServer server =
-                    cache.getServer(archives[i].getUrl());
-                try
-                {
-                    String request_type;
-                    Object[] request_parms;
-                    final int bins = Preferences.getPlotBins();
-                    if (item.getRequestType() == IPVModelItem.RequestType.RAW)
-                    {
-                        request_type = ArchiveServer.GET_RAW;
-                        request_parms = new Object[] { new Integer(bins) };
-                    }
-                    else
-                    {
-                        request_type = ArchiveServer.GET_AVERAGE;
-                        final double interval =
-                            (end.toDouble() - start.toDouble()) / bins;
-                        request_parms = new Object[] { new Double(interval) };
-                    }
-                    
-                    final BatchIterator batch = new BatchIterator(server,
-                                    archives[i].getKey(), item.getName(),
-                                    start, end, request_type, request_parms);
-                    IValue result[] = batch.getBatch();
-                    while (result != null)
-                    {   // Notify model of new samples.
-                        // Even when monitor.isCanceled at this point?
-                        // Yes, since we have the samples, might as well show them
-                        // before bailing out.
-                        if (result.length > 0)
-                            item.addArchiveSamples(server.getServerName(), result);
-                        if (monitor.isCanceled())
-                            break;
-                        result = batch.next();
-                    }
-                }
-                catch (Exception ex)
-                {   // Add server info to error, pass up to next try/catch
-                    throw new Exception(server.getURL() + ": " + ex.getMessage(), ex);
-                }
-            }
-            catch (final Exception ex)
             {
-                Plugin.getLogger().error("ArchiveFetchJob", ex);
-                shell.getDisplay().asyncExec(new Runnable()
-                {
-                    public void run()
-                    {
-                        MessageDialog.openError(shell, Messages.Error,
-                                NLS.bind(Messages.ErrorFmt, ex.getMessage()));
-                    }
-                });
+                Thread.sleep(POLL_PERIOD_MS);
             }
-            // Stop and ignore further results when canceled.
+            catch (InterruptedException ex)
+            {
+                // Ignore
+            }
+            // Try to cancel the worker in response to user's cancel request
             if (monitor.isCanceled())
-                return Status.CANCEL_STATUS;
-            // Handled one sub-archive.
-            monitor.worked(1);
+                worker.cancel();
+            ++seconds;
         }
         monitor.done();
-        listener.fetchCompleted(this);
-        return Status.OK_STATUS;
+        return monitor.isCanceled()
+            ? Status.CANCEL_STATUS
+            : Status.OK_STATUS;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "ArchiveFetchJob '" + item.getName() + "' "
+            + start.toString() + " - " + end.toString();
     }
 }
