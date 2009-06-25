@@ -18,8 +18,8 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 		X_AND_Y("X AND Y"),
 		X("X"),
 		Y("Y"),
-		TRIGGER("Trigger"),
-		PERIODICALLY_SAMPLE("Sample at regular intervals");		
+		TRIGGER("Trigger");
+		//PERIODICALLY_SAMPLE("Sample at regular intervals");		
 				
 		private UpdateMode(String description) {
 			 this.description = description;
@@ -196,12 +196,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 				updateTriggered = false;				
 			}
 				
-			break;
-		case PERIODICALLY_SAMPLE:
-			if(chronological || 
-					(!chronological && (currentXDataChanged || currentYDataChanged)))
-				addDataPoint();
-			break;
+			break;		
 		default:
 			break;
 		}
@@ -286,9 +281,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 				updateTriggered = false;
 			}
 				
-			break;
-		case PERIODICALLY_SAMPLE:			
-			break;
+			break;		
 		default:
 			break;
 		}
