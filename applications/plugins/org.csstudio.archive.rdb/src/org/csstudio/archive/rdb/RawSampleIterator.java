@@ -130,15 +130,23 @@ public class RawSampleIterator implements SampleIterator
 		// of lazily initializing a single, shared one.
 		
 		// Get initial sample
-		final String initial_sql = archive.getSQL().sample_sel_initial_by_id_time;
+        final Timestamp start_stamp = TimeWarp.getSQLTimestamp(start);
+        final String initial_sql = archive.getSQL().sample_sel_initial_by_id_time;
         PreparedStatement sel_initial_sample =
 				connection.prepareStatement(initial_sql);
-		sel_initial_sample.setInt(1, channel.getId());
-		final Timestamp start_stamp = TimeWarp.getSQLTimestamp(start);
-		sel_initial_sample.setTimestamp(2, start_stamp);
-		result_set = sel_initial_sample.executeQuery();
-		if (result_set.next())
-			value = decodeValue(result_set);
+        archive.addForCancellation(sel_initial_sample);
+        try
+        {
+    		sel_initial_sample.setInt(1, channel.getId());
+    		sel_initial_sample.setTimestamp(2, start_stamp);
+    		result_set = sel_initial_sample.executeQuery();
+    		if (result_set.next())
+    			value = decodeValue(result_set);
+        }
+        finally
+        {
+            archive.removeFromCancellation(sel_initial_sample);
+        }
 		result_set.close();
 		result_set = null;
 		sel_initial_sample.close();
@@ -147,14 +155,22 @@ public class RawSampleIterator implements SampleIterator
 		// Start fetching the bulk of the samples
 		sel_samples = connection.prepareStatement(
 				archive.getSQL().sample_sel_by_id_start_end);
-		sel_samples.setInt(1, channel.getId());
-		sel_samples.setTimestamp(2, start_stamp);
-		sel_samples.setTimestamp(3, TimeWarp.getSQLTimestamp(end));
-		result_set = sel_samples.executeQuery();
-		// If there's no initial sample, get the first one from the bulk result
-		if (value == null  &&  result_set.next())
-			value = decodeValue(result_set);
-		// else leave value on the initial sample
+        archive.addForCancellation(sel_samples);
+        try
+        {
+    		sel_samples.setInt(1, channel.getId());
+    		sel_samples.setTimestamp(2, start_stamp);
+    		sel_samples.setTimestamp(3, TimeWarp.getSQLTimestamp(end));
+    		result_set = sel_samples.executeQuery();
+    		// If there's no initial sample, get the first one from the bulk result
+    		if (value == null  &&  result_set.next())
+    			value = decodeValue(result_set);
+            // else leave value on the initial sample
+        }
+        finally
+        {
+            archive.removeFromCancellation(sel_samples);
+        }
     }
 	
 	/** @return <code>true</code> if there is another value */

@@ -208,6 +208,65 @@ public class RDBArchive
         close();
         connect();
     }
+
+    /** List of statements to cancel in cancel() */
+    private ArrayList<Statement> cancellable_statements =
+        new ArrayList<Statement>();
+    
+    /** Cancel an ongoing RDB query.
+     *  Not supported by all queries, but should work for basic
+     *  sample readout via RawSampleIterator
+     */
+    public void cancel()
+    {
+        synchronized (cancellable_statements)
+        {
+            for (Statement statement : cancellable_statements)
+            {
+                try
+                {
+                    // Note that
+                    //    statement.getConnection().close()
+                    // does NOT stop an ongoing Oracle query!
+                    // Only this seems to do it:
+                    statement.cancel();
+                }
+                catch (Exception ex)
+                {
+                    CentralLogger.getInstance().getLogger(this).
+                        info("Attempt to cancel statment", ex); //$NON-NLS-1$
+                }
+            }
+        }
+    }
+    
+    /** Meant to be called only from within the RDBArchive code:
+     *  Add a statement to the list of statements-to-cancel in cancel()
+     *  
+     *  @param statement Statement to cancel
+     *  @see #cancel()
+     */
+    public void addForCancellation(final Statement statement)
+    {
+        synchronized (cancellable_statements)
+        {
+            cancellable_statements.add(statement);
+        }
+    }
+
+    /** Meant to be called only from within the RDBArchive code:
+     *  Remove a statement to the list of statements-to-cancel in cancel()
+     *  
+     *  @param statement Statement that should no longer be cancelled
+     *  @see #cancel()
+     */
+    public void removeFromCancellation(final Statement statement)
+    {
+        synchronized (cancellable_statements)
+        {
+            cancellable_statements.remove(statement);
+        }
+    }
     
     /** Close the RDB connection.
      *  Clears all caches, deletes prepared statements etc.
@@ -855,6 +914,5 @@ public class RDBArchive
     {
         final ChannelGroupHelper groups = new ChannelGroupHelper(this);
         return groups.add(group_name, engine.getId(), 0, retention.getId());
-    }
-
+    }    
 }
