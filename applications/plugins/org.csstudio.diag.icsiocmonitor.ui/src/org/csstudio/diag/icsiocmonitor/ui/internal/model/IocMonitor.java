@@ -46,7 +46,7 @@ public class IocMonitor {
 	/**
 	 * Creates a new IOC monitor. 
 	 */
-	public IocMonitor() {
+	IocMonitor() {
 		_interconnectionServers = new ArrayList<String>();
 		_iocs = new ArrayList<IocState>();
 		_reporters = new ArrayList<IocConnectionReporter>();

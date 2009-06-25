@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorFactory;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocState;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -155,7 +156,7 @@ public class IocMonitorView extends ViewPart {
 		_tableViewer = new TableViewer(_table);
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
 		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
-		IocMonitor iocMonitor = new IocMonitor();
+		IocMonitor iocMonitor = IocMonitorFactory.createMonitor();
 		iocMonitor.update();
 		setInput(iocMonitor);
 	}

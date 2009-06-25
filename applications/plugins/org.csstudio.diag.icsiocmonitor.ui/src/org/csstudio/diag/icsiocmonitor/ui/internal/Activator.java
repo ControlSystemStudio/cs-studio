@@ -14,6 +14,8 @@ public class Activator extends AbstractCssUiPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
+	private BundleContext bundleContext;
+	
 	/**
 	 * The constructor
 	 */
@@ -26,6 +28,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	public void doStart(BundleContext context) throws Exception {
 		plugin = this;
+		bundleContext = context;
 	}
 
 	/*
@@ -34,6 +37,11 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	public void doStop(BundleContext context) throws Exception {
 		plugin = null;
+		bundleContext = null;
+	}
+	
+	public BundleContext getBundleContext() {
+		return bundleContext;
 	}
 
 	/**
