@@ -49,15 +49,12 @@ public class ConnectionBendPointCreator {
 		assert target != null : "target != null";
 		assert index >= 0 : "index >= 0";
 		
-		final Point firstRawBendPoint = source.getLocation().getCopy();
-		final Point lastRawBendPoint = target.getLocation().getCopy();
+		final Point firstAnchorPoint = source.getLocation().getCopy();
+		final Point secondAnchorPoint = target.getLocation().getCopy();
 
-		// orientationUp is based on the visual representation
-		final boolean orientationRight = firstRawBendPoint.x <= lastRawBendPoint.x;
-
-		final double realAngle = calculateNormalizedAngle(firstRawBendPoint, lastRawBendPoint);
+		final double realAngle = calculateNormalizedAngle(firstAnchorPoint, secondAnchorPoint);
 		final double firstAngle = realAngle - ((Math.PI / 30) * index);
-		final double lastAngle = realAngle + (Math.PI / 2)
+		final double secondAngle = realAngle + (Math.PI / 2)
 				+ ((Math.PI / 30) * index);
 
 		final double hypotenuse = calculateHypotenuse(_separation, index);
@@ -65,67 +62,38 @@ public class ConnectionBendPointCreator {
 		final double firstOppositeLeg = Math.cos(firstAngle) * hypotenuse;
 		final double firstAdjacentLeg = Math.sin(firstAngle) * hypotenuse;
 
-		final double lastOppositeLeg = Math.cos(lastAngle) * hypotenuse;
-		final double lastAdjacentLeg = Math.sin(lastAngle) * hypotenuse;
+		final double secondOppositeLeg = Math.cos(secondAngle) * hypotenuse;
+		final double secondAdjacentLeg = Math.sin(secondAngle) * hypotenuse;
 
-		double firstX = 0;
-		double firstY = 0;
-
-		double lastX = 0;
-		double lastY = 0;
-
-		if (orientationRight) {
-			firstX = firstRawBendPoint.x + firstAdjacentLeg;
-			firstY = firstRawBendPoint.y - firstOppositeLeg;
-
-			lastX = lastRawBendPoint.x - lastAdjacentLeg;
-			lastY = lastRawBendPoint.y + lastOppositeLeg;
-		} else {
-			firstX = firstRawBendPoint.x - firstAdjacentLeg;
-			firstY = firstRawBendPoint.y + firstOppositeLeg;
-
-			lastX = lastRawBendPoint.x + lastAdjacentLeg;
-			lastY = lastRawBendPoint.y - lastOppositeLeg;
-		}
-		double copyOfFirstX = firstX;
-		double copyOfFirstY = firstY;
+		final int deltaX = secondAnchorPoint.x - firstAnchorPoint.x;
+		final int deltaY = secondAnchorPoint.y - firstAnchorPoint.y;
 		
-		final int deltaX = lastRawBendPoint.x - firstRawBendPoint.x;
-		final int deltaY = lastRawBendPoint.y - firstRawBendPoint.y;
+		int firstXOrientation = deltaX / Math.max(1, Math.abs(deltaX));
+		if (firstXOrientation == 0) {
+			firstXOrientation = 1;
+		}
+		Dimension firstRelativeDimension = new Dimension((int)(firstXOrientation * firstAdjacentLeg), -(int)(firstXOrientation * firstOppositeLeg));
+		Dimension secondRelativeDimension = new Dimension(-(int)(firstXOrientation * secondAdjacentLeg), (int)(firstXOrientation * secondOppositeLeg));
+		
+		Point firstBendPoint = firstAnchorPoint.getCopy();
+		firstBendPoint.translate(firstRelativeDimension);
+		Point secondBendPoint = secondAnchorPoint.getCopy();
+		secondBendPoint.translate(secondRelativeDimension);
+		
 		if (deltaX > TOLERANCE) {
-			firstX = firstX + source.getSize().width;
+			firstBendPoint.x = firstBendPoint.x + source.getSize().width;
 		} else if (deltaX < -TOLERANCE) {
-			lastX = lastX + target.getSize().width;
+			secondBendPoint.x = secondBendPoint.x + target.getSize().width;
 		} 
 		if (deltaY > TOLERANCE) {
-			firstY = firstY + source.getSize().height;
+			firstBendPoint.y = firstBendPoint.y + source.getSize().height;
 		} else if (deltaY < -TOLERANCE) {
-			lastY = lastY + target.getSize().height;
-		} 
+			secondBendPoint.y = secondBendPoint.y + target.getSize().height;
+		} else {
+			firstBendPoint.y = firstBendPoint.y + source.getSize().height / 2;
+			secondBendPoint.y = secondBendPoint.y + target.getSize().height / 2;
+		}
 		
-//		int xOrientation = deltaX / Math.max(1, Math.abs(deltaX));
-//		if (xOrientation == 0) {
-//			xOrientation = 1;
-//		}
-//		int yOrientation = -deltaY / Math.max(1, Math.abs(deltaY));
-//		if (yOrientation == 0) {
-//			yOrientation = 1;
-//		}
-//		Dimension firstDimension = new Dimension((int)(xOrientation * firstAdjacentLeg), (int)(yOrientation * firstOppositeLeg));
-//		
-//		Point copy = firstRawBendPoint.getCopy();
-//		copy.translate(firstDimension);
-//		
-//		System.out.println("ConnectionBendPointCreator.calculateNewPoints()");
-//		System.out.println("FirstPoint: "+firstRawBendPoint+" - SecondPoint: "+lastRawBendPoint);
-//		System.out.println("deltaX: "+deltaX+" - deltaY: "+deltaY);
-//		System.out.println("XOrientation: "+xOrientation+" - yOrientation: "+yOrientation);
-//		System.out.println("FirstX / copy.x: "+copyOfFirstX+" / "+copy.x);
-//		System.out.println("FirstY / copy.y: "+copyOfFirstY+" / "+copy.y);
-
-		final Point firstBendPoint = new Point(firstX, firstY);
-		final Point secondBendPoint = new Point(lastX, lastY);
-
 		final List<Point> result = new ArrayList<Point>(2);
 		result.add(firstBendPoint);
 		result.add(secondBendPoint);

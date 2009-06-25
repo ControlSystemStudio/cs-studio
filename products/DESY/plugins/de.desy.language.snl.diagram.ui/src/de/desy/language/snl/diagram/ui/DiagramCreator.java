@@ -15,6 +15,13 @@ import de.desy.language.snl.parser.nodes.StateSetNode;
 import de.desy.language.snl.parser.nodes.WhenNode;
 
 public class DiagramCreator {
+	
+	private static final int START_X = 50;
+	private static final int START_Y = 50;
+	private static final int DISTANCE_X = 300;
+	private static final int DISTANCE_Y = 150;
+	private static final int STATE_WIDTH = 100;
+	private static final int STATE_HEIGHT = 50;
 
 	private static DiagramCreator _instance;
 	
@@ -67,10 +74,10 @@ public class DiagramCreator {
 				final StateNode stateNode = (StateNode) child;
 				final StateModel state = new StateModel();
 				final int size = stateMap.size();
-				state.setLocation(new Point(50 + size * 200, 50 + (_stateSetMap
-						.size() - 1) * 100));
+				state.setLocation(new Point(START_X + size * DISTANCE_X, START_Y + (_stateSetMap
+						.size() - 1) * DISTANCE_Y));
 				state.setStateNode(stateNode);
-				state.setSize(new Dimension(100, 50));
+				state.setSize(new Dimension(STATE_WIDTH, STATE_HEIGHT));
 				stateMap.put(stateNode.getSourceIdentifier(), state);
 				diagram.addChild(state);
 			} else {
