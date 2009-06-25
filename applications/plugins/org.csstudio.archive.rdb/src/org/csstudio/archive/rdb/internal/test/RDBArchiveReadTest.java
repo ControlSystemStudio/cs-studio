@@ -8,10 +8,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.SampleIterator;
 import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.TestSetup.TestType;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
@@ -29,12 +29,12 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBArchiveReadTest
 {
-	private static RDBArchiveImpl archive;
+	private static RDBArchive archive;
 
 	@BeforeClass
 	public static void connect() throws Exception
 	{
-		archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
+		archive = RDBArchive.connect(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
 	}
 	
 	@AfterClass

@@ -6,8 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.TestSetup;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.AfterClass;
@@ -20,13 +20,13 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class CancelTest
 {
-    private static RDBArchiveImpl archive;
+    private static RDBArchive archive;
     private PreparedStatement query;
 
     @BeforeClass
     public static void connect() throws Exception
     {
-        archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
+        archive = RDBArchive.connect(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
     }
     
     @AfterClass
@@ -54,7 +54,7 @@ public class CancelTest
 
         // Generate a query that could take a long time...
         progress.beginTask("Getting sample count", IProgressMonitor.UNKNOWN);
-        query = connection.prepareStatement("SELECT COUNT(*) FROM sample");
+        query = connection.prepareStatement("SELECT COUNT(*) FROM chan_arch.sample");
 
         // We will be stuck executing the query.
         // Create background thread to check if the user tried to cancel.

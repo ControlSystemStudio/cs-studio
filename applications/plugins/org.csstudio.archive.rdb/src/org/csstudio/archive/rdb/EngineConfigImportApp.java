@@ -12,7 +12,6 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
 import org.csstudio.archive.rdb.engineconfig.XMLImport;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -155,7 +154,7 @@ public class EngineConfigImportApp implements IApplication
     private void deleteEngine(final String rdb_url,  final String user,
             final String password, final String engine_name) throws Exception
     {
-        final RDBArchiveImpl archive = new RDBArchiveImpl(rdb_url, user, password);
+        final RDBArchive archive = RDBArchive.connect(rdb_url, user, password);
         try
         {
             final SampleEngineHelper engines =

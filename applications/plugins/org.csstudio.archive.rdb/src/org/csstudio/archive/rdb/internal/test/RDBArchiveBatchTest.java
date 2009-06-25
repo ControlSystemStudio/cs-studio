@@ -2,7 +2,6 @@ package org.csstudio.archive.rdb.internal.test;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -61,7 +60,7 @@ public class RDBArchiveBatchTest
     public void testBatching() throws Exception
     {
         System.out.println("Debug mode: " +
-                           ((RDBArchiveImpl)archive).debug_batch);
+                           archive.debug_batch);
         final ChannelConfig channel = archive.createChannel(CHANNEL);
 
         ITimestamp time = TimestampFactory.now();

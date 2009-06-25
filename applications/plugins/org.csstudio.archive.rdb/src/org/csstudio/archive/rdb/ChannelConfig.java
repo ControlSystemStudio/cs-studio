@@ -1,30 +1,49 @@
 package org.csstudio.archive.rdb;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.utility.rdb.StringID;
+import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /** Channel: Name, access to time range etc.
  *  @see RDBArchive
  *  @author Kay Kasemir
  */
-abstract public class ChannelConfig extends StringID
+public class ChannelConfig extends StringID
 {
     /** Minimum sample period.
      *  Must be > 0 to avoid div-0 error.
      *  Also enforces some sampling sanity.
      */
     final public double MIN_SAMPLE_PERIOD = 1.0;
-    protected int group_id;
-    private SampleMode sample_mode;
-    private double sample_period;
+
+    /** Archive that holds this channel */
+    final private RDBArchive archive;
     
-    protected ChannelConfig(final int id, final String name,
-            final int group_id, final SampleMode sample_mode,
+    protected int group_id;
+
+    private SampleMode sample_mode;
+    
+    private double sample_period;
+
+    /** The channel's meta data */
+    private IMetaData meta = null;
+    
+    /** Constructor from pieces */
+    public ChannelConfig(final RDBArchive archive, final int id,
+            final String name,
+            final int group_id,final SampleMode sample_mode,
             final double sample_period)
     {
         super(id, name);
+        this.archive = archive;
         this.group_id = group_id;
         this.sample_mode = sample_mode;
         this.sample_period = sample_period;
@@ -48,26 +67,97 @@ abstract public class ChannelConfig extends StringID
     {
         return sample_period;
     }
+    
+    /** @return Meta data or <code>null</code> */
+    public IMetaData getMetaData()
+    {
+        return meta;
+    }
 
+    /** @param meta The meta to set */
+    public void setMetaData(final IMetaData meta)
+    {
+        this.meta = meta;
+    }
+    
     /** Define the sample mode of this channel
      *  @param sample_mode SampleMode
      *  @param period_secs Sample period or estimated update rate in seconds
      */
-    abstract public void setSampleMode(final SampleMode sample_mode,
-            final double period_secs) throws Exception;
+    public void setSampleMode(final SampleMode sample_mode,
+            double period_secs) throws Exception
+    {
+        if (period_secs < MIN_SAMPLE_PERIOD)
+            period_secs = MIN_SAMPLE_PERIOD;
+        final PreparedStatement statement =
+            archive.getRDB().getConnection().prepareStatement(
+                        archive.getSQL().channel_set_sampling);
+        try
+        {   // UPDATE channel SET smpl_mode_id=?,smpl_per=? WHERE channel_id=?
+            statement.setInt(1, sample_mode.getId());
+            statement.setDouble(2, period_secs);
+            statement.setInt(3, getId());
+            statement.executeUpdate();
+        }
+        finally
+        {
+            statement.close();
+        }
+    }
     
     /** Add a channel to this group.
      *  @param channel Channel to add
      *  @throws Exception on error
      */
-    abstract public void addToGroup(final ChannelGroupConfig group) throws Exception;
+    public void addToGroup(final ChannelGroupConfig group) throws Exception
+    {
+        final Connection connection = archive.getRDB().getConnection();
+        final PreparedStatement statement = connection.prepareStatement(
+                archive.getSQL().channel_set_grp_by_id);
+        try
+        {
+            if (group.getId() > 0)
+                statement.setInt(1, group.getId());
+            else
+                statement.setNull(1, java.sql.Types.INTEGER);
+            statement.setInt(2, getId());
+            statement.executeUpdate();
+            connection.commit();
+            this.group_id = group.getId();
+        }
+        finally
+        {
+            statement.close();
+        }
+    }
     
     /** Get time range information.
      *  @return Last time stamp found for this channel,
      *          or <code>null</code>
      *  @throws Exception on error
      */
-    abstract public ITimestamp getLastTimestamp() throws Exception;
+    public ITimestamp getLastTimestamp() throws Exception
+    {
+        final PreparedStatement statement =
+            archive.getRDB().getConnection().prepareStatement(
+                        archive.getSQL().channel_sel_last_time_by_id);
+        try
+        {
+            statement.setInt(1, getId());
+            ResultSet rs = statement.executeQuery();
+            if (!rs.next())
+                return null;
+            final Timestamp end = rs.getTimestamp(1);
+            // Channel without any samples?
+            if (end == null)
+                return null;
+            return TimeWarp.getCSSTimestamp(end);
+        }
+        finally
+        {
+            statement.close();
+        }
+    }
         
     /** Read (raw) samples from start to end time.
      *  @param start Retrieval starts at-or-before this time
@@ -75,8 +165,11 @@ abstract public class ChannelConfig extends StringID
      *  @return SampleIterator for the samples
      *  @throws Exception on error
      */
-    abstract public SampleIterator getSamples(final ITimestamp start,
-            final ITimestamp end) throws Exception;
+    public SampleIterator getSamples(final ITimestamp start,
+            final ITimestamp end) throws Exception
+    {
+        return new RawSampleIterator(archive, this, start, end);
+    }
     
     /** Add a sample to the archive.
      *  <p>
@@ -87,5 +180,17 @@ abstract public class ChannelConfig extends StringID
      *  @throws Exception on error
      *  @see RDBArchive#commitBatch()
      */
-    abstract public void batchSample(final IValue sample) throws Exception;
+    public void batchSample(final IValue sample) throws Exception
+    {
+        archive.batchSample(this, sample);
+    }
+    
+    @Override
+    @SuppressWarnings("nls")
+    final public String toString()
+    {
+        return String.format("Channel '%s' (%d): group %d, %s @ %.2f secs",
+                getName(), getId(), getGroupId(),
+                getSampleMode(), getSamplePeriod());
+    }
 }

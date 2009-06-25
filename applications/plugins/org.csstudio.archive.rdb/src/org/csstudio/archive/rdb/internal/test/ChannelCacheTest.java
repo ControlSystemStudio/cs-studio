@@ -1,13 +1,15 @@
 package org.csstudio.archive.rdb.internal.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.sql.Statement;
 
+import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.internal.ChannelCache;
-import org.csstudio.archive.rdb.internal.ChannelConfigImpl;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.junit.Test;
 
 /** Test of ChannelCache
@@ -19,11 +21,11 @@ public class ChannelCacheTest
     @Test
     public void testChannelCache() throws Exception
     {
-        final RDBArchiveImpl archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
+        final RDBArchive archive = RDBArchive.connect(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
         final ChannelCache channels = new ChannelCache(archive);
         
         final String name = "does_not_exist";
-        ChannelConfigImpl channel = channels.find(name);
+        ChannelConfig channel = channels.find(name);
         assertNull(channel);
         
         channel = channels.findOrCreate(name);
@@ -31,7 +33,7 @@ public class ChannelCacheTest
         System.out.println(channel);
         
         // Hit the cache
-        final ChannelConfigImpl channel2 = channels.findOrCreate(name);
+        final ChannelConfig channel2 = channels.findOrCreate(name);
         assertSame(channel, channel2);
         
         // Hack for Unit test: Delete the entry
@@ -43,7 +45,7 @@ public class ChannelCacheTest
         archive.getRDB().getConnection().commit();
 
         // It's actually still in the cache...
-        final ChannelConfigImpl channel3 = channels.findOrCreate(name);
+        final ChannelConfig channel3 = channels.findOrCreate(name);
         assertSame(channel, channel3);
         
         channels.dispose();

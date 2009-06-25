@@ -8,9 +8,9 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.Retention;
 import org.csstudio.archive.rdb.SampleMode;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.csstudio.platform.logging.CentralLogger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -52,7 +52,7 @@ public class XMLImport extends DefaultHandler
     final boolean steal_channels;
 
     /** Connection to RDB archive */
-    final private RDBArchiveImpl archive;
+    final private RDBArchive archive;
     
     /** Engine info entry */
     final private SampleEngineConfig engine;
@@ -117,7 +117,7 @@ public class XMLImport extends DefaultHandler
         throws Exception
     {
         this.steal_channels = steal_channels;
-        archive = new RDBArchiveImpl(RDB_URL, user, password);
+        archive = RDBArchive.connect(RDB_URL, user, password);
         
         final SampleEngineConfig found = archive.findEngine(engine_name);
         if (found != null)

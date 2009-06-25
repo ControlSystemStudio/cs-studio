@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.Statement;
 
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.junit.Test;
 
 /** Retention tests
@@ -21,7 +21,7 @@ public class ChannelGroupHelperTest
     @Test
     public void test() throws Exception
     {
-        final RDBArchiveImpl archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
+        final RDBArchive archive = RDBArchive.connect(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
         
         final ChannelGroupHelper groups = new ChannelGroupHelper(archive);
         ChannelGroupConfig group = groups.find("Test", 1);

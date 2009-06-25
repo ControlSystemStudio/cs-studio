@@ -6,16 +6,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
+import org.csstudio.archive.rdb.RDBArchive;
 
 /** Helper for handling SampleEngineInfo entries in RDB
  *  @author Kay Kasemir
  */
 public class SampleEngineHelper
 {
-    final private RDBArchiveImpl archive;
+    final private RDBArchive archive;
     
-    public SampleEngineHelper(final RDBArchiveImpl archive)
+    public SampleEngineHelper(final RDBArchive archive)
     {
         this.archive = archive;
     }

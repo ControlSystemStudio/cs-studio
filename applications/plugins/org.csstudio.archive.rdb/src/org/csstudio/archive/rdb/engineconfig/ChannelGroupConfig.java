@@ -6,9 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.SampleMode;
-import org.csstudio.archive.rdb.internal.ChannelConfigImpl;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.csstudio.platform.utility.rdb.StringID;
 
 /** RDB info for a group of sampled channels.
@@ -16,13 +15,13 @@ import org.csstudio.platform.utility.rdb.StringID;
  */
 public class ChannelGroupConfig extends StringID
 {
-    final private RDBArchiveImpl archive;
+    final private RDBArchive archive;
     final private int engine_id;
     private int enabling_channel_id;
     final private int retention_id;
     
     /** Constructor, only used within package. */
-    ChannelGroupConfig(final RDBArchiveImpl archive,
+    ChannelGroupConfig(final RDBArchive archive,
             final int id, final String name, final int engine_id,
             final int enabling_channel_id, final int retention_id)
     {
@@ -60,7 +59,7 @@ public class ChannelGroupConfig extends StringID
             {   // channel_id, name, smpl_mode_id, smpl_per
                 final SampleMode sample_mode =
                     archive.getSampleMode(result.getInt(3));
-                channels.add(new ChannelConfigImpl(archive,
+                channels.add(new ChannelConfig(archive,
                         result.getInt(1),
                         result.getString(2),
                         getId(),

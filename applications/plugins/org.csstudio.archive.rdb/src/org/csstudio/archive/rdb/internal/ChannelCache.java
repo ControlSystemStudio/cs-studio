@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
+import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.SampleMode;
 
 /** Caching RDB interface to channel info.
@@ -11,14 +13,14 @@ import org.csstudio.archive.rdb.SampleMode;
  */
 public class ChannelCache
 {
-    private RDBArchiveImpl archive;
+    private RDBArchive archive;
 
     /** Cache that maps names to channels */
-    final private HashMap<String, ChannelConfigImpl> cache_by_name =
-        new HashMap<String, ChannelConfigImpl>();
+    final private HashMap<String, ChannelConfig> cache_by_name =
+        new HashMap<String, ChannelConfig>();
 	
 	/** Constructor */
-	public ChannelCache(final RDBArchiveImpl archive)
+	public ChannelCache(final RDBArchive archive)
 	{
 	    this.archive = archive;
 	}
@@ -30,7 +32,7 @@ public class ChannelCache
     }
 
     /** Add Channel to cache */
-	public void memorize(final ChannelConfigImpl channel)
+	public void memorize(final ChannelConfig channel)
 	{
 		cache_by_name.put(channel.getName(), channel);
 	}
@@ -40,10 +42,10 @@ public class ChannelCache
 	 *  @return channel or <code>null</code>
 	 *  @throws Exception on error
 	 */
-	public ChannelConfigImpl find(final String name) throws Exception
+	public ChannelConfig find(final String name) throws Exception
 	{
 		// Check cache
-		ChannelConfigImpl channel = cache_by_name.get(name);
+	    ChannelConfig channel = cache_by_name.get(name);
 		if (channel != null)
 			return channel;
 		// Query RDB
@@ -59,7 +61,7 @@ public class ChannelCache
 		    {
                 final SampleMode sample_mode =
                     archive.getSampleMode(result.getInt(3));
-                channel = new ChannelConfigImpl(archive,
+                channel = new ChannelConfig(archive,
                         result.getInt(1), name, result.getInt(2),
                         sample_mode, result.getDouble(4));
                 memorize(channel);
@@ -78,10 +80,10 @@ public class ChannelCache
 	 *  @return Channel
 	 *  @throws Exception on error
 	 */
-	public ChannelConfigImpl findOrCreate(final String name) throws Exception
+	public ChannelConfig findOrCreate(final String name) throws Exception
 	{
     	// Existing entry?
-        ChannelConfigImpl channel = find(name);
+	    ChannelConfig channel = find(name);
         if (channel != null)
             return channel;
         
@@ -90,7 +92,7 @@ public class ChannelCache
                     archive.getSQL().channel_insert);
         try
         {
-            channel = new ChannelConfigImpl(archive, getNextId(), name,
+            channel = new ChannelConfig(archive, getNextId(), name,
                     0, archive.getSampleModes()[0], 60.0);
             // channel_id, name, smpl_mode_id, smpl_per
             statement.setInt(1, channel.getId());

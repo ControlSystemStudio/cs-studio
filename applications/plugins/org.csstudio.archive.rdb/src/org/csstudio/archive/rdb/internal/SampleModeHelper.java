@@ -15,7 +15,7 @@ public class SampleModeHelper
     /** Locate Sample Modes
      *  @throws Exception on error
      */
-    static SampleMode [] getSampleModes(final RDBUtil rdb, final SQL sql)
+    public static SampleMode [] getSampleModes(final RDBUtil rdb, final SQL sql)
         throws Exception
     {
         final PreparedStatement statement =

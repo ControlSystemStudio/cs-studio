@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.internal.NumericMetaDataHelper;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ValueFactory;
 import org.junit.AfterClass;
@@ -15,12 +15,12 @@ import org.junit.Test;
 
 public class NumericMetadataTest
 {
-    private static RDBArchiveImpl archive;
+    private static RDBArchive archive;
 
     @BeforeClass
     public static void connect() throws Exception
     {
-        archive = new RDBArchiveImpl(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
+        archive = RDBArchive.connect(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
     }
     
     @AfterClass

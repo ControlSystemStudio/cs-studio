@@ -2,21 +2,21 @@ package org.csstudio.archive.rdb.engineconfig;
 
 import java.net.URL;
 
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.Retention;
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
 
 /** Info for a sample engine.
  *  @author Kay Kasemir
  */
 public class SampleEngineConfig
 {
-    final private RDBArchiveImpl archive;
+    final private RDBArchive archive;
     final private int id;
     final private String name;
     final private String description;
     final private URL url;
 
-    public SampleEngineConfig(final RDBArchiveImpl archive,
+    public SampleEngineConfig(final RDBArchive archive,
             final int id, final String name,
             final String description, final URL url)
     {

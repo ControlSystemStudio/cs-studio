@@ -9,9 +9,7 @@ public class TestSetup
     /** Default database URL */
     final public static String URL =
     // SNS Test, read-only
-     "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov:1521/prod";
-    //No passwd in CVS
-    // "jdbc:oracle:thin:chan_arch/passwd@//172.31.73.122:1521/prod";
+       "jdbc:oracle:thin:sns_reports/sns@//172.31.73.122:1521/prod";
 
     // MySQL Test
     // "jdbc:mysql://titan-terrier.sns.ornl.gov/archive?user=fred&password=$fred";

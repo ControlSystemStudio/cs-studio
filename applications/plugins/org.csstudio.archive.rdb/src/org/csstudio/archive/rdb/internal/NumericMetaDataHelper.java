@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ValueFactory;
 
@@ -24,7 +25,7 @@ public class NumericMetaDataHelper
      *  @return {@link INumericMetaData} or <code>null</code> if nothing found
      *  @throws Exception on error
      */
-    public static INumericMetaData get(final RDBArchiveImpl archive, final ChannelConfig channel)
+    public static INumericMetaData get(final RDBArchive archive, final ChannelConfig channel)
         throws Exception
     {
         final PreparedStatement sel = archive.getRDB().getConnection().prepareStatement(
@@ -54,7 +55,7 @@ public class NumericMetaDataHelper
      *  @param meta INumericMetaData. May be <code>null</code> to clear.
      *  @throws Exception on error
      */
-    public static void set(final RDBArchiveImpl archive,
+    public static void set(final RDBArchive archive,
             final ChannelConfig channel, final INumericMetaData meta) throws Exception
     {
         // See if already defined as needed.
@@ -77,7 +78,7 @@ public class NumericMetaDataHelper
     }
     
     /** Helper: Insert meta data into archive. */
-    private static void insert(final RDBArchiveImpl archive,
+    private static void insert(final RDBArchive archive,
             final ChannelConfig channel, final INumericMetaData meta) throws Exception
     {
         final Connection connection = archive.getRDB().getConnection();
@@ -108,7 +109,7 @@ public class NumericMetaDataHelper
     }    
     
     /** Helper: Delete meta data for channel. */
-    private static void delete(final RDBArchiveImpl archive,
+    private static void delete(final RDBArchive archive,
             final ChannelConfig channel) throws Exception
     {
         // Delete any existing entries

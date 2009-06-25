@@ -1,4 +1,4 @@
-package org.csstudio.archive.rdb.internal;
+package org.csstudio.archive.rdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,7 +6,8 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import org.csstudio.archive.rdb.SampleIterator;
+import org.csstudio.archive.rdb.internal.EnumMetaDataHelper;
+import org.csstudio.archive.rdb.internal.NumericMetaDataHelper;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
@@ -25,13 +26,13 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 public class RawSampleIterator implements SampleIterator
 {
 	/** Archive against which this iterator runs. */
-	final private RDBArchiveImpl archive;
+	final private RDBArchive archive;
 	
 	/** Channel.
 	 *  We set its meta data in <code>determineMetaData()</code>
 	 *  unless it's already defined.
 	 */
-	final private ChannelConfigImpl channel;
+	final private ChannelConfig channel;
 
 	/** SELECT ... for the start .. end samples. */
 	private PreparedStatement sel_samples;
@@ -64,8 +65,8 @@ public class RawSampleIterator implements SampleIterator
     private static INumericMetaData default_numeric_meta;
 	
 	/** Constructor, to be called by RDBArchive */
-	public RawSampleIterator(final RDBArchiveImpl archive,
-				   final ChannelConfigImpl channel,
+	public RawSampleIterator(final RDBArchive archive,
+				   final ChannelConfig channel,
 				   final ITimestamp start,
 				   final ITimestamp end) throws Exception
 	{

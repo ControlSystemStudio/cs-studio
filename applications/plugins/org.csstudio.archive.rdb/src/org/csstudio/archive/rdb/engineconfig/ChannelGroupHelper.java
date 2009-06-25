@@ -6,16 +6,16 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import org.csstudio.archive.rdb.internal.RDBArchiveImpl;
+import org.csstudio.archive.rdb.RDBArchive;
 
 /** Helper for handling ChannelGroup entries in RDB
  *  @author Kay Kasemir
  */
 public class ChannelGroupHelper
 {
-    final private RDBArchiveImpl archive;
+    final private RDBArchive archive;
 
-    public ChannelGroupHelper(final RDBArchiveImpl archive)
+    public ChannelGroupHelper(final RDBArchive archive)
     {
         this.archive = archive;
     }

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -33,7 +34,7 @@ public class EnumMetaDataHelper
      *  @return EnumStrings that were set, or <code>null</code> when cleared.
      *  @throws Exception on error
      */
-    public static void set(final RDBArchiveImpl archive,
+    public static void set(final RDBArchive archive,
             final ChannelConfig channel, final IEnumeratedMetaData meta) throws Exception
     {
         // See if already defined as needed.
@@ -56,7 +57,7 @@ public class EnumMetaDataHelper
     }
 
     /** Helper: Delete enum info in archive for channel. */
-    private static void delete(final RDBArchiveImpl archive,
+    private static void delete(final RDBArchive archive,
             final ChannelConfig channel) throws Exception
     {
         // Delete any existing entries
@@ -76,7 +77,7 @@ public class EnumMetaDataHelper
 
     /** Helper: Insert enum info into archive. */
     @SuppressWarnings("nls")
-    private static void insert(final RDBArchiveImpl archive,
+    private static void insert(final RDBArchive archive,
             final ChannelConfig channel, final IEnumeratedMetaData meta) throws Exception
     {
         final Connection connection = archive.getRDB().getConnection();
@@ -118,7 +119,7 @@ public class EnumMetaDataHelper
      */
     @SuppressWarnings("nls")
     public
-    static IEnumeratedMetaData get(final RDBArchiveImpl archive,
+    static IEnumeratedMetaData get(final RDBArchive archive,
             final ChannelConfig channel) throws Exception
     {
         final ArrayList<String> enums = new ArrayList<String>();
