@@ -168,5 +168,10 @@ public class WhenConnection extends ModelElement {
 	public List<Point> getBendPoints() {
 		return _bendPoints;
 	}
+
+	@Override
+	public String getIdentifier() {
+		return _whenNode.getSourceIdentifier();
+	}
 	
 }

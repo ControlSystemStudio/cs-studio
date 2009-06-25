@@ -145,4 +145,6 @@ public abstract class ModelElement implements Serializable {
 	public void setPropertyValue(Object id, Object value) {
 		// do nothing
 	}
+	
+	public abstract String getIdentifier();
 }

@@ -197,7 +197,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 		if (anchor == null) {
 			if (getModel() instanceof StateModel)
 				anchor = new ChopboxAnchor(getFigure());
-//				anchor = new EllipseAnchor(getFigure());
 			else if (getModel() instanceof StateSetModel)
 				anchor = new ChopboxAnchor(getFigure());
 			else

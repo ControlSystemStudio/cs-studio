@@ -41,6 +41,11 @@ public class StateModel extends SNLModel {
 
 	public void setStateNode(StateNode stateNode) {
 		_stateNode = stateNode;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return _stateNode.getSourceIdentifier();
 	}	
 	
 }

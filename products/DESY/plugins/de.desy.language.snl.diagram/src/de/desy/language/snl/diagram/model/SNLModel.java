@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Abstract prototype of a shape. Has a size (width and height), a location (x
@@ -24,7 +23,6 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @see de.desy.language.snl.diagram.model.RectangularShape
  * @see de.desy.language.snl.diagram.model.StateModel
- * @author Elias Volanakis
  */
 public abstract class SNLModel extends ModelElement {
 
@@ -64,9 +62,9 @@ public abstract class SNLModel extends ModelElement {
 	/** Size of this shape. */
 	private Dimension size = new Dimension(50, 50);
 	/** List of outgoing Connections. */
-	private List sourceConnections = new ArrayList();
+	private List<WhenConnection> sourceConnections = new ArrayList<WhenConnection>();
 	/** List of incoming Connections. */
-	private List targetConnections = new ArrayList();
+	private List<WhenConnection> targetConnections = new ArrayList<WhenConnection>();
 
 	/**
 	 * Add an incoming or outgoing connection to this shape.
@@ -138,15 +136,15 @@ public abstract class SNLModel extends ModelElement {
 	/**
 	 * Return a List of outgoing Connections.
 	 */
-	public List getSourceConnections() {
-		return new ArrayList(sourceConnections);
+	public List<WhenConnection> getSourceConnections() {
+		return new ArrayList<WhenConnection>(sourceConnections);
 	}
 
 	/**
 	 * Return a List of incoming Connections.
 	 */
-	public List getTargetConnections() {
-		return new ArrayList(targetConnections);
+	public List<WhenConnection> getTargetConnections() {
+		return new ArrayList<WhenConnection>(targetConnections);
 	}
 
 	/**
@@ -227,4 +225,5 @@ public abstract class SNLModel extends ModelElement {
 			firePropertyChange(SIZE_PROP, null, size);
 		}
 	}
+	
 }

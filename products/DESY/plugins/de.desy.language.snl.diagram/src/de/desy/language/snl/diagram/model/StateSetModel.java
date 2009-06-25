@@ -10,6 +10,9 @@
  *******************************************************************************/
 package de.desy.language.snl.diagram.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An elliptical shape.
  * 
@@ -17,7 +20,12 @@ package de.desy.language.snl.diagram.model;
  */
 public class StateSetModel extends SNLModel {
 
+	/** Property ID to use when a child is added to this diagram. */
+	public static final String CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded";
+	/** Property ID to use when a child is removed from this diagram. */
+	public static final String CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved";
 	private static final long serialVersionUID = 1;
+	private List<SNLModel> shapes = new ArrayList<SNLModel>();
 
 	public String getIconName() {
 		return "rectangle16.gif";
@@ -25,5 +33,48 @@ public class StateSetModel extends SNLModel {
 
 	public String toString() {
 		return "StateSet " + hashCode();
+	}
+
+	@Override
+	public String getIdentifier() {
+		return "StateSet";
+	}
+	
+	/**
+	 * Add a shape to this diagram.
+	 * 
+	 * @param s
+	 *            a non-null shape instance
+	 * @return true, if the shape was added, false otherwise
+	 */
+	public boolean addChild(SNLModel s) {
+		if (s != null && shapes.add(s)) {
+			firePropertyChange(CHILD_ADDED_PROP, null, s);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Return a List of Shapes in this diagram. The returned List should not be
+	 * modified.
+	 */
+	public List<SNLModel> getChildren() {
+		return shapes;
+	}
+
+	/**
+	 * Remove a shape from this diagram.
+	 * 
+	 * @param s
+	 *            a non-null shape instance;
+	 * @return true, if the shape was removed, false otherwise
+	 */
+	public boolean removeChild(SNLModel s) {
+		if (s != null && shapes.remove(s)) {
+			firePropertyChange(CHILD_REMOVED_PROP, null, s);
+			return true;
+		}
+		return false;
 	}
 }

@@ -56,6 +56,8 @@ import de.desy.language.editor.core.parser.Node;
 import de.desy.language.snl.diagram.model.SNLDiagram;
 import de.desy.language.snl.diagram.ui.parts.ShapesEditPartFactory;
 import de.desy.language.snl.diagram.ui.parts.ShapesTreeEditPartFactory;
+import de.desy.language.snl.diagram.ui.persistence.DummyPersistenceHandler;
+import de.desy.language.snl.diagram.ui.persistence.IPersistenceHandler;
 import de.desy.language.snl.parser.SNLParser;
 
 /**
@@ -72,10 +74,12 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	/** Palette component, holding the tools and shapes. */
 	private static PaletteRoot PALETTE_MODEL;
 	private ScalableFreeformRootEditPart _scalableFreeformRootEditPart;
+	private IPersistenceHandler _persistenceHandler;
 
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public DiagramEditor() {
 		setEditDomain(new DefaultEditDomain(this));
+		_persistenceHandler = new DummyPersistenceHandler();
 	}
 
 	/**
@@ -179,6 +183,9 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 //		} catch (IOException ioe) {
 //			ioe.printStackTrace();
 //		}
+		final IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+		_persistenceHandler.store(file.getName(), diagram);
+		getCommandStack().markSaveLocation();
 	}
 
 	/*
@@ -233,10 +240,10 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 //		}
 	}
 	
-	@Override
-	public boolean isDirty() {
-		return false;
-	}
+//	@Override
+//	public boolean isDirty() {
+//		return false;
+//	}
 
 	@Override
 	public Object getAdapter(final Class type) {
@@ -287,7 +294,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
-		return true;
+		return false;
 	}
 
 	/*

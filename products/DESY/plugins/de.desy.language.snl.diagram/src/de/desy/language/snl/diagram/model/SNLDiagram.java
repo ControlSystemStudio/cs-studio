@@ -14,47 +14,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A container for multiple shapes.
- * This is the "root" of the model data structure.
- * @author Elias Volanakis
+ * A container for multiple shapes. This is the "root" of the model data
+ * structure.
  */
 public class SNLDiagram extends ModelElement {
 
-/** Property ID to use when a child is added to this diagram. */
-public static final String CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded";
-/** Property ID to use when a child is removed from this diagram. */
-public static final String CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved";
-private static final long serialVersionUID = 1;
-private List shapes = new ArrayList();
+	/** Property ID to use when a child is added to this diagram. */
+	public static final String CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded";
+	/** Property ID to use when a child is removed from this diagram. */
+	public static final String CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved";
+	private static final long serialVersionUID = 1;
+	private List<SNLModel> shapes = new ArrayList<SNLModel>();
 
-/** 
- * Add a shape to this diagram.
- * @param s a non-null shape instance
- * @return true, if the shape was added, false otherwise
- */
-public boolean addChild(SNLModel s) {
-	if (s != null && shapes.add(s)) {
-		firePropertyChange(CHILD_ADDED_PROP, null, s);
-		return true;
+	/**
+	 * Add a shape to this diagram.
+	 * 
+	 * @param s
+	 *            a non-null shape instance
+	 * @return true, if the shape was added, false otherwise
+	 */
+	public boolean addChild(SNLModel s) {
+		if (s != null && shapes.add(s)) {
+			firePropertyChange(CHILD_ADDED_PROP, null, s);
+			return true;
+		}
+		return false;
 	}
-	return false;
-}
 
-/** Return a List of Shapes in this diagram.  The returned List should not be modified. */
-public List getChildren() {
-	return shapes;
-}
-
-/**
- * Remove a shape from this diagram.
- * @param s a non-null shape instance;
- * @return true, if the shape was removed, false otherwise
- */
-public boolean removeChild(SNLModel s) {
-	if (s != null && shapes.remove(s)) {
-		firePropertyChange(CHILD_REMOVED_PROP, null, s);
-		return true;
+	/**
+	 * Return a List of Shapes in this diagram. The returned List should not be
+	 * modified.
+	 */
+	public List<SNLModel> getChildren() {
+		return shapes;
 	}
-	return false;
-}
+
+	/**
+	 * Remove a shape from this diagram.
+	 * 
+	 * @param s
+	 *            a non-null shape instance;
+	 * @return true, if the shape was removed, false otherwise
+	 */
+	public boolean removeChild(SNLModel s) {
+		if (s != null && shapes.remove(s)) {
+			firePropertyChange(CHILD_REMOVED_PROP, null, s);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return "SNL-Diagram";
+	}
 }
