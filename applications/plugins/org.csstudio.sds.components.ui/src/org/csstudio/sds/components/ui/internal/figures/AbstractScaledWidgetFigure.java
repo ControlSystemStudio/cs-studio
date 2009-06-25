@@ -1,10 +1,10 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
-import org.csstudio.sds.components.ui.internal.figureparts.AbstractScale;
-import org.csstudio.sds.components.ui.internal.figureparts.Range;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.swt.xygraph.linearscale.AbstractScale;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;

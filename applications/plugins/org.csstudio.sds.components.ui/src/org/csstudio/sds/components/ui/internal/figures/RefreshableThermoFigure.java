@@ -3,9 +3,9 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.text.NumberFormat;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.sds.components.ui.internal.figureparts.LinearScale;
-import org.csstudio.sds.components.ui.internal.figureparts.LinearScaledMarker;
-import org.csstudio.sds.components.ui.internal.figureparts.LinearScale.Orientation;
+import org.csstudio.swt.xygraph.linearscale.LinearScale;
+import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
+import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureUtilities;

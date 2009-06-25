@@ -5,7 +5,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import org.csstudio.sds.components.ui.internal.figureparts.AbstractScale.LabelSide;
+
+import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;

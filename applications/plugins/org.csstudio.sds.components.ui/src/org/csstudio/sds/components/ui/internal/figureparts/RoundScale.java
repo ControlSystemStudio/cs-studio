@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.figureparts;
 
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;

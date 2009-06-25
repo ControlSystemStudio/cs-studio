@@ -2,7 +2,7 @@ package org.csstudio.sds.components.ui.internal.figureparts;
 
 import java.util.ArrayList;
 
-import org.csstudio.sds.components.ui.internal.figureparts.AbstractScale.LabelSide;
+import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;

@@ -2,8 +2,8 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.sds.components.ui.internal.figureparts.LinearScale;
-import org.csstudio.sds.components.ui.internal.figureparts.LinearScaledMarker;
+import org.csstudio.swt.xygraph.linearscale.LinearScale;
+import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.eclipse.swt.graphics.RGB;
 
 
