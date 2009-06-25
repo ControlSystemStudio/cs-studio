@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.diag.icsiocmonitor.ui.internal;
+package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +31,9 @@ import java.util.Map;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocState;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -44,7 +47,8 @@ public class IocMonitorTest {
 	private IocConnectionReporter _r1;
 	private IocConnectionReporter _r2;
 
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		_im = new IocMonitor();
 
 		_r1 = Mockito.mock(IocConnectionReporter.class);

@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocState;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;

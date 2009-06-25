@@ -6,7 +6,7 @@
       <view
             allowMultiple="false"
             category="org.csstudio"
-            class="org.csstudio.diag.icsiocmonitor.ui.internal.IocMonitorView"
+            class="org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorView"
             id="org.csstudio.diag.icsiocmonitor.ui.IocMonitorView"
             name="ICS/IOC Monitor"
             restorable="true">
@@ -19,7 +19,7 @@
             label="ICS/IOC Monitor"
             visible="true">
          <action
-               class="org.csstudio.diag.icsiocmonitor.ui.internal.ShowIocMonitor"
+               class="org.csstudio.diag.icsiocmonitor.ui.internal.model.ShowIocMonitor"
                id="org.csstudio.diag.icsiocmonitor.ui.ShowIocMonitorAction"
                label="ICS/IOC Monitor"
                menubarPath="css/diag/"

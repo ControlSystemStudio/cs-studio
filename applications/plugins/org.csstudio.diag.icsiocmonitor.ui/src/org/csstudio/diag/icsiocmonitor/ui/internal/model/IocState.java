@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.diag.icsiocmonitor.ui.internal;
+package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
 import java.util.HashMap;
 import java.util.Map;
