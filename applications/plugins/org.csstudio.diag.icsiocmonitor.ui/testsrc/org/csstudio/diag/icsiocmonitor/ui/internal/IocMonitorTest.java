@@ -34,18 +34,31 @@ import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import junit.framework.TestCase;
-
 /**
  * @author Joerg Rathlev
  *
  */
-public class IocMonitorTest extends TestCase {
+public class IocMonitorTest {
 	
 	private IocMonitor _im;
+	private IocConnectionReporter _r1;
+	private IocConnectionReporter _r2;
 
 	protected void setUp() throws Exception {
 		_im = new IocMonitor();
+
+		_r1 = Mockito.mock(IocConnectionReporter.class);
+		Map<String, IocConnectionState> s1 = new HashMap<String, IocConnectionState>();
+		s1.put("ioc1", IocConnectionState.CONNECTED);
+		s1.put("ioc2", IocConnectionState.DISCONNECTED);
+		Mockito.when(_r1.getReport()).thenReturn(new IocConnectionReport("r1", s1));
+
+		_r2 = Mockito.mock(IocConnectionReporter.class);
+		Map<String, IocConnectionState> s2 = new HashMap<String, IocConnectionState>();
+		s2.put("ioc1", IocConnectionState.CONNECTED);
+		s2.put("ioc2", IocConnectionState.CONNECTED);
+		s2.put("ioc3", IocConnectionState.DISCONNECTED);
+		Mockito.when(_r2.getReport()).thenReturn(new IocConnectionReport("r2", s2));
 	}
 	
 	/**
@@ -72,20 +85,13 @@ public class IocMonitorTest extends TestCase {
 	
 	@Test
 	public void testSingleReporter() throws Exception {
-		IocConnectionReporter reporter = Mockito.mock(IocConnectionReporter.class);
-		Map<String, IocConnectionState> states = new HashMap<String, IocConnectionState>();
-		states.put("ioc1", IocConnectionState.CONNECTED);
-		states.put("ioc2", IocConnectionState.DISCONNECTED);
-		IocConnectionReport report = new IocConnectionReport("test", states);
-		Mockito.when(reporter.getReport()).thenReturn(report);
-		
-		_im.addReporterService(reporter);
+		_im.addReporterService(_r1);
 		assertEquals(1, _im.getInterconnectionServers().size());
-		assertTrue(_im.getInterconnectionServers().contains("test"));
+		assertTrue(_im.getInterconnectionServers().contains("r1"));
 		List<IocState> is = _im.getIocStates();
 		assertEquals(2, is.size());
-		assertTrue(containsState(is, "ioc1", "test", IocConnectionState.CONNECTED));
-		assertTrue(containsState(is, "ioc2", "test", IocConnectionState.DISCONNECTED));
+		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
+		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
 	}
 	
 	@Test
@@ -99,22 +105,8 @@ public class IocMonitorTest extends TestCase {
 		 * The expected result is that there should be three IocState objects
 		 * with the correct states. ioc3/r1 should be reported as DISCONNECTED.
 		 */
-		
-		IocConnectionReporter r1 = Mockito.mock(IocConnectionReporter.class);
-		Map<String, IocConnectionState> s1 = new HashMap<String, IocConnectionState>();
-		s1.put("ioc1", IocConnectionState.CONNECTED);
-		s1.put("ioc2", IocConnectionState.DISCONNECTED);
-		Mockito.when(r1.getReport()).thenReturn(new IocConnectionReport("r1", s1));
-		
-		IocConnectionReporter r2 = Mockito.mock(IocConnectionReporter.class);
-		Map<String, IocConnectionState> s2 = new HashMap<String, IocConnectionState>();
-		s2.put("ioc1", IocConnectionState.CONNECTED);
-		s2.put("ioc2", IocConnectionState.CONNECTED);
-		s2.put("ioc3", IocConnectionState.DISCONNECTED);
-		Mockito.when(r2.getReport()).thenReturn(new IocConnectionReport("r2", s2));
-		
-		_im.addReporterService(r1);
-		_im.addReporterService(r2);
+		_im.addReporterService(_r1);
+		_im.addReporterService(_r2);
 		assertEquals(2, _im.getInterconnectionServers().size());
 		assertTrue(_im.getInterconnectionServers().contains("r1"));
 		assertTrue(_im.getInterconnectionServers().contains("r2"));
@@ -126,6 +118,19 @@ public class IocMonitorTest extends TestCase {
 		assertTrue(containsState(is, "ioc2", "r2", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc3", "r1", IocConnectionState.DISCONNECTED));
 		assertTrue(containsState(is, "ioc3", "r2", IocConnectionState.DISCONNECTED));
+	}
+	
+	@Test
+	public void testRemoveReporter() throws Exception {
+		_im.addReporterService(_r1);
+		_im.addReporterService(_r2);
+		_im.removeReporterService(_r2);
+		assertEquals(1, _im.getInterconnectionServers().size());
+		assertTrue(_im.getInterconnectionServers().contains("r1"));
+		List<IocState> is = _im.getIocStates();
+		assertEquals(2, is.size());
+		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
+		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
 	}
 
 }

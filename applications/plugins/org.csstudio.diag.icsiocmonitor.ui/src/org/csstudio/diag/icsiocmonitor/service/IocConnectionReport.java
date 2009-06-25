@@ -48,9 +48,16 @@ public final class IocConnectionReport implements Serializable {
 	 *            the interconnection server which created this report.
 	 * @param iocStates
 	 *            the states of the IOCs.
+	 * @throws NullPointerException
+	 *             if <code>server</code> or <code>iocStates</code> is
+	 *             <code>null</code>.
 	 */
 	public IocConnectionReport(String server,
 			Map<String, IocConnectionState> iocStates) {
+		if (server == null || iocStates == null) {
+			throw new NullPointerException();
+		}
+		
 		_reportingServer = server;
 		_iocStates = new HashMap<String, IocConnectionState>(iocStates);
 	}
