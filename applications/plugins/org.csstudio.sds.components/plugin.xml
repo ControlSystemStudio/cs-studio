@@ -187,7 +187,7 @@
             category="Monitors"
             class="org.csstudio.sds.components.internal.model.XMeterModelFactory"
             description="Express Meter"
-            icon="icons/XMeter.gif"
+            icon="icons/XMeter.png"
             name="Express Meter"
             typeId="org.csstudio.sds.components.XMeter">
       </widgetModelFactory>
