@@ -1,10 +1,7 @@
 package org.csstudio.swt.xygraph.figures;
 
 import org.csstudio.swt.xygraph.toolbar.XYGraphToolbar;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.FocusEvent;
-import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -29,17 +26,7 @@ public class ToolbarArmedXYGraph extends Figure {
 		xyGraph.setOpaque(false);
 		toolbar.setOpaque(false);
 		add(toolbar);		
-		add(xyGraph);
-		setRequestFocusEnabled(true);
-		setFocusTraversable(true);
-		addFocusListener(new FocusListener(){
-			public void focusGained(FocusEvent fe) {
-				repaint();				
-			}
-			public void focusLost(FocusEvent fe) {
-				repaint();
-			}			
-		});
+		add(xyGraph);		
 	}
 	
 	@Override
@@ -57,21 +44,6 @@ public class ToolbarArmedXYGraph extends Figure {
 		super.layout();
 	}
 
-	/**
-	 * If this XY-Graph has focus, this method paints a focus rectangle.
-	 * 
-	 * @param graphics Graphics handle for painting
-	 */
-	protected void paintBorder(Graphics graphics) {
-		super.paintBorder(graphics);
-		if (hasFocus()) {
-			graphics.setForegroundColor(ColorConstants.black);
-			graphics.setBackgroundColor(ColorConstants.white);
-			Rectangle area = getClientArea();			
-			graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);			
-		}
-	}
-	
 	/**
 	 * @param showToolbar the showToolbar to set
 	 */
