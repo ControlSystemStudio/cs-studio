@@ -321,4 +321,9 @@ public class AlarmMessageList extends MessageList {
         jmsMessagesToRemoveAndAdd.clear();
         return equalPreviousMessage;
     }
+    
+    @Override
+    public Integer getSize() {
+       return _messages.size();
+    }
 }

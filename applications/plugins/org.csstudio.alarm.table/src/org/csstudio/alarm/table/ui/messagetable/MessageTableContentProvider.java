@@ -26,6 +26,7 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.IMessageViewer;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -54,6 +55,7 @@ public class MessageTableContentProvider implements IMessageViewer,
                 try {
                     _tableViewer.add(jmsm);
                     _tableViewer.refresh();
+                    CentralLogger.getInstance().debug(this, "Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$

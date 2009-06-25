@@ -99,4 +99,6 @@ abstract public class MessageList {
     abstract public Vector<? extends BasicMessage> getJMSMessageList();
 
     abstract public void clearList();
+
+    abstract public Integer getSize();
 }

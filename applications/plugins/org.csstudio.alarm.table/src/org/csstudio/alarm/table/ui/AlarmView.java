@@ -119,7 +119,7 @@ public class AlarmView extends LogView {
 
         _messageTable.makeContextMenu(getSite());
         
-        _columnMapping = new ColumnWidthPreferenceMapping(_tableViewer);
+        _columnMapping = new AlarmColumnWidthPreferenceMapping(_tableViewer);
         
         getSite().setSelectionProvider(_tableViewer);
 

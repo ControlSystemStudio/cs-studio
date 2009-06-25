@@ -100,4 +100,9 @@ public class ArchiveMessageList extends MessageList {
     public void clearList() {
         _messages.clear();
     }
+    
+    @Override
+    public Integer getSize() {
+       return _messages.size();
+    }
 }

@@ -103,4 +103,9 @@ public class LogMessageList extends MessageList {
             }
         }
     }
+
+    @Override
+    public Integer getSize() {
+       return _messages.size();
+    }
 }

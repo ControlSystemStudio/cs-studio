@@ -20,7 +20,7 @@ public class AlarmColumnWidthPreferenceMapping extends
                 .getString(preferenceColumnConstant).split(";"); //$NON-NLS-1$
         for (int i = 1; i < columns.length; i++) {
             newPreferenceColumnString = newPreferenceColumnString
-                    .concat(columns[i].split(",")[0] + "," + _columnWidth[i] + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    .concat(columns[i].split(",")[0] + "," + _columnWidth[i+1] + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         newPreferenceColumnString = newPreferenceColumnString.substring(0,
                 newPreferenceColumnString.length() - 1);
