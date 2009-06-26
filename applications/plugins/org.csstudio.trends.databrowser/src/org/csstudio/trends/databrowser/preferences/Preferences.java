@@ -78,7 +78,7 @@ public class Preferences
     
     /** Preference Identifier: Show "Start Time" in archives view? */
     private static final String SHOW_ARCHIVE_START_TIMES = "show_archive_start_times";
-    
+
     /** @return Default start time specification. */
     static public String getStartSpecification()
     {

@@ -1,11 +1,13 @@
 package org.csstudio.trends.databrowser.preferences;
 
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -48,6 +50,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements
     {
         final Composite parent = getFieldEditorParent();
 
+        // Unclear how to control the placement of these items.
+        // StringFieldEditor seem to use 2 columns for Label, Value
         addField(new StringFieldEditor(Preferences.START_TIME_SPEC,
                 Messages.StartTime, parent));
         addField(new StringFieldEditor(Preferences.END_TIME_SPEC,
@@ -72,9 +76,30 @@ public class PreferencePage extends FieldEditorPreferencePage implements
                 MAX_BINS));
         addField(plot_bins);
 
+        // This one uses one column...
+        final String rescale[][] = new String[][]
+        {
+            {
+                org.csstudio.trends.databrowser.configview.Messages.Rescale_None,
+                ArchiveRescale.NONE.name()
+            },
+            {
+                org.csstudio.trends.databrowser.configview.Messages.Rescale_Autozoom,
+                ArchiveRescale.AUTOZOOM.name()
+            },
+            {
+                org.csstudio.trends.databrowser.configview.Messages.Rescale_Stagger,
+                ArchiveRescale.STAGGER.name()
+            },
+        };
+        addField(new RadioGroupFieldEditor(Preferences.ARCHIVE_RESCALE,
+                org.csstudio.trends.databrowser.configview.Messages.Rescale_Label,
+                3, rescale, parent, true));
+        // .. and this one the second column
         addField(new BooleanFieldEditor(Preferences.AUTOSCALE,
                 Messages.Label_Autoscale, parent));
-        
+
+        // These again will 2 columns
         addField(new URLListEditor(Preferences.URLS, parent));
         addField(new ArchiveListEditor(Preferences.ARCHIVES, parent));
     }
