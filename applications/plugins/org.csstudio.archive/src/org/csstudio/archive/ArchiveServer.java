@@ -213,4 +213,13 @@ public abstract class ArchiveServer
 			ITimestamp start, ITimestamp end,
             String request_type, Object request_parms[])
         throws Exception;
+    
+    /** Cancel an ongoing archive query.
+     *  It's up to the implementation to support this for all queries,
+     *  or only 'getSamples', or not at all.
+     */
+    public void cancel()
+    {
+        // NOP
+    }
 }
