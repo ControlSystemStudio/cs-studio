@@ -46,6 +46,11 @@ public class StateModel extends SNLModel {
 	@Override
 	public String getIdentifier() {
 		return _stateNode.getSourceIdentifier();
+	}
+
+	@Override
+	protected boolean canHaveChildren() {
+		return false;
 	}	
 	
 }

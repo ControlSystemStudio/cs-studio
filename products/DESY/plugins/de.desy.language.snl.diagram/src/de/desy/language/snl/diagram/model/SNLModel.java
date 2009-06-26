@@ -24,7 +24,7 @@ import org.eclipse.draw2d.geometry.Point;
  * @see de.desy.language.snl.diagram.model.RectangularShape
  * @see de.desy.language.snl.diagram.model.StateModel
  */
-public abstract class SNLModel extends ModelElement {
+public abstract class SNLModel extends SNLElement {
 
 	/**
 	 * ID for the Height property value (used for by the corresponding property

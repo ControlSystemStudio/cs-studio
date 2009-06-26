@@ -15,10 +15,8 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.eclipse.draw2d.ChopboxAnchor;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
@@ -32,6 +30,7 @@ import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 
 import de.desy.language.snl.diagram.model.ModelElement;
+import de.desy.language.snl.diagram.model.SNLElement;
 import de.desy.language.snl.diagram.model.SNLModel;
 import de.desy.language.snl.diagram.model.StateModel;
 import de.desy.language.snl.diagram.model.StateSetModel;
@@ -39,6 +38,7 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 import de.desy.language.snl.diagram.ui.commands.ConnectionCreateCommand;
 import de.desy.language.snl.diagram.ui.commands.ConnectionReconnectCommand;
 import de.desy.language.snl.diagram.ui.figures.StateFigure;
+import de.desy.language.snl.diagram.ui.figures.StateSetFigure;
 
 /**
  * EditPart used for Shape instances (more specific for EllipticalShape and
@@ -145,6 +145,19 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 					}
 				});
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected List getModelChildren() {
+		Object model = getModel();
+		if (model instanceof SNLElement) {
+			SNLElement element = (SNLElement)model;
+			if (element.hasChildren()) {
+				return element.getChildren();
+			}
+		}
+		return super.getModelChildren();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -155,7 +168,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	protected IFigure createFigure() {
 		final IFigure f = createFigureForModel();
 		f.setOpaque(true); // non-transparent figure
-		// f.setBackgroundColor(ColorConstants.green);
 		return f;
 	}
 
@@ -168,9 +180,8 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 			final StateModel sm = (StateModel) getModel();
 			return new StateFigure(sm.getStateNode());
 		} else if (getModel() instanceof StateSetModel) {
-			final RectangleFigure rectangleFigure = new RectangleFigure();
-			rectangleFigure.setBackgroundColor(ColorConstants.green);
-			return rectangleFigure;
+			final StateSetModel ssm = (StateSetModel) getModel();
+			return new StateSetFigure(ssm.getStateSetNode());
 		} else {
 			// if Shapes gets extended the conditions above must be updated
 			throw new IllegalArgumentException();
@@ -212,7 +223,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelSourceConnections()
 	 */
 	@Override
-	protected List getModelSourceConnections() {
+	protected List<WhenConnection> getModelSourceConnections() {
 		return getCastedModel().getSourceConnections();
 	}
 
@@ -222,7 +233,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelTargetConnections()
 	 */
 	@Override
-	protected List getModelTargetConnections() {
+	protected List<WhenConnection> getModelTargetConnections() {
 		return getCastedModel().getTargetConnections();
 	}
 

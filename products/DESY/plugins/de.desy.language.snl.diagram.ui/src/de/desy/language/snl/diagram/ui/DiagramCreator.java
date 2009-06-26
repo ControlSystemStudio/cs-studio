@@ -9,7 +9,9 @@ import org.eclipse.draw2d.geometry.Point;
 
 import de.desy.language.editor.core.parser.Node;
 import de.desy.language.snl.diagram.model.SNLDiagram;
+import de.desy.language.snl.diagram.model.SNLElement;
 import de.desy.language.snl.diagram.model.StateModel;
+import de.desy.language.snl.diagram.model.StateSetModel;
 import de.desy.language.snl.diagram.model.WhenConnection;
 import de.desy.language.snl.parser.nodes.StateNode;
 import de.desy.language.snl.parser.nodes.StateSetNode;
@@ -20,19 +22,21 @@ public class DiagramCreator {
 	private static final int START_X = 50;
 	private static final int START_Y = 50;
 	private static final int DISTANCE_X = 300;
-	private static final int DISTANCE_Y = 150;
+	private static final int DISTANCE_Y = 200;
 	private static final int STATE_WIDTH = 100;
 	private static final int STATE_HEIGHT = 50;
+	private static final int STATESET_HEIGHT = 180;
 
 	private static DiagramCreator _instance;
 
-	private final Map<StateSetNode, HashMap<String, StateModel>> _stateSetMap;
+	private final Map<StateSetModel, HashMap<String, StateModel>> _stateSetMap;
 	private final Map<WhenConnectionAnchors, Integer> _anchorMap;
 
 	private final ConnectionBendPointCreator _bendPointCreator;
+	private SNLDiagram _diagram;
 
 	private DiagramCreator() {
-		_stateSetMap = new HashMap<StateSetNode, HashMap<String, StateModel>>();
+		_stateSetMap = new HashMap<StateSetModel, HashMap<String, StateModel>>();
 		_anchorMap = new HashMap<WhenConnectionAnchors, Integer>();
 		_bendPointCreator = new ConnectionBendPointCreator();
 		_bendPointCreator.setSeparation(20);
@@ -50,18 +54,21 @@ public class DiagramCreator {
 		return diagram;
 	}
 
-	public SNLDiagram createDiagram(final Node rootNode) {
-		return this.createDiagram(rootNode, new HashMap<Node, List<Point>>());
+	public SNLDiagram createDiagram(final Node rootNode, int separation) {
+		return this.createDiagram(rootNode, new HashMap<Node, List<Point>>(),
+				separation);
 	}
 
 	public SNLDiagram createDiagram(final Node rootNode,
-			Map<Node, List<Point>> storedCoordinates) {
+			Map<Node, List<Point>> storedCoordinates, int separation) {
 		resetContainer();
 
-		final SNLDiagram diagram = new SNLDiagram();
-		addStateNodes(diagram, rootNode, storedCoordinates);
+		_bendPointCreator.setSeparation(separation);
+
+		_diagram = new SNLDiagram();
+		addStateNodes(_diagram, rootNode, storedCoordinates);
 		addWhenNodes(storedCoordinates);
-		return diagram;
+		return _diagram;
 	}
 
 	private void resetContainer() {
@@ -69,34 +76,51 @@ public class DiagramCreator {
 		_anchorMap.clear();
 	}
 
-	private void addStateNodes(final SNLDiagram diagram, final Node node,
+	private void addStateNodes(final SNLElement parentModel, final Node node,
 			Map<Node, List<Point>> storedCoordinates) {
 		for (final Node child : node.getChildrenNodes()) {
 			if (child instanceof StateNode) {
-				final StateSetNode parent = (StateSetNode) node;
-				if (!_stateSetMap.containsKey(parent)) {
-					_stateSetMap.put(parent, new HashMap<String, StateModel>());
-				}
 				final HashMap<String, StateModel> stateMap = _stateSetMap
-						.get(parent);
+						.get(parentModel);
+				final int size = stateMap.size();
+				
 				final StateNode stateNode = (StateNode) child;
 				final StateModel state = new StateModel();
-				final int size = stateMap.size();
 
 				List<Point> list = storedCoordinates.get(stateNode);
 				if (list == null || list.isEmpty()) {
-					state.setLocation(new Point(START_X + size * DISTANCE_X,
-							START_Y + (_stateSetMap.size() - 1) * DISTANCE_Y));
+					int x = 2 * START_X + size * DISTANCE_X;
+					int y = START_Y + (_stateSetMap.size() - 1) * DISTANCE_Y + (STATESET_HEIGHT - STATE_HEIGHT) / 2;
+					state.setLocation(new Point(x, y ));
+					System.out.println("\tState at "+x+"/"+y);
 				} else {
 					state.setLocation(list.get(0));
 				}
 				state.setSize(new Dimension(STATE_WIDTH, STATE_HEIGHT));
 				state.setStateNode(stateNode);
 				stateMap.put(stateNode.getSourceIdentifier(), state);
-				diagram.addChild(state);
+//				parentModel.addChild(state);
+				_diagram.addChild(state);
+			} else if (child instanceof StateSetNode) {
+				StateSetModel setModel = new StateSetModel();
+				setModel.setStateSetNode((StateSetNode) child);
+				parentModel.addChild(setModel);
+				
+				if (!_stateSetMap.containsKey(setModel)) {
+					_stateSetMap.put(setModel, new HashMap<String, StateModel>());
+				}
+				if (child.hasChildren()) {
+					addStateNodes(setModel, child, storedCoordinates);
+				}
+				int childCount = _stateSetMap.get(setModel).size();
+				int setWidth = 2 * START_X + (childCount-1) * DISTANCE_X + STATE_WIDTH;
+				setModel.setSize(new Dimension(setWidth, STATESET_HEIGHT));
+				int y = START_Y + (_stateSetMap.size() - 1) * DISTANCE_Y;
+				System.out.println("StateSet at "+START_X+"/"+y);
+				setModel.setLocation(new Point(START_X, y));
 			} else {
 				if (child.hasChildren()) {
-					addStateNodes(diagram, child, storedCoordinates);
+					addStateNodes(parentModel, child, storedCoordinates);
 				}
 			}
 		}

@@ -68,6 +68,8 @@ import de.desy.language.snl.parser.SNLParser;
  */
 public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
+	private static final int ROUTING_SEPARATION = 20;
+
 	/** This is the root of the editor's model. */
 	private SNLDiagram diagram;
 	private IDocumentProvider fImplicitDocumentProvider;
@@ -114,7 +116,9 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util.EventObject)
+	 * @see
+	 * org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util
+	 * .EventObject)
 	 */
 	@Override
 	public void commandStackChanged(final EventObject event) {
@@ -125,7 +129,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
+	 * @seeorg.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#
+	 * createPaletteViewerProvider()
 	 */
 	@Override
 	protected PaletteViewerProvider createPaletteViewerProvider() {
@@ -166,23 +171,26 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+	 * @see
+	 * org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor
+	 * )
 	 */
 	@Override
 	public void doSave(final IProgressMonitor monitor) {
-//		ByteArrayOutputStream out = new ByteArrayOutputStream();
-//		try {
-//			createOutputStream(out);
-//			IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-//			file.setContents(new ByteArrayInputStream(out.toByteArray()), true, 
-			// keep saving, even if IFile is out of sync with the Workspace false, don't keep history
-//					monitor); // progress monitor
-//			getCommandStack().markSaveLocation();
-//		} catch (CoreException ce) {
-//			ce.printStackTrace();
-//		} catch (IOException ioe) {
-//			ioe.printStackTrace();
-//		}
+		// ByteArrayOutputStream out = new ByteArrayOutputStream();
+		// try {
+		// createOutputStream(out);
+		// IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+		// file.setContents(new ByteArrayInputStream(out.toByteArray()), true,
+		// keep saving, even if IFile is out of sync with the Workspace false,
+		// don't keep history
+		// monitor); // progress monitor
+		// getCommandStack().markSaveLocation();
+		// } catch (CoreException ce) {
+		// ce.printStackTrace();
+		// } catch (IOException ioe) {
+		// ioe.printStackTrace();
+		// }
 		final IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 		_persistenceHandler.store(file.getName(), diagram);
 		getCommandStack().markSaveLocation();
@@ -195,55 +203,56 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	public void doSaveAs() {
-//		// Show a SaveAs dialog
-//		Shell shell = getSite().getWorkbenchWindow().getShell();
-//		SaveAsDialog dialog = new SaveAsDialog(shell);
-//		dialog.setOriginalFile(((IFileEditorInput) getEditorInput()).getFile());
-//		dialog.open();
-//
-//		IPath path = dialog.getResult();
-//		if (path != null) {
-//			// try to save the editor's contents under a different file name
-//			final IFile file = ResourcesPlugin.getWorkspace().getRoot()
-//					.getFile(path);
-//			try {
-//				new ProgressMonitorDialog(shell).run(false, // don't fork
-//						false, // not cancelable
-//						new WorkspaceModifyOperation() { // run this
-//							// operation
-//							public void execute(final IProgressMonitor monitor) {
-//								try {
-//									ByteArrayOutputStream out = new ByteArrayOutputStream();
-//									createOutputStream(out);
-//									file.create(new ByteArrayInputStream(out
-//											.toByteArray()), // contents
-//											true, // keep saving, even if
-//											// IFile is out of sync with
-//											// the Workspace
-//											monitor); // progress monitor
-//								} catch (CoreException ce) {
-//									ce.printStackTrace();
-//								} catch (IOException ioe) {
-//									ioe.printStackTrace();
-//								}
-//							}
-//						});
-//				// set input to the new file
-//				setInput(new FileEditorInput(file));
-//				getCommandStack().markSaveLocation();
-//			} catch (InterruptedException ie) {
-//				// should not happen, since the monitor dialog is not cancelable
-//				ie.printStackTrace();
-//			} catch (InvocationTargetException ite) {
-//				ite.printStackTrace();
-//			}
-//		}
+		// // Show a SaveAs dialog
+		// Shell shell = getSite().getWorkbenchWindow().getShell();
+		// SaveAsDialog dialog = new SaveAsDialog(shell);
+		// dialog.setOriginalFile(((IFileEditorInput)
+		// getEditorInput()).getFile());
+		// dialog.open();
+		//
+		// IPath path = dialog.getResult();
+		// if (path != null) {
+		// // try to save the editor's contents under a different file name
+		// final IFile file = ResourcesPlugin.getWorkspace().getRoot()
+		// .getFile(path);
+		// try {
+		// new ProgressMonitorDialog(shell).run(false, // don't fork
+		// false, // not cancelable
+		// new WorkspaceModifyOperation() { // run this
+		// // operation
+		// public void execute(final IProgressMonitor monitor) {
+		// try {
+		// ByteArrayOutputStream out = new ByteArrayOutputStream();
+		// createOutputStream(out);
+		// file.create(new ByteArrayInputStream(out
+		// .toByteArray()), // contents
+		// true, // keep saving, even if
+		// // IFile is out of sync with
+		// // the Workspace
+		// monitor); // progress monitor
+		// } catch (CoreException ce) {
+		// ce.printStackTrace();
+		// } catch (IOException ioe) {
+		// ioe.printStackTrace();
+		// }
+		// }
+		// });
+		// // set input to the new file
+		// setInput(new FileEditorInput(file));
+		// getCommandStack().markSaveLocation();
+		// } catch (InterruptedException ie) {
+		// // should not happen, since the monitor dialog is not cancelable
+		// ie.printStackTrace();
+		// } catch (InvocationTargetException ite) {
+		// ite.printStackTrace();
+		// }
+		// }
 	}
-	
-//	@Override
-//	public boolean isDirty() {
-//		return false;
-//	}
+
+	// @Override
+	// public boolean isDirty() {
+	// return false;
+	// }
 
 	@Override
 	public Object getAdapter(final Class type) {
@@ -259,7 +268,9 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
+	 * @see
+	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot
+	 * ()
 	 */
 	@Override
 	protected PaletteRoot getPaletteRoot() {
@@ -278,11 +289,13 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		super.initializeGraphicalViewer();
 		final GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setContents(getModel()); // set the contents of this editor
-		final ConnectionLayer layer = (ConnectionLayer) _scalableFreeformRootEditPart.getLayer(LayerConstants.CONNECTION_LAYER);
-		
-		final ShortestPathConnectionRouter pathRouter = (ShortestPathConnectionRouter)layer.getConnectionRouter();
-		pathRouter.setSpacing(10);
-				
+		final ConnectionLayer layer = (ConnectionLayer) _scalableFreeformRootEditPart
+				.getLayer(LayerConstants.CONNECTION_LAYER);
+
+		final ShortestPathConnectionRouter pathRouter = (ShortestPathConnectionRouter) layer
+				.getConnectionRouter();
+		pathRouter.setSpacing(ROUTING_SEPARATION);
+
 		// listen for dropped parts
 		viewer.addDropTargetListener(createTransferDropTargetListener());
 	}
@@ -320,14 +333,15 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 				sourceRessource = ((FileEditorInput) getEditorInput())
 						.getFile();
 			}
-			final Node rootNode = this.getLanguageParser().parse(document.get(), sourceRessource, new NullProgressMonitor());
-			diagram = DiagramCreator.getInstance().createDiagram(rootNode);
+			final Node rootNode = this.getLanguageParser().parse(
+					document.get(), sourceRessource, new NullProgressMonitor());
+			diagram = DiagramCreator.getInstance().createDiagram(rootNode, ROUTING_SEPARATION);
 		} else {
 			diagram = DiagramCreator.getInstance().createDefaultDiagram();
 		}
 		setPartName(file.getName());
 	}
-	
+
 	private AbstractLanguageParser getLanguageParser() {
 		return new SNLParser();
 	}
@@ -351,7 +365,9 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
+		 * @see
+		 * org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite
+		 * )
 		 */
 		@Override
 		public void createControl(final Composite parent) {

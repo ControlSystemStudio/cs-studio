@@ -10,71 +10,41 @@
  *******************************************************************************/
 package de.desy.language.snl.diagram.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.desy.language.snl.parser.nodes.StateSetNode;
 
 /**
  * An elliptical shape.
  * 
- * @author Elias Volanakis
  */
 public class StateSetModel extends SNLModel {
 
-	/** Property ID to use when a child is added to this diagram. */
-	public static final String CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded";
-	/** Property ID to use when a child is removed from this diagram. */
-	public static final String CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved";
 	private static final long serialVersionUID = 1;
-	private List<SNLModel> shapes = new ArrayList<SNLModel>();
+	private StateSetNode _stateSetNode;
 
 	public String getIconName() {
 		return "rectangle16.gif";
 	}
 
 	public String toString() {
-		return "StateSet " + hashCode();
+		return "StateSet '" + _stateSetNode.getSourceIdentifier() + "'";
 	}
 
 	@Override
 	public String getIdentifier() {
-		return "StateSet";
+		return _stateSetNode.getSourceIdentifier();
 	}
 	
-	/**
-	 * Add a shape to this diagram.
-	 * 
-	 * @param s
-	 *            a non-null shape instance
-	 * @return true, if the shape was added, false otherwise
-	 */
-	public boolean addChild(SNLModel s) {
-		if (s != null && shapes.add(s)) {
-			firePropertyChange(CHILD_ADDED_PROP, null, s);
-			return true;
-		}
-		return false;
+	public void setStateSetNode(StateSetNode node) {
+		_stateSetNode = node;
+	}
+	
+	public StateSetNode getStateSetNode() {
+		return _stateSetNode;
 	}
 
-	/**
-	 * Return a List of Shapes in this diagram. The returned List should not be
-	 * modified.
-	 */
-	public List<SNLModel> getChildren() {
-		return shapes;
+	@Override
+	protected boolean canHaveChildren() {
+		return true;
 	}
-
-	/**
-	 * Remove a shape from this diagram.
-	 * 
-	 * @param s
-	 *            a non-null shape instance;
-	 * @return true, if the shape was removed, false otherwise
-	 */
-	public boolean removeChild(SNLModel s) {
-		if (s != null && shapes.remove(s)) {
-			firePropertyChange(CHILD_REMOVED_PROP, null, s);
-			return true;
-		}
-		return false;
-	}
+	
 }
