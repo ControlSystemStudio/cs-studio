@@ -31,9 +31,16 @@ public class NameInfo
 	public ITimestamp getEnd()
 	{	return end;	}
 	
-	@Override public String toString()
+	@SuppressWarnings("nls")
+    @Override public String toString()
 	{
-		return String.format("'%s': %s - %s", //$NON-NLS-1$
-				name, start.toString(), end.toString());
+	    if (start != null  &&  end != null)
+    		return String.format("'%s': %s - %s",
+    				name, start.toString(), end.toString());
+	    else if (end != null)
+            return String.format("'%s': ? - %s",
+                    name, end.toString());
+	    else
+            return String.format("'%s': ? - ?", name);
 	}
 }
