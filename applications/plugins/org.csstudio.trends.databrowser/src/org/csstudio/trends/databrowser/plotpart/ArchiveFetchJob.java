@@ -53,6 +53,11 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
         private volatile boolean cancelled = false;
         private volatile boolean done = false;
         
+        /** Server that's currently queried.
+         *  Synchronize 'this' on access.
+         */
+        private ArchiveServer server = null;
+        
         /** Construct */
         public WorkerThread()
         {
@@ -69,6 +74,11 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
         public synchronized void cancel()
         {
             cancelled = true;
+            synchronized (this)
+            {
+                if (server != null)
+                    server.cancel();
+            }
         }
 
         /** @return <code>true</code> when done (success, error, cancelled) */
@@ -81,6 +91,7 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
         @Override
         public void run()
         {
+            final ArchiveCache cache = ArchiveCache.getInstance();
             final IArchiveDataSource archives[] = item.getArchiveDataSources();
             for (int i=0; i<archives.length && !cancelled; ++i)
             {
@@ -92,59 +103,55 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
                         + "' ("
                         + (i+1) + "/" + archives.length + ")";
                 }
-                final ArchiveCache cache = ArchiveCache.getInstance();
                 try
                 {   // Invoke the possibly lengthy search.
-                    final ArchiveServer server =
-                        cache.getServer(archives[i].getUrl());
-                    try
+                    synchronized (this)
                     {
-                        String request_type;
-                        Object[] request_parms;
-                        final int bins = Preferences.getPlotBins();
-                        if (item.getRequestType() == IPVModelItem.RequestType.RAW)
-                        {
-                            request_type = ArchiveServer.GET_RAW;
-                            request_parms = new Object[] { new Integer(bins) };
-                        }
-                        else
-                        {
-                            request_type = ArchiveServer.GET_AVERAGE;
-                            final double interval =
-                                (end.toDouble() - start.toDouble()) / bins;
-                            request_parms = new Object[] { new Double(interval) };
-                        }
-                        
-                        final BatchIterator batch = new BatchIterator(server,
-                                        archives[i].getKey(), item.getName(),
-                                        start, end, request_type, request_parms);
-                        IValue result[] = batch.getBatch();
-                        while (result != null)
-                        {   // Notify model of new samples.
-                            // Even when monitor.isCanceled at this point?
-                            // Yes, since we have the samples, might as well show them
-                            // before bailing out.
-                            if (result.length > 0)
-                                item.addArchiveSamples(server.getServerName(), result);
-                            if (cancelled)
-                                break;
-                            result = batch.next();
-                        }
+                        server = cache.getServer(archives[i].getUrl());
                     }
-                    catch (Exception ex)
-                    {   // Add server info to error, pass up to next try/catch
-                        throw new Exception(server.getURL() + ": " + ex.getMessage(), ex);
+                    String request_type;
+                    Object[] request_parms;
+                    final int bins = Preferences.getPlotBins();
+                    if (item.getRequestType() == IPVModelItem.RequestType.RAW)
+                    {
+                        request_type = ArchiveServer.GET_RAW;
+                        request_parms = new Object[] { new Integer(bins) };
+                    }
+                    else
+                    {
+                        request_type = ArchiveServer.GET_AVERAGE;
+                        final double interval =
+                            (end.toDouble() - start.toDouble()) / bins;
+                        request_parms = new Object[] { new Double(interval) };
+                    }
+                    
+                    final BatchIterator batch = new BatchIterator(server,
+                                    archives[i].getKey(), item.getName(),
+                                    start, end, request_type, request_parms);
+                    IValue result[] = batch.getBatch();
+                    while (result != null)
+                    {   // Notify model of new samples.
+                        // Even when 'cancelled' at this point?
+                        // Yes, since we have the samples, might as well show them
+                        // before bailing out.
+                        if (result.length > 0)
+                            item.addArchiveSamples(server.getServerName(), result);
+                        if (cancelled)
+                            break;
+                        result = batch.next();
                     }
                 }
-                catch (final Exception ex)
+                catch (Exception ex)
                 {
-                    Plugin.getLogger().error("ArchiveFetchJob", ex);
+                    final String url = archives[i].getUrl();
+                    final String msg = ex.getMessage();
+                    Plugin.getLogger().error("ArchiveFetchJob " + url, ex);
                     shell.getDisplay().asyncExec(new Runnable()
                     {
                         public void run()
                         {
                             MessageDialog.openError(shell, Messages.Error,
-                                    NLS.bind(Messages.ErrorFmt, ex.getMessage()));
+                                NLS.bind(Messages.ErrorFmt, url, msg));
                         }
                     });
                 }
@@ -152,6 +159,12 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
             done = true;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "WorkerTread for " + ArchiveFetchJob.this.toString();
         }
     };
     
@@ -233,7 +246,8 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
             {
                 // Ignore
             }
-            // Try to cancel the worker in response to user's cancel request
+            // Try to cancel the worker in response to user's cancel request.
+            // Continues to cancel the worker until isDone()
             if (monitor.isCanceled())
                 worker.cancel();
             ++seconds;

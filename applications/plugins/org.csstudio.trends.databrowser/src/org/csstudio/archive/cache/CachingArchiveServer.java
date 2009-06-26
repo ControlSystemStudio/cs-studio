@@ -31,7 +31,7 @@ public class CachingArchiveServer extends ArchiveServer
     // recent additions are most likely to be used again, we add entries
     // to the front, and remove the (old) entries when
     // exceeding the SAMPLE_CACHE_LENGTH.
-    private static int SAMPLE_CACHE_LENGTH = 40;
+    private static int SAMPLE_CACHE_LENGTH = 10;
     final private LinkedHashMap<SampleHashKey, ArchiveValues> sample_cache =
                             new LinkedHashMap<SampleHashKey, ArchiveValues>()
     {
@@ -56,22 +56,42 @@ public class CachingArchiveServer extends ArchiveServer
         this.server = server;
     }
 
-    @Override
-    public ArchiveInfo[] getArchiveInfos()
-    {   return server.getArchiveInfos(); }
+    /** Forward to 'real' server */
+    @Override 
+    public String getServerName() 
+    {	return server.getServerName(); }
 
+    /** Forward to 'real' server */
+    @Override
+    public String getURL()
+    {   return server.getURL();  }
+
+    /** Forward to 'real' server */
     @Override
     public String getDescription()
     {   return server.getDescription();   }
 
+    /** Forward to 'real' server */
+    @Override
+    public int getVersion()
+    {   return server.getVersion();  }
+
+    /** Forward to 'real' server */
+    @Override
+    public String[] getRequestTypes()
+    {   return server.getRequestTypes();  }
+
+    /** Forward to 'real' server */
+    @Override
+    public ArchiveInfo[] getArchiveInfos()
+    {   return server.getArchiveInfos(); }
+
+    /** Forward to 'real' server */
     @Override
     public NameInfo[] getNames(int key, String pattern) throws Exception
     {   return server.getNames(key, pattern);  }
 
-    @Override
-    public String[] getRequestTypes()
-    {   return server.getRequestTypes();  }
-    
+    /** Look for samples in cache, otherwise forward to real server */
     @SuppressWarnings("nls")
     @Override
     synchronized public ArchiveValues[] getSamples(
@@ -120,19 +140,14 @@ public class CachingArchiveServer extends ArchiveServer
         }
         return result;
     }
-
-    @Override
-    public String getURL()
-    {   return server.getURL();  }
-
-    @Override
-    public int getVersion()
-    {   return server.getVersion();  }
     
-    @Override 
-    public String getServerName() 
-    {	return server.getServerName(); }
-        
+    /** Forward to 'real' server */
+    @Override
+    public void cancel()
+    {
+        server.cancel();
+    }
+
     @SuppressWarnings("nls")
     synchronized public void clearCache()
     {

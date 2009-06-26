@@ -16,7 +16,7 @@ Require-Bundle: org.junit4,
  org.csstudio.utility.pv,
  org.csstudio.apputil,
  org.csstudio.apputil.ui,
- org.csstudio.archive,
+ org.csstudio.archive;bundle-version="1.0.4",
  org.csstudio.swt.chart,
  org.csstudio.logbook
 Eclipse-LazyStart: true
