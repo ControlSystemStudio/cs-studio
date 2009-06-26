@@ -35,10 +35,10 @@ public class RawSampleIterator implements SampleIterator
 	final private ChannelConfig channel;
 
 	/** SELECT ... for the start .. end samples. */
-	private PreparedStatement sel_samples;
+	private PreparedStatement sel_samples = null;
 	
     /** SELECT ... for the array samples. */
-	private PreparedStatement sel_array_samples;
+	private PreparedStatement sel_array_samples = null;
 		
 	/** 'Current' value that <code>next()</code> will return,
 	 *  or <code>null</code>
@@ -46,7 +46,7 @@ public class RawSampleIterator implements SampleIterator
 	private IValue value = null;
 
 	/** Result of <code>sel_samples</code> */
-	private ResultSet result_set;
+	private ResultSet result_set = null;
 	
 	/** Special Severity that's INVALID without a value */
 	private static ISeverity no_value_severity = null;
@@ -72,8 +72,22 @@ public class RawSampleIterator implements SampleIterator
 	{
 		this.archive = archive;
 		this.channel = channel;
-        determineMetaData();
-        determineInitialSample(start, end);
+		try
+		{
+            determineMetaData();
+            determineInitialSample(start, end);
+		}
+		catch (Exception ex)
+		{
+		    // ORA-01013: user requested cancel of current operation
+		    if (ex.getMessage().startsWith("ORA-01013"))
+		    {
+		        // Not a real error; return empty iterator
+		        CentralLogger.getInstance().getLogger(this).debug(
+		                "Channel " + channel.getName() + " request cancelled");
+		        close();
+		    }
+		}
 	}
 
 	/** Read meta data.
@@ -133,7 +147,7 @@ public class RawSampleIterator implements SampleIterator
         final Timestamp start_stamp = TimeWarp.getSQLTimestamp(start);
         final String initial_sql = archive.getSQL().sample_sel_initial_by_id_time;
         PreparedStatement sel_initial_sample =
-				connection.prepareStatement(initial_sql);
+            connection.prepareStatement(initial_sql);
         archive.addForCancellation(sel_initial_sample);
         try
         {
@@ -188,14 +202,29 @@ public class RawSampleIterator implements SampleIterator
 	{	// Remember value to return...
 		final IValue result = value;
 		// ... and prepare next value
-		if (result_set.next())
-			value = decodeValue(result_set);
-		else
-		    close();
+		try
+		{
+    		if (result_set.next())
+    			value = decodeValue(result_set);
+    		else
+    		    close();
+		}
+		catch (Exception ex)
+		{
+            if (ex.getMessage().startsWith("ORA-01013"))
+            {
+                // Not a real error; return empty iterator
+                CentralLogger.getInstance().getLogger(this).debug(
+                        "Channel " + channel.getName() + " request cancelled");
+                close();
+            }
+		}
 		return result;
 	}
 
-	/** Release all database resources */
+	/** Release all database resources.
+	 *  OK to call more than once.
+	 */
 	private void close()
 	{
         value = null;
@@ -340,13 +369,20 @@ public class RawSampleIterator implements SampleIterator
 	        sel_array_samples.setInt(3, stamp.getNanos());
 	    
         // Assemble array of unknown size in ArrayList ....
-	    ResultSet res = sel_array_samples.executeQuery();
-	    final ArrayList<Double> vals = new ArrayList<Double>();
-	    vals.add(new Double(dbl0));
-	    while (res.next())
-	        vals.add(res.getDouble(1));
-	    res.close();
-	    res = null;
+        final ArrayList<Double> vals = new ArrayList<Double>();
+	    archive.addForCancellation(sel_array_samples);
+	    try
+	    {
+	        final ResultSet res = sel_array_samples.executeQuery();
+    	    vals.add(new Double(dbl0));
+    	    while (res.next())
+    	        vals.add(res.getDouble(1));
+    	    res.close();
+	    }
+	    finally
+	    {
+	        archive.removeFromCancellation(sel_array_samples);
+	    }
 	    
         // Convert to plain double array
 	    final int N = vals.size();

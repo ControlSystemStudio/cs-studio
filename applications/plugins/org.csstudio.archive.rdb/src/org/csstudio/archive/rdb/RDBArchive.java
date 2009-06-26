@@ -123,7 +123,7 @@ public class RDBArchive
         this.password = password;
         connect();
     }
-
+    
     /** Initialize, connect to RDB.
      * 
      *  @param url URL, where "jdbc:oracle_stage:" handled like
