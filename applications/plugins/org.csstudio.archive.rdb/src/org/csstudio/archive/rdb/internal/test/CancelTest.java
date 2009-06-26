@@ -22,10 +22,8 @@ public class CancelTest
     {
         final RDBArchive archive =
             RDBArchive.connect(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
-        
 
-        // This thread simulates a user who pressed "cancel" in the progress
-        // view after 4 seconds
+        // Thread to simulate user who requests "cancel" after 4 seconds
         final Thread user = new Thread("ImpatientUser")
         {
             @Override
