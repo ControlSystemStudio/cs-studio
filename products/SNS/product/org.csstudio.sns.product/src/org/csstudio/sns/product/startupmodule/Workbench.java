@@ -70,18 +70,9 @@ public class Workbench implements WorkbenchExtPoint {
 	 * (non-Javadoc)
 	 * @see org.csstudio.startup.extensions.RunWorkbenchExtPoint#runWorkbench(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
-	@SuppressWarnings({ "nls", "unchecked" })
 	public Object runWorkbench(Display display, IApplicationContext context,
-			Map<String, Object> parameters) {
-		 // Display Name, version, location
-        final String instance = Platform.getInstanceLocation().getURL().getFile();
-        final Dictionary<String, String> headers = Activator.getInstance().getBundle().getHeaders();
-        String name = headers.get("Bundle-Name");
-        if (name == null)
-            name = "SNS CSS";
-        final String version = headers.get("Bundle-Version");
-        CentralLogger.getInstance().getLogger(this).info(name + " " + version + ": " + instance); 
-        
+			Map<String, Object> parameters)
+	{
         Object o = parameters.get(LoginExtPoint.USERNAME);
 		String username = o != null ? (String)o : null;
 		o = parameters.get(LoginExtPoint.PASSWORD);
